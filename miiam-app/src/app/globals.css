@@ -1,0 +1,225 @@
+@import "tailwindcss";
+
+@theme {
+  /* MIIAM Color System */
+  --color-surface: #fff4f4;
+  --color-surface-bright: #fff4f4;
+  --color-surface-dim: #ffc6ce;
+  --color-surface-variant: #ffd2d7;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #ffecee;
+  --color-surface-container: #ffe1e4;
+  --color-surface-container-high: #ffd9de;
+  --color-surface-container-highest: #ffd2d7;
+  --color-background: #fff4f4;
+  --color-on-background: #4d212a;
+  --color-on-surface: #4d212a;
+  --color-on-surface-variant: #814c55;
+  --color-outline: #a06770;
+  --color-outline-variant: #dd9ca6;
+  --color-inverse-surface: #24020a;
+  --color-inverse-on-surface: #cb8c96;
+  --color-surface-tint: #ba001c;
+  --color-primary: #ba001c;
+  --color-primary-dim: #a40017;
+  --color-primary-container: #ff7670;
+  --color-primary-fixed: #ff7670;
+  --color-primary-fixed-dim: #ff5a57;
+  --color-on-primary: #ffefee;
+  --color-on-primary-container: #4e0006;
+  --color-on-primary-fixed: #000000;
+  --color-on-primary-fixed-variant: #600009;
+  --color-inverse-primary: #ff5352;
+  --color-secondary: #0b50d5;
+  --color-secondary-dim: #0044bf;
+  --color-secondary-container: #c4d0ff;
+  --color-secondary-fixed: #c4d0ff;
+  --color-secondary-fixed-dim: #b1c2ff;
+  --color-on-secondary: #f1f2ff;
+  --color-on-secondary-container: #003dac;
+  --color-on-secondary-fixed: #002c83;
+  --color-on-secondary-fixed-variant: #0045c1;
+  --color-tertiary: #6c5a00;
+  --color-tertiary-dim: #5e4e00;
+  --color-tertiary-container: #ffd709;
+  --color-tertiary-fixed: #ffd709;
+  --color-tertiary-fixed-dim: #efc900;
+  --color-on-tertiary: #fff2cd;
+  --color-on-tertiary-container: #5b4b00;
+  --color-on-tertiary-fixed: #453900;
+  --color-on-tertiary-fixed-variant: #665500;
+  --color-error: #b02500;
+  --color-error-dim: #b92902;
+  --color-error-container: #f95630;
+  --color-on-error: #ffefec;
+  --color-on-error-container: #520c00;
+
+  /* Dark Mode Colors */
+  --color-dark-background: #1a0f12;
+  --color-dark-surface: #24020a;
+  --color-dark-surface-variant: #3d1520;
+  --color-dark-surface-container: #2d1018;
+  --color-dark-on-background: #ffebee;
+  --color-dark-on-surface: #ffebee;
+  --color-dark-on-surface-variant: #dd9ca6;
+  --color-dark-outline: #5c3340;
+  --color-dark-primary: #ff7670;
+  --color-dark-primary-container: #a40017;
+  --color-dark-on-primary: #4e0006;
+  --color-dark-error: #ff765e;
+  --color-dark-error-container: #8c1a00;
+  --color-dark-on-error: #4e0006;
+
+  /* Border radius */
+  --radius-DEFAULT: 1rem;
+  --radius-lg: 2rem;
+  --radius-xl: 3rem;
+
+  /* Font families */
+  --font-headline: "Plus Jakarta Sans", sans-serif;
+  --font-body: "Plus Jakarta Sans", sans-serif;
+  --font-label: "Plus Jakarta Sans", sans-serif;
+
+  /* Shadows */
+  --shadow-editorial: 0px 20px 40px rgba(77, 33, 42, 0.06);
+  --shadow-editorial-sm: 0px 10px 30px rgba(77, 33, 42, 0.04);
+}
+
+.dark {
+  --color-surface: #24020a;
+  --color-surface-bright: #3d1520;
+  --color-surface-dim: #24020a;
+  --color-surface-variant: #3d1520;
+  --color-surface-container-lowest: #1a0f12;
+  --color-surface-container-low: #2d1018;
+  --color-surface-container: #3d1520;
+  --color-surface-container-high: #4c1e28;
+  --color-surface-container-highest: #5c3340;
+  --color-background: #1a0f12;
+  --color-on-background: #ffebee;
+  --color-on-surface: #ffebee;
+  --color-on-surface-variant: #dd9ca6;
+  --color-outline: #5c3340;
+  --color-outline-variant: #3d1520;
+  --color-inverse-surface: #fff4f4;
+  --color-inverse-on-surface: #4d212a;
+  --color-surface-tint: #ff7670;
+  --color-primary: #ff7670;
+  --color-primary-dim: #ff5352;
+  --color-primary-container: #a40017;
+  --color-primary-fixed: #a40017;
+  --color-primary-fixed-dim: #8c1500;
+  --color-on-primary: #4e0006;
+  --color-on-primary-container: #ffefee;
+  --color-on-primary-fixed: #ffefee;
+  --color-on-primary-fixed-variant: #ffcfce;
+  --color-inverse-primary: #ba001c;
+  --color-secondary: #6b9fff;
+  --color-secondary-dim: #3d7aff;
+  --color-secondary-container: #0044bf;
+  --color-secondary-fixed: #3d7aff;
+  --color-secondary-fixed-dim: #6b9fff;
+  --color-on-secondary: #002c83;
+  --color-on-secondary-container: #f1f2ff;
+  --color-on-secondary-fixed: #002c83;
+  --color-on-secondary-fixed-variant: #c4d0ff;
+  --color-tertiary: #ffd709;
+  --color-tertiary-dim: #d4b800;
+  --color-tertiary-container: #5b4b00;
+  --color-tertiary-fixed: #d4b800;
+  --color-tertiary-fixed-dim: #b4a000;
+  --color-on-tertiary: #453900;
+  --color-on-tertiary-container: #fff2cd;
+  --color-on-tertiary-fixed: #453900;
+  --color-on-tertiary-fixed-variant: #665500;
+  --color-error: #ff765e;
+  --color-error-dim: #d42a1e;
+  --color-error-container: #8c1a00;
+  --color-on-error: #4e0006;
+  --color-on-error-container: #ffcfce;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  background-color: #fff4f4;
+  color: #4d212a;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Material Symbols */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Custom scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #dd9ca6;
+  border-radius: 10px;
+}
+
+/* Glassmorphism */
+.glassmorphism {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Gradients */
+.bento-gradient-red {
+  background: linear-gradient(135deg, #ba001c 0%, #ff7670 100%);
+}
+
+.bento-gradient-blue {
+  background: linear-gradient(135deg, #0b50d5 0%, #c4d0ff 100%);
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.float-animation {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Hide scrollbar utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Toast animation */
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.3s ease-out;
+}

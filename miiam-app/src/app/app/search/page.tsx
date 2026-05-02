@@ -1,0 +1,280 @@
+"use client";
+
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
+import { useCartStore } from "@/lib/store/cartStore";
+import { Skeleton, VendorCardSkeleton } from "@/components/Skeleton";
+
+interface VendorResult {
+  id: string;
+  shop_name: string;
+  cuisine: string;
+  rating: number;
+  delivery_time_min: number;
+  delivery_time_max: number;
+  min_order_amount: number;
+  image_url: string | null;
+}
+
+interface MenuResult {
+  id: string;
+  name: string;
+  price: number;
+  category: string;
+  image_url: string | null;
+  vendor: VendorResult;
+}
+
+function SearchContent() {
+  const searchParams = useSearchParams();
+  const query = searchParams.get("q") || "";
+  const supabase = createClient();
+  const { addItem } = useCartStore();
+
+  const [loading, setLoading] = useState(false);
+  const [results, setResults] = useState<{ vendors: VendorResult[]; menuItems: MenuResult[] }>({
+    vendors: [],
+    menuItems: [],
+  });
+  const [activeTab, setActiveTab] = useState<"all" | "vendors" | "food">("all");
+
+  useEffect(() => {
+    if (!query.trim()) {
+      setResults({ vendors: [], menuItems: [] });
+      return;
+    }
+    search(query);
+  }, [query]);
+
+  const search = async (searchQuery: string) => {
+    setLoading(true);
+    try {
+      const searchTerm = `%${searchQuery.toLowerCase()}%`;
+
+      const [vendorsRes, menuRes] = await Promise.all([
+        supabase
+          .from("vendors")
+          .select("*")
+          .or(`shop_name.ilike.${searchTerm},cuisine.ilike.${searchTerm}`)
+          .eq("status", "active")
+          .limit(20),
+        supabase
+          .from("menu_items")
+          .select("*, vendor:vendors(*)")
+          .ilike("name", `%${searchQuery}%`)
+          .limit(20),
+      ]);
+
+      setResults({
+        vendors: (vendorsRes.data || []) as VendorResult[],
+        menuItems: (menuRes.data || []) as MenuResult[],
+      });
+    } catch (error) {
+      console.error("Search error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddToCart = (item: any) => {
+    addItem({
+      id: item.id,
+      menu_item_id: item.id,
+      vendor_id: item.vendor_id,
+      vendor_name: item.vendor?.shop_name || "Vendor",
+      name: item.name,
+      price: item.price,
+      image_url: item.image_url || undefined,
+    });
+  };
+
+  const filteredResults = {
+    vendors: activeTab === "food" ? [] : results.vendors,
+    menuItems: activeTab === "vendors" ? [] : results.menuItems,
+  };
+
+  const totalResults = filteredResults.vendors.length + filteredResults.menuItems.length;
+
+  return (
+    <>
+      <header className="fixed top-0 w-full z-50 px-6 py-4 bg-[#fff4f4]/80 backdrop-blur-2xl border-b border-[#dd9ca6]/20">
+        <div className="flex items-center gap-4 max-w-4xl mx-auto">
+          <Link href="/app/explore" className="text-[#ba001c]">
+            <span className="material-symbols-outlined">arrow_back</span>
+          </Link>
+          <div className="flex-1 relative">
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#814c55]">search</span>
+            <input
+              type="text"
+              defaultValue={query}
+              placeholder="Search restaurants, dishes..."
+              className="w-full bg-white border-none rounded-xl pl-12 pr-4 py-3 text-[#4d212a] font-medium focus:outline-none focus:ring-2 focus:ring-[#ba001c]/40"
+              onChange={(e) => {
+                const url = new URL(window.location.href);
+                url.searchParams.set("q", e.target.value);
+                window.history.pushState({}, "", url);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  search((e.target as HTMLInputElement).value);
+                }
+              }}
+            />
+          </div>
+        </div>
+      </header>
+
+      <main className="pt-24 pb-32 px-6 max-w-4xl mx-auto">
+        {query && (
+          <div className="flex gap-2 mb-6">
+            {(["all", "vendors", "food"] as const).map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${
+                  activeTab === tab
+                    ? "bg-[#ba001c] text-white"
+                    : "bg-white text-[#814c55] border border-[#dd9ca6]/30"
+                }`}
+              >
+                {tab === "all" ? "All" : tab === "vendors" ? "Restaurants" : "Dishes"}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {loading ? (
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {[1, 2, 3, 4].map((i) => (
+                <VendorCardSkeleton key={i} />
+              ))}
+            </div>
+          </div>
+        ) : !query ? (
+          <div className="text-center py-16">
+            <span className="text-6xl">🔍</span>
+            <h2 className="text-xl font-bold text-[#4d212a] mt-4">Search for anything</h2>
+            <p className="text-[#814c55] mt-2">Find restaurants, dishes, cuisines</p>
+            <div className="mt-8 flex flex-wrap justify-center gap-2">
+              {["Biryani", "Pizza", "Burgers", "Chinese", "South Indian", "Desserts"].map((tag) => (
+                <Link
+                  key={tag}
+                  href={`/app/search?q=${tag}`}
+                  className="px-4 py-2 bg-white rounded-full text-sm text-[#814c55] border border-[#dd9ca6]/30 hover:border-[#ba001c] transition-all"
+                >
+                  {tag}
+                </Link>
+              ))}
+            </div>
+          </div>
+        ) : totalResults === 0 ? (
+          <div className="text-center py-16">
+            <span className="text-6xl">😕</span>
+            <h2 className="text-xl font-bold text-[#4d212a] mt-4">No results found</h2>
+            <p className="text-[#814c55] mt-2">Try different keywords or browse restaurants</p>
+            <Link
+              href="/app/explore"
+              className="mt-6 inline-block bg-[#ba001c] text-white px-6 py-3 rounded-xl font-bold"
+            >
+              Explore Restaurants
+            </Link>
+          </div>
+        ) : (
+          <>
+            {filteredResults.vendors.length > 0 && (
+              <section className="mb-8">
+                <h3 className="text-lg font-bold text-[#4d212a] mb-4">
+                  Restaurants ({filteredResults.vendors.length})
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {filteredResults.vendors.map((vendor) => (
+                    <Link
+                      key={vendor.id}
+                      href={`/app/vendor/${vendor.id}`}
+                      className="bg-white rounded-2xl overflow-hidden border border-slate-100 hover:shadow-lg transition-all"
+                    >
+                      <div className="h-32 bg-[#ffe1e4] relative">
+                        {vendor.image_url ? (
+                          <img src={vendor.image_url} alt={vendor.shop_name} className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <span className="material-symbols-outlined text-4xl text-[#dd9ca6]">restaurant</span>
+                          </div>
+                        )}
+                        <div className="absolute bottom-2 left-2 bg-white/90 backdrop-blur px-2 py-1 rounded-lg text-xs font-bold text-[#4d212a]">
+                          ⭐ {vendor.rating?.toFixed(1) || "N/A"}
+                        </div>
+                      </div>
+                      <div className="p-4">
+                        <h4 className="font-bold text-[#4d212a]">{vendor.shop_name}</h4>
+                        <p className="text-sm text-[#814c55]">{vendor.cuisine}</p>
+                        <p className="text-xs text-[#814c55] mt-1">
+                          {vendor.delivery_time_min}-{vendor.delivery_time_max} min • ₹{vendor.min_order_amount} min
+                        </p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {filteredResults.menuItems.length > 0 && (
+              <section>
+                <h3 className="text-lg font-bold text-[#4d212a] mb-4">
+                  Dishes ({filteredResults.menuItems.length})
+                </h3>
+                <div className="space-y-3">
+                  {filteredResults.menuItems.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex items-center gap-4 p-4 bg-white rounded-xl border border-slate-100"
+                    >
+                      <div className="w-20 h-20 bg-[#ffe1e4] rounded-lg overflow-hidden flex-shrink-0">
+                        {item.image_url ? (
+                          <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <span className="material-symbols-outlined text-2xl text-[#dd9ca6]">fastfood</span>
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-bold text-[#4d212a] truncate">{item.name}</h4>
+                        <p className="text-sm text-[#814c55]">{item.vendor?.shop_name}</p>
+                        <p className="text-sm font-bold text-[#ba001c] mt-1">₹{item.price}</p>
+                      </div>
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleAddToCart(item);
+                        }}
+                        className="bg-[#ba001c] text-white p-2 rounded-lg hover:bg-[#a00018] transition-all"
+                      >
+                        <span className="material-symbols-outlined">add</span>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+          </>
+        )}
+      </main>
+    </>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin" />
+      </div>
+    }>
+      <SearchContent />
+    </Suspense>
+  );
+}
