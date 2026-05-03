@@ -402,7 +402,7 @@ export default function CareersPage() {
       {/* Footer */}
       <footer className="bg-slate-950 px-4 py-12 text-center">
         <p className="text-slate-500 text-sm">
-          © 2024 MIIAM. All rights reserved. Guwahati, Assam.
+          © 2026 MIIAM. All rights reserved. Guwahati, Assam.
         </p>
       </footer>
 

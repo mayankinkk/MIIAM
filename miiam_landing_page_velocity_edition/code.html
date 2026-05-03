@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MIIAM - The Kinetic Super-App</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface": "#fff4f4",
+                      "secondary-fixed": "#c4d0ff",
+                      "surface-bright": "#fff4f4",
+                      "on-secondary-fixed-variant": "#0045c1",
+                      "tertiary-dim": "#5e4e00",
+                      "tertiary": "#6c5a00",
+                      "on-error-container": "#520c00",
+                      "inverse-surface": "#24020a",
+                      "on-surface": "#4d212a",
+                      "surface-container": "#ffe1e4",
+                      "primary-container": "#ff7670",
+                      "on-surface-variant": "#814c55",
+                      "on-secondary-fixed": "#002c83",
+                      "on-tertiary": "#fff2cd",
+                      "primary-dim": "#a40017",
+                      "on-background": "#4d212a",
+                      "on-secondary-container": "#003dac",
+                      "on-tertiary-fixed": "#453900",
+                      "surface-container-highest": "#ffd2d7",
+                      "secondary-fixed-dim": "#b1c2ff",
+                      "on-primary-container": "#4e0006",
+                      "background": "#fff4f4",
+                      "secondary": "#0b50d5",
+                      "on-secondary": "#f1f2ff",
+                      "inverse-on-surface": "#cb8c96",
+                      "tertiary-container": "#ffd709",
+                      "surface-variant": "#ffd2d7",
+                      "primary-fixed": "#ff7670",
+                      "outline": "#a06770",
+                      "on-primary-fixed-variant": "#600009",
+                      "outline-variant": "#dd9ca6",
+                      "error": "#b02500",
+                      "surface-dim": "#ffc6ce",
+                      "primary": "#ba001c",
+                      "secondary-dim": "#0044bf",
+                      "on-primary-fixed": "#000000",
+                      "on-primary": "#ffefee",
+                      "tertiary-fixed": "#ffd709",
+                      "error-container": "#f95630",
+                      "surface-container-low": "#ffecee",
+                      "secondary-container": "#c4d0ff",
+                      "surface-container-high": "#ffd9de",
+                      "on-error": "#ffefec",
+                      "tertiary-fixed-dim": "#efc900",
+                      "primary-fixed-dim": "#ff5a57",
+                      "surface-tint": "#ba001c",
+                      "surface-container-lowest": "#ffffff",
+                      "on-tertiary-container": "#5b4b00",
+                      "inverse-primary": "#ff5352",
+                      "error-dim": "#b92902",
+                      "on-tertiary-fixed-variant": "#665500"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "fontFamily": {
+                      "headline": ["Plus Jakarta Sans"],
+                      "body": ["Plus Jakarta Sans"],
+                      "label": ["Plus Jakarta Sans"]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        .glassmorphism {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .editorial-shadow {
+            box-shadow: 0px 20px 40px rgba(77, 33, 42, 0.06);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script>
+        function detectLocation() {
+            const locationText = document.getElementById('location-text');
+            if (navigator.geolocation) {
+                locationText.textContent = 'Detecting...';
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}`)
+                            .then(res => res.json())
+                            .then(data => {
+                                const city = data.address.city || data.address.town || data.address.village || data.address.county || 'Your Location';
+                                locationText.textContent = city;
+                            })
+                            .catch(() => {
+                                locationText.textContent = 'Location detected';
+                            });
+                    },
+                    () => {
+                        locationText.textContent = 'Enable location access';
+                    }
+                );
+            } else {
+                locationText.textContent = 'Location not supported';
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface font-body text-on-surface">
+<!-- TopNavBar (Shared Component) -->
+<nav class="fixed top-0 w-full z-50 bg-white/70 dark:bg-slate-900/70 backdrop-blur-2xl no-border glassmorphism-tonal-shift shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
+<div class="flex justify-between items-center max-w-7xl mx-auto px-8 py-5">
+<div class="text-3xl font-black text-red-700 dark:text-red-500 tracking-tighter font-['Plus_Jakarta_Sans']">MIIAM</div>
+<div class="hidden md:flex items-center gap-10">
+<a class="text-red-600 dark:text-red-400 border-b-2 border-red-600 pb-1 font-['Plus_Jakarta_Sans'] font-bold tracking-tight hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300" href="#">Food</a>
+<a class="text-slate-800 dark:text-slate-200 font-['Plus_Jakarta_Sans'] font-bold tracking-tight hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300" href="#">Services</a>
+<a class="text-slate-800 dark:text-slate-200 font-['Plus_Jakarta_Sans'] font-bold tracking-tight hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300" href="#">For Business</a>
+<a class="text-slate-800 dark:text-slate-200 font-['Plus_Jakarta_Sans'] font-bold tracking-tight hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300" href="#">Careers</a>
+</div>
+<div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary dark:text-primary-400" style="font-variation-settings: 'FILL' 1;">location_on</span>
+                        <button onclick="detectLocation()" class="text-sm font-medium text-on-surface-variant hover:text-primary transition-colors text-left">
+                            <span id="location-text">Detect Location</span>
+                            <span class="material-symbols-outlined text-xs align-middle" style="font-variation-settings: 'FILL' 1;">expand_more</span>
+                        </button>
+                    </div>
+                </div>
+                <button class="bg-primary hover:bg-primary-dim text-white px-8 py-3 rounded-xl font-bold active:scale-95 transition-transform cursor-pointer">
+                Get the App
+            </button>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="pt-24 overflow-x-hidden">
+<!-- Hero Section: Split-Screen -->
+<section class="min-h-[921px] flex flex-col md:flex-row relative">
+<!-- Food Side -->
+<div class="flex-1 bg-primary flex flex-col justify-center items-center px-8 py-20 relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-full opacity-20 pointer-events-none">
+<img class="w-full h-full object-cover grayscale" data-alt="overhead shot of various colorful bowls of gourmet food including noodles, salads, and curries on a warm rustic wooden table" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDriDTAhR_XlA4ltqAM2rYabRftwc_aBYmY7pkzZt00yWlW_e2cDtTJwuc1vA5Cvj--oSeqcm08aEX2ZK3IzHntCfHkLVOHLw7CrSBGaDEuezpDpbfK88pqpum21NqCYh1vrHkUx7rtUBckDnUL1n-i7yeL_yiGE4_oBYakwjK14KyJZsXPFlbzsdClYY9ghnl8dyRaNKilyvnRMwYXoBcYoWtYoEyrB9O2TOubpVrvzg2HtXvf0MzvHQG5BTP_wFF3t4uUzQN9PCQ"/>
+</div>
+<!-- Floating Icons -->
+<div class="absolute top-1/4 left-10 glassmorphism p-4 rounded-full editorial-shadow animate-bounce">
+<span class="material-symbols-outlined text-4xl text-white" style="font-variation-settings: 'FILL' 1;">restaurant</span>
+</div>
+<div class="absolute bottom-1/4 right-10 glassmorphism p-5 rounded-full editorial-shadow animate-pulse" style="animation-duration: 4s;">
+<span class="material-symbols-outlined text-5xl text-white" style="font-variation-settings: 'FILL' 1;">ramen_dining</span>
+</div>
+<div class="relative z-10 text-center max-w-md">
+<h1 class="text-6xl md:text-7xl font-extrabold text-white tracking-tighter mb-6 leading-none">
+                        Crave It.<br/>Get It.
+                    </h1>
+<p class="text-white/80 text-lg mb-10 font-medium">From street food favorites to gourmet grocery staples, delivered in minutes.</p>
+<button class="bg-white text-primary px-10 py-5 rounded-xl text-xl font-bold hover:scale-105 transition-transform editorial-shadow">
+                        Order Food
+                    </button>
+</div>
+</div>
+<!-- Service Side -->
+<div class="flex-1 bg-secondary flex flex-col justify-center items-center px-8 py-20 relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+<img class="w-full h-full object-cover" data-alt="clean minimal modern living room interior with soft blue daylight filtering through large windows and a professional handyman blurred in background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtnCVpu44wEo4CgmkYcQhUeoVHEk0Cv54jXh0JEv6ZRWkwBRp3HNwotGOB_ahJjGOAJaDnFf0WBQKBL0mTsbqB9yMEn9yoyJWhYqT8KFGBmKYrEn-TdzMIwqGqj72_EinnXBVZauR_ZpxEfbRVKZWiziUCB3AOlks9kGgJytxsd87Zuae4kaAmsQNq1XFRtPQLGjnxz-_quNjOUzHg4y5CWvZZb1_a8CgebCCSb8ooqZ0a-cSJeQSQahhy8HS5UqlS0qVAZFSKptw"/>
+</div>
+<!-- Floating Icons -->
+<div class="absolute top-1/3 right-12 glassmorphism p-4 rounded-full editorial-shadow animate-pulse">
+<span class="material-symbols-outlined text-4xl text-white" style="font-variation-settings: 'FILL' 1;">plumbing</span>
+</div>
+<div class="absolute bottom-1/3 left-12 glassmorphism p-5 rounded-full editorial-shadow animate-bounce" style="animation-duration: 3s;">
+<span class="material-symbols-outlined text-5xl text-white" style="font-variation-settings: 'FILL' 1;">construction</span>
+</div>
+<div class="relative z-10 text-center max-w-md">
+<h1 class="text-6xl md:text-7xl font-extrabold text-white tracking-tighter mb-6 leading-none">
+                        Home Fixed.<br/>Life Sorted.
+                    </h1>
+<p class="text-white/80 text-lg mb-10 font-medium">Plumbing, cleaning, or repairs. Verified professionals at your doorstep.</p>
+<button class="bg-white text-secondary px-10 py-5 rounded-xl text-xl font-bold hover:scale-105 transition-transform editorial-shadow">
+                        Book a Service
+                    </button>
+</div>
+</div>
+</section>
+<!-- Feature Strip -->
+<section class="bg-surface-container-lowest py-10 px-8 relative z-20 -mt-8 mx-auto max-w-6xl rounded-lg editorial-shadow">
+<div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+<div class="flex items-center gap-4 group">
+<div class="bg-primary-container/20 p-3 rounded-full group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">shopping_cart_checkout</span>
+</div>
+<span class="font-bold text-on-surface tracking-tight">Cross-Store Cart</span>
+</div>
+<div class="flex items-center gap-4 group">
+<div class="bg-primary-container/20 p-3 rounded-full group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<span class="font-bold text-on-surface tracking-tight">30-Min Delivery</span>
+</div>
+<div class="flex items-center gap-4 group">
+<div class="bg-secondary-container/20 p-3 rounded-full group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+</div>
+<span class="font-bold text-on-surface tracking-tight">Verified Pros</span>
+</div>
+<div class="flex items-center gap-4 group">
+<div class="bg-secondary-container/20 p-3 rounded-full group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">support_agent</span>
+</div>
+<span class="font-bold text-on-surface tracking-tight">Live Support</span>
+</div>
+</div>
+</section>
+<!-- Vendor Showcase: Bento Grid Style -->
+<section class="max-w-7xl mx-auto px-8 py-24">
+<div class="flex justify-between items-end mb-12">
+<div>
+<h2 class="text-4xl font-extrabold tracking-tight text-on-surface">Popular Near You</h2>
+<p class="text-on-surface-variant font-medium mt-2">The highest rated experiences in your city.</p>
+</div>
+<button class="text-primary font-bold flex items-center gap-2 hover:translate-x-1 transition-transform">
+                    View All <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Food Card Large -->
+<div class="md:col-span-2 group relative overflow-hidden rounded-lg editorial-shadow bg-surface-container-lowest">
+<div class="aspect-[16/9] overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="close-up of a fresh wood-fired artisan pizza with melting buffalo mozzarella, vibrant basil leaves, and roasted tomatoes on a dark stone surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuYG77LoUNQ54lX53DSmfRx4qvwC5uRV4hGnU-JU-sGokl5Z_Hij8FufhGZzNU-c5p11atYy0GC54AHD1xXhDaLGcag58vMWbfAQi8Cgi7EXKxhUVnb7QRUgnyr1HOatBYffy3RfnBoUL8jGL42wLtYqK7ET_fly6sPjCN6T2S3qDILH2rYAMrEy66qq_tyeP2eFQrT-dblSsNPZa0T3CxaDLvu11K4IBnJjDzu8Y8KbYwZsULiXVv7ArPPm1ZOlEge_9DMHajNFo"/>
+</div>
+<div class="p-8">
+<div class="flex justify-between items-start">
+<div>
+<span class="bg-primary-container text-on-primary-container text-xs font-bold px-3 py-1 rounded-full mb-3 inline-block">TRENDING FOOD</span>
+<h3 class="text-2xl font-bold text-on-surface">Pizzeria d'Autore</h3>
+<div class="flex items-center gap-2 mt-2 text-on-surface-variant font-medium">
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span>4.9 (2k+ reviews)</span>
+<span class="mx-2">•</span>
+<span>15-20 mins</span>
+</div>
+</div>
+<button class="bg-surface-container p-4 rounded-full text-primary hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add_shopping_cart</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Service Card -->
+<div class="group relative overflow-hidden rounded-lg editorial-shadow bg-surface-container-lowest flex flex-col">
+<div class="aspect-square overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="a professional cleaner in a bright white uniform using a vacuum on a minimalist high-end designer rug in a sunlit airy modern apartment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDP2MiGq0EPG4IqsbJ8YYS7cIqYTRzZalC_RCkRfE9M-fYnga9EW24EGioYMvp62hpDs-1KvnrVRsS6mXy-fUO6mOFQPTw-nKQbHsFJkvuBqmvoPMun4j5rV6KYBiI-gWAeiLcrUJU5ChfdXiQGKGII2XfL1EduDznRNFmEqnG1uUzfF1MzJPjz8TQg7euQU-fFUDnkUUPj-53dpQPamtSnWPU_t7CfUAduSEts9EUqE790h0FQJj8argvE6fYzrbXEIq3T_Z6NEmc"/>
+</div>
+<div class="p-8 flex-1 flex flex-col">
+<span class="bg-secondary-container text-on-secondary-container text-xs font-bold px-3 py-1 rounded-full mb-3 self-start">SERVICE PRO</span>
+<h3 class="text-2xl font-bold text-on-surface">PureHome Cleaning</h3>
+<div class="mt-auto pt-6 flex justify-between items-center">
+<span class="text-on-surface-variant font-bold">From $29/hr</span>
+<span class="flex items-center gap-1 font-bold text-on-surface">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">verified</span>
+                                Elite
+                            </span>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="group relative overflow-hidden rounded-lg editorial-shadow bg-surface-container-lowest">
+<div class="p-8">
+<span class="bg-primary-container text-on-primary-container text-xs font-bold px-3 py-1 rounded-full mb-3 inline-block">GROCERY</span>
+<h3 class="text-2xl font-bold text-on-surface">The Organic Pantry</h3>
+<div class="flex items-center gap-2 mt-2 text-on-surface-variant font-medium">
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">schedule</span>
+<span>Express Delivery</span>
+</div>
+</div>
+<div class="h-48 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="vibrant rows of fresh organic produce in a high-end grocery store including bright bell peppers, crisp lettuce, and deep purple grapes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxnbh_7wyHc2wEoeSDgHpeGFuwapMcVgX-c823Lve6sRrC04OKXXz8WBQndYr4sGJxA368arxIx2yJxFetfcIff9gmw9kw3VpaI9XwfQ6L_VJ0rQd2T8vyClojpXBRlqQKsTdDAV5y92zP6foLD6IfRONS8UcnGbcG-pcrmz8JNqdNoZwgl4B7IEGmbaKi3DuDwUtM6bk-N5-vSaqh2p7toiDqyOMTRe2WgJLd5YrincyweAvBUFbu_85PMhjryyJ5Myk8X2E7Xus"/>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="group relative overflow-hidden rounded-lg editorial-shadow bg-surface-container-lowest">
+<div class="p-8 h-full flex flex-col">
+<span class="bg-secondary-container text-on-secondary-container text-xs font-bold px-3 py-1 rounded-full mb-3 self-start">TECH SUPPORT</span>
+<h3 class="text-2xl font-bold text-on-surface">SmartHome Setup</h3>
+<p class="text-on-surface-variant mt-3 line-clamp-2">Installation and configuration of smart devices by certified tech experts.</p>
+<div class="mt-auto pt-8">
+<button class="w-full py-4 rounded-xl border-2 border-secondary text-secondary font-bold hover:bg-secondary hover:text-white transition-all">
+                                Learn More
+                            </button>
+</div>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="group relative overflow-hidden rounded-lg editorial-shadow bg-surface-container-lowest">
+<div class="aspect-video overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="aesthetic stack of decadent chocolate glazed donuts with colorful sprinkles on a minimalist pastel pink background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlHXvkvn0S7ruRrjqvISl1yhygMgcuQFd_AEo67bacjSVVYmpmoXLJKIT59XvosLzS7SzBhlmeAq8MeSi-2dDMDpI9zwR8AOoVaO8rlwNmJ-78j_c3V5JZA-8PeCn3C4ORsmjGBpytUIEnahzNuM5Fzlw5xQ87ug045-MRxh0F3ei1eCFl-NXGCrtqOfVduMbvnfZloeBr_jufxDpMWMfUdQJRcCNBwCTRIjXDHWYZ-Na6EjMKHHsMwYh5yZqDrPp-Sg84jaGpvqY"/>
+</div>
+<div class="p-8">
+<h3 class="text-2xl font-bold text-on-surface">Glaze &amp; Confetti</h3>
+<div class="flex justify-between items-center mt-4">
+<span class="text-on-surface-variant">Desserts • $$</span>
+<span class="bg-surface-container-high px-3 py-1 rounded-full text-sm font-bold">4.8</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Promotion Section -->
+<section class="max-w-7xl mx-auto px-8 mb-24">
+<div class="relative rounded-lg overflow-hidden bg-on-surface p-12 md:p-20 flex flex-col md:flex-row items-center gap-12">
+<div class="absolute top-0 right-0 w-1/2 h-full opacity-30">
+<div class="w-full h-full bg-gradient-to-l from-primary to-transparent"></div>
+</div>
+<div class="relative z-10 flex-1">
+<span class="text-primary-container font-black tracking-widest text-sm uppercase mb-4 block">Limited Time Launch Offer</span>
+<h2 class="text-5xl md:text-7xl font-extrabold text-white tracking-tighter leading-none mb-6">
+                        50% OFF<br/><span class="text-primary-container">FIRST ORDER</span>
+</h2>
+<p class="text-white/60 text-xl max-w-md mb-10">Experience the ultimate super-app. Use code <span class="text-white font-bold">MIIAM50</span> at checkout.</p>
+<div class="flex flex-col sm:flex-row gap-4">
+<button class="bg-primary text-white px-10 py-5 rounded-xl font-black text-lg shadow-xl hover:shadow-primary/20 transition-all active:scale-95">
+                            Claim My Offer
+                        </button>
+</div>
+</div>
+<div class="relative z-10 w-full md:w-1/3">
+<div class="bg-white/10 backdrop-blur-xl p-8 rounded-lg border border-white/10 editorial-shadow">
+<div class="flex gap-4 mb-6">
+<div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-white">confirmation_number</span>
+</div>
+<div>
+<p class="text-white font-bold">Promo Applied</p>
+<p class="text-white/40 text-sm">Save up to $25.00</p>
+</div>
+</div>
+<div class="space-y-3">
+<div class="h-2 w-full bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-2/3"></div>
+</div>
+<p class="text-white/60 text-xs font-medium">942 (target) people claimed this today</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer (Shared Component) -->
+<footer class="bg-slate-950 dark:bg-black w-full py-16 px-10 tonal-blocking-surface-to-dark flat">
+<div class="flex flex-col md:flex-row justify-between items-center gap-12 max-w-7xl mx-auto">
+<div class="text-2xl font-black text-white font-['Plus_Jakarta_Sans'] tracking-tighter">MIIAM</div>
+<div class="flex gap-10">
+<a class="text-slate-500 font-['Plus_Jakarta_Sans'] text-sm uppercase tracking-widest font-semibold hover:text-red-500 hover:translate-x-1 transition-all" href="#">Privacy</a>
+<a class="text-slate-500 font-['Plus_Jakarta_Sans'] text-sm uppercase tracking-widest font-semibold hover:text-red-500 hover:translate-x-1 transition-all" href="#">Terms</a>
+<a class="text-slate-500 font-['Plus_Jakarta_Sans'] text-sm uppercase tracking-widest font-semibold hover:text-red-500 hover:translate-x-1 transition-all" href="#">Safety</a>
+<a class="text-slate-500 font-['Plus_Jakarta_Sans'] text-sm uppercase tracking-widest font-semibold hover:text-red-500 hover:translate-x-1 transition-all" href="#">Contact</a>
+</div>
+<div class="text-slate-500 font-['Plus_Jakarta_Sans'] text-xs font-medium">
+                © 2026 MIIAM Super-App. All rights reserved.
+            </div>
+</div>
+</footer>
+</body></html>

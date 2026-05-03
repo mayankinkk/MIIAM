@@ -60,7 +60,7 @@ export const translations: Record<'en' | 'hi' | 'as', Translations> = {
     promoDesc1: "Experience the ultimate super-app. Use code ",
     promoDesc2: " at checkout.",
     claimOffer: "Claim My Offer",
-    footerRights: "© 2024 MIIAM Super-App. All rights reserved.",
+    footerRights: "© 2026 MIIAM Super-App. All rights reserved.",
   },
   hi: {
     navVendors: "विक्रेता",
@@ -91,7 +91,7 @@ export const translations: Record<'en' | 'hi' | 'as', Translations> = {
     promoDesc1: "परम सुपर-ऐप का अनुभव करें। चेकआउट पर कोड ",
     promoDesc2: " का उपयोग करें।",
     claimOffer: "मेरा ऑफर लें",
-    footerRights: "© 2024 MIIAM सुपर-ऐप। सर्वाधिकार सुरक्षित।",
+    footerRights: "© 2026 MIIAM सुपर-ऐप। सर्वाधिकार सुरक्षित।",
   },
   as: {
     navVendors: "বিক্ৰেতা",

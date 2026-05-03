@@ -206,7 +206,7 @@ function LoginContent() {
 
       {/* Footer */}
       <footer className="fixed bottom-0 right-0 p-6 z-40">
-        <p className="text-[10px] tracking-[0.3em] text-[#5c403d]/60">© 2024 MIIAM INC. ALL RIGHTS RESERVED.</p>
+        <p className="text-[10px] tracking-[0.3em] text-[#5c403d]/60">© 2026 MIIAM INC. ALL RIGHTS RESERVED.</p>
       </footer>
     </div>
   );

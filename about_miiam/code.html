@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>About MIIAM | Your City, Delivered</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary": "#f1f2ff",
+                        "tertiary-dim": "#5e4e00",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#814c55",
+                        "on-surface": "#4d212a",
+                        "on-secondary-container": "#003dac",
+                        "on-tertiary": "#fff2cd",
+                        "surface-container-highest": "#ffd2d7",
+                        "error": "#b02500",
+                        "secondary-dim": "#0044bf",
+                        "on-secondary-fixed": "#002c83",
+                        "tertiary": "#6c5a00",
+                        "surface-container": "#ffe1e4",
+                        "surface-bright": "#fff4f4",
+                        "tertiary-container": "#ffd709",
+                        "primary-fixed": "#ff7670",
+                        "primary-fixed-dim": "#ff5a57",
+                        "outline": "#a06770",
+                        "on-secondary-fixed-variant": "#0045c1",
+                        "on-primary-fixed": "#000000",
+                        "on-background": "#4d212a",
+                        "on-tertiary-fixed-variant": "#665500",
+                        "inverse-surface": "#24020a",
+                        "surface-dim": "#ffc6ce",
+                        "on-primary-container": "#4e0006",
+                        "surface-container-low": "#ffecee",
+                        "primary-dim": "#a40017",
+                        "primary-container": "#ff7670",
+                        "secondary-fixed-dim": "#b1c2ff",
+                        "tertiary-fixed-dim": "#efc900",
+                        "secondary-container": "#c4d0ff",
+                        "surface": "#fff4f4",
+                        "secondary-fixed": "#c4d0ff",
+                        "primary": "#ba001c",
+                        "inverse-primary": "#ff5352",
+                        "secondary": "#0b50d5",
+                        "on-tertiary-container": "#5b4b00",
+                        "on-primary": "#ffefee",
+                        "on-error": "#ffefec",
+                        "error-container": "#f95630",
+                        "on-primary-fixed-variant": "#600009",
+                        "background": "#fff4f4",
+                        "tertiary-fixed": "#ffd709",
+                        "error-dim": "#b92902",
+                        "on-error-container": "#520c00",
+                        "inverse-on-surface": "#cb8c96",
+                        "on-tertiary-fixed": "#453900",
+                        "surface-variant": "#ffd2d7",
+                        "surface-tint": "#ba001c",
+                        "outline-variant": "#dd9ca6",
+                        "surface-container-high": "#ffd9de"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fff4f4; color: #4d212a; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-card { backdrop-filter: blur(20px); background: rgba(255, 255, 255, 0.4); border: 1px solid rgba(255, 255, 255, 0.2); }
+        .hero-gradient { background: linear-gradient(135deg, #ba001c 0%, #ff7670 100%); }
+        .asymmetric-shape { border-radius: 4rem 2rem 8rem 3rem; }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-[#fff4f4]/80 dark:bg-slate-950/80 backdrop-blur-2xl shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
+<div class="flex items-center gap-4">
+<button class="flex items-center justify-center p-2 rounded-full hover:bg-[#ffe1e4] transition-all">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<span class="text-2xl font-extrabold tracking-tighter text-[#ba001c] dark:text-red-500">MIIAM</span>
+</div>
+<div class="hidden md:flex items-center space-x-8 text-[#4d212a] font-semibold">
+<a class="text-[#ba001c] font-bold border-b-2 border-[#ba001c]" href="#">About Us</a>
+<a class="hover:text-[#ba001c] transition-colors" href="#">Services</a>
+<a class="hover:text-[#ba001c] transition-colors" href="#">Partners</a>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface hover:bg-[#ffe1e4] p-2 rounded-full transition-all cursor-pointer">shopping_cart</span>
+<span class="material-symbols-outlined text-on-surface hover:bg-[#ffe1e4] p-2 rounded-full transition-all cursor-pointer">notifications</span>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-container shadow-sm">
+<img alt="User profile" data-alt="close-up portrait of a smiling young professional man in a bright studio setting with soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOa8MiAPU7gT_NPc5QEoEY7kdtYMIgdb3Djc5I90Q9zY6dir8Hl2ZUiCit8EcCZ6vn8RlExo0MVjBi6YuQAzd_GmIi02XDz0UaYuYs8-6v-ArYC6hx1lIeUh_kq4UPgau9jyMyoG4gHQkjGARENkESwA52p0gkF8zOYFPmZUl4YoH0Evn4BJ8cwNgLoerXuoI3HmzjWRQTCiCoTAXNdWSQVUIQ-1Bn_aB1pqYMZY4O1Dyv-B-WtJVxLi-4ywm6fh15r6STB4z8UPc"/>
+</div>
+</div>
+</header>
+<main class="pt-24 pb-20">
+<!-- Hero Section -->
+<section class="relative px-6 py-12 lg:py-24 overflow-hidden">
+<div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
+<div class="z-10">
+<span class="inline-block px-4 py-1 rounded-full bg-primary-container text-on-primary-container font-bold text-sm mb-6 tracking-wide">EST. 2024</span>
+<h1 class="text-5xl lg:text-7xl font-extrabold tracking-tight leading-[1.1] mb-8">
+                        Your City,<br/><span class="text-primary italic">Delivered.</span>
+</h1>
+<p class="text-lg text-on-surface-variant max-w-md mb-10 leading-relaxed">
+                        MIIAM isn't just an app; it's the kinetic pulse of your neighborhood. From artisan breads to professional plumbing, we bridge the gap between desire and doorstep.
+                    </p>
+<div class="flex flex-wrap gap-4">
+<button class="bg-primary text-white rounded-xl px-8 py-4 font-bold shadow-lg shadow-red-900/10 hover:scale-105 transition-transform">Get Started</button>
+<button class="flex items-center gap-2 text-secondary font-bold px-8 py-4 rounded-xl border-2 border-secondary/20 hover:bg-secondary-container transition-colors">
+<span class="material-symbols-outlined">play_circle</span>
+                            Watch Story
+                        </button>
+</div>
+</div>
+<div class="relative">
+<div class="absolute -top-12 -right-12 w-64 h-64 bg-secondary-container rounded-full blur-[80px] opacity-30"></div>
+<div class="absolute -bottom-12 -left-12 w-48 h-48 bg-primary-container rounded-full blur-[60px] opacity-30"></div>
+<img alt="City life" class="rounded-lg asymmetric-shape shadow-2xl relative z-10 w-full object-cover aspect-square" data-alt="vibrant urban street scene at sunset with blurred motion of delivery bikes and people walking in a modern city" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcJ9xpZ9aDX5-cwPaOlPbZ4Ljk_MDjI6B_muqPMV-8nQ8Uz5l6MGQ_ptIpuAnsgQysofeveUN6ME6mZ1XNsXZHc-2vkF5eO08RSZVxAAXPodQfpRq4rggXTe_VA3aiesgS47GyTKpxeR2vHwTfIF3EddIRrJg64xm8wf-U0KbPGY4aPCdYd3uTgPd65Zzh-tnofL3cRof0drphzjFQqpP1B1Gx7Qts4Ov6Wr7LGmaEdTZ-_EGXk1NDu9JxuLs8mbfRbYt74nuhpMc"/>
+<!-- Floating Kinetic Debris (Glassmorphism) -->
+<div class="absolute top-1/4 -right-4 glass-card p-4 rounded-2xl shadow-xl z-20 flex items-center gap-3 animate-bounce">
+<div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">restaurant</span>
+</div>
+<span class="text-xs font-bold">Pizza in 15m</span>
+</div>
+<div class="absolute bottom-1/4 -left-8 glass-card p-4 rounded-2xl shadow-xl z-20 flex items-center gap-3">
+<div class="w-10 h-10 bg-secondary rounded-full flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">electric_bolt</span>
+</div>
+<span class="text-xs font-bold">Electrician found</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Mission Statement -->
+<section class="bg-surface-container-low py-24 px-6">
+<div class="max-w-4xl mx-auto text-center">
+<h2 class="text-sm font-bold text-primary tracking-widest uppercase mb-6">Our Mission</h2>
+<blockquote class="text-3xl md:text-4xl font-extrabold leading-tight text-on-surface">
+                    "We believe urban living should be seamless. By unifying <span class="text-primary">gastronomy</span> and <span class="text-secondary">utility</span>, we empower local businesses and simplify the lives of millions."
+                </blockquote>
+</div>
+</section>
+<!-- Bento Grid: The Story -->
+<section class="py-24 px-6 max-w-7xl mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="md:col-span-2 bg-surface-container-lowest p-10 rounded-lg shadow-sm flex flex-col justify-between overflow-hidden relative group">
+<div class="z-10">
+<h3 class="text-3xl font-bold mb-4">Born in the Chaos</h3>
+<p class="text-on-surface-variant max-w-md mb-6">MIIAM started in a crowded kitchen with a simple question: Why can't I order a toolkit and a taco at the same time?</p>
+</div>
+<img alt="Team meeting" class="absolute right-0 bottom-0 w-2/3 h-full object-cover opacity-20 group-hover:scale-110 transition-transform duration-700" data-alt="creative workspace with sticky notes on glass wall and diverse team brainstorming in a bright open office" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLPGi1cJa4r_iShWYSjy9ixzuCZZte5a4w2EuwaGda-VtUFU5OPp3upmfjcznuqXZJ4rSJR8GI3n8XIuWJxniJLzp-GyCNmIhWnS6ZEneDA0JBxaeSZCF4Py3EAafcGD-f3MdmKohohAStNiKonWXaVm6hGFdxotKjRlTMth34_2YTm89NOcXqhRyHSbLDVMwcbiur8CwuQz9XeMutbGDeXsGpv295spLn7punK8dxN7rwTFM7K18CHFOAz6Fb7Du54cNy15FEjUs"/>
+</div>
+<div class="bg-primary p-10 rounded-lg text-on-primary flex flex-col justify-center">
+<span class="text-6xl font-extrabold mb-2">500+</span>
+<p class="font-semibold text-lg opacity-90">Local Partners</p>
+<div class="h-1 w-12 bg-white/30 my-6"></div>
+<p class="text-sm opacity-80">Empowering neighborhood gems from coffee shops to craft stores.</p>
+</div>
+<div class="bg-secondary p-10 rounded-lg text-on-secondary flex flex-col justify-center">
+<span class="text-6xl font-extrabold mb-2">12m</span>
+<p class="font-semibold text-lg opacity-90">Avg. Delivery</p>
+<div class="h-1 w-12 bg-white/30 my-6"></div>
+<p class="text-sm opacity-80">Our logistics engine is built for the kinetic speed of your life.</p>
+</div>
+<div class="md:col-span-2 bg-surface-container-highest p-10 rounded-lg shadow-sm relative overflow-hidden group">
+<div class="flex flex-col h-full justify-center z-10 relative">
+<h3 class="text-3xl font-bold mb-4">The Multi-Vendor Vision</h3>
+<p class="text-on-surface-variant max-w-lg">We pioneered the unified cart. Order from five different places, get one single delivery. Efficiency is our obsession.</p>
+</div>
+<div class="absolute -right-20 -bottom-20 w-80 h-80 bg-white/20 rounded-full blur-3xl group-hover:bg-white/40 transition-all duration-500"></div>
+</div>
+</div>
+</section>
+<!-- Why Choose Us -->
+<section class="py-24 px-6 bg-surface">
+<div class="max-w-7xl mx-auto">
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+<div>
+<h2 class="text-4xl font-bold tracking-tight mb-4">Why the city trusts MIIAM</h2>
+<p class="text-on-surface-variant max-w-xl">Reliability isn't a feature; it's our foundational promise. We build systems that work when you need them most.</p>
+</div>
+<div class="h-px flex-grow mx-12 bg-outline-variant opacity-20 hidden lg:block"></div>
+<button class="bg-secondary text-white rounded-xl px-10 py-4 font-bold shrink-0">Our Fleet Rules</button>
+</div>
+<div class="grid md:grid-cols-3 gap-8">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest p-8 rounded-lg shadow-[0px_20px_40px_rgba(77,33,42,0.04)] hover:-translate-y-2 transition-transform duration-300">
+<div class="w-16 h-16 bg-primary-container rounded-full flex items-center justify-center mb-8">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+</div>
+<h4 class="text-xl font-bold mb-4">Bulletproof Trust</h4>
+<p class="text-on-surface-variant leading-relaxed">Every courier and service provider undergoes a 7-step vetting process. We don't just deliver; we secure.</p>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest p-8 rounded-lg shadow-[0px_20px_40px_rgba(77,33,42,0.04)] hover:-translate-y-2 transition-transform duration-300">
+<div class="w-16 h-16 bg-secondary-container rounded-full flex items-center justify-center mb-8">
+<span class="material-symbols-outlined text-secondary text-3xl" style="font-variation-settings: 'FILL' 1;">shopping_bag</span>
+</div>
+<h4 class="text-xl font-bold mb-4">Unified Cart</h4>
+<p class="text-on-surface-variant leading-relaxed">Combine groceries, electronics, and dinner. One payment, one tracking link, one happy customer.</p>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest p-8 rounded-lg shadow-[0px_20px_40px_rgba(77,33,42,0.04)] hover:-translate-y-2 transition-transform duration-300">
+<div class="w-16 h-16 bg-tertiary-container rounded-full flex items-center justify-center mb-8">
+<span class="material-symbols-outlined text-tertiary-dim text-3xl" style="font-variation-settings: 'FILL' 1;">support_agent</span>
+</div>
+<h4 class="text-xl font-bold mb-4">24/7 Human Pulse</h4>
+<p class="text-on-surface-variant leading-relaxed">No bots, no endless loops. Real people from your city, ready to help within 60 seconds.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Contact/Support -->
+<section class="px-6 py-24">
+<div class="max-w-7xl mx-auto bg-[#0b50d5] rounded-lg overflow-hidden relative">
+<div class="absolute inset-0 opacity-10">
+<img alt="Support background" class="w-full h-full object-cover" data-alt="close-up of a person typing on a laptop in a cozy brightly lit environment with coffee and papers" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2Q8sS1SzJ_kyj143Wf-1rkprwdvCq016wwj72YcGtpCjObCEQfu187vvbM_NFns0c2EdcUXSkIsZteJvMRg3uxIJm2sHk8kxqDTihzj9nqV5zfmiegpEodIllGlQ-knvGomX8z3VTB3rHnnpFGlXZik1g7bnTQUif0IX7xOk_x0o049JScYDV_EFxNvG46uLhfOOhC4q1jFUj6oE5U9d34qK_6lRa9UdasFNoDWoquoknXjDhXTr43h_ueBgcj1g3qD40OVaxy0U"/>
+</div>
+<div class="relative z-10 grid lg:grid-cols-2 p-12 lg:p-24 items-center gap-16">
+<div class="text-on-secondary">
+<h2 class="text-4xl lg:text-5xl font-extrabold mb-8">Need a hand? We're already on the way.</h2>
+<div class="space-y-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 glass-card rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-white">mail</span>
+</div>
+<span class="font-semibold text-lg">hello@miiam.app</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 glass-card rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-white">forum</span>
+</div>
+<span class="font-semibold text-lg">Live Chat (App Only)</span>
+</div>
+</div>
+</div>
+<div class="glass-card p-8 lg:p-10 rounded-lg">
+<h3 class="text-2xl font-bold text-white mb-6">Drop us a message</h3>
+<form class="space-y-4">
+<input class="w-full bg-white/10 border-none rounded-xl py-4 px-6 text-white placeholder-white/60 focus:ring-2 focus:ring-white/40" placeholder="Your Name" type="text"/>
+<textarea class="w-full bg-white/10 border-none rounded-xl py-4 px-6 text-white placeholder-white/60 focus:ring-2 focus:ring-white/40" placeholder="How can we help?" rows="4"></textarea>
+<button class="w-full bg-white text-secondary py-4 rounded-xl font-extrabold hover:scale-95 transition-transform">Send Kinetic Pulse</button>
+</form>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer / Simplified Shell -->
+<footer class="bg-surface-container-high py-12 px-6">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+<span class="text-3xl font-extrabold tracking-tighter text-primary">MIIAM</span>
+<div class="flex gap-8 text-sm font-bold text-on-surface-variant">
+<a class="hover:text-primary" href="#">Privacy Policy</a>
+<a class="hover:text-primary" href="#">Terms of Service</a>
+<a class="hover:text-primary" href="#">Cookie Policy</a>
+</div>
+<div class="flex gap-4">
+<div class="w-10 h-10 bg-on-surface rounded-full flex items-center justify-center text-white cursor-pointer hover:bg-primary transition-colors">
+<span class="material-symbols-outlined text-xl">share</span>
+</div>
+<div class="w-10 h-10 bg-on-surface rounded-full flex items-center justify-center text-white cursor-pointer hover:bg-primary transition-colors">
+<span class="material-symbols-outlined text-xl">thumb_up</span>
+</div>
+</div>
+</div>
+<div class="text-center mt-12 text-xs font-medium text-on-surface-variant opacity-60">
+            © 2026 MIIAM Technologies. All rights reserved. Your City, Delivered.
+        </div>
+</footer>
+<!-- BottomNavBar (Hidden on desktop, shown on mobile as top-level sub destination) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-[#fff4f4]/90 dark:bg-slate-950/90 backdrop-blur-xl shadow-[0px_-10px_30px_rgba(77,33,42,0.08)] rounded-t-[3rem]">
+<div class="flex flex-col items-center justify-center text-[#4d212a] dark:text-slate-400 p-2 hover:text-[#ba001c] transition-colors active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Explore</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#4d212a] dark:text-slate-400 p-2 hover:text-[#ba001c] transition-colors active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined">category</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Services</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#4d212a] dark:text-slate-400 p-2 hover:text-[#ba001c] transition-colors active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined">shopping_bag</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Cart</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#4d212a] dark:text-slate-400 p-2 hover:text-[#ba001c] transition-colors active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Orders</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-[#ba001c] text-white rounded-full p-3 scale-110 -translate-y-2 shadow-lg shadow-red-900/20 active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Profile</span>
+</div>
+</nav>
+</body></html>

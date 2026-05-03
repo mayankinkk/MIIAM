@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Login | MIIAM</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .editorial-shadow {
+            box-shadow: 0 20px 40px rgba(77, 33, 42, 0.06);
+        }
+        .glass-card {
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-fixed-dim": "#9fcaff",
+                      "primary-fixed": "#ffdad7",
+                      "on-secondary-fixed": "#00174c",
+                      "on-tertiary-fixed-variant": "#00497d",
+                      "inverse-primary": "#ffb3ae",
+                      "primary-container": "#ba001c",
+                      "on-background": "#281716",
+                      "inverse-on-surface": "#ffedeb",
+                      "on-primary-fixed": "#410004",
+                      "on-primary-container": "#ffc6c2",
+                      "primary": "#8d0013",
+                      "on-tertiary": "#ffffff",
+                      "on-secondary-fixed-variant": "#003dab",
+                      "outline-variant": "#e5bdba",
+                      "inverse-surface": "#3f2c2a",
+                      "error-container": "#ffdad6",
+                      "surface-container": "#ffe9e7",
+                      "surface-container-highest": "#fbdbd8",
+                      "surface": "#fff8f7",
+                      "on-surface-variant": "#5c403d",
+                      "on-error": "#ffffff",
+                      "on-surface": "#281716",
+                      "on-tertiary-fixed": "#001d36",
+                      "error": "#ba1a1a",
+                      "surface-dim": "#f2d3d0",
+                      "tertiary-fixed": "#d1e4ff",
+                      "surface-container-lowest": "#ffffff",
+                      "secondary-container": "#386bef",
+                      "tertiary": "#004678",
+                      "on-primary-fixed-variant": "#930014",
+                      "on-secondary": "#ffffff",
+                      "secondary-fixed": "#dbe1ff",
+                      "surface-bright": "#fff8f7",
+                      "surface-variant": "#fbdbd8",
+                      "primary-fixed-dim": "#ffb3ae",
+                      "surface-container-low": "#fff0ef",
+                      "on-primary": "#ffffff",
+                      "secondary-fixed-dim": "#b5c4ff",
+                      "surface-tint": "#bf071f",
+                      "secondary": "#0c50d5",
+                      "on-tertiary-container": "#b7d6ff",
+                      "background": "#fff8f7",
+                      "outline": "#916f6c",
+                      "on-secondary-container": "#fefcff",
+                      "surface-container-high": "#ffe2df",
+                      "tertiary-container": "#005e9f",
+                      "on-error-container": "#93000a"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "container-max": "80rem",
+                      "section-gap": "6rem",
+                      "card-padding": "2rem",
+                      "safe-margin": "2rem",
+                      "element-gap": "2rem"
+              },
+              "fontFamily": {
+                      "display-hero": ["Plus Jakarta Sans"],
+                      "label-caps": ["Plus Jakarta Sans"],
+                      "headline-md": ["Plus Jakarta Sans"],
+                      "body-md": ["Plus Jakarta Sans"],
+                      "body-lg": ["Plus Jakarta Sans"],
+                      "headline-xl": ["Plus Jakarta Sans"]
+              },
+              "fontSize": {
+                      "display-hero": ["4.5rem", {"lineHeight": "0.9", "letterSpacing": "-0.05em", "fontWeight": "800"}],
+                      "label-caps": ["10px", {"lineHeight": "1.0", "letterSpacing": "0.3em", "fontWeight": "900"}],
+                      "headline-md": ["1.5rem", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "900"}],
+                      "body-md": ["1rem", {"lineHeight": "1.5", "fontWeight": "500"}],
+                      "body-lg": ["1.25rem", {"lineHeight": "1.6", "fontWeight": "600"}],
+                      "headline-xl": ["3rem", {"lineHeight": "1.0", "letterSpacing": "-0.02em", "fontWeight": "800"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen selection:bg-primary selection:text-white overflow-x-hidden">
+<!-- TopAppBar Fragment (Simplified for Auth context - no nav items as per rule) -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-transparent font-plus-jakarta-sans antialiased">
+<div class="text-2xl font-black tracking-tighter text-red-700">MIIAM</div>
+<div class="flex items-center gap-4">
+<span class="font-label-caps text-on-surface-variant cursor-pointer hover:opacity-80 transition-opacity">Help</span>
+</div>
+</header>
+<main class="flex min-h-screen">
+<!-- Split Layout - Left Side (Lifestyle Imagery) -->
+<section class="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-on-background">
+<div class="absolute inset-0 bg-gradient-to-tr from-primary/40 to-transparent z-10"></div>
+<img class="absolute inset-0 w-full h-full object-cover transform scale-110 hover:scale-100 transition-transform duration-[3000ms] ease-out" data-alt="A high-end editorial food photography shot featuring a vibrant artisanal pizza with fresh basil and buffalo mozzarella, set against a dark rustic wooden table. The lighting is dramatic and moody with warm highlights reflecting the steam, creating a premium and appetizing atmosphere. The color palette emphasizes deep ruby reds and rich earth tones, aligning with a high-energy urban super-app aesthetic. Cinematic depth of field focuses on the texture of the crust and melted cheese." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhfOu3V3KkjtmyRfet1cPPZc5-qz3jim-qm5VmrhPYL8E3dmOrFfYXh-HwTGSjO_r4V97XSEBy_beSGU9M8bT8PHCdIIjRAS2rc_9dvc2Hc0LuWrcxV_I-PXDGaYAS5GWX7xtmAFg-bM-_B534tnCSovYO6dgPTnCaTK497B_rF98rPi79CXKVAEP-jNYqV1DnuT2od_QN3lPEPg7WX1sk-MEbB6nBL3aIRWtvXwvBks9fDvVST6zxaQ6UBz0pCnlorp31ipPry8o"/>
+<div class="relative z-20 mt-auto p-16 max-w-xl">
+<div class="bg-primary px-4 py-1 inline-block mb-6 rounded-sm">
+<span class="text-white font-label-caps tracking-widest text-[10px]">PREMIUM SELECTION</span>
+</div>
+<h1 class="text-white font-display-hero text-display-hero mb-6">Savor the Moment.</h1>
+<p class="text-white/80 font-body-lg text-body-lg leading-relaxed">
+                    Connecting you to the finest culinary experiences in the city. Fast, fresh, and curated just for you.
+                </p>
+</div>
+</section>
+<!-- Split Layout - Right Side (Auth Card) -->
+<section class="w-full lg:w-1/2 flex items-center justify-center p-6 md:p-12 lg:p-24 bg-surface-container-low">
+<div class="w-full max-w-md space-y-8 bg-white p-8 md:p-12 rounded-xl editorial-shadow">
+<!-- Brand Header -->
+<div class="space-y-2">
+<div class="text-3xl font-black tracking-tighter text-red-700 mb-8">MIIAM</div>
+<h2 class="font-headline-xl text-headline-xl text-on-background">Welcome Back</h2>
+<p class="text-on-surface-variant font-body-md">Enter your credentials to access your account.</p>
+</div>
+<!-- Form -->
+<form action="#" class="space-y-6">
+<div class="space-y-4">
+<div class="space-y-1">
+<label class="font-label-caps text-on-surface-variant" for="email">EMAIL ADDRESS</label>
+<input class="w-full px-4 py-4 bg-surface-variant border-none rounded-DEFAULT focus:ring-2 focus:ring-primary text-on-surface font-body-md transition-all placeholder:text-on-surface-variant/50" id="email" placeholder="name@example.com" type="email"/>
+</div>
+<div class="space-y-1">
+<label class="font-label-caps text-on-surface-variant" for="password">PASSWORD</label>
+<div class="relative">
+<input class="w-full px-4 py-4 bg-surface-variant border-none rounded-DEFAULT focus:ring-2 focus:ring-primary text-on-surface font-body-md transition-all placeholder:text-on-surface-variant/50" id="password" placeholder="••••••••" type="password"/>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-primary" type="button">
+<span class="material-symbols-outlined" data-icon="visibility">visibility</span>
+</button>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<input class="w-5 h-5 rounded border-outline text-primary focus:ring-primary bg-surface-variant" id="remember" type="checkbox"/>
+<label class="text-sm font-semibold text-on-surface cursor-pointer" for="remember">Remember me</label>
+</div>
+<a class="text-sm font-bold text-primary hover:opacity-80 transition-opacity" href="#">Forgot Password?</a>
+</div>
+<button class="w-full bg-primary-container text-white font-headline-md text-headline-md py-5 rounded-full shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all duration-200">
+                        Sign In
+                    </button>
+</form>
+<!-- Divider -->
+<div class="relative py-4">
+<div class="absolute inset-0 flex items-center"><div class="w-full border-t border-outline-variant"></div></div>
+<div class="relative flex justify-center text-xs font-label-caps">
+<span class="bg-white px-4 text-on-surface-variant">OR CONTINUE WITH</span>
+</div>
+</div>
+<!-- Social Logins -->
+<div class="grid grid-cols-2 gap-4">
+<button class="flex items-center justify-center gap-3 px-4 py-3 border border-outline-variant rounded-full hover:bg-surface-variant transition-colors group active:scale-95">
+<span class="material-symbols-outlined text-on-surface" data-icon="google">google</span>
+<span class="font-bold text-sm text-on-surface">Google</span>
+</button>
+<button class="flex items-center justify-center gap-3 px-4 py-3 border border-outline-variant rounded-full hover:bg-surface-variant transition-colors group active:scale-95">
+<span class="material-symbols-outlined text-on-surface" data-icon="apple" data-weight="fill" style="font-variation-settings: 'FILL' 1;">ios</span>
+<span class="font-bold text-sm text-on-surface">Apple</span>
+</button>
+</div>
+<p class="text-center text-on-surface-variant font-body-md">
+                    Don't have an account? <a class="text-primary font-extrabold hover:underline underline-offset-4" href="#">Create Account</a>
+</p>
+</div>
+</section>
+</main>
+<!-- Footer Attribution (Minimal) -->
+<footer class="fixed bottom-0 right-0 p-6 z-40">
+<p class="text-[10px] font-label-caps text-on-surface-variant/60">© 2026 MIIAM INC. ALL RIGHTS RESERVED.</p>
+</footer>
+</body></html>

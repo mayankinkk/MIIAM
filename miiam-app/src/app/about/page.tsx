@@ -85,7 +85,7 @@ export default function AboutUsPage() {
 
       {/* Footer */}
       <footer className="py-12 border-t border-[#ba001c]/10 text-center">
-        <p className="text-slate-400 font-bold text-sm">© 2024 MIIAM Super-App. Built with ❤️ in Guwahati.</p>
+        <p className="text-slate-400 font-bold text-sm">© 2026 MIIAM Super-App. Built with ❤️ in Guwahati.</p>
       </footer>
     </div>
   );
