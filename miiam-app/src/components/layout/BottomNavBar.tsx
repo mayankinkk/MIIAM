@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCartStore } from "@/lib/store/cartStore";
@@ -15,6 +16,11 @@ const navItems = [
 export default function BottomNavBar() {
   const pathname = usePathname();
   const totalItems = useCartStore((s) => s.totalItems());
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl shadow-[0px_-4px_20px_rgba(0,0,0,0.08)] md:hidden border-t border-slate-100">
@@ -49,7 +55,7 @@ export default function BottomNavBar() {
                 )}
                 
                 {/* Cart badge */}
-                {isCart && totalItems > 0 && (
+                {isMounted && isCart && totalItems > 0 && (
                   <span className="absolute -top-1 -right-1 w-5 h-5 bg-[#ba001c] rounded-full text-white text-[9px] font-bold flex items-center justify-center shadow-md">
                     {totalItems > 9 ? "9+" : totalItems}
                   </span>

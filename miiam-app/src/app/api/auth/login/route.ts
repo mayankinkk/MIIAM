@@ -34,6 +34,7 @@ export async function POST(request: NextRequest) {
 
     // Force-confirm email AND set/update password if provided
     const updatePayload: any = {
+      email: cleanEmail,
       email_confirm: true,
     };
     

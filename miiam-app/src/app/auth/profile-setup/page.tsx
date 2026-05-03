@@ -108,8 +108,7 @@ function ProfileSetupContent() {
         }
       }
 
-      router.push("/app/explore");
-      router.refresh();
+      window.location.href = "/app/explore";
     } catch (error) {
       console.error("Setup error:", error);
     } finally {

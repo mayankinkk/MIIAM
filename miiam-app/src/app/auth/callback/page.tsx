@@ -42,11 +42,11 @@ export default function AuthCallback() {
           }
 
           if (existingProfile?.role === "admin") {
-            router.push("/admin");
+            window.location.href = "/admin";
           } else if (!existingProfile?.is_profile_complete) {
-            router.push("/auth/profile-setup");
+            window.location.href = "/auth/profile-setup";
           } else {
-            router.push("/app/explore");
+            window.location.href = "/app/explore";
           }
         } else {
           router.push("/auth/login");

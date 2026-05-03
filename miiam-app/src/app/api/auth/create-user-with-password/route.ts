@@ -33,6 +33,7 @@ export async function POST(request: NextRequest) {
       // User exists - update password and confirm email
       console.log("[create-user] Found existing user:", existingUser.id);
       const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(existingUser.id, {
+        email: cleanEmail,
         password,
         email_confirm: true,
       });

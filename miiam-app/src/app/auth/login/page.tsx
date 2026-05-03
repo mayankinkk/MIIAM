@@ -54,7 +54,7 @@ function LoginContent() {
           }
           
           // Success on retry
-          router.push("/app/explore");
+          window.location.href = "/app/explore";
           return;
         } else {
           const data = await confirmRes.json();
@@ -64,7 +64,7 @@ function LoginContent() {
       }
       
       // Success on first attempt
-      router.push("/app/explore");
+      window.location.href = "/app/explore";
     } catch { setError("Something went wrong"); }
     finally { setIsLoading(false); }
   };

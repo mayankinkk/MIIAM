@@ -107,7 +107,7 @@ export default function CheckoutPage() {
     try {
       const { data: { user }, error: authError } = await supabase.auth.getUser();
       if (authError) throw new Error("Authentication failed");
-      if (!user) { router.push("/auth/login"); return; }
+      if (!user) { window.location.href = "/auth/login"; return; }
 
       const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id)));
       let firstOrderId = "";
@@ -142,10 +142,17 @@ const scheduledDelivery = scheduledDate && scheduledTime
 
         if (order) {
           if (!firstOrderId) firstOrderId = order.id;
+          
+          const formatAsUuid = (id: string) => {
+            if (id?.length > 20 && id.includes('-')) return id;
+            const hex = id?.replace(/[^0-9a-fA-F]/g, '0').padStart(12, '0') || '000000000000';
+            return `00000000-0000-4000-8000-${hex}`;
+          };
+
           const { error: itemsError } = await supabase.from("order_items").insert(
             vendorItems.map((i) => ({
               order_id: order.id,
-              menu_item_id: i.menu_item_id,
+              menu_item_id: formatAsUuid(i.menu_item_id),
               name: i.name,
               quantity: i.quantity,
               unit_price: i.price,
@@ -158,8 +165,8 @@ const scheduledDelivery = scheduledDate && scheduledTime
 
       clearCart();
       addToast("Order placed successfully!", "success");
-      if (firstOrderId) router.push(`/app/orders/${firstOrderId}`);
-      else router.push("/app/orders");
+      if (firstOrderId) window.location.href = `/app/orders/${firstOrderId}`;
+      else window.location.href = "/app/orders";
     } catch (error: any) {
       console.error("Order placement failed:", error);
       let errorMessage = "Something went wrong. Please try again.";
@@ -179,6 +186,19 @@ const scheduledDelivery = scheduledDate && scheduledTime
       setPlacing(false);
     }
   };
+
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#fff4f4]">
+        <div className="w-8 h-8 border-4 border-[#ba001c]/20 border-t-[#ba001c] rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   return (
     <>

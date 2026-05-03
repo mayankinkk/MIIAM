@@ -41,22 +41,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: profileError.message }, { status: 500 });
     }
 
-    // Update users table too
-    const updates: any = {
-      full_name,
-      email_verified: true,
-      email_verified_at: new Date().toISOString(),
-    };
-    if (phone) {
-      updates.phone = phone;
-      updates.phone_verified = true;
-      updates.phone_verified_at = new Date().toISOString();
-    }
-
-    await supabaseAdmin
-      .from("users")
-      .update(updates)
-      .eq("id", user.id);
+    // The profiles table already has full_name, phone, and city updated in the upsert above.
+    // There is no public.users table (it's auth.users), and email_verified/phone_verified are not valid columns.
+    // So we don't need a separate update to a non-existent users table.
 
     return NextResponse.json({ success: true, userId: user.id });
   } catch (error: any) {
