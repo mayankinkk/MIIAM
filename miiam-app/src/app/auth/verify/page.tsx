@@ -13,7 +13,7 @@ function OTPVerificationContent() {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [resendTimer, setResendTimer] = useState(0);
+  const [resendTimer, setResendTimer] = useState(60);
   const [resent, setResent] = useState(false);
   
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
