@@ -1,7 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
+
+const supabase = createClient();
 
 const pharmacyCategories = [
   { id: "pain", name: "Pain Relief", icon: "💊", color: "bg-red-100" },
@@ -12,28 +15,43 @@ const pharmacyCategories = [
   { id: "baby", name: "Baby Care", icon: "👶", color: "bg-blue-100" },
 ];
 
-const medicines = [
-  { name: "Dolo 650", price: 30, category: "Pain Relief", desc: "Strip of 15 tablets", image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2b1?w=300&q=80" },
-  { name: "Combiflam", price: 52, category: "Pain Relief", desc: "Strip of 10 tablets", image: "https://images.unsplash.com/photo-1587854692152-cbe660dbde92?w=300&q=80" },
-  { name: "Paracetamol 500", price: 25, category: "Fever & Cold", desc: "Strip of 10 tablets", image: "https://images.unsplash.com/photo-1550572017-edd951b55104?w=300&q=80" },
-  { name: "Crocin 500", price: 35, category: "Fever & Cold", desc: "Strip of 10 tablets", image: "https://images.unsplash.com/photo-1585238342024-78d387f4a707?w=300&q=80" },
-  { name: "Gelusil", price: 20, category: "Digestive", desc: "Strip of 10 tablets", image: "https://images.unsplash.com/photo-1550572017-ebd951b55104?w=300&q=80" },
-  { name: "Digene", price: 45, category: "Digestive", desc: "Chewable tablets", image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2b1?w=300&q=80" },
-  { name: "Supradyn", price: 55, category: "Vitamins", desc: "Strip of 30 tablets", image: "https://images.unsplash.com/photo-1587854692152-cbe660dbde92?w=300&q=80" },
-  { name: " Becosules", price: 42, category: "Vitamins", desc: "Capsule", image: "https://images.unsplash.com/photo-1550572017-edd951b55104?w=300&q=80" },
-  { name: "Moisturizing Lotion", price: 180, category: "Skin Care", desc: "200ml", image: "https://images.unsplash.com/photo-1620916566398-39f1143ab3be?w=300&q=80" },
-  { name: "Coconut Oil", price: 250, category: "Skin Care", desc: "500ml", image: "https://images.unsplash.com/photo-1611080626910-7b1a1e9b1c56?w=300&q=80" },
-  { name: "Himalaya Baby Powder", price: 165, category: "Baby Care", desc: "200g", image: "https://images.unsplash.com/photo-1519689680058-324afc44ffd3?w=300&q=80" },
-  { name: "Johnson's Baby Oil", price: 195, category: "Baby Care", desc: "200ml", image: "https://images.unsplash.com/photo-1519689680058-324afc44ffd3?w=300&q=80" },
-];
+interface Medicine {
+  id: string;
+  name: string;
+  price: number;
+  category: string;
+  description?: string;
+  image_url: string;
+}
 
 export default function PharmacyPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [cart, setCart] = useState<any[]>([]);
+  const [medicines, setMedicines] = useState<Medicine[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchMedicines();
+  }, []);
+
+  const fetchMedicines = async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("pharmacy_products")
+      .select("*")
+      .order("created_at", { ascending: false });
+    
+    if (error) {
+      console.error("Error fetching medicines:", error);
+    } else {
+      setMedicines(data || []);
+    }
+    setLoading(false);
+  };
 
   const filteredMeds = selectedCategory === "all" 
     ? medicines 
-    : medicines.filter(m => m.category.toLowerCase().replace(" ", "") === selectedCategory);
+    : medicines.filter(m => m.category?.toLowerCase().replace(" ", "") === selectedCategory);
 
   const addToCart = (med: any) => {
     setCart([...cart, med]);
@@ -97,18 +115,23 @@ export default function PharmacyPage() {
 
       {/* Medicines Grid */}
       <main className="p-6">
-        <div className="grid grid-cols-2 gap-4">
-          {filteredMeds.map((med, index) => (
-            <div key={index} className="bg-white rounded-2xl overflow-hidden shadow-sm">
-              <img src={med.image} alt={med.name} className="w-full h-32 object-cover" />
-              <div className="p-3">
-                <p className="font-bold text-slate-800 text-sm">{med.name}</p>
-                <p className="text-xs text-slate-500">{med.desc}</p>
-                <div className="flex items-center justify-between mt-2">
-                  <span className="font-black text-[#ba001c]">₹{med.price}</span>
-                  <button 
-                    onClick={() => addToCart(med)}
-                    className="w-8 h-8 bg-[#ba001c] text-white rounded-full flex items-center justify-center"
+        {loading ? (
+          <div className="text-center py-8 text-slate-500">Loading medicines...</div>
+        ) : filteredMeds.length === 0 ? (
+          <div className="text-center py-8 text-slate-500">No medicines found</div>
+        ) : (
+          <div className="grid grid-cols-2 gap-4">
+            {filteredMeds.map((med) => (
+              <div key={med.id} className="bg-white rounded-2xl overflow-hidden shadow-sm">
+                <img src={med.image_url || med.image} alt={med.name} className="w-full h-32 object-cover" />
+                <div className="p-3">
+                  <p className="font-bold text-slate-800 text-sm">{med.name}</p>
+                  <p className="text-xs text-slate-500">{med.description}</p>
+                  <div className="flex items-center justify-between mt-2">
+                    <span className="font-black text-[#ba001c]">₹{med.price}</span>
+                    <button 
+                      onClick={() => addToCart(med)}
+                      className="w-8 h-8 bg-[#ba001c] text-white rounded-full flex items-center justify-center"
                   >
                     <span className="material-symbols-outlined text-lg">add</span>
                   </button>

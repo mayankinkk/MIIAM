@@ -1,7 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
+
+const supabase = createClient();
+
+interface Flower {
+  id: string;
+  name: string;
+  price: number;
+  category: string;
+  description?: string;
+  image_url: string;
+}
 
 const flowerCategories = [
   { id: "bouquets", name: "Bouquets", icon: "💐", color: "bg-pink-100" },
@@ -11,26 +23,34 @@ const flowerCategories = [
   { id: "ceremony", name: "Ceremony", icon: "💒", color: "bg-amber-100" },
 ];
 
-const flowers = [
-  { name: "Mixed Rose Bouquet", price: 499, category: "Bouquets", desc: "12 red roses with lily", image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300&q=80" },
-  { name: "Pink Rose Surprise", price: 599, category: "Bouquets", desc: "15 pink roses arrangement", image: "https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=300&q=80" },
-  { name: "Lily Special", price: 449, category: "Arrangements", desc: "Lilies & carnations", image: "https://images.unsplash.com/photo-1526047932273-341fbfc9f272?w=300&q=80" },
-  { name: "Orchid Delight", price: 799, category: "Arrangements", desc: "Exotic orchid vase", image: "https://images.unsplash.com/photo-1563241527-150b0bdbe306?w=300&q=80" },
-  { name: "Red Rose (Single)", price: 50, category: "Single Stems", desc: "Premium red rose", image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300&q=80" },
-  { name: "Sunflower (Single)", price: 80, category: "Single Stems", desc: "Bright sunflower", image: "https://images.unsplash.com/photo-1470509037663-253c2d7e6699?w=300&q=80" },
-  { name: "Chocolate Combo", price: 699, category: "Gift Sets", desc: "Roses + chocolates", image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300&q=80" },
-  { name: "Teddy & Roses", price: 899, category: "Gift Sets", desc: "Bouquet + teddy bear", image: "https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=300&q=80" },
-  { name: "Bridal Bouquet", price: 1499, category: "Ceremony", desc: "Custom wedding bouquet", image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300&q=80" },
-  { name: "Venue Decoration", price: 2999, category: "Ceremony", desc: "Full venue flowers", image: "https://images.unsplash.com/photo-1526047932273-341fbfc9f272?w=300&q=80" },
-];
-
 export default function FlowersPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [cart, setCart] = useState<any[]>([]);
+  const [flowers, setFlowers] = useState<Flower[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchFlowers();
+  }, []);
+
+  const fetchFlowers = async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("flower_products")
+      .select("*")
+      .order("created_at", { ascending: false });
+    
+    if (error) {
+      console.error("Error fetching flowers:", error);
+    } else {
+      setFlowers(data || []);
+    }
+    setLoading(false);
+  };
 
   const filteredFlowers = selectedCategory === "all" 
     ? flowers 
-    : flowers.filter(f => f.category.toLowerCase().replace(" ", "") === selectedCategory);
+    : flowers.filter(f => f.category?.toLowerCase().replace(" ", "") === selectedCategory);
 
   const addToCart = (flower: any) => {
     setCart([...cart, flower]);
@@ -94,26 +114,32 @@ export default function FlowersPage() {
 
       {/* Flowers Grid */}
       <main className="p-6">
-        <div className="grid grid-cols-2 gap-4">
-          {filteredFlowers.map((flower, index) => (
-            <div key={index} className="bg-white rounded-2xl overflow-hidden shadow-sm">
-              <img src={flower.image} alt={flower.name} className="w-full h-32 object-cover" />
-              <div className="p-3">
-                <p className="font-bold text-slate-800 text-sm">{flower.name}</p>
-                <p className="text-xs text-slate-500">{flower.desc}</p>
-                <div className="flex items-center justify-between mt-2">
-                  <span className="font-black text-[#ba001c]">₹{flower.price}</span>
-                  <button 
-                    onClick={() => addToCart(flower)}
-                    className="w-8 h-8 bg-[#ba001c] text-white rounded-full flex items-center justify-center"
-                  >
-                    <span className="material-symbols-outlined text-lg">add</span>
-                  </button>
+        {loading ? (
+          <div className="text-center py-8 text-slate-500">Loading flowers...</div>
+        ) : filteredFlowers.length === 0 ? (
+          <div className="text-center py-8 text-slate-500">No flowers found</div>
+        ) : (
+          <div className="grid grid-cols-2 gap-4">
+            {filteredFlowers.map((flower) => (
+              <div key={flower.id} className="bg-white rounded-2xl overflow-hidden shadow-sm">
+                <img src={flower.image_url || flower.image} alt={flower.name} className="w-full h-32 object-cover" />
+                <div className="p-3">
+                  <p className="font-bold text-slate-800 text-sm">{flower.name}</p>
+                  <p className="text-xs text-slate-500">{flower.description}</p>
+                  <div className="flex items-center justify-between mt-2">
+                    <span className="font-black text-[#ba001c]">₹{flower.price}</span>
+                    <button 
+                      onClick={() => addToCart(flower)}
+                      className="w-8 h-8 bg-[#ba001c] text-white rounded-full flex items-center justify-center"
+                    >
+                      <span className="material-symbols-outlined text-lg">add</span>
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </main>
     </div>
   );
