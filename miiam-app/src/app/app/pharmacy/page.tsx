@@ -59,7 +59,6 @@ export default function PharmacyPage() {
 
   return (
     <div className="min-h-screen bg-[#fff4f4] pb-24">
-      {/* Header */}
       <header className="bg-white px-6 py-4 sticky top-0 z-10">
         <div className="flex items-center justify-between mb-4">
           <Link href="/app/explore" className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
@@ -77,7 +76,6 @@ export default function PharmacyPage() {
         </div>
       </header>
 
-      {/* Hero Banner */}
       <div className="px-6 mt-4">
         <div className="rounded-2xl overflow-hidden relative h-40 shadow-sm">
           <img src="/images/pharmacy_hero.png" alt="Modern Pharmacy" className="w-full h-full object-cover" />
@@ -88,32 +86,19 @@ export default function PharmacyPage() {
         </div>
       </div>
 
-      {/* Categories */}
       <div className="bg-white px-6 py-4">
         <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-          <button
-            onClick={() => setSelectedCategory("all")}
-            className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap ${
-              selectedCategory === "all" ? "bg-[#ba001c] text-white" : "bg-slate-100 text-slate-600"
-            }`}
-          >
+          <button onClick={() => setSelectedCategory("all")} className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap ${selectedCategory === "all" ? "bg-[#ba001c] text-white" : "bg-slate-100 text-slate-600"}`}>
             All
           </button>
           {pharmacyCategories.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => setSelectedCategory(cat.id)}
-              className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap flex items-center gap-2 ${
-                selectedCategory === cat.id ? "bg-[#ba001c] text-white" : "bg-slate-100 text-slate-600"
-              }`}
-            >
+            <button key={cat.id} onClick={() => setSelectedCategory(cat.id)} className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap flex items-center gap-2 ${selectedCategory === cat.id ? "bg-[#ba001c] text-white" : "bg-slate-100 text-slate-600"}`}>
               <span>{cat.icon}</span> {cat.name}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Medicines Grid */}
       <main className="p-6">
         {loading ? (
           <div className="text-center py-8 text-slate-500">Loading medicines...</div>
@@ -123,23 +108,21 @@ export default function PharmacyPage() {
           <div className="grid grid-cols-2 gap-4">
             {filteredMeds.map((med) => (
               <div key={med.id} className="bg-white rounded-2xl overflow-hidden shadow-sm">
-                <img src={med.image_url || med.image} alt={med.name} className="w-full h-32 object-cover" />
+                <img src={med.image_url || "/images/pharmacy_hero.png"} alt={med.name} className="w-full h-32 object-cover" />
                 <div className="p-3">
                   <p className="font-bold text-slate-800 text-sm">{med.name}</p>
                   <p className="text-xs text-slate-500">{med.description}</p>
                   <div className="flex items-center justify-between mt-2">
                     <span className="font-black text-[#ba001c]">₹{med.price}</span>
-                    <button 
-                      onClick={() => addToCart(med)}
-                      className="w-8 h-8 bg-[#ba001c] text-white rounded-full flex items-center justify-center"
-                  >
-                    <span className="material-symbols-outlined text-lg">add</span>
-                  </button>
+                    <button onClick={() => addToCart(med)} className="w-8 h-8 bg-[#ba001c] text-white rounded-full flex items-center justify-center">
+                      <span className="material-symbols-outlined text-lg">add</span>
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </main>
     </div>
   );
