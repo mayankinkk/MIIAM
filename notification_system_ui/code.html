@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-container": "#003dac",
+                    "on-primary-fixed-variant": "#600009",
+                    "outline": "#a06770",
+                    "primary-fixed": "#ff7670",
+                    "secondary-container": "#c4d0ff",
+                    "on-secondary": "#f1f2ff",
+                    "primary-dim": "#a40017",
+                    "tertiary-fixed-dim": "#efc900",
+                    "tertiary-dim": "#5e4e00",
+                    "on-primary-container": "#4e0006",
+                    "primary-container": "#ff7670",
+                    "background": "#fff4f4",
+                    "error": "#b02500",
+                    "surface-bright": "#fff4f4",
+                    "tertiary": "#6c5a00",
+                    "on-error": "#ffefec",
+                    "surface-tint": "#ba001c",
+                    "surface": "#fff4f4",
+                    "primary": "#ba001c",
+                    "secondary-fixed": "#c4d0ff",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-highest": "#ffd2d7",
+                    "surface-variant": "#ffd2d7",
+                    "error-dim": "#b92902",
+                    "secondary": "#0b50d5",
+                    "primary-fixed-dim": "#ff5a57",
+                    "surface-container-low": "#ffecee",
+                    "surface-container": "#ffe1e4",
+                    "on-surface": "#4d212a",
+                    "on-tertiary-fixed-variant": "#665500",
+                    "outline-variant": "#dd9ca6",
+                    "surface-container-high": "#ffd9de",
+                    "on-tertiary-fixed": "#453900",
+                    "tertiary-fixed": "#ffd709",
+                    "on-primary-fixed": "#000000",
+                    "secondary-dim": "#0044bf",
+                    "inverse-surface": "#24020a",
+                    "on-tertiary": "#fff2cd",
+                    "on-primary": "#ffefee",
+                    "on-secondary-fixed": "#002c83",
+                    "error-container": "#f95630",
+                    "on-error-container": "#520c00",
+                    "surface-dim": "#ffc6ce",
+                    "tertiary-container": "#ffd709",
+                    "inverse-primary": "#ff5352",
+                    "secondary-fixed-dim": "#b1c2ff",
+                    "on-secondary-fixed-variant": "#0045c1",
+                    "on-background": "#4d212a",
+                    "on-surface-variant": "#814c55",
+                    "inverse-on-surface": "#cb8c96",
+                    "on-tertiary-container": "#5b4b00"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Plus Jakarta Sans"],
+                    "label": ["Plus Jakarta Sans"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="bg-[#fff4f4]/80 dark:bg-slate-950/80 backdrop-blur-xl docked full-width top-0 sticky z-50 shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
+<div class="flex justify-between items-center w-full px-6 py-4">
+<div class="flex items-center gap-4">
+<span class="text-2xl font-extrabold tracking-tighter text-[#ba001c] dark:text-[#ff7670]">MIIAM</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="hover:opacity-80 transition-opacity scale-95 active:scale-90 transition-transform duration-200">
+<span class="material-symbols-outlined text-[#ba001c]" data-icon="favorite">favorite</span>
+</button>
+<button class="hover:opacity-80 transition-opacity scale-95 active:scale-90 transition-transform duration-200 relative">
+<span class="material-symbols-outlined text-[#ba001c] font-bold" data-icon="notifications">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-primary rounded-full"></span>
+</button>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-container">
+<img alt="User profile" data-alt="Close up portrait of a smiling young professional man with short dark hair in a clean studio setting with warm lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpzlsppZO6sfKl2jn0jVnVUt04V-OLD7uUODX8I1dC7qtq-ijzGypfq3_4hRDeTNbNlO-zC70lFdKEs1MaOPEgHQ5QttEc-rudNeDGZr7ShuBIhpXuknKBd_-C7dtBQFWIHuLaI6BsZlCiGZazPBKNX7BoHB7ZhWxIN61QGML3fs9rToOFBmYliT3QcQBVdq9vSmnRQt7S-eFtys0hKGr_p1aN_wn1MV8ye2IcX-neQfzG7wPnrn5PcD1xVdbheRimRuJlI9w-MBE"/>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-4xl mx-auto px-6 py-8">
+<!-- Page Title & Quick Summary -->
+<div class="mb-12">
+<h1 class="text-5xl font-extrabold tracking-tight mb-4 text-on-surface">Inbox</h1>
+<p class="text-on-surface-variant font-medium">You have 3 unread updates waiting for your attention.</p>
+</div>
+<!-- Section: Order Updates (Bento Style) -->
+<section class="mb-12">
+<div class="flex items-center gap-3 mb-6">
+<div class="bg-primary-container p-2 rounded-full">
+<span class="material-symbols-outlined text-on-primary-container" data-icon="package_2">package_2</span>
+</div>
+<h2 class="text-2xl font-bold tracking-tight">Order Updates</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Active Order Card -->
+<div class="bg-surface-container-lowest rounded-lg p-6 shadow-[0px_20px_40px_rgba(77,33,42,0.06)] flex flex-col justify-between group">
+<div>
+<div class="flex justify-between items-start mb-4">
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Out for Delivery</span>
+<span class="text-xs text-on-surface-variant font-medium">2 mins ago</span>
+</div>
+<h3 class="text-xl font-bold mb-2">Gourmet Burger Kitchen</h3>
+<p class="text-on-surface-variant text-sm mb-6 leading-relaxed">Your rider is 500m away with your Lunch Special. Prepare for deliciousness!</p>
+</div>
+<button class="bg-secondary text-white rounded-xl py-3 px-6 font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-all">
+                        Track Order <span class="material-symbols-outlined text-sm" data-icon="map">map</span>
+</button>
+</div>
+<!-- Past Order Card -->
+<div class="bg-surface-container-low rounded-lg p-6 flex flex-col justify-between border-l-4 border-primary">
+<div>
+<div class="flex justify-between items-start mb-4">
+<span class="text-primary font-bold text-xs uppercase tracking-widest">Delivered</span>
+<span class="text-xs text-on-surface-variant font-medium">1 hour ago</span>
+</div>
+<h3 class="text-xl font-bold mb-2">Fresh Harvest Grocery</h3>
+<p class="text-on-surface-variant text-sm mb-6">Order #MIA-8829 was delivered to your front door. How was everything?</p>
+</div>
+<button class="bg-surface-container-highest text-on-surface rounded-xl py-3 px-6 font-bold flex items-center justify-center gap-2 hover:bg-primary-container transition-all">
+                        Rate Experience <span class="material-symbols-outlined text-sm" data-icon="star">star</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Section: Offers (Editorial Style) -->
+<section class="mb-12">
+<div class="flex items-center gap-3 mb-6">
+<div class="bg-tertiary-container p-2 rounded-full">
+<span class="material-symbols-outlined text-on-tertiary-container" data-icon="local_offer">local_offer</span>
+</div>
+<h2 class="text-2xl font-bold tracking-tight">Exclusive Offers</h2>
+</div>
+<div class="relative overflow-hidden rounded-lg bg-primary h-64 flex items-center shadow-xl group">
+<div class="absolute inset-0 opacity-40">
+<img class="w-full h-full object-cover" data-alt="Flat lay of various delicious Mediterranean dishes including hummus, pita, and grilled vegetables with vibrant warm tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDudRvKpZpg1uQaglRtPzimvqDxCjZWsggM20R_7MTRiWCwketR4JRdSTA4u2EcOqYNPyVPqfly2xY9TB9TnoeBGg6qIgrz9AKUMvfAZKNf5c0_awsXLovk_LpIkO111fdE4c3-sV7gCsRRf9WhbtKThNuLrLme7vjlU2v7SxFs4zUxNGur8phdquSjZvR8iYOSIMNz6BIT0qNDY1bk1zTfp9KoyF1jolwC1k7VnePl8_wS7laXYwKmnDNhpkBC-dLnwDi1wxH1dEE"/>
+</div>
+<div class="absolute inset-0 bg-gradient-to-r from-primary via-primary/80 to-transparent"></div>
+<div class="relative z-10 p-8 max-w-md">
+<span class="bg-tertiary text-on-tertiary px-4 py-1 rounded-full text-xs font-black uppercase tracking-[0.2em] mb-4 inline-block">Flash Deal</span>
+<h3 class="text-3xl font-extrabold text-white mb-2 leading-tight">50% OFF your next Healthy Bowl</h3>
+<p class="text-white/80 text-sm mb-6">Valid for the next 4 hours only on selected organic partners.</p>
+<button class="bg-white text-primary rounded-xl py-3 px-8 font-extrabold hover:scale-105 transition-transform">
+                        Claim Offer
+                    </button>
+</div>
+<!-- Floating Glass Icon -->
+<div class="absolute right-12 top-1/2 -translate-y-1/2 hidden md:block">
+<div class="glass-card w-24 h-24 rounded-full flex items-center justify-center border border-white/20 shadow-2xl animate-bounce">
+<span class="text-4xl">🥗</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Section: Messages (Glass/Clean Style) -->
+<section>
+<div class="flex items-center gap-3 mb-6">
+<div class="bg-secondary-container p-2 rounded-full">
+<span class="material-symbols-outlined text-on-secondary-container" data-icon="chat_bubble">chat_bubble</span>
+</div>
+<h2 class="text-2xl font-bold tracking-tight">Messages</h2>
+</div>
+<div class="space-y-4">
+<!-- Message Row -->
+<div class="bg-surface-container-lowest rounded-lg p-5 flex items-center gap-5 hover:bg-surface-container-low transition-colors cursor-pointer group shadow-sm">
+<div class="relative">
+<img class="w-14 h-14 rounded-full object-cover" data-alt="Professional woman with a friendly smile, glasses, and professional attire in a bright office environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUa2GV5iOjnyb9zL3MxB6MqtcFuHCs_r6Na028l-wegQzx9Ffz6Sv7PAPY5vRBI_HfHfEH6tIwWVxYc8BN-RUPOC2ykXOGVrwSLnXA7FK0ls3dO21KgCLmjXjILsN_kAhciThpYj9O3vaLrhVXkQ9QeQZcx3BAS-8kDPDg3-Ab_-FQK3nIw9fBIKwrpTS7BdPQjlxneNFceYKbgTEimx-SO3Zm2fHU7VSCbIoH3gHIdrRZQ0kJYXzGMiWAAH-sKAlbLwoyBPzhZe0"/>
+<div class="absolute bottom-0 right-0 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-1">
+<h4 class="font-bold text-lg">Support Concierge</h4>
+<span class="text-xs text-on-surface-variant">10:45 AM</span>
+</div>
+<p class="text-on-surface-variant text-sm line-clamp-1">"Hi there! I've successfully updated your delivery preferences for tonight's..."</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform" data-icon="chevron_right">chevron_right</span>
+</div>
+<!-- Message Row -->
+<div class="bg-surface-container-lowest rounded-lg p-5 flex items-center gap-5 hover:bg-surface-container-low transition-colors cursor-pointer group shadow-sm opacity-70">
+<div class="relative">
+<div class="w-14 h-14 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container font-bold text-xl">
+                            SA
+                        </div>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-1">
+<h4 class="font-bold text-lg">SuperApp Admin</h4>
+<span class="text-xs text-on-surface-variant">Yesterday</span>
+</div>
+<p class="text-on-surface-variant text-sm line-clamp-1">Welcome to the new MIIAM experience! Discover your personalized dashboard...</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-end px-4 pb-6 pt-2 bg-[#fff4f4]/90 dark:bg-slate-900/90 backdrop-blur-2xl z-50 rounded-t-[3rem] shadow-[0px_-10px_40px_rgba(77,33,42,0.08)]">
+<a class="flex flex-col items-center justify-center text-[#4d212a] dark:text-slate-400 p-2 hover:bg-[#ffe1e4] dark:hover:bg-slate-800 rounded-full transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-widest mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#4d212a] dark:text-slate-400 p-2 hover:bg-[#ffe1e4] dark:hover:bg-slate-800 rounded-full transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-widest mt-1">Services</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#4d212a] dark:text-slate-400 p-2 hover:bg-[#ffe1e4] dark:hover:bg-slate-800 rounded-full transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-widest mt-1">Explore</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-[#ba001c] text-white rounded-full p-3 shadow-lg transform -translate-y-2 animate-pulse-subtle" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-widest mt-1">Activity</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#4d212a] dark:text-slate-400 p-2 hover:bg-[#ffe1e4] dark:hover:bg-slate-800 rounded-full transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-widest mt-1">Account</span>
+</a>
+</nav>
+</body></html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MIIAM | User Profile</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary": "#f1f2ff",
+                        "tertiary-dim": "#5e4e00",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#814c55",
+                        "on-surface": "#4d212a",
+                        "on-secondary-container": "#003dac",
+                        "on-tertiary": "#fff2cd",
+                        "surface-container-highest": "#ffd2d7",
+                        "error": "#b02500",
+                        "secondary-dim": "#0044bf",
+                        "on-secondary-fixed": "#002c83",
+                        "tertiary": "#6c5a00",
+                        "surface-container": "#ffe1e4",
+                        "surface-bright": "#fff4f4",
+                        "tertiary-container": "#ffd709",
+                        "primary-fixed": "#ff7670",
+                        "primary-fixed-dim": "#ff5a57",
+                        "outline": "#a06770",
+                        "on-secondary-fixed-variant": "#0045c1",
+                        "on-primary-fixed": "#000000",
+                        "on-background": "#4d212a",
+                        "on-tertiary-fixed-variant": "#665500",
+                        "inverse-surface": "#24020a",
+                        "surface-dim": "#ffc6ce",
+                        "on-primary-container": "#4e0006",
+                        "surface-container-low": "#ffecee",
+                        "primary-dim": "#a40017",
+                        "primary-container": "#ff7670",
+                        "secondary-fixed-dim": "#b1c2ff",
+                        "tertiary-fixed-dim": "#efc900",
+                        "secondary-container": "#c4d0ff",
+                        "surface": "#fff4f4",
+                        "secondary-fixed": "#c4d0ff",
+                        "primary": "#ba001c",
+                        "inverse-primary": "#ff5352",
+                        "secondary": "#0b50d5",
+                        "on-tertiary-container": "#5b4b00",
+                        "on-primary": "#ffefee",
+                        "on-error": "#ffefec",
+                        "error-container": "#f95630",
+                        "on-primary-fixed-variant": "#600009",
+                        "background": "#fff4f4",
+                        "tertiary-fixed": "#ffd709",
+                        "error-dim": "#b92902",
+                        "on-error-container": "#520c00",
+                        "inverse-on-surface": "#cb8c96",
+                        "on-tertiary-fixed": "#453900",
+                        "surface-variant": "#ffd2d7",
+                        "surface-tint": "#ba001c",
+                        "outline-variant": "#dd9ca6",
+                        "surface-container-high": "#ffd9de"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fff4f4; color: #4d212a; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-card { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-[#fff4f4]/80 backdrop-blur-2xl shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
+<div class="flex items-center gap-4">
+<span class="text-2xl font-extrabold tracking-tighter text-[#ba001c]">MIIAM</span>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<nav class="flex gap-6">
+<a class="text-[#4d212a] hover:bg-[#ffe1e4] transition-all px-3 py-1 rounded-full text-sm font-semibold" href="#">Explore</a>
+<a class="text-[#4d212a] hover:bg-[#ffe1e4] transition-all px-3 py-1 rounded-full text-sm font-semibold" href="#">Services</a>
+<a class="text-[#ba001c] font-bold border-b-2 border-[#ba001c] px-3 py-1" href="#">Profile</a>
+</nav>
+</div>
+<div class="flex items-center gap-3">
+<button class="p-2 hover:bg-[#ffe1e4] rounded-full transition-all flex items-center justify-center">
+<span class="material-symbols-outlined text-[#ba001c]">shopping_cart</span>
+</button>
+<button class="p-2 hover:bg-[#ffe1e4] rounded-full transition-all flex items-center justify-center relative">
+<span class="material-symbols-outlined text-[#ba001c]">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full"></span>
+</button>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-container">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="Close-up portrait of a friendly man with a neat beard smiling warmly against a soft studio background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjg4izP2ZiKUVZJnZ9tQs9NIEIciyZDV3IWBPpw5jdS87iEr5yDrTNKqXRvpwmmD1I3n_ZvZvqrAR7q2knDAHkAtoTTZIp3SRS6Yvi7Owisz4qoEXXgnfTUC8a43_371ZdmCrcp6wrAhVDAhooDr3B5MsaB9JETKfajeJ6xvUwhvjJSajYiaiLVhSv49nVReAShHtGtVHVgRNmZBRvSs1q82YcS7EGW2IYRmL5ZkC2V4wzF3EAC_xdP0LpIJpveudKLNpDZpKmn9M"/>
+</div>
+</div>
+</header>
+<main class="pt-28 pb-32 px-6 max-w-7xl mx-auto">
+<!-- Hero Section / User Intro -->
+<section class="flex flex-col md:flex-row items-center md:items-end justify-between gap-8 mb-16">
+<div class="flex flex-col items-center md:items-start gap-4">
+<div class="relative">
+<div class="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden shadow-xl border-4 border-white">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="Close-up portrait of a friendly man with a neat beard smiling warmly against a soft studio background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7GpKdDMs9Ex4OuvRl0NJp2Q25YRaBo_eQ7Uqp1H9Nx9PixXaWNUH2RgRwnMVFe-eKk6dV44pPTrT9vZZl9tt512px1GI2gN-1pJuEWH7qMK860S4TIwFIvwVnOEWid00TeslxwLzkK_l30nC2YQWPThQWJQNWYxx9jKbgq2Aqdz8sR0EJct38BiYubBFGaeiDDItwhW-5TB1VNx2GdjSSV49Y_6Tt4Vmu1EiboLCCnXMszMUzmmy-1my4qaoooU2fuJYoAM12geA"/>
+</div>
+<button class="absolute bottom-2 right-2 bg-primary text-white p-2 rounded-full shadow-lg hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-sm">edit</span>
+</button>
+</div>
+<div class="text-center md:text-left">
+<h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-on-surface mb-2">Hello, Julian!</h1>
+<p class="text-on-surface-variant font-medium flex items-center justify-center md:justify-start gap-2">
+<span class="material-symbols-outlined text-primary text-lg">verified_user</span> 
+                        Gold Member since 2021
+                    </p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="bg-surface-container-high px-6 py-4 rounded-lg flex flex-col items-center justify-center text-center">
+<span class="text-2xl font-bold text-primary">124</span>
+<span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Orders</span>
+</div>
+<div class="bg-secondary-container px-6 py-4 rounded-lg flex flex-col items-center justify-center text-center">
+<span class="text-2xl font-bold text-secondary">2.4k</span>
+<span class="text-[10px] font-bold uppercase tracking-widest text-on-secondary-container">Points</span>
+</div>
+</div>
+</section>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- My Orders Section (Bento Large) -->
+<section class="lg:col-span-8 flex flex-col gap-6">
+<div class="flex items-center justify-between px-2">
+<h2 class="text-2xl font-bold tracking-tight">My Orders</h2>
+<button class="text-primary font-bold text-sm hover:underline">View History</button>
+</div>
+<!-- Latest Order Card -->
+<div class="bg-surface-container-lowest p-6 rounded-lg shadow-[0px_20px_40px_rgba(77,33,42,0.06)] flex flex-col md:flex-row gap-6 relative overflow-hidden">
+<div class="absolute top-0 right-0 bg-primary-container px-4 py-1 rounded-bl-lg">
+<span class="text-[10px] font-bold text-on-primary-container uppercase tracking-tighter">In Transit</span>
+</div>
+<div class="w-full md:w-48 h-32 rounded-lg overflow-hidden bg-surface-container">
+<img alt="Food order" class="w-full h-full object-cover" data-alt="Gourmet fusion bowl with fresh salmon, avocado, and vibrant vegetables in a minimalist ceramic bowl" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8g-SxdmNbUcrF_cvTqbljfEsxOIcDxrK4l-4BUChDN41gOnvj0oCs9GAC-UIFYbN3r0QXswqxlu2ilhqu0GYzKPmbVea_1gEjHvDWx794fFRENoasY1pku4X27diTK_Z--DPpWBFG94OqHfJEpo49RV7uM0odunE4T1IV5RzrOJldKosLI7S_vx0qUAev5FTsrnCVV8paDgUwpZiv9_hR5KtHc-wHZUtLJWTE5Jb0HZZRDPMuEgDJhGvtbgw6EVIHj_r2o6RNB_o"/>
+</div>
+<div class="flex flex-col justify-between flex-1">
+<div>
+<h3 class="text-xl font-bold mb-1">Artisan Poké Bowl</h3>
+<p class="text-on-surface-variant text-sm mb-4">Ordered 15 mins ago • From Poké Station</p>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-sm">moped</span>
+</div>
+<span class="text-xs font-bold text-on-surface-variant">Arriving in 12 min</span>
+</div>
+<button class="bg-primary text-white font-bold py-2 px-6 rounded-xl text-sm shadow-lg shadow-red-900/20 hover:scale-105 transition-transform">Track Live</button>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Historical Order 1 -->
+<div class="bg-surface-container-low p-5 rounded-lg flex items-center gap-4">
+<div class="w-16 h-16 rounded-full bg-white flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-secondary">local_shipping</span>
+</div>
+<div class="flex-1">
+<h4 class="font-bold text-sm">Grocery Restock</h4>
+<p class="text-xs text-on-surface-variant">Last Tuesday • $84.20</p>
+</div>
+<button class="p-2 bg-white rounded-full text-primary shadow-sm hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-sm">refresh</span>
+</button>
+</div>
+<!-- Historical Order 2 -->
+<div class="bg-surface-container-low p-5 rounded-lg flex items-center gap-4">
+<div class="w-16 h-16 rounded-full bg-white flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-primary">restaurant</span>
+</div>
+<div class="flex-1">
+<h4 class="font-bold text-sm">Joe's Pizza Palace</h4>
+<p class="text-xs text-on-surface-variant">2 weeks ago • $32.00</p>
+</div>
+<button class="p-2 bg-white rounded-full text-primary shadow-sm hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-sm">refresh</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Quick Actions / Payment (Bento Small) -->
+<aside class="lg:col-span-4 flex flex-col gap-8">
+<!-- Payment Methods -->
+<div class="bg-secondary p-8 rounded-lg text-white shadow-xl relative overflow-hidden">
+<div class="absolute -top-10 -right-10 w-40 h-40 bg-secondary-dim rounded-full blur-3xl opacity-50"></div>
+<div class="relative z-10">
+<div class="flex items-center justify-between mb-8">
+<h2 class="text-xl font-bold">Payments</h2>
+<span class="material-symbols-outlined opacity-60">contactless</span>
+</div>
+<div class="flex flex-col gap-4 mb-8">
+<div class="flex items-center gap-4 bg-white/10 p-4 rounded-xl backdrop-blur-md border border-white/10">
+<div class="w-12 h-8 bg-white/20 rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-xs">credit_card</span>
+</div>
+<div>
+<p class="text-xs font-bold tracking-widest opacity-60">PRIMARY CARD</p>
+<p class="font-bold tracking-widest">•••• 4421</p>
+</div>
+</div>
+</div>
+<button class="w-full bg-white text-secondary font-extrabold py-3 rounded-xl shadow-lg hover:bg-on-secondary transition-colors">Manage Cards</button>
+</div>
+</div>
+<!-- Saved Addresses -->
+<div class="bg-surface-container-highest p-8 rounded-lg">
+<h3 class="text-xl font-bold mb-6">Saved Addresses</h3>
+<div class="flex flex-col gap-4">
+<div class="flex items-start gap-4">
+<span class="material-symbols-outlined text-primary mt-1">home</span>
+<div>
+<h4 class="font-bold text-sm">Home</h4>
+<p class="text-xs text-on-surface-variant">221B Baker St, London</p>
+</div>
+</div>
+<div class="flex items-start gap-4 pt-4 border-t border-outline-variant/20">
+<span class="material-symbols-outlined text-secondary mt-1">work</span>
+<div>
+<h4 class="font-bold text-sm">Office</h4>
+<p class="text-xs text-on-surface-variant">10 Canal St, King's Cross</p>
+</div>
+</div>
+</div>
+<button class="mt-8 w-full py-3 rounded-xl border-2 border-primary text-primary font-bold text-sm hover:bg-primary hover:text-white transition-all">Add New Address</button>
+</div>
+</aside>
+</div>
+<!-- Account Settings Section -->
+<section class="mt-16 bg-surface-container-low rounded-lg p-8">
+<h2 class="text-2xl font-bold tracking-tight mb-8">Account Settings</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<button class="flex items-center gap-4 p-4 bg-white rounded-lg hover:bg-[#ffe1e4] transition-all group">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">person_outline</span>
+<span class="font-bold text-sm">Personal Info</span>
+</button>
+<button class="flex items-center gap-4 p-4 bg-white rounded-lg hover:bg-[#ffe1e4] transition-all group">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">lock_person</span>
+<span class="font-bold text-sm">Privacy &amp; Security</span>
+</button>
+<button class="flex items-center gap-4 p-4 bg-white rounded-lg hover:bg-[#ffe1e4] transition-all group">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">notifications_active</span>
+<span class="font-bold text-sm">Notifications</span>
+</button>
+<button class="flex items-center gap-4 p-4 bg-white rounded-lg hover:bg-error/10 transition-all group">
+<span class="material-symbols-outlined text-error group-hover:scale-110 transition-transform">logout</span>
+<span class="font-bold text-sm text-error">Logout</span>
+</button>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-[#fff4f4]/90 backdrop-blur-xl shadow-[0px_-10px_30px_rgba(77,33,42,0.08)] rounded-t-[3rem] md:hidden">
+<a class="flex flex-col items-center justify-center text-[#4d212a] p-2 hover:text-[#ba001c] transition-colors" href="#">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Explore</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#4d212a] p-2 hover:text-[#ba001c] transition-colors" href="#">
+<span class="material-symbols-outlined">category</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Services</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#4d212a] p-2 hover:text-[#ba001c] transition-colors" href="#">
+<span class="material-symbols-outlined">shopping_bag</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Cart</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#4d212a] p-2 hover:text-[#ba001c] transition-colors" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Orders</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-[#ba001c] text-white rounded-full p-3 scale-110 -translate-y-2 shadow-lg shadow-red-900/20 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Profile</span>
+</a>
+</nav>
+</body></html>

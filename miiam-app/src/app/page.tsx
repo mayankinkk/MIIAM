@@ -302,11 +302,12 @@ export default function LandingPage() {
         <div className="flex flex-col md:flex-row justify-between items-center gap-10 max-w-7xl mx-auto">
           <div className="text-2xl font-black text-white tracking-tighter">MIIAM</div>
           <div className="flex flex-wrap gap-8 justify-center">
-            {["Privacy", "Terms", "Safety", "Contact"].map((item) => (
-              <Link key={item} href="#" className="text-slate-500 text-xs uppercase tracking-widest font-semibold hover:text-white transition-colors duration-200">
-                {item}
-              </Link>
-            ))}
+            <Link href="/terms" className="text-slate-500 text-xs uppercase tracking-widest font-semibold hover:text-white transition-colors duration-200">
+              Terms
+            </Link>
+            <Link href="/privacy" className="text-slate-500 text-xs uppercase tracking-widest font-semibold hover:text-white transition-colors duration-200">
+              Privacy
+            </Link>
             <Link href="/partner" className="text-[#ba001c] text-xs uppercase tracking-widest font-black border-l-0 md:border-l border-slate-800 pl-0 md:pl-8 hover:text-white transition-colors duration-200">
               Partner Portal
             </Link>

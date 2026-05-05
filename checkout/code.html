@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Checkout | MIIAM</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary": "#f1f2ff",
+                        "tertiary-dim": "#5e4e00",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#814c55",
+                        "on-surface": "#4d212a",
+                        "on-secondary-container": "#003dac",
+                        "on-tertiary": "#fff2cd",
+                        "surface-container-highest": "#ffd2d7",
+                        "error": "#b02500",
+                        "secondary-dim": "#0044bf",
+                        "on-secondary-fixed": "#002c83",
+                        "tertiary": "#6c5a00",
+                        "surface-container": "#ffe1e4",
+                        "surface-bright": "#fff4f4",
+                        "tertiary-container": "#ffd709",
+                        "primary-fixed": "#ff7670",
+                        "primary-fixed-dim": "#ff5a57",
+                        "outline": "#a06770",
+                        "on-secondary-fixed-variant": "#0045c1",
+                        "on-primary-fixed": "#000000",
+                        "on-background": "#4d212a",
+                        "on-tertiary-fixed-variant": "#665500",
+                        "inverse-surface": "#24020a",
+                        "surface-dim": "#ffc6ce",
+                        "on-primary-container": "#4e0006",
+                        "surface-container-low": "#ffecee",
+                        "primary-dim": "#a40017",
+                        "primary-container": "#ff7670",
+                        "secondary-fixed-dim": "#b1c2ff",
+                        "tertiary-fixed-dim": "#efc900",
+                        "secondary-container": "#c4d0ff",
+                        "surface": "#fff4f4",
+                        "secondary-fixed": "#c4d0ff",
+                        "primary": "#ba001c",
+                        "inverse-primary": "#ff5352",
+                        "secondary": "#0b50d5",
+                        "on-tertiary-container": "#5b4b00",
+                        "on-primary": "#ffefee",
+                        "on-error": "#ffefec",
+                        "error-container": "#f95630",
+                        "on-primary-fixed-variant": "#600009",
+                        "background": "#fff4f4",
+                        "tertiary-fixed": "#ffd709",
+                        "error-dim": "#b92902",
+                        "on-error-container": "#520c00",
+                        "inverse-on-surface": "#cb8c96",
+                        "on-tertiary-fixed": "#453900",
+                        "surface-variant": "#ffd2d7",
+                        "surface-tint": "#ba001c",
+                        "outline-variant": "#dd9ca6",
+                        "surface-container-high": "#ffd9de"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #fff4f4;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="text-on-surface">
+<!-- TopAppBar -->
+<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-[#fff4f4]/80 backdrop-blur-2xl shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#ffe1e4] transition-all">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<span class="text-2xl font-extrabold tracking-tighter text-[#ba001c]">MIIAM</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden md:flex gap-8 items-center">
+<span class="text-[#4d212a] font-semibold">Checkout</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant">shopping_cart</span>
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+<img alt="User profile" class="w-10 h-10 rounded-full object-cover ring-2 ring-primary-container" data-alt="portrait of a professional user with a friendly expression in a bright studio setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxbAnKvph_V4tlwT8nUIHGNFw1h226SqL3OuvXdJSQm08kyjdZhVRCfdSOneES6zuUTWPQWfYG5tUn33arm347N77mGYcN_m9cDw_JxXiE_FfAG63lGQzXA41PIyT81V1t03yXTYSnrMS82MHOlXXg-LZhV6-rd02YzMBHG6rVV23AKDTC6qh3mWNaK8fdFep5G9_nPo0fwwzTiKmYqBraIdUIqhABwVoeNlFxhv5eRYi6SS_HnMbitzUwwrmXXZfS8mVJnrq_Cpc"/>
+</div>
+</div>
+</nav>
+<main class="pt-24 pb-32 px-6 max-w-7xl mx-auto">
+<!-- Page Title -->
+<header class="mb-12">
+<h1 class="text-5xl font-extrabold tracking-tight text-on-surface mb-2">Secure Checkout</h1>
+<p class="text-on-surface-variant">Complete your order with peace of mind.</p>
+</header>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- Left Column: Checkout Details -->
+<div class="lg:col-span-8 space-y-8">
+<!-- Delivery Address Section -->
+<section class="bg-surface-container-lowest p-8 rounded-lg shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
+<div class="flex justify-between items-center mb-8">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container">
+<span class="material-symbols-outlined">location_on</span>
+</div>
+<h2 class="text-2xl font-bold">Delivery Address</h2>
+</div>
+<button class="text-secondary font-bold hover:underline">Change</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Address Card Active -->
+<div class="p-6 rounded-lg border-2 border-primary bg-surface-container-low relative overflow-hidden">
+<div class="absolute top-0 right-0 p-2 bg-primary text-on-primary rounded-bl-lg">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<h3 class="font-bold text-lg mb-2">Home</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">
+                                452/A Kinetic Plaza, 5th Floor<br/>
+                                Skyway Avenue, Tech District<br/>
+                                Bangalore, KA 560001
+                            </p>
+<p class="mt-4 text-xs font-bold text-primary">+91 98765 43210</p>
+</div>
+<!-- Add New Address -->
+<button class="p-6 rounded-lg border-2 border-dashed border-outline-variant flex flex-col items-center justify-center gap-2 hover:bg-surface-container transition-colors group">
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary">add_location_alt</span>
+<span class="font-bold text-on-surface-variant group-hover:text-on-surface">Add New Address</span>
+</button>
+</div>
+</section>
+<!-- Payment Method Section -->
+<section class="bg-surface-container-lowest p-8 rounded-lg shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
+<div class="flex items-center gap-4 mb-8">
+<div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<h2 class="text-2xl font-bold">Payment Method</h2>
+</div>
+<div class="space-y-4">
+<!-- Card Option -->
+<label class="flex items-center justify-between p-6 rounded-lg bg-surface-container-low cursor-pointer hover:bg-surface-container transition-all">
+<div class="flex items-center gap-4">
+<input checked="" class="w-5 h-5 text-primary focus:ring-primary border-outline-variant" name="payment" type="radio"/>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary">credit_card</span>
+<div>
+<p class="font-bold">Credit / Debit Card</p>
+<p class="text-xs text-on-surface-variant">Visa, Mastercard, Amex</p>
+</div>
+</div>
+</div>
+<div class="flex gap-2">
+<div class="w-8 h-5 bg-white rounded border border-surface-container-highest"></div>
+<div class="w-8 h-5 bg-white rounded border border-surface-container-highest"></div>
+</div>
+</label>
+<!-- UPI Option -->
+<label class="flex items-center justify-between p-6 rounded-lg border-2 border-transparent hover:border-outline-variant transition-all cursor-pointer">
+<div class="flex items-center gap-4">
+<input class="w-5 h-5 text-primary focus:ring-primary border-outline-variant" name="payment" type="radio"/>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">account_balance_wallet</span>
+<div>
+<p class="font-bold">UPI Payment</p>
+<p class="text-xs text-on-surface-variant">Google Pay, PhonePe, Paytm</p>
+</div>
+</div>
+</div>
+</label>
+<!-- Cash Option -->
+<label class="flex items-center justify-between p-6 rounded-lg border-2 border-transparent hover:border-outline-variant transition-all cursor-pointer">
+<div class="flex items-center gap-4">
+<input class="w-5 h-5 text-primary focus:ring-primary border-outline-variant" name="payment" type="radio"/>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">payments</span>
+<div>
+<p class="font-bold">Cash on Delivery</p>
+<p class="text-xs text-on-surface-variant">Pay when you receive the order</p>
+</div>
+</div>
+</div>
+</label>
+</div>
+</section>
+</div>
+<!-- Right Column: Order Summary -->
+<div class="lg:col-span-4 sticky top-24">
+<aside class="bg-surface-container-low p-8 rounded-lg shadow-[0px_20px_40px_rgba(77,33,42,0.06)] relative overflow-hidden">
+<!-- Subtle Glass Decoration -->
+<div class="absolute -top-10 -right-10 w-32 h-32 bg-primary-container/20 rounded-full blur-3xl"></div>
+<h2 class="text-2xl font-extrabold mb-8 tracking-tight">Order Summary</h2>
+<div class="space-y-4 mb-8">
+<div class="flex justify-between text-on-surface-variant">
+<span>Subtotal (3 items)</span>
+<span class="font-semibold text-on-surface">$142.50</span>
+</div>
+<div class="flex justify-between text-on-surface-variant">
+<span>Delivery Fee</span>
+<span class="font-semibold text-secondary">FREE</span>
+</div>
+<div class="flex justify-between text-on-surface-variant">
+<span>Tax (GST 5%)</span>
+<span class="font-semibold text-on-surface">$7.12</span>
+</div>
+<div class="pt-4 border-t border-outline-variant/30 flex justify-between items-end">
+<span class="text-lg font-bold">Total Amount</span>
+<div class="text-right">
+<p class="text-3xl font-extrabold text-primary tracking-tighter">$149.62</p>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">Inc. all taxes</p>
+</div>
+</div>
+</div>
+<!-- Promo Code -->
+<div class="mb-8">
+<div class="relative">
+<input class="w-full bg-surface-container-lowest border-none rounded-xl py-4 pl-4 pr-16 focus:ring-2 focus:ring-primary/20" placeholder="Promo Code" type="text"/>
+<button class="absolute right-2 top-2 bottom-2 px-4 bg-on-surface text-white rounded-lg font-bold text-xs hover:bg-black transition-colors">APPLY</button>
+</div>
+</div>
+<!-- Checkout Button -->
+<button class="w-full bg-gradient-to-r from-primary to-primary-container text-on-primary py-5 rounded-xl text-lg font-extrabold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3">
+                        Place Order
+                        <span class="material-symbols-outlined">shield</span>
+</button>
+<p class="text-center mt-6 text-xs text-on-surface-variant flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">lock</span>
+                        100% Encrypted &amp; Secure Payment
+                    </p>
+</aside>
+<!-- Order items Preview (Bento Style) -->
+<div class="mt-6 grid grid-cols-2 gap-4">
+<div class="bg-surface-container-lowest p-3 rounded-lg flex items-center gap-3">
+<img alt="item" class="w-12 h-12 rounded-lg object-cover" data-alt="overhead shot of a vibrant healthy salad bowl with fresh vegetables and seeds" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBjfEdVzJQrOEstFQoNORL1Q5HFM_nBFN5O3OPyhXqAqa58sN19iqyYiYpEjiAtAZxiWy2aKXxWDP8KZuVuxIC3z08Mms62o8E39gWQq7f6GwAOl4fJanXYuLZNpjUxxvGa69NZT9BBXBFs87iqXvLFIMtAHaIcOsFPFAMM0TbqxgaECQaGDpDS6aMGUWbBmooFPG6qQD5R33wwL4zxz-loeT_u9fXEWq4y15ctLOghxX5I4cHNoDPmeTFP_JjsFjDUA2nBFOtYG0"/>
+<div class="overflow-hidden">
+<p class="text-xs font-bold truncate">Quinoa Bowl</p>
+<p class="text-[10px] text-on-surface-variant">Qty: 1</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-3 rounded-lg flex items-center gap-3">
+<img alt="item" class="w-12 h-12 rounded-lg object-cover" data-alt="freshly baked artisanal pizza with melting mozzarella and basil leaves" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5ZBDzNLfFBtAkDUeP0tW0nobemS4yUzmvEeXUZJ6jK5qH-vRAy9aLzeRd0c6885Yaf9sGru3cW_oPGrPIP63KMW5kcq7hnLbSvFR6OpPSdRMrYLWxbVYD5aVJ6B-bdoTUUbbRczUTp9GwanyJIHNOWWacfz-rQddv4xrrsTlGFsNl_V9H0xP65E--aR_DE9PtA0lUY-a5HSPOtxk43GY8HfoP56juLWquNe4nMEApnREHTmrZ7hxGUfHmDTynA_PpoE48bZ_lREA"/>
+<div class="overflow-hidden">
+<p class="text-xs font-bold truncate">Basil Pizza</p>
+<p class="text-[10px] text-on-surface-variant">Qty: 2</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-[#fff4f4]/90 backdrop-blur-xl shadow-[0px_-10px_30px_rgba(77,33,42,0.08)] rounded-t-[3rem]">
+<div class="flex flex-col items-center justify-center text-[#4d212a] p-2 hover:text-[#ba001c] transition-colors">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Explore</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#4d212a] p-2 hover:text-[#ba001c] transition-colors">
+<span class="material-symbols-outlined">category</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Services</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-[#ba001c] text-white rounded-full p-3 scale-110 -translate-y-2 shadow-lg shadow-red-900/20">
+<span class="material-symbols-outlined">shopping_bag</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Cart</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#4d212a] p-2 hover:text-[#ba001c] transition-colors">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Orders</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#4d212a] p-2 hover:text-[#ba001c] transition-colors">
+<span class="material-symbols-outlined">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Profile</span>
+</div>
+</nav>
+</body></html>

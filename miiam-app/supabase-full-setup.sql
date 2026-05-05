@@ -459,3 +459,23 @@ ALTER TABLE public.order_items ENABLE ROW LEVEL SECURITY;
 -- Policies
 CREATE POLICY "Allow full access to orders" ON public.orders FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow full access to order_items" ON public.order_items FOR ALL USING (true) WITH CHECK (true);
+
+-- User Prescriptions Table
+CREATE TABLE IF NOT EXISTS user_prescriptions (
+  id uuid default uuid_generate_v4() primary key,
+  user_id text,
+  image_url text not null,
+  notes text,
+  status text default 'pending',
+  created_at timestamp with time zone default timezone('utc'::text, now())
+);
+
+ALTER TABLE public.user_prescriptions ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow full access to user_prescriptions" ON public.user_prescriptions FOR ALL USING (true) WITH CHECK (true);
+
+-- STORAGE BUCKET FOR PHARMACY IMAGES
+INSERT INTO storage.buckets (id, name, public) VALUES ('pharmacy-images', 'pharmacy-images', true);
+
+-- Allow public access to pharmacy-images bucket
+CREATE POLICY "Public access to pharmacy-images" ON storage.objects FOR SELECT USING (bucket_id = 'pharmacy-images');
+CREATE POLICY "Allow uploads to pharmacy-images" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'pharmacy-images');

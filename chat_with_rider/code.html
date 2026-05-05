@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kinetic | Marco V. Chat</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-high": "#ffd9de",
+                    "primary": "#ba001c",
+                    "on-secondary-fixed-variant": "#0045c1",
+                    "primary-container": "#ff7670",
+                    "tertiary-dim": "#5e4e00",
+                    "on-tertiary-fixed": "#453900",
+                    "tertiary-fixed": "#ffd709",
+                    "surface-container": "#ffe1e4",
+                    "secondary-fixed": "#c4d0ff",
+                    "inverse-primary": "#ff5352",
+                    "error-container": "#f95630",
+                    "primary-fixed-dim": "#ff5a57",
+                    "surface-variant": "#ffd2d7",
+                    "tertiary": "#6c5a00",
+                    "surface": "#fff4f4",
+                    "secondary-dim": "#0044bf",
+                    "outline": "#a06770",
+                    "error-dim": "#b92902",
+                    "secondary": "#0b50d5",
+                    "inverse-on-surface": "#cb8c96",
+                    "primary-fixed": "#ff7670",
+                    "on-secondary-container": "#003dac",
+                    "surface-bright": "#fff4f4",
+                    "on-secondary": "#f1f2ff",
+                    "on-surface": "#4d212a",
+                    "surface-dim": "#ffc6ce",
+                    "on-secondary-fixed": "#002c83",
+                    "surface-container-highest": "#ffd2d7",
+                    "on-tertiary-container": "#5b4b00",
+                    "background": "#fff4f4",
+                    "tertiary-fixed-dim": "#efc900",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary-container": "#4e0006",
+                    "inverse-surface": "#24020a",
+                    "surface-container-low": "#ffecee",
+                    "on-primary-fixed-variant": "#600009",
+                    "on-tertiary-fixed-variant": "#665500",
+                    "primary-dim": "#a40017",
+                    "secondary-fixed-dim": "#b1c2ff",
+                    "secondary-container": "#c4d0ff",
+                    "on-surface-variant": "#814c55",
+                    "on-primary": "#ffefee",
+                    "on-primary-fixed": "#000000",
+                    "outline-variant": "#dd9ca6",
+                    "tertiary-container": "#ffd709",
+                    "surface-tint": "#ba001c",
+                    "on-tertiary": "#fff2cd",
+                    "on-error-container": "#520c00",
+                    "error": "#b02500",
+                    "on-background": "#4d212a",
+                    "on-error": "#ffefec"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Plus Jakarta Sans"],
+                    "label": ["Plus Jakarta Sans"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-[#fff4f4]/80 backdrop-blur-xl shadow-[0_20px_40px_rgba(77,33,42,0.06)]">
+<div class="flex items-center gap-4">
+<button class="text-secondary hover:bg-surface-container rounded-full p-2 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<div class="flex items-center gap-3">
+<div class="relative">
+<img alt="Marco V." class="w-10 h-10 rounded-full object-cover border-2 border-primary-container" data-alt="portrait of a friendly middle-aged man with a warm smile wearing a professional delivery uniform against a soft urban background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGCa7mZ4qOeQeRoGKnlJATG1Kly2jb8WBkgAf53uhrpzCXqpbNLObpzz_NHMqZ8Bkvt7drc0xy7C_kMvQFpwNYvEMLU2xcz9mAty34ffoI6L7po1BPmuc65727DXxo28IS1rO2Pe5kYhTM0UTIn153_AH_EumtXb-BSGWO-vyuj0lx2fV1Ad35Fcohu8MOwl-aWX4ZyZ7pm76FutvAN9B8UhQkQntMxgaXZXUHEthI3DFjXXoQdOGwRFZUTtx8WVBQzYGMLwEd4hg"/>
+<div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+</div>
+<div>
+<h1 class="font-headline font-bold text-on-surface tracking-tight leading-tight">Marco V.</h1>
+<p class="text-[10px] font-medium text-secondary flex items-center gap-1">
+<span class="w-1.5 h-1.5 bg-secondary rounded-full"></span>
+                        Active
+                    </p>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="w-10 h-10 flex items-center justify-center text-primary hover:bg-[#ffe1e4] rounded-full transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="phone">phone</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center text-primary hover:bg-[#ffe1e4] rounded-full transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="info">info</span>
+</button>
+</div>
+</header>
+<!-- Chat Canvas -->
+<main class="flex-1 mt-16 mb-32 px-4 pt-6 overflow-y-auto hide-scrollbar flex flex-col gap-6"><div class="mx-4 mb-4 bg-surface-container-high/50 backdrop-blur-md p-4 rounded-xl border border-primary/5 flex items-center gap-4">
+<div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">restaurant</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<h2 class="font-headline font-extrabold text-on-surface text-base uppercase tracking-wider">Gourmet Burger Kitchen</h2>
+<span class="text-[10px] font-bold bg-primary text-on-primary px-2 py-0.5 rounded-full">IN PROGRESS</span>
+</div>
+<p class="text-xs font-medium text-on-surface-variant mt-0.5">
+      2x Classic Burger, 1x Loaded Fries
+    </p>
+</div>
+<button class="text-primary">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+<!-- Status Notification -->
+<div class="flex justify-center">
+<div class="bg-surface-container-low px-4 py-1.5 rounded-full text-[11px] font-semibold text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px]">local_shipping</span>
+                Marco is 2 mins away from your location
+            </div>
+</div>
+<!-- Received Message -->
+<div class="flex flex-col items-start gap-1 max-w-[85%]">
+<div class="bg-secondary-container text-on-secondary-container p-4 rounded-t-2xl rounded-br-2xl rounded-bl-sm shadow-sm">
+<p class="text-sm font-medium">Hello! I have picked up your order from Kinetic Kitchen. I'll be there in a few minutes.</p>
+</div>
+<span class="text-[10px] text-on-surface-variant ml-1 font-medium">12:40 PM</span>
+</div>
+<!-- Sent Message -->
+<div class="flex flex-col items-end gap-1 self-end max-w-[85%]">
+<div class="bg-primary text-on-primary p-4 rounded-t-2xl rounded-bl-2xl rounded-br-sm shadow-md">
+<p class="text-sm font-medium">Perfect, thank you! Please leave it at the front desk when you arrive.</p>
+</div>
+<div class="flex items-center gap-1 mr-1"><span class="text-[10px] text-on-surface-variant font-medium">12:42 PM</span>
+<span class="material-symbols-outlined text-[12px] text-secondary" style="font-variation-settings: 'FILL' 1;">done_all</span></div>
+</div>
+<!-- Received Message with Image/Action -->
+<div class="flex flex-col items-start gap-1 max-w-[85%]">
+<div class="bg-secondary-container text-on-secondary-container p-4 rounded-t-2xl rounded-br-2xl rounded-bl-sm shadow-sm flex flex-col gap-3">
+<p class="text-sm font-medium">I am near your location now. Is the entrance on the north side?</p>
+<div class="w-full h-32 rounded-xl overflow-hidden relative">
+<img alt="Location map" class="w-full h-full object-cover" data-alt="a professional digital map interface showing a street intersection with a red delivery marker in a clean modern style" data-location="San Francisco" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBiwm7kMVAijdJPv8KxUFsSt_IkjSKtYAMFoy1Tr8feiP95Dw3y2Zo9JaTMmpB2n2jWrvGy-itJlNPxWIi-XD0Tg-y2N3DesGx1T4Dzuw7yX14ID40ULeC2P21I16gXdxNla2CR_Vr9DGN4J2bH-sp-_zeMZG2E8cttViEiPwy9OeHMzBznKdEmHfaKfvtqZP_jqvgPv0_m3i-ugqBgfl55UmvZS9WnuB-XeyHEUAqXB-LOEp-a2NaZcY5DfY7zpuH5ewhmzktcy0Y"/>
+<div class="absolute inset-0 bg-secondary/10"></div>
+</div>
+</div>
+<span class="text-[10px] text-on-surface-variant ml-1 font-medium">12:45 PM</span>
+</div>
+<!-- Quick Replies (Floating Chips) -->
+<div class="flex gap-2 overflow-x-auto hide-scrollbar py-2 -mx-4 px-4 sticky bottom-0">
+<button class="whitespace-nowrap bg-surface-container-lowest border border-outline-variant/20 px-4 py-2 rounded-full text-xs font-bold text-secondary shadow-sm active:scale-95 transition-transform">
+                Okay!
+            </button>
+<button class="whitespace-nowrap bg-surface-container-lowest border border-outline-variant/20 px-4 py-2 rounded-full text-xs font-bold text-secondary shadow-sm active:scale-95 transition-transform">
+                Where are you?
+            </button>
+<button class="whitespace-nowrap bg-surface-container-lowest border border-outline-variant/20 px-4 py-2 rounded-full text-xs font-bold text-secondary shadow-sm active:scale-95 transition-transform">
+                Call me
+            </button>
+<button class="whitespace-nowrap bg-surface-container-lowest border border-outline-variant/20 px-4 py-2 rounded-full text-xs font-bold text-secondary shadow-sm active:scale-95 transition-transform">
+                Be right there
+            </button>
+</div>
+</main>
+<!-- Bottom Input Bar -->
+<footer class="fixed bottom-0 left-0 w-full bg-surface-container-low/90 backdrop-blur-2xl rounded-t-[2.5rem] px-6 pt-4 pb-8 shadow-[0_-10px_30px_rgba(77,33,42,0.04)] z-50">
+<div class="flex items-center gap-3">
+<button class="w-12 h-12 flex items-center justify-center bg-surface-container-highest text-primary rounded-full active:scale-95 transition-transform">
+<span class="material-symbols-outlined">add</span>
+</button>
+<div class="flex-1 bg-surface-container-lowest rounded-full h-12 px-4 flex items-center gap-2 border border-outline-variant/10 focus-within:ring-2 focus-within:ring-secondary/20 transition-all">
+<input class="flex-1 bg-transparent border-none focus:ring-0 text-sm font-medium placeholder:text-on-surface-variant/50" placeholder="Type a message..." type="text"/>
+<button class="text-on-surface-variant/60 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">image</span>
+</button>
+</div>
+<button class="w-12 h-12 flex items-center justify-center bg-primary text-white rounded-full shadow-lg shadow-primary/20 active:scale-95 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">send</span>
+</button>
+</div>
+</footer>
+<!-- Floating Glass Debris (Decorative) -->
+<div class="fixed top-24 right-[-20px] w-16 h-16 bg-primary-container/20 backdrop-blur-md rounded-full border border-white/10 z-0 pointer-events-none"></div>
+<div class="fixed bottom-40 left-[-30px] w-24 h-24 bg-secondary-container/20 backdrop-blur-lg rounded-full border border-white/10 z-0 pointer-events-none"></div>
+</body></html>

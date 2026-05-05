@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MIIAM | Rider Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #fff4f4;
+            color: #4d212a;
+            margin: 0;
+            padding: 0;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(255, 244, 244, 0.7);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+        }
+        .kinetic-gradient {
+            background: linear-gradient(135deg, #ba001c 0%, #ff7670 100%);
+        }
+        .bipolar-split {
+            display: grid;
+            grid-template-columns: 1fr;
+        }
+        @media (min-width: 768px) {
+            .bipolar-split {
+                grid-template-columns: 1.1fr 0.9fr;
+            }
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary": "#6c5a00",
+                      "on-error": "#ffefec",
+                      "surface-tint": "#ba001c",
+                      "surface": "#fff4f4",
+                      "primary": "#ba001c",
+                      "secondary-fixed": "#c4d0ff",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-container-highest": "#ffd2d7",
+                      "surface-variant": "#ffd2d7",
+                      "on-secondary-container": "#003dac",
+                      "on-primary-fixed-variant": "#600009",
+                      "primary-fixed": "#ff7670",
+                      "outline": "#a06770",
+                      "primary-dim": "#a40017",
+                      "on-secondary": "#f1f2ff",
+                      "secondary-container": "#c4d0ff",
+                      "tertiary-fixed-dim": "#efc900",
+                      "primary-container": "#ff7670",
+                      "tertiary-dim": "#5e4e00",
+                      "on-primary-container": "#4e0006",
+                      "surface-bright": "#fff4f4",
+                      "error": "#b02500",
+                      "background": "#fff4f4",
+                      "on-secondary-fixed": "#002c83",
+                      "on-primary": "#ffefee",
+                      "error-container": "#f95630",
+                      "on-error-container": "#520c00",
+                      "tertiary-container": "#ffd709",
+                      "surface-dim": "#ffc6ce",
+                      "secondary-fixed-dim": "#b1c2ff",
+                      "on-secondary-fixed-variant": "#0045c1",
+                      "inverse-primary": "#ff5352",
+                      "on-surface-variant": "#814c55",
+                      "on-background": "#4d212a",
+                      "on-tertiary-container": "#5b4b00",
+                      "inverse-on-surface": "#cb8c96",
+                      "secondary": "#0b50d5",
+                      "primary-fixed-dim": "#ff5a57",
+                      "error-dim": "#b92902",
+                      "surface-container": "#ffe1e4",
+                      "on-surface": "#4d212a",
+                      "surface-container-low": "#ffecee",
+                      "on-tertiary-fixed-variant": "#665500",
+                      "surface-container-high": "#ffd9de",
+                      "outline-variant": "#dd9ca6",
+                      "on-tertiary-fixed": "#453900",
+                      "tertiary-fixed": "#ffd709",
+                      "secondary-dim": "#0044bf",
+                      "on-primary-fixed": "#000000",
+                      "on-tertiary": "#fff2cd",
+                      "inverse-surface": "#24020a"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "spacing": {},
+              "fontFamily": {
+                      "headline": ["Plus Jakarta Sans"],
+                      "body": ["Plus Jakarta Sans"],
+                      "label": ["Plus Jakarta Sans"]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="bg-surface selection:bg-primary-fixed selection:text-on-primary-container">
+<!-- Login screen follows the "Bipolarity" rule: split visual style -->
+<main class="min-h-screen bipolar-split overflow-hidden">
+<!-- VISUAL SIDE: The Kinetic Half (Movement & Brand) -->
+<section class="relative hidden md:flex items-center justify-center p-12 overflow-hidden bg-primary">
+<!-- Background Image Suggesting Movement -->
+<div class="absolute inset-0 z-0 opacity-40">
+<img class="w-full h-full object-cover" data-alt="dynamic long exposure of city lights at night with a blurred delivery moped speeding through neon streets, high energy action" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBNONWs9fsq_GTLapmZoujNPMktrmwOglPm1YkUKsMx-4MkoyKpcNyZoA4fOfAcQA5Vfnc47y1SEOtBW8IFkGffexC32VFV3gGpq3pklMiekqGRrQd2GSpQrE-xE_h2INP8-zlVAsiYFdT6uaEQYDZse-X9yT__iJvcEV0ZnwYfSu7qdTr51dGefH2hPwTpzMqtQijpyxkTNWuFuKLXLv21ZQiiNaFGyBPn-Wj2nJoTr-DbJMV415yK0jOtsmX4xVbrPmSJPGPpoQ"/>
+</div>
+<!-- Floating Kinetic Debris (Glassmorphism Emojis) -->
+<div class="absolute top-[15%] left-[10%] glass-panel rounded-xl p-4 shadow-xl rotate-[-12deg] z-10 border border-white/10">
+<span class="text-4xl">🚀</span>
+</div>
+<div class="absolute bottom-[20%] right-[15%] glass-panel rounded-xl p-4 shadow-xl rotate-[15deg] z-10 border border-white/10">
+<span class="text-4xl">🍕</span>
+</div>
+<div class="absolute top-1/2 right-[5%] glass-panel rounded-xl p-4 shadow-xl rotate-[5deg] z-10 border border-white/10">
+<span class="text-4xl">⚡️</span>
+</div>
+<!-- Brand Message -->
+<div class="relative z-20 text-on-primary max-w-lg">
+<h1 class="text-[5rem] font-extrabold leading-[0.9] tracking-tighter mb-6">
+                    MIIAM<br/>RIDER
+                </h1>
+<p class="text-xl font-medium opacity-90 max-w-sm leading-relaxed">
+                    The fastest fleet on the planet. Drive your way and earn on every mile.
+                </p>
+<div class="mt-12 flex gap-4">
+<div class="h-1 w-20 rounded-full bg-on-primary"></div>
+<div class="h-1 w-4 rounded-full bg-on-primary/30"></div>
+<div class="h-1 w-4 rounded-full bg-on-primary/30"></div>
+</div>
+</div>
+</section>
+<!-- FORM SIDE: The Functional Half (Login & CTA) -->
+<section class="flex flex-col justify-between p-8 md:p-16 lg:p-24 bg-surface relative">
+<!-- Mobile Header Logo -->
+<div class="md:hidden flex justify-center mb-12">
+<span class="text-3xl font-black tracking-tighter text-primary">MIIAM</span>
+</div>
+<div class="max-w-md mx-auto w-full">
+<!-- Login Header -->
+<header class="mb-12">
+<h2 class="text-4xl md:text-5xl font-bold tracking-tight text-on-surface mb-3">Welcome back</h2>
+<p class="text-on-surface-variant text-lg font-medium">Ready to hit the road?</p>
+</header>
+<!-- Phone Input Section -->
+<div class="space-y-6">
+<div class="relative">
+<label class="block text-sm font-bold text-on-surface mb-3 uppercase tracking-widest px-1">Phone Number</label>
+<div class="flex gap-3">
+<div class="w-24 bg-surface-container-lowest rounded-lg px-4 py-4 flex items-center justify-center font-bold text-on-surface">
+                                +44
+                            </div>
+<input class="flex-1 bg-surface-container-lowest border-none rounded-lg px-6 py-4 text-lg font-semibold focus:ring-2 focus:ring-primary/40 focus:bg-white transition-all placeholder:text-on-surface-variant/40" placeholder="000 000 0000" type="tel"/>
+</div>
+</div>
+<button class="w-full kinetic-gradient text-white rounded-xl py-5 text-lg font-bold shadow-[0px_20px_40px_rgba(186,0,28,0.2)] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 group">
+                        Get OTP
+                        <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+<!-- Divider -->
+<div class="relative my-12 flex items-center">
+<div class="flex-grow h-[1px] bg-outline-variant/30"></div>
+<span class="px-4 text-sm font-bold text-on-surface-variant/60 uppercase tracking-tighter">Quick Access</span>
+<div class="flex-grow h-[1px] bg-outline-variant/30"></div>
+</div>
+<!-- Social Logins -->
+<div class="grid grid-cols-2 gap-4">
+<button class="flex items-center justify-center gap-3 bg-white py-4 rounded-lg shadow-sm border border-outline-variant/20 hover:bg-surface-container-low transition-colors font-semibold">
+<img alt="Google" class="w-5 h-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAArRXK5c39tUA62zeKv--O2eJk6sJxDgKHHkIvfysOE65_BY0EBcci3HBxowTSPEc85Ynr8TpugiNn6rCBXCylrWwZ_vVnRqmWaLDT7q3L0OIKUBGllgrucobsHY8AxeNDHp-NkSFrnFhzuwHRMpkapEO_Ehc_gvjYUoW0dJW6tg1-Yt2XIbyr1jwEyMkygr-2Sb-gUsMbfriwGd04nV_z9AGw49aEchw-0ayCQ8Tum4rx6X__NJAmAUAuZ6VzaQqp5FucxdEfNtY"/>
+                        Google
+                    </button>
+<button class="flex items-center justify-center gap-3 bg-[#1877F2] text-white py-4 rounded-lg shadow-sm hover:opacity-90 transition-opacity font-semibold">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">social_leaderboard</span>
+                        Facebook
+                    </button>
+</div>
+</div>
+<!-- Footer: Become a Partner -->
+<footer class="mt-16 text-center">
+<div class="bg-secondary-container/30 rounded-lg p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+<div class="text-left">
+<p class="font-bold text-on-secondary-container">New to the fleet?</p>
+<p class="text-sm text-on-secondary-container/80">Start earning today with flexible hours.</p>
+</div>
+<a class="bg-secondary text-white px-6 py-3 rounded-full font-bold text-sm hover:bg-secondary-dim transition-colors flex items-center gap-2" href="#">
+                        Become a Partner
+                        <span class="material-symbols-outlined text-sm">open_in_new</span>
+</a>
+</div>
+</footer>
+</section>
+</main>
+<!-- Invisible background texture for premium feel -->
+<div class="fixed inset-0 pointer-events-none z-[100] opacity-[0.03] mix-blend-multiply bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+</body></html>

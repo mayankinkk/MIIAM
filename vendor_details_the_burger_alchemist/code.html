@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Burger Alchemist - MIIAM</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary": "#6c5a00",
+                    "surface-container-low": "#ffecee",
+                    "error-container": "#f95630",
+                    "on-secondary-fixed-variant": "#0045c1",
+                    "on-surface": "#4d212a",
+                    "surface": "#fff4f4",
+                    "on-primary-fixed-variant": "#600009",
+                    "background": "#fff4f4",
+                    "on-secondary-fixed": "#002c83",
+                    "on-tertiary": "#fff2cd",
+                    "surface-bright": "#fff4f4",
+                    "on-primary": "#ffefee",
+                    "surface-container": "#ffe1e4",
+                    "on-error": "#ffefec",
+                    "tertiary-fixed-dim": "#efc900",
+                    "on-tertiary-container": "#5b4b00",
+                    "on-secondary-container": "#003dac",
+                    "outline": "#a06770",
+                    "secondary-fixed": "#c4d0ff",
+                    "on-primary-fixed": "#000000",
+                    "surface-container-highest": "#ffd2d7",
+                    "primary": "#ba001c",
+                    "on-secondary": "#f1f2ff",
+                    "inverse-surface": "#24020a",
+                    "on-background": "#4d212a",
+                    "tertiary-fixed": "#ffd709",
+                    "secondary-container": "#c4d0ff",
+                    "on-error-container": "#520c00",
+                    "tertiary-container": "#ffd709",
+                    "primary-fixed-dim": "#ff5a57",
+                    "surface-dim": "#ffc6ce",
+                    "secondary": "#0b50d5",
+                    "inverse-primary": "#ff5352",
+                    "tertiary-dim": "#5e4e00",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-fixed": "#ff7670",
+                    "surface-container-high": "#ffd9de",
+                    "on-tertiary-fixed-variant": "#665500",
+                    "error": "#b02500",
+                    "secondary-dim": "#0044bf",
+                    "surface-tint": "#ba001c",
+                    "primary-dim": "#a40017",
+                    "on-primary-container": "#4e0006",
+                    "on-surface-variant": "#814c55",
+                    "outline-variant": "#dd9ca6",
+                    "primary-container": "#ff7670",
+                    "error-dim": "#b92902",
+                    "surface-variant": "#ffd2d7",
+                    "inverse-on-surface": "#cb8c96",
+                    "secondary-fixed-dim": "#b1c2ff",
+                    "on-tertiary-fixed": "#453900"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Plus Jakarta Sans"],
+                    "label": ["Plus Jakarta Sans"]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .glass-card { backdrop-filter: blur(20px); background: rgba(255, 255, 255, 0.7); }
+    </style>
+</head>
+<body class="bg-surface text-on-surface selection:bg-primary-container selection:text-on-primary-container">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-rose-50/90 dark:bg-slate-950/90 backdrop-blur-2xl shadow-[0px_20px_40px_rgba(77,33,42,0.06)] rounded-b-[3rem]">
+<div class="flex items-center gap-4">
+<button class="w-12 h-12 flex items-center justify-center rounded-full bg-surface-container-lowest text-primary hover:bg-red-50 transition-all active:scale-90">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<span class="text-2xl font-black tracking-tighter text-red-700 dark:text-red-500">MIIAM</span>
+</div>
+<div class="flex items-center gap-3">
+<button class="w-12 h-12 flex items-center justify-center rounded-full bg-surface-container-lowest text-on-surface-variant hover:bg-red-50 transition-all active:scale-90">
+<span class="material-symbols-outlined">shopping_cart</span>
+</button>
+<button class="w-12 h-12 flex items-center justify-center rounded-full bg-surface-container-lowest text-on-surface-variant hover:bg-red-50 transition-all active:scale-90">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<main class="pt-24 pb-32">
+<!-- Hero Section -->
+<section class="px-6 mb-12">
+<div class="relative h-[450px] w-full rounded-xl overflow-hidden shadow-2xl">
+<img alt="The Burger Alchemist Signature" class="w-full h-full object-cover" data-alt="Close-up of a premium gourmet wagyu beef burger with melting cheese and caramelized onions on a brioche bun with dramatic warm lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdbhX3-Vb7ThxxtVYCiu71zwsIIuGoRoPJY1mJ-xV9usrLQd-0lA_vdeKGA9x1oz9K722uHZAE8kkTYO7VOJdkrRcf7C5gh9_vP-ffonWC-EJymeZ1pkcYspQE9DWbIA0O0_LlSgxIO2dIvBj0-B6dGP6wCzJ_pV4KRRZ6BlvXZT35cDNDeCNx0kdbtDm2dkh3IuVoIL95NggzlZYG4e-C8rY6gokCpejm0cee4ltar-Vc0jN9dEgJDWkBO1qxnngvqFoEG2PPCoE"/>
+<div class="absolute inset-0 bg-gradient-to-t from-on-surface/80 via-on-surface/20 to-transparent"></div>
+<!-- Floating Badges -->
+<div class="absolute top-6 right-6 flex flex-col gap-3">
+<div class="glass-card px-4 py-2 rounded-full flex items-center gap-2 text-primary font-bold shadow-lg">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span>4.8</span>
+</div>
+<div class="glass-card px-4 py-2 rounded-full flex items-center gap-2 text-secondary font-bold shadow-lg">
+<span class="material-symbols-outlined">schedule</span>
+<span>20-30 min</span>
+</div>
+</div>
+<div class="absolute bottom-10 left-10 right-10">
+<h1 class="text-white text-5xl md:text-7xl font-extrabold tracking-tight mb-2">The Burger Alchemist</h1>
+<p class="text-surface-container-low text-xl max-w-2xl font-medium">Turning basic ingredients into culinary gold. Artisanal burgers, hand-cut fries, and secret sauces.</p>
+</div>
+</div>
+</section>
+<!-- Dynamic Tabs Navigation -->
+<nav class="px-6 mb-12 overflow-x-auto no-scrollbar">
+<div class="flex items-center gap-4 min-w-max">
+<a class="bg-primary text-white px-8 py-3 rounded-full font-bold shadow-lg shadow-primary/20 transition-all active:scale-95" href="#menu">Full Menu</a>
+<a class="bg-surface-container-highest text-on-surface px-8 py-3 rounded-full font-bold hover:bg-surface-container-high transition-all active:scale-95" href="#info">Info</a>
+<a class="bg-surface-container-highest text-on-surface px-8 py-3 rounded-full font-bold hover:bg-surface-container-high transition-all active:scale-95" href="#reviews">Reviews</a>
+<a class="bg-surface-container-highest text-on-surface px-8 py-3 rounded-full font-bold hover:bg-surface-container-high transition-all active:scale-95" href="#photos">Photos</a>
+</div>
+</nav>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-12 px-6">
+<!-- Left & Center: Menu & Content -->
+<div class="lg:col-span-2 space-y-16">
+<!-- Menu Section -->
+<section class="space-y-10" id="menu">
+<div class="flex justify-between items-end">
+<div>
+<h2 class="text-4xl font-extrabold tracking-tight text-on-surface">Popular Choice</h2>
+<p class="text-on-surface-variant font-medium">The favorites of our alchemists.</p>
+</div>
+<span class="text-primary font-bold flex items-center gap-1 cursor-pointer">View all <span class="material-symbols-outlined">chevron_right</span></span>
+</div>
+<!-- Bento Menu Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Item 1 -->
+<div class="group bg-surface-container-lowest rounded-lg overflow-hidden transition-all hover:shadow-[0px_20px_40px_rgba(77,33,42,0.06)] flex flex-col">
+<div class="h-48 overflow-hidden relative">
+<img alt="The Alchemist Special" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Gourmet double patty burger with blue cheese, caramelized pear, and truffle aioli on a glossy dark bun." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfN9jKpWF1uRzf-X1Zbo58LsOOh2StQfaXByXqwCmhxSyOz9akHJCrLsnWLIm4ELj52uDeLdXsXTmP3TdiHUQFRtnMNQTb5Cyy7x4tZRgfY8awZ1pixIBIloc7aD3DrNNFeXFDF-jb7E-esY7Re5A8PCQfbi_5RPbQM57fhBxFGrtvo7kBlZ6aKCQmdHjSqFlWVdpiYZ8NwhDDdmrTTq0s4yttVOkd5l9COCRlvQSsYNu3vcR-42lXcMGPLRvmEwHWAMcRCkpe7ko"/>
+<div class="absolute top-4 left-4 bg-primary text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest">Best Seller</div>
+</div>
+<div class="p-6 flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-xl font-bold text-on-surface">The Alchemist Special</h3>
+<span class="text-primary font-extrabold">$18.50</span>
+</div>
+<p class="text-on-surface-variant text-sm mb-6 flex-grow">Double Wagyu, melted Gorgonzola, truffle honey, and crispy leeks on charcoal brioche.</p>
+<button class="w-full bg-primary-container text-on-primary-container py-3 rounded-full font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-colors active:scale-95">
+<span class="material-symbols-outlined">add_shopping_cart</span>
+                                    Add to Cart
+                                </button>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="group bg-surface-container-lowest rounded-lg overflow-hidden transition-all hover:shadow-[0px_20px_40px_rgba(77,33,42,0.06)] flex flex-col">
+<div class="h-48 overflow-hidden">
+<img alt="Philosopher's Stone" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Vegetarian portobello mushroom burger with roasted red peppers, pesto, and fresh arugula on a toasted artisan roll." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQgzSD4jyY8oCl2F7z0BDRuqJn15Q7n2-VFaX2hM4W2MEwbR3gc-l_nDiwpmS8dEoc78ZjqjYJFU8_P2NvUnYCOAF2sHmSDQe9Qg2w4LRnzZqSuKGkLzEdtF6tcMtTfCTBX3SpUsa8MgKv5akhvAz7Apg3ZP59b63r1i9Pi2xRjVryiqOljztGgYADtwIZeEv8b5-nWH8WA9Gdvq4nnHNsjU85lwhc-ZjbKH1Rc7jc6JHKGF455u-5fgXCkYGyfdWijgYg7JYy6X8"/>
+</div>
+<div class="p-6 flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-xl font-bold text-on-surface">Philosopher's Stone</h3>
+<span class="text-primary font-extrabold">$16.00</span>
+</div>
+<p class="text-on-surface-variant text-sm mb-6 flex-grow">Smoked Portobello, herbed goat cheese, roasted red pepper, and arugula pesto.</p>
+<button class="w-full bg-primary-container text-on-primary-container py-3 rounded-full font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-colors active:scale-95">
+<span class="material-symbols-outlined">add_shopping_cart</span>
+                                    Add to Cart
+                                </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Photos Section -->
+<section class="space-y-6" id="photos">
+<h2 class="text-3xl font-bold tracking-tight text-on-surface">Guest Gallery</h2>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<img class="w-full h-40 object-cover rounded-lg shadow-sm" data-alt="User photo of juicy burger being squeezed showing melting cheese and juices." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXQb9FrclxhN734FSqqO3q63eGWDbyYMrAD5WE-Zsf1ZtM3lNTKwaaa2rL7a2rxYcxLUn5U5SfL1pLqT0BePZvQ7VHnM7VKHujjWjXDqM6zP298XYYr3rpRgq9CvzvB-fz_xCZiA0Rh6A49gdFBslgOSEFSuInKVIFJoOjN5BHv-AZYQYy2Jv8sv2M8KalEn5feW9HeOY9ltoxrZQgVjUZo7XB_OV7jFm5YL9wuaze3fHwCly6-k3IzZqopvOTc5PHOqH-jkPkI6o"/>
+<img class="w-full h-40 object-cover rounded-lg shadow-sm" data-alt="Close up of hand-cut sweet potato fries with a dipping sauce cup." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkDgsU9AAaA0B7Niv3zDw6IuGwTQKQXBsJEfs7Ft4Y4_GUrxL_X0m7oC7xluTJjCS3G4PVxz4C5V0omwlWw_1BA__CDwAHAcmbSmstGbX4OSSlh_PjRWu3Qfq2QIrrQw_6ju_Yg8Tr9Zc84n4I6NIbI01wcWTvYQirqSzEy07AScO1uU0IAwUxJo_Xx2K-_ZYEtpjvAm_rzkS0hr64HXzLEGV8nr8BIbBmfrNDTtFZQjoSugtlWaTjm3_Rb8YH2QcMvlrx4AzJ2Ig"/>
+<img class="w-full h-40 object-cover rounded-lg shadow-sm" data-alt="A table spread with multiple burgers, fries, and colorful milkshakes." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDIT0xEtsDVMf1DxcaIebBjoWDvWbLSyheWnB1es4pkfsx31y_JMFtY4rIdSiKAcHawtHoL-e73xL60LPgdFQa6lhFfkLKF2nWiP4XUrwI7n-m22cP-AWdlzvWZ1w4OGTLiTurdfSaa3gGkAvCvX7ayWdVuvogf7ONWzo2vVxcNTzx9hHRrKWR-UKXNFdY5YIzE-UTiiKcxUxn3JZ_mbgqRhLtXlRn2FZhEqcA4vTx2kZ4UaVHQi85lRyF7nrYNgtOSCb3lr_HMFIA"/>
+<div class="relative w-full h-40 rounded-lg overflow-hidden group cursor-pointer">
+<img class="w-full h-full object-cover" data-alt="Outdoor dining table with burgers and cold beers." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA9Yct27pNGYHScx6QG7srMD2Y2arbrFxA5_IIftl1auK6ezIbZZPUtSzNiVTR4dvoeraq05nXx3YU4uHoUmGQgrejTjjiPCfImhX3MVm-fnfIfJdbG-rIDT1YVMfQCKxFYnyWeGpiyI9HkucByhihv2Vkqt9jvkAFQDqxLsMd-TfGxmx1hy8E3TAfuOkJUnB_LfHS5Uup7gbSQZuA5j6CEscddkoMqJJzBUjVz3trSFlmr-yIt4hg4Jk8c4gp5-3rPx9_yAEueJh8"/>
+<div class="absolute inset-0 bg-black/50 flex items-center justify-center text-white font-bold group-hover:bg-black/60 transition-all">+42</div>
+</div>
+</div>
+</section>
+<!-- Reviews Section -->
+<section class="space-y-8" id="reviews">
+<div class="bg-surface-container rounded-lg p-8 flex flex-col md:flex-row gap-12 items-center">
+<div class="text-center">
+<div class="text-7xl font-black text-primary mb-2">4.8</div>
+<div class="flex justify-center text-primary mb-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star_half</span>
+</div>
+<div class="text-on-surface-variant font-medium">1,240 Ratings</div>
+</div>
+<div class="flex-grow space-y-3 w-full">
+<div class="flex items-center gap-4">
+<span class="text-xs font-bold w-4">5</span>
+<div class="flex-grow h-2 bg-white rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[85%]"></div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-xs font-bold w-4">4</span>
+<div class="flex-grow h-2 bg-white rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[10%]"></div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-xs font-bold w-4">3</span>
+<div class="flex-grow h-2 bg-white rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[3%]"></div>
+</div>
+</div>
+<div class="flex items-center gap-4 text-stone-400">
+<span class="text-xs font-bold w-4">2</span>
+<div class="flex-grow h-2 bg-white rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[1%]"></div>
+</div>
+</div>
+<div class="flex items-center gap-4 text-stone-400">
+<span class="text-xs font-bold w-4">1</span>
+<div class="flex-grow h-2 bg-white rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[1%]"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Individual Reviews -->
+<div class="space-y-6">
+<div class="p-6 bg-surface-container-lowest rounded-lg shadow-sm">
+<div class="flex justify-between items-start mb-4">
+<div class="flex gap-3 items-center">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container font-bold text-sm">JS</div>
+<div>
+<div class="font-bold">Julian Sterling</div>
+<div class="text-xs text-on-surface-variant">2 days ago</div>
+</div>
+</div>
+<div class="flex text-primary">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+<p class="text-on-surface-variant">Absolutely life-changing. The Philosopher's Stone burger actually made me contemplate my existence. Best vegetarian burger in the city by far.</p>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Sidebar: Info & Logistics -->
+<div class="space-y-8">
+<!-- Info Card -->
+<section class="bg-surface-container-lowest rounded-lg p-8 shadow-[0px_20px_40px_rgba(77,33,42,0.06)] sticky top-32" id="info">
+<h3 class="text-2xl font-bold mb-6">About the Lab</h3>
+<div class="space-y-6">
+<div class="flex gap-4">
+<div class="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined">location_on</span>
+</div>
+<div>
+<div class="font-bold">Location</div>
+<p class="text-on-surface-variant text-sm">42 Culinary Lane, Downtown Gastronomy District</p>
+<a class="text-secondary font-bold text-xs underline mt-1 block" href="#">Open in Maps</a>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center text-secondary shrink-0">
+<span class="material-symbols-outlined">schedule</span>
+</div>
+<div>
+<div class="font-bold">Opening Hours</div>
+<p class="text-on-surface-variant text-sm">Mon - Sat: 11:00 AM - 11:00 PM</p>
+<p class="text-on-surface-variant text-sm">Sun: 12:00 PM - 09:00 PM</p>
+<span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded text-[10px] font-bold uppercase mt-1 inline-block">Open Now</span>
+</div>
+</div>
+<div class="pt-6 border-t border-surface-container">
+<p class="text-sm text-on-surface-variant leading-relaxed">
+                                The Burger Alchemist isn't just a restaurant; it's a laboratory of taste. We specialize in fusion burgers that combine traditional techniques with avant-garde flavor profiles.
+                            </p>
+</div>
+<div class="flex gap-2">
+<button class="flex-grow bg-secondary text-white py-4 rounded-full font-bold transition-all active:scale-95 hover:bg-secondary-dim">Book a Table</button>
+<button class="w-14 h-14 bg-surface-container flex items-center justify-center rounded-full text-on-surface transition-all active:scale-95 hover:bg-surface-container-high">
+<span class="material-symbols-outlined">share</span>
+</button>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+<!-- Floating Cart Bar -->
+<div class="fixed bottom-32 left-1/2 -translate-x-1/2 w-[90%] max-w-4xl z-40">
+<div class="glass-card rounded-full p-4 flex items-center justify-between shadow-2xl border border-white/20">
+<div class="flex items-center gap-4 pl-4">
+<div class="relative">
+<span class="material-symbols-outlined text-primary text-3xl">shopping_bag</span>
+<span class="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">2</span>
+</div>
+<div>
+<div class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Your Order</div>
+<div class="text-lg font-black text-on-surface">$34.50</div>
+</div>
+</div>
+<button class="bg-primary text-white px-10 py-4 rounded-full font-bold flex items-center gap-3 transition-all active:scale-95 hover:shadow-lg hover:shadow-primary/30">
+                View Cart
+                <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Bottom Navigation Bar (Mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-white/80 dark:bg-slate-900/80 backdrop-blur-3xl rounded-t-[3rem] shadow-[0px_-10px_30px_rgba(77,33,42,0.04)]">
+<div class="flex flex-col items-center justify-center text-stone-500 dark:text-stone-400 px-5 py-2 hover:text-red-600 transition-colors">
+<span class="material-symbols-outlined">explore</span>
+<span class="text-[11px] font-medium mt-1">Explore</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-red-600 text-white rounded-full px-5 py-2 transition-transform active:scale-110">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="text-[11px] font-medium mt-1">Orders</span>
+</div>
+<div class="flex flex-col items-center justify-center text-stone-500 dark:text-stone-400 px-5 py-2 hover:text-red-600 transition-colors">
+<span class="material-symbols-outlined">search</span>
+<span class="text-[11px] font-medium mt-1">Search</span>
+</div>
+<div class="flex flex-col items-center justify-center text-stone-500 dark:text-stone-400 px-5 py-2 hover:text-red-600 transition-colors">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[11px] font-medium mt-1">Profile</span>
+</div>
+</nav>
+</body></html>

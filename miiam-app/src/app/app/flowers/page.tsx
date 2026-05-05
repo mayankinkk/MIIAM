@@ -36,7 +36,7 @@ export default function FlowersPage() {
   const fetchFlowers = async () => {
     setLoading(true);
     const { data, error } = await supabase
-      .from("flower_products")
+      .from("flower_items")
       .select("*")
       .order("created_at", { ascending: false });
     

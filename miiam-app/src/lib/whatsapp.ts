@@ -74,6 +74,31 @@ const messageTemplates = {
       },
     ],
   },
+  prescription_approved: {
+    name: "prescription_approved",
+    language: "en_US",
+    components: [
+      {
+        type: "body",
+        parameters: [
+          { type: "text", parameter_name: "rx_id" },
+        ],
+      },
+    ],
+  },
+  prescription_rejected: {
+    name: "prescription_rejected",
+    language: "en_US",
+    components: [
+      {
+        type: "body",
+        parameters: [
+          { type: "text", parameter_name: "rx_id" },
+          { type: "text", parameter_name: "reason" },
+        ],
+      },
+    ],
+  },
 };
 
 export async function sendWhatsAppMessage(
@@ -178,5 +203,27 @@ export async function sendServiceCompletion(
   return sendWhatsAppMessage(phoneNumber, "service_completed", {
     service_name: serviceName,
     rating_url: ratingUrl,
+  });
+}
+
+// Helper to send prescription approved
+export async function sendPrescriptionApproval(
+  phoneNumber: string,
+  rxId: string
+) {
+  return sendWhatsAppMessage(phoneNumber, "prescription_approved", {
+    rx_id: rxId,
+  });
+}
+
+// Helper to send prescription rejected
+export async function sendPrescriptionRejection(
+  phoneNumber: string,
+  rxId: string,
+  reason: string
+) {
+  return sendWhatsAppMessage(phoneNumber, "prescription_rejected", {
+    rx_id: rxId,
+    reason,
   });
 }

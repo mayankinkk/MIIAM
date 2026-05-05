@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MIIAM | Payment Status</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed-dim": "#ff5a57",
+                        "primary-fixed": "#ff7670",
+                        "on-secondary": "#f1f2ff",
+                        "surface-container-high": "#ffd9de",
+                        "tertiary-fixed": "#ffd709",
+                        "on-secondary-fixed": "#002c83",
+                        "on-primary-fixed-variant": "#600009",
+                        "error-dim": "#b92902",
+                        "tertiary-dim": "#5e4e00",
+                        "outline-variant": "#dd9ca6",
+                        "on-surface-variant": "#814c55",
+                        "inverse-surface": "#24020a",
+                        "surface-variant": "#ffd2d7",
+                        "on-primary": "#ffefee",
+                        "on-error-container": "#520c00",
+                        "on-primary-fixed": "#000000",
+                        "inverse-on-surface": "#cb8c96",
+                        "tertiary-container": "#ffd709",
+                        "secondary-fixed-dim": "#b1c2ff",
+                        "error-container": "#f95630",
+                        "surface-container": "#ffe1e4",
+                        "inverse-primary": "#ff5352",
+                        "surface-tint": "#ba001c",
+                        "on-tertiary-fixed-variant": "#665500",
+                        "surface-dim": "#ffc6ce",
+                        "on-tertiary": "#fff2cd",
+                        "on-surface": "#4d212a",
+                        "surface-container-low": "#ffecee",
+                        "surface-bright": "#fff4f4",
+                        "on-background": "#4d212a",
+                        "on-tertiary-fixed": "#453900",
+                        "on-primary-container": "#4e0006",
+                        "surface": "#fff4f4",
+                        "primary": "#ba001c",
+                        "primary-dim": "#a40017",
+                        "tertiary": "#6c5a00",
+                        "surface-container-highest": "#ffd2d7",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-container": "#c4d0ff",
+                        "tertiary-fixed-dim": "#efc900",
+                        "background": "#fff4f4",
+                        "on-secondary-container": "#003dac",
+                        "secondary-fixed": "#c4d0ff",
+                        "on-error": "#ffefec",
+                        "outline": "#a06770",
+                        "error": "#b02500",
+                        "on-tertiary-container": "#5b4b00",
+                        "secondary-dim": "#0044bf",
+                        "primary-container": "#ff7670",
+                        "on-secondary-fixed-variant": "#0045c1",
+                        "secondary": "#0b50d5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased min-h-screen">
+<!-- Top Navigation Anchor -->
+<header class="fixed top-0 w-full z-50 bg-[#fff4f4]/80 dark:bg-slate-900/80 backdrop-blur-2xl shadow-[0px_20px_40px_rgba(77,33,42,0.06)] flex justify-between items-center px-6 py-4">
+<div class="font-['Plus_Jakarta_Sans'] font-extrabold tracking-tighter text-2xl text-[#ba001c] dark:text-red-500">MIIAM</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface p-2 hover:opacity-80 transition-opacity active:scale-95 duration-200" data-icon="notifications">notifications</button>
+<button class="material-symbols-outlined text-on-surface p-2 hover:opacity-80 transition-opacity active:scale-95 duration-200" data-icon="shopping_bag">shopping_bag</button>
+</div>
+</header>
+<main class="pt-24 pb-12 px-6 max-w-6xl mx-auto">
+<!-- Dual State Toggle for Demo (UX context) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start mt-8">
+<!-- SUCCESS STATE SECTION -->
+<section class="flex flex-col gap-8">
+<div class="mb-2">
+<span class="bg-secondary-container text-on-secondary-container px-4 py-1.5 rounded-full text-[10px] font-extrabold uppercase tracking-widest">Confirmation</span>
+</div>
+<div class="bg-surface-container-lowest rounded-xl p-8 shadow-[0px_20px_40px_rgba(77,33,42,0.06)] relative overflow-hidden">
+<div class="absolute -top-10 -right-10 w-40 h-40 bg-secondary-container opacity-20 rounded-full blur-3xl"></div>
+<div class="flex flex-col items-center text-center">
+<div class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mb-6 shadow-sm">
+<span class="material-symbols-outlined text-green-600 text-5xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<h1 class="text-3xl font-extrabold tracking-tight mb-2">Payment Success</h1>
+<p class="text-on-surface-variant font-medium">Your order has been confirmed and is being prepared.</p>
+<div class="mt-8 w-full space-y-4">
+<div class="bg-surface-container-low rounded-lg p-6 flex flex-col gap-3">
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-surface-variant">Transaction ID</span>
+<span class="font-bold">#TXN-98234102</span>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-surface-variant">Date</span>
+<span class="font-bold">Oct 24, 2023 • 14:32</span>
+</div>
+<div class="flex justify-between items-center text-sm pt-3 border-t border-outline-variant/20">
+<span class="text-on-surface-variant">Total Amount</span>
+<span class="text-xl font-extrabold text-primary">$128.50</span>
+</div>
+</div>
+</div>
+<div class="mt-10 w-full flex flex-col gap-4">
+<button class="w-full bg-gradient-to-r from-primary to-primary-container text-white py-4 px-8 rounded-xl font-bold text-lg shadow-lg active:scale-[0.98] transition-all">Track My Order</button>
+<button class="w-full bg-surface-container text-on-surface py-4 px-8 rounded-xl font-bold active:scale-[0.98] transition-all">Download Receipt</button>
+</div>
+</div>
+</div>
+<!-- Floating Kinetic Emojis (Visual Debris) -->
+<div class="flex gap-4 justify-center">
+<div class="glass-card w-12 h-12 rounded-full flex items-center justify-center text-xl shadow-sm">🍕</div>
+<div class="glass-card w-12 h-12 rounded-full flex items-center justify-center text-xl shadow-sm">🚚</div>
+<div class="glass-card w-12 h-12 rounded-full flex items-center justify-center text-xl shadow-sm">✨</div>
+</div>
+</section>
+<!-- FAILURE STATE SECTION -->
+<section class="flex flex-col gap-8">
+<div class="mb-2">
+<span class="bg-primary-container text-on-primary-container px-4 py-1.5 rounded-full text-[10px] font-extrabold uppercase tracking-widest">Action Required</span>
+</div>
+<div class="bg-surface-container-lowest rounded-xl p-8 shadow-[0px_20px_40px_rgba(77,33,42,0.06)] border border-error/5">
+<div class="flex flex-col items-center text-center">
+<div class="w-24 h-24 bg-error-container/20 rounded-full flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-error text-5xl" style="font-variation-settings: 'FILL' 1;">error</span>
+</div>
+<h1 class="text-3xl font-extrabold tracking-tight mb-2">Payment Failed</h1>
+<p class="text-on-surface-variant font-medium">Something went wrong with your transaction. Please check your card details or balance.</p>
+<div class="mt-8 w-full space-y-4">
+<div class="bg-error-container/5 rounded-lg p-6 border border-error/10">
+<h3 class="font-bold text-error mb-1 text-left">Error Details</h3>
+<p class="text-sm text-on-surface-variant text-left leading-relaxed">Insufficient funds or bank server timeout. Error code: <span class="font-mono">ERR_402_PAYMENT</span></p>
+</div>
+</div>
+<div class="mt-10 w-full flex flex-col gap-4">
+<button class="w-full bg-secondary text-white py-4 px-8 rounded-xl font-bold text-lg shadow-lg active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">refresh</span>
+                                Retry Payment
+                            </button>
+<button class="w-full bg-white border border-outline-variant/30 text-on-surface py-4 px-8 rounded-xl font-bold active:scale-[0.98] transition-all">Choose Another Method</button>
+</div>
+<a class="mt-6 text-sm font-bold text-secondary-dim hover:underline underline-offset-4" href="#">Contact Support</a>
+</div>
+</div>
+<!-- Bento Info Grid (Contextual Details) -->
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container-high rounded-lg p-6 flex flex-col justify-between h-32">
+<span class="material-symbols-outlined text-primary">security</span>
+<span class="text-sm font-bold leading-tight">Secure 256-bit Encryption</span>
+</div>
+<div class="bg-secondary-container rounded-lg p-6 flex flex-col justify-between h-32">
+<span class="material-symbols-outlined text-secondary">support_agent</span>
+<span class="text-sm font-bold leading-tight">24/7 Concierge Support</span>
+</div>
+</div>
+</section>
+</div>
+<!-- Featured Merchant Card (Editorial Style) -->
+<div class="mt-16 bg-surface-container-highest rounded-xl overflow-hidden relative min-h-[300px] flex items-center px-12 group">
+<div class="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent z-10"></div>
+<img alt="Gourmet Dining Experience" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="dramatic close-up of a gourmet pasta dish with vibrant herbs in a moody restaurant setting with warm ambient lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1POJjnG2hiJF_oYvgO_Y_9zO-TnjLX-tm29KeLYiVeO4M479WfLIS8ByArYTi4XXQnFZXS-SJK_97W0myTzOykFH12XLpMyoH6-JRsKtvzEfjNimh3dajd2bbi_Wl_mv6RTupGQHi23F3kOTLAltLzf5yATyttfUszIvqbRDK4iZToXuzVX5kLddJOYxC1lzdQ75o3IygAey_HIHQjkLwiPagEV7WHnA-9x0GyP9DJ_Sq-EE06RcHcpoGJpqfQqn94-yxiDyl_GM"/>
+<div class="relative z-20 max-w-md">
+<h2 class="text-4xl font-extrabold text-white tracking-tighter mb-4 leading-none">Hungry for something else?</h2>
+<p class="text-white/80 mb-8 font-medium">Explore premium dining experiences curated just for you.</p>
+<button class="bg-white text-primary px-8 py-3 rounded-xl font-extrabold active:scale-95 transition-all">Explore Restaurants</button>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Shell -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-8 pt-4 bg-white/90 dark:bg-slate-950/90 backdrop-blur-3xl shadow-[0px_-10px_40px_rgba(77,33,42,0.08)] rounded-t-[3rem] z-50">
+<a class="flex flex-col items-center justify-center text-[#4d212a]/60 dark:text-slate-500 px-6 py-2 transition-all hover:scale-110" href="#">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-widest mt-1">Explore</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-[#ffe1e4] dark:bg-red-950/40 text-[#ba001c] dark:text-red-400 rounded-[2rem] px-6 py-2 transition-all hover:scale-110" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-widest mt-1">Orders</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#4d212a]/60 dark:text-slate-500 px-6 py-2 transition-all hover:scale-110" href="#">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-widest mt-1">Services</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#4d212a]/60 dark:text-slate-500 px-6 py-2 transition-all hover:scale-110" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-widest mt-1">Profile</span>
+</a>
+</nav>
+</body></html>

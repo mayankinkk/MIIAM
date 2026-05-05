@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Order Status - MIIAM</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary": "#6c5a00",
+                    "on-error": "#ffefec",
+                    "surface-tint": "#ba001c",
+                    "surface": "#fff4f4",
+                    "primary": "#ba001c",
+                    "secondary-fixed": "#c4d0ff",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-highest": "#ffd2d7",
+                    "surface-variant": "#ffd2d7",
+                    "on-secondary-container": "#003dac",
+                    "on-primary-fixed-variant": "#600009",
+                    "primary-fixed": "#ff7670",
+                    "outline": "#a06770",
+                    "primary-dim": "#a40017",
+                    "on-secondary": "#f1f2ff",
+                    "secondary-container": "#c4d0ff",
+                    "tertiary-fixed-dim": "#efc900",
+                    "primary-container": "#ff7670",
+                    "tertiary-dim": "#5e4e00",
+                    "on-primary-container": "#4e0006",
+                    "surface-bright": "#fff4f4",
+                    "error": "#b02500",
+                    "background": "#fff4f4",
+                    "on-secondary-fixed": "#002c83",
+                    "on-primary": "#ffefee",
+                    "error-container": "#f95630",
+                    "on-error-container": "#520c00",
+                    "tertiary-container": "#ffd709",
+                    "surface-dim": "#ffc6ce",
+                    "secondary-fixed-dim": "#b1c2ff",
+                    "on-secondary-fixed-variant": "#0045c1",
+                    "inverse-primary": "#ff5352",
+                    "on-surface-variant": "#814c55",
+                    "on-background": "#4d212a",
+                    "on-tertiary-container": "#5b4b00",
+                    "inverse-on-surface": "#cb8c96",
+                    "secondary": "#0b50d5",
+                    "primary-fixed-dim": "#ff5a57",
+                    "error-dim": "#b92902",
+                    "surface-container": "#ffe1e4",
+                    "on-surface": "#4d212a",
+                    "surface-container-low": "#ffecee",
+                    "on-tertiary-fixed-variant": "#665500",
+                    "surface-container-high": "#ffd9de",
+                    "outline-variant": "#dd9ca6",
+                    "on-tertiary-fixed": "#453900",
+                    "tertiary-fixed": "#ffd709",
+                    "secondary-dim": "#0044bf",
+                    "on-primary-fixed": "#000000",
+                    "on-tertiary": "#fff2cd",
+                    "inverse-surface": "#24020a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Plus Jakarta Sans"],
+                    "label": ["Plus Jakarta Sans"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased min-h-screen">
+<!-- TopAppBar -->
+<header class="bg-[#fff4f4]/80 dark:bg-slate-950/80 backdrop-blur-2xl fixed top-0 z-50 w-full shadow-[0px_10px_30px_rgba(77,33,42,0.04)]">
+<div class="flex justify-between items-center w-full px-6 py-4 max-w-7xl mx-auto">
+<div class="text-2xl font-black tracking-tighter text-[#ba001c] dark:text-[#ff7670]">MIIAM</div>
+<div class="flex items-center gap-4">
+<button class="scale-95 active:scale-90 transition-transform hover:opacity-80">
+<span class="material-symbols-outlined text-[#4d212a] dark:text-slate-400 font-medium" data-icon="notifications">notifications</span>
+</button>
+<button class="scale-95 active:scale-90 transition-transform hover:opacity-80">
+<span class="material-symbols-outlined text-[#4d212a] dark:text-slate-400 font-medium" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</div>
+<div class="bg-gradient-to-b from-[#ffe1e4] to-transparent h-2"></div>
+</header>
+<main class="pt-24 pb-32 px-6 max-w-2xl mx-auto">
+<!-- Error Header & Feedback -->
+<div class="text-center mb-12">
+<div class="inline-flex items-center justify-center w-24 h-24 bg-surface-container-highest rounded-full mb-6 relative">
+<div class="absolute inset-0 bg-primary opacity-10 rounded-full animate-ping"></div>
+<span class="material-symbols-outlined text-primary text-5xl" data-icon="cancel">cancel</span>
+</div>
+<h1 class="text-4xl font-extrabold tracking-tight mb-3 text-on-background">Order Cancelled</h1>
+<p class="text-on-surface-variant text-lg max-w-md mx-auto leading-relaxed">
+                We're sorry, your order could not be completed because the <span class="font-bold">Vendor closed unexpectedly</span>.
+            </p>
+</div>
+<!-- Refund Status Bento Box -->
+<div class="bg-surface-container-lowest rounded-lg p-8 shadow-[0px_20px_40px_rgba(77,33,42,0.06)] mb-8">
+<div class="flex items-center justify-between mb-8">
+<h2 class="text-xl font-bold tracking-tight text-on-surface">Refund Status</h2>
+<div class="px-4 py-1.5 bg-secondary-container text-on-secondary-container rounded-full text-xs font-bold tracking-widest uppercase">
+                    Processing
+                </div>
+</div>
+<!-- Timeline -->
+<div class="relative flex justify-between items-start mb-10 px-2">
+<!-- Connector Line -->
+<div class="absolute top-5 left-8 right-8 h-1 bg-surface-container z-0">
+<div class="h-full bg-secondary w-1/2"></div>
+</div>
+<!-- Step 1 -->
+<div class="relative z-10 flex flex-col items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-white shadow-lg shadow-secondary/20">
+<span class="material-symbols-outlined text-sm" data-icon="check" style="font-variation-settings: 'FILL' 0, 'wght' 700;">check</span>
+</div>
+<span class="text-[10px] font-bold uppercase tracking-widest text-secondary text-center">Refund<br/>Initiated</span>
+</div>
+<!-- Step 2 -->
+<div class="relative z-10 flex flex-col items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-white shadow-lg shadow-secondary/20 ring-4 ring-surface-container-lowest">
+<span class="material-symbols-outlined text-sm" data-icon="sync" style="font-variation-settings: 'FILL' 0, 'wght' 700;">sync</span>
+</div>
+<span class="text-[10px] font-bold uppercase tracking-widest text-secondary text-center">Refund<br/>Processing</span>
+</div>
+<!-- Step 3 -->
+<div class="relative z-10 flex flex-col items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-sm" data-icon="account_balance_wallet" style="font-variation-settings: 'FILL' 0, 'wght' 700;">account_balance_wallet</span>
+</div>
+<span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant text-center opacity-60">Credited</span>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-xl p-5 flex items-start gap-4">
+<span class="material-symbols-outlined text-secondary" data-icon="info">info</span>
+<p class="text-sm text-on-surface-variant leading-relaxed">
+                    Refund will be credited to your original payment method in <span class="font-bold text-on-surface">2–3 business days</span>. No further action is required on your part.
+                </p>
+</div>
+</div>
+<!-- Order Summary Card -->
+<div class="bg-surface-container rounded-lg p-6 mb-10">
+<div class="flex items-center gap-4 mb-4">
+<div class="w-16 h-16 rounded-xl overflow-hidden bg-white">
+<img alt="Order Item" class="w-full h-full object-cover" data-alt="Close-up of a vibrant healthy salad bowl with avocado, greens, and seeds on a minimalist light background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCY36i3OAsFRuBaP-ij9yQV_WEJg6rpgAZjMkHsasGMp6ycOOIF18FgFwDAIZkUgJtFo0Gr1hEmlcsmBvZ_JHVcctPHF-TrELsZjDGmVmqKBJ8pMrR-i7HZCPFNncnLVs34HbslkdBXP3YZqUTSS861aPp3NcG1BA21q1s6gE-3wvUyUPkdLO9m3u8S-7XNKy_np75o12p29PWv1jH6nheen53rv0PKhvG-in1JoJNgbqYaTpoC1Kpx8RncXQeKgQuCoG4CKJrz4yE"/>
+</div>
+<div>
+<p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Order #MI-82910</p>
+<h3 class="font-bold text-lg text-on-background leading-none">The Artisan Bistro</h3>
+</div>
+</div>
+<div class="flex justify-between items-center pt-4 border-t border-outline-variant/20">
+<span class="text-on-surface-variant">Total Amount to Refund</span>
+<span class="text-xl font-extrabold text-[#ba001c] tracking-tight">$42.50</span>
+</div>
+</div>
+<!-- Action Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<button class="bg-[#ba001c] text-white py-4 px-8 rounded-xl font-bold text-center scale-95 active:scale-90 transition-transform shadow-lg shadow-[#ba001c]/20 hover:opacity-90">
+                Browse Other Vendors
+            </button>
+<button class="bg-white text-secondary border-2 border-secondary/10 py-4 px-8 rounded-xl font-bold text-center scale-95 active:scale-90 transition-transform hover:bg-secondary/5">
+                Contact Support
+            </button>
+</div>
+<!-- Decorative Kinetic Element -->
+<div class="mt-16 flex justify-center opacity-30 pointer-events-none">
+<div class="relative w-full h-24 overflow-hidden">
+<div class="absolute top-0 left-1/4 w-12 h-12 bg-surface-container-highest rounded-full flex items-center justify-center backdrop-blur-md border border-white/10" style="transform: rotate(-15deg);">
+<span class="text-2xl">🍕</span>
+</div>
+<div class="absolute top-10 left-2/3 w-10 h-10 bg-secondary-container rounded-full flex items-center justify-center backdrop-blur-md border border-white/10" style="transform: rotate(10deg);">
+<span class="text-xl">🛵</span>
+</div>
+<div class="absolute -bottom-2 left-1/2 w-8 h-8 bg-surface-container-highest rounded-full flex items-center justify-center backdrop-blur-md border border-white/10" style="transform: rotate(45deg);">
+<span class="text-lg">🥗</span>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 w-[92%] rounded-[3rem] z-50 bg-[#ffffff]/90 dark:bg-slate-900/90 backdrop-blur-xl shadow-[0px_20px_40px_rgba(77,33,42,0.12)]">
+<div class="flex justify-around items-center h-20 px-4">
+<div class="flex flex-col items-center justify-center text-[#4d212a] dark:text-slate-400 px-4 hover:text-[#ba001c] transition-opacity">
+<span class="material-symbols-outlined mb-1" data-icon="grid_view">grid_view</span>
+<span class="text-[10px] font-bold uppercase tracking-widest">Explore</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#4d212a] dark:text-slate-400 px-4 hover:text-[#ba001c] transition-opacity">
+<span class="material-symbols-outlined mb-1" data-icon="search">search</span>
+<span class="text-[10px] font-bold uppercase tracking-widest">Search</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-[#ba001c] text-white rounded-full w-14 h-14 -translate-y-4 shadow-lg shadow-[#ba001c]/40 animate-bounce-short">
+<span class="material-symbols-outlined" data-icon="reorder">reorder</span>
+<span class="text-[10px] font-bold uppercase tracking-widest hidden">Orders</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#4d212a] dark:text-slate-400 px-4 hover:text-[#ba001c] transition-opacity">
+<span class="material-symbols-outlined mb-1" data-icon="contact_support">contact_support</span>
+<span class="text-[10px] font-bold uppercase tracking-widest">Support</span>
+</div>
+</div>
+</nav>
+</body></html>

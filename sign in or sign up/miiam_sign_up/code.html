@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed-dim": "#9fcaff",
+                    "primary-fixed": "#ffdad7",
+                    "on-secondary-fixed": "#00174c",
+                    "on-tertiary-fixed-variant": "#00497d",
+                    "inverse-primary": "#ffb3ae",
+                    "primary-container": "#ba001c",
+                    "on-background": "#281716",
+                    "inverse-on-surface": "#ffedeb",
+                    "on-primary-fixed": "#410004",
+                    "on-primary-container": "#ffc6c2",
+                    "primary": "#8d0013",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-fixed-variant": "#003dab",
+                    "outline-variant": "#e5bdba",
+                    "inverse-surface": "#3f2c2a",
+                    "error-container": "#ffdad6",
+                    "surface-container": "#ffe9e7",
+                    "surface-container-highest": "#fbdbd8",
+                    "surface": "#fff8f7",
+                    "on-surface-variant": "#5c403d",
+                    "on-error": "#ffffff",
+                    "on-surface": "#281716",
+                    "on-tertiary-fixed": "#001d36",
+                    "error": "#ba1a1a",
+                    "surface-dim": "#f2d3d0",
+                    "tertiary-fixed": "#d1e4ff",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-container": "#386bef",
+                    "tertiary": "#004678",
+                    "on-primary-fixed-variant": "#930014",
+                    "on-secondary": "#ffffff",
+                    "secondary-fixed": "#dbe1ff",
+                    "surface-bright": "#fff8f7",
+                    "surface-variant": "#fbdbd8",
+                    "primary-fixed-dim": "#ffb3ae",
+                    "surface-container-low": "#fff0ef",
+                    "on-primary": "#ffffff",
+                    "secondary-fixed-dim": "#b5c4ff",
+                    "surface-tint": "#bf071f",
+                    "secondary": "#0c50d5",
+                    "on-tertiary-container": "#b7d6ff",
+                    "background": "#fff8f7",
+                    "outline": "#916f6c",
+                    "on-secondary-container": "#fefcff",
+                    "surface-container-high": "#ffe2df",
+                    "tertiary-container": "#005e9f",
+                    "on-error-container": "#93000a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "container-max": "80rem",
+                    "section-gap": "6rem",
+                    "card-padding": "2rem",
+                    "safe-margin": "2rem",
+                    "element-gap": "2rem"
+            },
+            "fontFamily": {
+                    "display-hero": ["Plus Jakarta Sans"],
+                    "label-caps": ["Plus Jakarta Sans"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "body-md": ["Plus Jakarta Sans"],
+                    "body-lg": ["Plus Jakarta Sans"],
+                    "headline-xl": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "display-hero": ["4.5rem", {"lineHeight": "0.9", "letterSpacing": "-0.05em", "fontWeight": "800"}],
+                    "label-caps": ["10px", {"lineHeight": "1.0", "letterSpacing": "0.3em", "fontWeight": "900"}],
+                    "headline-md": ["1.5rem", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "900"}],
+                    "body-md": ["1rem", {"lineHeight": "1.5", "fontWeight": "500"}],
+                    "body-lg": ["1.25rem", {"lineHeight": "1.6", "fontWeight": "600"}],
+                    "headline-xl": ["3rem", {"lineHeight": "1.0", "letterSpacing": "-0.02em", "fontWeight": "800"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .editorial-shadow {
+            box-shadow: 0 20px 40px rgba(77, 33, 42, 0.06);
+        }
+        .text-glow {
+            text-shadow: 0 0 15px rgba(186, 0, 28, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md selection:bg-primary-fixed selection:text-primary">
+<main class="min-h-screen flex items-stretch overflow-hidden">
+<!-- Left Side: Form Section -->
+<section class="flex-1 flex flex-col justify-center items-center px-6 md:px-16 lg:px-24 bg-surface relative z-10">
+<div class="w-full max-w-md space-y-12">
+<!-- Brand Anchor -->
+<div class="flex flex-col items-start gap-4">
+<span class="text-2xl font-black tracking-tighter text-primary">MIIAM</span>
+<div class="space-y-2">
+<h1 class="font-headline-xl text-headline-xl text-on-surface">Create Account</h1>
+<p class="text-on-surface-variant font-body-md">Join the urban elite. Experience hyper-local excellence at your fingertips.</p>
+</div>
+</div>
+<!-- Registration Form -->
+<form class="space-y-6">
+<div class="space-y-4">
+<div class="relative">
+<label class="font-label-caps text-label-caps text-on-surface-variant mb-2 block uppercase">Full Name</label>
+<input class="w-full bg-surface-container-low border-none rounded-DEFAULT px-6 py-4 focus:ring-2 focus:ring-primary-container transition-all placeholder:text-on-surface-variant/40" placeholder="Johnathan Doe" type="text"/>
+</div>
+<div class="relative">
+<label class="font-label-caps text-label-caps text-on-surface-variant mb-2 block uppercase">Email Address</label>
+<input class="w-full bg-surface-container-low border-none rounded-DEFAULT px-6 py-4 focus:ring-2 focus:ring-primary-container transition-all placeholder:text-on-surface-variant/40" placeholder="hello@miiam.com" type="email"/>
+</div>
+<div class="relative">
+<label class="font-label-caps text-label-caps text-on-surface-variant mb-2 block uppercase">Phone Number</label>
+<input class="w-full bg-surface-container-low border-none rounded-DEFAULT px-6 py-4 focus:ring-2 focus:ring-primary-container transition-all placeholder:text-on-surface-variant/40" placeholder="+1 (555) 000-0000" type="tel"/>
+</div>
+<div class="relative">
+<label class="font-label-caps text-label-caps text-on-surface-variant mb-2 block uppercase">Password</label>
+<input class="w-full bg-surface-container-low border-none rounded-DEFAULT px-6 py-4 focus:ring-2 focus:ring-primary-container transition-all placeholder:text-on-surface-variant/40" placeholder="••••••••" type="password"/>
+</div>
+</div>
+<button class="w-full bg-primary-container text-on-tertiary font-headline-md text-headline-md py-6 rounded-DEFAULT editorial-shadow active:scale-95 transition-transform duration-200 text-glow" type="submit">
+                        Create Account
+                    </button>
+</form>
+<!-- Footer Link -->
+<div class="text-center pt-8">
+<p class="text-on-surface-variant font-body-md">
+                        Already have an account? 
+                        <a class="text-primary font-bold hover:underline underline-offset-4 transition-all" href="#">Log In</a>
+</p>
+</div>
+</div>
+<!-- Branding Accent -->
+<div class="absolute bottom-8 left-8 hidden lg:block">
+<span class="font-label-caps text-label-caps text-on-surface-variant/20 tracking-[0.5em]">MIIAM SUPER-APP ECOSYSTEM ©2024</span>
+</div>
+</section>
+<!-- Right Side: Lifestyle Imagery Section -->
+<section class="hidden md:flex flex-1 relative items-end justify-start p-16 overflow-hidden">
+<!-- Background Image -->
+<div class="absolute inset-0 z-0">
+<img alt="Service Professional" class="w-full h-full object-cover" data-alt="A professional and charismatic home service technician in a clean, high-quality uniform, working in a sun-drenched, modern minimalist kitchen. The lighting is bright and high-key, emphasizing a premium and trustworthy atmosphere. The color palette features warm wood tones and crisp whites with subtle ruby red accents. The image is captured in an editorial lifestyle photography style, evoking a sense of reliability and urban sophistication." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpdJoMqGx1JI9OC5-P3tNJEEsdLRmL0VxPoXXl7SBVXGDQu2WHUdcPOlWezQVyNynpg_QWeHfkWj2RHDuNYug-ViC-sGCb1gAmxWXR55MfJfFSu-IEHfieR6-hwdsuewLM6ha18jNmT4skgpzhcH9oI_IoeoKLwW5UQ0Bl2nQTBa19hpZNmDU5VKWE2R8ygNNLm3uduEb3bxKKXS1VtI4Y4Sp7408543z3l9doDDPv5qNjRXK14HNTeBx87404cD_sUm6ecb0-YWA"/>
+<div class="absolute inset-0 bg-gradient-to-t from-on-secondary-fixed/80 via-transparent to-transparent"></div>
+<div class="absolute inset-0 bg-primary/10 mix-blend-multiply"></div>
+</div>
+<!-- Content Overlay (Editorial Card) -->
+<div class="relative z-10 glass-panel p-10 rounded-lg max-w-lg editorial-shadow">
+<div class="space-y-6">
+<span class="inline-block bg-primary-container text-on-tertiary px-4 py-1 rounded-full font-label-caps text-label-caps">PREMIUM SERVICES</span>
+<h2 class="font-headline-xl text-headline-xl text-on-secondary-fixed leading-tight">Expert care for your urban lifestyle.</h2>
+<p class="font-body-lg text-body-lg text-on-secondary-fixed-variant">From artisan meal prep to high-end home maintenance, MIIAM connects you with the city's finest professionals instantly.</p>
+<div class="flex items-center gap-6 pt-4">
+<div class="flex -space-x-4">
+<img alt="User" class="w-12 h-12 rounded-full border-4 border-white object-cover" data-alt="Close-up portrait of a friendly professional man in a bright light-mode setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdlq3gI79VpGIBuc6jzvcnJdRRWwFoWA8sjBVe8pUkHBcdftNBTXILgrBj6CaJydUbFmxNcVB-2k9tWhgC6tJX66AsqjRNcYwNnUgAdUTg2iuqPbE5HxfuEEdLUI3H322Z6q-JNs4B5jrxq-m37tJgOeHuWDk-EOFuDHqgoX3EXOqjIKX3iZJrXE6EAbQjxdKR8oAuPoIlsJytSVqWKxwxFhx9hj7IK4i2qbhheEhTvBW8b-3aELPtlklFVRU7kU2juTyK8Z3_0cM"/>
+<img alt="User" class="w-12 h-12 rounded-full border-4 border-white object-cover" data-alt="Close-up portrait of a smiling professional woman in a high-key illuminated modern environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrdEzx_Wq8BLHAPK8vbfPiPmn5jp6k5_SxeKE8a9grEWxoqD4jhR96awoaIYxvR3TsqSmDXw4Le_rQJ6_sxiUfy_sN6jvIgVcOT0KGCTQj7WeuQYcw0hdShFgcnqgtwRkAIXYIbCkz1v9xc8YcZdwHMXo92GkezRZbIcqB3PEatcUcn-zJtcjlGr0BST3v2eS-uzUEpkHj9p8O_ID8qH6pwjGDF0T-KQmtqROYY7oxIwtIubov3AZ_okUVNNZ9ZFABMh4vRfVWnSg"/>
+<img alt="User" class="w-12 h-12 rounded-full border-4 border-white object-cover" data-alt="Close-up portrait of a confident male professional in a minimalist, bright aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcYRQW-ha-2JtG7yj0lWOcFmVw51PXe-dqPWmQiq4FcXwNNtoQpXIcQGDd9QBC3M3kx9gGer6mS7BBPeCKfNxSRkx6c5vo4u9WL-TrLRf2U2ShsRzheTmu-8ld2MdwwjeG-nWPOat9XBSmrR9Xeejz3idDjeqm5yt1-cMmqS0z8YCc-k-gVrCftINTAI8YntgUrB-0XoMlAHKYeR7GPZ_ahZ-k1of-1PCe4a3MB0HQPLt9hGXG10DEGtnKbOT-_DaIrinpuAvq26Y"/>
+<div class="w-12 h-12 rounded-full border-4 border-white bg-on-tertiary-fixed-variant flex items-center justify-center text-white text-xs font-bold">+2k</div>
+</div>
+<span class="font-label-caps text-label-caps text-on-secondary-fixed">TRUSTED BY PROFESSIONALS</span>
+</div>
+</div>
+</div>
+<!-- Decorative Elements -->
+<div class="absolute top-12 right-12 flex gap-4">
+<div class="w-3 h-3 rounded-full bg-primary shadow-lg animate-pulse"></div>
+<div class="w-3 h-3 rounded-full bg-white/40"></div>
+<div class="w-3 h-3 rounded-full bg-white/20"></div>
+</div>
+</section>
+</main>
+<!-- Visual Accents -->
+<div class="fixed top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-primary-container to-secondary-container z-[100]"></div>
+</body></html>

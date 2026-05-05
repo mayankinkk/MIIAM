@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MIIAM - Order History Details</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed-dim": "#ff5a57",
+                        "primary-fixed": "#ff7670",
+                        "on-secondary": "#f1f2ff",
+                        "surface-container-high": "#ffd9de",
+                        "tertiary-fixed": "#ffd709",
+                        "on-secondary-fixed": "#002c83",
+                        "on-primary-fixed-variant": "#600009",
+                        "error-dim": "#b92902",
+                        "tertiary-dim": "#5e4e00",
+                        "outline-variant": "#dd9ca6",
+                        "on-surface-variant": "#814c55",
+                        "inverse-surface": "#24020a",
+                        "surface-variant": "#ffd2d7",
+                        "on-primary": "#ffefee",
+                        "on-error-container": "#520c00",
+                        "on-primary-fixed": "#000000",
+                        "inverse-on-surface": "#cb8c96",
+                        "tertiary-container": "#ffd709",
+                        "secondary-fixed-dim": "#b1c2ff",
+                        "error-container": "#f95630",
+                        "surface-container": "#ffe1e4",
+                        "inverse-primary": "#ff5352",
+                        "surface-tint": "#ba001c",
+                        "on-tertiary-fixed-variant": "#665500",
+                        "surface-dim": "#ffc6ce",
+                        "on-tertiary": "#fff2cd",
+                        "on-surface": "#4d212a",
+                        "surface-container-low": "#ffecee",
+                        "surface-bright": "#fff4f4",
+                        "on-background": "#4d212a",
+                        "on-tertiary-fixed": "#453900",
+                        "on-primary-container": "#4e0006",
+                        "surface": "#fff4f4",
+                        "primary": "#ba001c",
+                        "primary-dim": "#a40017",
+                        "tertiary": "#6c5a00",
+                        "surface-container-highest": "#ffd2d7",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-container": "#c4d0ff",
+                        "tertiary-fixed-dim": "#efc900",
+                        "background": "#fff4f4",
+                        "on-secondary-container": "#003dac",
+                        "secondary-fixed": "#c4d0ff",
+                        "on-error": "#ffefec",
+                        "outline": "#a06770",
+                        "error": "#b02500",
+                        "on-tertiary-container": "#5b4b00",
+                        "secondary-dim": "#0044bf",
+                        "primary-container": "#ff7670",
+                        "on-secondary-fixed-variant": "#0045c1",
+                        "secondary": "#0b50d5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fff4f4; color: #4d212a; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-card { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.2); }
+    </style>
+</head>
+<body class="bg-surface selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#fff4f4]/80 dark:bg-slate-900/80 backdrop-blur-2xl shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
+<div class="flex justify-between items-center px-6 py-4 w-full">
+<div class="flex items-center gap-4">
+<button class="hover:opacity-80 transition-opacity scale-95 active:scale-90 duration-200">
+<span class="material-symbols-outlined text-on-surface">arrow_back</span>
+</button>
+<span class="font-['Plus_Jakarta_Sans'] font-extrabold tracking-tighter text-2xl text-[#ba001c] dark:text-red-500">MIIAM</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface hover:opacity-80 transition-opacity cursor-pointer">notifications</span>
+<span class="material-symbols-outlined text-on-surface hover:opacity-80 transition-opacity cursor-pointer">shopping_bag</span>
+</div>
+</div>
+</header>
+<main class="pt-24 pb-32 px-6 max-w-2xl mx-auto space-y-8">
+<!-- Order Header Bento -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="bg-surface-container-lowest p-8 rounded-lg flex flex-col justify-center">
+<span class="font-label text-primary font-bold uppercase tracking-widest text-[10px] mb-2">Order Status</span>
+<h1 class="text-3xl font-extrabold tracking-tight mb-2">Delivered</h1>
+<p class="text-on-surface-variant text-sm">October 24, 2023 • 7:14 PM</p>
+</div>
+<div class="bg-primary p-8 rounded-lg text-on-primary relative overflow-hidden">
+<div class="z-10 relative">
+<span class="font-label text-on-primary/70 font-bold uppercase tracking-widest text-[10px] mb-2">Total Amount</span>
+<h2 class="text-4xl font-extrabold tracking-tighter">$42.85</h2>
+<p class="text-on-primary/80 text-sm mt-1">ID: #ORD-99210-XC</p>
+</div>
+<!-- Kinetic Decorative Element -->
+<div class="absolute -right-4 -bottom-4 opacity-20 text-9xl transform rotate-12">
+<span class="material-symbols-outlined text-[160px]" style="font-variation-settings: 'FILL' 1;">receipt_long</span>
+</div>
+</div>
+</section>
+<!-- Vendor Info Card -->
+<section class="bg-surface-container-lowest p-6 rounded-lg flex items-center gap-6 shadow-[0px_20px_40px_rgba(77,33,42,0.04)]">
+<div class="h-20 w-20 rounded-xl overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="Interior of a modern boutique italian restaurant with soft ambient lighting and rustic wooden tables" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCyYb0mmU9J9nEB0EF9E6EqQ-_5D17GkAA0njflR04kfM2HXz1vYQsfsR-DLHnGDtPqWeKDMYM-iRTNfPqp9qGc2Vpp9YTOw7C8HMuN-EoCH4T7ECx_iyTobD_K9H1ydrRuLgtp_3gwOb4RtrkN0qd5EHvKI29o1E0mByK3ha3bXE9q-N5GyAIG2uGqMoPRun9-24MaCdsoDCCyySBDov_y8L-kmGXXGIH2SOO8VBlGylNsZPvwbGJtdM-bd3vB4aMCClRXDo-jBlw"/>
+</div>
+<div class="flex-1">
+<h3 class="text-xl font-bold">Pasta di Lusso</h3>
+<p class="text-on-surface-variant text-sm mb-3">2.4 miles • Italian Excellence</p>
+<div class="flex gap-2">
+<button class="bg-secondary-container text-on-secondary-container px-4 py-2 rounded-full text-xs font-bold transition-all hover:scale-105">
+                        Call Merchant
+                    </button>
+<button class="bg-surface-container text-on-surface px-4 py-2 rounded-full text-xs font-bold transition-all hover:scale-105">
+                        View Menu
+                    </button>
+</div>
+</div>
+</section>
+<!-- Itemized List -->
+<section class="space-y-4">
+<div class="flex justify-between items-end">
+<h3 class="text-2xl font-bold tracking-tight">Order Summary</h3>
+<span class="text-primary font-bold text-sm">3 Items</span>
+</div>
+<div class="bg-surface-container-low rounded-lg p-2 space-y-1">
+<!-- Item 1 -->
+<div class="bg-surface-container-lowest p-5 rounded-lg flex justify-between items-center">
+<div class="flex items-center gap-4">
+<div class="bg-surface-container h-12 w-12 rounded-lg flex items-center justify-center font-bold text-primary">1x</div>
+<div>
+<p class="font-bold">Truffle Tagliatelle</p>
+<p class="text-xs text-on-surface-variant italic">Extra Parmesan, Gluten-free pasta</p>
+</div>
+</div>
+<span class="font-bold text-lg">$24.50</span>
+</div>
+<!-- Item 2 -->
+<div class="bg-surface-container-lowest p-5 rounded-lg flex justify-between items-center">
+<div class="flex items-center gap-4">
+<div class="bg-surface-container h-12 w-12 rounded-lg flex items-center justify-center font-bold text-primary">1x</div>
+<div>
+<p class="font-bold">Burrata Caprese</p>
+<p class="text-xs text-on-surface-variant italic">Fresh basil, Aged balsamic</p>
+</div>
+</div>
+<span class="font-bold text-lg">$14.00</span>
+</div>
+<!-- Item 3 -->
+<div class="bg-surface-container-lowest p-5 rounded-lg flex justify-between items-center">
+<div class="flex items-center gap-4">
+<div class="bg-surface-container h-12 w-12 rounded-lg flex items-center justify-center font-bold text-primary">2x</div>
+<div>
+<p class="font-bold">San Pellegrino</p>
+<p class="text-xs text-on-surface-variant italic">Limonata edition</p>
+</div>
+</div>
+<span class="font-bold text-lg">$8.00</span>
+</div>
+</div>
+</section>
+<!-- Price Breakdown -->
+<section class="bg-surface-container p-8 rounded-lg space-y-4">
+<div class="flex justify-between text-on-surface/80">
+<span>Subtotal</span>
+<span class="font-semibold">$46.50</span>
+</div>
+<div class="flex justify-between text-on-surface/80">
+<span>Delivery Fee</span>
+<span class="font-semibold">$2.99</span>
+</div>
+<div class="flex justify-between text-on-surface/80">
+<span>Service Tax &amp; Fees</span>
+<span class="font-semibold">$5.36</span>
+</div>
+<div class="flex justify-between text-primary font-bold">
+<span>MIIAM Rewards Discount</span>
+<span>-$12.00</span>
+</div>
+<div class="pt-4 border-t-2 border-primary/10 flex justify-between items-center">
+<span class="text-xl font-extrabold tracking-tight">Final Amount</span>
+<span class="text-3xl font-extrabold text-primary tracking-tighter">$42.85</span>
+</div>
+</section>
+<!-- Action Grid -->
+<section class="grid grid-cols-1 gap-4 pb-12">
+<button class="bg-primary text-on-primary py-6 rounded-xl font-bold text-xl flex items-center justify-center gap-3 transition-transform active:scale-95 shadow-xl">
+<span class="material-symbols-outlined">restart_alt</span>
+                Reorder Items
+            </button>
+<div class="grid grid-cols-2 gap-4">
+<button class="bg-secondary text-white py-5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-transform active:scale-95">
+<span class="material-symbols-outlined text-xl">report_problem</span>
+                    Report Issue
+                </button>
+<button class="bg-surface-container-highest text-on-surface py-5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-transform active:scale-95">
+<span class="material-symbols-outlined text-xl">receipt</span>
+                    Get PDF Receipt
+                </button>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-8 pt-4 bg-white/90 dark:bg-slate-950/90 backdrop-blur-3xl shadow-[0px_-10px_40px_rgba(77,33,42,0.08)] z-50 rounded-t-xl">
+<div class="flex flex-col items-center justify-center text-[#4d212a]/60 dark:text-slate-500 px-6 py-2 transition-all cubic-bezier(0.34,1.56,0.64,1) hover:scale-110 cursor-pointer">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-widest mt-1">Explore</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-[#ffe1e4] dark:bg-red-950/40 text-[#ba001c] dark:text-red-400 rounded-[2rem] px-6 py-2 transition-all cubic-bezier(0.34,1.56,0.64,1) hover:scale-110 cursor-pointer">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-widest mt-1">Orders</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#4d212a]/60 dark:text-slate-500 px-6 py-2 transition-all cubic-bezier(0.34,1.56,0.64,1) hover:scale-110 cursor-pointer">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-widest mt-1">Services</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#4d212a]/60 dark:text-slate-500 px-6 py-2 transition-all cubic-bezier(0.34,1.56,0.64,1) hover:scale-110 cursor-pointer">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-widest mt-1">Profile</span>
+</div>
+</nav>
+<!-- SideNavBar (Hidden on Mobile) -->
+<aside class="hidden md:flex fixed inset-y-0 left-0 z-[60] flex flex-col py-10 h-full w-80 rounded-r-[3rem] overflow-hidden bg-[#fff4f4] dark:bg-slate-900 shadow-2xl transform -translate-x-full lg:translate-x-0 transition-transform">
+<div class="px-10">
+<h2 class="text-3xl font-black text-[#ba001c] mb-8 font-['Plus_Jakarta_Sans']">MIIAM</h2>
+<div class="mb-10 p-6 bg-surface-container rounded-lg">
+<div class="flex items-center gap-4 mb-4">
+<div class="w-12 h-12 rounded-full bg-primary-fixed overflow-hidden ring-4 ring-primary-container">
+<img class="w-full h-full object-cover" data-alt="Portrait of a smiling professional male user in his 30s with a clean groomed beard and stylish glasses" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBh4X7s_3t9tCOwQOa2KqhoXGVL0aTnOQGtNbc5kZo1GsurJ4VSpWj9Tg7dvLdNBhPn_sTxD6qQ0pn0cgRYS7rhh_-LuUrwAB3RiIbYPv436kBV4Zx1SZxTSKQJeOVsddXgxHeyGsdLdyHRi7ceU_dhOD6NmFIRE7G_mqT0u29b-XxmMTahEk-lw7-KJ3lY8KzDD55fO1tvDXYTsKlHaQp3zZZzWj0VaS6FhFP92JNERXpYEv-ATjNhisn3o01AWg510aiO_bnFlUI"/>
+</div>
+<div>
+<p class="font-bold text-md leading-tight">MIIAM Gold</p>
+<p class="text-xs text-on-surface-variant">Exclusive Rewards Program</p>
+</div>
+</div>
+<button class="w-full bg-primary text-on-primary font-bold py-3 rounded-full text-sm scale-102 transition-transform duration-300">Upgrade to Pro</button>
+</div>
+<nav class="space-y-2">
+<div class="flex items-center gap-4 text-[#4d212a] dark:text-slate-300 px-6 py-3 mx-2 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer rounded-full font-['Plus_Jakarta_Sans'] text-md font-bold">
+<span class="material-symbols-outlined">sell</span>
+<span>Promotions</span>
+</div>
+<div class="flex items-center gap-4 text-[#4d212a] dark:text-slate-300 px-6 py-3 mx-2 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer rounded-full font-['Plus_Jakarta_Sans'] text-md font-bold">
+<span class="material-symbols-outlined">storefront</span>
+<span>Favorite Merchants</span>
+</div>
+<div class="flex items-center gap-4 text-[#4d212a] dark:text-slate-300 px-6 py-3 mx-2 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer rounded-full font-['Plus_Jakarta_Sans'] text-md font-bold">
+<span class="material-symbols-outlined">payments</span>
+<span>Payment Methods</span>
+</div>
+<div class="flex items-center gap-4 text-[#4d212a] dark:text-slate-300 px-6 py-3 mx-2 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer rounded-full font-['Plus_Jakarta_Sans'] text-md font-bold">
+<span class="material-symbols-outlined">help_outline</span>
+<span>Help Center</span>
+</div>
+<div class="flex items-center gap-4 text-[#4d212a] dark:text-slate-300 px-6 py-3 mx-2 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer rounded-full font-['Plus_Jakarta_Sans'] text-md font-bold">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</div>
+</nav>
+</div>
+</aside>
+</body></html>

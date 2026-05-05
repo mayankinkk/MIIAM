@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary": "#f1f2ff",
+                    "tertiary-dim": "#5e4e00",
+                    "surface-container-lowest": "#ffffff",
+                    "on-surface-variant": "#814c55",
+                    "on-surface": "#4d212a",
+                    "on-secondary-container": "#003dac",
+                    "on-tertiary": "#fff2cd",
+                    "surface-container-highest": "#ffd2d7",
+                    "error": "#b02500",
+                    "secondary-dim": "#0044bf",
+                    "on-secondary-fixed": "#002c83",
+                    "tertiary": "#6c5a00",
+                    "surface-container": "#ffe1e4",
+                    "surface-bright": "#fff4f4",
+                    "tertiary-container": "#ffd709",
+                    "primary-fixed": "#ff7670",
+                    "primary-fixed-dim": "#ff5a57",
+                    "outline": "#a06770",
+                    "on-secondary-fixed-variant": "#0045c1",
+                    "on-primary-fixed": "#000000",
+                    "on-background": "#4d212a",
+                    "on-tertiary-fixed-variant": "#665500",
+                    "inverse-surface": "#24020a",
+                    "surface-dim": "#ffc6ce",
+                    "on-primary-container": "#4e0006",
+                    "surface-container-low": "#ffecee",
+                    "primary-dim": "#a40017",
+                    "primary-container": "#ff7670",
+                    "secondary-fixed-dim": "#b1c2ff",
+                    "tertiary-fixed-dim": "#efc900",
+                    "secondary-container": "#c4d0ff",
+                    "surface": "#fff4f4",
+                    "secondary-fixed": "#c4d0ff",
+                    "primary": "#ba001c",
+                    "inverse-primary": "#ff5352",
+                    "secondary": "#0b50d5",
+                    "on-tertiary-container": "#5b4b00",
+                    "on-primary": "#ffefee",
+                    "on-error": "#ffefec",
+                    "error-container": "#f95630",
+                    "on-primary-fixed-variant": "#600009",
+                    "background": "#fff4f4",
+                    "tertiary-fixed": "#ffd709",
+                    "error-dim": "#b92902",
+                    "on-error-container": "#520c00",
+                    "inverse-on-surface": "#cb8c96",
+                    "on-tertiary-fixed": "#453900",
+                    "surface-variant": "#ffd2d7",
+                    "surface-tint": "#ba001c",
+                    "outline-variant": "#dd9ca6",
+                    "surface-container-high": "#ffd9de"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Plus Jakarta Sans"],
+                    "label": ["Plus Jakarta Sans"]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-[#fff4f4]/80 dark:bg-slate-950/80 backdrop-blur-2xl shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
+<div class="flex items-center gap-4">
+<span class="text-2xl font-extrabold tracking-tighter text-[#ba001c] dark:text-red-500">MIIAM</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-[#ffe1e4] transition-all scale-95 duration-200 ease-out">
+<span class="material-symbols-outlined text-[#4d212a]" data-icon="notifications">notifications</span>
+</button>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-container">
+<img alt="User profile" data-alt="Close-up professional portrait of a smiling man with a neat beard in a modern office setting with soft natural light." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpGQRRwnyWbAv5-_x9bx_5hAUky2oXHGoey2P72rPnXmMBn3mO0n1f0JQ-3nohBaO4JSeAFTLQoSdpsoeGtjPsu8QvG79xdhG5QA1i2QoaKjPgD-MEURQXdCboYqVxd1zM12rjIaIXGu0U9nz4GO-aPFb2P3JwK8UwERDXkap8aIHOOdoQZBGYlMJ-OiIy73Lvu970L5bwaBLvUpY09WoZq2_lqPhQ_6h6NwZOWxs7zKhmR99YHtRS2G62Zs9wVYqi_soiwLwDUKA"/>
+</div>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-4xl mx-auto">
+<!-- Hero Section -->
+<section class="mb-10">
+<h1 class="text-[3.5rem] font-extrabold tracking-tight leading-none mb-2 text-primary">Your Cart</h1>
+<p class="text-on-surface-variant text-lg">Review items from your favorite spots.</p>
+</section>
+<!-- Bento Grid Layout for Vendors -->
+<div class="grid grid-cols-1 gap-8">
+<!-- Vendor 1: Burger Palace (Food - Primary Red) -->
+<div class="bg-surface-container-low rounded-lg p-6 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4">
+<span class="material-symbols-outlined text-primary/10 text-8xl absolute -top-4 -right-4" data-icon="lunch_dining">lunch_dining</span>
+</div>
+<div class="flex items-center gap-3 mb-8">
+<div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-white" data-icon="restaurant">restaurant</span>
+</div>
+<div>
+<h2 class="text-xl font-bold tracking-tight">Burger Palace</h2>
+<p class="text-xs font-medium text-primary uppercase tracking-widest">Priority Delivery</p>
+</div>
+</div>
+<div class="space-y-6 relative z-10">
+<!-- Item 1 -->
+<div class="flex items-center justify-between bg-surface-container-lowest p-4 rounded-lg shadow-sm">
+<div class="flex items-center gap-4">
+<div class="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0">
+<img alt="Gourmet Burger" data-alt="Top view of a juicy gourmet wagyu beef burger with melted cheese, caramelized onions, and crisp lettuce on a toasted brioche bun." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUwmSeB4138qzIAwy6r89J6s9Qgt6x_LBgAum6I-WmXgbHy7--JRx0R1VpMQmU6WfH14kv7_eCi80gSVv6ZmcIQ0LzSwVYzy4RXMxzcPcsyfZ72R-HruUW8py_STsf7kk_Df2BDeiKAFt74VjOMsguKqL-3vWsTJyqkWlbHwjxKkcVmIWVmI7nZjhZouEU5If6A_V1bTcUxfHHvoUxqs2SrRrbKwXCMRZqDfCPQq30nk23_7_BdJDYT9vcCt2pkZWPMbt1xuF1zU8"/>
+</div>
+<div>
+<h3 class="font-bold text-on-surface">The Signature Beast</h3>
+<p class="text-sm text-on-surface-variant">Extra pickles, no onions</p>
+<span class="text-primary font-bold mt-1 block">$18.50</span>
+</div>
+</div>
+<div class="flex items-center bg-surface-container rounded-full p-1">
+<button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="remove">remove</span>
+</button>
+<span class="px-4 font-bold">1</span>
+<button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+</button>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="flex items-center justify-between bg-surface-container-lowest p-4 rounded-lg shadow-sm">
+<div class="flex items-center gap-4">
+<div class="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0">
+<img alt="Truffle Fries" data-alt="Crispy golden french fries sprinkled with fresh parsley and grated parmesan cheese served in a rustic paper cone." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_fcM1-eTXL-65BN-YMsZ2hGwt5y8ylRdmUFGrgdPCN-2p5RraigeV8jaWD6u71GRmwCZMxa3D-qPebryfzt7aSMKiATfsnVHxZ8geu080z6VnWplwxorNlxvRj3Yi8RGrtdhxyVBxQj7N1eZWItq7hV-hRaFsOxqYNHSXHuxBJxxS8cUTUG9EJFGi8gieKWmMS4pJ-LFzU6GSsuweupkwzd0h0adDJJd6atLOCy-mOJNu31u02EUJCnYfmJEeMGgOC_-kkvgaMEo"/>
+</div>
+<div>
+<h3 class="font-bold text-on-surface">Truffle Parm Fries</h3>
+<p class="text-sm text-on-surface-variant">Large shareable portion</p>
+<span class="text-primary font-bold mt-1 block">$9.00</span>
+</div>
+</div>
+<div class="flex items-center bg-surface-container rounded-full p-1">
+<button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="remove">remove</span>
+</button>
+<span class="px-4 font-bold">2</span>
+<button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+</button>
+</div>
+</div>
+</div>
+<div class="mt-6 flex justify-between items-center text-sm border-t border-outline-variant/20 pt-4">
+<span class="text-on-surface-variant">Subtotal (Burger Palace)</span>
+<span class="font-bold">$36.50</span>
+</div>
+</div>
+<!-- Vendor 2: CleanPro (Services - Secondary Blue) -->
+<div class="bg-secondary-container/30 rounded-lg p-6 relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4">
+<span class="material-symbols-outlined text-secondary/10 text-8xl absolute -top-4 -right-4" data-icon="dry_cleaning">dry_cleaning</span>
+</div>
+<div class="flex items-center gap-3 mb-8">
+<div class="w-12 h-12 rounded-full bg-secondary flex items-center justify-center">
+<span class="material-symbols-outlined text-white" data-icon="check_circle">check_circle</span>
+</div>
+<div>
+<h2 class="text-xl font-bold tracking-tight text-on-secondary-container">CleanPro Services</h2>
+<p class="text-xs font-medium text-secondary uppercase tracking-widest">Scheduled Service</p>
+</div>
+</div>
+<div class="space-y-6">
+<div class="flex items-center justify-between bg-surface-container-lowest p-4 rounded-lg shadow-sm border border-secondary/10">
+<div class="flex items-center gap-4">
+<div class="w-20 h-20 rounded-xl bg-secondary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-4xl" data-icon="iron">iron</span>
+</div>
+<div>
+<h3 class="font-bold text-on-surface">Premium Dry Cleaning</h3>
+<p class="text-sm text-on-surface-variant">5 Items bundle - Eco-friendly</p>
+<span class="text-secondary font-bold mt-1 block">$45.00</span>
+</div>
+</div>
+<div class="flex items-center bg-secondary-container/20 rounded-full p-1">
+<button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white transition-colors">
+<span class="material-symbols-outlined text-sm text-secondary" data-icon="remove">remove</span>
+</button>
+<span class="px-4 font-bold text-secondary">1</span>
+<button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white transition-colors">
+<span class="material-symbols-outlined text-sm text-secondary" data-icon="add">add</span>
+</button>
+</div>
+</div>
+</div>
+<div class="mt-6 flex justify-between items-center text-sm border-t border-secondary/10 pt-4">
+<span class="text-on-surface-variant">Subtotal (CleanPro)</span>
+<span class="font-bold text-secondary">$45.00</span>
+</div>
+</div>
+</div>
+<!-- Order Summary Section -->
+<section class="mt-12 bg-white rounded-lg p-8 shadow-[0px_20px_40px_rgba(77,33,42,0.06)] border border-outline-variant/10">
+<h3 class="text-xl font-bold mb-6">Payment Summary</h3>
+<div class="space-y-4 text-on-surface-variant">
+<div class="flex justify-between">
+<span>Items Subtotal</span>
+<span class="text-on-surface font-semibold">$81.50</span>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-2">
+<span>Delivery &amp; Service Fee</span>
+<span class="material-symbols-outlined text-sm cursor-help" data-icon="info">info</span>
+</div>
+<span class="text-on-surface font-semibold">$5.99</span>
+</div>
+<div class="flex justify-between text-primary font-medium">
+<span>Vendor Discounts</span>
+<span>-$2.50</span>
+</div>
+<div class="pt-6 border-t border-outline-variant/20 flex justify-between items-end">
+<div>
+<p class="text-sm uppercase tracking-widest font-bold">Total Balance</p>
+<p class="text-4xl font-extrabold text-primary tracking-tighter">$84.99</p>
+</div>
+<div class="text-right">
+<p class="text-xs bg-tertiary-container text-on-tertiary-container px-2 py-1 rounded-full font-bold inline-block mb-1">EARN 85 POINTS</p>
+<p class="text-[10px]">Estimated delivery in 35-45 mins</p>
+</div>
+</div>
+</div>
+<button class="w-full mt-10 py-6 bg-gradient-to-r from-primary to-primary-container text-white rounded-xl font-bold text-xl shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3">
+                Proceed to Checkout
+                <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</section>
+<!-- Promotion Glass Card -->
+<section class="mt-8 mb-20 p-6 rounded-lg bg-surface-container relative overflow-hidden border border-white/40 backdrop-blur-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-white rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="local_activity">local_activity</span>
+</div>
+<div>
+<h4 class="font-bold text-on-surface">Have a promo code?</h4>
+<p class="text-sm text-on-surface-variant">Apply it now for instant savings.</p>
+</div>
+</div>
+<button class="px-6 py-2 bg-on-surface text-white rounded-full text-sm font-bold">Apply</button>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-[#fff4f4]/90 dark:bg-slate-950/90 backdrop-blur-xl shadow-[0px_-10px_30px_rgba(77,33,42,0.08)] rounded-t-[3rem]">
+<div class="flex flex-col items-center justify-center text-[#4d212a] dark:text-slate-400 p-2 hover:text-[#ba001c] transition-colors active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Explore</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#4d212a] dark:text-slate-400 p-2 hover:text-[#ba001c] transition-colors active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="Category">category</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Services</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-[#ba001c] text-white rounded-full p-3 scale-110 -translate-y-4 shadow-lg shadow-red-900/20 active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="shopping_bag">shopping_bag</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Cart</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#4d212a] dark:text-slate-400 p-2 hover:text-[#ba001c] transition-colors active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Orders</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#4d212a] dark:text-slate-400 p-2 hover:text-[#ba001c] transition-colors active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Profile</span>
+</div>
+</nav>
+</body></html>

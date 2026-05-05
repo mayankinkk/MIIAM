@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MIIAM | Vendor Status &amp; Failure Handling</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-low": "#ffecee",
+                        "background": "#fff4f4",
+                        "outline": "#a06770",
+                        "tertiary-container": "#ffd709",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-tint": "#ba001c",
+                        "outline-variant": "#dd9ca6",
+                        "on-error": "#ffefec",
+                        "error": "#b02500",
+                        "on-surface": "#4d212a",
+                        "secondary-fixed": "#c4d0ff",
+                        "on-tertiary-container": "#5b4b00",
+                        "tertiary": "#6c5a00",
+                        "secondary": "#0b50d5",
+                        "primary-dim": "#a40017",
+                        "surface-variant": "#ffd2d7",
+                        "primary": "#ba001c",
+                        "surface-container": "#ffe1e4",
+                        "surface-container-high": "#ffd9de",
+                        "error-dim": "#b92902",
+                        "inverse-surface": "#24020a",
+                        "on-tertiary-fixed-variant": "#665500",
+                        "tertiary-dim": "#5e4e00",
+                        "secondary-container": "#c4d0ff",
+                        "on-secondary-fixed": "#002c83",
+                        "on-primary": "#ffefee",
+                        "on-tertiary": "#fff2cd",
+                        "primary-fixed-dim": "#ff5a57",
+                        "primary-container": "#ff7670",
+                        "inverse-primary": "#ff5352",
+                        "on-tertiary-fixed": "#453900",
+                        "surface-container-highest": "#ffd2d7",
+                        "primary-fixed": "#ff7670",
+                        "secondary-dim": "#0044bf",
+                        "on-error-container": "#520c00",
+                        "on-secondary-fixed-variant": "#0045c1",
+                        "on-secondary-container": "#003dac",
+                        "on-primary-container": "#4e0006",
+                        "error-container": "#f95630",
+                        "on-primary-fixed-variant": "#600009",
+                        "secondary-fixed-dim": "#b1c2ff",
+                        "on-surface-variant": "#814c55",
+                        "inverse-on-surface": "#cb8c96",
+                        "tertiary-fixed-dim": "#efc900",
+                        "on-primary-fixed": "#000000",
+                        "on-secondary": "#f1f2ff",
+                        "tertiary-fixed": "#ffd709",
+                        "surface": "#fff4f4",
+                        "surface-dim": "#ffc6ce",
+                        "surface-bright": "#fff4f4",
+                        "on-background": "#4d212a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-[#fff4f4]/80 dark:bg-slate-950/80 backdrop-blur-xl shadow-sm dark:shadow-none">
+<div class="text-2xl font-black tracking-tighter text-[#ba001c] dark:text-[#ff7670]">MIIAM</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-[#ba001c] dark:text-[#ff7670] font-bold transition-opacity hover:opacity-80" href="#">Explore</a>
+<a class="text-slate-600 dark:text-slate-400 transition-opacity hover:opacity-80" href="#">Orders</a>
+<a class="text-slate-600 dark:text-slate-400 transition-opacity hover:opacity-80" href="#">Activity</a>
+<a class="text-slate-600 dark:text-slate-400 transition-opacity hover:opacity-80" href="#">Account</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface transition-opacity hover:opacity-80" data-icon="notifications">notifications</button>
+<button class="material-symbols-outlined text-on-surface transition-opacity hover:opacity-80" data-icon="account_circle">account_circle</button>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-7xl mx-auto">
+<!-- Hero Failure Handling Section -->
+<section class="mb-12">
+<div class="flex items-end justify-between mb-8">
+<div>
+<h1 class="text-5xl md:text-6xl font-extrabold tracking-tight text-on-surface mb-2">Attention Required</h1>
+<p class="text-on-surface-variant max-w-md">An item in your current order needs a replacement due to availability changes.</p>
+</div>
+<div class="hidden lg:block">
+<span class="material-symbols-outlined text-8xl text-primary/10 select-none" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+</div>
+</div>
+<div class="bg-surface-container rounded-lg p-1 flex flex-col md:flex-row items-stretch gap-1">
+<!-- Original Item -->
+<div class="flex-1 bg-surface-container-lowest rounded-lg p-8 flex flex-col items-center text-center relative overflow-hidden">
+<div class="absolute top-4 left-4 bg-error text-on-error text-[10px] font-black px-3 py-1 rounded-full tracking-widest uppercase">
+                        Item not available
+                    </div>
+<div class="w-32 h-32 rounded-full bg-surface-container-high mb-6 flex items-center justify-center overflow-hidden">
+<img alt="Gourmet Salad" class="w-full h-full object-cover grayscale opacity-50" data-alt="overhead shot of a colorful gourmet salad with fresh greens and berries, stylized with muted grey tones and low contrast" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVQnSdsl55mIEpdoXaaXiGhsLpNeL6gBc7wqETENxPERRxNwxBacbSmK1IQkWRUD1l5gse12FzaI1LWHEc5ITzvtRb06HiknfV0_CzoYelv4OC_D3rFTQo0aHv9BCu-bBXMCVApZG706PxyjukAQ_pwK5UGPadimtFGrqheR5ZyyO8KlFziLrWGQuAGnRhvrwFbsgiNMmuwwZsqMfCDSoBWZXMUuy0uPuTUEIioPpAxZPyzdPXEjOtTPaoUUDq8qEBk3R7SOq47uQ"/>
+</div>
+<h3 class="text-2xl font-bold mb-1">Wild Truffle Bowl</h3>
+<p class="text-on-surface-variant mb-6">Seasonal harvest with roasted pine nuts</p>
+<div class="h-[2px] w-12 bg-outline-variant/30 mb-6"></div>
+<span class="text-error font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="block">block</span>
+                        Out of Stock at Vendor
+                    </span>
+</div>
+<!-- Action Bridge -->
+<div class="flex items-center justify-center py-4 md:py-0 px-4">
+<div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/20 z-10">
+<span class="material-symbols-outlined" data-icon="swap_horiz">swap_horiz</span>
+</div>
+</div>
+<!-- Replacement Call to Action -->
+<div class="flex-1 bg-primary text-on-primary rounded-lg p-8 flex flex-col items-center justify-center text-center">
+<h3 class="text-3xl font-black mb-4 tracking-tight">Choose replacement</h3>
+<p class="text-on-primary/80 mb-8 max-w-xs">Swap this item for a similar alternative to keep your delivery on schedule.</p>
+<button class="bg-white text-primary px-10 py-4 rounded-xl font-extrabold text-lg hover:scale-95 transition-transform duration-200 shadow-xl shadow-black/10">
+                        View Alternatives
+                    </button>
+</div>
+</div>
+</section>
+<!-- Vendor Status List -->
+<section>
+<div class="flex items-center justify-between mb-8">
+<h2 class="text-3xl font-bold tracking-tight">Nearby Vendors</h2>
+<div class="flex gap-2">
+<button class="px-4 py-2 rounded-full bg-surface-container-high text-on-surface-variant text-sm font-semibold">All</button>
+<button class="px-4 py-2 rounded-full text-on-surface-variant text-sm font-semibold">Open</button>
+<button class="px-4 py-2 rounded-full text-on-surface-variant text-sm font-semibold">Services</button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Vendor Card 1: Open -->
+<div class="bg-surface-container-lowest rounded-lg overflow-hidden group transition-all duration-300 hover:shadow-[0_20px_40px_rgba(77,33,42,0.06)]">
+<div class="h-48 w-full relative">
+<img alt="Restaurant interior" class="w-full h-full object-cover" data-alt="luxury modern restaurant interior with warm lighting and wooden accents, high-end fine dining atmosphere" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAS8EzTxbeo12Tu0M7e5GglvaVurwpzlB7XBAMcyqadQc38VNTZnYuMb_qaX6B6YBHHPpEiYXFNaCkk8pUgz9bd9JmDy281mheYAuSqAvRb-BQEL7vMztMaSAlRJSgo1KECHFE-dQW3hC4UFjcEWL3PAbmBpSjWi9lYxTCEBlOSFPWvuCKVO-ryl0OZcsOrEr1wafGHseN2SWKcMwzzTmg8jb8ADFNJ3BTA7QZ_jAHO6LtQauE25qiCbMvLRImfTtscbVpJGX0zeO0"/>
+<div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full flex items-center gap-1">
+<div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+<span class="text-[10px] font-black uppercase tracking-widest text-emerald-600">Open</span>
+</div>
+</div>
+<div class="p-6">
+<div class="flex justify-between items-start mb-2">
+<h4 class="text-xl font-bold">L'Artisan Bistro</h4>
+<div class="flex items-center gap-1 bg-tertiary-container px-2 py-0.5 rounded text-on-tertiary-container text-xs font-bold">
+<span class="material-symbols-outlined text-[14px]" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+                                4.9
+                            </div>
+</div>
+<p class="text-on-surface-variant text-sm mb-4">French • 15-25 min • $$</p>
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-sm text-primary" data-icon="delivery_dining">delivery_dining</span>
+</div>
+<span class="text-xs font-semibold text-on-surface">Free delivery on orders over $30</span>
+</div>
+</div>
+</div>
+<!-- Vendor Card 2: Uncertain -->
+<div class="bg-surface-container-lowest rounded-lg overflow-hidden group transition-all duration-300 hover:shadow-[0_20px_40px_rgba(77,33,42,0.06)]">
+<div class="h-48 w-full relative">
+<img alt="Pizza oven" class="w-full h-full object-cover" data-alt="traditional wood-fired pizza oven with glowing embers and a fresh pizza inside, warm rustic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuByJDtnnsbXMSdPgLpZEz55i5L0y78GO7fyLn9O7TKd14y0726QUkqpyTwn7It_AGRQKl9uLdes7oE9FRb-KZMulHfL8zzLTOnkeEUs5oynal-hyQ4H8OKGnLs1S_m383IdKmD-nFT0oKxvnreDIV2DgFKJfsh6czIqqev-rlS1ezlkpIXGbslJ3fMTjhRqUia5wg4GotOw-HhcQc2Y55YrVl5LZJO8RRcnCvi0y0Ed8SsNSpo-PCx5BC0jeGQghhewNE1Cj6ZiIJ0"/>
+<div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full flex items-center gap-1">
+<div class="w-2 h-2 rounded-full bg-amber-500"></div>
+<span class="text-[10px] font-black uppercase tracking-widest text-amber-600">Uncertain</span>
+</div>
+</div>
+<div class="p-6 opacity-80">
+<div class="flex justify-between items-start mb-2">
+<h4 class="text-xl font-bold">Veloce Pizzeria</h4>
+<div class="flex items-center gap-1 bg-surface-container-high px-2 py-0.5 rounded text-on-surface-variant text-xs font-bold">
+<span class="material-symbols-outlined text-[14px]" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+                                4.5
+                            </div>
+</div>
+<p class="text-on-surface-variant text-sm mb-4">Italian • 30-45 min • $$</p>
+<div class="bg-amber-50 rounded-lg p-3 border border-amber-100 flex items-start gap-3">
+<span class="material-symbols-outlined text-amber-600 text-sm mt-0.5" data-icon="info">info</span>
+<p class="text-[11px] text-amber-800 leading-tight">High demand. Availability may be limited for the next hour.</p>
+</div>
+</div>
+</div>
+<!-- Vendor Card 3: Closed -->
+<div class="bg-surface-container-lowest rounded-lg overflow-hidden group transition-all duration-300 opacity-60">
+<div class="h-48 w-full relative">
+<img alt="Coffee shop" class="w-full h-full object-cover grayscale" data-alt="modern minimalist coffee shop storefront with large glass windows and clean lines, evening lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLtLFN4nD2uPQxZWbPaxMGJ15J5hjHlNZK-n4MuSHQnWp08BhS4bnW5XmjopyhOx0atsPn0OguIaYaSrvZ0rCGVmJHF5I0A5tX1p7wMI81k7jrpyvNWeBVKYt_v-Mo6Arnfv8c0B1Oprnbv3wgyAtmSRaf1YAN4MTcGYUaHn4bcytZJOd1davL6yHM3hyl3HHPrJAgt3CXdY22KqXsKyUKH-v-sZtUipXQ9mhftCSustwDgt2uTPZ3a9AdQ7EKwSaWqgb7PR9IzdM"/>
+<div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+<span class="text-white font-black text-2xl uppercase tracking-[0.3em]">Closed</span>
+</div>
+</div>
+<div class="p-6">
+<div class="flex justify-between items-start mb-2">
+<h4 class="text-xl font-bold">Origin Coffee</h4>
+<div class="flex items-center gap-1 bg-surface-container-high px-2 py-0.5 rounded text-on-surface-variant text-xs font-bold">
+<span class="material-symbols-outlined text-[14px]" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+                                4.7
+                            </div>
+</div>
+<p class="text-on-surface-variant text-sm mb-4">Cafe • Opens at 7:00 AM • $</p>
+<button class="w-full py-3 rounded-xl border border-outline-variant text-on-surface-variant text-xs font-bold uppercase tracking-widest">
+                            Schedule for Tomorrow
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Dynamic Service Section (Blue Vertical) -->
+<section class="mt-20">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center bg-secondary-container/30 rounded-lg p-12 overflow-hidden relative">
+<div class="absolute -right-20 -top-20 w-96 h-96 bg-secondary/5 rounded-full blur-3xl"></div>
+<div>
+<span class="text-secondary font-black tracking-widest uppercase text-xs mb-4 block">Professional Services</span>
+<h2 class="text-4xl font-extrabold text-on-surface mb-6 leading-tight">Reliable Courier <br/>&amp; Moving Support</h2>
+<p class="text-on-surface-variant mb-8 text-lg">Switching from appetite to utility. Our service vertical handles the heavy lifting with guaranteed uptime.</p>
+<div class="flex gap-4">
+<button class="bg-secondary text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 hover:scale-95 transition-transform">
+                            Book Service
+                            <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<button class="bg-white/50 backdrop-blur text-secondary border border-secondary/20 px-8 py-3 rounded-xl font-bold">
+                            View Rates
+                        </button>
+</div>
+</div>
+<div class="relative grid grid-cols-2 gap-4">
+<div class="space-y-4 pt-8">
+<div class="glass-card p-6 rounded-lg shadow-xl shadow-secondary/10">
+<div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center text-secondary mb-4">
+<span class="material-symbols-outlined" data-icon="local_shipping" style="font-variation-settings: 'FILL' 1;">local_shipping</span>
+</div>
+<h5 class="font-bold mb-1 text-on-surface">99% Reliability</h5>
+<p class="text-[11px] text-on-surface-variant">Guaranteed delivery within the time window.</p>
+</div>
+<div class="glass-card p-6 rounded-lg shadow-xl shadow-secondary/10 translate-x-4">
+<div class="w-12 h-12 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary-container mb-4">
+<span class="material-symbols-outlined" data-icon="verified_user" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+</div>
+<h5 class="font-bold mb-1 text-on-surface">Full Insurance</h5>
+<p class="text-[11px] text-on-surface-variant">Every parcel is covered up to $500.</p>
+</div>
+</div>
+<div class="space-y-4">
+<div class="glass-card p-6 rounded-lg shadow-xl shadow-secondary/10">
+<div class="w-12 h-12 rounded-full bg-primary-container/20 flex items-center justify-center text-primary mb-4">
+<span class="material-symbols-outlined" data-icon="support_agent">support_agent</span>
+</div>
+<h5 class="font-bold mb-1 text-on-surface">24/7 Support</h5>
+<p class="text-[11px] text-on-surface-variant">Real-time resolution for any service issue.</p>
+</div>
+<div class="relative rounded-lg overflow-hidden h-40 shadow-xl">
+<img alt="Delivery driver" class="w-full h-full object-cover" data-alt="friendly professional courier driver holding a package with a smile, sunny outdoor urban environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDj6LJXhrPUWp5Ra1Sxwq_-LgRXfUZXLjua4SQ0dLMk3HWCItRxYRmwn6pshQBBJYGMjAUhgWNx635lyCnhRVuXjFN7gx0_EfGBzhJRHkU-go1xTrwLUyEfB-th0wF3TKcfJ-ST1n7ow2K0YhmlKY79dqXxwDCPvNn_koIGdNkGiIzmtu13tL7LtzA7XSBicY967JHRSXikm776jfsv_XjiGHsJpmzEVGGgVX4ZZ29avhNPunPp5N0TLEMJf_3xxo2245J5_B07O_w"/>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-end px-4 pb-6 pt-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl shadow-[0_-10px_40px_rgba(77,33,42,0.04)] rounded-t-[3rem]">
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-[#ba001c] transition-colors">
+<span class="material-symbols-outlined mb-1" data-icon="explore">explore</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Explore</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-[#ba001c] text-white rounded-full w-12 h-12 mb-1 shadow-lg shadow-[#ba001c]/20 transition-transform active:scale-110 duration-300">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-[#ba001c] transition-colors">
+<span class="material-symbols-outlined mb-1" data-icon="local_shipping">local_shipping</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Activity</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-[#ba001c] transition-colors">
+<span class="material-symbols-outlined mb-1" data-icon="person">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Account</span>
+</div>
+</nav>
+</body></html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-container": "#003dac",
+                        "on-primary-fixed-variant": "#600009",
+                        "outline": "#a06770",
+                        "primary-fixed": "#ff7670",
+                        "secondary-container": "#c4d0ff",
+                        "on-secondary": "#f1f2ff",
+                        "primary-dim": "#a40017",
+                        "tertiary-fixed-dim": "#efc900",
+                        "tertiary-dim": "#5e4e00",
+                        "on-primary-container": "#4e0006",
+                        "primary-container": "#ff7670",
+                        "background": "#fff4f4",
+                        "error": "#b02500",
+                        "surface-bright": "#fff4f4",
+                        "tertiary": "#6c5a00",
+                        "on-error": "#ffefec",
+                        "surface-tint": "#ba001c",
+                        "surface": "#fff4f4",
+                        "primary": "#ba001c",
+                        "secondary-fixed": "#c4d0ff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-highest": "#ffd2d7",
+                        "surface-variant": "#ffd2d7",
+                        "error-dim": "#b92902",
+                        "secondary": "#0b50d5",
+                        "primary-fixed-dim": "#ff5a57",
+                        "surface-container-low": "#ffecee",
+                        "surface-container": "#ffe1e4",
+                        "on-surface": "#4d212a",
+                        "on-tertiary-fixed-variant": "#665500",
+                        "outline-variant": "#dd9ca6",
+                        "surface-container-high": "#ffd9de",
+                        "on-tertiary-fixed": "#453900",
+                        "tertiary-fixed": "#ffd709",
+                        "on-primary-fixed": "#000000",
+                        "secondary-dim": "#0044bf",
+                        "inverse-surface": "#24020a",
+                        "on-tertiary": "#fff2cd",
+                        "on-primary": "#ffefee",
+                        "on-secondary-fixed": "#002c83",
+                        "error-container": "#f95630",
+                        "on-error-container": "#520c00",
+                        "surface-dim": "#ffc6ce",
+                        "tertiary-container": "#ffd709",
+                        "inverse-primary": "#ff5352",
+                        "secondary-fixed-dim": "#b1c2ff",
+                        "on-secondary-fixed-variant": "#0045c1",
+                        "on-background": "#4d212a",
+                        "on-surface-variant": "#814c55",
+                        "inverse-on-surface": "#cb8c96",
+                        "on-tertiary-container": "#5b4b00"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .map-gradient-overlay {
+            background: linear-gradient(to bottom, rgba(255,244,244,0.9) 0%, rgba(255,244,244,0) 20%, rgba(255,244,244,0) 70%, rgba(255,244,244,1) 100%);
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<header class="bg-[#fff4f4]/80 dark:bg-slate-950/80 backdrop-blur-xl docked full-width top-0 sticky z-50 no-border bg-surface-container-low tonal-blocking shadow-[0px_20px_40px_rgba(77,33,42,0.06)] flex justify-between items-center w-full px-6 py-4">
+<div class="flex items-center gap-4 flex-1">
+<button class="hover:opacity-80 transition-opacity scale-95 active:scale-90 transition-transform duration-200">
+<span class="material-symbols-outlined text-on-surface">arrow_back</span>
+</button>
+<div class="flex-1 max-w-md">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full h-12 bg-surface-container-lowest rounded-md pl-12 pr-4 border-none focus:ring-2 focus:ring-primary/40 text-on-surface placeholder:text-on-surface-variant/60 font-medium" placeholder="Search address or landmark..." type="text"/>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-3 ml-4">
+<button class="text-on-surface hover:opacity-80 transition-opacity"><span class="material-symbols-outlined">favorite</span></button>
+<button class="text-on-surface hover:opacity-80 transition-opacity"><span class="material-symbols-outlined">notifications</span></button>
+</div>
+</header>
+<main class="relative h-[calc(100vh-80px)] overflow-hidden">
+<!-- Interactive Map Background -->
+<div class="absolute inset-0 z-0">
+<img class="w-full h-full object-cover" data-alt="High-resolution minimal vector map of a vibrant city center with clean streets and subtle landmarks in soft pastel tones" data-location="Paris" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMovKrLXiqhA0m75TmELc5u-FPh7fbmc8kBRqSGgKiD_HdaFCsvY8UO4tGd56DAhX3gGAaRoKd2dJSGzYIFVb9EpC9jVHG-MFVE5HZDVAP79TTE6sXHaoz3Rz0FL2swlaO8tFCF7aoxAj7bR8HmVx9mOqdJCf36WHylax-Bk0LkaS9fK7muEBtTjmimHFjVuz5gsg21IQrK1hZ3I0NStxqNeidBx2pnkutLoCJnoWQHkJGRfu7xN9m2vdNOFbhJ1xWWaibiAOXfPk"/>
+<div class="absolute inset-0 map-gradient-overlay pointer-events-none"></div>
+</div>
+<!-- Central Pin Indicator -->
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 -translate-y-8">
+<div class="relative flex flex-col items-center">
+<div class="bg-primary text-white w-14 h-14 rounded-full flex items-center justify-center shadow-xl ring-4 ring-white/30">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">location_on</span>
+</div>
+<div class="w-2 h-2 bg-on-surface/40 rounded-full blur-[1px] mt-2 scale-x-150"></div>
+</div>
+</div>
+<!-- Float Action: Use Current Location -->
+<div class="absolute bottom-[42%] right-6 z-20">
+<button class="bg-surface-container-lowest p-4 rounded-xl shadow-lg text-secondary flex items-center justify-center hover:bg-secondary-container transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">my_location</span>
+</button>
+</div>
+<!-- Address Selection Panel -->
+<div class="absolute bottom-0 left-0 right-0 z-30 px-6 pb-24 md:pb-8">
+<div class="max-w-2xl mx-auto space-y-4">
+<!-- Active Selection Card (Glass) -->
+<div class="bg-surface-container-lowest/90 backdrop-blur-2xl rounded-lg p-6 shadow-[0px_20px_40px_rgba(77,33,42,0.06)] border border-white/20">
+<div class="flex items-start gap-4">
+<div class="bg-primary-container p-3 rounded-full">
+<span class="material-symbols-outlined text-on-primary-container">near_me</span>
+</div>
+<div class="flex-1">
+<p class="text-on-surface-variant text-[10px] uppercase tracking-widest font-bold mb-1">Delivering To</p>
+<h2 class="text-on-surface font-bold text-lg leading-tight">72, Avenue des Champs-Élysées, 75008 Paris</h2>
+</div>
+</div>
+<button class="w-full mt-6 bg-gradient-to-r from-primary to-primary-dim text-white h-14 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:opacity-90 transition-opacity active:scale-[0.98]">
+                        Confirm Location
+                    </button>
+</div>
+<!-- Saved Addresses Bento -->
+<div class="grid grid-cols-2 gap-4 pb-8">
+<div class="bg-surface-container-lowest rounded-lg p-4 flex flex-col gap-3 hover:bg-surface-container transition-colors cursor-pointer group">
+<div class="flex justify-between items-start">
+<div class="bg-secondary-container w-10 h-10 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">home</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+</div>
+<div>
+<h3 class="font-bold text-on-surface">Home</h3>
+<p class="text-sm text-on-surface-variant line-clamp-1">12 Rue de la Paix, Paris</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded-lg p-4 flex flex-col gap-3 hover:bg-surface-container transition-colors cursor-pointer group">
+<div class="flex justify-between items-start">
+<div class="bg-surface-container w-10 h-10 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface" style="font-variation-settings: 'FILL' 1;">work</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+</div>
+<div>
+<h3 class="font-bold text-on-surface">Work</h3>
+<p class="text-sm text-on-surface-variant line-clamp-1">Station F, 5 Parvis Alan Turing</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-end px-4 pb-6 pt-2 bg-[#fff4f4]/90 dark:bg-slate-900/90 backdrop-blur-2xl z-50 rounded-t-[3rem] shadow-[0px_-10px_40px_rgba(77,33,42,0.08)] tonal-layering no-border">
+<div class="flex flex-col items-center justify-center text-[#4d212a] dark:text-slate-400 p-2 hover:bg-[#ffe1e4] dark:hover:bg-slate-800 rounded-full transition-colors group">
+<span class="material-symbols-outlined group-active:scale-90 transition-transform">home</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-widest mt-1">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#4d212a] dark:text-slate-400 p-2 hover:bg-[#ffe1e4] dark:hover:bg-slate-800 rounded-full transition-colors group">
+<span class="material-symbols-outlined group-active:scale-90 transition-transform">grid_view</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-widest mt-1">Services</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-[#ba001c] text-white rounded-full p-3 shadow-lg transform -translate-y-2 animate-pulse-subtle">
+<span class="material-symbols-outlined">map</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-widest mt-1">Explore</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#4d212a] dark:text-slate-400 p-2 hover:bg-[#ffe1e4] dark:hover:bg-slate-800 rounded-full transition-colors group">
+<span class="material-symbols-outlined group-active:scale-90 transition-transform">receipt_long</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-widest mt-1">Activity</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#4d212a] dark:text-slate-400 p-2 hover:bg-[#ffe1e4] dark:hover:bg-slate-800 rounded-full transition-colors group">
+<span class="material-symbols-outlined group-active:scale-90 transition-transform">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-widest mt-1">Account</span>
+</div>
+</nav>
+</body></html>

@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MIIAM Admin | Vendor Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary": "#6c5a00",
+                    "on-error": "#ffefec",
+                    "surface-tint": "#ba001c",
+                    "surface": "#fff4f4",
+                    "primary": "#ba001c",
+                    "secondary-fixed": "#c4d0ff",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-highest": "#ffd2d7",
+                    "surface-variant": "#ffd2d7",
+                    "on-secondary-container": "#003dac",
+                    "on-primary-fixed-variant": "#600009",
+                    "primary-fixed": "#ff7670",
+                    "outline": "#a06770",
+                    "primary-dim": "#a40017",
+                    "on-secondary": "#f1f2ff",
+                    "secondary-container": "#c4d0ff",
+                    "tertiary-fixed-dim": "#efc900",
+                    "primary-container": "#ff7670",
+                    "tertiary-dim": "#5e4e00",
+                    "on-primary-container": "#4e0006",
+                    "surface-bright": "#fff4f4",
+                    "error": "#b02500",
+                    "background": "#fff4f4",
+                    "on-secondary-fixed": "#002c83",
+                    "on-primary": "#ffefee",
+                    "error-container": "#f95630",
+                    "on-error-container": "#520c00",
+                    "tertiary-container": "#ffd709",
+                    "surface-dim": "#ffc6ce",
+                    "secondary-fixed-dim": "#b1c2ff",
+                    "on-secondary-fixed-variant": "#0045c1",
+                    "inverse-primary": "#ff5352",
+                    "on-surface-variant": "#814c55",
+                    "on-background": "#4d212a",
+                    "on-tertiary-container": "#5b4b00",
+                    "inverse-on-surface": "#cb8c96",
+                    "secondary": "#0b50d5",
+                    "primary-fixed-dim": "#ff5a57",
+                    "error-dim": "#b92902",
+                    "surface-container": "#ffe1e4",
+                    "on-surface": "#4d212a",
+                    "surface-container-low": "#ffecee",
+                    "on-tertiary-fixed-variant": "#665500",
+                    "surface-container-high": "#ffd9de",
+                    "outline-variant": "#dd9ca6",
+                    "on-tertiary-fixed": "#453900",
+                    "tertiary-fixed": "#ffd709",
+                    "secondary-dim": "#0044bf",
+                    "on-primary-fixed": "#000000",
+                    "on-tertiary": "#fff2cd",
+                    "inverse-surface": "#24020a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Plus Jakarta Sans"],
+                    "label": ["Plus Jakarta Sans"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #dd9ca6; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface selection:bg-primary-container selection:text-on-primary-container">
+<!-- SideNavBar Integration -->
+<aside class="h-screen w-72 left-0 top-0 fixed bg-[#fff4f4] dark:bg-slate-950 flex flex-col py-8 pr-4 z-40">
+<div class="px-6 mb-8">
+<h1 class="text-[#0b50d5] font-black text-xl tracking-tighter">MIIAM Admin</h1>
+<p class="text-[10px] uppercase tracking-[0.2em] text-on-surface-variant/60 font-bold">System Controller</p>
+</div>
+<nav class="flex-1 flex flex-col">
+<!-- Active Tab: Merchant Dashboard (mapping to Vendors context) -->
+<a class="bg-[#0b50d5] text-white rounded-r-full py-4 px-6 my-1 flex items-center gap-4 transition-all hover:pl-8 group" href="#">
+<span class="material-symbols-outlined">storefront</span>
+<span class="font-semibold text-sm">Merchant Dashboard</span>
+</a>
+<a class="text-[#4d212a] dark:text-slate-400 py-4 px-6 hover:bg-[#c4d0ff]/20 rounded-r-full my-1 transition-all flex items-center gap-4 hover:pl-8 group" href="#">
+<span class="material-symbols-outlined">restaurant_menu</span>
+<span class="font-semibold text-sm">Menu Editor</span>
+</a>
+<a class="text-[#4d212a] dark:text-slate-400 py-4 px-6 hover:bg-[#c4d0ff]/20 rounded-r-full my-1 transition-all flex items-center gap-4 hover:pl-8 group" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-semibold text-sm">Price Controls</span>
+</a>
+<a class="text-[#4d212a] dark:text-slate-400 py-4 px-6 hover:bg-[#c4d0ff]/20 rounded-r-full my-1 transition-all flex items-center gap-4 hover:pl-8 group" href="#">
+<span class="material-symbols-outlined">insights</span>
+<span class="font-semibold text-sm">Analytics</span>
+</a>
+<a class="text-[#4d212a] dark:text-slate-400 py-4 px-6 hover:bg-[#c4d0ff]/20 rounded-r-full my-1 transition-all flex items-center gap-4 hover:pl-8 group" href="#">
+<span class="material-symbols-outlined">local_shipping</span>
+<span class="font-semibold text-sm">Fleet Management</span>
+</a>
+</nav>
+<div class="px-6 pt-6 mt-auto">
+<div class="bg-surface-container rounded-lg p-4 flex items-center gap-3 mb-4">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-primary-container">
+<img class="w-full h-full object-cover" data-alt="professional male headshot for admin profile avatar with clean background and friendly expression" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCK5c8aN8BCWo7BFfeZ3pdKeZslUK1G2Xdm_c0BI05kQFTp3FpgGCNauo1amZ368BSpSf0aNtcvY1yMsz8UuR-1ztXbY16pVLS32nOw7H-C0E6qUz6cTrbdqrmC019Zu3kmiM4cbsZWSWcGeH61fctXDWoNxwmLnwsRGhAPOk6p_vh2ecj5Glojh1uW0jkcBneOrFEd4Oxv2lXziuLmy0tAviYngXu9Q4b1_sp4mUcQyEuWinVISzywzhAtF61o73OcJ6MG9TTNT9g"/>
+</div>
+<div>
+<p class="text-xs font-bold">Admin User</p>
+<p class="text-[10px] text-on-surface-variant">Super Admin</p>
+</div>
+</div>
+<button class="w-full py-3 rounded-xl bg-white border border-outline-variant/30 text-secondary text-xs font-bold flex items-center justify-center gap-2 hover:bg-secondary-container/20 transition-colors">
+<span class="material-symbols-outlined text-sm">swap_horiz</span>
+                Switch to User View
+            </button>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-72 min-h-screen p-8">
+<!-- Top Search and Global Actions -->
+<header class="flex justify-between items-center mb-10">
+<div>
+<h2 class="text-3xl font-extrabold tracking-tight text-on-background">Vendor Management</h2>
+<p class="text-on-surface-variant font-medium">Manage and monitor your global merchant network.</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="pl-12 pr-6 py-3 bg-surface-container-lowest border-none rounded-xl w-80 shadow-sm focus:ring-2 focus:ring-primary/20 placeholder:text-on-surface-variant/50" placeholder="Search vendors, categories..." type="text"/>
+</div>
+<button class="bg-primary text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-transform">
+<span class="material-symbols-outlined">add_circle</span>
+                    Add New Vendor
+                </button>
+</div>
+</header>
+<!-- Bento Stats Grid -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+<div class="bg-surface-container-lowest p-6 rounded-lg shadow-[0px_10px_30px_rgba(77,33,42,0.04)] relative overflow-hidden group">
+<div class="relative z-10">
+<p class="text-xs font-bold uppercase tracking-widest text-on-surface-variant/60 mb-1">Total Vendors</p>
+<h3 class="text-4xl font-black text-primary">1,284</h3>
+<div class="flex items-center gap-1 mt-4 text-[10px] font-bold text-green-600 bg-green-50 w-fit px-2 py-0.5 rounded-full">
+<span class="material-symbols-outlined text-xs">trending_up</span>
+                        +12% THIS MONTH
+                    </div>
+</div>
+<span class="material-symbols-outlined absolute -right-4 -bottom-4 text-9xl text-primary/5 group-hover:scale-110 transition-transform">storefront</span>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-lg shadow-[0px_10px_30px_rgba(77,33,42,0.04)] relative overflow-hidden group">
+<div class="relative z-10">
+<p class="text-xs font-bold uppercase tracking-widest text-on-surface-variant/60 mb-1">Active Vendors</p>
+<h3 class="text-4xl font-black text-secondary">942</h3>
+<div class="flex items-center gap-1 mt-4 text-[10px] font-bold text-secondary bg-secondary-container/30 w-fit px-2 py-0.5 rounded-full">
+<span class="material-symbols-outlined text-xs">bolt</span>
+                        73% UPTIME RATE
+                    </div>
+</div>
+<span class="material-symbols-outlined absolute -right-4 -bottom-4 text-9xl text-secondary/5 group-hover:scale-110 transition-transform">check_circle</span>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-lg shadow-[0px_10px_30px_rgba(77,33,42,0.04)] relative overflow-hidden group">
+<div class="relative z-10">
+<p class="text-xs font-bold uppercase tracking-widest text-on-surface-variant/60 mb-1">Total Menu Items</p>
+<h3 class="text-4xl font-black text-tertiary">24,501</h3>
+<div class="flex items-center gap-1 mt-4 text-[10px] font-bold text-tertiary-fixed-dim bg-tertiary-container/20 w-fit px-2 py-0.5 rounded-full">
+<span class="material-symbols-outlined text-xs">restaurant</span>
+                        ACROSS ALL CATEGORIES
+                    </div>
+</div>
+<span class="material-symbols-outlined absolute -right-4 -bottom-4 text-9xl text-tertiary/5 group-hover:scale-110 transition-transform">restaurant_menu</span>
+</div>
+</section>
+<!-- Main Vendor List Table -->
+<section class="bg-surface-container-lowest rounded-lg shadow-[0px_20px_40px_rgba(77,33,42,0.06)] overflow-hidden">
+<div class="px-8 py-6 border-b border-surface-container flex justify-between items-center">
+<h4 class="font-bold text-lg">Existing Vendors</h4>
+<div class="flex gap-2">
+<button class="p-2 hover:bg-surface-container rounded-lg transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">filter_list</span>
+</button>
+<button class="p-2 hover:bg-surface-container rounded-lg transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">more_vert</span>
+</button>
+</div>
+</div>
+<div class="overflow-x-auto custom-scrollbar">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-surface-container-low/50">
+<th class="px-8 py-4 text-xs font-bold uppercase tracking-widest text-on-surface-variant/70">Vendor Details</th>
+<th class="px-8 py-4 text-xs font-bold uppercase tracking-widest text-on-surface-variant/70">Category</th>
+<th class="px-8 py-4 text-xs font-bold uppercase tracking-widest text-on-surface-variant/70 text-center">Status</th>
+<th class="px-8 py-4 text-xs font-bold uppercase tracking-widest text-on-surface-variant/70 text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container">
+<!-- Vendor Row 1 -->
+<tr class="hover:bg-surface-container-low/30 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl overflow-hidden bg-primary-container/20">
+<img class="w-full h-full object-cover" data-alt="vibrant gourmet hamburger with melting cheese and fresh vegetables in a rustic restaurant setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAazl-YLNnHiAoe1hqReb7jFIwm65Epq1RCyzAcNUXRqblVYhOaB0_LsBH2i9P7POf82PIumccmjlpxMXPRAoHy36CCHnfQ-HhqEbIRSHQJPWX49FL7g6xVXxDzqbDBHnEX8SiQTVAP-Ewm3e09522yO5QFeCH5Ak2YnXWzVsDTwJq3JIbPSo7ZhvtTLycHOSN1pqBCWfmToR9YKj0sDKkOxRz1YpchQXNErJrG_wCQk6DyevSAEHWCGWQX_c9owaKrRfZmFsbMbV0"/>
+</div>
+<div>
+<p class="font-bold text-on-surface">The Burger Alchemist</p>
+<p class="text-xs text-on-surface-variant">ID: VND-40921</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5">
+<span class="bg-primary-container/10 text-primary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Fast Food</span>
+</td>
+<td class="px-8 py-5">
+<div class="flex justify-center">
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+<span class="ml-3 text-xs font-bold text-green-600">Active</span>
+</label>
+</div>
+</td>
+<td class="px-8 py-5">
+<div class="flex justify-end gap-3">
+<button class="flex items-center gap-1 text-xs font-bold text-secondary hover:underline">
+<span class="material-symbols-outlined text-sm">edit_note</span>
+                                        Edit Menu
+                                    </button>
+<div class="w-px h-4 bg-outline-variant/30"></div>
+<button class="flex items-center gap-1 text-xs font-bold text-secondary hover:underline">
+<span class="material-symbols-outlined text-sm">payments</span>
+                                        Edit Prices
+                                    </button>
+</div>
+</td>
+</tr>
+<!-- Vendor Row 2 -->
+<tr class="hover:bg-surface-container-low/30 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl overflow-hidden bg-secondary-container/20">
+<img class="w-full h-full object-cover" data-alt="artistic sushi platter with assorted nigiri and rolls on a slate board with atmospheric lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSK9e-qM0f9NIJycbLDlI_Vc6sKZaApdFP7d-Bey1kgROW2xxlPe9iWTfqioP3JTomL46QymoJSLIxrUFaCFRON99tCmwYLEltXgoWECPNNDZtJr8oLiP0q_2vK9qL8j9EO8oQx79Dm_QLYtbGSaH5BrgncZcBaZJl89bcSAJd0rx89HgHGsKLdykfYbEJm2fevwnNGbfygQZibeiIldZRoZa9JKDPxkc2yhepWhXJymG8eKxO1jetN_Jsl8CHRX-gB_jgTa69eqc"/>
+</div>
+<div>
+<p class="font-bold text-on-surface">Sushi Zen Master</p>
+<p class="text-xs text-on-surface-variant">ID: VND-88210</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5">
+<span class="bg-secondary-container/30 text-secondary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Japanese</span>
+</td>
+<td class="px-8 py-5">
+<div class="flex justify-center">
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+<span class="ml-3 text-xs font-bold text-green-600">Active</span>
+</label>
+</div>
+</td>
+<td class="px-8 py-5">
+<div class="flex justify-end gap-3">
+<button class="flex items-center gap-1 text-xs font-bold text-secondary hover:underline">
+<span class="material-symbols-outlined text-sm">edit_note</span>
+                                        Edit Menu
+                                    </button>
+<div class="w-px h-4 bg-outline-variant/30"></div>
+<button class="flex items-center gap-1 text-xs font-bold text-secondary hover:underline">
+<span class="material-symbols-outlined text-sm">payments</span>
+                                        Edit Prices
+                                    </button>
+</div>
+</td>
+</tr>
+<!-- Vendor Row 3 -->
+<tr class="hover:bg-surface-container-low/30 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl overflow-hidden bg-tertiary-container/20">
+<img class="w-full h-full object-cover" data-alt="succulent smoked barbecue ribs with honey glaze on a wooden board with glowing embers in background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOmdO1DvaxEojNK0FZGcI7WiHDDtwdv2cZ12rnZwn9dQzpLiS0FiDwhicrUE2gkEvL2f77HucJK5F_Dv8bmwS9tHyMwTu7U5mou9AWQB7RHaXqzRq14g5uCOMbflL0H1pSJBd-gnWHm4etNhLevKnq7O12qmiayAgJBvy__iLUzscaj-VQmRzowKOhhEqVFfmJbhstMAPEz_lfJ5IEti7D3nvLQDDKrQWZ-Cs_bCDrYQRM1zGiGiYEGGw4AEtiEDjCaduUkEFBbA8"/>
+</div>
+<div>
+<p class="font-bold text-on-surface">Iron Grill BBQ</p>
+<p class="text-xs text-on-surface-variant">ID: VND-11032</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5">
+<span class="bg-tertiary-container/20 text-tertiary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Steakhouse</span>
+</td>
+<td class="px-8 py-5">
+<div class="flex justify-center">
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+<span class="ml-3 text-xs font-bold text-on-surface-variant">Inactive</span>
+</label>
+</div>
+</td>
+<td class="px-8 py-5">
+<div class="flex justify-end gap-3">
+<button class="flex items-center gap-1 text-xs font-bold text-secondary hover:underline">
+<span class="material-symbols-outlined text-sm">edit_note</span>
+                                        Edit Menu
+                                    </button>
+<div class="w-px h-4 bg-outline-variant/30"></div>
+<button class="flex items-center gap-1 text-xs font-bold text-secondary hover:underline">
+<span class="material-symbols-outlined text-sm">payments</span>
+                                        Edit Prices
+                                    </button>
+</div>
+</td>
+</tr>
+<!-- Vendor Row 4 -->
+<tr class="hover:bg-surface-container-low/30 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl overflow-hidden bg-primary-container/20">
+<img class="w-full h-full object-cover" data-alt="traditional italian pepperoni pizza with melted mozzarella and fresh basil leaves on a flour dusted surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbm9A3cBP7HbPyO1LGU_tbAYo4xIT0rVQ2P1LmWEBCy3iUVvBpuPyoPJa_F1FnLCHTJZwkeNXGt7sS5VOjScwDPDz5ImSSg4scmhfr4tnbY1gJWTVcIP83IyeRXi0x9cOAZjxCm_OhvfMZma856QyPpa9JWlZpr9yMwukPFPTjsYnAqEeVwFUU721tAs1dxdioxMI5BfJ3JVwWpl8exQzYsa2YHc30Y1OpfSIzc8t64qpHH52APK9QhyrIfDbhELrc23tYbNFwYNI"/>
+</div>
+<div>
+<p class="font-bold text-on-surface">Pizzeria Napoli</p>
+<p class="text-xs text-on-surface-variant">ID: VND-77402</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5">
+<span class="bg-primary-container/10 text-primary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Italian</span>
+</td>
+<td class="px-8 py-5">
+<div class="flex justify-center">
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+<span class="ml-3 text-xs font-bold text-green-600">Active</span>
+</label>
+</div>
+</td>
+<td class="px-8 py-5">
+<div class="flex justify-end gap-3">
+<button class="flex items-center gap-1 text-xs font-bold text-secondary hover:underline">
+<span class="material-symbols-outlined text-sm">edit_note</span>
+                                        Edit Menu
+                                    </button>
+<div class="w-px h-4 bg-outline-variant/30"></div>
+<button class="flex items-center gap-1 text-xs font-bold text-secondary hover:underline">
+<span class="material-symbols-outlined text-sm">payments</span>
+                                        Edit Prices
+                                    </button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Pagination -->
+<div class="px-8 py-6 border-t border-surface-container flex justify-between items-center bg-surface-container-low/20">
+<p class="text-xs text-on-surface-variant font-medium">Showing <span class="font-bold text-on-surface">1 - 10</span> of 1,284 vendors</p>
+<div class="flex gap-2">
+<button class="px-3 py-1 rounded-lg border border-outline-variant text-xs font-bold hover:bg-surface-container transition-colors disabled:opacity-50" disabled="">Previous</button>
+<button class="px-3 py-1 rounded-lg bg-primary text-white text-xs font-bold shadow-md shadow-primary/10">1</button>
+<button class="px-3 py-1 rounded-lg border border-outline-variant text-xs font-bold hover:bg-surface-container transition-colors">2</button>
+<button class="px-3 py-1 rounded-lg border border-outline-variant text-xs font-bold hover:bg-surface-container transition-colors">3</button>
+<span class="px-2">...</span>
+<button class="px-3 py-1 rounded-lg border border-outline-variant text-xs font-bold hover:bg-surface-container transition-colors">129</button>
+<button class="px-3 py-1 rounded-lg border border-outline-variant text-xs font-bold hover:bg-surface-container transition-colors">Next</button>
+</div>
+</div>
+</section>
+<!-- Dynamic Insights Floating Cards -->
+<section class="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
+<div class="bg-gradient-to-br from-secondary/5 to-transparent p-8 rounded-lg border border-secondary/10 flex items-center justify-between">
+<div>
+<h5 class="text-secondary font-black text-xl mb-2">Fleet Management Sync</h5>
+<p class="text-sm text-on-surface-variant max-w-xs">Coordinate vendor pick-up zones with active courier locations in real-time.</p>
+<button class="mt-6 text-secondary font-bold text-xs uppercase tracking-widest flex items-center gap-2 group">
+                        Launch Dispatcher
+                        <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+<div class="relative w-32 h-32 opacity-20">
+<span class="material-symbols-outlined text-[120px] text-secondary absolute -top-4 -right-4">local_shipping</span>
+</div>
+</div>
+<div class="bg-gradient-to-br from-primary/5 to-transparent p-8 rounded-lg border border-primary/10 flex items-center justify-between">
+<div>
+<h5 class="text-primary font-black text-xl mb-2">Price Control Hub</h5>
+<p class="text-sm text-on-surface-variant max-w-xs">Global inflation adjustment tool for multi-location franchises.</p>
+<button class="mt-6 text-primary font-bold text-xs uppercase tracking-widest flex items-center gap-2 group">
+                        Update Global Rates
+                        <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+<div class="relative w-32 h-32 opacity-20">
+<span class="material-symbols-outlined text-[120px] text-primary absolute -top-4 -right-4">payments</span>
+</div>
+</div>
+</section>
+</main>
+</body></html>

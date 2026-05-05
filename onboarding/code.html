@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary-fixed-dim": "#ff5a57",
+                        "primary-fixed": "#ff7670",
+                        "on-secondary": "#f1f2ff",
+                        "surface-container-high": "#ffd9de",
+                        "tertiary-fixed": "#ffd709",
+                        "on-secondary-fixed": "#002c83",
+                        "on-primary-fixed-variant": "#600009",
+                        "error-dim": "#b92902",
+                        "tertiary-dim": "#5e4e00",
+                        "outline-variant": "#dd9ca6",
+                        "on-surface-variant": "#814c55",
+                        "inverse-surface": "#24020a",
+                        "surface-variant": "#ffd2d7",
+                        "on-primary": "#ffefee",
+                        "on-error-container": "#520c00",
+                        "on-primary-fixed": "#000000",
+                        "inverse-on-surface": "#cb8c96",
+                        "tertiary-container": "#ffd709",
+                        "secondary-fixed-dim": "#b1c2ff",
+                        "error-container": "#f95630",
+                        "surface-container": "#ffe1e4",
+                        "inverse-primary": "#ff5352",
+                        "surface-tint": "#ba001c",
+                        "on-tertiary-fixed-variant": "#665500",
+                        "surface-dim": "#ffc6ce",
+                        "on-tertiary": "#fff2cd",
+                        "on-surface": "#4d212a",
+                        "surface-container-low": "#ffecee",
+                        "surface-bright": "#fff4f4",
+                        "on-background": "#4d212a",
+                        "on-tertiary-fixed": "#453900",
+                        "on-primary-container": "#4e0006",
+                        "surface": "#fff4f4",
+                        "primary": "#ba001c",
+                        "primary-dim": "#a40017",
+                        "tertiary": "#6c5a00",
+                        "surface-container-highest": "#ffd2d7",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-container": "#c4d0ff",
+                        "tertiary-fixed-dim": "#efc900",
+                        "background": "#fff4f4",
+                        "on-secondary-container": "#003dac",
+                        "secondary-fixed": "#c4d0ff",
+                        "on-error": "#ffefec",
+                        "outline": "#a06770",
+                        "error": "#b02500",
+                        "on-tertiary-container": "#5b4b00",
+                        "secondary-dim": "#0044bf",
+                        "primary-container": "#ff7670",
+                        "on-secondary-fixed-variant": "#0045c1",
+                        "secondary": "#0b50d5"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .bento-gradient-red {
+            background: linear-gradient(135deg, #ba001c 0%, #ff7670 100%);
+        }
+        .bento-gradient-blue {
+            background: linear-gradient(135deg, #0b50d5 0%, #c4d0ff 100%);
+        }
+        .floating-emoji {
+            filter: drop-shadow(0 10px 15px rgba(77, 33, 42, 0.1));
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container">
+<!-- Onboarding Step 1: Welcome & Brand Identity -->
+<main class="min-h-screen flex flex-col items-center justify-center px-6 relative overflow-hidden">
+<!-- Background Kinetic Elements (Decorative) -->
+<div class="absolute -top-24 -left-24 w-96 h-96 bg-primary-container/20 rounded-full blur-[100px]"></div>
+<div class="absolute -bottom-24 -right-24 w-96 h-96 bg-secondary-container/20 rounded-full blur-[100px]"></div>
+<!-- Floating "Kinetic Debris" -->
+<div class="absolute top-20 right-10 floating-emoji text-5xl transform rotate-12 select-none">🍕</div>
+<div class="absolute top-1/2 left-4 floating-emoji text-4xl transform -rotate-12 select-none">📦</div>
+<div class="absolute bottom-40 right-20 floating-emoji text-6xl transform rotate-6 select-none">✨</div>
+<!-- Content Canvas -->
+<div class="max-w-4xl w-full z-10">
+<!-- Branding Header -->
+<div class="flex justify-center mb-12">
+<span class="font-headline text-5xl font-extrabold tracking-tighter text-primary">MIIAM</span>
+</div>
+<!-- Bento Grid Intro -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6 mb-12">
+<!-- Large Welcome Card -->
+<div class="md:col-span-8 bg-surface-container-lowest rounded-lg p-10 shadow-[0px_20px_40px_rgba(77,33,42,0.06)] flex flex-col justify-between min-h-[400px]">
+<div>
+<h1 class="font-headline text-5xl md:text-6xl font-extrabold tracking-tighter mb-6 leading-none">
+                            Taste the <span class="text-primary">Vibrant</span> Side of Life.
+                        </h1>
+<p class="text-body-lg text-on-surface-variant max-w-md">
+                            MIIAM is your premium dual-engine concierge. We bridge the gap between world-class culinary experiences and professional urban services.
+                        </p>
+</div>
+<div class="flex items-center gap-4 mt-8">
+<div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined">restaurant</span>
+</div>
+<div class="w-12 h-12 rounded-full bg-secondary flex items-center justify-center text-white">
+<span class="material-symbols-outlined">handyman</span>
+</div>
+<span class="font-label font-bold text-on-surface-variant">Food &amp; Services, Reimagined.</span>
+</div>
+</div>
+<!-- Featured Image Card -->
+<div class="md:col-span-4 rounded-lg overflow-hidden relative min-h-[400px]">
+<img class="w-full h-full object-cover" data-alt="Close-up of a vibrant, gourmet sushi platter with fresh salmon and edible flowers on a dark slate background, warm lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_eGuofEdBeeLV9hUZfIDuiZus9YUpGGblWZHG_Lv038k38xJ7Rv2t6XiifgkgOYs4N6KvE-BZg4bFNZyT4Gcf16rleAjp4S1IEKFSaSIUzpK24GG-HdU_LwqgHZYMtDD6foWu1yk-LPP_e1IfE1jg53Zb-Yidt97otbl-EVVf4YU2jncjwS1z7ywkVZoZgRd91OGCTnabtaIPdkI-nc23qq8indQ62JTlMXOGKb_CyxZ_0lQPd4pbZFfCMHWSeJG3-mNlG55HA7Q"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/60 to-transparent"></div>
+<div class="absolute bottom-6 left-6 text-white">
+<span class="font-label text-xs uppercase tracking-widest font-bold opacity-80">Now Trending</span>
+<p class="font-headline text-xl font-bold">Artisan Kitchens</p>
+</div>
+</div>
+</div>
+<!-- Step Indicators -->
+<div class="flex justify-center gap-2 mb-10">
+<div class="w-8 h-2 bg-primary rounded-full"></div>
+<div class="w-2 h-2 bg-surface-container-highest rounded-full"></div>
+<div class="w-2 h-2 bg-surface-container-highest rounded-full"></div>
+</div>
+<!-- CTA Container -->
+<div class="flex flex-col items-center gap-4">
+<button class="w-full md:w-80 bento-gradient-red text-white font-headline font-bold py-5 rounded-xl shadow-lg shadow-primary/20 transform transition-transform active:scale-95 text-lg">
+                    Get Started
+                </button>
+<button class="text-on-surface-variant font-label font-semibold text-sm hover:text-primary transition-colors">
+                    Already have an account? Sign In
+                </button>
+</div>
+</div>
+</main>
+<!-- Onboarding Step 2: What is MIIAM? (Sectional Anchor) -->
+<section class="min-h-screen bg-surface-container flex flex-col items-center justify-center px-6 py-20 relative">
+<div class="max-w-6xl w-full">
+<div class="text-center mb-16">
+<h2 class="font-headline text-4xl md:text-5xl font-extrabold tracking-tight text-on-surface mb-4">One App, Two Worlds.</h2>
+<p class="text-on-surface-variant text-lg">Swipe between Appetite and Trust.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+<!-- Vertical 1: Food -->
+<div class="bg-surface-container-lowest rounded-lg p-12 relative overflow-hidden group shadow-[0px_20px_40px_rgba(77,33,42,0.04)]">
+<div class="absolute -top-10 -right-10 w-40 h-40 bg-primary/10 rounded-full transform group-hover:scale-150 transition-transform duration-700"></div>
+<div class="mb-8 w-20 h-20 rounded-full bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-4xl text-primary" style="font-variation-settings: 'FILL' 1;">restaurant_menu</span>
+</div>
+<h3 class="font-headline text-3xl font-bold mb-6">Epicurean Desires</h3>
+<p class="text-on-surface-variant leading-relaxed mb-8">
+                        From street-side gems to Michelin-starred kitchens. We don't just deliver food; we deliver the moment. Track every bite in real-time with our kinetic interface.
+                    </p>
+<div class="flex flex-wrap gap-3">
+<span class="px-4 py-2 bg-primary/10 text-primary rounded-full font-label text-xs font-bold uppercase tracking-wider">Fast Delivery</span>
+<span class="px-4 py-2 bg-primary/10 text-primary rounded-full font-label text-xs font-bold uppercase tracking-wider">Exclusive Chefs</span>
+</div>
+</div>
+<!-- Vertical 2: Services -->
+<div class="bg-surface-container-lowest rounded-lg p-12 relative overflow-hidden group shadow-[0px_20px_40px_rgba(77,33,42,0.04)]">
+<div class="absolute -top-10 -right-10 w-40 h-40 bg-secondary/10 rounded-full transform group-hover:scale-150 transition-transform duration-700"></div>
+<div class="mb-8 w-20 h-20 rounded-full bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-4xl text-secondary" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+</div>
+<h3 class="font-headline text-3xl font-bold mb-6">Lifestyle Utility</h3>
+<p class="text-on-surface-variant leading-relaxed mb-8">
+                        Vetted professionals for your every need. Home maintenance, wellness, or logistics. Built on a foundation of deep trust and transparent service.
+                    </p>
+<div class="flex flex-wrap gap-3">
+<span class="px-4 py-2 bg-secondary/10 text-secondary rounded-full font-label text-xs font-bold uppercase tracking-wider">Certified Pros</span>
+<span class="px-4 py-2 bg-secondary/10 text-secondary rounded-full font-label text-xs font-bold uppercase tracking-wider">Secure Escrow</span>
+</div>
+</div>
+</div>
+<div class="mt-16 flex justify-center">
+<button class="px-12 py-5 bg-on-surface text-surface rounded-xl font-headline font-bold text-lg hover:bg-primary transition-colors">
+                    Explore Ecosystem
+                </button>
+</div>
+</div>
+</section>
+<!-- Onboarding Step 3: Location Permission (Task Focused) -->
+<section class="min-h-screen flex items-center justify-center px-6 relative">
+<div class="max-w-xl w-full text-center">
+<!-- Glassmorphic Map Container -->
+<div class="glass-card rounded-lg p-2 mb-12 shadow-2xl relative">
+<div class="h-80 w-full rounded-lg overflow-hidden relative">
+<img class="w-full h-full object-cover" data-alt="A stylized minimalist urban map of a city center with soft pink and blue highlights, showing clean white streets and floating pin markers" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAN1xfJwpdw2bj7H_TfKXirk6ngjY55cxxz3kiMpV5TlLyEpclKB-8Qk4HHR9l3g-blikPhN1f-ewc5O8wx354nNJU5QWj8B6v5i1Nfxa6Z0W2vAZW1UjmTRSkoa6wra81VbQLHC5MyxFmXBnZURM8H2b80AiCH48-b-Pi-TNOhqrxvffzy3ZUDaMv4En7_m96mN3aIVdF3rPrG2HobmHzJTO4ssSqAubCSqZK9jO0KTsvOtxqlf7TEIsGvBNtFcnC7C3H_cHM9Xng"/>
+<!-- Scanning Animation Simulation -->
+<div class="absolute top-0 left-0 w-full h-1 bg-primary/40 blur-sm"></div>
+<!-- Central Pin -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+<div class="w-16 h-16 bg-primary/20 rounded-full animate-ping absolute -top-4 -left-4"></div>
+<div class="bg-primary text-white w-10 h-10 rounded-full flex items-center justify-center shadow-xl relative z-10">
+<span class="material-symbols-outlined">location_on</span>
+</div>
+</div>
+</div>
+</div>
+<h2 class="font-headline text-4xl font-extrabold tracking-tight mb-6">Nearby Experiences.</h2>
+<p class="text-on-surface-variant text-lg leading-relaxed mb-10 max-w-md mx-auto">
+                MIIAM uses your location to connect you with the best merchants and service providers in your immediate neighborhood.
+            </p>
+<div class="space-y-4">
+<button class="w-full bento-gradient-blue text-white font-headline font-bold py-5 rounded-xl flex items-center justify-center gap-3 shadow-lg shadow-secondary/20 transform transition-transform active:scale-95 text-lg">
+<span class="material-symbols-outlined">near_me</span>
+                    Use current location
+                </button>
+<button class="w-full py-5 text-on-surface font-label font-bold text-sm uppercase tracking-widest hover:bg-surface-container transition-colors rounded-xl">
+                    Enter manually
+                </button>
+</div>
+<div class="mt-12 flex items-center justify-center gap-2 text-on-surface-variant text-xs">
+<span class="material-symbols-outlined text-sm">lock</span>
+<span>Your data is encrypted and never shared.</span>
+</div>
+</div>
+</section>
+<!-- Footer Space -->
+<div class="pb-20"></div>
+</body></html>

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Image from "next/image";
+import { sendPrescriptionApproval, sendPrescriptionRejection } from "@/lib/whatsapp";
 
 const supabase = createClient();
 
@@ -19,6 +20,15 @@ const mockPrescriptions = [
   { id: "RX002", customer: "Suresh P.", medicines: "Telmisartan, Amlodipine", submittedAt: "Yesterday", status: "approved" },
   { id: "RX003", customer: "Anita R.", medicines: "Cetrizine", submittedAt: "Yesterday", status: "approved" },
 ];
+
+interface Prescription {
+  id: string;
+  user_id: string;
+  image_url: string;
+  notes: string;
+  status: string;
+  created_at: string;
+}
 
 const mockPartners = [
   { id: "PH001", name: "Health Plus Pharmacy", orders: 156, rating: 4.7, status: "active" },
@@ -59,7 +69,9 @@ export default function PharmacyAdmin() {
   };
   
   const [medicines, setMedicines] = useState<Medicine[]>([]);
+  const [prescriptions, setPrescriptions] = useState<Prescription[]>([]);
   const [loading, setLoading] = useState(true);
+  const [prescriptionsLoading, setPrescriptionsLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingMedicine, setEditingMedicine] = useState<Medicine | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -83,6 +95,7 @@ export default function PharmacyAdmin() {
 
   useEffect(() => {
     loadMedicines();
+    loadPrescriptions();
   }, []);
 
   const loadMedicines = async () => {
@@ -102,23 +115,55 @@ export default function PharmacyAdmin() {
     }
   };
 
-  const handleImageUpload = async (file: File): Promise<string | null> => {
-    const fileExt = file.name.split(".").pop();
-    const fileName = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
-    const filePath = `pharmacy-products/${fileName}`;
-    
-    const { error: uploadError } = await supabase.storage
-      .from("pharmacy-images")
-      .upload(filePath, file);
+  const loadPrescriptions = async () => {
+    setPrescriptionsLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from("user_prescriptions")
+        .select("*")
+        .order("created_at", { ascending: false });
 
-    if (uploadError) {
-      console.error("Upload error:", uploadError);
-      return null;
+      if (error) throw error;
+      setPrescriptions(data || []);
+    } catch (error) {
+      console.error("Error loading prescriptions:", error);
+    } finally {
+      setPrescriptionsLoading(false);
     }
-
-    const { data } = supabase.storage.from("pharmacy-images").getPublicUrl(filePath);
-    return data.publicUrl;
   };
+
+  const handlePrescriptionStatus = async (id: string, status: string) => {
+    try {
+      const { data: presc, error: fetchError } = await supabase
+        .from("user_prescriptions")
+        .select("phone")
+        .eq("id", id)
+        .single();
+
+      if (fetchError) throw fetchError;
+
+      const { error } = await supabase
+        .from("user_prescriptions")
+        .update({ status })
+        .eq("id", id);
+
+      if (error) throw error;
+
+      if (presc?.phone) {
+        if (status === "approved") {
+          await sendPrescriptionApproval(presc.phone, id.slice(0, 8));
+        } else if (status === "rejected") {
+          await sendPrescriptionRejection(presc.phone, id.slice(0, 8), "Please contact us for more details");
+        }
+      }
+      
+      await loadPrescriptions();
+    } catch (error) {
+      console.error("Error updating prescription:", error);
+    }
+  };
+
+  const handleImageUpload = async (file: File): Promise<string | null> => {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -345,41 +390,61 @@ export default function PharmacyAdmin() {
 
         {activeTab === "prescriptions" && (
           <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
+            {prescriptionsLoading ? (
+              <div className="p-8 text-center text-slate-500">Loading prescriptions...</div>
+            ) : prescriptions.length === 0 ? (
+              <div className="p-8 text-center text-slate-500">No prescriptions yet</div>
+            ) : (
             <table className="w-full">
               <thead className="bg-slate-50">
                 <tr>
                   <th className="text-left p-4 font-bold text-slate-600 text-sm">Rx ID</th>
-                  <th className="text-left p-4 font-bold text-slate-600 text-sm">Customer</th>
-                  <th className="text-left p-4 font-bold text-slate-600 text-sm">Medicines</th>
+                  <th className="text-left p-4 font-bold text-slate-600 text-sm">Image</th>
+                  <th className="text-left p-4 font-bold text-slate-600 text-sm">Notes</th>
                   <th className="text-left p-4 font-bold text-slate-600 text-sm">Submitted</th>
                   <th className="text-left p-4 font-bold text-slate-600 text-sm">Status</th>
                   <th className="text-left p-4 font-bold text-slate-600 text-sm">Action</th>
                 </tr>
               </thead>
               <tbody>
-                {mockPrescriptions.map((rx) => (
+                {prescriptions.map((rx) => (
                   <tr key={rx.id} className="border-t border-slate-100 hover:bg-slate-50">
-                    <td className="p-4 font-bold text-slate-800">{rx.id}</td>
-                    <td className="p-4 text-slate-600">{rx.customer}</td>
-                    <td className="p-4 text-slate-600 max-w-xs truncate">{rx.medicines}</td>
-                    <td className="p-4 text-slate-500 text-sm">{rx.submittedAt}</td>
+                    <td className="p-4 font-bold text-slate-800">{rx.id.slice(0, 8)}</td>
                     <td className="p-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${rxStatusColors[rx.status]}`}>
+                      {rx.image_url && (
+                        <a href={rx.image_url} target="_blank" rel="noopener noreferrer" className="text-[#ba001c] font-bold text-sm hover:underline">
+                          View Image
+                        </a>
+                      )}
+                    </td>
+                    <td className="p-4 text-slate-600 max-w-xs truncate">{rx.notes || "-"}</td>
+                    <td className="p-4 text-slate-500 text-sm">{new Date(rx.created_at).toLocaleDateString()}</td>
+                    <td className="p-4">
+                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${rxStatusColors[rx.status] || "bg-gray-100 text-gray-700"}`}>
                         {rx.status}
                       </span>
                     </td>
                     <td className="p-4">
-                      <button 
-                        onClick={() => alert(`Reviewing prescription ${rx.id}`)}
-                        className="text-[#ba001c] font-bold text-sm hover:underline cursor-pointer"
-                      >
-                        Review
-                      </button>
+                      <div className="flex gap-2">
+                        <button 
+                          onClick={() => handlePrescriptionStatus(rx.id, "approved")}
+                          className="text-green-600 font-bold text-sm hover:underline cursor-pointer"
+                        >
+                          Approve
+                        </button>
+                        <button 
+                          onClick={() => handlePrescriptionStatus(rx.id, "rejected")}
+                          className="text-red-600 font-bold text-sm hover:underline cursor-pointer"
+                        >
+                          Reject
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+            )}
           </div>
         )}
 

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary": "#f1f2ff",
+                        "tertiary-fixed": "#ffd709",
+                        "primary-container": "#ff7670",
+                        "surface-container-highest": "#ffd2d7",
+                        "on-primary": "#ffefee",
+                        "tertiary-dim": "#5e4e00",
+                        "surface-container": "#ffe1e4",
+                        "error-dim": "#b92902",
+                        "surface-variant": "#ffd2d7",
+                        "tertiary-container": "#ffd709",
+                        "tertiary": "#6c5a00",
+                        "inverse-surface": "#24020a",
+                        "on-surface": "#4d212a",
+                        "primary": "#ba001c",
+                        "tertiary-fixed-dim": "#efc900",
+                        "error-container": "#f95630",
+                        "surface-container-low": "#ffecee",
+                        "outline": "#a06770",
+                        "secondary": "#0b50d5",
+                        "secondary-container": "#c4d0ff",
+                        "inverse-primary": "#ff5352",
+                        "on-tertiary-fixed-variant": "#665500",
+                        "on-error-container": "#520c00",
+                        "on-background": "#4d212a",
+                        "surface-bright": "#fff4f4",
+                        "on-primary-container": "#4e0006",
+                        "on-tertiary-container": "#5b4b00",
+                        "surface-dim": "#ffc6ce",
+                        "on-error": "#ffefec",
+                        "error": "#b02500",
+                        "on-tertiary-fixed": "#453900",
+                        "primary-fixed": "#ff7670",
+                        "on-secondary-fixed": "#002c83",
+                        "surface": "#fff4f4",
+                        "background": "#fff4f4",
+                        "inverse-on-surface": "#cb8c96",
+                        "on-surface-variant": "#814c55",
+                        "secondary-fixed-dim": "#b1c2ff",
+                        "surface-container-lowest": "#ffffff",
+                        "outline-variant": "#dd9ca6",
+                        "on-primary-fixed": "#000000",
+                        "secondary-fixed": "#c4d0ff",
+                        "secondary-dim": "#0044bf",
+                        "surface-container-high": "#ffd9de",
+                        "primary-fixed-dim": "#ff5a57",
+                        "primary-dim": "#a40017",
+                        "surface-tint": "#ba001c",
+                        "on-primary-fixed-variant": "#600009",
+                        "on-tertiary": "#fff2cd",
+                        "on-secondary-fixed-variant": "#0045c1",
+                        "on-secondary-container": "#003dac"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #fff4f4;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface selection:bg-primary-container/30">
+<!-- Top Navigation Anchor -->
+<header class="bg-[#fff4f4] dark:bg-slate-950 flex justify-between items-center w-full px-6 py-4 fixed top-0 z-50">
+<div class="flex items-center gap-3">
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-low hover:opacity-80 transition-opacity active:scale-95 duration-200">
+<span class="material-symbols-outlined text-primary">arrow_back_ios_new</span>
+</button>
+<h1 class="text-2xl font-black text-[#ba001c] dark:text-[#ff7670] font-['Plus_Jakarta_Sans'] font-extrabold tracking-tighter">MIIAM</h1>
+</div>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-[#4d212a] dark:text-slate-400 hover:opacity-80 transition-opacity">help</span>
+<span class="material-symbols-outlined text-[#4d212a] dark:text-slate-400 hover:opacity-80 transition-opacity">notifications</span>
+</div>
+</header>
+<main class="pt-20 pb-32 max-w-2xl mx-auto px-4 md:px-0">
+<!-- Map Preview Section -->
+<section class="relative mb-8 mt-4">
+<div class="w-full h-56 rounded-lg overflow-hidden shadow-ambient relative group">
+<img alt="City map layout with navigation pins" class="w-full h-full object-cover" data-alt="Modern minimalist city map interface with a bright red pin indicator and soft grey buildings" data-location="New York" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-CdfbXzi_MVL7lkjpsNo4i0iygoEq8LS8FyS14idkDyYaJUeIeeFH7_HViAmv1on8d3Tu9T7XYn33VOKv9-koYLpa6YPNRepLUNqDM6ZCZftCIzZ5NYRDYkka_L8rd0_OU0Z9jg_PoL03zfug03Qo01Vagu7ar231wKsA0lEcP_7nPqoH1jp03p2tR_IklqRTQ7oEbuKk-nm5bWWyH95SsqoXJCtMp_uFKS40rBuQYWQNmDYjXL9C6xKDUa6Q4L6J3KipnkLIiHs"/>
+<!-- Floating Pin Indicator -->
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="relative">
+<div class="absolute -top-12 -left-4 bg-white px-3 py-1 rounded-full shadow-lg flex items-center gap-2 whitespace-nowrap">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-xs font-bold text-on-surface uppercase tracking-wider">Confirm Location</span>
+</div>
+<span class="material-symbols-outlined text-primary text-5xl filter drop-shadow-md" style="font-variation-settings: 'FILL' 1;">location_on</span>
+</div>
+</div>
+<!-- Glass Map Control -->
+<div class="absolute bottom-4 right-4 flex flex-col gap-2">
+<button class="w-10 h-10 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center shadow-lg active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-on-surface">my_location</span>
+</button>
+<button class="w-10 h-10 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center shadow-lg active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-on-surface">zoom_in</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Form Heading -->
+<div class="mb-8">
+<h2 class="text-3xl font-extrabold text-on-surface tracking-tight mb-2">Delivery Details</h2>
+<p class="text-on-surface-variant font-medium">Please provide accurate information for a faster delivery.</p>
+</div>
+<!-- Address Form -->
+<form class="space-y-6">
+<!-- Street Address (Pre-filled) -->
+<div class="space-y-2">
+<label class="text-sm font-bold text-primary uppercase tracking-widest ml-1">Street Address</label>
+<div class="relative group">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline-variant group-focus-within:text-primary transition-colors">location_city</span>
+<input class="w-full pl-12 pr-4 py-4 bg-surface-container-lowest rounded-md border-none focus:ring-2 focus:ring-primary/40 text-on-surface font-semibold placeholder:text-outline-variant shadow-sm transition-all" placeholder="Enter street address" type="text" value="240 West 35th St, Manhattan"/>
+</div>
+</div>
+<!-- Bento Form Row -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Apartment / Building -->
+<div class="space-y-2">
+<label class="text-sm font-bold text-on-surface-variant uppercase tracking-widest ml-1">Building / Unit</label>
+<div class="relative group">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline-variant group-focus-within:text-primary transition-colors">domain</span>
+<input class="w-full pl-12 pr-4 py-4 bg-surface-container-lowest rounded-md border-none focus:ring-2 focus:ring-primary/40 text-on-surface font-semibold placeholder:text-outline-variant shadow-sm transition-all" placeholder="Floor, Apt, Building" type="text"/>
+</div>
+</div>
+<!-- Landmark -->
+<div class="space-y-2">
+<label class="text-sm font-bold text-on-surface-variant uppercase tracking-widest ml-1">Landmark</label>
+<div class="relative group">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline-variant group-focus-within:text-primary transition-colors">flag</span>
+<input class="w-full pl-12 pr-4 py-4 bg-surface-container-lowest rounded-md border-none focus:ring-2 focus:ring-primary/40 text-on-surface font-semibold placeholder:text-outline-variant shadow-sm transition-all" placeholder="Near central park" type="text"/>
+</div>
+</div>
+</div>
+<!-- Phone Number -->
+<div class="space-y-2">
+<label class="text-sm font-bold text-on-surface-variant uppercase tracking-widest ml-1">Contact Phone Number</label>
+<div class="relative group">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline-variant group-focus-within:text-primary transition-colors">call</span>
+<input class="w-full pl-12 pr-4 py-4 bg-surface-container-lowest rounded-md border-none focus:ring-2 focus:ring-primary/40 text-on-surface font-semibold placeholder:text-outline-variant shadow-sm transition-all" placeholder="+1 (555) 000-0000" type="tel"/>
+</div>
+</div>
+<!-- Address Tag Selection -->
+<div class="pt-4">
+<label class="text-sm font-bold text-on-surface-variant uppercase tracking-widest ml-1 mb-3 block">Save Address As</label>
+<div class="flex gap-3">
+<button class="flex-1 py-3 px-4 rounded-xl bg-primary text-white font-bold flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">home</span>
+                        Home
+                    </button>
+<button class="flex-1 py-3 px-4 rounded-xl bg-surface-container text-on-surface font-bold flex items-center justify-center gap-2 hover:bg-surface-container-highest active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-xl">work</span>
+                        Office
+                    </button>
+<button class="flex-1 py-3 px-4 rounded-xl bg-surface-container text-on-surface font-bold flex items-center justify-center gap-2 hover:bg-surface-container-highest active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-xl">location_on</span>
+                        Other
+                    </button>
+</div>
+</div>
+</form>
+<!-- Kinetic Debris (Decorative Floating Elements) -->
+<div class="fixed bottom-32 right-8 pointer-events-none opacity-20">
+<span class="material-symbols-outlined text-8xl text-primary-container/40 rotate-12">delivery_dining</span>
+</div>
+</main>
+<!-- Fixed Action Bottom Bar -->
+<footer class="fixed bottom-0 left-0 w-full bg-white/80 backdrop-blur-xl z-50 p-6 shadow-[0px_-20px_40px_rgba(77,33,42,0.06)]">
+<div class="max-w-2xl mx-auto">
+<button class="w-full py-5 rounded-xl bg-gradient-to-br from-[#ba001c] to-[#ff7670] text-white font-extrabold text-lg uppercase tracking-widest shadow-xl active:scale-95 transition-transform flex items-center justify-center gap-3">
+                Save and Continue
+                <span class="material-symbols-outlined font-bold">chevron_right</span>
+</button>
+</div>
+</footer>
+</body></html>

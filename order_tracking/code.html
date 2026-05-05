@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-low": "#ffecee",
+                    "background": "#fff4f4",
+                    "outline": "#a06770",
+                    "tertiary-container": "#ffd709",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-tint": "#ba001c",
+                    "outline-variant": "#dd9ca6",
+                    "on-error": "#ffefec",
+                    "error": "#b02500",
+                    "on-surface": "#4d212a",
+                    "secondary-fixed": "#c4d0ff",
+                    "on-tertiary-container": "#5b4b00",
+                    "tertiary": "#6c5a00",
+                    "secondary": "#0b50d5",
+                    "primary-dim": "#a40017",
+                    "surface-variant": "#ffd2d7",
+                    "primary": "#ba001c",
+                    "surface-container": "#ffe1e4",
+                    "surface-container-high": "#ffd9de",
+                    "error-dim": "#b92902",
+                    "inverse-surface": "#24020a",
+                    "on-tertiary-fixed-variant": "#665500",
+                    "tertiary-dim": "#5e4e00",
+                    "secondary-container": "#c4d0ff",
+                    "on-secondary-fixed": "#002c83",
+                    "on-primary": "#ffefee",
+                    "on-tertiary": "#fff2cd",
+                    "primary-fixed-dim": "#ff5a57",
+                    "primary-container": "#ff7670",
+                    "inverse-primary": "#ff5352",
+                    "on-tertiary-fixed": "#453900",
+                    "surface-container-highest": "#ffd2d7",
+                    "primary-fixed": "#ff7670",
+                    "secondary-dim": "#0044bf",
+                    "on-error-container": "#520c00",
+                    "on-secondary-fixed-variant": "#0045c1",
+                    "on-secondary-container": "#003dac",
+                    "on-primary-container": "#4e0006",
+                    "error-container": "#f95630",
+                    "on-primary-fixed-variant": "#600009",
+                    "secondary-fixed-dim": "#b1c2ff",
+                    "on-surface-variant": "#814c55",
+                    "inverse-on-surface": "#cb8c96",
+                    "tertiary-fixed-dim": "#efc900",
+                    "on-primary-fixed": "#000000",
+                    "on-secondary": "#f1f2ff",
+                    "tertiary-fixed": "#ffd709",
+                    "surface": "#fff4f4",
+                    "surface-dim": "#ffc6ce",
+                    "surface-bright": "#fff4f4",
+                    "on-background": "#4d212a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Plus Jakarta Sans"],
+                    "label": ["Plus Jakarta Sans"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-background text-on-surface antialiased min-h-screen">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-[#fff4f4]/80 backdrop-blur-xl shadow-sm">
+<div class="flex items-center gap-3">
+<span class="text-2xl font-black tracking-tighter text-[#ba001c]">MIIAM</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-slate-600 hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-slate-600 hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<main class="pt-20 pb-32 px-4 md:px-8 max-w-6xl mx-auto">
+<!-- Split Layout Map & Tracking -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Left: Real-time Map Area -->
+<div class="lg:col-span-7 h-[400px] lg:h-[700px] relative rounded-lg overflow-hidden shadow-[0_20_40_rgba(77,33,42,0.06)] bg-surface-container">
+<img class="w-full h-full object-cover grayscale opacity-60" data-alt="Modern minimalist city map view with a moving delivery icon highlighted in bright red on a clean white and soft red background" data-location="London" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDouC4Qq1OqQFzOuN8I8uY55mXRe_W7_G7qo15fYxr83q4dr35A3y_IVDJ1PMgK6-HyWi5w_xscRzFT_Ta3ZKqYVvEihisOf19rqjWNuM_tAuJKxSqq_CPm_bBw7irYCzAkBoqTbUq41Pq2zPz5IjQ1qhtf0qBOw-LsVNtZBC-607aiwzCnQs17_CuciWL-SpWZupct1ddhc2Q55yfJQfEzN3u8eDufV3GSJ5lHwebQvF_OwRMOErmycdbzITeKx7P_XIAteY-UAaM"/>
+<!-- Floating Map Overlays -->
+<div class="absolute inset-0 flex flex-col justify-between p-6 pointer-events-none">
+<div class="flex justify-between items-start">
+<div class="bg-white/90 backdrop-blur-md p-4 rounded-lg shadow-lg pointer-events-auto">
+<p class="text-[10px] font-bold uppercase tracking-widest text-primary opacity-60">Estimated Arrival</p>
+<p class="text-3xl font-extrabold text-on-surface">12 mins</p>
+</div>
+<div class="bg-white/90 backdrop-blur-md p-2 rounded-full shadow-lg pointer-events-auto">
+<span class="material-symbols-outlined text-primary">my_location</span>
+</div>
+</div>
+<!-- Rider Status Floating Bubble -->
+<div class="bg-white/90 backdrop-blur-xl p-4 rounded-lg shadow-xl pointer-events-auto flex items-center gap-4 max-w-xs self-center lg:self-start">
+<div class="relative">
+<img class="w-12 h-12 rounded-full object-cover border-2 border-primary" data-alt="Portrait of a friendly delivery rider wearing a professional uniform with a warm smile and helmet" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAK6SVbz9Uph27mEaOVdKJm1NtZ1Y1RljF8oC7j4S3O5yNgJwM2ljK7QjB2LuivqLRdRBKXUXvGsk8yJVvtfStK_XDBFHc3WQNE1u1lLrGVbhhH4OUEvnWRJN-YD3r4dZvU9chbw4HSFQPEsK-Ai99MdASF5-jqB4vA23dX5KcSj79jNtc68lf62GjigZ3wuAxfH5ft2HLCnoUv9cqzgJDa9loYNq8vrZmON8nZyAxdftKdINsj2i5epVaJOEBZNfZkHcH5Q-Emws"/>
+<div class="absolute -bottom-1 -right-1 bg-tertiary-container w-5 h-5 rounded-full flex items-center justify-center border-2 border-white">
+<span class="material-symbols-outlined text-[12px] font-bold">star</span>
+</div>
+</div>
+<div>
+<p class="font-bold text-on-surface">Marco V.</p>
+<p class="text-xs text-on-surface-variant">MIIAM Delivery Partner</p>
+</div>
+<div class="ml-auto flex gap-2">
+<button class="w-10 h-10 rounded-full bg-secondary-container text-secondary flex items-center justify-center">
+<span class="material-symbols-outlined">call</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Animated Rider Path (Visual Representation) -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none" viewbox="0 0 100 100">
+<path d="M 20 80 Q 50 50 80 20" fill="none" stroke="url(#gradient)" stroke-dasharray="2,2" stroke-width="0.5"></path>
+<defs>
+<lineargradient id="gradient" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" style="stop-color:#ba001c;stop-opacity:1"></stop>
+<stop offset="100%" style="stop-color:#ff7670;stop-opacity:1"></stop>
+</lineargradient>
+</defs>
+<circle class="animate-ping" cx="50" cy="50" fill="#ba001c" r="1.5"></circle>
+<circle cx="50" cy="50" fill="#ba001c" r="1"></circle>
+</svg>
+</div>
+<!-- Right: Multi-Vendor Timeline & Details -->
+<div class="lg:col-span-5 flex flex-col gap-6">
+<!-- Order Header -->
+<div class="bg-surface-container-lowest p-8 rounded-lg">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h2 class="text-2xl font-bold tracking-tight text-on-surface">Order #KN-7729</h2>
+<p class="text-on-surface-variant">Placed at 12:45 PM Today</p>
+</div>
+<span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">In Progress</span>
+</div>
+<!-- Multi-Vendor Bento Blocks -->
+<div class="grid grid-cols-2 gap-4 mb-8">
+<div class="bg-surface-container-low p-4 rounded-lg">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary text-xl">restaurant</span>
+<span class="text-xs font-bold uppercase tracking-tighter opacity-60">Food</span>
+</div>
+<p class="font-bold text-sm">Gourmet Burger Kitchen</p>
+<p class="text-[10px] text-on-surface-variant">2x Items</p>
+</div>
+<div class="bg-secondary-container/30 p-4 rounded-lg">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-secondary text-xl">local_mall</span>
+<span class="text-xs font-bold uppercase tracking-tighter opacity-60">Retail</span>
+</div>
+<p class="font-bold text-sm">Tech Central Hub</p>
+<p class="text-[10px] text-on-surface-variant">1x USB-C Cable</p>
+</div>
+</div>
+<!-- Status Timeline -->
+<div class="space-y-8 relative">
+<!-- Connecting Line -->
+<div class="absolute left-4 top-2 bottom-2 w-0.5 bg-surface-container-high"></div>
+<!-- Step 1: Completed -->
+<div class="relative pl-12">
+<div class="absolute left-0 w-8 h-8 rounded-full bg-primary flex items-center justify-center z-10 shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-white text-sm">check</span>
+</div>
+<div>
+<h4 class="font-bold text-on-surface">Order Accepted</h4>
+<p class="text-sm text-on-surface-variant">MIIAM system has confirmed your items from 2 vendors.</p>
+<p class="text-[10px] font-medium text-primary mt-1">12:46 PM</p>
+</div>
+</div>
+<!-- Step 2: Completed -->
+<div class="relative pl-12">
+<div class="absolute left-0 w-8 h-8 rounded-full bg-primary flex items-center justify-center z-10 shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-white text-sm">shopping_basket</span>
+</div>
+<div>
+<h4 class="font-bold text-on-surface">Picking Up</h4>
+<p class="text-sm text-on-surface-variant">Marco has picked up your burger and is heading to the next stop.</p>
+<p class="text-[10px] font-medium text-primary mt-1">12:58 PM</p>
+</div>
+</div>
+<!-- Step 3: Active -->
+<div class="relative pl-12">
+<div class="absolute left-0 w-8 h-8 rounded-full bg-white border-4 border-primary flex items-center justify-center z-10 ring-4 ring-primary-container/20">
+<div class="w-2 h-2 bg-primary rounded-full"></div>
+</div>
+<div>
+<h4 class="font-bold text-primary">On the Way</h4>
+<p class="text-sm text-on-surface-variant">Your rider is currently navigating traffic. Hang tight!</p>
+<div class="mt-3 flex items-center gap-2">
+<span class="flex h-2 w-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-[10px] font-bold text-primary uppercase tracking-widest">Live Updates</span>
+</div>
+</div>
+</div>
+<!-- Step 4: Future -->
+<div class="relative pl-12 opacity-40">
+<div class="absolute left-0 w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">home</span>
+</div>
+<div>
+<h4 class="font-bold text-on-surface">Delivered</h4>
+<p class="text-sm text-on-surface-variant">Handover at your doorstep.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Button -->
+<div class="bg-surface-container-lowest p-6 rounded-lg flex flex-col gap-4">
+<button class="w-full bg-gradient-to-r from-primary to-primary-container text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 hover:opacity-90 transition-all">
+                        Support Chat
+                    </button>
+<button class="w-full bg-transparent border-2 border-surface-container-high text-on-surface font-bold py-4 rounded-xl hover:bg-surface-container-low transition-all">
+                        Order Details
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-end px-4 pb-6 pt-2 bg-white/90 backdrop-blur-2xl shadow-[0_-10px_40px_rgba(77,33,42,0.04)] rounded-t-[3rem]">
+<div class="flex flex-col items-center justify-center text-slate-400">
+<span class="material-symbols-outlined">explore</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Explore</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Orders</span>
+</div>
+<!-- Active Activity Tab -->
+<div class="flex flex-col items-center justify-center bg-[#ba001c] text-white rounded-full w-12 h-12 mb-1 shadow-lg shadow-[#ba001c]/20">
+<span class="material-symbols-outlined">local_shipping</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400">
+<span class="material-symbols-outlined">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Account</span>
+</div>
+</nav>
+<!-- Floating Emojis as "Kinetic Debris" -->
+<div class="fixed bottom-24 right-8 pointer-events-none hidden lg:block">
+<div class="w-16 h-16 bg-white/20 backdrop-blur-lg rounded-full flex items-center justify-center text-2xl border border-white/10 shadow-2xl">
+            🍔
+        </div>
+</div>
+<div class="fixed top-32 left-12 pointer-events-none hidden lg:block opacity-60">
+<div class="w-12 h-12 bg-white/20 backdrop-blur-lg rounded-full flex items-center justify-center text-xl border border-white/10 shadow-2xl">
+            ⚡
+        </div>
+</div>
+</body></html>
