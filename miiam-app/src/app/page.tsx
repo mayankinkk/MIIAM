@@ -78,58 +78,63 @@ export default function LandingPage() {
                 {t.getApp}
               </Link>
             )}
-</div>
-          {/* More Vendor Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-            <Link href="/app/vendor/r1" className="group relative overflow-hidden rounded-2xl bg-white shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-slate-100 hover:shadow-[0_8px_40px_rgba(0,0,0,0.1)] transition-shadow duration-500">
-              <div className="aspect-[2/1] overflow-hidden">
-                <img
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                  src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800&q=80"
-                  alt="Biryani House"
-                />
-              </div>
-              <div className="p-5 flex justify-between items-center">
-                <div>
-                  <span className="bg-orange-100 text-orange-600 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider">Popular</span>
-                  <h3 className="text-lg font-bold text-slate-800 mt-2">Biryani House</h3>
-                  <div className="flex items-center gap-2 mt-1 text-slate-500 text-sm">
-                    <span className="flex items-center gap-1 text-green-600 font-bold">
-                      <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                      4.7
-                    </span>
-                    <span className="text-slate-300">•</span>
-                    <span>25-35 mins</span>
-                  </div>
-                </div>
-                <span className="text-slate-400 font-bold">From ₹180</span>
-              </div>
-            </Link>
+          </div>
+        </div>
+      </nav>
 
-            <Link href="/app/vendor/r3" className="group relative overflow-hidden rounded-2xl bg-white shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-slate-100 hover:shadow-[0_8px_40px_rgba(0,0,0,0.1)] transition-shadow duration-500">
-              <div className="aspect-[2/1] overflow-hidden">
-                <img
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                  src="https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=800&q=80"
-                  alt="Chinese Corner"
-                />
+      <main className="pt-[72px] overflow-x-hidden">
+
+        {/* ── Hero Section ── */}
+        <section className="relative min-h-[85vh] flex items-center">
+          {/* Background */}
+          <div className="absolute inset-0">
+            <div className="absolute inset-0 bg-gradient-to-br from-[#0f0f0f] via-[#1a0a0e] to-[#0a0a0a]" />
+            <img
+              src="/images/food_hero.png"
+              alt="Food"
+              className="absolute inset-0 w-full h-full object-cover opacity-[0.12] mix-blend-luminosity"
+              onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200&q=80"; }}
+            />
+          </div>
+
+          {/* Decorative glow */}
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#ba001c]/20 rounded-full blur-[120px] pointer-events-none" />
+          <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-[#0b50d5]/15 rounded-full blur-[100px] pointer-events-none" />
+
+          <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 w-full">
+            <div className="max-w-2xl">
+              <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full mb-8 border border-white/10">
+                <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                <span className="text-white/80 text-xs font-semibold tracking-wide">Now serving your city</span>
               </div>
-              <div className="p-5 flex justify-between items-center">
-                <div>
-                  <span className="bg-red-100 text-red-600 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider">Trending</span>
-                  <h3 className="text-lg font-bold text-slate-800 mt-2">Chinese Corner</h3>
-                  <div className="flex items-center gap-2 mt-1 text-slate-500 text-sm">
-                    <span className="flex items-center gap-1 text-green-600 font-bold">
-                      <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                      4.8
-                    </span>
-                    <span className="text-slate-300">•</span>
-                    <span>20-30 mins</span>
-                  </div>
-                </div>
-                <span className="text-slate-400 font-bold">From ₹160</span>
+
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black text-white tracking-tight leading-[1.05] mb-6">
+                {t.heroTitle1}
+                <br />
+                <span className="bg-gradient-to-r from-[#ff5f6d] to-[#ffc371] bg-clip-text text-transparent">{t.heroTitle2}</span>
+              </h1>
+
+              <p className="text-white/50 text-lg sm:text-xl max-w-lg mb-10 leading-relaxed font-medium">
+                {t.heroDesc}
+              </p>
+
+              <div className="flex flex-wrap gap-4">
+                <Link
+                  href="/app/food"
+                  className="group flex items-center gap-3 bg-[#ba001c] hover:bg-[#d0001f] text-white pl-7 pr-5 py-4 rounded-2xl font-bold text-base shadow-xl shadow-[#ba001c]/25 hover:shadow-[#ba001c]/40 active:scale-[0.97] transition-all duration-200"
+                >
+                  {t.orderFood}
+                  <span className="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                </Link>
+                <Link
+                  href="/services"
+                  className="group flex items-center gap-3 bg-white/10 hover:bg-white/15 backdrop-blur-md text-white border border-white/20 pl-7 pr-5 py-4 rounded-2xl font-bold text-base active:scale-[0.97] transition-all duration-200"
+                >
+                  {t.bookService}
+                  <span className="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                </Link>
               </div>
-            </Link>
+            </div>
           </div>
         </section>
 
