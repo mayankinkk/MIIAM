@@ -164,6 +164,22 @@ export default function PharmacyAdmin() {
   };
 
   const handleImageUpload = async (file: File): Promise<string | null> => {
+    const fileExt = file.name.split(".").pop();
+    const fileName = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
+    const filePath = `pharmacy-products/${fileName}`;
+    
+    const { error: uploadError } = await supabase.storage
+      .from("pharmacy-images")
+      .upload(filePath, file);
+
+    if (uploadError) {
+      console.error("Upload error:", uploadError);
+      return null;
+    }
+
+    const { data } = supabase.storage.from("pharmacy-images").getPublicUrl(filePath);
+    return data.publicUrl;
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
