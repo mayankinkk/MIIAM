@@ -479,3 +479,62 @@ INSERT INTO storage.buckets (id, name, public) VALUES ('pharmacy-images', 'pharm
 -- Allow public access to pharmacy-images bucket
 CREATE POLICY "Public access to pharmacy-images" ON storage.objects FOR SELECT USING (bucket_id = 'pharmacy-images');
 CREATE POLICY "Allow uploads to pharmacy-images" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'pharmacy-images');
+
+-- SAMPLE VENDORS AND MENU ITEMS FOR TESTING
+-- Run this to add sample data to your database
+
+-- Insert sample vendors
+INSERT INTO vendors (id, owner_name, phone, email, shop_name, address, cuisine, status) VALUES
+('r1', 'Rahul Sharma', '9876543210', 'rahul@biranihouse.com', 'Biryani House', '123 MG Road, Delhi', 'North Indian', 'active'),
+('r2', 'Priya Singh', '9876543211', 'priya@pizzaparadise.com', 'Pizza Paradise', '456 NS Road, Mumbai', 'Italian', 'active'),
+('r3', 'Mike Chen', '9876543212', 'mike@chinesecorner.com', 'Chinese Corner', '789 BC Ave, Bangalore', 'Chinese', 'active'),
+('r4', 'Anita Desai', '9876543213', 'anita@burgerbarn.com', 'Burger Barn', '321 KL Street, Chennai', 'American', 'active'),
+('r5', 'Vikram Singh', '9876543214', 'vikram@icecreamscoop.com', 'Ice Cream Scoop', '555 PQ Road, Hyderabad', 'Desserts', 'active');
+
+-- Insert sample menu items for Biryani House (r1)
+INSERT INTO menu_items (vendor_id, name, price, category, image_url) VALUES
+('r1', 'Chicken Biryani', 250, 'Biryani', 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=400'),
+('r1', 'Mutton Biryani', 350, 'Biryani', 'https://images.unsplash.com/photo-1583134253734-8a8d8d5b09f5?w=400'),
+('r1', 'Veg Biryani', 180, 'Biryani', 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400'),
+('r1', 'Chicken Fry', 150, 'Starters', 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=400'),
+('r1', 'Dal Makhani', 120, 'Curries', 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400'),
+('r1', 'Butter Chicken', 280, 'Curries', 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=400'),
+('r1', 'Garlic Naan', 40, 'Breads', 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=400'),
+('r1', 'Masala Papad', 30, 'Starters', 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=400');
+
+-- Insert sample menu items for Pizza Paradise (r2)
+INSERT INTO menu_items (vendor_id, name, price, category, image_url) VALUES
+('r2', 'Margherita Pizza', 299, 'Pizza', 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400'),
+('r2', 'Pepperoni Pizza', 399, 'Pizza', 'https://images.unsplash.com/photo-1628840042765-356cda07504e?w=400'),
+('r2', 'Veggie Supreme', 349, 'Pizza', 'https://images.unsplash.com/photo-1511689660979-10d2b1aada49?w=400'),
+('r2', 'Chicken Wings', 199, 'Starters', 'https://images.unsplash.com/photo-1527477396000-e27163b481c2?w=400'),
+('r2', 'Garlic Bread', 99, 'Starters', 'https://images.unsplash.com/photo-1619535860434-ba1d8fa12536?w=400'),
+('r2', 'Pasta Alfredo', 249, 'Pasta', 'https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=400'),
+('r2', 'Tiramisu', 149, 'Desserts', 'https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=400');
+
+-- Insert sample menu items for Chinese Corner (r3)
+INSERT INTO menu_items (vendor_id, name, price, category, image_url) VALUES
+('r3', 'Chicken Fried Rice', 180, 'Rice', 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=400'),
+('r3', 'Schezwan Noodles', 160, 'Noodles', 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400'),
+('r3', 'Manchurian', 180, 'Starters', 'https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=400'),
+('r3', 'Spring Rolls', 120, 'Starters', 'https://images.unsplash.com/photo-1544025162-d76694265947?w=400'),
+('r3', 'Chilli Chicken', 220, 'Main Course', 'https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=400'),
+('r3', 'Hot & Sour Soup', 80, 'Soups', 'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400');
+
+-- Insert sample menu items for Burger Barn (r4)
+INSERT INTO menu_items (vendor_id, name, price, category, image_url) VALUES
+('r4', 'Classic Cheeseburger', 199, 'Burgers', 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400'),
+('r4', 'Chicken Burger', 179, 'Burgers', 'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400'),
+('r4', 'Veggie Burger', 149, 'Burgers', 'https://images.unsplash.com/photo-1550547660-d9450f859349?w=400'),
+('r4', 'Loaded Fries', 99, 'Sides', 'https://images.unsplash.com/photo-1573080496219-bb080dd6f248?w=400'),
+('r4', 'Onion Rings', 79, 'Sides', 'https://images.unsplash.com/photo-1639024471283-03518883512d?w=400'),
+('r4', 'Chocolate Milkshake', 129, 'Drinks', 'https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=400');
+
+-- Insert sample menu items for Ice Cream Scoop (r5)
+INSERT INTO menu_items (vendor_id, name, price, category, image_url) VALUES
+('r5', 'Vanilla Scoop', 50, 'Ice Cream', 'https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=400'),
+('r5', 'Chocolate Scoop', 50, 'Ice Cream', 'https://images.unsplash.com/photo-1548365328-8c6db3220e4c?w=400'),
+('r5', 'Strawberry Scoop', 50, 'Ice Cream', 'https://images.unsplash.com/photo-1488900128323-21503983a07e?w=400'),
+('r5', 'Sundae', 120, 'Ice Cream', 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400'),
+('r5', 'Waffle with Ice Cream', 150, 'Desserts', 'https://images.unsplash.com/photo-1551024601-564d6dbf303f?w=400'),
+('r5', 'Cold Coffee', 80, 'Drinks', 'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=400');

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { useCartStore } from "@/lib/store/cartStore";
 
 const supabase = createClient();
 
@@ -25,9 +26,9 @@ const flowerCategories = [
 
 export default function FlowersPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [cart, setCart] = useState<any[]>([]);
   const [flowers, setFlowers] = useState<Flower[]>([]);
   const [loading, setLoading] = useState(true);
+  const { addItem, items, updateQuantity, totalItems } = useCartStore();
 
   useEffect(() => {
     fetchFlowers();
@@ -53,7 +54,15 @@ export default function FlowersPage() {
     : flowers.filter(f => f.category?.toLowerCase().replace(" ", "") === selectedCategory);
 
   const addToCart = (flower: any) => {
-    setCart([...cart, flower]);
+    addItem({
+      id: flower.id,
+      menu_item_id: flower.id,
+      name: flower.name,
+      price: flower.price,
+      image_url: flower.image_url,
+      vendor_id: "flowers",
+      vendor_name: "Flowers & Gifts",
+    });
   };
 
   return (
@@ -65,14 +74,14 @@ export default function FlowersPage() {
             <span className="material-symbols-outlined">arrow_back</span>
           </Link>
           <h1 className="text-xl font-black text-[#4d212a]">Flowers & Gifts</h1>
-          <button className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center relative">
+          <Link href="/app/cart" className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center relative">
             <span className="material-symbols-outlined">shopping_cart</span>
-            {cart.length > 0 && (
+            {totalItems() > 0 && (
               <span className="absolute -top-1 -right-1 w-5 h-5 bg-[#ba001c] text-white text-xs rounded-full flex items-center justify-center">
-                {cart.length}
+                {totalItems()}
               </span>
             )}
-          </button>
+          </Link>
         </div>
       </header>
 
@@ -141,6 +150,21 @@ export default function FlowersPage() {
           </div>
         )}
       </main>
+
+      {totalItems() > 0 && (
+        <Link
+          href="/app/cart"
+          className="fixed bottom-6 left-4 right-4 z-50 flex items-center justify-between bg-[#ba001c] text-white px-5 py-4 rounded-2xl shadow-2xl shadow-[#ba001c]/40"
+        >
+          <div className="flex items-center gap-3">
+            <span className="bg-white text-[#ba001c] font-black text-xs px-2 py-0.5 rounded-full">
+              {totalItems()}
+            </span>
+            <span className="font-bold">View Cart</span>
+          </div>
+          <span className="font-black text-lg">Checkout</span>
+        </Link>
+      )}
     </div>
   );
 }
