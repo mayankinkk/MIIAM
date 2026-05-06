@@ -11,7 +11,7 @@ interface OrderItem {
   quantity: number;
   unit_price: number;
   special_notes: string | null;
-  status: "pending" | "available" | "unavailable" | "different_brand";
+  status: "pending" | "picked" | "unavailable" | "different_brand";
   picked: boolean;
   actual_price: number | null;
   menu_item?: {
@@ -27,6 +27,8 @@ interface Order {
   delivery_fee: number;
   special_instructions: string | null;
   placed_at: string;
+  delivered_at?: string;
+  customer_collected?: number;
   vendor?: {
     name: string;
     address: string;
@@ -36,73 +38,274 @@ interface Order {
     street: string;
     city: string;
   };
+  customer_phone?: string;
   items?: OrderItem[];
 }
 
-const STATUS_FLOW = ["pending", "accepted", "picking_up", "shopping", "on_the_way", "delivered"];
+const mockOrders: Order[] = [
+  {
+    id: "ORD-2024-001",
+    status: "preparing",
+    total_amount: 450,
+    delivery_fee: 40,
+    special_instructions: "Please ring doorbell twice",
+    placed_at: new Date().toISOString(),
+    vendor: { name: "DMart Ready", address: "Sector 18, Noida", phone: "+91 98765 43210" },
+    address: { street: "Flat 402, Silver Oaks", city: "Noida" },
+    customer_phone: "+91 91234 56789",
+    items: [
+      { id: "1", menu_item_id: "1", quantity: 2, unit_price: 85, special_notes: null, status: "pending", picked: false, actual_price: null, menu_item: { name: "Basmati Rice 5kg", category: "Grocery" } },
+      { id: "2", menu_item_id: "2", quantity: 1, unit_price: 120, special_notes: null, status: "pending", picked: false, actual_price: null, menu_item: { name: "Dal Masoor 1kg", category: "Grocery" } },
+      { id: "3", menu_item_id: "3", quantity: 3, unit_price: 45, special_notes: null, status: "pending", picked: false, actual_price: null, menu_item: { name: "Eggs (12 pack)", category: "Dairy" } },
+    ],
+  },
+  {
+    id: "ORD-2024-002",
+    status: "shopping",
+    total_amount: 280,
+    delivery_fee: 35,
+    special_instructions: "Leave at security",
+    placed_at: new Date(Date.now() - 1800000).toISOString(),
+    vendor: { name: "Big Bazaar", address: "Mall of India", phone: "+91 98765 11111" },
+    address: { street: "Tower A, Tech Park", city: "Noida" },
+    customer_phone: "+91 99887 76655",
+    items: [
+      { id: "4", menu_item_id: "4", quantity: 1, unit_price: 150, special_notes: null, status: "picked", picked: true, actual_price: 145, menu_item: { name: "Sunflower Oil 1L", category: "Grocery" } },
+      { id: "5", menu_item_id: "5", quantity: 2, unit_price: 55, special_notes: null, status: "picked", picked: true, actual_price: 110, menu_item: { name: "Sugar 1kg", category: "Grocery" } },
+    ],
+  },
+  {
+    id: "ORD-2024-003",
+    status: "delivered",
+    total_amount: 520,
+    delivery_fee: 45,
+    special_instructions: null,
+    placed_at: new Date(Date.now() - 7200000).toISOString(),
+    delivered_at: new Date(Date.now() - 3600000).toISOString(),
+    customer_collected: 565,
+    vendor: { name: "Reliance Fresh", address: "Sector 25", phone: "+91 98765 22222" },
+    address: { street: "House 101, Green Village", city: "Noida" },
+    customer_phone: "+91 90000 12345",
+    items: [
+      { id: "6", menu_item_id: "6", quantity: 1, unit_price: 299, special_notes: null, status: "picked", picked: true, actual_price: 299, menu_item: { name: "Dettol Soap Pack", category: "Personal Care" } },
+    ],
+  },
+];
 
 export default function RiderOrdersPage() {
   const supabase = createClient();
   const router = useRouter();
-  const [orders, setOrders] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"available" | "shopping" | "completed">("available");
+  const [orders, setOrders] = useState<Order[]>(mockOrders);
+  const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState<"available" | "shopping" | "completed" | "history">("available");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [dateFilter, setDateFilter] = useState<"today" | "week" | "month">("today");
+  const [showAutoSkip, setShowAutoSkip] = useState(false);
+  const [autoSkipTime, setAutoSkipTime] = useState(30);
+  const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
+  const [showCashCollectModal, setShowCashCollectModal] = useState(false);
+  const [cashToCollect, setCashToCollect] = useState(0);
+  const [currentOrderId, setCurrentOrderId] = useState<string | null>(null);
+  const [showIssueModal, setShowIssueModal] = useState(false);
+  const [issueType, setIssueType] = useState("");
 
   useEffect(() => {
     loadOrders();
   }, [supabase]);
 
   async function loadOrders() {
+    setLoading(true);
     const { data } = await supabase
       .from("orders")
       .select("*, vendor:vendors(*), address:delivery_address_id(*), items:order_items(*, menu_item:menu_items(*))")
-      .in("status", ["preparing", "picking_up", "shopping"])
       .order("placed_at", { ascending: false });
-    if (data) setOrders(data);
+    if (data && data.length > 0) {
+      setOrders(data);
+    }
     setLoading(false);
   }
 
   async function acceptOrder(orderId: string) {
-    await supabase.from("orders").update({ status: "picking_up", rider_id: "current-rider" }).eq("id", orderId);
-    loadOrders();
+    setOrders(orders.map(o => o.id === orderId ? { ...o, status: "shopping" } : o));
+    alert("Order accepted! Start shopping.");
   }
 
-  if (loading) return <div className="p-6">Loading orders...</div>;
+  async function batchAccept() {
+    if (selectedOrders.length === 0) return;
+    setOrders(orders.map(o => selectedOrders.includes(o.id) ? { ...o, status: "shopping" } : o));
+    alert(`${selectedOrders.length} orders accepted!`);
+    setSelectedOrders([]);
+  }
 
-  const availableOrders = orders.filter(o => o.status === "preparing");
-  const shoppingOrders = orders.filter(o => ["picking_up", "shopping"].includes(o.status));
-  const completedOrders = orders.filter(o => o.status === "delivered");
+  function toggleSelectOrder(orderId: string) {
+    setSelectedOrders(prev => 
+      prev.includes(orderId) ? prev.filter(id => id !== orderId) : [...prev, orderId]
+    );
+  }
+
+  async function updateItemStatus(orderId: string, itemId: string, status: string, actualPrice?: number) {
+    setOrders(orders.map(o => {
+      if (o.id === orderId) {
+        return {
+          ...o,
+          items: o.items?.map(i => i.id === itemId ? { ...i, status: status as any, actual_price: actualPrice ?? i.actual_price } : i)
+        };
+      }
+      return o;
+    }));
+  }
+
+  async function markDelivered(orderId: string) {
+    const order = orders.find(o => o.id === orderId);
+    if (order) {
+      const totalSpent = order.items?.reduce((sum, item) => sum + (item.actual_price || 0) * item.quantity, 0) || 0;
+      setCurrentOrderId(orderId);
+      setCashToCollect(order.total_amount - totalSpent + (order.delivery_fee || 0));
+      setShowCashCollectModal(true);
+    }
+  }
+
+  async function confirmDelivery() {
+    setOrders(orders.map(o => o.id === currentOrderId ? { ...o, status: "delivered", delivered_at: new Date().toISOString(), customer_collected: cashToCollect } : o));
+    setShowCashCollectModal(false);
+    alert(`Delivery complete! ₹${cashToCollect} collected from customer.`);
+  }
+
+  const filteredOrders = orders.filter(o => {
+    if (searchQuery) {
+      const search = searchQuery.toLowerCase();
+      return o.id.toLowerCase().includes(search) || 
+             o.vendor?.name?.toLowerCase().includes(search) ||
+             o.address?.street?.toLowerCase().includes(search);
+    }
+    return true;
+  });
+
+  const availableOrders = filteredOrders.filter(o => o.status === "preparing");
+  const shoppingOrders = filteredOrders.filter(o => o.status === "shopping");
+  const completedOrders = filteredOrders.filter(o => o.status === "delivered");
+
+  const todayEarnings = completedOrders
+    .filter(o => new Date(o.delivered_at || "").toDateString() === new Date().toDateString())
+    .reduce((sum, o) => sum + (o.customer_collected || 0) - (o.items?.reduce((s, i) => s + (i.actual_price || 0) * i.quantity, 0) || 0), 0);
 
   return (
     <div className="min-h-screen bg-[#fff4f4]">
-      <header className="bg-[#0b50d5] text-white p-6 pb-8 rounded-b-[3rem]">
-        <div className="flex justify-between items-center">
-          <Link href="/rider" className="text-3xl font-black tracking-tighter">MIIAM</Link>
-          <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-            <span className="material-symbols-outlined">person</span>
+      <header className="bg-[#0b50d5] text-white p-4 pb-6 rounded-b-[3rem]">
+        <div className="flex justify-between items-center mb-4">
+          <Link href="/rider/dashboard" className="text-2xl font-black tracking-tighter">MIIAM</Link>
+          <div className="flex items-center gap-3">
+            <button onClick={() => setShowAutoSkip(!showAutoSkip)} className="relative">
+              <span className="material-symbols-outlined">timer</span>
+              {showAutoSkip && <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>}
+            </button>
+            <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+              <span className="material-symbols-outlined">person</span>
+            </div>
           </div>
         </div>
-        <div className="flex gap-2 mt-6 bg-white/10 p-1 rounded-xl">
-          {(["available", "shopping", "completed"] as const).map(tab => (
+
+        {/* Search */}
+        <div className="relative mb-3">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search order ID or customer..."
+            className="w-full pl-10 pr-4 py-2 rounded-xl text-sm text-slate-800"
+          />
+        </div>
+
+        {/* Date Filter */}
+        <div className="flex gap-2">
+          {(["today", "week", "month"] as const).map(p => (
             <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`flex-1 py-2 rounded-lg text-sm font-bold capitalize ${
-                activeTab === tab ? "bg-white text-[#0b50d5]" : "text-white/70"
+              key={p}
+              onClick={() => setDateFilter(p)}
+              className={`flex-1 py-1.5 rounded-lg text-xs font-bold ${
+                dateFilter === p ? "bg-white text-[#0b50d5]" : "bg-white/10 text-white/70"
               }`}
             >
-              {tab} {tab === "available" ? `(${availableOrders.length})` : tab === "shopping" ? `(${shoppingOrders.length})` : `(${completedOrders.length})`}
+              {p === "today" ? "Today" : p === "week" ? "This Week" : "This Month"}
             </button>
           ))}
         </div>
       </header>
 
-      <main className="p-6 space-y-4 pb-32">
+      {/* Auto Skip Settings */}
+      {showAutoSkip && (
+        <div className="mx-4 -mt-2 bg-white rounded-xl p-4 shadow-lg">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="font-bold text-sm">Auto-Skip Orders</p>
+              <p className="text-xs text-slate-500">Decline after {autoSkipTime} seconds</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <button onClick={() => setAutoSkipTime(Math.max(10, autoSkipTime - 5))} className="w-8 h-8 bg-slate-100 rounded-full font-bold">-</button>
+              <span className="font-bold w-8 text-center">{autoSkipTime}s</span>
+              <button onClick={() => setAutoSkipTime(Math.min(60, autoSkipTime + 5))} className="w-8 h-8 bg-slate-100 rounded-full font-bold">+</button>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 mt-2">
+            <span className={`w-2 h-2 rounded-full ${autoSkipTime > 0 ? "bg-green-500" : "bg-slate-300"}`}></span>
+            <span className="text-xs text-slate-500">{autoSkipTime > 0 ? "Auto-skip enabled" : "Disabled"}</span>
+          </div>
+        </div>
+      )}
+
+      {/* Quick Stats */}
+      <div className="px-4 py-3 flex gap-3 overflow-x-auto">
+        <div className="bg-white px-4 py-2 rounded-xl shadow-sm min-w-fit">
+          <p className="text-[10px] text-slate-400">TODAY'S EARNINGS</p>
+          <p className="font-black text-green-600">₹{todayEarnings}</p>
+        </div>
+        <div className="bg-white px-4 py-2 rounded-xl shadow-sm min-w-fit">
+          <p className="text-[10px] text-slate-400">COMPLETED</p>
+          <p className="font-black text-[#0b50d5]">{completedOrders.length}</p>
+        </div>
+        <div className="bg-white px-4 py-2 rounded-xl shadow-sm min-w-fit">
+          <p className="text-[10px] text-slate-400">IN PROGRESS</p>
+          <p className="font-black text-purple-600">{shoppingOrders.length}</p>
+        </div>
+      </div>
+
+      <main className="p-4 space-y-4 pb-32">
+        {/* Tabs */}
+        <div className="flex gap-2 bg-white p-1 rounded-xl">
+          {(["available", "shopping", "completed", "history"] as const).map(tab => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`flex-1 py-2 rounded-lg text-xs font-bold capitalize ${
+                activeTab === tab ? "bg-[#0b50d5] text-white" : "text-slate-500"
+              }`}
+            >
+              {tab} {tab === "available" ? `(${availableOrders.length})` : tab === "shopping" ? `(${shoppingOrders.length})` : tab === "completed" ? `(${completedOrders.length})` : ""}
+            </button>
+          ))}
+        </div>
+
+        {/* Batch Accept Bar */}
+        {activeTab === "available" && selectedOrders.length > 0 && (
+          <div className="fixed bottom-24 left-4 right-4 bg-green-500 text-white p-3 rounded-xl flex items-center justify-between shadow-lg z-40">
+            <span className="font-bold">{selectedOrders.length} orders selected</span>
+            <button onClick={batchAccept} className="bg-white text-green-600 px-4 py-1 rounded-lg font-bold">
+              Accept All
+            </button>
+          </div>
+        )}
+
         {activeTab === "available" && (
           <>
-            <h2 className="text-xl font-bold text-[#4d212a] mb-4">Available Orders to Shop</h2>
             {availableOrders.map(order => (
-              <OrderCard key={order.id} order={order} onAccept={() => acceptOrder(order.id)} />
+              <OrderCard 
+                key={order.id} 
+                order={order} 
+                onAccept={() => acceptOrder(order.id)}
+                isSelected={selectedOrders.includes(order.id)}
+                onToggleSelect={() => toggleSelectOrder(order.id)}
+              />
             ))}
             {availableOrders.length === 0 && (
               <div className="text-center py-12 text-slate-400">
@@ -115,9 +318,14 @@ export default function RiderOrdersPage() {
 
         {activeTab === "shopping" && (
           <>
-            <h2 className="text-xl font-bold text-[#4d212a] mb-4">Your Shopping List</h2>
             {shoppingOrders.map(order => (
-              <ShoppingCard key={order.id} order={order} onRefresh={loadOrders} />
+              <ShoppingCard 
+                key={order.id} 
+                order={order} 
+                onUpdateItemStatus={(itemId, status, price) => updateItemStatus(order.id, itemId, status, price)}
+                onMarkDelivered={() => markDelivered(order.id)}
+                onReportIssue={() => { setCurrentOrderId(order.id); setShowIssueModal(true); }}
+              />
             ))}
             {shoppingOrders.length === 0 && (
               <div className="text-center py-12 text-slate-400">
@@ -130,7 +338,6 @@ export default function RiderOrdersPage() {
 
         {activeTab === "completed" && (
           <>
-            <h2 className="text-xl font-bold text-[#4d212a] mb-4">Completed Deliveries</h2>
             {completedOrders.map(order => (
               <CompletedCard key={order.id} order={order} />
             ))}
@@ -142,122 +349,173 @@ export default function RiderOrdersPage() {
             )}
           </>
         )}
+
+        {activeTab === "history" && (
+          <>
+            <div className="bg-white rounded-xl p-4 shadow-sm">
+              <h3 className="font-bold text-[#4d212a] mb-3">📊 Performance Stats</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="text-center p-3 bg-slate-50 rounded-xl">
+                  <p className="text-2xl font-black text-[#0b50d5]">{orders.length}</p>
+                  <p className="text-xs text-slate-400">Total Orders</p>
+                </div>
+                <div className="text-center p-3 bg-slate-50 rounded-xl">
+                  <p className="text-2xl font-black text-green-600">₹{(todayEarnings * 7).toFixed(0)}</p>
+                  <p className="text-xs text-slate-400">Weekly Earnings</p>
+                </div>
+              </div>
+            </div>
+            {orders.map(order => (
+              <HistoryCard key={order.id} order={order} />
+            ))}
+          </>
+        )}
       </main>
 
-      {/* Bottom Nav */}
+      {/* Cash Collection Modal */}
+      {showCashCollectModal && (
+        <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-sm">
+            <div className="text-center mb-4">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <span className="material-symbols-outlined text-green-600 text-4xl">payments</span>
+              </div>
+              <h3 className="font-bold text-xl">Collect Payment</h3>
+            </div>
+            <div className="bg-green-50 p-4 rounded-xl mb-4">
+              <p className="text-sm text-green-700">Amount to collect from customer:</p>
+              <p className="text-3xl font-black text-green-600">₹{cashToCollect}</p>
+            </div>
+            <div className="space-y-2 mb-4">
+              <button onClick={() => setCashToCollect(cashToCollect + 10)} className="w-full py-2 border border-slate-200 rounded-lg font-bold">+₹10</button>
+              <button onClick={() => setCashToCollect(cashToCollect + 50)} className="w-full py-2 border border-slate-200 rounded-lg font-bold">+₹50</button>
+            </div>
+            <div className="flex gap-3">
+              <button onClick={() => setShowCashCollectModal(false)} className="flex-1 py-3 bg-slate-200 text-slate-600 font-bold rounded-xl">Cancel</button>
+              <button onClick={confirmDelivery} className="flex-1 py-3 bg-green-500 text-white font-bold rounded-xl">Confirm & Complete</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Issue Reporting Modal */}
+      {showIssueModal && (
+        <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-sm">
+            <h3 className="font-bold text-xl mb-4">Report Issue</h3>
+            <div className="space-y-2">
+              {["Wrong Items", "Store Closed", "Customer Unreachable", "Safety Concern", "Other"].map(issue => (
+                <button
+                  key={issue}
+                  onClick={() => { setIssueType(issue); alert(`Issue "${issue}" reported. Support will contact you.`); setShowIssueModal(false); }}
+                  className="w-full p-3 text-left bg-slate-50 rounded-xl font-bold hover:bg-slate-100"
+                >
+                  {issue}
+                </button>
+              ))}
+            </div>
+            <button onClick={() => setShowIssueModal(false)} className="w-full mt-4 py-3 text-slate-500 font-bold">Cancel</button>
+          </div>
+        </div>
+      )}
+
       <RiderNavBar active="orders" />
     </div>
   );
 }
 
-function OrderCard({ order, onAccept }: { order: any; onAccept: () => void }) {
-  const totalItems = order.items?.reduce((s: number, i: any) => s + i.quantity, 0) || 0;
+function OrderCard({ order, onAccept, isSelected, onToggleSelect }: { order: Order; onAccept: () => void; isSelected: boolean; onToggleSelect: () => void }) {
+  const totalItems = order.items?.reduce((s, i) => s + i.quantity, 0) || 0;
+  const estimatedEarning = order.total_amount + (order.delivery_fee || 0);
 
   return (
-    <div className="bg-white rounded-2xl p-5 shadow-lg">
-      <div className="flex justify-between items-start mb-3">
-        <div>
-          <h3 className="font-bold text-lg text-[#4d212a]">{order.vendor?.name}</h3>
-          <p className="text-xs text-slate-400 flex items-center gap-1">
-            <span className="material-symbols-outlined text-sm">store</span>
-            {order.vendor?.address}
-          </p>
+    <div className="bg-white rounded-2xl p-4 shadow-lg border-2 border-transparent hover:border-[#0b50d5]/30">
+      <div className="flex justify-between items-start mb-2">
+        <div className="flex items-start gap-3">
+          <button onClick={onToggleSelect} className={`mt-1 w-6 h-6 rounded-full border-2 flex items-center justify-center ${isSelected ? "bg-[#0b50d5] border-[#0b50d5]" : "border-slate-300"}`}>
+            {isSelected && <span className="material-symbols-outlined text-white text-sm">check</span>}
+          </button>
+          <div>
+            <div className="flex items-center gap-2">
+              <h3 className="font-bold text-[#4d212a]">{order.vendor?.name}</h3>
+              <span className="text-[9px] bg-slate-100 px-1.5 py-0.5 rounded">{order.id}</span>
+            </div>
+            <p className="text-xs text-slate-400 flex items-center gap-1">
+              <span className="material-symbols-outlined text-xs">store</span>
+              {order.vendor?.address}
+            </p>
+          </div>
         </div>
         <div className="text-right">
-          <p className="text-xl font-black text-green-600">₹{order.total_amount}</p>
+          <p className="text-xl font-black text-green-600">₹{estimatedEarning}</p>
           <p className="text-[10px] text-slate-400">{totalItems} items</p>
         </div>
       </div>
-      <div className="bg-slate-50 rounded-xl p-3 mb-3">
-        <p className="text-xs font-bold text-slate-400 uppercase mb-1">Items to buy:</p>
-        {order.items?.slice(0, 3).map((item: any) => (
-          <p key={item.id} className="text-sm text-slate-600">
-            {item.quantity}x {item.menu_item?.name}
-          </p>
-        ))}
-        {order.items?.length > 3 && (
-          <p className="text-xs text-slate-400">+{order.items.length - 3} more items</p>
-        )}
+      
+      <div className="bg-slate-50 rounded-lg p-2 mb-3">
+        <p className="text-[10px] text-slate-400 mb-1">📍 DELIVER TO:</p>
+        <p className="text-sm">{order.address?.street}</p>
       </div>
-      <button
-        onClick={onAccept}
-        className="w-full bg-[#0b50d5] text-white py-3 rounded-xl font-bold hover:bg-[#0044bf]"
-      >
-        Start Shopping
-      </button>
+
+      {order.special_instructions && (
+        <div className="bg-amber-50 text-amber-800 text-xs p-2 rounded-lg mb-3">
+          📝 {order.special_instructions}
+        </div>
+      )}
+
+      <div className="flex gap-2">
+        <a href={`tel:${order.customer_phone}`} className="flex-1 py-2 bg-slate-100 text-slate-700 font-bold rounded-lg text-center text-sm flex items-center justify-center gap-1">
+          <span className="material-symbols-outlined text-sm">call</span>
+          Call
+        </a>
+        <button onClick={onAccept} className="flex-[2] bg-[#0b50d5] text-white py-2 rounded-lg font-bold text-sm">
+          Start Shopping
+        </button>
+      </div>
     </div>
   );
 }
 
-function ShoppingCard({ order, onRefresh }: { order: any; onRefresh: () => void }) {
-  const router = useRouter();
+function ShoppingCard({ order, onUpdateItemStatus, onMarkDelivered, onReportIssue }: { order: Order; onUpdateItemStatus: (itemId: string, status: string, price?: number) => void; onMarkDelivered: () => void; onReportIssue: () => void }) {
   const [items, setItems] = useState(order.items || []);
-  const [expanded, setExpanded] = useState(false);
-
-  async function updateItemStatus(itemId: string, status: string) {
-    const supabase = createClient();
-    await supabase.from("order_items").update({ status, picked: status === "picked" }).eq("id", itemId);
-    setItems(items.map((i: any) => i.id === itemId ? { ...i, status } : i));
-  }
-
-  async function updateActualPrice(itemId: string, price: string) {
-    const supabase = createClient();
-    await supabase.from("order_items").update({ actual_price: parseFloat(price) }).eq("id", itemId);
-    setItems(items.map((i: any) => i.id === itemId ? { ...i, actual_price: parseFloat(price) } : i));
-  }
-
-  async function startShopping() {
-    const supabase = createClient();
-    await supabase.from("orders").update({ status: "shopping" }).eq("id", order.id);
-    onRefresh();
-  }
-
-  async function markDelivered() {
-    const supabase = createClient();
-    await supabase.from("orders").update({ status: "delivered", delivered_at: new Date().toISOString() }).eq("id", order.id);
-    onRefresh();
-  }
-
   const pickedCount = items.filter((i: any) => i.status === "picked").length;
-  const totalActual = items.reduce((s: number, i: any) => s + (i.actual_price || 0) * i.quantity, 0);
+  const totalSpent = items.reduce((s: number, i: any) => s + ((i.actual_price || 0) * i.quantity), 0);
+  const profit = (order.total_amount || 0) + (order.delivery_fee || 0) - totalSpent;
 
   return (
-    <div className="bg-white rounded-2xl p-5 shadow-lg">
+    <div className="bg-white rounded-2xl p-4 shadow-lg">
       <div className="flex justify-between items-start mb-3">
         <div>
           <h3 className="font-bold text-lg text-[#4d212a]">{order.vendor?.name}</h3>
           <p className="text-xs text-slate-400">{order.vendor?.address}</p>
           <p className="text-xs text-slate-400 flex items-center gap-1 mt-1">
-            <span className="material-symbols-outlined text-sm">location_on</span>
-            Deliver to: {order.address?.street}
+            <span className="material-symbols-outlined text-xs">location_on</span>
+            Deliver: {order.address?.street}
           </p>
         </div>
         <div className="text-right">
-          <p className="text-lg font-black text-[#0b50d5]">₹{order.total_amount}</p>
-          <p className="text-[10px] text-slate-400">Customer paid</p>
+          <p className="text-lg font-black text-[#0b50d5]">₹{order.total_amount + (order.delivery_fee || 0)}</p>
+          <p className="text-[10px] text-slate-400">Collect from customer</p>
         </div>
       </div>
 
-      {/* Progress */}
-      <div className="bg-slate-100 rounded-full h-2 mb-3 overflow-hidden">
-        <div 
-          className="h-full bg-green-500 transition-all" 
-          style={{ width: `${(pickedCount / items.length) * 100}%` }}
-        />
+      {/* Progress Bar */}
+      <div className="bg-slate-100 rounded-full h-2 mb-2 overflow-hidden">
+        <div className="h-full bg-green-500 transition-all" style={{ width: `${(pickedCount / items.length) * 100}%` }} />
       </div>
-      <p className="text-xs text-slate-500 mb-4">{pickedCount}/{items.length} items picked</p>
+      <p className="text-xs text-slate-500 mb-3">{pickedCount}/{items.length} items picked</p>
 
-      {/* Items */}
-      <div className="space-y-2 mb-4">
+      {/* Items List */}
+      <div className="space-y-2 mb-3 max-h-48 overflow-y-auto">
         {items.map((item: any) => (
-          <div key={item.id} className="flex items-center gap-2 p-2 bg-slate-50 rounded-xl">
+          <div key={item.id} className="flex items-center gap-2 p-2 bg-slate-50 rounded-lg">
             <div className="flex-1">
               <p className="font-medium text-sm">{item.quantity}x {item.menu_item?.name}</p>
-              <p className="text-xs text-slate-400">{item.menu_item?.category}</p>
+              <p className="text-xs text-slate-400">Expected: ₹{item.unit_price}</p>
             </div>
             <select
               value={item.status || "pending"}
-              onChange={(e) => updateItemStatus(item.id, e.target.value)}
+              onChange={(e) => onUpdateItemStatus(item.id, e.target.value, item.actual_price)}
               className={`text-xs font-bold px-2 py-1 rounded-full ${
                 item.status === "picked" ? "bg-green-100 text-green-700" :
                 item.status === "unavailable" ? "bg-red-100 text-red-700" :
@@ -266,65 +524,96 @@ function ShoppingCard({ order, onRefresh }: { order: any; onRefresh: () => void 
               }`}
             >
               <option value="pending">Pending</option>
-              <option value="picked">Available ✅</option>
-              <option value="unavailable">Not Available ❌</option>
-              <option value="different_brand">Diff Brand 🔄</option>
+              <option value="picked">✅ Available</option>
+              <option value="unavailable">❌ Not Available</option>
+              <option value="different_brand">🔄 Different Brand</option>
             </select>
             {item.status === "picked" && (
               <input
                 type="number"
                 placeholder="Price"
                 value={item.actual_price || ""}
-                onChange={(e) => updateActualPrice(item.id, e.target.value)}
-                className="w-20 text-sm border rounded-lg px-2 py-1"
+                onChange={(e) => onUpdateItemStatus(item.id, "picked", parseFloat(e.target.value))}
+                className="w-16 text-xs border rounded px-1 py-1"
               />
             )}
           </div>
         ))}
       </div>
 
-      {/* Totals */}
-      <div className="flex justify-between text-sm mb-4 p-3 bg-slate-50 rounded-xl">
-        <span>Your advance used:</span>
-        <span className="font-bold">₹{totalActual.toFixed(2)}</span>
+      {/* Barcode Scanner Button */}
+      <button className="w-full py-2 border-2 border-dashed border-slate-300 rounded-lg text-slate-500 text-sm font-bold mb-3 flex items-center justify-center gap-1">
+        <span className="material-symbols-outlined text-sm">qr_code_scanner</span>
+        Scan Barcode (Optional)
+      </button>
+
+      {/* Financial Summary */}
+      <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-3 rounded-lg mb-3">
+        <div className="flex justify-between text-sm">
+          <span className="text-slate-500">You spent:</span>
+          <span className="font-bold">₹{totalSpent.toFixed(0)}</span>
+        </div>
+        <div className="flex justify-between text-sm">
+          <span className="text-slate-500">Collect from customer:</span>
+          <span className="font-bold text-[#0b50d5]">₹{order.total_amount + (order.delivery_fee || 0)}</span>
+        </div>
+        <div className="flex justify-between text-sm border-t pt-1 mt-1">
+          <span className="font-bold">Your profit:</span>
+          <span className="font-black text-green-600">₹{profit.toFixed(0)}</span>
+        </div>
       </div>
 
       {/* Actions */}
-      <div className="space-y-2">
-        {order.status === "picking_up" ? (
-          <button
-            onClick={startShopping}
-            className="w-full bg-[#0b50d5] text-white py-3 rounded-xl font-bold"
-          >
-            Start Shopping
-          </button>
-        ) : (
-          <button
-            onClick={markDelivered}
-            disabled={pickedCount === 0}
-            className="w-full bg-green-600 text-white py-3 rounded-xl font-bold disabled:opacity-50"
-          >
-            Mark Delivered (₹{totalActual.toFixed(2)} collected)
-          </button>
-        )}
+      <div className="flex gap-2">
+        <button onClick={onReportIssue} className="py-2 px-3 bg-red-50 text-red-600 rounded-lg text-sm font-bold">
+          Report Issue
+        </button>
+        <button
+          onClick={onMarkDelivered}
+          disabled={pickedCount === 0}
+          className="flex-1 bg-green-500 text-white py-2 rounded-lg font-bold disabled:opacity-50 flex items-center justify-center gap-1"
+        >
+          <span className="material-symbols-outlined text-sm">payments</span>
+          Complete & Collect ₹{order.total_amount + (order.delivery_fee || 0)}
+        </button>
       </div>
     </div>
   );
 }
 
-function CompletedCard({ order }: { order: any }) {
+function CompletedCard({ order }: { order: Order }) {
   return (
-    <div className="bg-white rounded-2xl p-5 shadow-lg opacity-75">
+    <div className="bg-white rounded-2xl p-4 shadow-lg">
       <div className="flex justify-between items-start">
         <div>
-          <h3 className="font-bold text-lg text-[#4d212a]">{order.vendor?.name}</h3>
-          <p className="text-xs text-slate-400">
-            {new Date(order.delivered_at).toLocaleString()}
-          </p>
+          <h3 className="font-bold text-[#4d212a]">{order.vendor?.name}</h3>
+          <p className="text-xs text-slate-400">{new Date(order.delivered_at || "").toLocaleString()}</p>
         </div>
         <div className="text-right">
-          <p className="text-lg font-black text-green-600">₹{order.total_amount}</p>
-          <p className="text-[10px] text-green-500">Delivered ✅</p>
+          <p className="text-lg font-black text-green-600">₹{order.customer_collected || 0}</p>
+          <p className="text-[10px] text-green-500">Collected</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function HistoryCard({ order }: { order: Order }) {
+  const spent = order.items?.reduce((s, i) => s + ((i.actual_price || 0) * i.quantity), 0) || 0;
+  const earned = (order.customer_collected || 0) - spent;
+
+  return (
+    <div className="bg-white rounded-xl p-3 shadow-sm mb-2">
+      <div className="flex justify-between items-center">
+        <div>
+          <p className="font-bold text-sm">{order.vendor?.name}</p>
+          <p className="text-xs text-slate-400">{new Date(order.placed_at).toLocaleDateString()}</p>
+        </div>
+        <div className="text-right">
+          <p className={`font-bold ${earned >= 0 ? "text-green-600" : "text-red-500"}`}>
+            {earned >= 0 ? "+" : ""}₹{earned}
+          </p>
+          <p className="text-[9px] text-slate-400">{order.status}</p>
         </div>
       </div>
     </div>
@@ -333,7 +622,7 @@ function CompletedCard({ order }: { order: any }) {
 
 function RiderNavBar({ active }: { active: string }) {
   const navItems = [
-    { name: "Map", href: "/rider", icon: "map" },
+    { name: "Map", href: "/rider/dashboard", icon: "map" },
     { name: "Orders", href: "/rider/orders", icon: "list_alt" },
     { name: "Wallet", href: "/rider/wallet", icon: "account_balance_wallet" },
     { name: "Account", href: "/rider/account", icon: "person" },
