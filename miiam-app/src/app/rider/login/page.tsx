@@ -6,39 +6,39 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 export default function RiderLoginPage() {
-  const [phone, setPhone] = useState("");
-  const [otp, setOtp] = useState("");
-  const [step, setStep] = useState<"phone" | "otp">("phone");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
   const router = useRouter();
   const supabase = createClient();
 
-  // For real OTP we'd use supabase.auth.signInWithOtp.
-  // We'll mock the flow for the UI demo since SMS billing needs to be set up.
-  const handleSendOtp = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    setTimeout(() => {
-      setStep("otp");
-      setLoading(false);
-    }, 1000);
-  };
 
-  const handleVerifyOtp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    
-    // Demo bypass
-    if (otp === "123456") {
-      router.push("/rider");
-    } else {
-      setError("Invalid OTP. Use 123456 for demo.");
-      setLoading(false);
+    try {
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (signInError) {
+        setError(signInError.message);
+        setLoading(false);
+        return;
+      }
+
+      if (data.user) {
+        router.push("/rider/dashboard");
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Login failed. Please try again.");
     }
+    setLoading(false);
   };
 
   return (
@@ -60,57 +60,48 @@ export default function RiderLoginPage() {
             </div>
           )}
 
-          {step === "phone" ? (
-            <form onSubmit={handleSendOtp} className="space-y-6">
-              <div>
-                <label className="block text-sm font-bold text-[#4d212a] mb-3 uppercase tracking-widest px-1">Phone Number</label>
-                <div className="flex bg-[#ffecee] rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-[#ba001c]/40 transition-all border border-[#dd9ca6]/30">
-                  <span className="px-5 py-4 font-bold text-[#814c55] border-r border-[#dd9ca6]/30">+1</span>
-                  <input
-                    type="tel"
-                    required
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    className="w-full bg-transparent border-none px-5 py-4 text-lg font-semibold focus:outline-none placeholder:text-[#814c55]/40 text-[#4d212a]"
-                    placeholder="Enter your mobile number"
-                  />
-                </div>
-              </div>
-              <button
-                type="submit"
-                disabled={loading || phone.length < 10}
-                className="w-full bento-gradient-blue text-white rounded-xl py-5 text-lg font-bold shadow-lg shadow-[#0b50d5]/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-70 disabled:pointer-events-none"
-              >
-                {loading ? "Sending..." : "Send Verification Code"}
-              </button>
-            </form>
-          ) : (
-            <form onSubmit={handleVerifyOtp} className="space-y-6 animate-[slideUp_0.3s_ease-out]">
-              <div>
-                <label className="block text-sm font-bold text-[#4d212a] mb-3 uppercase tracking-widest px-1">Enter Code</label>
-                <p className="text-xs text-[#814c55] mb-4 px-1">Code sent to +1 {phone} <button type="button" onClick={() => setStep("phone")} className="text-[#0b50d5] font-bold hover:underline">Edit</button></p>
+          <form onSubmit={handleLogin} className="space-y-6">
+            <div>
+              <label className="block text-sm font-bold text-[#4d212a] mb-3 uppercase tracking-widest px-1">Email Address</label>
+              <div className="flex bg-[#ffecee] rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-[#ba001c]/40 transition-all border border-[#dd9ca6]/30">
+                <span className="px-5 py-4 font-bold text-[#814c55] border-r border-[#dd9ca6]/30">
+                  <span className="material-symbols-outlined">mail</span>
+                </span>
                 <input
-                  type="text"
+                  type="email"
                   required
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
-                  maxLength={6}
-                  className="w-full bg-[#ffecee] border border-[#dd9ca6]/30 rounded-xl px-5 py-4 text-2xl font-mono text-center tracking-[0.5em] focus:outline-none focus:ring-2 focus:ring-[#0b50d5]/40 transition-all text-[#4d212a]"
-                  placeholder="------"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full bg-transparent border-none px-5 py-4 text-lg font-semibold focus:outline-none placeholder:text-[#814c55]/40 text-[#4d212a]"
+                  placeholder="your@email.com"
                 />
               </div>
-              <button
-                type="submit"
-                disabled={loading || otp.length !== 6}
-                className="w-full bento-gradient-blue text-white rounded-xl py-5 text-lg font-bold shadow-lg shadow-[#0b50d5]/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-70 disabled:pointer-events-none"
-              >
-                {loading ? "Verifying..." : "Verify & Login"}
-              </button>
-            </form>
-          )}
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-[#4d212a] mb-3 uppercase tracking-widest px-1">Password</label>
+              <input
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-[#ffecee] border border-[#dd9ca6]/30 rounded-xl px-5 py-4 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-[#ba001c]/40 transition-all text-[#4d212a]"
+                placeholder="Enter your password"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={loading || !email || !password}
+              className="w-full bento-gradient-blue text-white rounded-xl py-5 text-lg font-bold shadow-lg shadow-[#0b50d5]/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-70 disabled:pointer-events-none"
+            >
+              {loading ? "Signing in..." : "Sign In"}
+            </button>
+          </form>
 
           <div className="mt-12 text-center text-sm font-medium text-[#814c55]">
-            Want to become a rider? <a href="#" className="text-[#ba001c] font-bold hover:underline">Apply now</a>
+            Want to become a rider?{" "}
+            <Link href="/rider/apply" className="text-[#ba001c] font-bold hover:underline">
+              Apply now
+            </Link>
           </div>
         </div>
       </div>

@@ -307,8 +307,8 @@ export default function LandingPage() {
             <Link href="/privacy" className="text-slate-500 text-xs uppercase tracking-widest font-semibold hover:text-white transition-colors duration-200">
               Privacy
             </Link>
-            <Link href="/partner" className="text-[#ba001c] text-xs uppercase tracking-widest font-black border-l-0 md:border-l border-slate-800 pl-0 md:pl-8 hover:text-white transition-colors duration-200">
-              Partner Portal
+            <Link href="/rider/login" className="text-[#ba001c] text-xs uppercase tracking-widest font-black border-l-0 md:border-l border-slate-800 pl-0 md:pl-8 hover:text-white transition-colors duration-200">
+              Rider Login
             </Link>
             <Link href="/admin" className="text-slate-500 text-xs uppercase tracking-widest font-bold hover:text-white transition-colors duration-200">
               Admin Dashboard

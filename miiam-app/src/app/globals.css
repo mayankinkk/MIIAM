@@ -223,3 +223,10 @@ body {
 .animate-slide-in {
   animation: slide-in 0.3s ease-out;
 }
+
+/* Countdown ring animation */
+.countdown-ring {
+  stroke-dasharray: 113;
+  stroke-dashoffset: 70;
+  transition: stroke-dashoffset 1s linear;
+}
