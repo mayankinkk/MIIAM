@@ -245,71 +245,71 @@ export default function RiderDashboard() {
           </div>
         )}
 
-        {/* Current Order View */}
-        {currentOrder && (
-          <div className="absolute inset-0 z-10 flex items-end justify-center pb-24 md:pb-32 px-4 md:px-0">
-            <div className="max-w-xl w-full bg-gradient-to-r from-primary-container to-primary text-white rounded-2xl overflow-hidden shadow-[0_32px_64px_rgba(77,33,42,0.12)] flex flex-col">
-              <div className="p-card-padding">
-                <div className="flex items-center gap-2 mb-4">
-                  <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>delivery_dining</span>
-                  <span className="font-label-caps text-[10px] uppercase tracking-widest">CURRENT DELIVERY</span>
-                </div>
-                
-                <div className="space-y-4">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <p className="font-headline-md text-xl">{currentOrder.vendor}</p>
-                      <p className="text-white/70 text-sm">{currentOrder.vendorAddress}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-headline-xl text-2xl">₹{currentOrder.earnings}</p>
-                      <p className="font-label-caps text-[9px] opacity-70">EARNINGS</p>
-                    </div>
-                  </div>
-                  
-                  <div className="bg-white/10 rounded-xl p-4 space-y-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                        <span className="material-symbols-outlined text-white">restaurant</span>
-                      </div>
-                      <div>
-                        <p className="font-label-caps text-[9px] opacity-70">PICKUP</p>
-                        <p className="font-bold">{currentOrder.vendor}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                        <span className="material-symbols-outlined text-white">home</span>
-                      </div>
-                      <div>
-                        <p className="font-label-caps text-[9px] opacity-70">DROP OFF</p>
-                        <p className="font-bold">{currentOrder.customer}</p>
-                      </div>
-                    </div>
-                  </div>
-                
-                <div className="flex gap-3 mt-6">
-                  <button className="flex-1 bg-white/20 py-4 rounded-full font-bold text-sm flex items-center justify-center gap-2 transition-all active:scale-95">
-                    <span className="material-symbols-outlined">call</span>
-                    Call
-                  </button>
-                  <button className="flex-1 bg-white text-primary py-4 rounded-full font-bold text-sm flex items-center justify-center gap-2 transition-all active:scale-95">
-                    <span className="material-symbols-outlined">navigation</span>
-                    Navigate
-                  </button>
-                </div>
-                
-                <button
-                  onClick={handleComplete}
-                  className="w-full mt-4 bg-green-500 py-4 rounded-full font-black text-sm flex items-center justify-center gap-2 uppercase tracking-widest transition-all active:scale-95"
-                >
-                  <span className="material-symbols-outlined">check_circle</span>
-                  Mark as Delivered
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* Current Order View - disabled due to Turbopack issue */}
+        {/* {currentOrder && ( */}
+          {/* <div className="absolute inset-0 z-10 flex items-end justify-center pb-24 md:pb-32 px-4 md:px-0"> */}
+            {/* <div className="max-w-xl w-full bg-gradient-to-r from-primary-container to-primary text-white rounded-2xl overflow-hidden shadow-[0_32px_64px_rgba(77,33,42,0.12)] flex flex-col"> */}
+              {/* <div className="p-card-padding"> */}
+                {/* <div className="flex items-center gap-2 mb-4"> */}
+                  {/* <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>delivery_dining</span> */}
+                  {/* <span className="font-label-caps text-[10px] uppercase tracking-widest">CURRENT DELIVERY</span> */}
+                {/* </div> */}
+                {/*  */}
+                {/* <div className="space-y-4"> */}
+                  {/* <div className="flex justify-between items-start"> */}
+                    {/* <div> */}
+                      {/* <p className="font-headline-md text-xl">{currentOrder.vendor}</p> */}
+                      {/* <p className="text-white/70 text-sm">{currentOrder.vendorAddress}</p> */}
+                    {/* </div> */}
+                    {/* <div className="text-right"> */}
+                      {/* <p className="font-headline-xl text-2xl">₹{currentOrder.earnings}</p> */}
+                      {/* <p className="font-label-caps text-[9px] opacity-70">EARNINGS</p> */}
+                    {/* </div> */}
+                  {/* </div> */}
+                  {/*  */}
+                  {/* <div className="bg-white/10 rounded-xl p-4 space-y-3"> */}
+                    {/* <div className="flex items-center gap-3"> */}
+                      {/* <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center"> */}
+                        {/* <span className="material-symbols-outlined text-white">restaurant</span> */}
+                      {/* </div> */}
+                      {/* <div> */}
+                        {/* <p className="font-label-caps text-[9px] opacity-70">PICKUP</p> */}
+                        {/* <p className="font-bold">{currentOrder.vendor}</p> */}
+                      {/* </div> */}
+                    {/* </div> */}
+                    {/* <div className="flex items-center gap-3"> */}
+                      {/* <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center"> */}
+                        {/* <span className="material-symbols-outlined text-white">home</span> */}
+                      {/* </div> */}
+                      {/* <div> */}
+                        {/* <p className="font-label-caps text-[9px] opacity-70">DROP OFF</p> */}
+                        {/* <p className="font-bold">{currentOrder.customer}</p> */}
+                      {/* </div> */}
+                    {/* </div> */}
+                  {/* </div> */}
+                {/*  */}
+                {/* <div className="flex gap-3 mt-6"> */}
+                  {/* <button className="flex-1 bg-white/20 py-4 rounded-full font-bold text-sm flex items-center justify-center gap-2 transition-all active:scale-95"> */}
+                    {/* <span className="material-symbols-outlined">call</span> */}
+                    {/* Call */}
+                  {/* </button> */}
+                  {/* <button className="flex-1 bg-white text-primary py-4 rounded-full font-bold text-sm flex items-center justify-center gap-2 transition-all active:scale-95"> */}
+                    {/* <span className="material-symbols-outlined">navigation</span> */}
+                    {/* Navigate */}
+                  {/* </button> */}
+                {/* </div> */}
+                {/*  */}
+                {/* <button */}
+                  {/* onClick={handleComplete} */}
+                  {/* className="w-full mt-4 bg-green-500 py-4 rounded-full font-black text-sm flex items-center justify-center gap-2 uppercase tracking-widest transition-all active:scale-95" */}
+                {/* > */}
+                  {/* <span className="material-symbols-outlined">check_circle</span> */}
+                  {/* Mark as Delivered */}
+                {/* </button> */}
+              {/* </div> */}
+            {/* </div> */}
+          {/* </div> */}
+        {/* )} */}
 
         {/* Map Controls */}
         <div className="absolute right-6 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-20">
