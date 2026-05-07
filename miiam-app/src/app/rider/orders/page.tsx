@@ -42,56 +42,6 @@ interface Order {
   items?: OrderItem[];
 }
 
-const mockOrders: Order[] = [
-  {
-    id: "ORD-2024-001",
-    status: "preparing",
-    total_amount: 450,
-    delivery_fee: 40,
-    special_instructions: "Please ring doorbell twice",
-    placed_at: new Date().toISOString(),
-    vendor: { name: "DMart Ready", address: "Sector 18, Noida", phone: "+91 98765 43210" },
-    address: { street: "Flat 402, Silver Oaks", city: "Noida" },
-    customer_phone: "+91 91234 56789",
-    items: [
-      { id: "1", menu_item_id: "1", quantity: 2, unit_price: 85, special_notes: null, status: "pending", picked: false, actual_price: null, menu_item: { name: "Basmati Rice 5kg", category: "Grocery" } },
-      { id: "2", menu_item_id: "2", quantity: 1, unit_price: 120, special_notes: null, status: "pending", picked: false, actual_price: null, menu_item: { name: "Dal Masoor 1kg", category: "Grocery" } },
-      { id: "3", menu_item_id: "3", quantity: 3, unit_price: 45, special_notes: null, status: "pending", picked: false, actual_price: null, menu_item: { name: "Eggs (12 pack)", category: "Dairy" } },
-    ],
-  },
-  {
-    id: "ORD-2024-002",
-    status: "shopping",
-    total_amount: 280,
-    delivery_fee: 35,
-    special_instructions: "Leave at security",
-    placed_at: new Date(Date.now() - 1800000).toISOString(),
-    vendor: { name: "Big Bazaar", address: "Mall of India", phone: "+91 98765 11111" },
-    address: { street: "Tower A, Tech Park", city: "Noida" },
-    customer_phone: "+91 99887 76655",
-    items: [
-      { id: "4", menu_item_id: "4", quantity: 1, unit_price: 150, special_notes: null, status: "picked", picked: true, actual_price: 145, menu_item: { name: "Sunflower Oil 1L", category: "Grocery" } },
-      { id: "5", menu_item_id: "5", quantity: 2, unit_price: 55, special_notes: null, status: "picked", picked: true, actual_price: 110, menu_item: { name: "Sugar 1kg", category: "Grocery" } },
-    ],
-  },
-  {
-    id: "ORD-2024-003",
-    status: "delivered",
-    total_amount: 520,
-    delivery_fee: 45,
-    special_instructions: null,
-    placed_at: new Date(Date.now() - 7200000).toISOString(),
-    delivered_at: new Date(Date.now() - 3600000).toISOString(),
-    customer_collected: 565,
-    vendor: { name: "Reliance Fresh", address: "Sector 25", phone: "+91 98765 22222" },
-    address: { street: "House 101, Green Village", city: "Noida" },
-    customer_phone: "+91 90000 12345",
-    items: [
-      { id: "6", menu_item_id: "6", quantity: 1, unit_price: 299, special_notes: null, status: "picked", picked: true, actual_price: 299, menu_item: { name: "Dettol Soap Pack", category: "Personal Care" } },
-    ],
-  },
-];
-
 export default function RiderOrdersPage() {
   const supabase = createClient();
   const router = useRouter();
