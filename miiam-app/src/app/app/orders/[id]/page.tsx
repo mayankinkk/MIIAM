@@ -5,18 +5,24 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
 const steps = [
-  { key: "pending", label: "Order Placed", time: "12:28 PM", icon: "receipt_long" },
-  { key: "accepted", label: "Order Accepted", time: "12:28 PM", icon: "check_circle" },
-  { key: "preparing", label: "Preparing", time: "12:30 PM", icon: "skillet" },
-  { key: "picking_up", label: "Picking Up", time: "12:35 PM", icon: "storefront" },
-  { key: "on_the_way", label: "On the Way", time: "12:42 PM", icon: "directions_bike", current: true },
-  { key: "delivered", label: "Delivered", time: "Pending", icon: "home_pin" },
+  { key: "pending", label: "Order Placed", icon: "receipt_long" },
+  { key: "accepted", label: "Order Accepted", icon: "check_circle" },
+  { key: "preparing", label: "Preparing", icon: "skillet" },
+  { key: "shopping", label: "Shopping", icon: "shopping_cart" },
+  { key: "picking_up", label: "Picking Up", icon: "storefront" },
+  { key: "on_the_way", label: "On the Way", icon: "directions_bike" },
+  { key: "delivered", label: "Delivered", icon: "home_pin" },
 ];
 
-const riderInfo = {
-  name: "Marco V.",
-  image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAZMW67BSQ_rSfkmKMuhsVVexQAwwdJojcgrIn6S0tcZcsIyr_YlOE-fIkMKKQCYCENyIqIsugOpsRTRKmtIVFzkdotEkkznxY8GkuokYHhzic9dGZvQ55jVYLgN0EA7OOrg5yBeF4sjpaOxmGu9pFJghlHlRM87JJFkvcHwBVz7-oVcS7UBBTL1bJ-vRVphV0YNJtacmbVu9WCuGkKEs204xGyNpkYuDTqKhABL_Qb-Rq2DOoCU5S3kOd1Po3ZIbxfH9mHxZF3t54",
-  rating: 4.9,
+const riderInfo = order?.riders ? {
+  name: order.riders.name || "Rider",
+  image: order.riders.profile_image || "https://ui-avatars.com/api/?name=Rider&background=0b50d5&color=fff",
+  rating: order.riders.rating || 4.9,
+  phone: order.riders.phone,
+} : {
+  name: "Assigning Rider...",
+  image: "https://ui-avatars.com/api/?name=Rider&background=0b50d5&color=fff",
+  rating: 0,
 };
 
 export default function OrderTrackingPage({ params }: { params: Promise<{ id: string }> }) {
@@ -25,6 +31,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [etaMins, setEtaMins] = useState(12);
+  const [riderLocation, setRiderLocation] = useState<{lat: number, lng: number} | null>(null);
 
   useEffect(() => {
     async function loadData() {
@@ -75,7 +82,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
       // 3. Load full data
       const { data } = await supabase
         .from("orders")
-        .select("*, vendor:vendors(*), items:order_items(*, menu_item:menu_items(*))")
+        .select("*, vendor:vendors(*), riders:riders(*), items:order_items(*, menu_item:menu_items(*))")
         .eq("id", id)
         .single();
         
@@ -83,6 +90,32 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
       setLoading(false);
     }
     loadData();
+
+    const channel = supabase
+      .channel(`order-tracking-${id}`)
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'orders',
+        filter: `id=eq.${id}`,
+      }, (payload) => {
+        if (payload.new) {
+          setOrder((prev: any) => ({ ...prev, ...payload.new }));
+        }
+      })
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'rider_locations',
+        filter: `order_id=eq.${id}`,
+      }, (payload) => {
+        setRiderLocation({ lat: payload.new.lat, lng: payload.new.lng });
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [id, supabase]);
 
   useEffect(() => {
@@ -131,16 +164,31 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
         <div className="max-w-7xl mx-auto px-6 lg:grid lg:grid-cols-12 lg:gap-10 items-start">
           <div className="lg:col-span-7 space-y-6">
             <div className="relative w-full h-[450px] rounded-xl overflow-hidden shadow-[0px_20px_40px_rgba(77,33,42,0.06)] bg-[#ffe1e4]">
-              <div 
-                className="absolute inset-0 w-full h-full grayscale-[0.2] brightness-[1.05]"
-                style={{
-                  backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCjmYJilzWAOq_x5siwxhSz4VWUjsYYMeeGqKHcY6WBxRpqaGtTBO_bQdGuiimEH2lk6cs4Uh0DpZN8Ta5Zit0SsekdasaZvD0esEh_me7E89BmJqfWUg5sSusGECwa2ud4fiX4EkWYZ5Cn9DxtDbIGwr1BHU8bBRLddx4c_y8PGOjuIW1Ab1OKrUyHigOuUeBU7TLL3D0K6ydPkiN0GWkWxk5_hs5Ng9E4U9ifIg-ZeZNWq20l6eU0K8l4XWmExW0n6Rs6KMTkGsk')",
-                  backgroundSize: "cover",
-                  backgroundPosition: "center"
-                }}
-              />
+              {order?.status === "on_the_way" && riderLocation ? (
+                <div className="absolute inset-0 bg-slate-200">
+                  <div className="w-full h-full flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="w-16 h-16 bg-[#0b50d5] rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
+                        <span className="material-symbols-outlined text-white text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>directions_bike</span>
+                      </div>
+                      <p className="font-bold text-[#4d212a]">Live Tracking Active</p>
+                      <p className="text-sm text-[#814c55]">Rider location updating in real-time</p>
+                      <p className="text-xs text-[#0b50d5] mt-2">📍 {riderLocation.lat.toFixed(4)}, {riderLocation.lng.toFixed(4)}</p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div 
+                  className="absolute inset-0 w-full h-full grayscale-[0.2] brightness-[1.05]"
+                  style={{
+                    backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCjmYJilzWAOq_x5siwxhSz4VWUjsYYMeeGqKHcY6WBxRpqaGtTBO_bQdGuiimEH2lk6cs4Uh0DpZN8Ta5Zit0SsekdasaZvD0esEh_me7E89BmJqfWUg5sSusGECwa2ud4fiX4EkWYZ5Cn9DxtDbIGwr1BHU8bBRLddx4c_y8PGOjuIW1Ab1OKrUyHigOuUeBU7TLL3D0K6ydPkiN0GWkWxk5_hs5Ng9E4U9ifIg-ZeZNWq20l6eU0K8l4XWmExW0n6Rs6KMTkGsk')",
+                    backgroundSize: "cover",
+                    backgroundPosition: "center"
+                  }}
+                />
+              )}
               
-              <div className="absolute top-1/4 left-1/3 w-12 h-12 bg-[#0b50d5] rounded-full flex items-center justify-center text-white border-4 border-white shadow-lg animate-pulse">
+              <div className={`absolute w-12 h-12 bg-[#0b50d5] rounded-full flex items-center justify-center text-white border-4 border-white shadow-lg animate-pulse ${order?.status === "on_the_way" ? "top-1/3 left-1/2 -translate-x-1/2" : "top-1/4 left-1/3"}`}>
                 <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>directions_bike</span>
               </div>
               <div className="absolute bottom-1/3 right-1/4 w-10 h-10 bg-[#ba001c] rounded-full flex items-center justify-center text-white border-2 border-white shadow-md">
@@ -177,9 +225,12 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                       <span className="material-symbols-outlined text-lg">chat_bubble</span>
                       Chat
                     </Link>
-                    <button className="w-14 h-14 bg-[#ffe1e4] text-[#0b50d5] rounded-xl flex items-center justify-center hover:opacity-90 transition-all scale-95 active:scale-90">
+                    <a 
+                      href={`tel:${riderInfo.phone || ''}`}
+                      className="w-14 h-14 bg-[#ffe1e4] text-[#0b50d5] rounded-xl flex items-center justify-center hover:opacity-90 transition-all scale-95 active:scale-90"
+                    >
                       <span className="material-symbols-outlined text-2xl">call</span>
-                    </button>
+                    </a>
                   </div>
                 </div>
               </div>

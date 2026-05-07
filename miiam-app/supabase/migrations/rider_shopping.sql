@@ -32,3 +32,20 @@ CREATE TABLE IF NOT EXISTS rider_wallets (
 -- Enable real-time for orders
 ALTER TABLE orders REPLICA IDENTITY FULL;
 ALTER TABLE order_items REPLICA IDENTITY FULL;
+
+-- Rider Location Tracking
+CREATE TABLE IF NOT EXISTS rider_locations (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  order_id UUID REFERENCES orders(id),
+  rider_id UUID,
+  rider_name TEXT,
+  rider_phone TEXT,
+  lat DOUBLE PRECISION,
+  lng DOUBLE PRECISION,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+ALTER TABLE rider_locations REPLICA IDENTITY FULL;
+
+-- Enable real-time for rider_locations
+CREATE POLICY "Enable all for rider_locations" ON rider_locations FOR ALL USING (true) WITH CHECK (true);

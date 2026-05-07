@@ -111,6 +111,32 @@ export default function RiderOrdersPage() {
 
   useEffect(() => {
     loadOrders();
+
+    const channel = supabase
+      .channel('rider-orders')
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'orders',
+      }, (payload) => {
+        const newOrder = payload.new as any;
+        if (newOrder.status === 'pending' || newOrder.status === 'preparing') {
+          setOrders(prev => [newOrder, ...prev]);
+          if (Notification.permission === 'granted') {
+            new Notification('New Order Available!', {
+              body: `Order #${newOrder.id?.slice(0,8)} - ₹${newOrder.total_amount}`,
+              icon: '/icon.png',
+            });
+          } else if (Notification.permission === 'default') {
+            Notification.requestPermission();
+          }
+        }
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [supabase]);
 
   async function loadOrders() {
@@ -126,8 +152,42 @@ export default function RiderOrdersPage() {
   }
 
   async function acceptOrder(orderId: string) {
-    setOrders(orders.map(o => o.id === orderId ? { ...o, status: "shopping" } : o));
-    alert("Order accepted! Start shopping.");
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        alert("Please login first");
+        return;
+      }
+
+      const { error } = await supabase
+        .from("orders")
+        .update({ 
+          status: "accepted", 
+          rider_id: user.id,
+          accepted_at: new Date().toISOString()
+        })
+        .eq("id", orderId);
+
+      if (error) throw error;
+
+      const order = orders.find(o => o.id === orderId);
+      if (order?.user_id) {
+        await supabase.from("notifications").insert({
+          user_id: order.user_id,
+          title: "Order Accepted! 🎉",
+          message: "A rider has accepted your order and will start shopping soon.",
+          type: "order",
+          read: false,
+          created_at: new Date().toISOString(),
+        });
+      }
+
+      setOrders(orders.map(o => o.id === orderId ? { ...o, status: "accepted", rider_id: user.id } : o));
+      alert("Order accepted! Start shopping.");
+    } catch (err) {
+      console.error("Error accepting order:", err);
+      alert("Failed to accept order. Please try again.");
+    }
   }
 
   async function batchAccept() {
@@ -166,9 +226,91 @@ export default function RiderOrdersPage() {
   }
 
   async function confirmDelivery() {
-    setOrders(orders.map(o => o.id === currentOrderId ? { ...o, status: "delivered", delivered_at: new Date().toISOString(), customer_collected: cashToCollect } : o));
-    setShowCashCollectModal(false);
-    alert(`Delivery complete! ₹${cashToCollect} collected from customer.`);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      await supabase
+        .from("orders")
+        .update({ 
+          status: "delivered", 
+          delivered_at: new Date().toISOString(),
+          customer_collected: cashToCollect
+        })
+        .eq("id", currentOrderId);
+
+      const order = orders.find(o => o.id === currentOrderId);
+      if (order?.user_id) {
+        await supabase.from("notifications").insert({
+          user_id: order.user_id,
+          title: "Order Delivered! 🎉",
+          message: `Your order has been delivered. ₹${cashToCollect} collected. Enjoy your food!`,
+          type: "order",
+          read: false,
+          created_at: new Date().toISOString(),
+        });
+      }
+
+      setOrders(orders.map(o => o.id === currentOrderId ? { ...o, status: "delivered", delivered_at: new Date().toISOString(), customer_collected: cashToCollect } : o));
+      setShowCashCollectModal(false);
+      alert(`Delivery complete! ₹${cashToCollect} collected from customer.`);
+    } catch (err) {
+      console.error("Error delivering order:", err);
+      alert("Failed to complete delivery.");
+    }
+  }
+
+  async function startDelivery(orderId: string) {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      await supabase
+        .from("orders")
+        .update({ status: "on_the_way" })
+        .eq("id", orderId);
+
+      const order = orders.find(o => o.id === orderId);
+      if (order?.user_id) {
+        await supabase.from("notifications").insert({
+          user_id: order.user_id,
+          title: "Order On The Way! 🚴",
+          message: "Your rider has picked up your order and is heading to you. Track in real-time!",
+          type: "order",
+          read: false,
+          created_at: new Date().toISOString(),
+        });
+
+        await supabase.from("rider_locations").insert({
+          order_id: orderId,
+          rider_id: user.id,
+          rider_name: user.email?.split('@')[0] || 'Rider',
+          rider_phone: '',
+          lat: 28.6139 + (Math.random() - 0.5) * 0.01,
+          lng: 77.2090 + (Math.random() - 0.5) * 0.01,
+        });
+      }
+
+      setOrders(orders.map(o => o.id === orderId ? { ...o, status: "on_the_way" } : o));
+    } catch (err) {
+      console.error("Error starting delivery:", err);
+    }
+  }
+
+  async function updateRiderLocation(orderId: string) {
+    if (!navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition(async (position) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      await supabase.from("rider_locations").insert({
+        order_id: orderId,
+        rider_id: user.id,
+        rider_name: user.email?.split('@')[0] || 'Rider',
+        rider_phone: '',
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+      });
+    });
   }
 
   const filteredOrders = orders.filter(o => {
@@ -181,8 +323,8 @@ export default function RiderOrdersPage() {
     return true;
   });
 
-  const availableOrders = filteredOrders.filter(o => o.status === "preparing");
-  const shoppingOrders = filteredOrders.filter(o => o.status === "shopping");
+  const availableOrders = filteredOrders.filter(o => o.status === "pending" || o.status === "preparing");
+  const shoppingOrders = filteredOrders.filter(o => o.status === "shopping" || o.status === "accepted" || o.status === "on_the_way");
   const completedOrders = filteredOrders.filter(o => o.status === "delivered");
 
   const todayEarnings = completedOrders
@@ -331,6 +473,8 @@ export default function RiderOrdersPage() {
                 onUpdateItemStatus={(itemId, status, price) => updateItemStatus(order.id, itemId, status, price)}
                 onMarkDelivered={() => markDelivered(order.id)}
                 onReportIssue={() => { setCurrentOrderId(order.id); setShowIssueModal(true); }}
+                onStartDelivery={() => startDelivery(order.id)}
+                onShareLocation={() => updateRiderLocation(order.id)}
               />
             ))}
             {shoppingOrders.length === 0 && (
@@ -482,7 +626,7 @@ function OrderCard({ order, onAccept, isSelected, onToggleSelect }: { order: Ord
   );
 }
 
-function ShoppingCard({ order, onUpdateItemStatus, onMarkDelivered, onReportIssue }: { order: Order; onUpdateItemStatus: (itemId: string, status: string, price?: number) => void; onMarkDelivered: () => void; onReportIssue: () => void }) {
+function ShoppingCard({ order, onUpdateItemStatus, onMarkDelivered, onReportIssue, onStartDelivery, onShareLocation }: { order: Order; onUpdateItemStatus: (itemId: string, status: string, price?: number) => void; onMarkDelivered: () => void; onReportIssue: () => void; onStartDelivery?: () => void; onShareLocation?: () => void }) {
   const [items, setItems] = useState(order.items || []);
   const pickedCount = items.filter((i: any) => i.status === "picked").length;
   const totalSpent = items.reduce((s: number, i: any) => s + ((i.actual_price || 0) * i.quantity), 0);
@@ -571,6 +715,18 @@ function ShoppingCard({ order, onUpdateItemStatus, onMarkDelivered, onReportIssu
 
       {/* Actions */}
       <div className="flex gap-2">
+        {pickedCount === items.length && onStartDelivery && (
+          <button onClick={onStartDelivery} className="py-2 px-3 bg-[#0b50d5] text-white rounded-lg text-sm font-bold flex items-center gap-1">
+            <span className="material-symbols-outlined text-sm">directions_bike</span>
+            Start Delivery
+          </button>
+        )}
+        {order.status === "on_the_way" && onShareLocation && (
+          <button onClick={onShareLocation} className="py-2 px-3 bg-green-500 text-white rounded-lg text-sm font-bold flex items-center gap-1">
+            <span className="material-symbols-outlined text-sm">share_location</span>
+            Share Live Location
+          </button>
+        )}
         <button onClick={onReportIssue} className="py-2 px-3 bg-red-50 text-red-600 rounded-lg text-sm font-bold">
           Report Issue
         </button>
