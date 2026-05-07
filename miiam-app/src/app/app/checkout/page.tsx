@@ -162,13 +162,13 @@ const scheduledDelivery = scheduledDate && scheduledTime
           if (itemsError) throw itemsError;
 
           await supabase.from("notifications").insert({
-            user_id: "rider-broadcast",
+            user_id: "all-riders",
             title: "New Order Available!",
             message: `New order #${order.id.slice(0,8)} - ₹${vendorTotal}`,
             type: "rider",
             read: false,
             created_at: new Date().toISOString(),
-          });
+          }).then(() => {}).catch(() => {});
         }
       }
 

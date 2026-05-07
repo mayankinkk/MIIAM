@@ -192,9 +192,28 @@ export default function RiderOrdersPage() {
 
   async function batchAccept() {
     if (selectedOrders.length === 0) return;
-    setOrders(orders.map(o => selectedOrders.includes(o.id) ? { ...o, status: "shopping" } : o));
-    alert(`${selectedOrders.length} orders accepted!`);
-    setSelectedOrders([]);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      for (const orderId of selectedOrders) {
+        await supabase
+          .from("orders")
+          .update({ 
+            status: "accepted", 
+            rider_id: user.id,
+            accepted_at: new Date().toISOString()
+          })
+          .eq("id", orderId);
+      }
+      
+      setOrders(orders.map(o => selectedOrders.includes(o.id) ? { ...o, status: "accepted", rider_id: user.id } : o));
+      alert(`${selectedOrders.length} orders accepted!`);
+      setSelectedOrders([]);
+    } catch (err) {
+      console.error("Error batch accepting:", err);
+      alert("Failed to accept orders");
+    }
   }
 
   function toggleSelectOrder(orderId: string) {
