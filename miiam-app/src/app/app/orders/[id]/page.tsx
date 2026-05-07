@@ -70,14 +70,49 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
       // Skip strict ownership check for now - just load if order exists
       console.log("Order owner:", basicOrder.user_id, "Current user:", currentUserId);
 
-      // 3. Load full data
-      const { data } = await supabase
+      // 3. Load full data (manual join due to missing foreign keys)
+      const { data: orderData, error: orderError } = await supabase
         .from("orders")
-        .select("*, vendor:vendors(*), riders:riders(*), items:order_items(*, menu_item:menu_items(*))")
+        .select("*")
         .eq("id", id)
         .single();
         
-      setOrder(data);
+      if (orderError || !orderData) {
+        setOrder(null);
+        setLoading(false);
+        return;
+      }
+
+      // Fetch related data in parallel
+      const [vendorRes, riderRes, itemsRes] = await Promise.all([
+        orderData.vendor_id ? supabase.from("vendors").select("*").eq("id", orderData.vendor_id).single() : Promise.resolve({ data: null }),
+        orderData.rider_id ? supabase.from("riders").select("*").eq("id", orderData.rider_id).single() : Promise.resolve({ data: null }),
+        supabase.from("order_items").select("*").eq("order_id", id)
+      ]);
+
+      const items = itemsRes.data || [];
+      
+      // Fetch menu items for the order items
+      if (items.length > 0) {
+        const menuItemIds = items.map(i => i.menu_item_id).filter(Boolean);
+        if (menuItemIds.length > 0) {
+          const { data: menuItems } = await supabase.from("menu_items").select("*").in("id", menuItemIds);
+          if (menuItems) {
+            items.forEach((item: any) => {
+              item.menu_item = menuItems.find(mi => mi.id === item.menu_item_id) || null;
+            });
+          }
+        }
+      }
+
+      const fullOrder = {
+        ...orderData,
+        vendor: vendorRes.data,
+        riders: riderRes.data,
+        items: items
+      };
+
+      setOrder(fullOrder);
       setLoading(false);
     }
     loadData();

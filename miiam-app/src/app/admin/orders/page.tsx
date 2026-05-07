@@ -166,12 +166,12 @@ export default function OrderManagement() {
                 ))}
               </>
             )}
-            <button
+<button
               onClick={exportToCSV}
               className="px-4 py-2 bg-green-50 text-green-600 rounded-xl text-xs font-bold hover:bg-green-100 flex items-center gap-1"
             >
               <span className="material-symbols-outlined text-sm">download</span>
-              Export CSV
+              Export
             </button>
           </div>
         </div>

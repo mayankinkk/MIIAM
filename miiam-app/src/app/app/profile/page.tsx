@@ -19,7 +19,7 @@ export default function EnhancedProfilePage() {
   const supabase = createClient();
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
-  const [stats, setStats] = useState({ orders: 12, reviews: 5, saved: 8 });
+  const [stats, setStats] = useState({ orders: 0, reviews: 0, saved: 0 });
 
   useEffect(() => {
     async function loadUserAndProfile() {
@@ -32,6 +32,26 @@ export default function EnhancedProfilePage() {
           .eq("id", user.id)
           .single();
         setProfile(profileData);
+
+        // Fetch real stats
+        const { count: orderCount } = await supabase
+          .from("orders")
+          .select("*", { count: "exact", head: true })
+          .eq("user_id", user.id);
+        const { count: reviewCount } = await supabase
+          .from("reviews")
+          .select("*", { count: "exact", head: true })
+          .eq("user_id", user.id);
+        const { count: favCount } = await supabase
+          .from("favorites")
+          .select("*", { count: "exact", head: true })
+          .eq("user_id", user.id);
+        
+        setStats({
+          orders: orderCount || 0,
+          reviews: reviewCount || 0,
+          saved: favCount || 0
+        });
       }
     }
     loadUserAndProfile();
