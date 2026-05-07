@@ -92,9 +92,14 @@ export default function RiderOrdersPage() {
 
   async function loadOrders() {
     setLoading(true);
+
+    const yesterday = new Date();
+    yesterday.setHours(yesterday.getHours() - 24);
+
     const { data: dbOrders } = await supabase
       .from("orders")
       .select("*")
+      .gte("placed_at", yesterday.toISOString())
       .order("placed_at", { ascending: false });
 
     if (dbOrders && dbOrders.length > 0) {

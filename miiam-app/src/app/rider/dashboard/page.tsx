@@ -174,10 +174,14 @@ export default function RiderDashboard() {
     async function fetchRealOrders() {
       if (!isOnline) return;
       
+      const yesterday = new Date();
+      yesterday.setHours(yesterday.getHours() - 24);
+
       const { data: dbOrders } = await supabase
         .from("orders")
         .select("*")
         .in("status", ["pending", "accepted", "preparing"])
+        .gte("placed_at", yesterday.toISOString())
         .order("placed_at", { ascending: false });
         
       if (!dbOrders || dbOrders.length === 0) {
