@@ -21,12 +21,18 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const { data } = await supabase
+      const { data: orderData } = await supabase
         .from("orders")
-        .select("*, vendor:vendors(name)")
+        .select("*")
         .eq("id", id)
         .eq("user_id", user.id)
         .single();
+
+      let data = orderData;
+      if (data && data.vendor_id) {
+        const { data: vendorData } = await supabase.from("vendors").select("name").eq("id", data.vendor_id).single();
+        data.vendor = vendorData;
+      }
 
       if (data) {
         setOrder(data);

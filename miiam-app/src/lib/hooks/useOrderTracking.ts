@@ -54,16 +54,41 @@ export function useOrderTracking(orderId: string) {
 
   const fetchOrderData = useCallback(async () => {
     try {
-      const { data: order, error: orderError } = await supabase
+      const { data: orderData, error: orderError } = await supabase
         .from("orders")
-        .select(`
-          *,
-          vendor:vendors(name),
-          rider:riders(name, phone),
-          items:order_items(*, menu_item:menu_items(*))
-        `)
+        .select("*")
         .eq("id", orderId)
         .single();
+
+      if (orderError) throw orderError;
+
+      // Fetch related data sequentially
+      const [vendorRes, riderRes, itemsRes] = await Promise.all([
+        orderData.vendor_id ? supabase.from("vendors").select("name").eq("id", orderData.vendor_id).single() : Promise.resolve({ data: null }),
+        orderData.rider_id ? supabase.from("riders").select("name, phone").eq("id", orderData.rider_id).single() : Promise.resolve({ data: null }),
+        supabase.from("order_items").select("*").eq("order_id", orderId)
+      ]);
+
+      let items = itemsRes.data || [];
+      if (items.length > 0) {
+        const menuItemIds = items.map(i => i.menu_item_id).filter(Boolean);
+        if (menuItemIds.length > 0) {
+          const { data: menuItems } = await supabase.from("menu_items").select("*").in("id", menuItemIds);
+          if (menuItems) {
+            items = items.map((item: any) => ({
+              ...item,
+              menu_item: menuItems.find(mi => mi.id === item.menu_item_id) || null
+            }));
+          }
+        }
+      }
+
+      const order = {
+        ...orderData,
+        vendor: vendorRes.data,
+        rider: riderRes.data,
+        items
+      };
 
       if (orderError) throw orderError;
 
