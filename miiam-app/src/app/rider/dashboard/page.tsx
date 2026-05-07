@@ -140,7 +140,7 @@ export default function RiderDashboard() {
   const supabase = createClient();
   const [isOnline, setIsOnline] = useState(true);
   const [countdown, setCountdown] = useState(52);
-  const [pendingOrders, setPendingOrders] = useState<Order[]>(sampleOrders);
+  const [pendingOrders, setPendingOrders] = useState<Order[]>([]);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [currentOrder, setCurrentOrder] = useState<Order | null>(null);
   const [showCallModal, setShowCallModal] = useState(false);
@@ -315,13 +315,22 @@ export default function RiderDashboard() {
     setShowChatModal(true);
   };
 
-  const handleSendMessage = () => {
-    if (chatMessage.trim()) {
+  const handleSendMessage = async () => {
+    if (chatMessage.trim() && currentOrder) {
+      // Save to database
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase.from("chat_messages").insert({
+          order_id: currentOrder.id,
+          sender_id: user.id,
+          sender_type: "rider",
+          message: chatMessage.trim(),
+        });
+      }
+      
+      // Add to local display
       setChatHistory([...chatHistory, { from: "you", text: chatMessage, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }]);
       setChatMessage("");
-      setTimeout(() => {
-        setChatHistory(prev => [...prev, { from: "system", text: "Message delivered to customer", time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }]);
-      }, 1000);
     }
   };
 
