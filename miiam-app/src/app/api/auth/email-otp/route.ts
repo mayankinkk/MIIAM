@@ -12,18 +12,22 @@ function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-async function sendEmail(email: string, otp: string): Promise<{ success: boolean; error?: string }> {
+async function sendEmail(email: string, otp: string, purpose?: string): Promise<{ success: boolean; error?: string }> {
   if (!resend) {
     console.warn("RESEND_API_KEY not configured - OTP will be logged to console");
-    console.log(`[DEV OTP] Email: ${email}, OTP: ${otp}`);
+    console.log(`[DEV OTP] Email: ${email}, OTP: ${otp}, Purpose: ${purpose || "verification"}`);
     return { success: true };
   }
+  
+  const subject = purpose === "password_reset" 
+    ? "MIIAM - Reset Your Password" 
+    : "MIIAM - Your Verification Code";
   
   try {
     const { error } = await resend.emails.send({
       from: "MIIAM <noreply@miiam.in>",
       to: email,
-      subject: "MIIAM - Your Verification Code",
+      subject,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="background: linear-gradient(135deg, #ba001c, #8a0014); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
@@ -71,13 +75,18 @@ const cleanEmail = email.toLowerCase().trim();
 
     // For password_reset, check if user exists
     if (purpose === "password_reset") {
-      const { data: users, error: listError } = await supabase.auth.admin.listUsers();
-      if (listError) {
-        return NextResponse.json({ error: "Failed to verify user" }, { status: 500 });
-      }
-      const user = users?.find(u => u.email?.toLowerCase() === cleanEmail);
-      if (!user) {
-        return NextResponse.json({ error: "No account found with this email" }, { status: 404 });
+      try {
+        const { data: users, error: listError } = await supabase.auth.admin.listUsers();
+        if (listError) {
+          console.error("List users error:", listError);
+          // Continue anyway - don't block password reset, just log the error
+        }
+        const user = users?.find((u: any) => u.email?.toLowerCase() === cleanEmail);
+        if (!user) {
+          return NextResponse.json({ error: "No account found with this email" }, { status: 404 });
+        }
+      } catch (e) {
+        console.error("User lookup error:", e);
       }
     }
     
@@ -94,7 +103,7 @@ const cleanEmail = email.toLowerCase().trim();
       return NextResponse.json({ error: "Failed to store code" }, { status: 500 });
     }
 
-    const result = await sendEmail(cleanEmail, otp);
+    const result = await sendEmail(cleanEmail, otp, purpose);
 
     if (!result.success) {
       return NextResponse.json({ error: result.error || "Failed to send email" }, { status: 500 });

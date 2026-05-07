@@ -188,7 +188,7 @@ export default function BeautyPage() {
         <section>
           <h2 className="text-lg font-black text-slate-800 mb-4">{categories.find(c => c.id === activeCategory)?.label}</h2>
           <div className="space-y-4">
-            {currentServices.map((service) => {
+            {currentServices.map((service: any) => {
               const qty = getQty(service.id);
               const discount = service.original ? Math.round(((service.original - service.price) / service.original) * 100) : 0;
               

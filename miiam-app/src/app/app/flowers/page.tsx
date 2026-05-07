@@ -129,7 +129,7 @@ export default function FlowersPage() {
           <div className="text-center py-8 text-slate-500">No flowers found</div>
         ) : (
           <div className="grid grid-cols-2 gap-4">
-            {filteredFlowers.map((flower) => (
+            {filteredFlowers.map((flower: any) => (
               <div key={flower.id} className="bg-white rounded-2xl overflow-hidden shadow-sm">
                 <img src={flower.image_url || flower.image} alt={flower.name} className="w-full h-32 object-cover" />
                 <div className="p-3">

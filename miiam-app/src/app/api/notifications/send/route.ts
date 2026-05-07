@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const supabase = createClient();
+    const supabase = await createClient();
 
     // Get user's push token from database
     const { data: userToken } = await supabase
@@ -80,7 +80,7 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const supabase = createClient();
+  const supabase = await createClient();
 
   // Get notification history
   const { data: notifications } = await supabase

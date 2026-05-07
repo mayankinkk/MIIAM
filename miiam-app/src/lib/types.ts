@@ -136,3 +136,24 @@ export interface Review {
   created_at: string;
   profile?: Profile;
 }
+
+export interface Flower {
+  id: string;
+  name: string;
+  price: number;
+  original?: number;
+  image: string;
+  description?: string;
+}
+
+export interface Product {
+  id: string;
+  name: string;
+  price: number;
+  original?: number;
+  image: string;
+  description?: string;
+  category?: string;
+}
+
+export type TabType = "vendors" | "users" | "riders" | "orders" | "overview" | "reports";

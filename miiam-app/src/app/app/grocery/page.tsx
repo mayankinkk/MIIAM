@@ -131,7 +131,7 @@ export default function GroceryPage() {
           <div className="text-center py-8 text-slate-500">No products found</div>
         ) : (
           <div className="grid grid-cols-2 gap-4">
-            {filteredProducts.map((product) => (
+            {filteredProducts.map((product: any) => (
               <div key={product.id} className="bg-white rounded-2xl overflow-hidden shadow-sm">
                 <img src={product.image_url || product.image} alt={product.name} className="w-full h-32 object-cover" />
                 <div className="p-3">

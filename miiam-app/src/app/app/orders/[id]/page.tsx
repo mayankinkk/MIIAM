@@ -14,17 +14,6 @@ const steps = [
   { key: "delivered", label: "Delivered", icon: "home_pin" },
 ];
 
-const riderInfo = order?.riders ? {
-  name: order.riders.name || "Rider",
-  image: order.riders.profile_image || "https://ui-avatars.com/api/?name=Rider&background=0b50d5&color=fff",
-  rating: order.riders.rating || 4.9,
-  phone: order.riders.phone,
-} : {
-  name: "Assigning Rider...",
-  image: "https://ui-avatars.com/api/?name=Rider&background=0b50d5&color=fff",
-  rating: 0,
-};
-
 export default function OrderTrackingPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const supabase = createClient();
@@ -32,6 +21,17 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
   const [loading, setLoading] = useState(true);
   const [etaMins, setEtaMins] = useState(12);
   const [riderLocation, setRiderLocation] = useState<{lat: number, lng: number} | null>(null);
+
+  const riderInfo = order?.riders ? {
+    name: order.riders.name || "Rider",
+    image: order.riders.profile_image || "https://ui-avatars.com/api/?name=Rider&background=0b50d5&color=fff",
+    rating: order.riders.rating || 4.9,
+    phone: order.riders.phone,
+  } : {
+    name: "Assigning Rider...",
+    image: "https://ui-avatars.com/api/?name=Rider&background=0b50d5&color=fff",
+    rating: 0,
+  };
 
   useEffect(() => {
     async function loadData() {
