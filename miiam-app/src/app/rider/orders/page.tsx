@@ -194,14 +194,20 @@ export default function RiderOrdersPage() {
       <header className="bg-[#0b50d5] text-white p-4 pb-6 rounded-b-[3rem]">
         <div className="flex justify-between items-center mb-4">
           <Link href="/rider/dashboard" className="text-2xl font-black tracking-tighter">MIIAM</Link>
-          <div className="flex items-center gap-3">
-            <button onClick={() => setShowAutoSkip(!showAutoSkip)} className="relative">
+          <div className="flex items-center gap-2">
+            <button onClick={() => setShowAutoSkip(!showAutoSkip)} className="relative p-2 bg-white/20 rounded-full">
               <span className="material-symbols-outlined">timer</span>
               {showAutoSkip && <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>}
             </button>
-            <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+            <Link href="/rider/analytics" className="p-2 bg-white/20 rounded-full">
+              <span className="material-symbols-outlined">insights</span>
+            </Link>
+            <Link href="/rider/incident" className="p-2 bg-red-500/20 rounded-full">
+              <span className="material-symbols-outlined text-red-400">emergency</span>
+            </Link>
+            <Link href="/rider/account" className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
               <span className="material-symbols-outlined">person</span>
-            </div>
+            </Link>
           </div>
         </div>
 
