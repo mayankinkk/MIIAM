@@ -202,6 +202,26 @@ export default function RiderAccountPage() {
           <p className="text-xs text-slate-400 mt-2">Maintain 4.5+ to avoid suspension</p>
         </div>
 
+        {/* Quick Links */}
+        <div className="grid grid-cols-4 gap-2">
+          <Link href="/rider/analytics" className="bg-white p-3 rounded-xl shadow-sm flex flex-col items-center gap-1">
+            <span className="text-2xl">📊</span>
+            <span className="text-[10px] font-bold">Analytics</span>
+          </Link>
+          <Link href="/rider/achievements" className="bg-white p-3 rounded-xl shadow-sm flex flex-col items-center gap-1">
+            <span className="text-2xl">🏆</span>
+            <span className="text-[10px] font-bold">Badges</span>
+          </Link>
+          <Link href="/rider/vehicle" className="bg-white p-3 rounded-xl shadow-sm flex flex-col items-center gap-1">
+            <span className="text-2xl">🛵</span>
+            <span className="text-[10px] font-bold">Vehicle</span>
+          </Link>
+          <Link href="/rider/referral" className="bg-white p-3 rounded-xl shadow-sm flex flex-col items-center gap-1">
+            <span className="text-2xl">🎁</span>
+            <span className="text-[10px] font-bold">Refer</span>
+          </Link>
+        </div>
+
         {/* Menu */}
         <div className="bg-white rounded-2xl overflow-hidden shadow-lg">
           <Link href="/rider/orders" className="flex items-center gap-3 p-4 border-b border-slate-100">
@@ -212,6 +232,36 @@ export default function RiderAccountPage() {
           <Link href="/rider/wallet" className="flex items-center gap-3 p-4 border-b border-slate-100">
             <span className="material-symbols-outlined text-[#0b50d5]">account_balance_wallet</span>
             <span className="flex-1 font-bold text-[#4d212a]">Wallet & Earnings</span>
+            <span className="material-symbols-outlined text-slate-400">chevron_right</span>
+          </Link>
+          <Link href="/rider/analytics" className="flex items-center gap-3 p-4 border-b border-slate-100">
+            <span className="material-symbols-outlined text-[#0b50d5]">insights</span>
+            <span className="flex-1 font-bold text-[#4d212a]">Analytics</span>
+            <span className="material-symbols-outlined text-slate-400">chevron_right</span>
+          </Link>
+          <Link href="/rider/achievements" className="flex items-center gap-3 p-4 border-b border-slate-100">
+            <span className="material-symbols-outlined text-amber-500">emoji_events</span>
+            <span className="flex-1 font-bold text-[#4d212a]">Achievements</span>
+            <span className="material-symbols-outlined text-slate-400">chevron_right</span>
+          </Link>
+          <Link href="/rider/vehicle" className="flex items-center gap-3 p-4 border-b border-slate-100">
+            <span className="material-symbols-outlined text-[#0b50d5]">two_wheeler</span>
+            <span className="flex-1 font-bold text-[#4d212a]">My Vehicle</span>
+            <span className="material-symbols-outlined text-slate-400">chevron_right</span>
+          </Link>
+          <Link href="/rider/training" className="flex items-center gap-3 p-4 border-b border-slate-100">
+            <span className="material-symbols-outlined text-[#0b50d5]">school</span>
+            <span className="flex-1 font-bold text-[#4d212a]">Training Center</span>
+            <span className="material-symbols-outlined text-slate-400">chevron_right</span>
+          </Link>
+          <Link href="/rider/referral" className="flex items-center gap-3 p-4 border-b border-slate-100">
+            <span className="material-symbols-outlined text-purple-500">group_add</span>
+            <span className="flex-1 font-bold text-[#4d212a]">Refer & Earn</span>
+            <span className="material-symbols-outlined text-slate-400">chevron_right</span>
+          </Link>
+          <Link href="/rider/incident" className="flex items-center gap-3 p-4 border-b border-slate-100">
+            <span className="material-symbols-outlined text-red-500">emergency</span>
+            <span className="flex-1 font-bold text-red-600">Report Incident</span>
             <span className="material-symbols-outlined text-slate-400">chevron_right</span>
           </Link>
           <Link href="/rider/notifications" className="flex items-center gap-3 p-4 border-b border-slate-100">
@@ -232,6 +282,11 @@ export default function RiderAccountPage() {
           <Link href="/rider/rate" className="flex items-center gap-3 p-4 border-b border-slate-100">
             <span className="material-symbols-outlined text-[#0b50d5]">rate_review</span>
             <span className="flex-1 font-bold text-[#4d212a]">Rate Customers</span>
+            <span className="material-symbols-outlined text-slate-400">chevron_right</span>
+          </Link>
+          <Link href="/rider/settings" className="flex items-center gap-3 p-4 border-b border-slate-100">
+            <span className="material-symbols-outlined text-[#0b50d5]">settings</span>
+            <span className="flex-1 font-bold text-[#4d212a]">Settings</span>
             <span className="material-symbols-outlined text-slate-400">chevron_right</span>
           </Link>
           <button onClick={handleSignOut} className="flex items-center gap-3 p-4 w-full text-left text-red-500">
