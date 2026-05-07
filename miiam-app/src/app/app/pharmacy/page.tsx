@@ -150,15 +150,7 @@ export default function PharmacyPage() {
         </div>
       </div>
 
-      <div className="px-6 mt-4">
-        <button
-          onClick={() => setShowPrescriptionModal(true)}
-          className="w-full bg-white border-2 border-dashed border-[#ba001c] rounded-2xl p-4 flex items-center justify-center gap-3"
-        >
-          <span className="material-symbols-outlined text-[#ba001c]">upload_file</span>
-          <span className="font-bold text-[#ba001c]">Upload Prescription</span>
-        </button>
-      </div>
+      
 
       <div className="bg-white px-6 py-4">
         <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
@@ -199,77 +191,6 @@ export default function PharmacyPage() {
         )}
       </main>
 
-      {showPrescriptionModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-black text-slate-800">Upload Prescription</h2>
-              <button onClick={() => setShowPrescriptionModal(false)} className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center">
-                <span className="material-symbols-outlined">close</span>
-              </button>
-            </div>
-            
-            <div className="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center mb-4">
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                className="hidden"
-              />
-              {prescriptionFile ? (
-                <div>
-                  <p className="font-bold text-slate-800">{prescriptionFile.name}</p>
-                  <button onClick={() => setPrescriptionFile(null)} className="text-sm text-red-500 mt-2">Remove</button>
-                </div>
-              ) : (
-                <button onClick={() => fileInputRef.current?.click()} className="flex flex-col items-center gap-2 mx-auto">
-                  <span className="material-symbols-outlined text-4xl text-slate-400">add_photo_alternate</span>
-                  <span className="text-slate-600">Tap to upload prescription image</span>
-                </button>
-              )}
-            </div>
-
-            <textarea
-              placeholder="Add any notes (optional)..."
-              value={prescriptionNotes}
-              onChange={(e) => setPrescriptionNotes(e.target.value)}
-              className="w-full border border-slate-200 rounded-xl p-3 text-sm mb-4"
-              rows={3}
-            />
-
-            <input
-              type="tel"
-              placeholder="WhatsApp number for updates (e.g., 9876543210)"
-              value={prescriptionPhone}
-              onChange={(e) => setPrescriptionPhone(e.target.value)}
-              className="w-full border border-slate-200 rounded-xl p-3 text-sm mb-4"
-            />
-
-            <button
-              onClick={handlePrescriptionUpload}
-              disabled={!prescriptionFile || uploading}
-              className="w-full bg-[#ba001c] text-white font-bold py-3 rounded-xl disabled:opacity-50"
-            >
-              {uploading ? "Uploading..." : "Submit Prescription"}
-            </button>
-          </div>
-        </div>
-      )}
-    {totalItems() > 0 && (
-        <Link
-          href="/app/cart"
-          className="fixed bottom-6 left-4 right-4 z-50 flex items-center justify-between bg-[#ba001c] text-white px-5 py-4 rounded-2xl shadow-2xl shadow-[#ba001c]/40"
-        >
-          <div className="flex items-center gap-3">
-            <span className="bg-white text-[#ba001c] font-black text-xs px-2 py-0.5 rounded-full">
-              {totalItems()}
-            </span>
-            <span className="font-bold">View Cart</span>
-          </div>
-          <span className="font-black text-lg">Checkout</span>
-        </Link>
-      )}
-    </div>
+</div>
   );
 }
