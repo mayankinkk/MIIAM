@@ -96,9 +96,12 @@ export default function RiderOrdersPage() {
     const yesterday = new Date();
     yesterday.setHours(yesterday.getHours() - 24);
 
+    // Fetch pending orders (not assigned to any rider yet)
     const { data: dbOrders } = await supabase
       .from("orders")
       .select("*")
+      .is("rider_id", null)
+      .in("status", ["pending", "accepted", "preparing"])
       .gte("placed_at", yesterday.toISOString())
       .order("placed_at", { ascending: false });
 
