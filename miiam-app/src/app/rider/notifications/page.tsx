@@ -1,16 +1,38 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
-
-const notifications = [
-  { id: 1, title: "New Order Available", message: "Order #1234 from Burger Prime - ₹120 earnings", time: "2 mins ago", read: false },
-  { id: 2, title: "Order Completed", message: "Order #1230 delivered successfully!", time: "15 mins ago", read: true },
-  { id: 3, title: "Payout Processed", message: "₹1,500 transferred to your bank account", time: "1 hour ago", read: true },
-  { id: 4, title: "Rating Received", message: "You received a 5-star rating from customer", time: "2 hours ago", read: true },
-  { id: 5, title: "Weekly Goal Achieved", message: "Congratulations! You completed 12 deliveries this week", time: "Yesterday", read: true },
-];
+import { createClient } from "@/lib/supabase/client";
 
 export default function RiderNotificationsPage() {
+  const supabase = createClient();
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadNotifications() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data } = await supabase
+        .from("rider_notifications")
+        .select("*")
+        .eq("rider_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(20);
+      
+      setNotifications(data || []);
+      setLoading(false);
+    }
+    loadNotifications();
+  }, []);
+
+  if (loading) return (
+    <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center">
+      <div className="w-12 h-12 border-4 border-[#0b50d5] border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-[#fff4f4]">
       <header className="bg-[#0b50d5] text-white p-6 pb-8 rounded-b-[3rem]">
@@ -23,7 +45,12 @@ export default function RiderNotificationsPage() {
       </header>
 
       <main className="p-6 space-y-4 pb-32">
-        {notifications.map((notif) => (
+        {notifications.length === 0 ? (
+          <div className="text-center py-8 text-slate-500">
+            <span className="material-symbols-outlined text-6xl text-slate-300">notifications_off</span>
+            <p className="mt-4">No notifications yet</p>
+          </div>
+        ) : notifications.map((notif) => (
           <div
             key={notif.id}
             className={`bg-white p-4 rounded-2xl shadow-lg ${notif.read ? "opacity-75" : ""}`}
@@ -35,9 +62,8 @@ export default function RiderNotificationsPage() {
               <div className="flex-1">
                 <h3 className="font-bold text-[#4d212a]">{notif.title}</h3>
                 <p className="text-sm text-slate-500 mt-1">{notif.message}</p>
-                <p className="text-xs text-slate-400 mt-2">{notif.time}</p>
+                <p className="text-xs text-slate-400 mt-2">{new Date(notif.created_at).toLocaleString()}</p>
               </div>
-              <span className="material-symbols-outlined text-slate-300">chevron_right</span>
             </div>
           </div>
         ))}
