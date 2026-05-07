@@ -92,12 +92,41 @@ export default function RiderOrdersPage() {
 
   async function loadOrders() {
     setLoading(true);
-    const { data } = await supabase
+    const { data: dbOrders } = await supabase
       .from("orders")
-      .select("*, vendor:vendors(*), address:delivery_address_id(*), items:order_items(*, menu_item:menu_items(*))")
+      .select("*")
       .order("placed_at", { ascending: false });
-    if (data && data.length > 0) {
-      setOrders(data);
+
+    if (dbOrders && dbOrders.length > 0) {
+      const fullOrders = await Promise.all(dbOrders.map(async (order) => {
+        const [vendorRes, addressRes, itemsRes] = await Promise.all([
+          order.vendor_id ? supabase.from("vendors").select("*").eq("id", order.vendor_id).single() : Promise.resolve({ data: null }),
+          order.delivery_address_id ? supabase.from("delivery_addresses").select("*").eq("id", order.delivery_address_id).single() : Promise.resolve({ data: null }),
+          supabase.from("order_items").select("*").eq("order_id", order.id)
+        ]);
+
+        let items = itemsRes.data || [];
+        if (items.length > 0) {
+          const menuItemIds = items.map(i => i.menu_item_id).filter(Boolean);
+          if (menuItemIds.length > 0) {
+            const { data: menuItems } = await supabase.from("menu_items").select("*").in("id", menuItemIds);
+            if (menuItems) {
+              items = items.map(item => ({
+                ...item,
+                menu_item: menuItems.find(mi => mi.id === item.menu_item_id) || null
+              }));
+            }
+          }
+        }
+
+        return {
+          ...order,
+          vendor: vendorRes.data,
+          address: addressRes.data,
+          items: items
+        };
+      }));
+      setOrders(fullOrders);
     }
     setLoading(false);
   }

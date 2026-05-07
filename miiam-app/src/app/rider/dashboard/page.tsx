@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
 
 interface Order {
   id: string;
@@ -136,9 +137,10 @@ function calculateEarnings(distance: number, baseFare: number = 40, perKm: numbe
 }
 
 export default function RiderDashboard() {
+  const supabase = createClient();
   const [isOnline, setIsOnline] = useState(true);
   const [countdown, setCountdown] = useState(52);
-  const [pendingOrders, setPendingOrders] = useState(sampleOrders);
+  const [pendingOrders, setPendingOrders] = useState<Order[]>(sampleOrders);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [currentOrder, setCurrentOrder] = useState<Order | null>(null);
   const [showCallModal, setShowCallModal] = useState(false);
@@ -167,6 +169,89 @@ export default function RiderDashboard() {
       autoDecline();
     }
   }, [countdown, selectedOrder]);
+
+  useEffect(() => {
+    async function fetchRealOrders() {
+      if (!isOnline) return;
+      
+      const { data: dbOrders } = await supabase
+        .from("orders")
+        .select("*")
+        .in("status", ["pending", "accepted", "preparing"])
+        .order("placed_at", { ascending: false });
+        
+      if (!dbOrders || dbOrders.length === 0) {
+        setPendingOrders([]);
+        return;
+      }
+      
+      const mappedOrders: Order[] = await Promise.all(dbOrders.map(async (dbOrder) => {
+        // Fetch related data sequentially
+        const [vendorRes, itemsRes] = await Promise.all([
+          dbOrder.vendor_id ? supabase.from("vendors").select("*").eq("id", dbOrder.vendor_id).single() : Promise.resolve({ data: null }),
+          supabase.from("order_items").select("*").eq("order_id", dbOrder.id)
+        ]);
+        
+        let itemsList = [];
+        let itemsCount = 0;
+        
+        const items = itemsRes.data || [];
+        if (items.length > 0) {
+          itemsCount = items.reduce((sum, item) => sum + item.quantity, 0);
+          const menuItemIds = items.map(i => i.menu_item_id).filter(Boolean);
+          if (menuItemIds.length > 0) {
+            const { data: menuItems } = await supabase.from("menu_items").select("*").in("id", menuItemIds);
+            if (menuItems) {
+              itemsList = items.map((item: any) => {
+                const menuItem = menuItems.find(mi => mi.id === item.menu_item_id);
+                return `${item.quantity}x ${menuItem?.name || "Item"}`;
+              });
+            }
+          }
+        }
+        
+        return {
+          id: dbOrder.id.substring(0, 8).toUpperCase(),
+          vendor: vendorRes.data?.name || "Restaurant",
+          vendorAddress: vendorRes.data?.address || "Restaurant Address",
+          vendorPhone: vendorRes.data?.phone || "+91 99999 99999",
+          customer: "Customer",
+          customerPhone: dbOrder.customer_phone || "+91 88888 88888",
+          customerAddress: "Customer Delivery Location",
+          landmark: dbOrder.special_instructions || "N/A",
+          distance: 1.5,
+          distance2: 2.5,
+          totalDistance: 4.0,
+          earnings: dbOrder.delivery_fee || 40,
+          items: itemsCount || 1,
+          itemsList: itemsList.length > 0 ? itemsList : ["Items hidden"],
+          time: "5 mins",
+          time2: "15 mins",
+          estCompletion: 20,
+          priority: "normal",
+          peakMultiplier: 1.0,
+          specialInstructions: dbOrder.special_instructions || "",
+          otp: "1234",
+          type: "food",
+        } as Order;
+      }));
+      
+      setPendingOrders(mappedOrders);
+    }
+    
+    fetchRealOrders();
+    
+    const channel = supabase
+      .channel('rider-orders-dash')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => {
+        fetchRealOrders();
+      })
+      .subscribe();
+      
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [isOnline, supabase]);
 
   useEffect(() => {
     if (pendingOrders.length > 0 && isOnline && !showNewOrderAlert) {

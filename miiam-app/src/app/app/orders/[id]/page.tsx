@@ -2,6 +2,7 @@
 
 import { use, useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 const steps = [
@@ -16,11 +17,26 @@ const steps = [
 
 export default function OrderTrackingPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
+  const router = useRouter();
   const supabase = createClient();
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [etaMins, setEtaMins] = useState(12);
   const [riderLocation, setRiderLocation] = useState<{lat: number, lng: number} | null>(null);
+  const [showHelp, setShowHelp] = useState(false);
+
+  const canCancel = order && ["pending", "accepted"].includes(order.status);
+
+  const handleCancelOrder = async () => {
+    if (!confirm("Are you sure you want to cancel this order?")) return;
+    try {
+      await supabase.from("orders").update({ status: "cancelled" }).eq("id", id);
+      router.push("/app/orders");
+    } catch (error) {
+      console.error("Cancel error:", error);
+      alert("Failed to cancel order");
+    }
+  };
 
   const riderInfo = order?.riders ? {
     name: order.riders.name || "Rider",
@@ -338,9 +354,61 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
               </div>
             </div>
 
-            <button className="w-full bg-gradient-to-r from-[#ba001c] to-[#ff7670] text-white rounded-xl py-5 text-lg font-extrabold shadow-lg shadow-[#ba001c]/20 hover:scale-[1.02] active:scale-95 transition-all">
-              Help with Order
+            <button 
+              onClick={() => setShowHelp(true)}
+              className="w-full bg-gradient-to-r from-[#ba001c] to-[#ff7670] text-white rounded-xl py-5 text-lg font-extrabold shadow-lg shadow-[#ba001c]/20 hover:scale-[1.02] active:scale-95 transition-all"
+            >
+              {canCancel ? "Cancel Order" : "Help with Order"}
             </button>
+
+            {!canCancel && order && order.status !== "delivered" && order.status !== "cancelled" && (
+              <p className="text-center text-sm text-slate-500 mt-2">
+                Contact rider or customer support to make changes
+              </p>
+            )}
+
+            {showHelp && (
+              <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                <div className="bg-white rounded-2xl w-full max-w-md p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-xl font-black text-slate-800">Need Help?</h2>
+                    <button onClick={() => setShowHelp(false)} className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center">
+                      <span className="material-symbols-outlined">close</span>
+                    </button>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <button 
+                      onClick={() => router.push(`/app/orders/${id}/chat`)}
+                      className="w-full p-4 bg-blue-50 text-blue-600 rounded-xl font-bold flex items-center justify-center gap-2"
+                    >
+                      <span className="material-symbols-outlined">chat</span>
+                      Chat with Rider
+                    </button>
+                    
+                    {order?.riders?.phone && (
+                      <a 
+                        href={`tel:${order.riders.phone}`}
+                        className="w-full p-4 bg-green-50 text-green-600 rounded-xl font-bold flex items-center justify-center gap-2"
+                      >
+                        <span className="material-symbols-outlined">call</span>
+                        Call Rider
+                      </a>
+                    )}
+                    
+                    {canCancel && (
+                      <button 
+                        onClick={handleCancelOrder}
+                        className="w-full p-4 bg-red-50 text-red-600 rounded-xl font-bold flex items-center justify-center gap-2"
+                      >
+                        <span className="material-symbols-outlined">cancel</span>
+                        Cancel Order
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </main>
