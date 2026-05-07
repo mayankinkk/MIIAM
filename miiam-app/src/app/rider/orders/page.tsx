@@ -95,7 +95,7 @@ const mockOrders: Order[] = [
 export default function RiderOrdersPage() {
   const supabase = createClient();
   const router = useRouter();
-  const [orders, setOrders] = useState<Order[]>(mockOrders);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<"available" | "shopping" | "completed" | "history">("available");
   const [searchQuery, setSearchQuery] = useState("");
