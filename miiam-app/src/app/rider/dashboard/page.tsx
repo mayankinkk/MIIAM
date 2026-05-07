@@ -143,13 +143,13 @@ export default function RiderDashboard() {
   const [currentOrder, setCurrentOrder] = useState<Order | null>(null);
   const [showCallModal, setShowCallModal] = useState(false);
   const [showChatModal, setShowChatModal] = useState(false);
-  const [showOtpModal, setShowOtpModal] = useState(false);
-  const [showPhotoModal, setShowPhotoModal] = useState(false);
+  
+  
   const [showSkipModal, setShowSkipModal] = useState(false);
   const [showAlertSettings, setShowAlertSettings] = useState(false);
   const [showNewOrderAlert, setShowNewOrderAlert] = useState(false);
   const [currentStopIndex, setCurrentStopIndex] = useState(0);
-  const [otpInput, setOtpInput] = useState("");
+  
   const [chatMessage, setChatMessage] = useState("");
   const [chatHistory, setChatHistory] = useState<{from: string; text: string; time: string}[]>([
     { from: "system", text: "Order confirmed. Please proceed to pickup.", time: "10:30 AM" },
@@ -234,20 +234,6 @@ export default function RiderDashboard() {
     }
   };
 
-  const handleOtpSubmit = () => {
-    if (otpInput === currentOrder?.otp) {
-      setShowOtpModal(false);
-      setShowPhotoModal(true);
-    } else {
-      alert("Invalid OTP! Please try again.");
-    }
-  };
-
-  const handlePhotoProof = () => {
-    setShowPhotoModal(false);
-    handleComplete();
-  };
-
   const handleComplete = () => {
     if (currentOrder) {
       const finalEarnings = calculateEarnings(currentOrder.totalDistance, 40, 8, currentOrder.peakMultiplier);
@@ -265,8 +251,7 @@ export default function RiderDashboard() {
       setCurrentStopIndex(currentStopIndex + 1);
       alert(`Stop ${currentStopIndex + 1} delivered! Moving to stop ${currentStopIndex + 2}...`);
     } else {
-      setDeliveryStep("arrived");
-      setShowOtpModal(true);
+      handleComplete();
     }
   };
 
@@ -765,12 +750,6 @@ export default function RiderDashboard() {
                       <p className="text-sm text-slate-500">{currentOrder.stops[currentStopIndex].address}</p>
                       <p className="text-xs text-slate-400 mt-1">📍 {currentOrder.stops[currentStopIndex].landmark}</p>
                     </div>
-                    <div className="bg-purple-50 p-3 rounded-xl mb-4">
-                      <p className="text-[10px] text-purple-600 font-bold mb-1">🔐 DELIVERY OTP</p>
-                      <p className="font-black text-2xl tracking-widest">{currentOrder.stops[currentStopIndex].otp}</p>
-                      <p className="text-[9px] text-purple-500">Share this OTP with customer</p>
-                    </div>
-                    
                     {/* Remaining Stops */}
                     <div className="bg-slate-50 p-3 rounded-xl mb-4">
                       <p className="text-[10px] text-slate-400 mb-2">UPCOMING STOPS</p>
@@ -821,11 +800,6 @@ export default function RiderDashboard() {
                       <p className="text-sm text-slate-500">{currentOrder.customerAddress}</p>
                       <p className="text-xs text-slate-400 mt-1">📍 {currentOrder.landmark}</p>
                     </div>
-                    <div className="bg-blue-50 p-3 rounded-xl mb-4">
-                      <p className="text-[10px] text-blue-600 font-bold mb-1">🔐 DELIVERY OTP</p>
-                      <p className="font-black text-2xl tracking-widest">{currentOrder.otp}</p>
-                      <p className="text-[9px] text-blue-500">Share this OTP with customer</p>
-                    </div>
                     <div className="flex gap-3">
                       <button 
                         onClick={handleCallCustomer}
@@ -865,12 +839,12 @@ export default function RiderDashboard() {
                       <span className="material-symbols-outlined text-green-600 text-5xl">location_on</span>
                     </div>
                     <p className="font-bold text-xl mb-2">You've Arrived!</p>
-                    <p className="text-sm text-slate-500 mb-4">Ask customer for OTP to complete delivery</p>
+                    <p className="text-sm text-slate-500 mb-4">Ready to complete delivery</p>
                     <button 
-                      onClick={() => setShowOtpModal(true)}
+                      onClick={handleComplete}
                       className="w-full py-4 bg-green-500 text-white font-black rounded-xl"
                     >
-                      VERIFY OTP & COMPLETE
+                      COMPLETE DELIVERY
                     </button>
                   </div>
                 )}
@@ -1015,57 +989,7 @@ export default function RiderDashboard() {
         </div>
       )}
 
-      {/* OTP Modal */}
-      {showOtpModal && (
-        <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-sm">
-            <h3 className="font-bold text-xl text-center mb-4">Verify OTP</h3>
-            <p className="text-sm text-slate-500 text-center mb-6">Ask customer for their delivery OTP</p>
-            <input 
-              type="text"
-              value={otpInput}
-              onChange={(e) => setOtpInput(e.target.value)}
-              maxLength={4}
-              placeholder="Enter 4-digit OTP"
-              className="w-full text-center text-2xl font-bold tracking-[1em] border-2 border-slate-200 rounded-xl p-4 mb-4 focus:outline-none focus:border-[#0b50d5]"
-            />
-            <div className="flex gap-3">
-              <button 
-                onClick={() => setShowOtpModal(false)}
-                className="flex-1 py-3 bg-slate-200 text-slate-600 font-bold rounded-xl"
-              >
-                Cancel
-              </button>
-              <button 
-                onClick={handleOtpSubmit}
-                className="flex-1 py-3 bg-green-500 text-white font-bold rounded-xl"
-              >
-                Verify
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Photo Proof Modal */}
-      {showPhotoModal && (
-        <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-sm">
-            <h3 className="font-bold text-xl text-center mb-4">Delivery Proof</h3>
-            <p className="text-sm text-slate-500 text-center mb-6">Take a photo of the delivered items</p>
-            <div className="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center mb-4">
-              <span className="material-symbols-outlined text-4xl text-slate-300">add_a_photo</span>
-              <p className="text-sm text-slate-400 mt-2">Tap to capture photo</p>
-            </div>
-            <button 
-              onClick={handlePhotoProof}
-              className="w-full py-4 bg-green-500 text-white font-bold rounded-xl"
-            >
-              CONFIRM DELIVERY
-            </button>
-          </div>
-        </div>
-      )}
+      
 
       {/* Skip Modal */}
       {showSkipModal && (
