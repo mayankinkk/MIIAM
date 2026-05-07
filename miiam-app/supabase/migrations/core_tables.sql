@@ -1,4 +1,4 @@
--- Core tables for MIIAM delivery system
+-- Core tables for MIIAM delivery system (Idempotent - safe to run multiple times)
 
 -- Orders Table
 CREATE TABLE IF NOT EXISTS orders (
@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS orders (
   user_id UUID REFERENCES auth.users(id),
   vendor_id UUID REFERENCES vendors(id),
   rider_id UUID,
-  status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'scheduled', 'accepted', 'preparing', 'shopping', 'picking_up', 'on_the_way', 'delivered', 'cancelled')),
+  status TEXT DEFAULT 'pending',
   total_amount NUMERIC(10,2) NOT NULL,
   delivery_fee NUMERIC(10,2) DEFAULT 5.99,
   discount_amount NUMERIC(10,2) DEFAULT 0,
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS order_items (
   unit_price NUMERIC(10,2) NOT NULL,
   price NUMERIC(10,2) NOT NULL,
   special_notes TEXT,
-  status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'available', 'unavailable', 'different_brand', 'picked')),
+  status TEXT DEFAULT 'pending',
   picked BOOLEAN DEFAULT FALSE,
   actual_price NUMERIC(10,2),
   created_at TIMESTAMP DEFAULT NOW()
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS notifications (
   message TEXT,
   icon TEXT,
   action_url TEXT,
-  type TEXT DEFAULT 'system' CHECK (type IN ('order', 'promo', 'system', 'rider')),
+  type TEXT DEFAULT 'system',
   read BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP DEFAULT NOW()
 );
@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS promo_codes (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   code TEXT UNIQUE NOT NULL,
   discount_value NUMERIC(10,2) NOT NULL,
-  discount_type TEXT CHECK (discount_type IN ('percentage', 'flat')),
+  discount_type TEXT,
   min_order_amount NUMERIC(10,2) DEFAULT 0,
   is_active BOOLEAN DEFAULT true,
   valid_from TIMESTAMP,
@@ -97,7 +97,7 @@ CREATE TABLE IF NOT EXISTS riders (
   profile_image TEXT,
   rating DECIMAL(3,2) DEFAULT 5.0,
   total_deliveries INTEGER DEFAULT 0,
-  status TEXT DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'busy')),
+  status TEXT DEFAULT 'active',
   vehicle_type TEXT,
   vehicle_number TEXT,
   city TEXT,
@@ -128,6 +128,8 @@ ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
 ALTER TABLE user_push_tokens ENABLE ROW LEVEL SECURITY;
 ALTER TABLE pending_notifications ENABLE ROW LEVEL SECURITY;
 ALTER TABLE promo_codes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE riders ENABLE ROW LEVEL SECURITY;
+ALTER TABLE delivery_addresses ENABLE ROW LEVEL SECURITY;
 
 -- Policies
 DROP POLICY IF EXISTS "Orders all access" ON orders;
@@ -158,19 +160,18 @@ CREATE POLICY "Delivery addresses all access" ON delivery_addresses FOR ALL USIN
 ALTER TABLE orders REPLICA IDENTITY FULL;
 ALTER TABLE order_items REPLICA IDENTITY FULL;
 ALTER TABLE notifications REPLICA IDENTITY FULL;
-ALTER TABLE rider_locations REPLICA IDENTITY FULL;
 
--- Indexes
-CREATE INDEX idx_orders_user_id ON orders(user_id);
-CREATE INDEX idx_orders_status ON orders(status);
-CREATE INDEX idx_orders_rider_id ON orders(rider_id);
-CREATE INDEX idx_order_items_order_id ON order_items(order_id);
-CREATE INDEX idx_notifications_user_id ON notifications(user_id);
-CREATE INDEX idx_notifications_read ON notifications(read);
-CREATE INDEX idx_riders_user_id ON riders(user_id);
-CREATE INDEX idx_delivery_addresses_user_id ON delivery_addresses(user_id);
+-- Indexes (IF NOT EXISTS for idempotency)
+CREATE INDEX IF NOT EXISTS idx_orders_user_id ON orders(user_id);
+CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);
+CREATE INDEX IF NOT EXISTS idx_orders_rider_id ON orders(rider_id);
+CREATE INDEX IF NOT EXISTS idx_order_items_order_id ON order_items(order_id);
+CREATE INDEX IF NOT EXISTS idx_notifications_user_id ON notifications(user_id);
+CREATE INDEX IF NOT EXISTS idx_notifications_read ON notifications(read);
+CREATE INDEX IF NOT EXISTS idx_riders_user_id ON riders(user_id);
+CREATE INDEX IF NOT EXISTS idx_delivery_addresses_user_id ON delivery_addresses(user_id);
 
--- Insert sample promo codes
+-- Insert sample promo codes (will not duplicate)
 INSERT INTO promo_codes (code, discount_value, discount_type, min_order_amount, is_active) VALUES
 ('FIRST50', 50, 'flat', 200, true),
 ('MIIAM20', 20, 'percentage', 100, true),
