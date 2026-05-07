@@ -1046,7 +1046,7 @@ export default function RiderDashboard() {
               ))}
             </div>
 
-            <div className="p-4 border-t">
+<div className="p-4 border-t">
               {/* Quick Message Shortcuts */}
               <div className="flex gap-2 mb-3 overflow-x-auto pb-2">
                 {["I'm on my way", "I've arrived", "Item not available", "Traffic delay", "Contacting support"].map((msg) => (
@@ -1060,6 +1060,21 @@ export default function RiderDashboard() {
                 ))}
               </div>
               <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={chatMessage}
+                  onChange={(e) => setChatMessage(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
+                  placeholder="Type a message..."
+                  className="flex-1 bg-slate-100 rounded-full px-4 py-2 text-sm"
+                />
+<button 
+                  onClick={handleSendMessage}
+                  disabled={!chatMessage.trim()}
+                  className="w-10 h-10 bg-[#0b50d5] text-white rounded-full flex items-center justify-center disabled:opacity-50"
+                >
+                  <span className="material-symbols-outlined">send</span>
+                </button>
                 <button onClick={() => setShowAlertSettings(true)} className="relative p-2">
                   <span className="material-symbols-outlined text-slate-600">
                     {soundEnabled && vibrationEnabled ? "notifications_active" : soundEnabled ? "volume_up" : vibrationEnabled ? "vibration" : "notifications_off"}
@@ -1077,8 +1092,6 @@ export default function RiderDashboard() {
           </div>
         </div>
       )}
-
-      
 
       {/* Skip Modal */}
       {showSkipModal && (

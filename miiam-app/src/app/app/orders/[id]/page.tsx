@@ -142,7 +142,22 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
         filter: `id=eq.${id}`,
       }, (payload) => {
         if (payload.new) {
+          const oldStatus = order?.status;
+          const newStatus = payload.new.status;
           setOrder((prev: any) => ({ ...prev, ...payload.new }));
+          
+          // Show toast for status changes
+          if (newStatus !== oldStatus) {
+            const statusMessages: Record<string, string> = {
+              accepted: "🎉 Order accepted by rider!",
+              preparing: "👨‍🍳 Restaurant is preparing your order",
+              picking_up: "🛒 Rider is picking up your order",
+              on_the_way: "🚴 Rider is on the way!",
+              delivered: "✅ Order delivered!",
+            };
+            const msg = statusMessages[newStatus];
+            if (msg) alert(msg);
+          }
         }
       })
       .on('postgres_changes', {
@@ -152,8 +167,9 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
         filter: `order_id=eq.${id}`,
       }, (payload) => {
         setRiderLocation({ lat: payload.new.lat, lng: payload.new.lng });
-      })
-      .subscribe();
+      });
+
+    channel.subscribe();
 
     return () => {
       supabase.removeChannel(channel);
