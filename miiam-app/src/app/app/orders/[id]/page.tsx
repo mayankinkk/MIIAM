@@ -386,13 +386,21 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                       Chat with Rider
                     </button>
                     
-                    {order?.riders?.phone && (
+                    {order?.riders?.phone ? (
                       <a 
                         href={`tel:${order.riders.phone}`}
                         className="w-full p-4 bg-green-50 text-green-600 rounded-xl font-bold flex items-center justify-center gap-2"
                       >
                         <span className="material-symbols-outlined">call</span>
                         Call Rider
+                      </a>
+                    ) : (
+                      <a 
+                        href="tel:+919876543210"
+                        className="w-full p-4 bg-green-50 text-green-600 rounded-xl font-bold flex items-center justify-center gap-2"
+                      >
+                        <span className="material-symbols-outlined">call</span>
+                        Call Support
                       </a>
                     )}
                     
