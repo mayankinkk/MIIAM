@@ -1,57 +1,55 @@
 -- Core tables for MIIAM delivery system (Idempotent - safe to run multiple times)
 
--- Orders Table
-CREATE TABLE IF NOT EXISTS orders (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID REFERENCES auth.users(id),
-  vendor_id UUID REFERENCES vendors(id),
-  rider_id UUID,
-  status TEXT DEFAULT 'pending',
-  total_amount NUMERIC(10,2) NOT NULL,
-  delivery_fee NUMERIC(10,2) DEFAULT 5.99,
-  discount_amount NUMERIC(10,2) DEFAULT 0,
-  payment_method TEXT,
-  delivery_address TEXT,
-  delivery_address_id UUID,
-  special_instructions TEXT,
-  delivery_notes TEXT,
-  placed_at TIMESTAMP DEFAULT NOW(),
-  accepted_at TIMESTAMP,
-  delivered_at TIMESTAMP,
-  estimated_delivery TIMESTAMP,
-  customer_collected NUMERIC(10,2),
-  created_at TIMESTAMP DEFAULT NOW(),
-  updated_at TIMESTAMP DEFAULT NOW()
-);
+-- Orders Table (add columns if table exists)
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'orders' AND column_name = 'rider_id') THEN
+    ALTER TABLE orders ADD COLUMN rider_id UUID;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'orders' AND column_name = 'status') THEN
+    ALTER TABLE orders ADD COLUMN status TEXT DEFAULT 'pending';
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'orders' AND column_name = 'accepted_at') THEN
+    ALTER TABLE orders ADD COLUMN accepted_at TIMESTAMP;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'orders' AND column_name = 'delivery_notes') THEN
+    ALTER TABLE orders ADD COLUMN delivery_notes TEXT;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'orders' AND column_name = 'customer_collected') THEN
+    ALTER TABLE orders ADD COLUMN customer_collected NUMERIC(10,2);
+  END IF;
+END $$;
 
--- Order Items Table
-CREATE TABLE IF NOT EXISTS order_items (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  order_id UUID REFERENCES orders(id) ON DELETE CASCADE,
-  menu_item_id UUID REFERENCES menu_items(id),
-  name TEXT NOT NULL,
-  quantity INTEGER NOT NULL,
-  unit_price NUMERIC(10,2) NOT NULL,
-  price NUMERIC(10,2) NOT NULL,
-  special_notes TEXT,
-  status TEXT DEFAULT 'pending',
-  picked BOOLEAN DEFAULT FALSE,
-  actual_price NUMERIC(10,2),
-  created_at TIMESTAMP DEFAULT NOW()
-);
+-- Order Items Table (add columns if table exists)
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'order_items' AND column_name = 'status') THEN
+    ALTER TABLE order_items ADD COLUMN status TEXT DEFAULT 'pending';
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'order_items' AND column_name = 'picked') THEN
+    ALTER TABLE order_items ADD COLUMN picked BOOLEAN DEFAULT FALSE;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'order_items' AND column_name = 'actual_price') THEN
+    ALTER TABLE order_items ADD COLUMN actual_price NUMERIC(10,2);
+  END IF;
+END $$;
 
--- Notifications Table
-CREATE TABLE IF NOT EXISTS notifications (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id TEXT NOT NULL,
-  title TEXT NOT NULL,
-  message TEXT,
-  icon TEXT,
-  action_url TEXT,
-  type TEXT DEFAULT 'system',
-  read BOOLEAN DEFAULT FALSE,
-  created_at TIMESTAMP DEFAULT NOW()
-);
+-- Notifications Table (add columns if table exists)
+DO $$ 
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'notifications' AND column_name = 'read') THEN
+    ALTER TABLE notifications ADD COLUMN read BOOLEAN DEFAULT FALSE;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'notifications' AND column_name = 'type') THEN
+    ALTER TABLE notifications ADD COLUMN type TEXT DEFAULT 'system';
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'notifications' AND column_name = 'action_url') THEN
+    ALTER TABLE notifications ADD COLUMN action_url TEXT;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'notifications' AND column_name = 'icon') THEN
+    ALTER TABLE notifications ADD COLUMN icon TEXT;
+  END IF;
+END $$;
 
 -- User Push Tokens Table
 CREATE TABLE IF NOT EXISTS user_push_tokens (
