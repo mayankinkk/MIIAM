@@ -159,6 +159,8 @@ export default function RiderOrdersPage() {
         return;
       }
 
+      console.log("Accepting order:", orderId, "user:", user.id);
+
       const { error } = await supabase
         .from("orders")
         .update({ 
@@ -168,7 +170,11 @@ export default function RiderOrdersPage() {
         })
         .eq("id", orderId);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Update error:", error);
+        alert("Error: " + error.message);
+        return;
+      }
 
       const order = orders.find(o => o.id === orderId);
       if (order?.user_id) {
@@ -179,14 +185,14 @@ export default function RiderOrdersPage() {
           type: "order",
           read: false,
           created_at: new Date().toISOString(),
-        });
+        }).catch(() => {});
       }
 
       setOrders(orders.map(o => o.id === orderId ? { ...o, status: "accepted", rider_id: user.id } : o));
       alert("Order accepted! Start shopping.");
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error accepting order:", err);
-      alert("Failed to accept order. Please try again.");
+      alert("Failed to accept order: " + (err?.message || "Unknown error"));
     }
   }
 
