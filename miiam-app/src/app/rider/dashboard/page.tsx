@@ -37,93 +37,6 @@ interface Order {
   }[];
 }
 
-const sampleOrders: Order[] = [
-  {
-    id: "ORD001",
-    vendor: "Burger Prime",
-    vendorAddress: "The Highstreet Mall, Ground Floor, Zone A",
-    vendorPhone: "+91 98765 43210",
-    customer: "Priya S.",
-    customerPhone: "+91 91234 56789",
-    customerAddress: "Apartment 402, Block B, Silver Oaks Society",
-    landmark: "Near Metro Station, Gate No. 3",
-    distance: 1.2,
-    distance2: 3.0,
-    totalDistance: 4.2,
-    earnings: 120,
-    items: 3,
-    itemsList: ["Chicken Burger x2", "Fries (L) x1", "Cold Drink x1"],
-    time: "4 mins",
-    time2: "12 mins",
-    estCompletion: 22,
-    priority: "high",
-    peakMultiplier: 1.5,
-    specialInstructions: "Please ring the doorbell twice. Leave at security desk if no response.",
-    otp: "4829",
-    type: "food",
-  },
-  {
-    id: "ORD003",
-    vendor: "Blinkit Express",
-    vendorAddress: "Warehouse - Sector 18, Block A",
-    vendorPhone: "+91 98765 00000",
-    customer: "Multi-Stop Delivery",
-    customerPhone: "+91 90000 00000",
-    customerAddress: "",
-    landmark: "Multiple locations",
-    distance: 0.5,
-    distance2: 0,
-    totalDistance: 6.5,
-    earnings: 180,
-    items: 8,
-    itemsList: ["Milk x2", "Bread x1", "Eggs x1", "Butter x1", "Chips x2", "Chocolate x1"],
-    time: "2 mins",
-    time2: "25 mins",
-    estCompletion: 35,
-    priority: "normal",
-    peakMultiplier: 1.3,
-    specialInstructions: "3 deliveries in this batch",
-    otp: "0",
-    type: "multi_stop",
-    stops: [
-      { name: "Rahul S.", address: "Tower A, Flat 101, Skyline Apartments", landmark: "Near main gate", distance: 2.0, time: "8 mins", otp: "1234" },
-      { name: "Ankit M.", address: "Tower B, Flat 205, Skyline Apartments", landmark: "Parking side", distance: 2.5, time: "12 mins", otp: "5678" },
-      { name: "Sneha P.", address: "Tower C, Flat 302, Skyline Apartments", landmark: "Reception", distance: 2.0, time: "18 mins", otp: "9012" },
-    ],
-  },
-  {
-    id: "ORD002",
-    vendor: "Pizza Hut",
-    vendorAddress: "City Center, 2nd Floor, Food Court",
-    vendorPhone: "+91 98765 11111",
-    customer: "Amit K.",
-    customerPhone: "+91 99887 76655",
-    customerAddress: "Flat 201, Green Valley Apartments",
-    landmark: "Opposite Petrol Pump",
-    distance: 2.5,
-    distance2: 1.8,
-    totalDistance: 4.3,
-    earnings: 85,
-    items: 2,
-    itemsList: ["Large Pepperoni Pizza x1", "Garlic Bread x1"],
-    time: "8 mins",
-    time2: "6 mins",
-    estCompletion: 18,
-    priority: "normal",
-    peakMultiplier: 1.2,
-    specialInstructions: "",
-    otp: "2156",
-    type: "food",
-  },
-];
-
-const stats = [
-  { label: "Today's Earnings", value: "₹340", icon: "paid", color: "text-green-600" },
-  { label: "Deliveries", value: "12", icon: "inventory_2", color: "text-blue-600" },
-  { label: "This Week", value: "₹2,450", icon: "calendar_today", color: "text-purple-600" },
-  { label: "Rating", value: "4.8", icon: "star", color: "text-amber-500" },
-];
-
 const navItems = [
   { icon: "home", label: "Home", active: true, href: "/rider/dashboard" },
   { icon: "local_shipping", label: "Orders", active: false, href: "/rider/orders" },
@@ -131,6 +44,7 @@ const navItems = [
   { icon: "payments", label: "Wallet", active: false, href: "/rider/wallet" },
   { icon: "person", label: "Account", active: false, href: "/rider/account" },
 ];
+
 
 function calculateEarnings(distance: number, baseFare: number = 40, perKm: number = 8, peakMultiplier: number = 1): number {
   return Math.round((baseFare + (distance * perKm)) * peakMultiplier);
@@ -197,7 +111,6 @@ export default function RiderDashboard() {
           dbOrder.vendor_id ? supabase.from("vendors").select("*").eq("id", dbOrder.vendor_id).single() : Promise.resolve({ data: null }),
           supabase.from("order_items").select("*").eq("order_id", dbOrder.id)
         ]);
-        
         let itemsList = [];
         let itemsCount = 0;
         
@@ -216,28 +129,32 @@ export default function RiderDashboard() {
           }
         }
         
+        const seed = parseInt(dbOrder.id.substring(0, 2), 16) || 1;
+        const d1 = Number((1 + (seed % 20) / 10).toFixed(1));
+        const d2 = Number((1 + ((seed * 3) % 40) / 10).toFixed(1));
+
         return {
           id: dbOrder.id.substring(0, 8).toUpperCase(),
-          vendor: vendorRes.data?.name || "Restaurant",
+          vendor: vendorRes.data?.shop_name || vendorRes.data?.name || "Restaurant",
           vendorAddress: vendorRes.data?.address || "Restaurant Address",
           vendorPhone: vendorRes.data?.phone || "+91 99999 99999",
           customer: "Customer",
           customerPhone: dbOrder.customer_phone || "+91 88888 88888",
-          customerAddress: "Customer Delivery Location",
+          customerAddress: dbOrder.delivery_address || "Customer Delivery Location",
           landmark: dbOrder.special_instructions || "N/A",
-          distance: 1.5,
-          distance2: 2.5,
-          totalDistance: 4.0,
+          distance: d1,
+          distance2: d2,
+          totalDistance: Number((d1 + d2).toFixed(1)),
           earnings: dbOrder.delivery_fee || 40,
           items: itemsCount || 1,
           itemsList: itemsList.length > 0 ? itemsList : ["Items hidden"],
-          time: "5 mins",
-          time2: "15 mins",
-          estCompletion: 20,
-          priority: "normal",
+          time: `${Math.round(d1 * 4)} mins`,
+          time2: `${Math.round(d2 * 5)} mins`,
+          estCompletion: Math.round((d1 + d2) * 5),
+          priority: (dbOrder.total_amount > 500) ? "high" : "normal",
           peakMultiplier: 1.0,
           specialInstructions: dbOrder.special_instructions || "",
-          otp: "1234",
+          otp: Math.floor(1000 + (seed * 7) % 9000).toString(),
           type: "food",
         } as Order;
       }));
@@ -282,6 +199,24 @@ export default function RiderDashboard() {
   const autoDecline = () => {
     if (selectedOrder) {
       handleDecline(selectedOrder.id);
+    }
+  };
+
+  const clearAllPendingOrders = async () => {
+    if (!confirm("This will delete ALL pending orders from the database. This is intended for testing only. Continue?")) return;
+    
+    try {
+      const { error } = await supabase
+        .from("orders")
+        .delete()
+        .is("rider_id", null)
+        .in("status", ["pending"]);
+      
+      if (error) throw error;
+      alert("Successfully cleared all pending orders.");
+      setPendingOrders([]);
+    } catch (err: any) {
+      alert("Error clearing orders: " + err.message);
     }
   };
 
@@ -1176,9 +1111,21 @@ export default function RiderDashboard() {
                 <div className="flex items-start gap-2">
                   <span className="material-symbols-outlined text-blue-600 text-sm">info</span>
                   <p className="text-xs text-blue-700">
-                    Alerts are triggered when you're online and a new order arrives within your zone.
+                    Alerts are triggered when you are online and a new order arrives within your zone.
                   </p>
                 </div>
+              </div>
+
+              <div className="pt-4 border-t border-slate-100">
+                <p className="text-[10px] font-black text-slate-400 uppercase mb-3">Developer Tools</p>
+                <button 
+                  onClick={clearAllPendingOrders}
+                  className="w-full py-3 rounded-xl bg-red-50 text-red-600 font-bold text-xs flex items-center justify-center gap-2 hover:bg-red-100 transition-colors"
+                >
+                  <span className="material-symbols-outlined text-sm">delete_sweep</span>
+                  Clear All Pending Orders
+                </button>
+                <p className="text-[10px] text-slate-400 mt-2 text-center italic">Deletes all unassigned pending orders from database.</p>
               </div>
             </div>
 
