@@ -88,7 +88,12 @@ export default function RiderAccountPage() {
       <header className="bg-[#0b50d5] text-white p-6 pb-8 rounded-b-[3rem]">
         <div className="flex justify-between items-center">
           <Link href="/rider/dashboard" className="text-3xl font-black tracking-tighter">MIIAM</Link>
-          
+          <button 
+            onClick={handleSignOut}
+            className="text-white/70 hover:text-white"
+          >
+            <span className="material-symbols-outlined">logout</span>
+          </button>
         </div>
       </header>
 
@@ -284,6 +289,11 @@ export default function RiderAccountPage() {
             <span className="flex-1 font-bold text-[#4d212a]">Settings</span>
             <span className="material-symbols-outlined text-slate-400">chevron_right</span>
           </Link>
+          <button onClick={handleSignOut} className="flex items-center gap-3 p-4 w-full text-left text-red-500">
+            <span className="material-symbols-outlined">logout</span>
+            <span className="flex-1 font-bold">Sign Out</span>
+            <span className="material-symbols-outlined">chevron_right</span>
+          </button>
           
         </div>
 
