@@ -564,6 +564,8 @@ export default function RiderDashboard() {
             )}
           </button>
           <Link href="/rider/analytics" className="p-2 bg-blue-50 rounded-full" title="Analytics">
+            <span className="material-symbols-outlined text-blue-600">insights</span>
+          </Link>
           <Link href="/rider/achievements" className="p-2 bg-amber-50 rounded-full" title="Achievements">
             <span className="material-symbols-outlined text-amber-500">emoji_events</span>
           </Link>
