@@ -73,7 +73,7 @@ export default function HomePage() {
           .eq("id", user.id)
           .single();
         if (profileData?.full_name) {
-          setUser(prev => ({ ...prev, profile_name: profileData.full_name }));
+          setUser((prev: any) => ({ ...prev, profile_name: profileData.full_name }));
         }
       }
     }

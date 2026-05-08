@@ -36,7 +36,7 @@ function AddToCartButton({
       price: item.price,
       image_url: item.image_url,
       vendor_id: restaurant.id,
-      vendor_name: restaurant.shop_name,
+      vendor_name: restaurant.shop_name || "Restaurant",
     });
   };
 

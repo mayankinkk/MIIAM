@@ -59,36 +59,7 @@ export default function RiderOrdersPage() {
   const [currentOrderId, setCurrentOrderId] = useState<string | null>(null);
   const [showIssueModal, setShowIssueModal] = useState(false);
   const [issueType, setIssueType] = useState("");
-
-  useEffect(() => {
-    loadOrders();
-
-    const channel = supabase
-      .channel('rider-orders')
-      .on('postgres_changes', {
-        event: 'INSERT',
-        schema: 'public',
-        table: 'orders',
-      }, (payload) => {
-        const newOrder = payload.new as any;
-        if (newOrder.status === 'pending' || newOrder.status === 'preparing') {
-          setOrders(prev => [newOrder, ...prev]);
-          if (Notification.permission === 'granted') {
-            new Notification('New Order Available!', {
-              body: `Order #${newOrder.id?.slice(0,8)} - ₹${newOrder.total_amount}`,
-              icon: '/icon.png',
-            });
-          } else if (Notification.permission === 'default') {
-            Notification.requestPermission();
-          }
-        }
-      })
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [supabase]);
+  const [riderLocation, setRiderLocation] = useState({ lat: 28.6139, lng: 77.2090 });
 
   async function loadOrders() {
     setLoading(true);
@@ -96,7 +67,6 @@ export default function RiderOrdersPage() {
     const yesterday = new Date();
     yesterday.setHours(yesterday.getHours() - 24);
 
-    // Fetch pending orders (not assigned to any rider yet)
     const { data: dbOrders } = await supabase
       .from("orders")
       .select("*")
@@ -138,6 +108,40 @@ export default function RiderOrdersPage() {
     }
     setLoading(false);
   }
+
+  useEffect(() => {
+    setRiderLocation({
+      lat: 28.6139 + (Math.random() - 0.5) * 0.01,
+      lng: 77.2090 + (Math.random() - 0.5) * 0.01
+    });
+    loadOrders();
+
+    const channel = supabase
+      .channel('rider-orders')
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'orders',
+      }, (payload) => {
+        const newOrder = payload.new as { id?: string; status: string; total_amount: number };
+        if (newOrder.status === 'pending' || newOrder.status === 'preparing') {
+          setOrders(prev => [newOrder as Order, ...prev]);
+          if (Notification.permission === 'granted') {
+            new Notification('New Order Available!', {
+              body: `Order #${newOrder.id?.slice(0,8)} - ₹${newOrder.total_amount}`,
+              icon: '/icon.png',
+            });
+          } else if (Notification.permission === 'default') {
+            Notification.requestPermission();
+          }
+        }
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [supabase]);
 
   async function acceptOrder(orderId: string) {
     try {
@@ -322,8 +326,8 @@ export default function RiderOrdersPage() {
           rider_id: user.id,
           rider_name: user.email?.split('@')[0] || 'Rider',
           rider_phone: '',
-          lat: 28.6139 + (Math.random() - 0.5) * 0.01,
-          lng: 77.2090 + (Math.random() - 0.5) * 0.01,
+          lat: riderLocation.lat,
+          lng: riderLocation.lng,
         });
       }
 

@@ -81,7 +81,7 @@ const cleanEmail = email.toLowerCase().trim();
           console.error("List users error:", listError);
           // Continue anyway - don't block password reset, just log the error
         }
-        const user = users?.find((u: any) => u.email?.toLowerCase() === cleanEmail);
+        const user = (users as { users: any[] })?.users?.find((u: any) => u.email?.toLowerCase() === cleanEmail);
         if (!user) {
           return NextResponse.json({ error: "No account found with this email" }, { status: 404 });
         }

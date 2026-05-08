@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create session
-    const { data: sessionData, error: sessionError } = await supabaseAdmin.auth.admin.createSession({
+    const { data: sessionData, error: sessionError } = await (supabaseAdmin.auth.admin as any).createSession({
       userId: user.id,
     });
 

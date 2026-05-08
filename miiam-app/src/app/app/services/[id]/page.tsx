@@ -119,9 +119,8 @@ function ServiceDetailContent() {
       image_url: service.image,
       vendor_name: "MIIAM Services",
       vendor_id: "5e700000-0000-4000-8000-000000000000",
-      quantity: 1,
       menu_item_id: service.id,
-    });
+    }, 1);
     setTimeout(() => {
       setAdding(false);
       router.push("/app/cart");

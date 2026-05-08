@@ -51,10 +51,6 @@ export default function RiderWalletPage() {
   const totalWeekEarnings = weeklyEarnings.reduce((s, d) => s + d.earnings, 0);
   const totalDeliveries = weeklyEarnings.reduce((s, d) => s + d.deliveries, 0);
 
-  useEffect(() => {
-    loadTransactions();
-  }, [supabase]);
-
   async function loadTransactions() {
     const { data } = await supabase
       .from("rider_wallet")
@@ -64,6 +60,10 @@ export default function RiderWalletPage() {
     if (data) setTransactions(data);
     setLoading(false);
   }
+
+  useEffect(() => {
+    loadTransactions();
+  }, [supabase]);
 
   async function requestPayout(amount: number) {
     alert(`Payout request of ₹${amount} submitted! Will be processed in 24-48 hours.`);
@@ -92,14 +92,15 @@ export default function RiderWalletPage() {
     }, 2000);
   }
 
-  const mockTransactions = [
-    { id: "1", amount: 150, type: "earning", description: "Order #ORD001 delivery", created_at: new Date().toISOString() },
-    { id: "2", amount: -80, type: "expense", description: "Advance for Order #ORD002", created_at: new Date(Date.now() - 3600000).toISOString() },
-    { id: "3", amount: 200, type: "earning", description: "Order #1230 delivery", created_at: new Date(Date.now() - 7200000).toISOString() },
-    { id: "4", amount: 120, type: "earning", description: "Order #1229 delivery (Peak)", created_at: new Date(Date.now() - 10800000).toISOString() },
+  const now = Date.now();
+  const mockTransactions: Transaction[] = [
+    { id: "1", amount: 150, type: "earning", description: "Order #ORD001 delivery", created_at: new Date(now).toISOString(), order_id: "ord1" },
+    { id: "2", amount: -80, type: "expense", description: "Advance for Order #ORD002", created_at: new Date(now - 3600000).toISOString(), order_id: "ord2" },
+    { id: "3", amount: 200, type: "earning", description: "Order #1230 delivery", created_at: new Date(now - 7200000).toISOString(), order_id: "ord3" },
+    { id: "4", amount: 120, type: "earning", description: "Order #1229 delivery (Peak)", created_at: new Date(now - 10800000).toISOString(), order_id: "ord4" },
   ];
 
-  const displayTxns = transactions.length > 0 ? transactions : mockTransactions;
+  const displayTxns: Transaction[] = transactions.length > 0 ? transactions : mockTransactions;
 
   return (
     <div className="min-h-screen bg-[#fff4f4]">
@@ -209,7 +210,7 @@ export default function RiderWalletPage() {
             <h2 className="text-lg font-bold text-[#4d212a]">Recent Transactions</h2>
             
             <div className="space-y-3">
-              {displayTxns.map((txn: any) => (
+              {displayTxns.map((txn) => (
                 <div key={txn.id} className="bg-white p-4 rounded-2xl shadow-sm flex justify-between items-center">
                   <div className="flex items-center gap-3">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center ${

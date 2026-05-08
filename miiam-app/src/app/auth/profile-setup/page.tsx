@@ -41,15 +41,13 @@ function ProfileSetupContent() {
   const handleComplete = async () => {
     setLoading(true);
     try {
-      // Check for session first
       let { data: { session } } = await supabase.auth.getSession();
       
       let user = session?.user;
       
       if (!user) {
-        // Try to get user anyway
-        const userData = await supabase.auth.getUser();
-        user = userData.data.user;
+        const userResponse = await supabase.auth.getUser();
+        user = userResponse.data?.user ?? undefined;
       }
 
       if (user) {

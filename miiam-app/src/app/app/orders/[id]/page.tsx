@@ -7,13 +7,13 @@ import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 
 const steps = [
-  { key: "pending", label: "Order Placed", icon: "receipt_long" },
-  { key: "accepted", label: "Order Accepted", icon: "check_circle" },
-  { key: "preparing", label: "Preparing", icon: "skillet" },
-  { key: "shopping", label: "Shopping", icon: "shopping_cart" },
-  { key: "picking_up", label: "Picking Up", icon: "storefront" },
-  { key: "on_the_way", label: "On the Way", icon: "directions_bike" },
-  { key: "delivered", label: "Delivered", icon: "home_pin" },
+  { key: "pending", label: "Order Placed", icon: "receipt_long", time: "" },
+  { key: "accepted", label: "Order Accepted", icon: "check_circle", time: "" },
+  { key: "preparing", label: "Preparing", icon: "skillet", time: "" },
+  { key: "shopping", label: "Shopping", icon: "shopping_cart", time: "" },
+  { key: "picking_up", label: "Picking Up", icon: "storefront", time: "" },
+  { key: "on_the_way", label: "On the Way", icon: "directions_bike", time: "" },
+  { key: "delivered", label: "Delivered", icon: "home_pin", time: "" },
 ];
 
 export default function OrderTrackingPage({ params }: { params: Promise<{ id: string }> }) {
@@ -143,9 +143,9 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
         table: 'orders',
         filter: `id=eq.${id}`,
       }, (payload) => {
-        if (payload.new) {
+        if (payload.new && typeof payload.new === 'object' && 'status' in payload.new) {
           const oldStatus = order?.status;
-          const newStatus = payload.new.status;
+          const newStatus = (payload.new as { status: string }).status;
           setOrder((prev: any) => ({ ...prev, ...payload.new }));
           
           if (newStatus !== oldStatus) {

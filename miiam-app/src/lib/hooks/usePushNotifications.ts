@@ -51,8 +51,9 @@ export function usePushNotifications(userId?: string) {
       }
 
       // Listen for foreground messages
-      const unsubscribe = onForegroundMessage((payload) => {
-        const { notification, data } = payload;
+      const unsubscribe = onForegroundMessage((payload: unknown) => {
+        const payloadWithType = payload as { notification?: { title?: string; body?: string; icon?: string }; data?: Record<string, string> };
+        const { notification, data } = payloadWithType;
         
         if (notification) {
           const title = notification.title || "";

@@ -14,7 +14,7 @@ export default function AdvancedAnalytics() {
   const [riders, setRiders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState<"7d" | "30d" | "90d">("30d");
-  const [activeTab, setActiveTab] = useState<"overview" | "orders" | "users" | "vendors" | "riders">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "orders" | "users" | "vendors" | "riders" | "reports">("overview");
 
   useEffect(() => {
     loadData();

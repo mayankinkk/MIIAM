@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 
 interface Vehicle {
@@ -37,8 +37,9 @@ export default function RiderVehiclePage() {
   const [activeTab, setActiveTab] = useState<"vehicles" | "maintenance" | "fuel">("vehicles");
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle>(vehicles[0]);
 
-  const daysUntilInsurance = Math.ceil((new Date(selectedVehicle.insuranceExpiry).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
-  const daysUntilLicense = Math.ceil((new Date(selectedVehicle.licenseExpiry).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+  const now = useMemo(() => Date.now(), []);
+  const daysUntilInsurance = useMemo(() => Math.ceil((new Date(selectedVehicle.insuranceExpiry).getTime() - now) / (1000 * 60 * 60 * 24)), [selectedVehicle.insuranceExpiry, now]);
+  const daysUntilLicense = useMemo(() => Math.ceil((new Date(selectedVehicle.licenseExpiry).getTime() - now) / (1000 * 60 * 60 * 24)), [selectedVehicle.licenseExpiry, now]);
 
   return (
     <div className="min-h-screen bg-[#fff4f4]">

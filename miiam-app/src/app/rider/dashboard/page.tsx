@@ -226,7 +226,7 @@ export default function RiderDashboard() {
           dbOrder.vendor_id ? supabase.from("vendors").select("*").eq("id", dbOrder.vendor_id).single() : Promise.resolve({ data: null }),
           supabase.from("order_items").select("*").eq("order_id", dbOrder.id)
         ]);
-        let itemsList = [];
+        let itemsList: string[] = [];
         let itemsCount = 0;
         
         const items = itemsRes.data || [];
