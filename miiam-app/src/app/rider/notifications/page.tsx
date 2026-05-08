@@ -8,11 +8,13 @@ export default function RiderNotificationsPage() {
   const supabase = createClient();
   const [notifications, setNotifications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadNotifications() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
+      setUserId(user.id);
 
       const { data } = await supabase
         .from("rider_notifications")
@@ -25,7 +27,19 @@ export default function RiderNotificationsPage() {
       setLoading(false);
     }
     loadNotifications();
-  }, []);
+  }, [supabase]);
+
+  const markAllRead = async () => {
+    if (!userId) return;
+    await supabase
+      .from("rider_notifications")
+      .update({ read: true })
+      .eq("rider_id", userId)
+      .eq("read", false);
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+  };
+
+  const unreadCount = notifications.filter(n => !n.read).length;
 
   if (loading) return (
     <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center">
@@ -36,12 +50,20 @@ export default function RiderNotificationsPage() {
   return (
     <div className="min-h-screen bg-[#fff4f4]">
       <header className="bg-[#0b50d5] text-white p-6 pb-8 rounded-b-[3rem]">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center justify-between">
           <Link href="/rider/account" className="text-white">
             <span className="material-symbols-outlined">arrow_back</span>
           </Link>
           <h1 className="text-2xl font-black tracking-tighter">Notifications</h1>
+          {unreadCount > 0 && (
+            <button onClick={markAllRead} className="text-sm font-bold bg-white/20 px-3 py-1 rounded-full">
+              Clear All
+            </button>
+          )}
         </div>
+        {unreadCount > 0 && (
+          <p className="text-sm text-white/70 mt-2">{unreadCount} unread notification{unreadCount > 1 ? "s" : ""}</p>
+        )}
       </header>
 
       <main className="p-6 space-y-4 pb-32">

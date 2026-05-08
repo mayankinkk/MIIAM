@@ -185,15 +185,9 @@ export default function RiderAccountPage() {
           <div className="flex items-center justify-between mb-2">
             <p className="font-bold text-[#4d212a]">Your Rating</p>
             <div className="flex items-center gap-1">
-              {[1,2,3,4,5].map((star) => (
-                <span 
-                  key={star}
-                  className={`text-lg ${star <= Math.floor(displayRider.rating) ? "text-yellow-400" : "text-slate-300"}`}
-                  style={{ fontVariationSettings: "'FILL' 1" }}
-                >
-                  star
-                </span>
-              ))}
+              <span className="material-symbols-outlined text-yellow-400" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+              <span className="font-bold text-lg text-[#4d212a]">{displayRider.rating}</span>
+              <span className="text-slate-400 text-sm">/ 5.0</span>
             </div>
           </div>
           <div className="w-full bg-slate-100 rounded-full h-2">
