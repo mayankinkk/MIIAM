@@ -14,6 +14,7 @@ interface Vendor {
   cuisine: string;
   gst_number: string;
   status: string;
+  delivery_charge?: number;
 }
 
 interface MenuItem {
@@ -38,6 +39,7 @@ export default function AdminVendorsPage() {
     address: "",
     cuisine: "",
     gstNumber: "",
+    deliveryCharge: "",
   });
   const [menuItems, setMenuItems] = useState([{ name: "", price: "", category: "Main Course" }]);
   const [editingVendor, setEditingVendor] = useState<Vendor | null>(null);
@@ -50,9 +52,12 @@ export default function AdminVendorsPage() {
     cuisine: "",
     gstNumber: "",
     status: "active",
+    deliveryCharge: "",
   });
   const [vendorMenuItems, setVendorMenuItems] = useState<MenuItem[]>([]);
   const [newMenuItem, setNewMenuItem] = useState<MenuItem>({ name: "", price: "", category: "Main Course" });
+  const [editingItemId, setEditingItemId] = useState<string | null>(null);
+  const [editingItemPrice, setEditingItemPrice] = useState("");
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
@@ -86,7 +91,6 @@ export default function AdminVendorsPage() {
     setLoading(true);
 
     try {
-      // Create vendor profile
       const { data, error: vendorError } = await supabase
         .from("vendors")
         .insert([{
@@ -97,6 +101,7 @@ export default function AdminVendorsPage() {
           address: vendorForm.address,
           cuisine: vendorForm.cuisine,
           gst_number: vendorForm.gstNumber,
+          delivery_charge: vendorForm.deliveryCharge ? parseFloat(vendorForm.deliveryCharge) : 0,
           status: "active",
         }])
         .select();
@@ -106,7 +111,6 @@ export default function AdminVendorsPage() {
       
       const vendor = data[0];
 
-      // Add menu items
       const menuData = menuItems
         .filter(item => item.name && item.price)
         .map(item => ({
@@ -134,18 +138,17 @@ export default function AdminVendorsPage() {
         address: "",
         cuisine: "",
         gstNumber: "",
+        deliveryCharge: "",
       });
       setMenuItems([{ name: "", price: "", category: "Main Course" }]);
       loadVendors();
     } catch (error: any) {
       console.error("Error creating vendor:", error);
-      const msg = error?.message || error?.error_description || JSON.stringify(error);
-      alert(`Failed to create vendor: ${msg}`);
+      alert(`Failed to create vendor: ${error?.message || JSON.stringify(error)}`);
     } finally {
       setLoading(false);
     }
   };
-
 
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -164,6 +167,7 @@ export default function AdminVendorsPage() {
           cuisine: editForm.cuisine,
           gst_number: editForm.gstNumber,
           status: editForm.status,
+          delivery_charge: editForm.deliveryCharge ? parseFloat(editForm.deliveryCharge) : 0,
         })
         .eq("id", editingVendor.id);
 
@@ -199,40 +203,9 @@ export default function AdminVendorsPage() {
       cuisine: vendor.cuisine || "",
       gstNumber: vendor.gst_number || "",
       status: vendor.status,
+      deliveryCharge: vendor.delivery_charge?.toString() || "",
     });
     await loadVendorMenuItems(vendor.id);
-  };
-
-  const uploadImage = async (file: File): Promise<string | null> => {
-    const fileExt = file.name.split(".").pop();
-    const fileName = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
-    const filePath = `menu-items/${fileName}`;
-    
-    const { error: uploadError } = await supabase.storage
-      .from("food-images")
-      .upload(filePath, file);
-
-    if (uploadError) {
-      console.error("Upload error:", uploadError);
-      return null;
-    }
-
-    const { data } = supabase.storage.from("food-images").getPublicUrl(filePath);
-    return data.publicUrl;
-  };
-
-  const handleImageUpload = async (index: number, file: File) => {
-    setUploading(true);
-    try {
-      const imageUrl = await uploadImage(file);
-      if (imageUrl) {
-        const updated = [...vendorMenuItems];
-        updated[index].image_url = imageUrl;
-        setVendorMenuItems(updated);
-      }
-    } finally {
-      setUploading(false);
-    }
   };
 
   const handleAddNewMenuItem = async (e: React.FormEvent) => {
@@ -275,6 +248,35 @@ export default function AdminVendorsPage() {
     } catch (error: any) {
       console.error("Error deleting menu item:", error);
       alert(`Failed to delete: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEditPriceClick = (item: MenuItem) => {
+    setEditingItemId(item.id || null);
+    setEditingItemPrice(item.price);
+  };
+
+  const handleSavePrice = async (itemId: string) => {
+    if (!editingVendor) return;
+    setLoading(true);
+    try {
+      const { error } = await supabase
+        .from("menu_items")
+        .update({ price: parseFloat(editingItemPrice) })
+        .eq("id", itemId);
+      
+      if (error) throw error;
+      
+      setVendorMenuItems(vendorMenuItems.map(item => 
+        item.id === itemId ? { ...item, price: editingItemPrice } : item
+      ));
+      setEditingItemId(null);
+      alert("Price updated!");
+    } catch (error: any) {
+      console.error("Error updating price:", error);
+      alert(`Failed to update price: ${error.message}`);
     } finally {
       setLoading(false);
     }
@@ -389,6 +391,19 @@ export default function AdminVendorsPage() {
                       className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
                       placeholder="Enter GST number"
                     />
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-slate-600 mb-1 block">Delivery Charge (₹)</label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">₹</span>
+                      <input
+                        type="number"
+                        value={vendorForm.deliveryCharge}
+                        onChange={(e) => setVendorForm({ ...vendorForm, deliveryCharge: e.target.value })}
+                        className="w-full p-3 pl-7 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                        placeholder="0"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -560,6 +575,18 @@ export default function AdminVendorsPage() {
                     />
                   </div>
                   <div>
+                    <label className="text-xs font-bold text-slate-600 mb-1 block">Delivery Charge (₹)</label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">₹</span>
+                      <input
+                        type="number"
+                        value={editForm.deliveryCharge}
+                        onChange={(e) => setEditForm({ ...editForm, deliveryCharge: e.target.value })}
+                        className="w-full p-3 pl-7 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                  <div>
                     <label className="text-xs font-bold text-slate-600 mb-1 block">Status</label>
                     <select
                       value={editForm.status}
@@ -591,44 +618,60 @@ export default function AdminVendorsPage() {
                       </div>
                       <div className="flex-1">
                         <p className="font-bold text-sm text-slate-800">{item.name}</p>
-                        <p className="text-xs text-slate-500">{item.category} • ₹{item.price}</p>
+                        <p className="text-xs text-slate-500">{item.category}</p>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => item.id && handleDeleteMenuItem(item.id)}
-                        className="text-red-500 hover:text-red-700 p-2"
-                      >
-                        <span className="material-symbols-outlined">delete</span>
-                      </button>
+                      <div className="flex items-center gap-2">
+                        {editingItemId === item.id ? (
+                          <>
+                            <div className="relative">
+                              <span className="absolute left-2 top-1/2 -translate-y-1/2 text-slate-400 text-xs">₹</span>
+                              <input
+                                type="number"
+                                value={editingItemPrice}
+                                onChange={(e) => setEditingItemPrice(e.target.value)}
+                                className="w-20 p-2 pl-6 border border-[#ba001c] rounded-lg text-sm"
+                                autoFocus
+                              />
+                            </div>
+                            <button
+                              onClick={() => handleSavePrice(item.id!)}
+                              className="p-2 bg-green-500 text-white rounded-lg"
+                            >
+                              <span className="material-symbols-outlined text-sm">check</span>
+                            </button>
+                            <button
+                              onClick={() => setEditingItemId(null)}
+                              className="p-2 bg-slate-200 text-slate-600 rounded-lg"
+                            >
+                              <span className="material-symbols-outlined text-sm">close</span>
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button
+                              onClick={() => handleEditPriceClick(item)}
+                              className="flex items-center gap-1 px-3 py-1 bg-white border border-slate-200 rounded-lg text-sm font-bold hover:border-[#ba001c]"
+                            >
+                              <span className="text-green-600">₹{item.price}</span>
+                              <span className="material-symbols-outlined text-xs text-slate-400">edit</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => item.id && handleDeleteMenuItem(item.id)}
+                              className="text-red-500 hover:text-red-700 p-2"
+                            >
+                              <span className="material-symbols-outlined">delete</span>
+                            </button>
+                          </>
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>
 
-<div className="bg-slate-50 p-4 rounded-xl space-y-3">
+                <div className="bg-slate-50 p-4 rounded-xl space-y-3">
                   <p className="text-xs font-bold text-slate-600 mb-2">Add New Menu Item</p>
                   <div className="flex items-center gap-3">
-                    <div className="w-16 h-16 bg-slate-200 rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center border-2 border-dashed border-slate-300 hover:border-[#ba001c] cursor-pointer">
-                      {newMenuItem.image_url ? (
-                        <img src={newMenuItem.image_url} alt="Preview" className="w-full h-full object-cover" />
-                      ) : (
-                        <label className="cursor-pointer w-full h-full flex items-center justify-center">
-                          <span className="material-symbols-outlined text-slate-400">add_photo_alternate</span>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={(e) => {
-                              const file = e.target.files?.[0];
-                              if (file) {
-                                const reader = new FileReader();
-                                reader.onload = (ev) => setNewMenuItem({ ...newMenuItem, image_url: ev.target?.result as string });
-                                reader.readAsDataURL(file);
-                              }
-                            }}
-                          />
-                        </label>
-                      )}
-                    </div>
                     <div className="flex-1 space-y-2">
                       <input
                         type="text"
@@ -704,7 +747,7 @@ export default function AdminVendorsPage() {
                 <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Shop Name</th>
                 <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Owner</th>
                 <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Phone</th>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Cuisine</th>
+                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Delivery</th>
                 <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
                 <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Actions</th>
               </tr>
@@ -722,7 +765,7 @@ export default function AdminVendorsPage() {
                     <td className="p-4 text-slate-800 font-bold">{vendor.shop_name}</td>
                     <td className="p-4 text-slate-500">{vendor.owner_name}</td>
                     <td className="p-4 text-slate-500">{vendor.phone}</td>
-                    <td className="p-4 text-slate-500">{vendor.cuisine}</td>
+                    <td className="p-4 text-slate-500">₹{vendor.delivery_charge || 0}</td>
                     <td className="p-4">
                       <span className={`text-[10px] font-black px-2 py-1 rounded-full uppercase ${
                         vendor.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'
