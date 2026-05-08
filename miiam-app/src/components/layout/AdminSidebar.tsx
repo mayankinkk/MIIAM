@@ -21,9 +21,9 @@ const menuGroups = [
     items: [
       { name: "All Restaurants", href: "/admin/vendors", icon: "storefront" },
       { name: "Food Orders", href: "/admin/foods", icon: "restaurant" },
+      { name: "Menu Items", href: "/admin/foods/menu-items", icon: "menu_book" },
+      { name: "Cuisines", href: "/admin/foods/cuisines", icon: "lunch_dining" },
       { name: "Verifications", href: "/admin/vendors/verification", icon: "verified" },
-      { name: "Menu Items", href: "/admin/foods?menu=true", icon: "menu_book" },
-      { name: "Cuisines", href: "/admin/foods?cuisines=true", icon: "lunch_dining" },
     ],
   },
   {
