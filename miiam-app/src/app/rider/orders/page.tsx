@@ -220,6 +220,27 @@ export default function RiderOrdersPage() {
   }
 
   async function updateItemStatus(orderId: string, itemId: string, status: string, actualPrice?: number) {
+    try {
+      // Update database
+      const { error } = await supabase
+        .from("order_items")
+        .update({ 
+          status: status,
+          actual_price: actualPrice ?? null,
+          picked: status === "picked"
+        })
+        .eq("id", itemId);
+      
+      if (error) {
+        console.error("Error updating item:", error);
+        alert("Failed to update item: " + error.message);
+        return;
+      }
+    } catch (err) {
+      console.error("Update error:", err);
+    }
+    
+    // Update local state
     setOrders(orders.map(o => {
       if (o.id === orderId) {
         return {
