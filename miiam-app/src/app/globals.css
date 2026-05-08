@@ -252,6 +252,21 @@ body {
 @media (min-width: 375px) and (min-height: 667px) { .iphone-se { --w: 375px; --h: 667px; } }
 @media (min-width: 414px) and (min-height: 896px) { .iphone-11-max { --w: 414px; --h: 896px; } }
 @media (min-width: 375px) and (min-height: 812px) { .iphone-x { --w: 375px; --h: 812px; } }
+/* iPhone 15 series */
+@media (min-width: 393px) and (min-height: 852px) { .iphone-15 { --w: 393px; --h: 852px; } }
+@media (min-width: 430px) and (min-height: 932px) { .iphone-15-pro-max { --w: 430px; --h: 932px; } }
+/* iPhone 16 series */
+@media (min-width: 393px) and (min-height: 852px) { .iphone-16 { --w: 393px; --h: 852px; } }
+@media (min-width: 393px) and (min-height: 852px) { .iphone-16-pro { --w: 393px; --h: 852px; } }
+@media (min-width: 430px) and (min-height: 932px) { .iphone-16-pro-max { --w: 430px; --h: 932px; } }
+/* iPhone 17 series (2026) */
+@media (min-width: 395px) and (min-height: 870px) { .iphone-17 { --w: 395px; --h: 870px; } }
+@media (min-width: 395px) and (min-height: 870px) { .iphone-17-pro { --w: 395px; --h: 870px; } }
+@media (min-width: 435px) and (min-height: 945px) { .iphone-17-pro-max { --w: 435px; --h: 945px; } }
+/* iPhone 18 series (2026-2027) - estimated */
+@media (min-width: 398px) and (min-height: 880px) { .iphone-18 { --w: 398px; --h: 880px; } }
+@media (min-width: 398px) and (min-height: 880px) { .iphone-18-pro { --w: 398px; --h: 880px; } }
+@media (min-width: 440px) and (min-height: 955px) { .iphone-18-pro-max { --w: 440px; --h: 955px; } }
 
 /* Tablet fallback */
 @media (min-width: 768px) and (max-width: 1024px) { .tablet { --w: 768px; --h: 1024px; } }
