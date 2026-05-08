@@ -228,6 +228,34 @@ body {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
+/* Common Phone Dimensions (not fixed, for reference & PWA) */
+/* Samsung Galaxy S Series */
+@media (min-width: 360px) and (min-height: 740px) { .galaxy-s { --w: 360px; --h: 740px; } }
+/* Samsung Galaxy A Series */
+@media (min-width: 360px) and (min-height: 800px) { .galaxy-a { --w: 360px; --h: 800px; } }
+/* Samsung Galaxy Note */
+@media (min-width: 412px) and (min-height: 846px) { .galaxy-note { --w: 412px; --h: 846px; } }
+/* Google Pixel */
+@media (min-width: 411px) and (min-height: 767px) { .pixel { --w: 411px; --h: 767px; } }
+/* OnePlus */
+@media (min-width: 411px) and (min-height: 820px) { .oneplus { --w: 411px; --h: 820px; } }
+/* Xiaomi Mi */
+@media (min-width: 393px) and (min-height: 851px) { .xiaomi { --w: 393px; --h: 851px; } }
+/* Realme */
+@media (min-width: 360px) and (min-height: 780px) { .realme { --w: 360px; --h: 780px; } }
+/* Moto G */
+@media (min-width: 360px) and (min-height: 720px) { .moto-g { --w: 360px; --h: 720px; } }
+
+/* iPhone variants */
+@media (min-width: 390px) and (min-height: 844px) { .iphone-13-14 { --w: 390px; --h: 844px; } }
+@media (min-width: 430px) and (min-height: 932px) { .iphone-pro-max { --w: 430px; --h: 932px; } }
+@media (min-width: 375px) and (min-height: 667px) { .iphone-se { --w: 375px; --h: 667px; } }
+@media (min-width: 414px) and (min-height: 896px) { .iphone-11-max { --w: 414px; --h: 896px; } }
+@media (min-width: 375px) and (min-height: 812px) { .iphone-x { --w: 375px; --h: 812px; } }
+
+/* Tablet fallback */
+@media (min-width: 768px) and (max-width: 1024px) { .tablet { --w: 768px; --h: 1024px; } }
+
 /* Mobile dimensions */
 @layer components {
   .phone-screen {
@@ -250,6 +278,16 @@ body {
   .phone-input {
     min-height: 48px;
     font-size: 16px; /* Prevents iOS zoom */
+  }
+  
+  /* Responsive text scaling */
+  .text-responsive {
+    font-size: clamp(0.875rem, 2.5vw, 1rem);
+  }
+  
+  /* Responsive spacing */
+  .p-responsive {
+    padding: clamp(0.75rem, 3vw, 1.5rem);
   }
 }
 
