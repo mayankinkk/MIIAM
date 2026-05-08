@@ -85,6 +85,41 @@ export default function RiderDashboard() {
   const [vibrationEnabled, setVibrationEnabled] = useState(true);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  // Quest & Streak System
+  const [dailyQuests, setDailyQuests] = useState([
+    { id: 1, title: "Complete 5 Deliveries", current: 3, target: 5, bonus: 100 },
+    { id: 2, title: "Earn ₹500 Today", current: 320, target: 500, bonus: 75 },
+    { id: 3, title: "3-Star Ratings", current: 5, target: 10, bonus: 50 },
+  ]);
+  const [streakDays, setStreakDays] = useState(7);
+  const [showQuestModal, setShowQuestModal] = useState(false);
+
+  // Live Earnings
+  const [todayEarnings, setTodayEarnings] = useState(340);
+  const [liveEarnings, setLiveEarnings] = useState(0);
+
+  // Cash Collection
+  const [cashCollected, setCashCollected] = useState(180);
+  const [cashPending, setCashPending] = useState(120);
+
+  // Cancel Flow
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [cancelReasons] = useState([
+    "Too far from pickup",
+    "Too far from delivery",
+    "Vehicle breakdown",
+    "Customer unreachable",
+    "Order unavailable",
+    "Other"
+  ]);
+
+  // Low Battery
+  const [batteryLevel, setBatteryLevel] = useState(85);
+  const [showLowBattery, setShowLowBattery] = useState(false);
+
+  // Customer Rating Preview
+  const [customerRating] = useState(4.7);
+
   // Get rider ID on mount
   useEffect(() => {
     async function getRiderId() {
@@ -314,6 +349,31 @@ export default function RiderDashboard() {
     return () => clearInterval(checkExpired);
   }, []);
 
+  // Low battery warning
+  useEffect(() => {
+    if (typeof navigator !== 'undefined' && 'getBattery' in navigator) {
+      (navigator as any).getBattery().then((battery: any) => {
+        setBatteryLevel(Math.round(battery.level * 100));
+        battery.addEventListener('levelchange', () => {
+          setBatteryLevel(Math.round(battery.level * 100));
+          if (battery.level <= 0.2) {
+            setShowLowBattery(true);
+          }
+        });
+      });
+    }
+  }, []);
+
+  // Live earnings counter when delivering
+  useEffect(() => {
+    if (currentOrder && (deliveryStep === "delivering" || deliveryStep === "picking_up")) {
+      const interval = setInterval(() => {
+        setLiveEarnings(prev => prev + 1);
+      }, 30000); // Add ₹1 every 30 seconds while on delivery
+      return () => clearInterval(interval);
+    }
+  }, [currentOrder, deliveryStep]);
+
   const clearAllPendingOrders = async () => {
     if (!confirm("This will delete ALL pending orders from the database. This is intended for testing only. Continue?")) return;
     
@@ -484,12 +544,26 @@ export default function RiderDashboard() {
               {isOnline ? "ONLINE" : "OFFLINE"}
             </span>
           </button>
-          <Link href="/rider/incident" className="p-2 bg-red-50 rounded-full" title="Report Incident">
+          <button 
+            onClick={() => alert("Emergency: Calling MIIAM Support...")}
+            className="p-2 bg-red-50 rounded-full animate-pulse" 
+            title="Emergency SOS"
+          >
             <span className="material-symbols-outlined text-red-500">emergency</span>
-          </Link>
+          </button>
+          <button 
+            onClick={() => setShowQuestModal(true)}
+            className="p-2 bg-amber-50 rounded-full relative" 
+            title="Daily Quests"
+          >
+            <span className="material-symbols-outlined text-amber-500">local_fire_department</span>
+            {streakDays > 0 && (
+              <span className="absolute -top-1 -right-1 w-4 h-4 bg-orange-500 text-white text-[8px] font-bold rounded-full flex items-center justify-center">
+                {streakDays}
+              </span>
+            )}
+          </button>
           <Link href="/rider/analytics" className="p-2 bg-blue-50 rounded-full" title="Analytics">
-            <span className="material-symbols-outlined text-blue-600">insights</span>
-          </Link>
           <Link href="/rider/achievements" className="p-2 bg-amber-50 rounded-full" title="Achievements">
             <span className="material-symbols-outlined text-amber-500">emoji_events</span>
           </Link>
@@ -616,6 +690,11 @@ export default function RiderDashboard() {
                       PEAK HOUR
                     </span>
                   )}
+                  {/* Customer Rating Preview */}
+                  <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-[10px] font-bold flex items-center gap-1">
+                    <span className="material-symbols-outlined text-[12px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                    {customerRating}
+                  </span>
                 </div>
 
                 {/* Multi-Stop Info */}
@@ -720,11 +799,10 @@ export default function RiderDashboard() {
 
               <div className="p-4 border-t bg-slate-50 flex gap-3">
                 <button 
-                  onClick={() => handleSnooze(pendingOrders[0])}
-                  className="flex-1 py-3 bg-slate-200 text-slate-600 font-bold rounded-xl text-sm flex items-center justify-center gap-1"
+                  onClick={() => setShowCancelModal(true)}
+                  className="flex-1 py-3 bg-slate-200 text-slate-600 font-bold rounded-xl text-sm"
                 >
-                  <span className="material-symbols-outlined text-sm">snooze</span>
-                  {pendingOrders[0].isSnoozed ? "Snoozed" : "Snooze 30s"}
+                  Decline
                 </button>
                 <button 
                   onClick={() => handleAccept(pendingOrders[0])}
@@ -994,10 +1072,17 @@ export default function RiderDashboard() {
                         Chat
                       </button>
                     </div>
+                    <button 
+                      onClick={() => alert("Location shared with customer!")}
+                      className="w-full mt-3 py-2 bg-green-100 text-green-700 font-bold rounded-xl flex items-center justify-center gap-2"
+                    >
+                      <span className="material-symbols-outlined">share_location</span>
+                      Share Live Location
+                    </button>
                     <a 
                       href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(currentOrder.stops[currentStopIndex].address)}`}
                       target="_blank"
-                      className="w-full mt-3 py-3 bg-[#0b50d5] text-white font-bold rounded-xl flex items-center justify-center gap-2"
+                      className="w-full mt-2 py-3 bg-[#0b50d5] text-white font-bold rounded-xl flex items-center justify-center gap-2"
                     >
                       <span className="material-symbols-outlined">navigation</span>
                       Navigate to Stop
@@ -1033,10 +1118,17 @@ export default function RiderDashboard() {
                         Chat
                       </button>
                     </div>
+                    <button 
+                      onClick={() => alert("Location shared with customer!")}
+                      className="w-full mt-3 py-2 bg-green-100 text-green-700 font-bold rounded-xl flex items-center justify-center gap-2"
+                    >
+                      <span className="material-symbols-outlined">share_location</span>
+                      Share Live Location
+                    </button>
                     <a 
                       href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(currentOrder.customerAddress)}`}
                       target="_blank"
-                      className="w-full mt-3 py-3 bg-[#0b50d5] text-white font-bold rounded-xl flex items-center justify-center gap-2"
+                      className="w-full mt-2 py-3 bg-[#0b50d5] text-white font-bold rounded-xl flex items-center justify-center gap-2"
                     >
                       <span className="material-symbols-outlined">navigation</span>
                       Navigate
@@ -1065,7 +1157,90 @@ export default function RiderDashboard() {
                     </button>
                   </div>
                 )}
-              </div>
+
+              {/* Cancel Modal */}
+              {showCancelModal && (
+                <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
+                  <div className="bg-white rounded-2xl w-full max-w-sm p-4">
+                    <h3 className="font-bold text-lg mb-4">Decline Order</h3>
+                    <p className="text-sm text-slate-500 mb-4">Select a reason for declining:</p>
+                    <div className="space-y-2 max-h-60 overflow-y-auto">
+                      {cancelReasons.map((reason) => (
+                        <button
+                          key={reason}
+                          onClick={() => {
+                            handleDecline(pendingOrders[0].id);
+                            setShowCancelModal(false);
+                          }}
+                          className="w-full text-left p-3 bg-slate-50 rounded-xl hover:bg-slate-100 text-sm"
+                        >
+                          {reason}
+                        </button>
+                      ))}
+                    </div>
+                    <button 
+                      onClick={() => setShowCancelModal(false)}
+                      className="w-full mt-4 py-3 bg-slate-200 text-slate-600 font-bold rounded-xl"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Quest Modal */}
+              {showQuestModal && (
+                <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
+                  <div className="bg-white rounded-2xl w-full max-w-sm p-4">
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="font-bold text-lg">Daily Quests</h3>
+                      <button onClick={() => setShowQuestModal(false)}>
+                        <span className="material-symbols-outlined">close</span>
+                      </button>
+                    </div>
+                    
+                    {/* Streak */}
+                    <div className="bg-gradient-to-r from-orange-400 to-red-500 text-white p-4 rounded-xl mb-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>local_fire_department</span>
+                        <span className="font-bold">{streakDays} Day Streak!</span>
+                      </div>
+                      <p className="text-xs opacity-80">Complete daily quests to maintain your streak</p>
+                    </div>
+                    
+                    {/* Quests */}
+                    <div className="space-y-3">
+                      {dailyQuests.map((quest) => (
+                        <div key={quest.id} className="p-3 bg-slate-50 rounded-xl">
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="font-bold text-sm">{quest.title}</span>
+                            <span className="text-green-600 font-bold text-sm">+₹{quest.bonus}</span>
+                          </div>
+                          <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+                            <div 
+                              className="h-full bg-green-500 rounded-full" 
+                              style={{ width: `${(quest.current / quest.target) * 100}%` }}
+                            ></div>
+                          </div>
+                          <p className="text-[10px] text-slate-400 mt-1">{quest.current}/{quest.target} completed</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Low Battery Warning */}
+              {showLowBattery && (
+                <div className="fixed top-24 left-1/2 -translate-x-1/2 z-50 bg-yellow-500 text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2 animate-pulse">
+                  <span className="material-symbols-outlined text-sm">battery_alert</span>
+                  <span className="text-sm font-medium">Low Battery ({batteryLevel}%)</span>
+                  <button onClick={() => setShowLowBattery(false)}>
+                    <span className="material-symbols-outlined text-sm">close</span>
+                  </button>
+                </div>
+              )}
+            </div>
             </div>
           </div>
         )}
@@ -1084,10 +1259,20 @@ export default function RiderDashboard() {
         </div>
 
         {/* Quick Stats */}
-        <div className="fixed top-20 left-4 z-20">
+        <div className="fixed top-20 left-4 z-20 space-y-2">
           <div className="bg-white/90 backdrop-blur p-3 rounded-xl shadow-lg">
             <p className="text-[10px] text-slate-400">TODAY'S EARNINGS</p>
-            <p className="font-black text-xl text-green-600">₹340</p>
+            <p className="font-black text-xl text-green-600">₹{todayEarnings + liveEarnings}</p>
+            {currentOrder && (deliveryStep === "delivering" || deliveryStep === "picking_up") && (
+              <p className="text-[8px] text-orange-500 animate-pulse">+₹{liveEarnings} (Live)</p>
+            )}
+          </div>
+          <div className="bg-white/90 backdrop-blur p-2 rounded-xl shadow-lg flex items-center gap-2">
+            <span className="material-symbols-outlined text-green-600 text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>account_balance_wallet</span>
+            <div>
+              <p className="text-[8px] text-slate-400">CASH</p>
+              <p className="text-xs font-bold">₹{cashCollected} <span className="text-slate-400">/ ₹{cashPending}</span></p>
+            </div>
           </div>
         </div>
       </main>
