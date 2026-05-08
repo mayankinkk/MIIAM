@@ -3,231 +3,328 @@
 <html class="light" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<title>MIIAM | Rider App</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "surface-container-low": "#ffecee",
-                        "background": "#fff4f4",
-                        "outline": "#a06770",
-                        "tertiary-container": "#ffd709",
-                        "surface-container-lowest": "#ffffff",
-                        "surface-tint": "#ba001c",
-                        "outline-variant": "#dd9ca6",
-                        "on-error": "#ffefec",
-                        "error": "#b02500",
-                        "on-surface": "#4d212a",
-                        "secondary-fixed": "#c4d0ff",
-                        "on-tertiary-container": "#5b4b00",
-                        "tertiary": "#6c5a00",
-                        "secondary": "#0b50d5",
-                        "primary-dim": "#a40017",
-                        "surface-variant": "#ffd2d7",
-                        "primary": "#ba001c",
-                        "surface-container": "#ffe1e4",
-                        "surface-container-high": "#ffd9de",
-                        "error-dim": "#b92902",
-                        "inverse-surface": "#24020a",
-                        "on-tertiary-fixed-variant": "#665500",
-                        "tertiary-dim": "#5e4e00",
-                        "secondary-container": "#c4d0ff",
-                        "on-secondary-fixed": "#002c83",
-                        "on-primary": "#ffefee",
-                        "on-tertiary": "#fff2cd",
-                        "primary-fixed-dim": "#ff5a57",
-                        "primary-container": "#ff7670",
-                        "inverse-primary": "#ff5352",
-                        "on-tertiary-fixed": "#453900",
-                        "surface-container-highest": "#ffd2d7",
-                        "primary-fixed": "#ff7670",
-                        "secondary-dim": "#0044bf",
-                        "on-error-container": "#520c00",
-                        "on-secondary-fixed-variant": "#0045c1",
-                        "on-secondary-container": "#003dac",
-                        "on-primary-container": "#4e0006",
-                        "error-container": "#f95630",
-                        "on-primary-fixed-variant": "#600009",
-                        "secondary-fixed-dim": "#b1c2ff",
-                        "on-surface-variant": "#814c55",
-                        "inverse-on-surface": "#cb8c96",
-                        "tertiary-fixed-dim": "#efc900",
-                        "on-primary-fixed": "#000000",
-                        "on-secondary": "#f1f2ff",
-                        "tertiary-fixed": "#ffd709",
-                        "surface": "#fff4f4",
-                        "surface-dim": "#ffc6ce",
-                        "surface-bright": "#fff4f4",
-                        "on-background": "#4d212a"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "1rem",
-                        "lg": "2rem",
-                        "xl": "3rem",
-                        "full": "9999px"
-                    },
-                    "fontFamily": {
-                        "headline": ["Plus Jakarta Sans"],
-                        "body": ["Plus Jakarta Sans"],
-                        "label": ["Plus Jakarta Sans"]
-                    }
-                },
+tailwind.config = {
+    darkMode: "class",
+    theme: {
+        extend: {
+            colors: {
+                "surface-container-low": "#ffecee",
+                "background": "#fff4f4",
+                "outline": "#a06770",
+                "tertiary-container": "#ffd709",
+                "surface-container-lowest": "#ffffff",
+                "surface-tint": "#ba001c",
+                "outline-variant": "#dd9ca6",
+                "on-error": "#ffefec",
+                "error": "#b02500",
+                "on-surface": "#4d212a",
+                "secondary-fixed": "#c4d0ff",
+                "on-tertiary-container": "#5b4b00",
+                "tertiary": "#6c5a00",
+                "secondary": "#0b50d5",
+                "primary-dim": "#a40017",
+                "surface-variant": "#ffd2d7",
+                "primary": "#ba001c",
+                "surface-container": "#ffe1e4",
+                "surface-container-high": "#ffd9de",
+                "error-dim": "#b92902",
+                "inverse-surface": "#24020a",
+                "on-tertiary-fixed-variant": "#665500",
+                "tertiary-dim": "#5e4e00",
+                "secondary-container": "#c4d0ff",
+                "on-secondary-fixed": "#002c83",
+                "on-primary": "#ffefee",
+                "on-tertiary": "#fff2cd",
+                "primary-fixed-dim": "#ff5a57",
+                "primary-container": "#ff7670",
+                "inverse-primary": "#ff5352",
+                "on-tertiary-fixed": "#453900",
+                "surface-container-highest": "#ffd2d7",
+                "primary-fixed": "#ff7670",
+                "secondary-dim": "#0044bf",
+                "on-error-container": "#520c00",
+                "on-secondary-fixed-variant": "#0045c1",
+                "on-secondary-container": "#003dac",
+                "on-primary-container": "#4e0006",
+                "error-container": "#f95630",
+                "on-primary-fixed-variant": "#600009",
+                "secondary-fixed-dim": "#b1c2ff",
+                "on-surface-variant": "#814c55",
+                "inverse-on-surface": "#cb8c96",
+                "tertiary-fixed-dim": "#efc900",
+                "on-primary-fixed": "#000000",
+                "on-secondary": "#f1f2ff",
+                "tertiary-fixed": "#ffd709",
+                "surface": "#fff4f4",
+                "surface-dim": "#ffc6ce",
+                "surface-bright": "#fff4f4",
+                "on-background": "#4d212a"
             },
-        }
-    </script>
+            borderRadius: {
+                "DEFAULT": "1rem",
+                "lg": "2rem",
+                "xl": "3rem",
+                "full": "9999px"
+            },
+            fontFamily: {
+                "headline": ["Plus Jakarta Sans"],
+                "body": ["Plus Jakarta Sans"],
+                "label": ["Plus Jakarta Sans"]
+            },
+            boxShadow: {
+                'glow': '0 0 30px rgba(186, 0, 28, 0.3)',
+                'glow-secondary': '0 0 30px rgba(11, 80, 213, 0.3)',
+            }
+        },
+    },
+}
+</script>
 <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fff4f4; color: #4d212a; }
-        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        .glass-card { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.3); }
-        .map-gradient { background: linear-gradient(to bottom, rgba(186, 0, 28, 0.05), rgba(11, 80, 213, 0.05)); }
-    </style>
+body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fff4f4; color: #4d212a; }
+.material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+.glass-card { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.3); }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 20px rgba(186, 0, 28, 0.4); } 50% { box-shadow: 0 0 40px rgba(186, 0, 28, 0.6); } }
+@keyframes slide-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.animate-float { animation: float 3s ease-in-out infinite; }
+.animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+.animate-slide-up { animation: slide-up 0.5s ease-out forwards; }
+.order-card { animation: slide-up 0.4s ease-out forwards; animation-delay: calc(var('order-index') * 0.1s); opacity: 0; }
+#map { height: 100%; width: 100%; z-index: 1; }
+.leaflet-control-zoom { border: none !important; box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important; border-radius: 12px !important; overflow: hidden; }
+.leaflet-control-zoom a { background: white !important; color: #4d212a !important; }
+.leaflet-control-zoom-in { border-radius: 12px 12px 0 0 !important; }
+.leaflet-control-zoom-out { border-radius: 0 0 12px 12px !important; }
+.rider-icon, .pickup-icon, .dropoff-icon { display: flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+.rider-icon { background: linear-gradient(135deg, #0b50d5, #386bef); border: 3px solid white; }
+.pickup-icon { background: white; border: 2px solid #ba001c; }
+.dropoff-icon { background: white; border: 2px solid #0b50d5; }
+</style>
 </head>
-<body class="antialiased overflow-x-hidden pb-24">
+<body class="antialiased overflow-x-hidden pb-24 bg-gradient-to-b from-[#fff4f4] to-[#ffe8ea]">
 <!-- TopAppBar -->
-<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-[#fff4f4]/80 backdrop-blur-xl shadow-sm">
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-5 py-3 bg-white/90 backdrop-blur-xl shadow-[0_4px_30px_rgba(186,0,28,0.08)] border-b border-pink-100">
 <div class="flex items-center gap-3">
 <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white shadow-lg shadow-primary/20">
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">electric_moped</span>
 </div>
-<h1 class="font-['Plus_Jakarta_Sans'] font-extrabold tracking-tight text-2xl text-[#ba001c]">MIIAM</h1>
+<div>
+<h1 class="font-['Plus_Jakarta_Sans'] font-extrabold tracking-tight text-xl text-[#ba001c]">MIIAM</h1>
+<span class="text-[9px] font-bold text-on-surface-variant uppercase tracking-[0.2em]">Rider</span>
 </div>
-<div class="flex items-center gap-4">
-<button class="w-10 h-10 rounded-full flex items-center justify-center text-slate-600 hover:opacity-80 transition-opacity">
+</div>
+<div class="flex items-center gap-3">
+<div class="hidden sm:flex items-center gap-2 bg-surface-container px-3 py-1.5 rounded-full">
+<span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+<span class="text-xs font-semibold text-on-surface">Online</span>
+</div>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-slate-600 hover:bg-surface-container transition-colors">
 <span class="material-symbols-outlined">notifications</span>
 </button>
-<button class="w-10 h-10 rounded-full flex items-center justify-center text-slate-600 hover:opacity-80 transition-opacity">
-<span class="material-symbols-outlined">account_circle</span>
-</button>
+<div class="w-10 h-10 rounded-full overflow-hidden ring-2 ring-primary ring-offset-2 ring-offset-white">
+<img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0ugQxMYonoLLwgxpgaKFhG2q5USX6oMQI1vSInCg6OdWjIyzXnjJZCNnBMMxyvDjnzBUxX8yX_kd1deGO-qzSKMG_AvgniNvLJfEoIJ0lIwEUs7BnLtBoTChwFq3JFs4JyjqXwB-SCo-yI8bKzVm6CH1xBmivkC05agaTSrM4SRKNtBfe-Bd01Ov5e0F6KegEFnN9o3cstDGAnkp7XGLZ7Q151lbHlWZL3S1lIINX4atJelp7H04eLU4h1g" alt="Rider profile"/>
+</div>
 </div>
 </header>
-<main class="mt-20 px-4 max-w-2xl mx-auto space-y-6">
-<!-- Active Shift Status -->
-<section class="flex items-center justify-between p-4 bg-secondary rounded-lg text-white shadow-xl shadow-secondary/10">
-<div class="flex items-center gap-3">
-<div class="relative">
-<div class="w-3 h-3 bg-tertiary-container rounded-full absolute -top-1 -right-1 border-2 border-secondary animate-pulse"></div>
-<span class="material-symbols-outlined text-3xl">delivery_dining</span>
+<main class="mt-20 px-4 max-w-2xl mx-auto space-y-5">
+<!-- Earnings Stats Row -->
+<section class="grid grid-cols-3 gap-3">
+<div class="bg-gradient-to-br from-primary to-[#d90024] p-4 rounded-xl text-white shadow-lg shadow-primary/20">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">payments</span>
+<span class="text-[10px] font-bold uppercase tracking-wider opacity-80">Today</span>
 </div>
-<div>
-<p class="text-[10px] uppercase tracking-widest font-bold opacity-70">Rider Status</p>
-<p class="font-bold text-lg leading-tight">Active &amp; Online</p>
+<p class="text-2xl font-black tracking-tight">₹847</p>
+<p class="text-[10px] opacity-70">+12% vs yesterday</p>
 </div>
+<div class="bg-white p-4 rounded-xl shadow-md border border-pink-50">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary text-sm">local_shipping</span>
+<span class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Orders</span>
 </div>
-<div class="text-right">
-<p class="text-[10px] uppercase tracking-widest font-bold opacity-70">Today's Earnings</p>
-<p class="font-black text-xl tracking-tighter">$142.50</p>
+<p class="text-2xl font-black text-on-surface">18</p>
+<p class="text-[10px] text-on-surface-variant">This week</p>
+</div>
+<div class="bg-white p-4 rounded-xl shadow-md border border-pink-50">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-secondary text-sm">timer</span>
+<span class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Avg Time</span>
+</div>
+<p class="text-2xl font-black text-on-surface">24m</p>
+<p class="text-[10px] text-on-surface-variant">Per delivery</p>
 </div>
 </section>
 <!-- Active Delivery Map Section -->
-<section class="relative h-[300px] w-full rounded-lg overflow-hidden shadow-2xl group">
-<img alt="City Navigation Map" class="w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 transition-all duration-700" data-alt="Modern minimalist city map with neon blue and red route lines indicating delivery path in a stylized urban environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyH4iPY5E6MDlHoqHjZZLTk3XIelIzdDMiamr8xsMWyB41hkkdnlSAaZXMvfg4MrRkIHzLesviQFkER2Whni7LGae515VMhsj-Z754vtPSHKqkjNKjG3Ya_HFmvsHG7YJ5UbBG3hodRKRx5TGXQ3RMTfabnsfWkCdXUq-dW3XioB77Tq6Jwufpeo58iWtcl___Egl540l_H4enyjphQMPg8UVl5d1stIEhSoSrmriuxgWtV3zkYnu91mpjnFgAtxbSELRAbc7Eo-8"/>
-<div class="absolute inset-0 map-gradient"></div>
-<!-- Navigation Button Overlay -->
-<div class="absolute bottom-4 right-4">
-<button class="bg-secondary text-white px-6 py-3 rounded-xl flex items-center gap-2 font-bold shadow-2xl hover:scale-95 transition-transform">
+<section class="relative h-[320px] w-full rounded-2xl overflow-hidden shadow-2xl">
+<div id="map" class="h-full w-full rounded-2xl"></div>
+<!-- Map Overlays -->
+<div class="absolute top-4 left-4 z-[1000] space-y-2">
+<div class="glass-card px-4 py-2 rounded-full flex items-center gap-2 shadow-lg">
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">bolt</span>
+<span class="text-sm font-bold text-on-surface" id="eta">12 mins</span>
+</div>
+</div>
+<div class="absolute top-4 right-4 z-[1000] glass-card px-3 py-2 rounded-full flex items-center gap-2 shadow-lg">
+<span class="material-symbols-outlined text-secondary text-sm">straighten</span>
+<span class="text-xs font-semibold text-on-surface" id="distance">2.4 km</span>
+</div>
+<div class="absolute bottom-4 right-4 z-[1000]">
+<button class="bg-secondary text-white px-5 py-2.5 rounded-xl flex items-center gap-2 font-bold shadow-2xl hover:scale-95 active:scale-90 transition-transform">
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">directions</span>
-                    Navigate
-                </button>
-</div>
-<!-- Map Floating Stats -->
-<div class="absolute top-4 left-4 space-y-2">
-<div class="glass-card px-4 py-2 rounded-full flex items-center gap-2">
-<span class="material-symbols-outlined text-secondary text-sm">timer</span>
-<span class="text-sm font-bold text-on-surface">12 mins away</span>
-</div>
-</div>
-</section>
-<!-- New Order Flash Card (Bento Style) -->
-<section class="bg-primary p-6 rounded-lg text-white relative overflow-hidden shadow-2xl shadow-primary/20">
-<!-- Background Decorative Element -->
-<div class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
-<div class="relative z-10">
-<div class="flex justify-between items-start mb-6">
-<div>
-<span class="bg-white/20 text-white text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-widest mb-2 inline-block">New Priority Order</span>
-<h2 class="text-3xl font-black tracking-tighter">+$18.40</h2>
-</div>
-<div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-<span class="material-symbols-outlined text-white">flash_on</span>
-</div>
-</div>
-<div class="space-y-4 mb-8">
-<div class="flex items-center gap-4">
-<div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
-<span class="material-symbols-outlined text-sm">restaurant</span>
-</div>
-<div>
-<p class="text-[10px] font-bold opacity-60">PICKUP</p>
-<p class="font-bold">Gourmet Burger Kitchen • 0.8km</p>
-</div>
-</div>
-<div class="flex items-center gap-4">
-<div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
-<span class="material-symbols-outlined text-sm">location_on</span>
-</div>
-<div>
-<p class="text-[10px] font-bold opacity-60">DROP-OFF</p>
-<p class="font-bold">221B Baker St • 2.4km</p>
-</div>
-</div>
-</div>
-<button class="w-full bg-white text-primary py-4 rounded-xl font-extrabold text-lg flex items-center justify-center gap-2 shadow-xl hover:scale-[1.02] active:scale-95 transition-all">
-                    Accept Order
-                    <span class="material-symbols-outlined">arrow_forward</span>
+Navigate
 </button>
 </div>
 </section>
-<!-- Multi-Vendor Stops Details -->
-<section class="space-y-4">
-<h3 class="font-bold text-on-surface text-xl px-2">Current Route Details</h3>
-<div class="grid grid-cols-1 gap-4">
-<!-- Stop 1: Food -->
-<div class="bg-surface-container-lowest p-5 rounded-lg flex items-center gap-4 border-l-4 border-primary shadow-sm">
-<div class="w-14 h-14 bg-surface-container rounded-full flex items-center justify-center shrink-0">
-<span class="material-symbols-outlined text-primary text-2xl" style="font-variation-settings: 'FILL' 1;">lunch_dining</span>
+<!-- Quick Actions -->
+<section class="grid grid-cols-4 gap-2">
+<button class="flex flex-col items-center justify-center p-3 bg-white rounded-xl shadow-sm border border-pink-50 hover:shadow-md hover:border-primary/20 transition-all group">
+<div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mb-2 group-hover:bg-green-200 transition-colors">
+<span class="material-symbols-outlined text-green-600" style="font-variation-settings: 'FILL' 1;">check_circle</span>
 </div>
-<div class="flex-grow">
-<div class="flex justify-between items-center">
+<span class="text-[10px] font-bold text-on-surface">Complete</span>
+</button>
+<button class="flex flex-col items-center justify-center p-3 bg-white rounded-xl shadow-sm border border-pink-50 hover:shadow-md hover:border-primary/20 transition-all group">
+<div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center mb-2 group-hover:bg-orange-200 transition-colors">
+<span class="material-symbols-outlined text-orange-600" style="font-variation-settings: 'FILL' 1;">call</span>
+</div>
+<span class="text-[10px] font-bold text-on-surface">Contact</span>
+</button>
+<button class="flex flex-col items-center justify-center p-3 bg-white rounded-xl shadow-sm border border-pink-50 hover:shadow-md hover:border-primary/20 transition-all group">
+<div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mb-2 group-hover:bg-blue-200 transition-colors">
+<span class="material-symbols-outlined text-blue-600" style="font-variation-settings: 'FILL' 1;">qr_code</span>
+</div>
+<span class="text-[10px] font-bold text-on-surface">Scan</span>
+</button>
+<button class="flex flex-col items-center justify-center p-3 bg-white rounded-xl shadow-sm border border-pink-50 hover:shadow-md hover:border-primary/20 transition-all group">
+<div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mb-2 group-hover:bg-purple-200 transition-colors">
+<span class="material-symbols-outlined text-purple-600" style="font-variation-settings: 'FILL' 1;">help</span>
+</div>
+<span class="text-[10px] font-bold text-on-surface">Help</span>
+</button>
+</section>
+<!-- New Order Flash Card -->
+<section class="bg-gradient-to-br from-primary via-[#d00020] to-[#a00018] p-5 rounded-2xl text-white relative overflow-hidden shadow-2xl shadow-primary/20">
+<div class="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-3xl"></div>
+<div class="absolute -left-4 -bottom-4 w-24 h-24 bg-secondary/20 rounded-full blur-2xl"></div>
+<div class="relative z-10">
+<div class="flex justify-between items-start mb-4">
+<div>
+<span class="bg-white/20 backdrop-blur-sm text-white text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-widest mb-2 inline-block flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">bolt</span>Priority Order</span>
+<h2 class="text-3xl font-black tracking-tighter">+₹85.00</h2>
+</div>
+<div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">flash_on</span>
+</div>
+</div>
+<div class="space-y-3 mb-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-sm">restaurant</span>
+</div>
+<div class="flex-1">
+<p class="text-[10px] font-bold opacity-60 uppercase tracking-wider">Pickup</p>
+<p class="font-bold text-sm">The Burger Lab • <span class="opacity-70">0.8km</span></p>
+</div>
+<div class="text-right">
+<p class="text-xs font-bold bg-white/20 px-2 py-0.5 rounded-full">Ready</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-sm">location_on</span>
+</div>
+<div class="flex-1">
+<p class="text-[10px] font-bold opacity-60 uppercase tracking-wider">Drop-off</p>
+<p class="font-bold text-sm">Skyline Towers • <span class="opacity-70">3.2km</span></p>
+</div>
+</div>
+</div>
+<button class="w-full bg-white text-primary py-3.5 rounded-xl font-extrabold text-base flex items-center justify-center gap-2 shadow-lg hover:scale-[1.02] active:scale-95 transition-all">
+Accept Order
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</section>
+<!-- Current Route Details -->
+<section class="space-y-3">
+<h3 class="font-bold text-on-surface text-lg px-1 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">route</span>
+Active Deliveries
+</h3>
+<div class="space-y-3">
+<div class="bg-white p-4 rounded-xl flex items-center gap-4 border-l-4 border-primary shadow-md hover:shadow-lg transition-shadow">
+<div class="w-12 h-12 bg-surface-container rounded-full flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-xl" style="font-variation-settings: 'FILL' 1;">lunch_dining</span>
+</div>
+<div class="flex-grow min-w-0">
+<div class="flex justify-between items-center mb-1">
 <span class="text-[10px] font-bold text-primary uppercase">Stop 1 • Pickup</span>
-<span class="text-[10px] font-medium bg-primary-container text-on-primary-container px-2 py-0.5 rounded-full">Ready in 2m</span>
+<span class="text-[10px] font-medium bg-primary-container text-white px-2 py-0.5 rounded-full flex items-center gap-1">
+<span class="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>Ready</span>
 </div>
-<p class="font-extrabold text-on-surface">The Italian Deli</p>
-<p class="text-xs text-on-surface-variant font-medium">Order #BK-9021 • 3 items</p>
+<p class="font-extrabold text-on-surface truncate">The Italian Deli</p>
+<div class="flex items-center gap-2 mt-1">
+<span class="text-xs text-on-surface-variant">Order #BK-9021</span>
+<span class="text-xs text-on-surface-variant">•</span>
+<span class="text-xs text-on-surface-variant">3 items</span>
 </div>
-<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
 </div>
-<!-- Stop 2: Pharmacy (Secondary Vertical) -->
-<div class="bg-surface-container-lowest p-5 rounded-lg flex items-center gap-4 border-l-4 border-secondary shadow-sm">
-<div class="w-14 h-14 bg-secondary-container rounded-full flex items-center justify-center shrink-0">
-<span class="material-symbols-outlined text-secondary text-2xl" style="font-variation-settings: 'FILL' 1;">medical_services</span>
+<button class="shrink-0 w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
 </div>
-<div class="flex-grow">
-<div class="flex justify-between items-center">
-<span class="text-[10px] font-bold text-secondary uppercase">Stop 2 • Pickup</span>
-<span class="text-[10px] font-medium bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded-full">At Counter</span>
+<div class="bg-white p-4 rounded-xl flex items-center gap-4 border-l-4 border-secondary shadow-md hover:shadow-lg transition-shadow">
+<div class="w-12 h-12 bg-secondary-container rounded-full flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-secondary text-xl" style="font-variation-settings: 'FILL' 1;">medical_services</span>
 </div>
-<p class="font-extrabold text-on-surface">MediCare Pharmacy</p>
-<p class="text-xs text-on-surface-variant font-medium">Order #RX-4412 • 1 item</p>
+<div class="flex-grow min-w-0">
+<div class="flex justify-between items-center mb-1">
+<span class="text-[10px] font-bold text-secondary uppercase">Stop 2 • Dropoff</span>
+<span class="text-[10px] font-medium bg-secondary text-white px-2 py-0.5 rounded-full">En Route</span>
 </div>
-<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+<p class="font-extrabold text-on-surface truncate">MediCare Pharmacy</p>
+<div class="flex items-center gap-2 mt-1">
+<span class="text-xs text-on-surface-variant">Order #RX-4412</span>
+<span class="text-xs text-on-surface-variant">•</span>
+<span class="text-xs text-on-surface-variant">1 item</span>
+</div>
+</div>
+<button class="shrink-0 w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-secondary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
 </div>
 </div>
 </section>
-<!-- Kinetic Floating Debris (Visual Flair) -->
-<!-- MIIAM Floating Debris (Visual Flair) -->
-<div class="flex justify-center gap-4 pt-4 opacity-50">
-<div class="w-12 h-12 rounded-full glass-card flex items-center justify-center text-xl">🍕</div>
-<div class="w-12 h-12 rounded-full glass-card flex items-center justify-center text-xl">💊</div>
-<div class="w-12 h-12 rounded-full glass-card flex items-center justify-center text-xl">📦</div>
+<!-- Performance Card -->
+<section class="bg-gradient-to-r from-amber-50 to-yellow-50 p-5 rounded-2xl border border-amber-100 shadow-md">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-amber-600" style="font-variation-settings: 'FILL' 1;">emoji_events</span>
 </div>
+<div>
+<p class="font-bold text-on-surface">Gold Status</p>
+<p class="text-xs text-on-surface-variant">Top 15% of riders</p>
+</div>
+</div>
+<span class="bg-amber-400 text-white text-[10px] font-bold px-2 py-1 rounded-full">LEVEL 5</span>
+</div>
+<div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+<div class="w-3/4 h-full bg-gradient-to-r from-amber-400 to-yellow-500 rounded-full"></div>
+</div>
+<p class="text-xs text-on-surface-variant mt-2">₹500 more to reach Platinum</p>
+</section>
 </main>
 <!-- BottomNavBar -->
-<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-end px-4 pb-6 pt-2 bg-white/90 backdrop-blur-2xl shadow-[0_-10px_40px_rgba(77,33,42,0.04)] rounded-t-[3rem]">
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-end px-4 pb-6 pt-2 bg-white/95 backdrop-blur-2xl shadow-[0_-10px_40px_rgba(77,33,42,0.06)] rounded-t-[2rem] border-t border-pink-100">
 <a class="flex flex-col items-center justify-center text-slate-400 group" href="#">
 <span class="material-symbols-outlined group-hover:text-[#ba001c] transition-colors">explore</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Explore</span>
@@ -236,13 +333,45 @@
 <span class="material-symbols-outlined group-hover:text-[#ba001c] transition-colors">receipt_long</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Orders</span>
 </a>
-<a class="flex flex-col items-center justify-center bg-[#ba001c] text-white rounded-full w-12 h-12 mb-1 shadow-lg shadow-[#ba001c]/20 scale-110" href="#">
+<a class="flex flex-col items-center justify-center bg-[#ba001c] text-white rounded-full w-14 h-14 mb-1 shadow-lg shadow-[#ba001c]/30 scale-110 hover:scale-115 transition-transform" href="#">
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">local_shipping</span>
-<!-- No text label for active item per design shell layout sometimes -->
 </a>
 <a class="flex flex-col items-center justify-center text-slate-400 group" href="#">
 <span class="material-symbols-outlined group-hover:text-[#ba001c] transition-colors">person</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Account</span>
 </a>
 </nav>
+<script>
+const riderIcon = L.divIcon({ className: '', html: '<div class="rider-icon w-10 h-10"><span class="material-symbols-outlined text-white" style="font-variation-settings:\'FILL\' 1;">moped</span></div>', iconSize: [40, 40], iconAnchor: [20, 20] });
+const pickupIcon = L.divIcon({ className: '', html: '<div class="pickup-icon w-10 h-10"><span class="material-symbols-outlined text-[#ba001c]" style="font-variation-settings:\'FILL\' 1;">restaurant</span></div>', iconSize: [40, 40], iconAnchor: [20, 20] });
+const dropoffIcon = L.divIcon({ className: '', html: '<div class="dropoff-icon w-10 h-10"><span class="material-symbols-outlined text-[#0b50d5]" style="font-variation-settings:\'FILL\' 1;">home</span></div>', iconSize: [40, 40], iconAnchor: [20, 20] });
+
+const map = L.map('map', { zoomControl: true }).setView([19.0760, 72.8777], 14);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 19 }).addTo(map);
+
+const riderPos = [19.0760, 72.8777];
+const pickupPos = [19.0720, 72.8800];
+const dropoffPos = [19.0850, 72.8700];
+
+const riderMarker = L.marker(riderPos, { icon: riderIcon, draggable: true }).addTo(map).bindPopup('<b>You</b><br>Rider Location');
+const pickupMarker = L.marker(pickupPos, { icon: pickupIcon }).addTo(map).bindPopup('<b>Pickup</b><br>The Burger Lab');
+const dropoffMarker = L.marker(dropoffPos, { icon: dropoffIcon }).addTo(map).bindPopup('<b>Drop-off</b><br>Skyline Towers');
+
+const routeLine = L.polyline([pickupPos, riderPos, dropoffPos], { color: '#ba001c', weight: 4, dashArray: '10, 10', opacity: 0.8 }).addTo(map);
+const bounds = L.latLngBounds([pickupPos, dropoffPos]);
+map.fitBounds(bounds, { padding: [50, 50] });
+
+function calculateDistance(pos1, pos2) {
+    const R = 6371;
+    const dLat = (pos2[0] - pos1[0]) * Math.PI / 180;
+    const dLon = (pos2[1] - pos1[1]) * Math.PI / 180;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(pos1[0] * Math.PI / 180) * Math.cos(pos2[0] * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+const totalDist = calculateDistance(pickupPos, dropoffPos).toFixed(1);
+const eta = Math.round(totalDist * 3);
+document.getElementById('distance').textContent = totalDist + ' km';
+document.getElementById('eta').textContent = eta + ' mins';
+</script>
 </body></html>

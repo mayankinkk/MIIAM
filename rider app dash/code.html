@@ -3,318 +3,319 @@
 <html class="light" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MIIAM | Rider Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            "colors": {
-                    "surface-variant": "#fbdbd8",
-                    "primary-fixed-dim": "#ffb3ae",
-                    "on-surface-variant": "#5c403d",
-                    "on-tertiary-container": "#b7d6ff",
-                    "outline": "#916f6c",
-                    "on-secondary-container": "#fefcff",
-                    "surface-container-high": "#ffe2df",
-                    "on-primary": "#ffffff",
-                    "secondary-fixed-dim": "#b5c4ff",
-                    "primary": "#8d0013",
-                    "on-tertiary-fixed-variant": "#00497d",
-                    "surface-container-highest": "#fbdbd8",
-                    "on-secondary-fixed-variant": "#003dab",
-                    "on-background": "#281716",
-                    "tertiary-container": "#005e9f",
-                    "on-tertiary-fixed": "#001d36",
-                    "surface-container-lowest": "#ffffff",
-                    "background": "#fff8f7",
-                    "primary-container": "#ba001c",
-                    "tertiary-fixed-dim": "#9fcaff",
-                    "on-primary-fixed": "#410004",
-                    "inverse-surface": "#3f2c2a",
-                    "on-surface": "#281716",
-                    "on-primary-container": "#ffc6c2",
-                    "secondary": "#0c50d5",
-                    "inverse-on-surface": "#ffedeb",
-                    "on-tertiary": "#ffffff",
-                    "primary-fixed": "#ffdad7",
-                    "on-secondary": "#ffffff",
-                    "error-container": "#ffdad6",
-                    "surface-container-low": "#fff0ef",
-                    "on-error": "#ffffff",
-                    "secondary-fixed": "#dbe1ff",
-                    "on-error-container": "#93000a",
-                    "surface-dim": "#f2d3d0",
-                    "surface-tint": "#bf071f",
-                    "secondary-container": "#386bef",
-                    "error": "#ba1a1a",
-                    "surface": "#fff8f7",
-                    "on-primary-fixed-variant": "#930014",
-                    "tertiary-fixed": "#d1e4ff",
-                    "tertiary": "#004678",
-                    "inverse-primary": "#ffb3ae",
-                    "surface-bright": "#fff8f7",
-                    "surface-container": "#ffe9e7",
-                    "outline-variant": "#e5bdba",
-                    "on-secondary-fixed": "#00174c"
+tailwind.config = {
+    darkMode: "class",
+    theme: {
+        extend: {
+            colors: {
+                "surface-variant": "#fbdbd8",
+                "primary-fixed-dim": "#ffb3ae",
+                "on-surface-variant": "#5c403d",
+                "on-tertiary-container": "#b7d6ff",
+                "outline": "#916f6c",
+                "on-secondary-container": "#fefcff",
+                "surface-container-high": "#ffe2df",
+                "on-primary": "#ffffff",
+                "secondary-fixed-dim": "#b5c4ff",
+                "primary": "#8d0013",
+                "on-tertiary-fixed-variant": "#00497d",
+                "surface-container-highest": "#fbdbd8",
+                "on-secondary-fixed-variant": "#003dab",
+                "on-background": "#281716",
+                "tertiary-container": "#005e9f",
+                "on-tertiary-fixed": "#001d36",
+                "surface-container-lowest": "#ffffff",
+                "background": "#fff8f7",
+                "primary-container": "#ba001c",
+                "tertiary-fixed-dim": "#9fcaff",
+                "on-primary-fixed": "#410004",
+                "inverse-surface": "#3f2c2a",
+                "on-surface": "#281716",
+                "on-primary-container": "#ffc6c2",
+                "secondary": "#0c50d5",
+                "inverse-on-surface": "#ffedeb",
+                "on-tertiary": "#ffffff",
+                "primary-fixed": "#ffdad7",
+                "on-secondary": "#ffffff",
+                "error-container": "#ffdad6",
+                "surface-container-low": "#fff0ef",
+                "on-error": "#ffffff",
+                "secondary-fixed": "#dbe1ff",
+                "on-error-container": "#93000a",
+                "surface-dim": "#f2d3d0",
+                "surface-tint": "#bf071f",
+                "secondary-container": "#386bef",
+                "error": "#ba1a1a",
+                "surface": "#fff8f7",
+                "on-primary-fixed-variant": "#930014",
+                "tertiary-fixed": "#d1e4ff",
+                "tertiary": "#004678",
+                "inverse-primary": "#ffb3ae",
+                "surface-bright": "#fff8f7",
+                "surface-container": "#ffe9e7",
+                "outline-variant": "#e5bdba",
+                "on-secondary-fixed": "#00174c"
             },
-            "borderRadius": {
-                    "DEFAULT": "1rem",
-                    "lg": "2rem",
-                    "xl": "3rem",
-                    "full": "9999px"
+            borderRadius: {
+                "DEFAULT": "1rem",
+                "lg": "2rem",
+                "xl": "3rem",
+                "full": "9999px"
             },
-            "spacing": {
-                    "card-padding": "2rem",
-                    "container-max": "80rem",
-                    "safe-margin": "2rem",
-                    "element-gap": "2rem",
-                    "section-gap": "6rem"
+            fontFamily: {
+                "label-caps": ["Plus Jakarta Sans"],
+                "body-md": ["Plus Jakarta Sans"],
+                "display-hero": ["Plus Jakarta Sans"],
+                "body-lg": ["Plus Jakarta Sans"],
+                "headline-md": ["Plus Jakarta Sans"],
+                "headline-xl": ["Plus Jakarta Sans"]
             },
-            "fontFamily": {
-                    "label-caps": ["Plus Jakarta Sans"],
-                    "body-md": ["Plus Jakarta Sans"],
-                    "display-hero": ["Plus Jakarta Sans"],
-                    "body-lg": ["Plus Jakarta Sans"],
-                    "headline-md": ["Plus Jakarta Sans"],
-                    "headline-xl": ["Plus Jakarta Sans"]
+            fontSize: {
+                "label-caps": ["10px", {"lineHeight": "1.0", "letterSpacing": "0.3em", "fontWeight": "900"}],
+                "body-md": ["1rem", {"lineHeight": "1.5", "fontWeight": "500"}],
+                "display-hero": ["4.5rem", {"lineHeight": "0.9", "letterSpacing": "-0.05em", "fontWeight": "800"}],
+                "body-lg": ["1.25rem", {"lineHeight": "1.6", "fontWeight": "600"}],
+                "headline-md": ["1.5rem", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "900"}],
+                "headline-xl": ["3rem", {"lineHeight": "1.0", "letterSpacing": "-0.02em", "fontWeight": "800"}]
             },
-            "fontSize": {
-                    "label-caps": ["10px", {"lineHeight": "1.0", "letterSpacing": "0.3em", "fontWeight": "900"}],
-                    "body-md": ["1rem", {"lineHeight": "1.5", "fontWeight": "500"}],
-                    "display-hero": ["4.5rem", {"lineHeight": "0.9", "letterSpacing": "-0.05em", "fontWeight": "800"}],
-                    "body-lg": ["1.25rem", {"lineHeight": "1.6", "fontWeight": "600"}],
-                    "headline-md": ["1.5rem", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "900"}],
-                    "headline-xl": ["3rem", {"lineHeight": "1.0", "letterSpacing": "-0.02em", "fontWeight": "800"}]
+            boxShadow: {
+                'glow-red': '0 0 30px rgba(186, 0, 28, 0.4)',
+                'glow-blue': '0 0 30px rgba(11, 80, 213, 0.3)',
             }
-          },
         },
-      }
-    </script>
+    },
+}
+</script>
 <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-        }
-        .countdown-ring {
-            stroke-dasharray: 283;
-            stroke-dashoffset: 70;
-            transition: stroke-dashoffset 1s linear;
-        }
-    </style>
+.material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+.glass-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.4); }
+.glass-card-heavy { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(30px); border: 1px solid rgba(255, 255, 255, 0.5); }
+.countdown-ring { stroke-dasharray: 283; stroke-dashoffset: 70; transition: stroke-dashoffset 1s linear; }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@keyframes pulse-ring { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0; } }
+@keyframes slide-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.animate-float { animation: float 3s ease-in-out infinite; }
+.animate-slide-up { animation: slide-up 0.4s ease-out forwards; animation-delay: calc(var('order') * 0.1s); opacity: 0; }
+#map { height: 100%; width: 100%; z-index: 0; }
+.leaflet-control-zoom { border: none !important; box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important; border-radius: 12px !important; overflow: hidden; }
+.leaflet-control-zoom a { background: white !important; color: #281716 !important; }
+.leaflet-control-zoom-in { border-radius: 12px 12px 0 0 !important; }
+.leaflet-control-zoom-out { border-radius: 0 0 12px 12px !important; }
+.rider-icon, .pickup-icon { display: flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+.rider-icon { background: linear-gradient(135deg, #0c50d5, #386bef); border: 3px solid white; }
+.pickup-icon { background: white; border: 2px solid #ba001c; }
+</style>
 </head>
 <body class="bg-surface font-body-md text-on-surface overflow-hidden h-screen w-full">
 <!-- Top Navigation Shell -->
-<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg border-b border-white/20 dark:border-slate-800/50 shadow-[0_20px_40px_rgba(77,33,42,0.06)]">
-<div class="flex items-center gap-4">
-<span class="text-2xl font-black italic tracking-tighter text-red-700 dark:text-red-500 font-['Plus_Jakarta_Sans']">MIIAM RIDER</span>
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-5 py-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-pink-100/50 shadow-[0_20px_40px_rgba(77,33,42,0.06)]">
+<div class="flex items-center gap-3">
+<span class="text-xl font-black italic tracking-tighter text-red-700 dark:text-red-500 font-['Plus_Jakarta_Sans']">MIIAM RIDER</span>
 </div>
-<div class="flex items-center gap-6">
-<!-- Online Toggle -->
-<div class="flex items-center bg-surface-container-high px-4 py-2 rounded-full border border-outline-variant">
-<span class="font-label-caps text-label-caps text-on-surface-variant mr-3">ONLINE</span>
-<button class="w-12 h-6 bg-primary-container rounded-full relative transition-all active:scale-95">
-<div class="absolute right-1 top-1 w-4 h-4 bg-white rounded-full"></div>
+<div class="flex items-center gap-4">
+<div class="flex items-center bg-surface-container-high px-3 py-1.5 rounded-full border border-outline-variant">
+<span class="font-label-caps text-[9px] text-on-surface-variant mr-2">ONLINE</span>
+<button class="w-10 h-5 bg-primary-container rounded-full relative transition-all active:scale-95">
+<div class="absolute right-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow-sm"></div>
 </button>
 </div>
-<div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-container">
-<img class="w-full h-full object-cover" data-alt="A professional close-up headshot of a delivery rider wearing a high-performance MIIAM branded technical jacket in deep ruby red. The rider has a friendly, confident expression against a soft-focus urban street background. The lighting is crisp and cinematic, reflecting a high-end service professional aesthetic." src="https://lh3.googleusercontent.com/aida/ADBb0ugQxMYonoLLwgxpgaKFhG2q5USX6oMQI1vSInCg6OdWjIyzXnjJZCNnBMMxyvDjnzBUxX8yX_kd1deGO-qzSKMG_AvgniNvLJfEoIJ0lIwEUs7BnLtBoTChwFq3JFs4JyjqXwB-SCo-yI8bKzVm6CH1xBmivkC05agaTSrM4SRKNtBfe-Bd01Ov5e0F6KegEFnN9o3cstDGAnkp7XGLZ7Q151lbHlWZL3S1lIINX4atJelp7H04eLU4h1g"/>
+<div class="flex items-center gap-2">
+<div class="w-9 h-9 rounded-full overflow-hidden border-2 border-primary-container">
+<img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0ugQxMYonoLLwgxpgaKFhG2q5USX6oMQI1vSInCg6OdWjIyzXnjJZCNnBMMxyvDjnzBUxX8yX_kd1deGO-qzSKMG_AvgniNvLJfEoIJ0lIwEUs7BnLtBoTChwFq3JFs4JyjqXwB-SCo-yI8bKzVm6CH1xBmivkC05agaTSrM4SRKNtBfe-Bd01Ov5e0F6KegEFnN9o3cstDGAnkp7XGLZ7Q151lbHlWZL3S1lIINX4atJelp7H04eLU4h1g" alt="Rider"/>
 </div>
-<div class="hidden md:block">
-<p class="font-label-caps text-[10px] text-primary">GOLD TIER</p>
-<p class="font-headline-md text-sm leading-none">Rider #8821</p>
+<div class="hidden lg:block">
+<p class="font-label-caps text-[8px] text-primary">GOLD TIER</p>
+<p class="font-bold text-sm leading-none">Rider #8821</p>
 </div>
 </div>
-<div class="flex gap-2">
-<button class="p-2 text-slate-500 hover:opacity-80 transition-opacity active:scale-95">
+<div class="flex gap-1">
+<button class="p-2.5 text-slate-500 hover:bg-surface-container rounded-full transition-colors">
 <span class="material-symbols-outlined">notifications</span>
 </button>
-<button class="p-2 text-slate-500 hover:opacity-80 transition-opacity active:scale-95">
+<button class="p-2.5 text-slate-500 hover:bg-surface-container rounded-full transition-colors">
 <span class="material-symbols-outlined">power_settings_new</span>
 </button>
 </div>
 </div>
 </header>
 <!-- Map Background Section -->
-<main class="relative h-full w-full pt-20">
-<!-- The Map -->
-<div class="absolute inset-0 z-0">
-<img class="w-full h-full object-cover" data-alt="A high-contrast, stylized digital map of a bustling metropolitan area, featuring elegant dark slate and ruby red accents for route paths. The map shows detailed urban grids, parks, and water bodies with professional vector aesthetics. Strategic glowing markers represent the pickup point and current rider location, connected by a vibrant neon delivery path." data-location="Mumbai, India" src="https://lh3.googleusercontent.com/aida/ADBb0uiugKcaP2DL9C13e9wDrnek068tIUinJpk04MptyP_MOu7svL-593yK1hDkx7C-MEYEAVoLGe0Q7M--cy1ugPRBsxWIfKaL1S65tI9nJ0kyAE8FKFAUKFyIO3C8mEQvhxjr0v4OZFbepXRxllGTFhhLIJYU3kDCSqCtADWnDZf8Wyx4D6oHuIuXdwmuWMxkyLXy4dft3qR_NeL02fo9_hY8PA4bE55HpKruqId6cpcR48qKrFGQcaInouZkak8LVbYDQt4VBbC8nA"/>
-<!-- Map Overlay Gradients for Depth -->
-<div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none"></div>
-<div class="absolute inset-0 bg-gradient-to-b from-white/40 via-transparent to-transparent pointer-events-none"></div>
-<!-- Custom Map Markers (Visual Simulation) -->
-<div class="absolute top-[35%] left-[45%] -translate-x-1/2 -translate-y-1/2">
-<div class="relative">
-<div class="absolute inset-0 rounded-full bg-primary animate-ping opacity-25"></div>
-<div class="relative w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-xl border-2 border-primary">
-<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">restaurant</span>
-</div>
-<div class="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap bg-white px-3 py-1 rounded-lg shadow-lg border border-outline-variant">
-<p class="font-label-caps text-[8px] text-primary">PICKUP</p>
-<p class="text-[10px] font-bold">Burger Prime</p>
-</div>
-</div>
-</div>
-<div class="absolute top-[65%] left-[55%] -translate-x-1/2 -translate-y-1/2">
-<div class="relative">
-<div class="w-10 h-10 bg-secondary rounded-full flex items-center justify-center shadow-xl border-2 border-white">
-<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">moped</span>
-</div>
-</div>
-</div>
-</div>
+<main class="relative h-full w-full pt-16">
+<!-- Real Map -->
+<div id="map" class="absolute inset-0 z-0"></div>
+<!-- Gradient Overlays -->
+<div class="absolute inset-0 z-[5] pointer-events-none bg-gradient-to-t from-black/10 via-transparent to-transparent"></div>
+<div class="absolute inset-0 z-[5] pointer-events-none bg-gradient-to-b from-white/20 via-transparent to-transparent"></div>
 <!-- NEW ORDER DASHBOARD OVERLAY -->
-<div class="absolute inset-0 z-10 flex items-end justify-center pb-24 md:pb-32 px-4 md:px-0">
-<div class="max-w-xl w-full glass-card rounded-lg overflow-hidden shadow-[0_32px_64px_rgba(77,33,42,0.12)] border-t border-white flex flex-col">
+<div class="absolute inset-0 z-10 flex items-end justify-center pb-24 md:pb-28 px-4 md:px-0">
+<div class="max-w-lg w-full glass-card-heavy rounded-2xl overflow-hidden shadow-[0_32px_64px_rgba(77,33,42,0.15)] border-t-2 border-pink-200 flex flex-col">
 <!-- Countdown Header -->
-<div class="bg-primary-container p-4 flex items-center justify-between text-white">
+<div class="bg-gradient-to-r from-primary to-[#d00020] p-4 flex items-center justify-between text-white">
 <div class="flex items-center gap-3">
-<div class="relative w-10 h-10">
+<div class="relative w-11 h-11">
 <svg class="w-full h-full -rotate-90">
-<circle cx="20" cy="20" fill="transparent" r="18" stroke="rgba(255,255,255,0.2)" stroke-width="3"></circle>
-<circle class="countdown-ring" cx="20" cy="20" fill="transparent" r="18" stroke="white" stroke-width="3"></circle>
+<circle cx="22" cy="22" fill="transparent" r="20" stroke="rgba(255,255,255,0.2)" stroke-width="3"></circle>
+<circle class="countdown-ring" cx="22" cy="22" fill="transparent" r="20" stroke="white" stroke-width="3"></circle>
 </svg>
-<span class="absolute inset-0 flex items-center justify-center font-bold text-xs">52</span>
+<span class="absolute inset-0 flex items-center justify-center font-black text-sm">52</span>
 </div>
 <div>
-<p class="font-label-caps text-[10px] opacity-80">NEW REQUEST</p>
-<h2 class="font-headline-md text-lg uppercase tracking-tight">Incoming Order</h2>
+<p class="font-label-caps text-[9px] opacity-80">NEW REQUEST</p>
+<h2 class="font-bold text-lg uppercase tracking-tight">Incoming Order</h2>
 </div>
 </div>
 <div class="text-right">
-<p class="font-label-caps text-[10px] opacity-80">EARNINGS</p>
-<h2 class="font-headline-xl text-2xl">₹120.00</h2>
+<p class="font-label-caps text-[9px] opacity-80">EARNINGS</p>
+<h2 class="font-black text-2xl">₹120.00</h2>
 </div>
 </div>
 <!-- Order Details -->
-<div class="p-card-padding">
-<!-- Basic Info -->
-<div class="flex justify-between items-center mb-6">
-<div class="flex gap-2">
-<span class="bg-surface-container-highest text-on-surface px-3 py-1 rounded-full text-[11px] font-bold">3 ITEMS</span>
-<span class="bg-surface-container-highest text-on-surface px-3 py-1 rounded-full text-[11px] font-bold">FOOD DELIVERY</span>
-</div>
-<div class="flex items-center gap-1 text-primary font-bold">
-<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">bolt</span>
-<span class="text-xs uppercase tracking-wider">High Priority</span>
-</div>
+<div class="p-5">
+<!-- Tags -->
+<div class="flex flex-wrap gap-2 mb-5">
+<span class="bg-surface-container-highest text-on-surface px-3 py-1 rounded-full text-[11px] font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">inventory_2</span>3 ITEMS</span>
+<span class="bg-surface-container-highest text-on-surface px-3 py-1 rounded-full text-[11px] font-bold">FOOD</span>
+<span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-[11px] font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">bolt</span>HIGH PRIORITY</span>
 </div>
 <!-- Journey Path -->
-<div class="space-y-6 relative">
-<!-- Connecting Line -->
+<div class="space-y-5 relative">
 <div class="absolute left-[11px] top-6 bottom-6 w-0.5 border-l-2 border-dashed border-outline-variant"></div>
 <!-- Pickup -->
 <div class="flex items-start gap-4">
-<div class="z-10 bg-primary-container w-6 h-6 rounded-full flex items-center justify-center mt-1">
+<div class="z-10 bg-primary-container w-6 h-6 rounded-full flex items-center justify-center mt-0.5 shrink-0">
 <span class="material-symbols-outlined text-[14px] text-white">restaurant</span>
 </div>
-<div class="flex-1">
-<p class="font-label-caps text-[10px] text-primary">PICKUP AT</p>
-<h3 class="font-headline-md text-lg">Burger Prime</h3>
-<p class="text-sm text-on-surface-variant">The Highstreet Mall, Ground Floor, Zone A</p>
+<div class="flex-1 min-w-0">
+<p class="font-label-caps text-[9px] text-primary">PICKUP AT</p>
+<h3 class="font-bold text-base">Burger Prime</h3>
+<p class="text-xs text-on-surface-variant truncate">The Highstreet Mall, Ground Floor</p>
 </div>
-<div class="text-right">
-<p class="text-sm font-bold text-primary">1.2 km</p>
-<p class="text-[10px] text-on-surface-variant">4 mins</p>
+<div class="text-right shrink-0">
+<p class="text-sm font-bold text-primary" id="pickup-dist">1.2 km</p>
+<p class="text-[10px] text-on-surface-variant" id="pickup-time">4 mins</p>
 </div>
 </div>
 <!-- Dropoff -->
 <div class="flex items-start gap-4">
-<div class="z-10 bg-secondary-container w-6 h-6 rounded-full flex items-center justify-center mt-1">
+<div class="z-10 bg-secondary-container w-6 h-6 rounded-full flex items-center justify-center mt-0.5 shrink-0">
 <span class="material-symbols-outlined text-[14px] text-white">home</span>
 </div>
-<div class="flex-1">
-<p class="font-label-caps text-[10px] text-secondary">DROP OFF AT</p>
-<h3 class="font-headline-md text-lg">Residential Area</h3>
-<p class="text-sm text-on-surface-variant">Apartment 402, Block B, Silver Oaks Society</p>
+<div class="flex-1 min-w-0">
+<p class="font-label-caps text-[9px] text-secondary">DROP OFF AT</p>
+<h3 class="font-bold text-base">Residential Area</h3>
+<p class="text-xs text-on-surface-variant truncate">Apt 402, Block B, Silver Oaks</p>
 </div>
-<div class="text-right">
-<p class="text-sm font-bold text-secondary">3.0 km</p>
-<p class="text-[10px] text-on-surface-variant">12 mins</p>
+<div class="text-right shrink-0">
+<p class="text-sm font-bold text-secondary" id="dropoff-dist">3.0 km</p>
+<p class="text-[10px] text-on-surface-variant" id="dropoff-time">12 mins</p>
 </div>
 </div>
 </div>
 <!-- Summary Stats -->
-<div class="mt-8 grid grid-cols-2 gap-4 bg-surface-container-low p-4 rounded-lg">
+<div class="mt-6 grid grid-cols-2 gap-3 bg-surface-container-low p-4 rounded-xl">
 <div class="flex flex-col">
-<span class="font-label-caps text-[9px] text-on-surface-variant">TOTAL DISTANCE</span>
-<span class="font-headline-md text-xl">4.2 km</span>
+<span class="font-label-caps text-[8px] text-on-surface-variant">TOTAL DISTANCE</span>
+<span class="font-bold text-xl" id="total-dist">4.2 km</span>
 </div>
-<div class="flex flex-col border-l border-outline-variant pl-4">
-<span class="font-label-caps text-[9px] text-on-surface-variant">EST. COMPLETION</span>
-<span class="font-headline-md text-xl">22 mins</span>
+<div class="flex flex-col border-l border-outline-variant pl-3">
+<span class="font-label-caps text-[8px] text-on-surface-variant">EST. COMPLETION</span>
+<span class="font-bold text-xl" id="total-time">22 mins</span>
 </div>
 </div>
 <!-- Action Buttons -->
-<div class="mt-8 flex gap-4">
-<button class="flex-1 py-5 bg-surface-container-highest text-on-surface-variant font-bold rounded-full transition-all active:scale-95 hover:bg-outline-variant uppercase tracking-widest text-xs">
-                            DECLINE
-                        </button>
-<button class="flex-[2] py-5 bg-primary-container text-white font-black rounded-full shadow-lg shadow-primary-container/30 transition-all active:scale-[0.97] hover:opacity-90 uppercase tracking-[0.2em] text-sm flex items-center justify-center gap-2">
-<span>ACCEPT ORDER</span>
+<div class="mt-6 flex gap-3">
+<button class="flex-1 py-4 bg-surface-container-highest text-on-surface-variant font-bold rounded-full transition-all active:scale-95 hover:bg-outline-variant uppercase tracking-widest text-xs">
+DECLINE
+</button>
+<button class="flex-[2] py-4 bg-gradient-to-r from-primary to-[#d00020] text-white font-black rounded-full shadow-lg shadow-primary/30 transition-all active:scale-[0.97] hover:opacity-90 uppercase tracking-[0.15em] text-sm flex items-center justify-center gap-2">
+<span>ACCEPT</span>
 <span class="material-symbols-outlined">chevron_right</span>
 </button>
 </div>
 </div>
 </div>
 </div>
-<!-- Floatting Map Zoom Controls -->
-<div class="absolute right-6 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-20">
-<button class="w-12 h-12 bg-white rounded-xl shadow-lg flex items-center justify-center text-on-surface active:scale-90 transition-all">
-<span class="material-symbols-outlined">add</span>
-</button>
-<button class="w-12 h-12 bg-white rounded-xl shadow-lg flex items-center justify-center text-on-surface active:scale-90 transition-all">
-<span class="material-symbols-outlined">remove</span>
-</button>
-<button class="w-12 h-12 bg-white rounded-xl shadow-lg flex items-center justify-center text-primary active:scale-90 transition-all mt-4">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">my_location</span>
-</button>
-</div>
-</main>
-<!-- Bottom Navigation Shell -->
-<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 pb-8 bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl">
-<div class="flex flex-col items-center justify-center text-slate-400 p-2 hover:text-red-600 transition-colors active:scale-90 transition-all duration-200">
-<span class="material-symbols-outlined" data-icon="local_shipping">local_shipping</span>
-<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-extrabold uppercase tracking-widest mt-1">Orders</span>
-</div>
-<div class="flex flex-col items-center justify-center bg-red-700 text-white rounded-full w-14 h-14 -mt-6 shadow-lg shadow-red-700/40 active:scale-90 transition-all duration-200">
-<span class="material-symbols-outlined" data-icon="explore">explore</span>
-<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-extrabold uppercase tracking-widest hidden">Navigate</span>
-</div>
-<div class="flex flex-col items-center justify-center text-slate-400 p-2 hover:text-red-600 transition-colors active:scale-90 transition-all duration-200">
-<span class="material-symbols-outlined" data-icon="payments">payments</span>
-<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-extrabold uppercase tracking-widest mt-1">Earnings</span>
-</div>
-<div class="flex flex-col items-center justify-center text-slate-400 p-2 hover:text-red-600 transition-colors active:scale-90 transition-all duration-200">
-<span class="material-symbols-outlined" data-icon="person">person</span>
-<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-extrabold uppercase tracking-widest mt-1">Account</span>
-</div>
-</nav>
-<!-- Visual Polish: Floating Promotional Tile (Partial View) -->
-<div class="fixed top-24 left-6 z-20 hidden lg:block">
-<div class="glass-card p-4 rounded-lg w-64 shadow-xl border border-white/40">
-<div class="flex items-center gap-3 mb-3">
-<div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+<!-- Floating Stats Panel -->
+<div class="absolute right-4 top-20 z-[100] hidden lg:block">
+<div class="glass-card-heavy p-4 rounded-2xl w-56 shadow-xl border border-white/50">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary">
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">military_tech</span>
 </div>
-<div>
-<p class="font-label-caps text-[9px] text-primary">DAILY GOAL</p>
+<div class="flex-1">
+<p class="font-label-caps text-[8px] text-primary">DAILY GOAL</p>
 <p class="font-bold text-sm">8/12 Orders</p>
 </div>
 </div>
-<div class="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden">
-<div class="w-2/3 h-full bg-primary-container rounded-full"></div>
+<div class="w-full h-2 bg-surface-container-high rounded-full overflow-hidden mb-2">
+<div class="w-2/3 h-full bg-gradient-to-r from-primary to-red-500 rounded-full"></div>
 </div>
-<p class="mt-2 text-[10px] text-on-surface-variant font-medium">Earn ₹250 bonus for 4 more orders</p>
+<p class="text-[10px] text-on-surface-variant font-medium">₹250 bonus for 4 more orders</p>
 </div>
 </div>
+</main>
+<!-- Bottom Navigation Shell -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-3 pb-6 bg-white/95 backdrop-blur-2xl shadow-[0_-10px_40px_rgba(77,33,42,0.06)] rounded-t-[2rem] border-t border-pink-100">
+<div class="flex flex-col items-center justify-center text-slate-400 p-2 hover:text-red-600 transition-colors active:scale-90 transition-all duration-200 group">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">local_shipping</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[9px] font-extrabold uppercase tracking-widest mt-1">Orders</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-gradient-to-r from-primary to-[#d00020] text-white rounded-full w-12 h-12 -mt-5 shadow-lg shadow-red-700/40 active:scale-90 transition-all duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">explore</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 p-2 hover:text-red-600 transition-colors active:scale-90 transition-all duration-200 group">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">payments</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[9px] font-extrabold uppercase tracking-widest mt-1">Earnings</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 p-2 hover:text-red-600 transition-colors active:scale-90 transition-all duration-200 group">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[9px] font-extrabold uppercase tracking-widest mt-1">Account</span>
+</div>
+</nav>
+<script>
+const riderIcon = L.divIcon({ className: '', html: '<div class="rider-icon w-10 h-10 flex items-center justify-center"><span class="material-symbols-outlined text-white" style="font-variation-settings:\'FILL\' 1;">moped</span></div>', iconSize: [40, 40], iconAnchor: [20, 20] });
+const pickupIcon = L.divIcon({ className: '', html: '<div class="pickup-icon w-10 h-10 flex items-center justify-center"><span class="material-symbols-outlined text-[#ba001c]" style="font-variation-settings:\'FILL\' 1;">restaurant</span></div>', iconSize: [40, 40], iconAnchor: [20, 20] });
+
+const map = L.map('map', { zoomControl: false }).setView([19.0760, 72.8777], 14);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 19 }).addTo(map);
+
+const riderPos = [19.0760, 72.8777];
+const pickupPos = [19.0720, 72.8800];
+const dropoffPos = [19.0850, 72.8700];
+
+L.marker(riderPos, { icon: riderIcon }).addTo(map).bindPopup('<b>You</b><br>Rider Location');
+L.marker(pickupPos, { icon: pickupIcon }).addTo(map).bindPopup('<b>Pickup</b><br>Burger Prime');
+
+L.polyline([pickupPos, riderPos, dropoffPos], { color: '#ba001c', weight: 4, dashArray: '10, 10', opacity: 0.8 }).addTo(map);
+
+const bounds = L.latLngBounds([pickupPos, dropoffPos]);
+map.fitBounds(bounds, { padding: [80, 80] });
+
+function calculateDistance(pos1, pos2) {
+    const R = 6371;
+    const dLat = (pos2[0] - pos1[0]) * Math.PI / 180;
+    const dLon = (pos2[1] - pos1[1]) * Math.PI / 180;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(pos1[0] * Math.PI / 180) * Math.cos(pos2[0] * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+const pickupDist = calculateDistance(riderPos, pickupPos);
+const dropoffDist = calculateDistance(pickupPos, dropoffPos);
+const totalDist = pickupDist + dropoffDist;
+
+document.getElementById('pickup-dist').textContent = pickupDist.toFixed(1) + ' km';
+document.getElementById('pickup-time').textContent = Math.round(pickupDist * 3) + ' mins';
+document.getElementById('dropoff-dist').textContent = dropoffDist.toFixed(1) + ' km';
+document.getElementById('dropoff-time').textContent = Math.round(dropoffDist * 3) + ' mins';
+document.getElementById('total-dist').textContent = totalDist.toFixed(1) + ' km';
+document.getElementById('total-time').textContent = Math.round(totalDist * 3) + ' mins';
+</script>
 </body></html>
