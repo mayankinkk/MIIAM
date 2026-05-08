@@ -1150,6 +1150,9 @@ export default function RiderDashboard() {
           <div className="bg-white rounded-t-2xl w-full h-[70vh] flex flex-col">
             <div className="p-4 border-b flex items-center justify-between">
               <div className="flex items-center gap-3">
+                <button onClick={() => setShowChatModal(false)}>
+                  <span className="material-symbols-outlined text-slate-600">arrow_back</span>
+                </button>
                 <div className="w-10 h-10 bg-[#0b50d5]/10 rounded-full flex items-center justify-center">
                   <span className="material-symbols-outlined text-[#0b50d5]">person</span>
                 </div>
@@ -1158,9 +1161,18 @@ export default function RiderDashboard() {
                   <p className="text-[10px] text-green-500">Online</p>
                 </div>
               </div>
-              <button onClick={() => setShowChatModal(false)}>
-                <span className="material-symbols-outlined">close</span>
-              </button>
+              <div className="flex items-center gap-1">
+                <button 
+                  onClick={handleCallCustomer}
+                  className="p-2 text-green-500 hover:bg-green-50 rounded-full"
+                  title="Call Customer"
+                >
+                  <span className="material-symbols-outlined">call</span>
+                </button>
+                <button onClick={() => setShowChatModal(false)}>
+                  <span className="material-symbols-outlined text-slate-600">close</span>
+                </button>
+              </div>
             </div>
             
             <div className="flex-1 p-4 overflow-y-auto space-y-3">
@@ -1187,7 +1199,13 @@ export default function RiderDashboard() {
                   </button>
                 ))}
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-2 items-center">
+                <button className="p-2 text-slate-400 hover:text-[#0b50d5] hover:bg-slate-100 rounded-full" title="Attach file">
+                  <span className="material-symbols-outlined">attach_file</span>
+                </button>
+                <button className="p-2 text-slate-400 hover:text-[#0b50d5] hover:bg-slate-100 rounded-full" title="Voice message">
+                  <span className="material-symbols-outlined">mic</span>
+                </button>
                 <input
                   type="text"
                   value={chatMessage}
