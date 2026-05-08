@@ -2,41 +2,56 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import type { Order } from "@/lib/types";
 
 export default function AdminFoodsDashboard() {
   const supabase = createClient();
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [vendors, setVendors] = useState<any[]>([]);
+  
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [vendorFilter, setVendorFilter] = useState<string>("all");
+  const [paymentFilter, setPaymentFilter] = useState<string>("all");
   const [dateFilter, setDateFilter] = useState<string>("today");
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [amountMin, setAmountMin] = useState<string>("");
+  const [amountMax, setAmountMax] = useState<string>("");
+  const [showFilters, setShowFilters] = useState(false);
+  
+  const [selectedOrder, setSelectedOrder] = useState<any>(null);
 
   useEffect(() => {
-    async function loadData() {
-      setLoading(true);
-      let query = supabase
-        .from("orders")
-        .select("*, vendor:vendors(name, shop_name), items:order_items(*)")
-        .order("placed_at", { ascending: false });
-
-      if (dateFilter === "today") {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        query = query.gte("placed_at", today.toISOString());
-      } else if (dateFilter === "week") {
-        const week = new Date();
-        week.setDate(week.getDate() - 7);
-        query = query.gte("placed_at", week.toISOString());
-      }
-
-      const { data } = await query;
-      if (data) setOrders(data);
-      setLoading(false);
-    }
     loadData();
-  }, [supabase, dateFilter]);
+  }, [supabase]);
+
+  async function loadData() {
+    setLoading(true);
+    const { data: vendorsData } = await supabase.from("vendors").select("id, shop_name, name");
+    if (vendorsData) setVendors(vendorsData);
+
+    let query = supabase
+      .from("orders")
+      .select("*, vendor:vendors(id, name, shop_name), items:order_items(*)")
+      .order("placed_at", { ascending: false });
+
+    if (dateFilter === "today") {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      query = query.gte("placed_at", today.toISOString());
+    } else if (dateFilter === "week") {
+      const week = new Date();
+      week.setDate(week.getDate() - 7);
+      query = query.gte("placed_at", week.toISOString());
+    } else if (dateFilter === "month") {
+      const month = new Date();
+      month.setDate(month.getDate() - 30);
+      query = query.gte("placed_at", month.toISOString());
+    }
+
+    const { data } = await query;
+    if (data) setOrders(data);
+    setLoading(false);
+  }
 
   const updateOrderStatus = async (orderId: string, newStatus: string) => {
     try {
@@ -55,19 +70,39 @@ export default function AdminFoodsDashboard() {
     }
   };
 
+  const clearFilters = () => {
+    setSearchQuery("");
+    setStatusFilter("all");
+    setVendorFilter("all");
+    setPaymentFilter("all");
+    setDateFilter("today");
+    setAmountMin("");
+    setAmountMax("");
+  };
+
+  const hasActiveFilters = searchQuery || statusFilter !== "all" || vendorFilter !== "all" || 
+    paymentFilter !== "all" || dateFilter !== "today" || amountMin || amountMax;
+
   const filteredOrders = orders.filter(order => {
-    const matchesSearch = searchQuery === "" || 
+    const matchesSearch = !searchQuery || 
       order.id?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.vendor?.name?.toLowerCase().includes(searchQuery.toLowerCase());
+      (order.vendor?.name || order.vendor?.shop_name || "")?.toLowerCase().includes(searchQuery.toLowerCase());
     
     const matchesStatus = statusFilter === "all" || order.status === statusFilter;
+    const matchesVendor = vendorFilter === "all" || order.vendor?.id === vendorFilter;
+    const matchesPayment = paymentFilter === "all" || order.payment_method === paymentFilter;
     
-    return matchesSearch && matchesStatus;
+    const orderAmount = order.total_amount || 0;
+    const matchesMinAmount = !amountMin || orderAmount >= parseFloat(amountMin);
+    const matchesMaxAmount = !amountMax || orderAmount <= parseFloat(amountMax);
+    
+    return matchesSearch && matchesStatus && matchesVendor && matchesPayment && matchesMinAmount && matchesMaxAmount;
   });
 
-  const totalGMV = orders.reduce((acc, curr) => acc + (curr.total_amount || 0), 0);
-  const activeOrders = orders.filter(o => !["delivered", "cancelled", "refunded"].includes(o.status)).length;
-  const pendingOrders = orders.filter(o => o.status === "pending").length;
+  const totalGMV = filteredOrders.reduce((acc, curr) => acc + (curr.total_amount || 0), 0);
+  const activeOrders = filteredOrders.filter(o => !["delivered", "cancelled", "refunded"].includes(o.status)).length;
+  const pendingOrders = filteredOrders.filter(o => o.status === "pending").length;
+  const cancelledOrders = filteredOrders.filter(o => o.status === "cancelled").length;
 
   const statusColors: Record<string, string> = {
     pending: "bg-yellow-100 text-yellow-700",
@@ -118,19 +153,56 @@ export default function AdminFoodsDashboard() {
       </div>
 
       <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm">
-        <div className="p-4 border-b border-slate-50 flex items-center justify-between gap-4 flex-wrap">
-          <h2 className="font-black text-slate-800 uppercase tracking-widest text-sm">All Orders ({filteredOrders.length})</h2>
-          <div className="flex items-center gap-3">
-            <div className="relative">
+        <div className="p-4 border-b border-slate-50">
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <div className="flex items-center gap-3 flex-1">
+              <h2 className="font-black text-slate-800 uppercase tracking-widest text-sm">Orders ({filteredOrders.length})</h2>
+              {hasActiveFilters && (
+                <button
+                  onClick={clearFilters}
+                  className="text-xs font-bold text-red-500 hover:underline"
+                >
+                  Clear Filters
+                </button>
+              )}
+            </div>
+            <div className="flex items-center gap-3 flex-wrap">
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className={`px-4 py-2 rounded-xl text-sm font-bold border flex items-center gap-2 ${
+                  showFilters || hasActiveFilters 
+                    ? "bg-[#ba001c] text-white border-[#ba001c]" 
+                    : "border-slate-200"
+                }`}
+              >
+                <span className="material-symbols-outlined text-sm">filter_list</span>
+                Filters
+                {hasActiveFilters && <span className="bg-white text-[#ba001c] rounded-full w-5 h-5 text-xs flex items-center justify-center">!</span>}
+              </button>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-3 mt-4 flex-wrap">
+            <div className="relative flex-1 min-w-[200px]">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search order ID or vendor..."
-                className="pl-10 pr-4 py-2 border border-slate-200 rounded-xl text-sm w-64"
+                className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-xl text-sm"
               />
             </div>
+            <select
+              value={dateFilter}
+              onChange={(e) => setDateFilter(e.target.value)}
+              className="px-4 py-2 border border-slate-200 rounded-xl text-sm font-bold"
+            >
+              <option value="today">Today</option>
+              <option value="week">This Week</option>
+              <option value="month">This Month</option>
+              <option value="all">All Time</option>
+            </select>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
@@ -145,6 +217,58 @@ export default function AdminFoodsDashboard() {
               <option value="cancelled">Cancelled</option>
             </select>
           </div>
+
+          {showFilters && (
+            <div className="mt-4 p-4 bg-slate-50 rounded-xl grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div>
+                <label className="text-xs font-bold text-slate-500 block mb-1">Vendor</label>
+                <select
+                  value={vendorFilter}
+                  onChange={(e) => setVendorFilter(e.target.value)}
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm bg-white"
+                >
+                  <option value="all">All Vendors</option>
+                  {vendors.map(v => (
+                    <option key={v.id} value={v.id}>{v.shop_name || v.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-bold text-slate-500 block mb-1">Payment Method</label>
+                <select
+                  value={paymentFilter}
+                  onChange={(e) => setPaymentFilter(e.target.value)}
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm bg-white"
+                >
+                  <option value="all">All Methods</option>
+                  <option value="upi">UPI</option>
+                  <option value="card">Card</option>
+                  <option value="cash">Cash</option>
+                  <option value="wallet">Wallet</option>
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-bold text-slate-500 block mb-1">Min Amount (₹)</label>
+                <input
+                  type="number"
+                  value={amountMin}
+                  onChange={(e) => setAmountMin(e.target.value)}
+                  placeholder="0"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm bg-white"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-slate-500 block mb-1">Max Amount (₹)</label>
+                <input
+                  type="number"
+                  value={amountMax}
+                  onChange={(e) => setAmountMax(e.target.value)}
+                  placeholder="10000"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm bg-white"
+                />
+              </div>
+            </div>
+          )}
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left">
