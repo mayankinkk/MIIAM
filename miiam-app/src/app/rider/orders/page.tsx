@@ -166,14 +166,17 @@ export default function RiderOrdersPage() {
 
       const order = orders.find(o => o.id === orderId);
       if (order?.user_id) {
-        await supabase.from("notifications").insert({
-          user_id: order.user_id,
-          title: "Order Accepted! 🎉",
-          message: "A rider has accepted your order and will start shopping soon.",
-          type: "order",
-          read: false,
-          created_at: new Date().toISOString(),
-        }).catch(() => {});
+        try {
+          await supabase.from("notifications").insert({
+            user_id: order.user_id,
+            title: "Order Accepted! 🎉",
+            message: "A rider has accepted your order and will start shopping soon.",
+            type: "order",
+            read: false,
+          });
+        } catch (notifErr) {
+          console.log("Notification error (non-critical):", notifErr);
+        }
       }
 
       setOrders(orders.map(o => o.id === orderId ? { ...o, status: "accepted", rider_id: user.id } : o));
