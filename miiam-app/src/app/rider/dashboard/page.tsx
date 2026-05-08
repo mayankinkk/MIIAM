@@ -50,21 +50,31 @@ function calculateEarnings(distance: number, baseFare: number = 40, perKm: numbe
   return Math.round((baseFare + (distance * perKm)) * peakMultiplier);
 }
 
+// Order with timing info
+interface OrderWithTiming extends Order {
+  expiresAt?: number; // timestamp when order expires
+  isSnoozed?: boolean;
+  snoozeUntil?: number;
+  orderDbId?: string; // actual DB ID for transactions
+}
+
 export default function RiderDashboard() {
   const supabase = createClient();
   const [isOnline, setIsOnline] = useState(true);
-  const [countdown, setCountdown] = useState(52);
-  const [pendingOrders, setPendingOrders] = useState<Order[]>([]);
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-  const [currentOrder, setCurrentOrder] = useState<Order | null>(null);
+  const [countdown, setCountdown] = useState(300); // 5 minutes = 300 seconds
+  const [pendingOrders, setPendingOrders] = useState<OrderWithTiming[]>([]);
+  const [selectedOrder, setSelectedOrder] = useState<OrderWithTiming | null>(null);
+  const [currentOrder, setCurrentOrder] = useState<OrderWithTiming | null>(null);
   const [showCallModal, setShowCallModal] = useState(false);
   const [showChatModal, setShowChatModal] = useState(false);
-  
+  const [riderId, setRiderId] = useState<string | null>(null);
+  const [orderTakenByOther, setOrderTakenByOther] = useState(false);
   
   const [showSkipModal, setShowSkipModal] = useState(false);
   const [showAlertSettings, setShowAlertSettings] = useState(false);
   const [showNewOrderAlert, setShowNewOrderAlert] = useState(false);
   const [currentStopIndex, setCurrentStopIndex] = useState(0);
+  const [snoozeMessage, setSnoozeMessage] = useState("");
   
   const [chatMessage, setChatMessage] = useState("");
   const [chatHistory, setChatHistory] = useState<{from: string; text: string; time: string}[]>([
@@ -75,14 +85,80 @@ export default function RiderDashboard() {
   const [vibrationEnabled, setVibrationEnabled] = useState(true);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  // Get rider ID on mount
+  useEffect(() => {
+    async function getRiderId() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: riderData } = await supabase.from("riders").select("id").eq("user_id", user.id).single();
+        if (riderData) {
+          setRiderId(riderData.id);
+        }
+      }
+    }
+    getRiderId();
+  }, [supabase]);
+
+  // 5-minute countdown timer
   useEffect(() => {
     if (selectedOrder && countdown > 0) {
+      // Check if order is snoozed
+      if (selectedOrder.isSnoozed && selectedOrder.snoozeUntil && Date.now() < selectedOrder.snoozeUntil) {
+        return; // Don't countdown while snoozed
+      }
+      
       const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
       return () => clearTimeout(timer);
     } else if (countdown === 0 && selectedOrder) {
       autoDecline();
     }
   }, [countdown, selectedOrder]);
+
+  // Function to handle snooze
+  const handleSnooze = async (order: OrderWithTiming) => {
+    const snoozeUntil = Date.now() + 30000; // 30 seconds
+    
+    setPendingOrders(prev => prev.map(o => 
+      o.id === order.id 
+        ? { ...o, isSnoozed: true, snoozeUntil } 
+        : o
+    ));
+    
+    if (selectedOrder?.id === order.id) {
+      setSelectedOrder(prev => prev ? { ...prev, isSnoozed: true, snoozeUntil } : null);
+    }
+    
+    setSnoozeMessage("Order snoozed for 30 seconds");
+    setTimeout(() => setSnoozeMessage(""), 3000);
+    
+    // Save snooze to database
+    if (order.orderDbId && riderId) {
+      try {
+        await supabase.rpc('snooze_order_for_rider', {
+          p_order_id: order.orderDbId,
+          p_rider_id: riderId,
+          p_seconds: 30
+        });
+      } catch (e) {
+        console.log("Snooze RPC not available, using local only");
+      }
+    }
+  };
+
+  // Check for snoozed orders periodically and wake them up
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = Date.now();
+      setPendingOrders(prev => prev.map(o => {
+        if (o.isSnoozed && o.snoozeUntil && now >= o.snoozeUntil) {
+          return { ...o, isSnoozed: false, snoozeUntil: undefined };
+        }
+        return o;
+      }));
+    }, 1000);
+    
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     async function fetchRealOrders() {
@@ -105,7 +181,11 @@ export default function RiderDashboard() {
         return;
       }
       
-      const mappedOrders: Order[] = await Promise.all(dbOrders.map(async (dbOrder) => {
+      // Calculate expiration time (5 minutes from now for new orders)
+      const now = Date.now();
+      const expirationTime = now + (5 * 60 * 1000); // 5 minutes
+      
+      const mappedOrders: OrderWithTiming[] = await Promise.all(dbOrders.map(async (dbOrder) => {
         // Fetch related data sequentially
         const [vendorRes, itemsRes] = await Promise.all([
           dbOrder.vendor_id ? supabase.from("vendors").select("*").eq("id", dbOrder.vendor_id).single() : Promise.resolve({ data: null }),
@@ -135,6 +215,7 @@ export default function RiderDashboard() {
 
         return {
           id: dbOrder.id.substring(0, 8).toUpperCase(),
+          orderDbId: dbOrder.id, // Store actual DB ID for transactions
           vendor: vendorRes.data?.shop_name || vendorRes.data?.name || "Restaurant",
           vendorAddress: vendorRes.data?.address || "Restaurant Address",
           vendorPhone: vendorRes.data?.phone || "+91 99999 99999",
@@ -156,10 +237,21 @@ export default function RiderDashboard() {
           specialInstructions: dbOrder.special_instructions || "",
           otp: Math.floor(1000 + (seed * 7) % 9000).toString(),
           type: "food",
-        } as Order;
+          expiresAt: expirationTime, // 5 minute expiration
+          isSnoozed: false,
+        } as OrderWithTiming;
       }));
       
-      setPendingOrders(mappedOrders);
+      // Filter out orders that are snoozed for this rider
+      const now2 = Date.now();
+      const filteredOrders = mappedOrders.filter(o => {
+        if (o.isSnoozed && o.snoozeUntil && now2 < o.snoozeUntil) {
+          return false; // Skip snoozed orders
+        }
+        return true;
+      });
+      
+      setPendingOrders(filteredOrders);
     }
     
     fetchRealOrders();
@@ -198,9 +290,29 @@ export default function RiderDashboard() {
 
   const autoDecline = () => {
     if (selectedOrder) {
+      // Order expired - it will be handled by database for user notification
       handleDecline(selectedOrder.id);
     }
   };
+
+  // Check for expired orders periodically
+  useEffect(() => {
+    const checkExpired = setInterval(async () => {
+      const now = Date.now();
+      setPendingOrders(prev => {
+        const filtered = prev.filter(o => {
+          // Remove orders that have been accepted by other riders (expired)
+          if (o.expiresAt && now > o.expiresAt + 5000) { // 5 sec grace period
+            return false;
+          }
+          return true;
+        });
+        return filtered;
+      });
+    }, 5000);
+    
+    return () => clearInterval(checkExpired);
+  }, []);
 
   const clearAllPendingOrders = async () => {
     if (!confirm("This will delete ALL pending orders from the database. This is intended for testing only. Continue?")) return;
@@ -220,14 +332,63 @@ export default function RiderDashboard() {
     }
   };
 
-  const handleAccept = (order: Order) => {
+  const handleAccept = async (order: OrderWithTiming) => {
+    // Try to accept via atomic database function
+    if (order.orderDbId && riderId) {
+      try {
+        const { data: success, error } = await supabase.rpc('accept_order_as_rider', {
+          p_order_id: order.orderDbId,
+          p_rider_id: riderId
+        });
+        
+        if (!success || error) {
+          // Order was already taken by another rider
+          setOrderTakenByOther(true);
+          setTimeout(() => {
+            setOrderTakenByOther(false);
+            setPendingOrders(prev => prev.filter(o => o.id !== order.id));
+            setSelectedOrder(null);
+          }, 2000);
+          return;
+        }
+      } catch (e) {
+        console.log("RPC not available, using fallback");
+      }
+    }
+    
+    // Fallback: directly update order
+    if (order.orderDbId) {
+      const { error } = await supabase
+        .from("orders")
+        .update({ 
+          rider_id: riderId, 
+          status: 'accepted', 
+          accepted_at: new Date().toISOString() 
+        })
+        .eq("id", order.orderDbId)
+        .is("rider_id", null); // Only if no rider assigned
+        
+      if (error) {
+        // Order already taken
+        setOrderTakenByOther(true);
+        setTimeout(() => {
+          setOrderTakenByOther(false);
+          setPendingOrders(prev => prev.filter(o => o.id !== order.id));
+          setSelectedOrder(null);
+        }, 2000);
+        return;
+      }
+    }
+    
     setPendingOrders(pendingOrders.filter(o => o.id !== order.id));
     setCurrentOrder(order);
     setSelectedOrder(null);
+    setCountdown(300); // Reset timer for next order
+    
     if (order.type === "multi_stop") {
       setDeliveryStep("picking_up");
     } else {
-      setDeliveryStep("shopping"); // For shopping orders, start with shopping mode
+      setDeliveryStep("shopping");
     }
   };
 
@@ -235,11 +396,11 @@ export default function RiderDashboard() {
     setPendingOrders(pendingOrders.filter(o => o.id !== orderId));
     setSelectedOrder(null);
     setShowSkipModal(false);
-    setCountdown(52);
+    setCountdown(300); // Reset to 5 minutes
   };
 
-  const handleSkip = () => {
-    setShowSkipModal(true);
+  const handleSkip = (order: OrderWithTiming) => {
+    handleSnooze(order);
   };
 
   const handleCallCustomer = () => {
@@ -338,6 +499,14 @@ export default function RiderDashboard() {
         </div>
       </header>
 
+      {/* Snooze Message Toast */}
+      {snoozeMessage && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-slate-800 text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2">
+          <span className="material-symbols-outlined text-sm">snooze</span>
+          <span className="text-sm font-medium">{snoozeMessage}</span>
+        </div>
+      )}
+
       {/* Main Content */}
       <main className="relative h-screen w-full pt-16">
         {/* Map Background with Heatmap */}
@@ -396,15 +565,17 @@ export default function RiderDashboard() {
             <div className="max-w-md w-full bg-white/95 backdrop-blur-xl rounded-2xl overflow-hidden shadow-2xl border border-white flex flex-col max-h-[80vh]">
               <div className="bg-gradient-to-r from-[#0b50d5] to-[#0044bf] p-4 flex items-center justify-between text-white">
                 <div className="flex items-center gap-3">
-                  <div className="relative w-10 h-10">
+                  <div className="relative w-12 h-12">
                     <svg className="w-full h-full -rotate-90">
-                      <circle cx="20" cy="20" fill="transparent" r="18" stroke="rgba(255,255,255,0.3)" strokeWidth="3"></circle>
-                      <circle cx="20" cy="20" fill="transparent" r="18" stroke="white" strokeWidth="3" strokeDasharray={`${(52 - countdown) / 52 * 113} 113`}></circle>
+                      <circle cx="24" cy="24" fill="transparent" r="22" stroke="rgba(255,255,255,0.3)" strokeWidth="3"></circle>
+                      <circle cx="24" cy="24" fill="transparent" r="22" stroke="white" strokeWidth="3" strokeDasharray={`${(300 - countdown) / 300 * 138} 138`}></circle>
                     </svg>
-                    <span className="absolute inset-0 flex items-center justify-center font-bold text-xs">{countdown}</span>
+                    <span className="absolute inset-0 flex items-center justify-center font-black text-sm">
+                      {Math.floor(countdown / 60)}:{(countdown % 60).toString().padStart(2, '0')}
+                    </span>
                   </div>
                   <div>
-                    <p className="text-[10px] opacity-80">NEW ORDER</p>
+                    <p className="text-[10px] opacity-80">NEW ORDER • 5 MIN</p>
                     <h2 className="font-bold text-lg">{pendingOrders[0].id}</h2>
                   </div>
                 </div>
@@ -549,10 +720,11 @@ export default function RiderDashboard() {
 
               <div className="p-4 border-t bg-slate-50 flex gap-3">
                 <button 
-                  onClick={handleSkip}
-                  className="flex-1 py-3 bg-slate-200 text-slate-600 font-bold rounded-xl text-sm"
+                  onClick={() => handleSnooze(pendingOrders[0])}
+                  className="flex-1 py-3 bg-slate-200 text-slate-600 font-bold rounded-xl text-sm flex items-center justify-center gap-1"
                 >
-                  Skip (Snooze 30s)
+                  <span className="material-symbols-outlined text-sm">snooze</span>
+                  {pendingOrders[0].isSnoozed ? "Snoozed" : "Snooze 30s"}
                 </button>
                 <button 
                   onClick={() => handleAccept(pendingOrders[0])}
@@ -561,6 +733,16 @@ export default function RiderDashboard() {
                   ACCEPT ORDER
                 </button>
               </div>
+              {/* Order taken by other rider alert */}
+              {orderTakenByOther && (
+                <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-50">
+                  <div className="bg-white rounded-2xl p-6 text-center max-w-xs mx-4">
+                    <span className="material-symbols-outlined text-red-500 text-5xl">error</span>
+                    <p className="font-bold text-lg mt-3">Order Taken!</p>
+                    <p className="text-sm text-slate-500 mt-1">Another rider accepted this order first.</p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
