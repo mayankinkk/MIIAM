@@ -4,6 +4,7 @@ import { use, useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useToastStore } from "@/lib/store/toastStore";
 
 const steps = [
   { key: "pending", label: "Order Placed", icon: "receipt_long" },
@@ -19,6 +20,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
   const { id } = use(params);
   const router = useRouter();
   const supabase = createClient();
+  const { addToast } = useToastStore();
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [etaMins, setEtaMins] = useState(12);
@@ -146,17 +148,19 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
           const newStatus = payload.new.status;
           setOrder((prev: any) => ({ ...prev, ...payload.new }));
           
-          // Show toast for status changes
           if (newStatus !== oldStatus) {
             const statusMessages: Record<string, string> = {
-              accepted: "🎉 Order accepted by rider!",
-              preparing: "👨‍🍳 Restaurant is preparing your order",
-              picking_up: "🛒 Rider is picking up your order",
-              on_the_way: "🚴 Rider is on the way!",
-              delivered: "✅ Order delivered!",
+              accepted: "Order accepted by rider!",
+              preparing: "Restaurant is preparing your order",
+              shopping: "Rider is shopping for your items",
+              picking_up: "Rider is picking up your order",
+              on_the_way: "Rider is on the way!",
+              delivered: "Order delivered!",
             };
             const msg = statusMessages[newStatus];
-            if (msg) alert(msg);
+            if (msg) {
+              addToast(msg, "info");
+            }
           }
         }
       })
@@ -167,9 +171,8 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
         filter: `order_id=eq.${id}`,
       }, (payload) => {
         setRiderLocation({ lat: payload.new.lat, lng: payload.new.lng });
-      });
-
-    channel.subscribe();
+      })
+      .subscribe();
 
     return () => {
       supabase.removeChannel(channel);

@@ -249,8 +249,8 @@ export default function RiderDashboard() {
         const d2 = Number((1 + ((seed * 3) % 40) / 10).toFixed(1));
 
         return {
-          id: dbOrder.id.substring(0, 8).toUpperCase(),
-          orderDbId: dbOrder.id, // Store actual DB ID for transactions
+          id: dbOrder.id, // Full UUID for proper identification
+          orderDbId: dbOrder.id,
           vendor: vendorRes.data?.shop_name || vendorRes.data?.name || "Restaurant",
           vendorAddress: vendorRes.data?.address || "Restaurant Address",
           vendorPhone: vendorRes.data?.phone || "+91 99999 99999",
@@ -261,7 +261,7 @@ export default function RiderDashboard() {
           distance: d1,
           distance2: d2,
           totalDistance: Number((d1 + d2).toFixed(1)),
-          earnings: dbOrder.delivery_fee || 40,
+          earnings: (dbOrder.total_amount || 0) + (dbOrder.delivery_fee || 0), // Show actual collection amount, not rider cut
           items: itemsCount || 1,
           itemsList: itemsList.length > 0 ? itemsList : ["Items hidden"],
           time: `${Math.round(d1 * 4)} mins`,
@@ -272,7 +272,7 @@ export default function RiderDashboard() {
           specialInstructions: dbOrder.special_instructions || "",
           otp: Math.floor(1000 + (seed * 7) % 9000).toString(),
           type: "food",
-          expiresAt: expirationTime, // 5 minute expiration
+          expiresAt: expirationTime,
           isSnoozed: false,
         } as OrderWithTiming;
       }));
@@ -652,7 +652,7 @@ export default function RiderDashboard() {
                   </div>
                   <div>
                     <p className="text-[10px] opacity-80">NEW ORDER • 5 MIN</p>
-                    <h2 className="font-bold text-lg">{pendingOrders[0].id}</h2>
+                    <h2 className="font-bold text-lg">{pendingOrders[0].id?.substring(0, 8).toUpperCase() || "ORDER"}</h2>
                   </div>
                 </div>
                 <div className="text-right">
