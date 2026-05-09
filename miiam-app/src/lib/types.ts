@@ -53,6 +53,7 @@ export interface MenuItem {
   category: string;
   is_available: boolean;
   is_featured: boolean;
+  is_veg: boolean | null;
   created_at: string;
 }
 

@@ -16,6 +16,7 @@ export default function VendorPage() {
   const [menuItems, setMenuItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState("All");
+  const [vegFilter, setVegFilter] = useState<"all" | "veg" | "non_veg">("all");
   const [customizingItem, setCustomizingItem] = useState<any>(null);
   const { addItem, items, updateQuantity } = useCartStore();
 
@@ -44,9 +45,11 @@ export default function VendorPage() {
 
   const categories = ["All", ...new Set(menuItems.map((m) => m.category).filter(Boolean))];
 
-  const filteredItems = activeCategory === "All" 
-    ? menuItems 
-    : menuItems.filter((m) => m.category === activeCategory);
+  const filteredItems = menuItems.filter((m) => {
+    const categoryMatch = activeCategory === "All" || m.category === activeCategory;
+    const vegMatch = vegFilter === "all" || m.is_veg === (vegFilter === "veg");
+    return categoryMatch && vegMatch;
+  });
 
 const handleCustomizeItem = (item: any) => {
     setCustomizingItem(item);
@@ -156,6 +159,17 @@ const handleCustomizeItem = (item: any) => {
             </button>
           ))}
         </div>
+        <div className="flex gap-2 px-4 pb-3">
+          <button onClick={() => setVegFilter("all")} className={`px-3 py-1.5 rounded-full text-xs font-bold ${vegFilter === "all" ? "bg-slate-800 text-white" : "bg-slate-100 text-slate-600"}`}>
+            All
+          </button>
+          <button onClick={() => setVegFilter("veg")} className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 ${vegFilter === "veg" ? "bg-green-600 text-white" : "bg-green-100 text-green-700"}`}>
+            <span className="w-3 h-3 border-2 border-green-600 rounded-sm flex items-center justify-center"><span className="w-1.5 h-1.5 bg-green-600 rounded-full"></span></span> Veg
+          </button>
+          <button onClick={() => setVegFilter("non_veg")} className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 ${vegFilter === "non_veg" ? "bg-red-600 text-white" : "bg-red-100 text-red-700"}`}>
+            <span className="w-3 h-3 border-2 border-red-600 rounded-sm flex items-center justify-center"><span className="w-1.5 h-1.5 bg-red-600 rounded-full"></span></span> Non-Veg
+          </button>
+        </div>
       </div>
 
       <div className="p-4 space-y-4">
@@ -177,7 +191,12 @@ const handleCustomizeItem = (item: any) => {
                   )}
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-bold text-slate-800">{item.name}</h3>
+                  <div className="flex items-center gap-1.5">
+                    <span className={`w-3.5 h-3.5 border-2 ${item.is_veg ? "border-green-600" : "border-red-600"} rounded-sm flex items-center justify-center`}>
+                      <span className={`w-1.5 h-1.5 ${item.is_veg ? "bg-green-600" : "bg-red-600"} rounded-full`}></span>
+                    </span>
+                    <h3 className="font-bold text-slate-800">{item.name}</h3>
+                  </div>
                   <p className="text-xs text-slate-500 mt-1">{item.category}</p>
                   <div className="flex items-center justify-between mt-2">
                     <span className="font-black text-slate-800">₹{item.price}</span>
