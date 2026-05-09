@@ -51,6 +51,7 @@ export default function RiderOrdersPage() {
   const [activeTab, setActiveTab] = useState<"available" | "shopping" | "completed" | "history">("available");
   const [searchQuery, setSearchQuery] = useState("");
   const [dateFilter, setDateFilter] = useState<"today" | "week" | "month">("today");
+  const [sortBy, setSortBy] = useState<"newest" | "earnings_high" | "distance">("newest");
   const [showAutoSkip, setShowAutoSkip] = useState(false);
   const [autoSkipTime, setAutoSkipTime] = useState(30);
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
@@ -357,11 +358,17 @@ export default function RiderOrdersPage() {
   const filteredOrders = orders.filter(o => {
     if (searchQuery) {
       const search = searchQuery.toLowerCase();
-      return o.id.toLowerCase().includes(search) || 
+      return o.id.toLowerCase().includes(search) ||
              o.vendor?.name?.toLowerCase().includes(search) ||
              o.address?.street?.toLowerCase().includes(search);
     }
     return true;
+  }).sort((a, b) => {
+    switch (sortBy) {
+      case "earnings_high": return ((b.total_amount || 0) + (b.delivery_fee || 0)) - ((a.total_amount || 0) + (a.delivery_fee || 0));
+      case "distance": return 0;
+      default: return new Date(b.placed_at || 0).getTime() - new Date(a.placed_at || 0).getTime();
+    }
   });
 
   const availableOrders = filteredOrders.filter(o => o.status === "pending" || o.status === "preparing");
@@ -407,18 +414,29 @@ export default function RiderOrdersPage() {
         </div>
 
         {/* Date Filter */}
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           {(["today", "week", "month"] as const).map(p => (
             <button
               key={p}
               onClick={() => setDateFilter(p)}
-              className={`flex-1 py-1.5 rounded-lg text-xs font-bold ${
+              className={`py-1.5 px-3 rounded-lg text-xs font-bold ${
                 dateFilter === p ? "bg-white text-[#0b50d5]" : "bg-white/10 text-white/70"
               }`}
             >
               {p === "today" ? "Today" : p === "week" ? "This Week" : "This Month"}
             </button>
           ))}
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as any)}
+            className={`py-1.5 px-3 rounded-lg text-xs font-bold ${
+              sortBy !== "newest" ? "bg-white text-[#0b50d5]" : "bg-white/10 text-white/70"
+            }`}
+          >
+            <option value="newest">Newest First</option>
+            <option value="earnings_high">Highest Earnings</option>
+            <option value="distance">Nearest</option>
+          </select>
         </div>
       </header>
 

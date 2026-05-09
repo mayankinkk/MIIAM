@@ -17,8 +17,11 @@ export default function AdminFoodsDashboard() {
   const [amountMin, setAmountMin] = useState<string>("");
   const [amountMax, setAmountMax] = useState<string>("");
   const [showFilters, setShowFilters] = useState(false);
+  const [sortBy, setSortBy] = useState<"date" | "amount_high" | "amount_low" | "rating">("date");
   
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
+  const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
+  const [bulkStatus, setBulkStatus] = useState<string>("");
 
   useEffect(() => {
     loadData();
@@ -70,6 +73,49 @@ export default function AdminFoodsDashboard() {
     }
   };
 
+  const handleSelectAll = () => {
+    if (selectedOrders.length === filteredOrders.length) {
+      setSelectedOrders([]);
+    } else {
+      setSelectedOrders(filteredOrders.map(o => o.id));
+    }
+  };
+
+  const handleSelectOrder = (orderId: string) => {
+    if (selectedOrders.includes(orderId)) {
+      setSelectedOrders(selectedOrders.filter(id => id !== orderId));
+    } else {
+      setSelectedOrders([...selectedOrders, orderId]);
+    }
+  };
+
+  const handleBulkUpdate = async () => {
+    if (!bulkStatus || selectedOrders.length === 0) return;
+    
+    if (!confirm(`Update ${selectedOrders.length} orders to "${bulkStatus}"?`)) return;
+    
+    setLoading(true);
+    try {
+      const { error } = await supabase
+        .from("orders")
+        .update({ status: bulkStatus })
+        .in("id", selectedOrders);
+
+      if (error) throw error;
+
+      setOrders(orders.map(o => 
+        selectedOrders.includes(o.id) ? { ...o, status: bulkStatus } : o
+      ));
+      alert(`${selectedOrders.length} orders updated!`);
+      setSelectedOrders([]);
+      setBulkStatus("");
+    } catch (error: any) {
+      alert(`Failed: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const clearFilters = () => {
     setSearchQuery("");
     setStatusFilter("all");
@@ -97,6 +143,13 @@ export default function AdminFoodsDashboard() {
     const matchesMaxAmount = !amountMax || orderAmount <= parseFloat(amountMax);
     
     return matchesSearch && matchesStatus && matchesVendor && matchesPayment && matchesMinAmount && matchesMaxAmount;
+  }).sort((a, b) => {
+    switch (sortBy) {
+      case "amount_high": return (b.total_amount || 0) - (a.total_amount || 0);
+      case "amount_low": return (a.total_amount || 0) - (b.total_amount || 0);
+      case "rating": return ((b.vendor as any)?.rating || 0) - ((a.vendor as any)?.rating || 0);
+      default: return new Date(b.placed_at || 0).getTime() - new Date(a.placed_at || 0).getTime();
+    }
   });
 
   const totalGMV = filteredOrders.reduce((acc, curr) => acc + (curr.total_amount || 0), 0);
@@ -167,18 +220,28 @@ export default function AdminFoodsDashboard() {
               )}
             </div>
             <div className="flex items-center gap-3 flex-wrap">
-              <button
-                onClick={() => setShowFilters(!showFilters)}
-                className={`px-4 py-2 rounded-xl text-sm font-bold border flex items-center gap-2 ${
-                  showFilters || hasActiveFilters 
-                    ? "bg-[#ba001c] text-white border-[#ba001c]" 
-                    : "border-slate-200"
-                }`}
-              >
-                <span className="material-symbols-outlined text-sm">filter_list</span>
-                Filters
-                {hasActiveFilters && <span className="bg-white text-[#ba001c] rounded-full w-5 h-5 text-xs flex items-center justify-center">!</span>}
-              </button>
+                <button
+                  onClick={() => setShowFilters(!showFilters)}
+                  className={`px-4 py-2 rounded-xl text-sm font-bold border flex items-center gap-2 ${
+                    showFilters || hasActiveFilters
+                      ? "bg-[#ba001c] text-white border-[#ba001c]"
+                      : "border-slate-200"
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-sm">filter_list</span>
+                  Filters
+                  {hasActiveFilters && <span className="bg-white text-[#ba001c] rounded-full w-5 h-5 text-xs flex items-center justify-center">!</span>}
+                </button>
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as any)}
+                  className="px-4 py-2 border border-slate-200 rounded-xl text-sm font-bold"
+                >
+                  <option value="date">Sort: Date</option>
+                  <option value="amount_high">Amount: High to Low</option>
+                  <option value="amount_low">Amount: Low to High</option>
+                  <option value="rating">Rating</option>
+                </select>
             </div>
           </div>
           
@@ -270,10 +333,58 @@ export default function AdminFoodsDashboard() {
             </div>
           )}
         </div>
+        
+        {selectedOrders.length > 0 && (
+          <div className="p-4 bg-[#ba001c]/10 border-b border-[#ba001c]/20 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <span className="bg-[#ba001c] text-white w-8 h-8 rounded-full flex items-center justify-center font-black text-sm">
+                {selectedOrders.length}
+              </span>
+              <span className="font-bold text-slate-800">orders selected</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <select
+                value={bulkStatus}
+                onChange={(e) => setBulkStatus(e.target.value)}
+                className="px-4 py-2 border border-slate-200 rounded-xl text-sm font-bold bg-white"
+              >
+                <option value="">Change Status</option>
+                <option value="pending">Pending</option>
+                <option value="accepted">Accepted</option>
+                <option value="preparing">Preparing</option>
+                <option value="on_the_way">On the Way</option>
+                <option value="delivered">Delivered</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+              <button
+                onClick={handleBulkUpdate}
+                disabled={!bulkStatus}
+                className="px-4 py-2 bg-green-600 text-white rounded-xl font-bold text-sm disabled:opacity-50"
+              >
+                Apply
+              </button>
+              <button
+                onClick={() => setSelectedOrders([])}
+                className="px-4 py-2 bg-slate-200 text-slate-600 rounded-xl font-bold text-sm"
+              >
+                Clear
+              </button>
+            </div>
+          </div>
+        )}
+        
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead className="bg-slate-50">
               <tr>
+                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest w-12">
+                  <input
+                    type="checkbox"
+                    checked={selectedOrders.length === filteredOrders.length && filteredOrders.length > 0}
+                    onChange={handleSelectAll}
+                    className="w-4 h-4 cursor-pointer"
+                  />
+                </th>
                 <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Order ID</th>
                 <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Vendor</th>
                 <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Customer</th>
@@ -287,13 +398,21 @@ export default function AdminFoodsDashboard() {
             <tbody className="divide-y divide-slate-50 text-xs font-medium">
               {filteredOrders.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="p-8 text-center text-slate-400">
+                  <td colSpan={9} className="p-8 text-center text-slate-400">
                     No orders found
                   </td>
                 </tr>
               ) : (
                 filteredOrders.map((order) => (
-                  <tr key={order.id} className="hover:bg-slate-50 transition-colors">
+                  <tr key={order.id} className={`hover:bg-slate-50 transition-colors ${selectedOrders.includes(order.id) ? "bg-[#ba001c]/5" : ""}`}>
+                    <td className="p-4">
+                      <input
+                        type="checkbox"
+                        checked={selectedOrders.includes(order.id)}
+                        onChange={() => handleSelectOrder(order.id)}
+                        className="w-4 h-4 cursor-pointer"
+                      />
+                    </td>
                     <td className="p-4">
                       <span className="font-black text-slate-800">#{order.id?.slice(0, 8).toUpperCase()}</span>
                     </td>
