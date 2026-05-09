@@ -3,145 +3,123 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-export interface PushNotification {
-  id: string;
-  title: string;
-  body: string;
-  icon?: string;
-  badge?: string;
-  tag?: string;
-  data?: Record<string, any>;
-  timestamp: number;
-  read: boolean;
-  actionUrl?: string;
+interface NotificationPreferences {
+  orderUpdates: boolean;
+  promotions: boolean;
+  recommendations: boolean;
 }
 
 interface NotificationStore {
-  notifications: PushNotification[];
-  permission: NotificationPermission | null;
-  pushToken: string | null;
-  addNotification: (notification: Omit<PushNotification, "id" | "timestamp" | "read">) => void;
-  markAsRead: (id: string) => void;
-  markAllAsRead: () => void;
-  removeNotification: (id: string) => void;
-  clearAll: () => void;
-  setPermission: (permission: NotificationPermission) => void;
-  setPushToken: (token: string) => void;
-  unreadCount: () => number;
+  permission: NotificationPermission | "default" | "unknown";
+  token: string | null;
+  preferences: NotificationPreferences;
+  requestPermission: () => Promise<boolean>;
+  setToken: (token: string) => void;
+  updatePreferences: (prefs: Partial<NotificationPreferences>) => void;
 }
-
-const generateId = () => Math.random().toString(36).substring(2, 15);
 
 export const useNotificationStore = create<NotificationStore>()(
   persist(
     (set, get) => ({
-      notifications: [],
-      permission: null,
-      pushToken: null,
+      permission: "default",
+      token: null,
+      preferences: {
+        orderUpdates: true,
+        promotions: true,
+        recommendations: false,
+      },
 
-      addNotification: (notification) => {
-        const newNotification: PushNotification = {
-          ...notification,
-          id: generateId(),
-          timestamp: Date.now(),
-          read: false,
-        };
-        set({ notifications: [newNotification, ...get().notifications] });
+      requestPermission: async () => {
+        if (!("Notification" in window)) {
+          console.log("Notifications not supported");
+          return false;
+        }
         
-        if (notification.actionUrl) {
-          console.log(`[Push Notification] Navigate to: ${notification.actionUrl}`);
+        const currentPermission = Notification.permission;
+        if (currentPermission === "granted") {
+          set({ permission: "granted" });
+          await get().subscribe();
+          return true;
+        }
+        
+        if (currentPermission === "denied") {
+          set({ permission: "denied" });
+          return false;
+        }
+
+        try {
+          const permission = await Notification.requestPermission();
+          set({ permission });
+          if (permission === "granted") {
+            await get().subscribe();
+          }
+          return permission === "granted";
+        } catch (error) {
+          console.error("Notification permission error:", error);
+          return false;
         }
       },
 
-      markAsRead: (id) => {
-        set({
-          notifications: get().notifications.map((n) =>
-            n.id === id ? { ...n, read: true } : n
-          ),
-        });
-      },
+      setToken: (token) => set({ token }),
 
-      markAllAsRead: () => {
-        set({
-          notifications: get().notifications.map((n) => ({ ...n, read: true })),
-        });
-      },
-
-      removeNotification: (id) => {
-        set({
-          notifications: get().notifications.filter((n) => n.id !== id),
-        });
-      },
-
-      clearAll: () => set({ notifications: [] }),
-
-      setPermission: (permission) => set({ permission }),
-
-      setPushToken: (token) => set({ pushToken: token }),
-
-      unreadCount: () => get().notifications.filter((n) => !n.read).length,
+      updatePreferences: (prefs) => set((state) => ({
+        preferences: { ...state.preferences, ...prefs },
+      })),
     }),
     { name: "miiam-notifications" }
   )
 );
 
-export async function requestNotificationPermission(): Promise<NotificationPermission> {
-  if (!("Notification" in window)) {
-    console.warn("This browser does not support notifications");
-    return "denied";
-  }
-
-  const permission = await Notification.requestPermission();
-  useNotificationStore.getState().setPermission(permission);
-  return permission;
-}
-
-export function subscribeToPushNotifications() {
-  if (!("serviceWorker" in navigator)) {
-    console.warn("Service workers not supported");
+export async function subscribe() {
+  const store = useNotificationStore.getState();
+  if (store.permission !== "granted" || !("serviceWorker" in navigator)) {
     return;
   }
 
-  if (!("PushManager" in window)) {
-    console.warn("Push messaging not supported");
-    return;
-  }
+  try {
+    const registration = await navigator.serviceWorker.ready;
+    const existingSubscription = await registration.pushManager.getSubscription();
+    
+    if (existingSubscription) {
+      store.setToken(existingSubscription.endpoint);
+      return existingSubscription;
+    }
 
-  navigator.serviceWorker.ready.then((registration) => {
-    registration.pushManager.subscribe({
+    const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+    if (!vapidPublicKey) {
+      console.log("VAPID public key not configured");
+      return null;
+    }
+
+    const subscription = await registration.pushManager.subscribe({
       userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(
-        process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || ""
-      ),
-    }).then((subscription) => {
-      console.log("Push subscription successful:", subscription);
-      useNotificationStore.getState().setPushToken(subscription.endpoint);
-    }).catch((err) => {
-      console.error("Push subscription failed:", err);
+      applicationServerKey: urlBase64ToUint8Array(vapidPublicKey),
     });
-  });
+    
+    store.setToken(subscription.endpoint);
+    return subscription;
+  } catch (error) {
+    console.error("Push subscription error:", error);
+    return null;
+  }
 }
 
-function urlBase64ToUint8Array(base64String: string): Uint8Array<ArrayBuffer> {
+function urlBase64ToUint8Array(base64String: string): Uint8Array {
   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
-  const base64 = (base64String + padding)
-    .replace(/-/g, "+")
-    .replace(/_/g, "/");
-
+  const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
   const rawData = window.atob(base64);
   const outputArray = new Uint8Array(rawData.length);
-
   for (let i = 0; i < rawData.length; ++i) {
     outputArray[i] = rawData.charCodeAt(i);
   }
-  return new Uint8Array(outputArray.buffer) as Uint8Array<ArrayBuffer>;
+  return outputArray;
 }
 
-export function showLocalNotification(title: string, options?: NotificationOptions) {
+export function notify(title: string, options?: NotificationOptions) {
   if (Notification.permission === "granted") {
     new Notification(title, {
-      icon: "/icon.png",
-      badge: "/badge.png",
+      icon: "/icons/icon-192.png",
+      badge: "/icons/badge.png",
       ...options,
     });
   }

@@ -41,12 +41,31 @@ function SearchContent() {
   });
   const [activeTab, setActiveTab] = useState<"all" | "vendors" | "food">("all");
   const [vegFilter, setVegFilter] = useState<"all" | "veg" | "non_veg">("all");
+  const [searchHistory, setSearchHistory] = useState<string[]>([]);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("miiam-search-history");
+    if (saved) setSearchHistory(JSON.parse(saved));
+  }, []);
+
+  const saveSearch = (term: string) => {
+    if (!term.trim()) return;
+    const updated = [term, ...searchHistory.filter(t => t !== term)].slice(0, 10);
+    setSearchHistory(updated);
+    localStorage.setItem("miiam-search-history", JSON.stringify(updated));
+  };
+
+  const clearHistory = () => {
+    setSearchHistory([]);
+    localStorage.removeItem("miiam-search-history");
+  };
 
   useEffect(() => {
     if (!query.trim()) {
       setResults({ vendors: [], menuItems: [] });
       return;
     }
+    saveSearch(query);
     search(query);
   }, [query]);
 
@@ -171,20 +190,38 @@ function SearchContent() {
             </div>
           </div>
         ) : !query ? (
-          <div className="text-center py-16">
-            <span className="text-6xl">🔍</span>
-            <h2 className="text-xl font-bold text-[#4d212a] mt-4">Search for anything</h2>
-            <p className="text-[#814c55] mt-2">Find restaurants, dishes, cuisines</p>
-            <div className="mt-8 flex flex-wrap justify-center gap-2">
-              {["Biryani", "Pizza", "Burgers", "Chinese", "South Indian", "Desserts"].map((tag) => (
-                <Link
-                  key={tag}
-                  href={`/app/search?q=${tag}`}
-                  className="px-4 py-2 bg-white rounded-full text-sm text-[#814c55] border border-[#dd9ca6]/30 hover:border-[#ba001c] transition-all"
-                >
-                  {tag}
-                </Link>
-              ))}
+          <div className="py-8">
+            {searchHistory.length > 0 && (
+              <div className="mb-8">
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="text-lg font-bold text-[#4d212a]">Recent Searches</h2>
+                  <button onClick={clearHistory} className="text-xs text-[#ba001c] font-bold">Clear All</button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {searchHistory.map((term) => (
+                    <Link key={term} href={`/app/search?q=${term}`} className="px-4 py-2 bg-white rounded-full text-sm text-[#814c55] border border-[#dd9ca6]/30 hover:border-[#ba001c] transition-all flex items-center gap-2">
+                      <span className="material-symbols-outlined text-sm">history</span>
+                      {term}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+            <div className="text-center py-8">
+              <span className="text-6xl">🔍</span>
+              <h2 className="text-xl font-bold text-[#4d212a] mt-4">Search for anything</h2>
+              <p className="text-[#814c55] mt-2">Find restaurants, dishes, cuisines</p>
+              <div className="mt-8 flex flex-wrap justify-center gap-2">
+                {["Biryani", "Pizza", "Burgers", "Chinese", "South Indian", "Desserts"].map((tag) => (
+                  <Link
+                    key={tag}
+                    href={`/app/search?q=${tag}`}
+                    className="px-4 py-2 bg-white rounded-full text-sm text-[#814c55] border border-[#dd9ca6]/30 hover:border-[#ba001c] transition-all"
+                  >
+                    {tag}
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
         ) : totalResults === 0 ? (
