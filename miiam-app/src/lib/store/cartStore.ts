@@ -13,6 +13,7 @@ export interface CartItem {
   quantity: number;
   image_url?: string;
   special_notes?: string;
+  is_veg?: boolean;
 }
 
 interface CartStore {
