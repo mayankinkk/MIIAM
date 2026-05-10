@@ -3,6 +3,8 @@
 import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useServiceSettingsStore, ServiceCategory } from "@/lib/store/serviceSettingsStore";
+import ServiceUnavailable from "@/components/ServiceUnavailable";
 
 // ---------- Booking Modal ----------
 type Service = {
@@ -583,9 +585,29 @@ const categoryIdMap: Record<string, string> = {
 function ServicesContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { getSetting } = useServiceSettingsStore();
 
-  // Read ?category= from URL and map to listing category ID
+  // Check individual service categories
   const rawCategory = searchParams.get("category") ?? "all";
+  
+  // Map raw category to our service setting ID
+  const categoryIdMap: Record<string, ServiceCategory> = {
+    "ac": "ac",
+    "cleaning": "cleaning",
+    "plumbing": "plumbing", 
+    "electrical": "electrical",
+    "pest": "pest",
+    "car": "car",
+    "appliance": "appliance",
+  };
+  
+  const mappedCategory = categoryIdMap[rawCategory];
+  if (mappedCategory) {
+    const setting = getSetting(mappedCategory);
+    if (setting && !setting.isEnabled) {
+      return <ServiceUnavailable serviceName={setting.name} message={setting.message} icon={setting.icon} />;
+    }
+  }
   const initialCategory = categoryIdMap[rawCategory] ?? (rawCategory === "all" ? "all" : "all");
 
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
