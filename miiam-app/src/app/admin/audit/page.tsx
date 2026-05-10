@@ -9,7 +9,7 @@ interface AuditLog {
   action: string;
   target_type: string;
   target_id: string;
-  details: Record<string, any>;
+  details: Record<string, unknown>;
   created_at: string;
 }
 
@@ -21,24 +21,28 @@ export default function AuditLogs() {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    loadLogs();
+    async function fetchLogs() {
+      let query = supabase.from("audit_logs").select("*").order("created_at", { ascending: false }).limit(100);
+      
+      if (filter !== "all") {
+        query = query.eq("action", filter);
+      }
+      if (search) {
+        query = query.or(`action.ilike.%${search}%,target_type.ilike.%${search}%`);
+      }
+
+      const { data } = await query;
+      if (data) setLogs(data);
+      setLoading(false);
+    }
+
+    fetchLogs();
+
     const channel = supabase.channel("audit-logs")
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "audit_logs" }, () => loadLogs())
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "audit_logs" }, () => fetchLogs())
       .subscribe();
     return () => { supabase.removeChannel(channel); };
-  }, [supabase, filter]);
-
-  async function loadLogs() {
-    let query = supabase.from("audit_logs").select("*").order("created_at", { ascending: false }).limit(100);
-    
-    if (filter !== "all") {
-      query = query.eq("action", filter);
-    }
-    
-    const { data } = await query;
-    if (data) setLogs(data);
-    setLoading(false);
-  }
+  }, [supabase, filter, search]);
 
   async function exportLogs() {
     const headers = ["Timestamp", "Admin ID", "Action", "Target Type", "Target ID", "Details"];

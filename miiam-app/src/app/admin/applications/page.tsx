@@ -56,10 +56,18 @@ export default function AdminApplicationsPage() {
       .order("created_at", { ascending: false });
     if (data) setApplications(data);
     setLoading(false);
-  };
+  }
 
   useEffect(() => {
-    loadApplications();
+    const fetchApplications = async () => {
+      const { data } = await supabase
+        .from("job_applications")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (data) setApplications(data);
+      setLoading(false);
+    };
+    fetchApplications();
   }, [supabase]);
 
   async function updateStatus(id: string, status: string) {

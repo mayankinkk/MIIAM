@@ -5,25 +5,38 @@ export const dynamic = "force-dynamic";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
+interface InsightUser {
+  id: string;
+  email: string;
+  full_name: string;
+  loyalty_points: number;
+  created_at: string;
+}
+
+interface InsightOrder {
+  id: string;
+  user_id: string;
+  placed_at: string;
+}
+
 export default function CustomerInsights() {
   const supabase = createClient();
-  const [users, setUsers] = useState<any[]>([]);
-  const [orders, setOrders] = useState<any[]>([]);
+  const [users, setUsers] = useState<InsightUser[]>([]);
+  const [orders, setOrders] = useState<InsightOrder[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadData();
+    async function fetchData() {
+      const [usersRes, ordersRes] = await Promise.all([
+        supabase.from("profiles").select("*"),
+        supabase.from("orders").select("id, user_id, placed_at")
+      ]);
+      if (usersRes.data) setUsers(usersRes.data);
+      if (ordersRes.data) setOrders(ordersRes.data);
+      setLoading(false);
+    }
+    fetchData();
   }, [supabase]);
-
-  async function loadData() {
-    const [usersRes, ordersRes] = await Promise.all([
-      supabase.from("profiles").select("*"),
-      supabase.from("orders").select("*, user:user_id(*)")
-    ]);
-    if (usersRes.data) setUsers(usersRes.data);
-    if (ordersRes.data) setOrders(ordersRes.data);
-    setLoading(false);
-  }
 
   // User metrics
   const newUsersThisMonth = users.filter(u => {

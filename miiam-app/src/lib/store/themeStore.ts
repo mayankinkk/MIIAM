@@ -3,18 +3,26 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+type Theme = "light" | "dark" | "system";
+
 interface ThemeStore {
-  isDarkMode: boolean;
-  toggleDarkMode: () => void;
-  setDarkMode: (value: boolean) => void;
+  theme: Theme;
+  setTheme: (theme: Theme) => void;
 }
 
 export const useThemeStore = create<ThemeStore>()(
   persist(
     (set) => ({
-      isDarkMode: false,
-      toggleDarkMode: () => set((state) => ({ isDarkMode: !state.isDarkMode })),
-      setDarkMode: (value: boolean) => set({ isDarkMode: value }),
+      theme: "light",
+      setTheme: (theme) => {
+        set({ theme });
+        const root = document.documentElement;
+        if (theme === "dark") {
+          root.classList.add("dark");
+        } else {
+          root.classList.remove("dark");
+        }
+      },
     }),
     { name: "miiam-theme" }
   )

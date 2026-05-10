@@ -4,56 +4,82 @@ export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import Link from "next/link";
+
+interface AnalyticsOrder {
+  id: string;
+  status: string;
+  total_amount: number;
+  delivery_fee: number;
+  discount_amount: number;
+  placed_at: string;
+  vendor?: { name: string };
+  rider?: { name: string };
+}
+
+interface AnalyticsUser {
+  id: string;
+  created_at: string;
+}
+
+interface AnalyticsVendor {
+  id: string;
+  name: string;
+  is_active: boolean;
+  created_at: string;
+}
+
+interface AnalyticsRider {
+  id: string;
+  name: string;
+  is_online: boolean;
+  earnings: number;
+}
 
 export default function AdvancedAnalytics() {
   const supabase = createClient();
-  const [orders, setOrders] = useState<any[]>([]);
-  const [users, setUsers] = useState<any[]>([]);
-  const [vendors, setVendors] = useState<any[]>([]);
-  const [riders, setRiders] = useState<any[]>([]);
+  const [orders, setOrders] = useState<AnalyticsOrder[]>([]);
+  const [users, setUsers] = useState<AnalyticsUser[]>([]);
+  const [vendors, setVendors] = useState<AnalyticsVendor[]>([]);
+  const [riders, setRiders] = useState<AnalyticsRider[]>([]);
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState<"7d" | "30d" | "90d">("30d");
   const [activeTab, setActiveTab] = useState<"overview" | "orders" | "users" | "vendors" | "riders" | "reports">("overview");
 
   useEffect(() => {
+    async function loadData() {
+      setLoading(true);
+      const days = period === "7d" ? 7 : period === "30d" ? 30 : 90;
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - days);
+
+      const [ordersRes, usersRes, vendorsRes, ridersRes] = await Promise.all([
+        supabase
+          .from("orders")
+          .select("*, vendor:vendors(name), rider:riders(name)")
+          .gte("placed_at", startDate.toISOString())
+          .order("placed_at", { ascending: true }),
+        supabase
+          .from("users")
+          .select("id, created_at")
+          .gte("created_at", startDate.toISOString()),
+        supabase
+          .from("vendors")
+          .select("id, name, is_active, created_at"),
+        supabase
+          .from("riders")
+          .select("id, name, is_online, earnings"),
+      ]);
+
+      if (ordersRes.data) setOrders(ordersRes.data);
+      if (usersRes.data) setUsers(usersRes.data);
+      if (vendorsRes.data) setVendors(vendorsRes.data);
+      if (ridersRes.data) setRiders(ridersRes.data);
+      setLoading(false);
+    }
     loadData();
   }, [period, supabase]);
 
-  async function loadData() {
-    setLoading(true);
-    const days = period === "7d" ? 7 : period === "30d" ? 30 : 90;
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - days);
-
-    const [ordersRes, usersRes, vendorsRes, ridersRes] = await Promise.all([
-      supabase
-        .from("orders")
-        .select("*, vendor:vendors(name), rider:riders(name)")
-        .gte("placed_at", startDate.toISOString())
-        .order("placed_at", { ascending: true }),
-      supabase
-        .from("users")
-        .select("id, created_at")
-        .gte("created_at", startDate.toISOString()),
-      supabase
-        .from("vendors")
-        .select("id, name, is_active, created_at"),
-      supabase
-        .from("riders")
-        .select("id, name, is_online, earnings"),
-    ]);
-
-    if (ordersRes.data) setOrders(ordersRes.data);
-    if (usersRes.data) setUsers(usersRes.data);
-    if (vendorsRes.data) setVendors(vendorsRes.data);
-    if (ridersRes.data) setRiders(ridersRes.data);
-    setLoading(false);
-  }
-
   const totalRevenue = orders.reduce((s, o) => s + (o.total_amount || 0), 0);
-  const totalDeliveryFee = orders.reduce((s, o) => s + (o.delivery_fee || 0), 0);
-  const totalDiscount = orders.reduce((s, o) => s + (o.discount_amount || 0), 0);
   const orderCount = orders.length;
   const avgOrderValue = orderCount ? totalRevenue / orderCount : 0;
 
