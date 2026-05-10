@@ -14,6 +14,7 @@ export default function VendorPage() {
   const supabase = createClient();
   const [vendor, setVendor] = useState<any>(null);
   const [menuItems, setMenuItems] = useState<any[]>([]);
+  const [reviews, setReviews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState("All");
   const [vegFilter, setVegFilter] = useState<"all" | "veg" | "non_veg">("all");
@@ -36,6 +37,16 @@ export default function VendorPage() {
         .eq("vendor_id", vendorId);
 
       if (menuData) setMenuItems(menuData);
+
+      // Load reviews
+      const { data: reviewsData } = await supabase
+        .from("reviews")
+        .select("*, profile:profiles(full_name, avatar_url)")
+        .eq("vendor_id", vendorId)
+        .order("created_at", { ascending: false })
+        .limit(10);
+
+      if (reviewsData) setReviews(reviewsData);
       setLoading(false);
     }
     loadData();
@@ -126,6 +137,60 @@ const handleCustomizeItem = (item: any) => {
           )}
         </div>
       </div>
+
+      {/* Reviews Section */}
+      {reviews.length > 0 && (
+        <div className="bg-white border-b border-slate-100 px-4 py-4">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-bold text-slate-800">Customer Reviews</h2>
+            <Link href={`/app/vendor/${vendorId}/reviews`} className="text-sm text-[#ba001c] font-bold">
+              See All
+            </Link>
+          </div>
+          <div className="space-y-3">
+            {reviews.slice(0, 3).map((review: any) => (
+              <div key={review.id} className="bg-slate-50 rounded-xl p-3">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-8 h-8 bg-[#ba001c] text-white rounded-full flex items-center justify-center text-xs font-bold">
+                    {review.profile?.full_name?.[0] || "U"}
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-slate-800">{review.profile?.full_name || "User"}</p>
+                    <div className="flex items-center gap-1">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <span
+                          key={star}
+                          className={`material-symbols-outlined text-sm ${
+                            star <= review.rating ? "text-[#ba001c]" : "text-slate-300"
+                          }`}
+                          style={{ fontVariationSettings: `'FILL' ${star <= review.rating ? 1 : 0}` }}
+                        >
+                          star
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <span className="text-xs text-slate-400 ml-auto">
+                    {new Date(review.created_at).toLocaleDateString()}
+                  </span>
+                </div>
+                {review.review_text && (
+                  <p className="text-sm text-slate-600">{review.review_text}</p>
+                )}
+                {review.tags && review.tags.length > 0 && (
+                  <div className="flex gap-2 mt-2">
+                    {review.tags.map((tag: string) => (
+                      <span key={tag} className="text-xs bg-slate-200 text-slate-600 px-2 py-1 rounded-full">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Restaurant Details */}
       <div className="bg-white border-b border-slate-100 px-4 py-4">
