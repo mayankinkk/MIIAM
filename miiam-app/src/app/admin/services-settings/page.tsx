@@ -3,10 +3,31 @@
 import { useState } from "react";
 import { useServiceSettingsStore, ServiceCategory } from "@/lib/store/serviceSettingsStore";
 
+const defaultSettings = [
+  { id: "food", name: "Food Delivery", isEnabled: true, message: "Food delivery is currently under maintenance", icon: "restaurant" },
+  { id: "grocery", name: "Grocery", isEnabled: true, message: "Grocery service is coming soon!", icon: "shopping_cart" },
+  { id: "pharmacy", name: "Pharmacy", isEnabled: true, message: "Pharmacy service is under maintenance", icon: "medication" },
+  { id: "flowers", name: "Flowers", isEnabled: true, message: "Flower delivery is coming soon!", icon: "local_florist" },
+  { id: "ac", name: "AC Repair", isEnabled: true, message: "AC repair service is under maintenance", icon: "ac_unit" },
+  { id: "cleaning", name: "Home Cleaning", isEnabled: true, message: "Home cleaning service is coming soon!", icon: "cleaning_services" },
+  { id: "plumbing", name: "Plumbing", isEnabled: true, message: "Plumbing service is under maintenance", icon: "plumbing" },
+  { id: "electrical", name: "Electrical", isEnabled: true, message: "Electrical service is coming soon!", icon: "electrical_services" },
+  { id: "pest", name: "Pest Control", isEnabled: true, message: "Pest control service is under maintenance", icon: "pest_control" },
+  { id: "car", name: "Car Repair", isEnabled: true, message: "Car repair service is coming soon!", icon: "directions_car" },
+  { id: "appliance", name: "Appliance Repair", isEnabled: true, message: "Appliance repair is under maintenance", icon: "kitchen" },
+];
+
 export default function ServiceSettingsPage() {
   const { settings, updateSetting } = useServiceSettingsStore();
   const [editingId, setEditingId] = useState<ServiceCategory | null>(null);
   const [tempMessage, setTempMessage] = useState("");
+
+  const handleReset = () => {
+    if (confirm("Reset all settings to defaults? This will clear all custom messages.")) {
+      localStorage.removeItem("miiam-service-settings");
+      window.location.reload();
+    }
+  };
 
   const handleToggle = (id: ServiceCategory) => {
     const setting = settings.find((s) => s.id === id);
@@ -30,6 +51,12 @@ export default function ServiceSettingsPage() {
         <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Service Settings</h1>
         <p className="text-slate-500 mt-1">Control which services are available to users</p>
       </div>
+      <button
+        onClick={handleReset}
+        className="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-sm font-bold hover:bg-slate-200"
+      >
+        Reset to Defaults
+      </button>
 
       <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
         <div className="p-4 border-b border-slate-100 bg-slate-50">
