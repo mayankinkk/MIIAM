@@ -30,7 +30,7 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
 
       const data = orderData;
       if (data && data.vendor_id) {
-        const { data: vendorData } = await supabase.from("vendors").select("name").eq("id", data.vendor_id).single();
+        const { data: vendorData } = await supabase.from("vendors").select("shop_name").eq("id", data.vendor_id).single();
         data.vendor = vendorData;
       }
 

@@ -29,7 +29,7 @@ export default function AdminFoodsDashboard() {
 
   async function loadData() {
     setLoading(true);
-    const { data: vendorsData } = await supabase.from("vendors").select("id, shop_name, name");
+    const { data: vendorsData } = await supabase.from("vendors").select("id, shop_name");
     if (vendorsData) setVendors(vendorsData);
 
     let query = supabase

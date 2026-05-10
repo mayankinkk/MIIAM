@@ -41,7 +41,7 @@ export default function AdminMenuItemsPage() {
 
   async function loadData() {
     setLoading(true);
-    const { data: vendorsData } = await supabase.from("vendors").select("id, shop_name, name");
+    const { data: vendorsData } = await supabase.from("vendors").select("id, shop_name");
     if (vendorsData) setVendors(vendorsData);
 
     const { data } = await supabase
