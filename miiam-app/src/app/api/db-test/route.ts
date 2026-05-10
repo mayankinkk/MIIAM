@@ -8,7 +8,7 @@ export async function GET() {
     // Test 1: Check vendors table
     const { data: vendors, error: vendorsError } = await supabase
       .from("vendors")
-      .select("id, name")
+      .select("id, shop_name")
       .limit(3);
 
     // Test 2: Check users table
