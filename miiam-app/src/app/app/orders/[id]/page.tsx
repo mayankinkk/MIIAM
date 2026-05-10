@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState, useEffect } from "react";
+import { use, useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -268,6 +268,12 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
               </div>
             </div>
 
+            {order?.status === "picking_up" || order?.status === "on_the_way" ? (
+              <div className="relative h-64 rounded-xl overflow-hidden shadow-lg">
+                <LiveMapTracker orderId={id} riderLocation={riderLocation} />
+              </div>
+            ) : null}
+
             <div className="relative bg-white rounded-xl p-6 shadow-[0px_20px_40px_rgba(77,33,42,0.04)] overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-[#c4d0ff]/20 rounded-full -mr-16 -mt-16 blur-2xl" />
               <div className="flex items-center gap-6 relative z-10">
@@ -441,4 +447,71 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
       </main>
     </div>
   );
+}
+
+function LiveMapTracker({ orderId, riderLocation }: { orderId: string; riderLocation: { lat: number; lng: number } | null }) {
+  const mapRef = useRef<HTMLDivElement>(null);
+  const mapInstanceRef = useRef<any>(null);
+  const riderMarkerRef = useRef<any>(null);
+  const supabase = createClient();
+
+  useEffect(() => {
+    if (!mapRef.current) return;
+
+    let L: any;
+    let map: any;
+
+    async function initMap() {
+      L = await import('leaflet');
+      await import('leaflet/dist/leaflet.css');
+
+      const defaultLat = riderLocation?.lat || 28.6139;
+      const defaultLng = riderLocation?.lng || 77.2090;
+
+      map = L.map(mapRef.current!).setView([defaultLat, defaultLng], 15);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap',
+      }).addTo(map);
+
+      const riderIcon = L.divIcon({
+        className: 'rider-marker',
+        html: `<div style="background:#0b50d5;width:32px;height:32px;border-radius:50%;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;"><span style="color:white;font-size:16px;">🛵</span></div>`,
+        iconSize: [32, 32],
+        iconAnchor: [16, 16],
+      });
+
+      riderMarkerRef.current = L.marker([defaultLat, defaultLng], { icon: riderIcon }).addTo(map);
+
+      mapInstanceRef.current = map;
+    }
+
+    initMap();
+
+    const channel = supabase
+      .channel(`live-map-${orderId}`)
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'rider_locations',
+        filter: `order_id=eq.${orderId}`,
+      }, (payload: any) => {
+        if (payload.new?.lat && payload.new?.lng && riderMarkerRef.current) {
+          riderMarkerRef.current.setLatLng([payload.new.lat, payload.new.lng]);
+          mapInstanceRef.current?.setView([payload.new.lat, payload.new.lng], 15, { animate: true });
+        }
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+      mapInstanceRef.current?.remove();
+    };
+  }, [orderId, supabase]);
+
+  if (riderLocation && riderMarkerRef.current) {
+    riderMarkerRef.current.setLatLng([riderLocation.lat, riderLocation.lng]);
+  }
+
+  return <div ref={mapRef} className="w-full h-full" />;
 }

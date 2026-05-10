@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { requestFcmToken, onForegroundMessage, getFirebaseMessaging } from "@/lib/firebase/messaging";
+import { requestFcmToken, onForegroundMessage } from "@/lib/firebase/messaging";
 import { useNotificationStore, showLocalNotification } from "@/lib/store/notificationStore";
 
 export function usePushNotifications(userId?: string) {
