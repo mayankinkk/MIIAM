@@ -27,7 +27,7 @@ export default function ReviewsPage() {
   }, [supabase, filter]);
 
   async function loadReviews() {
-    let query = supabase.from("reviews").select("*, profile:profiles(full_name)").order("created_at", { ascending: false });
+    const query = supabase.from("reviews").select("*, profile:profiles(full_name)").order("created_at", { ascending: false });
     const { data } = await query;
     if (data) setReviews(data);
     setLoading(false);

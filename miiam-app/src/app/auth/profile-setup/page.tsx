@@ -41,7 +41,7 @@ function ProfileSetupContent() {
   const handleComplete = async () => {
     setLoading(true);
     try {
-      let { data: { session } } = await supabase.auth.getSession();
+      const { data: { session } } = await supabase.auth.getSession();
       
       let user = session?.user;
       

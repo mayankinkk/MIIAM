@@ -28,7 +28,7 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
         .eq("user_id", user.id)
         .single();
 
-      let data = orderData;
+      const data = orderData;
       if (data && data.vendor_id) {
         const { data: vendorData } = await supabase.from("vendors").select("name").eq("id", data.vendor_id).single();
         data.vendor = vendorData;

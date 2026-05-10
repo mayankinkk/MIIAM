@@ -23,14 +23,13 @@ export default function BannerManagement() {
   const [newBanner, setNewBanner] = useState({ title: "", image_url: "", link_url: "" });
 
   useEffect(() => {
+    async function loadBanners() {
+      const { data } = await supabase.from("banners").select("*").order("position");
+      if (data) setBanners(data);
+      setLoading(false);
+    }
     loadBanners();
   }, [supabase]);
-
-  async function loadBanners() {
-    const { data } = await supabase.from("banners").select("*").order("position");
-    if (data) setBanners(data);
-    setLoading(false);
-  }
 
   async function addBanner() {
     if (!newBanner.title || !newBanner.image_url) return;
