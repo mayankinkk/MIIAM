@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cartStore";
+import { useServiceSettingsStore } from "@/lib/store/serviceSettingsStore";
+import ServiceUnavailable from "@/components/ServiceUnavailable";
 
 const supabase = createClient();
 
@@ -25,6 +27,13 @@ const flowerCategories = [
 ];
 
 export default function FlowersPage() {
+  const { getSetting } = useServiceSettingsStore();
+  const flowersSetting = getSetting("flowers");
+
+  if (flowersSetting && !flowersSetting.isEnabled) {
+    return <ServiceUnavailable serviceName="Flowers" message={flowersSetting.message} icon="local_florist" />;
+  }
+
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [flowers, setFlowers] = useState<Flower[]>([]);
   const [loading, setLoading] = useState(true);

@@ -4,6 +4,8 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cartStore";
+import { useServiceSettingsStore } from "@/lib/store/serviceSettingsStore";
+import ServiceUnavailable from "@/components/ServiceUnavailable";
 
 const supabase = createClient();
 
@@ -26,6 +28,13 @@ interface Medicine {
 }
 
 export default function PharmacyPage() {
+  const { getSetting } = useServiceSettingsStore();
+  const pharmacySetting = getSetting("pharmacy");
+
+  if (pharmacySetting && !pharmacySetting.isEnabled) {
+    return <ServiceUnavailable serviceName="Pharmacy" message={pharmacySetting.message} icon="medication" />;
+  }
+
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [medicines, setMedicines] = useState<Medicine[]>([]);
   const [loading, setLoading] = useState(true);

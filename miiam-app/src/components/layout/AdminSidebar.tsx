@@ -91,6 +91,7 @@ const menuGroups = [
       { name: "Notifications", href: "/admin/notifications", icon: "notifications" },
       { name: "Reports", href: "/admin/reports", icon: "description" },
       { name: "Audit Logs", href: "/admin/audit", icon: "fact_check" },
+      { name: "Service Toggles", href: "/admin/services-settings", icon: "toggle_on" },
       { name: "Settings", href: "/admin/settings", icon: "settings" },
     ],
   },

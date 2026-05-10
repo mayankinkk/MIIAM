@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/lib/store/cartStore";
+import { useServiceSettingsStore } from "@/lib/store/serviceSettingsStore";
+import ServiceUnavailable from "@/components/ServiceUnavailable";
 import { createClient } from "@/lib/supabase/client";
 
 const supabase = createClient();
@@ -162,6 +164,13 @@ function CartFloater() {
 }
 
 export default function FoodPage() {
+  const { isServiceEnabled, getSetting } = useServiceSettingsStore();
+  const foodSetting = getSetting("food");
+
+  if (foodSetting && !foodSetting.isEnabled) {
+    return <ServiceUnavailable serviceName="Food Delivery" message={foodSetting.message} icon="restaurant" />;
+  }
+
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [vegFilter, setVegFilter] = useState<"all" | "veg" | "non_veg">("all");
   const [sortBy, setSortBy] = useState<SortOption>("rating");

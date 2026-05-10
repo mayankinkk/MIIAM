@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useCartStore } from "@/lib/store/cartStore";
+import { useServiceSettingsStore } from "@/lib/store/serviceSettingsStore";
+import ServiceUnavailable from "@/components/ServiceUnavailable";
 
 const categories = [
   { id: "salon", label: "Salon at Home", icon: "content_cut", color: "from-pink-500 to-pink-400", emoji: "💇‍♀️" },
@@ -85,6 +87,13 @@ function getNextDays(n: number) {
 const timeSlots = ["09:00 AM", "11:00 AM", "01:00 PM", "03:00 PM", "05:00 PM", "07:00 PM"];
 
 export default function BeautyPage() {
+  const { getSetting } = useServiceSettingsStore();
+  const beautySetting = getSetting("beauty");
+
+  if (beautySetting && !beautySetting.isEnabled) {
+    return <ServiceUnavailable serviceName="Beauty & Wellness" message={beautySetting.message} icon="spa" />;
+  }
+
   const [activeCategory, setActiveCategory] = useState("salon");
   const [bookingService, setBookingService] = useState<any>(null);
   const [selectedDate, setSelectedDate] = useState(0);
