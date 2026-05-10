@@ -338,6 +338,14 @@ export default function RiderOrdersPage() {
           created_at: new Date().toISOString(),
         });
 
+        // Browser notification
+        if (typeof window !== "undefined" && Notification.permission === "granted") {
+          new Notification("Order On The Way! 🚴", {
+            body: "Your rider has picked up your order and is heading to you",
+            icon: "/icon.png",
+          });
+        }
+
         await supabase.from("rider_locations").insert({
           order_id: orderId,
           rider_id: user.id,
