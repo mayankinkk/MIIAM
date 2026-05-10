@@ -30,16 +30,15 @@ const groceryCategories = [
 
 export default function GroceryPage() {
   const { getSetting } = useServiceSettingsStore();
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { addItem, totalItems } = useCartStore();
   const grocerySetting = getSetting("grocery");
 
   if (grocerySetting && !grocerySetting.isEnabled) {
     return <ServiceUnavailable serviceName="Grocery" message={grocerySetting.message} icon="shopping_cart" />;
   }
-
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const { addItem, totalItems } = useCartStore();
 
   useEffect(() => {
     fetchProducts();

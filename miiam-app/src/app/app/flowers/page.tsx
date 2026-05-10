@@ -28,16 +28,15 @@ const flowerCategories = [
 
 export default function FlowersPage() {
   const { getSetting } = useServiceSettingsStore();
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [flowers, setFlowers] = useState<Flower[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { addItem, items, updateQuantity, totalItems } = useCartStore();
   const flowersSetting = getSetting("flowers");
 
   if (flowersSetting && !flowersSetting.isEnabled) {
     return <ServiceUnavailable serviceName="Flowers" message={flowersSetting.message} icon="local_florist" />;
   }
-
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const [flowers, setFlowers] = useState<Flower[]>([]);
-  const [loading, setLoading] = useState(true);
-  const { addItem, items, updateQuantity, totalItems } = useCartStore();
 
   useEffect(() => {
     fetchFlowers();

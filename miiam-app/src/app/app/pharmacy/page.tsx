@@ -29,12 +29,6 @@ interface Medicine {
 
 export default function PharmacyPage() {
   const { getSetting } = useServiceSettingsStore();
-  const pharmacySetting = getSetting("pharmacy");
-
-  if (pharmacySetting && !pharmacySetting.isEnabled) {
-    return <ServiceUnavailable serviceName="Pharmacy" message={pharmacySetting.message} icon="medication" />;
-  }
-
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [medicines, setMedicines] = useState<Medicine[]>([]);
   const [loading, setLoading] = useState(true);
@@ -45,6 +39,11 @@ export default function PharmacyPage() {
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { addItem, totalItems } = useCartStore();
+  const pharmacySetting = getSetting("pharmacy");
+
+  if (pharmacySetting && !pharmacySetting.isEnabled) {
+    return <ServiceUnavailable serviceName="Pharmacy" message={pharmacySetting.message} icon="medication" />;
+  }
 
   useEffect(() => {
     fetchMedicines();

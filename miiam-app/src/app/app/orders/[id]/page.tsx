@@ -509,9 +509,5 @@ function LiveMapTracker({ orderId, riderLocation }: { orderId: string; riderLoca
     };
   }, [orderId, supabase]);
 
-  if (riderLocation && riderMarkerRef.current) {
-    riderMarkerRef.current.setLatLng([riderLocation.lat, riderLocation.lng]);
-  }
-
   return <div ref={mapRef} className="w-full h-full" />;
 }

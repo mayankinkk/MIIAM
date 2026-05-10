@@ -88,13 +88,12 @@ const timeSlots = ["09:00 AM", "11:00 AM", "01:00 PM", "03:00 PM", "05:00 PM", "
 
 export default function BeautyPage() {
   const { getSetting } = useServiceSettingsStore();
+  const [activeCategory, setActiveCategory] = useState("salon");
   const beautySetting = getSetting("beauty");
 
   if (beautySetting && !beautySetting.isEnabled) {
     return <ServiceUnavailable serviceName="Beauty & Wellness" message={beautySetting.message} icon="spa" />;
   }
-
-  const [activeCategory, setActiveCategory] = useState("salon");
   const [bookingService, setBookingService] = useState<any>(null);
   const [selectedDate, setSelectedDate] = useState(0);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);

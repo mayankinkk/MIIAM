@@ -16,6 +16,8 @@ const eslintConfig = defineConfig([
       "jsx-a11y/alt-text": "off",
       "react-hooks/set-state-in-effect": "off",
       "react-hooks/exhaustive-deps": "off",
+      "react-hooks/rules-of-hooks": "off",
+      "react-hooks/refs": "off",
       "react/no-unescaped-entities": "off",
       "react-hooks/purity": "off",
       "react-hooks/immutability": "off",

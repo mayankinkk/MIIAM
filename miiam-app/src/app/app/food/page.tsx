@@ -164,13 +164,7 @@ function CartFloater() {
 }
 
 export default function FoodPage() {
-  const { isServiceEnabled, getSetting } = useServiceSettingsStore();
-  const foodSetting = getSetting("food");
-
-  if (foodSetting && !foodSetting.isEnabled) {
-    return <ServiceUnavailable serviceName="Food Delivery" message={foodSetting.message} icon="restaurant" />;
-  }
-
+  const { getSetting } = useServiceSettingsStore();
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [vegFilter, setVegFilter] = useState<"all" | "veg" | "non_veg">("all");
   const [sortBy, setSortBy] = useState<SortOption>("rating");
@@ -181,6 +175,11 @@ export default function FoodPage() {
   const [menuItems, setMenuItems] = useState<any[]>([]);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
+  const foodSetting = getSetting("food");
+
+  if (foodSetting && !foodSetting.isEnabled) {
+    return <ServiceUnavailable serviceName="Food Delivery" message={foodSetting.message} icon="restaurant" />;
+  }
 
   useEffect(() => {
     fetchData();

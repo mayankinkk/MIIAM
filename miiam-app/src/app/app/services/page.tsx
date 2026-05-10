@@ -602,12 +602,6 @@ function ServicesContent() {
   };
   
   const mappedCategory = categoryIdMap[rawCategory];
-  if (mappedCategory) {
-    const setting = getSetting(mappedCategory);
-    if (setting && !setting.isEnabled) {
-      return <ServiceUnavailable serviceName={setting.name} message={setting.message} icon={setting.icon} />;
-    }
-  }
   const initialCategory = categoryIdMap[rawCategory] ?? (rawCategory === "all" ? "all" : "all");
 
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
@@ -619,6 +613,14 @@ function ServicesContent() {
     const mapped = categoryIdMap[raw] ?? "all";
     setSelectedCategory(mapped);
   }, [searchParams]);
+
+  // Check service availability after hooks
+  if (mappedCategory) {
+    const setting = getSetting(mappedCategory);
+    if (setting && !setting.isEnabled) {
+      return <ServiceUnavailable serviceName={setting.name} message={setting.message} icon={setting.icon} />;
+    }
+  }
 
   const filteredServices = selectedCategory === "all"
     ? services
