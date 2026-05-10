@@ -1,12 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-
-const ratingCategories = [
-  { id: "food", label: "Rate Food & Packaging", vendor: "The Burger Project", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBZAFUyMJ1Yjnc2nFqrgxrlBN71Qp0W720WOL9IeQPItwjkmrPRJ7ixuioPYvFZ5YHMzxpMln55UtLNFA7xaw5Saj_Fpx4ICLbxMn83ouJmkQu1AvMoZuFER-jEtQMP40PtZMiHfECS1kJ4Cl5ABD364du1_S8DG2hsiu1bG-HyGxPX-20PldSosrSsWAJigS9GsxJuTqT9NtEtl2DRJtmd2Y9VFWnGR7AdIodaKo2GLvWFPSlSOag36Z_uPtrv74MnitQXMfY2Gew" },
-  { id: "rider", label: "Rate Delivery Service", rider: "David Miller", riderImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuDwQCjB6ppgdCg3zaMieMRydFwvPXFwa_4rOhmebKtVFMaCwEjJVPfFQ2nJtinpsQV3uvEnS4Hzjn4UKf99BftcBRKtCXYyvNvD9AGTC5-_PJVHc1rqKXIamEtkpYvEl8yiaVHuuSC_mDnIpdVXuJJitLhsxlbrMPFtV3qsrhn98n-yzBC1TLzuoLCHbd_alvLkSM_TWUGYOnR8uBjkjViO39G5Vi0e3LWHWWzSI-ZhW2hwdZeCl0WTemp0sJ0eWbORRYedfAt6Uo4" },
-];
+import { useState, useEffect } from "react";
+import { useRouter, use } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 
 const feedbackTags = [
   "Fast Delivery",
@@ -19,8 +15,12 @@ const feedbackTags = [
   "Careful Handling",
 ];
 
-export default function RatingReviewPage() {
+export default function RatingReviewPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const router = useRouter();
+  const supabase = createClient();
+  const [loading, setLoading] = useState(true);
+  const [order, setOrder] = useState<any>(null);
   const [foodRating, setFoodRating] = useState(0);
   const [riderRating, setRiderRating] = useState(0);
   const [hoverFood, setHoverFood] = useState(0);
@@ -29,11 +29,62 @@ export default function RatingReviewPage() {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = () => {
-    setSubmitted(true);
-    setTimeout(() => {
-      router.push("/app/orders");
-    }, 2000);
+  useEffect(() => {
+    async function loadOrder() {
+      const { data: orderData } = await supabase
+        .from("orders")
+        .select("*, vendor:vendors(name, image_url), rider:riders(name, profile_image)")
+        .eq("id", id)
+        .single();
+      
+      if (orderData) setOrder(orderData);
+      setLoading(false);
+    }
+    loadOrder();
+  }, [id, supabase]);
+
+  const handleSubmit = async () => {
+    if (!order) return;
+
+    try {
+      // Save rating to reviews table
+      if (foodRating > 0) {
+        await supabase.from("reviews").insert({
+          order_id: id,
+          user_id: order.user_id,
+          vendor_id: order.vendor_id,
+          rating: foodRating,
+          review_text: feedback,
+          tags: selectedTags,
+          type: "food",
+        });
+      }
+
+      // Update rider rating
+      if (riderRating > 0 && order.rider_id) {
+        const { data: rider } = await supabase
+          .from("riders")
+          .select("rating, total_ratings")
+          .eq("id", order.rider_id)
+          .single();
+        
+        if (rider) {
+          const newRating = ((rider.rating || 0) * (rider.total_ratings || 0) + riderRating) / ((rider.total_ratings || 0) + 1);
+          await supabase.from("riders").update({ 
+            rating: Math.round(newRating * 10) / 10,
+            total_ratings: (rider.total_ratings || 0) + 1
+          }).eq("id", order.rider_id);
+        }
+      }
+
+      // Mark order as rated
+      await supabase.from("orders").update({ rating_submitted: true }).eq("id", id);
+
+      setSubmitted(true);
+      setTimeout(() => router.push("/app/orders"), 2000);
+    } catch (err) {
+      console.error("Error submitting rating:", err);
+    }
   };
 
   const toggleTag = (tag: string) => {
@@ -41,6 +92,14 @@ export default function RatingReviewPage() {
       prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
     );
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   if (submitted) {
     return (
@@ -81,11 +140,15 @@ export default function RatingReviewPage() {
         <section className="bg-white rounded-xl p-8 shadow-[0px_20px_40px_rgba(77,33,42,0.04)] space-y-6">
           <div className="flex flex-col items-center gap-4">
             <div className="w-24 h-24 rounded-full overflow-hidden bg-[#ffe1e4]">
-              <img alt="Restaurant" className="w-full h-full object-cover" src={ratingCategories[0].image} />
+              <img 
+                alt="Restaurant" 
+                className="w-full h-full object-cover" 
+                src={order?.vendor?.image_url || "https://via.placeholder.com/100"} 
+              />
             </div>
             <div className="text-center">
-              <h2 className="text-xl font-bold tracking-tight">{ratingCategories[0].vendor}</h2>
-              <p className="text-sm text-[#814c55]">{ratingCategories[0].label}</p>
+              <h2 className="text-xl font-bold tracking-tight">{order?.vendor?.name || "Restaurant"}</h2>
+              <p className="text-sm text-[#814c55]">Rate Food & Packaging</p>
             </div>
             <div className="flex gap-2">
               {[1, 2, 3, 4, 5].map((star) => (
@@ -114,15 +177,19 @@ export default function RatingReviewPage() {
           <div className="flex flex-col items-center gap-4">
             <div className="relative">
               <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-[#ffe1e4]">
-                <img alt="Rider" className="w-full h-full object-cover" src={ratingCategories[1].riderImage} />
+                <img 
+                  alt="Rider" 
+                  className="w-full h-full object-cover" 
+                  src={order?.rider?.profile_image || "https://via.placeholder.com/80"} 
+                />
               </div>
               <div className="absolute -bottom-2 -right-2 bg-[#0b50d5] text-white rounded-full p-1.5 shadow-md">
                 <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>electric_moped</span>
               </div>
             </div>
             <div className="text-center">
-              <h2 className="text-xl font-bold tracking-tight">{ratingCategories[1].rider}</h2>
-              <p className="text-sm text-[#814c55]">{ratingCategories[1].label}</p>
+              <h2 className="text-xl font-bold tracking-tight">{order?.rider?.name || "Delivery Partner"}</h2>
+              <p className="text-sm text-[#814c55]">Rate Delivery Service</p>
             </div>
             <div className="flex gap-2">
               {[1, 2, 3, 4, 5].map((star) => (
