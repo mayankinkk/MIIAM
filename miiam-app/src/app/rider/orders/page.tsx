@@ -137,6 +137,22 @@ export default function RiderOrdersPage() {
           }
         }
       })
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'orders',
+      }, (payload) => {
+        const updatedOrder = payload.new as { id: string; status: string };
+        setOrders(prev => prev.map(o => o.id === updatedOrder.id ? { ...o, status: updatedOrder.status } : o));
+      })
+      .on('postgres_changes', {
+        event: 'DELETE',
+        schema: 'public',
+        table: 'orders',
+      }, (payload) => {
+        const deletedOrder = payload.old as { id: string };
+        setOrders(prev => prev.filter(o => o.id !== deletedOrder.id));
+      })
       .subscribe();
 
     return () => {

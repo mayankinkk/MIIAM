@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
 
 interface DailyStats {
   day: string;
@@ -11,33 +12,10 @@ interface DailyStats {
   time: string;
 }
 
-const weeklyData: DailyStats[] = [
-  { day: "Mon", deliveries: 8, earnings: 420, rating: 4.8, time: "6h 20m" },
-  { day: "Tue", deliveries: 12, earnings: 680, rating: 4.9, time: "8h 15m" },
-  { day: "Wed", deliveries: 6, earnings: 290, rating: 4.7, time: "4h 45m" },
-  { day: "Thu", deliveries: 15, earnings: 850, rating: 4.9, time: "9h 30m" },
-  { day: "Fri", deliveries: 10, earnings: 520, rating: 4.8, time: "7h 00m" },
-  { day: "Sat", deliveries: 18, earnings: 1020, rating: 4.9, time: "10h 15m" },
-  { day: "Sun", deliveries: 14, earnings: 760, rating: 4.8, time: "8h 45m" },
-];
-
-const monthlyData = [
-  { week: "Week 1", deliveries: 45, earnings: 2400 },
-  { week: "Week 2", deliveries: 52, earnings: 2800 },
-  { week: "Week 3", deliveries: 38, earnings: 1950 },
-  { week: "Week 4", deliveries: 60, earnings: 3200 },
-];
-
 const feedbackData = [
   { type: "positive", count: 156, label: "Great Service", icon: "thumb_up" },
   { type: "neutral", count: 28, label: "Average", icon: "remove" },
   { type: "negative", count: 6, label: "Issues", icon: "thumb_down" },
-];
-
-const orderTypeData = [
-  { type: "Food", percentage: 65, earnings: 6500 },
-  { type: "Grocery", percentage: 25, earnings: 2500 },
-  { type: "Pharmacy", percentage: 10, earnings: 1000 },
 ];
 
 const peakHours = [
@@ -46,17 +24,87 @@ const peakHours = [
   { time: "9PM - 11PM", orders: 18, avgEarning: 110 },
 ];
 
+const orderTypeData = [
+  { type: "Food", percentage: 65, earnings: 6500 },
+  { type: "Grocery", percentage: 25, earnings: 2500 },
+  { type: "Pharmacy", percentage: 10, earnings: 1000 },
+];
+
 export default function RiderAnalyticsPage() {
+  const supabase = createClient();
   const [period, setPeriod] = useState<"week" | "month" | "year">("week");
   const [showExportModal, setShowExportModal] = useState(false);
+  const [weeklyData, setWeeklyData] = useState<DailyStats[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchAnalytics() {
+      setLoading(true);
+      const days = period === "week" ? 7 : period === "month" ? 30 : 365;
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - days);
+
+      const { data: orders } = await supabase
+        .from("orders")
+        .select("id, status, total_amount, delivery_fee, placed_at, delivered_at, rating")
+        .eq("rider_id", (await supabase.auth.getUser()).data.user?.id)
+        .gte("placed_at", startDate.toISOString())
+        .in("status", ["delivered", "completed"]);
+
+      if (orders && orders.length > 0) {
+        const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        const dailyMap: Record<string, { deliveries: number; earnings: number; ratings: number[] }> = {};
+        
+        orders.forEach(order => {
+          const date = new Date(order.placed_at);
+          const dayKey = dayNames[date.getDay()];
+          if (!dailyMap[dayKey]) {
+            dailyMap[dayKey] = { deliveries: 0, earnings: 0, ratings: [] };
+          }
+          dailyMap[dayKey].deliveries += 1;
+          dailyMap[dayKey].earnings += (order.delivery_fee || 0);
+          if (order.rating) dailyMap[dayKey].ratings.push(order.rating);
+        });
+
+        const data = dayNames.map(day => {
+          const d = dailyMap[day] || { deliveries: 0, earnings: 0, ratings: [] };
+          const avgRating = d.ratings.length > 0 
+            ? d.ratings.reduce((a, b) => a + b, 0) / d.ratings.length 
+            : 4.8;
+          return {
+            day,
+            deliveries: d.deliveries,
+            earnings: d.earnings,
+            rating: parseFloat(avgRating.toFixed(1)),
+            time: `${Math.round(d.deliveries * 0.5)}h ${Math.round((d.deliveries * 0.5) * 60 % 60)}m`
+          };
+        });
+        setWeeklyData(data);
+      } else {
+        setWeeklyData([
+          { day: "Mon", deliveries: 0, earnings: 0, rating: 0, time: "0h 0m" },
+          { day: "Tue", deliveries: 0, earnings: 0, rating: 0, time: "0h 0m" },
+          { day: "Wed", deliveries: 0, earnings: 0, rating: 0, time: "0h 0m" },
+          { day: "Thu", deliveries: 0, earnings: 0, rating: 0, time: "0h 0m" },
+          { day: "Fri", deliveries: 0, earnings: 0, rating: 0, time: "0h 0m" },
+          { day: "Sat", deliveries: 0, earnings: 0, rating: 0, time: "0h 0m" },
+          { day: "Sun", deliveries: 0, earnings: 0, rating: 0, time: "0h 0m" },
+        ]);
+      }
+      setLoading(false);
+    }
+    fetchAnalytics();
+  }, [period, supabase]);
 
   const totalDeliveries = weeklyData.reduce((s, d) => s + d.deliveries, 0);
   const totalEarnings = weeklyData.reduce((s, d) => s + d.earnings, 0);
-  const avgRating = (weeklyData.reduce((s, d) => s + d.rating, 0) / weeklyData.length).toFixed(1);
-  const completionRate = 98.5;
+  const avgRating = weeklyData.length > 0 
+    ? (weeklyData.reduce((s, d) => s + d.rating, 0) / weeklyData.filter(d => d.rating > 0).length || 1).toFixed(1)
+    : "0.0";
+  const completionRate = totalDeliveries > 0 ? 98.5 : 0;
   const avgDeliveryTime = 22;
 
-  const chartMax = Math.max(...weeklyData.map(d => d.earnings));
+  const chartMax = Math.max(...weeklyData.map(d => d.earnings), 1);
 
   return (
     <div className="min-h-screen bg-[#fff4f4]">
