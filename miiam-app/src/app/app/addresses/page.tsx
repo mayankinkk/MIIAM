@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 
 const addressTypes = [
@@ -39,9 +39,16 @@ const defaultAddresses = [
 ];
 
 export default function AddressBookPage() {
-  const savedFromStorage = JSON.parse(localStorage.getItem('miiam_addresses') || '[]');
-  const mergedAddresses = savedFromStorage.length > 0 ? savedFromStorage : defaultAddresses;
-  const [addresses, setAddresses] = useState(mergedAddresses);
+  const [addresses, setAddresses] = useState<any[]>(defaultAddresses);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+    const savedFromStorage = JSON.parse(localStorage.getItem('miiam_addresses') || '[]');
+    if (savedFromStorage.length > 0) {
+      setAddresses(savedFromStorage);
+    }
+  }, []);
   const [showAddAddress, setShowAddAddress] = useState(false);
   const [editingAddress, setEditingAddress] = useState<typeof savedAddresses[0] | null>(null);
   const [newAddress, setNewAddress] = useState({
