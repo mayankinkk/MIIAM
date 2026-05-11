@@ -17,6 +17,7 @@ interface Order {
   distance2: number;
   totalDistance: number;
   earnings: number;
+  orderTotal: number;
   items: number;
   itemsList: string[];
   time: string;
@@ -222,9 +223,10 @@ export default function RiderDashboard() {
       
       const mappedOrders: OrderWithTiming[] = await Promise.all(dbOrders.map(async (dbOrder) => {
         // Fetch related data sequentially
-        const [vendorRes, itemsRes] = await Promise.all([
+        const [vendorRes, itemsRes, profileRes] = await Promise.all([
           dbOrder.vendor_id ? supabase.from("vendors").select("*").eq("id", dbOrder.vendor_id).single() : Promise.resolve({ data: null }),
-          supabase.from("order_items").select("*").eq("order_id", dbOrder.id)
+          supabase.from("order_items").select("*").eq("order_id", dbOrder.id),
+          dbOrder.user_id ? supabase.from("profiles").select("full_name, name, phone").eq("id", dbOrder.user_id).single() : Promise.resolve({ data: null }),
         ]);
         let itemsList: string[] = [];
         let itemsCount = 0;
@@ -254,14 +256,15 @@ export default function RiderDashboard() {
           vendor: vendorRes.data?.shop_name || vendorRes.data?.name || "Restaurant",
           vendorAddress: vendorRes.data?.address || "Restaurant Address",
           vendorPhone: vendorRes.data?.phone || "+91 99999 99999",
-          customer: "Customer",
-          customerPhone: dbOrder.customer_phone || "+91 88888 88888",
+          customer: profileRes.data?.full_name || (profileRes.data as any)?.name || "Customer",
+          customerPhone: profileRes.data?.phone || dbOrder.customer_phone || "+91 88888 88888",
           customerAddress: dbOrder.delivery_address || "Customer Delivery Location",
           landmark: dbOrder.special_instructions || "N/A",
           distance: d1,
           distance2: d2,
           totalDistance: Number((d1 + d2).toFixed(1)),
-          earnings: (dbOrder.total_amount || 0) + (dbOrder.delivery_fee || 0), // Show actual collection amount, not rider cut
+          earnings: calculateEarnings(Number((d1 + d2).toFixed(1))), // rider's cut (base + distance)
+          orderTotal: Math.round(dbOrder.total_amount || 0), // what customer paid
           items: itemsCount || 1,
           itemsList: itemsList.length > 0 ? itemsList : ["Items hidden"],
           time: `${Math.round(d1 * 4)} mins`,
@@ -656,13 +659,14 @@ export default function RiderDashboard() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-[10px] opacity-80">EARNINGS</p>
+                  <p className="text-[10px] opacity-80">YOUR CUT</p>
                   <div className="flex items-center gap-1">
                     <span className="text-2xl font-black">₹{calculatePeakEarnings(pendingOrders[0])}</span>
                     {pendingOrders[0].peakMultiplier > 1 && (
                       <span className="bg-yellow-400 text-[#0b50d5] text-[10px] font-bold px-1.5 rounded">+{(pendingOrders[0].peakMultiplier - 1) * 100}%</span>
                     )}
                   </div>
+                  <p className="text-[10px] opacity-60">Order: ₹{pendingOrders[0].orderTotal}</p>
                 </div>
               </div>
               

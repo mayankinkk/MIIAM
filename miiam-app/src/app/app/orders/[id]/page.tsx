@@ -142,25 +142,36 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
         schema: 'public',
         table: 'orders',
         filter: `id=eq.${id}`,
-      }, (payload) => {
+      }, async (payload) => {
         if (payload.new && typeof payload.new === 'object' && 'status' in payload.new) {
+          const newData = payload.new as any;
+          const newStatus = newData.status;
           const oldStatus = order?.status;
-          const newStatus = (payload.new as { status: string }).status;
-          setOrder((prev: any) => ({ ...prev, ...payload.new }));
-          
+
+          // Re-fetch rider info if rider_id is now set
+          let riderData = null;
+          if (newData.rider_id) {
+            const { data } = await supabase.from("riders").select("*").eq("id", newData.rider_id).single();
+            riderData = data;
+          }
+
+          setOrder((prev: any) => ({
+            ...prev,
+            ...newData,
+            riders: riderData || prev?.riders,
+          }));
+
           if (newStatus !== oldStatus) {
             const statusMessages: Record<string, string> = {
-              accepted: "Order accepted by rider!",
+              accepted: "🚴 Rider accepted your order!",
               preparing: "Restaurant is preparing your order",
               shopping: "Rider is shopping for your items",
               picking_up: "Rider is picking up your order",
-              on_the_way: "Rider is on the way!",
-              delivered: "Order delivered!",
+              on_the_way: "🚴 Rider is on the way!",
+              delivered: "✅ Order delivered!",
             };
             const msg = statusMessages[newStatus];
-            if (msg) {
-              addToast(msg, "info");
-            }
+            if (msg) addToast(msg, "info");
           }
         }
       })
@@ -174,9 +185,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
       })
       .subscribe();
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    return () => { supabase.removeChannel(channel); };
   }, [id, supabase]);
 
   useEffect(() => {
@@ -227,52 +236,23 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
       <main className="pt-6 pb-12 min-h-screen">
         <div className="max-w-7xl mx-auto px-6 lg:grid lg:grid-cols-12 lg:gap-10 items-start">
           <div className="lg:col-span-7 space-y-6">
-            <div className="relative w-full h-[450px] rounded-xl overflow-hidden shadow-[0px_20px_40px_rgba(77,33,42,0.06)] bg-[#ffe1e4]">
-              {order?.status === "on_the_way" && riderLocation ? (
-                <div className="absolute inset-0 bg-slate-200">
-                  <div className="w-full h-full flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="w-16 h-16 bg-[#0b50d5] rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
-                        <span className="material-symbols-outlined text-white text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>directions_bike</span>
-                      </div>
-                      <p className="font-bold text-[#4d212a]">Live Tracking Active</p>
-                      <p className="text-sm text-[#814c55]">Rider location updating in real-time</p>
-                      <p className="text-xs text-[#0b50d5] mt-2">📍 {riderLocation.lat.toFixed(4)}, {riderLocation.lng.toFixed(4)}</p>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div 
-                  className="absolute inset-0 w-full h-full grayscale-[0.2] brightness-[1.05]"
-                  style={{
-                    backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCjmYJilzWAOq_x5siwxhSz4VWUjsYYMeeGqKHcY6WBxRpqaGtTBO_bQdGuiimEH2lk6cs4Uh0DpZN8Ta5Zit0SsekdasaZvD0esEh_me7E89BmJqfWUg5sSusGECwa2ud4fiX4EkWYZ5Cn9DxtDbIGwr1BHU8bBRLddx4c_y8PGOjuIW1Ab1OKrUyHigOuUeBU7TLL3D0K6ydPkiN0GWkWxk5_hs5Ng9E4U9ifIg-ZeZNWq20l6eU0K8l4XWmExW0n6Rs6KMTkGsk')",
-                    backgroundSize: "cover",
-                    backgroundPosition: "center"
-                  }}
-                />
-              )}
-              
-              <div className={`absolute w-12 h-12 bg-[#0b50d5] rounded-full flex items-center justify-center text-white border-4 border-white shadow-lg animate-pulse ${order?.status === "on_the_way" ? "top-1/3 left-1/2 -translate-x-1/2" : "top-1/4 left-1/3"}`}>
-                <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>directions_bike</span>
-              </div>
-              <div className="absolute bottom-1/3 right-1/4 w-10 h-10 bg-[#ba001c] rounded-full flex items-center justify-center text-white border-2 border-white shadow-md">
-                <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>home</span>
-              </div>
-
-              <div className="absolute top-6 right-6 backdrop-blur-xl bg-white/80 p-6 rounded-xl border border-white/20 shadow-xl flex flex-col items-center min-w-[140px]">
-                <span className="text-xs font-bold uppercase tracking-widest text-[#ba001c]/60 mb-1">Estimated Arrival</span>
+            {/* Live Map - always visible */}
+            <div className="relative w-full h-[420px] rounded-xl overflow-hidden shadow-[0px_20px_40px_rgba(77,33,42,0.06)]"
+>
+              <MainOrderMap
+                orderId={id}
+                riderLocation={riderLocation}
+                deliveryAddress={order?.delivery_address}
+              />
+              {/* ETA chip */}
+              <div className="absolute top-4 right-4 z-[400] backdrop-blur-xl bg-white/90 p-4 rounded-xl border border-white/20 shadow-xl flex flex-col items-center min-w-[120px]">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-[#ba001c]/60 mb-1">ETA</span>
                 <div className="flex items-end gap-1">
-                  <span className="text-4xl font-extrabold text-[#ba001c] tracking-tighter">{etaMins}</span>
-                  <span className="text-xl font-bold text-[#ba001c] mb-1">MINS</span>
+                  <span className="text-3xl font-extrabold text-[#ba001c] tracking-tighter">{etaMins}</span>
+                  <span className="text-sm font-bold text-[#ba001c] mb-1">MINS</span>
                 </div>
               </div>
             </div>
-
-            {order?.status === "picking_up" || order?.status === "on_the_way" ? (
-              <div className="relative h-64 rounded-xl overflow-hidden shadow-lg">
-                <LiveMapTracker orderId={id} riderLocation={riderLocation} />
-              </div>
-            ) : null}
 
             <div className="relative bg-white rounded-xl p-6 shadow-[0px_20px_40px_rgba(77,33,42,0.04)] overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-[#c4d0ff]/20 rounded-full -mr-16 -mt-16 blur-2xl" />
@@ -449,7 +429,11 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
   );
 }
 
-function LiveMapTracker({ orderId, riderLocation }: { orderId: string; riderLocation: { lat: number; lng: number } | null }) {
+function MainOrderMap({ orderId, riderLocation, deliveryAddress }: {
+  orderId: string;
+  riderLocation: { lat: number; lng: number } | null;
+  deliveryAddress?: string;
+}) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
   const riderMarkerRef = useRef<any>(null);
@@ -457,57 +441,113 @@ function LiveMapTracker({ orderId, riderLocation }: { orderId: string; riderLoca
 
   useEffect(() => {
     if (!mapRef.current) return;
-
-    let L: any;
-    let map: any;
+    let isMounted = true;
 
     async function initMap() {
-      L = await import('leaflet');
+      const L = await import('leaflet');
       await import('leaflet/dist/leaflet.css');
 
-      const defaultLat = riderLocation?.lat || 28.6139;
-      const defaultLng = riderLocation?.lng || 77.2090;
+      if (!isMounted || !mapRef.current) return;
 
-      map = L.map(mapRef.current!).setView([defaultLat, defaultLng], 15);
+      // Default: New Delhi
+      let centerLat = 28.6139;
+      let centerLng = 77.2090;
 
+      const map = L.map(mapRef.current, { zoomControl: false }).setView([centerLat, centerLng], 14);
+      L.control.zoom({ position: 'bottomright' }).addTo(map);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap',
+        attribution: '\u00a9 OpenStreetMap contributors',
+        maxZoom: 18,
       }).addTo(map);
-
-      const riderIcon = L.divIcon({
-        className: 'rider-marker',
-        html: `<div style="background:#0b50d5;width:32px;height:32px;border-radius:50%;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;"><span style="color:white;font-size:16px;">🛵</span></div>`,
-        iconSize: [32, 32],
-        iconAnchor: [16, 16],
-      });
-
-      riderMarkerRef.current = L.marker([defaultLat, defaultLng], { icon: riderIcon }).addTo(map);
-
       mapInstanceRef.current = map;
+
+      // Geocode delivery address to place home pin
+      if (deliveryAddress) {
+        try {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(deliveryAddress)}&limit=1`,
+            { headers: { 'Accept-Language': 'en' } }
+          );
+          const data = await res.json();
+          if (data[0] && isMounted) {
+            centerLat = parseFloat(data[0].lat);
+            centerLng = parseFloat(data[0].lon);
+            const homeIcon = L.divIcon({
+              className: '',
+              html: `<div style="background:#ba001c;width:36px;height:36px;border-radius:50%;border:3px solid white;box-shadow:0 3px 10px rgba(186,0,28,0.4);display:flex;align-items:center;justify-content:center;font-size:18px;">\ud83c\udfe0</div>`,
+              iconSize: [36, 36],
+              iconAnchor: [18, 18],
+            });
+            L.marker([centerLat, centerLng], { icon: homeIcon })
+              .bindPopup('Your delivery location')
+              .addTo(map);
+            map.setView([centerLat, centerLng], 15);
+          }
+        } catch (_) {
+          // Geocoding failed — use default center
+        }
+      }
+
+      // Place rider marker if we already have a location
+      if (riderLocation && isMounted) {
+        const riderIcon = L.divIcon({
+          className: '',
+          html: `<div style="background:#0b50d5;width:36px;height:36px;border-radius:50%;border:3px solid white;box-shadow:0 3px 10px rgba(11,80,213,0.4);display:flex;align-items:center;justify-content:center;font-size:18px;">\ud83d\udee5</div>`,
+          iconSize: [36, 36],
+          iconAnchor: [18, 18],
+        });
+        riderMarkerRef.current = L.marker([riderLocation.lat, riderLocation.lng], { icon: riderIcon })
+          .bindPopup('Rider')
+          .addTo(map);
+      }
     }
 
     initMap();
 
+    // Subscribe to live rider location updates
     const channel = supabase
-      .channel(`live-map-${orderId}`)
+      .channel(`main-map-${orderId}`)
       .on('postgres_changes', {
         event: 'INSERT',
         schema: 'public',
         table: 'rider_locations',
         filter: `order_id=eq.${orderId}`,
-      }, (payload: any) => {
-        if (payload.new?.lat && payload.new?.lng && riderMarkerRef.current) {
-          riderMarkerRef.current.setLatLng([payload.new.lat, payload.new.lng]);
-          mapInstanceRef.current?.setView([payload.new.lat, payload.new.lng], 15, { animate: true });
+      }, async (payload: any) => {
+        if (payload.new?.lat && payload.new?.lng) {
+          const { lat, lng } = payload.new;
+          if (riderMarkerRef.current) {
+            riderMarkerRef.current.setLatLng([lat, lng]);
+          } else if (mapInstanceRef.current) {
+            const L = await import('leaflet');
+            const riderIcon = L.divIcon({
+              className: '',
+              html: `<div style="background:#0b50d5;width:36px;height:36px;border-radius:50%;border:3px solid white;box-shadow:0 3px 10px rgba(11,80,213,0.4);display:flex;align-items:center;justify-content:center;font-size:18px;">\ud83d\udee5</div>`,
+              iconSize: [36, 36],
+              iconAnchor: [18, 18],
+            });
+            riderMarkerRef.current = L.marker([lat, lng], { icon: riderIcon })
+              .bindPopup('Rider')
+              .addTo(mapInstanceRef.current);
+          }
+          mapInstanceRef.current?.setView([lat, lng], 15, { animate: true });
         }
       })
       .subscribe();
 
     return () => {
+      isMounted = false;
       supabase.removeChannel(channel);
       mapInstanceRef.current?.remove();
+      mapInstanceRef.current = null;
     };
-  }, [orderId, supabase]);
+  }, [orderId, deliveryAddress]);
 
-  return <div ref={mapRef} className="w-full h-full" />;
+  // Sync rider location prop changes to marker
+  useEffect(() => {
+    if (riderLocation && riderMarkerRef.current) {
+      riderMarkerRef.current.setLatLng([riderLocation.lat, riderLocation.lng]);
+    }
+  }, [riderLocation]);
+
+  return <div ref={mapRef} className="w-full h-full" style={{ zIndex: 1 }} />;
 }
