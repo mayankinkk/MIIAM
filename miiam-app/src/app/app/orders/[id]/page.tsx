@@ -138,31 +138,34 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
     const channel = supabase
       .channel(`order-tracking-${id}`)
       .on('postgres_changes', {
-        event: '*',
+        event: 'UPDATE',
         schema: 'public',
         table: 'orders',
         filter: `id=eq.${id}`,
       }, async (payload) => {
-        if (payload.new && typeof payload.new === 'object' && 'status' in payload.new) {
+        if (payload.new && typeof payload.new === 'object') {
           const newData = payload.new as any;
           const newStatus = newData.status;
           const oldStatus = order?.status;
 
-          // Re-fetch rider info if rider_id is now set
           let riderData = null;
           if (newData.rider_id) {
             const { data } = await supabase.from("riders").select("*").eq("id", newData.rider_id).single();
             riderData = data;
           }
 
-          setOrder((prev: any) => ({
-            ...prev,
-            ...newData,
-            riders: riderData || prev?.riders,
-          }));
+          setOrder((prev: any) => {
+            if (!prev) return prev;
+            return {
+              ...prev,
+              ...newData,
+              riders: riderData || prev?.riders,
+            };
+          });
 
-          if (newStatus !== oldStatus) {
+          if (newStatus !== oldStatus && newStatus) {
             const statusMessages: Record<string, string> = {
+              pending: "Order placed!",
               accepted: "🚴 Rider accepted your order!",
               preparing: "Restaurant is preparing your order",
               shopping: "Rider is shopping for your items",
@@ -254,37 +257,60 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
               </div>
             </div>
 
-            <div className="relative bg-white rounded-xl p-6 shadow-[0px_20px_40px_rgba(77,33,42,0.04)] overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-[#c4d0ff]/20 rounded-full -mr-16 -mt-16 blur-2xl" />
-              <div className="flex items-center gap-6 relative z-10">
-                <div className="relative">
-                  <img className="w-20 h-20 rounded-full object-cover border-4 border-[#ffe1e4]" src={riderInfo.image} alt={riderInfo.name} />
-                  <div className="absolute bottom-0 right-0 bg-[#ffd709] text-[#453900] px-2 py-0.5 rounded-full text-[10px] font-black flex items-center gap-1 shadow-sm">
-                    <span className="material-symbols-outlined text-[12px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                    {riderInfo.rating}
+            {/* Rider Info - only show when rider assigned */}
+            {order.status !== "pending" && order.riders && (
+              <div className="relative bg-white rounded-xl p-6 shadow-[0px_20px_40px_rgba(77,33,42,0.04)] overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#c4d0ff]/20 rounded-full -mr-16 -mt-16 blur-2xl" />
+                <div className="flex items-center gap-6 relative z-10">
+                  <div className="relative">
+                    <img className="w-20 h-20 rounded-full object-cover border-4 border-[#ffe1e4]" src={riderInfo.image} alt={riderInfo.name} />
+                    <div className="absolute bottom-0 right-0 bg-[#ffd709] text-[#453900] px-2 py-0.5 rounded-full text-[10px] font-black flex items-center gap-1 shadow-sm">
+                      <span className="material-symbols-outlined text-[12px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                      {riderInfo.rating}
+                    </div>
                   </div>
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-xl font-bold tracking-tight text-[#4d212a]">{riderInfo.name}</h3>
-                  <p className="text-[#814c55] font-medium">Your delivery hero is on the move</p>
-                  <div className="flex gap-3 mt-4">
-                    <Link 
-                      href={`/app/orders/${id}/chat`}
-                      className="flex-1 bg-[#0b50d5] text-white rounded-xl py-3 font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-all scale-95 active:scale-90"
-                    >
-                      <span className="material-symbols-outlined text-lg">chat_bubble</span>
-                      Chat
-                    </Link>
-                    <a 
-                      href={`tel:${riderInfo.phone || ''}`}
-                      className="w-14 h-14 bg-[#ffe1e4] text-[#0b50d5] rounded-xl flex items-center justify-center hover:opacity-90 transition-all scale-95 active:scale-90"
-                    >
-                      <span className="material-symbols-outlined text-2xl">call</span>
-                    </a>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold tracking-tight text-[#4d212a]">{riderInfo.name}</h3>
+                    <p className="text-[#814c55] font-medium">Your delivery hero is on the move</p>
+                    <div className="flex gap-3 mt-4">
+                      <Link 
+                        href={`/app/orders/${id}/chat`}
+                        className="flex-1 bg-[#0b50d5] text-white rounded-xl py-3 font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-all scale-95 active:scale-90"
+                      >
+                        <span className="material-symbols-outlined text-lg">chat_bubble</span>
+                        Chat
+                      </Link>
+                      <a 
+                        href={`tel:${riderInfo.phone || ''}`}
+                        className="w-14 h-14 bg-[#ffe1e4] text-[#0b50d5] rounded-xl flex items-center justify-center hover:opacity-90 transition-all scale-95 active:scale-90"
+                      >
+                        <span className="material-symbols-outlined text-2xl">call</span>
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
+
+            {/* Waiting for rider - shown before acceptance */}
+            {order.status === "pending" && (
+              <div className="relative bg-white rounded-xl p-6 shadow-[0px_20px_40px_rgba(77,33,42,0.04)] overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#c4d0ff]/20 rounded-full -mr-16 -mt-16 blur-2xl" />
+                <div className="flex items-center gap-6 relative z-10">
+                  <div className="w-20 h-20 rounded-full object-cover border-4 border-[#ffe1e4] bg-[#ffe1e4] flex items-center justify-center">
+                    <span className="material-symbols-outlined text-4xl text-[#ba001c]" style={{ fontVariationSettings: "'FILL' 1" }}>person_search</span>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold tracking-tight text-[#4d212a]">Finding a Rider</h3>
+                    <p className="text-[#814c55] font-medium">A rider will accept your order soon</p>
+                    <p className="text-xs text-[#ba001c] font-bold mt-2 flex items-center gap-1">
+                      <span className="w-2 h-2 bg-[#ba001c] rounded-full animate-pulse" />
+                      Waiting for rider acceptance...
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="lg:col-span-5 space-y-6 mt-6 lg:mt-0">
