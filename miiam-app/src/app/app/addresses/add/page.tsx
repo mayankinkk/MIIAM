@@ -385,34 +385,22 @@ export default function AddressPickerPage() {
         )}
 
         {currentLocation && (
-          <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-xl z-50 max-h-[45vh] overflow-y-auto">
+          <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-xl z-50 max-h-[50vh] overflow-y-auto">
             <div className="p-4 border-b border-slate-100">
               <div className="flex items-center gap-2 mb-2">
-                {locationAccuracy && locationAccuracy <= 10 ? (
-                  <span className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                    <span className="material-symbols-outlined text-green-600 text-sm">check</span>
-                  </span>
-                ) : locationAccuracy ? (
-                  <span className="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center">
-                    <span className="material-symbols-outlined text-amber-600 text-sm">warning</span>
-                  </span>
-                ) : (
-                  <span className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                    <span className="material-symbols-outlined text-green-600 text-sm">check</span>
-                  </span>
-                )}
-                <span className={`text-xs font-bold px-2 py-1 rounded-full ${
-                  locationAccuracy && locationAccuracy <= 10 ? "bg-green-50 text-green-600" :
-                  locationAccuracy ? "bg-amber-50 text-amber-600" : "bg-green-50 text-green-600"
-                }`}>
-                  {locationAccuracy && locationAccuracy <= 10 ? "High Accuracy" :
-                   locationAccuracy ? `Accuracy: ${locationAccuracy.toFixed(0)}m` : "Location Selected"}
+                <span className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                  <span className="material-symbols-outlined text-green-600 text-sm">location_on</span>
+                </span>
+                <span className="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full">
+                  {locationAccuracy ? `GPS Accuracy: ${locationAccuracy.toFixed(0)}m` : "Location Selected"}
                 </span>
               </div>
-              <p className="font-medium text-[#4d212a]">{currentLocation.address}</p>
+              <p className="font-medium text-[#4d212a] text-sm">{currentLocation.address}</p>
+              <p className="text-xs text-slate-400 mt-1">{currentLocation.lat.toFixed(6)}, {currentLocation.lng.toFixed(6)}</p>
             </div>
 
             <div className="p-4 space-y-3">
+              <p className="text-xs text-slate-500 font-medium uppercase tracking-wide">Address Label</p>
               <div className="flex gap-2">
                 <button
                   onClick={() => setAddressLabel("home")}
@@ -467,12 +455,27 @@ export default function AddressPickerPage() {
                 rows={2}
               />
 
-              <button
-                onClick={handleSave}
-                className="w-full bg-[#ba001c] text-white py-3 rounded-lg font-bold text-sm hover:bg-[#a40017] transition-colors"
-              >
-                Confirm & Deliver Here
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => handleDetectLocation(true)}
+                  disabled={detecting}
+                  className="flex-1 py-3 rounded-lg border-2 border-[#0b50d5] text-[#0b50d5] font-bold text-sm hover:bg-blue-50 transition-colors flex items-center justify-center gap-2"
+                >
+                  {detecting ? (
+                    <span className="w-4 h-4 border-2 border-[#0b50d5] border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <span className="material-symbols-outlined text-sm">my_location</span>
+                  )}
+                  Auto Detect
+                </button>
+                <button
+                  onClick={handleSave}
+                  className="flex-[2] bg-[#ba001c] text-white py-3 rounded-lg font-bold text-sm hover:bg-[#a40017] transition-colors flex items-center justify-center gap-2"
+                >
+                  <span className="material-symbols-outlined text-sm">check</span>
+                  Confirm Address
+                </button>
+              </div>
             </div>
           </div>
         )}
