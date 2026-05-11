@@ -11,7 +11,7 @@ interface OrderItem {
   quantity: number;
   unit_price: number;
   special_notes: string | null;
-  status: "pending" | "picked" | "unavailable" | "different_brand";
+  status: "pending" | "available" | "unavailable" | "different_brand";
   picked: boolean;
   actual_price: number | null;
   menu_item?: {
@@ -248,7 +248,7 @@ export default function RiderOrdersPage() {
         .update({ 
           status: status,
           actual_price: actualPrice ?? null,
-          picked: status === "picked"
+          picked: status === "available"
         })
         .eq("id", itemId);
       
@@ -711,7 +711,7 @@ function OrderCard({ order, onAccept, isSelected, onToggleSelect }: { order: Ord
 
 function ShoppingCard({ order, onUpdateItemStatus, onMarkDelivered, onReportIssue, onStartDelivery, onShareLocation }: { order: Order; onUpdateItemStatus: (itemId: string, status: string, price?: number) => void; onMarkDelivered: () => void; onReportIssue: () => void; onStartDelivery?: () => void; onShareLocation?: () => void }) {
   const [items, setItems] = useState(order.items || []);
-  const pickedCount = items.filter((i: any) => i.status === "picked").length;
+  const pickedCount = items.filter((i: any) => i.status === "available").length;
   const totalSpent = items.reduce((s: number, i: any) => s + ((i.actual_price || 0) * i.quantity), 0);
   const profit = (order.total_amount || 0) + (order.delivery_fee || 0) - totalSpent;
 
@@ -750,23 +750,23 @@ function ShoppingCard({ order, onUpdateItemStatus, onMarkDelivered, onReportIssu
               value={item.status || "pending"}
               onChange={(e) => onUpdateItemStatus(item.id, e.target.value, item.actual_price)}
               className={`text-xs font-bold px-2 py-1 rounded-full ${
-                item.status === "picked" ? "bg-green-100 text-green-700" :
+                item.status === "available" ? "bg-green-100 text-green-700" :
                 item.status === "unavailable" ? "bg-red-100 text-red-700" :
                 item.status === "different_brand" ? "bg-amber-100 text-amber-700" :
                 "bg-slate-100 text-slate-500"
               }`}
             >
               <option value="pending">Pending</option>
-              <option value="picked">✅ Available</option>
+              <option value="available">✅ Available</option>
               <option value="unavailable">❌ Not Available</option>
               <option value="different_brand">🔄 Different Brand</option>
             </select>
-            {item.status === "picked" && (
+            {item.status === "available" && (
               <input
                 type="number"
                 placeholder="Price"
                 value={item.actual_price || ""}
-                onChange={(e) => onUpdateItemStatus(item.id, "picked", parseFloat(e.target.value))}
+                onChange={(e) => onUpdateItemStatus(item.id, "available", parseFloat(e.target.value))}
                 className="w-16 text-xs border rounded px-1 py-1"
               />
             )}
