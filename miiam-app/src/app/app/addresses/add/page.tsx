@@ -42,17 +42,18 @@ export default function AddressPickerPage() {
   useEffect(() => {
     let map: any;
     let L: any;
+    let isMounted = true;
 
-    const initMap = async () => {
+    const initMap = async (centerLat?: number, centerLng?: number) => {
       if (typeof window === 'undefined' || !mapRef.current || mapInstanceRef.current) return;
 
       L = await import('leaflet');
       await import('leaflet/dist/leaflet.css');
 
-      const defaultLat = 26.1445;
-      const defaultLng = 91.7362;
+      const defaultLat = centerLat ?? 26.1445;
+      const defaultLng = centerLng ?? 91.7362;
 
-      map = L.map(mapRef.current).setView([defaultLat, defaultLng], 14);
+      map = L.map(mapRef.current).setView([defaultLat, defaultLng], 17);
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -61,31 +62,33 @@ export default function AddressPickerPage() {
       const customIcon = L.divIcon({
         className: 'custom-marker',
         html: `<div style="
-          width: 40px;
-          height: 40px;
+          width: 50px;
+          height: 50px;
           background: #ba001c;
-          border: 3px solid white;
+          border: 4px solid white;
           border-radius: 50%;
-          box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+          box-shadow: 0 4px 15px rgba(0,0,0,0.4);
           display: flex;
           align-items: center;
           justify-content: center;
-        "><span style="color: white; font-size: 20px;">📍</span></div>`,
-        iconSize: [40, 40],
-        iconAnchor: [20, 40],
-        popupAnchor: [0, -40]
+          animation: pulse 2s infinite;
+        "><span style="color: white; font-size: 24px;">📍</span></div>`,
+        iconSize: [50, 50],
+        iconAnchor: [25, 50],
+        popupAnchor: [0, -50]
       });
 
       const marker = L.marker([defaultLat, defaultLng], { icon: customIcon, draggable: true }).addTo(map);
       
       marker.on('dragend', async (e: any) => {
         const pos = e.target.getLatLng();
-        await reverseGeocode(pos.lat, pos.lng);
+        if (isMounted) await reverseGeocode(pos.lat, pos.lng);
       });
 
       map.on('click', async (e: any) => {
+        if (!isMounted) return;
         const { lat, lng } = e.latlng;
-        marker.setLatLng([lat, lng]);
+        if (marker) marker.setLatLng([lat, lng]);
         await reverseGeocode(lat, lng);
       });
 
@@ -94,12 +97,62 @@ export default function AddressPickerPage() {
       setMapLoaded(true);
     };
 
-    initMap();
+    const getInitialLocation = async () => {
+      if (!navigator.geolocation) {
+        initMap();
+        return;
+      }
 
-    setAutoDetectOnLoad(true);
-    handleDetectLocation(false);
+      setDetecting(true);
+      setLocationStatus("detecting");
+
+      const timeoutPromise = new Promise<null>((_, reject) => {
+        setTimeout(() => reject(new Error("timeout")), 10000);
+      });
+
+      const geoPromise = new Promise<GeolocationPosition>((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => resolve(pos),
+          (err) => reject(err),
+          { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+        );
+      });
+
+      try {
+        const position = await Promise.race([geoPromise, timeoutPromise]);
+        if (!position) {
+          initMap();
+          setDetecting(false);
+          return;
+        }
+
+        const { latitude, longitude, accuracy } = position.coords;
+        setLocationAccuracy(accuracy);
+
+        if (accuracy <= 50) {
+          await initMap(latitude, longitude);
+          await reverseGeocode(latitude, longitude);
+        } else {
+          await initMap(latitude, longitude);
+          setTimeout(async () => {
+            if (isMounted) {
+              await reverseGeocode(latitude, longitude);
+              setLocationStatus("good");
+            }
+          }, 500);
+        }
+        setLocationStatus("good");
+      } catch {
+        initMap();
+      }
+
+      setDetecting(false);
+    };
+
+    getInitialLocation();
 
     return () => {
+      isMounted = false;
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove();
         mapInstanceRef.current = null;
@@ -188,82 +241,32 @@ export default function AddressPickerPage() {
       return;
     }
 
-    let watchId: number | null = null;
-    let iteration = 0;
-    const maxIterations = 3;
-    let lastPos: GeolocationPosition | null = null;
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude, accuracy } = position.coords;
+        setLocationAccuracy(accuracy);
+        setLocationStatus(accuracy <= 50 ? "good" : "improving");
 
-    const successHandler = async (position: GeolocationPosition) => {
-      const { latitude, longitude, accuracy } = position.coords;
-      iteration++;
-
-      setLocationAccuracy(accuracy);
-
-      if (accuracy <= 10) {
-        if (watchId !== null) navigator.geolocation.clearWatch(watchId);
-        setLocationStatus("good");
         if (mapInstanceRef.current && markerRef.current) {
           mapInstanceRef.current.setView([latitude, longitude], 17);
           markerRef.current.setLatLng([latitude, longitude]);
         }
+
         await reverseGeocode(latitude, longitude);
         setDetecting(false);
-        return;
-      }
-
-      if (iteration < maxIterations) {
-        lastPos = position;
-        setLocationStatus("improving");
-      } else {
-        if (watchId !== null) navigator.geolocation.clearWatch(watchId);
-        const finalLat = lastPos?.coords.latitude ?? latitude;
-        const finalLng = lastPos?.coords.longitude ?? longitude;
-        setLocationStatus("good");
-        if (mapInstanceRef.current && markerRef.current) {
-          mapInstanceRef.current.setView([finalLat, finalLng], 17);
-          markerRef.current.setLatLng([finalLat, finalLng]);
-        }
-        await reverseGeocode(finalLat, finalLng);
+      },
+      (error) => {
         setDetecting(false);
-      }
-    };
-
-    const errorHandler = (error: GeolocationPositionError) => {
-      if (watchId !== null) navigator.geolocation.clearWatch(watchId);
-      setDetecting(false);
-      setLocationStatus("error");
-      switch (error.code) {
-        case 1: setLocationError("Location permission denied"); break;
-        case 2: setLocationError("Location unavailable"); break;
-        case 3: setLocationError("Location timed out"); break;
-        default: setLocationError("Could not get location");
-      }
-    };
-
-    watchId = navigator.geolocation.watchPosition(
-      successHandler,
-      errorHandler,
-      {
-        enableHighAccuracy: true,
-        timeout: 60000,
-        maximumAge: 0
-      }
+        setLocationStatus("error");
+        switch (error.code) {
+          case 1: setLocationError("Location permission denied"); break;
+          case 2: setLocationError("Location unavailable"); break;
+          case 3: setLocationError("Location timed out"); break;
+          default: setLocationError("Could not get location");
+        }
+      },
+      { enableHighAccuracy: true, timeout: 30000, maximumAge: 0 }
     );
-
-    setTimeout(() => {
-      if (watchId !== null && iteration < maxIterations) {
-        navigator.geolocation.clearWatch(watchId);
-        if (lastPos) {
-          setLocationStatus("good");
-          if (mapInstanceRef.current && markerRef.current) {
-            mapInstanceRef.current.setView([lastPos.coords.latitude, lastPos.coords.longitude], 17);
-            markerRef.current.setLatLng([lastPos.coords.latitude, lastPos.coords.longitude]);
-          }
-          reverseGeocode(lastPos.coords.latitude, lastPos.coords.longitude);
-        }
-        setDetecting(false);
-      }
-    }, 15000);
   };
 
   const handleSave = () => {
