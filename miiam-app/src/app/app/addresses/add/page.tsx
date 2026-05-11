@@ -53,47 +53,74 @@ export default function AddressPickerPage() {
       const defaultLat = centerLat ?? 26.1445;
       const defaultLng = centerLng ?? 91.7362;
 
-      map = L.map(mapRef.current).setView([defaultLat, defaultLng], 17);
+      map = L.map(mapRef.current, {
+        zoomControl: false,
+        attributionControl: false
+      }).setView([defaultLat, defaultLng], 18);
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a>'
+        maxZoom: 19
       }).addTo(map);
 
-      const customIcon = L.divIcon({
-        className: 'custom-marker',
-        html: `<div style="
-          width: 50px;
-          height: 50px;
-          background: #ba001c;
-          border: 4px solid white;
-          border-radius: 50%;
-          box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          animation: pulse 2s infinite;
-        "><span style="color: white; font-size: 24px;">📍</span></div>`,
-        iconSize: [50, 50],
-        iconAnchor: [25, 50],
-        popupAnchor: [0, -50]
+      L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+      const crosshairIcon = L.divIcon({
+        className: 'crosshair-marker',
+        html: `
+          <div style="position: relative; width: 60px; height: 60px;">
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 20px; height: 20px; background: rgba(186,0,28,0.9); border: 3px solid white; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.4);"></div>
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; border: 2px solid rgba(186,0,28,0.5); border-radius: 50%;"></div>
+            <div style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 2px; height: 12px; background: rgba(186,0,28,0.7);"></div>
+            <div style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 2px; height: 12px; background: rgba(186,0,28,0.7);"></div>
+            <div style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 12px; height: 2px; background: rgba(186,0,28,0.7);"></div>
+            <div style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); width: 12px; height: 2px; background: rgba(186,0,28,0.7);"></div>
+          </div>
+        `,
+        iconSize: [60, 60],
+        iconAnchor: [30, 30]
       });
 
-      const marker = L.marker([defaultLat, defaultLng], { icon: customIcon, draggable: true }).addTo(map);
-      
+      const accuracyCircle = L.circle([defaultLat, defaultLng], {
+        radius: 20,
+        color: '#0b50d5',
+        fillColor: '#0b50d5',
+        fillOpacity: 0.15,
+        weight: 2
+      }).addTo(map);
+
+      const marker = L.marker([defaultLat, defaultLng], {
+        icon: crosshairIcon,
+        draggable: true,
+        zIndexOffset: 1000
+      }).addTo(map);
+
+      const updateLocation = async (lat: number, lng: number) => {
+        if (!isMounted) return;
+        accuracyCircle.setLatLng([lat, lng]);
+        await reverseGeocode(lat, lng);
+      };
+
       marker.on('dragend', async (e: any) => {
         const pos = e.target.getLatLng();
-        if (isMounted) await reverseGeocode(pos.lat, pos.lng);
+        map.setView([pos.lat, pos.lng], 18);
+        await updateLocation(pos.lat, pos.lng);
       });
 
       map.on('click', async (e: any) => {
         if (!isMounted) return;
         const { lat, lng } = e.latlng;
-        if (marker) marker.setLatLng([lat, lng]);
-        await reverseGeocode(lat, lng);
+        marker.setLatLng([lat, lng]);
+        map.setView([lat, lng], 18);
+        await updateLocation(lat, lng);
       });
 
       mapInstanceRef.current = map;
       markerRef.current = marker;
+
+      if (centerLat && centerLng) {
+        setTimeout(() => updateLocation(centerLat, centerLng), 300);
+      }
+
       setMapLoaded(true);
     };
 
@@ -106,47 +133,28 @@ export default function AddressPickerPage() {
       setDetecting(true);
       setLocationStatus("detecting");
 
-      const timeoutPromise = new Promise<null>((_, reject) => {
-        setTimeout(() => reject(new Error("timeout")), 10000);
-      });
-
-      const geoPromise = new Promise<GeolocationPosition>((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(
-          (pos) => resolve(pos),
-          (err) => reject(err),
-          { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
-        );
-      });
-
       try {
-        const position = await Promise.race([geoPromise, timeoutPromise]);
-        if (!position) {
-          initMap();
-          setDetecting(false);
-          return;
-        }
+        const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(
+            resolve,
+            reject,
+            { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
+          );
+        });
 
         const { latitude, longitude, accuracy } = position.coords;
         setLocationAccuracy(accuracy);
+        setLocationStatus(accuracy <= 10 ? "good" : accuracy <= 30 ? "improving" : "detecting");
 
-        if (accuracy <= 50) {
-          await initMap(latitude, longitude);
-          await reverseGeocode(latitude, longitude);
-        } else {
-          await initMap(latitude, longitude);
-          setTimeout(async () => {
-            if (isMounted) {
-              await reverseGeocode(latitude, longitude);
-              setLocationStatus("good");
-            }
-          }, 500);
-        }
-        setLocationStatus("good");
+        await initMap(latitude, longitude);
+        setDetecting(false);
+
       } catch {
+        setLocationError("Could not get GPS. Search or tap map to select.");
+        setLocationStatus("error");
         initMap();
+        setDetecting(false);
       }
-
-      setDetecting(false);
     };
 
     getInitialLocation();
@@ -161,30 +169,59 @@ export default function AddressPickerPage() {
   }, []);
 
   const reverseGeocode = async (lat: number, lng: number) => {
+    setCurrentLocation({ lat, lng, address: "Fetching address..." });
+
     try {
       const res = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`,
-        { headers: { 'User-Agent': 'MIIAM/1.0' } }
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1&accept-language=en`,
+        { headers: { 'User-Agent': 'MIIAM/1.0 (contact@mii.am)' } }
       );
       const data = await res.json();
-      const address = buildAddressString(data.address, data.display_name);
-      setCurrentLocation({ lat, lng, address });
-    } catch (err) {
-      setCurrentLocation({ lat, lng, address: `${lat.toFixed(4)}, ${lng.toFixed(4)}` });
-    }
-  };
 
-  const buildAddressString = (addr: any, displayName?: string): string => {
-    const parts: string[] = [];
-    if (addr?.house_number) parts.push(addr.house_number);
-    if (addr?.road || addr?.street) parts.push(addr.road || addr.street);
-    if (addr?.neighbourhood || addr?.suburb) parts.push(addr.neighbourhood || addr.suburb);
-    if (addr?.city || addr?.town || addr?.village) parts.push(addr.city || addr.town || addr.village);
-    if (addr?.state) parts.push(addr.state);
-    if (addr?.postcode) parts.push(addr.postcode);
-    if (parts.length >= 2) return parts.join(", ");
-    if (displayName) return displayName.split(", ").slice(0, 3).join(", ");
-    return "Selected location";
+      let address = "";
+      if (data.address) {
+        const a = data.address;
+        const parts: string[] = [];
+
+        if (a.building || a.house_number || a.amenity) {
+          if (a.building) parts.push(a.building);
+          if (a.house_number) parts.push(a.house_number);
+        }
+
+        if (a.road || a.street) {
+          parts.push(a.road || a.street);
+        }
+
+        if (a.neighbourhood || a.suburb || a.quarter) {
+          parts.push(a.neighbourhood || a.suburb || a.quarter);
+        }
+
+        if (a.locality || a.village || a.town) {
+          parts.push(a.locality || a.village || a.town);
+        }
+
+        if (a.city) parts.push(a.city);
+
+        if (a.postcode) parts.push(a.postcode);
+
+        if (parts.length > 0) {
+          address = parts.join(", ");
+        }
+      }
+
+      if (!address && data.display_name) {
+        const parts = data.display_name.split(", ");
+        address = parts.slice(0, 5).join(", ");
+      }
+
+      if (!address) {
+        address = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+      }
+
+      setCurrentLocation({ lat, lng, address });
+    } catch {
+      setCurrentLocation({ lat, lng, address: `${lat.toFixed(6)}, ${lng.toFixed(6)}` });
+    }
   };
 
   const handleSearch = async (query: string) => {
@@ -245,10 +282,10 @@ export default function AddressPickerPage() {
       async (position) => {
         const { latitude, longitude, accuracy } = position.coords;
         setLocationAccuracy(accuracy);
-        setLocationStatus(accuracy <= 50 ? "good" : "improving");
+        setLocationStatus(accuracy <= 10 ? "good" : accuracy <= 30 ? "improving" : "detecting");
 
         if (mapInstanceRef.current && markerRef.current) {
-          mapInstanceRef.current.setView([latitude, longitude], 17);
+          mapInstanceRef.current.setView([latitude, longitude], 19);
           markerRef.current.setLatLng([latitude, longitude]);
         }
 
