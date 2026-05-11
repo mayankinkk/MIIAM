@@ -710,7 +710,7 @@ function OrderCard({ order, onAccept, isSelected, onToggleSelect }: { order: Ord
 }
 
 function ShoppingCard({ order, onUpdateItemStatus, onMarkDelivered, onReportIssue, onStartDelivery, onShareLocation }: { order: Order; onUpdateItemStatus: (itemId: string, status: string, price?: number) => void; onMarkDelivered: () => void; onReportIssue: () => void; onStartDelivery?: () => void; onShareLocation?: () => void }) {
-  const [items, setItems] = useState(order.items || []);
+  const items = order.items || [];
   const pickedCount = items.filter((i: any) => i.status === "available").length;
   const totalSpent = items.reduce((s: number, i: any) => s + ((i.actual_price || 0) * i.quantity), 0);
   const profit = (order.total_amount || 0) + (order.delivery_fee || 0) - totalSpent;
