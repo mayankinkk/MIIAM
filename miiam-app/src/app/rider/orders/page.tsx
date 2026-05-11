@@ -486,18 +486,18 @@ export default function RiderOrdersPage() {
       )}
 
       {/* Quick Stats */}
-      <div className="px-4 py-3 flex gap-3 overflow-x-auto">
-        <div className="bg-white px-4 py-2 rounded-xl shadow-sm min-w-fit">
+      <div className="px-4 py-3 flex gap-3 overflow-x-auto no-scrollbar">
+        <div className="bg-white px-4 py-2 rounded-xl shadow-sm min-w-[90px] shrink-0">
           <p className="text-[10px] text-slate-400">TODAY'S EARNINGS</p>
-          <p className="font-black text-green-600">₹{todayEarnings}</p>
+          <p className="font-black text-green-600 text-sm">₹{todayEarnings}</p>
         </div>
-        <div className="bg-white px-4 py-2 rounded-xl shadow-sm min-w-fit">
+        <div className="bg-white px-4 py-2 rounded-xl shadow-sm min-w-[80px] shrink-0">
           <p className="text-[10px] text-slate-400">COMPLETED</p>
-          <p className="font-black text-[#0b50d5]">{completedOrders.length}</p>
+          <p className="font-black text-[#0b50d5] text-sm">{completedOrders.length}</p>
         </div>
-        <div className="bg-white px-4 py-2 rounded-xl shadow-sm min-w-fit">
+        <div className="bg-white px-4 py-2 rounded-xl shadow-sm min-w-[90px] shrink-0">
           <p className="text-[10px] text-slate-400">IN PROGRESS</p>
-          <p className="font-black text-purple-600">{shoppingOrders.length}</p>
+          <p className="font-black text-purple-600 text-sm">{shoppingOrders.length}</p>
         </div>
       </div>
 
@@ -741,35 +741,37 @@ function ShoppingCard({ order, onUpdateItemStatus, onMarkDelivered, onReportIssu
       {/* Items List */}
       <div className="space-y-2 mb-3 max-h-48 overflow-y-auto">
         {items.map((item: any) => (
-          <div key={item.id} className="flex items-center gap-2 p-2 bg-slate-50 rounded-lg">
-            <div className="flex-1">
-              <p className="font-medium text-sm">{item.quantity}x {item.menu_item?.name}</p>
-              <p className="text-xs text-slate-400">Expected: ₹{item.unit_price}</p>
+          <div key={item.id} className="flex flex-col gap-1 p-3 bg-slate-50 rounded-lg">
+            <div className="flex items-center justify-between gap-2">
+              <p className="font-medium text-sm flex-1 min-w-0 truncate">{item.quantity}x {item.menu_item?.name || item.name}</p>
+              <p className="text-xs text-slate-400 shrink-0">₹{item.unit_price}</p>
             </div>
-            <select
-              value={item.status || "pending"}
-              onChange={(e) => onUpdateItemStatus(item.id, e.target.value, item.actual_price)}
-              className={`text-xs font-bold px-2 py-1 rounded-full ${
-                item.status === "available" ? "bg-green-100 text-green-700" :
-                item.status === "unavailable" ? "bg-red-100 text-red-700" :
-                item.status === "different_brand" ? "bg-amber-100 text-amber-700" :
-                "bg-slate-100 text-slate-500"
-              }`}
-            >
-              <option value="pending">Pending</option>
-              <option value="available">✅ Available</option>
-              <option value="unavailable">❌ Not Available</option>
-              <option value="different_brand">🔄 Different Brand</option>
-            </select>
-            {item.status === "available" && (
-              <input
-                type="number"
-                placeholder="Price"
-                value={item.actual_price || ""}
-                onChange={(e) => onUpdateItemStatus(item.id, "available", parseFloat(e.target.value))}
-                className="w-16 text-xs border rounded px-1 py-1"
-              />
-            )}
+            <div className="flex items-center gap-2">
+              <select
+                value={item.status || "pending"}
+                onChange={(e) => onUpdateItemStatus(item.id, e.target.value, item.actual_price)}
+                className={`flex-1 text-xs font-bold px-2 py-1.5 rounded-lg border-0 ${
+                  item.status === "available" ? "bg-green-100 text-green-700" :
+                  item.status === "unavailable" ? "bg-red-100 text-red-700" :
+                  item.status === "different_brand" ? "bg-amber-100 text-amber-700" :
+                  "bg-slate-100 text-slate-500"
+                }`}
+              >
+                <option value="pending">Pending</option>
+                <option value="available">✅ Available</option>
+                <option value="unavailable">❌ Not Available</option>
+                <option value="different_brand">🔄 Different Brand</option>
+              </select>
+              {item.status === "available" && (
+                <input
+                  type="number"
+                  placeholder="Actual ₹"
+                  value={item.actual_price || ""}
+                  onChange={(e) => onUpdateItemStatus(item.id, "available", parseFloat(e.target.value))}
+                  className="w-20 text-xs border border-slate-200 rounded-lg px-2 py-1.5 bg-white"
+                />
+              )}
+            </div>
           </div>
         ))}
       </div>
@@ -797,29 +799,33 @@ function ShoppingCard({ order, onUpdateItemStatus, onMarkDelivered, onReportIssu
       </div>
 
       {/* Actions */}
-      <div className="flex gap-2">
-        {pickedCount === items.length && onStartDelivery && (
-          <button onClick={onStartDelivery} className="py-2 px-3 bg-[#0b50d5] text-white rounded-lg text-sm font-bold flex items-center gap-1">
-            <span className="material-symbols-outlined text-sm">directions_bike</span>
-            Start Delivery
+      <div className="space-y-2">
+        {/* Top row: optional start delivery + report */}
+        <div className="flex gap-2">
+          {pickedCount === items.length && items.length > 0 && onStartDelivery && order.status !== "on_the_way" && (
+            <button onClick={onStartDelivery} className="flex-1 py-2.5 px-3 bg-[#0b50d5] text-white rounded-xl text-sm font-bold flex items-center justify-center gap-1.5">
+              <span className="material-symbols-outlined text-sm">directions_bike</span>
+              Start Delivery
+            </button>
+          )}
+          {order.status === "on_the_way" && onShareLocation && (
+            <button onClick={onShareLocation} className="flex-1 py-2.5 px-3 bg-green-500 text-white rounded-xl text-sm font-bold flex items-center justify-center gap-1.5">
+              <span className="material-symbols-outlined text-sm">share_location</span>
+              Share Location
+            </button>
+          )}
+          <button onClick={onReportIssue} className="py-2.5 px-4 bg-red-50 text-red-600 rounded-xl text-sm font-bold border border-red-100">
+            Report
           </button>
-        )}
-        {order.status === "on_the_way" && onShareLocation && (
-          <button onClick={onShareLocation} className="py-2 px-3 bg-green-500 text-white rounded-lg text-sm font-bold flex items-center gap-1">
-            <span className="material-symbols-outlined text-sm">share_location</span>
-            Share Live Location
-          </button>
-        )}
-        <button onClick={onReportIssue} className="py-2 px-3 bg-red-50 text-red-600 rounded-lg text-sm font-bold">
-          Report Issue
-        </button>
+        </div>
+        {/* Bottom row: full-width collect button */}
         <button
           onClick={onMarkDelivered}
           disabled={pickedCount === 0}
-          className="flex-1 bg-green-500 text-white py-2 rounded-lg font-bold disabled:opacity-50 flex items-center justify-center gap-1"
+          className="w-full bg-green-500 text-white py-3 rounded-xl font-bold disabled:opacity-40 flex items-center justify-center gap-2 text-sm"
         >
           <span className="material-symbols-outlined text-sm">payments</span>
-          Complete & Collect ₹{order.total_amount + (order.delivery_fee || 0)}
+          Complete &amp; Collect ₹{(order.total_amount || 0) + (order.delivery_fee || 0)}
         </button>
       </div>
     </div>
@@ -874,7 +880,10 @@ function RiderNavBar({ active }: { active: string }) {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-4 bg-white/90 backdrop-blur-xl shadow-[0px_-10px_30px_rgba(11,80,213,0.1)] rounded-t-[3rem]">
+    <nav
+      className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pt-4 bg-white/90 backdrop-blur-xl shadow-[0px_-10px_30px_rgba(11,80,213,0.1)] rounded-t-[2rem]"
+      style={{ paddingBottom: "calc(1.5rem + env(safe-area-inset-bottom, 0px))" }}
+    >
       {navItems.map(item => (
         <Link
           key={item.name}
