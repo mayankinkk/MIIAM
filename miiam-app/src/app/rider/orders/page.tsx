@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -710,10 +710,107 @@ function OrderCard({ order, onAccept, isSelected, onToggleSelect }: { order: Ord
 }
 
 function ShoppingCard({ order, onUpdateItemStatus, onMarkDelivered, onReportIssue, onStartDelivery, onShareLocation }: { order: Order; onUpdateItemStatus: (itemId: string, status: string, price?: number) => void; onMarkDelivered: () => void; onReportIssue: () => void; onStartDelivery?: () => void; onShareLocation?: () => void }) {
+  const supabase = createClient();
   const items = order.items || [];
   const pickedCount = items.filter((i: any) => i.status === "available").length;
   const totalSpent = items.reduce((s: number, i: any) => s + ((i.actual_price || 0) * i.quantity), 0);
   const profit = (order.total_amount || 0) + (order.delivery_fee || 0) - totalSpent;
+  const [showMap, setShowMap] = useState(false);
+  const mapRef = useRef<HTMLDivElement>(null);
+  const mapInstanceRef = useRef<any>(null);
+
+  useEffect(() => {
+    if (!showMap || !mapRef.current || mapInstanceRef.current) return;
+
+    let isMounted = true;
+
+    async function initMap() {
+      if (!isMounted || !mapRef.current) return;
+
+      const L = await import('leaflet');
+      await import('leaflet/dist/leaflet.css');
+
+      const deliveryAddr = order.address?.street || order.delivery_address || "";
+      let centerLat = 26.1445;
+      let centerLng = 91.7362;
+
+      const map = L.map(mapRef.current, { zoomControl: false }).setView([centerLat, centerLng], 16);
+      L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+      mapInstanceRef.current = map;
+
+      const homeIcon = L.divIcon({
+        className: '',
+        html: `<div style="background:#ba001c;width:40px;height:40px;border-radius:50%;border:4px solid white;box-shadow:0 3px 10px rgba(186,0,28,0.4);display:flex;align-items:center;justify-content:center;font-size:18px;">🏠</div>`,
+        iconSize: [40, 40],
+        iconAnchor: [20, 40],
+      });
+
+      L.marker([centerLat, centerLng], { icon: homeIcon })
+        .bindPopup(`<b>Deliver Here:</b><br>${deliveryAddr}`)
+        .addTo(map);
+
+      if (deliveryAddr) {
+        try {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(deliveryAddr)}&limit=1`,
+            { headers: { 'Accept-Language': 'en', 'User-Agent': 'MIIAM/1.0' } }
+          );
+          const data = await res.json();
+          if (data[0] && isMounted) {
+            centerLat = parseFloat(data[0].lat);
+            centerLng = parseFloat(data[0].lon);
+            map.setView([centerLat, centerLng], 17);
+            L.marker([centerLat, centerLng], { icon: homeIcon })
+              .bindPopup(`<b>Deliver Here:</b><br>${deliveryAddr}`)
+              .addTo(map);
+          }
+        } catch (_) {}
+      }
+
+      const channel = supabase
+        .channel(`rider-loc-${order.id}`)
+        .on('postgres_changes', {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'rider_locations',
+          filter: `order_id=eq.${order.id}`,
+        }, async (payload: any) => {
+          if (payload.new?.lat && payload.new?.lng && isMounted) {
+            const riderIcon = L.divIcon({
+              className: '',
+              html: `<div style="background:#0b50d5;width:36px;height:36px;border-radius:50%;border:3px solid white;box-shadow:0 3px 10px rgba(11,80,213,0.4);display:flex;align-items:center;justify-content:center;font-size:16px;">🛵</div>`,
+              iconSize: [36, 36],
+              iconAnchor: [18, 36],
+            });
+            L.marker([payload.new.lat, payload.new.lng], { icon: riderIcon })
+              .bindPopup('You are here')
+              .addTo(map);
+          }
+        })
+        .subscribe();
+
+      return () => {
+        isMounted = false;
+        supabase.removeChannel(channel);
+        mapInstanceRef.current?.remove();
+        mapInstanceRef.current = null;
+      };
+    }
+
+    initMap();
+
+    return () => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
+    };
+  }, [showMap, order.id, order.address, order.delivery_address]);
+
+  const deliveryAddress = order.address?.street || order.delivery_address || "Customer address not available";
+  const customerPhone = order.customer_phone || "";
 
   return (
     <div className="bg-white rounded-2xl p-4 shadow-lg">
@@ -721,16 +818,44 @@ function ShoppingCard({ order, onUpdateItemStatus, onMarkDelivered, onReportIssu
         <div>
           <h3 className="font-bold text-lg text-[#4d212a]">{order.vendor?.name}</h3>
           <p className="text-xs text-slate-400">{order.vendor?.address}</p>
-          <p className="text-xs text-slate-400 flex items-center gap-1 mt-1">
+          <p className="text-xs text-[#ba001c] font-semibold flex items-center gap-1 mt-1">
             <span className="material-symbols-outlined text-xs">location_on</span>
-            Deliver: {order.address?.street}
+            Deliver: {deliveryAddress}
           </p>
+          {customerPhone && (
+            <a href={`tel:${customerPhone}`} className="text-xs text-[#0b50d5] font-semibold flex items-center gap-1 mt-1">
+              <span className="material-symbols-outlined text-xs">call</span>
+              Call Customer: {customerPhone}
+            </a>
+          )}
         </div>
         <div className="text-right">
           <p className="text-lg font-black text-[#0b50d5]">₹{order.total_amount + (order.delivery_fee || 0)}</p>
           <p className="text-[10px] text-slate-400">Collect from customer</p>
         </div>
       </div>
+
+      {/* Live Map Toggle */}
+      {order.status === "on_the_way" && (
+        <div className="mb-3">
+          <button
+            onClick={() => setShowMap(!showMap)}
+            className="w-full py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-xl text-sm font-bold flex items-center justify-center gap-2"
+          >
+            <span className="material-symbols-outlined text-sm">{showMap ? "visibility_off" : "map"}</span>
+            {showMap ? "Hide Map" : "Show Live Tracking"}
+          </button>
+          {showMap && (
+            <div className="mt-2 rounded-xl overflow-hidden border-2 border-blue-200">
+              <div ref={mapRef} className="w-full h-64" />
+              <div className="bg-blue-50 p-2 text-center text-xs text-blue-700 font-medium">
+                <span className="material-symbols-outlined text-xs align-middle">directions_bike</span>
+                Live tracking active - route to customer
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Progress Bar */}
       <div className="bg-slate-100 rounded-full h-2 mb-2 overflow-hidden">
