@@ -23,7 +23,10 @@ export default function BottomNavBar() {
   }, []);
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl shadow-[0px_-4px_20px_rgba(0,0,0,0.08)] md:hidden border-t border-slate-100">
+    <nav
+      className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl shadow-[0px_-4px_20px_rgba(0,0,0,0.08)] md:hidden border-t border-slate-100"
+      style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
+    >
       <div className="flex justify-around items-center px-2 py-2">
         {navItems.map((item) => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
