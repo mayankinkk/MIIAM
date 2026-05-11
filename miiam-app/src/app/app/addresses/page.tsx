@@ -9,7 +9,7 @@ const addressTypes = [
   { id: "other", icon: "place", label: "Other", color: "bg-slate-100 text-slate-700" },
 ];
 
-const savedAddresses = [
+const defaultAddresses = [
   {
     id: "addr1",
     label: "Home",
@@ -39,7 +39,9 @@ const savedAddresses = [
 ];
 
 export default function AddressBookPage() {
-  const [addresses, setAddresses] = useState(savedAddresses);
+  const savedFromStorage = JSON.parse(localStorage.getItem('miiam_addresses') || '[]');
+  const mergedAddresses = savedFromStorage.length > 0 ? savedFromStorage : defaultAddresses;
+  const [addresses, setAddresses] = useState(mergedAddresses);
   const [showAddAddress, setShowAddAddress] = useState(false);
   const [editingAddress, setEditingAddress] = useState<typeof savedAddresses[0] | null>(null);
   const [newAddress, setNewAddress] = useState({
@@ -118,7 +120,9 @@ export default function AddressBookPage() {
 
   const handleDelete = (addressId: string) => {
     if (confirm("Delete this address?")) {
-      setAddresses(addresses.filter((addr) => addr.id !== addressId));
+      const updatedAddresses = addresses.filter((addr) => addr.id !== addressId);
+      setAddresses(updatedAddresses);
+      localStorage.setItem('miiam_addresses', JSON.stringify(updatedAddresses));
     }
   };
 
@@ -130,11 +134,13 @@ export default function AddressBookPage() {
     };
 
     if (editingAddress) {
-      setAddresses(
-        addresses.map((addr) => (addr.id === editingAddress.id ? { ...addr, ...addressData } : addr))
-      );
+      const updatedAddresses = addresses.map((addr) => (addr.id === editingAddress.id ? { ...addr, ...addressData } : addr));
+      setAddresses(updatedAddresses);
+      localStorage.setItem('miiam_addresses', JSON.stringify(updatedAddresses));
     } else {
-      setAddresses([...addresses, addressData as typeof savedAddresses[0]]);
+      const updatedAddresses = [...addresses, addressData as typeof addresses[0]];
+      setAddresses(updatedAddresses);
+      localStorage.setItem('miiam_addresses', JSON.stringify(updatedAddresses));
     }
 
     setShowAddAddress(false);
@@ -281,13 +287,22 @@ export default function AddressBookPage() {
         </section>
 
         {/* Add New Address Button */}
-        <button
-          onClick={() => setShowAddAddress(true)}
-          className="w-full py-4 bg-[#ba001c] text-white font-extrabold rounded-2xl flex items-center justify-center gap-2 hover:bg-[#a40017] transition-colors shadow-lg shadow-[#ba001c]/20"
-        >
-          <span className="material-symbols-outlined">add_location</span>
-          Add New Address
-        </button>
+        <div className="space-y-3">
+          <Link
+            href="/app/addresses/add"
+            className="w-full py-4 bg-[#ba001c] text-white font-extrabold rounded-2xl flex items-center justify-center gap-2 hover:bg-[#a40017] transition-colors shadow-lg shadow-[#ba001c]/20"
+          >
+            <span className="material-symbols-outlined">add_location</span>
+            Add New Address
+          </Link>
+          <Link
+            href="/app/addresses/add"
+            className="w-full py-3 bg-[#0b50d5] text-white font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-[#0940b0] transition-colors"
+          >
+            <span className="material-symbols-outlined">my_location</span>
+            Auto Detect on Map
+          </Link>
+        </div>
 
         {/* Info */}
         <div className="mt-8 bg-blue-50 rounded-2xl p-4">

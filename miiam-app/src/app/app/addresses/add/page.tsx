@@ -306,9 +306,14 @@ export default function AddressPickerPage() {
     );
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!currentLocation?.address) {
       alert("Please select a location on the map");
+      return;
+    }
+
+    if (currentLocation.address === "Fetching address...") {
+      alert("Please wait for address to load");
       return;
     }
 
@@ -323,6 +328,25 @@ export default function AddressPickerPage() {
 
     const addressLabelText = addressLabel === "home" ? "Home" : addressLabel === "office" ? "Office" : "Other";
 
+    const newAddress = {
+      id: "addr" + Date.now(),
+      label: addressLabelText,
+      name: houseNumber.trim() || fullAddress.split(",")[0],
+      street: fullAddress,
+      city: "",
+      state: "",
+      postal_code: "",
+      phone: "",
+      instructions: deliveryInstructions,
+      is_default: true,
+      lat: currentLocation.lat,
+      lng: currentLocation.lng
+    };
+
+    const savedAddresses = JSON.parse(localStorage.getItem('miiam_addresses') || '[]');
+    const updatedAddresses = [...savedAddresses, newAddress];
+    localStorage.setItem('miiam_addresses', JSON.stringify(updatedAddresses));
+
     localStorage.setItem('miiam_selected_address', JSON.stringify({
       address: fullAddress,
       label: addressLabelText,
@@ -330,6 +354,7 @@ export default function AddressPickerPage() {
       lng: currentLocation.lng
     }));
 
+    alert("Address saved successfully!");
     router.push("/app/checkout");
   };
 
