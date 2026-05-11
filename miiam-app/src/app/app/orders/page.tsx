@@ -26,17 +26,23 @@ export default function OrdersPage() {
   const { addItem } = useCartStore();
   const supabase = createClient();
 
+  const [userId, setUserId] = useState<string | null>(null);
+
   useEffect(() => {
     fetchOrders();
+  }, []);
+
+  useEffect(() => {
+    if (!userId) return;
 
     const channel = supabase
-      .channel('user-orders-realtime')
+      .channel(`orders-list-${userId}`)
       .on('postgres_changes', {
         event: 'UPDATE',
         schema: 'public',
         table: 'orders',
-      }, (payload) => {
-        if (payload.new && payload.new.user_id === user?.id) {
+      }, (payload: any) => {
+        if (payload.new?.user_id === userId) {
           setOrders(prev => prev.map(o => o.id === payload.new.id ? { ...o, ...payload.new } : o));
         }
       })
@@ -45,16 +51,16 @@ export default function OrdersPage() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [user]);
+  }, [userId]);
 
   const fetchOrders = async () => {
     try {
       const { data: { user: authUser } } = await supabase.auth.getUser();
-      setUser(authUser);
       if (!authUser) {
         setLoading(false);
         return;
       }
+      setUserId(authUser.id);
 
       const { data: ordersData, error: ordersError } = await supabase
         .from("orders")

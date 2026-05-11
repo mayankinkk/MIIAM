@@ -186,10 +186,12 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
       }, (payload) => {
         setRiderLocation({ lat: payload.new.lat, lng: payload.new.lng });
       })
-      .subscribe();
+      .subscribe((status) => {
+        console.log("Order tracking channel status:", status);
+      });
 
     return () => { supabase.removeChannel(channel); };
-  }, [id, supabase]);
+  }, [id]);
 
   useEffect(() => {
     if (!order || order.status !== "on_the_way") return;
