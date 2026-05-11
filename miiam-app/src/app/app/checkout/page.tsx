@@ -263,6 +263,13 @@ const scheduledDelivery = scheduledDate && scheduledTime
                 <span className="material-symbols-outlined">add</span>
                 Add New Address
               </Link>
+              <Link 
+                href="/app/addresses/add" 
+                className="mt-2 w-full p-4 rounded-lg border-2 border-[#0b50d5] bg-[#e8f0fe] flex items-center justify-center gap-2 text-[#0b50d5] hover:bg-[#d0e0ff] transition-all"
+              >
+                <span className="material-symbols-outlined">my_location</span>
+                Auto Detect Address on Map
+              </Link>
             </section>
 
             {/* Scheduled Services */}

@@ -35,6 +35,9 @@ export default function AddressPickerPage() {
   const [houseNumber, setHouseNumber] = useState("");
   const [landmark, setLandmark] = useState("");
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [autoDetectOnLoad, setAutoDetectOnLoad] = useState(false);
+  const [locationAccuracy, setLocationAccuracy] = useState<number | null>(null);
+  const [locationStatus, setLocationStatus] = useState<"detecting" | "improving" | "good" | "error">("detecting");
 
   useEffect(() => {
     let map: any;
@@ -92,6 +95,9 @@ export default function AddressPickerPage() {
     };
 
     initMap();
+
+    setAutoDetectOnLoad(true);
+    handleDetectLocation(false);
 
     return () => {
       if (mapInstanceRef.current) {
@@ -168,39 +174,96 @@ export default function AddressPickerPage() {
     setSearchResults([]);
   };
 
-  const handleDetectLocation = () => {
-    setDetecting(true);
-    setLocationError("");
+  const handleDetectLocation = (showLoading = true) => {
+    if (showLoading) {
+      setDetecting(true);
+      setLocationError("");
+      setLocationStatus("detecting");
+    }
 
     if (!navigator.geolocation) {
       setLocationError("Geolocation not supported");
-      setDetecting(false);
+      setLocationStatus("error");
+      if (showLoading) setDetecting(false);
       return;
     }
 
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const { latitude, longitude, accuracy } = position.coords;
-        
+    let watchId: number | null = null;
+    let iteration = 0;
+    const maxIterations = 3;
+    let lastPos: GeolocationPosition | null = null;
+
+    const successHandler = async (position: GeolocationPosition) => {
+      const { latitude, longitude, accuracy } = position.coords;
+      iteration++;
+
+      setLocationAccuracy(accuracy);
+
+      if (accuracy <= 10) {
+        if (watchId !== null) navigator.geolocation.clearWatch(watchId);
+        setLocationStatus("good");
         if (mapInstanceRef.current && markerRef.current) {
-          mapInstanceRef.current.setView([latitude, longitude], 16);
+          mapInstanceRef.current.setView([latitude, longitude], 17);
           markerRef.current.setLatLng([latitude, longitude]);
         }
-        
         await reverseGeocode(latitude, longitude);
         setDetecting(false);
-      },
-      (error) => {
-        setDetecting(false);
-        switch (error.code) {
-          case 1: setLocationError("Location permission denied"); break;
-          case 2: setLocationError("Location unavailable"); break;
-          case 3: setLocationError("Location timed out"); break;
-          default: setLocationError("Could not get location");
+        return;
+      }
+
+      if (iteration < maxIterations) {
+        lastPos = position;
+        setLocationStatus("improving");
+      } else {
+        if (watchId !== null) navigator.geolocation.clearWatch(watchId);
+        const finalLat = lastPos?.coords.latitude ?? latitude;
+        const finalLng = lastPos?.coords.longitude ?? longitude;
+        setLocationStatus("good");
+        if (mapInstanceRef.current && markerRef.current) {
+          mapInstanceRef.current.setView([finalLat, finalLng], 17);
+          markerRef.current.setLatLng([finalLat, finalLng]);
         }
-      },
-      { enableHighAccuracy: true, timeout: 30000, maximumAge: 0 }
+        await reverseGeocode(finalLat, finalLng);
+        setDetecting(false);
+      }
+    };
+
+    const errorHandler = (error: GeolocationPositionError) => {
+      if (watchId !== null) navigator.geolocation.clearWatch(watchId);
+      setDetecting(false);
+      setLocationStatus("error");
+      switch (error.code) {
+        case 1: setLocationError("Location permission denied"); break;
+        case 2: setLocationError("Location unavailable"); break;
+        case 3: setLocationError("Location timed out"); break;
+        default: setLocationError("Could not get location");
+      }
+    };
+
+    watchId = navigator.geolocation.watchPosition(
+      successHandler,
+      errorHandler,
+      {
+        enableHighAccuracy: true,
+        timeout: 60000,
+        maximumAge: 0
+      }
     );
+
+    setTimeout(() => {
+      if (watchId !== null && iteration < maxIterations) {
+        navigator.geolocation.clearWatch(watchId);
+        if (lastPos) {
+          setLocationStatus("good");
+          if (mapInstanceRef.current && markerRef.current) {
+            mapInstanceRef.current.setView([lastPos.coords.latitude, lastPos.coords.longitude], 17);
+            markerRef.current.setLatLng([lastPos.coords.latitude, lastPos.coords.longitude]);
+          }
+          reverseGeocode(lastPos.coords.latitude, lastPos.coords.longitude);
+        }
+        setDetecting(false);
+      }
+    }, 15000);
   };
 
   const handleSave = () => {
@@ -247,8 +310,8 @@ export default function AddressPickerPage() {
       <div className="flex-1 relative pt-[60px]">
         <div ref={mapRef} className="absolute inset-0" />
 
-        <button 
-          onClick={handleDetectLocation}
+        <button
+          onClick={() => handleDetectLocation(true)}
           disabled={detecting}
           className="absolute bottom-36 right-4 z-40 bg-white p-3 rounded-full shadow-lg hover:bg-slate-50 transition-all"
           title="Use current location"
@@ -260,14 +323,51 @@ export default function AddressPickerPage() {
           )}
         </button>
 
+        {/* Accuracy Status */}
+        {detecting && (
+          <div className="absolute top-24 left-4 right-4 z-40 bg-white/95 backdrop-blur p-3 rounded-xl shadow-lg">
+            <div className="flex items-center gap-2">
+              {locationStatus === "improving" ? (
+                <span className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <span className="w-4 h-4 bg-blue-500 rounded-full animate-pulse" />
+              )}
+              <span className="text-sm font-medium text-slate-700">
+                {locationStatus === "improving" ? "Improving accuracy..." : "Detecting location..."}
+              </span>
+            </div>
+            {locationAccuracy && (
+              <p className="text-xs text-slate-500 mt-1">
+                Accuracy: {locationAccuracy.toFixed(0)}m {locationAccuracy <= 10 ? "✓" : "(need <10m)"}
+              </p>
+            )}
+          </div>
+        )}
+
         {currentLocation && (
           <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-xl z-50 max-h-[45vh] overflow-y-auto">
             <div className="p-4 border-b border-slate-100">
               <div className="flex items-center gap-2 mb-2">
-                <span className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                  <span className="material-symbols-outlined text-green-600 text-sm">check</span>
+                {locationAccuracy && locationAccuracy <= 10 ? (
+                  <span className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                    <span className="material-symbols-outlined text-green-600 text-sm">check</span>
+                  </span>
+                ) : locationAccuracy ? (
+                  <span className="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center">
+                    <span className="material-symbols-outlined text-amber-600 text-sm">warning</span>
+                  </span>
+                ) : (
+                  <span className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                    <span className="material-symbols-outlined text-green-600 text-sm">check</span>
+                  </span>
+                )}
+                <span className={`text-xs font-bold px-2 py-1 rounded-full ${
+                  locationAccuracy && locationAccuracy <= 10 ? "bg-green-50 text-green-600" :
+                  locationAccuracy ? "bg-amber-50 text-amber-600" : "bg-green-50 text-green-600"
+                }`}>
+                  {locationAccuracy && locationAccuracy <= 10 ? "High Accuracy" :
+                   locationAccuracy ? `Accuracy: ${locationAccuracy.toFixed(0)}m` : "Location Selected"}
                 </span>
-                <span className="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full">Location Selected</span>
               </div>
               <p className="font-medium text-[#4d212a]">{currentLocation.address}</p>
             </div>
