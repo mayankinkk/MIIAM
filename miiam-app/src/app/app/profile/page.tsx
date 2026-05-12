@@ -83,6 +83,7 @@ export default function EnhancedProfilePage() {
           <div>
             <h2 className="text-2xl font-black">{displayName}</h2>
             <p className="text-white/80 text-sm">{user?.email}</p>
+            {profile?.phone && <p className="text-white/60 text-sm">{profile.phone}</p>}
             <div className="flex items-center gap-2 mt-2">
               <span className="bg-amber-400 text-amber-900 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
                 <span className="material-symbols-outlined text-[10px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
