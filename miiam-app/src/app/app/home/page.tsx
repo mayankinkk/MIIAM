@@ -64,23 +64,39 @@ export default function HomePage() {
           setUser((prev: any) => ({ ...prev, profile_name: profileData.full_name }));
         }
 
-        // Fetch user's active order
-        const { data: orders } = await supabase
+        // Fetch user's active order safely (avoiding joins that might fail if foreign keys are missing)
+        const { data: orders, error: ordersError } = await supabase
           .from("orders")
-          .select("*, vendor:vendors(*), items:order_items(*, menu_item:menu_items(name))")
+          .select("*")
           .eq("user_id", user.id)
           .in("status", ["pending", "accepted", "preparing", "shopping", "picking_up", "on_the_way"])
           .order("placed_at", { ascending: false })
           .limit(1);
 
+        if (ordersError) console.error("Error fetching active order:", ordersError);
+
         if (orders && orders.length > 0) {
           const order = orders[0];
           
+          let vendorName = "Restaurant";
+          if (order.vendor_id) {
+             const { data: vendorData } = await supabase.from("vendors").select("name").eq("id", order.vendor_id).single();
+             if (vendorData?.name) vendorName = vendorData.name;
+          }
+
           let itemsText = "Items";
-          if (order.items && order.items.length > 0) {
-             const firstItem = order.items[0];
-             const itemName = firstItem.menu_item?.name || firstItem.name || "Item";
-             itemsText = `${itemName} x${firstItem.quantity}${order.items.length > 1 ? ` +${order.items.length - 1} more` : ''}`;
+          const { data: orderItems } = await supabase.from("order_items").select("*").eq("order_id", order.id);
+          
+          if (orderItems && orderItems.length > 0) {
+             const firstItem = orderItems[0];
+             let itemName = firstItem.name || "Item";
+             
+             if (firstItem.menu_item_id) {
+                const { data: menuItem } = await supabase.from("menu_items").select("name").eq("id", firstItem.menu_item_id).single();
+                if (menuItem?.name) itemName = menuItem.name;
+             }
+             
+             itemsText = `${itemName} x${firstItem.quantity}${orderItems.length > 1 ? ` +${orderItems.length - 1} more` : ''}`;
           }
 
           let eta = "30 mins";
@@ -90,7 +106,7 @@ export default function HomePage() {
 
           setActiveOrder({
             id: order.id,
-            vendor: order.vendor?.name || "Restaurant",
+            vendor: vendorName,
             items: itemsText,
             status: order.status,
             eta: eta,
