@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 const categories = [
   { id: "food", label: "Food", icon: "restaurant", color: "bg-orange-100", iconColor: "text-orange-600", offer: "20% OFF" },
   { id: "grocery", label: "Grocery", icon: "shopping_basket", color: "bg-green-100", iconColor: "text-green-600", offer: "FREE Delivery" },
-  { id: "beauty", label: "Beauty", icon: "spa", color: "bg-pink-100", iconColor: "text-pink-600", offer: "₹100 OFF" },
+  { id: "beauty", label: "Beauty & Wellness", icon: "spa", color: "bg-pink-100", iconColor: "text-pink-600", offer: "₹100 OFF" },
   { id: "services", label: "Services", icon: "handyman", color: "bg-blue-100", iconColor: "text-blue-600", offer: "Flat ₹200 OFF" },
   { id: "pharmacy", label: "Pharmacy", icon: "medication", color: "bg-purple-100", iconColor: "text-purple-600", offer: "15% OFF" },
   { id: "flowers", label: "Flowers & Gifts", icon: "local_florist", color: "bg-rose-100", iconColor: "text-rose-600", offer: null },
