@@ -47,8 +47,10 @@ export async function POST(request: NextRequest) {
           // Combine date and time
           const scheduledDateTime = new Date(`${datePart} ${startTime}`);
           
-          // If scheduled time has passed, activate the order
-          if (scheduledDateTime <= new Date()) {
+          // Activate 60 minutes BEFORE scheduled time so riders can prepare
+          const activateTime = new Date(scheduledDateTime.getTime() - 60 * 60 * 1000); // 60 mins before
+          
+          if (activateTime <= new Date()) {
             const { error: updateError } = await supabase
               .from("orders")
               .update({ 
@@ -64,8 +66,8 @@ export async function POST(request: NextRequest) {
               // Send notification to user
               await supabase.from("notifications").insert({
                 user_id: order.user_id,
-                title: "Order Ready! 🚀",
-                body: `Your scheduled order is now active and ready for delivery.`,
+                title: "Rider Preparing Your Order! 🚴",
+                body: `Your order for ${scheduledTimeStr} is now visible to riders. They'll pick it up soon!`,
                 type: "order_activated",
                 order_id: order.id
               });
