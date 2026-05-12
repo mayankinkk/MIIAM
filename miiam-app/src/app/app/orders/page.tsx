@@ -21,7 +21,7 @@ export default function OrdersPage() {
   const [reordering, setReordering] = useState<string | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<any>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(true); // assume true until proven otherwise
   const router = useRouter();
   const { addItem } = useCartStore();
   const supabase = createClient();
@@ -57,9 +57,11 @@ export default function OrdersPage() {
     try {
       const { data: { user: authUser } } = await supabase.auth.getUser();
       if (!authUser) {
+        setIsAuthenticated(false);
         setLoading(false);
         return;
       }
+      setIsAuthenticated(true);
       setUserId(authUser.id);
 
       const { data: ordersData, error: ordersError } = await supabase
@@ -97,6 +99,7 @@ export default function OrdersPage() {
       setLoading(false);
     }
   };
+
 
   const handleReorder = async (order: Order) => {
     setReordering(order.id);
@@ -148,7 +151,7 @@ export default function OrdersPage() {
             <div className="w-12 h-12 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin"></div>
             <p className="text-[#814c55] font-medium">Fetching your orders...</p>
           </div>
-        ) : !user ? (
+        ) : !isAuthenticated ? (
           <div className="text-center py-24">
             <div className="text-8xl mb-6">👤</div>
             <h2 className="text-2xl font-bold text-[#4d212a] mb-3">Please log in</h2>

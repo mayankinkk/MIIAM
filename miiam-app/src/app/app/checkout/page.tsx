@@ -6,6 +6,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useToastStore } from "@/lib/store/toastStore";
+import AddressPickerSheet, { type SelectedAddress } from "@/components/AddressPickerSheet";
 
 interface PromoCode {
   code: string;
@@ -28,7 +29,9 @@ export default function CheckoutPage() {
   const tipOptions = [0, 10, 20, 50];
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
-  const [deliveryAddress, setDeliveryAddress] = useState<{ address: string; lat?: number; lng?: number } | null>(null);
+  const [deliveryAddress, setDeliveryAddress] = useState<SelectedAddress | null>(null);
+  const [savedAddresses, setSavedAddresses] = useState<SelectedAddress[]>([]);
+  const [showAddressPicker, setShowAddressPicker] = useState(false);
   const router = useRouter();
   const { items, totalPrice, clearCart } = useCartStore();
   const supabase = createClient();
@@ -37,13 +40,12 @@ export default function CheckoutPage() {
   useEffect(() => {
     const saved = localStorage.getItem('miiam_selected_address');
     if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        setDeliveryAddress(parsed);
-      } catch {}
+      try { setDeliveryAddress(JSON.parse(saved)); } catch {}
     }
-    
-    // Load promo codes from database
+    const allSaved = localStorage.getItem('miiam_addresses');
+    if (allSaved) {
+      try { setSavedAddresses(JSON.parse(allSaved)); } catch {}
+    }
     async function loadPromoCodes() {
       const { data } = await supabase
         .from("promo_codes")
@@ -96,7 +98,9 @@ export default function CheckoutPage() {
   ];
 
   const placeOrder = async () => {
-    const finalAddress = deliveryAddress?.address || "452/A Kinetic Plaza, 5th Floor, Skyway Avenue, Tech District, Local Area, State 560001";
+    const finalAddress = deliveryAddress
+      ? [deliveryAddress.flat, deliveryAddress.street, deliveryAddress.city, deliveryAddress.state, deliveryAddress.postal_code].filter(Boolean).join(", ")
+      : "452/A Kinetic Plaza, 5th Floor, Skyway Avenue, Tech District, Local Area, State 560001";
     
     if (items.length === 0) {
       alert("Your cart is empty! Add items from the Food page first.");
@@ -225,44 +229,70 @@ const scheduledDelivery = scheduledDate && scheduledTime
           {/* Left */}
           <div className="lg:col-span-8 space-y-8">
             {/* Delivery Address */}
-            <section className="bg-white p-8 rounded-lg shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
-              <div className="flex items-center gap-4 mb-8">
-                <div className="w-12 h-12 rounded-full bg-[#ff7670] flex items-center justify-center text-[#4e0006]">
-                  <span className="material-symbols-outlined">location_on</span>
+            <section className="bg-white p-6 rounded-2xl shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-10 h-10 rounded-full bg-[#ffe1e4] flex items-center justify-center">
+                  <span className="material-symbols-outlined text-[#ba001c]">location_on</span>
                 </div>
                 <div className="flex-1">
-                  <h2 className="text-2xl font-bold">Delivery Address</h2>
-                  <p className="text-sm text-[#814c55]">Where should we deliver?</p>
+                  <h2 className="text-lg font-extrabold text-[#4d212a]">Delivery Address</h2>
+                  <p className="text-xs text-[#814c55]">Where should we deliver?</p>
                 </div>
-                <Link href="/app/addresses" className="text-[#ba001c] font-bold text-sm hover:underline">
+                <button
+                  onClick={() => setShowAddressPicker(true)}
+                  className="text-[#ba001c] font-bold text-sm bg-[#fff4f4] px-3 py-1.5 rounded-lg hover:bg-[#ffe1e4] transition-colors"
+                >
                   Change
-                </Link>
+                </button>
               </div>
-              <Link href="/app/addresses" className="block p-6 rounded-lg border-2 border-[#ba001c] bg-[#ffecee] relative overflow-hidden hover:bg-[#ffe1e4] transition-colors cursor-pointer">
-                <div className="absolute top-0 right-0 p-2 bg-[#ba001c] text-white rounded-bl-lg">
-                  <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+
+              {deliveryAddress ? (
+                <div className="p-4 rounded-xl border-2 border-[#ba001c] bg-[#fff8f8] flex items-start gap-4">
+                  <div className="w-11 h-11 rounded-xl bg-[#ffe1e4] flex items-center justify-center flex-shrink-0">
+                    <span className="material-symbols-outlined text-[#ba001c]" style={{ fontVariationSettings: "'FILL' 1" }}>
+                      {deliveryAddress.type === "office" ? "business" : deliveryAddress.type === "other" ? "place" : "home"}
+                    </span>
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-bold text-[#4d212a] flex items-center gap-2">
+                      {deliveryAddress.label || "Home"}
+                      {deliveryAddress.lat && (
+                        <span className="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-semibold flex items-center gap-1">
+                          <span className="material-symbols-outlined text-[10px]">gps_fixed</span>GPS
+                        </span>
+                      )}
+                    </p>
+                    <p className="text-sm text-[#814c55] mt-1 leading-relaxed">
+                      {[deliveryAddress.flat, deliveryAddress.street, deliveryAddress.city, deliveryAddress.state].filter(Boolean).join(", ")}
+                    </p>
+                    {deliveryAddress.landmark && (
+                      <p className="text-xs text-slate-400 mt-1">📍 Near {deliveryAddress.landmark}</p>
+                    )}
+                  </div>
+                  <div className="w-6 h-6 bg-[#ba001c] rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="material-symbols-outlined text-white text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>check</span>
+                  </div>
                 </div>
-                <h3 className="font-bold text-lg mb-2 flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[#ba001c]">my_location</span>
-                  {deliveryAddress ? "GPS Location" : "Home"}
-                </h3>
-                <p className="text-[#814c55] text-sm leading-relaxed">
-                  {deliveryAddress?.address || "452/A Kinetic Plaza, 5th Floor\nSkyway Avenue, Tech District\nLocal Area, State 560001"}
-                </p>
-                {deliveryAddress?.lat && (
-                  <p className="text-xs text-[#ba001c] mt-2 font-medium flex items-center gap-1">
-                    <span className="material-symbols-outlined text-xs">gps_fixed</span>
-                    GPS Detected
-                  </p>
-                )}
-              </Link>
-              <Link
-                href="/app/addresses/add"
-                className="mt-4 w-full p-4 rounded-lg border-2 border-dashed border-[#dd9ca6]/50 flex items-center justify-center gap-2 text-[#814c55] hover:border-[#ba001c] hover:text-[#ba001c] transition-all"
-              >
-                <span className="material-symbols-outlined">add</span>
-                Add New Address
-              </Link>
+              ) : (
+                <button
+                  onClick={() => setShowAddressPicker(true)}
+                  className="w-full p-5 rounded-xl border-2 border-dashed border-[#dd9ca6]/50 flex flex-col items-center gap-2 text-[#814c55] hover:border-[#ba001c] hover:text-[#ba001c] hover:bg-[#fff4f4] transition-all"
+                >
+                  <span className="material-symbols-outlined text-3xl">add_location</span>
+                  <span className="font-bold">Add Delivery Address</span>
+                  <span className="text-xs">GPS auto-detect or enter manually</span>
+                </button>
+              )}
+
+              {deliveryAddress && (
+                <button
+                  onClick={() => setShowAddressPicker(true)}
+                  className="mt-3 w-full py-3 rounded-xl border-2 border-dashed border-[#dd9ca6]/40 text-sm font-bold text-[#814c55] hover:border-[#ba001c] hover:text-[#ba001c] flex items-center justify-center gap-2 transition-all"
+                >
+                  <span className="material-symbols-outlined text-sm">add</span>
+                  Use a Different Address
+                </button>
+              )}
             </section>
 
             {/* Scheduled Services */}
@@ -558,6 +588,26 @@ const scheduledDelivery = scheduledDate && scheduledTime
           </div>
         </div>
       </main>
+
+      {/* Address Picker Bottom Sheet */}
+      {showAddressPicker && (
+        <AddressPickerSheet
+          savedAddresses={savedAddresses}
+          onSelect={(addr) => {
+            setDeliveryAddress(addr);
+            localStorage.setItem('miiam_selected_address', JSON.stringify(addr));
+            // Save to address book if new
+            const existing = savedAddresses.find(a => a.street === addr.street);
+            if (!existing) {
+              const updated = [...savedAddresses, addr];
+              setSavedAddresses(updated);
+              localStorage.setItem('miiam_addresses', JSON.stringify(updated));
+            }
+            setShowAddressPicker(false);
+          }}
+          onClose={() => setShowAddressPicker(false)}
+        />
+      )}
     </>
   );
 }
