@@ -23,8 +23,8 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
   const { addToast } = useToastStore();
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [etaMins, setEtaMins] = useState(12);
   const [riderLocation, setRiderLocation] = useState<{lat: number, lng: number} | null>(null);
+  const [trackingInfo, setTrackingInfo] = useState<{ eta: number; distance: string } | null>(null);
   const [showHelp, setShowHelp] = useState(false);
 
   const canCancel = order && ["pending", "accepted"].includes(order.status);
@@ -58,7 +58,6 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
       
       const { data: { user } } = await supabase.auth.getUser();
       
-      // Try to find the order by ID only
       const { data: basicOrder, error: fetchError } = await supabase
         .from("orders")
         .select("id, user_id, status")
@@ -72,10 +71,8 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
         return;
       }
 
-      // Debug: Check if user is logged in
       if (!user) {
         const { data: { session } } = await supabase.auth.getSession();
-        console.log("Session check:", session ? "has session" : "no session");
         if (!session) {
           setOrder(null);
           setLoading(false);
@@ -83,12 +80,6 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
         }
       }
 
-      const currentUserId = user?.id || (await supabase.auth.getSession()).data.session?.user.id;
-
-      // Skip strict ownership check for now - just load if order exists
-      console.log("Order owner:", basicOrder.user_id, "Current user:", currentUserId);
-
-      // 3. Load full data (manual join due to missing foreign keys)
       const { data: orderData, error: orderError } = await supabase
         .from("orders")
         .select("*")
@@ -101,18 +92,21 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
         return;
       }
 
-      // Fetch related data in parallel
-      const [vendorRes, riderRes, itemsRes] = await Promise.all([
+      const [vendorRes, riderRes, itemsRes, locationRes] = await Promise.all([
         orderData.vendor_id ? supabase.from("vendors").select("*").eq("id", orderData.vendor_id).single() : Promise.resolve({ data: null }),
         orderData.rider_id ? supabase.from("riders").select("*").eq("id", orderData.rider_id).single() : Promise.resolve({ data: null }),
-        supabase.from("order_items").select("*").eq("order_id", id)
+        supabase.from("order_items").select("*").eq("order_id", id),
+        supabase.from("rider_locations").select("lat, lng").eq("order_id", id).order('created_at', { ascending: false }).limit(1).maybeSingle()
       ]);
 
       const items = itemsRes.data || [];
       
-      // Fetch menu items for the order items
+      if (locationRes.data) {
+        setRiderLocation({ lat: locationRes.data.lat, lng: locationRes.data.lng });
+      }
+      
       if (items.length > 0) {
-        const menuItemIds = items.map(i => i.menu_item_id).filter(Boolean);
+        const menuItemIds = items.map((i: any) => i.menu_item_id).filter(Boolean);
         if (menuItemIds.length > 0) {
           const { data: menuItems } = await supabase.from("menu_items").select("*").in("id", menuItemIds);
           if (menuItems) {
@@ -195,12 +189,6 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
     return () => { supabase.removeChannel(channel); };
   }, [id]);
 
-  useEffect(() => {
-    if (!order || order.status !== "on_the_way") return;
-    const interval = setInterval(() => setEtaMins((prev) => Math.max(1, prev - 1)), 60000);
-    return () => clearInterval(interval);
-  }, [order?.status]);
-
   if (loading) return (
     <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center">
       <div className="w-12 h-12 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin" />
@@ -243,25 +231,26 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
       <main className="pt-6 pb-12 min-h-screen">
         <div className="max-w-7xl mx-auto px-6 lg:grid lg:grid-cols-12 lg:gap-10 items-start">
           <div className="lg:col-span-7 space-y-6">
-            {/* Live Map - always visible */}
-            <div className="relative w-full h-[420px] rounded-xl overflow-hidden shadow-[0px_20px_40px_rgba(77,33,42,0.06)]"
->
+            <div className="relative w-full h-[420px] rounded-xl overflow-hidden shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
+              
+              {/* ETA Overlay */}
+              {trackingInfo && (
+                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur rounded-full px-4 py-3 shadow-lg flex items-center gap-2" style={{ zIndex: 10 }}>
+                  <div className="text-center">
+                    <p className="text-[10px] text-[#5c403d] font-bold uppercase tracking-wider">ETA</p>
+                    <p className="text-xl font-black text-[#ba001c] leading-none">{trackingInfo.eta} <span className="text-xs">MINS</span></p>
+                  </div>
+                </div>
+              )}
+
               <MainOrderMap
                 orderId={id}
                 riderLocation={riderLocation}
                 deliveryAddress={order?.delivery_address}
+                onRouteUpdate={setTrackingInfo}
               />
-              {/* ETA chip */}
-              <div className="absolute top-4 right-4 z-[400] backdrop-blur-xl bg-white/90 p-4 rounded-xl border border-white/20 shadow-xl flex flex-col items-center min-w-[120px]">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-[#ba001c]/60 mb-1">ETA</span>
-                <div className="flex items-end gap-1">
-                  <span className="text-3xl font-extrabold text-[#ba001c] tracking-tighter">{etaMins}</span>
-                  <span className="text-sm font-bold text-[#ba001c] mb-1">MINS</span>
-                </div>
-              </div>
             </div>
 
-            {/* Rider Info - only show when rider assigned */}
             {order.status !== "pending" && order.riders && (
               <div className="relative bg-white rounded-xl p-6 shadow-[0px_20px_40px_rgba(77,33,42,0.04)] overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-[#c4d0ff]/20 rounded-full -mr-16 -mt-16 blur-2xl" />
@@ -459,10 +448,11 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
   );
 }
 
-function MainOrderMap({ orderId, riderLocation, deliveryAddress }: {
+function MainOrderMap({ orderId, riderLocation, deliveryAddress, onRouteUpdate }: {
   orderId: string;
   riderLocation: { lat: number; lng: number } | null;
   deliveryAddress?: string;
+  onRouteUpdate?: (info: { eta: number; distance: string }) => void;
 }) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
@@ -577,6 +567,11 @@ function MainOrderMap({ orderId, riderLocation, deliveryAddress }: {
             const shadow = L.polyline(coords, { color: `rgba(186,0,28,0.2)`, weight: 10, lineCap: 'round' }).addTo(map);
             const line = L.polyline(coords, { color: '#ba001c', weight: 5, lineCap: 'round' }).addTo(map);
             routeLayerRef.current = [shadow, line];
+            
+            const eta = Math.round(data.routes[0].duration / 60);
+            const distance = (data.routes[0].distance / 1000).toFixed(1);
+            if (onRouteUpdate) onRouteUpdate({ eta, distance });
+            
             map.fitBounds([[lat, lng], [dest[0], dest[1]]], { padding: [40, 40] });
           }
         } catch (_) {}
