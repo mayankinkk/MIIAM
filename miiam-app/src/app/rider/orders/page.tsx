@@ -715,21 +715,25 @@ function ShoppingCard({ order, onUpdateItemStatus, onMarkDelivered, onReportIssu
   const pickedCount = items.filter((i: any) => i.status === "available").length;
   const totalSpent = items.reduce((s: number, i: any) => s + ((i.actual_price || 0) * i.quantity), 0);
   const profit = (order.total_amount || 0) + (order.delivery_fee || 0) - totalSpent;
-  const [showMap, setShowMap] = useState(order.status === "on_the_way");
+
+  // Phase: "pickup" = go to restaurant, "delivery" = go to customer
+  const phase = order.status === "on_the_way" ? "delivery" : "pickup";
+  const [showMap, setShowMap] = useState(true); // always open
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
   const riderMarkerRef = useRef<any>(null);
-  const routeLayerRef = useRef<any>(null);
-  const customerLatLngRef = useRef<[number, number] | null>(null);
-  const [trackingInfo, setTrackingInfo] = useState<{ eta: number; distance: string; speed: number } | null>(null);
+  const routeLayerRef = useRef<any[]>([]);
+  const destLatLngRef = useRef<[number, number] | null>(null);
+  const [trackingInfo, setTrackingInfo] = useState<{ eta: number; distance: string } | null>(null);
   const locationWatchRef = useRef<number | null>(null);
-  const broadcastIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const prevPhaseRef = useRef(phase);
 
-  // Auto-start GPS broadcast when on_the_way
+  const deliveryAddress = (order as any).delivery_address || order.address?.street || "";
+  const vendorAddress = order.vendor?.address || "";
+  const customerPhone = order.customer_phone || "";
+
+  // Broadcast GPS position continuously
   useEffect(() => {
-    if (order.status !== "on_the_way") return;
-    setShowMap(true);
-
     async function broadcastLocation(lat: number, lng: number) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
@@ -743,273 +747,270 @@ function ShoppingCard({ order, onUpdateItemStatus, onMarkDelivered, onReportIssu
         updated_at: new Date().toISOString(),
       }, { onConflict: 'order_id' });
     }
-
     if (navigator.geolocation) {
       locationWatchRef.current = navigator.geolocation.watchPosition(
-        (pos) => {
-          broadcastLocation(pos.coords.latitude, pos.coords.longitude);
-        },
+        (pos) => broadcastLocation(pos.coords.latitude, pos.coords.longitude),
         null,
-        { enableHighAccuracy: true, maximumAge: 3000, timeout: 8000 }
+        { enableHighAccuracy: true, maximumAge: 3000, timeout: 10000 }
       );
     }
-
     return () => {
       if (locationWatchRef.current !== null) navigator.geolocation.clearWatch(locationWatchRef.current);
-      if (broadcastIntervalRef.current) clearInterval(broadcastIntervalRef.current);
     };
-  }, [order.status, order.id]);
+  }, [order.id]);
 
+  // When phase changes, destroy map so it re-initialises for new destination
+  useEffect(() => {
+    if (prevPhaseRef.current !== phase) {
+      prevPhaseRef.current = phase;
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+        riderMarkerRef.current = null;
+        routeLayerRef.current = [];
+        destLatLngRef.current = null;
+        setTrackingInfo(null);
+      }
+    }
+  }, [phase]);
+
+  // Initialise / re-initialise map
   useEffect(() => {
     if (!showMap || !mapRef.current || mapInstanceRef.current) return;
-
     let isMounted = true;
 
     async function initMap() {
       if (!isMounted || !mapRef.current) return;
-
       const L = await import('leaflet');
       await import('leaflet/dist/leaflet.css');
 
-      const deliveryAddr = order.address?.street || (order as any).delivery_address || "";
-      let customerLat = 26.1445;
-      let customerLng = 91.7362;
-
-      // Get current rider GPS position
-      let riderLat = 26.1445 + (Math.random() - 0.5) * 0.01;
-      let riderLng = 91.7362 + (Math.random() - 0.5) * 0.01;
-      try {
-        await new Promise<void>((resolve) => {
-          navigator.geolocation.getCurrentPosition(
-            (pos) => { riderLat = pos.coords.latitude; riderLng = pos.coords.longitude; resolve(); },
-            () => resolve(),
-            { timeout: 5000, enableHighAccuracy: true }
-          );
-        });
-      } catch (_) {}
-
-      const map = L.map(mapRef.current, { zoomControl: false }).setView([riderLat, riderLng], 15);
-      L.control.zoom({ position: 'bottomright' }).addTo(map);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(map);
-      mapInstanceRef.current = map;
-
-      // --- Customer (home) marker ---
-      const homeIcon = L.divIcon({
-        className: '',
-        html: `<div style="position:relative;width:44px;height:44px">
-          <div style="position:absolute;inset:0;background:rgba(186,0,28,0.15);border-radius:50%;animation:pulse-ring 1.5s ease-out infinite"></div>
-          <div style="position:absolute;inset:4px;background:#ba001c;border-radius:50%;border:3px solid white;box-shadow:0 4px 12px rgba(186,0,28,0.5);display:flex;align-items:center;justify-content:center;font-size:18px;">🏠</div>
-        </div>`,
-        iconSize: [44, 44],
-        iconAnchor: [22, 44],
+      // Get rider GPS
+      let riderLat = 26.1445, riderLng = 91.7362;
+      await new Promise<void>((res) => {
+        navigator.geolocation.getCurrentPosition(
+          (p) => { riderLat = p.coords.latitude; riderLng = p.coords.longitude; res(); },
+          () => res(), { timeout: 6000, enableHighAccuracy: true }
+        );
       });
 
-      // --- Rider marker ---
-      const riderIconHtml = () => `<div style="position:relative;width:46px;height:46px">
-        <div style="position:absolute;inset:0;background:rgba(11,80,213,0.2);border-radius:50%;animation:pulse-ring 1s ease-out infinite"></div>
-        <div style="position:absolute;inset:4px;background:#0b50d5;border-radius:50%;border:3px solid white;box-shadow:0 4px 14px rgba(11,80,213,0.55);display:flex;align-items:center;justify-content:center;font-size:20px;">🛵</div>
-      </div>`;
+      const map = L.map(mapRef.current!, { zoomControl: false }).setView([riderLat, riderLng], 15);
+      L.control.zoom({ position: 'bottomright' }).addTo(map);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+      mapInstanceRef.current = map;
 
-      const riderIcon = L.divIcon({ className: '', html: riderIconHtml(), iconSize: [46, 46], iconAnchor: [23, 46] });
+      // Rider marker (blue scooter)
+      const riderIcon = L.divIcon({
+        className: '',
+        html: `<div style="position:relative;width:46px;height:46px">
+          <div style="position:absolute;inset:0;background:rgba(11,80,213,0.2);border-radius:50%;animation:pulse-ring 1s ease-out infinite"></div>
+          <div style="position:absolute;inset:4px;background:#0b50d5;border-radius:50%;border:3px solid white;box-shadow:0 4px 14px rgba(11,80,213,0.5);display:flex;align-items:center;justify-content:center;font-size:20px;">🛵</div>
+        </div>`,
+        iconSize: [46, 46], iconAnchor: [23, 46],
+      });
       const riderMarker = L.marker([riderLat, riderLng], { icon: riderIcon, zIndexOffset: 1000 })
-        .bindPopup('<b>You (Rider)</b>')
-        .addTo(map);
+        .bindPopup('<b>You</b>').addTo(map);
       riderMarkerRef.current = riderMarker;
 
-      async function drawRoute(rLat: number, rLng: number, cLat: number, cLng: number) {
+      // Destination marker colour/emoji by phase
+      const isPickup = phase === "pickup";
+      const destColor = isPickup ? "#16a34a" : "#ba001c";
+      const destEmoji = isPickup ? "🏪" : "🏠";
+      const destLabel = isPickup ? "Pick up here" : "Deliver here";
+      const destAddr = isPickup ? vendorAddress : deliveryAddress;
+
+      const destIcon = L.divIcon({
+        className: '',
+        html: `<div style="position:relative;width:44px;height:44px">
+          <div style="position:absolute;inset:0;background:${destColor}22;border-radius:50%;animation:pulse-ring 1.4s ease-out infinite"></div>
+          <div style="position:absolute;inset:4px;background:${destColor};border-radius:50%;border:3px solid white;box-shadow:0 4px 12px ${destColor}66;display:flex;align-items:center;justify-content:center;font-size:18px;">${destEmoji}</div>
+        </div>`,
+        iconSize: [44, 44], iconAnchor: [22, 44],
+      });
+
+      async function drawRoute(rLat: number, rLng: number, dLat: number, dLng: number) {
         try {
           const res = await fetch(
-            `https://router.project-osrm.org/route/v1/driving/${rLng},${rLat};${cLng},${cLat}?overview=full&geometries=geojson`
+            `https://router.project-osrm.org/route/v1/driving/${rLng},${rLat};${dLng},${dLat}?overview=full&geometries=geojson`
           );
           const data = await res.json();
-          if (data.routes?.[0] && isMounted) {
-            if (routeLayerRef.current) map.removeLayer(routeLayerRef.current);
-            const coords = data.routes[0].geometry.coordinates.map((c: [number, number]) => [c[1], c[0]]);
-            // Shadow polyline
-            L.polyline(coords, { color: 'rgba(11,80,213,0.15)', weight: 10, lineCap: 'round' }).addTo(map);
-            // Main route
-            const routeLine = L.polyline(coords, { color: '#0b50d5', weight: 5, lineCap: 'round', dashArray: '1, 0' }).addTo(map);
-            routeLayerRef.current = routeLine;
-
-            const durationMin = Math.round(data.routes[0].duration / 60);
-            const distKm = (data.routes[0].distance / 1000).toFixed(1);
-            const speedKmh = Math.round((data.routes[0].distance / 1000) / (data.routes[0].duration / 3600));
-            if (isMounted) setTrackingInfo({ eta: durationMin, distance: distKm, speed: speedKmh });
-
-            map.fitBounds([[rLat, rLng], [cLat, cLng]], { padding: [40, 40] });
+          if (data.routes?.[0] && isMounted && mapInstanceRef.current) {
+            // Remove old route layers
+            routeLayerRef.current.forEach(l => map.removeLayer(l));
+            routeLayerRef.current = [];
+            const coords = data.routes[0].geometry.coordinates.map((c: [number,number]) => [c[1], c[0]]);
+            const shadow = L.polyline(coords, { color: `${destColor}33`, weight: 10, lineCap: 'round' }).addTo(map);
+            const line = L.polyline(coords, { color: destColor, weight: 5, lineCap: 'round' }).addTo(map);
+            routeLayerRef.current = [shadow, line];
+            const eta = Math.round(data.routes[0].duration / 60);
+            const dist = (data.routes[0].distance / 1000).toFixed(1);
+            if (isMounted) setTrackingInfo({ eta, distance: dist });
+            map.fitBounds([[rLat, rLng], [dLat, dLng]], { padding: [40, 40] });
           }
         } catch (_) {}
       }
 
-      // Geocode customer address
-      if (deliveryAddr) {
+      // Geocode destination address
+      if (destAddr) {
         try {
           const res = await fetch(
-            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(deliveryAddr)}&limit=1`,
+            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(destAddr)}&limit=1`,
             { headers: { 'Accept-Language': 'en', 'User-Agent': 'MIIAM/1.0' } }
           );
           const data = await res.json();
           if (data[0] && isMounted) {
-            customerLat = parseFloat(data[0].lat);
-            customerLng = parseFloat(data[0].lon);
-            customerLatLngRef.current = [customerLat, customerLng];
-            L.marker([customerLat, customerLng], { icon: homeIcon })
-              .bindPopup(`<b>📍 Deliver Here</b><br><span style='font-size:12px'>${deliveryAddr}</span>`)
-              .openPopup()
-              .addTo(map);
-            await drawRoute(riderLat, riderLng, customerLat, customerLng);
+            const dLat = parseFloat(data[0].lat);
+            const dLng = parseFloat(data[0].lon);
+            destLatLngRef.current = [dLat, dLng];
+            L.marker([dLat, dLng], { icon: destIcon })
+              .bindPopup(`<b>${destLabel}</b><br><span style="font-size:11px">${destAddr}</span>`)
+              .openPopup().addTo(map);
+            await drawRoute(riderLat, riderLng, dLat, dLng);
           }
         } catch (_) {}
       }
 
-      // Listen for real-time rider location updates
-      const channel = supabase
-        .channel(`rider-loc-${order.id}`)
-        .on('postgres_changes', {
-          event: '*',
-          schema: 'public',
-          table: 'rider_locations',
-          filter: `order_id=eq.${order.id}`,
-        }, async (payload: any) => {
-          const loc = payload.new;
-          if (loc?.lat && loc?.lng && isMounted && mapInstanceRef.current) {
-            const newLatLng = L.latLng(loc.lat, loc.lng);
-            riderMarkerRef.current?.setLatLng(newLatLng);
-            if (customerLatLngRef.current) {
-              await drawRoute(loc.lat, loc.lng, customerLatLngRef.current[0], customerLatLngRef.current[1]);
+      // Live rider position updates from Supabase
+      const channel = supabase.channel(`rider-loc-${order.id}-${phase}`)
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'rider_locations', filter: `order_id=eq.${order.id}` },
+          async (payload: any) => {
+            const loc = payload.new;
+            if (loc?.lat && loc?.lng && isMounted && mapInstanceRef.current) {
+              riderMarkerRef.current?.setLatLng([loc.lat, loc.lng]);
+              if (destLatLngRef.current) {
+                await drawRoute(loc.lat, loc.lng, destLatLngRef.current[0], destLatLngRef.current[1]);
+              }
             }
-          }
-        })
-        .subscribe();
+          }).subscribe();
 
-      return () => {
-        isMounted = false;
-        supabase.removeChannel(channel);
-      };
+      return () => { isMounted = false; supabase.removeChannel(channel); };
     }
 
     initMap();
-
     return () => {
       isMounted = false;
-      if (mapInstanceRef.current) {
-        mapInstanceRef.current.remove();
-        mapInstanceRef.current = null;
-      }
+      if (mapInstanceRef.current) { mapInstanceRef.current.remove(); mapInstanceRef.current = null; }
     };
-  }, [showMap, order.id, order.address, (order as any).delivery_address]);
-
-  const deliveryAddress = order.address?.street || (order as any).delivery_address || "Customer address not available";
-  const customerPhone = order.customer_phone || "";
+  }, [showMap, phase, order.id, vendorAddress, deliveryAddress]);
 
   return (
-    <div className="bg-white rounded-2xl p-4 shadow-lg">
-      <div className="flex justify-between items-start mb-3">
-        <div>
-          <h3 className="font-bold text-lg text-[#4d212a]">{order.vendor?.name}</h3>
-          <p className="text-xs text-slate-400">{order.vendor?.address}</p>
-          <p className="text-xs text-[#ba001c] font-semibold flex items-center gap-1 mt-1">
-            <span className="material-symbols-outlined text-xs">location_on</span>
-            Deliver: {deliveryAddress}
+    <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+      {/* CSS */}
+      <style>{`
+        @keyframes pulse-ring { 0%{transform:scale(0.8);opacity:0.8} 100%{transform:scale(1.8);opacity:0} }
+        @keyframes slide-up { from{transform:translateY(6px);opacity:0} to{transform:translateY(0);opacity:1} }
+      `}</style>
+
+      {/* Phase Banner — like Uber/Ola top strip */}
+      <div className={`px-4 py-3 flex items-center gap-3 ${phase === "pickup" ? "bg-gradient-to-r from-green-600 to-emerald-500" : "bg-gradient-to-r from-[#0b50d5] to-indigo-600"}`}>
+        <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center text-xl flex-shrink-0">
+          {phase === "pickup" ? "🏪" : "🏠"}
+        </div>
+        <div className="flex-1">
+          <p className="text-white font-extrabold text-sm">
+            {phase === "pickup" ? "Phase 1 — Go to Restaurant" : "Phase 2 — Deliver to Customer"}
           </p>
-          {customerPhone && (
-            <a href={`tel:${customerPhone}`} className="text-xs text-[#0b50d5] font-semibold flex items-center gap-1 mt-1">
-              <span className="material-symbols-outlined text-xs">call</span>
-              Call Customer: {customerPhone}
-            </a>
-          )}
+          <p className="text-white/80 text-xs truncate">
+            {phase === "pickup" ? (vendorAddress || order.vendor?.name || "Vendor location") : (deliveryAddress || "Customer address")}
+          </p>
         </div>
-        <div className="text-right">
-          <p className="text-lg font-black text-[#0b50d5]">₹{order.total_amount + (order.delivery_fee || 0)}</p>
-          <p className="text-[10px] text-slate-400">Collect from customer</p>
-        </div>
+        {phase === "pickup" && (
+          <span className="text-white/70 text-[10px] font-bold bg-white/10 px-2 py-1 rounded-full">STEP 1/2</span>
+        )}
+        {phase === "delivery" && (
+          <span className="text-white/70 text-[10px] font-bold bg-white/10 px-2 py-1 rounded-full">STEP 2/2</span>
+        )}
       </div>
 
-      {/* Live Tracking Map - Zomato/Swiggy style */}
-      {order.status === "on_the_way" && (
-        <div className="mb-3">
-          {/* Pulse animation CSS */}
-          <style>{`
-            @keyframes pulse-ring {
-              0% { transform: scale(0.8); opacity: 0.8; }
-              100% { transform: scale(1.8); opacity: 0; }
-            }
-            @keyframes slide-up {
-              from { transform: translateY(8px); opacity: 0; }
-              to { transform: translateY(0); opacity: 1; }
-            }
-          `}</style>
-
-          {/* ETA / Distance pill strip */}
-          {trackingInfo && (
-            <div className="flex gap-2 mb-2" style={{ animation: 'slide-up 0.3s ease' }}>
-              <div className="flex-1 bg-gradient-to-br from-[#0b50d5] to-blue-600 text-white rounded-xl p-2.5 text-center shadow-md">
-                <p className="text-[10px] font-semibold opacity-80 uppercase tracking-wide">ETA</p>
-                <p className="text-xl font-black">{trackingInfo.eta}<span className="text-xs font-normal ml-0.5">min</span></p>
-              </div>
-              <div className="flex-1 bg-white border border-slate-200 rounded-xl p-2.5 text-center shadow-sm">
-                <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide">Distance</p>
-                <p className="text-xl font-black text-slate-700">{trackingInfo.distance}<span className="text-xs font-normal ml-0.5">km</span></p>
-              </div>
-              <div className="flex-1 bg-white border border-slate-200 rounded-xl p-2.5 text-center shadow-sm">
-                <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide">Speed</p>
-                <p className="text-xl font-black text-slate-700">{trackingInfo.speed}<span className="text-xs font-normal ml-0.5">km/h</span></p>
-              </div>
+      {/* ETA Strip */}
+      {trackingInfo && (
+        <div className="flex border-b border-slate-100" style={{ animation: 'slide-up 0.3s ease' }}>
+          <div className={`flex-1 py-3 text-center border-r border-slate-100 ${phase === "pickup" ? "bg-green-50" : "bg-blue-50"}`}>
+            <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400">ETA</p>
+            <p className={`text-2xl font-black ${phase === "pickup" ? "text-green-600" : "text-[#0b50d5]"}`}>
+              {trackingInfo.eta}<span className="text-xs font-normal ml-0.5">min</span>
+            </p>
+          </div>
+          <div className="flex-1 py-3 text-center">
+            <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400">Distance</p>
+            <p className="text-2xl font-black text-slate-700">{trackingInfo.distance}<span className="text-xs font-normal ml-0.5">km</span></p>
+          </div>
+          <div className={`flex-1 py-3 text-center border-l border-slate-100`}>
+            <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400">GPS</p>
+            <div className="flex items-center justify-center gap-1 mt-0.5">
+              <span style={{ width:8,height:8,borderRadius:'50%',background:'#22c55e',display:'inline-block',boxShadow:'0 0 0 3px rgba(34,197,94,0.25)' }}></span>
+              <span className="text-xs font-bold text-green-600">Live</span>
             </div>
-          )}
-
-          {/* Map toggle button */}
-          <button
-            onClick={() => setShowMap(!showMap)}
-            className="w-full py-2.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all"
-            style={{ background: showMap ? '#f1f5f9' : 'linear-gradient(135deg,#0b50d5,#4f7ef0)', color: showMap ? '#475569' : 'white' }}
-          >
-            <span className="material-symbols-outlined text-sm">{showMap ? "visibility_off" : "map"}</span>
-            {showMap ? "Hide Map" : "📍 Show Route to Customer"}
-          </button>
-
-          {showMap && (
-            <div className="mt-2 rounded-2xl overflow-hidden" style={{ boxShadow: '0 4px 20px rgba(11,80,213,0.2)', border: '2px solid #dbeafe' }}>
-              <div ref={mapRef} className="w-full" style={{ height: '280px' }} />
-              <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-2.5 flex items-center justify-center gap-2">
-                <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#4ade80', display: 'inline-block', boxShadow: '0 0 0 3px rgba(74,222,128,0.3)', animation: 'pulse-ring 1.2s ease-out infinite' }}></span>
-                <span className="text-white text-xs font-semibold">🛵 Live GPS — Route to customer active</span>
-              </div>
-            </div>
-          )}
-
-          {!trackingInfo && (
-            <p className="text-[10px] text-blue-500 text-center mt-1 font-medium">📡 Fetching route...</p>
-          )}
+          </div>
         </div>
       )}
 
-      {/* Show map button for accepted/shopping orders too */}
-      {order.status !== "on_the_way" && (
-        <div className="mb-3">
-          <button
-            onClick={() => setShowMap(!showMap)}
-            className="w-full py-2 bg-slate-100 text-slate-600 rounded-xl text-sm font-bold flex items-center justify-center gap-2"
-          >
-            <span className="material-symbols-outlined text-sm">map</span>
-            {showMap ? "Hide Map" : "📍 View Customer Location"}
-          </button>
-          {showMap && (
-            <div className="mt-2 rounded-xl overflow-hidden border border-slate-200">
-              <div ref={mapRef} className="w-full" style={{ height: '220px' }} />
+      {/* Map */}
+      <div className="relative">
+        <div ref={mapRef} className="w-full" style={{ height: 240 }} />
+        <button
+          onClick={() => setShowMap(!showMap)}
+          className="absolute top-2 right-2 z-[400] bg-white rounded-xl px-3 py-1.5 text-xs font-bold text-slate-600 shadow-md flex items-center gap-1"
+        >
+          <span className="material-symbols-outlined text-sm">{showMap ? "visibility_off" : "map"}</span>
+          {showMap ? "Hide" : "Map"}
+        </button>
+        {!trackingInfo && (
+          <div className="absolute inset-0 bg-slate-900/20 flex items-center justify-center z-[400]">
+            <div className="bg-white rounded-xl px-4 py-3 flex items-center gap-2 shadow-lg">
+              <div className="w-4 h-4 border-2 border-[#0b50d5] border-t-transparent rounded-full animate-spin"/>
+              <span className="text-sm font-bold text-slate-700">Loading route...</span>
             </div>
-          )}
+          </div>
+        )}
+      </div>
+
+      {/* Navigate button */}
+      <div className="px-4 pt-3 pb-2">
+        <a
+          href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(phase === "pickup" ? vendorAddress : deliveryAddress)}&travelmode=driving`}
+          target="_blank"
+          rel="noreferrer"
+          className={`w-full py-2.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 ${phase === "pickup" ? "bg-green-500 text-white" : "bg-[#0b50d5] text-white"}`}
+        >
+          <span className="material-symbols-outlined text-sm">navigation</span>
+          Open in Google Maps →
+        </a>
+      </div>
+
+      <div className="px-4 pb-3 space-y-1">
+        {/* Vendor info */}
+        <div className="flex justify-between items-start">
+          <div>
+            <h3 className="font-bold text-base text-[#4d212a]">{order.vendor?.name}</h3>
+            <p className="text-xs text-slate-400">{order.vendor?.address}</p>
+            <p className="text-xs text-[#ba001c] font-semibold flex items-center gap-1 mt-0.5">
+              <span className="material-symbols-outlined text-xs">location_on</span>
+              Deliver: {deliveryAddress}
+            </p>
+            {customerPhone && (
+              <a href={`tel:${customerPhone}`} className="text-xs text-[#0b50d5] font-semibold flex items-center gap-1 mt-0.5">
+                <span className="material-symbols-outlined text-xs">call</span>
+                Call Customer: {customerPhone}
+              </a>
+            )}
+          </div>
+          <div className="text-right">
+            <p className="text-base font-black text-[#0b50d5]">₹{order.total_amount + (order.delivery_fee || 0)}</p>
+            <p className="text-[10px] text-slate-400">Collect from customer</p>
+          </div>
         </div>
-      )}
+      </div>
 
       {/* Progress Bar */}
-      <div className="bg-slate-100 rounded-full h-2 mb-2 overflow-hidden">
-        <div className="h-full bg-green-500 transition-all" style={{ width: `${(pickedCount / items.length) * 100}%` }} />
+      <div className="px-4">
+        <div className="bg-slate-100 rounded-full h-2 mb-1 overflow-hidden">
+          <div className="h-full bg-green-500 transition-all" style={{ width: `${items.length ? (pickedCount / items.length) * 100 : 0}%` }} />
+        </div>
+        <p className="text-xs text-slate-500 mb-2">{pickedCount}/{items.length} items picked</p>
       </div>
-      <p className="text-xs text-slate-500 mb-3">{pickedCount}/{items.length} items picked</p>
 
       {/* Items List */}
-      <div className="space-y-2 mb-3 max-h-48 overflow-y-auto">
+      <div className="px-4 space-y-2 mb-3 max-h-48 overflow-y-auto">
         {items.map((item: any) => (
           <div key={item.id} className="flex flex-col gap-1 p-3 bg-slate-50 rounded-lg">
             <div className="flex items-center justify-between gap-2">
@@ -1046,31 +1047,34 @@ function ShoppingCard({ order, onUpdateItemStatus, onMarkDelivered, onReportIssu
         ))}
       </div>
 
-      {/* Barcode Scanner Button */}
-      <button className="w-full py-2 border-2 border-dashed border-slate-300 rounded-lg text-slate-500 text-sm font-bold mb-3 flex items-center justify-center gap-1">
-        <span className="material-symbols-outlined text-sm">qr_code_scanner</span>
-        Scan Barcode (Optional)
-      </button>
+      {/* Barcode Scanner */}
+      <div className="px-4 mb-3">
+        <button className="w-full py-2 border-2 border-dashed border-slate-300 rounded-lg text-slate-500 text-sm font-bold flex items-center justify-center gap-1">
+          <span className="material-symbols-outlined text-sm">qr_code_scanner</span>
+          Scan Barcode (Optional)
+        </button>
+      </div>
 
       {/* Financial Summary */}
-      <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-3 rounded-lg mb-3">
-        <div className="flex justify-between text-sm">
-          <span className="text-slate-500">You spent:</span>
-          <span className="font-bold">₹{totalSpent.toFixed(0)}</span>
-        </div>
-        <div className="flex justify-between text-sm">
-          <span className="text-slate-500">Collect from customer:</span>
-          <span className="font-bold text-[#0b50d5]">₹{order.total_amount + (order.delivery_fee || 0)}</span>
-        </div>
-        <div className="flex justify-between text-sm border-t pt-1 mt-1">
-          <span className="font-bold">Your profit:</span>
-          <span className="font-black text-green-600">₹{profit.toFixed(0)}</span>
+      <div className="px-4 mb-3">
+        <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-3 rounded-lg">
+          <div className="flex justify-between text-sm">
+            <span className="text-slate-500">You spent:</span>
+            <span className="font-bold">₹{totalSpent.toFixed(0)}</span>
+          </div>
+          <div className="flex justify-between text-sm">
+            <span className="text-slate-500">Collect from customer:</span>
+            <span className="font-bold text-[#0b50d5]">₹{order.total_amount + (order.delivery_fee || 0)}</span>
+          </div>
+          <div className="flex justify-between text-sm border-t pt-1 mt-1">
+            <span className="font-bold">Your profit:</span>
+            <span className="font-black text-green-600">₹{profit.toFixed(0)}</span>
+          </div>
         </div>
       </div>
 
       {/* Actions */}
-      <div className="space-y-2">
-        {/* Top row: optional start delivery + report */}
+      <div className="px-4 pb-4 space-y-2">
         <div className="flex gap-2">
           {pickedCount === items.length && items.length > 0 && onStartDelivery && order.status !== "on_the_way" && (
             <button onClick={onStartDelivery} className="flex-1 py-2.5 px-3 bg-[#0b50d5] text-white rounded-xl text-sm font-bold flex items-center justify-center gap-1.5">
@@ -1088,7 +1092,6 @@ function ShoppingCard({ order, onUpdateItemStatus, onMarkDelivered, onReportIssu
             Report
           </button>
         </div>
-        {/* Bottom row: full-width collect button */}
         <button
           onClick={onMarkDelivered}
           disabled={pickedCount === 0}
@@ -1101,6 +1104,7 @@ function ShoppingCard({ order, onUpdateItemStatus, onMarkDelivered, onReportIssu
     </div>
   );
 }
+
 
 function CompletedCard({ order }: { order: Order }) {
   return (
