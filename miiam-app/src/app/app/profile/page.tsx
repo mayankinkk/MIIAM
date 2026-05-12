@@ -57,7 +57,7 @@ export default function EnhancedProfilePage() {
     loadUserAndProfile();
   }, [supabase]);
 
-  const displayName = profile?.full_name || user?.email?.split("@")[0] || "User";
+  const displayName = profile?.full_name || user?.user_metadata?.full_name || user?.user_metadata?.name || user?.email?.split("@")[0] || "User";
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
