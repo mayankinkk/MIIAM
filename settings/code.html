@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MIIAM | Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary": "#f1f2ff",
+                        "tertiary-dim": "#5e4e00",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#814c55",
+                        "on-surface": "#4d212a",
+                        "on-secondary-container": "#003dac",
+                        "on-tertiary": "#fff2cd",
+                        "surface-container-highest": "#ffd2d7",
+                        "error": "#b02500",
+                        "secondary-dim": "#0044bf",
+                        "on-secondary-fixed": "#002c83",
+                        "tertiary": "#6c5a00",
+                        "surface-container": "#ffe1e4",
+                        "surface-bright": "#fff4f4",
+                        "tertiary-container": "#ffd709",
+                        "primary-fixed": "#ff7670",
+                        "primary-fixed-dim": "#ff5a57",
+                        "outline": "#a06770",
+                        "on-secondary-fixed-variant": "#0045c1",
+                        "on-primary-fixed": "#000000",
+                        "on-background": "#4d212a",
+                        "on-tertiary-fixed-variant": "#665500",
+                        "inverse-surface": "#24020a",
+                        "surface-dim": "#ffc6ce",
+                        "on-primary-container": "#4e0006",
+                        "surface-container-low": "#ffecee",
+                        "primary-dim": "#a40017",
+                        "primary-container": "#ff7670",
+                        "secondary-fixed-dim": "#b1c2ff",
+                        "tertiary-fixed-dim": "#efc900",
+                        "secondary-container": "#c4d0ff",
+                        "surface": "#fff4f4",
+                        "secondary-fixed": "#c4d0ff",
+                        "primary": "#ba001c",
+                        "inverse-primary": "#ff5352",
+                        "secondary": "#0b50d5",
+                        "on-tertiary-container": "#5b4b00",
+                        "on-primary": "#ffefee",
+                        "on-error": "#ffefec",
+                        "error-container": "#f95630",
+                        "on-primary-fixed-variant": "#600009",
+                        "background": "#fff4f4",
+                        "tertiary-fixed": "#ffd709",
+                        "error-dim": "#b92902",
+                        "on-error-container": "#520c00",
+                        "inverse-on-surface": "#cb8c96",
+                        "on-tertiary-fixed": "#453900",
+                        "surface-variant": "#ffd2d7",
+                        "surface-tint": "#ba001c",
+                        "outline-variant": "#dd9ca6",
+                        "surface-container-high": "#ffd9de"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fff4f4; color: #4d212a; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-card { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .toggle-checkbox:checked { right: 0; border-color: #ba001c; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #ba001c; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-[#fff4f4]/80 backdrop-blur-2xl shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
+<div class="flex items-center gap-4">
+<a href="#" class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[#ba001c]">arrow_back</span>
+</a>
+<span class="text-2xl font-extrabold tracking-tighter text-[#ba001c]">MIIAM</span>
+</div>
+<div class="flex items-center gap-3">
+<button class="p-2 hover:bg-[#ffe1e4] rounded-full transition-all flex items-center justify-center">
+<span class="material-symbols-outlined text-[#ba001c]">help</span>
+</button>
+</div>
+</header>
+<main class="pt-28 pb-32 px-6 max-w-3xl mx-auto">
+<!-- Page Header -->
+<section class="mb-10">
+<h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-3">Settings</h1>
+<p class="text-on-surface-variant font-medium">Manage your account preferences and security</p>
+</section>
+
+<!-- Account Section -->
+<div class="mb-10">
+<h2 class="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-4 px-2">Account</h2>
+<div class="bg-surface-container-lowest rounded-lg shadow-[0px_20px_40px_rgba(77,33,42,0.06)] overflow-hidden">
+<!-- Profile Settings -->
+<button class="w-full flex items-center gap-4 p-5 hover:bg-surface-container transition-all border-b border-outline-variant/20">
+<div class="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">person</span>
+</div>
+<div class="flex-1 text-left">
+<h3 class="font-bold text-sm">Personal Information</h3>
+<p class="text-xs text-on-surface-variant">Name, email, phone</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</button>
+<!-- Change Password -->
+<button class="w-full flex items-center gap-4 p-5 hover:bg-surface-container transition-all border-b border-outline-variant/20">
+<div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">lock</span>
+</div>
+<div class="flex-1 text-left">
+<h3 class="font-bold text-sm">Change Password</h3>
+<p class="text-xs text-on-surface-variant">Update your password</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</button>
+<!-- Two-Factor Authentication -->
+<button class="w-full flex items-center gap-4 p-5 hover:bg-surface-container transition-all">
+<div class="w-12 h-12 rounded-full bg-tertiary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary">security</span>
+</div>
+<div class="flex-1 text-left">
+<h3 class="font-bold text-sm">Two-Factor Authentication</h3>
+<p class="text-xs text-on-surface-variant">Add an extra layer of security</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</button>
+</div>
+</div>
+
+<!-- Preferences Section -->
+<div class="mb-10">
+<h2 class="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-4 px-2">Preferences</h2>
+<div class="bg-surface-container-lowest rounded-lg shadow-[0px_20px_40px_rgba(77,33,42,0.06)] overflow-hidden">
+<!-- Language -->
+<button class="w-full flex items-center gap-4 p-5 hover:bg-surface-container transition-all border-b border-outline-variant/20">
+<div class="w-12 h-12 rounded-full bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">translate</span>
+</div>
+<div class="flex-1 text-left">
+<h3 class="font-bold text-sm">Language</h3>
+<p class="text-xs text-on-surface-variant">English (US)</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</button>
+<!-- Dark Mode Toggle -->
+<div class="w-full flex items-center gap-4 p-5 hover:bg-surface-container transition-all border-b border-outline-variant/20">
+<div class="w-12 h-12 rounded-full bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">dark_mode</span>
+</div>
+<div class="flex-1 text-left">
+<h3 class="font-bold text-sm">Dark Mode</h3>
+<p class="text-xs text-on-surface-variant">Switch between light and dark theme</p>
+</div>
+<div class="relative inline-block w-12 h-6 transition duration-200 ease-in-out">
+<input type="checkbox" id="darkModeToggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full border-4 border-white appearance-none cursor-pointer shadow-md checked:right-0 checked:border-white"/>
+<label for="darkModeToggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-surface-container cursor-pointer"></label>
+</div>
+</div>
+<!-- Notifications -->
+<button class="w-full flex items-center gap-4 p-5 hover:bg-surface-container transition-all border-b border-outline-variant/20">
+<div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">notifications</span>
+</div>
+<div class="flex-1 text-left">
+<h3 class="font-bold text-sm">Push Notifications</h3>
+<p class="text-xs text-on-surface-variant">Order updates, promotions, alerts</p>
+</div>
+<div class="relative inline-block w-12 h-6 transition duration-200 ease-in-out">
+<input type="checkbox" checked class="toggle-checkbox absolute block w-6 h-6 rounded-full border-4 border-white appearance-none cursor-pointer shadow-md checked:right-0 checked:border-white"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-primary cursor-pointer"></label>
+</div>
+</button>
+<!-- Location Services -->
+<button class="w-full flex items-center gap-4 p-5 hover:bg-surface-container transition-all">
+<div class="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">location_on</span>
+</div>
+<div class="flex-1 text-left">
+<h3 class="font-bold text-sm">Location Services</h3>
+<p class="text-xs text-on-surface-variant">Allow app to access your location</p>
+</div>
+<div class="relative inline-block w-12 h-6 transition duration-200 ease-in-out">
+<input type="checkbox" checked class="toggle-checkbox absolute block w-6 h-6 rounded-full border-4 border-white appearance-none cursor-pointer shadow-md checked:right-0 checked:border-white"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-primary cursor-pointer"></label>
+</div>
+</button>
+</div>
+</div>
+
+<!-- Privacy & Legal Section -->
+<div class="mb-10">
+<h2 class="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-4 px-2">Privacy & Legal</h2>
+<div class="bg-surface-container-lowest rounded-lg shadow-[0px_20px_40px_rgba(77,33,42,0.06)] overflow-hidden">
+<!-- Privacy Policy -->
+<button class="w-full flex items-center gap-4 p-5 hover:bg-surface-container transition-all border-b border-outline-variant/20">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant">policy</span>
+</div>
+<div class="flex-1 text-left">
+<h3 class="font-bold text-sm">Privacy Policy</h3>
+<p class="text-xs text-on-surface-variant">How we handle your data</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</button>
+<!-- Terms of Service -->
+<button class="w-full flex items-center gap-4 p-5 hover:bg-surface-container transition-all border-b border-outline-variant/20">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant">description</span>
+</div>
+<div class="flex-1 text-left">
+<h3 class="font-bold text-sm">Terms of Service</h3>
+<p class="text-xs text-on-surface-variant">User agreement and conditions</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</button>
+<!-- Data & Cookies -->
+<button class="w-full flex items-center gap-4 p-5 hover:bg-surface-container transition-all">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant">cookie</span>
+</div>
+<div class="flex-1 text-left">
+<h3 class="font-bold text-sm">Cookies & Data</h3>
+<p class="text-xs text-on-surface-variant">Manage cookie preferences</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</button>
+</div>
+</div>
+
+<!-- Danger Zone -->
+<div class="mb-10">
+<h2 class="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-4 px-2">Danger Zone</h2>
+<div class="bg-surface-container-lowest rounded-lg shadow-[0px_20px_40px_rgba(77,33,42,0.06)] overflow-hidden border border-error/20">
+<button class="w-full flex items-center gap-4 p-5 hover:bg-error/5 transition-all">
+<div class="w-12 h-12 rounded-full bg-error/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-error">delete_forever</span>
+</div>
+<div class="flex-1 text-left">
+<h3 class="font-bold text-sm text-error">Delete Account</h3>
+<p class="text-xs text-on-surface-variant">Permanently remove your account</p>
+</div>
+<span class="material-symbols-outlined text-error">chevron_right</span>
+</button>
+</div>
+</div>
+
+<!-- App Info -->
+<div class="text-center py-8">
+<p class="text-xs text-on-surface-variant">MIIAM v2.4.1 (Build 2024.12.15)</p>
+<p class="text-xs text-on-surface-variant mt-2">Made with love in London</p>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-[#fff4f4]/90 backdrop-blur-xl shadow-[0px_-10px_30px_rgba(77,33,42,0.08)] rounded-t-[3rem] md:hidden">
+<a class="flex flex-col items-center justify-center text-[#4d212a] p-2 hover:text-[#ba001c] transition-colors" href="#">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Explore</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#4d212a] p-2 hover:text-[#ba001c] transition-colors" href="#">
+<span class="material-symbols-outlined">category</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Services</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#4d212a] p-2 hover:text-[#ba001c] transition-colors" href="#">
+<span class="material-symbols-outlined">shopping_bag</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Cart</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#4d212a] p-2 hover:text-[#ba001c] transition-colors" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Orders</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#4d212a] p-2 hover:text-[#ba001c] transition-colors" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Profile</span>
+</a>
+</nav>
+</body></html>
