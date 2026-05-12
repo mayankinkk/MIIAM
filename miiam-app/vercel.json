@@ -1,8 +1,0 @@
-{
-  "crons": [
-    {
-      "path": "/api/orders/activate-scheduled",
-      "schedule": "*/5 * * * *"
-    }
-  ]
-}
