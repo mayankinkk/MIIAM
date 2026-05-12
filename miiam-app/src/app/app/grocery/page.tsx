@@ -77,6 +77,33 @@ export default function GroceryPage() {
     });
   };
 
+  const getItemQuantity = (productId: string) => {
+    const item = items.find(i => i.menu_item_id === productId);
+    return item?.quantity || 0;
+  };
+
+  const ProductAddButton = ({ product }: { product: any }) => {
+    const quantity = getItemQuantity(product.id);
+    if (quantity === 0) {
+      return (
+        <button onClick={() => addToCart(product)} className="w-8 h-8 bg-[#ba001c] text-white rounded-full flex items-center justify-center hover:scale-110 transition-transform">
+          <span className="material-symbols-outlined text-lg">add</span>
+        </button>
+      );
+    }
+    return (
+      <div className="flex items-center gap-2 bg-[#ba001c] rounded-full px-2">
+        <button onClick={() => updateQuantity(product.id, quantity - 1)} className="w-6 h-6 text-white flex items-center justify-center hover:scale-110 transition-transform">
+          <span className="material-symbols-outlined text-lg">remove</span>
+        </button>
+        <span className="text-white font-bold text-sm min-w-[20px] text-center">{quantity}</span>
+        <button onClick={() => addToCart(product)} className="w-6 h-6 text-white flex items-center justify-center hover:scale-110 transition-transform">
+          <span className="material-symbols-outlined text-lg">add</span>
+        </button>
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-[#fff4f4] pb-24">
       {/* Header */}
@@ -149,12 +176,7 @@ export default function GroceryPage() {
                   <p className="text-xs text-slate-500">{product.category}</p>
                   <div className="flex items-center justify-between mt-2">
                     <span className="font-black text-[#ba001c]">₹{product.price}</span>
-                    <button 
-                      onClick={() => addToCart(product)}
-                      className="w-8 h-8 bg-[#ba001c] text-white rounded-full flex items-center justify-center"
-                    >
-                      <span className="material-symbols-outlined text-lg">add</span>
-                    </button>
+                    <ProductAddButton product={product} />
                   </div>
                 </div>
               </div>

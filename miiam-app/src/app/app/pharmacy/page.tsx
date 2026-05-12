@@ -82,6 +82,33 @@ export default function PharmacyPage() {
     });
   };
 
+  const getItemQuantity = (medId: string) => {
+    const item = items.find(i => i.menu_item_id === medId);
+    return item?.quantity || 0;
+  };
+
+  const MedAddButton = ({ med }: { med: any }) => {
+    const quantity = getItemQuantity(med.id);
+    if (quantity === 0) {
+      return (
+        <button onClick={() => addToCart(med)} className="w-8 h-8 bg-[#ba001c] text-white rounded-full flex items-center justify-center hover:scale-110 transition-transform">
+          <span className="material-symbols-outlined text-lg">add</span>
+        </button>
+      );
+    }
+    return (
+      <div className="flex items-center gap-2 bg-[#ba001c] rounded-full px-2">
+        <button onClick={() => updateQuantity(med.id, quantity - 1)} className="w-6 h-6 text-white flex items-center justify-center hover:scale-110 transition-transform">
+          <span className="material-symbols-outlined text-lg">remove</span>
+        </button>
+        <span className="text-white font-bold text-sm min-w-[20px] text-center">{quantity}</span>
+        <button onClick={() => addToCart(med)} className="w-6 h-6 text-white flex items-center justify-center hover:scale-110 transition-transform">
+          <span className="material-symbols-outlined text-lg">add</span>
+        </button>
+      </div>
+    );
+  };
+
   const handlePrescriptionUpload = async () => {
     if (!prescriptionFile) return;
     setUploading(true);
@@ -190,9 +217,7 @@ export default function PharmacyPage() {
                   <p className="text-xs text-slate-500">{med.description}</p>
                   <div className="flex items-center justify-between mt-2">
                     <span className="font-black text-[#ba001c]">₹{med.price}</span>
-                    <button onClick={() => addToCart(med)} className="w-8 h-8 bg-[#ba001c] text-white rounded-full flex items-center justify-center">
-                      <span className="material-symbols-outlined text-lg">add</span>
-                    </button>
+                    <MedAddButton med={med} />
                   </div>
                 </div>
               </div>
