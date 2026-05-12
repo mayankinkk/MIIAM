@@ -40,6 +40,7 @@ interface Order {
     city: string;
   };
   customer_phone?: string;
+  customer_name?: string;
   items?: OrderItem[];
 }
 
@@ -78,10 +79,11 @@ export default function RiderOrdersPage() {
 
     if (dbOrders && dbOrders.length > 0) {
       const fullOrders = await Promise.all(dbOrders.map(async (order) => {
-        const [vendorRes, addressRes, itemsRes] = await Promise.all([
+        const [vendorRes, addressRes, itemsRes, userRes] = await Promise.all([
           order.vendor_id ? supabase.from("vendors").select("*").eq("id", order.vendor_id).single() : Promise.resolve({ data: null }),
           order.delivery_address_id ? supabase.from("delivery_addresses").select("*").eq("id", order.delivery_address_id).single() : Promise.resolve({ data: null }),
-          supabase.from("order_items").select("*").eq("order_id", order.id)
+          supabase.from("order_items").select("*").eq("order_id", order.id),
+          order.user_id ? supabase.from("profiles").select("full_name").eq("id", order.user_id).single() : Promise.resolve({ data: null })
         ]);
 
         let items = itemsRes.data || [];
@@ -102,7 +104,8 @@ export default function RiderOrdersPage() {
           ...order,
           vendor: vendorRes.data,
           address: addressRes.data,
-          items: items
+          items: items,
+          customer_name: userRes.data?.full_name || "Customer"
         };
       }));
       setOrders(fullOrders);
@@ -671,7 +674,7 @@ function OrderCard({ order, onAccept, isSelected, onToggleSelect }: { order: Ord
           <div>
             <div className="flex items-center gap-2">
               <h3 className="font-bold text-[#4d212a]">{order.vendor?.name}</h3>
-              <span className="text-[9px] bg-slate-100 px-1.5 py-0.5 rounded">{order.id}</span>
+              <span className="text-[10px] font-bold text-[#0b50d5] bg-[#c4d0ff]/50 px-2 py-0.5 rounded-full">For {order.customer_name || "Customer"}</span>
             </div>
             <p className="text-xs text-slate-400 flex items-center gap-1">
               <span className="material-symbols-outlined text-xs">store</span>
