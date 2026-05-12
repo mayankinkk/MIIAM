@@ -5,6 +5,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useServiceSettingsStore } from "@/lib/store/serviceSettingsStore";
+import { useToastStore } from "@/lib/store/toastStore";
 import ServiceUnavailable from "@/components/ServiceUnavailable";
 
 const supabase = createClient();
@@ -39,6 +40,7 @@ export default function PharmacyPage() {
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { addItem, totalItems } = useCartStore();
+  const { addToast } = useToastStore();
   const pharmacySetting = getSetting("pharmacy");
 
   if (pharmacySetting && !pharmacySetting.isEnabled) {
@@ -80,6 +82,7 @@ export default function PharmacyPage() {
       vendor_id: PHARMACY_VENDOR_ID,
       vendor_name: "Pharmacy",
     });
+    addToast(`${med.name} added to cart!`, "success");
   };
 
   const getItemQuantity = (medId: string) => {

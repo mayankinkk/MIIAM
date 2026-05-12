@@ -5,6 +5,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useServiceSettingsStore } from "@/lib/store/serviceSettingsStore";
+import { useToastStore } from "@/lib/store/toastStore";
 import ServiceUnavailable from "@/components/ServiceUnavailable";
 
 const supabase = createClient();
@@ -32,6 +33,7 @@ export default function FlowersPage() {
   const [flowers, setFlowers] = useState<Flower[]>([]);
   const [loading, setLoading] = useState(true);
   const { addItem, items, updateQuantity, totalItems } = useCartStore();
+  const { addToast } = useToastStore();
   const flowersSetting = getSetting("flowers");
 
   if (flowersSetting && !flowersSetting.isEnabled) {
@@ -73,6 +75,7 @@ export default function FlowersPage() {
       vendor_id: FLOWERS_VENDOR_ID,
       vendor_name: "Flowers & Gifts",
     });
+    addToast(`${flower.name} added to cart!`, "success");
   };
 
   const getItemQuantity = (flowerId: string) => {

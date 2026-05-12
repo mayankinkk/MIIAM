@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useCartStore } from "@/lib/store/cartStore";
+import { EmptyCart } from "@/components/ui/EmptyStates";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -120,20 +121,7 @@ export default function CartPage() {
         )}
 
         {items.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="text-6xl mb-4">🛒</div>
-            <h2 className="text-xl font-bold text-[#4d212a] mb-2">Your cart is empty</h2>
-            <p className="text-[#814c55] text-sm mb-5">Add items from vendors to get started.</p>
-            <div className="flex flex-col gap-3">
-              <Link href="/app/explore" className="bg-gradient-to-r from-[#ba001c] to-[#ff7670] text-white px-6 py-3 rounded-xl font-bold text-sm shadow-lg shadow-[#ba001c]/20">
-                Explore Vendors
-              </Link>
-              <button onClick={() => { fetchPastOrders(); setShowReorderModal(true); }} className="bg-white border border-[#dd9ca6]/30 text-[#4d212a] px-6 py-3 rounded-xl font-bold text-sm hover:border-[#ba001c] transition-colors">
-                <span className="material-symbols-outlined align-middle mr-1 text-[16px]">refresh</span>
-                Reorder Past
-              </button>
-            </div>
-          </div>
+          <EmptyCart />
         ) : (
           <div className="space-y-4">
             {vendors.map((vendor) => (

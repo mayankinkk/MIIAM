@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useServiceSettingsStore } from "@/lib/store/serviceSettingsStore";
+import { useToastStore } from "@/lib/store/toastStore";
 import ServiceUnavailable from "@/components/ServiceUnavailable";
 
 const supabase = createClient();
@@ -34,6 +35,7 @@ export default function GroceryPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const { addItem, totalItems } = useCartStore();
+  const { addToast } = useToastStore();
   const grocerySetting = getSetting("grocery");
 
   if (grocerySetting && !grocerySetting.isEnabled) {
@@ -75,6 +77,7 @@ export default function GroceryPage() {
       vendor_id: GROCERY_VENDOR_ID,
       vendor_name: "Grocery",
     });
+    addToast(`${product.name} added to cart!`, "success");
   };
 
   const getItemQuantity = (productId: string) => {
