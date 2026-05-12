@@ -111,18 +111,18 @@ export default function CheckoutPage() {
     try {
       const { data: { user }, error: authError } = await supabase.auth.getUser();
       if (authError) throw new Error("Authentication failed");
-      if (!user) { window.location.href = "/auth/login"; return; }
+      if (!user) { router.push("/auth/login"); return; }
 
       const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id)));
       let firstOrderId = "";
 
       for (const vendorId of vendorIds) {
-        if (!vendorId || vendorId.length < 10 || !vendorId.includes("-")) continue;
+        if (!vendorId) continue;
         
         const vendorItems = items.filter((i) => i.vendor_id === vendorId);
         const vendorTotal = vendorItems.reduce((s, i) => s + i.price * i.quantity, 0);
 
-const scheduledDelivery = scheduledDate && scheduledTime 
+        const scheduledDelivery = scheduledDate && scheduledTime 
           ? `${new Date(scheduledDate).toLocaleDateString('en-IN', { weekday: 'long', month: 'long', day: 'numeric' })} at ${scheduledTime}`
           : null;
         
@@ -138,6 +138,7 @@ const scheduledDelivery = scheduledDate && scheduledTime
             payment_method: paymentMethod,
             delivery_address: finalAddress,
             special_instructions: scheduledDelivery || null,
+            placed_at: new Date().toISOString(),
           })
           .select()
           .single();
@@ -164,16 +165,13 @@ const scheduledDelivery = scheduledDate && scheduledTime
             }))
           );
           if (itemsError) throw itemsError;
-
-          // Only notify riders via the actual notifications system - not as user notifications
-          // Riders see new orders in their dashboard automatically from the orders table
         }
       }
 
       clearCart();
-      addToast("Order placed successfully!", "success");
-      if (firstOrderId) window.location.href = `/app/orders/${firstOrderId}`;
-      else window.location.href = "/app/orders";
+      addToast("🎉 Order placed! Tracking your order...", "success");
+      const targetPath = firstOrderId ? `/app/orders/${firstOrderId}` : "/app/orders";
+      router.push(targetPath);
     } catch (error: any) {
       console.error("Order placement failed:", error);
       let errorMessage = "Something went wrong. Please try again.";
