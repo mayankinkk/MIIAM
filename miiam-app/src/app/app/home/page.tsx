@@ -20,20 +20,7 @@ const offers = [
   { id: "o4", title: "MIIAM+ Exclusive", subtitle: "Get 30% OFF with MIIAM+", color: "from-purple-500 to-pink-500", badge: "MIIAM+" },
 ];
 
-const activeOrder = {
-  id: "a1",
-  vendor: "Biryani House",
-  items: "Chicken Biryani x2",
-  status: "preparing",
-  eta: "25 mins",
-  total: 498,
-  steps: [
-    { id: 1, label: "Order Placed", time: "12:30 PM", completed: true },
-    { id: 2, label: "Preparing", time: "12:35 PM", completed: true },
-    { id: 3, label: "Out for Delivery", time: "12:50 PM", completed: false },
-    { id: 4, label: "Delivered", time: "", completed: false },
-  ],
-};
+
 
 const nearbyRestaurants = [
   { id: "r1", name: "Biryani House", rating: 4.8, reviews: "2.3k", distance: "1.2 km", deliveryTime: "25-35 min", cuisine: "Biryani, North Indian", image: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=400&q=80", offer: "20% OFF" },
@@ -55,6 +42,7 @@ export default function HomePage() {
   const [user, setUser] = useState<any>(null);
   const [currentOffer, setCurrentOffer] = useState(0);
   const [location, setLocation] = useState("Select Location");
+  const [activeOrder, setActiveOrder] = useState<any>(null);
   const [orderBubbleExpanded, setOrderBubbleExpanded] = useState(false);
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
   const [showLocationModal, setShowLocationModal] = useState(false);
@@ -74,6 +62,46 @@ export default function HomePage() {
           .single();
         if (profileData?.full_name) {
           setUser((prev: any) => ({ ...prev, profile_name: profileData.full_name }));
+        }
+
+        // Fetch user's active order
+        const { data: orders } = await supabase
+          .from("orders")
+          .select("*, vendor:vendors(*), items:order_items(*, menu_item:menu_items(name))")
+          .eq("user_id", user.id)
+          .in("status", ["pending", "accepted", "preparing", "shopping", "picking_up", "on_the_way"])
+          .order("placed_at", { ascending: false })
+          .limit(1);
+
+        if (orders && orders.length > 0) {
+          const order = orders[0];
+          
+          let itemsText = "Items";
+          if (order.items && order.items.length > 0) {
+             const firstItem = order.items[0];
+             const itemName = firstItem.menu_item?.name || firstItem.name || "Item";
+             itemsText = `${itemName} x${firstItem.quantity}${order.items.length > 1 ? ` +${order.items.length - 1} more` : ''}`;
+          }
+
+          let eta = "30 mins";
+          if (order.status === "on_the_way") eta = "10 mins";
+          else if (order.status === "preparing" || order.status === "shopping") eta = "20 mins";
+          else if (order.status === "accepted") eta = "25 mins";
+
+          setActiveOrder({
+            id: order.id,
+            vendor: order.vendor?.name || "Restaurant",
+            items: itemsText,
+            status: order.status,
+            eta: eta,
+            total: order.total_amount,
+            steps: [
+              { id: 1, label: "Order Placed", time: order.placed_at ? new Date(order.placed_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : "", completed: true },
+              { id: 2, label: "Preparing", time: "", completed: ["preparing", "shopping", "picking_up", "on_the_way"].includes(order.status) },
+              { id: 3, label: "Out for Delivery", time: "", completed: order.status === "on_the_way" },
+              { id: 4, label: "Delivered", time: "", completed: order.status === "delivered" },
+            ]
+          });
         }
       }
     }
@@ -316,7 +344,7 @@ export default function HomePage() {
                   <p className="text-xs text-[#5c403d]">Estimated Delivery</p>
                   <p className="font-bold text-orange-600">{activeOrder.eta}</p>
                 </div>
-                <Link href="/app/orders" className="text-[#ba001c] font-bold text-sm">
+                <Link href={`/app/orders/${activeOrder.id}`} className="text-[#ba001c] font-bold text-sm">
                   Track Order →
                 </Link>
               </div>
