@@ -850,10 +850,12 @@ function ShoppingCard({ order, onUpdateItemStatus, onMarkDelivered, onReportIssu
       }
 
       // Geocode destination address
-      if (destAddr) {
+      let geoSuccess = false;
+      const searchAddr = destAddr || (isPickup && order.vendor?.name ? order.vendor.name : null);
+      if (searchAddr) {
         try {
           const res = await fetch(
-            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(destAddr)}&limit=1`,
+            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchAddr)}&limit=1`,
             { headers: { 'Accept-Language': 'en', 'User-Agent': 'MIIAM/1.0' } }
           );
           const data = await res.json();
@@ -862,11 +864,17 @@ function ShoppingCard({ order, onUpdateItemStatus, onMarkDelivered, onReportIssu
             const dLng = parseFloat(data[0].lon);
             destLatLngRef.current = [dLat, dLng];
             L.marker([dLat, dLng], { icon: destIcon })
-              .bindPopup(`<b>${destLabel}</b><br><span style="font-size:11px">${destAddr}</span>`)
+              .bindPopup(`<b>${destLabel}</b><br><span style="font-size:11px">${searchAddr}</span>`)
               .openPopup().addTo(map);
             await drawRoute(riderLat, riderLng, dLat, dLng);
+            geoSuccess = true;
           }
         } catch (_) {}
+      }
+
+      if (!geoSuccess && isMounted) {
+        // Fallback so the map isn't stuck loading forever
+        setTrackingInfo({ eta: 0, distance: "0.0" });
       }
 
       // Live rider position updates from Supabase
