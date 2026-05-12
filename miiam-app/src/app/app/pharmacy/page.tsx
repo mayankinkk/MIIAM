@@ -68,6 +68,8 @@ export default function PharmacyPage() {
     ? medicines 
     : medicines.filter(m => m.category?.toLowerCase().replace(" ", "") === selectedCategory);
 
+  const PHARMACY_VENDOR_ID = "00000000-0000-4000-8000-000000000002";
+
   const addToCart = (med: any) => {
     addItem({
       id: med.id,
@@ -75,7 +77,7 @@ export default function PharmacyPage() {
       name: med.name,
       price: med.price,
       image_url: med.image_url,
-      vendor_id: "pharmacy",
+      vendor_id: PHARMACY_VENDOR_ID,
       vendor_name: "Pharmacy",
     });
   };

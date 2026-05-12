@@ -15,6 +15,8 @@ const categories = [
   { id: "facial", label: "Facials", icon: "auto_awesome", color: "from-green-500 to-green-400", emoji: "🌸" },
 ];
 
+const BEAUTY_VENDOR_ID = "00000000-0000-4000-8000-000000000004";
+
 const services = {
   "salon": [
     { id: "s1", name: "Haircut & Styling", price: 299, original: 499, duration: "45 min", rating: 4.8, reviews: 12400, image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=300&q=80", popular: true, description: "Professional haircut with styling" },
@@ -116,7 +118,7 @@ export default function BeautyPage() {
     addItem({
       id: bookingService.id + Date.now(),
       menu_item_id: bookingService.id,
-      vendor_id: "beauty-services",
+      vendor_id: BEAUTY_VENDOR_ID,
       vendor_name: "MIIAM Beauty",
       name: `${bookingService.name} - ${days[selectedDate].label}, ${selectedTime}`,
       price: bookingService.price,
@@ -249,7 +251,7 @@ export default function BeautyPage() {
                               <span className="material-symbols-outlined text-sm">remove</span>
                             </button>
                             <span className="font-bold text-white">{qty}</span>
-                            <button onClick={() => addItem({ id: service.id + Date.now(), menu_item_id: service.id, vendor_id: "beauty", vendor_name: "MIIAM Beauty", name: service.name, price: service.price, image_url: service.image })} className="w-6 h-6 flex items-center justify-center text-white">
+                            <button onClick={() => addItem({ id: service.id + Date.now(), menu_item_id: service.id, vendor_id: BEAUTY_VENDOR_ID, vendor_name: "MIIAM Beauty", name: service.name, price: service.price, image_url: service.image })} className="w-6 h-6 flex items-center justify-center text-white">
                               <span className="material-symbols-outlined text-sm">add</span>
                             </button>
                           </div>

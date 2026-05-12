@@ -63,6 +63,8 @@ export default function GroceryPage() {
     ? products 
     : products.filter(p => p.category?.toLowerCase() === selectedCategory);
 
+  const GROCERY_VENDOR_ID = "00000000-0000-4000-8000-000000000003";
+
   const addToCart = (product: any) => {
     addItem({
       id: product.id,
@@ -70,7 +72,7 @@ export default function GroceryPage() {
       name: product.name,
       price: product.price,
       image_url: product.image_url,
-      vendor_id: "grocery",
+      vendor_id: GROCERY_VENDOR_ID,
       vendor_name: "Grocery",
     });
   };

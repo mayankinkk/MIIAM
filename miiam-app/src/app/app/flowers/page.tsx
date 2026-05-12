@@ -61,6 +61,8 @@ export default function FlowersPage() {
     ? flowers 
     : flowers.filter(f => f.category?.toLowerCase().replace(" ", "") === selectedCategory);
 
+  const FLOWERS_VENDOR_ID = "00000000-0000-4000-8000-000000000001";
+
   const addToCart = (flower: any) => {
     addItem({
       id: flower.id,
@@ -68,7 +70,7 @@ export default function FlowersPage() {
       name: flower.name,
       price: flower.price,
       image_url: flower.image_url,
-      vendor_id: "flowers",
+      vendor_id: FLOWERS_VENDOR_ID,
       vendor_name: "Flowers & Gifts",
     });
   };
