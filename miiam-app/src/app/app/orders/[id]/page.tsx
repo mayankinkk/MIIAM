@@ -179,12 +179,14 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
         }
       })
       .on('postgres_changes', {
-        event: 'INSERT',
+        event: '*',
         schema: 'public',
         table: 'rider_locations',
         filter: `order_id=eq.${id}`,
-      }, (payload) => {
-        setRiderLocation({ lat: payload.new.lat, lng: payload.new.lng });
+      }, (payload: any) => {
+        if (payload.new?.lat && payload.new?.lng) {
+          setRiderLocation({ lat: payload.new.lat, lng: payload.new.lng });
+        }
       })
       .subscribe((status) => {
         console.log("Order tracking channel status:", status);
@@ -536,7 +538,7 @@ function MainOrderMap({ orderId, riderLocation, deliveryAddress }: {
     const channel = supabase
       .channel(`main-map-${orderId}`)
       .on('postgres_changes', {
-        event: 'INSERT',
+        event: '*',
         schema: 'public',
         table: 'rider_locations',
         filter: `order_id=eq.${orderId}`,
