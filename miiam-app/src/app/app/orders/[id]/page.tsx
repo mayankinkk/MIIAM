@@ -467,7 +467,8 @@ function MainOrderMap({ orderId, riderLocation, deliveryAddress }: {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
   const riderMarkerRef = useRef<any>(null);
-  const supabase = createClient();
+  const destLatLngRef = useRef<[number, number] | null>(null);
+  const routeLayerRef = useRef<any[]>([]);
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -486,98 +487,115 @@ function MainOrderMap({ orderId, riderLocation, deliveryAddress }: {
       const map = L.map(mapRef.current, { zoomControl: false }).setView([centerLat, centerLng], 14);
       L.control.zoom({ position: 'bottomright' }).addTo(map);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '\u00a9 OpenStreetMap contributors',
+        attribution: '© OpenStreetMap contributors',
         maxZoom: 18,
       }).addTo(map);
       mapInstanceRef.current = map;
 
+      const homeIcon = L.divIcon({
+        className: '',
+        html: `<div style="position:relative;width:44px;height:44px">
+          <div style="position:absolute;inset:0;background:rgba(186,0,28,0.15);border-radius:50%;animation:pulse-ring 1.4s ease-out infinite"></div>
+          <div style="position:absolute;inset:4px;background:#ba001c;border-radius:50%;border:3px solid white;box-shadow:0 3px 10px rgba(186,0,28,0.4);display:flex;align-items:center;justify-content:center;font-size:18px;">🏠</div>
+        </div>`,
+        iconSize: [44, 44],
+        iconAnchor: [22, 44],
+      });
+
       // Geocode delivery address to place home pin
       if (deliveryAddress) {
         try {
+          // Add India fallback for better search accuracy
+          const searchAddress = deliveryAddress.toLowerCase().includes('india') ? deliveryAddress : `${deliveryAddress}, India`;
           const res = await fetch(
-            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(deliveryAddress)}&limit=1`,
+            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchAddress)}&limit=1`,
             { headers: { 'Accept-Language': 'en' } }
           );
           const data = await res.json();
           if (data[0] && isMounted) {
-            centerLat = parseFloat(data[0].lat);
-            centerLng = parseFloat(data[0].lon);
-            const homeIcon = L.divIcon({
-              className: '',
-              html: `<div style="background:#ba001c;width:36px;height:36px;border-radius:50%;border:3px solid white;box-shadow:0 3px 10px rgba(186,0,28,0.4);display:flex;align-items:center;justify-content:center;font-size:18px;">\ud83c\udfe0</div>`,
-              iconSize: [36, 36],
-              iconAnchor: [18, 18],
-            });
-            L.marker([centerLat, centerLng], { icon: homeIcon })
+            const dLat = parseFloat(data[0].lat);
+            const dLng = parseFloat(data[0].lon);
+            destLatLngRef.current = [dLat, dLng];
+            L.marker([dLat, dLng], { icon: homeIcon })
               .bindPopup('Your delivery location')
               .addTo(map);
-            map.setView([centerLat, centerLng], 15);
+            map.setView([dLat, dLng], 15);
           }
         } catch (_) {
-          // Geocoding failed — use default center
+          // Geocoding failed
         }
-      }
-
-      // Place rider marker if we already have a location
-      if (riderLocation && isMounted) {
-        const riderIcon = L.divIcon({
-          className: '',
-          html: `<div style="background:#0b50d5;width:36px;height:36px;border-radius:50%;border:3px solid white;box-shadow:0 3px 10px rgba(11,80,213,0.4);display:flex;align-items:center;justify-content:center;font-size:18px;">\ud83d\udee5</div>`,
-          iconSize: [36, 36],
-          iconAnchor: [18, 18],
-        });
-        riderMarkerRef.current = L.marker([riderLocation.lat, riderLocation.lng], { icon: riderIcon })
-          .bindPopup('Rider')
-          .addTo(map);
       }
     }
 
     initMap();
 
-    // Subscribe to live rider location updates
-    const channel = supabase
-      .channel(`main-map-${orderId}`)
-      .on('postgres_changes', {
-        event: '*',
-        schema: 'public',
-        table: 'rider_locations',
-        filter: `order_id=eq.${orderId}`,
-      }, async (payload: any) => {
-        if (payload.new?.lat && payload.new?.lng) {
-          const { lat, lng } = payload.new;
-          if (riderMarkerRef.current) {
-            riderMarkerRef.current.setLatLng([lat, lng]);
-          } else if (mapInstanceRef.current) {
-            const L = await import('leaflet');
-            const riderIcon = L.divIcon({
-              className: '',
-              html: `<div style="background:#0b50d5;width:36px;height:36px;border-radius:50%;border:3px solid white;box-shadow:0 3px 10px rgba(11,80,213,0.4);display:flex;align-items:center;justify-content:center;font-size:18px;">\ud83d\udee5</div>`,
-              iconSize: [36, 36],
-              iconAnchor: [18, 18],
-            });
-            riderMarkerRef.current = L.marker([lat, lng], { icon: riderIcon })
-              .bindPopup('Rider')
-              .addTo(mapInstanceRef.current);
-          }
-          mapInstanceRef.current?.setView([lat, lng], 15, { animate: true });
-        }
-      })
-      .subscribe();
-
     return () => {
       isMounted = false;
-      supabase.removeChannel(channel);
       mapInstanceRef.current?.remove();
       mapInstanceRef.current = null;
     };
-  }, [orderId, deliveryAddress]);
+  }, [deliveryAddress]);
 
-  // Sync rider location prop changes to marker
+  // Sync rider location prop changes to marker and draw route
   useEffect(() => {
-    if (riderLocation && riderMarkerRef.current) {
-      riderMarkerRef.current.setLatLng([riderLocation.lat, riderLocation.lng]);
+    if (!riderLocation || !mapInstanceRef.current) return;
+    let isMounted = true;
+
+    async function updateRider() {
+      const L = await import('leaflet');
+      const map = mapInstanceRef.current;
+      const { lat, lng } = riderLocation!;
+      
+      if (!riderMarkerRef.current) {
+        const riderIcon = L.divIcon({
+          className: '',
+          html: `<div style="position:relative;width:46px;height:46px">
+            <div style="position:absolute;inset:0;background:rgba(11,80,213,0.2);border-radius:50%;animation:pulse-ring 1s ease-out infinite"></div>
+            <div style="position:absolute;inset:4px;background:#0b50d5;border-radius:50%;border:3px solid white;box-shadow:0 3px 10px rgba(11,80,213,0.4);display:flex;align-items:center;justify-content:center;font-size:20px;">🛵</div>
+          </div>`,
+          iconSize: [46, 46],
+          iconAnchor: [23, 46],
+        });
+        riderMarkerRef.current = L.marker([lat, lng], { icon: riderIcon, zIndexOffset: 1000 })
+          .bindPopup('Rider')
+          .addTo(map);
+      } else {
+        riderMarkerRef.current.setLatLng([lat, lng]);
+      }
+
+      const dest = destLatLngRef.current;
+      if (dest) {
+        try {
+          const res = await fetch(
+            `https://router.project-osrm.org/route/v1/driving/${lng},${lat};${dest[1]},${dest[0]}?overview=full&geometries=geojson`
+          );
+          const data = await res.json();
+          if (data.routes?.[0] && isMounted && mapInstanceRef.current) {
+            routeLayerRef.current.forEach(l => map.removeLayer(l));
+            routeLayerRef.current = [];
+            const coords = data.routes[0].geometry.coordinates.map((c: [number,number]) => [c[1], c[0]]);
+            const shadow = L.polyline(coords, { color: `rgba(186,0,28,0.2)`, weight: 10, lineCap: 'round' }).addTo(map);
+            const line = L.polyline(coords, { color: '#ba001c', weight: 5, lineCap: 'round' }).addTo(map);
+            routeLayerRef.current = [shadow, line];
+            map.fitBounds([[lat, lng], [dest[0], dest[1]]], { padding: [40, 40] });
+          }
+        } catch (_) {}
+      } else {
+        map.setView([lat, lng], 15, { animate: true });
+      }
     }
+
+    updateRider();
+
+    return () => { isMounted = false; };
   }, [riderLocation]);
 
-  return <div ref={mapRef} className="w-full h-full" style={{ zIndex: 1 }} />;
+  return (
+    <div className="relative w-full h-full">
+      <style>{`
+        @keyframes pulse-ring { 0%{transform:scale(0.8);opacity:0.8} 100%{transform:scale(1.8);opacity:0} }
+      `}</style>
+      <div ref={mapRef} className="w-full h-full" style={{ zIndex: 1 }} />
+    </div>
+  );
 }
