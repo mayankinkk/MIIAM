@@ -35,7 +35,7 @@ export default function GroceryPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [isHydrated, setIsHydrated] = useState(false);
-  const { addItem, totalItems } = useCartStore();
+  const { items, addItem, updateQuantity, totalItems } = useCartStore();
   const { addToast } = useToastStore();
 
   useEffect(() => {
