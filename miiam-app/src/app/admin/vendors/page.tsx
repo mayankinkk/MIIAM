@@ -15,6 +15,9 @@ interface Vendor {
   gst_number: string;
   status: string;
   delivery_charge?: number;
+  is_featured?: boolean;
+  is_promoted?: boolean;
+  is_new?: boolean;
 }
 
 interface MenuItem {
@@ -53,6 +56,9 @@ export default function AdminVendorsPage() {
     gstNumber: "",
     status: "active",
     deliveryCharge: "",
+    isFeatured: false,
+    isPromoted: false,
+    isNew: false,
   });
   const [vendorMenuItems, setVendorMenuItems] = useState<MenuItem[]>([]);
   const [newMenuItem, setNewMenuItem] = useState<MenuItem>({ name: "", price: "", category: "Main Course" });
@@ -168,6 +174,9 @@ export default function AdminVendorsPage() {
           gst_number: editForm.gstNumber,
           status: editForm.status,
           delivery_charge: editForm.deliveryCharge ? parseFloat(editForm.deliveryCharge) : 0,
+          is_featured: editForm.isFeatured,
+          is_promoted: editForm.isPromoted,
+          is_new: editForm.isNew,
         })
         .eq("id", editingVendor.id);
 
@@ -204,6 +213,9 @@ export default function AdminVendorsPage() {
       gstNumber: vendor.gst_number || "",
       status: vendor.status,
       deliveryCharge: vendor.delivery_charge?.toString() || "",
+      isFeatured: vendor.is_featured || false,
+      isPromoted: vendor.is_promoted || false,
+      isNew: vendor.is_new || false,
     });
     await loadVendorMenuItems(vendor.id);
   };
@@ -598,6 +610,74 @@ export default function AdminVendorsPage() {
                       <option value="suspended">Suspended</option>
                     </select>
                   </div>
+                </div>
+              </div>
+
+              <div className="border-t pt-6">
+                <h3 className="font-black text-slate-800 uppercase tracking-widest text-xs mb-4">Promotional Options</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <label className="flex items-center justify-between p-4 bg-amber-50 rounded-xl cursor-pointer border-2 border-transparent hover:border-amber-200 transition-all">
+                    <input
+                      type="checkbox"
+                      checked={editForm.isFeatured}
+                      onChange={(e) => setEditForm({ ...editForm, isFeatured: e.target.checked })}
+                      className="sr-only"
+                    />
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
+                        <span className="material-symbols-outlined text-amber-600" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                      </div>
+                      <div>
+                        <p className="font-bold text-sm text-slate-800">Featured</p>
+                        <p className="text-xs text-slate-500">Spotlight section</p>
+                      </div>
+                    </div>
+                    <div className={`w-12 h-7 rounded-full p-1 transition-colors ${editForm.isFeatured ? "bg-amber-500" : "bg-slate-200"}`}>
+                      <div className={`w-5 h-5 bg-white rounded-full shadow transition-transform ${editForm.isFeatured ? "translate-x-5" : ""}`} />
+                    </div>
+                  </label>
+
+                  <label className="flex items-center justify-between p-4 bg-purple-50 rounded-xl cursor-pointer border-2 border-transparent hover:border-purple-200 transition-all">
+                    <input
+                      type="checkbox"
+                      checked={editForm.isPromoted}
+                      onChange={(e) => setEditForm({ ...editForm, isPromoted: e.target.checked })}
+                      className="sr-only"
+                    />
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <span className="material-symbols-outlined text-purple-600">verified</span>
+                      </div>
+                      <div>
+                        <p className="font-bold text-sm text-slate-800">Promoted</p>
+                        <p className="text-xs text-slate-500">Promoted section</p>
+                      </div>
+                    </div>
+                    <div className={`w-12 h-7 rounded-full p-1 transition-colors ${editForm.isPromoted ? "bg-purple-500" : "bg-slate-200"}`}>
+                      <div className={`w-5 h-5 bg-white rounded-full shadow transition-transform ${editForm.isPromoted ? "translate-x-5" : ""}`} />
+                    </div>
+                  </label>
+
+                  <label className="flex items-center justify-between p-4 bg-green-50 rounded-xl cursor-pointer border-2 border-transparent hover:border-green-200 transition-all">
+                    <input
+                      type="checkbox"
+                      checked={editForm.isNew}
+                      onChange={(e) => setEditForm({ ...editForm, isNew: e.target.checked })}
+                      className="sr-only"
+                    />
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                        <span className="material-symbols-outlined text-green-600">new_label</span>
+                      </div>
+                      <div>
+                        <p className="font-bold text-sm text-slate-800">New</p>
+                        <p className="text-xs text-slate-500">New badge</p>
+                      </div>
+                    </div>
+                    <div className={`w-12 h-7 rounded-full p-1 transition-colors ${editForm.isNew ? "bg-green-500" : "bg-slate-200"}`}>
+                      <div className={`w-5 h-5 bg-white rounded-full shadow transition-transform ${editForm.isNew ? "translate-x-5" : ""}`} />
+                    </div>
+                  </label>
                 </div>
               </div>
 
