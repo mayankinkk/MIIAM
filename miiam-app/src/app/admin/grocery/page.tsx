@@ -87,19 +87,49 @@ export default function GroceryAdmin() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Link href="/admin/grocery/orders" className="bg-white p-6 rounded-2xl border border-slate-100 hover:border-[#ba001c] hover:shadow-lg transition-all group">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-[#ba001c]/10 rounded-xl flex items-center justify-center">
-                <span className="material-symbols-outlined text-2xl text-[#ba001c]">local_mall</span>
+                <span className="material-symbols-outlined text-2xl text-[#ba001c]">receipt_long</span>
               </div>
               <div>
-                <h3 className="font-bold text-slate-800 group-hover:text-[#ba001c]">Grocery Management</h3>
-                <p className="text-sm text-slate-500">Orders, Partners, Inventory & Analytics</p>
+                <h3 className="font-bold text-slate-800 group-hover:text-[#ba001c]">Orders</h3>
+                <p className="text-sm text-slate-500">Manage grocery orders</p>
               </div>
             </div>
             <div className="mt-4 flex items-center text-[#ba001c] text-sm font-bold">
-              Open Dashboard <span className="material-symbols-outlined text-lg ml-1">arrow_forward</span>
+              Go to Orders <span className="material-symbols-outlined text-lg ml-1">arrow_forward</span>
+            </div>
+          </Link>
+
+          <Link href="/admin/grocery/inventory" className="bg-white p-6 rounded-2xl border border-slate-100 hover:border-[#ba001c] hover:shadow-lg transition-all group">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                <span className="material-symbols-outlined text-2xl text-blue-600">inventory_2</span>
+              </div>
+              <div>
+                <h3 className="font-bold text-slate-800 group-hover:text-[#ba001c]">Inventory</h3>
+                <p className="text-sm text-slate-500">Manage products & stock</p>
+              </div>
+            </div>
+            <div className="mt-4 flex items-center text-[#ba001c] text-sm font-bold">
+              Go to Inventory <span className="material-symbols-outlined text-lg ml-1">arrow_forward</span>
+            </div>
+          </Link>
+
+          <Link href="/admin/grocery/partners" className="bg-white p-6 rounded-2xl border border-slate-100 hover:border-[#ba001c] hover:shadow-lg transition-all group">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                <span className="material-symbols-outlined text-2xl text-green-600">store</span>
+              </div>
+              <div>
+                <h3 className="font-bold text-slate-800 group-hover:text-[#ba001c]">Partners</h3>
+                <p className="text-sm text-slate-500">Manage store partners</p>
+              </div>
+            </div>
+            <div className="mt-4 flex items-center text-[#ba001c] text-sm font-bold">
+              Go to Partners <span className="material-symbols-outlined text-lg ml-1">arrow_forward</span>
             </div>
           </Link>
         </div>
