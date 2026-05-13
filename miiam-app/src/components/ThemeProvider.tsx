@@ -4,15 +4,24 @@ import { useEffect } from "react";
 import { useThemeStore } from "@/lib/store/themeStore";
 
 export default function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const isDarkMode = useThemeStore((s) => s.isDarkMode);
+  const { theme, resolvedTheme, setTheme } = useThemeStore();
 
   useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [isDarkMode]);
+    setTheme(theme);
+  }, []);
+
+  useEffect(() => {
+    const handleChange = () => {
+      if (theme === "system") {
+        setTheme("system");
+      }
+    };
+    
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    mediaQuery.addEventListener("change", handleChange);
+    
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, [theme, setTheme]);
 
   return <>{children}</>;
 }

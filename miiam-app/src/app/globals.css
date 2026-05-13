@@ -388,3 +388,64 @@ textarea:focus-visible {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Dark Mode */
+.dark {
+  --color-surface: #1a0a0c;
+  --color-surface-bright: #240b0e;
+  --color-surface-dim: #4d212a;
+  --color-surface-variant: #5c2d34;
+  --color-surface-container-lowest: #0f0506;
+  --color-surface-container-low: #1a0a0c;
+  --color-surface-container: #240b0e;
+  --color-surface-container-high: #2e1014;
+  --color-surface-container-highest: #3d1a1e;
+  --color-background: #0f0506;
+  --color-on-background: #ffd9de;
+  --color-on-surface: #ffd9de;
+  --color-on-surface-variant: #dd9ca6;
+  --color-outline: #a06770;
+  --color-outline-variant: #5c2d34;
+  --color-inverse-surface: #ffd9de;
+  --color-inverse-on-surface: #4d212a;
+  --color-surface-tint: #ff7670;
+  --color-primary: #ff7670;
+  --color-primary-dim: #ff5a57;
+  --color-primary-container: #8a1c18;
+  --color-primary-fixed: #ff7670;
+  --color-primary-fixed-dim: #ff5a57;
+  --color-on-primary: #4e0006;
+  --color-on-primary-container: #ffefee;
+  --color-on-primary-fixed: #000000;
+  --color-on-primary-fixed-variant: #600009;
+  --color-inverse-primary: #ba001c;
+  --color-secondary: #c4d0ff;
+  --color-secondary-dim: #b1c2ff;
+  --color-secondary-container: #003dac;
+  --color-secondary-fixed: #c4d0ff;
+  --color-secondary-fixed-dim: #b1c2ff;
+  --color-on-secondary: #002c83;
+  --color-on-secondary-container: #f1f2ff;
+  --color-on-secondary-fixed: #002c83;
+  --color-on-secondary-fixed-variant: #0045c1;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-surface: #1a0a0c;
+    --color-surface-bright: #240b0e;
+    --color-surface-dim: #4d212a;
+    --color-surface-variant: #5c2d34;
+    --color-surface-container-lowest: #0f0506;
+    --color-surface-container-low: #1a0a0c;
+    --color-surface-container: #240b0e;
+    --color-surface-container-high: #2e1014;
+    --color-surface-container-highest: #3d1a1e;
+    --color-background: #0f0506;
+    --color-on-background: #ffd9de;
+    --color-on-surface: #ffd9de;
+    --color-on-surface-variant: #dd9ca6;
+    --color-outline: #a06770;
+    --color-outline-variant: #5c2d34;
+  }
+}
