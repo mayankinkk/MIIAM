@@ -1,13 +1,35 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import ThemeProvider from "@/components/ThemeProvider";
 import { ToastContainer } from "@/components/Toast";
+import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
 
 export const metadata: Metadata = {
   title: "MIIAM — The Kinetic Super-App",
   description:
     "MIIAM is your premium dual-engine concierge. Food delivery and professional home services, all in one place.",
   keywords: ["food delivery", "home services", "super app", "MIIAM"],
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "MIIAM",
+  },
+  icons: {
+    apple: [
+      { url: "/icons/icon-192.png", sizes: "192x192" },
+      { url: "/icons/icon-512.png", sizes: "512x512" },
+    ],
+  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
+  themeColor: "#ba001c",
 };
 
 export default function RootLayout({
@@ -36,6 +58,7 @@ export default function RootLayout({
       </head>
       <body>
         <ThemeProvider>
+          <ServiceWorkerRegistration />
           {children}
           <ToastContainer />
         </ThemeProvider>
