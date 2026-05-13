@@ -20,15 +20,6 @@ const offers = [
   { id: "o4", title: "MIIAM+ Exclusive", subtitle: "Get 30% OFF with MIIAM+", color: "from-purple-500 to-pink-500", badge: "MIIAM+" },
 ];
 
-
-
-const nearbyRestaurants = [
-  { id: "r1", name: "Biryani House", rating: 4.8, reviews: "2.3k", distance: "1.2 km", deliveryTime: "25-35 min", cuisine: "Biryani, North Indian", image: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=400&q=80", offer: "20% OFF" },
-  { id: "r2", name: "Pizza Paradise", rating: 4.6, reviews: "1.8k", distance: "2.5 km", deliveryTime: "30-40 min", cuisine: "Pizza, Italian", image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&q=80", offer: "FREE DELIVERY" },
-  { id: "r3", name: "Chinese Corner", rating: 4.7, reviews: "1.2k", distance: "0.8 km", deliveryTime: "20-30 min", cuisine: "Chinese, Asian", image: "https://images.unsplash.com/photo-1552566626-52f8b828add9?w=400&q=80", offer: null },
-  { id: "r4", name: "Burger Bliss", rating: 4.5, reviews: "987", distance: "3.1 km", deliveryTime: "25-35 min", cuisine: "Burgers, American", image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&q=80", offer: "₹100 OFF" },
-];
-
 const notifications = [
   { id: "n1", type: "order", title: "Order Delivered", message: "Your order from Biryani House has been delivered. Rate your experience!", time: "2 min ago", icon: "check_circle", color: "text-green-500" },
   { id: "n2", type: "offer", title: "50% OFF on Pizza", message: "Get flat 50% off on all pizza orders today. Use code PIZZA50", time: "1 hour ago", icon: "local_offer", color: "text-orange-500" },
@@ -49,6 +40,21 @@ export default function HomePage() {
   const [manualLocation, setManualLocation] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
   const [unreadCount, setUnreadCount] = useState(3);
+  const [nearbyRestaurants, setNearbyRestaurants] = useState<any[]>([]);
+
+  useEffect(() => {
+    async function loadNearbyRestaurants() {
+      const { data: vendors } = await supabase
+        .from("vendors")
+        .select("id, name, shop_name, rating, cuisine, image_url, is_active")
+        .eq("is_active", true)
+        .order("rating", { ascending: false })
+        .limit(6);
+      
+      if (vendors) setNearbyRestaurants(vendors);
+    }
+    loadNearbyRestaurants();
+  }, []);
 
   useEffect(() => {
     async function loadUserAndProfile() {
@@ -411,43 +417,44 @@ export default function HomePage() {
           <h2 className="text-lg font-bold text-[#281716]">Nearby Popular 🔥</h2>
           <Link href="/app/food" className="text-xs font-bold text-[#ba001c]">See All</Link>
         </div>
-        <div className="space-y-3">
-          {nearbyRestaurants.map((restaurant) => (
-            <Link key={restaurant.id} href={`/app/vendor/${restaurant.id}`} className="block bg-white rounded-2xl overflow-hidden shadow-sm">
-              <div className="flex">
-                <div className="w-28 h-28 flex-shrink-0">
-                  <img src={restaurant.image} alt={restaurant.name} className="w-full h-full object-cover" />
-                </div>
-                <div className="flex-1 p-3">
-                  <div className="flex items-start justify-between">
-                    <h3 className="font-bold text-[#281716]">{restaurant.name}</h3>
-                    <div className="flex items-center gap-1 bg-green-100 px-1.5 py-0.5 rounded">
-                      <span className="text-xs font-bold text-green-700">{restaurant.rating}</span>
-                      <span className="text-green-700 text-xs">★</span>
+        {nearbyRestaurants.length > 0 ? (
+          <div className="space-y-3">
+            {nearbyRestaurants.map((restaurant) => (
+              <Link key={restaurant.id} href={`/app/vendor/${restaurant.id}`} className="block bg-white rounded-2xl overflow-hidden shadow-sm">
+                <div className="flex">
+                  <div className="w-28 h-28 flex-shrink-0 bg-slate-100">
+                    {restaurant.image_url ? (
+                      <img src={restaurant.image_url} alt={restaurant.name || restaurant.shop_name} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-3xl">🍽️</div>
+                    )}
+                  </div>
+                  <div className="flex-1 p-3">
+                    <div className="flex items-start justify-between">
+                      <h3 className="font-bold text-[#281716]">{restaurant.name || restaurant.shop_name}</h3>
+                      <div className="flex items-center gap-1 bg-green-100 px-1.5 py-0.5 rounded">
+                        <span className="text-xs font-bold text-green-700">{restaurant.rating || 4.0}</span>
+                        <span className="text-green-700 text-xs">★</span>
+                      </div>
+                    </div>
+                    <p className="text-xs text-[#5c403d] mt-1">{restaurant.cuisine || "Various"}</p>
+                    <div className="flex items-center gap-2 mt-2 text-xs text-[#5c403d]">
+                      <span className="flex items-center gap-0.5">
+                        <span className="material-symbols-outlined text-sm">schedule</span>
+                        25-35 min
+                      </span>
                     </div>
                   </div>
-                  <p className="text-xs text-[#5c403d] mt-1">{restaurant.cuisine}</p>
-                  <div className="flex items-center gap-2 mt-2 text-xs text-[#5c403d]">
-                    <span className="flex items-center gap-0.5">
-                      <span className="material-symbols-outlined text-sm">schedule</span>
-                      {restaurant.deliveryTime}
-                    </span>
-                    <span>•</span>
-                    <span className="flex items-center gap-0.5">
-                      <span className="material-symbols-outlined text-sm">location_on</span>
-                      {restaurant.distance}
-                    </span>
-                  </div>
-                  {restaurant.offer && (
-                    <div className="mt-2 inline-block bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded">
-                      {restaurant.offer}
-                    </div>
-                  )}
                 </div>
-              </div>
-            </Link>
-          ))}
-        </div>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-8 text-slate-500">
+            <span className="material-symbols-outlined text-4xl mb-2">restaurant</span>
+            <p>No restaurants available nearby</p>
+          </div>
+        )}
       </div>
 
       {/* MIIAM+ Banner */}
