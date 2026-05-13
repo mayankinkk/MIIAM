@@ -30,31 +30,17 @@ const groceryCategories = [
 ];
 
 export default function GroceryPage() {
-  const { getSetting } = useServiceSettingsStore();
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isHydrated, setIsHydrated] = useState(false);
+  const [grocerySetting, setGrocerySetting] = useState<any>(null);
   const { items, addItem, updateQuantity, totalItems } = useCartStore();
   const { addToast } = useToastStore();
 
   useEffect(() => {
-    setIsHydrated(true);
+    const setting = useServiceSettingsStore.getState().getSetting("grocery");
+    setGrocerySetting(setting);
   }, []);
-
-  const grocerySetting = getSetting("grocery");
-
-  if (!isHydrated) {
-    return (
-      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
-
-  if (grocerySetting && !grocerySetting.isEnabled) {
-    return <ServiceUnavailable serviceName="Grocery" message={grocerySetting.message} icon="shopping_cart" />;
-  }
 
   useEffect(() => {
     fetchProducts();
@@ -80,6 +66,10 @@ export default function GroceryPage() {
     : products.filter(p => p.category?.toLowerCase() === selectedCategory);
 
   const GROCERY_VENDOR_ID = "00000000-0000-4000-8000-000000000003";
+
+  if (grocerySetting && !grocerySetting.isEnabled) {
+    return <ServiceUnavailable serviceName="Grocery" message={grocerySetting.message} icon="shopping_cart" />;
+  }
 
   const addToCart = (product: any) => {
     addItem({

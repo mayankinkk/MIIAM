@@ -29,7 +29,6 @@ interface Medicine {
 }
 
 export default function PharmacyPage() {
-  const { getSetting } = useServiceSettingsStore();
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [medicines, setMedicines] = useState<Medicine[]>([]);
   const [loading, setLoading] = useState(true);
@@ -38,28 +37,15 @@ export default function PharmacyPage() {
   const [prescriptionNotes, setPrescriptionNotes] = useState("");
   const [prescriptionPhone, setPrescriptionPhone] = useState("");
   const [uploading, setUploading] = useState(false);
-  const [isHydrated, setIsHydrated] = useState(false);
+  const [pharmacySetting, setPharmacySetting] = useState<any>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { addItem, totalItems } = useCartStore();
+  const { addItem, items, totalItems } = useCartStore();
   const { addToast } = useToastStore();
 
   useEffect(() => {
-    setIsHydrated(true);
+    const setting = useServiceSettingsStore.getState().getSetting("pharmacy");
+    setPharmacySetting(setting);
   }, []);
-
-  const pharmacySetting = getSetting("pharmacy");
-
-  if (!isHydrated) {
-    return (
-      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
-
-  if (pharmacySetting && !pharmacySetting.isEnabled) {
-    return <ServiceUnavailable serviceName="Pharmacy" message={pharmacySetting.message} icon="medication" />;
-  }
 
   useEffect(() => {
     fetchMedicines();
@@ -85,6 +71,10 @@ export default function PharmacyPage() {
     : medicines.filter(m => m.category?.toLowerCase().replace(" ", "") === selectedCategory);
 
   const PHARMACY_VENDOR_ID = "00000000-0000-4000-8000-000000000002";
+
+  if (pharmacySetting && !pharmacySetting.isEnabled) {
+    return <ServiceUnavailable serviceName="Pharmacy" message={pharmacySetting.message} icon="medication" />;
+  }
 
   const addToCart = (med: any) => {
     addItem({
