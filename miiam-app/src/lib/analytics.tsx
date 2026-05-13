@@ -161,8 +161,7 @@ function AnalyticsTrackerInner() {
 
 export function AnalyticsTracker() {
   return (
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    <Suspense fallback={null as any}>
+    <Suspense fallback={null}>
       <AnalyticsTrackerInner />
     </Suspense>
   );

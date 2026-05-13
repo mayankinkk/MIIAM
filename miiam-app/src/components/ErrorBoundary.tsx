@@ -59,7 +59,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 className="px-6 py-3 bg-[#ffe1e4] text-[#ba001c] rounded-xl font-bold hover:opacity-90 transition-opacity"
               >
                 Go Home
-              </button>
+              </Link>
             </div>
           </div>
         </div>
