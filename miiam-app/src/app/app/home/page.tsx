@@ -46,18 +46,22 @@ export default function HomePage() {
 
   useEffect(() => {
     async function loadRestaurants() {
-      const { data: vendors } = await supabase
+      const { data: vendors, error } = await supabase
         .from("vendors")
-        .select("*, is_featured, is_promoted, is_new")
-        .eq("is_active", true)
-        .order("rating", { ascending: false })
+        .select("*")
+        .order("created_at", { ascending: false })
         .limit(20);
       
+      if (error) {
+        console.error("Error loading vendors:", error);
+      }
+      
       if (vendors) {
+        console.log("Vendors loaded:", vendors);
         setNearbyRestaurants(vendors);
         const featured = vendors.filter((v: any) => v.is_featured || v.is_promoted).slice(0, 6);
+        const spotlight = vendors.find((v: any) => v.is_featured) || null;
         setFeaturedRestaurants(featured);
-        const spotlight = vendors.find((v: any) => v.is_featured) || vendors[0];
         setSpotlightRestaurant(spotlight);
       }
     }
