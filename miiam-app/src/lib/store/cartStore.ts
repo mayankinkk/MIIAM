@@ -33,24 +33,24 @@ export const useCartStore = create<CartStore>()(
       items: [],
 
       addItem: (item, quantity = 1) => {
-        const existing = get().items.find(
+        const existing = (get().items || []).find(
           (i) => i.menu_item_id === item.menu_item_id
         );
         if (existing) {
           set({
-            items: get().items.map((i) =>
+            items: (get().items || []).map((i) =>
               i.menu_item_id === item.menu_item_id
                 ? { ...i, quantity: i.quantity + quantity }
                 : i
             ),
           });
         } else {
-          set({ items: [...get().items, { ...item, quantity }] });
+          set({ items: [...(get().items || []), { ...item, quantity }] });
         }
       },
 
       removeItem: (menu_item_id) => {
-        set({ items: get().items.filter((i) => i.menu_item_id !== menu_item_id) });
+        set({ items: (get().items || []).filter((i) => i.menu_item_id !== menu_item_id) });
       },
 
       updateQuantity: (menu_item_id, quantity) => {
@@ -59,7 +59,7 @@ export const useCartStore = create<CartStore>()(
           return;
         }
         set({
-          items: get().items.map((i) =>
+          items: (get().items || []).map((i) =>
             i.menu_item_id === menu_item_id ? { ...i, quantity } : i
           ),
         });
@@ -67,14 +67,14 @@ export const useCartStore = create<CartStore>()(
 
       clearCart: () => set({ items: [] }),
 
-      totalItems: () => get().items.reduce((sum, i) => sum + i.quantity, 0),
+      totalItems: () => (get().items || []).reduce((sum, i) => sum + i.quantity, 0),
 
       totalPrice: () =>
-        get().items.reduce((sum, i) => sum + i.price * i.quantity, 0),
+        (get().items || []).reduce((sum, i) => sum + i.price * i.quantity, 0),
 
       subtotalByVendor: (vendor_id) =>
-        get()
-          .items.filter((i) => i.vendor_id === vendor_id)
+        (get().items || [])
+          .filter((i) => i.vendor_id === vendor_id)
           .reduce((sum, i) => sum + i.price * i.quantity, 0),
     }),
     { name: "miiam-cart" }

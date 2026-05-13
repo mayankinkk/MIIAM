@@ -95,7 +95,7 @@ export default function GroceryPage() {
   };
 
   const getItemQuantity = (productId: string) => {
-    const item = items.find(i => i.menu_item_id === productId);
+    const item = (items || []).find(i => i.menu_item_id === productId);
     return item?.quantity || 0;
   };
 
