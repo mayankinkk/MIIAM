@@ -38,10 +38,24 @@ export default function PharmacyPage() {
   const [prescriptionNotes, setPrescriptionNotes] = useState("");
   const [prescriptionPhone, setPrescriptionPhone] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { addItem, totalItems } = useCartStore();
   const { addToast } = useToastStore();
+
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
   const pharmacySetting = getSetting("pharmacy");
+
+  if (!isHydrated) {
+    return (
+      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   if (pharmacySetting && !pharmacySetting.isEnabled) {
     return <ServiceUnavailable serviceName="Pharmacy" message={pharmacySetting.message} icon="medication" />;
