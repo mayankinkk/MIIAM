@@ -41,19 +41,27 @@ export default function HomePage() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [unreadCount, setUnreadCount] = useState(3);
   const [nearbyRestaurants, setNearbyRestaurants] = useState<any[]>([]);
+  const [featuredRestaurants, setFeaturedRestaurants] = useState<any[]>([]);
+  const [spotlightRestaurant, setSpotlightRestaurant] = useState<any>(null);
 
   useEffect(() => {
-    async function loadNearbyRestaurants() {
+    async function loadRestaurants() {
       const { data: vendors } = await supabase
         .from("vendors")
-        .select("id, name, shop_name, rating, cuisine, image_url, is_active")
+        .select("*, is_featured, is_promoted, is_new")
         .eq("is_active", true)
         .order("rating", { ascending: false })
-        .limit(6);
+        .limit(20);
       
-      if (vendors) setNearbyRestaurants(vendors);
+      if (vendors) {
+        setNearbyRestaurants(vendors);
+        const featured = vendors.filter((v: any) => v.is_featured || v.is_promoted).slice(0, 6);
+        setFeaturedRestaurants(featured);
+        const spotlight = vendors.find((v: any) => v.is_featured) || vendors[0];
+        setSpotlightRestaurant(spotlight);
+      }
     }
-    loadNearbyRestaurants();
+    loadRestaurants();
   }, []);
 
   useEffect(() => {
@@ -411,6 +419,83 @@ export default function HomePage() {
         </div>
       </div>
 
+      {/* Spotlight Section - Featured Today */}
+      {spotlightRestaurant && (
+        <div className="px-4 pb-4">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="material-symbols-outlined text-amber-500" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+            <h2 className="text-lg font-bold text-[#281716]">Featured Today</h2>
+          </div>
+          <Link href={`/app/vendor/${spotlightRestaurant.id}`} className="block relative bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl p-5 text-white overflow-hidden">
+            <div className="absolute -right-6 -bottom-6 w-40 h-40 bg-white/10 rounded-full blur-2xl" />
+            <div className="relative z-10 flex items-center gap-4">
+              <div className="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center overflow-hidden">
+                {spotlightRestaurant.image_url ? (
+                  <img src={spotlightRestaurant.image_url} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-3xl">🍽️</span>
+                )}
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="bg-white/30 text-xs font-bold px-2 py-0.5 rounded-full">⭐ Featured</span>
+                </div>
+                <h3 className="text-xl font-black">{spotlightRestaurant.name || spotlightRestaurant.shop_name}</h3>
+                <p className="text-sm text-white/80">{spotlightRestaurant.cuisine || "Various cuisines"}</p>
+                <div className="flex items-center gap-2 mt-2">
+                  <span className="flex items-center gap-1 bg-white/20 px-2 py-1 rounded-full text-xs font-bold">
+                    ★ {spotlightRestaurant.rating || 4.0}
+                  </span>
+                  <span className="text-xs text-white/80">25-35 min</span>
+                </div>
+              </div>
+            </div>
+          </Link>
+        </div>
+      )}
+
+      {/* Featured/Promoted Section */}
+      {featuredRestaurants.length > 0 && (
+        <div className="px-4 pb-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-purple-500" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
+              <h2 className="text-lg font-bold text-[#281716]">Promoted Partners</h2>
+            </div>
+          </div>
+          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+            {featuredRestaurants.map((restaurant) => (
+              <Link key={restaurant.id} href={`/app/vendor/${restaurant.id}`} className="flex-shrink-0 w-36 bg-white rounded-2xl overflow-hidden shadow-sm border-2 border-transparent hover:border-purple-200 transition-all">
+                <div className="relative h-28 bg-slate-100">
+                  {restaurant.image_url ? (
+                    <img src={restaurant.image_url} alt="" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-2xl">🍽️</div>
+                  )}
+                  {restaurant.is_promoted && (
+                    <div className="absolute top-2 left-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                      PROMOTED
+                    </div>
+                  )}
+                  {restaurant.is_new && (
+                    <div className="absolute top-2 right-2 bg-green-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                      NEW
+                    </div>
+                  )}
+                </div>
+                <div className="p-2">
+                  <h4 className="font-bold text-sm text-[#281716] truncate">{restaurant.name || restaurant.shop_name}</h4>
+                  <div className="flex items-center gap-1 mt-1">
+                    <span className="text-xs font-bold text-green-700">★ {restaurant.rating || 4.0}</span>
+                    <span className="text-xs text-slate-400">• {restaurant.cuisine?.split(",")[0] || "Food"}</span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Nearby Popular Restaurants */}
       <div className="px-4 pb-4">
         <div className="flex items-center justify-between mb-3">
@@ -422,11 +507,27 @@ export default function HomePage() {
             {nearbyRestaurants.map((restaurant) => (
               <Link key={restaurant.id} href={`/app/vendor/${restaurant.id}`} className="block bg-white rounded-2xl overflow-hidden shadow-sm">
                 <div className="flex">
-                  <div className="w-28 h-28 flex-shrink-0 bg-slate-100">
+                  <div className="w-28 h-28 flex-shrink-0 bg-slate-100 relative">
                     {restaurant.image_url ? (
                       <img src={restaurant.image_url} alt={restaurant.name || restaurant.shop_name} className="w-full h-full object-cover" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-3xl">🍽️</div>
+                    )}
+                    {restaurant.is_featured && (
+                      <div className="absolute top-1 left-1 bg-amber-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
+                        <span className="material-symbols-outlined text-xs" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                        Featured
+                      </div>
+                    )}
+                    {restaurant.is_promoted && (
+                      <div className="absolute top-1 right-1 bg-purple-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">
+                        Promoted
+                      </div>
+                    )}
+                    {restaurant.is_new && (
+                      <div className="absolute bottom-1 left-1 bg-green-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">
+                        New
+                      </div>
                     )}
                   </div>
                   <div className="flex-1 p-3">
@@ -443,6 +544,12 @@ export default function HomePage() {
                         <span className="material-symbols-outlined text-sm">schedule</span>
                         25-35 min
                       </span>
+                      {restaurant.is_featured && (
+                        <span className="flex items-center gap-0.5 text-amber-600">
+                          <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                          Top Rated
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>
