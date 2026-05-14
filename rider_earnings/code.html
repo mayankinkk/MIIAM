@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Rider Earnings - MIIAM</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary": "#ba001c", "secondary": "#0b50d5", "tertiary": "#6c5a00",
+                    "surface": "#fff4f4", "surface-container": "#ffe1e4",
+                    "surface-container-lowest": "#ffffff", "on-surface": "#4d212a",
+                    "on-surface-variant": "#814c55", "primary-container": "#ff7670",
+                    "secondary-container": "#c4d0ff", "tertiary-container": "#ffd709"
+            },
+            "fontFamily": { "headline": ["Plus Jakarta Sans"], "body": ["Plus Jakarta Sans"], "label": ["Plus Jakarta Sans"] }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen pb-24">
+<header class="fixed top-0 w-full z-50 bg-[#ba001c] px-6 py-4">
+<div class="flex items-center justify-between">
+<span class="text-xl font-extrabold text-white">My Earnings</span>
+<button class="text-white"><span class="material-symbols-outlined">more_vert</span></button>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-2xl mx-auto">
+<!-- Balance Card -->
+<section class="bg-gradient-to-br from-primary to-primary-container p-8 rounded-2xl text-white mb-8">
+<p class="text-white/70 mb-2">Total Earnings</p>
+<h2 class="text-5xl font-extrabold mb-4">₹8,450</h2>
+<div class="flex gap-4">
+<button class="bg-white text-primary px-6 py-3 rounded-xl font-bold flex-1">Withdraw</button>
+<button class="bg-white/20 text-white px-6 py-3 rounded-xl font-bold flex-1">History</button>
+</div>
+</section>
+
+<!-- Quick Stats -->
+<div class="grid grid-cols-3 gap-4 mb-8">
+<div class="bg-surface-container-lowest p-4 rounded-xl text-center">
+<p class="text-sm text-on-surface-variant">Today</p>
+<p class="text-xl font-extrabold text-primary">₹450</p>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl text-center">
+<p class="text-sm text-on-surface-variant">This Week</p>
+<p class="text-xl font-extrabold text-primary">₹2,100</p>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl text-center">
+<p class="text-sm text-on-surface-variant">This Month</p>
+<p class="text-xl font-extrabold text-primary">₹8,450</p>
+</div>
+</div>
+
+<!-- Delivery Stats -->
+<div class="grid grid-cols-2 gap-4 mb-8">
+<div class="bg-surface-container p-4 rounded-xl">
+<div class="flex items-center gap-3 mb-2">
+<span class="material-symbols-outlined text-primary">delivery_truck_speed</span>
+<span class="font-bold">Deliveries</span>
+</div>
+<p class="text-3xl font-extrabold">156</p>
+</div>
+<div class="bg-surface-container p-4 rounded-xl">
+<div class="flex items-center gap-3 mb-2">
+<span class="material-symbols-outlined text-secondary">schedule</span>
+<span class="font-bold">Avg. Time</span>
+</div>
+<p class="text-3xl font-extrabold">22 min</p>
+</div>
+</div>
+
+<!-- Earnings History -->
+<section>
+<h3 class="text-lg font-bold mb-4">Recent Earnings</h3>
+<div class="space-y-3">
+<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-green-600">check_circle</span>
+<div>
+<p class="font-bold text-sm">Delivery #2341</p>
+<p class="text-xs text-on-surface-variant">The Momo Station → Sector 15</p>
+</div>
+</div>
+<span class="text-green-600 font-bold">+₹45</span>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-green-600">check_circle</span>
+<div>
+<p class="font-bold text-sm">Delivery #2340</p>
+<p class="text-xs text-on-surface-variant">Biryani House → MG Road</p>
+</div>
+</div>
+<span class="text-green-600 font-bold">+₹38</span>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-green-600">check_circle</span>
+<div>
+<p class="font-bold text-sm">Delivery #2339</p>
+<p class="text-xs text-on-surface-variant">Pizza Palace → Koramangala</p>
+</div>
+</div>
+<span class="text-green-600 font-bold">+₹52</span>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-green-600">check_circle</span>
+<div>
+<p class="font-bold text-sm">Delivery #2338</p>
+<p class="text-xs text-on-surface-variant">Chai Tapri → Indiranagar</p>
+</div>
+</div>
+<span class="text-green-600 font-bold">+₹32</span>
+</div>
+</div>
+<button class="w-full mt-4 py-4 text-primary font-bold">View All Deliveries</button>
+</section>
+
+<!-- Incentives -->
+<section class="mt-8">
+<h3 class="text-lg font-bold mb-4">Active Incentives</h3>
+<div class="bg-tertiary-container p-4 rounded-xl flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-tertiary">stars</span>
+<div>
+<p class="font-bold">Peak Hour Bonus</p>
+<p class="text-xs text-on-surface-variant">₹10 extra per delivery</p>
+</div>
+</div>
+<span class="text-tertiary font-bold">+₹80 today</span>
+</div>
+</section>
+</main>
+
+<!-- Bottom Nav -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-8 pt-4 bg-white z-50 rounded-t-[3rem]">
+<div class="flex flex-col items-center text-[#ba001c]">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-bold">Home</span>
+</div>
+<div class="flex flex-col items-center text-[#4d212a]/60">
+<span class="material-symbols-outlined">assignment</span>
+<span class="text-[10px] font-bold">Orders</span>
+</div>
+<div class="flex flex-col items-center text-[#4d212a]/60">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span class="text-[10px] font-bold">Earnings</span>
+</div>
+<div class="flex flex-col items-center text-[#4d212a]/60">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-bold">Profile</span>
+</div>
+</nav>
+</body></html>

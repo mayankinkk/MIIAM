@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin Analytics - MIIAM</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary": "#ba001c", "secondary": "#0b50d5", "tertiary": "#6c5a00",
+                    "surface": "#fff4f4", "surface-container": "#ffe1e4",
+                    "surface-container-lowest": "#ffffff", "on-surface": "#4d212a",
+                    "on-surface-variant": "#814c55", "primary-container": "#ff7670",
+                    "secondary-container": "#c4d0ff", "tertiary-container": "#ffd709"
+            },
+            "fontFamily": { "headline": ["Plus Jakarta Sans"], "body": ["Plus Jakarta Sans"], "label": ["Plus Jakarta Sans"] }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen pb-24">
+<header class="fixed top-0 w-full z-50 bg-[#fff4f4]/80 backdrop-blur-2xl px-6 py-4">
+<div class="flex items-center justify-between">
+<span class="text-xl font-extrabold text-primary">MIIAM Admin</span>
+<div class="flex items-center gap-4">
+<span class="text-sm font-bold">Today</span>
+<button class="bg-primary text-white px-4 py-2 rounded-lg font-bold text-sm">Export</button>
+</div>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-6xl mx-auto">
+<!-- Stats Cards -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+<div class="bg-surface-container-lowest p-6 rounded-xl">
+<p class="text-sm text-on-surface-variant">Total Revenue</p>
+<p class="text-2xl font-extrabold text-primary">₹12.5L</p>
+<p class="text-xs text-green-600 font-bold">↑ 15%</p>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl">
+<p class="text-sm text-on-surface-variant">Orders</p>
+<p class="text-2xl font-extrabold">1,234</p>
+<p class="text-xs text-green-600 font-bold">↑ 8%</p>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl">
+<p class="text-sm text-on-surface-variant">Active Users</p>
+<p class="text-2xl font-extrabold text-secondary">5,678</p>
+<p class="text-xs text-green-600 font-bold">↑ 12%</p>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl">
+<p class="text-sm text-on-surface-variant">Vendors</p>
+<p class="text-2xl font-extrabold">89</p>
+<p class="text-xs text-green-600 font-bold">↑ 3</p>
+</div>
+</div>
+
+<!-- Revenue Chart Placeholder -->
+<div class="bg-surface-container-lowest p-6 rounded-xl mb-8">
+<h3 class="text-lg font-bold mb-4">Revenue Trend</h3>
+<div class="h-48 bg-surface-container rounded-lg flex items-end justify-around p-4">
+<div class="w-8 bg-primary rounded-t" style="height: 60%"></div>
+<div class="w-8 bg-primary rounded-t" style="height: 80%"></div>
+<div class="w-8 bg-primary rounded-t" style="height: 45%"></div>
+<div class="w-8 bg-primary rounded-t" style="height: 90%"></div>
+<div class="w-8 bg-primary rounded-t" style="height: 70%"></div>
+<div class="w-8 bg-primary rounded-t" style="height: 85%"></div>
+<div class="w-8 bg-primary rounded-t" style="height: 95%"></div>
+</div>
+<div class="flex justify-around mt-2 text-xs text-on-surface-variant">
+<span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+</div>
+</div>
+
+<!-- Top Vendors -->
+<section class="mb-8">
+<h3 class="text-lg font-bold mb-4">Top Performing Vendors</h3>
+<div class="space-y-3">
+<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center gap-4">
+<span class="text-xl font-bold text-on-surface-variant">1</span>
+<img class="w-12 h-12 rounded-lg object-cover" src="https://images.unsplash.com/photo-1585032226651-759b368d7246?w=100" alt="Vendor"/>
+<div class="flex-1">
+<p class="font-bold">The Momo Station</p>
+<p class="text-sm text-on-surface-variant">245 orders • ₹45,000</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center gap-4">
+<span class="text-xl font-bold text-on-surface-variant">2</span>
+<img class="w-12 h-12 rounded-lg object-cover" src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=100" alt="Vendor"/>
+<div class="flex-1">
+<p class="font-bold">Biryani House</p>
+<p class="text-sm text-on-surface-variant">198 orders • ₹38,000</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center gap-4">
+<span class="text-xl font-bold text-on-surface-variant">3</span>
+<img class="w-12 h-12 rounded-lg object-cover" src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=100" alt="Vendor"/>
+<div class="flex-1">
+<p class="font-bold">Pizza Palace</p>
+<p class="text-sm text-on-surface-variant">156 orders • ₹32,000</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Recent Orders -->
+<section>
+<h3 class="text-lg font-bold mb-4">Recent Orders</h3>
+<div class="space-y-3">
+<div class="bg-surface-container p-4 rounded-xl flex items-center justify-between">
+<div>
+<p class="font-bold">Order #12345</p>
+<p class="text-sm text-on-surface-variant">The Momo Station • ₹450</p>
+</div>
+<span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">Delivered</span>
+</div>
+<div class="bg-surface-container p-4 rounded-xl flex items-center justify-between">
+<div>
+<p class="font-bold">Order #12344</p>
+<p class="text-sm text-on-surface-variant">Biryani House • ₹320</p>
+</div>
+<span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-bold">In Transit</span>
+</div>
+<div class="bg-surface-container p-4 rounded-xl flex items-center justify-between">
+<div>
+<p class="font-bold">Order #12343</p>
+<p class="text-sm text-on-surface-variant">Pizza Palace • ₹890</p>
+</div>
+<span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-bold">Preparing</span>
+</div>
+</div>
+</section>
+</main>
+</body></html>

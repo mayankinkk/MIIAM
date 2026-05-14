@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MIIAM Support</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary": "#ba001c", "secondary": "#0b50d5", "tertiary": "#6c5a00",
+                    "surface": "#fff4f4", "surface-container": "#ffe1e4",
+                    "surface-container-lowest": "#ffffff", "on-surface": "#4d212a",
+                    "on-surface-variant": "#814c55", "primary-container": "#ff7670",
+                    "secondary-container": "#c4d0ff"
+            },
+            "fontFamily": { "headline": ["Plus Jakarta Sans"], "body": ["Plus Jakarta Sans"], "label": ["Plus Jakarta Sans"] }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface h-screen flex flex-col">
+<header class="fixed top-0 w-full z-50 bg-[#fff4f4]/80 backdrop-blur-2xl px-6 py-4 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<button><span class="material-symbols-outlined">close</span></button>
+<span class="text-xl font-bold">MIIAM Support</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 bg-green-500 rounded-full"></span>
+<span class="text-sm font-bold text-green-600">Online</span>
+</div>
+</header>
+
+<!-- Chat Messages -->
+<main class="flex-1 pt-20 pb-24 px-6 overflow-y-auto space-y-4">
+<div class="flex gap-3">
+<div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-sm font-bold">M</div>
+<div class="bg-surface-container p-4 rounded-2xl rounded-tl-none max-w-[80%]">
+<p class="text-sm">Hi! Welcome to MIIAM Support. How can I help you today?</p>
+</div>
+</div>
+
+<div class="flex gap-3 flex-row-reverse">
+<div class="bg-primary-container p-4 rounded-2xl rounded-tr-none max-w-[80%]">
+<p class="text-sm">I have an issue with my order #12345. The delivery is delayed.</p>
+</div>
+</div>
+
+<div class="flex gap-3">
+<div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-sm font-bold">M</div>
+<div class="bg-surface-container p-4 rounded-2xl rounded-tl-none max-w-[80%]">
+<p class="text-sm">I understand. Let me check the status of your order. Could you please confirm your registered phone number?</p>
+</div>
+</div>
+
+<!-- Quick Replies -->
+<div class="flex gap-2 flex-wrap">
+<button class="px-4 py-2 bg-surface-container rounded-full text-xs font-bold">Track Order</button>
+<button class="px-4 py-2 bg-surface-container rounded-full text-xs font-bold">Cancel Order</button>
+<button class="px-4 py-2 bg-surface-container rounded-full text-xs font-bold">Refund Status</button>
+<button class="px-4 py-2 bg-surface-container rounded-full text-xs font-bold">Talk to Agent</button>
+</div>
+</main>
+
+<!-- Input Area -->
+<footer class="fixed bottom-0 left-0 w-full bg-white p-4 border-t border-outline-variant">
+<div class="flex items-center gap-3">
+<button class="text-on-surface-variant"><span class="material-symbols-outlined">add</span></button>
+<input class="flex-1 bg-surface-container rounded-full px-4 py-3 text-sm" placeholder="Type your message..." type="text"/>
+<button class="bg-primary text-white p-3 rounded-full"><span class="material-symbols-outlined">send</span></button>
+</div>
+</footer>
+
+<!-- Issue Categories -->
+<div class="bg-white p-4 border-t border-outline-variant">
+<p class="text-sm font-bold mb-3">Quick Help</p>
+<div class="grid grid-cols-4 gap-2 text-center">
+<div class="cursor-pointer">
+<span class="material-symbols-outlined text-2xl text-primary">receipt_long</span>
+<p class="text-xs">Orders</p>
+</div>
+<div class="cursor-pointer">
+<span class="material-symbols-outlined text-2xl text-primary">payment</span>
+<p class="text-xs">Payments</p>
+</div>
+<div class="cursor-pointer">
+<span class="material-symbols-outlined text-2xl text-primary">account_balance_wallet</span>
+<p class="text-xs">Wallet</p>
+</div>
+<div class="cursor-pointer">
+<span class="material-symbols-outlined text-2xl text-primary">help</span>
+<p class="text-xs">General</p>
+</div>
+</div>
+</div>
+</body></html>

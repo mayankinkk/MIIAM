@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Restaurant Gallery - MIIAM</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary": "#ba001c", "secondary": "#0b50d5", "tertiary": "#6c5a00",
+                    "surface": "#fff4f4", "surface-container": "#ffe1e4",
+                    "surface-container-lowest": "#ffffff", "on-surface": "#4d212a",
+                    "on-surface-variant": "#814c55", "primary-container": "#ff7670",
+                    "secondary-container": "#c4d0ff", "tertiary-container": "#ffd709",
+                    "outline-variant": "#dd9ca6"
+            },
+            "fontFamily": { "headline": ["Plus Jakarta Sans"], "body": ["Plus Jakarta Sans"], "label": ["Plus Jakarta Sans"] }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface pb-24">
+<header class="fixed top-0 w-full z-50 bg-[#fff4f4]/80 backdrop-blur-2xl px-6 py-4 flex items-center gap-4">
+<button><span class="material-symbols-outlined">arrow_back</span></button>
+<span class="text-xl font-bold">Photos</span>
+</header>
+<main class="pt-20 px-6 max-w-2xl mx-auto">
+<!-- Gallery Tabs -->
+<div class="flex gap-2 mb-6 overflow-x-auto pb-2">
+<button class="px-4 py-2 bg-primary text-white rounded-full text-sm font-bold">All (48)</button>
+<button class="px-4 py-2 bg-surface-container rounded-full text-sm font-bold">Food (24)</button>
+<button class="px-4 py-2 bg-surface-container rounded-full text-sm font-bold">Ambience (12)</button>
+<button class="px-4 py-2 bg-surface-container rounded-full text-sm font-bold">Reviews (12)</button>
+</div>
+
+<!-- Photo Grid -->
+<div class="grid grid-cols-3 gap-2">
+<img class="w-full h-32 object-cover rounded-lg cursor-pointer hover:opacity-80" src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=200" alt="Food"/>
+<img class="w-full h-32 object-cover rounded-lg cursor-pointer hover:opacity-80" src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=200" alt="Food"/>
+<img class="w-full h-32 object-cover rounded-lg cursor-pointer hover:opacity-80" src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200" alt="Food"/>
+<img class="w-full h-32 object-cover rounded-lg cursor-pointer hover:opacity-80" src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=200" alt="Ambience"/>
+<img class="w-full h-32 object-cover rounded-lg cursor-pointer hover:opacity-80" src="https://images.unsplash.com/photo-1552566626-52f8b828add9?w=200" alt="Ambience"/>
+<img class="w-full h-32 object-cover rounded-lg cursor-pointer hover:opacity-80" src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=200" alt="Ambience"/>
+<img class="w-full h-32 object-cover rounded-lg cursor-pointer hover:opacity-80" src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=200" alt="Food"/>
+<img class="w-full h-32 object-cover rounded-lg cursor-pointer hover:opacity-80" src="https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=200" alt="Food"/>
+<img class="w-full h-32 object-cover rounded-lg cursor-pointer hover:opacity-80" src="https://images.unsplash.com/photo-1601050690597-df0568f70950?w=200" alt="Food"/>
+</div>
+
+<!-- View All Button -->
+<button class="w-full mt-6 py-4 border-2 border-outline-variant rounded-xl font-bold text-on-surface-variant">View All Photos</button>
+</main>
+</body></html>
