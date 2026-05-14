@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Menu Management - MIIAM Admin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary": "#ba001c", "secondary": "#0b50d5", "tertiary": "#6c5a00",
+                    "surface": "#fff4f4", "surface-container": "#ffe1e4",
+                    "surface-container-lowest": "#ffffff", "on-surface": "#4d212a",
+                    "on-surface-variant": "#814c55", "primary-container": "#ff7670",
+                    "secondary-container": "#c4d0ff"
+            },
+            "fontFamily": { "headline": ["Plus Jakarta Sans"], "body": ["Plus Jakarta Sans"], "label": ["Plus Jakarta Sans"] }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen pb-24">
+<header class="fixed top-0 w-full z-50 bg-[#fff4f4]/80 backdrop-blur-2xl px-6 py-4">
+<div class="flex items-center justify-between">
+<span class="text-xl font-extrabold text-primary">Menu Management</span>
+<button class="bg-primary text-white px-4 py-2 rounded-lg font-bold text-sm">+ Add Item</button>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-4xl mx-auto">
+<!-- Categories -->
+<div class="flex gap-2 mb-6 overflow-x-auto pb-2">
+<button class="px-4 py-2 bg-primary text-white rounded-full text-sm font-bold">All (45)</button>
+<button class="px-4 py-2 bg-surface-container rounded-full text-sm font-bold">Burgers (12)</button>
+<button class="px-4 py-2 bg-surface-container rounded-full text-sm font-bold">Pizza (8)</button>
+<button class="px-4 py-2 bg-surface-container rounded-full text-sm font-bold">Beverages (15)</button>
+<button class="px-4 py-2 bg-surface-container rounded-full text-sm font-bold">Sides (10)</button>
+</div>
+
+<!-- Menu Items -->
+<div class="space-y-3">
+<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center gap-4">
+<img class="w-16 h-16 rounded-lg object-cover" src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=100" alt="Burger"/>
+<div class="flex-1">
+<p class="font-bold">Classic Cheese Burger</p>
+<p class="text-sm text-on-surface-variant">Cheese, lettuce, tomato, special sauce</p>
+<p class="text-primary font-bold mt-1">₹199</p>
+</div>
+<div class="flex flex-col gap-2">
+<button class="text-secondary text-sm font-bold">Edit</button>
+<button class="text-red-500 text-sm font-bold">Delete</button>
+</div>
+</div>
+
+<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center gap-4">
+<img class="w-16 h-16 rounded-lg object-cover" src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=100" alt="Pizza"/>
+<div class="flex-1">
+<p class="font-bold">Margherita Pizza</p>
+<p class="text-sm text-on-surface-variant">Fresh tomatoes, mozzarella, basil</p>
+<p class="text-primary font-bold mt-1">₹349</p>
+</div>
+<div class="flex flex-col gap-2">
+<button class="text-secondary text-sm font-bold">Edit</button>
+<button class="text-red-500 text-sm font-bold">Delete</button>
+</div>
+</div>
+
+<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center gap-4">
+<img class="w-16 h-16 rounded-lg object-cover" src="https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=100" alt="Drink"/>
+<div class="flex-1">
+<p class="font-bold">Chocolate Milkshake</p>
+<p class="text-sm text-on-surface-variant">Premium chocolate, vanilla ice cream</p>
+<p class="text-primary font-bold mt-1">₹129</p>
+</div>
+<div class="flex flex-col gap-2">
+<button class="text-secondary text-sm font-bold">Edit</button>
+<button class="text-red-500 text-sm font-bold">Delete</button>
+</div>
+</div>
+</div>
+</main>
+</body></html>

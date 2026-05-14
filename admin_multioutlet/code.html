@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Multi-Outlet Management - MIIAM Admin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary": "#ba001c", "secondary": "#0b50d5", "tertiary": "#6c5a00",
+                    "surface": "#fff4f4", "surface-container": "#ffe1e4",
+                    "surface-container-lowest": "#ffffff", "on-surface": "#4d212a",
+                    "on-surface-variant": "#814c55", "primary-container": "#ff7670",
+                    "secondary-container": "#c4d0ff"
+            },
+            "fontFamily": { "headline": ["Plus Jakarta Sans"], "body": ["Plus Jakarta Sans"], "label": ["Plus Jakarta Sans"] }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen pb-24">
+<header class="fixed top-0 w-full z-50 bg-[#fff4f4]/80 backdrop-blur-2xl px-6 py-4">
+<div class="flex items-center justify-between">
+<span class="text-xl font-extrabold text-primary">Multi-Outlet</span>
+<button class="bg-primary text-white px-4 py-2 rounded-lg font-bold text-sm">+ Add Outlet</button>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-4xl mx-auto">
+<section class="space-y-4">
+<div class="bg-surface-container-lowest p-6 rounded-xl border-2 border-primary">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-lg font-bold">Koramangala Branch</h3>
+<span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">Active</span>
+</div>
+<p class="text-sm text-on-surface-variant">5th Block, Koramangala, Bangalore</p>
+<div class="flex gap-4 mt-4 text-sm">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">shopping_cart</span> 245 orders</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">star</span> 4.5 rating</span>
+</div>
+</div>
+
+<div class="bg-surface-container-lowest p-6 rounded-xl">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-lg font-bold">Indiranagar Branch</h3>
+<span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">Active</span>
+</div>
+<p class="text-sm text-on-surface-variant">100 Feet Road, Indiranagar, Bangalore</p>
+<div class="flex gap-4 mt-4 text-sm">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">shopping_cart</span> 198 orders</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">star</span> 4.3 rating</span>
+</div>
+</div>
+
+<div class="bg-surface-container-lowest p-6 rounded-xl">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-lg font-bold">MG Road Branch</h3>
+<span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-bold">Paused</span>
+</div>
+<p class="text-sm text-on-surface-variant">MG Road, Bangalore</p>
+<div class="flex gap-4 mt-4 text-sm">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">shopping_cart</span> 0 orders</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">star</span> - rating</span>
+</div>
+</div>
+</section>
+</main>
+</body></html>
