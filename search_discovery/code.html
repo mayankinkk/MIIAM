@@ -150,6 +150,201 @@
 <span>All Filters</span>
 </button>
 </div>
+
+<!-- Veg Mode & Dietary Filters -->
+<div class="flex flex-wrap gap-3 items-center mb-6">
+<button id="vegModeToggle" class="flex items-center gap-2 px-4 py-2 rounded-full border-2 border-[#22c55e] bg-[#22c55e]/10 transition-all duration-300 hover:bg-[#22c55e]/20">
+<span class="material-symbols-outlined text-[#22c55e]" style="font-variation-settings: 'FILL' 1;" id="vegIcon">eco</span>
+<span class="text-sm font-bold text-[#22c55e]" id="vegText">Veg Mode</span>
+</button>
+<div class="relative group">
+<button class="flex items-center gap-2 bg-surface-container px-4 py-2 rounded-full border border-outline-variant/20 hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-sm text-on-surface-variant">restaurant_menu</span>
+<span class="text-sm font-semibold text-on-surface-variant">Dietary</span>
+<span class="material-symbols-outlined text-sm">expand_more</span>
+</button>
+<!-- Dietary Dropdown -->
+<div class="absolute top-full left-0 mt-2 w-56 bg-surface-container-lowest rounded-xl shadow-xl border border-outline-variant/20 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+<div class="p-3 space-y-2">
+<label class="flex items-center gap-3 p-2 rounded-lg hover:bg-surface-container cursor-pointer">
+<input type="checkbox" class="dietary-filter w-4 h-4 rounded text-[#22c55e]" data-filter="vegan"/>
+<span class="text-sm">🌱 Vegan</span>
+</label>
+<label class="flex items-center gap-3 p-2 rounded-lg hover:bg-surface-container cursor-pointer">
+<input type="checkbox" class="dietary-filter w-4 h-4 rounded text-[#22c55e]" data-filter="gluten-free"/>
+<span class="text-sm">🌾 Gluten-Free</span>
+</label>
+<label class="flex items-center gap-3 p-2 rounded-lg hover:bg-surface-container cursor-pointer">
+<input type="checkbox" class="dietary-filter w-4 h-4 rounded text-[#22c55e]" data-filter="nut-free"/>
+<span class="text-sm">🥜 Nut-Free</span>
+</label>
+<label class="flex items-center gap-3 p-2 rounded-lg hover:bg-surface-container cursor-pointer">
+<input type="checkbox" class="dietary-filter w-4 h-4 rounded text-secondary" data-filter="halal"/>
+<span class="text-sm">☪ Halal</span>
+</label>
+<label class="flex items-center gap-3 p-2 rounded-lg hover:bg-surface-container cursor-pointer">
+<input type="checkbox" class="dietary-filter w-4 h-4 rounded text-primary" data-filter="jain"/>
+<span class="text-sm">🪔 Jain</span>
+</label>
+<label class="flex items-center gap-3 p-2 rounded-lg hover:bg-surface-container cursor-pointer">
+<input type="checkbox" class="dietary-filter w-4 h-4 rounded text-primary" data-filter="keto"/>
+<span class="text-sm">🥛 Keto</span>
+</label>
+<label class="flex items-center gap-3 p-2 rounded-lg hover:bg-surface-container cursor-pointer">
+<input type="checkbox" class="dietary-filter w-4 h-4 rounded text-primary" data-filter="high-protein"/>
+<span class="text-sm">💪 High Protein</span>
+</label>
+</div>
+<button class="apply-dietary-btn w-full p-3 text-center text-primary font-bold border-t border-outline-variant/20 hover:bg-surface-container transition-colors rounded-b-xl">Apply Filters</button>
+</div>
+</div>
+<!-- Active Filter Tags -->
+<div id="activeFilters" class="flex flex-wrap gap-2 mb-4">
+</div>
+
+<!-- Cuisine & Price Filters Bar -->
+<div class="flex flex-wrap gap-2 mb-8">
+<span class="text-sm font-bold text-on-surface-variant self-center mr-2">Cuisine:</span>
+<button class="cuisine-filter px-3 py-1.5 rounded-full bg-surface-container text-sm font-medium hover:bg-surface-container-high transition-colors" data-cuisine="north-indian">North Indian</button>
+<button class="cuisine-filter px-3 py-1.5 rounded-full bg-surface-container text-sm font-medium hover:bg-surface-container-high transition-colors" data-cuisine="south-indian">South Indian</button>
+<button class="cuisine-filter px-3 py-1.5 rounded-full bg-surface-container text-sm font-medium hover:bg-surface-container-high transition-colors" data-cuisine="chinese">Chinese</button>
+<button class="cuisine-filter px-3 py-1.5 rounded-full bg-surface-container text-sm font-medium hover:bg-surface-container-high transition-colors" data-cuisine="pizza">Pizza</button>
+<button class="cuisine-filter px-3 py-1.5 rounded-full bg-surface-container text-sm font-medium hover:bg-surface-container-high transition-colors" data-cuisine="burgers">Burgers</button>
+<button class="cuisine-filter px-3 py-1.5 rounded-full bg-surface-container text-sm font-medium hover:bg-surface-container-high transition-colors" data-cuisine="biryani">Biryani</button>
+<button class="cuisine-filter px-3 py-1.5 rounded-full bg-surface-container text-sm font-medium hover:bg-surface-container-high transition-colors" data-cuisine="desserts">Desserts</button>
+<button class="cuisine-filter px-3 py-1.5 rounded-full bg-surface-container text-sm font-medium hover:bg-surface-container-high transition-colors" data-cuisine="street-food">Street Food</button>
+</div>
+<div class="flex flex-wrap gap-2 mb-8">
+<span class="text-sm font-bold text-on-surface-variant self-center mr-2">Price:</span>
+<button class="price-filter px-3 py-1.5 rounded-full bg-surface-container text-sm font-medium hover:bg-surface-container-high transition-colors" data-price="low">$</button>
+<button class="price-filter px-3 py-1.5 rounded-full bg-surface-container text-sm font-medium hover:bg-surface-container-high transition-colors" data-price="medium">$$</button>
+<button class="price-filter px-3 py-1.5 rounded-full bg-surface-container text-sm font-medium hover:bg-surface-container-high transition-colors" data-price="high">$$$</button>
+</div>
+
+<script>
+const vegModeBtn = document.getElementById('vegModeToggle');
+const vegIcon = document.getElementById('vegIcon');
+const vegText = document.getElementById('vegText');
+const activeFiltersContainer = document.getElementById('activeFilters');
+let vegModeActive = false;
+let activeCuisines = [];
+let activePrices = [];
+let activeDietary = [];
+
+function updateActiveFilters() {
+activeFiltersContainer.innerHTML = '';
+if (vegModeActive) {
+activeFiltersContainer.innerHTML += `<span class="flex items-center gap-1 px-3 py-1 bg-[#22c55e]/20 text-[#22c55e] rounded-full text-xs font-bold"><span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">eco</span> Veg Mode <button class="ml-1 hover:opacity-70" onclick="toggleVegMode()">×</button></span>`;
+}
+activeCuisines.forEach(c => {
+activeFiltersContainer.innerHTML += `<span class="flex items-center gap-1 px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-xs font-bold">${c} <button class="ml-1 hover:opacity-70" onclick="removeCuisine('${c}')">×</button></span>`;
+});
+activePrices.forEach(p => {
+activeFiltersContainer.innerHTML += `<span class="flex items-center gap-1 px-3 py-1 bg-primary-container text-on-primary-container rounded-full text-xs font-bold">${p} <button class="ml-1 hover:opacity-70" onclick="removePrice('${p}')">×</button></span>`;
+});
+activeDietary.forEach(d => {
+activeFiltersContainer.innerHTML += `<span class="flex items-center gap-1 px-3 py-1 bg-tertiary-container text-on-tertiary-fixed rounded-full text-xs font-bold">${d} <button class="ml-1 hover:opacity-70" onclick="removeDietary('${d}')">×</button></span>`;
+});
+}
+
+function toggleVegMode() {
+vegModeActive = !vegModeActive;
+updateVegModeUI();
+updateActiveFilters();
+}
+
+function removeCuisine(c) {
+activeCuisines = activeCuisines.filter(x => x !== c);
+document.querySelectorAll('.cuisine-filter').forEach(btn => {
+if (btn.dataset.cuisine === c.toLowerCase().replace(' ', '-')) {
+btn.classList.remove('bg-secondary', 'text-on-secondary');
+btn.classList.add('bg-surface-container');
+}
+});
+updateActiveFilters();
+}
+
+function removePrice(p) {
+activePrices = activePrices.filter(x => x !== p);
+document.querySelectorAll('.price-filter').forEach(btn => {
+if (btn.dataset.price === p.toLowerCase()) {
+btn.classList.remove('bg-secondary', 'text-on-secondary');
+btn.classList.add('bg-surface-container');
+}
+});
+updateActiveFilters();
+}
+
+function removeDietary(d) {
+activeDietary = activeDietary.filter(x => x !== d);
+updateActiveFilters();
+}
+
+function updateVegModeUI() {
+if (vegModeActive) {
+vegModeBtn.classList.remove('bg-[#22c55e]/10');
+vegModeBtn.classList.add('bg-[#22c55e]', 'text-white');
+vegIcon.style.color = '#ffffff';
+vegText.style.color = '#ffffff';
+vegIcon.textContent = 'check_circle';
+} else {
+vegModeBtn.classList.add('bg-[#22c55e]/10');
+vegModeBtn.classList.remove('bg-[#22c55e]', 'text-white');
+vegIcon.style.color = '#22c55e';
+vegText.style.color = '#22c55e';
+vegIcon.textContent = 'eco';
+}
+}
+
+vegModeBtn.addEventListener('click', toggleVegMode);
+
+document.querySelectorAll('.cuisine-filter').forEach(btn => {
+btn.addEventListener('click', () => {
+const cuisine = btn.textContent.trim();
+if (activeCuisines.includes(cuisine)) {
+activeCuisines = activeCuisines.filter(x => x !== cuisine);
+btn.classList.remove('bg-secondary', 'text-on-secondary');
+btn.classList.add('bg-surface-container');
+} else {
+activeCuisines.push(cuisine);
+btn.classList.add('bg-secondary', 'text-on-secondary');
+btn.classList.remove('bg-surface-container');
+}
+updateActiveFilters();
+});
+});
+
+document.querySelectorAll('.price-filter').forEach(btn => {
+btn.addEventListener('click', () => {
+const price = btn.textContent.trim();
+if (activePrices.includes(price)) {
+activePrices = activePrices.filter(x => x !== price);
+btn.classList.remove('bg-secondary', 'text-on-secondary');
+btn.classList.add('bg-surface-container');
+} else {
+activePrices.push(price);
+btn.classList.add('bg-secondary', 'text-on-secondary');
+btn.classList.remove('bg-surface-container');
+}
+updateActiveFilters();
+});
+});
+
+document.querySelectorAll('.dietary-filter').forEach(checkbox => {
+checkbox.addEventListener('change', () => {
+const filter = checkbox.nextElementSibling.textContent.trim();
+if (checkbox.checked) {
+if (!activeDietary.includes(filter)) activeDietary.push(filter);
+} else {
+activeDietary = activeDietary.filter(x => x !== filter);
+}
+});
+});
+
+document.querySelector('.apply-dietary-btn').addEventListener('click', () => {
+updateActiveFilters();
+});
+</script>
 <!-- Category Chips - Floating Glassmorphism Style -->
 <div class="flex overflow-x-auto pb-4 gap-4 no-scrollbar">
 <div class="flex-shrink-0 bg-primary-container text-on-primary-container px-6 py-4 rounded-xl flex items-center gap-3 shadow-lg">
