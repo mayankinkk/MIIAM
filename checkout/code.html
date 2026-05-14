@@ -158,6 +158,64 @@
 </button>
 </div>
 </section>
+<!-- Order Scheduling Section -->
+<section class="bg-surface-container-lowest p-8 rounded-lg shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
+<div class="flex items-center gap-4 mb-8">
+<div class="w-12 h-12 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary-fixed">
+<span class="material-symbols-outlined">schedule</span>
+</div>
+<h2 class="text-2xl font-bold">Schedule Order</h2>
+</div>
+<div class="space-y-4">
+<!-- Delivery Type Toggle -->
+<div class="flex gap-4 mb-6">
+<button id="scheduleNow" class="schedule-toggle flex-1 py-3 px-4 rounded-xl font-bold text-sm transition-all border-2 border-primary bg-primary text-on-primary">
+<span class="material-symbols-outlined text-sm vertical-middle mr-1">bolt</span>
+Deliver Now
+</button>
+<button id="scheduleLater" class="schedule-toggle flex-1 py-3 px-4 rounded-xl font-bold text-sm transition-all border-2 border-outline-variant text-on-surface-variant hover:border-primary">
+<span class="material-symbols-outlined text-sm vertical-middle mr-1">event</span>
+Schedule for Later
+</button>
+</div>
+<!-- Schedule Options (Hidden by default) -->
+<div id="scheduleOptions" class="hidden space-y-6 p-6 bg-surface-container rounded-xl">
+<div>
+<label class="block text-sm font-bold text-on-surface-variant mb-3">Select Date</label>
+<div class="flex gap-2 overflow-x-auto pb-2">
+<button class="date-btn flex-shrink-0 px-4 py-2 rounded-lg bg-surface-container-lowest border-2 border-transparent font-medium text-sm hover:border-primary transition-colors" data-date="today">Today</button>
+<button class="date-btn flex-shrink-0 px-4 py-2 rounded-lg bg-surface-container-lowest border-2 border-transparent font-medium text-sm hover:border-primary transition-colors" data-date="tomorrow">Tomorrow</button>
+<button class="date-btn flex-shrink-0 px-4 py-2 rounded-lg bg-surface-container-lowest border-2 border-transparent font-medium text-sm hover:border-primary transition-colors" data-date="custom">Custom</button>
+</div>
+</div>
+<div>
+<label class="block text-sm font-bold text-on-surface-variant mb-3">Select Time Slot</label>
+<div class="grid grid-cols-3 gap-2">
+<button class="time-btn py-3 px-2 rounded-lg bg-surface-container-lowest border-2 border-transparent font-medium text-sm hover:border-primary transition-colors" data-time="30min"> ASAP (30 min)</button>
+<button class="time-btn py-3 px-2 rounded-lg bg-surface-container-lowest border-2 border-transparent font-medium text-sm hover:border-primary transition-colors" data-time="1hr"> 1 Hour</button>
+<button class="time-btn py-3 px-2 rounded-lg bg-surface-container-lowest border-2 border-transparent font-medium text-sm hover:border-primary transition-colors" data-time="2hr"> 2 Hours</button>
+<button class="time-btn py-3 px-2 rounded-lg bg-surface-container-lowest border-2 border-transparent font-medium text-sm hover:border-primary transition-colors" data-time="lunch"> Lunch (12-2 PM)</button>
+<button class="time-btn py-3 px-2 rounded-lg bg-surface-container-lowest border-2 border-transparent font-medium text-sm hover:border-primary transition-colors" data-time="dinner"> Dinner (7-9 PM)</button>
+<button class="time-btn py-3 px-2 rounded-lg bg-surface-container-lowest border-2 border-transparent font-medium text-sm hover:border-primary transition-colors" data-time="custom"> Custom Time</button>
+</div>
+</div>
+<!-- Custom Date Time Picker -->
+<div id="customDateTime" class="hidden">
+<label class="block text-sm font-bold text-on-surface-variant mb-3">Choose Specific Time</label>
+<input type="datetime-local" class="w-full p-4 rounded-xl bg-surface-container-lowest border-2 border-outline-variant focus:border-primary outline-none" />
+</div>
+<!-- Scheduled Order Summary -->
+<div class="mt-6 p-4 bg-tertiary-container/30 rounded-xl flex items-center gap-4">
+<span class="material-symbols-outlined text-tertiary">info</span>
+<div>
+<p class="font-bold text-sm">Scheduled Delivery</p>
+<p class="text-xs text-on-surface-variant" id="scheduleSummary">Order will arrive in 30 minutes</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+
 <!-- Payment Method Section -->
 <section class="bg-surface-container-lowest p-8 rounded-lg shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
 <div class="flex items-center gap-4 mb-8">
@@ -209,6 +267,19 @@
 </div>
 </div>
 </div>
+</label>
+<!-- MIIAM Wallet Option -->
+<label class="flex items-center justify-between p-6 rounded-lg border-2 border-tertiary bg-tertiary-container/30 hover:border-tertiary transition-all cursor-pointer">
+<div class="flex items-center gap-4">
+<input class="w-5 h-5 text-tertiary focus:ring-tertiary border-outline-variant" name="payment" type="radio"/>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-tertiary">account_balance</span>
+<div>
+<p class="font-bold">MIIAM Wallet</p>
+<p class="text-xs text-on-surface-variant">Use your wallet balance ($45.00)</p>
+</div>
+</div>
+<span class="text-xs font-bold text-tertiary">$45.00</span>
 </label>
 </div>
 </section>
@@ -300,4 +371,79 @@
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Profile</span>
 </div>
 </nav>
+<script>
+const scheduleNow = document.getElementById('scheduleNow');
+const scheduleLater = document.getElementById('scheduleLater');
+const scheduleOptions = document.getElementById('scheduleOptions');
+const scheduleSummary = document.getElementById('scheduleSummary');
+let selectedDate = 'today';
+let selectedTime = '30min';
+let isScheduled = false;
+
+function updateScheduleSummary() {
+const dateLabel = selectedDate === 'today' ? 'Today' : selectedDate === 'tomorrow' ? 'Tomorrow' : 'Custom';
+const timeLabel = selectedTime === '30min' ? '30 minutes' : selectedTime === '1hr' ? '1 hour' : selectedTime === '2hr' ? '2 hours' : selectedTime === 'lunch' ? '12-2 PM' : selectedTime === 'dinner' ? '7-9 PM' : 'Custom time';
+if (isScheduled) {
+scheduleSummary.textContent = `${dateLabel} at ${timeLabel}`;
+} else {
+scheduleSummary.textContent = 'Order will arrive in 30 minutes';
+}
+}
+
+scheduleNow.addEventListener('click', () => {
+isScheduled = false;
+scheduleOptions.classList.add('hidden');
+scheduleNow.classList.add('bg-primary', 'text-on-primary', 'border-primary');
+scheduleNow.classList.remove('text-on-surface-variant', 'border-outline-variant');
+scheduleLater.classList.remove('bg-primary', 'text-on-primary', 'border-primary');
+scheduleLater.classList.add('text-on-surface-variant', 'border-outline-variant');
+updateScheduleSummary();
+});
+
+scheduleLater.addEventListener('click', () => {
+isScheduled = true;
+scheduleOptions.classList.remove('hidden');
+scheduleLater.classList.add('bg-primary', 'text-on-primary', 'border-primary');
+scheduleLater.classList.remove('text-on-surface-variant', 'border-outline-variant');
+scheduleNow.classList.remove('bg-primary', 'text-on-primary', 'border-primary');
+scheduleNow.classList.add('text-on-surface-variant', 'border-outline-variant');
+updateScheduleSummary();
+});
+
+document.querySelectorAll('.date-btn').forEach(btn => {
+btn.addEventListener('click', () => {
+document.querySelectorAll('.date-btn').forEach(b => {
+b.classList.remove('bg-primary', 'text-on-primary', 'border-primary');
+b.classList.add('bg-surface-container-lowest', 'border-transparent');
+});
+btn.classList.add('bg-primary', 'text-on-primary', 'border-primary');
+btn.classList.remove('bg-surface-container-lowest', 'border-transparent');
+selectedDate = btn.dataset.date;
+if (selectedDate === 'custom') {
+document.getElementById('customDateTime').classList.remove('hidden');
+} else {
+document.getElementById('customDateTime').classList.add('hidden');
+}
+updateScheduleSummary();
+});
+});
+
+document.querySelectorAll('.time-btn').forEach(btn => {
+btn.addEventListener('click', () => {
+document.querySelectorAll('.time-btn').forEach(b => {
+b.classList.remove('bg-primary', 'text-on-primary', 'border-primary');
+b.classList.add('bg-surface-container-lowest', 'border-transparent');
+});
+btn.classList.add('bg-primary', 'text-on-primary', 'border-primary');
+btn.classList.remove('bg-surface-container-lowest', 'border-transparent');
+selectedTime = btn.dataset.time;
+if (selectedTime === 'custom') {
+document.getElementById('customDateTime').classList.remove('hidden');
+} else {
+document.getElementById('customDateTime').classList.add('hidden');
+}
+updateScheduleSummary();
+});
+});
+</script>
 </body></html>
