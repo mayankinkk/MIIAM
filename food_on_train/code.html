@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MIIAM - Food on Train</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary": "#ba001c", "secondary": "#0b50d5", "tertiary": "#6c5a00",
+                    "surface": "#fff4f4", "surface-container": "#ffe1e4",
+                    "surface-container-lowest": "#ffffff", "on-surface": "#4d212a",
+                    "on-surface-variant": "#814c55", "primary-container": "#ff7670",
+                    "secondary-container": "#c4d0ff", "tertiary-container": "#ffd709",
+                    "tertiary-fixed": "#ffd709", "outline-variant": "#dd9ca6"
+            },
+            "fontFamily": { "headline": ["Plus Jakarta Sans"], "body": ["Plus Jakarta Sans"], "label": ["Plus Jakarta Sans"] }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen pb-24">
+<header class="fixed top-0 w-full z-50 bg-[#fff4f4]/80 backdrop-blur-2xl px-6 py-4">
+<div class="flex items-center gap-4">
+<button><span class="material-symbols-outlined">arrow_back</span></button>
+<div class="flex items-center gap-2">
+<span class="text-xl font-extrabold text-primary">MIIAM</span>
+<span class="bg-secondary text-white text-xs font-bold px-2 py-0.5 rounded">Train</span>
+</div>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-2xl mx-auto">
+<!-- Hero Section -->
+<section class="bg-gradient-to-br from-secondary to-secondary-container p-8 rounded-2xl text-white mb-8">
+<div class="text-center">
+<span class="material-symbols-outlined text-5xl mb-4">train</span>
+<h2 class="text-3xl font-extrabold mb-2">Food on Train</h2>
+<p class="text-white/80 mb-6">Order food delivered to your seat at 130+ stations</p>
+</div>
+</section>
+
+<!-- PNR Input -->
+<section class="bg-surface-container-lowest p-6 rounded-xl mb-8 shadow-lg">
+<h3 class="text-xl font-bold mb-4">Enter PNR Details</h3>
+<div class="space-y-4">
+<div>
+<label class="text-sm font-bold text-on-surface-variant mb-2 block">PNR Number</label>
+<input class="w-full p-4 bg-surface-container rounded-xl border-2 border-outline-variant focus:border-secondary outline-none font-mono text-lg text-center tracking-widest" placeholder="Enter 10-digit PNR" type="text" maxlength="10"/>
+</div>
+<div>
+<label class="text-sm font-bold text-on-surface-variant mb-2 block">Or Train Number</label>
+<input class="w-full p-4 bg-surface-container rounded-xl border-2 border-outline-variant focus:border-secondary outline-none text-lg" placeholder="e.g., 12560" type="text"/>
+</div>
+<button class="w-full bg-secondary text-white py-4 rounded-xl font-bold text-lg">Search Order</button>
+</div>
+</section>
+
+<!-- Quick PNR -->
+<section class="mb-8">
+<h3 class="text-lg font-bold mb-4">Recent Journeys</h3>
+<div class="space-y-3">
+<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center gap-4 cursor-pointer hover:shadow-md transition-shadow">
+<span class="material-symbols-outlined text-secondary">history</span>
+<div class="flex-1">
+<p class="font-bold">PNR: 2345678901</p>
+<p class="text-sm text-on-surface-variant">Howrah Express • Dec 15</p>
+</div>
+<button class="text-secondary font-bold text-sm">Order Again</button>
+</div>
+</div>
+</section>
+
+<!-- Popular Stations -->
+<section class="mb-8">
+<h3 class="text-lg font-bold mb-4">Popular Stations</h3>
+<div class="flex flex-wrap gap-2">
+<button class="px-4 py-2 bg-surface-container rounded-full text-sm font-bold hover:bg-secondary-container transition-colors">Delhi</button>
+<button class="px-4 py-2 bg-surface-container rounded-full text-sm font-bold hover:bg-secondary-container transition-colors">Mumbai</button>
+<button class="px-4 py-2 bg-surface-container rounded-full text-sm font-bold hover:bg-secondary-container transition-colors">Kolkata</button>
+<button class="px-4 py-2 bg-surface-container rounded-full text-sm font-bold hover:bg-secondary-container transition-colors">Chennai</button>
+<button class="px-4 py-2 bg-surface-container rounded-full text-sm font-bold hover:bg-secondary-container transition-colors">Bangalore</button>
+<button class="px-4 py-2 bg-surface-container rounded-full text-sm font-bold hover:bg-secondary-container transition-colors">Hyderabad</button>
+</div>
+</section>
+
+<!-- How It Works -->
+<section class="mb-8">
+<h3 class="text-lg font-bold mb-4">How It Works</h3>
+<div class="grid grid-cols-3 gap-4 text-center">
+<div>
+<span class="material-symbols-outlined text-3xl text-secondary mb-2">tag</span>
+<p class="text-sm font-bold">Enter PNR</p>
+</div>
+<div>
+<span class="material-symbols-outlined text-3xl text-secondary mb-2">restaurant_menu</span>
+<p class="text-sm font-bold">Choose Food</p>
+</div>
+<div>
+<span class="material-symbols-outlined text-3xl text-secondary mb-2">seat</span>
+<p class="text-sm font-bold">Get at Seat</p>
+</div>
+</div>
+</section>
+
+<!-- Popular Train Food -->
+<section>
+<h3 class="text-lg font-bold mb-4">Popular on Train</h3>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container-lowest p-4 rounded-xl">
+<img class="w-full h-24 object-cover rounded-lg mb-2" src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=200" alt="Biryani"/>
+<p class="font-bold text-sm">Chicken Biryani</p>
+<p class="text-xs text-on-surface-variant">₹199 • 30 min</p>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl">
+<img class="w-full h-24 object-cover rounded-lg mb-2" src="https://images.unsplash.com/photo-1601050690597-df0568f70950?w=200" alt="Thali"/>
+<p class="font-bold text-sm">Veg Thali</p>
+<p class="text-xs text-on-surface-variant">₹149 • 25 min</p>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl">
+<img class="w-full h-24 object-cover rounded-lg mb-2" src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=200" alt="Curry"/>
+<p class="font-bold text-sm">Dal Makhani</p>
+<p class="text-xs text-on-surface-variant">₹120 • 20 min</p>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl">
+<img class="w-full h-24 object-cover rounded-lg mb-2" src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=200" alt="Paratha"/>
+<p class="font-bold text-sm">Aloo Paratha</p>
+<p class="text-xs text-on-surface-variant">₹80 • 15 min</p>
+</div>
+</div>
+</section>
+</main>
+</body></html>

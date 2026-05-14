@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MIIAM Gift Cards</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary": "#ba001c", "secondary": "#0b50d5", "tertiary": "#6c5a00",
+                    "surface": "#fff4f4", "surface-container": "#ffe1e4",
+                    "surface-container-lowest": "#ffffff", "on-surface": "#4d212a",
+                    "on-surface-variant": "#814c55", "primary-container": "#ff7670",
+                    "secondary-container": "#c4d0ff", "tertiary-container": "#ffd709",
+                    "tertiary-fixed": "#ffd709", "outline-variant": "#dd9ca6"
+            },
+            "fontFamily": { "headline": ["Plus Jakarta Sans"], "body": ["Plus Jakarta Sans"], "label": ["Plus Jakarta Sans"] }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen pb-24">
+<header class="fixed top-0 w-full z-50 bg-[#fff4f4]/80 backdrop-blur-2xl px-6 py-4">
+<div class="flex items-center gap-4">
+<button><span class="material-symbols-outlined">arrow_back</span></button>
+<span class="text-xl font-extrabold text-primary">MIIAM Gift Cards</span>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-2xl mx-auto">
+<!-- Gift Card Hero -->
+<section class="bg-gradient-to-br from-tertiary to-tertiary-container p-8 rounded-2xl text-on-tertiary-fixed mb-8">
+<div class="text-center">
+<span class="material-symbols-outlined text-5xl mb-4" style="font-variation-settings: 'FILL' 1;">card_giftcard</span>
+<h2 class="text-3xl font-extrabold mb-2">Gift Food, Not Guess</h2>
+<p class="text-on-tertiary-fixed/80 mb-6">Perfect for birthdays, celebrations & everything in between</p>
+</div>
+</section>
+
+<!-- Buy Gift Card -->
+<section class="bg-surface-container-lowest p-6 rounded-xl mb-8 shadow-lg">
+<h3 class="text-xl font-bold mb-4">Buy a Gift Card</h3>
+<div class="space-y-4">
+<div class="grid grid-cols-3 gap-3">
+<button class="gift-amount p-4 rounded-xl border-2 border-outline-variant font-bold hover:border-primary transition-colors" data-amount="500">₹500</button>
+<button class="gift-amount p-4 rounded-xl border-2 border-primary bg-primary-container font-bold" data-amount="1000">₹1,000</button>
+<button class="gift-amount p-4 rounded-xl border-2 border-outline-variant font-bold hover:border-primary transition-colors" data-amount="2000">₹2,000</button>
+</div>
+<div>
+<label class="text-sm font-bold text-on-surface-variant mb-2 block">Or enter custom amount</label>
+<input class="w-full p-4 bg-surface-container rounded-xl border-2 border-outline-variant focus:border-primary outline-none text-lg" placeholder="₹100 - ₹10,000" type="number"/>
+</div>
+<div>
+<label class="text-sm font-bold text-on-surface-variant mb-2 block">Recipient Name</label>
+<input class="w-full p-4 bg-surface-container rounded-xl border-2 border-outline-variant focus:border-primary outline-none" placeholder="Enter name" type="text"/>
+</div>
+<div>
+<label class="text-sm font-bold text-on-surface-variant mb-2 block">Your Message</label>
+<textarea class="w-full p-4 bg-surface-container rounded-xl border-2 border-outline-variant focus:border-primary outline-none" placeholder="Write a sweet message..." rows="3"></textarea>
+</div>
+<button class="w-full bg-primary text-on-primary py-4 rounded-xl font-bold text-lg">Buy Gift Card</button>
+</div>
+</section>
+
+<!-- Gift Card Designs -->
+<section class="mb-8">
+<h3 class="text-lg font-bold mb-4">Choose a Design</h3>
+<div class="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
+<div class="flex-shrink-0 w-40">
+<div class="bg-gradient-to-br from-pink-400 to-pink-600 p-4 rounded-xl text-white">
+<span class="material-symbols-outlined text-2xl">cake</span>
+<p class="font-bold text-sm mt-2">Birthday</p>
+</div>
+</div>
+<div class="flex-shrink-0 w-40">
+<div class="bg-gradient-to-br from-purple-400 to-purple-600 p-4 rounded-xl text-white">
+<span class="material-symbols-outlined text-2xl">celebration</span>
+<p class="font-bold text-sm mt-2">Celebration</p>
+</div>
+</div>
+<div class="flex-shrink-0 w-40">
+<div class="bg-gradient-to-br from-yellow-400 to-orange-500 p-4 rounded-xl text-white">
+<span class="material-symbols-outlined text-2xl">workspace_premium</span>
+<p class="font-bold text-sm mt-2">Thank You</p>
+</div>
+</div>
+<div class="flex-shrink-0 w-40">
+<div class="bg-gradient-to-br from-green-400 to-green-600 p-4 rounded-xl text-white">
+<span class="material-symbols-outlined text-2xl">favorite</span>
+<p class="font-bold text-sm mt-2">Love</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- My Gift Cards -->
+<section>
+<h3 class="text-lg font-bold mb-4">My Gift Cards</h3>
+<div class="space-y-3">
+<div class="bg-surface-container p-4 rounded-xl flex items-center gap-4">
+<div class="bg-tertiary-container p-3 rounded-lg">
+<span class="material-symbols-outlined text-tertiary">card_giftcard</span>
+</div>
+<div class="flex-1">
+<p class="font-bold">Gift Card •••• 4521</p>
+<p class="text-sm text-on-surface-variant">Balance: ₹750</p>
+</div>
+<button class="text-primary font-bold text-sm">Redeem</button>
+</div>
+<div class="bg-surface-container p-4 rounded-xl flex items-center gap-4">
+<div class="bg-tertiary-container p-3 rounded-lg">
+<span class="material-symbols-outlined text-tertiary">card_giftcard</span>
+</div>
+<div class="flex-1">
+<p class="font-bold">Gift Card •••• 8892</p>
+<p class="text-sm text-on-surface-variant">Balance: ₹1,200</p>
+</div>
+<button class="text-primary font-bold text-sm">Redeem</button>
+</div>
+</div>
+</section>
+</main>
+</body></html>

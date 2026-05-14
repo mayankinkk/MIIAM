@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MIIAM Dineout - Table Reservation</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary": "#ba001c", "secondary": "#0b50d5", "tertiary": "#6c5a00",
+                    "surface": "#fff4f4", "surface-container": "#ffe1e4",
+                    "surface-container-lowest": "#ffffff", "on-surface": "#4d212a",
+                    "on-surface-variant": "#814c55", "primary-container": "#ff7670",
+                    "secondary-container": "#c4d0ff", "tertiary-container": "#ffd709",
+                    "tertiary-fixed": "#ffd709", "outline-variant": "#dd9ca6"
+            },
+            "fontFamily": { "headline": ["Plus Jakarta Sans"], "body": ["Plus Jakarta Sans"], "label": ["Plus Jakarta Sans"] }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen pb-24">
+<header class="fixed top-0 w-full z-50 bg-[#fff4f4]/80 backdrop-blur-2xl px-6 py-4">
+<div class="flex items-center gap-4">
+<button><span class="material-symbols-outlined">arrow_back</span></button>
+<div class="flex items-center gap-2">
+<span class="text-xl font-extrabold text-secondary">MIIAM</span>
+<span class="bg-secondary text-white text-xs font-bold px-2 py-0.5 rounded">Dineout</span>
+</div>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-2xl mx-auto">
+<!-- Dineout Hero -->
+<section class="bg-gradient-to-br from-secondary to-secondary-container p-8 rounded-2xl text-white mb-8">
+<div class="text-center">
+<span class="material-symbols-outlined text-5xl mb-4" style="font-variation-settings: 'FILL' 1;">restaurant</span>
+<h2 class="text-3xl font-extrabold mb-2">Dineout</h2>
+<p class="text-white/80 mb-6">Get up to 50% OFF on dining at top restaurants</p>
+</div>
+</section>
+
+<!-- Restaurant Search -->
+<section class="bg-surface-container-lowest p-6 rounded-xl mb-8 shadow-lg">
+<h3 class="text-xl font-bold mb-4">Find a Restaurant</h3>
+<div class="space-y-4">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full p-4 pl-12 bg-surface-container rounded-xl border-2 border-outline-variant focus:border-secondary outline-none" placeholder="Search restaurants..." type="text"/>
+</div>
+<div class="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+<button class="flex-shrink-0 px-4 py-2 bg-secondary text-white rounded-full text-sm font-bold">All</button>
+<button class="flex-shrink-0 px-4 py-2 bg-surface-container rounded-full text-sm font-bold">Fine Dining</button>
+<button class="flex-shrink-0 px-4 py-2 bg-surface-container rounded-full text-sm font-bold">Casual</button>
+<button class="flex-shrink-0 px-4 py-2 bg-surface-container rounded-full text-sm font-bold">Cafe</button>
+<button class="flex-shrink-0 px-4 py-2 bg-surface-container rounded-full text-sm font-bold">Bar</button>
+</div>
+</div>
+</section>
+
+<!-- Popular Restaurants with Deals -->
+<section class="mb-8">
+<h3 class="text-lg font-bold mb-4">Hot Deals Near You</h3>
+<div class="space-y-4">
+<!-- Restaurant 1 -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-md">
+<div class="relative h-40">
+<img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400" alt="Restaurant"/>
+<div class="absolute top-3 right-3 bg-tertiary text-on-tertiary-fixed px-3 py-1 rounded-full text-sm font-bold">40% OFF</div>
+</div>
+<div class="p-4">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h4 class="font-bold text-lg">The Olive Garden</h4>
+<p class="text-sm text-on-surface-variant">Italian • Sector 15</p>
+</div>
+<span class="flex items-center gap-1 text-sm font-bold">4.5 ★</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-sm text-on-surface-variant">2 people • 7:30 PM</span>
+<button class="bg-secondary text-white px-4 py-2 rounded-lg font-bold text-sm">Book Table</button>
+</div>
+</div>
+</div>
+<!-- Restaurant 2 -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-md">
+<div class="relative h-40">
+<img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1552566626-52f8b828add9?w=400" alt="Restaurant"/>
+<div class="absolute top-3 right-3 bg-tertiary text-on-tertiary-fixed px-3 py-1 rounded-full text-sm font-bold">30% OFF</div>
+</div>
+<div class="p-4">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h4 class="font-bold text-lg">BBQ Nation</h4>
+<p class="text-sm text-on-surface-variant">Grill • MG Road</p>
+</div>
+<span class="flex items-center gap-1 text-sm font-bold">4.3 ★</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-sm text-on-surface-variant">4 people • 8:00 PM</span>
+<button class="bg-secondary text-white px-4 py-2 rounded-lg font-bold text-sm">Book Table</button>
+</div>
+</div>
+</div>
+<!-- Restaurant 3 -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-md">
+<div class="relative h-40">
+<img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=400" alt="Restaurant"/>
+<div class="absolute top-3 right-3 bg-tertiary text-on-tertiary-fixed px-3 py-1 rounded-full text-sm font-bold">25% OFF</div>
+</div>
+<div class="p-4">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h4 class="font-bold text-lg">Sky Lounge</h4>
+<p class="text-sm text-on-surface-variant">Bar • Rooftop</p>
+</div>
+<span class="flex items-center gap-1 text-sm font-bold">4.6 ★</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-sm text-on-surface-variant">6 people • 9:00 PM</span>
+<button class="bg-secondary text-white px-4 py-2 rounded-lg font-bold text-sm">Book Table</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Booking Form Modal -->
+<section class="bg-surface-container p-6 rounded-xl mb-8">
+<h3 class="text-lg font-bold mb-4">Quick Booking</h3>
+<div class="space-y-4">
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="text-sm font-bold text-on-surface-variant mb-2 block">Date</label>
+<input class="w-full p-3 bg-surface-container-lowest rounded-xl border-2 border-outline-variant focus:border-secondary outline-none" type="date"/>
+</div>
+<div>
+<label class="text-sm font-bold text-on-surface-variant mb-2 block">Time</label>
+<select class="w-full p-3 bg-surface-container-lowest rounded-xl border-2 border-outline-variant focus:border-secondary outline-none">
+<option>12:00 PM</option>
+<option>12:30 PM</option>
+<option>1:00 PM</option>
+<option>7:00 PM</option>
+<option>7:30 PM</option>
+<option>8:00 PM</option>
+<option>8:30 PM</option>
+<option>9:00 PM</option>
+</select>
+</div>
+</div>
+<div>
+<label class="text-sm font-bold text-on-surface-variant mb-2 block">Number of Guests</label>
+<select class="w-full p-3 bg-surface-container-lowest rounded-xl border-2 border-outline-variant focus:border-secondary outline-none">
+<option>2 People</option>
+<option>3 People</option>
+<option>4 People</option>
+<option>5 People</option>
+<option>6 People</option>
+<option>7+ People</option>
+</select>
+</div>
+<button class="w-full bg-secondary text-white py-4 rounded-xl font-bold text-lg">Find Available Tables</button>
+</div>
+</section>
+
+<!-- Your Reservations -->
+<section>
+<h3 class="text-lg font-bold mb-4">Upcoming Reservations</h3>
+<div class="bg-surface-container p-4 rounded-xl flex items-center gap-4">
+<span class="material-symbols-outlined text-secondary">event_available</span>
+<div class="flex-1">
+<p class="font-bold">No upcoming reservations</p>
+<p class="text-sm text-on-surface-variant">Book a table to see it here</p>
+</div>
+</div>
+</section>
+</main>
+</body></html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MIIAM Wallet</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary": "#ba001c", "secondary": "#0b50d5", "tertiary": "#6c5a00",
+                    "surface": "#fff4f4", "surface-container": "#ffe1e4",
+                    "surface-container-lowest": "#ffffff", "on-surface": "#4d212a",
+                    "on-surface-variant": "#814c55", "primary-container": "#ff7670",
+                    "secondary-container": "#c4d0ff", "tertiary-container": "#ffd709",
+                    "tertiary-fixed": "#ffd709", "outline-variant": "#dd9ca6"
+            },
+            "fontFamily": { "headline": ["Plus Jakarta Sans"], "body": ["Plus Jakarta Sans"], "label": ["Plus Jakarta Sans"] }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen pb-24">
+<header class="fixed top-0 w-full z-50 bg-[#fff4f4]/80 backdrop-blur-2xl px-6 py-4">
+<div class="flex items-center gap-4">
+<button><span class="material-symbols-outlined">arrow_back</span></button>
+<span class="text-xl font-extrabold">MIIAM Wallet</span>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-2xl mx-auto">
+<!-- Wallet Balance -->
+<section class="bg-gradient-to-br from-primary to-primary-container p-8 rounded-2xl text-white mb-8">
+<div class="flex justify-between items-start mb-6">
+<div>
+<p class="text-white/70 text-sm">Available Balance</p>
+<h2 class="text-5xl font-extrabold">₹1,250</h2>
+</div>
+<span class="material-symbols-outlined text-4xl opacity-50">account_balance_wallet</span>
+</div>
+<div class="flex gap-3">
+<button class="bg-white text-primary px-6 py-3 rounded-xl font-bold flex-1">Add Money</button>
+<button class="bg-white/20 text-white px-6 py-3 rounded-xl font-bold flex-1">Send</button>
+</div>
+</section>
+
+<!-- Quick Actions -->
+<section class="grid grid-cols-4 gap-4 mb-8">
+<div class="text-center cursor-pointer">
+<div class="w-12 h-12 bg-primary-container rounded-full flex items-center justify-center mx-auto mb-2">
+<span class="material-symbols-outlined text-primary">qr_code</span>
+</div>
+<span class="text-xs font-bold">Scan QR</span>
+</div>
+<div class="text-center cursor-pointer">
+<div class="w-12 h-12 bg-secondary-container rounded-full flex items-center justify-center mx-auto mb-2">
+<span class="material-symbols-outlined text-secondary">passkey</span>
+</div>
+<span class="text-xs font-bold">UPI ID</span>
+</div>
+<div class="text-center cursor-pointer">
+<div class="w-12 h-12 bg-tertiary-container rounded-full flex items-center justify-center mx-auto mb-2">
+<span class="material-symbols-outlined text-tertiary">card_giftcard</span>
+</div>
+<span class="text-xs font-bold">Gift Card</span>
+</div>
+<div class="text-center cursor-pointer">
+<div class="w-12 h-12 bg-surface-container rounded-full flex items-center justify-center mx-auto mb-2">
+<span class="material-symbols-outlined">history</span>
+</div>
+<span class="text-xs font-bold">History</span>
+</div>
+</section>
+
+<!-- Transaction History -->
+<section>
+<h3 class="text-xl font-bold mb-4">Recent Transactions</h3>
+<div class="space-y-3">
+<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center gap-4">
+<div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-green-600">arrow_downward</span>
+</div>
+<div class="flex-1">
+<p class="font-bold text-sm">Added via UPI</p>
+<p class="text-xs text-on-surface-variant">Today, 2:30 PM</p>
+</div>
+<span class="text-green-600 font-bold">+₹500</span>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center gap-4">
+<div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-red-600">shopping_cart</span>
+</div>
+<div class="flex-1">
+<p class="font-bold text-sm">The Momo Station</p>
+<p class="text-xs text-on-surface-variant">Yesterday, 8:15 PM</p>
+</div>
+<span class="text-red-600 font-bold">-₹245</span>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center gap-4">
+<div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-red-600">restaurant</span>
+</div>
+<div class="flex-1">
+<p class="font-bold text-sm">Chai Tapri Collective</p>
+<p class="text-xs text-on-surface-variant">Oct 20, 5:00 PM</p>
+</div>
+<span class="text-red-600 font-bold">-₹80</span>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center gap-4">
+<div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-green-600">card_giftcard</span>
+</div>
+<div class="flex-1">
+<p class="font-bold text-sm">Cashback Reward</p>
+<p class="text-xs text-on-surface-variant">Oct 18, 12:00 PM</p>
+</div>
+<span class="text-green-600 font-bold">+₹25</span>
+</div>
+</div>
+<button class="w-full mt-4 py-4 text-primary font-bold">View All Transactions</button>
+</section>
+
+<!-- Saved Payment Methods -->
+<section class="mt-8">
+<h3 class="text-xl font-bold mb-4">Saved Payment Methods</h3>
+<div class="space-y-3">
+<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center gap-4 border-2 border-primary">
+<span class="material-symbols-outlined text-secondary">credit_card</span>
+<div class="flex-1">
+<p class="font-bold text-sm">HDFC Bank •••• 4521</p>
+<p class="text-xs text-on-surface-variant">Default</p>
+</div>
+<button class="text-primary text-sm font-bold">Edit</button>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center gap-4">
+<span class="material-symbols-outlined text-secondary">account_balance</span>
+<div class="flex-1">
+<p class="font-bold text-sm">upi@okhdfcbank</p>
+<p class="text-xs text-on-surface-variant">UPI</p>
+</div>
+<button class="text-primary text-sm font-bold">Edit</button>
+</div>
+</div>
+<button class="w-full mt-4 py-4 border-2 border-dashed border-outline-variant rounded-xl text-on-surface-variant font-bold flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">add</span> Add Payment Method
+</button>
+</section>
+</main>
+</body></html>
