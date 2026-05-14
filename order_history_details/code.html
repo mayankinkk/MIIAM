@@ -295,14 +295,45 @@ Add to Cart • $42.85
 
 <!-- Action Grid -->
 <section class="grid grid-cols-1 gap-4 pb-12">
+<!-- Digital Receipt Section -->
+<div class="bg-surface-container p-6 rounded-xl">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-bold">Digital Receipt</h3>
+<span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">Paid</span>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-lg text-sm space-y-2 mb-4">
+<div class="flex justify-between">
+<span class="text-on-surface-variant">Order ID</span>
+<span class="font-bold">#ORD-99210-XC</span>
+</div>
+<div class="flex justify-between">
+<span class="text-on-surface-variant">Date</span>
+<span class="font-bold">Oct 24, 2023</span>
+</div>
+<div class="flex justify-between">
+<span class="text-on-surface-variant">Amount</span>
+<span class="font-bold text-primary">$42.85</span>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 bg-secondary text-white py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:bg-secondary/90">
+<span class="material-symbols-outlined text-sm">download</span>
+Download PDF
+</button>
+<button class="flex-1 bg-primary text-white py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:bg-primary/90">
+<span class="material-symbols-outlined text-sm">share</span>
+Share
+</button>
+</div>
+</div>
 <div class="grid grid-cols-2 gap-4">
 <button class="bg-secondary text-white py-5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-transform active:scale-95">
 <span class="material-symbols-outlined text-xl">report_problem</span>
                     Report Issue
                 </button>
 <button class="bg-surface-container-highest text-on-surface py-5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-transform active:scale-95">
-<span class="material-symbols-outlined text-xl">receipt</span>
-                    Get PDF Receipt
+<span class="material-symbols-outlined text-xl">email</span>
+                    Email Receipt
                 </button>
 </div>
 <button class="border-2 border-outline-variant text-on-surface py-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-surface-container transition-colors">

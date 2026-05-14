@@ -216,6 +216,50 @@ Schedule for Later
 </div>
 </section>
 
+<!-- Delivery Instructions -->
+<section class="bg-surface-container-lowest p-8 rounded-lg shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
+<div class="flex items-center gap-4 mb-6">
+<div class="w-12 h-12 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary-fixed">
+<span class="material-symbols-outlined">edit_note</span>
+</div>
+<h2 class="text-2xl font-bold">Delivery Instructions</h2>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+<label class="delivery-option cursor-pointer">
+<input type="radio" name="delivery" class="hidden" checked/>
+<div class="p-4 rounded-xl border-2 border-primary bg-primary-container text-center">
+<span class="material-symbols-outlined text-2xl mb-1">door_front</span>
+<p class="text-sm font-bold">Leave at Door</p>
+</div>
+</label>
+<label class="delivery-option cursor-pointer">
+<input type="radio" name="delivery" class="hidden"/>
+<div class="p-4 rounded-xl border-2 border-outline-variant bg-surface-container-lowest text-center hover:border-primary transition-colors">
+<span class="material-symbols-outlined text-2xl mb-1">doorbell</span>
+<p class="text-sm font-bold">Ring Bell</p>
+</div>
+</label>
+<label class="delivery-option cursor-pointer">
+<input type="radio" name="delivery" class="hidden"/>
+<div class="p-4 rounded-xl border-2 border-outline-variant bg-surface-container-lowest text-center hover:border-primary transition-colors">
+<span class="material-symbols-outlined text-2xl mb-1">call</span>
+<p class="text-sm font-bold">Call Before</p>
+</div>
+</label>
+<label class="delivery-option cursor-pointer">
+<input type="radio" name="delivery" class="hidden"/>
+<div class="p-4 rounded-xl border-2 border-outline-variant bg-surface-container-lowest text-center hover:border-primary transition-colors">
+<span class="material-symbols-outlined text-2xl mb-1">person</span>
+<p class="text-sm font-bold">Leave with Security</p>
+</div>
+</label>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-4 text-on-surface-variant">notes</span>
+<textarea class="w-full pl-12 p-4 bg-surface-container rounded-xl border-2 border-outline-variant focus:border-primary outline-none" rows="2" placeholder="Any specific instructions for the delivery partner..."></textarea>
+</div>
+</section>
+
 <!-- Payment Method Section -->
 <section class="bg-surface-container-lowest p-8 rounded-lg shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
 <div class="flex items-center gap-4 mb-8">
