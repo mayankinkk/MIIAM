@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MIIAM Gold - Loyalty Program</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary-fixed-dim": "#ff5a57",
+                    "primary-fixed": "#ff7670",
+                    "on-secondary": "#f1f2ff",
+                    "surface-container-high": "#ffd9de",
+                    "tertiary-fixed": "#ffd709",
+                    "on-secondary-fixed": "#002c83",
+                    "on-primary-fixed-variant": "#600009",
+                    "error-dim": "#b92902",
+                    "tertiary-dim": "#5e4e00",
+                    "outline-variant": "#dd9ca6",
+                    "on-surface-variant": "#814c55",
+                    "inverse-surface": "#24020a",
+                    "surface-variant": "#ffd2d7",
+                    "on-primary": "#ffefee",
+                    "on-error-container": "#520c00",
+                    "on-primary-fixed": "#000000",
+                    "inverse-on-surface": "#cb8c96",
+                    "tertiary-container": "#ffd709",
+                    "secondary-fixed-dim": "#b1c2ff",
+                    "error-container": "#f95630",
+                    "surface-container": "#ffe1e4",
+                    "inverse-primary": "#ff5352",
+                    "surface-tint": "#ba001c",
+                    "on-tertiary-fixed-variant": "#665500",
+                    "surface-dim": "#ffc6ce",
+                    "on-tertiary": "#fff2cd",
+                    "on-surface": "#4d212a",
+                    "surface-container-low": "#ffecee",
+                    "surface-bright": "#fff4f4",
+                    "on-background": "#4d212a",
+                    "on-tertiary-fixed": "#453900",
+                    "on-primary-container": "#4e0006",
+                    "surface": "#fff4f4",
+                    "primary": "#ba001c",
+                    "primary-dim": "#a40017",
+                    "tertiary": "#6c5a00",
+                    "surface-container-highest": "#ffd2d7",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-container": "#c4d0ff",
+                    "tertiary-fixed-dim": "#efc900",
+                    "background": "#fff4f4",
+                    "on-secondary-container": "#003dac",
+                    "secondary-fixed": "#c4d0ff",
+                    "on-error": "#ffefec",
+                    "outline": "#a06770",
+                    "error": "#b02500",
+                    "on-tertiary-container": "#5b4b00",
+                    "secondary-dim": "#0044bf",
+                    "primary-container": "#ff7670",
+                    "on-secondary-fixed-variant": "#0045c1",
+                    "secondary": "#0b50d5"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Plus Jakarta Sans"],
+                    "label": ["Plus Jakarta Sans"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .gold-gradient {
+            background: linear-gradient(135deg, #ffd709 0%, #ffb800 50%, #ffd709 100%);
+        }
+        .gold-shimmer {
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+            animation: shimmer 2s infinite;
+        }
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#fff4f4]/80 backdrop-blur-2xl shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
+<div class="flex justify-between items-center px-6 py-4 w-full">
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<span class="text-xl font-bold text-primary">MIIAM Gold</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="relative">
+<span class="material-symbols-outlined text-primary">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-primary rounded-full"></span>
+</button>
+<div class="w-10 h-10 rounded-full overflow-hidden ring-2 ring-tertiary-container">
+<img alt="User" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxbAnKvph_V4tlwT8nUIHGNFw1h226SqL3OuvXdJSQm08kyjdZhVRCfdSOneES6zuUTWPQWfYG5tUn33arm347N77mGYcN_m9cDw_JxXiE_FfAG63lGQzXA41PIyT81V1t03yXTYSnrMS82MHOlXXg-LZhV6-rd02YzMBHG6rVV23AKDTC6qh3mWNaK8fdFep5G9_nPo0fwwzTiKmYqBraIdUIqhABwVoeNlFxhv5eRYi6SS_HnMbitzUwwrmXXZfS8mVJnrq_Cpc"/>
+</div>
+</div>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-7xl mx-auto">
+<!-- Hero Section -->
+<section class="mb-10">
+<div class="relative overflow-hidden rounded-3xl gold-gradient p-8 text-center shadow-2xl">
+<div class="absolute inset-0 gold-shimmer"></div>
+<div class="relative z-10">
+<span class="material-symbols-outlined text-6xl mb-4 text-black/80" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+<h1 class="text-4xl font-extrabold text-black mb-2">MIIAM Gold Member</h1>
+<p class="text-black/70 font-medium mb-6">Unlock exclusive benefits & savings</p>
+<div class="flex justify-center items-center gap-4 mb-6">
+<div class="bg-black/10 rounded-full px-4 py-2">
+<span class="text-2xl font-extrabold text-black">2,450</span>
+<span class="text-sm font-bold text-black/70 ml-1">Points</span>
+</div>
+<span class="text-black/50 font-bold">|</span>
+<div class="bg-black/10 rounded-full px-4 py-2">
+<span class="text-sm font-bold text-black">Tier: <span class="text-black font-extrabold">Gold</span></span>
+</div>
+</div>
+<button class="bg-black text-tertiary-fixed font-bold py-3 px-8 rounded-full hover:scale-105 transition-transform shadow-lg">
+Redeem Points
+</button>
+</div>
+</div>
+</section>
+
+<!-- Membership Tiers -->
+<section class="mb-10">
+<h2 class="text-2xl font-bold mb-6">Membership Tiers</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Silver Tier -->
+<div class="bg-surface-container-lowest p-6 rounded-xl border-2 border-transparent hover:border-outline-variant transition-all">
+<div class="flex items-center gap-3 mb-4">
+<span class="text-2xl">🥈</span>
+<div>
+<h3 class="font-bold text-lg">Silver</h3>
+<p class="text-xs text-on-surface-variant">0 - 1,000 pts</p>
+</div>
+</div>
+<ul class="space-y-2 text-sm">
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-green-500 text-sm" style="font-variation-settings: 'FILL' 1;">check</span> 5% off on orders</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-green-500 text-sm" style="font-variation-settings: 'FILL' 1;">check</span> Free delivery (3km)</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-green-500 text-sm" style="font-variation-settings: 'FILL' 1;">check</span> Birthday rewards</li>
+</ul>
+</div>
+<!-- Gold Tier (Current) -->
+<div class="bg-tertiary-container/30 p-6 rounded-xl border-2 border-tertiary shadow-lg transform scale-105">
+<div class="absolute -top-2 -right-2 bg-tertiary text-black text-xs font-bold px-2 py-1 rounded-full">CURRENT</div>
+<div class="flex items-center gap-3 mb-4">
+<span class="text-2xl">🥇</span>
+<div>
+<h3 class="font-bold text-lg">Gold</h3>
+<p class="text-xs text-on-surface-variant">1,000 - 5,000 pts</p>
+</div>
+</div>
+<ul class="space-y-2 text-sm">
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-tertiary text-sm" style="font-variation-settings: 'FILL' 1;">check</span> 15% off on orders</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-tertiary text-sm" style="font-variation-settings: 'FILL' 1;">check</span> Free delivery (7km)</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-tertiary text-sm" style="font-variation-settings: 'FILL' 1;">check</span> Priority support</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-tertiary text-sm" style="font-variation-settings: 'FILL' 1;">check</span> Exclusive deals</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-tertiary text-sm" style="font-variation-settings: 'FILL' 1;">check</span> Early access to new restaurants</li>
+</ul>
+</div>
+<!-- Platinum Tier -->
+<div class="bg-surface-container-lowest p-6 rounded-xl border-2 border-transparent hover:border-outline-variant transition-all">
+<div class="flex items-center gap-3 mb-4">
+<span class="text-2xl">💎</span>
+<div>
+<h3 class="font-bold text-lg">Platinum</h3>
+<p class="text-xs text-on-surface-variant">5,000+ pts</p>
+</div>
+</div>
+<ul class="space-y-2 text-sm">
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-green-500 text-sm" style="font-variation-settings: 'FILL' 1;">check</span> 30% off on orders</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-green-500 text-sm" style="font-variation-settings: 'FILL' 1;">check</span> Unlimited free delivery</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-green-500 text-sm" style="font-variation-settings: 'FILL' 1;">check</span> Personal concierge</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-green-500 text-sm" style="font-variation-settings: 'FILL' 1;">check</span> Free table reservations</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-green-500 text-sm" style="font-variation-settings: 'FILL' 1;">check</span> Exclusive events access</li>
+</ul>
+</div>
+</div>
+</section>
+
+<!-- Benefits Section -->
+<section class="mb-10">
+<h2 class="text-2xl font-bold mb-6">Your Gold Benefits</h2>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<div class="bg-surface-container-lowest p-6 rounded-xl text-center hover:shadow-lg transition-shadow">
+<span class="material-symbols-outlined text-3xl text-tertiary mb-2" style="font-variation-settings: 'FILL' 1;">local_shipping</span>
+<p class="font-bold text-sm">Free Delivery</p>
+<p class="text-xs text-on-surface-variant">7km radius</p>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl text-center hover:shadow-lg transition-shadow">
+<span class="material-symbols-outlined text-3xl text-tertiary mb-2" style="font-variation-settings: 'FILL' 1;">percent</span>
+<p class="font-bold text-sm">15% Off</p>
+<p class="text-xs text-on-surface-variant">Every order</p>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl text-center hover:shadow-lg transition-shadow">
+<span class="material-symbols-outlined text-3xl text-tertiary mb-2" style="font-variation-settings: 'FILL' 1;">support_agent</span>
+<p class="font-bold text-sm">Priority Support</p>
+<p class="text-xs text-on-surface-variant">24/7 assistance</p>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl text-center hover:shadow-lg transition-shadow">
+<span class="material-symbols-outlined text-3xl text-tertiary mb-2" style="font-variation-settings: 'FILL' 1;">celebration</span>
+<p class="font-bold text-sm">Exclusive Deals</p>
+<p class="text-xs text-on-surface-variant">Member-only offers</p>
+</div>
+</div>
+</section>
+
+<!-- Points History -->
+<section class="mb-10">
+<div class="flex justify-between items-center mb-6">
+<h2 class="text-2xl font-bold">Points Activity</h2>
+<button class="text-primary font-bold text-sm">View All</button>
+</div>
+<div class="space-y-3">
+<div class="bg-surface-container-lowest p-4 rounded-xl flex justify-between items-center">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+<span class="material-symbols-outlined text-green-600" style="font-variation-settings: 'FILL' 1;">add</span>
+</div>
+<div>
+<p class="font-bold text-sm">Order #12345</p>
+<p class="text-xs text-on-surface-variant">Today</p>
+</div>
+</div>
+<span class="font-bold text-green-600">+150 pts</span>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl flex justify-between items-center">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+<span class="material-symbols-outlined text-green-600" style="font-variation-settings: 'FILL' 1;">add</span>
+</div>
+<div>
+<p class="font-bold text-sm">Order #12340</p>
+<p class="text-xs text-on-surface-variant">Yesterday</p>
+</div>
+</div>
+<span class="font-bold text-green-600">+200 pts</span>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl flex justify-between items-center">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
+<span class="material-symbols-outlined text-red-600" style="font-variation-settings: 'FILL' 1;">remove</span>
+</div>
+<div>
+<p class="font-bold text-sm">Redeemed: $10 Off</p>
+<p class="text-xs text-on-surface-variant">2 days ago</p>
+</div>
+</div>
+<span class="font-bold text-red-600">-500 pts</span>
+</div>
+</div>
+</section>
+
+<!-- How to Earn More -->
+<section class="mb-10">
+<h2 class="text-2xl font-bold mb-6">Earn More Points</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="bg-surface-container p-6 rounded-xl flex items-center gap-4">
+<span class="text-3xl">📱</span>
+<div>
+<p class="font-bold">Refer a Friend</p>
+<p class="text-sm text-on-surface-variant">Earn 500 pts per referral</p>
+</div>
+<button class="bg-primary text-on-primary px-4 py-2 rounded-lg font-bold text-sm">Invite</button>
+</div>
+<div class="bg-surface-container p-6 rounded-xl flex items-center gap-4">
+<span class="text-3xl">⭐</span>
+<div>
+<p class="font-bold">Write Reviews</p>
+<p class="text-sm text-on-surface-variant">Earn 50 pts per review</p>
+</div>
+<button class="bg-secondary text-on-secondary px-4 py-2 rounded-lg font-bold text-sm">Review</button>
+</div>
+<div class="bg-surface-container p-6 rounded-xl flex items-center gap-4">
+<span class="text-3xl">🎂</span>
+<div>
+<p class="font-bold">Birthday Bonus</p>
+<p class="text-sm text-on-surface-variant">2x points on your birthday</p>
+</div>
+<button class="bg-tertiary text-on-tertiary-fixed px-4 py-2 rounded-lg font-bold text-sm">Claim</button>
+</div>
+<div class="bg-surface-container p-6 rounded-xl flex items-center gap-4">
+<span class="text-3xl">🏆</span>
+<div>
+<p class="font-bold">Complete Tasks</p>
+<p class="text-sm text-on-surface-variant">Win bonus point challenges</p>
+</div>
+<button class="bg-outline-variant text-on-surface px-4 py-2 rounded-lg font-bold text-sm">View</button>
+</div>
+</div>
+</section>
+
+<!-- Exclusive Offers for Gold Members -->
+<section class="mb-10">
+<h2 class="text-2xl font-bold mb-6">Gold Exclusive Offers</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="bg-gradient-to-br from-tertiary-container to-tertiary-fixed/30 p-6 rounded-xl relative overflow-hidden">
+<div class="absolute -top-4 -right-4 w-24 h-24 bg-white/20 rounded-full"></div>
+<h3 class="font-extrabold text-xl mb-2">50% OFF</h3>
+<p class="text-sm mb-4">On orders from premium restaurants</p>
+<div class="flex items-center justify-between">
+<span class="text-xs bg-black/10 px-2 py-1 rounded">Code: GOLD50</span>
+<button class="text-sm font-bold underline">Apply</button>
+</div>
+</div>
+<div class="bg-gradient-to-br from-secondary-container to-secondary/30 p-6 rounded-xl relative overflow-hidden">
+<div class="absolute -top-4 -right-4 w-24 h-24 bg-white/20 rounded-full"></div>
+<h3 class="font-extrabold text-xl mb-2">FREE DELIVERY</h3>
+<p class="text-sm mb-4">No minimum order, 10km radius</p>
+<div class="flex items-center justify-between">
+<span class="text-xs bg-black/10 px-2 py-1 rounded">Always Active</span>
+<button class="text-sm font-bold underline">Apply</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+
+<!-- Bottom Navigation -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-8 pt-4 bg-white/90 backdrop-blur-3xl z-50 rounded-t-[3rem] shadow-[0px_-10px_40px_rgba(77,33,42,0.08)]">
+<div class="flex flex-col items-center justify-center text-[#4d212a]/60 px-6 py-2">
+<span class="material-symbols-outlined">explore</span>
+<span class="text-[10px] font-semibold uppercase tracking-widest mt-1">Explore</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#4d212a]/60 px-6 py-2">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="text-[10px] font-semibold uppercase tracking-widest mt-1">Orders</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-[#ba001c] text-white rounded-full px-6 py-2 -translate-y-2 shadow-lg">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+<span class="text-[10px] font-semibold uppercase tracking-widest mt-1">Gold</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#4d212a]/60 px-6 py-2">
+<span class="material-symbols-outlined">chat</span>
+<span class="text-[10px] font-semibold uppercase tracking-widest mt-1">Support</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#4d212a]/60 px-6 py-2">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-semibold uppercase tracking-widest mt-1">Profile</span>
+</div>
+</nav>
+</body></html>
