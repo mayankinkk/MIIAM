@@ -206,12 +206,95 @@
 <span class="text-3xl font-extrabold text-primary tracking-tighter">$42.85</span>
 </div>
 </section>
+<!-- Quick Reorder Section -->
+<section class="space-y-4">
+<div class="flex justify-between items-center">
+<h3 class="text-2xl font-bold tracking-tight">Quick Reorder</h3>
+<span class="text-xs font-bold text-primary bg-primary-container px-3 py-1 rounded-full">Same items</span>
+</div>
+<div class="bg-surface-container-low rounded-lg p-4 space-y-3">
+<!-- Reorder Item 1 -->
+<div class="flex items-center gap-4 bg-surface-container-lowest p-3 rounded-lg">
+<img class="w-12 h-12 rounded-lg object-cover" src="https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=100" alt="Pasta"/>
+<div class="flex-1">
+<p class="font-bold text-sm">Truffle Tagliatelle</p>
+<p class="text-xs text-on-surface-variant">$24.50</p>
+</div>
+<div class="flex items-center gap-2">
+<button class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center" onclick="decreaseQty(1)">-</button>
+<span class="font-bold w-8 text-center">1</span>
+<button class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center" onclick="increaseQty(1)">+</button>
+</div>
+</div>
+<!-- Reorder Item 2 -->
+<div class="flex items-center gap-4 bg-surface-container-lowest p-3 rounded-lg">
+<img class="w-12 h-12 rounded-lg object-cover" src="https://images.unsplash.com/photo-1608897013039-887f21d8c804?w=100" alt="Salad"/>
+<div class="flex-1">
+<p class="font-bold text-sm">Burrata Caprese</p>
+<p class="text-xs text-on-surface-variant">$14.00</p>
+</div>
+<div class="flex items-center gap-2">
+<button class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center" onclick="decreaseQty(2)">-</button>
+<span class="font-bold w-8 text-center">1</span>
+<button class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center" onclick="increaseQty(2)">+</button>
+</div>
+</div>
+<!-- Reorder Item 3 -->
+<div class="flex items-center gap-4 bg-surface-container-lowest p-3 rounded-lg">
+<img class="w-12 h-12 rounded-lg object-cover" src="https://images.unsplash.com/photo-1523362628745-0c100150b504?w=100" alt="Water"/>
+<div class="flex-1">
+<p class="font-bold text-sm">San Pellegrino (2x)</p>
+<p class="text-xs text-on-surface-variant">$8.00</p>
+</div>
+<div class="flex items-center gap-2">
+<button class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center" onclick="decreaseQty(3)">-</button>
+<span class="font-bold w-8 text-center">2</span>
+<button class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center" onclick="increaseQty(3)">+</button>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 bg-tertiary-container rounded-lg">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-tertiary">local_shipping</span>
+<div>
+<p class="font-bold text-sm">Free Delivery</p>
+<p class="text-xs text-on-surface-variant">On orders above $150</p>
+</div>
+</div>
+<button id="reorderBtn" class="w-full bg-primary text-on-primary py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-3 transition-transform active:scale-95 shadow-xl hover:shadow-2xl">
+<span class="material-symbols-outlined">shopping_cart_checkout</span>
+Add to Cart • $42.85
+</button>
+</section>
+
+<!-- Buy Again Suggestions -->
+<section class="space-y-4">
+<h3 class="text-2xl font-bold tracking-tight">Buy Again</h3>
+<p class="text-sm text-on-surface-variant">From your previous orders</p>
+<div class="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
+<div class="flex-shrink-0 bg-surface-container-lowest p-4 rounded-xl w-40">
+<img class="w-full h-20 rounded-lg object-cover mb-2" src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=100" alt="Pizza"/>
+<p class="font-bold text-sm truncate">Pepperoni Pizza</p>
+<p class="text-xs text-primary font-bold">$18.99</p>
+<button class="w-full mt-2 bg-primary-container text-on-primary-container py-1.5 rounded-lg text-xs font-bold">Add</button>
+</div>
+<div class="flex-shrink-0 bg-surface-container-lowest p-4 rounded-xl w-40">
+<img class="w-full h-20 rounded-lg object-cover mb-2" src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=100" alt="Burger"/>
+<p class="font-bold text-sm truncate">Classic Burger</p>
+<p class="text-xs text-primary font-bold">$12.99</p>
+<button class="w-full mt-2 bg-primary-container text-on-primary-container py-1.5 rounded-lg text-xs font-bold">Add</button>
+</div>
+<div class="flex-shrink-0 bg-surface-container-lowest p-4 rounded-xl w-40">
+<img class="w-full h-20 rounded-lg object-cover mb-2" src="https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=100" alt="Biryani"/>
+<p class="font-bold text-sm truncate">Chicken Biryani</p>
+<p class="text-xs text-primary font-bold">$15.99</p>
+<button class="w-full mt-2 bg-primary-container text-on-primary-container py-1.5 rounded-lg text-xs font-bold">Add</button>
+</div>
+</div>
+</section>
+
 <!-- Action Grid -->
 <section class="grid grid-cols-1 gap-4 pb-12">
-<button class="bg-primary text-on-primary py-6 rounded-xl font-bold text-xl flex items-center justify-center gap-3 transition-transform active:scale-95 shadow-xl">
-<span class="material-symbols-outlined">restart_alt</span>
-                Reorder Items
-            </button>
 <div class="grid grid-cols-2 gap-4">
 <button class="bg-secondary text-white py-5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-transform active:scale-95">
 <span class="material-symbols-outlined text-xl">report_problem</span>
@@ -222,7 +305,29 @@
                     Get PDF Receipt
                 </button>
 </div>
+<button class="border-2 border-outline-variant text-on-surface py-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-xl">bookmark_add</span>
+                    Save for Later
+                </button>
 </section>
+
+<script>
+let quantities = {1: 1, 2: 1, 3: 2};
+function increaseQty(item) {
+quantities[item]++;
+updateReorderBtn();
+}
+function decreaseQty(item) {
+if (quantities[item] > 1) {
+quantities[item]--;
+updateReorderBtn();
+}
+}
+function updateReorderBtn() {
+const total = (24.50 * quantities[1]) + (14.00 * quantities[2]) + (8.00 * quantities[3]);
+document.getElementById('reorderBtn').innerHTML = `<span class="material-symbols-outlined">shopping_cart_checkout</span>Add to Cart • $${total.toFixed(2)}`;
+}
+</script>
 </main>
 <!-- BottomNavBar -->
 <nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-8 pt-4 bg-white/90 dark:bg-slate-950/90 backdrop-blur-3xl shadow-[0px_-10px_40px_rgba(77,33,42,0.08)] z-50 rounded-t-xl">
