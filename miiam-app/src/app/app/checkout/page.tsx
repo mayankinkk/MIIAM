@@ -165,6 +165,16 @@ export default function CheckoutPage() {
             }))
           );
           if (itemsError) throw itemsError;
+
+          try {
+            await fetch("/api/emails/order-confirmation", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ orderId: order.id }),
+            });
+          } catch (emailErr) {
+            console.warn("Failed to send confirmation email:", emailErr);
+          }
         }
       }
 

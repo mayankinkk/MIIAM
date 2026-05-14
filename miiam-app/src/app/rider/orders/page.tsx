@@ -309,6 +309,16 @@ export default function RiderOrdersPage() {
           read: false,
           created_at: new Date().toISOString(),
         });
+
+        try {
+          await fetch("/api/emails/order-status", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ orderId: currentOrderId, status: "delivered" }),
+          });
+        } catch (emailErr) {
+          console.warn("Failed to send delivery email:", emailErr);
+        }
       }
 
       setOrders(orders.map(o => o.id === currentOrderId ? { ...o, status: "delivered", delivered_at: new Date().toISOString(), customer_collected: cashToCollect } : o));
@@ -340,6 +350,16 @@ export default function RiderOrdersPage() {
           read: false,
           created_at: new Date().toISOString(),
         });
+
+        try {
+          await fetch("/api/emails/order-status", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ orderId, status: "on_the_way" }),
+          });
+        } catch (emailErr) {
+          console.warn("Failed to send status email:", emailErr);
+        }
 
         // Browser notification
         if (typeof window !== "undefined" && Notification.permission === "granted") {

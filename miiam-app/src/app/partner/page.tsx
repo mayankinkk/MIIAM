@@ -43,6 +43,19 @@ export default function PartnerPOS() {
     
     if (error) {
       alert("Error updating status: " + error.message);
+      return;
+    }
+
+    if (["accepted", "preparing"].includes(newStatus)) {
+      try {
+        await fetch("/api/emails/order-status", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ orderId, status: newStatus }),
+        });
+      } catch (emailErr) {
+        console.warn("Failed to send status email:", emailErr);
+      }
     }
   };
 
