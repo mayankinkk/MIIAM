@@ -316,11 +316,11 @@ Add to Cart • $42.85
 </div>
 </div>
 <div class="flex gap-2">
-<button class="flex-1 bg-secondary text-white py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:bg-secondary/90">
+<button onclick="downloadReceipt()" class="flex-1 bg-secondary text-white py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:bg-secondary/90">
 <span class="material-symbols-outlined text-sm">download</span>
 Download PDF
 </button>
-<button class="flex-1 bg-primary text-white py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:bg-primary/90">
+<button onclick="shareReceipt()" class="flex-1 bg-primary text-white py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:bg-primary/90">
 <span class="material-symbols-outlined text-sm">share</span>
 Share
 </button>
@@ -331,7 +331,7 @@ Share
 <span class="material-symbols-outlined text-xl">report_problem</span>
                     Report Issue
                 </button>
-<button class="bg-surface-container-highest text-on-surface py-5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-transform active:scale-95">
+<button onclick="emailReceipt()" class="bg-surface-container-highest text-on-surface py-5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-transform active:scale-95">
 <span class="material-symbols-outlined text-xl">email</span>
                     Email Receipt
                 </button>
@@ -357,6 +357,26 @@ updateReorderBtn();
 function updateReorderBtn() {
 const total = (24.50 * quantities[1]) + (14.00 * quantities[2]) + (8.00 * quantities[3]);
 document.getElementById('reorderBtn').innerHTML = `<span class="material-symbols-outlined">shopping_cart_checkout</span>Add to Cart • $${total.toFixed(2)}`;
+}
+
+// Digital Receipt functionality
+function downloadReceipt() {
+alert('📄 Receipt downloaded!\n\nOrder #ORD-99210-XC\nAmount: $42.85\n\nReceipt saved to your device.');
+}
+
+function shareReceipt() {
+if (navigator.share) {
+navigator.share({
+title: 'MIIAM Order Receipt',
+text: 'Order #ORD-99210-XC\nTotal: $42.85\nDate: Oct 24, 2023\n\nThank you for ordering with MIIAM!',
+});
+} else {
+alert('📤 Share:\n\nOrder #ORD-99210-XC\nTotal: $42.85\nDate: Oct 24, 2023\n\nCopy this info to share via any app.');
+}
+}
+
+function emailReceipt() {
+alert('📧 Receipt will be sent to your registered email!\n\nCheck your inbox for the PDF receipt.');
 }
 </script>
 </main>

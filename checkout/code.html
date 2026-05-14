@@ -488,6 +488,17 @@ document.getElementById('customDateTime').classList.add('hidden');
 }
 updateScheduleSummary();
 });
+
+// Delivery Instructions interactivity
+document.querySelectorAll('.delivery-option').forEach(option => {
+option.addEventListener('click', () => {
+document.querySelectorAll('.delivery-option').forEach(opt => {
+opt.querySelector('div').classList.remove('border-primary', 'bg-primary-container');
+opt.querySelector('div').classList.add('border-outline-variant', 'bg-surface-container-lowest');
+});
+option.querySelector('div').classList.remove('border-outline-variant', 'bg-surface-container-lowest');
+option.querySelector('div').classList.add('border-primary', 'bg-primary-container');
+});
 });
 </script>
 </body></html>
