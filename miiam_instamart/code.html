@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MIIAM Instamart - Quick Grocery</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary-fixed-dim": "#ff5a57",
+                    "primary-fixed": "#ff7670",
+                    "on-secondary": "#f1f2ff",
+                    "surface-container-high": "#ffd9de",
+                    "tertiary-fixed": "#ffd709",
+                    "on-secondary-fixed": "#002c83",
+                    "on-primary-fixed-variant": "#600009",
+                    "error-dim": "#b92902",
+                    "tertiary-dim": "#5e4e00",
+                    "outline-variant": "#dd9ca6",
+                    "on-surface-variant": "#814c55",
+                    "inverse-surface": "#24020a",
+                    "surface-variant": "#ffd2d7",
+                    "on-primary": "#ffefee",
+                    "on-error-container": "#520c00",
+                    "on-primary-fixed": "#000000",
+                    "inverse-on-surface": "#cb8c96",
+                    "tertiary-container": "#ffd709",
+                    "secondary-fixed-dim": "#b1c2ff",
+                    "error-container": "#f95630",
+                    "surface-container": "#ffe1e4",
+                    "inverse-primary": "#ff5352",
+                    "surface-tint": "#ba001c",
+                    "on-tertiary-fixed-variant": "#665500",
+                    "surface-dim": "#ffc6ce",
+                    "on-tertiary": "#fff2cd",
+                    "on-surface": "#4d212a",
+                    "surface-container-low": "#ffecee",
+                    "surface-bright": "#fff4f4",
+                    "on-background": "#4d212a",
+                    "on-tertiary-fixed": "#453900",
+                    "on-primary-container": "#4e0006",
+                    "surface": "#fff4f4",
+                    "primary": "#ba001c",
+                    "primary-dim": "#a40017",
+                    "tertiary": "#6c5a00",
+                    "surface-container-highest": "#ffd2d7",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-container": "#c4d0ff",
+                    "tertiary-fixed-dim": "#efc900",
+                    "background": "#fff4f4",
+                    "on-secondary-container": "#003dac",
+                    "secondary-fixed": "#c4d0ff",
+                    "on-error": "#ffefec",
+                    "outline": "#a06770",
+                    "error": "#b02500",
+                    "on-tertiary-container": "#5b4b00",
+                    "secondary-dim": "#0044bf",
+                    "primary-container": "#ff7670",
+                    "on-secondary-fixed-variant": "#0045c1",
+                    "secondary": "#0b50d5"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Plus Jakarta Sans"],
+                    "label": ["Plus Jakarta Sans"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .instamart-green { color: #00a862; }
+        .bg-instamart { background-color: #00a862; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#00a862]/95 backdrop-blur-2xl shadow-lg">
+<div class="flex justify-between items-center px-6 py-4 w-full">
+<div class="flex items-center gap-3 flex-1">
+<span class="text-2xl font-extrabold tracking-tighter text-white">MIIAM</span>
+<span class="bg-white/20 text-white text-xs font-bold px-2 py-1 rounded">instamart</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-white">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="text-white relative">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="absolute -top-1 -right-1 bg-white text-[#00a862] text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">3</span>
+</button>
+</div>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-7xl mx-auto">
+<!-- Delivery Promise Banner -->
+<div class="bg-[#00a862] text-white p-4 rounded-xl mb-6 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-2xl">bolt</span>
+<div>
+<p class="font-bold">Delivery in 10 minutes</p>
+<p class="text-xs opacity-80">Sponsored</p>
+</div>
+</div>
+<button class="text-white text-sm font-bold underline">Change</button>
+</div>
+
+<!-- Search Bar -->
+<div class="relative mb-6">
+<input class="w-full bg-white border-none rounded-xl py-4 pl-12 pr-4 text-on-surface shadow-md focus:ring-2 focus:ring-[#00a862]/20" placeholder="Search for groceries..." type="text"/>
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+</div>
+
+<!-- Category Pills -->
+<div class="flex overflow-x-auto pb-4 gap-3 no-scrollbar mb-6">
+<button class="category-btn flex-shrink-0 bg-[#00a862] text-white px-5 py-2.5 rounded-full font-bold text-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">local_grocery_store</span>
+All
+</button>
+<button class="category-btn flex-shrink-0 bg-surface-container text-on-surface px-5 py-2.5 rounded-full font-bold text-sm hover:bg-surface-container-high transition-colors">
+🥬 Vegetables
+</button>
+<button class="category-btn flex-shrink-0 bg-surface-container text-on-surface px-5 py-2.5 rounded-full font-bold text-sm hover:bg-surface-container-high transition-colors">
+🍎 Fruits
+</button>
+<button class="category-btn flex-shrink-0 bg-surface-container text-on-surface px-5 py-2.5 rounded-full font-bold text-sm hover:bg-surface-container-high transition-colors">
+🥛 Dairy
+</button>
+<button class="category-btn flex-shrink-0 bg-surface-container text-on-surface px-5 py-2.5 rounded-full font-bold text-sm hover:bg-surface-container-high transition-colors">
+🍞 Bread
+</button>
+<button class="category-btn flex-shrink-0 bg-surface-container text-on-surface px-5 py-2.5 rounded-full font-bold text-sm hover:bg-surface-container-high transition-colors">
+🍫 Snacks
+</button>
+<button class="category-btn flex-shrink-0 bg-surface-container text-on-surface px-5 py-2.5 rounded-full font-bold text-sm hover:bg-surface-container-high transition-colors">
+🥤 Beverages
+</button>
+<button class="category-btn flex-shrink-0 bg-surface-container text-on-surface px-5 py-2.5 rounded-full font-bold text-sm hover:bg-surface-container-high transition-colors">
+🧴 Personal Care
+</button>
+<button class="category-btn flex-shrink-0 bg-surface-container text-on-surface px-5 py-2.5 rounded-full font-bold text-sm hover:bg-surface-container-high transition-colors">
+🍚 Rice & Dal
+</button>
+</div>
+
+<!-- Popular Searches -->
+<div class="mb-8">
+<h3 class="font-bold text-lg mb-4">Popular Searches</h3>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1.5 bg-white rounded-full text-sm font-medium border border-outline-variant">Milk</span>
+<span class="px-3 py-1.5 bg-white rounded-full text-sm font-medium border border-outline-variant">Bread</span>
+<span class="px-3 py-1.5 bg-white rounded-full text-sm font-medium border border-outline-variant">Eggs</span>
+<span class="px-3 py-1.5 bg-white rounded-full text-sm font-medium border border-outline-variant">Chips</span>
+<span class="px-3 py-1.5 bg-white rounded-full text-sm font-medium border border-outline-variant">Coffee</span>
+<span class="px-3 py-1.5 bg-white rounded-full text-sm font-medium border border-outline-variant">Water</span>
+</div>
+</div>
+
+<!-- Products Grid -->
+<section class="mb-8">
+<div class="flex justify-between items-center mb-6">
+<h2 class="text-2xl font-bold">Essential Groceries</h2>
+<button class="text-[#00a862] font-bold flex items-center gap-1">
+See All <span class="material-symbols-outlined text-sm">arrow_forward_ios</span>
+</button>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+<!-- Product Card 1 -->
+<div class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
+<div class="relative mb-3">
+<img class="w-full h-24 object-contain" src="https://images.unsplash.com/photo-1563636619-e9143da7973b?w=200" alt="Milk"/>
+<span class="absolute top-0 right-0 bg-[#00a862] text-white text-[10px] font-bold px-2 py-0.5 rounded">10 min</span>
+</div>
+<h4 class="font-bold text-sm mb-1">Amul Gold Milk</h4>
+<p class="text-xs text-on-surface-variant mb-2">1L • Pack</p>
+<div class="flex items-center justify-between">
+<span class="font-bold text-primary">₹65</span>
+<button class="bg-[#00a862] text-white px-3 py-1.5 rounded-lg text-sm font-bold hover:bg-[#008a4a] transition-colors">ADD</button>
+</div>
+</div>
+<!-- Product Card 2 -->
+<div class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
+<div class="relative mb-3">
+<img class="w-full h-24 object-contain" src="https://images.unsplash.com/photo-1587740908075-9e245070dfaa?w=200" alt="Bread"/>
+<span class="absolute top-0 right-0 bg-[#00a862] text-white text-[10px] font-bold px-2 py-0.5 rounded">10 min</span>
+</div>
+<h4 class="font-bold text-sm mb-1">Harvest Brown Bread</h4>
+<p class="text-xs text-on-surface-variant mb-2">400g • loaf</p>
+<div class="flex items-center justify-between">
+<span class="font-bold text-primary">₹45</span>
+<button class="bg-[#00a862] text-white px-3 py-1.5 rounded-lg text-sm font-bold hover:bg-[#008a4a] transition-colors">ADD</button>
+</div>
+</div>
+<!-- Product Card 3 -->
+<div class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
+<div class="relative mb-3">
+<img class="w-full h-24 object-contain" src="https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=200" alt="Eggs"/>
+<span class="absolute top-0 right-0 bg-[#00a862] text-white text-[10px] font-bold px-2 py-0.5 rounded">10 min</span>
+</div>
+<h4 class="font-bold text-sm mb-1">Farm Fresh Eggs</h4>
+<p class="text-xs text-on-surface-variant mb-2">30 pieces</p>
+<div class="flex items-center justify-between">
+<span class="font-bold text-primary">₹150</span>
+<button class="bg-[#00a862] text-white px-3 py-1.5 rounded-lg text-sm font-bold hover:bg-[#008a4a] transition-colors">ADD</button>
+</div>
+</div>
+<!-- Product Card 4 -->
+<div class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
+<div class="relative mb-3">
+<img class="w-full h-24 object-contain" src="https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=200" alt="Chips"/>
+<span class="absolute top-0 right-0 bg-[#00a862] text-white text-[10px] font-bold px-2 py-0.5 rounded">10 min</span>
+</div>
+<h4 class="font-bold text-sm mb-1">Lay's Classic</h4>
+<p class="text-xs text-on-surface-variant mb-2">148g • Pack</p>
+<div class="flex items-center justify-between">
+<span class="font-bold text-primary">₹40</span>
+<button class="bg-[#00a862] text-white px-3 py-1.5 rounded-lg text-sm font-bold hover:bg-[#008a4a] transition-colors">ADD</button>
+</div>
+</div>
+<!-- Product Card 5 -->
+<div class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
+<div class="relative mb-3">
+<img class="w-full h-24 object-contain" src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=200" alt="Coffee"/>
+<span class="absolute top-0 right-0 bg-[#00a862] text-white text-[10px] font-bold px-2 py-0.5 rounded">10 min</span>
+</div>
+<h4 class="font-bold text-sm mb-1">Nescafe Instant</h4>
+<p class="text-xs text-on-surface-variant mb-2">50g • Jar</p>
+<div class="flex items-center justify-between">
+<span class="font-bold text-primary">₹180</span>
+<button class="bg-[#00a862] text-white px-3 py-1.5 rounded-lg text-sm font-bold hover:bg-[#008a4a] transition-colors">ADD</button>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Fruits & Vegetables -->
+<section class="mb-8">
+<div class="flex justify-between items-center mb-6">
+<h2 class="text-2xl font-bold">Fresh Fruits & Vegetables</h2>
+<button class="text-[#00a862] font-bold flex items-center gap-1">
+See All <span class="material-symbols-outlined text-sm">arrow_forward_ios</span>
+</button>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+<!-- Product Card -->
+<div class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
+<div class="relative mb-3">
+<img class="w-full h-24 object-contain" src="https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=200" alt="Banana"/>
+<span class="absolute top-0 right-0 bg-[#00a862] text-white text-[10px] font-bold px-2 py-0.5 rounded">10 min</span>
+</div>
+<h4 class="font-bold text-sm mb-1">Organic Bananas</h4>
+<p class="text-xs text-on-surface-variant mb-2">1 dozen</p>
+<div class="flex items-center justify-between">
+<span class="font-bold text-primary">₹60</span>
+<button class="bg-[#00a862] text-white px-3 py-1.5 rounded-lg text-sm font-bold hover:bg-[#008a4a] transition-colors">ADD</button>
+</div>
+</div>
+<!-- Product Card -->
+<div class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
+<div class="relative mb-3">
+<img class="w-full h-24 object-contain" src="https://images.unsplash.com/photo-1557844352-761f2565b576?w=200" alt="Apples"/>
+<span class="absolute top-0 right-0 bg-[#00a862] text-white text-[10px] font-bold px-2 py-0.5 rounded">10 min</span>
+</div>
+<h4 class="font-bold text-sm mb-1">Red Apples</h4>
+<p class="text-xs text-on-surface-variant mb-2">4 pieces</p>
+<div class="flex items-center justify-between">
+<span class="font-bold text-primary">₹120</span>
+<button class="bg-[#00a862] text-white px-3 py-1.5 rounded-lg text-sm font-bold hover:bg-[#008a4a] transition-colors">ADD</button>
+</div>
+</div>
+<!-- Product Card -->
+<div class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
+<div class="relative mb-3">
+<img class="w-full h-24 object-contain" src="https://images.unsplash.com/photo-1518977676601-b53f82ber656?w=200" alt="Potatoes"/>
+<span class="absolute top-0 right-0 bg-[#00a862] text-white text-[10px] font-bold px-2 py-0.5 rounded">10 min</span>
+</div>
+<h4 class="font-bold text-sm mb-1">Fresh Potatoes</h4>
+<p class="text-xs text-on-surface-variant mb-2">1kg</p>
+<div class="flex items-center justify-between">
+<span class="font-bold text-primary">₹35</span>
+<button class="bg-[#00a862] text-white px-3 py-1.5 rounded-lg text-sm font-bold hover:bg-[#008a4a] transition-colors">ADD</button>
+</div>
+</div>
+<!-- Product Card -->
+<div class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
+<div class="relative mb-3">
+<img class="w-full h-24 object-contain" src="https://images.unsplash.com/photo-1582284540020-8acbe03f4924?w=200" alt="Onions"/>
+<span class="absolute top-0 right-0 bg-[#00a862] text-white text-[10px] font-bold px-2 py-0.5 rounded">10 min</span>
+</div>
+<h4 class="font-bold text-sm mb-1">Fresh Onions</h4>
+<p class="text-xs text-on-surface-variant mb-2">1kg</p>
+<div class="flex items-center justify-between">
+<span class="font-bold text-primary">₹40</span>
+<button class="bg-[#00a862] text-white px-3 py-1.5 rounded-lg text-sm font-bold hover:bg-[#008a4a] transition-colors">ADD</button>
+</div>
+</div>
+<!-- Product Card -->
+<div class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
+<div class="relative mb-3">
+<img class="w-full h-24 object-contain" src="https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?w=200" alt="Tomatoes"/>
+<span class="absolute top-0 right-0 bg-[#00a862] text-white text-[10px] font-bold px-2 py-0.5 rounded">10 min</span>
+</div>
+<h4 class="font-bold text-sm mb-1">Red Tomatoes</h4>
+<p class="text-xs text-on-surface-variant mb-2">500g</p>
+<div class="flex items-center justify-between">
+<span class="font-bold text-primary">₹25</span>
+<button class="bg-[#00a862] text-white px-3 py-1.5 rounded-lg text-sm font-bold hover:bg-[#008a4a] transition-colors">ADD</button>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Snacks & Beverages -->
+<section class="mb-8">
+<div class="flex justify-between items-center mb-6">
+<h2 class="text-2xl font-bold">Snacks & Beverages</h2>
+<button class="text-[#00a862] font-bold flex items-center gap-1">
+See All <span class="material-symbols-outlined text-sm">arrow_forward_ios</span>
+</button>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+<!-- Product Card -->
+<div class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
+<div class="relative mb-3">
+<img class="w-full h-24 object-contain" src="https://images.unsplash.com/photo-1621447504864-4c6c1a632712?w=200" alt="Chocolate"/>
+<span class="absolute top-0 right-0 bg-[#00a862] text-white text-[10px] font-bold px-2 py-0.5 rounded">10 min</span>
+</div>
+<h4 class="font-bold text-sm mb-1">Galaxy Bar</h4>
+<p class="text-xs text-on-surface-variant mb-2">36g</p>
+<div class="flex items-center justify-between">
+<span class="font-bold text-primary">₹45</span>
+<button class="bg-[#00a862] text-white px-3 py-1.5 rounded-lg text-sm font-bold hover:bg-[#008a4a] transition-colors">ADD</button>
+</div>
+</div>
+<!-- Product Card -->
+<div class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
+<div class="relative mb-3">
+<img class="w-full h-24 object-contain" src="https://images.unsplash.com/photo-1546171753-97d7676e4602?w=200" alt="Chips"/>
+<span class="absolute top-0 right-0 bg-[#00a862] text-white text-[10px] font-bold px-2 py-0.5 rounded">10 min</span>
+</div>
+<h4 class="font-bold text-sm mb-1">Doritos Nachos</h4>
+<p class="text-xs text-on-surface-variant mb-2">150g</p>
+<div class="flex items-center justify-between">
+<span class="font-bold text-primary">₹90</span>
+<button class="bg-[#00a862] text-white px-3 py-1.5 rounded-lg text-sm font-bold hover:bg-[#008a4a] transition-colors">ADD</button>
+</div>
+</div>
+<!-- Product Card -->
+<div class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
+<div class="relative mb-3">
+<img class="w-full h-24 object-contain" src="https://images.unsplash.com/photo-1551632811-561732d1e306?w=200" alt="Coffee"/>
+<span class="absolute top-0 right-0 bg-[#00a862] text-white text-[10px] font-bold px-2 py-0.5 rounded">10 min</span>
+</div>
+<h4 class="font-bold text-sm mb-1">Bru Instant Coffee</h4>
+<p class="text-xs text-on-surface-variant mb-2">50g</p>
+<div class="flex items-center justify-between">
+<span class="font-bold text-primary">₹95</span>
+<button class="bg-[#00a862] text-white px-3 py-1.5 rounded-lg text-sm font-bold hover:bg-[#008a4a] transition-colors">ADD</button>
+</div>
+</div>
+<!-- Product Card -->
+<div class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
+<div class="relative mb-3">
+<img class="w-full h-24 object-contain" src="https://images.unsplash.com/photo-1625772299848-391b6a87d7b3?w=200" alt="Water"/>
+<span class="absolute top-0 right-0 bg-[#00a862] text-white text-[10px] font-bold px-2 py-0.5 rounded">10 min</span>
+</div>
+<h4 class="font-bold text-sm mb-1">Bisleri Water</h4>
+<p class="text-xs text-on-surface-variant mb-2">1L • 6 Pack</p>
+<div class="flex items-center justify-between">
+<span class="font-bold text-primary">₹60</span>
+<button class="bg-[#00a862] text-white px-3 py-1.5 rounded-lg text-sm font-bold hover:bg-[#008a4a] transition-colors">ADD</button>
+</div>
+</div>
+<!-- Product Card -->
+<div class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
+<div class="relative mb-3">
+<img class="w-full h-24 object-contain" src="https://images.unsplash.com/photo-1582819509237-d5b75f20ff7a?w=200" alt="Cola"/>
+<span class="absolute top-0 right-0 bg-[#00a862] text-white text-[10px] font-bold px-2 py-0.5 rounded">10 min</span>
+</div>
+<h4 class="font-bold text-sm mb-1">Coca Cola</h4>
+<p class="text-xs text-on-surface-variant mb-2">600ml</p>
+<div class="flex items-center justify-between">
+<span class="font-bold text-primary">₹45</span>
+<button class="bg-[#00a862] text-white px-3 py-1.5 rounded-lg text-sm font-bold hover:bg-[#008a4a] transition-colors">ADD</button>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Personal Care -->
+<section class="mb-8">
+<div class="flex justify-between items-center mb-6">
+<h2 class="text-2xl font-bold">Personal Care</h2>
+<button class="text-[#00a862] font-bold flex items-center gap-1">
+See All <span class="material-symbols-outlined text-sm">arrow_forward_ios</span>
+</button>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+<!-- Product Card -->
+<div class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
+<div class="relative mb-3">
+<img class="w-full h-24 object-contain" src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=200" alt="Soap"/>
+<span class="absolute top-0 right-0 bg-[#00a862] text-white text-[10px] font-bold px-2 py-0.5 rounded">10 min</span>
+</div>
+<h4 class="font-bold text-sm mb-1">Santoor Soap</h4>
+<p class="text-xs text-on-surface-variant mb-2">125g • 4 pack</p>
+<div class="flex items-center justify-between">
+<span class="font-bold text-primary">₹80</span>
+<button class="bg-[#00a862] text-white px-3 py-1.5 rounded-lg text-sm font-bold hover:bg-[#008a4a] transition-colors">ADD</button>
+</div>
+</div>
+<!-- Product Card -->
+<div class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
+<div class="relative mb-3">
+<img class="w-full h-24 object-contain" src="https://images.unsplash.com/photo-1580870082804-ebe8a734c3c8?w=200" alt="Shampoo"/>
+<span class="absolute top-0 right-0 bg-[#00a862] text-white text-[10px] font-bold px-2 py-0.5 rounded">10 min</span>
+</div>
+<h4 class="font-bold text-sm mb-1">Sunsilk Shampoo</h4>
+<p class="text-xs text-on-surface-variant mb-2">340ml</p>
+<div class="flex items-center justify-between">
+<span class="font-bold text-primary">₹175</span>
+<button class="bg-[#00a862] text-white px-3 py-1.5 rounded-lg text-sm font-bold hover:bg-[#008a4a] transition-colors">ADD</button>
+</div>
+</div>
+<!-- Product Card -->
+<div class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
+<div class="relative mb-3">
+<img class="w-full h-24 object-contain" src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=200" alt="Toothpaste"/>
+<span class="absolute top-0 right-0 bg-[#00a862] text-white text-[10px] font-bold px-2 py-0.5 rounded">10 min</span>
+</div>
+<h4 class="font-bold text-sm mb-1">Colgate Toothpaste</h4>
+<p class="text-xs text-on-surface-variant mb-2">150g</p>
+<div class="flex items-center justify-between">
+<span class="font-bold text-primary">₹95</span>
+<button class="bg-[#00a862] text-white px-3 py-1.5 rounded-lg text-sm font-bold hover:bg-[#008a4a] transition-colors">ADD</button>
+</div>
+</div>
+<!-- Product Card -->
+<div class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
+<div class="relative mb-3">
+<img class="w-full h-24 object-contain" src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=200" alt="Face Wash"/>
+<span class="absolute top-0 right-0 bg-[#00a862] text-white text-[10px] font-bold px-2 py-0.5 rounded">10 min</span>
+</div>
+<h4 class="font-bold text-sm mb-1">Himalaya Face Wash</h4>
+<p class="text-xs text-on-surface-variant mb-2">100ml</p>
+<div class="flex items-center justify-between">
+<span class="font-bold text-primary">₹120</span>
+<button class="bg-[#00a862] text-white px-3 py-1.5 rounded-lg text-sm font-bold hover:bg-[#008a4a] transition-colors">ADD</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+
+<!-- Floating Cart -->
+<div class="fixed bottom-24 right-6 z-40">
+<button class="bg-[#00a862] text-white px-6 py-3 rounded-full shadow-xl flex items-center gap-3 hover:scale-105 transition-transform">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="font-bold">3 items</span>
+<span class="bg-white text-[#00a862] px-2 py-0.5 rounded-full text-sm font-bold">₹295</span>
+</button>
+</div>
+
+<!-- Bottom Navigation -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-8 pt-4 bg-white/90 backdrop-blur-3xl z-50 rounded-t-[3rem] shadow-[0px_-10px_40px_rgba(77,33,42,0.08)]">
+<div class="flex flex-col items-center justify-center text-[#00a862] bg-[#00a862]/10 rounded-[2rem] px-6 py-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="text-[10px] font-semibold uppercase tracking-widest mt-1">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#4d212a]/60 px-6 py-2">
+<span class="material-symbols-outlined">search</span>
+<span class="text-[10px] font-semibold uppercase tracking-widest mt-1">Search</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#4d212a]/60 px-6 py-2">
+<span class="material-symbols-outlined">category</span>
+<span class="text-[10px] font-semibold uppercase tracking-widest mt-1">Categories</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#4d212a]/60 px-6 py-2">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="text-[10px] font-semibold uppercase tracking-widest mt-1">Orders</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#4d212a]/60 px-6 py-2">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-semibold uppercase tracking-widest mt-1">Profile</span>
+</div>
+</nav>
+</body></html>
