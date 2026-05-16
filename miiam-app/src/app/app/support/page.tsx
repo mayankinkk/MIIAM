@@ -56,6 +56,7 @@ export default function SupportPage() {
   const [onlineAgents, setOnlineAgents] = useState(3);
   const [userOrders, setUserOrders] = useState<any[]>([]);
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
+  const [faqSearch, setFaqSearch] = useState("");
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -385,24 +386,73 @@ export default function SupportPage() {
 
         {tab === "faqs" && (
           <div className="space-y-6">
-            {faqs.map((section) => (
-              <section key={section.category}>
-                <h2 className="text-lg font-bold text-slate-800 mb-4">{section.category}</h2>
-                <div className="space-y-3">
-                  {section.questions.map((faq, i) => (
-                    <details key={i} className="bg-white rounded-2xl overflow-hidden shadow-sm group">
-                      <summary className="flex items-center justify-between px-5 py-4 cursor-pointer hover:bg-slate-50 transition-colors list-none">
-                        <span className="font-semibold text-slate-800 pr-4">{faq.q}</span>
-                        <span className="material-symbols-outlined text-slate-400 group-open:rotate-180 transition-transform">expand_more</span>
-                      </summary>
-                      <div className="px-5 pb-4 text-slate-600 text-sm leading-relaxed border-t border-slate-100 pt-4">
-                        {faq.a}
-                      </div>
-                    </details>
-                  ))}
-                </div>
-              </section>
-            ))}
+            {/* Search */}
+            <div className="relative">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+              <input
+                type="text"
+                value={faqSearch}
+                onChange={(e) => setFaqSearch(e.target.value)}
+                placeholder="Search FAQs..."
+                className="w-full pl-12 pr-4 py-4 bg-white rounded-2xl border border-slate-200 focus:border-[#ba001c] outline-none"
+              />
+            </div>
+
+            {/* Category Pills */}
+            <div className="flex gap-2 overflow-x-auto pb-2">
+              <button className="px-4 py-2 bg-[#ba001c] text-white rounded-full text-sm font-bold whitespace-nowrap">
+                All
+              </button>
+              {faqs.map((section) => (
+                <button key={section.category} className="px-4 py-2 bg-white border border-slate-200 rounded-full text-sm font-bold whitespace-nowrap">
+                  {section.category}
+                </button>
+              ))}
+            </div>
+
+            {faqs.map((section) => {
+              const filteredQuestions = faqSearch 
+                ? section.questions.filter(faq => 
+                    faq.q.toLowerCase().includes(faqSearch.toLowerCase()) || 
+                    faq.a.toLowerCase().includes(faqSearch.toLowerCase())
+                  )
+                : section.questions;
+              
+              if (filteredQuestions.length === 0) return null;
+
+              return (
+                <section key={section.category}>
+                  <div className="flex items-center gap-2 mb-4">
+                    <span className="material-symbols-outlined text-[#ba001c]">
+                      {section.category === "Orders & Delivery" ? "local_shipping" :
+                       section.category === "Payments & Refunds" ? "payments" :
+                       section.category === "Account & Profile" ? "person" : "help"}
+                    </span>
+                    <h2 className="text-lg font-bold text-slate-800">{section.category}</h2>
+                  </div>
+                  <div className="space-y-3">
+                    {filteredQuestions.map((faq, i) => (
+                      <details key={i} className="bg-white rounded-2xl overflow-hidden shadow-sm group">
+                        <summary className="flex items-center justify-between px-5 py-4 cursor-pointer hover:bg-slate-50 transition-colors list-none">
+                          <span className="font-semibold text-slate-800 pr-4">{faq.q}</span>
+                          <span className="material-symbols-outlined text-slate-400 group-open:rotate-180 transition-transform">expand_more</span>
+                        </summary>
+                        <div className="px-5 pb-4 text-slate-600 text-sm leading-relaxed border-t border-slate-100 pt-4">
+                          {faq.a}
+                        </div>
+                      </details>
+                    ))}
+                  </div>
+                </section>
+              );
+            })}
+
+            {faqSearch && (
+              <div className="text-center py-8 text-slate-500">
+                <span className="material-symbols-outlined text-4xl mb-2">search_off</span>
+                <p>No FAQs found for "{faqSearch}"</p>
+              </div>
+            )}
           </div>
         )}
       </main>
