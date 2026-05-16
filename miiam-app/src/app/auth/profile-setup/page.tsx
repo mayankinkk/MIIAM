@@ -52,12 +52,14 @@ function ProfileSetupContent() {
   
   const phoneFromVerify = searchParams.get("phone") || "";
   const emailFromVerify = searchParams.get("email") || "";
+  const referralCodeParam = searchParams.get("ref") || "";
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     full_name: "",
     phone: phoneFromVerify,
     email: emailFromVerify,
+    referral_code: referralCodeParam,
     state: "",
     city: "",
     location: "",
@@ -145,6 +147,22 @@ function ProfileSetupContent() {
         }
       }
 
+      // Complete referral if code was provided
+      if (formData.referral_code && user) {
+        try {
+          await fetch("/api/referral/complete", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              user_id: user.id,
+              referral_code: formData.referral_code,
+            }),
+          });
+        } catch (e) {
+          console.error("[profile-setup] Referral error:", e);
+        }
+      }
+
       window.location.href = "/app/explore";
     } catch (error) {
       console.error("Setup error:", error);
@@ -203,6 +221,23 @@ function ProfileSetupContent() {
                   readOnly
                   className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 bg-slate-100"
                 />
+              </div>
+            )}
+            {!formData.referral_code && (
+              <div>
+                <label className="block text-sm font-bold text-slate-700 mb-2">Referral Code (Optional)</label>
+                <input
+                  type="text"
+                  value={formData.referral_code}
+                  onChange={(e) => updateField("referral_code", e.target.value.toUpperCase())}
+                  placeholder="Enter referral code"
+                  className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-[#ba001c] focus:ring-2 focus:ring-[#ba001c]/20 outline-none"
+                />
+              </div>
+            )}
+            {formData.referral_code && (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                <p className="text-green-700 text-sm font-medium">Referral code applied!</p>
               </div>
             )}
             <button

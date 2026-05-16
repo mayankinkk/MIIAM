@@ -15,6 +15,9 @@ create table if not exists profiles (
   city text,
   state text,
   is_profile_complete boolean default false,
+  referral_code text unique,
+  referred_by uuid references profiles(id),
+  total_loyalty_points integer default 0,
   created_at timestamp with time zone default timezone('utc'::text, now())
 );
 
@@ -166,6 +169,17 @@ create table if not exists notifications (
   created_at timestamp with time zone default timezone('utc'::text, now())
 );
 
+-- LOYALTY POINTS TRANSACTIONS
+create table if not exists loyalty_points_transactions (
+  id uuid default uuid_generate_v4() primary key,
+  user_id uuid references profiles(id) on delete cascade,
+  points integer not null,
+  type text not null,
+  description text,
+  reference_id text,
+  created_at timestamp with time zone default timezone('utc'::text, now())
+);
+
 -- ENABLE RLS ON ALL TABLES
 alter table profiles enable row level security;
 alter table orders enable row level security;
@@ -177,6 +191,7 @@ alter table reviews enable row level security;
 alter table promo_codes enable row level security;
 alter table audit_logs enable row level security;
 alter table chat_messages enable row level security;
+alter table loyalty_points_transactions enable row level security;
 alter table notifications enable row level security;
 
 -- CREATE RLS POLICIES FOR ALL TABLES
