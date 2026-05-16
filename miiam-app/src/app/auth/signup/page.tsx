@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-export default function SignupPage() {
+function SignupContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const supabase = createClient();
@@ -151,5 +151,23 @@ export default function SignupPage() {
         </div>
       </section>
     </div>
+  );
+}
+
+function Loading() {
+  return (
+    <div className="min-h-screen flex items-stretch overflow-hidden">
+      <section className="flex-1 flex flex-col justify-center items-center px-6 md:px-16 lg:px-24 bg-[#fff8f7]">
+        <div className="w-12 h-12 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin" />
+      </section>
+    </div>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <SignupContent />
+    </Suspense>
   );
 }
