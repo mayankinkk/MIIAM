@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
 
 const quickActions = [
   { id: "track", icon: "local_shipping", label: "Track my order", color: "bg-blue-100 text-blue-700" },
@@ -45,14 +46,33 @@ const chatMessages = [
 ];
 
 export default function SupportPage() {
-  const [tab, setTab] = useState<"home" | "chat" | "faqs">("home");
+  const supabase = createClient();
+  const [tab, setTab] = useState<"home" | "chat" | "faqs" | "tickets">("home");
   const [messages, setMessages] = useState(chatMessages);
   const [newMessage, setNewMessage] = useState("");
   const [issueType, setIssueType] = useState("");
   const [orderIssue, setOrderIssue] = useState("");
   const [showQuickActions, setShowQuickActions] = useState(true);
   const [onlineAgents, setOnlineAgents] = useState(3);
+  const [userOrders, setUserOrders] = useState<any[]>([]);
+  const [selectedOrder, setSelectedOrder] = useState<any>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    async function fetchOrders() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: orders } = await supabase
+          .from("orders")
+          .select("id, vendor:vendors(name), status, total_amount, placed_at")
+          .eq("user_id", user.id)
+          .order("placed_at", { ascending: false })
+          .limit(10);
+        setUserOrders(orders || []);
+      }
+    }
+    fetchOrders();
+  }, []);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -87,8 +107,13 @@ export default function SupportPage() {
     const userMsg = { id: messages.length + 1, from: "user" as const, text: actionTexts[action] || action, time: "Just now" };
     setMessages([...messages, userMsg]);
 
+    let orderContext = "";
+    if (selectedOrder) {
+      orderContext = ` (Order: #${selectedOrder.id.slice(0, 8).toUpperCase()} - ${selectedOrder.vendor?.name})`;
+    }
+
     setTimeout(() => {
-      const botMsg = { id: messages.length + 2, from: "bot" as const, text: `I understand you need help with "${action}". Let me connect you with our support team. What's your order ID or the details of your issue?`, time: "Just now" };
+      const botMsg = { id: messages.length + 2, from: "bot" as const, text: `I understand you need help with "${action}".${orderContext} Let me connect you with our support team. What's the details of your issue?`, time: "Just now" };
       setMessages(prev => [...prev, botMsg]);
     }, 1500);
 
@@ -114,15 +139,15 @@ export default function SupportPage() {
       {/* Tabs */}
       <div className="bg-white border-b border-slate-100 px-4">
         <div className="max-w-2xl mx-auto flex">
-          {(["home", "chat", "faqs"] as const).map((t) => (
+          {(["home", "chat", "tickets", "faqs"] as const).map((t) => (
             <button
               key={t}
-              onClick={() => setTab(t)}
+              onClick={() => setTab(t as any)}
               className={`flex-1 py-4 text-sm font-bold border-b-2 transition-all ${
                 tab === t ? "border-[#ba001c] text-[#ba001c]" : "border-transparent text-slate-500"
               }`}
             >
-              {t === "home" ? "Home" : t === "chat" ? "💬 Chat" : "❓ FAQs"}
+              {t === "home" ? "Home" : t === "chat" ? "💬 Chat" : t === "tickets" ? "🎫 Tickets" : "❓ FAQs"}
             </button>
           ))}
         </div>
@@ -148,6 +173,40 @@ export default function SupportPage() {
                 ))}
               </div>
             </section>
+
+            {/* Select Order */}
+            {userOrders.length > 0 && (
+              <section>
+                <h2 className="text-lg font-bold text-slate-800 mb-4">Select Order (Optional)</h2>
+                <div className="space-y-2">
+                  <button
+                    onClick={() => { setSelectedOrder(null); setTab("chat"); }}
+                    className={`w-full text-left p-4 rounded-xl border-2 transition-all ${!selectedOrder ? "border-[#ba001c] bg-[#ffe1e4]" : "border-slate-200 hover:border-[#ba001c]"}`}
+                  >
+                    <p className="font-semibold text-slate-700">General Query</p>
+                    <p className="text-xs text-slate-500">Not related to a specific order</p>
+                  </button>
+                  {userOrders.map((order) => (
+                    <button
+                      key={order.id}
+                      onClick={() => { setSelectedOrder(order); setTab("chat"); }}
+                      className={`w-full text-left p-4 rounded-xl border-2 transition-all ${selectedOrder?.id === order.id ? "border-[#ba001c] bg-[#ffe1e4]" : "border-slate-200 hover:border-[#ba001c]"}`}
+                    >
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <p className="font-semibold text-slate-700">{order.vendor?.name || "Order"}</p>
+                          <p className="text-xs text-slate-500">#{order.id.slice(0, 8).toUpperCase()}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-bold text-[#ba001c]">₹{order.total_amount}</p>
+                          <span className="text-[10px] px-2 py-0.5 bg-slate-100 rounded-full">{order.status}</span>
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </section>
+            )}
 
             {/* Contact Options */}
             <section>
@@ -256,6 +315,54 @@ export default function SupportPage() {
               >
                 <span className="material-symbols-outlined">send</span>
               </button>
+            </div>
+          </div>
+        )}
+
+        {tab === "tickets" && (
+          <div className="space-y-6">
+            <div className="bg-[#ba001c] text-white rounded-2xl p-6">
+              <h2 className="text-xl font-bold mb-2">Support Tickets</h2>
+              <p className="text-white/70 text-sm">Track and manage your support requests</p>
+            </div>
+            
+            <div className="text-center py-12 text-slate-500">
+              <span className="material-symbols-outlined text-5xl mb-4">confirmation_number</span>
+              <p>No tickets yet</p>
+              <p className="text-sm mt-2">Start a chat to create a ticket</p>
+              <button 
+                onClick={() => setTab("chat")}
+                className="mt-4 bg-[#ba001c] text-white px-6 py-3 rounded-xl font-bold"
+              >
+                Start Chat
+              </button>
+            </div>
+
+            <div className="bg-white rounded-2xl p-6">
+              <h3 className="font-bold text-slate-800 mb-4">How Tickets Work</h3>
+              <div className="space-y-4">
+                <div className="flex items-start gap-4">
+                  <div className="w-8 h-8 rounded-full bg-[#ba001c] text-white flex items-center justify-center font-bold text-sm">1</div>
+                  <div>
+                    <p className="font-semibold text-slate-800">Start a Chat</p>
+                    <p className="text-sm text-slate-500">Describe your issue in the chat</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="w-8 h-8 rounded-full bg-[#ba001c] text-white flex items-center justify-center font-bold text-sm">2</div>
+                  <div>
+                    <p className="font-semibold text-slate-800">We Create a Ticket</p>
+                    <p className="text-sm text-slate-500">Our team will create a support ticket for you</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="w-8 h-8 rounded-full bg-[#ba001c] text-white flex items-center justify-center font-bold text-sm">3</div>
+                  <div>
+                    <p className="font-semibold text-slate-800">Track Here</p>
+                    <p className="text-sm text-slate-500">View ticket status and updates</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         )}
