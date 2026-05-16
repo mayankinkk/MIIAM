@@ -2,13 +2,15 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 export default function SignupPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const supabase = createClient();
   const [email, setEmail] = useState("");
+  const [referralCode, setReferralCode] = useState(searchParams.get("ref") || "");
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [error, setError] = useState("");
@@ -26,7 +28,8 @@ export default function SignupPage() {
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error); return; }
-      router.push(`/auth/email-verify?email=${encodeURIComponent(email)}&purpose=signup`);
+      const refParam = referralCode ? `&ref=${encodeURIComponent(referralCode)}` : "";
+      router.push(`/auth/email-verify?email=${encodeURIComponent(email)}&purpose=signup${refParam}`);
     } catch { setError("Something went wrong"); }
     finally { setIsLoading(false); }
   };
@@ -69,6 +72,16 @@ export default function SignupPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="hello@miiam.com"
+                  className="w-full bg-[#fff0ef] border-none rounded-xl px-6 py-4 focus:ring-2 focus:ring-[#ba001c] transition-all placeholder:text-[#5c403d]/40"
+                />
+              </div>
+              <div className="relative">
+                <label className="text-[10px] tracking-[0.3em] font-bold text-[#5c403d] mb-2 block uppercase">Referral Code <span className="text-slate-400 font-normal">(Optional)</span></label>
+                <input
+                  type="text"
+                  value={referralCode}
+                  onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
+                  placeholder="Enter referral code"
                   className="w-full bg-[#fff0ef] border-none rounded-xl px-6 py-4 focus:ring-2 focus:ring-[#ba001c] transition-all placeholder:text-[#5c403d]/40"
                 />
               </div>

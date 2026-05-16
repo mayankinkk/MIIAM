@@ -10,6 +10,7 @@ const menuItems = [
   { id: "addresses", icon: "location_on", label: "Saved Addresses", sub: "Manage delivery addresses", color: "text-green-500", bg: "bg-green-50" },
   { id: "favorites", icon: "favorite", label: "Favorites", sub: "Your saved items", color: "text-red-500", bg: "bg-red-50" },
   { id: "payment", icon: "payment", label: "Payment Methods", sub: "Cards, UPI, wallets", color: "text-purple-500", bg: "bg-purple-50" },
+  { id: "referral", icon: "card_membership", label: "Refer & Earn", sub: "Share code & earn points", color: "text-[#ba001c]", bg: "bg-[#ffe1e4]" },
   { id: "subscription", icon: "workspace_premium", label: "MIIAM+", sub: "Premium membership", color: "text-amber-500", bg: "bg-amber-50", badge: "ACTIVE" },
   { id: "support", icon: "support_agent", label: "Help & Support", sub: "24/7 customer care", color: "text-indigo-500", bg: "bg-indigo-50" },
   { id: "settings", icon: "settings", label: "Settings", sub: "App preferences", color: "text-slate-500", bg: "bg-slate-50" },

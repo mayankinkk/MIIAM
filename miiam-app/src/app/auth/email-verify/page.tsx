@@ -11,6 +11,7 @@ function EmailVerifyContent() {
   const supabase = createClient();
   const email = searchParams.get("email") || "";
   const purpose = searchParams.get("purpose") || "signup";
+  const referralCode = searchParams.get("ref") || "";
   
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [isLoading, setIsLoading] = useState(false);
@@ -51,7 +52,8 @@ function EmailVerifyContent() {
 
       // For signup - go to set password page
       if (purpose === "signup") {
-        router.push(`/auth/set-password?email=${encodeURIComponent(email)}`);
+        const refParam = referralCode ? `&ref=${encodeURIComponent(referralCode)}` : "";
+        router.push(`/auth/set-password?email=${encodeURIComponent(email)}${refParam}`);
         return;
       }
 
