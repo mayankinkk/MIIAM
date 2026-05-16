@@ -118,6 +118,7 @@ function ProfileSetupContent() {
           phone: formData.phone,
           email: formData.email,
           city: formData.city,
+          state: formData.state,
           is_profile_complete: true,
           updated_at: new Date().toISOString(),
         });
@@ -134,6 +135,7 @@ function ProfileSetupContent() {
             full_name: formData.full_name,
             phone: formData.phone,
             city: formData.city,
+            state: formData.state,
           }),
         });
         

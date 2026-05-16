@@ -5,7 +5,7 @@ export async function POST(request: NextRequest) {
   const supabaseAdmin = createAdminClient();
 
   try {
-    const { email, full_name, phone, city } = await request.json();
+    const { email, full_name, phone, city, state } = await request.json();
 
     if (!email) {
       return NextResponse.json({ error: "Email required" }, { status: 400 });
@@ -32,6 +32,7 @@ export async function POST(request: NextRequest) {
       phone,
       email: cleanEmail,
       city,
+      state,
       is_profile_complete: true,
       updated_at: new Date().toISOString(),
     });

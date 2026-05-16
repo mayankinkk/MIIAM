@@ -12,6 +12,9 @@ create table if not exists profiles (
   email text,
   avatar_url text,
   role text default 'user',
+  city text,
+  state text,
+  is_profile_complete boolean default false,
   created_at timestamp with time zone default timezone('utc'::text, now())
 );
 
