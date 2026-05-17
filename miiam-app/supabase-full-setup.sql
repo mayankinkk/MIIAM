@@ -194,6 +194,78 @@ alter table chat_messages enable row level security;
 alter table loyalty_points_transactions enable row level security;
 alter table notifications enable row level security;
 
+-- FUNCTION: Auto-create notification when order status changes
+CREATE OR REPLACE FUNCTION create_order_status_notification()
+RETURNS TRIGGER AS $$
+DECLARE
+  notification_title TEXT;
+  notification_message TEXT;
+  notification_icon TEXT;
+BEGIN
+  IF NEW.status != OLD.status AND NEW.user_id IS NOT NULL THEN
+    -- Determine notification content based on status
+    CASE NEW.status
+      WHEN 'accepted' THEN
+        notification_title := '🎉 Order Accepted';
+        notification_message := 'Great news! Your order has been accepted and is being prepared.';
+        notification_icon := 'check_circle';
+      WHEN 'preparing' THEN
+        notification_title := '👨‍🍳 Preparing Your Order';
+        notification_message := 'The restaurant is preparing your delicious food.';
+        notification_icon := 'restaurant';
+      WHEN 'shopping' THEN
+        notification_title := '🛒 Shopping Started';
+        notification_message := 'Your rider has started shopping for your items.';
+        notification_icon := 'shopping_cart';
+      WHEN 'picking_up' THEN
+        notification_title := '📦 Picking Up Order';
+        notification_message := 'Your rider is on the way to pick up your order.';
+        notification_icon := 'delivery_dining';
+      WHEN 'on_the_way' THEN
+        notification_title := '🚴 On The Way';
+        notification_message := 'Your order is on its way to you!';
+        notification_icon := 'directions_bike';
+      WHEN 'delivered' THEN
+        notification_title := '✅ Order Delivered';
+        notification_message := 'Your order has been delivered. Enjoy your meal!';
+        notification_icon := 'home_pin';
+      WHEN 'cancelled' THEN
+        notification_title := '❌ Order Cancelled';
+        notification_message := 'Your order has been cancelled.';
+        notification_icon := 'cancel';
+      WHEN 'refunded' THEN
+        notification_title := '💰 Refund Initiated';
+        notification_message := 'Your refund has been initiated and will be processed soon.';
+        notification_icon := 'currency_exchange';
+      ELSE
+        notification_title := '📋 Order Update';
+        notification_message := 'Your order status has been updated to: ' || NEW.status;
+        notification_icon := 'update';
+    END CASE;
+
+    INSERT INTO notifications (user_id, title, message, type, read, icon, action_url, created_at)
+    VALUES (
+      NEW.user_id,
+      notification_title,
+      notification_message,
+      'order_update',
+      false,
+      notification_icon,
+      '/app/orders/' || NEW.id,
+      NOW()
+    );
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- TRIGGER: Execute function on order status change
+DROP TRIGGER IF EXISTS order_status_notification_trigger ON orders;
+CREATE TRIGGER order_status_notification_trigger
+AFTER UPDATE ON orders
+FOR EACH ROW
+EXECUTE FUNCTION create_order_status_notification();
+
 -- CREATE RLS POLICIES FOR ALL TABLES
 -- Profiles
 DROP POLICY IF EXISTS "Profiles full access" ON profiles;
