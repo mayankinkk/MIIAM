@@ -122,9 +122,9 @@ export default function SupportPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f8f8f8] flex flex-col pb-24 md:pb-0">
+    <div className="h-[100dvh] bg-[#f8f8f8] flex flex-col pb-24 md:pb-0 overflow-hidden">
       {/* Header */}
-      <header className="bg-[#ba001c] text-white px-4 py-6">
+      <header className="bg-[#ba001c] text-white px-4 py-6 shrink-0">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-extrabold">Help & Support</h1>
@@ -138,7 +138,7 @@ export default function SupportPage() {
       </header>
 
       {/* Tabs */}
-      <div className="bg-white border-b border-slate-100 px-4">
+      <div className="bg-white border-b border-slate-100 px-4 shrink-0">
         <div className="max-w-2xl mx-auto flex">
           {(["home", "chat", "tickets", "faqs"] as const).map((t) => (
             <button
@@ -155,7 +155,7 @@ export default function SupportPage() {
       </div>
 
       {/* Content */}
-      <main className="flex-1 max-w-2xl mx-auto w-full px-4 py-6">
+      <main className="flex-1 max-w-2xl mx-auto w-full px-4 py-6 overflow-y-auto min-h-0">
         {tab === "home" && (
           <div className="space-y-6">
             {/* Quick Actions */}
@@ -282,7 +282,7 @@ export default function SupportPage() {
         )}
 
         {tab === "chat" && (
-          <div className="flex flex-col h-[calc(100dvh-280px)] md:h-[calc(100vh-200px)]">
+          <div className="flex flex-col h-full min-h-0">
             {/* Chat Messages */}
             <div className="flex-1 overflow-y-auto space-y-4 mb-4">
               {messages.map((msg) => (

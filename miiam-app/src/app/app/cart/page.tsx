@@ -8,17 +8,32 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 const supabase = createClient();
-const POINTS_BALANCE = 350;
 const POINTS_TO_RUPEE = 0.1;
 
 export default function CartPage() {
   const { items, updateQuantity, removeItem, totalPrice, subtotalByVendor, clearCart, addItem } = useCartStore();
   const [pointsToRedeem, setPointsToRedeem] = useState(0);
+  const [pointsBalance, setPointsBalance] = useState(0);
   const [pastOrders, setPastOrders] = useState<any[]>([]);
   const [showReorderModal, setShowReorderModal] = useState(false);
   const [reordering, setReordering] = useState(false);
   const [loadingOrders, setLoadingOrders] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    async function loadLoyaltyPoints() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("total_loyalty_points")
+          .eq("id", user.id)
+          .single();
+        if (profile) setPointsBalance(profile.total_loyalty_points || 0);
+      }
+    }
+    loadLoyaltyPoints();
+  }, []);
 
   const vendors = Array.from(new Set(items.map((i) => i.vendor_id))).map((vid) => ({
     id: vid,
@@ -32,7 +47,7 @@ export default function CartPage() {
   const deliveryFee = total > 0 ? 5.99 : 0;
   const pointsDiscount = +(pointsToRedeem * POINTS_TO_RUPEE).toFixed(2);
   const grandTotal = Math.max(0, total + deliveryFee - pointsDiscount);
-  const maxRedeemable = Math.min(POINTS_BALANCE, Math.floor((total + deliveryFee) / POINTS_TO_RUPEE));
+  const maxRedeemable = Math.min(pointsBalance, Math.floor((total + deliveryFee) / POINTS_TO_RUPEE));
 
   const fetchPastOrders = async () => {
     setLoadingOrders(true);
@@ -231,7 +246,7 @@ export default function CartPage() {
                     <span className="font-extrabold text-[#453900] text-sm">Redeem Loyalty Points</span>
                   </div>
                   <span className="text-[10px] font-bold bg-[#ffd709] text-[#453900] px-2 py-0.5 rounded-full">
-                    {POINTS_BALANCE} pts
+                    {pointsBalance} pts
                   </span>
                 </div>
                 <p className="text-[11px] text-[#665500] mb-3">1 pt = ₹{POINTS_TO_RUPEE} &nbsp;|&nbsp; Using {pointsToRedeem} pts = saves ₹{pointsDiscount.toFixed(2)}</p>
@@ -254,7 +269,7 @@ export default function CartPage() {
               </div>
 
               <Link
-                href="/app/checkout"
+                href={`/app/checkout${pointsToRedeem > 0 ? `?redeemPts=${pointsToRedeem}` : ""}`}
                 className="w-full mt-4 py-4 bg-gradient-to-r from-[#ba001c] to-[#ff7670] text-white rounded-xl font-bold text-base shadow-lg shadow-[#ba001c]/20 hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-2"
               >
                 Proceed to Checkout

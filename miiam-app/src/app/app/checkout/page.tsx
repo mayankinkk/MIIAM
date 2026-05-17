@@ -41,6 +41,16 @@ export default function CheckoutPage() {
   const { addToast } = useToastStore();
 
   useEffect(() => {
+    // Read URL params
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const redeemPts = Number(params.get("redeemPts"));
+      if (redeemPts > 0) {
+        setUseLoyaltyPoints(true);
+        setLoyaltyPointsToRedeem(redeemPts);
+      }
+    } catch (e) {}
+
     const saved = localStorage.getItem('miiam_selected_address');
     if (saved) {
       try { setDeliveryAddress(JSON.parse(saved)); } catch {}
