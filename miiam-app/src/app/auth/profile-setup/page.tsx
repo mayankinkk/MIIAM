@@ -163,6 +163,24 @@ function ProfileSetupContent() {
         }
       }
 
+      // Award 100 points signup bonus
+      if (user) {
+        try {
+          await fetch("/api/loyalty/award", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              user_id: user.id,
+              points: 100,
+              type: "signup_bonus",
+              description: "Welcome bonus - 100 points!",
+            }),
+          });
+        } catch (e) {
+          console.error("[profile-setup] Signup bonus error:", e);
+        }
+      }
+
       window.location.href = "/app/explore";
     } catch (error) {
       console.error("Setup error:", error);

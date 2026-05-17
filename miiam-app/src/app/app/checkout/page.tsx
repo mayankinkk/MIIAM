@@ -32,6 +32,9 @@ export default function CheckoutPage() {
   const [deliveryAddress, setDeliveryAddress] = useState<SelectedAddress | null>(null);
   const [savedAddresses, setSavedAddresses] = useState<SelectedAddress[]>([]);
   const [showAddressPicker, setShowAddressPicker] = useState(false);
+  const [loyaltyPoints, setLoyaltyPoints] = useState(0);
+  const [useLoyaltyPoints, setUseLoyaltyPoints] = useState(false);
+  const [loyaltyPointsToRedeem, setLoyaltyPointsToRedeem] = useState(0);
   const router = useRouter();
   const { items, totalPrice, clearCart } = useCartStore();
   const supabase = createClient();
@@ -54,6 +57,19 @@ export default function CheckoutPage() {
       if (data) setPromoCodes(data);
     }
     loadPromoCodes();
+
+    async function loadLoyaltyPoints() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("total_loyalty_points")
+          .eq("id", user.id)
+          .single();
+        if (profile) setLoyaltyPoints(profile.total_loyalty_points || 0);
+      }
+    }
+    loadLoyaltyPoints();
   }, []);
 
   const subtotal = totalPrice();
@@ -62,9 +78,10 @@ export default function CheckoutPage() {
       ? +(subtotal * (promoApplied.discount / 100)).toFixed(2)
       : promoApplied.discount
     : 0;
-  const tax = +((subtotal - discount) * 0.05).toFixed(2);
+  const loyaltyDiscount = useLoyaltyPoints ? +(loyaltyPointsToRedeem * 0.1).toFixed(2) : 0;
+  const tax = +((subtotal - discount - loyaltyDiscount) * 0.05).toFixed(2);
   const deliveryFee = 5.99;
-  const grand = +(subtotal - discount + tax + deliveryFee + tipAmount).toFixed(2);
+  const grand = +(subtotal - discount - loyaltyDiscount + tax + deliveryFee + tipAmount).toFixed(2);
 
   const handleApplyPromo = () => {
     const code = promoCode.toUpperCase().trim();
@@ -175,6 +192,23 @@ export default function CheckoutPage() {
           } catch (emailErr) {
             console.warn("Failed to send confirmation email:", emailErr);
           }
+        }
+      }
+
+      // Redeem loyalty points if selected
+      if (useLoyaltyPoints && loyaltyPointsToRedeem > 0 && user) {
+        try {
+          await fetch("/api/loyalty/redeem", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              user_id: user.id,
+              points: loyaltyPointsToRedeem,
+              order_id: firstOrderId,
+            }),
+          });
+        } catch (e) {
+          console.error("[checkout] Loyalty redemption error:", e);
         }
       }
 
@@ -536,6 +570,53 @@ export default function CheckoutPage() {
                     ))}
                   </div>
                 </div>
+                
+                {/* Loyalty Points Redemption */}
+                {loyaltyPoints > 0 && (
+                  <div className="py-3 border-t border-dashed border-[#dd9ca6]/30">
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-sm font-bold text-[#4d212a]">💎 Use Loyalty Points</p>
+                      <span className="text-xs text-[#814c55]">{loyaltyPoints} points available</span>
+                    </div>
+                    <div className="flex gap-2">
+                      {[100, 200, 500].map((pts) => (
+                        <button
+                          key={pts}
+                          onClick={() => {
+                            if (pts <= loyaltyPoints) {
+                              setUseLoyaltyPoints(true);
+                              setLoyaltyPointsToRedeem(Math.min(pts, loyaltyPoints));
+                            }
+                          }}
+                          disabled={pts > loyaltyPoints}
+                          className={`flex-1 py-2 rounded-lg text-sm font-bold border transition-all ${
+                            loyaltyPointsToRedeem === pts
+                              ? "bg-[#ffd709] text-[#453900] border-[#ffd709]"
+                              : pts > loyaltyPoints
+                                ? "bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed"
+                                : "bg-white text-[#4d212a] border-slate-200 hover:border-[#ffd709]"
+                          }`}
+                        >
+                          {pts} pts
+                        </button>
+                      ))}
+                      <button
+                        onClick={() => {
+                          setUseLoyaltyPoints(false);
+                          setLoyaltyPointsToRedeem(0);
+                        }}
+                        className="px-3 py-2 rounded-lg text-sm font-bold border border-slate-200 text-slate-500"
+                      >
+                        Clear
+                      </button>
+                    </div>
+                    {useLoyaltyPoints && loyaltyPointsToRedeem > 0 && (
+                      <p className="text-xs text-green-600 mt-2 font-medium">
+                        ✓ Using {loyaltyPointsToRedeem} points = ₹{(loyaltyPointsToRedeem * 0.1).toFixed(2)} off
+                      </p>
+                    )}
+                  </div>
+                )}
                 
                 <div className="pt-4 border-t border-[#dd9ca6]/30 flex justify-between items-end">
                   <span className="text-lg font-bold">Total Amount</span>
