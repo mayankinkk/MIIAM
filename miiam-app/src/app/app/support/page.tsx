@@ -122,7 +122,7 @@ export default function SupportPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f8f8f8] flex flex-col">
+    <div className="min-h-screen bg-[#f8f8f8] flex flex-col pb-24 md:pb-0">
       {/* Header */}
       <header className="bg-[#ba001c] text-white px-4 py-6">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
@@ -282,7 +282,7 @@ export default function SupportPage() {
         )}
 
         {tab === "chat" && (
-          <div className="flex flex-col h-[calc(100vh-200px)]">
+          <div className="flex flex-col h-[calc(100dvh-280px)] md:h-[calc(100vh-200px)]">
             {/* Chat Messages */}
             <div className="flex-1 overflow-y-auto space-y-4 mb-4">
               {messages.map((msg) => (
