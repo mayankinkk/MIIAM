@@ -109,6 +109,23 @@ export default function EnhancedProfilePage() {
             <p className="text-[10px] text-white/70 uppercase tracking-wider">Saved</p>
           </div>
         </div>
+
+        {/* Loyalty Points Banner */}
+        <Link href="/app/referral" className="mt-4 bg-gradient-to-r from-[#ffd709] to-[#ffb700] rounded-2xl p-4 flex items-center justify-between block">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-white/30 rounded-xl flex items-center justify-center">
+              <span className="material-symbols-outlined text-amber-800 text-2xl">stars</span>
+            </div>
+            <div>
+              <p className="font-bold text-amber-900">Loyalty Points</p>
+              <p className="text-xs text-amber-800">₹{(profile?.total_loyalty_points || 0) * 0.1} value</p>
+            </div>
+          </div>
+          <div className="text-right">
+            <p className="text-3xl font-black text-amber-900">{profile?.total_loyalty_points || 0}</p>
+            <p className="text-[10px] text-amber-800 font-bold">POINTS</p>
+          </div>
+        </Link>
       </header>
 
       {/* Menu Items */}
