@@ -89,9 +89,11 @@ export default function CheckoutPage() {
       : promoApplied.discount
     : 0;
   const loyaltyDiscount = useLoyaltyPoints ? +(loyaltyPointsToRedeem * 0.1).toFixed(2) : 0;
-  const tax = +((subtotal - discount - loyaltyDiscount) * 0.05).toFixed(2);
+  const baseAmountForTax = Math.max(0, subtotal - discount - loyaltyDiscount);
+  const tax = +(baseAmountForTax * 0.05).toFixed(2);
   const deliveryFee = 5.99;
-  const grand = +(subtotal - discount - loyaltyDiscount + tax + deliveryFee + tipAmount).toFixed(2);
+  const grand = Math.max(0, +(subtotal - discount - loyaltyDiscount + tax + deliveryFee + tipAmount).toFixed(2));
+  const maxRedeemable = Math.min(loyaltyPoints, Math.floor((subtotal - discount + deliveryFee + tipAmount) / 0.1));
 
   const handleApplyPromo = () => {
     const code = promoCode.toUpperCase().trim();
@@ -588,37 +590,48 @@ export default function CheckoutPage() {
                       <p className="text-sm font-bold text-[#4d212a]">💎 Use Loyalty Points</p>
                       <span className="text-xs text-[#814c55]">{loyaltyPoints} points available</span>
                     </div>
-                    <div className="flex gap-2">
-                      {[100, 200, 500].map((pts) => (
-                        <button
-                          key={pts}
-                          onClick={() => {
-                            if (pts <= loyaltyPoints) {
+                    <div className="mt-3 bg-white p-4 rounded-xl border border-slate-200 shadow-inner">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-xs font-semibold text-slate-500">Slide to adjust</span>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => {
+                              setUseLoyaltyPoints(false);
+                              setLoyaltyPointsToRedeem(0);
+                            }}
+                            className="text-[10px] font-bold text-slate-500 px-2 py-1 rounded bg-slate-100 hover:bg-slate-200"
+                          >
+                            Clear
+                          </button>
+                          <button
+                            onClick={() => {
                               setUseLoyaltyPoints(true);
-                              setLoyaltyPointsToRedeem(Math.min(pts, loyaltyPoints));
-                            }
+                              setLoyaltyPointsToRedeem(maxRedeemable);
+                            }}
+                            className="text-[10px] font-bold text-[#453900] px-2 py-1 rounded bg-[#ffd709] hover:bg-[#e5c100]"
+                          >
+                            Use Max
+                          </button>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="range"
+                          min={0}
+                          max={maxRedeemable}
+                          step={10}
+                          value={loyaltyPointsToRedeem}
+                          onChange={(e) => {
+                            const val = Number(e.target.value);
+                            setLoyaltyPointsToRedeem(val);
+                            setUseLoyaltyPoints(val > 0);
                           }}
-                          disabled={pts > loyaltyPoints}
-                          className={`flex-1 py-2 rounded-lg text-sm font-bold border transition-all ${
-                            loyaltyPointsToRedeem === pts
-                              ? "bg-[#ffd709] text-[#453900] border-[#ffd709]"
-                              : pts > loyaltyPoints
-                                ? "bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed"
-                                : "bg-white text-[#4d212a] border-slate-200 hover:border-[#ffd709]"
-                          }`}
-                        >
-                          {pts} pts
-                        </button>
-                      ))}
-                      <button
-                        onClick={() => {
-                          setUseLoyaltyPoints(false);
-                          setLoyaltyPointsToRedeem(0);
-                        }}
-                        className="px-3 py-2 rounded-lg text-sm font-bold border border-slate-200 text-slate-500"
-                      >
-                        Clear
-                      </button>
+                          className="w-full accent-[#ba001c] h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer"
+                        />
+                        <div className="shrink-0 w-16 text-right font-bold text-[#4d212a] bg-[#ffecee] px-2 py-1 rounded-md">
+                          {loyaltyPointsToRedeem}
+                        </div>
+                      </div>
                     </div>
                     {useLoyaltyPoints && loyaltyPointsToRedeem > 0 && (
                       <p className="text-xs text-green-600 mt-2 font-medium">
