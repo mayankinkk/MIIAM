@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cartStore";
-import { Skeleton, VendorCardSkeleton } from "@/components/Skeleton";
+import { Skeleton, VendorCardSkeleton, SearchResultSkeleton } from "@/components/Skeleton";
 import { EmptySearch } from "@/components/ui/EmptyStates";
 
 interface VendorResult {
@@ -183,13 +183,7 @@ function SearchContent() {
         )}
 
         {loading ? (
-          <div className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {[1, 2, 3, 4].map((i) => (
-                <VendorCardSkeleton key={i} />
-              ))}
-            </div>
-          </div>
+          <SearchResultSkeleton />
         ) : !query ? (
           <div className="py-8">
             {searchHistory.length > 0 && (
