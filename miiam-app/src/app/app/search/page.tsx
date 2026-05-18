@@ -6,6 +6,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cartStore";
 import { Skeleton, VendorCardSkeleton } from "@/components/Skeleton";
+import { EmptySearch } from "@/components/ui/EmptyStates";
 
 interface VendorResult {
   id: string;
@@ -225,16 +226,22 @@ function SearchContent() {
             </div>
           </div>
         ) : totalResults === 0 ? (
-          <div className="text-center py-16">
-            <span className="text-6xl">😕</span>
-            <h2 className="text-xl font-bold text-[#4d212a] mt-4">No results found</h2>
-            <p className="text-[#814c55] mt-2">Try different keywords or browse restaurants</p>
-            <Link
-              href="/app/explore"
-              className="mt-6 inline-block bg-[#ba001c] text-white px-6 py-3 rounded-xl font-bold"
-            >
-              Explore Restaurants
-            </Link>
+          <div className="animate-fade-in">
+            <EmptySearch query={query} />
+            <div className="mt-8 text-center">
+              <p className="text-sm text-[#814c55] mb-4">Popular searches</p>
+              <div className="flex flex-wrap justify-center gap-2">
+                {["Biryani", "Pizza", "Burgers", "Chinese", "South Indian", "Desserts", "North Indian", "Street Food"].map((tag) => (
+                  <Link
+                    key={tag}
+                    href={`/app/search?q=${tag}`}
+                    className="px-4 py-2 bg-white rounded-full text-sm text-[#814c55] border border-[#dd9ca6]/30 hover:border-[#ba001c] hover:bg-[#ba001c]/5 transition-all"
+                  >
+                    {tag}
+                  </Link>
+                ))}
+              </div>
+            </div>
           </div>
         ) : (
           <>
