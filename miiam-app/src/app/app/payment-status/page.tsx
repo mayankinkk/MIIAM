@@ -6,6 +6,59 @@ import Link from "next/link";
 
 type PaymentStatus = "processing" | "success" | "failed" | "pending";
 
+interface ConfettiPiece {
+  id: number;
+  x: number;
+  delay: number;
+  color: string;
+  size: number;
+  rotation: number;
+}
+
+function Confetti() {
+  const [pieces, setPieces] = useState<ConfettiPiece[]>([]);
+  
+  useEffect(() => {
+    const colors = ["#ba001c", "#ff7670", "#ffc371", "#0b50d5", "#38ef7d", "#ffd200", "#ff6a00"];
+    const confetti = Array.from({ length: 50 }, (_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      delay: Math.random() * 0.5,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      size: Math.random() * 10 + 5,
+      rotation: Math.random() * 360,
+    }));
+    setPieces(confetti);
+  }, []);
+
+  return (
+    <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
+      {pieces.map((piece) => (
+        <div
+          key={piece.id}
+          className="absolute top-0"
+          style={{
+            left: `${piece.x}%`,
+            animationDelay: `${piece.delay}s`,
+            animation: `confetti-fall 3s ease-out forwards`,
+          }}
+        >
+          <div
+            className="rounded-sm"
+            style={{
+              width: piece.size,
+              height: piece.size,
+              backgroundColor: piece.color,
+              transform: `rotate(${piece.rotation}deg)`,
+              animation: `confetti-spin 2s linear infinite`,
+            }}
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function PaymentStatusContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -14,6 +67,8 @@ function PaymentStatusContent() {
   
   const [status, setStatus] = useState<PaymentStatus>(statusParam || "processing");
   const [progress, setProgress] = useState(0);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
 
   useEffect(() => {
     if (status === "processing") {
@@ -28,6 +83,15 @@ function PaymentStatusContent() {
         });
       }, 500);
       return () => clearInterval(interval);
+    }
+  }, [status]);
+
+  useEffect(() => {
+    if (status === "success") {
+      setShowCelebration(true);
+      setShowConfetti(true);
+      const timer = setTimeout(() => setShowConfetti(false), 4000);
+      return () => clearTimeout(timer);
     }
   }, [status]);
 
@@ -130,10 +194,26 @@ function PaymentStatusContent() {
 
           {status === "success" && (
             <div className="space-y-3 mb-6">
+              {showCelebration && (
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-4 mb-4 border border-green-200 animate-bounce-in">
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className="text-3xl">🎉</span>
+                    <div>
+                      <p className="font-bold text-green-700">Order Placed!</p>
+                      <p className="text-xs text-green-600">Your delicious food is being prepared</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-green-600">
+                    <span className="material-symbols-outlined text-sm animate-pulse" style={{ fontVariationSettings: "'FILL' 1" }}>local_shipping</span>
+                    Estimated delivery in 30-40 mins
+                  </div>
+                </div>
+              )}
               <Link 
                 href={`/app/orders/${orderId}`}
-                className="block w-full bg-[#ba001c] text-white py-4 rounded-xl font-bold text-center hover:bg-[#a40017] transition-colors"
+                className="block w-full bg-[#ba001c] text-white py-4 rounded-xl font-bold text-center hover:bg-[#a40017] transition-colors flex items-center justify-center gap-2"
               >
+                <span className="material-symbols-outlined">order_play</span>
                 Track Order
               </Link>
               <Link 
@@ -144,6 +224,9 @@ function PaymentStatusContent() {
               </Link>
             </div>
           )}
+
+          {/* Confetti */}
+          {showConfetti && <Confetti />}
 
           <div className="flex justify-center gap-4 pt-6 border-t border-slate-100">
             <Link href="/app/home" className="flex items-center gap-2 text-[#814c55] hover:text-[#ba001c] transition-colors">
