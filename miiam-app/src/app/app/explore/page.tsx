@@ -1,15 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 
-const features = [
-  { id: "food", icon: "restaurant", label: "Food Delivery", desc: "Order from top restaurants", color: "bg-orange-100 text-orange-600" },
-  { id: "grocery", icon: "shopping_basket", label: "Grocery", desc: "Fresh groceries delivered", color: "bg-green-100 text-green-600" },
-  { id: "beauty", icon: "spa", label: "Beauty & Wellness", desc: "Salon, Spa, Nails", color: "bg-pink-100 text-pink-600" },
-  { id: "services", icon: "home_repair_service", label: "Home Services", desc: "AC, Plumbing, Cleaning", color: "bg-blue-100 text-blue-600" },
-  { id: "pharmacy", icon: "medication", label: "Pharmacy", desc: "Medicines at your door", color: "bg-purple-100 text-purple-600" },
-  { id: "flowers", icon: "local_florist", label: "Flowers & Gifts", desc: "Send love & wishes", color: "bg-rose-100 text-rose-600" },
+const categories = [
+  { id: "all", icon: "apps", label: "All" },
+  { id: "food", icon: "restaurant", label: "Food" },
+  { id: "grocery", icon: "shopping_basket", label: "Grocery" },
+  { id: "beauty", icon: "spa", label: "Beauty" },
+  { id: "services", icon: "handyman", label: "Services" },
+  { id: "pharmacy", icon: "medication", label: "Pharmacy" },
+  { id: "flowers", icon: "local_florist", label: "Flowers" },
+  { id: "cleaning", icon: "cleaning_services", label: "Cleaning" },
+  { id: "ac", icon: "ac_unit", label: "AC Repair" },
+  { id: "plumbing", icon: "plumbing", label: "Plumbing" },
+  { id: "electrical", icon: "electrical_services", label: "Electrical" },
+  { id: "pest", icon: "pest_control", label: "Pest Control" },
 ];
 
 
@@ -23,6 +29,23 @@ const collections = [
 
 export default function ExplorePage() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeCategory, setActiveCategory] = useState("all");
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const colorMap: Record<string, string> = {
+    all: "bg-slate-100 text-slate-600",
+    food: "bg-orange-100 text-orange-600",
+    grocery: "bg-green-100 text-green-600",
+    beauty: "bg-pink-100 text-pink-600",
+    services: "bg-blue-100 text-blue-600",
+    pharmacy: "bg-purple-100 text-purple-600",
+    flowers: "bg-rose-100 text-rose-600",
+    cleaning: "bg-cyan-100 text-cyan-600",
+    ac: "bg-sky-100 text-sky-600",
+    plumbing: "bg-teal-100 text-teal-600",
+    electrical: "bg-amber-100 text-amber-600",
+    pest: "bg-lime-100 text-lime-600",
+  };
 
   return (
     <div className="min-h-screen bg-[#fff4f4] pb-24">
@@ -44,22 +67,81 @@ export default function ExplorePage() {
         </div>
       </header>
 
-      <main className="px-6 space-y-8">
+      <main className="space-y-8">
+        {/* Swipeable Category Tabs */}
+        <section className="sticky top-0 z-20 bg-white/80 backdrop-blur-xl border-b border-slate-100">
+          <div 
+            ref={scrollRef}
+            className="flex gap-2 px-6 py-4 overflow-x-auto no-scrollbar snap-x snap-mandatory"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
+            {categories.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setActiveCategory(cat.id)}
+                className={`
+                  flex items-center gap-2 px-5 py-2.5 rounded-full font-semibold text-sm whitespace-nowrap
+                  transition-all duration-300 snap-start
+                  ${activeCategory === cat.id 
+                    ? 'bg-[#ba001c] text-white shadow-lg shadow-[#ba001c]/25 scale-105' 
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}
+                `}
+              >
+                <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>{cat.icon}</span>
+                {cat.label}
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {/* Active Category Filter Chip */}
+        {activeCategory !== "all" && (
+          <div className="px-6 flex items-center gap-2">
+            <span className="text-sm text-slate-500">Showing:</span>
+            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${colorMap[activeCategory]}`}>
+              <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>{categories.find(c => c.id === activeCategory)?.icon}</span>
+              {categories.find(c => c.id === activeCategory)?.label}
+            </span>
+            <button 
+              onClick={() => setActiveCategory("all")}
+              className="text-xs text-[#ba001c] font-bold hover:underline"
+            >
+              Clear
+            </button>
+          </div>
+        )}
+
         {/* Services Grid */}
-        <section>
-          <h2 className="text-lg font-black text-slate-800 mb-4">All Services</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {features.map((feature) => (
+        <section className="px-6">
+          <h2 className="text-lg font-black text-slate-800 mb-4">
+            {activeCategory === "all" ? "All Services" : categories.find(c => c.id === activeCategory)?.label}
+          </h2>
+          <div className="grid grid-cols-2 gap-4">
+            {categories.filter(c => c.id !== "all").map((feature) => (
               <Link 
                 key={feature.id} 
                 href={`/app/${feature.id}`}
-                className="bg-white rounded-2xl p-5 shadow-sm hover:shadow-lg transition-all group"
+                className={`bg-white rounded-2xl p-5 shadow-sm hover:shadow-lg transition-all group ${
+                  activeCategory !== "all" && activeCategory !== feature.id ? "opacity-40 scale-95" : ""
+                }`}
               >
-                <div className={`w-14 h-14 rounded-2xl ${feature.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
+                <div className={`w-14 h-14 rounded-2xl ${colorMap[feature.id]} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
                   <span className="material-symbols-outlined text-2xl">{feature.icon}</span>
                 </div>
                 <h3 className="font-bold text-slate-800">{feature.label}</h3>
-                <p className="text-xs text-slate-500 mt-1">{feature.desc}</p>
+                <p className="text-xs text-slate-500 mt-1">
+                  {feature.id === "food" && "Order from top restaurants"}
+                  {feature.id === "grocery" && "Fresh groceries delivered"}
+                  {feature.id === "beauty" && "Salon, Spa, Nails"}
+                  {feature.id === "services" && "AC, Plumbing, Cleaning"}
+                  {feature.id === "pharmacy" && "Medicines at your door"}
+                  {feature.id === "flowers" && "Send love & wishes"}
+                  {feature.id === "cleaning" && "Home & Office Cleaning"}
+                  {feature.id === "ac" && "AC Repair & Service"}
+                  {feature.id === "plumbing" && "Pipe & Leak Repair"}
+                  {feature.id === "electrical" && "Wiring & Switches"}
+                  {feature.id === "pest" && "Cockroach & Pest Control"}
+                </p>
               </Link>
             ))}
           </div>
