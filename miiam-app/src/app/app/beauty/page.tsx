@@ -153,15 +153,16 @@ export default function BeautyPage() {
       <div className="px-4 -mt-6">
         <div className="bg-white rounded-2xl p-2 shadow-lg">
           <div className="flex gap-2 overflow-x-auto no-scrollbar">
-            {categories.map((cat) => (
+            {categories.map((cat, i) => (
               <button
                 key={cat.id}
-                onClick={() => setActiveCategory(cat.id)}
-                className={`flex-shrink-0 px-4 py-3 rounded-xl font-bold text-sm flex items-center gap-2 transition-all ${
+                onClick={() => { setActiveCategory(cat.id); if (navigator.vibrate) navigator.vibrate(10); }}
+                className={`flex-shrink-0 px-4 py-3 rounded-xl font-bold text-sm flex items-center gap-2 transition-all active:scale-95 ${
                   activeCategory === cat.id
                     ? "bg-gradient-to-r " + cat.color + " text-white"
                     : "bg-slate-100 text-slate-600"
-                }`}
+                } animate-category-slide`}
+                style={{ animationDelay: `${i * 50}ms` }}
               >
                 <span>{cat.emoji}</span>
                 {cat.label}
@@ -180,7 +181,7 @@ export default function BeautyPage() {
           </div>
           <div className="flex gap-4 overflow-x-auto no-scrollbar">
             {experts.map((expert, i) => (
-              <div key={i} className="flex-shrink-0 w-40 bg-white rounded-2xl p-4 shadow-sm text-center">
+              <div key={i} className="flex-shrink-0 w-40 bg-white rounded-2xl p-4 shadow-sm text-center card-lift animate-pop-in" style={{ animationDelay: `${i * 80}ms` }}>
                 <img src={expert.photo} alt={expert.name} className="w-16 h-16 rounded-full mx-auto object-cover border-2 border-pink-200" />
                 <p className="font-bold text-slate-800 mt-3 text-sm">{expert.name}</p>
                 <p className="text-xs text-slate-500">{expert.specialist}</p>
@@ -198,12 +199,12 @@ export default function BeautyPage() {
         <section>
           <h2 className="text-lg font-black text-slate-800 mb-4">{categories.find(c => c.id === activeCategory)?.label}</h2>
           <div className="space-y-4">
-            {currentServices.map((service: any) => {
+            {currentServices.map((service: any, index) => {
               const qty = getQty(service.id);
               const discount = service.original ? Math.round(((service.original - service.price) / service.original) * 100) : 0;
               
               return (
-                <div key={service.id} className="bg-white rounded-2xl p-4 shadow-sm flex gap-4">
+                <div key={service.id} className="bg-white rounded-2xl p-4 shadow-sm flex gap-4 card-lift animate-pop-in" style={{ animationDelay: `${Math.min(index * 80, 500)}ms` }}>
                   <div className="w-24 h-24 rounded-xl overflow-hidden flex-shrink-0 bg-slate-100">
                     <img src={service.image} alt={service.name} className="w-full h-full object-cover" />
                   </div>
@@ -241,17 +242,17 @@ export default function BeautyPage() {
                     </div>
                     <div className="mt-3">
                       {qty === 0 ? (
-                        <button onClick={() => handleBook(service)} className="w-full bg-[#ba001c] text-white font-bold py-2 rounded-xl text-sm">
+                        <button onClick={() => { handleBook(service); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }} className="w-full bg-[#ba001c] text-white font-bold py-2 rounded-xl text-sm hover:scale-[1.02] active:scale-[0.98] transition-all animate-glow-pulse">
                           Book Now
                         </button>
                       ) : (
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2 bg-[#ba001c] rounded-xl px-2">
-                            <button onClick={() => updateQuantity(service.id, qty - 1)} className="w-6 h-6 flex items-center justify-center text-white">
+                          <div className="flex items-center gap-2 bg-[#ba001c] rounded-xl px-2 animate-cart-pop">
+                            <button onClick={() => { updateQuantity(service.id, qty - 1); if (navigator.vibrate) navigator.vibrate(10); }} className="w-6 h-6 flex items-center justify-center text-white hover:scale-110 active:scale-90 transition-transform">
                               <span className="material-symbols-outlined text-sm">remove</span>
                             </button>
                             <span className="font-bold text-white">{qty}</span>
-                            <button onClick={() => addItem({ id: service.id + Date.now(), menu_item_id: service.id, vendor_id: BEAUTY_VENDOR_ID, vendor_name: "MIIAM Beauty", name: service.name, price: service.price, image_url: service.image })} className="w-6 h-6 flex items-center justify-center text-white">
+                            <button onClick={() => { addItem({ id: service.id + Date.now(), menu_item_id: service.id, vendor_id: BEAUTY_VENDOR_ID, vendor_name: "MIIAM Beauty", name: service.name, price: service.price, image_url: service.image }); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }} className="w-6 h-6 flex items-center justify-center text-white hover:scale-110 active:scale-90 transition-transform">
                               <span className="material-symbols-outlined text-sm">add</span>
                             </button>
                           </div>
@@ -269,8 +270,8 @@ export default function BeautyPage() {
         <section>
           <h2 className="text-lg font-black text-slate-800 mb-4">Special Packages</h2>
           <div className="space-y-4">
-            {packages.map((pkg) => (
-              <div key={pkg.id} className={`bg-gradient-to-r ${pkg.color} rounded-2xl p-5 text-white`}>
+            {packages.map((pkg, i) => (
+              <div key={pkg.id} className={`bg-gradient-to-r ${pkg.color} rounded-2xl p-5 text-white card-lift animate-pop-in`} style={{ animationDelay: `${i * 100}ms` }}>
                 <div className="flex justify-between items-start">
                   <div>
                     <p className="text-xs font-bold opacity-80">Save {pkg.savings}</p>
@@ -289,7 +290,7 @@ export default function BeautyPage() {
                     <span className="text-sm opacity-80 line-through ml-2">₹{pkg.original}</span>
                   </div>
                 </div>
-                <button className="w-full mt-4 bg-white text-slate-900 font-bold py-2 rounded-xl">
+                <button onClick={() => { if (navigator.vibrate) navigator.vibrate(10); }} className="w-full mt-4 bg-white text-slate-900 font-bold py-2 rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all">
                   View Details
                 </button>
               </div>
@@ -302,7 +303,7 @@ export default function BeautyPage() {
           <h2 className="text-lg font-black text-slate-800 mb-4">Trending Searches</h2>
           <div className="flex flex-wrap gap-2">
             {trending.map((item, i) => (
-              <button key={i} className="px-4 py-2 bg-white border border-slate-200 rounded-full text-sm font-medium text-slate-600 hover:border-pink-300 hover:text-pink-600 transition-colors">
+              <button key={i} onClick={() => { if (navigator.vibrate) navigator.vibrate(10); }} className="px-4 py-2 bg-white border border-slate-200 rounded-full text-sm font-medium text-slate-600 hover:border-pink-300 hover:text-pink-600 hover:scale-105 active:scale-95 transition-all animate-category-slide" style={{ animationDelay: `${i * 50}ms` }}>
                 {item}
               </button>
             ))}
@@ -312,11 +313,11 @@ export default function BeautyPage() {
 
       {/* Booking Modal */}
       {bookingService && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center">
-          <div className="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl p-6 max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center animate-fade-in">
+          <div className="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl p-6 max-h-[90vh] overflow-y-auto animate-slide-up">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-xl font-black text-slate-800">Book {bookingService.name}</h3>
-              <button onClick={() => setBookingService(null)} className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center">
+              <button onClick={() => { setBookingService(null); if (navigator.vibrate) navigator.vibrate(10); }} className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center hover:scale-110 active:scale-90 transition-transform">
                 <span className="material-symbols-outlined text-sm">close</span>
               </button>
             </div>
@@ -324,10 +325,10 @@ export default function BeautyPage() {
             {/* Location */}
             <p className="text-xs font-bold text-slate-500 uppercase mb-2">Service Location</p>
             <div className="flex gap-3 mb-6">
-              <button onClick={() => setLocation("home")} className={`flex-1 py-3 rounded-xl font-bold text-sm border-2 ${location === "home" ? "border-[#ba001c] bg-pink-50" : "border-slate-200"}`}>
+              <button onClick={() => { setLocation("home"); if (navigator.vibrate) navigator.vibrate(10); }} className={`flex-1 py-3 rounded-xl font-bold text-sm border-2 hover:scale-[1.02] active:scale-[0.98] transition-all ${location === "home" ? "border-[#ba001c] bg-pink-50" : "border-slate-200"}`}>
                 🏠 Home
               </button>
-              <button onClick={() => setLocation("salon")} className={`flex-1 py-3 rounded-xl font-bold text-sm border-2 ${location === "salon" ? "border-[#ba001c] bg-pink-50" : "border-slate-200"}`}>
+              <button onClick={() => { setLocation("salon"); if (navigator.vibrate) navigator.vibrate(10); }} className={`flex-1 py-3 rounded-xl font-bold text-sm border-2 hover:scale-[1.02] active:scale-[0.98] transition-all ${location === "salon" ? "border-[#ba001c] bg-pink-50" : "border-slate-200"}`}>
                 🏪 Salon Visit
               </button>
             </div>
@@ -336,7 +337,7 @@ export default function BeautyPage() {
             <p className="text-xs font-bold text-slate-500 uppercase mb-2">Select Date</p>
             <div className="flex gap-2 overflow-x-auto no-scrollbar mb-6">
               {days.map((day, i) => (
-                <button key={i} onClick={() => setSelectedDate(i)} className={`flex-shrink-0 px-4 py-3 rounded-xl font-bold text-sm border-2 ${selectedDate === i ? "border-[#ba001c] bg-[#ba001c] text-white" : "border-slate-200"}`}>
+                <button key={i} onClick={() => { setSelectedDate(i); if (navigator.vibrate) navigator.vibrate(10); }} className={`flex-shrink-0 px-4 py-3 rounded-xl font-bold text-sm border-2 hover:scale-105 active:scale-95 transition-all ${selectedDate === i ? "border-[#ba001c] bg-[#ba001c] text-white" : "border-slate-200"}`}>
                   {day.label}
                 </button>
               ))}
@@ -346,7 +347,7 @@ export default function BeautyPage() {
             <p className="text-xs font-bold text-slate-500 uppercase mb-2">Select Time</p>
             <div className="grid grid-cols-3 gap-2 mb-6">
               {timeSlots.map((time) => (
-                <button key={time} onClick={() => setSelectedTime(time)} className={`py-3 rounded-xl font-bold text-sm border-2 ${selectedTime === time ? "border-slate-800 bg-slate-800 text-white" : "border-slate-200"}`}>
+                <button key={time} onClick={() => { setSelectedTime(time); if (navigator.vibrate) navigator.vibrate(10); }} className={`py-3 rounded-xl font-bold text-sm border-2 hover:scale-105 active:scale-95 transition-all ${selectedTime === time ? "border-slate-800 bg-slate-800 text-white" : "border-slate-200"}`}>
                   {time}
                 </button>
               ))}
@@ -364,7 +365,7 @@ export default function BeautyPage() {
               </div>
             </div>
 
-            <button onClick={confirmBooking} disabled={!selectedTime} className="w-full bg-gradient-to-r from-[#ba001c] to-[#ff7670] text-white py-4 rounded-xl font-extrabold disabled:opacity-50">
+            <button onClick={() => { confirmBooking(); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }} disabled={!selectedTime} className="w-full bg-gradient-to-r from-[#ba001c] to-[#ff7670] text-white py-4 rounded-xl font-extrabold disabled:opacity-50 hover:scale-[1.02] active:scale-[0.98] transition-all">
               Confirm Booking
             </button>
           </div>

@@ -121,17 +121,18 @@ export default function ExplorePage() {
             className="flex gap-2 px-6 py-4 overflow-x-auto no-scrollbar snap-x snap-mandatory"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
-            {categories.map((cat) => (
+            {categories.map((cat, i) => (
               <button
                 key={cat.id}
-                onClick={() => setActiveCategory(cat.id)}
+                onClick={() => { setActiveCategory(cat.id); if (navigator.vibrate) navigator.vibrate(10); }}
                 className={`
                   flex items-center gap-2 px-5 py-2.5 rounded-full font-semibold text-sm whitespace-nowrap
-                  transition-all duration-300 snap-start
+                  transition-all duration-300 snap-start active:scale-95 animate-category-slide
                   ${activeCategory === cat.id 
                     ? 'bg-[#ba001c] text-white shadow-lg shadow-[#ba001c]/25 scale-105' 
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:scale-[1.02]'}
                 `}
+                style={{ animationDelay: `${i * 50}ms` }}
               >
                 <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>{cat.icon}</span>
                 {cat.label}
@@ -163,13 +164,14 @@ export default function ExplorePage() {
             {activeCategory === "all" ? "All Services" : categories.find(c => c.id === activeCategory)?.label}
           </h2>
           <div className="grid grid-cols-2 gap-4">
-            {categories.filter(c => c.id !== "all").map((feature) => (
+            {categories.filter(c => c.id !== "all").map((feature, i) => (
               <Link 
                 key={feature.id} 
                 href={`/app/${feature.id}`}
-                className={`bg-white rounded-2xl p-5 shadow-sm hover:shadow-lg transition-all group ${
+                className={`bg-white rounded-2xl p-5 shadow-sm hover:shadow-lg transition-all group card-lift animate-pop-in ${
                   activeCategory !== "all" && activeCategory !== feature.id ? "opacity-40 scale-95" : ""
                 }`}
+                style={{ animationDelay: `${i * 80}ms` }}
               >
                 <div className={`w-14 h-14 rounded-2xl ${colorMap[feature.id]} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
                   <span className="material-symbols-outlined text-2xl">{feature.icon}</span>
@@ -197,10 +199,11 @@ export default function ExplorePage() {
         <section>
           <h2 className="text-lg font-black text-slate-800 mb-4">Featured Collections</h2>
           <div className="grid grid-cols-2 gap-4">
-            {collections.map((collection) => (
+            {collections.map((collection, i) => (
               <div 
                 key={collection.id}
-                className="relative rounded-2xl overflow-hidden h-40 group"
+                className="relative rounded-2xl overflow-hidden h-40 group card-lift animate-pop-in"
+                style={{ animationDelay: `${i * 100}ms` }}
               >
                 <img 
                   src={collection.image} 

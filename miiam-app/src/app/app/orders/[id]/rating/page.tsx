@@ -4,6 +4,94 @@ import { useState, useEffect } from "react";
 import { useRouter, use } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
+function AnimatedStarRating({ 
+  rating, 
+  hover, 
+  setHover, 
+  setRating, 
+  label 
+}: { 
+  rating: number; 
+  hover: number; 
+  setHover: (v: number) => void; 
+  setRating: (v: number) => void;
+  label: string;
+}) {
+  return (
+    <div className="flex flex-col items-center gap-4">
+      {label && (
+        <div className="text-center">
+          <h2 className="text-xl font-bold tracking-tight">{label}</h2>
+        </div>
+      )}
+      <div className="flex gap-2">
+        {[1, 2, 3, 4, 5].map((star) => {
+          const isActive = star <= (hover || rating);
+          return (
+            <button
+              key={star}
+              onMouseEnter={() => setHover(star)}
+              onMouseLeave={() => setHover(0)}
+              onClick={() => {
+                setRating(star);
+                if (typeof navigator !== "undefined" && navigator.vibrate) {
+                  navigator.vibrate(20);
+                }
+              }}
+              className="transition-transform hover:scale-110 active:scale-95"
+            >
+              <span
+                className={`material-symbols-outlined text-5xl transition-all duration-300 ${
+                  isActive ? "text-[#ba001c]" : "text-[#dd9ca6]"
+                } ${hover === star ? "scale-110" : ""}`}
+                style={{ 
+                  fontVariationSettings: `'FILL' ${isActive ? 1 : 0}`,
+                  filter: isActive ? "drop-shadow(0 0 8px rgba(186, 0, 28, 0.5))" : "none",
+                }}
+              >
+                star
+              </span>
+            </button>
+          );
+        })}
+      </div>
+      {rating > 0 && (
+        <p className="text-sm text-[#ba001c] font-bold animate-fade-in">
+          {rating === 5 ? "🌟 Excellent!" : rating >= 4 ? "⭐ Great!" : rating >= 3 ? "👍 Good" : "💫 Okay"}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function Confetti() {
+  return (
+    <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
+      {Array.from({ length: 30 }).map((_, i) => (
+        <div
+          key={i}
+          className="absolute top-0"
+          style={{
+            left: `${Math.random() * 100}%`,
+            animationDelay: `${Math.random() * 0.5}s`,
+            animation: `confetti-fall 3s ease-out forwards`,
+          }}
+        >
+          <div
+            className="rounded-full"
+            style={{
+              width: Math.random() * 8 + 4,
+              height: Math.random() * 8 + 4,
+              backgroundColor: ["#ba001c", "#ff7670", "#ffd200", "#0b50d5", "#38ef7d"][i % 5],
+              animation: `confetti-spin 1.5s linear infinite`,
+            }}
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 const feedbackTags = [
   "Fast Delivery",
   "Friendly Rider",
@@ -81,7 +169,10 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
       await supabase.from("orders").update({ rating_submitted: true }).eq("id", id);
 
       setSubmitted(true);
-      setTimeout(() => router.push("/app/orders"), 2000);
+      if (typeof navigator !== "undefined" && navigator.vibrate) {
+        navigator.vibrate([50, 30, 100]);
+      }
+      setTimeout(() => router.push("/app/orders"), 2500);
     } catch (err) {
       console.error("Error submitting rating:", err);
     }
@@ -103,15 +194,23 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center p-6">
-        <div className="text-center">
-          <div className="w-24 h-24 bg-[#c4d0ff] rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse">
-            <span className="material-symbols-outlined text-[#0b50d5] text-5xl" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+      <>
+        <Confetti />
+        <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center p-6">
+          <div className="text-center animate-bounce-in">
+            <div className="w-32 h-32 bg-gradient-to-br from-[#ba001c] to-[#ff7670] rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-[#ba001c]/30">
+              <span className="material-symbols-outlined text-white text-6xl" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
+            </div>
+            <h2 className="text-3xl font-extrabold text-[#4d212a] mb-2">Thanks for rating! 💖</h2>
+            <p className="text-[#814c55] font-medium">Your feedback helps us serve you better</p>
+            <div className="mt-8 flex justify-center gap-4">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <span key={i} className="text-2xl animate-bounce-in" style={{ animationDelay: `${i * 0.1}s` }}>⭐</span>
+              ))}
+            </div>
           </div>
-          <h2 className="text-3xl font-extrabold text-[#4d212a] mb-2">Thank You!</h2>
-          <p className="text-[#814c55]">Your feedback helps us improve.</p>
         </div>
-      </div>
+      </>
     );
   }
 
@@ -138,39 +237,13 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
         </section>
 
         <section className="bg-white rounded-xl p-8 shadow-[0px_20px_40px_rgba(77,33,42,0.04)] space-y-6">
-          <div className="flex flex-col items-center gap-4">
-            <div className="w-24 h-24 rounded-full overflow-hidden bg-[#ffe1e4]">
-              <img 
-                alt="Restaurant" 
-                className="w-full h-full object-cover" 
-                src={order?.vendor?.image_url || "https://via.placeholder.com/100"} 
-              />
-            </div>
-            <div className="text-center">
-              <h2 className="text-xl font-bold tracking-tight">{order?.vendor?.name || "Restaurant"}</h2>
-              <p className="text-sm text-[#814c55]">Rate Food & Packaging</p>
-            </div>
-            <div className="flex gap-2">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <button
-                  key={star}
-                  onMouseEnter={() => setHoverFood(star)}
-                  onMouseLeave={() => setHoverFood(0)}
-                  onClick={() => setFoodRating(star)}
-                  className="transition-transform hover:scale-110 active:scale-95"
-                >
-                  <span
-                    className={`material-symbols-outlined text-4xl ${
-                      star <= (hoverFood || foodRating) ? "text-[#ba001c]" : "text-[#dd9ca6]"
-                    }`}
-                    style={{ fontVariationSettings: `'FILL' ${star <= (hoverFood || foodRating) ? 1 : 0}` }}
-                  >
-                    star
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
+          <AnimatedStarRating
+            rating={foodRating}
+            hover={hoverFood}
+            setHover={setHoverFood}
+            setRating={setFoodRating}
+            label={order?.vendor?.name || "Restaurant"}
+          />
         </section>
 
         <section className="bg-white rounded-xl p-8 shadow-[0px_20px_40px_rgba(77,33,42,0.04)] space-y-6">
@@ -187,31 +260,14 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
                 <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>electric_moped</span>
               </div>
             </div>
-            <div className="text-center">
-              <h2 className="text-xl font-bold tracking-tight">{order?.rider?.name || "Delivery Partner"}</h2>
-              <p className="text-sm text-[#814c55]">Rate Delivery Service</p>
-            </div>
-            <div className="flex gap-2">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <button
-                  key={star}
-                  onMouseEnter={() => setHoverRider(star)}
-                  onMouseLeave={() => setHoverRider(0)}
-                  onClick={() => setRiderRating(star)}
-                  className="transition-transform hover:scale-110 active:scale-95"
-                >
-                  <span
-                    className={`material-symbols-outlined text-3xl ${
-                      star <= (hoverRider || riderRating) ? "text-[#ba001c]" : "text-[#dd9ca6]"
-                    }`}
-                    style={{ fontVariationSettings: `'FILL' ${star <= (hoverRider || riderRating) ? 1 : 0}` }}
-                  >
-                    star
-                  </span>
-                </button>
-              ))}
-            </div>
+            <p className="text-sm text-[#814c55]">Rate Delivery Service</p>
           </div>
+          <AnimatedStarRating
+            rating={riderRating}
+            hover={hoverRider}
+            setHover={setHoverRider}
+            setRating={setRiderRating}
+          />
         </section>
 
         <section className="space-y-4">

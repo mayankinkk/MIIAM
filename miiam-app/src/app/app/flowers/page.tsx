@@ -89,8 +89,8 @@ export default function FlowersPage() {
     if (quantity === 0) {
       return (
         <button 
-          onClick={() => addToCart(flower)}
-          className="w-8 h-8 bg-[#ba001c] text-white rounded-full flex items-center justify-center hover:scale-110 transition-transform"
+          onClick={() => { addToCart(flower); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }}
+          className="w-8 h-8 bg-[#ba001c] text-white rounded-full flex items-center justify-center hover:scale-110 active:scale-90 transition-all animate-glow-pulse"
         >
           <span className="material-symbols-outlined text-lg">add</span>
         </button>
@@ -98,17 +98,17 @@ export default function FlowersPage() {
     }
     
     return (
-      <div className="flex items-center gap-2 bg-[#ba001c] rounded-full px-2">
+      <div className="flex items-center gap-2 bg-[#ba001c] rounded-full px-2 animate-cart-pop">
         <button 
-          onClick={() => updateQuantity(flower.id, quantity - 1)}
-          className="w-6 h-6 text-white flex items-center justify-center hover:scale-110 transition-transform"
+          onClick={() => { updateQuantity(flower.id, quantity - 1); if (navigator.vibrate) navigator.vibrate(10); }}
+          className="w-6 h-6 text-white flex items-center justify-center hover:scale-110 active:scale-90 transition-transform"
         >
           <span className="material-symbols-outlined text-lg">remove</span>
         </button>
         <span className="text-white font-bold text-sm min-w-[20px] text-center">{quantity}</span>
         <button 
-          onClick={() => addToCart(flower)}
-          className="w-6 h-6 text-white flex items-center justify-center hover:scale-110 transition-transform"
+          onClick={() => { addToCart(flower); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }}
+          className="w-6 h-6 text-white flex items-center justify-center hover:scale-110 active:scale-90 transition-transform"
         >
           <span className="material-symbols-outlined text-lg">add</span>
         </button>
@@ -151,20 +151,21 @@ export default function FlowersPage() {
       <div className="bg-white px-6 py-4">
         <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
           <button
-            onClick={() => setSelectedCategory("all")}
+            onClick={() => { setSelectedCategory("all"); if (navigator.vibrate) navigator.vibrate(10); }}
             className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap ${
               selectedCategory === "all" ? "bg-[#ba001c] text-white" : "bg-slate-100 text-slate-600"
-            }`}
+            } active:scale-95 transition-all`}
           >
             All
           </button>
-          {flowerCategories.map((cat) => (
+          {flowerCategories.map((cat, i) => (
             <button
               key={cat.id}
-              onClick={() => setSelectedCategory(cat.id.replace(" ", ""))}
+              onClick={() => { setSelectedCategory(cat.id.replace(" ", "")); if (navigator.vibrate) navigator.vibrate(10); }}
               className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap flex items-center gap-2 ${
                 selectedCategory === cat.id.replace(" ", "") ? "bg-[#ba001c] text-white" : "bg-slate-100 text-slate-600"
-              }`}
+              } active:scale-95 transition-all animate-category-slide`}
+              style={{ animationDelay: `${i * 50}ms` }}
             >
               <span>{cat.icon}</span> {cat.name}
             </button>
@@ -180,14 +181,14 @@ export default function FlowersPage() {
           <div className="text-center py-8 text-slate-500">No flowers found</div>
         ) : (
           <div className="grid grid-cols-2 gap-4">
-            {filteredFlowers.map((flower: any) => (
-              <div key={flower.id} className="bg-white rounded-2xl overflow-hidden shadow-sm">
+            {filteredFlowers.map((flower: any, index) => (
+              <div key={flower.id} className="bg-white rounded-2xl overflow-hidden shadow-sm card-lift animate-pop-in" style={{ animationDelay: `${Math.min(index * 80, 500)}ms` }}>
                 <img src={flower.image_url || flower.image} alt={flower.name} className="w-full h-32 object-cover" />
                 <div className="p-3">
                   <p className="font-bold text-slate-800 text-sm">{flower.name}</p>
                   <p className="text-xs text-slate-500">{flower.description}</p>
                   <div className="flex items-center justify-between mt-2">
-                    <span className="font-black text-[#ba001c]">₹{flower.price}</span>
+                    <span className="font-black text-[#ba001c] animate-price-tag">₹{flower.price}</span>
                     <FlowerAddButton flower={flower} />
                   </div>
                 </div>
@@ -200,7 +201,7 @@ export default function FlowersPage() {
       {totalItems() > 0 && (
         <Link
           href="/app/cart"
-          className="fixed bottom-6 left-4 right-4 z-50 flex items-center justify-between bg-[#ba001c] text-white px-5 py-4 rounded-2xl shadow-2xl shadow-[#ba001c]/40"
+          className="fixed bottom-6 left-4 right-4 z-50 flex items-center justify-between bg-[#ba001c] text-white px-5 py-4 rounded-2xl shadow-2xl shadow-[#ba001c]/40 active:scale-[0.98] transition-transform animate-slide-reveal"
         >
           <div className="flex items-center gap-3">
             <span className="bg-white text-[#ba001c] font-black text-xs px-2 py-0.5 rounded-full">

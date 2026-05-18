@@ -54,8 +54,8 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
   const canProceed = selectedDate && selectedSlot;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 backdrop-blur-sm">
-      <div className="bg-white w-full max-w-lg rounded-t-3xl shadow-2xl p-6 pb-10 max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 backdrop-blur-sm animate-fade-in">
+      <div className="bg-white w-full max-w-lg rounded-t-3xl shadow-2xl p-6 pb-10 max-h-[90vh] overflow-y-auto animate-slide-reveal">
         {/* Handle */}
         <div className="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-5" />
 
@@ -76,8 +76,8 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
               {dateOptions.map((d) => (
                 <button
                   key={d.value}
-                  onClick={() => setSelectedDate(d.value)}
-                  className={`px-4 py-2 rounded-xl text-sm font-bold border-2 transition-all ${
+                  onClick={() => { setSelectedDate(d.value); if (navigator.vibrate) navigator.vibrate(10); }}
+                  className={`px-4 py-2 rounded-xl text-sm font-bold border-2 transition-all hover:scale-105 active:scale-95 ${
                     selectedDate === d.value
                       ? "bg-[#ba001c] text-white border-[#ba001c]"
                       : "border-slate-200 text-slate-600 hover:border-[#ba001c]"
@@ -93,8 +93,8 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
               {timeSlots.map((slot) => (
                 <button
                   key={slot}
-                  onClick={() => setSelectedSlot(slot)}
-                  className={`p-3 rounded-xl text-xs font-bold border-2 transition-all text-left ${
+                  onClick={() => { setSelectedSlot(slot); if (navigator.vibrate) navigator.vibrate(10); }}
+                  className={`p-3 rounded-xl text-xs font-bold border-2 transition-all text-left hover:scale-[1.02] active:scale-[0.98] ${
                     selectedSlot === slot
                       ? "bg-[#ba001c] text-white border-[#ba001c]"
                       : "border-slate-200 text-slate-600 hover:border-[#ba001c]"
@@ -116,12 +116,12 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
 
             <button
               disabled={!canProceed}
-              onClick={() => setStep("confirm")}
-              className="w-full bg-[#ba001c] text-white py-4 rounded-2xl font-bold text-base disabled:opacity-40 hover:bg-[#a40017] transition-colors"
+              onClick={() => { setStep("confirm"); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }}
+              className="w-full bg-[#ba001c] text-white py-4 rounded-2xl font-bold text-base disabled:opacity-40 hover:bg-[#a40017] transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
               Review Booking
             </button>
-            <button onClick={onClose} className="w-full mt-3 py-3 text-slate-500 font-semibold text-sm">
+            <button onClick={() => { onClose(); if (navigator.vibrate) navigator.vibrate(10); }} className="w-full mt-3 py-3 text-slate-500 font-semibold text-sm hover:text-slate-700 transition-colors">
               Cancel
             </button>
           </>
@@ -161,20 +161,20 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
               <p className="text-xs text-blue-700">A professional will arrive at your location. Payment can be done after service completion.</p>
             </div>
             <button
-              onClick={() => setStep("done")}
-              className="w-full bg-[#ba001c] text-white py-4 rounded-2xl font-bold text-base hover:bg-[#a40017] transition-colors"
+              onClick={() => { setStep("done"); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }}
+              className="w-full bg-[#ba001c] text-white py-4 rounded-2xl font-bold text-base hover:bg-[#a40017] transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
               Confirm &amp; Book
             </button>
-            <button onClick={() => setStep("pick")} className="w-full mt-3 py-3 text-slate-500 font-semibold text-sm">
+            <button onClick={() => { setStep("pick"); if (navigator.vibrate) navigator.vibrate(10); }} className="w-full mt-3 py-3 text-slate-500 font-semibold text-sm hover:text-slate-700 transition-colors">
               Go Back
             </button>
           </>
         )}
 
         {step === "done" && (
-          <div className="text-center py-8">
-            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="text-center py-8 animate-pop-in">
+            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
               <span className="material-symbols-outlined text-green-600 text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
             </div>
             <h2 className="font-black text-2xl text-slate-800 mb-2">Booking Confirmed!</h2>
@@ -185,8 +185,8 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
             <p className="text-slate-600 font-semibold mb-6">{selectedSlot}</p>
             <p className="text-sm text-slate-500 mb-8">You will receive a confirmation shortly. Our professional will arrive on time.</p>
             <button
-              onClick={onClose}
-              className="w-full bg-[#ba001c] text-white py-4 rounded-2xl font-bold text-base hover:bg-[#a40017] transition-colors"
+              onClick={() => { onClose(); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }}
+              className="w-full bg-[#ba001c] text-white py-4 rounded-2xl font-bold text-base hover:bg-[#a40017] transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
               Done
             </button>
@@ -654,20 +654,21 @@ function ServicesContent() {
       <div className="px-4 py-4">
         <div className="flex gap-3 overflow-x-auto no-scrollbar">
           <button
-            onClick={() => setSelectedCategory("all")}
-            className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap ${
+            onClick={() => { setSelectedCategory("all"); if (navigator.vibrate) navigator.vibrate(10); }}
+            className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap active:scale-95 transition-all ${
               selectedCategory === "all" ? "bg-[#ba001c] text-white" : "bg-white text-gray-600 border border-gray-200"
             }`}
           >
             All
           </button>
-          {serviceCategories.map((cat) => (
+          {serviceCategories.map((cat, i) => (
             <button
               key={cat.id}
-              onClick={() => setSelectedCategory(cat.id)}
-              className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap flex items-center gap-1 ${
+              onClick={() => { setSelectedCategory(cat.id); if (navigator.vibrate) navigator.vibrate(10); }}
+              className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap flex items-center gap-1 active:scale-95 transition-all animate-category-slide ${
                 selectedCategory === cat.id ? "bg-[#ba001c] text-white" : "bg-white text-gray-600 border border-gray-200"
               }`}
+              style={{ animationDelay: `${i * 50}ms` }}
             >
               <span className="material-symbols-outlined text-sm">{cat.icon}</span>
               {cat.name}
@@ -678,8 +679,8 @@ function ServicesContent() {
 
       {/* Services List */}
       <main className="px-4 space-y-5 pb-10">
-        {filteredServices.map((service) => (
-          <div key={service.id} className="bg-white rounded-2xl overflow-hidden shadow-[0_2px_16px_rgba(0,0,0,0.06)] border border-gray-100">
+        {filteredServices.map((service, index) => (
+          <div key={service.id} className="bg-white rounded-2xl overflow-hidden shadow-[0_2px_16px_rgba(0,0,0,0.06)] border border-gray-100 card-lift animate-pop-in" style={{ animationDelay: `${Math.min(index * 80, 500)}ms` }}>
             {/* Image with overlay badges */}
             <div className="relative h-44 overflow-hidden">
               <img
@@ -740,11 +741,11 @@ function ServicesContent() {
                   {service.originalPrice && (
                     <span className="text-sm text-gray-400 line-through mr-2">₹{service.originalPrice}</span>
                   )}
-                  <span className="font-black text-2xl text-gray-800">₹{service.price}</span>
+                  <span className="font-black text-2xl text-gray-800 animate-price-tag">₹{service.price}</span>
                 </div>
                 <button
-                  onClick={() => setBookingService(service as Service)}
-                  className="bg-[#ba001c] text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-[#a40017] active:scale-95 transition-all shadow-sm shadow-[#ba001c]/20"
+                  onClick={() => { setBookingService(service as Service); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }}
+                  className="bg-[#ba001c] text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-[#a40017] active:scale-95 transition-all shadow-sm shadow-[#ba001c]/20 hover:scale-[1.02] animate-glow-pulse"
                 >
                   Book Now
                 </button>
