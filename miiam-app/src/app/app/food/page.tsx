@@ -160,20 +160,41 @@ function AddToCartButton({
 
 function CartFloater() {
   const { items, totalPrice, totalItems } = useCartStore();
+  const [showAnimation, setShowAnimation] = useState(false);
+  const [prevCount, setPrevCount] = useState(totalItems());
+  
+  useEffect(() => {
+    if (totalItems() > prevCount) {
+      setShowAnimation(true);
+      const timer = setTimeout(() => setShowAnimation(false), 500);
+      setPrevCount(totalItems());
+      return () => clearTimeout(timer);
+    }
+    setPrevCount(totalItems());
+  }, [totalItems(), prevCount]);
+  
   if (items.length === 0) return null;
   return (
     <div className="fixed bottom-6 left-4 right-4 z-50">
       <Link
         href="/app/cart"
-        className="flex items-center justify-between bg-[#ba001c] text-white px-5 py-4 rounded-2xl shadow-2xl shadow-[#ba001c]/40"
+        className="flex items-center justify-between bg-[#ba001c] text-white px-5 py-4 rounded-2xl shadow-2xl shadow-[#ba001c]/40 active:scale-[0.98] transition-transform"
       >
         <div className="flex items-center gap-3">
-          <span className="bg-white text-[#ba001c] font-black text-xs px-2 py-0.5 rounded-full">
-            {totalItems()}
-          </span>
+          <div className={`relative ${showAnimation ? "animate-bounce-sm" : ""}`}>
+            <span className="bg-white text-[#ba001c] font-black text-xs px-2 py-0.5 rounded-full">
+              {totalItems()}
+            </span>
+            {showAnimation && (
+              <span className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-ping" />
+            )}
+          </div>
           <span className="font-bold">View Cart</span>
         </div>
-        <span className="font-black text-lg">₹{totalPrice().toFixed(2)}</span>
+        <div className="flex items-center gap-2">
+          <span className="font-black text-lg">₹{totalPrice().toFixed(2)}</span>
+          <span className="material-symbols-outlined text-white/80">arrow_forward</span>
+        </div>
       </Link>
     </div>
   );

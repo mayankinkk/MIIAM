@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import PullToRefresh from "@/components/PullToRefresh";
 import QuickActionsFAB from "@/components/QuickActionsFAB";
+import { useCartStore } from "@/lib/store/cartStore";
 
 const categories = [
   { id: "all", icon: "apps", label: "All" },
@@ -34,6 +35,19 @@ export default function ExplorePage() {
   const [activeCategory, setActiveCategory] = useState("all");
   const scrollRef = useRef<HTMLDivElement>(null);
   const [refreshKey, setRefreshKey] = useState(0);
+  const { totalItems } = useCartStore();
+  const [cartBounce, setCartBounce] = useState(false);
+  const [prevCartCount, setPrevCartCount] = useState(0);
+
+  useEffect(() => {
+    const count = totalItems();
+    if (count > prevCartCount && count > 0) {
+      setCartBounce(true);
+      const timer = setTimeout(() => setCartBounce(false), 500);
+      return () => clearTimeout(timer);
+    }
+    setPrevCartCount(count);
+  }, [totalItems(), prevCartCount]);
 
   const handleRefresh = async () => {
     await new Promise(resolve => setTimeout(resolve, 1500));
@@ -60,23 +74,46 @@ export default function ExplorePage() {
       <PullToRefresh onRefresh={handleRefresh} className="pb-24">
         {/* Header */}
         <header className="bg-white px-6 pt-8 pb-4">
-        <h1 className="text-3xl font-black text-[#4d212a] mb-2">Explore</h1>
-        <p className="text-slate-500 mb-6">Discover everything MIIAM has to offer</p>
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h1 className="text-3xl font-black text-[#4d212a]">Explore</h1>
+              <p className="text-slate-500">Discover everything MIIAM has to offer</p>
+            </div>
+            <div className="flex items-center gap-3">
+              {/* Cart with animated badge */}
+              <Link 
+                href="/app/cart" 
+                className={`relative p-2 bg-slate-100 rounded-full hover:bg-slate-200 transition-colors ${cartBounce ? "animate-bounce-sm" : ""}`}
+              >
+                <span className="material-symbols-outlined text-2xl text-slate-700">shopping_cart</span>
+                {totalItems() > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-[#ba001c] text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center animate-bounce-in">
+                    {totalItems()}
+                  </span>
+                )}
+              </Link>
+              {/* Notifications */}
+              <Link href="/app/notifications" className="p-2 bg-slate-100 rounded-full hover:bg-slate-200 transition-colors relative">
+                <span className="material-symbols-outlined text-2xl text-slate-700">notifications</span>
+                <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+              </Link>
+            </div>
+          </div>
 
-        {/* Search */}
-        <div className="relative">
-          <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search for anything..."
-            className="w-full pl-12 pr-4 py-4 bg-slate-100 rounded-2xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
-          />
-        </div>
-      </header>
+          {/* Search */}
+          <div className="relative">
+            <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search for anything..."
+              className="w-full pl-12 pr-4 py-4 bg-slate-100 rounded-2xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+            />
+          </div>
+        </header>
 
-      <main className="space-y-8">
+        <main className="space-y-8">
         {/* Swipeable Category Tabs */}
         <section className="sticky top-0 z-20 bg-white/80 backdrop-blur-xl border-b border-slate-100">
           <div 
