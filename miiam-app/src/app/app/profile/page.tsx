@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { useHapticStore } from "@/components/HapticFeedback";
 
 const menuItems = [
   { id: "orders", icon: "receipt_long", label: "My Orders", sub: "View all orders", color: "text-blue-500", bg: "bg-blue-50" },
@@ -14,6 +15,7 @@ const menuItems = [
   { id: "subscription", icon: "workspace_premium", label: "MIIAM+", sub: "Premium membership", color: "text-amber-500", bg: "bg-amber-50", badge: "ACTIVE" },
   { id: "support", icon: "support_agent", label: "Help & Support", sub: "24/7 customer care", color: "text-indigo-500", bg: "bg-indigo-50" },
   { id: "settings", icon: "settings", label: "Settings", sub: "App preferences", color: "text-slate-500", bg: "bg-slate-50" },
+  { id: "haptic", icon: "vibration", label: "Haptic Feedback", sub: "Vibration settings", color: "text-cyan-500", bg: "bg-cyan-50", special: true },
 ];
 
 export default function EnhancedProfilePage() {
@@ -21,6 +23,8 @@ export default function EnhancedProfilePage() {
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
   const [stats, setStats] = useState({ orders: 0, reviews: 0, saved: 0 });
+  const [showHapticSettings, setShowHapticSettings] = useState(false);
+  const { settings, updateSetting, triggerHaptic } = useHapticStore();
 
   useEffect(() => {
     async function loadUserAndProfile() {
@@ -186,18 +190,129 @@ export default function EnhancedProfilePage() {
         {/* Settings Section */}
         <div className="space-y-2">
           {menuItems.slice(8).map((item) => (
-            <Link key={item.id} href={`/app/${item.id}`} className="block bg-white rounded-2xl p-4 flex items-center gap-4 hover:shadow-md transition-shadow">
-              <div className={`w-12 h-12 rounded-xl ${item.bg} flex items-center justify-center`}>
-                <span className={`material-symbols-outlined ${item.color}`}>{item.icon}</span>
-              </div>
-              <div className="flex-1">
-                <p className="font-bold text-slate-800">{item.label}</p>
-                <p className="text-xs text-slate-500">{item.sub}</p>
-              </div>
-              <span className="material-symbols-outlined text-slate-300">chevron_right</span>
-            </Link>
+            item.special ? (
+              <button 
+                key={item.id}
+                onClick={() => {
+                  triggerHaptic("medium");
+                  setShowHapticSettings(!showHapticSettings);
+                }}
+                className="w-full bg-white rounded-2xl p-4 flex items-center gap-4 hover:shadow-md transition-shadow"
+              >
+                <div className={`w-12 h-12 rounded-xl ${item.bg} flex items-center justify-center`}>
+                  <span className={`material-symbols-outlined ${item.color}`}>{item.icon}</span>
+                </div>
+                <div className="flex-1 text-left">
+                  <p className="font-bold text-slate-800">{item.label}</p>
+                  <p className="text-xs text-slate-500">{item.sub}</p>
+                </div>
+                <span className={`material-symbols-outlined text-slate-300 transition-transform ${showHapticSettings ? "rotate-180" : ""}`}>expand_more</span>
+              </button>
+            ) : (
+              <Link key={item.id} href={`/app/${item.id}`} className="block bg-white rounded-2xl p-4 flex items-center gap-4 hover:shadow-md transition-shadow">
+                <div className={`w-12 h-12 rounded-xl ${item.bg} flex items-center justify-center`}>
+                  <span className={`material-symbols-outlined ${item.color}`}>{item.icon}</span>
+                </div>
+                <div className="flex-1">
+                  <p className="font-bold text-slate-800">{item.label}</p>
+                  <p className="text-xs text-slate-500">{item.sub}</p>
+                </div>
+                <span className="material-symbols-outlined text-slate-300">chevron_right</span>
+              </Link>
+            )
           ))}
         </div>
+
+        {/* Haptic Feedback Settings Panel */}
+        {showHapticSettings && (
+          <div className="bg-white rounded-2xl p-4 space-y-2 animate-fade-in">
+            <div className="flex items-center gap-3 mb-4 pb-3 border-b border-slate-100">
+              <span className="material-symbols-outlined text-[#ba001c]">vibration</span>
+              <p className="font-bold text-slate-800">Haptic Feedback Settings</p>
+            </div>
+            
+            <button
+              onClick={() => updateSetting("enabled", !settings.enabled)}
+              className="w-full flex items-center justify-between py-3 hover:bg-slate-50 rounded-xl px-2 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-cyan-50 flex items-center justify-center">
+                  <span className="material-symbols-outlined text-cyan-500">power_settings_new</span>
+                </div>
+                <div className="text-left">
+                  <p className="font-semibold text-slate-800">Enable Haptics</p>
+                  <p className="text-xs text-slate-500">Master toggle for all vibrations</p>
+                </div>
+              </div>
+              <div className={`w-12 h-7 rounded-full relative transition-colors ${settings.enabled ? "bg-[#ba001c]" : "bg-slate-300"}`}>
+                <div className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow-md transition-all ${settings.enabled ? "left-6" : "left-1"}`} />
+              </div>
+            </button>
+
+            <button
+              onClick={() => {
+                if (settings.enabled) triggerHaptic("light");
+                updateSetting("light", !settings.light);
+              }}
+              className="w-full flex items-center justify-between py-3 hover:bg-slate-50 rounded-xl px-2 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center">
+                  <span className="material-symbols-outlined text-green-500 text-lg">circle</span>
+                </div>
+                <div className="text-left">
+                  <p className="font-semibold text-slate-800">Light Tap</p>
+                  <p className="text-xs text-slate-500">Brief feedback (10ms)</p>
+                </div>
+              </div>
+              <div className={`w-12 h-7 rounded-full relative transition-colors ${settings.light ? "bg-[#ba001c]" : "bg-slate-300"}`}>
+                <div className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow-md transition-all ${settings.light ? "left-6" : "left-1"}`} />
+              </div>
+            </button>
+
+            <button
+              onClick={() => {
+                if (settings.enabled) triggerHaptic("medium");
+                updateSetting("medium", !settings.medium);
+              }}
+              className="w-full flex items-center justify-between py-3 hover:bg-slate-50 rounded-xl px-2 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center">
+                  <span className="material-symbols-outlined text-amber-500 text-lg">radio_button_checked</span>
+                </div>
+                <div className="text-left">
+                  <p className="font-semibold text-slate-800">Medium Tap</p>
+                  <p className="text-xs text-slate-500">Standard feedback (25ms)</p>
+                </div>
+              </div>
+              <div className={`w-12 h-7 rounded-full relative transition-colors ${settings.medium ? "bg-[#ba001c]" : "bg-slate-300"}`}>
+                <div className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow-md transition-all ${settings.medium ? "left-6" : "left-1"}`} />
+              </div>
+            </button>
+
+            <button
+              onClick={() => {
+                if (settings.enabled) triggerHaptic("heavy");
+                updateSetting("heavy", !settings.heavy);
+              }}
+              className="w-full flex items-center justify-between py-3 hover:bg-slate-50 rounded-xl px-2 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center">
+                  <span className="material-symbols-outlined text-red-500 text-lg">lens</span>
+                </div>
+                <div className="text-left">
+                  <p className="font-semibold text-slate-800">Heavy Tap</p>
+                  <p className="text-xs text-slate-500">Strong feedback (150ms)</p>
+                </div>
+              </div>
+              <div className={`w-12 h-7 rounded-full relative transition-colors ${settings.heavy ? "bg-[#ba001c]" : "bg-slate-300"}`}>
+                <div className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow-md transition-all ${settings.heavy ? "left-6" : "left-1"}`} />
+              </div>
+            </button>
+          </div>
+        )}
 
         {/* Logout */}
         <button 
