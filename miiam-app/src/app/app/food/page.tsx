@@ -85,6 +85,18 @@ function AddToCartButton({
   const qty = cartItem?.quantity ?? 0;
   const cartVendorId = items.length > 0 ? items[0].vendor_id : null;
   const isDifferentVendor = cartVendorId && cartVendorId !== restaurant.id;
+  const [bouncing, setBouncing] = useState(false);
+  const [prevQty, setPrevQty] = useState(qty);
+
+  useEffect(() => {
+    if (qty > prevQty) {
+      setBouncing(true);
+      const timer = setTimeout(() => setBouncing(false), 500);
+      setPrevQty(qty);
+      return () => clearTimeout(timer);
+    }
+    setPrevQty(qty);
+  }, [qty, prevQty]);
 
   const handleAdd = () => {
     if (isDifferentVendor && confirm(`Your cart has items from another restaurant. Adding this will create separate orders. Continue?`)) {
@@ -116,7 +128,9 @@ function AddToCartButton({
     return (
       <button
         onClick={handleAdd}
-        className="px-4 py-1.5 bg-[#ba001c] text-white text-xs font-bold rounded-full hover:bg-[#a40017] active:scale-95 transition-all"
+        className={`px-4 py-1.5 bg-[#ba001c] text-white text-xs font-bold rounded-full hover:bg-[#a40017] active:scale-95 transition-all ${
+          bouncing ? "animate-bounce shadow-lg shadow-[#ba001c]/40" : ""
+        }`}
       >
         Add +
       </button>
@@ -124,17 +138,17 @@ function AddToCartButton({
   }
 
   return (
-      <div className="flex items-center gap-1.5 bg-[#ba001c] rounded-full px-2 py-1">
+      <div className={`flex items-center gap-1.5 bg-[#ba001c] rounded-full px-2 py-1 transition-all ${bouncing ? "scale-125 shadow-lg shadow-[#ba001c]/40" : ""}`}>
       <button
         onClick={() => updateQuantity(item.id, qty - 1)}
-        className="text-white font-bold w-5 h-5 flex items-center justify-center"
+        className="text-white font-bold w-5 h-5 flex items-center justify-center active:scale-75 transition-transform"
       >
         −
       </button>
       <span className="text-white font-bold text-xs min-w-[16px] text-center">{qty}</span>
       <button
         onClick={handleAdd}
-        className="text-white font-bold w-5 h-5 flex items-center justify-center"
+        className="text-white font-bold w-5 h-5 flex items-center justify-center active:scale-125 transition-transform"
       >
         +
       </button>
