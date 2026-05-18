@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import Link from "next/link";
+import PullToRefresh from "@/components/PullToRefresh";
 
 const categories = [
   { id: "all", icon: "apps", label: "All" },
@@ -31,6 +32,12 @@ export default function ExplorePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const handleRefresh = async () => {
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    setRefreshKey(k => k + 1);
+  };
 
   const colorMap: Record<string, string> = {
     all: "bg-slate-100 text-slate-600",
@@ -48,9 +55,10 @@ export default function ExplorePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fff4f4] pb-24">
-      {/* Header */}
-      <header className="bg-white px-6 pt-8 pb-4">
+    <div className="min-h-screen bg-[#fff4f4]">
+      <PullToRefresh onRefresh={handleRefresh} className="pb-24">
+        {/* Header */}
+        <header className="bg-white px-6 pt-8 pb-4">
         <h1 className="text-3xl font-black text-[#4d212a] mb-2">Explore</h1>
         <p className="text-slate-500 mb-6">Discover everything MIIAM has to offer</p>
 
@@ -204,7 +212,8 @@ export default function ExplorePage() {
             </button>
           </div>
         </div>
-      </main>
+        </main>
+      </PullToRefresh>
     </div>
   );
 }

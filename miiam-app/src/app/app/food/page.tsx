@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useServiceSettingsStore } from "@/lib/store/serviceSettingsStore";
 import ServiceUnavailable from "@/components/ServiceUnavailable";
+import PullToRefresh from "@/components/PullToRefresh";
 import { createClient } from "@/lib/supabase/client";
 
 const supabase = createClient();
@@ -195,11 +196,9 @@ export default function FoodPage() {
     return <ServiceUnavailable serviceName="Food Delivery" message={foodSetting.message} icon="restaurant" />;
   }
 
-  useEffect(() => {
-    fetchData();
-    const saved = localStorage.getItem("miiam-favorites");
-    if (saved) setFavorites(new Set(JSON.parse(saved)));
-  }, []);
+  const handleRefresh = async () => {
+    await fetchData();
+  };
 
   const fetchData = async () => {
     setLoading(true);
@@ -218,6 +217,12 @@ export default function FoodPage() {
     }
     setLoading(false);
   };
+
+  useEffect(() => {
+    fetchData();
+    const saved = localStorage.getItem("miiam-favorites");
+    if (saved) setFavorites(new Set(JSON.parse(saved)));
+  }, []);
 
   const toggleFavorite = (id: string) => {
     const newFavs = new Set(favorites);
@@ -251,7 +256,7 @@ export default function FoodPage() {
       : sortedRestaurants.filter((r) => r.cuisine?.toLowerCase() === selectedCategory);
 
   return (
-    <div className="min-h-screen bg-[#fff4f4] pb-32">
+    <PullToRefresh onRefresh={handleRefresh} className="min-h-screen bg-[#fff4f4]">
       <header className="bg-white px-6 py-4 sticky top-0 z-10 shadow-sm">
         <div className="flex items-center justify-between mb-4">
           <Link href="/app/explore" className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
@@ -353,7 +358,7 @@ export default function FoodPage() {
                         </div>
                         <AddToCartButton item={item} restaurant={restaurant} />
                       </div>
-                    ))
+))
                   )}
                 </div>
               )}
@@ -363,6 +368,6 @@ export default function FoodPage() {
       </main>
 
       <CartFloater />
-    </div>
-  );
-}
+      </PullToRefresh>
+    );
+  }
