@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import Link from "next/link";
 import PullToRefresh from "@/components/PullToRefresh";
+import QuickActionsFAB from "@/components/QuickActionsFAB";
 
 const categories = [
   { id: "all", icon: "apps", label: "All" },
@@ -214,6 +215,8 @@ export default function ExplorePage() {
         </div>
         </main>
       </PullToRefresh>
+      
+      <QuickActionsFAB />
     </div>
   );
 }

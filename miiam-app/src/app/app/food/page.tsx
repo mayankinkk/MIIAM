@@ -7,6 +7,7 @@ import { useCartStore } from "@/lib/store/cartStore";
 import { useServiceSettingsStore } from "@/lib/store/serviceSettingsStore";
 import ServiceUnavailable from "@/components/ServiceUnavailable";
 import PullToRefresh from "@/components/PullToRefresh";
+import QuickActionsFAB from "@/components/QuickActionsFAB";
 import { createClient } from "@/lib/supabase/client";
 
 const supabase = createClient();
@@ -368,6 +369,7 @@ export default function FoodPage() {
       </main>
 
       <CartFloater />
+      <QuickActionsFAB />
       </PullToRefresh>
     );
   }
