@@ -16,6 +16,60 @@ interface PromoCode {
   is_active: boolean;
 }
 
+function CouponReveal({ code, discount, onReveal }: { code: string; discount: string; onReveal: () => void }) {
+  const [revealed, setRevealed] = useState(false);
+  const [scratchProgress, setScratchProgress] = useState(0);
+
+  useEffect(() => {
+    if (revealed) {
+      const timer = setTimeout(onReveal, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [revealed, onReveal]);
+
+  return (
+    <div className="relative bg-gradient-to-br from-[#ba001c] to-[#ff7670] rounded-xl p-4 overflow-hidden cursor-pointer group">
+      {/* Scratch overlay */}
+      {!revealed && (
+        <div 
+          className="absolute inset-0 bg-gradient-to-r from-[#ff7670] to-[#ffc371] flex items-center justify-center z-10 transition-all duration-500"
+          onClick={() => setRevealed(true)}
+          onMouseMove={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width) * 100;
+            setScratchProgress(Math.min(x, 100));
+            if (x > 60) setRevealed(true);
+          }}
+        >
+          <div className="text-center">
+            <span className="text-4xl mb-2 block">🎁</span>
+            <p className="text-white font-bold text-sm">Scratch to reveal!</p>
+          </div>
+          {/* Scratch progress overlay */}
+          <div 
+            className="absolute inset-0 bg-gradient-to-r from-[#ba001c] to-[#ff5f6d] transition-all duration-100"
+            style={{ clipPath: `polygon(0 0, ${scratchProgress}% 0, ${scratchProgress}% 100%, 0 100%)` }}
+          />
+        </div>
+      )}
+      
+      {/* Revealed content */}
+      {revealed && (
+        <div className="flex items-center gap-4 animate-fade-in">
+          <div className="bg-white/20 rounded-xl p-3">
+            <span className="text-3xl">🏷️</span>
+          </div>
+          <div>
+            <p className="text-white/80 text-xs font-bold uppercase tracking-widest">Revealed!</p>
+            <p className="text-white font-black text-2xl">{code}</p>
+            <p className="text-white/90 text-sm font-semibold">{discount} off your order!</p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function CheckoutPage() {
   const [promoCodes, setPromoCodes] = useState<PromoCode[]>([]);
   const [paymentMethod, setPaymentMethod] = useState("card");
@@ -649,6 +703,24 @@ export default function CheckoutPage() {
                   </div>
                 </div>
               </div>
+
+              {/* Hidden Coupon Reveal Animation */}
+              {!promoApplied && (
+                <div className="mb-6">
+                  <p className="text-xs font-bold text-[#814c55] uppercase tracking-widest mb-3 flex items-center gap-2">
+                    <span className="material-symbols-outlined text-base animate-pulse">auto_awesome</span>
+                    Exclusive for you
+                  </p>
+                  <CouponReveal
+                    code="MIIAM50"
+                    discount="₹50"
+                    onReveal={() => {
+                      setPromoCode("MIIAM50");
+                      addToast("Coupon copied! Apply it below.", "info");
+                    }}
+                  />
+                </div>
+              )}
 
               {/* Promo Code */}
               <div className="mb-8">

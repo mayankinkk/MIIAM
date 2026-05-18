@@ -332,6 +332,27 @@ body {
   animation: slide-in 0.3s ease-out;
 }
 
+/* Coupon reveal animations */
+@keyframes fade-in {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.coupon-shimmer {
+  background: linear-gradient(90deg, #ba001c 0%, #ff7670 25%, #ffc371 50%, #ff7670 75%, #ba001c 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s linear infinite;
+}
+
 /* Countdown ring animation */
 .countdown-ring {
   stroke-dasharray: 113;
