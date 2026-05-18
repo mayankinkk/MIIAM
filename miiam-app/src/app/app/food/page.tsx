@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/lib/store/cartStore";
@@ -33,12 +33,12 @@ function SortDropdown({ sort, setSort }: { sort: SortOption; setSort: (s: SortOp
   ];
   return (
     <div className="relative">
-      <button onClick={() => setOpen(!open)} className="flex items-center gap-2 px-3 py-2 bg-slate-100 rounded-full text-sm font-medium">
+      <button onClick={() => { setOpen(!open); if (navigator.vibrate) navigator.vibrate(10); }} className="flex items-center gap-2 px-3 py-2 bg-slate-100 rounded-full text-sm font-medium active:scale-95 transition-transform">
         <span className="material-symbols-outlined text-sm">swap_vert</span>
         {options.find(o => o.value === sort)?.label}
       </button>
       {open && (
-        <div className="absolute top-full right-0 mt-2 bg-white rounded-xl shadow-lg border border-slate-100 z-20 min-w-[180px]">
+        <div className="absolute top-full right-0 mt-2 bg-white rounded-xl shadow-lg border border-slate-100 z-20 min-w-[180px] animate-pop-in">
           {options.map((opt) => (
             <button key={opt.value} onClick={() => { setSort(opt.value); setOpen(false); }} className={`w-full text-left px-4 py-2.5 text-sm hover:bg-slate-50 ${sort === opt.value ? "text-[#ba001c] font-bold" : "text-slate-600"}`}>
               {opt.label}
@@ -56,19 +56,19 @@ function PriceRangeFilter({ onApply }: { onApply: (min: number, max: number) => 
   const [open, setOpen] = useState(false);
   return (
     <div className="relative">
-      <button onClick={() => setOpen(!open)} className="flex items-center gap-2 px-3 py-2 bg-slate-100 rounded-full text-sm font-medium">
+      <button onClick={() => { setOpen(!open); if (navigator.vibrate) navigator.vibrate(10); }} className="flex items-center gap-2 px-3 py-2 bg-slate-100 rounded-full text-sm font-medium active:scale-95 transition-transform">
         <span className="material-symbols-outlined text-sm">attach_money</span>
         ₹{min}-{max}
       </button>
       {open && (
-        <div className="absolute top-full right-0 mt-2 bg-white rounded-xl shadow-lg border border-slate-100 z-20 p-4 min-w-[240px]">
+        <div className="absolute top-full right-0 mt-2 bg-white rounded-xl shadow-lg border border-slate-100 z-20 p-4 min-w-[240px] animate-pop-in">
           <p className="text-xs font-bold text-slate-500 mb-2">PRICE RANGE</p>
           <div className="flex gap-2 items-center">
             <input type="number" value={min} onChange={(e) => setMin(Number(e.target.value))} className="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Min" />
             <span className="text-slate-400">-</span>
             <input type="number" value={max} onChange={(e) => setMax(Number(e.target.value))} className="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Max" />
           </div>
-          <button onClick={() => { onApply(min, max); setOpen(false); }} className="w-full mt-3 py-2 bg-[#ba001c] text-white text-sm font-bold rounded-lg">Apply</button>
+          <button onClick={() => { onApply(min, max); setOpen(false); if (navigator.vibrate) navigator.vibrate(15); }} className="w-full mt-3 py-2 bg-[#ba001c] text-white text-sm font-bold rounded-lg active:scale-95 transition-transform">Apply</button>
         </div>
       )}
     </div>
@@ -303,11 +303,11 @@ export default function FoodPage() {
 
       <div className="bg-white px-6 py-4 mt-4">
         <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-          <button onClick={() => setSelectedCategory("all")} className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap ${selectedCategory === "all" ? "bg-[#ba001c] text-white" : "bg-slate-100 text-slate-600"}`}>
+          <button onClick={() => { setSelectedCategory("all"); if (navigator.vibrate) navigator.vibrate(10); }} className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap ${selectedCategory === "all" ? "bg-[#ba001c] text-white" : "bg-slate-100 text-slate-600"} active:scale-95 transition-all`}>
             🍽 All
           </button>
           {foodCategories.map((cat) => (
-            <button key={cat.id} onClick={() => setSelectedCategory(cat.id)} className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap flex items-center gap-2 ${selectedCategory === cat.id ? "bg-[#ba001c] text-white" : "bg-slate-100 text-slate-600"}`}>
+            <button key={cat.id} onClick={() => { setSelectedCategory(cat.id); if (navigator.vibrate) navigator.vibrate(10); }} className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap flex items-center gap-2 ${selectedCategory === cat.id ? "bg-[#ba001c] text-white" : "bg-slate-100 text-slate-600"} active:scale-95 transition-all`}>
               <span>{cat.icon}</span> {cat.name}
             </button>
           ))}
@@ -333,12 +333,12 @@ export default function FoodPage() {
         ) : filteredRestaurants.length === 0 ? (
           <div className="text-center py-8 text-slate-500">No restaurants found</div>
         ) : (
-          filteredRestaurants.map((restaurant) => (
-            <div key={restaurant.id} className="bg-white rounded-2xl overflow-hidden shadow-sm">
+          filteredRestaurants.map((restaurant, index) => (
+            <div key={restaurant.id} className="bg-white rounded-2xl overflow-hidden shadow-sm animate-reveal-up card-lift" style={{ animationDelay: `${Math.min(index * 60, 400)}ms`, opacity: 0 }}>
               <div className="flex">
                 <div className="w-32 h-32 flex-shrink-0 overflow-hidden bg-slate-100 relative">
                   <img src={restaurant.image_url || "/images/food_hero.png"} alt={restaurant.shop_name} className="w-full h-full object-cover" onError={(e) => {(e.target as HTMLImageElement).style.display = "none";}} />
-                  <button onClick={() => toggleFavorite(restaurant.id)} className="absolute top-2 right-2 w-8 h-8 bg-white/90 rounded-full flex items-center justify-center shadow">
+                  <button onClick={() => { toggleFavorite(restaurant.id); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }} className="absolute top-2 right-2 w-8 h-8 bg-white/90 rounded-full flex items-center justify-center shadow hover:scale-110 transition-transform">
                     <span className={`material-symbols-outlined text-lg ${favorites.has(restaurant.id) ? "text-red-500 fill-red-500" : "text-slate-400"}`}>favorite</span>
                   </button>
                 </div>
@@ -349,9 +349,9 @@ export default function FoodPage() {
                     <span className="text-xs text-slate-500">{restaurant.delivery_time || "30-40 min"}</span>
                   </div>
                   <p className="text-xs text-slate-500 mt-1">Delivery: {restaurant.delivery_fee || "₹49"}</p>
-                  <button onClick={() => setExpandedRestaurant(expandedRestaurant === restaurant.id ? null : restaurant.id)} className="mt-2 text-sm font-bold text-[#ba001c] flex items-center gap-1">
+                  <button onClick={() => { setExpandedRestaurant(expandedRestaurant === restaurant.id ? null : restaurant.id); if (navigator.vibrate) navigator.vibrate(10); }} className="mt-2 text-sm font-bold text-[#ba001c] flex items-center gap-1 active:scale-95 transition-transform">
                     {expandedRestaurant === restaurant.id ? "Hide Menu" : "View Menu"}
-                    <span className="material-symbols-outlined text-sm">{expandedRestaurant === restaurant.id ? "expand_less" : "expand_more"}</span>
+                    <span className="material-symbols-outlined text-sm transition-transform duration-300">{expandedRestaurant === restaurant.id ? "expand_less" : "expand_more"}</span>
                   </button>
                 </div>
               </div>
