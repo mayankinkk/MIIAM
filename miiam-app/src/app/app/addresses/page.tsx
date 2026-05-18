@@ -3,6 +3,131 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 
+interface AddressCardProps {
+  address: any;
+  onSelect: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
+  onSetDefault: () => void;
+}
+
+function AddressCard({ address, onSelect, onEdit, onDelete, onSetDefault }: AddressCardProps) {
+  const labelColors = {
+    Home: { bg: "bg-blue-100", text: "text-blue-700", accent: "from-blue-500 to-blue-600" },
+    Office: { bg: "bg-purple-100", text: "text-purple-700", accent: "from-purple-500 to-purple-600" },
+    Other: { bg: "bg-slate-100", text: "text-slate-700", accent: "from-slate-500 to-slate-600" },
+  };
+  
+  const colors = labelColors[address.label as keyof typeof labelColors] || labelColors.Other;
+  
+  return (
+    <div className={`bg-white rounded-2xl overflow-hidden shadow-sm transition-all group ${address.is_default ? "ring-2 ring-[#ba001c]" : ""}`}>
+      {/* Default badge */}
+      {address.is_default && (
+        <div className="bg-[#ba001c] text-white text-xs font-bold px-4 py-2 flex items-center gap-2">
+          <span className="material-symbols-outlined text-sm">check_circle</span>
+          Default Address
+        </div>
+      )}
+
+      <div className="p-4">
+        {/* Map Preview */}
+        <div className="relative mb-4 rounded-xl overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 h-32 group-hover:shadow-md transition-shadow">
+          {/* Static map placeholder with location marker */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="absolute inset-0 opacity-30">
+              <svg className="w-full h-full" viewBox="0 0 400 150">
+                {/* Grid lines to simulate map */}
+                <line x1="0" y1="50" x2="400" y2="50" stroke="#94a3b8" strokeWidth="0.5" />
+                <line x1="0" y1="100" x2="400" y2="100" stroke="#94a3b8" strokeWidth="0.5" />
+                <line x1="100" y1="0" x2="100" y2="150" stroke="#94a3b8" strokeWidth="0.5" />
+                <line x1="200" y1="0" x2="200" y2="150" stroke="#94a3b8" strokeWidth="0.5" />
+                <line x1="300" y1="0" x2="300" y2="150" stroke="#94a3b8" strokeWidth="0.5" />
+                {/* Roads */}
+                <line x1="50" y1="0" x2="50" y2="150" stroke="#cbd5e1" strokeWidth="3" />
+                <line x1="150" y1="0" x2="150" y2="150" stroke="#cbd5e1" strokeWidth="4" />
+                <line x1="250" y1="0" x2="250" y2="150" stroke="#cbd5e1" strokeWidth="2" />
+                <line x1="0" y1="75" x2="400" y2="75" stroke="#cbd5e1" strokeWidth="4" />
+              </svg>
+            </div>
+            {/* Location marker */}
+            <div className="relative z-10">
+              <div className={`w-12 h-12 bg-gradient-to-br ${colors.accent} rounded-full flex items-center justify-center shadow-lg animate-pulse-subtle`}>
+                <span className="material-symbols-outlined text-white text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>
+                  {address.icon}
+                </span>
+              </div>
+              <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-3 h-3 bg-[#ba001c] rotate-45" />
+            </div>
+          </div>
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-white/80 to-transparent" />
+          {/* Coordinates badge */}
+          <div className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg text-[10px] font-bold text-slate-600 flex items-center gap-1">
+            <span className="material-symbols-outlined text-xs">pin_drop</span>
+            Guwahati
+          </div>
+        </div>
+
+        {/* Address Info */}
+        <div className="flex items-start gap-4">
+          <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${colors.bg}`}>
+            <span className={`material-symbols-outlined text-xl ${colors.text}`} style={{ fontVariationSettings: "'FILL' 1" }}>
+              {address.icon}
+            </span>
+          </div>
+
+          <div className="flex-1">
+            <div className="flex items-center gap-2">
+              <h3 className="font-bold text-slate-900">{address.label}</h3>
+              {address.is_default && (
+                <span className="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                  Default
+                </span>
+              )}
+            </div>
+            <p className="text-sm text-slate-800 mt-1">{address.name}</p>
+            <p className="text-sm text-slate-600 mt-0.5 line-clamp-2">
+              {address.street}, {address.city}
+            </p>
+            <p className="text-xs text-slate-500">{address.state} - {address.postal_code}</p>
+            {address.instructions && (
+              <p className="text-xs text-slate-400 mt-2 flex items-center gap-1 bg-amber-50 px-2 py-1 rounded-lg">
+                <span className="material-symbols-outlined text-sm text-amber-600">info</span>
+                {address.instructions}
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="border-t border-slate-100 flex">
+        <button
+          onClick={onSelect}
+          className="flex-1 py-3 text-[#ba001c] font-bold text-sm border-r border-slate-100 hover:bg-[#fff4f4] transition-colors"
+        >
+          Select for Delivery
+        </button>
+        {!address.is_default && (
+          <button
+            onClick={onSetDefault}
+            className="flex-1 py-3 text-blue-600 font-bold text-sm border-r border-slate-100 hover:bg-blue-50 transition-colors"
+          >
+            Set as Default
+          </button>
+        )}
+        <button onClick={onEdit} className="py-3 px-4 text-slate-600 hover:bg-slate-50 transition-colors">
+          <span className="material-symbols-outlined">edit</span>
+        </button>
+        <button onClick={onDelete} className="py-3 px-4 text-red-500 hover:bg-red-50 transition-colors">
+          <span className="material-symbols-outlined">delete</span>
+        </button>
+      </div>
+    </div>
+  );
+}
+
 const addressTypes = [
   { id: "home", icon: "home", label: "Home", color: "bg-blue-100 text-blue-700" },
   { id: "office", icon: "business", label: "Office", color: "bg-purple-100 text-purple-700" },
@@ -194,101 +319,27 @@ export default function AddressBookPage() {
 
           <div className="space-y-4">
             {addresses.map((address) => (
-              <div
+              <AddressCard
                 key={address.id}
-                className={`bg-white rounded-2xl overflow-hidden shadow-sm transition-all ${
-                  address.is_default ? "ring-2 ring-[#ba001c]" : ""
-                }`}
-              >
-                {address.is_default && (
-                  <div className="bg-[#ba001c] text-white text-xs font-bold px-4 py-2 flex items-center gap-2">
-                    <span className="material-symbols-outlined text-sm">check_circle</span>
-                    Default Address
-                  </div>
-                )}
-
-                <div className="p-4">
-                  <div className="flex items-start gap-4">
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                      address.label === "Home" ? "bg-blue-100" :
-                      address.label === "Office" ? "bg-purple-100" : "bg-slate-100"
-                    }`}>
-                      <span className={`material-symbols-outlined text-xl ${
-                        address.label === "Home" ? "text-blue-700" :
-                        address.label === "Office" ? "text-purple-700" : "text-slate-700"
-                      }`}>
-                        {address.icon}
-                      </span>
-                    </div>
-
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-bold text-slate-900">{address.label}</h3>
-                        {address.is_default && (
-                          <span className="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
-                            Default
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-sm text-slate-800 mt-2">{address.name}</p>
-                      <p className="text-sm text-slate-600 mt-1">
-                        {address.street}, {address.city}
-                      </p>
-                      <p className="text-sm text-slate-500">{address.state} - {address.postal_code}</p>
-                      {address.instructions && (
-                        <p className="text-xs text-slate-400 mt-2 flex items-center gap-1">
-                          <span className="material-symbols-outlined text-sm">info</span>
-                          {address.instructions}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="border-t border-slate-100 flex">
-                  <button
-                    onClick={() => handleSelectAddress(address)}
-                    className="flex-1 py-3 text-[#ba001c] font-bold text-sm border-r border-slate-100 hover:bg-[#fff4f4] transition-colors"
-                  >
-                    Select for Delivery
-                  </button>
-                </div>
-                <div className="border-t border-slate-100 flex">
-                  {!address.is_default && (
-                    <button
-                      onClick={() => handleSetDefault(address.id)}
-                      className="flex-1 py-3 text-blue-600 font-bold text-sm border-r border-slate-100 hover:bg-blue-50 transition-colors"
-                    >
-                      Set as Default
-                    </button>
-                  )}
-                  <button
-                    onClick={() => {
-                      setEditingAddress(address);
-                      setNewAddress({
-                        label: address.label.toLowerCase(),
-                        name: address.name,
-                        street: address.street,
-                        city: address.city,
-                        state: address.state,
-                        postal_code: address.postal_code,
-                        phone: address.phone,
-                        instructions: address.instructions,
-                      });
-                      setShowAddAddress(true);
-                    }}
-                    className="flex-1 py-3 text-slate-600 font-bold text-sm border-r border-slate-100 hover:bg-slate-50 transition-colors"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(address.id)}
-                    className="flex-1 py-3 text-red-500 font-bold text-sm hover:bg-red-50 transition-colors"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
+                address={address}
+                onSelect={() => handleSelectAddress(address)}
+                onEdit={() => {
+                  setEditingAddress(address);
+                  setNewAddress({
+                    label: address.label.toLowerCase(),
+                    name: address.name,
+                    street: address.street,
+                    city: address.city,
+                    state: address.state,
+                    postal_code: address.postal_code,
+                    phone: address.phone,
+                    instructions: address.instructions,
+                  });
+                  setShowAddAddress(true);
+                }}
+                onDelete={() => handleDelete(address.id)}
+                onSetDefault={() => handleSetDefault(address.id)}
+              />
             ))}
           </div>
         </section>
