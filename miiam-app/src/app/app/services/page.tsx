@@ -593,6 +593,7 @@ function ServicesContent() {
   // Map raw category to our service setting ID
   const categoryIdMap: Record<string, ServiceCategory> = {
     "ac": "ac",
+    "beauty": "beauty",
     "cleaning": "cleaning",
     "plumbing": "plumbing", 
     "electrical": "electrical",

@@ -314,7 +314,7 @@ export default function BeautyPage() {
       {/* Booking Modal */}
       {bookingService && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center animate-fade-in">
-          <div className="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl p-6 max-h-[90vh] overflow-y-auto animate-slide-up">
+          <div className="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl p-4 sm:p-6 max-h-[85vh] sm:max-h-[90vh] overflow-y-auto animate-slide-up">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-xl font-black text-slate-800">Book {bookingService.name}</h3>
               <button onClick={() => { setBookingService(null); if (navigator.vibrate) navigator.vibrate(10); }} className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center hover:scale-110 active:scale-90 transition-transform">
@@ -345,7 +345,7 @@ export default function BeautyPage() {
 
             {/* Time */}
             <p className="text-xs font-bold text-slate-500 uppercase mb-2">Select Time</p>
-            <div className="grid grid-cols-3 gap-2 mb-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-6">
               {timeSlots.map((time) => (
                 <button key={time} onClick={() => { setSelectedTime(time); if (navigator.vibrate) navigator.vibrate(10); }} className={`py-3 rounded-xl font-bold text-sm border-2 hover:scale-105 active:scale-95 transition-all ${selectedTime === time ? "border-slate-800 bg-slate-800 text-white" : "border-slate-200"}`}>
                   {time}
