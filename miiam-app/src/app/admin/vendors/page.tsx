@@ -30,6 +30,9 @@ interface MenuItem {
   category: string;
   image_url?: string;
   isNew?: boolean;
+  is_veg?: boolean;
+  is_featured?: boolean;
+  description?: string;
 }
 
 export default function AdminVendorsPage() {
@@ -67,9 +70,16 @@ export default function AdminVendorsPage() {
     openingHours: "",
   });
   const [vendorMenuItems, setVendorMenuItems] = useState<MenuItem[]>([]);
-  const [newMenuItem, setNewMenuItem] = useState<MenuItem>({ name: "", price: "", category: "Main Course" });
-  const [editingItemId, setEditingItemId] = useState<string | null>(null);
-  const [editingItemPrice, setEditingItemPrice] = useState("");
+  const [newMenuItem, setNewMenuItem] = useState<MenuItem>({
+    name: "",
+    price: "",
+    category: "Main Course",
+    image_url: "",
+    description: "",
+    is_veg: true,
+    is_featured: false,
+  });
+  const [editingMenuItem, setEditingMenuItem] = useState<MenuItem | null>(null);
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
@@ -244,11 +254,22 @@ export default function AdminVendorsPage() {
         price: parseFloat(newMenuItem.price),
         category: newMenuItem.category,
         image_url: newMenuItem.image_url || null,
+        description: newMenuItem.description || null,
+        is_veg: newMenuItem.is_veg ?? true,
+        is_featured: newMenuItem.is_featured ?? false,
       });
       
       if (error) throw error;
       
-      setNewMenuItem({ name: "", price: "", category: "Main Course" });
+      setNewMenuItem({
+        name: "",
+        price: "",
+        category: "Main Course",
+        image_url: "",
+        description: "",
+        is_veg: true,
+        is_featured: false,
+      });
       await loadVendorMenuItems(editingVendor.id);
       alert("Menu item added!");
     } catch (error: any) {
@@ -277,30 +298,33 @@ export default function AdminVendorsPage() {
     }
   };
 
-  const handleEditPriceClick = (item: MenuItem) => {
-    setEditingItemId(item.id || null);
-    setEditingItemPrice(item.price);
-  };
+  const handleUpdateMenuItem = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingVendor || !editingMenuItem || !editingMenuItem.id) return;
 
-  const handleSavePrice = async (itemId: string) => {
-    if (!editingVendor) return;
     setLoading(true);
     try {
       const { error } = await supabase
         .from("menu_items")
-        .update({ price: parseFloat(editingItemPrice) })
-        .eq("id", itemId);
-      
+        .update({
+          name: editingMenuItem.name,
+          price: parseFloat(editingMenuItem.price),
+          category: editingMenuItem.category,
+          image_url: editingMenuItem.image_url || null,
+          description: editingMenuItem.description || null,
+          is_veg: editingMenuItem.is_veg ?? true,
+          is_featured: editingMenuItem.is_featured ?? false,
+        })
+        .eq("id", editingMenuItem.id);
+
       if (error) throw error;
-      
-      setVendorMenuItems(vendorMenuItems.map(item => 
-        item.id === itemId ? { ...item, price: editingItemPrice } : item
-      ));
-      setEditingItemId(null);
-      alert("Price updated!");
+
+      await loadVendorMenuItems(editingVendor.id);
+      setEditingMenuItem(null);
+      alert("Menu item updated!");
     } catch (error: any) {
-      console.error("Error updating price:", error);
-      alert(`Failed to update price: ${error.message}`);
+      console.error("Error updating menu item:", error);
+      alert(`Failed to update menu item: ${error.message}`);
     } finally {
       setLoading(false);
     }
@@ -731,111 +755,133 @@ export default function AdminVendorsPage() {
               <div className="border-t pt-6">
                 <h3 className="font-black text-slate-800 uppercase tracking-widest text-xs mb-4">Menu Items</h3>
                 
-                <div className="space-y-3 mb-4">
+                <div className="space-y-3 mb-4 max-h-[300px] overflow-y-auto pr-1">
                   {vendorMenuItems.map((item, index) => (
-                    <div key={item.id || index} className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl">
-                      <div className="w-16 h-16 bg-slate-200 rounded-lg overflow-hidden flex-shrink-0">
+                    <div key={item.id || index} className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors">
+                      <div className="w-14 h-14 bg-slate-200 rounded-lg overflow-hidden flex-shrink-0 relative">
                         {item.image_url ? (
                           <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-slate-400">
-                            <span className="material-symbols-outlined">restaurant</span>
+                            <span className="material-symbols-outlined text-xl">restaurant</span>
                           </div>
                         )}
+                        <span className={`absolute bottom-0.5 right-0.5 w-3 h-3 border border-white rounded-full flex items-center justify-center ${item.is_veg ? "bg-green-500" : "bg-red-500"}`} />
                       </div>
-                      <div className="flex-1">
-                        <p className="font-bold text-sm text-slate-800">{item.name}</p>
-                        <p className="text-xs text-slate-500">{item.category}</p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {editingItemId === item.id ? (
-                          <>
-                            <div className="relative">
-                              <span className="absolute left-2 top-1/2 -translate-y-1/2 text-slate-400 text-xs">₹</span>
-                              <input
-                                type="number"
-                                value={editingItemPrice}
-                                onChange={(e) => setEditingItemPrice(e.target.value)}
-                                className="w-20 p-2 pl-6 border border-[#ba001c] rounded-lg text-sm"
-                                autoFocus
-                              />
-                            </div>
-                            <button
-                              onClick={() => handleSavePrice(item.id!)}
-                              className="p-2 bg-green-500 text-white rounded-lg"
-                            >
-                              <span className="material-symbols-outlined text-sm">check</span>
-                            </button>
-                            <button
-                              onClick={() => setEditingItemId(null)}
-                              className="p-2 bg-slate-200 text-slate-600 rounded-lg"
-                            >
-                              <span className="material-symbols-outlined text-sm">close</span>
-                            </button>
-                          </>
-                        ) : (
-                          <>
-                            <button
-                              onClick={() => handleEditPriceClick(item)}
-                              className="flex items-center gap-1 px-3 py-1 bg-white border border-slate-200 rounded-lg text-sm font-bold hover:border-[#ba001c]"
-                            >
-                              <span className="text-green-600">₹{item.price}</span>
-                              <span className="material-symbols-outlined text-xs text-slate-400">edit</span>
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => item.id && handleDeleteMenuItem(item.id)}
-                              className="text-red-500 hover:text-red-700 p-2"
-                            >
-                              <span className="material-symbols-outlined">delete</span>
-                            </button>
-                          </>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <p className="font-bold text-sm text-slate-800 truncate">{item.name}</p>
+                          {item.is_featured && (
+                            <span className="material-symbols-outlined text-amber-500 text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                          )}
+                        </div>
+                        <p className="text-[10px] text-slate-400">{item.category} • <span className="text-green-600 font-bold">₹{item.price}</span></p>
+                        {item.description && (
+                          <p className="text-[10px] text-slate-500 truncate mt-0.5">{item.description}</p>
                         )}
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => setEditingMenuItem(item)}
+                          className="p-1.5 bg-white border border-slate-200 rounded-lg hover:border-[#ba001c] hover:text-[#ba001c] transition-all flex items-center justify-center"
+                          title="Edit details"
+                        >
+                          <span className="material-symbols-outlined text-xs">edit</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => item.id && handleDeleteMenuItem(item.id)}
+                          className="p-1.5 bg-white border border-slate-200 text-red-500 rounded-lg hover:bg-red-50 transition-all flex items-center justify-center"
+                          title="Delete"
+                        >
+                          <span className="material-symbols-outlined text-xs">delete</span>
+                        </button>
                       </div>
                     </div>
                   ))}
                 </div>
 
                 <div className="bg-slate-50 p-4 rounded-xl space-y-3">
-                  <p className="text-xs font-bold text-slate-600 mb-2">Add New Menu Item</p>
-                  <div className="flex items-center gap-3">
-                    <div className="flex-1 space-y-2">
+                  <p className="text-xs font-black text-slate-700 mb-2 uppercase tracking-wider">Add New Menu Item</p>
+                  <div className="space-y-3">
+                    <div className="grid grid-cols-2 gap-3">
                       <input
                         type="text"
                         value={newMenuItem.name}
                         onChange={(e) => setNewMenuItem({ ...newMenuItem, name: e.target.value })}
-                        className="w-full p-2 border border-slate-200 rounded-lg text-sm"
-                        placeholder="Item name"
+                        className="w-full p-2.5 border border-slate-200 rounded-lg text-sm focus:border-[#ba001c] focus:outline-none"
+                        placeholder="Item name *"
                       />
-                      <div className="flex gap-2">
-                        <select
-                          value={newMenuItem.category}
-                          onChange={(e) => setNewMenuItem({ ...newMenuItem, category: e.target.value })}
-                          className="p-2 border border-slate-200 rounded-lg text-xs"
-                        >
-                          <option value="Main Course">Main Course</option>
-                          <option value="Starters">Starters</option>
-                          <option value="Beverages">Beverages</option>
-                          <option value="Desserts">Desserts</option>
-                        </select>
-                        <div className="relative flex-1">
-                          <span className="absolute left-2 top-1/2 -translate-y-1/2 text-slate-400 text-sm">₹</span>
-                          <input
-                            type="number"
-                            value={newMenuItem.price}
-                            onChange={(e) => setNewMenuItem({ ...newMenuItem, price: e.target.value })}
-                            className="w-full pl-6 p-2 border border-slate-200 rounded-lg text-sm"
-                            placeholder="Price"
-                          />
-                        </div>
+                      <div className="relative">
+                        <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm">₹</span>
+                        <input
+                          type="number"
+                          value={newMenuItem.price}
+                          onChange={(e) => setNewMenuItem({ ...newMenuItem, price: e.target.value })}
+                          className="w-full pl-6 p-2.5 border border-slate-200 rounded-lg text-sm focus:border-[#ba001c] focus:outline-none"
+                          placeholder="Price *"
+                        />
                       </div>
                     </div>
+                    
+                    <div className="grid grid-cols-2 gap-3">
+                      <select
+                        value={newMenuItem.category}
+                        onChange={(e) => setNewMenuItem({ ...newMenuItem, category: e.target.value })}
+                        className="p-2.5 border border-slate-200 rounded-lg text-sm focus:border-[#ba001c] focus:outline-none"
+                      >
+                        <option value="Main Course">Main Course</option>
+                        <option value="Starters">Starters</option>
+                        <option value="Beverages">Beverages</option>
+                        <option value="Desserts">Desserts</option>
+                      </select>
+
+                      <input
+                        type="text"
+                        value={newMenuItem.image_url || ""}
+                        onChange={(e) => setNewMenuItem({ ...newMenuItem, image_url: e.target.value })}
+                        className="w-full p-2.5 border border-slate-200 rounded-lg text-sm focus:border-[#ba001c] focus:outline-none"
+                        placeholder="Food Image URL"
+                      />
+                    </div>
+
+                    <input
+                      type="text"
+                      value={newMenuItem.description || ""}
+                      onChange={(e) => setNewMenuItem({ ...newMenuItem, description: e.target.value })}
+                      className="w-full p-2.5 border border-slate-200 rounded-lg text-sm focus:border-[#ba001c] focus:outline-none"
+                      placeholder="Brief description / ingredients"
+                    />
+
+                    <div className="flex gap-4">
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={newMenuItem.is_veg ?? true}
+                          onChange={(e) => setNewMenuItem({ ...newMenuItem, is_veg: e.target.checked })}
+                          className="rounded text-[#ba001c] focus:ring-[#ba001c]"
+                        />
+                        <span className="text-xs font-bold text-slate-600">Veg / Green Badge</span>
+                      </label>
+
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={newMenuItem.is_featured ?? false}
+                          onChange={(e) => setNewMenuItem({ ...newMenuItem, is_featured: e.target.checked })}
+                          className="rounded text-amber-500 focus:ring-amber-500"
+                        />
+                        <span className="text-xs font-bold text-slate-600">⭐ Featured (Chef's Special)</span>
+                      </label>
+                    </div>
                   </div>
+
                   <button
                     type="button"
                     onClick={handleAddNewMenuItem}
                     disabled={loading || !newMenuItem.name || !newMenuItem.price}
-                    className="w-full py-2 bg-[#ba001c] text-white rounded-lg text-sm font-bold disabled:opacity-50"
+                    className="w-full py-2.5 bg-[#ba001c] text-white rounded-lg text-sm font-bold hover:bg-[#a00018] disabled:opacity-50 transition-all"
                   >
                     {loading ? "Adding..." : "Add Menu Item"}
                   </button>
@@ -915,6 +961,130 @@ export default function AdminVendorsPage() {
           </table>
         </div>
       </div>
+
+      {editingMenuItem && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-[60] overflow-y-auto animate-fade-in">
+          <div className="bg-white rounded-3xl p-6 max-w-md w-full mx-4 shadow-2xl animate-scale-up">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-black text-slate-800">Edit Menu Item Details</h3>
+              <button
+                type="button"
+                onClick={() => setEditingMenuItem(null)}
+                className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-600"
+              >
+                <span className="material-symbols-outlined text-sm">close</span>
+              </button>
+            </div>
+
+            <form onSubmit={handleUpdateMenuItem} className="space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Item Name *</label>
+                  <input
+                    type="text"
+                    required
+                    value={editingMenuItem.name}
+                    onChange={(e) => setEditingMenuItem({ ...editingMenuItem, name: e.target.value })}
+                    className="w-full p-2.5 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Price (₹) *</label>
+                  <input
+                    type="number"
+                    required
+                    value={editingMenuItem.price}
+                    onChange={(e) => setEditingMenuItem({ ...editingMenuItem, price: e.target.value })}
+                    className="w-full p-2.5 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Category</label>
+                  <select
+                    value={editingMenuItem.category}
+                    onChange={(e) => setEditingMenuItem({ ...editingMenuItem, category: e.target.value })}
+                    className="w-full p-2.5 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                  >
+                    <option value="Main Course">Main Course</option>
+                    <option value="Starters">Starters</option>
+                    <option value="Beverages">Beverages</option>
+                    <option value="Desserts">Desserts</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Image URL</label>
+                  <input
+                    type="text"
+                    value={editingMenuItem.image_url || ""}
+                    onChange={(e) => setEditingMenuItem({ ...editingMenuItem, image_url: e.target.value })}
+                    className="w-full p-2.5 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                    placeholder="https://..."
+                  />
+                </div>
+              </div>
+
+              {editingMenuItem.image_url && (
+                <div className="h-20 rounded-xl overflow-hidden bg-slate-100">
+                  <img src={editingMenuItem.image_url} alt="Food item preview" className="w-full h-full object-cover" onError={(e) => {(e.target as HTMLImageElement).style.opacity = '0.3';}} />
+                </div>
+              )}
+
+              <div>
+                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Description</label>
+                <textarea
+                  value={editingMenuItem.description || ""}
+                  onChange={(e) => setEditingMenuItem({ ...editingMenuItem, description: e.target.value })}
+                  className="w-full p-2.5 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                  placeholder="Ingredients, specs, portion size..."
+                  rows={2}
+                />
+              </div>
+
+              <div className="flex gap-4 pt-2">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={editingMenuItem.is_veg ?? true}
+                    onChange={(e) => setEditingMenuItem({ ...editingMenuItem, is_veg: e.target.checked })}
+                    className="rounded text-[#ba001c] focus:ring-[#ba001c]"
+                  />
+                  <span className="text-xs font-bold text-slate-600">Veg / Green Badge</span>
+                </label>
+
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={editingMenuItem.is_featured ?? false}
+                    onChange={(e) => setEditingMenuItem({ ...editingMenuItem, is_featured: e.target.checked })}
+                    className="rounded text-amber-500 focus:ring-amber-500"
+                  />
+                  <span className="text-xs font-bold text-slate-600">⭐ Featured (Chef's Special)</span>
+                </label>
+              </div>
+
+              <div className="flex gap-3 pt-4 border-t">
+                <button
+                  type="button"
+                  onClick={() => setEditingMenuItem(null)}
+                  className="flex-1 py-2.5 border border-slate-200 rounded-xl font-bold text-sm hover:bg-slate-50 transition-all"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="flex-1 py-2.5 bg-[#ba001c] text-white rounded-xl font-bold text-sm hover:bg-[#a00018] transition-all disabled:opacity-50"
+                >
+                  {loading ? "Saving..." : "Save Changes"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
