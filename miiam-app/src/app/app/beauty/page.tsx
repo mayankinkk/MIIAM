@@ -133,38 +133,38 @@ export default function BeautyPage() {
   return (
     <div className="min-h-screen bg-[#fff4f4] pb-24">
       {/* Header */}
-      <header className="bg-gradient-to-br from-pink-500 to-rose-500 text-white p-6 pb-12">
-        <div className="flex items-center justify-between mb-4">
-          <h1 className="text-2xl font-black">Beauty & Wellness</h1>
+      <header className="bg-gradient-to-br from-pink-500 to-rose-500 text-white p-4 pb-10">
+        <div className="flex items-center justify-between mb-2">
+          <h1 className="text-xl font-black">Beauty & Wellness</h1>
           <button className="p-2 bg-white/20 rounded-full">
-            <span className="material-symbols-outlined">notifications</span>
+            <span className="material-symbols-outlined text-lg">notifications</span>
           </button>
         </div>
-        <p className="text-white/90 mb-4">Professional beauty services at your home</p>
+        <p className="text-white/90 text-sm mb-3">Professional beauty services at your home</p>
         
         {/* Search */}
         <div className="relative">
-          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
-          <input type="text" placeholder="Search for services..." className="w-full pl-10 pr-4 py-3 rounded-xl text-slate-800" />
+          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+          <input type="text" placeholder="Search for services..." className="w-full pl-9 pr-4 py-2.5 rounded-lg text-slate-800 text-sm" />
         </div>
       </header>
 
       {/* Categories */}
-      <div className="px-4 -mt-6">
-        <div className="bg-white rounded-2xl p-2 shadow-lg">
-          <div className="flex gap-2 overflow-x-auto no-scrollbar">
+      <div className="px-3 -mt-5">
+        <div className="bg-white rounded-xl p-1.5 shadow-lg">
+          <div className="flex gap-1.5 overflow-x-auto no-scrollbar">
             {categories.map((cat, i) => (
               <button
                 key={cat.id}
                 onClick={() => { setActiveCategory(cat.id); if (navigator.vibrate) navigator.vibrate(10); }}
-                className={`flex-shrink-0 px-4 py-3 rounded-xl font-bold text-sm flex items-center gap-2 transition-all active:scale-95 ${
+                className={`flex-shrink-0 px-3 py-2 rounded-lg font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 ${
                   activeCategory === cat.id
                     ? "bg-gradient-to-r " + cat.color + " text-white"
                     : "bg-slate-100 text-slate-600"
                 } animate-category-slide`}
                 style={{ animationDelay: `${i * 50}ms` }}
               >
-                <span>{cat.emoji}</span>
+                <span className="text-sm">{cat.emoji}</span>
                 {cat.label}
               </button>
             ))}
@@ -172,23 +172,22 @@ export default function BeautyPage() {
         </div>
       </div>
 
-      <main className="px-4 py-6 space-y-8">
+      <main className="px-4 py-4 space-y-6">
         {/* Expert Stylists */}
         <section>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-black text-slate-800">Top Stylists</h2>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-base font-black text-slate-800">Top Stylists</h2>
             <span className="text-xs font-bold text-pink-500">View All</span>
           </div>
-          <div className="flex gap-4 overflow-x-auto no-scrollbar">
+          <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2">
             {experts.map((expert, i) => (
-              <div key={i} className="flex-shrink-0 w-40 bg-white rounded-2xl p-4 shadow-sm text-center card-lift animate-pop-in" style={{ animationDelay: `${i * 80}ms` }}>
-                <img src={expert.photo} alt={expert.name} className="w-16 h-16 rounded-full mx-auto object-cover border-2 border-pink-200" />
-                <p className="font-bold text-slate-800 mt-3 text-sm">{expert.name}</p>
-                <p className="text-xs text-slate-500">{expert.specialist}</p>
-                <div className="flex items-center justify-center gap-1 mt-2">
-                  <span className="material-symbols-outlined text-amber-500 text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+              <div key={i} className="flex-shrink-0 w-32 bg-white rounded-xl p-3 shadow-sm text-center card-lift animate-pop-in" style={{ animationDelay: `${i * 80}ms` }}>
+                <img src={expert.photo} alt={expert.name} className="w-12 h-12 rounded-full mx-auto object-cover border-2 border-pink-200" />
+                <p className="font-bold text-slate-800 mt-2 text-xs">{expert.name}</p>
+                <p className="text-[10px] text-slate-500">{expert.specialist}</p>
+                <div className="flex items-center justify-center gap-1 mt-1">
+                  <span className="material-symbols-outlined text-amber-500 text-xs" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
                   <span className="text-xs font-bold">{expert.rating}</span>
-                  <span className="text-xs text-slate-400">({expert.services})</span>
                 </div>
               </div>
             ))}
@@ -204,28 +203,28 @@ export default function BeautyPage() {
               const discount = service.original ? Math.round(((service.original - service.price) / service.original) * 100) : 0;
               
               return (
-                <div key={service.id} className="bg-white rounded-2xl p-4 shadow-sm flex gap-4 card-lift animate-pop-in" style={{ animationDelay: `${Math.min(index * 80, 500)}ms` }}>
-                  <div className="w-24 h-24 rounded-xl overflow-hidden flex-shrink-0 bg-slate-100">
+                <div key={service.id} className="bg-white rounded-2xl p-3 shadow-sm flex gap-3 card-lift animate-pop-in" style={{ animationDelay: `${Math.min(index * 80, 500)}ms` }}>
+                  <div className="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0 bg-slate-100">
                     <img src={service.image} alt={service.name} className="w-full h-full object-cover" />
                   </div>
-                  <div className="flex-1">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <h3 className="font-bold text-slate-800">{service.name}</h3>
-                        <p className="text-xs text-slate-500 mt-1">{service.description}</p>
-                        <div className="flex items-center gap-2 mt-2">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <h3 className="font-bold text-slate-800 text-sm truncate">{service.name}</h3>
+                        <p className="text-xs text-slate-500 mt-0.5 line-clamp-1">{service.description}</p>
+                        <div className="flex items-center gap-2 mt-1">
                           <span className="flex items-center gap-0.5 text-xs font-bold">
-                            <span className="material-symbols-outlined text-amber-500 text-[12px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                            <span className="material-symbols-outlined text-amber-500 text-[10px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
                             {service.rating}
                           </span>
                           <span className="text-xs text-slate-400">({service.reviews.toLocaleString()})</span>
                         </div>
                       </div>
                       {service.popular && (
-                        <span className="bg-pink-100 text-pink-600 text-[10px] font-bold px-2 py-1 rounded-full">Popular</span>
+                        <span className="bg-pink-100 text-pink-600 text-[10px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0">Popular</span>
                       )}
                     </div>
-                    <div className="flex items-center justify-between mt-3">
+                    <div className="flex items-center justify-between mt-2">
                       <div className="flex items-center gap-2">
                         <span className="font-black text-lg text-[#ba001c]">₹{service.price}</span>
                         {service.original && (
@@ -240,9 +239,9 @@ export default function BeautyPage() {
                         {service.duration}
                       </span>
                     </div>
-                    <div className="mt-3">
+                    <div className="mt-2">
                       {qty === 0 ? (
-                        <button onClick={() => { handleBook(service); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }} className="w-full bg-[#ba001c] text-white font-bold py-2 rounded-xl text-sm hover:scale-[1.02] active:scale-[0.98] transition-all animate-glow-pulse">
+                        <button onClick={() => { handleBook(service); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }} className="w-full bg-[#ba001c] text-white font-bold py-1.5 rounded-lg text-xs hover:scale-[1.02] active:scale-[0.98] transition-all animate-glow-pulse">
                           Book Now
                         </button>
                       ) : (
