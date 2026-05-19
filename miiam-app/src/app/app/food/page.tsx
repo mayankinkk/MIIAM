@@ -34,37 +34,81 @@ function parseIsOpen(hours: string | null | undefined): boolean {
   } catch { return true; }
 }
 
-const PROMO_BANNERS = [
-  { id: 1, label: "🔥 Today's Deal", title: "50% OFF your first order", sub: "Use code FIRST50", color: "from-[#ba001c] to-[#ff7670]" },
-  { id: 2, label: "⚡ Flash Sale", title: "Free delivery all day", sub: "On orders above ₹299", color: "from-violet-600 to-purple-400" },
-  { id: 3, label: "🌟 New Arrival", title: "Try something new", sub: "Freshly added restaurants", color: "from-amber-500 to-yellow-300" },
+const DEFAULT_BANNERS = [
+  { id: "1", label: "🔥 Today's Deal", title: "50% OFF your first order", sub: "Use code FIRST50", color: "from-[#ba001c] to-[#ff7670]", image_url: "" },
+  { id: "2", label: "⚡ Flash Sale", title: "Free delivery all day", sub: "On orders above ₹299", color: "from-violet-600 to-purple-400", image_url: "" },
+  { id: "3", label: "🌟 New Arrival", title: "Try something new", sub: "Freshly added restaurants", color: "from-amber-500 to-yellow-300", image_url: "" },
 ];
 
 function PromoBannerCarousel() {
+  const [banners, setBanners] = useState<any[]>(DEFAULT_BANNERS);
   const [active, setActive] = useState(0);
+
   useEffect(() => {
-    const t = setInterval(() => setActive((a) => (a + 1) % PROMO_BANNERS.length), 3500);
-    return () => clearInterval(t);
+    async function fetchBanners() {
+      const { data, error } = await supabase
+        .from("banners")
+        .select("*")
+        .eq("is_active", true)
+        .order("position");
+      
+      if (!error && data && data.length > 0) {
+        setBanners(data.map((b: any) => ({
+          id: b.id,
+          label: "📣 Promotion",
+          title: b.title,
+          sub: b.link_url || "Check out this offer!",
+          color: "from-[#ba001c] to-[#ff7670]",
+          image_url: b.image_url,
+        })));
+      }
+    }
+    fetchBanners();
   }, []);
-  const b = PROMO_BANNERS[active];
+
+  useEffect(() => {
+    if (banners.length === 0) return;
+    const t = setInterval(() => setActive((a) => (a + 1) % banners.length), 4000);
+    return () => clearInterval(t);
+  }, [banners]);
+
+  if (banners.length === 0) return null;
+  const b = banners[active];
+
   return (
     <div className="px-6 mt-3">
-      <div className={`bg-gradient-to-r ${b.color} rounded-2xl p-4 flex items-center justify-between overflow-hidden relative transition-all duration-500`}>
-        <div>
-          <span className="text-white/80 text-[10px] font-black uppercase tracking-widest">{b.label}</span>
-          <p className="text-white font-black text-base mt-0.5">{b.title}</p>
-          <p className="text-white/80 text-xs mt-0.5">{b.sub}</p>
-        </div>
-        <div className="flex flex-col items-end gap-2">
-          <div className="flex gap-1">
-            {PROMO_BANNERS.map((_, i) => (
-              <button key={i} onClick={() => setActive(i)}
-                className={`h-1.5 rounded-full transition-all duration-300 ${i === active ? "w-5 bg-white" : "w-1.5 bg-white/40"}`} />
+      <div 
+        style={b.image_url ? { backgroundImage: `url(${b.image_url})` } : {}}
+        className={`bg-cover bg-center relative rounded-2xl p-4 flex items-center justify-between overflow-hidden transition-all duration-500 h-28 ${
+          !b.image_url ? `bg-gradient-to-r ${b.color}` : ""
+        }`}
+      >
+        {b.image_url && <div className="absolute inset-0 bg-black/45 z-0" />}
+        
+        <div className="relative z-10 flex flex-col justify-between h-full w-full">
+          <div>
+            <span className="text-white/80 text-[10px] font-black uppercase tracking-widest">{b.label}</span>
+            <p className="text-white font-black text-base mt-0.5 leading-tight">{b.title}</p>
+            <p className="text-white/80 text-xs mt-0.5">{b.sub}</p>
+          </div>
+          
+          <div className="flex gap-1 mt-2">
+            {banners.map((_, i) => (
+              <button 
+                key={i} 
+                onClick={() => setActive(i)}
+                className={`h-1.5 rounded-full transition-all duration-300 ${i === active ? "w-5 bg-white" : "w-1.5 bg-white/40"}`} 
+              />
             ))}
           </div>
         </div>
-        <div className="absolute -right-4 -bottom-4 w-20 h-20 bg-white/10 rounded-full" />
-        <div className="absolute -right-8 -top-4 w-28 h-28 bg-white/5 rounded-full" />
+        
+        {!b.image_url && (
+          <>
+            <div className="absolute -right-4 -bottom-4 w-20 h-20 bg-white/10 rounded-full" />
+            <div className="absolute -right-8 -top-4 w-28 h-28 bg-white/5 rounded-full" />
+          </>
+        )}
       </div>
     </div>
   );

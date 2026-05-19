@@ -22,12 +22,13 @@ export default function BannerManagement() {
   const [showAdd, setShowAdd] = useState(false);
   const [newBanner, setNewBanner] = useState({ title: "", image_url: "", link_url: "" });
 
+  async function loadBanners() {
+    const { data } = await supabase.from("banners").select("*").order("position");
+    if (data) setBanners(data);
+    setLoading(false);
+  }
+
   useEffect(() => {
-    async function loadBanners() {
-      const { data } = await supabase.from("banners").select("*").order("position");
-      if (data) setBanners(data);
-      setLoading(false);
-    }
     loadBanners();
   }, [supabase]);
 

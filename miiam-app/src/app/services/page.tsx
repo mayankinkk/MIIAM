@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import BottomNavBar from "@/components/layout/BottomNavBar";
 
 const serviceCategories = [
   {
@@ -319,34 +320,7 @@ export default function ServicesLandingPage() {
         </div>
       </div>
 
-      {/* Bottom Mobile Nav */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-slate-100 p-2 md:hidden">
-        <div className="flex justify-around">
-          {[
-            { href: "/app/home", icon: "home", label: "Home" },
-            { href: "/app/food", icon: "restaurant", label: "Food" },
-            { href: "/services", icon: "handyman", label: "Services", active: true },
-            { href: "/app/cart", icon: "shopping_cart", label: "Cart" },
-            { href: "/app/profile", icon: "person", label: "Profile" },
-          ].map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex flex-col items-center py-2 px-3 rounded-xl transition-all ${
-                item.active ? 'text-[#ba001c]' : 'text-slate-400'
-              }`}
-            >
-              <span 
-                className="material-symbols-outlined text-2xl"
-                style={{ fontVariationSettings: item.active ? "'FILL' 1" : "'FILL' 0" }}
-              >
-                {item.icon}
-              </span>
-              <span className="text-[10px] font-medium mt-1">{item.label}</span>
-            </Link>
-          ))}
-        </div>
-      </div>
+      <BottomNavBar />
     </div>
   );
 }
