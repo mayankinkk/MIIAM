@@ -47,10 +47,21 @@ export const useCartStore = create<CartStore>()(
         } else {
           set({ items: [...(get().items || []), { ...item, quantity }] });
         }
+        
+        // Show success toast (using dynamic import to avoid circular dependency issues)
+        import('./toastStore').then(({ useToastStore }) => {
+          useToastStore.getState().addToast(`Added ${item.name} to cart`, "success");
+        });
       },
 
       removeItem: (menu_item_id) => {
+        const item = get().items.find(i => i.menu_item_id === menu_item_id);
         set({ items: (get().items || []).filter((i) => i.menu_item_id !== menu_item_id) });
+        if (item) {
+          import('./toastStore').then(({ useToastStore }) => {
+            useToastStore.getState().addToast(`Removed ${item.name}`, "info");
+          });
+        }
       },
 
       updateQuantity: (menu_item_id, quantity) => {

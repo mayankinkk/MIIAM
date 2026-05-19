@@ -19,72 +19,11 @@ type Coupon = {
   created_at: string;
 };
 
-const mockCoupons: Coupon[] = [
-  {
-    id: "1",
-    code: "WELCOME20",
-    type: "percentage",
-    value: 20,
-    min_order: 300,
-    max_discount: 100,
-    usage_limit: 1000,
-    used_count: 456,
-    valid_from: "2024-04-01",
-    valid_until: "2024-06-30",
-    status: "active",
-    service_type: "all",
-    created_at: "2024-04-01",
-  },
-  {
-    id: "2",
-    code: "SAVE50",
-    type: "fixed",
-    value: 50,
-    min_order: 200,
-    max_discount: 50,
-    usage_limit: 500,
-    used_count: 234,
-    valid_from: "2024-05-01",
-    valid_until: "2024-05-31",
-    status: "active",
-    service_type: "beauty",
-    created_at: "2024-05-01",
-  },
-  {
-    id: "3",
-    code: "SUMMER30",
-    type: "percentage",
-    value: 30,
-    min_order: 500,
-    max_discount: 200,
-    usage_limit: 200,
-    used_count: 200,
-    valid_from: "2024-04-15",
-    valid_until: "2024-05-15",
-    status: "exhausted",
-    service_type: "all",
-    created_at: "2024-04-15",
-  },
-  {
-    id: "4",
-    code: "ACSPECIAL",
-    type: "percentage",
-    value: 15,
-    min_order: 400,
-    max_discount: 75,
-    usage_limit: 300,
-    used_count: 89,
-    valid_from: "2024-06-01",
-    valid_until: "2024-08-31",
-    status: "active",
-    service_type: "ac_repair",
-    created_at: "2024-06-01",
-  },
-];
+// removed mock coupons
 
 export default function CouponsAdminPage() {
   const supabase = createClient();
-  const [coupons, setCoupons] = useState<Coupon[]>(mockCoupons);
+  const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [editingCoupon, setEditingCoupon] = useState<Coupon | null>(null);
   const [filter, setFilter] = useState<"all" | "active" | "expired" | "exhausted">("all");
@@ -101,6 +40,31 @@ export default function CouponsAdminPage() {
     service_type: "all",
   });
 
+  useEffect(() => {
+    loadCoupons();
+  }, [supabase]);
+
+  const loadCoupons = async () => {
+    const { data } = await supabase.from("promo_codes").select("*");
+    if (data) {
+      setCoupons(data.map(c => ({
+        id: c.id,
+        code: c.code,
+        type: c.discount_type === "percentage" ? "percentage" : "fixed",
+        value: c.discount_value || 0,
+        min_order: c.min_order_amount || 0,
+        max_discount: c.max_discount || 0,
+        usage_limit: c.usage_limit || 100,
+        used_count: c.uses_count || 0,
+        valid_from: c.created_at,
+        valid_until: c.valid_until || new Date(Date.now() + 86400000 * 30).toISOString(),
+        status: c.is_active ? "active" : "expired",
+        service_type: "all",
+        created_at: c.created_at
+      })));
+    }
+  };
+
   const filteredCoupons = coupons.filter((c) =>
     filter === "all" ? true : c.status === filter
   );
@@ -108,24 +72,25 @@ export default function CouponsAdminPage() {
   const totalDiscount = coupons.reduce((sum, c) => sum + c.used_count * c.value, 0);
   const activeCoupons = coupons.filter((c) => c.status === "active").length;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    const dbPayload = {
+      code: formData.code.toUpperCase(),
+      discount_type: formData.type,
+      discount_value: formData.value,
+      min_order_amount: formData.min_order,
+      is_active: true,
+      uses_count: editingCoupon ? editingCoupon.used_count : 0
+    };
+
     if (editingCoupon) {
-      setCoupons((prev) =>
-        prev.map((c) => (c.id === editingCoupon.id ? { ...c, ...formData } : c))
-      );
+      await supabase.from("promo_codes").update(dbPayload).eq("id", editingCoupon.id);
     } else {
-      const newCoupon: Coupon = {
-        id: Date.now().toString(),
-        ...formData,
-        used_count: 0,
-        status: "active",
-        created_at: new Date().toISOString(),
-      };
-      setCoupons((prev) => [newCoupon, ...prev]);
+      await supabase.from("promo_codes").insert(dbPayload);
     }
     
+    loadCoupons();
     setShowModal(false);
     setEditingCoupon(null);
     setFormData({
@@ -141,9 +106,10 @@ export default function CouponsAdminPage() {
     });
   };
 
-  const deleteCoupon = (id: string) => {
+  const deleteCoupon = async (id: string) => {
     if (confirm("Are you sure you want to delete this coupon?")) {
-      setCoupons((prev) => prev.filter((c) => c.id !== id));
+      await supabase.from("promo_codes").delete().eq("id", id);
+      loadCoupons();
     }
   };
 

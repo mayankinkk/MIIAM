@@ -5,6 +5,7 @@ const DYNAMIC_CACHE = 'miiam-dynamic-v1';
 const STATIC_ASSETS = [
   '/',
   '/manifest.json',
+  '/offline.html',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
 ];
@@ -39,6 +40,17 @@ self.addEventListener('fetch', (event) => {
 
   if (url.pathname.startsWith('/api/')) {
     event.respondWith(networkFirst(request, DYNAMIC_CACHE));
+    return;
+  }
+
+  if (request.mode === 'navigate') {
+    event.respondWith(
+      fetch(request).catch(async () => {
+        const cache = await caches.open(STATIC_CACHE);
+        const offlinePage = await cache.match('/offline.html');
+        return offlinePage || new Response('Offline', { status: 503 });
+      })
+    );
     return;
   }
 

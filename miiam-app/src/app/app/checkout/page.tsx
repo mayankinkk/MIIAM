@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useToastStore } from "@/lib/store/toastStore";
 import AddressPickerSheet, { type SelectedAddress } from "@/components/AddressPickerSheet";
+import { RiderTipSelector, TipThankYou } from "@/components/RiderTip";
 
 interface PromoCode {
   code: string;
@@ -28,7 +29,7 @@ export default function CheckoutPage() {
   const [scheduledTime, setScheduledTime] = useState<string>("");
   const [placing, setPlacing] = useState(false);
   const [tipAmount, setTipAmount] = useState(0);
-  const tipOptions = [0, 10, 20, 50];
+  const [showTipSelector, setShowTipSelector] = useState(true);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [deliveryAddress, setDeliveryAddress] = useState<SelectedAddress | null>(null);
@@ -244,7 +245,7 @@ export default function CheckoutPage() {
           errorMessage = `Error: ${error.message}`;
         }
       }
-      alert(errorMessage);
+      addToast(errorMessage, "error");
     } finally {
       setPlacing(false);
     }
@@ -567,22 +568,24 @@ export default function CheckoutPage() {
                 
                 {/* Rider Tip */}
                 <div className="py-3 border-t border-dashed border-[#dd9ca6]/30">
-                  <p className="text-sm font-bold text-[#4d212a] mb-2">Tip your rider 🧡</p>
-                  <div className="flex gap-2">
-                    {tipOptions.map((amount) => (
-                      <button
-                        key={amount}
-                        onClick={() => setTipAmount(amount)}
-                        className={`flex-1 py-2 rounded-lg text-sm font-bold border transition-all ${
-                          tipAmount === amount
-                            ? "bg-[#ba001c] text-white border-[#ba001c]"
-                            : "bg-white text-[#4d212a] border-slate-200 hover:border-[#ba001c]"
-                        }`}
-                      >
-                        {amount === 0 ? "No Tip" : `₹${amount}`}
-                      </button>
-                    ))}
-                  </div>
+                  {showTipSelector ? (
+                    <RiderTipSelector 
+                      orderAmount={subtotal} 
+                      onTipSelect={(amount) => { setTipAmount(amount); setShowTipSelector(false); }} 
+                      onSkip={() => { setTipAmount(0); setShowTipSelector(false); }} 
+                    />
+                  ) : (
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="font-bold text-[#4d212a]">Rider Tip</span>
+                        <div className="flex items-center gap-2">
+                          <span className="font-semibold text-[#ba001c]">₹{tipAmount}</span>
+                          <button onClick={() => setShowTipSelector(true)} className="text-xs text-blue-600 underline">Edit</button>
+                        </div>
+                      </div>
+                      {tipAmount > 0 && <TipThankYou amount={tipAmount} />}
+                    </div>
+                  )}
                 </div>
                 
                 {/* Loyalty Points Redemption */}

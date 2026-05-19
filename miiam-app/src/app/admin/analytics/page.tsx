@@ -77,6 +77,24 @@ export default function AdvancedAnalytics() {
       setLoading(false);
     }
     loadData();
+
+    const channel = supabase.channel('admin-analytics')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => {
+        // Reload data quietly in background without setting loading true
+        const days = period === "7d" ? 7 : period === "30d" ? 30 : 90;
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - days);
+        supabase.from("orders")
+          .select("*, vendor:vendors(name), rider:riders(name)")
+          .gte("placed_at", startDate.toISOString())
+          .order("placed_at", { ascending: true })
+          .then(res => { if (res.data) setOrders(res.data); });
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [period, supabase]);
 
   const totalRevenue = orders.reduce((s, o) => s + (o.total_amount || 0), 0);

@@ -4,6 +4,7 @@ import ThemeProvider from "@/components/ThemeProvider";
 import { ToastContainer } from "@/components/Toast";
 import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
 import { AnalyticsTracker } from "@/lib/analytics";
+import SplashScreen from "@/components/SplashScreen";
 
 export const metadata: Metadata = {
   title: "MIIAM — The Kinetic Super-App",
@@ -59,6 +60,7 @@ export default function RootLayout({
       </head>
       <body>
         <ThemeProvider>
+          <SplashScreen />
           <ServiceWorkerRegistration />
           <AnalyticsTracker />
           {children}

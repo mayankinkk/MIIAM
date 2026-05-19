@@ -1,13 +1,16 @@
 {
-  "name": "MIIAM - Super App",
+  "name": "MIIAM — Super App",
   "short_name": "MIIAM",
-  "description": "Food delivery and professional home services",
-  "start_url": "/",
+  "description": "Premium food delivery and professional home services in one app.",
+  "start_url": "/app/home",
   "display": "standalone",
   "background_color": "#fff4f4",
   "theme_color": "#ba001c",
   "orientation": "portrait",
   "scope": "/",
+  "prefer_related_applications": false,
+  "lang": "en-IN",
+  "dir": "ltr",
   "icons": [
     {
       "src": "/icons/icon-192.svg",
@@ -34,5 +37,28 @@
       "purpose": "maskable"
     }
   ],
-  "categories": ["food", "shopping", "lifestyle"]
+  "shortcuts": [
+    {
+      "name": "Order Food",
+      "short_name": "Food",
+      "description": "Browse restaurants and order food",
+      "url": "/app/food",
+      "icons": [{ "src": "/icons/icon-192.svg", "sizes": "192x192" }]
+    },
+    {
+      "name": "Book Service",
+      "short_name": "Services",
+      "description": "Book a home service",
+      "url": "/app/services",
+      "icons": [{ "src": "/icons/icon-192.svg", "sizes": "192x192" }]
+    },
+    {
+      "name": "My Orders",
+      "short_name": "Orders",
+      "description": "View your orders",
+      "url": "/app/orders",
+      "icons": [{ "src": "/icons/icon-192.svg", "sizes": "192x192" }]
+    }
+  ],
+  "categories": ["food", "shopping", "lifestyle", "productivity"]
 }

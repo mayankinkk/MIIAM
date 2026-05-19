@@ -6,6 +6,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useCartStore } from "@/lib/store/cartStore";
+import { OrderSkeleton } from "@/components/Skeleton";
+import { EmptyState } from "@/components/EmptyState";
 
 const statusColors: Record<string, string> = {
   pending: "bg-[#ffd709]/20 text-[#453900]",
@@ -147,27 +149,30 @@ export default function OrdersPage() {
         </section>
 
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-24 gap-4">
-            <div className="w-12 h-12 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin"></div>
-            <p className="text-[#814c55] font-medium">Fetching your orders...</p>
+          <div className="space-y-4">
+            <OrderSkeleton />
+            <OrderSkeleton />
+            <OrderSkeleton />
           </div>
         ) : !isAuthenticated ? (
-          <div className="text-center py-24">
-            <div className="text-8xl mb-6">👤</div>
-            <h2 className="text-2xl font-bold text-[#4d212a] mb-3">Please log in</h2>
-            <p className="text-[#814c55] mb-8">You need to be logged in to view your orders.</p>
-            <Link href="/auth/login" className="bg-[#ba001c] text-white px-10 py-4 rounded-xl font-bold inline-block">
-              Go to Login
-            </Link>
+          <div className="py-12">
+            <EmptyState 
+              icon="person_off" 
+              title="Please log in" 
+              description="You need to be logged in to view your orders." 
+              actionLabel="Go to Login" 
+              actionHref="/auth/login" 
+            />
           </div>
         ) : orders.length === 0 ? (
-          <div className="text-center py-24">
-            <div className="text-8xl mb-6">📦</div>
-            <h2 className="text-2xl font-bold text-[#4d212a] mb-3">No orders yet</h2>
-            <p className="text-[#814c55] mb-8">Your order history will appear here.</p>
-            <Link href="/app/explore" className="bg-[#ba001c] text-white px-10 py-4 rounded-xl font-bold inline-block hover:scale-105 transition-transform">
-              Start Ordering
-            </Link>
+          <div className="py-12">
+            <EmptyState 
+              icon="local_shipping" 
+              title="No orders yet" 
+              description="Your order history will appear here once you place an order." 
+              actionLabel="Start Ordering" 
+              actionHref="/app/explore" 
+            />
           </div>
         ) : (
           <div className="space-y-6">

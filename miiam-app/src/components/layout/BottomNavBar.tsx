@@ -36,13 +36,13 @@ export default function BottomNavBar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex flex-col items-center justify-center px-3 py-2 rounded-xl transition-all duration-200 relative min-w-[60px] ${
+              className={`flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full transition-all duration-300 ${
                 isActive
-                  ? "text-[#ba001c]"
-                  : "text-slate-400 hover:text-slate-600"
+                  ? "bg-[#ffecee] text-[#ba001c]"
+                  : "text-slate-400 hover:text-slate-600 hover:bg-slate-50"
               }`}
             >
-              <div className={`relative transition-transform ${isActive ? "scale-110" : ""}`}>
+              <div className={`relative transition-transform duration-300 ${isActive ? "scale-100" : "scale-95"}`}>
                 <span 
                   className="material-symbols-outlined text-[24px]" 
                   style={{ 
@@ -52,22 +52,19 @@ export default function BottomNavBar() {
                   {item.icon}
                 </span>
                 
-                {/* Active indicator dot */}
-                {isActive && (
-                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#ba001c] rounded-full" />
-                )}
-                
                 {/* Cart badge */}
                 {isMounted && isCart && totalItems > 0 && (
-                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-[#ba001c] rounded-full text-white text-[9px] font-bold flex items-center justify-center shadow-md">
+                  <span className="absolute -top-1.5 -right-2 w-5 h-5 bg-[#ba001c] rounded-full text-white text-[10px] font-black flex items-center justify-center shadow-md border-2 border-white">
                     {totalItems > 9 ? "9+" : totalItems}
                   </span>
                 )}
               </div>
               
-              <span className={`text-[11px] font-semibold mt-1 ${isActive ? "text-[#ba001c]" : "text-slate-500"}`}>
-                {item.label}
-              </span>
+              {isActive && (
+                <span className="text-[13px] font-extrabold animate-fade-in whitespace-nowrap overflow-hidden">
+                  {item.label}
+                </span>
+              )}
             </Link>
           );
         })}

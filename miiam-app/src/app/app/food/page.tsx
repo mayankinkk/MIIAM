@@ -9,6 +9,9 @@ import ServiceUnavailable from "@/components/ServiceUnavailable";
 import PullToRefresh from "@/components/PullToRefresh";
 import QuickActionsFAB from "@/components/QuickActionsFAB";
 import { createClient } from "@/lib/supabase/client";
+import { VendorCardSkeleton } from "@/components/Skeleton";
+import { useToastStore } from "@/lib/store/toastStore";
+import { useFavoritesStore } from "@/lib/store/favoritesStore";
 
 const supabase = createClient();
 
@@ -264,7 +267,8 @@ export default function FoodPage() {
   const [priceMax, setPriceMax] = useState(1000);
   const [restaurants, setRestaurants] = useState<any[]>([]);
   const [menuItems, setMenuItems] = useState<any[]>([]);
-  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  const { favoriteIds, toggle, setFavorites } = useFavoritesStore();
+  const favorites = new Set(favoriteIds);
   const [loading, setLoading] = useState(true);
   const [heroAsset, setHeroAsset] = useState<{ image_url: string; title: string; subtitle: string } | null>(null);
   const foodSetting = getSetting("food");
@@ -298,16 +302,26 @@ export default function FoodPage() {
 
   useEffect(() => {
     fetchData();
-    const saved = localStorage.getItem("miiam-favorites");
-    if (saved) setFavorites(new Set(JSON.parse(saved)));
+    // Load from Supabase if auth
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) {
+        supabase.from("favorites").select("vendor_id").eq("user_id", user.id).then(({ data }) => {
+          if (data) setFavorites(data.map(f => f.vendor_id));
+        });
+      }
+    });
   }, []);
 
-  const toggleFavorite = (id: string) => {
-    const newFavs = new Set(favorites);
-    if (newFavs.has(id)) newFavs.delete(id);
-    else newFavs.add(id);
-    setFavorites(newFavs);
-    localStorage.setItem("miiam-favorites", JSON.stringify([...newFavs]));
+  const toggleFavorite = async (id: string) => {
+    toggle(id);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      if (favorites.has(id)) {
+        await supabase.from("favorites").delete().eq("user_id", user.id).eq("vendor_id", id);
+      } else {
+        await supabase.from("favorites").insert({ user_id: user.id, vendor_id: id });
+      }
+    }
   };
 
   const sortedRestaurants = [...restaurants].sort((a, b) => {
@@ -384,7 +398,18 @@ export default function FoodPage() {
 
       <main className="p-6 space-y-4">
         {loading ? (
-          <div className="text-center py-8 text-slate-500">Loading restaurants...</div>
+          <div className="space-y-4">
+            {[1,2,3,4].map(i => (
+              <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-sm flex">
+                <div className="w-32 h-32 bg-slate-200 animate-pulse flex-shrink-0" />
+                <div className="p-4 flex-1 space-y-2">
+                  <div className="h-5 w-36 bg-slate-200 animate-pulse rounded" />
+                  <div className="h-4 w-24 bg-slate-200 animate-pulse rounded" />
+                  <div className="h-4 w-40 bg-slate-200 animate-pulse rounded" />
+                </div>
+              </div>
+            ))}
+          </div>
         ) : filteredRestaurants.length === 0 ? (
           <div className="text-center py-8 text-slate-500">No restaurants found</div>
         ) : (
@@ -420,14 +445,19 @@ export default function FoodPage() {
                 </div>
                 <div className="p-4 flex-1">
                   <div className="flex items-start justify-between gap-1">
-                    <h3 className="font-bold text-slate-800 text-base leading-tight">{restaurant.shop_name}</h3>
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-full bg-[#ba001c] flex items-center justify-center text-white text-xs font-black flex-shrink-0 overflow-hidden">
+                        {restaurant.image_url ? <img src={restaurant.image_url} alt="" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display='none'; }} /> : restaurant.shop_name?.charAt(0)}
+                      </div>
+                      <h3 className="font-bold text-slate-800 text-base leading-tight">{restaurant.shop_name}</h3>
+                    </div>
                     {restaurant.is_featured && <span className="text-amber-400 text-base flex-shrink-0">⭐</span>}
                   </div>
-                  <p className="text-xs text-slate-500 mt-0.5">{restaurant.cuisine}</p>
+                  <p className="text-xs text-slate-500 mt-0.5 ml-10">{restaurant.cuisine}</p>
                   <div className="flex items-center gap-2 mt-1.5">
                     <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded font-medium">★ {restaurant.rating || "4.0"}</span>
                     <span className="text-xs text-slate-400">•</span>
-                    <span className="text-xs text-slate-500">{restaurant.delivery_time || "30-40 min"}</span>
+                    <span className="text-xs text-slate-500">{restaurant.delivery_time_minutes ? `${restaurant.delivery_time_minutes - 5}–${restaurant.delivery_time_minutes + 5} min` : restaurant.delivery_time || "30-40 min"}</span>
                   </div>
                   <p className="text-xs text-slate-500 mt-1">Delivery: {restaurant.delivery_fee || "₹49"}</p>
                   <div className="mt-2 flex items-center gap-1 text-[#ba001c] font-bold text-xs">

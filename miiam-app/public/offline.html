@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MIIAM — You're Offline</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      background: linear-gradient(135deg, #fff4f4 0%, #ffd2d7 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      text-align: center;
+    }
+    .logo {
+      width: 72px;
+      height: 72px;
+      background: linear-gradient(135deg, #ba001c, #ff7670);
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 20px 40px rgba(186,0,28,0.3);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    h1 { font-size: 1.75rem; font-weight: 900; color: #4d212a; margin-bottom: 0.5rem; }
+    p { color: #814c55; font-size: 0.95rem; margin-bottom: 2rem; line-height: 1.6; max-width: 280px; }
+    .retry {
+      background: linear-gradient(135deg, #ba001c, #ff7670);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 1rem;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .retry:active { transform: scale(0.95); }
+    .tips { margin-top: 2rem; background: white; border-radius: 1rem; padding: 1rem; max-width: 280px; }
+    .tips p { font-size: 0.8rem; color: #814c55; margin-bottom: 0; }
+    .tips strong { color: #4d212a; }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 20px 40px rgba(186,0,28,0.3); }
+      50% { box-shadow: 0 20px 60px rgba(186,0,28,0.5); }
+    }
+  </style>
+</head>
+<body>
+  <div class="logo">🍽️</div>
+  <h1>You're Offline</h1>
+  <p>No internet connection detected. Check your Wi-Fi or mobile data and try again.</p>
+  <button class="retry" onclick="window.location.reload()">🔄 Try Again</button>
+  <div class="tips">
+    <p><strong>Tip:</strong> Enable Wi-Fi or turn off Airplane Mode to get back to ordering your favourite food!</p>
+  </div>
+</body>
+</html>

@@ -28,6 +28,16 @@ export default function OrderManagement() {
 
   useEffect(() => {
     loadOrders();
+
+    const channel = supabase.channel('admin-orders')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => {
+        loadOrders();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [supabase]);
 
   async function loadOrders() {

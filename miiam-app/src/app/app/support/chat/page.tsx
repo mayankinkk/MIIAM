@@ -1,261 +1,154 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
-interface SupportMessage {
-  id: string;
-  sender_type: "user" | "support";
-  message: string;
-  created_at: string;
-  attachment_url?: string;
+const supabase = createClient();
+
+const BOT_RESPONSES: Record<string, string> = {
+  default: "Thanks for reaching out! A support agent will respond shortly. For urgent issues, call us at 1800-XXX-XXXX.",
+  order: "I can see you have a question about an order. Please share your order ID and we'll look into it right away!",
+  refund: "Refunds are processed within 5-7 business days to your original payment method. Can you share your order ID?",
+  delivery: "If your delivery is delayed, please wait 10 extra minutes. If still not arrived, share your order ID and we'll coordinate with the rider.",
+  payment: "Payment issues are rare but we'll sort it out! Please share your order ID or transaction ID.",
+};
+
+function getBotResponse(message: string): string {
+  const lower = message.toLowerCase();
+  if (lower.includes("order")) return BOT_RESPONSES.order;
+  if (lower.includes("refund") || lower.includes("return") || lower.includes("cancel")) return BOT_RESPONSES.refund;
+  if (lower.includes("delivery") || lower.includes("late") || lower.includes("arrived")) return BOT_RESPONSES.delivery;
+  if (lower.includes("payment") || lower.includes("pay") || lower.includes("charged")) return BOT_RESPONSES.payment;
+  return BOT_RESPONSES.default;
 }
 
-const botResponses = [
-  "I understand. Let me help you with that.",
-  "Thank you for sharing. One moment please.",
-  "I see your concern. Here's what I can do...",
-  "Let me check on that for you right away.",
-];
+interface Message {
+  id: string;
+  text: string;
+  role: "user" | "bot";
+  time: Date;
+}
 
 export default function SupportChatPage() {
-  const supabase = createClient();
-  const [messages, setMessages] = useState<SupportMessage[]>([
-    { id: "1", sender_type: "support", message: "Hi! Welcome to MIIAM Support. How can I help you today?", created_at: new Date().toISOString() },
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: "1",
+      text: "👋 Hi there! I'm MIIAM Support. How can I help you today?",
+      role: "bot",
+      time: new Date(),
+    },
   ]);
-  const [newMessage, setNewMessage] = useState("");
-  const [sending, setSending] = useState(false);
-  const [isTyping, setIsTyping] = useState(false);
-  const [ticketId, setTicketId] = useState<string | null>(null);
-  const [subject, setSubject] = useState("");
-  const [showTicketForm, setShowTicketForm] = useState(false);
-  const [userId, setUserId] = useState<string>("");
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [input, setInput] = useState("");
+  const [typing, setTyping] = useState(false);
+  const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    async function getUser() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) setUserId(user.id);
-    }
-    getUser();
-  }, [supabase]);
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, typing]);
 
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  const sendMessage = async () => {
+    if (!input.trim()) return;
+    const text = input.trim();
+    setInput("");
 
-  const handleSend = async () => {
-    if (!newMessage.trim() || sending || !userId) return;
+    const userMsg: Message = { id: Date.now().toString(), text, role: "user", time: new Date() };
+    setMessages((prev) => [...prev, userMsg]);
+    setTyping(true);
 
-    const userMessage: SupportMessage = {
-      id: Date.now().toString(),
-      sender_type: "user",
-      message: newMessage.trim(),
-      created_at: new Date().toISOString(),
-    };
-
-    setMessages((prev) => [...prev, userMessage]);
-    setNewMessage("");
-    setSending(true);
-
-    // Simulate bot response
-    setIsTyping(true);
+    // Simulate bot response delay
     setTimeout(() => {
-      setIsTyping(false);
-      const botMessage: SupportMessage = {
-        id: (Date.now() + 1).toString(),
-        sender_type: "support",
-        message: botResponses[Math.floor(Math.random() * botResponses.length)],
-        created_at: new Date().toISOString(),
-      };
-      setMessages((prev) => [...prev, botMessage]);
-      setSending(false);
-    }, 1500);
+      const botText = getBotResponse(text);
+      setMessages((prev) => [...prev, { id: (Date.now() + 1).toString(), text: botText, role: "bot", time: new Date() }]);
+      setTyping(false);
+    }, 1200);
   };
 
-  const handleCreateTicket = async () => {
-    if (!subject.trim() || !userId) return;
-
-    // Create support conversation
-    const { data: ticket, error } = await supabase
-      .from("support_conversations")
-      .insert({
-        user_id: userId,
-        subject: subject.trim(),
-        status: "open",
-      })
-      .select()
-      .single();
-
-    if (ticket) {
-      setTicketId(ticket.id);
-      setShowTicketForm(false);
-      
-      // Add initial message
-      await supabase.from("support_messages").insert({
-        conversation_id: ticket.id,
-        sender_id: userId,
-        sender_type: "user",
-        message: subject.trim(),
-      });
-    }
-  };
-
-  const formatTime = (timestamp: string) => {
-    const date = new Date(timestamp);
-    return date.toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit" });
-  };
-
-  const helpTopics = [
-    { icon: "receipt", label: "Order Issues", desc: "Problems with your order" },
-    { icon: "payment", label: "Payments", desc: "Billing & refunds" },
-    { icon: "account_circle", label: "Account", desc: "Login & profile" },
-    { icon: "restaurant", label: "Vendors", desc: "Restaurant concerns" },
-  ];
+  const quickReplies = ["Track my order", "Request refund", "Payment issue", "Delivery problem"];
 
   return (
     <div className="min-h-screen bg-[#fff4f4] flex flex-col">
-      {/* Header */}
-      <header className="fixed top-0 w-full z-50 flex justify-between items-center px-4 py-3 bg-white border-b border-[#dd9ca6]/20">
+      <header className="bg-white px-4 py-4 sticky top-0 z-10 shadow-sm border-b border-slate-100">
         <div className="flex items-center gap-3">
-          <span className="material-symbols-outlined text-[#ba001c] cursor-pointer" onClick={() => window.history.back()}>
-            arrow_back
-          </span>
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#ba001c] to-[#ff7670] flex items-center justify-center">
-            <span className="material-symbols-outlined text-white" style={{ fontVariationSettings: "'FILL' 1" }}>support_agent</span>
-          </div>
-          <div>
-            <h1 className="font-bold text-[#4d212a]">MIIAM Support</h1>
-            <p className="text-xs text-green-600 flex items-center gap-1">
-              <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-              Online • Usually replies in 5 mins
-            </p>
+          <Link href="/app/support" className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
+            <span className="material-symbols-outlined">arrow_back</span>
+          </Link>
+          <div className="w-10 h-10 bg-gradient-to-br from-[#ba001c] to-[#ff7670] rounded-full flex items-center justify-center text-white font-black text-sm">M</div>
+          <div className="flex-1">
+            <p className="font-bold text-slate-800">MIIAM Support</p>
+            <div className="flex items-center gap-1">
+              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+              <span className="text-xs text-green-600 font-medium">Online · Usually replies instantly</span>
+            </div>
           </div>
         </div>
-        <button 
-          onClick={() => setShowTicketForm(true)}
-          className="px-3 py-1.5 bg-[#ba001c] text-white text-xs font-bold rounded-full"
-        >
-          New Ticket
-        </button>
       </header>
 
-      {/* Help Topics (show when no conversation) */}
-      {messages.length <= 1 && (
-        <div className="pt-20 px-4 pb-4">
-          <p className="text-sm text-[#814c55] mb-4">What can we help you with?</p>
-          <div className="grid grid-cols-2 gap-3">
-            {helpTopics.map((topic) => (
-              <button
-                key={topic.label}
-                onClick={() => setNewMessage(`I need help with: ${topic.label}`)}
-                className="bg-white p-4 rounded-xl text-left hover:shadow-md transition-shadow"
-              >
-                <span className="material-symbols-outlined text-[#ba001c]">{topic.icon}</span>
-                <p className="font-bold text-[#4d212a] mt-2">{topic.label}</p>
-                <p className="text-xs text-[#814c55]">{topic.desc}</p>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
       {/* Messages */}
-      <div className="flex-1 pt-4 pb-24 px-4 overflow-y-auto">
-        <div className="space-y-4">
-          {messages.map((msg) => (
-            <div
-              key={msg.id}
-              className={`flex ${msg.sender_type === "user" ? "justify-end" : "justify-start"}`}
+      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3 pb-40">
+        {messages.map((msg) => (
+          <div key={msg.id} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+            {msg.role === "bot" && (
+              <div className="w-8 h-8 bg-gradient-to-br from-[#ba001c] to-[#ff7670] rounded-full flex items-center justify-center text-white text-xs font-black mr-2 flex-shrink-0 mt-auto">M</div>
+            )}
+            <div className={`max-w-[78%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${
+              msg.role === "user"
+                ? "bg-[#ba001c] text-white rounded-br-sm"
+                : "bg-white text-slate-800 shadow-sm rounded-bl-sm"
+            }`}>
+              {msg.text}
+              <p className={`text-[9px] mt-1 ${msg.role === "user" ? "text-white/60" : "text-slate-400"}`}>
+                {msg.time.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}
+              </p>
+            </div>
+          </div>
+        ))}
+
+        {typing && (
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-gradient-to-br from-[#ba001c] to-[#ff7670] rounded-full flex items-center justify-center text-white text-xs font-black">M</div>
+            <div className="bg-white rounded-2xl rounded-bl-sm px-4 py-3 shadow-sm flex gap-1 items-center">
+              {[0, 1, 2].map((i) => (
+                <span key={i} className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
+              ))}
+            </div>
+          </div>
+        )}
+        <div ref={bottomRef} />
+      </div>
+
+      {/* Quick Replies */}
+      <div className="fixed bottom-20 left-0 right-0 px-4 pb-2">
+        <div className="flex gap-2 overflow-x-auto no-scrollbar">
+          {quickReplies.map((r) => (
+            <button
+              key={r}
+              onClick={() => { setInput(r); }}
+              className="flex-shrink-0 px-3 py-1.5 bg-white border border-[#ba001c] text-[#ba001c] rounded-full text-xs font-bold hover:bg-[#fff4f4] transition-colors"
             >
-              <div
-                className={`max-w-[80%] px-4 py-3 rounded-2xl ${
-                  msg.sender_type === "user"
-                    ? "bg-[#ba001c] text-white rounded-br-md"
-                    : "bg-white text-[#4d212a] rounded-bl-md shadow-sm"
-                }`}
-              >
-                <p className="text-sm">{msg.message}</p>
-                <p className={`text-[10px] mt-1 ${msg.sender_type === "user" ? "text-white/70" : "text-[#814c55]"}`}>
-                  {formatTime(msg.created_at)}
-                </p>
-              </div>
-            </div>
+              {r}
+            </button>
           ))}
-
-          {isTyping && (
-            <div className="flex justify-start">
-              <div className="bg-white px-4 py-3 rounded-2xl rounded-bl-md shadow-sm">
-                <div className="flex gap-1">
-                  <span className="w-2 h-2 bg-[#814c55] rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></span>
-                  <span className="w-2 h-2 bg-[#814c55] rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></span>
-                  <span className="w-2 h-2 bg-[#814c55] rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div ref={messagesEndRef} />
         </div>
       </div>
 
-      {/* Ticket Form Modal */}
-      {showTicketForm && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-md">
-            <h2 className="text-xl font-bold text-[#4d212a] mb-4">Create Support Ticket</h2>
-            <input
-              type="text"
-              value={subject}
-              onChange={(e) => setSubject(e.target.value)}
-              placeholder="Describe your issue..."
-              className="w-full p-4 bg-[#fff4f4] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20 mb-4"
-            />
-            <div className="flex gap-3">
-              <button
-                onClick={() => setShowTicketForm(false)}
-                className="flex-1 py-3 border-2 border-slate-200 rounded-xl font-bold text-slate-600"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleCreateTicket}
-                disabled={!subject.trim()}
-                className="flex-1 bg-[#ba001c] text-white py-3 rounded-xl font-bold disabled:opacity-50"
-              >
-                Submit
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Input */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-[#dd9ca6]/20">
-        <div className="flex items-center gap-2">
-          <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#ffe1e4]">
-            <span className="material-symbols-outlined text-[#814c55]">add_circle</span>
-          </button>
-          <input
-            type="text"
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSend()}
-            placeholder="Type your message..."
-            className="flex-1 bg-[#fff4f4] rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
-          />
-          <button
-            onClick={handleSend}
-            disabled={!newMessage.trim() || sending}
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-[#ba001c] text-white disabled:opacity-50"
-          >
-            {sending ? (
-              <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-            ) : (
-              <span className="material-symbols-outlined">send</span>
-            )}
-          </button>
-        </div>
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 px-4 py-3 flex gap-2 items-end" style={{ paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))" }}>
+        <textarea
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }}}
+          placeholder="Type a message..."
+          rows={1}
+          className="flex-1 px-4 py-3 bg-slate-50 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20 resize-none max-h-24"
+        />
+        <button
+          onClick={sendMessage}
+          disabled={!input.trim()}
+          className="w-11 h-11 bg-[#ba001c] disabled:bg-slate-200 text-white rounded-2xl flex items-center justify-center transition-all active:scale-90"
+        >
+          <span className="material-symbols-outlined">send</span>
+        </button>
       </div>
     </div>
   );

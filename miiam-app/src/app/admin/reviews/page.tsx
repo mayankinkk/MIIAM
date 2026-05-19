@@ -12,6 +12,8 @@ interface Review {
   rating: number;
   comment: string | null;
   created_at: string;
+  is_approved: boolean;
+  is_highlighted: boolean;
   profile?: { full_name: string };
 }
 
@@ -36,6 +38,20 @@ export default function ReviewsPage() {
   async function deleteReview(id: string) {
     await supabase.from("reviews").delete().eq("id", id);
     setReviews(reviews.filter(r => r.id !== id));
+  }
+
+  async function toggleStatus(id: string, currentStatus: boolean, field: 'is_approved' | 'is_highlighted') {
+    try {
+      const { error } = await supabase.from("reviews").update({ [field]: !currentStatus }).eq("id", id);
+      if (error) {
+        console.error("Update failed:", error);
+        alert("Could not update review. Ensure database schema supports this field.");
+        return;
+      }
+      setReviews(reviews.map(r => r.id === id ? { ...r, [field]: !currentStatus } : r));
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   const filteredReviews = reviews.filter(r => {
@@ -140,12 +156,28 @@ export default function ReviewsPage() {
                     {review.vendor_id ? "Vendor Review" : "Rider Review"} • {new Date(review.created_at).toLocaleDateString()}
                   </p>
                 </div>
-                <button 
-                  onClick={() => deleteReview(review.id)}
-                  className="text-slate-400 hover:text-red-500 p-2"
-                >
-                  <span className="material-symbols-outlined text-sm">delete</span>
-                </button>
+                <div className="flex flex-col gap-2">
+                  <button 
+                    onClick={() => toggleStatus(review.id, review.is_approved, 'is_approved')}
+                    className={`text-xs px-3 py-1 rounded-full font-bold ${review.is_approved ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-500"}`}
+                  >
+                    {review.is_approved ? "Approved" : "Pending"}
+                  </button>
+                  <button 
+                    onClick={() => toggleStatus(review.id, review.is_highlighted, 'is_highlighted')}
+                    className={`text-xs px-3 py-1 rounded-full font-bold flex items-center gap-1 ${review.is_highlighted ? "bg-amber-100 text-amber-700" : "bg-slate-100 text-slate-500"}`}
+                  >
+                    <span className="material-symbols-outlined text-[14px]">star</span>
+                    {review.is_highlighted ? "Highlighted" : "Highlight"}
+                  </button>
+                  <button 
+                    onClick={() => deleteReview(review.id)}
+                    className="text-red-500 hover:text-red-700 p-1 flex justify-end"
+                    title="Delete Review"
+                  >
+                    <span className="material-symbols-outlined text-sm">delete</span>
+                  </button>
+                </div>
               </div>
             </div>
           ))}

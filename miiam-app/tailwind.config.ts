@@ -116,6 +116,16 @@ const config: Config = {
           "0%, 100%": { opacity: "1" },
           "50%": { opacity: "0.5" },
         },
+        fadeOutDelayed: {
+          "0%, 80%": { opacity: "1" },
+          "100%": { opacity: "0", visibility: "hidden" },
+        },
+        bounceIn: {
+          "0%": { transform: "scale(0.3)", opacity: "0" },
+          "50%": { transform: "scale(1.05)", opacity: "1" },
+          "70%": { transform: "scale(0.9)" },
+          "100%": { transform: "scale(1)", opacity: "1" },
+        },
       },
       animation: {
         moveRider: "moveRider 10s linear infinite",
@@ -123,6 +133,8 @@ const config: Config = {
         slideUp: "slideUp 0.5s ease-out",
         fadeIn: "fadeIn 0.5s ease-out",
         scaleIn: "scaleIn 0.5s ease-out",
+        "fade-out-delayed": "fadeOutDelayed 2s forwards",
+        "bounce-in": "bounceIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards",
       },
     },
   },

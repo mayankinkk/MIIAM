@@ -5,6 +5,8 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cartStore";
+import { useFavoritesStore } from "@/lib/store/favoritesStore";
+import { ProfileSkeleton, MenuItemSkeleton } from "@/components/Skeleton";
 
 const supabase = createClient();
 
@@ -164,6 +166,12 @@ function ReviewModal({ vendorId, onClose, onSubmitted }: { vendorId: string; onC
       return;
     }
     setSubmitting(false);
+    
+    // Show success toast
+    import('@/lib/store/toastStore').then(({ useToastStore }) => {
+      useToastStore.getState().addToast("Review submitted successfully!", "success");
+    });
+    
     onSubmitted();
     onClose();
   };
@@ -267,6 +275,20 @@ export default function RestaurantProfilePage() {
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [vegOnly, setVegOnly] = useState(false);
   const [menuSearch, setMenuSearch] = useState("");
+  const { favoriteIds, toggle } = useFavoritesStore();
+  const isFavorite = favoriteIds.includes(vendorId);
+
+  const handleToggleFavorite = async () => {
+    toggle(vendorId);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      if (isFavorite) {
+        await supabase.from("favorites").delete().eq("user_id", user.id).eq("vendor_id", vendorId);
+      } else {
+        await supabase.from("favorites").insert({ user_id: user.id, vendor_id: vendorId });
+      }
+    }
+  };
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -287,8 +309,14 @@ export default function RestaurantProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-[#ba001c]/20 border-t-[#ba001c] rounded-full animate-spin" />
+      <div className="min-h-screen bg-[#fff4f4] p-6 space-y-6">
+        <div className="h-48 w-full bg-slate-200 animate-pulse rounded-2xl" />
+        <ProfileSkeleton />
+        <div className="space-y-4">
+          <MenuItemSkeleton />
+          <MenuItemSkeleton />
+          <MenuItemSkeleton />
+        </div>
       </div>
     );
   }
@@ -345,6 +373,12 @@ export default function RestaurantProfilePage() {
             <span className="material-symbols-outlined">arrow_back</span>
           </button>
           <div className="flex items-center gap-2">
+            <button
+              onClick={handleToggleFavorite}
+              className="w-10 h-10 bg-black/40 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/60 transition-colors active:scale-90"
+            >
+              <span className={`material-symbols-outlined ${isFavorite ? "text-red-500" : "text-white"}`} style={{ fontVariationSettings: isFavorite ? "'FILL' 1" : "'FILL' 0" }}>favorite</span>
+            </button>
             <Link
               href="/app/cart"
               className="w-10 h-10 bg-black/40 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/60 transition-colors active:scale-90"
@@ -385,7 +419,7 @@ export default function RestaurantProfilePage() {
         <div className="w-px h-4 bg-slate-200" />
         <div className="flex items-center gap-1.5 text-slate-600 flex-shrink-0">
           <span className="material-symbols-outlined text-[#ba001c] text-base">schedule</span>
-          <span className="text-sm font-semibold">{vendor.delivery_time || "30-40 min"}</span>
+          <span className="text-sm font-semibold">{vendor.delivery_time_minutes ? `${vendor.delivery_time_minutes - 5}–${vendor.delivery_time_minutes + 5} min` : vendor.delivery_time || "30-40 min"}</span>
         </div>
         <div className="w-px h-4 bg-slate-200" />
         <div className="flex items-center gap-1.5 text-slate-600 flex-shrink-0">
