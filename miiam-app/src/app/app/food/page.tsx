@@ -207,11 +207,11 @@ export default function FoodPage() {
   const [sortBy, setSortBy] = useState<SortOption>("rating");
   const [priceMin, setPriceMin] = useState(0);
   const [priceMax, setPriceMax] = useState(1000);
-  const [expandedRestaurant, setExpandedRestaurant] = useState<string | null>(null);
   const [restaurants, setRestaurants] = useState<any[]>([]);
   const [menuItems, setMenuItems] = useState<any[]>([]);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
+  const [heroAsset, setHeroAsset] = useState<{ image_url: string; title: string; subtitle: string } | null>(null);
   const foodSetting = getSetting("food");
 
   if (foodSetting && !foodSetting.isEnabled) {
@@ -224,19 +224,20 @@ export default function FoodPage() {
 
   const fetchData = async () => {
     setLoading(true);
-    const { data: vendors } = await supabase
-      .from("vendors")
-      .select("*")
-      .order("created_at", { ascending: false });
-    
-    if (vendors) {
-      setRestaurants(vendors);
+    const [vendorsRes, heroRes] = await Promise.all([
+      supabase.from("vendors").select("*").order("created_at", { ascending: false }),
+      supabase.from("page_assets").select("*").eq("section", "food_hero").eq("is_active", true).maybeSingle(),
+    ]);
+
+    if (vendorsRes.data) {
+      setRestaurants(vendorsRes.data);
       const { data: items } = await supabase
         .from("menu_items")
         .select("*")
         .order("name");
       setMenuItems(items || []);
     }
+    if (heroRes.data) setHeroAsset(heroRes.data);
     setLoading(false);
   };
 
@@ -252,14 +253,6 @@ export default function FoodPage() {
     else newFavs.add(id);
     setFavorites(newFavs);
     localStorage.setItem("miiam-favorites", JSON.stringify([...newFavs]));
-  };
-
-  const getMenuItems = (vendorId: string) => {
-    let items = menuItems.filter((item) => item.vendor_id === vendorId);
-    if (vegFilter !== "all") {
-      items = items.filter((item) => item.is_veg === (vegFilter === "veg"));
-    }
-    return items.filter((item) => item.price >= priceMin && item.price <= priceMax);
   };
 
   const sortedRestaurants = [...restaurants].sort((a, b) => {
@@ -293,10 +286,15 @@ export default function FoodPage() {
 
       <div className="px-6 mt-4">
         <div className="rounded-2xl overflow-hidden relative h-44 shadow-sm">
-          <img src="/images/food_hero.png" alt="Premium Food" className="w-full h-full object-cover" onError={(e) => {(e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80";}} />
+          <img
+            src={heroAsset?.image_url || "/images/food_hero.png"}
+            alt="Food Hero Banner"
+            className="w-full h-full object-cover"
+            onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80"; }}
+          />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-5">
-            <h2 className="text-white text-2xl font-black">Gourmet Selection</h2>
-            <p className="text-white/90 text-sm mt-1">Order food from top restaurants near you</p>
+            <h2 className="text-white text-2xl font-black">{heroAsset?.title || "Gourmet Selection"}</h2>
+            <p className="text-white/90 text-sm mt-1">{heroAsset?.subtitle || "Order food from top restaurants near you"}</p>
           </div>
         </div>
       </div>
@@ -334,61 +332,52 @@ export default function FoodPage() {
           <div className="text-center py-8 text-slate-500">No restaurants found</div>
         ) : (
           filteredRestaurants.map((restaurant, index) => (
-            <div key={restaurant.id} className="bg-white rounded-2xl overflow-hidden shadow-sm animate-reveal-up card-lift" style={{ animationDelay: `${Math.min(index * 60, 400)}ms`, opacity: 0 }}>
+            <Link
+              key={restaurant.id}
+              href={`/app/food/${restaurant.id}`}
+              className="block bg-white rounded-2xl overflow-hidden shadow-sm animate-reveal-up card-lift active:scale-[0.98] transition-transform"
+              style={{ animationDelay: `${Math.min(index * 60, 400)}ms`, opacity: 0 }}
+            >
               <div className="flex">
                 <div className="w-32 h-32 flex-shrink-0 overflow-hidden bg-slate-100 relative">
-                  <img src={restaurant.image_url || "/images/food_hero.png"} alt={restaurant.shop_name} className="w-full h-full object-cover" onError={(e) => {(e.target as HTMLImageElement).style.display = "none";}} />
-                  <button onClick={() => { toggleFavorite(restaurant.id); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }} className="absolute top-2 right-2 w-8 h-8 bg-white/90 rounded-full flex items-center justify-center shadow hover:scale-110 transition-transform">
-                    <span className={`material-symbols-outlined text-lg ${favorites.has(restaurant.id) ? "text-red-500 fill-red-500" : "text-slate-400"}`}>favorite</span>
+                  <img
+                    src={restaurant.cover_image_url || restaurant.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"}
+                    alt={restaurant.shop_name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"; }}
+                  />
+                  <button
+                    onClick={(e) => { e.preventDefault(); toggleFavorite(restaurant.id); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }}
+                    className="absolute top-2 right-2 w-8 h-8 bg-white/90 rounded-full flex items-center justify-center shadow hover:scale-110 transition-transform"
+                  >
+                    <span className={`material-symbols-outlined text-lg ${favorites.has(restaurant.id) ? "text-red-500" : "text-slate-400"}`}>favorite</span>
                   </button>
+                  {restaurant.is_new && (
+                    <span className="absolute top-2 left-2 bg-green-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full">NEW</span>
+                  )}
                 </div>
                 <div className="p-4 flex-1">
-                  <h3 className="font-bold text-slate-800 text-base">{restaurant.shop_name}</h3>
-                  <div className="flex items-center gap-2 mt-1">
+                  <div className="flex items-start justify-between gap-1">
+                    <h3 className="font-bold text-slate-800 text-base leading-tight">{restaurant.shop_name}</h3>
+                    {restaurant.is_featured && <span className="text-amber-400 text-base flex-shrink-0">⭐</span>}
+                  </div>
+                  <p className="text-xs text-slate-500 mt-0.5">{restaurant.cuisine}</p>
+                  <div className="flex items-center gap-2 mt-1.5">
                     <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded font-medium">★ {restaurant.rating || "4.0"}</span>
+                    <span className="text-xs text-slate-400">•</span>
                     <span className="text-xs text-slate-500">{restaurant.delivery_time || "30-40 min"}</span>
                   </div>
                   <p className="text-xs text-slate-500 mt-1">Delivery: {restaurant.delivery_fee || "₹49"}</p>
-                  <button onClick={() => { setExpandedRestaurant(expandedRestaurant === restaurant.id ? null : restaurant.id); if (navigator.vibrate) navigator.vibrate(10); }} className="mt-2 text-sm font-bold text-[#ba001c] flex items-center gap-1 active:scale-95 transition-transform">
-                    {expandedRestaurant === restaurant.id ? "Hide Menu" : "View Menu"}
-                    <span className="material-symbols-outlined text-sm transition-transform duration-300">{expandedRestaurant === restaurant.id ? "expand_less" : "expand_more"}</span>
-                  </button>
+                  <div className="mt-2 flex items-center gap-1 text-[#ba001c] font-bold text-xs">
+                    <span>View Menu</span>
+                    <span className="material-symbols-outlined text-sm">chevron_right</span>
+                  </div>
                 </div>
               </div>
-
-              {expandedRestaurant === restaurant.id && (
-                <div className="border-t border-slate-100 px-4 pb-4 space-y-3 bg-slate-50">
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest pt-3 mb-1">Menu</p>
-                  {getMenuItems(restaurant.id).length === 0 ? (
-                    <p className="text-sm text-slate-400 text-center py-4">No items match filters</p>
-                  ) : (
-                    getMenuItems(restaurant.id).map((item) => (
-                      <div key={item.id} className="flex items-center justify-between bg-white rounded-xl p-3 shadow-sm">
-                        <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
-                            <img src={item.image_url || "/images/food_hero.png"} alt={item.name} className="w-full h-full object-cover" onError={(e) => {(e.target as HTMLImageElement).style.display = "none";}} />
-                          </div>
-                          <div>
-                            <div className="flex items-center gap-1.5">
-                              <span className={`w-3.5 h-3.5 border-2 ${item.is_veg ? "border-green-600" : "border-red-600"} rounded-sm flex items-center justify-center`}>
-                                <span className={`w-1.5 h-1.5 ${item.is_veg ? "bg-green-600" : "bg-red-600"} rounded-full`}></span>
-                              </span>
-                              <p className="font-semibold text-slate-800 text-sm">{item.name}</p>
-                            </div>
-                            <p className="font-black text-[#ba001c] text-sm">₹{item.price}</p>
-                          </div>
-                        </div>
-                        <AddToCartButton item={item} restaurant={restaurant} />
-                      </div>
-))
-                  )}
-                </div>
-              )}
-            </div>
+            </Link>
           ))
         )}
       </main>
-
       <CartFloater />
       <QuickActionsFAB />
       </PullToRefresh>

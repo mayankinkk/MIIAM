@@ -18,6 +18,9 @@ interface Vendor {
   is_featured?: boolean;
   is_promoted?: boolean;
   is_new?: boolean;
+  cover_image_url?: string;
+  description?: string;
+  opening_hours?: string;
 }
 
 interface MenuItem {
@@ -59,6 +62,9 @@ export default function AdminVendorsPage() {
     isFeatured: false,
     isPromoted: false,
     isNew: false,
+    coverImageUrl: "",
+    description: "",
+    openingHours: "",
   });
   const [vendorMenuItems, setVendorMenuItems] = useState<MenuItem[]>([]);
   const [newMenuItem, setNewMenuItem] = useState<MenuItem>({ name: "", price: "", category: "Main Course" });
@@ -177,6 +183,9 @@ export default function AdminVendorsPage() {
           is_featured: editForm.isFeatured,
           is_promoted: editForm.isPromoted,
           is_new: editForm.isNew,
+          cover_image_url: editForm.coverImageUrl || null,
+          description: editForm.description || null,
+          opening_hours: editForm.openingHours || null,
         })
         .eq("id", editingVendor.id);
 
@@ -216,6 +225,9 @@ export default function AdminVendorsPage() {
       isFeatured: vendor.is_featured || false,
       isPromoted: vendor.is_promoted || false,
       isNew: vendor.is_new || false,
+      coverImageUrl: vendor.cover_image_url || "",
+      description: vendor.description || "",
+      openingHours: vendor.opening_hours || "",
     });
     await loadVendorMenuItems(vendor.id);
   };
@@ -597,6 +609,41 @@ export default function AdminVendorsPage() {
                         className="w-full p-3 pl-7 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
                       />
                     </div>
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="text-xs font-bold text-slate-600 mb-1 block">Cover Image URL</label>
+                    <input
+                      type="text"
+                      value={editForm.coverImageUrl}
+                      onChange={(e) => setEditForm({ ...editForm, coverImageUrl: e.target.value })}
+                      className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      placeholder="https://... (restaurant cover photo)"
+                    />
+                    {editForm.coverImageUrl && (
+                      <div className="mt-2 h-24 rounded-xl overflow-hidden">
+                        <img src={editForm.coverImageUrl} alt="Cover preview" className="w-full h-full object-cover" onError={(e) => {(e.target as HTMLImageElement).style.opacity = '0.3';}} />
+                      </div>
+                    )}
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="text-xs font-bold text-slate-600 mb-1 block">Restaurant Description</label>
+                    <textarea
+                      value={editForm.description}
+                      onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+                      className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      placeholder="Brief description of the restaurant..."
+                      rows={2}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-slate-600 mb-1 block">Opening Hours</label>
+                    <input
+                      type="text"
+                      value={editForm.openingHours}
+                      onChange={(e) => setEditForm({ ...editForm, openingHours: e.target.value })}
+                      className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      placeholder="e.g. 10:00 AM – 11:00 PM"
+                    />
                   </div>
                   <div>
                     <label className="text-xs font-bold text-slate-600 mb-1 block">Status</label>

@@ -23,9 +23,11 @@ const menuGroups = [
       { name: "Food Orders", href: "/admin/foods", icon: "restaurant" },
       { name: "Menu Items", href: "/admin/foods/menu-items", icon: "menu_book" },
       { name: "Cuisines", href: "/admin/foods/cuisines", icon: "lunch_dining" },
+      { name: "Reviews", href: "/admin/reviews", icon: "star" },
       { name: "Verifications", href: "/admin/vendors/verification", icon: "verified" },
     ],
   },
+
   {
     title: "Home Services",
     items: [
@@ -81,6 +83,8 @@ const menuGroups = [
   {
     title: "Content",
     items: [
+      { name: "Content Manager", href: "/admin/page-assets", icon: "photo_library" },
+      { name: "Banners", href: "/admin/banners", icon: "image" },
       { name: "Blog & Tips", href: "/admin/blog", icon: "article" },
     ],
   },
