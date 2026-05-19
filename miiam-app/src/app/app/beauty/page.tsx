@@ -312,7 +312,7 @@ export default function BeautyPage() {
 
       {/* Booking Modal */}
       {bookingService && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center animate-fade-in">
+        <div className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center animate-fade-in">
           <div className="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl p-4 sm:p-6 max-h-[85vh] sm:max-h-[90vh] overflow-y-auto animate-slide-up">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-xl font-black text-slate-800">Book {bookingService.name}</h3>
