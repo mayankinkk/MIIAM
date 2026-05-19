@@ -12,6 +12,61 @@ import { createClient } from "@/lib/supabase/client";
 
 const supabase = createClient();
 
+function parseIsOpen(hours: string | null | undefined): boolean {
+  if (!hours) return true;
+  try {
+    const to24 = (t: string) => {
+      const [time, mod] = t.trim().split(" ");
+      let [h, m] = time.split(":").map(Number);
+      if (!m) m = 0;
+      if (mod?.toUpperCase() === "PM" && h !== 12) h += 12;
+      if (mod?.toUpperCase() === "AM" && h === 12) h = 0;
+      return h * 60 + m;
+    };
+    const parts = hours.replace("–", "-").split("-");
+    if (parts.length < 2) return true;
+    const now = new Date();
+    const cur = now.getHours() * 60 + now.getMinutes();
+    return cur >= to24(parts[0]) && cur < to24(parts[1]);
+  } catch { return true; }
+}
+
+const PROMO_BANNERS = [
+  { id: 1, label: "🔥 Today's Deal", title: "50% OFF your first order", sub: "Use code FIRST50", color: "from-[#ba001c] to-[#ff7670]" },
+  { id: 2, label: "⚡ Flash Sale", title: "Free delivery all day", sub: "On orders above ₹299", color: "from-violet-600 to-purple-400" },
+  { id: 3, label: "🌟 New Arrival", title: "Try something new", sub: "Freshly added restaurants", color: "from-amber-500 to-yellow-300" },
+];
+
+function PromoBannerCarousel() {
+  const [active, setActive] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setActive((a) => (a + 1) % PROMO_BANNERS.length), 3500);
+    return () => clearInterval(t);
+  }, []);
+  const b = PROMO_BANNERS[active];
+  return (
+    <div className="px-6 mt-3">
+      <div className={`bg-gradient-to-r ${b.color} rounded-2xl p-4 flex items-center justify-between overflow-hidden relative transition-all duration-500`}>
+        <div>
+          <span className="text-white/80 text-[10px] font-black uppercase tracking-widest">{b.label}</span>
+          <p className="text-white font-black text-base mt-0.5">{b.title}</p>
+          <p className="text-white/80 text-xs mt-0.5">{b.sub}</p>
+        </div>
+        <div className="flex flex-col items-end gap-2">
+          <div className="flex gap-1">
+            {PROMO_BANNERS.map((_, i) => (
+              <button key={i} onClick={() => setActive(i)}
+                className={`h-1.5 rounded-full transition-all duration-300 ${i === active ? "w-5 bg-white" : "w-1.5 bg-white/40"}`} />
+            ))}
+          </div>
+        </div>
+        <div className="absolute -right-4 -bottom-4 w-20 h-20 bg-white/10 rounded-full" />
+        <div className="absolute -right-8 -top-4 w-28 h-28 bg-white/5 rounded-full" />
+      </div>
+    </div>
+  );
+}
+
 const foodCategories = [
   { id: "pizza", name: "Pizza", icon: "🍕", color: "bg-orange-100" },
   { id: "burgers", name: "Burgers", icon: "🍔", color: "bg-amber-100" },
@@ -299,6 +354,8 @@ export default function FoodPage() {
         </div>
       </div>
 
+      <PromoBannerCarousel />
+
       <div className="bg-white px-6 py-4 mt-4">
         <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
           <button onClick={() => { setSelectedCategory("all"); if (navigator.vibrate) navigator.vibrate(10); }} className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap ${selectedCategory === "all" ? "bg-[#ba001c] text-white" : "bg-slate-100 text-slate-600"} active:scale-95 transition-all`}>
@@ -355,6 +412,11 @@ export default function FoodPage() {
                   {restaurant.is_new && (
                     <span className="absolute top-2 left-2 bg-green-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full">NEW</span>
                   )}
+                  {(() => { const open = parseIsOpen(restaurant.opening_hours); return (
+                    <span className={`absolute bottom-0 left-0 right-0 text-[9px] font-black text-center py-0.5 ${
+                      open ? "bg-green-600/90 text-white" : "bg-black/60 text-white"
+                    }`}>{open ? "OPEN" : "CLOSED"}</span>
+                  );})()}
                 </div>
                 <div className="p-4 flex-1">
                   <div className="flex items-start justify-between gap-1">

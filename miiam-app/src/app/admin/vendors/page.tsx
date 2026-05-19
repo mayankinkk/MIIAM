@@ -206,6 +206,23 @@ export default function AdminVendorsPage() {
     }
   };
 
+  const handleDeleteVendor = async (vendor: Vendor) => {
+    if (!confirm(`Delete "${vendor.shop_name}" and all their menu items? This cannot be undone.`)) return;
+    setLoading(true);
+    try {
+      // Delete menu items first (in case no cascade set)
+      await supabase.from("menu_items").delete().eq("vendor_id", vendor.id);
+      const { error } = await supabase.from("vendors").delete().eq("id", vendor.id);
+      if (error) throw error;
+      setVendors(vendors.filter(v => v.id !== vendor.id));
+      alert("Vendor deleted.");
+    } catch (error: any) {
+      alert(`Failed to delete: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingVendor) return;
@@ -1020,12 +1037,21 @@ export default function AdminVendorsPage() {
                       </span>
                     </td>
                     <td className="p-4">
-                      <button 
-                        onClick={() => handleEditClick(vendor)}
-                        className="text-[#ba001c] font-bold hover:underline"
-                      >
-                        Edit
-                      </button>
+                      <div className="flex items-center gap-3">
+                        <button 
+                          onClick={() => handleEditClick(vendor)}
+                          className="text-[#ba001c] font-bold hover:underline text-xs"
+                        >
+                          Edit
+                        </button>
+                        <button 
+                          onClick={() => handleDeleteVendor(vendor)}
+                          className="text-red-500 hover:text-red-700 font-bold text-xs flex items-center gap-1"
+                        >
+                          <span className="material-symbols-outlined text-sm">delete</span>
+                          Delete
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))

@@ -10,6 +10,27 @@ const supabase = createClient();
 
 const MENU_CATEGORIES = ["All", "Starters", "Main Course", "Desserts", "Beverages"];
 
+function parseIsOpen(hours: string | null | undefined): boolean {
+  if (!hours) return true; // assume open if not set
+  try {
+    const to24 = (t: string) => {
+      const [time, mod] = t.trim().split(" ");
+      let [h, m] = time.split(":").map(Number);
+      if (!m) m = 0;
+      if (mod?.toUpperCase() === "PM" && h !== 12) h += 12;
+      if (mod?.toUpperCase() === "AM" && h === 12) h = 0;
+      return h * 60 + m;
+    };
+    const parts = hours.replace("–", "-").split("-");
+    if (parts.length < 2) return true;
+    const open = to24(parts[0]);
+    const close = to24(parts[1]);
+    const now = new Date();
+    const cur = now.getHours() * 60 + now.getMinutes();
+    return cur >= open && cur < close;
+  } catch { return true; }
+}
+
 interface Vendor {
   id: string;
   shop_name: string;
@@ -244,6 +265,8 @@ export default function RestaurantProfilePage() {
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState("All");
   const [showReviewModal, setShowReviewModal] = useState(false);
+  const [vegOnly, setVegOnly] = useState(false);
+  const [menuSearch, setMenuSearch] = useState("");
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -282,8 +305,12 @@ export default function RestaurantProfilePage() {
   }
 
   const coverImage = vendor.cover_image_url || vendor.image_url || "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80";
+  const isOpen = parseIsOpen(vendor.opening_hours);
   const specials = menuItems.filter((item) => item.is_featured);
-  const filteredMenu = activeCategory === "All" ? menuItems : menuItems.filter((item) => item.category === activeCategory);
+  const filteredMenu = menuItems
+    .filter((item) => activeCategory === "All" || item.category === activeCategory)
+    .filter((item) => !vegOnly || item.is_veg)
+    .filter((item) => !menuSearch || item.name.toLowerCase().includes(menuSearch.toLowerCase()) || item.description?.toLowerCase().includes(menuSearch.toLowerCase()));
   const availableCategories = MENU_CATEGORIES.filter(
     (cat) => cat === "All" || menuItems.some((item) => item.category === cat)
   );
@@ -350,6 +377,12 @@ export default function RestaurantProfilePage() {
 
       {/* Info Strip */}
       <div className="bg-white px-5 py-4 flex items-center gap-4 overflow-x-auto no-scrollbar shadow-sm border-b border-slate-100">
+        <span className={`flex-shrink-0 px-2.5 py-1 rounded-full text-xs font-black uppercase tracking-wider ${
+          isOpen ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"
+        }`}>
+          {isOpen ? "🟢 Open" : "🔴 Closed"}
+        </span>
+        <div className="w-px h-4 bg-slate-200" />
         <div className="flex items-center gap-1.5 text-slate-600 flex-shrink-0">
           <span className="material-symbols-outlined text-[#ba001c] text-base">schedule</span>
           <span className="text-sm font-semibold">{vendor.delivery_time || "30-40 min"}</span>
@@ -420,8 +453,36 @@ export default function RestaurantProfilePage() {
 
       {/* Menu Tabs */}
       <section className="mt-5">
-        <div className="px-4 mb-3">
+        <div className="px-4 mb-3 flex items-center justify-between gap-3">
           <h2 className="text-lg font-black text-slate-800">Full Menu</h2>
+          <label className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full cursor-pointer text-xs font-bold transition-all ${
+            vegOnly ? "bg-green-600 text-white" : "bg-green-50 text-green-700 border border-green-200"
+          }`}>
+            <input type="checkbox" checked={vegOnly} onChange={(e) => setVegOnly(e.target.checked)} className="hidden" />
+            <span className="w-3 h-3 border-2 border-current rounded-sm flex items-center justify-center flex-shrink-0">
+              <span className="w-1.5 h-1.5 bg-current rounded-full" />
+            </span>
+            Veg Only
+          </label>
+        </div>
+
+        {/* Search bar */}
+        <div className="px-4 mb-3">
+          <div className="relative">
+            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-base">search</span>
+            <input
+              type="text"
+              value={menuSearch}
+              onChange={(e) => setMenuSearch(e.target.value)}
+              placeholder="Search menu items..."
+              className="w-full pl-9 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#ba001c] shadow-sm"
+            />
+            {menuSearch && (
+              <button onClick={() => setMenuSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                <span className="material-symbols-outlined text-base">close</span>
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Category tabs */}
@@ -445,18 +506,23 @@ export default function RestaurantProfilePage() {
         <div className="px-4 mt-3 space-y-3">
           {filteredMenu.length === 0 ? (
             <div className="bg-white rounded-2xl p-8 text-center text-slate-400 shadow-sm">
-              No items in this category
+              {menuSearch ? `No results for "${menuSearch}"` : "No items in this category"}
             </div>
           ) : (
             filteredMenu.map((item) => (
               <div key={item.id} className="bg-white rounded-2xl p-3 shadow-sm flex items-center gap-3">
-                <div className="w-20 h-20 rounded-xl overflow-hidden bg-slate-100 flex-shrink-0">
+                <div className="w-20 h-20 rounded-xl overflow-hidden bg-slate-100 flex-shrink-0 relative">
                   <img
                     src={item.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"}
                     alt={item.name}
                     className="w-full h-full object-cover"
                     onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"; }}
                   />
+                  {item.is_featured && (
+                    <span className="absolute bottom-0 left-0 right-0 bg-black/50 backdrop-blur-sm text-white text-[9px] font-black text-center py-0.5 tracking-wider">
+                      ⭐ CHEF'S SPECIAL
+                    </span>
+                  )}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5 mb-0.5">
