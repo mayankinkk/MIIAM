@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
@@ -16,55 +16,295 @@ interface PromoCode {
   is_active: boolean;
 }
 
-function CouponReveal({ code, discount, onReveal }: { code: string; discount: string; onReveal: () => void }) {
-  const [revealed, setRevealed] = useState(false);
-  const [scratchProgress, setScratchProgress] = useState(0);
+function ConfettiOverlay() {
+  const [particles, setParticles] = useState<any[]>([]);
 
   useEffect(() => {
-    if (revealed) {
-      const timer = setTimeout(onReveal, 1500);
-      return () => clearTimeout(timer);
-    }
-  }, [revealed, onReveal]);
+    const colors = ["#ffd700", "#ff7670", "#ba001c", "#38bdf8", "#34d399", "#c084fc"];
+    const newParticles = Array.from({ length: 35 }).map((_, i) => ({
+      id: i,
+      left: Math.random() * 100,
+      top: Math.random() * 20 - 10,
+      size: Math.random() * 6 + 4,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      delay: Math.random() * 0.3,
+      duration: Math.random() * 1.2 + 0.8,
+      angle: Math.random() * 360,
+    }));
+    setParticles(newParticles);
+  }, []);
 
   return (
-    <div className="relative bg-gradient-to-br from-[#ba001c] to-[#ff7670] rounded-xl p-4 overflow-hidden cursor-pointer group">
-      {/* Scratch overlay */}
-      {!revealed && (
-        <div 
-          className="absolute inset-0 bg-gradient-to-r from-[#ff7670] to-[#ffc371] flex items-center justify-center z-10 transition-all duration-500"
-          onClick={() => setRevealed(true)}
-          onMouseMove={(e) => {
-            const rect = e.currentTarget.getBoundingClientRect();
-            const x = ((e.clientX - rect.left) / rect.width) * 100;
-            setScratchProgress(Math.min(x, 100));
-            if (x > 60) setRevealed(true);
+    <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
+      {particles.map((p) => (
+        <div
+          key={p.id}
+          className="absolute rounded-sm animate-confetti-fall"
+          style={{
+            left: `${p.left}%`,
+            top: `${p.top}%`,
+            width: `${p.size}px`,
+            height: `${p.size}px`,
+            backgroundColor: p.color,
+            transform: `rotate(${p.angle}deg)`,
+            animationDelay: `${p.delay}s`,
+            animationDuration: `${p.duration}s`,
+            animationIterationCount: 1,
+            animationFillMode: "forwards",
           }}
-        >
-          <div className="text-center">
-            <span className="text-4xl mb-2 block">🎁</span>
-            <p className="text-white font-bold text-sm">Scratch to reveal!</p>
-          </div>
-          {/* Scratch progress overlay */}
-          <div 
-            className="absolute inset-0 bg-gradient-to-r from-[#ba001c] to-[#ff5f6d] transition-all duration-100"
-            style={{ clipPath: `polygon(0 0, ${scratchProgress}% 0, ${scratchProgress}% 100%, 0 100%)` }}
-          />
-        </div>
-      )}
-      
-      {/* Revealed content */}
-      {revealed && (
-        <div className="flex items-center gap-4 animate-fade-in">
-          <div className="bg-white/20 rounded-xl p-3">
-            <span className="text-3xl">🏷️</span>
+        />
+      ))}
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes confetti-fall {
+          0% {
+            transform: translateY(-20px) rotate(0deg);
+            opacity: 1;
+          }
+          100% {
+            transform: translateY(140px) rotate(360deg);
+            opacity: 0;
+          }
+        }
+        .animate-confetti-fall {
+          animation-name: confetti-fall;
+          animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+      `}} />
+    </div>
+  );
+}
+
+function CouponReveal({ code, discount, onReveal }: { code: string; discount: string; onReveal: () => void }) {
+  const [revealed, setRevealed] = useState(false);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isScratching, setIsScratching] = useState(false);
+  const lastX = useRef<number | null>(null);
+  const lastY = useRef<number | null>(null);
+
+  // Use a ref to capture the latest onReveal and avoid dependencies re-triggering the useEffect
+  const onRevealRef = useRef(onReveal);
+  useEffect(() => {
+    onRevealRef.current = onReveal;
+  });
+
+  // Call onReveal once when revealed is set to true
+  useEffect(() => {
+    if (revealed) {
+      const timer = setTimeout(() => {
+        onRevealRef.current();
+      }, 700); // Trigger callback slightly after reveal transition
+      return () => clearTimeout(timer);
+    }
+  }, [revealed]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || revealed) return;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    // Set canvas dimensions based on container
+    const resizeCanvas = () => {
+      if (!canvas) return;
+      const rect = containerRef.current?.getBoundingClientRect();
+      canvas.width = rect?.width || 320;
+      canvas.height = rect?.height || 100;
+
+      // Draw scratch layer
+      ctx.fillStyle = "transparent";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Create a gorgeous gradient for the scratch layer
+      const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+      grad.addColorStop(0, "#ba001c");
+      grad.addColorStop(0.5, "#ff7670");
+      grad.addColorStop(1, "#fecfef");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Draw elegant golden sparkles/dots patterns on the scratch layer
+      ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+      for (let i = 0; i < 40; i++) {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        const r = Math.random() * 2 + 1;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Add a stylish overlay border pattern
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.25)";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(5, 5, canvas.width - 10, canvas.height - 10);
+
+      // Add "Scratch Card" text
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 15px sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.shadowColor = "rgba(0, 0, 0, 0.25)";
+      ctx.shadowBlur = 4;
+      ctx.fillText("🎁 EXCLUSIVE GIFT 🎁", canvas.width / 2, canvas.height / 2 - 10);
+
+      ctx.font = "bold 11px sans-serif";
+      ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+      ctx.fillText("Scratch with finger or mouse to reveal!", canvas.width / 2, canvas.height / 2 + 14);
+    };
+
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+
+    return () => window.removeEventListener("resize", resizeCanvas);
+  }, [revealed]);
+
+  // Handle scratching logic
+  const scratch = (clientX: number, clientY: number, isStarting = false) => {
+    const canvas = canvasRef.current;
+    if (!canvas || revealed) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.lineJoin = "round";
+    ctx.lineCap = "round";
+    ctx.lineWidth = 45; // thick brush for scratch
+
+    ctx.beginPath();
+    if (isStarting || lastX.current === null || lastY.current === null) {
+      ctx.arc(x, y, 22.5, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.moveTo(lastX.current, lastY.current);
+      ctx.lineTo(x, y);
+      ctx.stroke();
+    }
+
+    lastX.current = x;
+    lastY.current = y;
+
+    // Check cleared percentage
+    checkScratchPercentage();
+  };
+
+  const checkScratchPercentage = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const pixels = imgData.data;
+    let clearedCount = 0;
+
+    // Check every 4th pixel (alpha channel) for performance
+    for (let i = 3; i < pixels.length; i += 16) {
+      if (pixels[i] === 0) {
+        clearedCount++;
+      }
+    }
+
+    const totalPixels = pixels.length / 16;
+    const percentage = (clearedCount / totalPixels) * 100;
+
+    if (percentage > 40) {
+      setRevealed(true);
+    }
+  };
+
+  const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    setIsScratching(true);
+    scratch(e.clientX, e.clientY, true);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (!isScratching) return;
+    scratch(e.clientX, e.clientY);
+  };
+
+  const handleMouseUp = () => {
+    setIsScratching(false);
+    lastX.current = null;
+    lastY.current = null;
+  };
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    setIsScratching(true);
+    if (e.touches[0]) {
+      scratch(e.touches[0].clientX, e.touches[0].clientY, true);
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    if (!isScratching) return;
+    if (e.touches[0]) {
+      // Prevent scrolling when scratching
+      if (e.cancelable) e.preventDefault();
+      scratch(e.touches[0].clientX, e.touches[0].clientY);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setIsScratching(false);
+    lastX.current = null;
+    lastY.current = null;
+  };
+
+  return (
+    <div 
+      ref={containerRef}
+      className="relative w-full h-[100px] rounded-2xl overflow-hidden shadow-inner border border-[#dd9ca6]/30 bg-gradient-to-br from-[#1e1b29] to-[#0d0b14] p-0.5 select-none"
+    >
+      {/* Revealed content (Underneath) */}
+      <div className="absolute inset-0 flex items-center justify-between px-6 bg-gradient-to-r from-[#1a131b] via-[#2d111d] to-[#1a131b]">
+        {/* Decorative elements */}
+        <div className="absolute -left-6 -top-6 w-16 h-16 bg-[#ba001c]/25 rounded-full blur-xl" />
+        <div className="absolute -right-6 -bottom-6 w-16 h-16 bg-[#ff7670]/25 rounded-full blur-xl" />
+        
+        <div className="flex items-center gap-4 z-10">
+          <div className="relative flex items-center justify-center w-12 h-12 bg-gradient-to-br from-amber-400 to-yellow-600 rounded-xl shadow-lg border border-amber-300">
+            <span className="material-symbols-outlined text-white text-2xl animate-bounce">local_offer</span>
           </div>
           <div>
-            <p className="text-white/80 text-xs font-bold uppercase tracking-widest">Revealed!</p>
-            <p className="text-white font-black text-2xl">{code}</p>
-            <p className="text-white/90 text-sm font-semibold">{discount} off your order!</p>
+            <p className="text-amber-400 font-extrabold text-[10px] uppercase tracking-widest flex items-center gap-1">
+              🎉 Unlocked!
+            </p>
+            <p className="text-white font-black text-2xl tracking-tight leading-none mt-1">{code}</p>
+            <p className="text-slate-300 text-xs font-semibold mt-1">{discount} off your order</p>
           </div>
         </div>
+
+        {/* Action instruction */}
+        <div className="text-right z-10">
+          <span className="text-[10px] bg-green-500/20 text-green-400 border border-green-500/30 font-extrabold px-3 py-1 rounded-full animate-pulse">
+            COPIED!
+          </span>
+          <p className="text-[9px] text-slate-400 mt-1.5 font-medium">Applied automatically</p>
+        </div>
+
+        {/* Small sparkling particles */}
+        {revealed && <ConfettiOverlay />}
+      </div>
+
+      {/* Canvas scratch layer */}
+      {!revealed && (
+        <canvas
+          ref={canvasRef}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          className="absolute inset-0 w-full h-full z-20 cursor-crosshair touch-none transition-opacity duration-500 ease-out"
+        />
       )}
     </div>
   );
