@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useCartStore } from "@/lib/store/cartStore";
 import { OrderSkeleton } from "@/components/Skeleton";
-import { EmptyState } from "@/components/EmptyState";
+import EmptyState from "@/components/EmptyState";
 
 const statusColors: Record<string, string> = {
   pending: "bg-[#ffd709]/20 text-[#453900]",

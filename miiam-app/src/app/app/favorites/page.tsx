@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useFavoritesStore } from "@/lib/store/favoritesStore";
 import { createClient } from "@/lib/supabase/client";
-import { EmptyState } from "@/components/EmptyState";
+import EmptyState from "@/components/EmptyState";
 import { VendorCardSkeleton } from "@/components/Skeleton";
 import { useState, useEffect } from "react";
 
