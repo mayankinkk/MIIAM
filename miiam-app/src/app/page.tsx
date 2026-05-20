@@ -307,7 +307,7 @@ export default function LandingPage() {
             <Link href="/privacy" className="text-slate-500 text-xs uppercase tracking-widest font-semibold hover:text-white transition-colors duration-200">
               Privacy
             </Link>
-            <Link href="/terms#refund" className="text-slate-500 text-xs uppercase tracking-widest font-semibold hover:text-white transition-colors duration-200">
+            <Link href="/refunds" className="text-slate-500 text-xs uppercase tracking-widest font-semibold hover:text-white transition-colors duration-200">
               Refunds
             </Link>
           </div>
