@@ -1,8 +1,21 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 
 export default function PrivacyPolicyPage() {
+  useEffect(() => {
+    const root = document.documentElement;
+    const hadDark = root.classList.contains("dark");
+    if (hadDark) {
+      root.classList.remove("dark");
+    }
+    return () => {
+      if (hadDark) {
+        root.classList.add("dark");
+      }
+    };
+  }, []);
   return (
     <div className="min-h-screen bg-background text-on-background font-sans">
       <nav className="fixed top-0 w-full z-50 bg-surface-container/80 backdrop-blur-xl border-b border-outline-variant/20">

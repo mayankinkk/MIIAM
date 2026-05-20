@@ -1,10 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 
 export default function TermsOfService() {
   const [activeSection, setActiveSection] = useState<string>("introduction");
+
+  useEffect(() => {
+    const root = document.documentElement;
+    const hadDark = root.classList.contains("dark");
+    if (hadDark) {
+      root.classList.remove("dark");
+    }
+    return () => {
+      if (hadDark) {
+        root.classList.add("dark");
+      }
+    };
+  }, []);
 
   const scrollToSection = (id: string) => {
     setActiveSection(id);
