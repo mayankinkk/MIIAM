@@ -34,33 +34,39 @@ export default function RiderAccountPage() {
   }, [supabase]);
 
   async function loadRider() {
-    const { data } = await supabase
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setLoading(false); return; }
+    
+    const { data: riderData } = await supabase
       .from("riders")
       .select("*, profile:profiles(*)")
+      .eq("user_id", user.id)
       .single();
-    if (data) setRider(data);
+    
+    if (riderData) {
+      setRider(riderData);
+      setIsOnline(riderData.is_online || false);
+    }
     setLoading(false);
   }
 
-  const mockRider = {
-    name: "Delhi Metro Rider",
-    phone: "+91 12345 67890",
-    email: "fordelhimetro1@gmail.com",
-    vehicle: "Honda Activa",
-    rating: 4.9,
-    totalDeliveries: 342,
-    joined: "May 2026",
-    isOnline: true,
-    timeOnJob: "4h 32m",
-    distanceCovered: "28.5 km",
-  };
-
-  const displayRider = rider || mockRider;
+  const displayRider = rider ? {
+    ...rider,
+    totalDeliveries: rider.total_deliveries || 0,
+    totalEarnings: rider.total_earnings || 0,
+    rating: rider.rating || 5.0,
+    phone: rider.phone,
+    email: rider.profile?.email || "",
+    name: rider.name || rider.profile?.full_name || "Rider",
+    vehicle: rider.vehicle_type,
+    isOnline: rider.is_online,
+  } : null;
 
   async function toggleOnline() {
-    const newStatus = !displayRider.isOnline;
+    const newStatus = !isOnline;
     if (rider) {
       await supabase.from("riders").update({ is_online: newStatus }).eq("id", rider.id);
+      setIsOnline(newStatus);
     }
     alert(`You are now ${newStatus ? "Online" : "Offline"}`);
   }
@@ -167,16 +173,16 @@ export default function RiderAccountPage() {
         {/* Quick Stats */}
         <div className="grid grid-cols-3 gap-3">
           <div className="bg-white p-3 rounded-2xl shadow-sm text-center">
-            <p className="text-lg font-black text-[#0b50d5]">{displayRider.totalDeliveries}</p>
+            <p className="text-lg font-black text-[#0b50d5]">{displayRider?.totalDeliveries || 0}</p>
             <p className="text-[9px] text-slate-400">Deliveries</p>
           </div>
           <div className="bg-white p-3 rounded-2xl shadow-sm text-center">
-            <p className="text-lg font-black text-[#0b50d5]">{displayRider.timeOnJob}</p>
-            <p className="text-[9px] text-slate-400">Time Online</p>
+            <p className="text-lg font-black text-green-600">₹{displayRider?.totalEarnings || 0}</p>
+            <p className="text-[9px] text-slate-400">Earned</p>
           </div>
           <div className="bg-white p-3 rounded-2xl shadow-sm text-center">
-            <p className="text-lg font-black text-[#0b50d5]">{displayRider.distanceCovered}</p>
-            <p className="text-[9px] text-slate-400">Distance</p>
+            <p className="text-lg font-black text-[#0b50d5]">{(displayRider?.rating || 5).toFixed(1)}</p>
+            <p className="text-[9px] text-slate-400">Rating</p>
           </div>
         </div>
 
@@ -186,12 +192,12 @@ export default function RiderAccountPage() {
             <p className="font-bold text-[#4d212a]">Your Rating</p>
             <div className="flex items-center gap-1">
               <span className="material-symbols-outlined text-yellow-400" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-              <span className="font-bold text-lg text-[#4d212a]">{displayRider.rating}</span>
+              <span className="font-bold text-lg text-[#4d212a]">{(displayRider?.rating || 5).toFixed(1)}</span>
               <span className="text-slate-400 text-sm">/ 5.0</span>
             </div>
           </div>
           <div className="w-full bg-slate-100 rounded-full h-2">
-            <div className="bg-green-500 h-2 rounded-full" style={{ width: `${(displayRider.rating / 5) * 100}%` }}></div>
+            <div className="bg-green-500 h-2 rounded-full" style={{ width: `${((displayRider?.rating || 5) / 5) * 100}%` }}></div>
           </div>
           <p className="text-xs text-slate-400 mt-2">Maintain 4.5+ to avoid suspension</p>
         </div>

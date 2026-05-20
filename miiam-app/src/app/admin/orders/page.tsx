@@ -273,16 +273,9 @@ export default function OrderManagement() {
                   <p className="font-bold text-slate-800">{selectedOrder.vendor?.name}</p>
                 </div>
                 <div className="bg-slate-50 p-4 rounded-xl">
-                  <p className="text-[10px] font-black text-slate-400 uppercase mb-1">Status</p>
-                  <select
-                    value={selectedOrder.status}
-                    onChange={(e) => updateStatus(selectedOrder.id, e.target.value as OrderStatus)}
-                    className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm font-bold"
-                  >
-                    {STATUS_OPTIONS.map(s => (
-                      <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1).replace("_", " ")}</option>
-                    ))}
-                  </select>
+                  <p className="text-[10px] font-black text-slate-400 uppercase mb-1">Rider</p>
+                  <p className="font-bold text-slate-800">{selectedOrder.rider?.name || "Not Assigned"}</p>
+                  {selectedOrder.rider?.phone && <p className="text-xs text-slate-500">{selectedOrder.rider.phone}</p>}
                 </div>
               </div>
               <div className="bg-slate-50 p-4 rounded-xl space-y-2">

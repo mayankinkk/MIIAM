@@ -22,6 +22,7 @@ interface DailyEarning {
 
 export default function RiderWalletPage() {
   const supabase = createClient();
+  const [riderId, setRiderId] = useState<string | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"wallet" | "earnings" | "payouts">("wallet");
@@ -29,43 +30,19 @@ export default function RiderWalletPage() {
   const [showInstantPayout, setShowInstantPayout] = useState(false);
   const [instantPayoutAmount, setInstantPayoutAmount] = useState("");
   const [processingPayout, setProcessingPayout] = useState(false);
-
-  const mockWallet = {
-    balance: 2500,
-    pendingPayout: 450,
-    totalEarnings: 12500,
-    advanceUsed: 3200,
-    instantPayoutFee: 2,
-  };
-
-  const weeklyEarnings: DailyEarning[] = [
-    { date: "Mon", deliveries: 8, earnings: 420, avgPerDelivery: 52.5 },
-    { date: "Tue", deliveries: 12, earnings: 680, avgPerDelivery: 56.67 },
-    { date: "Wed", deliveries: 6, earnings: 290, avgPerDelivery: 48.33 },
-    { date: "Thu", deliveries: 15, earnings: 850, avgPerDelivery: 56.67 },
-    { date: "Fri", deliveries: 10, earnings: 520, avgPerDelivery: 52 },
-    { date: "Sat", deliveries: 18, earnings: 1020, avgPerDelivery: 56.67 },
-    { date: "Sun", deliveries: 14, earnings: 760, avgPerDelivery: 54.29 },
-  ];
-
-  const totalWeekEarnings = weeklyEarnings.reduce((s, d) => s + d.earnings, 0);
-  const totalDeliveries = weeklyEarnings.reduce((s, d) => s + d.deliveries, 0);
-
-  async function loadTransactions() {
-    const { data } = await supabase
-      .from("rider_wallet")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .limit(20);
-    if (data) setTransactions(data);
-    setLoading(false);
-  }
+  const [walletData, setWalletData] = useState({ balance: 0, pendingPayout: 0, totalEarnings: 0, advanceUsed: 0, instantPayoutFee: 2 });
+  const [weeklyEarnings, setWeeklyEarnings] = useState<DailyEarning[]>([]);
+  const [totalWeekEarnings, setTotalWeekEarnings] = useState(0);
+  const [totalDeliveries, setTotalDeliveries] = useState(0);
 
   useEffect(() => {
-    loadTransactions();
+    loadWalletData();
   }, [supabase]);
 
   async function requestPayout(amount: number) {
+    if (riderId) {
+      await supabase.from("rider_wallets").update({ pending_payout: amount }).eq("rider_id", riderId);
+    }
     alert(`Payout request of ₹${amount} submitted! Will be processed in 24-48 hours.`);
   }
 
@@ -75,32 +52,31 @@ export default function RiderWalletPage() {
       alert("Minimum instant payout is ₹100");
       return;
     }
-    if (amount > mockWallet.balance) {
+    if (amount > walletData.balance) {
       alert("Insufficient balance");
       return;
     }
 
     setProcessingPayout(true);
-    const fee = Math.round(amount * (mockWallet.instantPayoutFee / 100));
+    const fee = Math.round(amount * (walletData.instantPayoutFee / 100));
     const netAmount = amount - fee;
 
-    setTimeout(() => {
-      alert(`Instant payout of ₹${netAmount} initiated! (₹${fee} fee deducted). Amount will be credited in 5-30 minutes.`);
-      setProcessingPayout(false);
-      setShowInstantPayout(false);
-      setInstantPayoutAmount("");
-    }, 2000);
+    if (riderId) {
+      await supabase.from("rider_wallets").update({
+        balance: walletData.balance - amount,
+        pending_payout: walletData.pendingPayout + netAmount,
+      }).eq("rider_id", riderId);
+      await loadWalletData();
+    }
+
+    setProcessingPayout(false);
+    setShowInstantPayout(false);
+    setInstantPayoutAmount("");
+    alert(`Instant payout of ₹${netAmount} initiated! (₹${fee} fee deducted). Amount will be credited in 5-30 minutes.`);
   }
 
   const now = Date.now();
-  const mockTransactions: Transaction[] = [
-    { id: "1", amount: 150, type: "earning", description: "Order #ORD001 delivery", created_at: new Date(now).toISOString(), order_id: "ord1" },
-    { id: "2", amount: -80, type: "expense", description: "Advance for Order #ORD002", created_at: new Date(now - 3600000).toISOString(), order_id: "ord2" },
-    { id: "3", amount: 200, type: "earning", description: "Order #1230 delivery", created_at: new Date(now - 7200000).toISOString(), order_id: "ord3" },
-    { id: "4", amount: 120, type: "earning", description: "Order #1229 delivery (Peak)", created_at: new Date(now - 10800000).toISOString(), order_id: "ord4" },
-  ];
-
-  const displayTxns: Transaction[] = transactions.length > 0 ? transactions : mockTransactions;
+  const displayTxns: Transaction[] = transactions;
 
   return (
     <div className="min-h-screen bg-[#fff4f4]">
@@ -113,7 +89,7 @@ export default function RiderWalletPage() {
           <>
             <div className="mt-8 text-center">
               <p className="text-sm opacity-70 mb-1">Available Balance</p>
-              <p className="text-5xl font-black">₹{mockWallet.balance.toLocaleString()}</p>
+              <p className="text-5xl font-black">₹{walletData.balance.toLocaleString()}</p>
             </div>
 
             <div className="flex gap-3 mt-6">
@@ -157,15 +133,15 @@ export default function RiderWalletPage() {
             <div className="grid grid-cols-3 gap-3">
               <div className="bg-white p-3 rounded-2xl shadow-lg text-center">
                 <p className="text-[9px] text-slate-400 uppercase">Total Earned</p>
-                <p className="text-lg font-black text-green-600">₹{mockWallet.totalEarnings}</p>
+                <p className="text-lg font-black text-green-600">₹{walletData.totalEarnings}</p>
               </div>
               <div className="bg-white p-3 rounded-2xl shadow-lg text-center">
                 <p className="text-[9px] text-slate-400 uppercase">Advance Used</p>
-                <p className="text-lg font-black text-amber-600">₹{mockWallet.advanceUsed}</p>
+                <p className="text-lg font-black text-amber-600">₹{walletData.advanceUsed}</p>
               </div>
               <div className="bg-white p-3 rounded-2xl shadow-lg text-center">
                 <p className="text-[9px] text-slate-400 uppercase">Pending</p>
-                <p className="text-lg font-black text-slate-400">₹{mockWallet.pendingPayout}</p>
+                <p className="text-lg font-black text-slate-400">₹{walletData.pendingPayout}</p>
               </div>
             </div>
 
@@ -298,7 +274,15 @@ export default function RiderWalletPage() {
             <div className="bg-white rounded-2xl p-6 shadow-sm">
               <h3 className="font-bold text-slate-800 mb-4">Daily Breakdown</h3>
               <div className="space-y-3">
-                {weeklyEarnings.map((day) => (
+                {(weeklyEarnings.length > 0 ? weeklyEarnings : [
+                  { date: "Mon", deliveries: 0, earnings: 0, avgPerDelivery: 0 },
+                  { date: "Tue", deliveries: 0, earnings: 0, avgPerDelivery: 0 },
+                  { date: "Wed", deliveries: 0, earnings: 0, avgPerDelivery: 0 },
+                  { date: "Thu", deliveries: 0, earnings: 0, avgPerDelivery: 0 },
+                  { date: "Fri", deliveries: 0, earnings: 0, avgPerDelivery: 0 },
+                  { date: "Sat", deliveries: 0, earnings: 0, avgPerDelivery: 0 },
+                  { date: "Sun", deliveries: 0, earnings: 0, avgPerDelivery: 0 },
+                ]).map((day) => (
                   <div key={day.date} className="flex items-center justify-between p-2 hover:bg-slate-50 rounded-lg">
                     <div className="flex items-center gap-3">
                       <span className="text-sm font-bold text-slate-600 w-8">{day.date}</span>
@@ -318,7 +302,15 @@ export default function RiderWalletPage() {
             <div className="bg-white rounded-2xl p-6 shadow-sm">
               <h3 className="font-bold text-slate-800 mb-4">Earnings Chart</h3>
               <div className="h-40 flex items-end gap-2">
-                {weeklyEarnings.map((day) => (
+                {(weeklyEarnings.length > 0 ? weeklyEarnings : [
+                  { date: "Mon", deliveries: 0, earnings: 0, avgPerDelivery: 0 },
+                  { date: "Tue", deliveries: 0, earnings: 0, avgPerDelivery: 0 },
+                  { date: "Wed", deliveries: 0, earnings: 0, avgPerDelivery: 0 },
+                  { date: "Thu", deliveries: 0, earnings: 0, avgPerDelivery: 0 },
+                  { date: "Fri", deliveries: 0, earnings: 0, avgPerDelivery: 0 },
+                  { date: "Sat", deliveries: 0, earnings: 0, avgPerDelivery: 0 },
+                  { date: "Sun", deliveries: 0, earnings: 0, avgPerDelivery: 0 },
+                ]).map((day) => (
                   <div key={day.date} className="flex-1 flex flex-col items-center gap-2">
                     <div 
                       className="w-full bg-gradient-to-t from-[#0b50d5] to-blue-400 rounded-t-lg"
@@ -397,10 +389,10 @@ export default function RiderWalletPage() {
                 ))}
               </div>
               <button 
-                onClick={() => requestPayout(mockWallet.balance)}
+                onClick={() => requestPayout(walletData.balance)}
                 className="w-full py-4 bg-[#0b50d5] text-white rounded-xl font-bold"
               >
-                Withdraw Full Balance (₹{mockWallet.balance})
+                Withdraw Full Balance (₹{walletData.balance})
               </button>
               <p className="text-xs text-slate-400 text-center mt-2">Standard payout: 24-48 hours • Free</p>
             </div>

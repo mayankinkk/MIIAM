@@ -6,6 +6,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useToastStore } from "@/lib/store/toastStore";
+import { useLocationStore } from "@/lib/store/locationStore";
 import AddressPickerSheet, { type SelectedAddress } from "@/components/AddressPickerSheet";
 import { RiderTipSelector, TipThankYou } from "@/components/RiderTip";
 
@@ -42,6 +43,14 @@ export default function CheckoutPage() {
   const { items, totalPrice, clearCart } = useCartStore();
   const supabase = createClient();
   const { addToast } = useToastStore();
+  const locationStore = useLocationStore();
+  const userPincode = locationStore.pincode;
+
+  useEffect(() => {
+    if (!userPincode) {
+      locationStore.setLocation({ pincode: "000000", displayAddress: "Checking..." });
+    }
+  }, []);
 
   useEffect(() => {
     // Read URL params
@@ -137,6 +146,16 @@ export default function CheckoutPage() {
     if (items.length === 0) {
       alert("Your cart is empty! Add items from the Food page first.");
       return;
+    }
+    
+    if (userPincode && userPincode !== "000000") {
+      const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id)));
+      const { data: vendors } = await supabase.from("vendors").select("id, pincode, name").in("id", vendorIds);
+      const unserviceable = vendors?.filter(v => v.pincode && v.pincode !== userPincode) || [];
+      if (unserviceable.length > 0) {
+        addToast(`Some items (${unserviceable.map(v => v.name).join(", ")}) are not deliverable at your location. Please remove them to proceed.`, "error");
+        return;
+      }
     }
     
     setPlacing(true);
