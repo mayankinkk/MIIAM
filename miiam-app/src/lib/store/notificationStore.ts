@@ -14,6 +14,7 @@ interface NotificationStore {
   token: string | null;
   preferences: NotificationPreferences;
   requestPermission: () => Promise<boolean>;
+  setPermission: (perm: NotificationPermission | "default" | "unknown") => void;
   setToken: (token: string) => void;
   updatePreferences: (prefs: Partial<NotificationPreferences>) => void;
 }
@@ -28,6 +29,7 @@ export const useNotificationStore = create<NotificationStore>()(
         promotions: true,
         recommendations: false,
       },
+      setPermission: (permission) => set({ permission }),
 
       requestPermission: async () => {
         if (!("Notification" in window)) {
