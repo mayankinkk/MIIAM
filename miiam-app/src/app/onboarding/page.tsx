@@ -98,7 +98,7 @@ export default function OnboardingPage() {
               </div>
               <h3 className="text-3xl font-bold mb-6">Epicurean Desires</h3>
               <p className="text-[#814c55] leading-relaxed mb-8">
-                From street-side gems to Michelin-starred kitchens. We don't just deliver food; we deliver the moment.
+                From local favorites to top restaurants. We don't just deliver food; we deliver the moment.
               </p>
               <div className="flex flex-wrap gap-3">
                 <span className="px-4 py-2 bg-[#ba001c]/10 text-[#ba001c] rounded-full text-xs font-bold uppercase tracking-wider">Fast Delivery</span>
