@@ -12,37 +12,37 @@ const legalLinks = [
 
 export default function LegalPage() {
   return (
-    <div className="min-h-screen bg-[#fff4f4] dark:bg-slate-950 pb-24">
-      <header className="bg-white dark:bg-slate-900 px-6 py-4 sticky top-0 z-10 shadow-sm">
+    <div className="min-h-screen bg-background text-on-background pb-24">
+      <header className="bg-surface-container px-6 py-4 sticky top-0 z-10 shadow-sm border-b border-outline-variant/10">
         <div className="flex items-center gap-4">
-          <Link href="/app/settings" className="w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center">
-            <span className="material-symbols-outlined">arrow_back</span>
+          <Link href="/app/settings" className="w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center hover:bg-surface-container-highest transition-colors">
+            <span className="material-symbols-outlined text-on-background">arrow_back</span>
           </Link>
-          <h1 className="text-xl font-black text-[#4d212a] dark:text-white">Legal</h1>
+          <h1 className="text-xl font-black text-on-background">Legal</h1>
         </div>
       </header>
 
       <main className="p-6">
-        <div className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm">
+        <div className="bg-surface-container border border-outline-variant/10 rounded-2xl overflow-hidden shadow-sm">
           {legalLinks.map((item, i) => (
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors ${i !== legalLinks.length - 1 ? "border-b border-slate-100 dark:border-slate-700" : ""}`}
+              className={`flex items-center gap-4 p-4 hover:bg-surface-container-high transition-colors ${i !== legalLinks.length - 1 ? "border-b border-outline-variant/10" : ""}`}
             >
-              <div className="w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center">
-                <span className="material-symbols-outlined text-slate-600 dark:text-slate-400">{item.icon}</span>
+              <div className="w-10 h-10 bg-surface-container-high rounded-xl flex items-center justify-center">
+                <span className="material-symbols-outlined text-on-surface-variant">{item.icon}</span>
               </div>
               <div className="flex-1">
-                <p className="font-bold text-slate-800 dark:text-white">{item.title}</p>
-                <p className="text-xs text-slate-500">{item.sub}</p>
+                <p className="font-bold text-on-surface">{item.title}</p>
+                <p className="text-xs text-on-surface-variant">{item.sub}</p>
               </div>
-              <span className="material-symbols-outlined text-slate-400">open_in_new</span>
+              <span className="material-symbols-outlined text-on-surface-variant/50">open_in_new</span>
             </Link>
           ))}
         </div>
 
-        <p className="text-center text-xs text-slate-400 mt-8">
+        <p className="text-center text-xs text-on-surface-variant/60 mt-8">
           MIIAM v1.0 · © 2026 MIIAM Technologies Pvt. Ltd.
           <br />Registered in India · CIN: U74999XX2025PTC000001
         </p>
