@@ -20,9 +20,13 @@ interface ToastStore {
 
 export const useToastStore = create<ToastStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       toasts: [],
       addToast: (message, type = "info") => {
+        // Prevent duplicate toast messages from showing at the same time
+        const activeToasts = get().toasts || [];
+        if (activeToasts.some((t) => t.message === message)) return;
+
         const id = Math.random().toString(36).substring(2, 9);
         set((state) => ({ toasts: [...state.toasts, { id, message, type }] }));
         setTimeout(() => {

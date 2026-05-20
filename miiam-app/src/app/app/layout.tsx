@@ -1,5 +1,4 @@
 import BottomNavBar from "@/components/layout/BottomNavBar";
-import Toaster from "@/components/ui/Toaster";
 import NotificationPermission from "@/components/NotificationPermission";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
@@ -8,7 +7,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <NotificationPermission />
       {children}
       <BottomNavBar />
-      <Toaster />
     </div>
   );
 }

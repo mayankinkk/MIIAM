@@ -8,7 +8,7 @@ export default function Toaster() {
   if (toasts.length === 0) return null;
 
   return (
-    <div className="fixed bottom-24 left-4 right-4 z-[9999] flex flex-col gap-2 pointer-events-none">
+    <div className="fixed bottom-24 left-4 right-4 md:bottom-6 md:left-auto md:right-6 md:max-w-sm z-[9999] flex flex-col gap-2 pointer-events-none">
       {toasts.map((toast) => (
         <div
           key={toast.id}

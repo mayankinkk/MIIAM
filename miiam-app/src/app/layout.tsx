@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import ThemeProvider from "@/components/ThemeProvider";
-import { ToastContainer } from "@/components/Toast";
+import Toaster from "@/components/ui/Toaster";
 import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
 import { AnalyticsTracker } from "@/lib/analytics";
 import SplashScreen from "@/components/SplashScreen";
@@ -64,7 +64,7 @@ export default function RootLayout({
           <ServiceWorkerRegistration />
           <AnalyticsTracker />
           {children}
-          <ToastContainer />
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
