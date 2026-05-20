@@ -106,6 +106,65 @@ useEffect(() => {
     setManualPincode("");
   };
 
+  const getCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      setPincodeError("Location not supported by your browser");
+      return;
+    }
+
+    setIsLoadingLocation(true);
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const { latitude, longitude } = position.coords;
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+          );
+          const data = await res.json();
+          const address = data.address || {};
+          const pincode = address.postcode || "";
+
+          if (pincode) {
+            setLocation(`PIN: ${pincode}`);
+            locationStore.setLocation({
+              pincode,
+              lat: latitude,
+              lng: longitude,
+              displayAddress: data.display_name?.split(",")[0] || `PIN: ${pincode}`,
+            });
+            setShowLocationModal(false);
+          } else {
+            setLocation(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+            locationStore.setLocation({
+              lat: latitude,
+              lng: longitude,
+              displayAddress: `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`,
+            });
+            setShowLocationModal(false);
+          }
+        } catch {
+          setLocation(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+          locationStore.setLocation({
+            lat: latitude,
+            lng: longitude,
+            displayAddress: `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`,
+          });
+          setShowLocationModal(false);
+        }
+        setIsLoadingLocation(false);
+      },
+      (error) => {
+        setIsLoadingLocation(false);
+        if (error.code === error.PERMISSION_DENIED) {
+          setPincodeError("Location permission denied. Please enter PIN manually.");
+        } else {
+          setPincodeError("Unable to detect location. Please enter PIN manually.");
+        }
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+    );
+  };
+
   const userName = user?.profile_name || user?.email?.split("@")[0] || "User";
 
   // Auto-rotate offers
