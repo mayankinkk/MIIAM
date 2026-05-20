@@ -39,221 +39,28 @@ export default function HomePage() {
   const [orderBubbleExpanded, setOrderBubbleExpanded] = useState(false);
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
   const [showLocationModal, setShowLocationModal] = useState(false);
-  const [manualLocation, setManualLocation] = useState("");
+  const [manualPincode, setManualPincode] = useState("");
+  const [pincodeError, setPincodeError] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
   const [unreadCount, setUnreadCount] = useState(3);
   const [nearbyRestaurants, setNearbyRestaurants] = useState<any[]>([]);
   const [featuredRestaurants, setFeaturedRestaurants] = useState<any[]>([]);
   const [spotlightRestaurant, setSpotlightRestaurant] = useState<any>(null);
+  const [localServiceable, setLocalServiceable] = useState(true);
+  const [checkingPincode, setCheckingPincode] = useState(false);
+  const userPincode = locationStore.pincode;
 
   useEffect(() => {
-    async function loadRestaurants() {
-      const { data: vendors, error } = await supabase
-        .from("vendors")
-        .select("*")
-        .order("created_at", { ascending: false })
-        .limit(20);
-      
-      if (error) {
-        console.error("Error loading vendors:", error);
-      }
-      
-      if (vendors) {
-        console.log("Vendors loaded:", vendors);
-        setNearbyRestaurants(vendors);
-        const featured = vendors.filter((v: any) => v.is_featured || v.is_promoted).slice(0, 6);
-        const spotlight = vendors.find((v: any) => v.is_featured) || null;
-        setFeaturedRestaurants(featured);
-        setSpotlightRestaurant(spotlight);
-      }
+    async function checkServiceability() {
+      const { pincode } = locationStore;
+      if (!pincode) { setLocalServiceable(true); return; }
+      setCheckingPincode(true);
+      const { data } = await supabase.from("vendors").select("id").eq("pincode", pincode).eq("status", "active").limit(1);
+      setLocalServiceable(!!(data && data.length > 0));
+      setCheckingPincode(false);
     }
-    loadRestaurants();
-  }, []);
-
-  useEffect(() => {
-    async function loadUserAndProfile() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        setUser(user);
-        const { data: profileData } = await supabase
-          .from("profiles")
-          .select("full_name")
-          .eq("id", user.id)
-          .single();
-        if (profileData?.full_name) {
-          setUser((prev: any) => ({ ...prev, profile_name: profileData.full_name }));
-        }
-
-        // Fetch user's active order safely (avoiding joins that might fail if foreign keys are missing)
-        const { data: orders, error: ordersError } = await supabase
-          .from("orders")
-          .select("*")
-          .eq("user_id", user.id)
-          .in("status", ["pending", "accepted", "preparing", "shopping", "picking_up", "on_the_way"])
-          .order("placed_at", { ascending: false })
-          .limit(1);
-
-        if (ordersError) console.error("Error fetching active order:", ordersError);
-
-        if (orders && orders.length > 0) {
-          const order = orders[0];
-          
-          let vendorName = "Restaurant";
-          if (order.vendor_id) {
-             const { data: vendorData } = await supabase.from("vendors").select("name").eq("id", order.vendor_id).single();
-             if (vendorData?.name) vendorName = vendorData.name;
-          }
-
-          let itemsText = "Items";
-          const { data: orderItems } = await supabase.from("order_items").select("*").eq("order_id", order.id);
-          
-          if (orderItems && orderItems.length > 0) {
-             const firstItem = orderItems[0];
-             let itemName = firstItem.name || "Item";
-             
-             if (firstItem.menu_item_id) {
-                const { data: menuItem } = await supabase.from("menu_items").select("name").eq("id", firstItem.menu_item_id).single();
-                if (menuItem?.name) itemName = menuItem.name;
-             }
-             
-             itemsText = `${itemName} x${firstItem.quantity}${orderItems.length > 1 ? ` +${orderItems.length - 1} more` : ''}`;
-          }
-
-          let eta = "30 mins";
-          if (order.status === "on_the_way") eta = "10 mins";
-          else if (order.status === "preparing" || order.status === "shopping") eta = "20 mins";
-          else if (order.status === "accepted") eta = "25 mins";
-
-          setActiveOrder({
-            id: order.id,
-            vendor: vendorName,
-            items: itemsText,
-            status: order.status,
-            eta: eta,
-            total: order.total_amount,
-            steps: [
-              { id: 1, label: "Order Placed", time: order.placed_at ? new Date(order.placed_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : "", completed: true },
-              { id: 2, label: "Preparing", time: "", completed: ["preparing", "shopping", "picking_up", "on_the_way"].includes(order.status) },
-              { id: 3, label: "Out for Delivery", time: "", completed: order.status === "on_the_way" },
-              { id: 4, label: "Delivered", time: "", completed: order.status === "delivered" },
-            ]
-          });
-        }
-      }
-    }
-    loadUserAndProfile();
-  }, [supabase]);
-
-  // Handle browser back button
-  useEffect(() => {
-    const handlePopState = () => {
-      if (showNotifications) {
-        setShowNotifications(false);
-      }
-    };
-    
-    if (showNotifications) {
-      window.addEventListener("popstate", handlePopState);
-      document.body.style.overflow = "hidden";
-    }
-    
-    return () => {
-      window.removeEventListener("popstate", handlePopState);
-      document.body.style.overflow = "unset";
-    };
-  }, [showNotifications]);
-
-  const getCurrentLocation = () => {
-    setIsLoadingLocation(true);
-    if (navigator.geolocation) {
-      const highAccuracyOptions = {
-        enableHighAccuracy: true,
-        timeout: 30000,
-        maximumAge: 0,
-      };
-
-      const handleLocationSuccess = async (position: GeolocationPosition) => {
-        const { latitude, longitude } = position.coords;
-        
-        try {
-          const response = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`,
-            { headers: { 'User-Agent': 'MIIAM/1.0' } }
-          );
-          const data = await response.json();
-          const addr = data.address;
-          
-          const preciseLocation = buildPreciseAddress(addr, data.display_name);
-          setLocation(preciseLocation);
-
-          // Save to global location store for vendor filtering
-          locationStore.setLocation({
-            city: addr.city || addr.town || addr.village || addr.county || null,
-            state: addr.state || null,
-            country: addr.country || null,
-            lat: latitude,
-            lng: longitude,
-            displayAddress: preciseLocation,
-          });
-        } catch {
-          setLocation(`${latitude.toFixed(5)}, ${longitude.toFixed(5)}`);
-          locationStore.setLocation({ lat: latitude, lng: longitude });
-        }
-        
-        setIsLoadingLocation(false);
-        setShowLocationModal(false);
-      };
-
-      const handleLocationError = (error: GeolocationPositionError) => {
-        setIsLoadingLocation(false);
-        if (error.code === error.PERMISSION_DENIED) {
-          alert("Location permission denied. Please enable location access in browser settings.");
-        } else if (error.code === error.TIMEOUT) {
-          navigator.geolocation.getCurrentPosition(handleLocationSuccess, handleLocationError, {
-            enableHighAccuracy: false,
-            timeout: 15000,
-            maximumAge: 300000,
-          });
-        } else {
-          alert("Unable to get location. Please enter manually.");
-        }
-      };
-
-      navigator.geolocation.getCurrentPosition(handleLocationSuccess, handleLocationError, highAccuracyOptions);
-    } else {
-      setIsLoadingLocation(false);
-      alert("Geolocation not supported on this device");
-    }
-  };
-
-  const buildPreciseAddress = (addr: any, displayName?: string): string => {
-    const parts: string[] = [];
-    
-    if (addr.house_number) parts.push(addr.house_number);
-    if (addr.road || addr.street) parts.push(addr.road || addr.street);
-    if (addr.neighbourhood) parts.push(addr.neighbourhood);
-    else if (addr.suburb) parts.push(addr.suburb);
-    if (addr.city || addr.town || addr.village) parts.push(addr.city || addr.town || addr.village);
-    if (addr.state) parts.push(addr.state);
-    
-    if (parts.length > 0) return parts.join(", ");
-    if (displayName) return displayName.split(", ").slice(0, 3).join(", ");
-    return "Current Location";
-  };
-
-  const handleManualLocation = () => {
-    if (manualLocation.trim()) {
-      const loc = manualLocation.trim();
-      setLocation(loc);
-      // Save manual location as city hint for filtering
-      locationStore.setLocation({
-        city: loc.split(",")[0].trim(),
-        displayAddress: loc,
-      });
-      setShowLocationModal(false);
-      setManualLocation("");
-    }
-  };
+    checkServiceability();
+  }, [userPincode]);
 
   const hour = new Date().getHours();
   let greeting = "Good evening";
@@ -417,6 +224,21 @@ export default function HomePage() {
               delivery_dining
             </span>
           </button>
+        </div>
+      )}
+
+      {/* Serviceability Banner */}
+      {locationStore.pincode && (
+        <div className={`px-4 py-2 ${localServiceable ? "bg-green-50 border-b border-green-200" : "bg-amber-50 border-b border-amber-200"}`}>
+          <div className="flex items-center gap-2">
+            <span className={`material-symbols-outlined text-sm ${localServiceable ? "text-green-600" : "text-amber-600"}`}>location_on</span>
+            <p className={`text-[11px] font-bold ${localServiceable ? "text-green-700" : "text-amber-700"}`}>
+              {checkingPincode ? "Checking availability..." : localServiceable
+                ? `Showing vendors delivering to ${locationStore.pincode}`
+                : `No vendors available at ${locationStore.pincode}. Showing all instead.`
+              }
+            </p>
+          </div>
         </div>
       )}
 
@@ -609,57 +431,66 @@ export default function HomePage() {
       {showLocationModal && (
         <div className="fixed inset-0 z-50 bg-black/50 flex items-end md:items-center justify-center">
           <div className="bg-white w-full md:w-96 rounded-t-3xl md:rounded-3xl p-6 animate-in slide-in-from-bottom duration-300">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-black text-[#281716]">Select Location</h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-black text-[#281716]">Enter Delivery PIN Code</h2>
               <button onClick={() => setShowLocationModal(false)} className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
                 <span className="material-symbols-outlined text-gray-600">close</span>
               </button>
+            </div>
+
+            <p className="text-sm text-[#5c403d] mb-4">Enter your 6-digit PIN code to check delivery availability in your area.</p>
+
+            {/* Pincode Entry */}
+            <div className="mb-4">
+              <label className="text-xs font-bold text-slate-500 mb-1 block">PIN Code</label>
+              <input
+                type="tel"
+                inputMode="numeric"
+                maxLength={6}
+                value={manualPincode}
+                onChange={(e) => {
+                  setManualPincode(e.target.value.replace(/\D/g, ""));
+                  setPincodeError("");
+                }}
+                placeholder="Enter 6-digit PIN Code"
+                className="w-full px-4 py-4 bg-gray-100 rounded-xl border-2 border-transparent focus:border-[#ba001c] outline-none text-2xl font-black tracking-[0.5em] text-center"
+                autoFocus
+              />
+              {pincodeError && <p className="text-red-500 text-xs mt-2 text-center font-bold">{pincodeError}</p>}
+            </div>
+
+            <button
+              onClick={handleManualLocation}
+              disabled={manualPincode.length !== 6}
+              className="w-full mb-3 bg-[#ba001c] text-white py-4 rounded-xl font-bold text-base hover:bg-[#a00018] transition-colors disabled:opacity-50 active:scale-[0.98]"
+            >
+              Check Availability
+            </button>
+
+            <div className="flex items-center gap-3 mb-2">
+              <div className="flex-1 h-px bg-gray-200" />
+              <span className="text-xs text-gray-400 font-bold">OR</span>
+              <div className="flex-1 h-px bg-gray-200" />
             </div>
 
             {/* GPS Button */}
             <button
               onClick={getCurrentLocation}
               disabled={isLoadingLocation}
-              className="w-full flex items-center gap-4 p-4 border-2 border-[#ba001c] rounded-xl mb-4 hover:bg-[#fff4f4] transition-colors"
+              className="w-full flex items-center gap-4 p-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
             >
-              <div className="w-12 h-12 bg-[#ba001c]/10 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
                 {isLoadingLocation ? (
-                  <div className="w-6 h-6 border-2 border-[#ba001c] border-t-transparent rounded-full animate-spin" />
+                  <div className="w-5 h-5 border-2 border-green-600 border-t-transparent rounded-full animate-spin" />
                 ) : (
-                  <span className="material-symbols-outlined text-[#ba001c]">my_location</span>
+                  <span className="material-symbols-outlined text-green-600">my_location</span>
                 )}
               </div>
               <div className="text-left">
-                <p className="font-bold text-[#281716]">Use Current Location</p>
-                <p className="text-xs text-[#5c403d]">Automatically detect via GPS</p>
+                <p className="font-bold text-[#281716] text-sm">Detect My Location</p>
+                <p className="text-[10px] text-[#5c403d]">Use GPS to auto-fill PIN code</p>
               </div>
             </button>
-
-            {/* Divider */}
-            <div className="flex items-center gap-4 mb-4">
-              <div className="flex-1 h-px bg-gray-200" />
-              <span className="text-xs text-gray-400">OR</span>
-              <div className="flex-1 h-px bg-gray-200" />
-            </div>
-
-            {/* Manual Entry */}
-            <div>
-              <p className="font-bold text-[#281716] mb-2">Enter Location Manually</p>
-              <input
-                type="text"
-                value={manualLocation}
-                onChange={(e) => setManualLocation(e.target.value)}
-                placeholder="Enter your area, street, landmark..."
-                className="w-full px-4 py-3 bg-gray-100 rounded-xl border-none focus:ring-2 focus:ring-[#ba001c] outline-none"
-              />
-              <button
-                onClick={handleManualLocation}
-                disabled={!manualLocation.trim()}
-                className="w-full mt-4 bg-[#ba001c] text-white py-3 rounded-xl font-bold hover:bg-[#a00018] transition-colors disabled:opacity-50"
-              >
-                Confirm Location
-              </button>
-            </div>
           </div>
         </div>
       )}

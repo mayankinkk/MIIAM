@@ -3,6 +3,7 @@ import { persist } from "zustand/middleware";
 
 interface LocationState {
   city: string | null;
+  pincode: string | null;
   state: string | null;
   country: string | null;
   lat: number | null;
@@ -10,6 +11,7 @@ interface LocationState {
   displayAddress: string;
   setLocation: (loc: {
     city?: string;
+    pincode?: string;
     state?: string;
     country?: string;
     lat?: number;
@@ -23,6 +25,7 @@ export const useLocationStore = create<LocationState>()(
   persist(
     (set) => ({
       city: null,
+      pincode: null,
       state: null,
       country: null,
       lat: null,
@@ -30,7 +33,7 @@ export const useLocationStore = create<LocationState>()(
       displayAddress: "Select Location",
       setLocation: (loc) => set((prev) => ({ ...prev, ...loc })),
       clearLocation: () => set({
-        city: null, state: null, country: null,
+        city: null, pincode: null, state: null, country: null,
         lat: null, lng: null, displayAddress: "Select Location"
       }),
     }),

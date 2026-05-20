@@ -29,6 +29,8 @@ create table if not exists vendors (
   email text,
   shop_name text not null,
   address text not null,
+  city text,
+  pincode text,
   cuisine text,
   gst_number text,
   status text default 'active',
@@ -630,12 +632,12 @@ CREATE POLICY "Allow uploads to pharmacy-images" ON storage.objects FOR INSERT W
 -- Run this to add sample data to your database
 
 -- Insert sample vendors
-INSERT INTO vendors (id, owner_name, phone, email, shop_name, address, cuisine, status) VALUES
-('r1', 'Rahul Sharma', '9876543210', 'rahul@biranihouse.com', 'Biryani House', '123 MG Road, Delhi', 'North Indian', 'active'),
-('r2', 'Priya Singh', '9876543211', 'priya@pizzaparadise.com', 'Pizza Paradise', '456 NS Road, Mumbai', 'Italian', 'active'),
-('r3', 'Mike Chen', '9876543212', 'mike@chinesecorner.com', 'Chinese Corner', '789 BC Ave, Bangalore', 'Chinese', 'active'),
-('r4', 'Anita Desai', '9876543213', 'anita@burgerbarn.com', 'Burger Barn', '321 KL Street, Chennai', 'American', 'active'),
-('r5', 'Vikram Singh', '9876543214', 'vikram@icecreamscoop.com', 'Ice Cream Scoop', '555 PQ Road, Hyderabad', 'Desserts', 'active');
+INSERT INTO vendors (id, owner_name, phone, email, shop_name, address, city, pincode, cuisine, status) VALUES
+('r1', 'Rahul Sharma', '9876543210', 'rahul@biranihouse.com', 'Biryani House', '123 MG Road, Delhi', 'Delhi', '110001', 'North Indian', 'active'),
+('r2', 'Priya Singh', '9876543211', 'priya@pizzaparadise.com', 'Pizza Paradise', '456 NS Road, Mumbai', 'Mumbai', '400001', 'Italian', 'active'),
+('r3', 'Mike Chen', '9876543212', 'mike@chinesecorner.com', 'Chinese Corner', '789 BC Ave, Bangalore', 'Bangalore', '560001', 'Chinese', 'active'),
+('r4', 'Anita Desai', '9876543213', 'anita@burgerbarn.com', 'Burger Barn', '321 KL Street, Chennai', 'Chennai', '600001', 'American', 'active'),
+('r5', 'Vikram Singh', '9876543214', 'vikram@icecreamscoop.com', 'Ice Cream Scoop', '555 PQ Road, Hyderabad', 'Hyderabad', '500001', 'Desserts', 'active');
 
 -- Insert sample menu items for Biryani House (r1)
 INSERT INTO menu_items (vendor_id, name, price, category, image_url) VALUES

@@ -1,10 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useServiceSettingsStore } from "@/lib/store/serviceSettingsStore";
 import ServiceUnavailable from "@/components/ServiceUnavailable";
+import { useLocationStore } from "@/lib/store/locationStore";
+import { useToastStore } from "@/lib/store/toastStore";
+import { createClient } from "@/lib/supabase/client";
 
 const categories = [
   { id: "salon", label: "Salon at Home", icon: "content_cut", color: "from-pink-500 to-pink-400", emoji: "💇‍♀️" },
@@ -91,6 +94,12 @@ const timeSlots = ["09:00 AM", "11:00 AM", "01:00 PM", "03:00 PM", "05:00 PM", "
 export default function BeautyPage() {
   const { getSetting } = useServiceSettingsStore();
   const [activeCategory, setActiveCategory] = useState("salon");
+  const [isServiceable, setIsServiceable] = useState(true);
+  const locationStore = useLocationStore();
+  const userPincode = locationStore.pincode;
+  const userCity = locationStore.city;
+  const { addToast } = useToastStore();
+  const supabase = createClient();
   const beautySetting = getSetting("beauty");
 
   if (beautySetting && !beautySetting.isEnabled) {
@@ -102,11 +111,38 @@ export default function BeautyPage() {
   const [location, setLocation] = useState<"home" | "salon">("home");
   const { addItem, items, updateQuantity } = useCartStore();
 
+  useEffect(() => {
+    checkServiceability();
+  }, [userPincode]);
+
+  const checkServiceability = async () => {
+    if (userPincode) {
+      const { data: serviceVendors, error: vendorError } = await supabase
+        .from("vendors")
+        .select("id")
+        .eq("category", "Service")
+        .eq("pincode", userPincode)
+        .eq("status", "active");
+
+      if (!vendorError && (!serviceVendors || serviceVendors.length === 0)) {
+        setIsServiceable(false);
+      } else {
+        setIsServiceable(true);
+      }
+    } else {
+      setIsServiceable(true);
+    }
+  };
+
   const days = getNextDays(7);
 
   const getQty = (id: string) => items.filter(i => i.menu_item_id === id).reduce((s, i) => s + i.quantity, 0);
 
   const handleBook = (service: any) => {
+    if (!isServiceable) {
+      addToast("Beauty services are not available at your location!", "error");
+      return;
+    }
     setBookingService(service);
     setSelectedDate(0);
     setSelectedTime(null);
@@ -148,6 +184,23 @@ export default function BeautyPage() {
           <input type="text" placeholder="Search for services..." className="w-full pl-9 pr-4 py-2.5 rounded-lg text-slate-800 text-sm" />
         </div>
       </header>
+
+      {/* Location / Availability Banner */}
+      {!isServiceable && (userPincode || userCity) && (
+        <div className="bg-amber-50 border-b border-amber-200 px-6 py-3 flex items-center gap-3">
+          <span className="material-symbols-outlined text-amber-600 text-xl animate-bounce">warning</span>
+          <div className="flex-1">
+            <p className="text-xs font-bold text-amber-800">Not serviceable at {userPincode ? `Pincode ${userPincode}` : userCity}</p>
+            <p className="text-[10px] text-amber-600 font-medium">Beauty & Spa services are coming soon to your area. You can still browse our services!</p>
+          </div>
+        </div>
+      )}
+      {isServiceable && (userPincode || userCity) && (
+        <div className="bg-green-50 border-b border-green-200 px-6 py-2 flex items-center gap-2">
+          <span className="material-symbols-outlined text-green-600 text-sm">location_on</span>
+          <p className="text-[11px] font-bold text-green-700">Providing beauty & spa services to {userPincode ? `Pincode ${userPincode}` : userCity}</p>
+        </div>
+      )}
 
       {/* Categories */}
       <div className="px-3 -mt-5">
@@ -241,8 +294,20 @@ export default function BeautyPage() {
                     </div>
                     <div className="mt-2">
                       {qty === 0 ? (
-                        <button onClick={() => { handleBook(service); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }} className="w-full bg-[#ba001c] text-white font-bold py-1.5 rounded-lg text-xs hover:scale-[1.02] active:scale-[0.98] transition-all animate-glow-pulse">
-                          Book Now
+                        <button
+                          onClick={() => {
+                            if (!isServiceable) {
+                              addToast("Cannot book: Beauty services are not serviceable at your selected location!", "error");
+                            } else {
+                              handleBook(service);
+                            }
+                            if (navigator.vibrate) navigator.vibrate([20, 10, 20]);
+                          }}
+                          className={`w-full font-bold py-1.5 rounded-lg text-xs transition-all ${
+                            isServiceable ? "bg-[#ba001c] text-white hover:scale-[1.02] active:scale-[0.98] animate-glow-pulse" : "bg-gray-400 text-white cursor-not-allowed"
+                          }`}
+                        >
+                          {isServiceable ? "Book Now" : "Unavailable"}
                         </button>
                       ) : (
                         <div className="flex items-center justify-between">

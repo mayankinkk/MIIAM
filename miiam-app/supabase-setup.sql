@@ -12,6 +12,8 @@ create table vendors (
   email text,
   shop_name text not null,
   address text not null,
+  city text,
+  pincode text,
   cuisine text,
   gst_number text,
   status text default 'active',
@@ -53,10 +55,10 @@ create index idx_menu_items_vendor_id on menu_items(vendor_id);
 create index idx_menu_items_category on menu_items(category);
 
 -- Insert sample vendors (optional - for testing)
-insert into vendors (owner_name, phone, email, shop_name, address, cuisine, status) values
-('Rahul Sharma', '9876543210', 'rahul@biranihouse.com', 'Biryani House', '123 MG Road, Delhi', 'North Indian', 'active'),
-('Priya Singh', '9876543211', 'priya@pizzaparadise.com', 'Pizza Paradise', '456 NS Road, Mumbai', 'Italian', 'active'),
-('Mike Chen', '9876543212', 'mike@chinesecorner.com', 'Chinese Corner', '789 BC Ave, Bangalore', 'Chinese', 'active');
+insert into vendors (owner_name, phone, email, shop_name, address, city, pincode, cuisine, status) values
+('Rahul Sharma', '9876543210', 'rahul@biranihouse.com', 'Biryani House', '123 MG Road, Delhi', 'Delhi', '110001', 'North Indian', 'active'),
+('Priya Singh', '9876543211', 'priya@pizzaparadise.com', 'Pizza Paradise', '456 NS Road, Mumbai', 'Mumbai', '400001', 'Italian', 'active'),
+('Mike Chen', '9876543212', 'mike@chinesecorner.com', 'Chinese Corner', '789 BC Ave, Bangalore', 'Bangalore', '560001', 'Chinese', 'active');
 
 -- Job Applications Table
 create table job_applications (

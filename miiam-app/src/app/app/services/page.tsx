@@ -5,6 +5,9 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useServiceSettingsStore, ServiceCategory } from "@/lib/store/serviceSettingsStore";
 import ServiceUnavailable from "@/components/ServiceUnavailable";
+import { useLocationStore } from "@/lib/store/locationStore";
+import { useToastStore } from "@/lib/store/toastStore";
+import { createClient } from "@/lib/supabase/client";
 
 // ---------- Booking Modal ----------
 type Service = {
@@ -586,6 +589,12 @@ function ServicesContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { getSetting } = useServiceSettingsStore();
+  const [isServiceable, setIsServiceable] = useState(true);
+  const locationStore = useLocationStore();
+  const userPincode = locationStore.pincode;
+  const userCity = locationStore.city;
+  const { addToast } = useToastStore();
+  const supabase = createClient();
 
   // Check individual service categories
   const rawCategory = searchParams.get("category") ?? "all";
@@ -615,6 +624,30 @@ function ServicesContent() {
     setSelectedCategory(mapped);
   }, [searchParams]);
 
+  useEffect(() => {
+    checkServiceability();
+  }, [userPincode]);
+
+  const checkServiceability = async () => {
+    if (userPincode) {
+      setIsServiceable(true);
+      const { data: serviceVendors, error: vendorError } = await supabase
+        .from("vendors")
+        .select("id")
+        .eq("category", "Service")
+        .eq("pincode", userPincode)
+        .eq("status", "active");
+
+      if (!vendorError && (!serviceVendors || serviceVendors.length === 0)) {
+        setIsServiceable(false);
+      } else {
+        setIsServiceable(true);
+      }
+    } else {
+      setIsServiceable(true);
+    }
+  };
+
   // Check service availability after hooks
   if (mappedCategory) {
     const setting = getSetting(mappedCategory);
@@ -639,6 +672,23 @@ function ServicesContent() {
         </div>
         <p className="text-sm text-gray-500 mt-1">Professional services at your doorstep</p>
       </header>
+
+      {/* Location / Availability Banner */}
+      {!isServiceable && (userPincode || userCity) && (
+        <div className="bg-amber-50 border-b border-amber-200 px-6 py-3 flex items-center gap-3">
+          <span className="material-symbols-outlined text-amber-600 text-xl animate-bounce">warning</span>
+          <div className="flex-1">
+            <p className="text-xs font-bold text-amber-800">Not serviceable at {userPincode ? `Pincode ${userPincode}` : userCity}</p>
+            <p className="text-[10px] text-amber-600 font-medium">Home services are coming soon to your area. You can still browse our services!</p>
+          </div>
+        </div>
+      )}
+      {isServiceable && (userPincode || userCity) && (
+        <div className="bg-green-50 border-b border-green-200 px-6 py-2 flex items-center gap-2">
+          <span className="material-symbols-outlined text-green-600 text-sm">location_on</span>
+          <p className="text-[11px] font-bold text-green-700">Providing doorstep home services to {userPincode ? `Pincode ${userPincode}` : userCity}</p>
+        </div>
+      )}
 
       {/* Hero Banner */}
       <div className="px-4 mt-4">
@@ -745,10 +795,19 @@ function ServicesContent() {
                   <span className="font-black text-2xl text-gray-800 animate-price-tag">₹{service.price}</span>
                 </div>
                 <button
-                  onClick={() => { setBookingService(service as Service); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }}
-                  className="bg-[#ba001c] text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-[#a40017] active:scale-95 transition-all shadow-sm shadow-[#ba001c]/20 hover:scale-[1.02] animate-glow-pulse"
+                  onClick={() => {
+                    if (!isServiceable) {
+                      addToast("Cannot book: Home services are not serviceable at your selected location!", "error");
+                    } else {
+                      setBookingService(service as Service);
+                    }
+                    if (navigator.vibrate) navigator.vibrate([20, 10, 20]);
+                  }}
+                  className={`px-6 py-2.5 rounded-xl font-bold text-sm active:scale-95 transition-all shadow-sm ${
+                    isServiceable ? "bg-[#ba001c] text-white hover:bg-[#a40017] shadow-[#ba001c]/20 hover:scale-[1.02]" : "bg-gray-400 text-white cursor-not-allowed shadow-none"
+                  }`}
                 >
-                  Book Now
+                  {isServiceable ? "Book Now" : "Unavailable"}
                 </button>
               </div>
             </div>

@@ -317,7 +317,9 @@ export default function FoodPage() {
   const [loading, setLoading] = useState(true);
   const [heroAsset, setHeroAsset] = useState<{ image_url: string; title: string; subtitle: string } | null>(null);
   const locationStore = useLocationStore();
+  const userPincode = locationStore.pincode;
   const userCity = locationStore.city;
+  const [noLocalVendors, setNoLocalVendors] = useState(false);
   const foodSetting = getSetting("food");
 
   if (foodSetting && !foodSetting.isEnabled) {
@@ -330,25 +332,37 @@ export default function FoodPage() {
 
   const fetchData = async () => {
     setLoading(true);
-    const [vendorsRes, heroRes] = await Promise.all([
-      supabase.from("vendors").select("*").order("created_at", { ascending: false }),
+    setNoLocalVendors(false);
+    const [heroRes] = await Promise.all([
       supabase.from("page_assets").select("*").eq("section", "food_hero").eq("is_active", true).maybeSingle(),
     ]);
 
+    let query = supabase.from("vendors").select("*").order("created_at", { ascending: false });
+    if (userPincode) {
+      query = query.eq("pincode", userPincode);
+    }
+    const vendorsRes = await query;
+
     if (vendorsRes.data) {
-      // Location-based filtering: if user has set a city, show only vendors from that area
       let filteredVendors = vendorsRes.data;
-      if (userCity) {
+
+      if (userPincode) {
+        if (vendorsRes.data.length === 0) {
+          setNoLocalVendors(true);
+        }
+      } else if (userCity) {
         const cityLower = userCity.toLowerCase();
         const localVendors = vendorsRes.data.filter((v: any) => {
-          const vendorCity = (v.city || v.address || v.location || "").toLowerCase();
+          const vendorCity = (v.city || v.address || "").toLowerCase();
           return vendorCity.includes(cityLower);
         });
-        // Only apply filter if we get results — fallback to all if no local vendors found
         if (localVendors.length > 0) {
           filteredVendors = localVendors;
+        } else {
+          setNoLocalVendors(true);
         }
       }
+
       setRestaurants(filteredVendors);
       const { data: items } = await supabase
         .from("menu_items")
@@ -356,7 +370,7 @@ export default function FoodPage() {
         .order("name");
       setMenuItems(items || []);
     }
-    if (heroRes.data) setHeroAsset(heroRes.data);
+    if (heroRes?.data) setHeroAsset(heroRes.data);
     setLoading(false);
   };
 
@@ -401,6 +415,18 @@ export default function FoodPage() {
 
   return (
     <PullToRefresh onRefresh={handleRefresh} className="min-h-screen bg-[#fff4f4]">
+      {/* Pincode Verification Banner */}
+      {userPincode && (
+        <div className={`px-4 py-2 ${noLocalVendors ? "bg-amber-50 border-b border-amber-200" : "bg-green-50 border-b border-green-200"} flex items-center gap-2`}>
+          <span className={`material-symbols-outlined text-sm ${noLocalVendors ? "text-amber-600" : "text-green-600"}`}>location_on</span>
+          <p className={`text-[11px] font-bold ${noLocalVendors ? "text-amber-700" : "text-green-700"}`}>
+            {noLocalVendors
+              ? `No restaurants delivering to ${userPincode}. Showing all vendors.`
+              : `Showing restaurants delivering to ${userPincode}`
+            }
+          </p>
+        </div>
+      )}
       <header className="bg-white px-6 py-4 sticky top-0 z-10 shadow-sm">
         <div className="flex items-center justify-between mb-4">
           <Link href="/app/explore" className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">

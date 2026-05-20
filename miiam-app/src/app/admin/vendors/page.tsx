@@ -11,16 +11,30 @@ interface Vendor {
   email: string;
   shop_name: string;
   address: string;
+  city?: string;
+  state?: string;
+  pincode?: string;
+  landmark?: string;
+  latitude?: number;
+  longitude?: number;
   cuisine: string;
   gst_number: string;
+  pan_number?: string;
+  fssai_number?: string;
   status: string;
   delivery_charge?: number;
+  min_order_amount?: number;
+  delivery_time_min?: number;
+  delivery_time_max?: number;
+  is_pure_veg?: boolean;
   is_featured?: boolean;
   is_promoted?: boolean;
   is_new?: boolean;
   cover_image_url?: string;
   description?: string;
   opening_hours?: string;
+  rating?: number;
+  review_count?: number;
 }
 
 interface MenuItem {
@@ -46,9 +60,21 @@ export default function AdminVendorsPage() {
     email: "",
     shopName: "",
     address: "",
+    city: "",
+    state: "",
+    pincode: "",
+    landmark: "",
+    latitude: "",
+    longitude: "",
     cuisine: "",
     gstNumber: "",
+    panNumber: "",
+    fssaiNumber: "",
     deliveryCharge: "",
+    minOrderAmount: "",
+    deliveryTimeMin: "",
+    deliveryTimeMax: "",
+    isPureVeg: false,
   });
   const [menuItems, setMenuItems] = useState([{ name: "", price: "", category: "Main Course" }]);
   const [editingVendor, setEditingVendor] = useState<Vendor | null>(null);
@@ -58,6 +84,8 @@ export default function AdminVendorsPage() {
     email: "",
     shopName: "",
     address: "",
+    city: "",
+    pincode: "",
     cuisine: "",
     gstNumber: "",
     status: "active",
@@ -152,12 +180,24 @@ export default function AdminVendorsPage() {
         .insert([{
           owner_name: vendorForm.ownerName,
           phone: vendorForm.phone,
-          email: vendorForm.email,
+          email: vendorForm.email || null,
           shop_name: vendorForm.shopName,
           address: vendorForm.address,
+          city: vendorForm.city || null,
+          state: vendorForm.state || null,
+          pincode: vendorForm.pincode || null,
+          landmark: vendorForm.landmark || null,
+          latitude: vendorForm.latitude ? parseFloat(vendorForm.latitude) : null,
+          longitude: vendorForm.longitude ? parseFloat(vendorForm.longitude) : null,
           cuisine: vendorForm.cuisine,
-          gst_number: vendorForm.gstNumber,
+          gst_number: vendorForm.gstNumber || null,
+          pan_number: vendorForm.panNumber || null,
+          fssai_number: vendorForm.fssaiNumber || null,
           delivery_charge: vendorForm.deliveryCharge ? parseFloat(vendorForm.deliveryCharge) : 0,
+          min_order_amount: vendorForm.minOrderAmount ? parseFloat(vendorForm.minOrderAmount) : 0,
+          delivery_time_min: vendorForm.deliveryTimeMin ? parseInt(vendorForm.deliveryTimeMin) : null,
+          delivery_time_max: vendorForm.deliveryTimeMax ? parseInt(vendorForm.deliveryTimeMax) : null,
+          is_pure_veg: vendorForm.isPureVeg,
           status: "active",
         }])
         .select();
@@ -192,9 +232,21 @@ export default function AdminVendorsPage() {
         email: "",
         shopName: "",
         address: "",
+        city: "",
+        state: "",
+        pincode: "",
+        landmark: "",
+        latitude: "",
+        longitude: "",
         cuisine: "",
         gstNumber: "",
+        panNumber: "",
+        fssaiNumber: "",
         deliveryCharge: "",
+        minOrderAmount: "",
+        deliveryTimeMin: "",
+        deliveryTimeMax: "",
+        isPureVeg: false,
       });
       setMenuItems([{ name: "", price: "", category: "Main Course" }]);
       loadVendors();
@@ -237,6 +289,8 @@ export default function AdminVendorsPage() {
           email: editForm.email,
           shop_name: editForm.shopName,
           address: editForm.address,
+          city: editForm.city || null,
+          pincode: editForm.pincode || null,
           cuisine: editForm.cuisine,
           gst_number: editForm.gstNumber,
           status: editForm.status,
@@ -279,6 +333,8 @@ export default function AdminVendorsPage() {
       email: vendor.email || "",
       shopName: vendor.shop_name,
       address: vendor.address,
+      city: vendor.city || "",
+      pincode: vendor.pincode || "",
       cuisine: vendor.cuisine || "",
       gstNumber: vendor.gst_number || "",
       status: vendor.status,
@@ -448,15 +504,92 @@ export default function AdminVendorsPage() {
               <div>
                 <h3 className="font-black text-slate-800 uppercase tracking-widest text-xs mb-4">Shop Details</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-xs font-bold text-slate-600 mb-1 block">Shop Name *</label>
+                  <div className="md:col-span-2">
+                    <label className="text-xs font-bold text-slate-600 mb-1 block">Restaurant Name *</label>
                     <input
                       type="text"
                       required
                       value={vendorForm.shopName}
                       onChange={(e) => setVendorForm({ ...vendorForm, shopName: e.target.value })}
                       className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
-                      placeholder="Enter shop name"
+                      placeholder="Enter restaurant/shop name"
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="text-xs font-bold text-slate-600 mb-1 block">Full Address *</label>
+                    <textarea
+                      required
+                      value={vendorForm.address}
+                      onChange={(e) => setVendorForm({ ...vendorForm, address: e.target.value })}
+                      className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      placeholder="House/Flat No., Building, Street, Area"
+                      rows={2}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-slate-600 mb-1 block">City *</label>
+                    <input
+                      required
+                      type="text"
+                      value={vendorForm.city}
+                      onChange={(e) => setVendorForm({ ...vendorForm, city: e.target.value })}
+                      className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      placeholder="e.g. Delhi, Mumbai"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-slate-600 mb-1 block">State *</label>
+                    <input
+                      type="text"
+                      value={vendorForm.state}
+                      onChange={(e) => setVendorForm({ ...vendorForm, state: e.target.value })}
+                      className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      placeholder="e.g. Delhi, Maharashtra"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-slate-600 mb-1 block">PIN Code *</label>
+                    <input
+                      required
+                      type="tel"
+                      inputMode="numeric"
+                      maxLength={6}
+                      value={vendorForm.pincode}
+                      onChange={(e) => setVendorForm({ ...vendorForm, pincode: e.target.value.replace(/\D/g, "") })}
+                      className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      placeholder="e.g. 110001"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-slate-600 mb-1 block">Landmark</label>
+                    <input
+                      type="text"
+                      value={vendorForm.landmark}
+                      onChange={(e) => setVendorForm({ ...vendorForm, landmark: e.target.value })}
+                      className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      placeholder="e.g. Near Metro Station"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-slate-600 mb-1 block">Latitude</label>
+                    <input
+                      type="number"
+                      step="any"
+                      value={vendorForm.latitude}
+                      onChange={(e) => setVendorForm({ ...vendorForm, latitude: e.target.value })}
+                      className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      placeholder="e.g. 28.6139"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-slate-600 mb-1 block">Longitude</label>
+                    <input
+                      type="number"
+                      step="any"
+                      value={vendorForm.longitude}
+                      onChange={(e) => setVendorForm({ ...vendorForm, longitude: e.target.value })}
+                      className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      placeholder="e.g. 77.2090"
                     />
                   </div>
                   <div>
@@ -467,29 +600,75 @@ export default function AdminVendorsPage() {
                       value={vendorForm.cuisine}
                       onChange={(e) => setVendorForm({ ...vendorForm, cuisine: e.target.value })}
                       className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
-                      placeholder="e.g., North Indian, Chinese"
+                      placeholder="e.g. North Indian, Chinese, Italian"
                     />
                   </div>
-                  <div className="md:col-span-2">
-                    <label className="text-xs font-bold text-slate-600 mb-1 block">Shop Address *</label>
-                    <textarea
-                      required
-                      value={vendorForm.address}
-                      onChange={(e) => setVendorForm({ ...vendorForm, address: e.target.value })}
-                      className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
-                      placeholder="Enter full shop address"
-                      rows={2}
-                    />
+                  <div>
+                    <label className="text-xs font-bold text-slate-600 mb-1 flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={vendorForm.isPureVeg}
+                        onChange={(e) => setVendorForm({ ...vendorForm, isPureVeg: e.target.checked })}
+                        className="rounded text-green-600"
+                      />
+                      Pure Veg Restaurant
+                    </label>
                   </div>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="font-black text-slate-800 uppercase tracking-widest text-xs mb-4">Business Documents</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <label className="text-xs font-bold text-slate-600 mb-1 block">GST Number</label>
                     <input
                       type="text"
                       value={vendorForm.gstNumber}
                       onChange={(e) => setVendorForm({ ...vendorForm, gstNumber: e.target.value })}
-                      className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
-                      placeholder="Enter GST number"
+                      className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none uppercase"
+                      placeholder="22AAAAA0000A1Z5"
                     />
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-slate-600 mb-1 block">PAN Number</label>
+                    <input
+                      type="text"
+                      value={vendorForm.panNumber}
+                      onChange={(e) => setVendorForm({ ...vendorForm, panNumber: e.target.value.toUpperCase() })}
+                      className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none uppercase"
+                      placeholder="ABCDE1234F"
+                      maxLength={10}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-slate-600 mb-1 block">FSSAI License</label>
+                    <input
+                      type="text"
+                      value={vendorForm.fssaiNumber}
+                      onChange={(e) => setVendorForm({ ...vendorForm, fssaiNumber: e.target.value })}
+                      className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      placeholder="12345678901234"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="font-black text-slate-800 uppercase tracking-widest text-xs mb-4">Delivery Settings</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div>
+                    <label className="text-xs font-bold text-slate-600 mb-1 block">Min Order (₹)</label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">₹</span>
+                      <input
+                        type="number"
+                        value={vendorForm.minOrderAmount}
+                        onChange={(e) => setVendorForm({ ...vendorForm, minOrderAmount: e.target.value })}
+                        className="w-full p-3 pl-7 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                        placeholder="0"
+                      />
+                    </div>
                   </div>
                   <div>
                     <label className="text-xs font-bold text-slate-600 mb-1 block">Delivery Charge (₹)</label>
@@ -503,6 +682,26 @@ export default function AdminVendorsPage() {
                         placeholder="0"
                       />
                     </div>
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-slate-600 mb-1 block">Min Delivery Time (min)</label>
+                    <input
+                      type="number"
+                      value={vendorForm.deliveryTimeMin}
+                      onChange={(e) => setVendorForm({ ...vendorForm, deliveryTimeMin: e.target.value })}
+                      className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      placeholder="20"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-slate-600 mb-1 block">Max Delivery Time (min)</label>
+                    <input
+                      type="number"
+                      value={vendorForm.deliveryTimeMax}
+                      onChange={(e) => setVendorForm({ ...vendorForm, deliveryTimeMax: e.target.value })}
+                      className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      placeholder="45"
+                    />
                   </div>
                 </div>
               </div>
@@ -662,6 +861,30 @@ export default function AdminVendorsPage() {
                       onChange={(e) => setEditForm({ ...editForm, address: e.target.value })}
                       className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
                       rows={2}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-slate-600 mb-1 block">City *</label>
+                    <input
+                      required
+                      type="text"
+                      value={editForm.city}
+                      onChange={(e) => setEditForm({ ...editForm, city: e.target.value })}
+                      className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      placeholder="e.g. Delhi, Mumbai"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-slate-600 mb-1 block">PIN Code *</label>
+                    <input
+                      required
+                      type="tel"
+                      inputMode="numeric"
+                      maxLength={6}
+                      value={editForm.pincode}
+                      onChange={(e) => setEditForm({ ...editForm, pincode: e.target.value.replace(/\D/g, "") })}
+                      className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      placeholder="e.g. 110001"
                     />
                   </div>
                   <div>

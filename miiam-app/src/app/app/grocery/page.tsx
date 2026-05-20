@@ -8,6 +8,8 @@ import { useServiceSettingsStore } from "@/lib/store/serviceSettingsStore";
 import { useToastStore } from "@/lib/store/toastStore";
 import ServiceUnavailable from "@/components/ServiceUnavailable";
 
+import { useLocationStore } from "@/lib/store/locationStore";
+
 const supabase = createClient();
 
 interface Product {
@@ -34,8 +36,12 @@ export default function GroceryPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [grocerySetting, setGrocerySetting] = useState<any>(null);
+  const [isServiceable, setIsServiceable] = useState(true);
   const { items, addItem, updateQuantity, totalItems } = useCartStore();
   const { addToast } = useToastStore();
+  const locationStore = useLocationStore();
+  const userPincode = locationStore.pincode;
+  const userCity = locationStore.city;
 
   useEffect(() => {
     const setting = useServiceSettingsStore.getState().getSetting("grocery");
@@ -44,14 +50,34 @@ export default function GroceryPage() {
 
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [userPincode]);
 
   const fetchProducts = async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from("grocery_products")
-      .select("*")
-      .order("created_at", { ascending: false });
+    
+    // Check pincode serviceability
+    if (userPincode) {
+      const { data: groceryVendors, error: vendorError } = await supabase
+        .from("vendors")
+        .select("id")
+        .eq("category", "Grocery")
+        .eq("pincode", userPincode)
+        .eq("status", "active");
+      
+      if (!vendorError && (!groceryVendors || groceryVendors.length === 0)) {
+        setIsServiceable(false);
+      } else {
+        setIsServiceable(true);
+      }
+    } else {
+      setIsServiceable(true);
+    }
+
+    let query = supabase.from("grocery_products").select("*").order("created_at", { ascending: false });
+    if (userPincode) {
+      query = query.eq("pincode", userPincode);
+    }
+    const { data, error } = await query;
     
     if (error) {
       console.error("Error fetching products:", error);
@@ -72,6 +98,10 @@ export default function GroceryPage() {
   }
 
   const addToCart = (product: any) => {
+    if (!isServiceable) {
+      addToast("Grocery delivery is not available at your location!", "error");
+      return;
+    }
     addItem({
       id: product.id,
       menu_item_id: product.id,
@@ -114,7 +144,7 @@ export default function GroceryPage() {
   return (
     <div className="min-h-screen bg-[#fff4f4] pb-24">
       {/* Header */}
-      <header className="bg-white px-6 py-4 sticky top-0 z-10">
+      <header className="bg-white px-6 py-4 sticky top-0 z-10 shadow-sm">
         <div className="flex items-center justify-between mb-4">
           <Link href="/app/explore" className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
             <span className="material-symbols-outlined">arrow_back</span>
@@ -130,6 +160,23 @@ export default function GroceryPage() {
           </Link>
         </div>
       </header>
+
+      {/* Location / Availability Banner */}
+      {!isServiceable && (userPincode || userCity) && (
+        <div className="bg-amber-50 border-b border-amber-200 px-6 py-3 flex items-center gap-3">
+          <span className="material-symbols-outlined text-amber-600 text-xl animate-bounce">warning</span>
+          <div className="flex-1">
+            <p className="text-xs font-bold text-amber-800">Not serviceable at {userPincode ? `Pincode ${userPincode}` : userCity}</p>
+            <p className="text-[10px] text-amber-600 font-medium">Grocery delivery is coming soon to your area. You can still browse our catalog!</p>
+          </div>
+        </div>
+      )}
+      {isServiceable && (userPincode || userCity) && (
+        <div className="bg-green-50 border-b border-green-200 px-6 py-2 flex items-center gap-2">
+          <span className="material-symbols-outlined text-green-600 text-sm">location_on</span>
+          <p className="text-[11px] font-bold text-green-700">Delivering fresh groceries to {userPincode ? `Pincode ${userPincode}` : userCity}</p>
+        </div>
+      )}
 
       {/* Hero Banner */}
       <div className="px-6 mt-4">
@@ -194,9 +241,17 @@ export default function GroceryPage() {
       </main>
 
       {totalItems() > 0 && (
-        <Link
-          href="/app/cart"
-          className="fixed bottom-6 left-4 right-4 z-50 flex items-center justify-between bg-[#ba001c] text-white px-5 py-4 rounded-2xl shadow-2xl shadow-[#ba001c]/40 active:scale-[0.98] transition-transform animate-slide-reveal"
+        <button
+          onClick={() => {
+            if (!isServiceable) {
+              addToast("Cannot checkout: Grocery is not serviceable at your selected location!", "error");
+            } else {
+              window.location.href = "/app/cart";
+            }
+          }}
+          className={`fixed bottom-6 left-4 right-4 z-50 flex items-center justify-between text-white px-5 py-4 rounded-2xl shadow-2xl active:scale-[0.98] transition-transform animate-slide-reveal ${
+            isServiceable ? "bg-[#ba001c] shadow-[#ba001c]/40" : "bg-gray-400 cursor-not-allowed shadow-none"
+          }`}
         >
           <div className="flex items-center gap-3">
             <span className="bg-white text-[#ba001c] font-black text-xs px-2 py-0.5 rounded-full">
@@ -204,8 +259,8 @@ export default function GroceryPage() {
             </span>
             <span className="font-bold">View Cart</span>
           </div>
-          <span className="font-black text-lg">Checkout</span>
-        </Link>
+          <span className="font-black text-lg">{isServiceable ? "Checkout" : "Unserviceable"}</span>
+        </button>
       )}
     </div>
   );
