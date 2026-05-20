@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
 
 interface Achievement {
   id: string;
@@ -15,22 +16,22 @@ interface Achievement {
   category: "delivery" | "earning" | "rating" | "streak" | "special";
 }
 
-const achievements: Achievement[] = [
-  { id: "1", icon: "🎯", title: "First Delivery", description: "Complete your first delivery", progress: 1, target: 1, reward: "100 points", unlocked: true, category: "delivery" },
-  { id: "2", icon: "🚀", title: "100 Orders", description: "Complete 100 deliveries", progress: 100, target: 100, reward: "₹500 bonus", unlocked: true, category: "delivery" },
-  { id: "3", icon: "🏃", title: "500 Orders", description: "Complete 500 deliveries", progress: 342, target: 500, reward: "₹2000 bonus", unlocked: false, category: "delivery" },
-  { id: "4", icon: "👑", title: "1000 Orders", description: "Complete 1000 deliveries", progress: 342, target: 1000, reward: "₹5000 bonus", unlocked: false, category: "delivery" },
-  { id: "5", icon: "💰", title: "₹10K Earner", description: "Earn ₹10,000 total", progress: 10000, target: 10000, reward: "₹500 bonus", unlocked: true, category: "earning" },
-  { id: "6", icon: "💎", title: "₹50K Earner", description: "Earn ₹50,000 total", progress: 12500, target: 50000, reward: "₹2000 bonus", unlocked: false, category: "earning" },
-  { id: "7", icon: "🤑", title: "₹1 Lakh Club", description: "Earn ₹1,00,000 total", progress: 12500, target: 100000, reward: "₹10000 bonus", unlocked: false, category: "earning" },
-  { id: "8", icon: "⭐", title: "4.5 Star Rating", description: "Maintain 4.5+ rating", progress: 4.9, target: 4.5, reward: "Priority orders", unlocked: true, category: "rating" },
-  { id: "9", icon: "🌟", title: "5 Star Rating", description: "Maintain 5.0 rating", progress: 4.9, target: 5.0, reward: "Gold badge", unlocked: false, category: "rating" },
-  { id: "10", icon: "🔥", title: "7 Day Streak", description: "Work 7 days in a row", progress: 7, target: 7, reward: "₹200 bonus", unlocked: true, category: "streak" },
-  { id: "11", icon: "💪", title: "30 Day Streak", description: "Work 30 days in a row", progress: 12, target: 30, reward: "₹1000 bonus", unlocked: false, category: "streak" },
-  { id: "12", icon: "🌙", title: "Night Owl", description: "Complete 50 night deliveries", progress: 38, target: 50, reward: "₹300 bonus", unlocked: false, category: "special" },
-  { id: "13", icon: "🌅", title: "Early Bird", description: "Complete 50 morning deliveries", progress: 50, target: 50, reward: "₹300 bonus", unlocked: true, category: "special" },
-  { id: "14", icon: "⚡", title: "Speed Demon", description: "Complete 20 deliveries under 15 min", progress: 15, target: 20, reward: "Fast badge", unlocked: false, category: "special" },
-  { id: "15", icon: "🎉", title: "Weekend Warrior", description: "Complete 100 weekend deliveries", progress: 85, target: 100, reward: "₹500 bonus", unlocked: false, category: "special" },
+const achievementDefs: Omit<Achievement, "progress" | "unlocked">[] = [
+  { id: "1", icon: "🎯", title: "First Delivery", description: "Complete your first delivery", target: 1, reward: "100 points", category: "delivery" },
+  { id: "2", icon: "🚀", title: "100 Orders", description: "Complete 100 deliveries", target: 100, reward: "₹500 bonus", category: "delivery" },
+  { id: "3", icon: "🏃", title: "500 Orders", description: "Complete 500 deliveries", target: 500, reward: "₹2000 bonus", category: "delivery" },
+  { id: "4", icon: "👑", title: "1000 Orders", description: "Complete 1000 deliveries", target: 1000, reward: "₹5000 bonus", category: "delivery" },
+  { id: "5", icon: "💰", title: "₹10K Earner", description: "Earn ₹10,000 total", target: 10000, reward: "₹500 bonus", category: "earning" },
+  { id: "6", icon: "💎", title: "₹50K Earner", description: "Earn ₹50,000 total", target: 50000, reward: "₹2000 bonus", category: "earning" },
+  { id: "7", icon: "🤑", title: "₹1 Lakh Club", description: "Earn ₹1,00,000 total", target: 100000, reward: "₹10000 bonus", category: "earning" },
+  { id: "8", icon: "⭐", title: "4.5 Star Rating", description: "Maintain 4.5+ rating", target: 4.5, reward: "Priority orders", category: "rating" },
+  { id: "9", icon: "🌟", title: "5 Star Rating", description: "Maintain 5.0 rating", target: 5.0, reward: "Gold badge", category: "rating" },
+  { id: "10", icon: "🔥", title: "7 Day Streak", description: "Work 7 days in a row", target: 7, reward: "₹200 bonus", category: "streak" },
+  { id: "11", icon: "💪", title: "30 Day Streak", description: "Work 30 days in a row", target: 30, reward: "₹1000 bonus", category: "streak" },
+  { id: "12", icon: "🌙", title: "Night Owl", description: "Complete 50 night deliveries", target: 50, reward: "₹300 bonus", category: "special" },
+  { id: "13", icon: "🌅", title: "Early Bird", description: "Complete 50 morning deliveries", target: 50, reward: "₹300 bonus", category: "special" },
+  { id: "14", icon: "⚡", title: "Speed Demon", description: "Complete 20 deliveries under 15 min", target: 20, reward: "Fast badge", category: "special" },
+  { id: "15", icon: "🎉", title: "Weekend Warrior", description: "Complete 100 weekend deliveries", target: 100, reward: "₹500 bonus", category: "special" },
 ];
 
 const categories = [
@@ -43,16 +44,46 @@ const categories = [
 ];
 
 export default function RiderAchievementsPage() {
+  const supabase = createClient();
   const [activeCategory, setActiveCategory] = useState("all");
   const [showRewardModal, setShowRewardModal] = useState(false);
   const [selectedReward, setSelectedReward] = useState<Achievement | null>(null);
+  const [achievements, setAchievements] = useState<Achievement[]>([]);
+  const [totalPoints, setTotalPoints] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadAchievements() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { setLoading(false); return; }
+
+      const { data: myRider } = await supabase.from("riders").select("total_deliveries, total_earnings, rating").eq("user_id", user.id).single();
+
+      const totalDel = myRider?.total_deliveries || 0;
+      const totalEarn = myRider?.total_earnings || 0;
+      const rating = myRider?.rating || 5.0;
+
+      const built = achievementDefs.map(a => {
+        let progress = 0;
+        if (a.category === "delivery") progress = totalDel;
+        else if (a.category === "earning") progress = totalEarn;
+        else if (a.category === "rating") progress = rating;
+        const unlocked = progress >= a.target;
+        return { ...a, progress, unlocked } as Achievement;
+      });
+
+      setAchievements(built);
+      setTotalPoints(built.filter(a => a.unlocked).length * 100);
+      setLoading(false);
+    }
+    loadAchievements();
+  }, [supabase]);
 
   const filteredAchievements = activeCategory === "all" 
     ? achievements 
     : achievements.filter(a => a.category === activeCategory);
 
   const unlockedCount = achievements.filter(a => a.unlocked).length;
-  const totalPoints = 2450;
 
   return (
     <div className="min-h-screen bg-[#fff4f4]">
@@ -76,9 +107,11 @@ export default function RiderAchievementsPage() {
               🏅
             </div>
           </div>
-          <div className="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
-            <div className="h-full bg-gradient-to-r from-amber-400 to-orange-500 rounded-full" style={{ width: `${(unlockedCount / achievements.length) * 100}%` }} />
-          </div>
+          {achievements.length > 0 && (
+            <div className="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+              <div className="h-full bg-gradient-to-r from-amber-400 to-orange-500 rounded-full" style={{ width: `${(unlockedCount / achievements.length) * 100}%` }} />
+            </div>
+          )}
           <div className="flex justify-between mt-2 text-xs">
             <span className="text-slate-500">{unlockedCount} unlocked</span>
             <span className="text-amber-600 font-bold">{totalPoints} points</span>
@@ -89,7 +122,7 @@ export default function RiderAchievementsPage() {
         <div className="bg-gradient-to-r from-amber-50 to-orange-50 p-4 rounded-2xl border border-amber-100 flex items-center justify-between">
           <div>
             <p className="text-xs text-amber-600">Available Points</p>
-            <p className="text-2xl font-black text-amber-700">2,450</p>
+            <p className="text-2xl font-black text-amber-700">{totalPoints}</p>
           </div>
           <button 
             onClick={() => alert("Redeem points for bonuses, merchandise, and more!")}
@@ -117,107 +150,90 @@ export default function RiderAchievementsPage() {
         </div>
 
         {/* Achievements List */}
-        <div className="space-y-3">
-          {filteredAchievements.map((achievement) => (
-            <div 
-              key={achievement.id}
-              className={`bg-white rounded-2xl p-4 shadow-sm border-2 transition-all ${
-                achievement.unlocked 
-                  ? "border-amber-300" 
-                  : "border-transparent"
-              }`}
-            >
-              <div className="flex items-start gap-4">
-                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-3xl ${
-                  achievement.unlocked 
-                    ? "bg-amber-100" 
-                    : "bg-slate-100"
-                }`}>
-                  {achievement.icon}
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-bold text-[#4d212a]">{achievement.title}</h3>
-                    {achievement.unlocked && <span className="text-amber-500">✓</span>}
-                  </div>
-                  <p className="text-xs text-slate-500 mt-1">{achievement.description}</p>
-                  
-                  {!achievement.unlocked && (
-                    <>
-                      <div className="flex items-center justify-between mt-2">
-                        <span className="text-[10px] text-slate-400">
-                          {achievement.progress} / {achievement.target}
-                        </span>
-                        <span className="text-[10px] text-[#0b50d5] font-bold">
-                          {Math.round((achievement.progress / achievement.target) * 100)}%
-                        </span>
-                      </div>
-                      <div className="w-full bg-slate-100 rounded-full h-2 mt-1 overflow-hidden">
-                        <div 
-                          className="h-full bg-[#0b50d5] rounded-full transition-all"
-                          style={{ width: `${(achievement.progress / achievement.target) * 100}%` }}
-                        />
-                      </div>
-                    </>
-                  )}
-
-                  <div className="flex items-center justify-between mt-3">
-                    <span className="text-xs font-bold text-green-600">{achievement.reward}</span>
-                    {!achievement.unlocked && (
-                      <button 
-                        onClick={() => {
-                          setSelectedReward(achievement);
-                          setShowRewardModal(true);
-                        }}
-                        className="text-xs text-[#0b50d5] font-bold"
-                      >
-                        Track →
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Leaderboard Teaser */}
-        <div className="bg-gradient-to-r from-purple-50 to-indigo-50 p-5 rounded-2xl border border-purple-100">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="font-bold text-purple-800">Weekly Leaderboard</h3>
-              <p className="text-xs text-purple-600 mt-1">You're ranked #12 this week</p>
-            </div>
-            <div className="text-center">
-              <p className="text-3xl font-black text-purple-600">#12</p>
-              <p className="text-[10px] text-purple-400">of 500</p>
-            </div>
-          </div>
-          <Link href="/rider/leaderboard" className="block text-center text-xs text-[#0b50d5] font-bold mt-3">
-            View Full Leaderboard →
-          </Link>
-        </div>
-
-        {/* Upcoming Rewards */}
-        <div className="bg-white rounded-2xl p-5 shadow-lg">
-          <h3 className="font-bold text-[#4d212a] mb-4">🎁 Upcoming Rewards</h3>
+        {loading ? (
           <div className="space-y-3">
-            {[
-              { reward: "₹500 Bonus", requirement: "Reach 400 deliveries", progress: 85 },
-              { reward: "Gold Badge", requirement: "Maintain 5-star rating for 30 days", progress: 40 },
-              { reward: "₹1000 Bonus", requirement: "Earn ₹25,000 total", progress: 50 },
-            ].map((item, i) => (
-              <div key={i} className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl">
-                <div className="flex-1">
-                  <p className="font-bold text-sm">{item.reward}</p>
-                  <p className="text-xs text-slate-400">{item.requirement}</p>
-                </div>
-                <div className="text-right">
-                  <p className="font-bold text-[#0b50d5]">{item.progress}%</p>
+            {[1, 2, 3].map(i => (
+              <div key={i} className="bg-white rounded-2xl p-4 animate-pulse">
+                <div className="h-14 bg-slate-200 rounded mb-2" />
+                <div className="h-3 bg-slate-200 rounded w-3/4" />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {filteredAchievements.map((achievement) => (
+              <div 
+                key={achievement.id}
+                className={`bg-white rounded-2xl p-4 shadow-sm border-2 transition-all ${
+                  achievement.unlocked 
+                    ? "border-amber-300" 
+                    : "border-transparent"
+                }`}
+              >
+                <div className="flex items-start gap-4">
+                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-3xl ${
+                    achievement.unlocked 
+                      ? "bg-amber-100" 
+                      : "bg-slate-100"
+                  }`}>
+                    {achievement.icon}
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-bold text-[#4d212a]">{achievement.title}</h3>
+                      {achievement.unlocked && <span className="text-amber-500">✓</span>}
+                    </div>
+                    <p className="text-xs text-slate-500 mt-1">{achievement.description}</p>
+                    
+                    {!achievement.unlocked && (
+                      <>
+                        <div className="flex items-center justify-between mt-2">
+                          <span className="text-[10px] text-slate-400">
+                            {Math.round(achievement.progress)} / {achievement.target}
+                          </span>
+                          <span className="text-[10px] text-[#0b50d5] font-bold">
+                            {Math.min(Math.round((achievement.progress / achievement.target) * 100), 100)}%
+                          </span>
+                        </div>
+                        <div className="w-full bg-slate-100 rounded-full h-2 mt-1 overflow-hidden">
+                          <div 
+                            className="h-full bg-[#0b50d5] rounded-full transition-all"
+                            style={{ width: `${Math.min((achievement.progress / achievement.target) * 100, 100)}%` }}
+                          />
+                        </div>
+                      </>
+                    )}
+
+                    <div className="flex items-center justify-between mt-3">
+                      <span className="text-xs font-bold text-green-600">{achievement.reward}</span>
+                      {!achievement.unlocked && (
+                        <button 
+                          onClick={() => {
+                            setSelectedReward(achievement);
+                            setShowRewardModal(true);
+                          }}
+                          className="text-xs text-[#0b50d5] font-bold"
+                        >
+                          Track →
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
+        )}
+
+        {/* Leaderboard Teaser */}
+        <div className="bg-gradient-to-r from-purple-50 to-indigo-50 p-5 rounded-2xl border border-purple-100">
+          <Link href="/rider/leaderboard" className="flex items-center justify-between">
+            <div>
+              <h3 className="font-bold text-purple-800">Weekly Leaderboard</h3>
+              <p className="text-xs text-purple-600 mt-1">Compete with other riders</p>
+            </div>
+            <span className="text-[#0b50d5] font-bold text-sm">View →</span>
+          </Link>
         </div>
       </main>
 
@@ -236,12 +252,12 @@ export default function RiderAchievementsPage() {
             <div className="bg-slate-50 p-4 rounded-xl mb-4">
               <div className="flex justify-between mb-2">
                 <span className="text-sm text-slate-500">Progress</span>
-                <span className="font-bold">{selectedReward.progress} / {selectedReward.target}</span>
+                <span className="font-bold">{Math.round(selectedReward.progress)} / {selectedReward.target}</span>
               </div>
               <div className="w-full bg-slate-200 rounded-full h-3 overflow-hidden">
                 <div 
                   className="h-full bg-[#0b50d5] rounded-full"
-                  style={{ width: `${(selectedReward.progress / selectedReward.target) * 100}%` }}
+                  style={{ width: `${Math.min((selectedReward.progress / selectedReward.target) * 100, 100)}%` }}
                 />
               </div>
             </div>

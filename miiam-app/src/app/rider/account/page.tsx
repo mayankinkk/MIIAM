@@ -76,6 +76,30 @@ export default function RiderAccountPage() {
     router.push("/rider/login");
   }
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center">
+        <div className="animate-pulse text-center">
+          <div className="w-20 h-20 bg-slate-200 rounded-full mx-auto mb-4" />
+          <div className="h-6 bg-slate-200 rounded w-32 mx-auto mb-2" />
+          <div className="h-4 bg-slate-200 rounded w-24 mx-auto" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!displayRider) {
+    return (
+      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center p-6">
+        <div className="text-center">
+          <span className="material-symbols-outlined text-6xl text-slate-300">person_off</span>
+          <p className="text-slate-500 mt-4">Rider profile not found</p>
+          <Link href="/rider/login" className="text-[#0b50d5] font-bold mt-2 block">Go to Login</Link>
+        </div>
+      </div>
+    );
+  }
+
   const toggleShift = (shiftId: string) => {
     setShifts(shifts.map(s => ({
       ...s,
