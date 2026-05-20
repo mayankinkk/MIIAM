@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
 
 interface AddressCardProps {
   address: any;
@@ -164,18 +165,31 @@ const defaultAddresses = [
 ];
 
 export default function AddressBookPage() {
-  const [addresses, setAddresses] = useState<any[]>(defaultAddresses);
+  const supabase = createClient();
+  const [addresses, setAddresses] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [isClient, setIsClient] = useState(false);
+
+  const loadAddresses = useCallback(async () => {
+    setLoading(true);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const res = await fetch(`/api/addresses?user_id=${user.id}`);
+      const data = await res.json();
+      if (data.addresses) {
+        setAddresses(data.addresses);
+      }
+    }
+    setLoading(false);
+  }, [supabase]);
 
   useEffect(() => {
     setIsClient(true);
-    const savedFromStorage = JSON.parse(localStorage.getItem('miiam_addresses') || '[]');
-    if (savedFromStorage.length > 0) {
-      setAddresses(savedFromStorage);
-    }
-  }, []);
+    loadAddresses();
+  }, [loadAddresses]);
+
   const [showAddAddress, setShowAddAddress] = useState(false);
-  const [editingAddress, setEditingAddress] = useState<typeof savedAddresses[0] | null>(null);
+  const [editingAddress, setEditingAddress] = useState<any | null>(null);
   const [newAddress, setNewAddress] = useState({
     label: "home",
     name: "",
@@ -230,12 +244,23 @@ export default function AddressBookPage() {
     }
   };
 
-  const handleSetDefault = (addressId: string) => {
+  const handleSetDefault = async (addressId: string) => {
     const selectedAddress = addresses.find(addr => addr.id === addressId);
     if (selectedAddress) {
-      const fullAddress = `${selectedAddress.name}, ${selectedAddress.street}, ${selectedAddress.city}, ${selectedAddress.state} - ${selectedAddress.postal_code}`;
+      const fullAddress = `${selectedAddress.address}, ${selectedAddress.city}, ${selectedAddress.state} - ${selectedAddress.pincode}`;
       localStorage.setItem('miiam_selected_address', JSON.stringify({ address: fullAddress }));
     }
+    
+    await fetch("/api/addresses", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ 
+        id: addressId, 
+        user_id: addresses[0]?.user_id,
+        is_default: true 
+      }),
+    });
+    
     setAddresses(
       addresses.map((addr) => ({
         ...addr,
@@ -245,34 +270,49 @@ export default function AddressBookPage() {
   };
 
   const handleSelectAddress = (address: typeof addresses[0]) => {
-    const fullAddress = `${address.name}, ${address.street}, ${address.city}, ${address.state} - ${address.postal_code}`;
+    const fullAddress = `${address.address}, ${address.city}, ${address.state} - ${address.pincode}`;
     localStorage.setItem('miiam_selected_address', JSON.stringify({ address: fullAddress }));
     window.location.href = '/app/checkout';
   };
 
-  const handleDelete = (addressId: string) => {
+  const handleDelete = async (addressId: string) => {
     if (confirm("Delete this address?")) {
-      const updatedAddresses = addresses.filter((addr) => addr.id !== addressId);
-      setAddresses(updatedAddresses);
-      localStorage.setItem('miiam_addresses', JSON.stringify(updatedAddresses));
+      await fetch(`/api/addresses?id=${addressId}`, { method: "DELETE" });
+      setAddresses(addresses.filter((addr) => addr.id !== addressId));
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const addressData = {
-      ...newAddress,
-      id: editingAddress?.id || "addr" + Date.now(),
-      icon: newAddress.label,
+      label: newAddress.label,
+      address: newAddress.street || newAddress.name,
+      city: newAddress.city,
+      state: newAddress.state,
+      pincode: newAddress.postal_code,
+      is_default: addresses.length === 0,
     };
 
     if (editingAddress) {
-      const updatedAddresses = addresses.map((addr) => (addr.id === editingAddress.id ? { ...addr, ...addressData } : addr));
-      setAddresses(updatedAddresses);
-      localStorage.setItem('miiam_addresses', JSON.stringify(updatedAddresses));
+      await fetch("/api/addresses", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          id: editingAddress.id, 
+          user_id: addresses[0]?.user_id,
+          ...addressData 
+        }),
+      });
+      setAddresses(addresses.map((addr) => (addr.id === editingAddress.id ? { ...addr, ...addressData } : addr)));
     } else {
-      const updatedAddresses = [...addresses, addressData as typeof addresses[0]];
-      setAddresses(updatedAddresses);
-      localStorage.setItem('miiam_addresses', JSON.stringify(updatedAddresses));
+      const res = await fetch("/api/addresses", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(addressData),
+      });
+      const data = await res.json();
+      if (data.address) {
+        setAddresses([...addresses, data.address]);
+      }
     }
 
     setShowAddAddress(false);
@@ -288,6 +328,14 @@ export default function AddressBookPage() {
       instructions: "",
     });
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#f8f8f8] flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#f8f8f8] pb-24">
