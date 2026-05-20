@@ -33,6 +33,19 @@ interface AnalyticsRider {
   name: string;
   is_online: boolean;
   earnings: number;
+  total_deliveries?: number;
+}
+
+interface OrderWithTimes {
+  id: string;
+  status: string;
+  total_amount: number;
+  delivery_fee: number;
+  discount_amount: number;
+  placed_at: string;
+  delivered_at?: string;
+  vendor?: { name: string };
+  rider?: { name: string };
 }
 
 export default function AdvancedAnalytics() {
@@ -55,7 +68,7 @@ export default function AdvancedAnalytics() {
       const [ordersRes, usersRes, vendorsRes, ridersRes] = await Promise.all([
         supabase
           .from("orders")
-          .select("*, vendor:vendors(name), rider:riders(name)")
+          .select("*, vendor:vendors(name), rider:riders(name), rider:riders(earnings,total_deliveries)")
           .gte("placed_at", startDate.toISOString())
           .order("placed_at", { ascending: true }),
         supabase
@@ -104,6 +117,26 @@ export default function AdvancedAnalytics() {
   const deliveredOrders = orders.filter((o) => o.status === "delivered").length;
   const cancelledOrders = orders.filter((o) => o.status === "cancelled").length;
   const pendingOrders = orders.filter((o) => ["pending", "accepted", "preparing"].includes(o.status)).length;
+
+  // Calculate average delivery time
+  const ordersWithDeliveryTime = orders.filter((o) => o.delivered_at && o.placed_at);
+  let avgDeliveryMinutes = 0;
+  if (ordersWithDeliveryTime.length > 0) {
+    const totalMinutes = ordersWithDeliveryTime.reduce((sum, order) => {
+      const placed = new Date(order.placed_at).getTime();
+      const delivered = new Date(order.delivered_at!).getTime();
+      return sum + (delivered - placed);
+    }, 0);
+    avgDeliveryMinutes = Math.round(totalMinutes / ordersWithDeliveryTime.length / 60000);
+  }
+
+  // Rider utilization
+  const activeRiders = riders.filter((r) => r.is_online).length;
+  const totalRiders = riders.length;
+  const riderUtilization = totalRiders > 0 ? Math.round((activeRiders / totalRiders) * 100) : 0;
+
+  // Orders per rider
+  const ordersPerRider = activeRiders > 0 ? Math.round(deliveredOrders / activeRiders) : 0;
 
   const dailyRevenue: Record<string, number> = {};
   const hourlyOrders: Record<number, number> = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0, 11: 0, 12: 0, 13: 0, 14: 0, 15: 0, 16: 0, 17: 0, 18: 0, 19: 0, 20: 0, 21: 0, 22: 0, 23: 0 };
@@ -467,7 +500,7 @@ export default function AdvancedAnalytics() {
             </div>
 
             <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm">
-              <h2 className="text-lg font-black text-slate-800 mb-6">Platform Health</h2>
+              <h2 className="text-lg font-black text-slate-800 mb-6">Operations Metrics</h2>
               <div className="grid grid-cols-2 gap-4">
                 <div className="p-4 bg-green-50 rounded-xl">
                   <span className="material-symbols-outlined text-green-600 text-2xl">store</span>
@@ -480,16 +513,26 @@ export default function AdvancedAnalytics() {
                   <p className="text-xs text-slate-500">Online Riders</p>
                 </div>
                 <div className="p-4 bg-purple-50 rounded-xl">
-                  <span className="material-symbols-outlined text-purple-600 text-2xl">person</span>
-                  <p className="text-2xl font-black text-slate-800 mt-2">{newUsersCount}</p>
-                  <p className="text-xs text-slate-500">New Users</p>
+                  <span className="material-symbols-outlined text-purple-600 text-2xl">timer</span>
+                  <p className="text-2xl font-black text-slate-800 mt-2">{avgDeliveryMinutes > 0 ? `${avgDeliveryMinutes}m` : "N/A"}</p>
+                  <p className="text-xs text-slate-500">Avg Delivery Time</p>
                 </div>
                 <div className="p-4 bg-amber-50 rounded-xl">
-                  <span className="material-symbols-outlined text-amber-600 text-2xl">trending_up</span>
+                  <span className="material-symbols-outlined text-amber-600 text-2xl">percent</span>
+                  <p className="text-2xl font-black text-slate-800 mt-2">{riderUtilization}%</p>
+                  <p className="text-xs text-slate-500">Rider Utilization</p>
+                </div>
+                <div className="p-4 bg-rose-50 rounded-xl">
+                  <span className="material-symbols-outlined text-rose-600 text-2xl">trending_up</span>
                   <p className="text-2xl font-black text-slate-800 mt-2">
                     {orderCount ? Math.round((deliveredOrders / orderCount) * 100) : 0}%
                   </p>
-                  <p className="text-xs text-slate-500">Fulfillment Rate</p>
+                  <p className="text-xs text-slate-500">Success Rate</p>
+                </div>
+                <div className="p-4 bg-cyan-50 rounded-xl">
+                  <span className="material-symbols-outlined text-cyan-600 text-2xl">person</span>
+                  <p className="text-2xl font-black text-slate-800 mt-2">{newUsersCount}</p>
+                  <p className="text-xs text-slate-500">New Users</p>
                 </div>
               </div>
             </div>

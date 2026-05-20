@@ -35,9 +35,16 @@ export default function ExplorePage() {
   const [activeCategory, setActiveCategory] = useState("all");
   const scrollRef = useRef<HTMLDivElement>(null);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
   const { totalItems } = useCartStore();
   const [cartBounce, setCartBounce] = useState(false);
   const [prevCartCount, setPrevCartCount] = useState(0);
+
+  useEffect(() => {
+    // Ensure client-side rendering is complete
+    setIsLoaded(true);
+  }, []);
 
   useEffect(() => {
     const count = totalItems();
@@ -50,8 +57,13 @@ export default function ExplorePage() {
   }, [totalItems(), prevCartCount]);
 
   const handleRefresh = async () => {
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setRefreshKey(k => k + 1);
+    try {
+      setError(null);
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      setRefreshKey(k => k + 1);
+    } catch (err) {
+      setError("Failed to refresh. Please try again.");
+    }
   };
 
   const colorMap: Record<string, string> = {
@@ -69,8 +81,27 @@ export default function ExplorePage() {
     pest: "bg-lime-100 text-lime-600",
   };
 
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center">
+        <div className="w-16 h-16 bg-[#ba001c] rounded-2xl flex items-center justify-center animate-pulse">
+          <span className="material-symbols-outlined text-3xl text-white">M</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#fff4f4]">
+      {error && (
+        <div className="bg-red-50 border border-red-200 px-4 py-3 flex items-center gap-2">
+          <span className="material-symbols-outlined text-red-500">error</span>
+          <span className="text-sm text-red-700">{error}</span>
+          <button onClick={() => setError(null)} className="ml-auto text-red-500">
+            <span className="material-symbols-outlined text-sm">close</span>
+          </button>
+        </div>
+      )}
       <PullToRefresh onRefresh={handleRefresh} className="pb-24">
         {/* Header */}
         <header className="bg-white px-6 pt-8 pb-4">
