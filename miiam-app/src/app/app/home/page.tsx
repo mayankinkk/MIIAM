@@ -68,6 +68,23 @@ export default function HomePage() {
   if (hour < 12) { greeting = "Good morning"; timeIcon = "☀️"; }
   else if (hour < 18) { greeting = "Good afternoon"; timeIcon = "🌤️"; }
 
+  const handleManualLocation = () => {
+    const pin = manualPincode.trim();
+    if (pin.length !== 6 || !/^\d{6}$/.test(pin)) {
+      setPincodeError("Please enter a valid 6-digit PIN code");
+      return;
+    }
+    setPincodeError("");
+    setLocation(`PIN: ${pin}`);
+    locationStore.setLocation({
+      pincode: pin,
+      city: null,
+      displayAddress: `PIN: ${pin}`,
+    });
+    setShowLocationModal(false);
+    setManualPincode("");
+  };
+
   const userName = user?.profile_name || user?.email?.split("@")[0] || "User";
 
   // Auto-rotate offers
