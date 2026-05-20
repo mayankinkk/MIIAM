@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import * as Sentry from "@sentry/nextjs";
 import Link from "next/link";
 
 export default function GlobalError({
@@ -14,8 +13,6 @@ export default function GlobalError({
   const [showDetails, setShowDetails] = useState(false);
 
   useEffect(() => {
-    // Report to Sentry
-    Sentry.captureException(error);
     console.error("Global error:", error);
   }, [error]);
 

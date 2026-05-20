@@ -1,121 +1,332 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 
-export default function TermsPage() {
+export default function TermsOfService() {
+  const [activeSection, setActiveSection] = useState<string>("introduction");
+
+  const scrollToSection = (id: string) => {
+    setActiveSection(id);
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  const sections = [
+    { id: "introduction", label: "Introduction" },
+    { id: "acceptance", label: "Acceptance of Terms" },
+    { id: "eligibility", label: "Eligibility" },
+    { id: "accounts", label: "User Accounts" },
+    { id: "services", label: "Our Services" },
+    { id: "payment", label: "Payments & Pricing" },
+    { id: "obligations", label: "User Obligations" },
+    { id: "intellectual", label: "Intellectual Property" },
+    { id: "termination", label: "Termination" },
+    { id: "liability", label: "Limitation of Liability" },
+    { id: "indemnification", label: "Indemnification" },
+    { id: "governing", label: "Governing Law" },
+    { id: "dpdp", label: "DPDP Act 2023 Compliance" },
+    { id: "contact", label: "Contact Us" },
+  ];
+
   return (
-    <div className="min-h-screen bg-[#fff4f4] font-sans">
-      <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl border-b border-[#ba001c]/10">
-        <div className="max-w-4xl mx-auto px-6 py-4 flex justify-between items-center">
-          <Link href="/" className="text-2xl font-black text-[#ba001c] tracking-tighter">
-            MIIAM
-          </Link>
-          <Link href="/" className="text-sm font-bold text-slate-500 hover:text-[#ba001c]">
-            ← Back to Home
-          </Link>
-        </div>
-      </nav>
-
-      <main className="pt-32 pb-20 px-6">
-        <div className="max-w-4xl mx-auto">
-          <span className="inline-block px-4 py-1.5 bg-[#ba001c]/10 text-[#ba001c] rounded-full text-xs font-black uppercase tracking-widest mb-6">
-            Legal
-          </span>
-          <h1 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter mb-8">
-            Terms & Conditions
-          </h1>
-          <p className="text-slate-500 mb-12">Last updated: May 2026</p>
-
-          <div className="prose prose-slate max-w-none space-y-12">
-            <section className="bg-white rounded-2xl p-8 border border-slate-100">
-              <h2 className="text-xl font-black text-slate-900 mb-4">1. Eligibility</h2>
-              <ul className="list-disc pl-6 text-slate-600 space-y-2">
-                <li>You must be 18 years or older to use MIIAM</li>
-                <li>You must provide accurate information during registration</li>
-                <li>You are responsible for maintaining your account credentials</li>
-              </ul>
-            </section>
-
-            <section className="bg-white rounded-2xl p-8 border border-slate-100">
-              <h2 className="text-xl font-black text-slate-900 mb-4">2. Orders & Payments</h2>
-              <ul className="list-disc pl-6 text-slate-600 space-y-2">
-                <li>Prices shown are final at checkout</li>
-                <li>Orders are confirmed only after successful payment</li>
-                <li><strong>Cancellation window:</strong> Within 2 minutes of placing the order</li>
-                <li><strong>Refunds:</strong> 5-7 business days to source account</li>
-                <li>Payment methods: UPI, Cards, Wallets (Razorpay/Cashfree)</li>
-              </ul>
-            </section>
-
-            <section className="bg-white rounded-2xl p-8 border border-slate-100">
-              <h2 className="text-xl font-black text-slate-900 mb-4">3. Vendor & Service Partner Conduct</h2>
-              <ul className="list-disc pl-6 text-slate-600 space-y-2">
-                <li>MIIAM is a platform connecting users with <strong>independent businesses</strong></li>
-                <li>MIIAM is not liable for quality issues beyond our refund policy</li>
-                <li>All service professionals undergo background verification before onboarding</li>
-                <li>Vendors are responsible for their own pricing and service delivery</li>
-              </ul>
-            </section>
-
-            <section className="bg-white rounded-2xl p-8 border border-slate-100">
-              <h2 className="text-xl font-black text-slate-900 mb-4">4. Prohibited Use</h2>
-              <p className="text-slate-600 mb-4">You must NOT:</p>
-              <ul className="list-disc pl-6 text-slate-600 space-y-2">
-                <li>Create fake accounts or place fraudulent orders</li>
-                <li>Abuse or manipulate offers/coupons</li>
-                <li>Harass delivery partners or service professionals</li>
-                <li>Use the platform for illegal activities</li>
-                <li>Attempt to hack or disrupt platform services</li>
-              </ul>
-              <p className="text-slate-600 mt-4 font-semibold text-red-600">
-                Violation may result in account termination and legal action.
-              </p>
-            </section>
-
-            <section className="bg-white rounded-2xl p-8 border border-slate-100">
-              <h2 className="text-xl font-black text-slate-900 mb-4">5. Intellectual Property</h2>
-              <ul className="list-disc pl-6 text-slate-600 space-y-2">
-                <li>MIIAM name, logo, and all content are owned by MIIAM</li>
-                <li>Users cannot reproduce, resell, or distribute platform content</li>
-                <li>All trademarks and copyrights are protected</li>
-              </ul>
-            </section>
-
-            <section className="bg-white rounded-2xl p-8 border border-slate-100">
-              <h2 className="text-xl font-black text-slate-900 mb-4">6. Limitation of Liability</h2>
-              <p className="text-slate-600 mb-4">MIIAM is not liable for:</p>
-              <ul className="list-disc pl-6 text-slate-600 space-y-2">
-                <li>Delays caused by weather conditions</li>
-                <li>Delays caused by strikes or force majeure</li>
-                <li>Issues caused by third-party service providers</li>
-                <li>Indirect or consequential damages</li>
-              </ul>
-              <p className="text-slate-600 mt-4 font-semibold">
-                Maximum liability is capped at the order value paid.
-              </p>
-            </section>
-
-            <section className="bg-white rounded-2xl p-8 border border-slate-100">
-              <h2 className="text-xl font-black text-slate-900 mb-4">7. Governing Law</h2>
-              <ul className="list-disc pl-6 text-slate-600 space-y-2">
-                <li>All disputes governed by laws of India</li>
-                <li>Jurisdiction: Courts of Guwahati, Assam</li>
-                <li>Any disputes will be resolved amicably first</li>
-              </ul>
-            </section>
-
-            <section className="bg-white rounded-2xl p-8 border border-slate-100">
-              <h2 className="text-xl font-black text-slate-900 mb-4">8. Contact</h2>
-              <p className="text-slate-600 mb-4">For queries:</p>
-              <div className="bg-slate-50 rounded-xl p-4">
-                <p className="font-bold text-slate-800">MIIAM Support</p>
-                <p className="text-slate-600">Email: support@miiam.app</p>
-                <p className="text-slate-600">Phone: +91 98765 43210</p>
+    <div className="min-h-screen bg-[#fff4f4] dark:bg-slate-950">
+      {/* Header */}
+      <header className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <Link href="/" className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-[#ba001c] rounded-xl flex items-center justify-center">
+                <span className="material-symbols-outlined text-white text-xl">M</span>
               </div>
-            </section>
+              <span className="text-xl font-black text-[#4d212a] dark:text-white">MIIAM</span>
+            </Link>
+            <div className="flex items-center gap-4">
+              <Link href="/privacy" className="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-[#ba001c]">
+                Privacy Policy
+              </Link>
+              <Link href="/" className="px-4 py-2 bg-[#ba001c] text-white rounded-lg text-sm font-bold hover:opacity-90">
+                Back to Home
+              </Link>
+            </div>
           </div>
         </div>
-      </main>
+      </header>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="lg:grid lg:grid-cols-12 lg:gap-8">
+          {/* Sidebar Navigation */}
+          <aside className="hidden lg:block lg:col-span-3">
+            <div className="sticky top-24">
+              <nav className="space-y-1">
+                {sections.map((section) => (
+                  <button
+                    key={section.id}
+                    onClick={() => scrollToSection(section.id)}
+                    className={`w-full text-left px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      activeSection === section.id
+                        ? "bg-[#ba001c] text-white"
+                        : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+                    }`}
+                  >
+                    {section.label}
+                  </button>
+                ))}
+              </nav>
+            </div>
+          </aside>
+
+          {/* Main Content */}
+          <main className="lg:col-span-9 mt-8 lg:mt-0">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm p-6 sm:p-8 lg:p-10">
+              <div className="flex items-center gap-3 mb-8">
+                <span className="material-symbols-outlined text-4xl text-[#ba001c]">description</span>
+                <div>
+                  <h1 className="text-2xl sm:text-3xl font-black text-[#4d212a] dark:text-white">Terms of Service</h1>
+                  <p className="text-slate-500 text-sm mt-1">Last updated: May 2025</p>
+                </div>
+              </div>
+
+              <div className="prose prose-slate dark:prose-invert max-w-none space-y-8">
+                {/* Introduction */}
+                <section id="introduction" className="scroll-mt-20">
+                  <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">1. Introduction</h2>
+                  <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Welcome to MIIAM ("we," "our," or "us"). These Terms of Service ("Terms") govern your access to and use of the MIIAM mobile application, website, and related services (collectively, the "Platform"). MIIAM is a technology platform that connects users with local vendors, delivery riders, and service providers across food delivery, grocery, pharmacy, beauty, and various on-demand services.
+                  </p>
+                  <p className="text-slate-600 dark:text-slate-400 leading-relaxed mt-4">
+                    By accessing or using our Platform, you agree to be bound by these Terms. If you disagree with any part of these Terms, you may not access our Platform.
+                  </p>
+                </section>
+
+                {/* Acceptance of Terms */}
+                <section id="acceptance" className="scroll-mt-20">
+                  <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">2. Acceptance of Terms</h2>
+                  <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    By creating an account, placing an order, or using any feature of the Platform, you acknowledge that you have read, understood, and agree to be bound by these Terms and our Privacy Policy. You also agree to comply with all applicable laws and regulations.
+                  </p>
+                </section>
+
+                {/* Eligibility */}
+                <section id="eligibility" className="scroll-mt-20">
+                  <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">3. Eligibility</h2>
+                  <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    You must be at least 18 years of age to use our Platform. By using MIIAM, you represent and warrant that you meet this eligibility requirement. If you are using the Platform on behalf of a business, you represent that you have the authority to bind that business to these Terms.
+                  </p>
+                </section>
+
+                {/* User Accounts */}
+                <section id="accounts" className="scroll-mt-20">
+                  <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">4. User Accounts</h2>
+                  <div className="space-y-4 text-slate-600 dark:text-slate-400 leading-relaxed">
+                    <p><strong>4.1 Account Registration:</strong> To access certain features, you must register an account by providing accurate and complete information, including your phone number, email address, and location.</p>
+                    <p><strong>4.2 Account Security:</strong> You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You agree to notify us immediately of any unauthorized use of your account.</p>
+                    <p><strong>4.3 Phone Verification:</strong> We require phone number verification via OTP (One-Time Password) to create an account and verify your identity for security purposes.</p>
+                    <p><strong>4.4 Location Services:</strong> To provide delivery services, we collect your location data. You agree to share your location to enable order tracking and delivery.</p>
+                  </div>
+                </section>
+
+                {/* Our Services */}
+                <section id="services" className="scroll-mt-20">
+                  <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">5. Our Services</h2>
+                  <div className="space-y-4 text-slate-600 dark:text-slate-400 leading-relaxed">
+                    <p>MIIAM provides a digital marketplace connecting users with:</p>
+                    <ul className="list-disc pl-6 space-y-2">
+                      <li><strong>Food Delivery:</strong> Orders from restaurants, cloud kitchens, and food outlets</li>
+                      <li><strong>Grocery Delivery:</strong> Fresh produce, daily essentials, and household items</li>
+                      <li><strong>Pharmacy:</strong> Medicines and health products with prescription upload capability</li>
+                      <li><strong>Beauty & Personal Care:</strong> Salon services, beauty products, and at-home treatments</li>
+                      <li><strong>On-Demand Services:</strong> Home cleaning, AC repair, plumbing, electrical, and pest control</li>
+                      <li><strong>Flowers & Gifts:</strong> Flower arrangements, gift baskets, and special occasion items</li>
+                    </ul>
+                    <p className="mt-4">We act as an intermediary platform and do not own or operate the vendors, riders, or service providers listed on our Platform.</p>
+                  </div>
+                </section>
+
+                {/* Payments & Pricing */}
+                <section id="payment" className="scroll-mt-20">
+                  <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">6. Payments & Pricing</h2>
+                  <div className="space-y-4 text-slate-600 dark:text-slate-400 leading-relaxed">
+                    <p><strong>6.1 Payment Methods:</strong> We accept various payment methods including credit/debit cards, UPI, net banking, wallet payments, and cash on delivery.</p>
+                    <p><strong>6.2 Pricing:</strong> Prices are determined by vendors and may include item prices, packing charges, delivery fees, and applicable taxes. Delivery fees vary based on distance and demand.</p>
+                    <p><strong>6.3 Wallet:</strong> MIIAM Wallet credits are non-refundable unless required by applicable law.</p>
+                    <p><strong>6.4 Refunds:</strong> Refunds are processed for cancelled orders or quality issues. See Section 11 (Refund Policy) for details.</p>
+                  </div>
+                </section>
+
+                {/* User Obligations */}
+                <section id="obligations" className="scroll-mt-20">
+                  <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">7. User Obligations</h2>
+                  <div className="space-y-4 text-slate-600 dark:text-slate-400 leading-relaxed">
+                    <p>You agree to:</p>
+                    <ul className="list-disc pl-6 space-y-2">
+                      <li>Provide accurate and current information</li>
+                      <li>Not use the Platform for any unlawful purpose</li>
+                      <li>Not attempt to gain unauthorized access to any part of the Platform</li>
+                      <li>Not interfere with the proper working of the Platform</li>
+                      <li>Not place fraudulent or fake orders</li>
+                      <li>Not harass, abuse, or harm any vendor, rider, or other user</li>
+                      <li>Comply with all applicable laws including the Digital Personal Data Protection Act, 2023</li>
+                    </ul>
+                  </div>
+                </section>
+
+                {/* Intellectual Property */}
+                <section id="intellectual" className="scroll-mt-20">
+                  <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">8. Intellectual Property</h2>
+                  <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    All content, features, and functionality of the Platform, including logos, trademarks, and software, are owned by MIIAM Technologies Pvt. Ltd. and are protected by Indian and international copyright, trademark, and other intellectual property laws. You may not copy, reproduce, distribute, or create derivative works without our prior written consent.
+                  </p>
+                </section>
+
+                {/* Termination */}
+                <section id="termination" className="scroll-mt-20">
+                  <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">9. Termination</h2>
+                  <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    We reserve the right to suspend or terminate your account at any time for violation of these Terms, suspicious activity, or upon legal request. You may delete your account at any time through the app settings. Upon termination, all rights granted to you under these Terms will immediately cease.
+                  </p>
+                </section>
+
+                {/* Limitation of Liability */}
+                <section id="liability" className="scroll-mt-20">
+                  <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">10. Limitation of Liability</h2>
+                  <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    MIIAM shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising out of your use of the Platform. Our total liability shall not exceed the amount paid by you for the specific order in question. We are not liable for any issues with vendors, riders, or third-party service providers.
+                  </p>
+                </section>
+
+                {/* Refund Policy */}
+                <section id="refund" className="scroll-mt-20">
+                  <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">11. Refund Policy</h2>
+                  <div className="space-y-4 text-slate-600 dark:text-slate-400 leading-relaxed">
+                    <p><strong>11.1 Order Cancellation:</strong> You may cancel an order before it is accepted by the vendor. Once accepted, cancellation may not be possible or may incur a fee.</p>
+                    <p><strong>11.2 Non-Delivery:</strong> If your order is not delivered within the estimated time or is not delivered at all, you may request a refund.</p>
+                    <p><strong>11.3 Quality Issues:</strong> If the delivered items are incorrect, damaged, or of poor quality, report it within 30 minutes of delivery for resolution.</p>
+                    <p><strong>11.4 Refund Processing:</strong> Approved refunds are processed within 5-7 business days to the original payment method or MIIAM Wallet.</p>
+                    <p><strong>11.5 Wallet Credits:</strong> MIIAM Wallet credits expire after 6 months of inactivity.</p>
+                  </div>
+                </section>
+
+                {/* Cookie Policy */}
+                <section id="cookies" className="scroll-mt-20">
+                  <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">12. Cookie Policy</h2>
+                  <div className="space-y-4 text-slate-600 dark:text-slate-400 leading-relaxed">
+                    <p>We use cookies and similar tracking technologies to:</p>
+                    <ul className="list-disc pl-6 space-y-2">
+                      <li>Keep you logged in and remember your preferences</li>
+                      <li>Analyze traffic and improve our services</li>
+                      <li>Personalize content and advertisements</li>
+                      <li>Provide location-based services</li>
+                    </ul>
+                    <p className="mt-4">You can manage cookie preferences in your browser settings. Disabling cookies may affect some Platform features.</p>
+                  </div>
+                </section>
+
+                {/* Indemnification */}
+                <section id="indemnification" className="scroll-mt-20">
+                  <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">13. Indemnification</h2>
+                  <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    You agree to indemnify, defend, and hold harmless MIIAM and its officers, directors, employees, and agents from any claims, damages, losses, or expenses arising out of your violation of these Terms or your use of the Platform.
+                  </p>
+                </section>
+
+                {/* Governing Law */}
+                <section id="governing" className="scroll-mt-20">
+                  <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">14. Governing Law & Dispute Resolution</h2>
+                  <div className="space-y-4 text-slate-600 dark:text-slate-400 leading-relaxed">
+                    <p>These Terms shall be governed by and construed in accordance with the laws of India.</p>
+                    <p>Any dispute arising out of or relating to these Terms shall be subject to the exclusive jurisdiction of the courts in Bangalore, Karnataka, India.</p>
+                    <p>For any complaints or grievances, please contact our Grievance Officer.</p>
+                  </div>
+                </section>
+
+                {/* DPDP Act 2023 Compliance */}
+                <section id="dpdp" className="scroll-mt-20">
+                  <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">15. Digital Personal Data Protection Act, 2023 Compliance</h2>
+                  <div className="space-y-4 text-slate-600 dark:text-slate-400 leading-relaxed">
+                    <p>MIIAM is committed to complying with the Digital Personal Data Protection Act, 2023 ("DPDP Act") of India. This section outlines our data protection commitments:</p>
+                    
+                    <p><strong>15.1 Lawful Basis:</strong> We process your personal data based on your consent, contractual necessity, and legitimate interests.</p>
+                    
+                    <p><strong>15.2 Data Collection:</strong> We collect personal data including:</p>
+                    <ul className="list-disc pl-6 space-y-2">
+                      <li>Identity details (name, phone, email)</li>
+                      <li>Location data for delivery</li>
+                      <li>Payment information</li>
+                      <li>Order history and preferences</li>
+                      <li>Device and usage data</li>
+                    </ul>
+                    
+                    <p><strong>15.3 Purpose Limitation:</strong> Your data is used only for:</p>
+                    <ul className="list-disc pl-6 space-y-2">
+                      <li>Providing and improving our services</li>
+                      <li>Order fulfillment and delivery</li>
+                      <li>Customer support</li>
+                      <li>Analytics and personalization</li>
+                      <li>Legal compliance</li>
+                    </ul>
+                    
+                    <p><strong>15.4 Data Retention:</strong> We retain personal data only as long as necessary for the purposes outlined, or as required by law.</p>
+                    
+                    <p><strong>15.5 Your Rights (under DPDP Act):</strong></p>
+                    <ul className="list-disc pl-6 space-y-2">
+                      <li><strong>Right to Access:</strong> You can request access to your personal data</li>
+                      <li><strong>Right to Correction:</strong> You can request correction of inaccurate data</li>
+                      <li><strong>Right to Erasure:</strong> You can request deletion of your personal data ("right to be forgotten")</li>
+                      <li><strong>Right to Portability:</strong> You can request your data in a portable format</li>
+                      <li><strong>Right to Grievance:</strong> You can file complaints with our Grievance Officer or the Data Protection Board</li>
+                    </ul>
+                    
+                    <p><strong>15.6 Consent Management:</strong> You can manage your consent preferences in the app settings. You have the right to withdraw consent at any time.</p>
+                    
+                    <p><strong>15.7 Data Breach:</strong> In case of a data breach that affects your personal data, we will notify you and the Data Protection Board as required by law.</p>
+                    
+                    <p><strong>15.8 Cross-Border Transfer:</strong> Your data may be transferred outside India for processing. We ensure adequate protections are in place.</p>
+                    
+                    <p><strong>15.9 Children's Data:</strong> We do not knowingly collect data from children under 18 without parental consent.</p>
+                  </div>
+                </section>
+
+                {/* Contact Us */}
+                <section id="contact" className="scroll-mt-20">
+                  <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">16. Contact Us</h2>
+                  <div className="bg-slate-50 dark:bg-slate-800 rounded-xl p-6">
+                    <p className="text-slate-600 dark:text-slate-400 mb-4">For any questions about these Terms, please contact us:</p>
+                    <div className="space-y-2 text-slate-700 dark:text-slate-300">
+                      <p><strong>MIIAM Technologies Pvt. Ltd.</strong></p>
+                      <p>Registered Office: Bangalore, Karnataka, India</p>
+                      <p>Email: legal@miiam.com</p>
+                      <p>Phone: +91 98765 43210</p>
+                      <p className="mt-4"><strong>Grievance Officer:</strong></p>
+                      <p>Email: grievance@miiam.com</p>
+                      <p>Phone: +91 98765 43211</p>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <footer className="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-8 mt-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-[#ba001c]">M</span>
+              <span className="font-bold text-slate-600 dark:text-slate-400">MIIAM Technologies Pvt. Ltd.</span>
+            </div>
+            <div className="flex gap-6">
+              <Link href="/terms" className="text-sm text-slate-500 hover:text-[#ba001c]">Terms of Service</Link>
+              <Link href="/privacy" className="text-sm text-slate-500 hover:text-[#ba001c]">Privacy Policy</Link>
+            </div>
+            <p className="text-sm text-slate-400">© 2025 MIIAM. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
