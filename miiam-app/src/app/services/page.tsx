@@ -84,7 +84,7 @@ const stats = [
   { number: "4.8★", label: "Avg Rating", icon: "star" },
   { number: "100+", label: "Expert Pros", icon: "groups" },
   { number: "12+", label: "Service Types", icon: "category" },
-  { number: "Growing", label: "In Guwahati", icon: "location_on" },
+  { number: "Growing", label: "In Gauripur", icon: "location_on" },
 ];
 
 const whyChooseUs = [
