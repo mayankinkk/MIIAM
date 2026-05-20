@@ -180,7 +180,7 @@ function ServiceDetailContent() {
           </div>
           <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-200">
             <span className="material-symbols-outlined text-blue-600 text-sm">verified</span>
-            <span className="text-sm text-gray-500">{service.warranty_days} days warranty</span>
+            
           </div>
         </div>
 

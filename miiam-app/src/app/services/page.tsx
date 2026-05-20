@@ -90,7 +90,6 @@ const stats = [
 const whyChooseUs = [
   { icon: "verified_user", title: "Verified Experts", desc: "Background-checked professionals", color: "bg-green-100 text-green-600" },
   { icon: "schedule", title: "Flexible Scheduling", desc: "Book at your convenience", color: "bg-blue-100 text-blue-600" },
-  { icon: "shield", title: "Service Warranty", desc: "Up to 365 days warranty", color: "bg-amber-100 text-amber-600" },
   { icon: "support_agent", title: "24/7 Support", desc: "Round-the-clock assistance", color: "bg-purple-100 text-purple-600" },
 ];
 
