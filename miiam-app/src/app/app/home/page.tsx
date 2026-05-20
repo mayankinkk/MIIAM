@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { useLocationStore } from "@/lib/store/locationStore";
 
 const categories = [
   { id: "food", label: "Food", icon: "restaurant", color: "bg-orange-100", iconColor: "text-orange-600", offer: "20% OFF" },
@@ -32,7 +33,8 @@ export default function HomePage() {
   const supabase = createClient();
   const [user, setUser] = useState<any>(null);
   const [currentOffer, setCurrentOffer] = useState(0);
-  const [location, setLocation] = useState("Select Location");
+  const locationStore = useLocationStore();
+  const [location, setLocation] = useState(locationStore.displayAddress || "Select Location");
   const [activeOrder, setActiveOrder] = useState<any>(null);
   const [orderBubbleExpanded, setOrderBubbleExpanded] = useState(false);
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
@@ -171,7 +173,7 @@ export default function HomePage() {
       };
 
       const handleLocationSuccess = async (position: GeolocationPosition) => {
-        const { latitude, longitude, accuracy } = position.coords;
+        const { latitude, longitude } = position.coords;
         
         try {
           const response = await fetch(
@@ -183,8 +185,19 @@ export default function HomePage() {
           
           const preciseLocation = buildPreciseAddress(addr, data.display_name);
           setLocation(preciseLocation);
+
+          // Save to global location store for vendor filtering
+          locationStore.setLocation({
+            city: addr.city || addr.town || addr.village || addr.county || null,
+            state: addr.state || null,
+            country: addr.country || null,
+            lat: latitude,
+            lng: longitude,
+            displayAddress: preciseLocation,
+          });
         } catch {
           setLocation(`${latitude.toFixed(5)}, ${longitude.toFixed(5)}`);
+          locationStore.setLocation({ lat: latitude, lng: longitude });
         }
         
         setIsLoadingLocation(false);
@@ -230,7 +243,13 @@ export default function HomePage() {
 
   const handleManualLocation = () => {
     if (manualLocation.trim()) {
-      setLocation(manualLocation.trim());
+      const loc = manualLocation.trim();
+      setLocation(loc);
+      // Save manual location as city hint for filtering
+      locationStore.setLocation({
+        city: loc.split(",")[0].trim(),
+        displayAddress: loc,
+      });
       setShowLocationModal(false);
       setManualLocation("");
     }

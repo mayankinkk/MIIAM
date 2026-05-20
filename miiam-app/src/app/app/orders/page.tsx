@@ -40,12 +40,18 @@ export default function OrdersPage() {
     const channel = supabase
       .channel(`orders-list-${userId}`)
       .on('postgres_changes', {
-        event: 'UPDATE',
+        event: '*', // Listen to INSERT, UPDATE, DELETE
         schema: 'public',
         table: 'orders',
+        filter: `user_id=eq.${userId}`,
       }, (payload: any) => {
-        if (payload.new?.user_id === userId) {
+        if (payload.eventType === 'UPDATE' && payload.new) {
           setOrders(prev => prev.map(o => o.id === payload.new.id ? { ...o, ...payload.new } : o));
+        } else if (payload.eventType === 'INSERT' && payload.new) {
+          // Re-fetch to get full order with vendor details
+          fetchOrders();
+        } else if (payload.eventType === 'DELETE' && payload.old) {
+          setOrders(prev => prev.filter(o => o.id !== payload.old.id));
         }
       })
       .subscribe();

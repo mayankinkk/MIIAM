@@ -12,6 +12,7 @@ import { createClient } from "@/lib/supabase/client";
 import { VendorCardSkeleton } from "@/components/Skeleton";
 import { useToastStore } from "@/lib/store/toastStore";
 import { useFavoritesStore } from "@/lib/store/favoritesStore";
+import { useLocationStore } from "@/lib/store/locationStore";
 
 const supabase = createClient();
 
@@ -315,6 +316,8 @@ export default function FoodPage() {
   const favorites = new Set(favoriteIds);
   const [loading, setLoading] = useState(true);
   const [heroAsset, setHeroAsset] = useState<{ image_url: string; title: string; subtitle: string } | null>(null);
+  const locationStore = useLocationStore();
+  const userCity = locationStore.city;
   const foodSetting = getSetting("food");
 
   if (foodSetting && !foodSetting.isEnabled) {
@@ -333,7 +336,20 @@ export default function FoodPage() {
     ]);
 
     if (vendorsRes.data) {
-      setRestaurants(vendorsRes.data);
+      // Location-based filtering: if user has set a city, show only vendors from that area
+      let filteredVendors = vendorsRes.data;
+      if (userCity) {
+        const cityLower = userCity.toLowerCase();
+        const localVendors = vendorsRes.data.filter((v: any) => {
+          const vendorCity = (v.city || v.address || v.location || "").toLowerCase();
+          return vendorCity.includes(cityLower);
+        });
+        // Only apply filter if we get results — fallback to all if no local vendors found
+        if (localVendors.length > 0) {
+          filteredVendors = localVendors;
+        }
+      }
+      setRestaurants(filteredVendors);
       const { data: items } = await supabase
         .from("menu_items")
         .select("*")

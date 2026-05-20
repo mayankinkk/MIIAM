@@ -32,11 +32,14 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
   const handleCancelOrder = async () => {
     if (!confirm("Are you sure you want to cancel this order?")) return;
     try {
-      await supabase.from("orders").update({ status: "cancelled" }).eq("id", id);
-      router.push("/app/orders");
+      const { error } = await supabase.from("orders").update({ status: "cancelled" }).eq("id", id);
+      if (error) throw error;
+      // Immediately update local state so UI reflects cancel without waiting for realtime
+      setOrder((prev: any) => prev ? { ...prev, status: "cancelled" } : prev);
+      addToast("Order cancelled successfully", "success");
     } catch (error) {
       console.error("Cancel error:", error);
-      alert("Failed to cancel order");
+      addToast("Failed to cancel order. Please try again.", "error");
     }
   };
 
@@ -385,6 +388,15 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
               {canCancel ? "Cancel Order" : "Help with Order"}
             </button>
 
+            {/* Show cancelled state prominently */}
+            {order.status === "cancelled" && (
+              <div className="w-full bg-red-50 border border-red-200 rounded-xl py-4 text-center">
+                <span className="material-symbols-outlined text-red-500 text-3xl block mb-1">cancel</span>
+                <p className="text-red-600 font-bold">Order Cancelled</p>
+                <p className="text-sm text-red-400 mt-1">This order has been cancelled</p>
+              </div>
+            )}
+
             {!canCancel && order && order.status !== "delivered" && order.status !== "cancelled" && (
               <p className="text-center text-sm text-slate-500 mt-2">
                 Contact rider or customer support to make changes
@@ -590,6 +602,11 @@ function MainOrderMap({ orderId, riderLocation, deliveryAddress, onRouteUpdate }
       <style>{`
         @keyframes pulse-ring { 0%{transform:scale(0.8);opacity:0.8} 100%{transform:scale(1.8);opacity:0} }
       `}</style>
+      {/* LIVE badge */}
+      <div className="absolute top-3 left-3 z-10 bg-red-600 text-white text-[10px] font-black px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
+        <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
+        LIVE
+      </div>
       <div ref={mapRef} className="w-full h-full" style={{ zIndex: 1 }} />
     </div>
   );
