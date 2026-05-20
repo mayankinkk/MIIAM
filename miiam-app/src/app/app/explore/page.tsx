@@ -30,9 +30,27 @@ const collections = [
   { id: "c4", name: "Late Night Cravings", emoji: "🌙", count: 21, image: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=300&q=80" },
 ];
 
+const servicesData = [
+  { id: "food", name: "Food Delivery", desc: "Order from top restaurants", icon: "restaurant", price: null, rating: 4.5, dietary: "both", cuisine: "multi" },
+  { id: "grocery", name: "Grocery", desc: "Fresh groceries delivered", icon: "shopping_basket", price: null, rating: 4.3, dietary: "both", cuisine: "grocery" },
+  { id: "beauty", name: "Beauty & Spa", desc: "Salon, Spa, Nails", icon: "spa", price: 299, rating: 4.7, dietary: "both", cuisine: "beauty" },
+  { id: "services", name: "Home Services", desc: "AC, Plumbing, Cleaning", icon: "handyman", price: 199, rating: 4.4, dietary: "both", cuisine: "services" },
+  { id: "pharmacy", name: "Pharmacy", desc: "Medicines at your door", icon: "medication", price: null, rating: 4.6, dietary: "both", cuisine: "pharmacy" },
+  { id: "flowers", name: "Flowers & Gifts", desc: "Send love & wishes", icon: "local_florist", price: 299, rating: 4.5, dietary: "both", cuisine: "flowers" },
+  { id: "cleaning", name: "Cleaning", desc: "Home & Office Cleaning", icon: "cleaning_services", price: 499, rating: 4.6, dietary: "both", cuisine: "cleaning" },
+  { id: "ac", name: "AC Repair", desc: "AC Repair & Service", icon: "ac_unit", price: 299, rating: 4.7, dietary: "both", cuisine: "ac" },
+  { id: "plumbing", name: "Plumbing", desc: "Pipe & Leak Repair", icon: "plumbing", price: 149, rating: 4.5, dietary: "both", cuisine: "plumbing" },
+  { id: "electrical", name: "Electrical", desc: "Wiring & Switches", icon: "electrical_services", price: 99, rating: 4.4, dietary: "both", cuisine: "electrical" },
+  { id: "pest", name: "Pest Control", desc: "Cockroach & Pest Control", icon: "pest_control", price: 399, rating: 4.3, dietary: "both", cuisine: "pest" },
+];
+
 export default function ExplorePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
+  const [showFilters, setShowFilters] = useState(false);
+  const [priceFilter, setPriceFilter] = useState<"all" | "under_200" | "200_500" | "over_500">("all");
+  const [ratingFilter, setRatingFilter] = useState<"all" | "4plus" | "3plus">("all");
+  const [dietaryFilter, setDietaryFilter] = useState<"all" | "veg" | "nonveg">("all");
   const scrollRef = useRef<HTMLDivElement>(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -40,6 +58,28 @@ export default function ExplorePage() {
   const { totalItems } = useCartStore();
   const [cartBounce, setCartBounce] = useState(false);
   const [prevCartCount, setPrevCartCount] = useState(0);
+
+  const filteredServices = servicesData.filter(service => {
+    const matchesSearch = searchQuery === "" || 
+      service.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      service.desc.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    const matchesCategory = activeCategory === "all" || service.id === activeCategory;
+    
+    const matchesPrice = priceFilter === "all" || 
+      (priceFilter === "under_200" && service.price && service.price < 200) ||
+      (priceFilter === "200_500" && service.price && service.price >= 200 && service.price <= 500) ||
+      (priceFilter === "over_500" && service.price && service.price > 500) ||
+      service.price === null;
+    
+    const matchesRating = ratingFilter === "all" ||
+      (ratingFilter === "4plus" && service.rating >= 4) ||
+      (ratingFilter === "3plus" && service.rating >= 3);
+    
+    return matchesSearch && matchesCategory && matchesPrice && matchesRating;
+  });
+
+  const hasActiveFilters = priceFilter !== "all" || ratingFilter !== "all" || dietaryFilter !== "all";
 
   useEffect(() => {
     // Ensure client-side rendering is complete
@@ -138,7 +178,7 @@ export default function ExplorePage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search for anything..."
+              placeholder="Search dishes, cuisines, services..."
               className="w-full pl-12 pr-4 py-4 bg-slate-100 rounded-2xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
             />
           </div>
@@ -189,13 +229,106 @@ export default function ExplorePage() {
           </div>
         )}
 
+        {/* Search and Filter Bar */}
+        <section className="px-6 mb-4">
+          <div className="flex gap-2">
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className={`flex items-center gap-2 px-4 py-3 rounded-xl font-bold text-sm ${
+                hasActiveFilters ? "bg-[#ba001c] text-white" : "bg-white text-slate-600 border border-slate-200"
+              }`}
+            >
+              <span className="material-symbols-outlined text-lg">filter_list</span>
+              Filters
+              {hasActiveFilters && <span className="w-2 h-2 bg-white rounded-full" />}
+            </button>
+          </div>
+          
+          {showFilters && (
+            <div className="mt-4 p-4 bg-white rounded-2xl space-y-4 animate-fade-in">
+              <div>
+                <p className="text-xs font-bold text-slate-500 uppercase mb-2">Price Range</p>
+                <div className="flex gap-2 flex-wrap">
+                  {[
+                    { value: "all", label: "All" },
+                    { value: "under_200", label: "Under ₹200" },
+                    { value: "200_500", label: "₹200-500" },
+                    { value: "over_500", label: "₹500+" },
+                  ].map(opt => (
+                    <button
+                      key={opt.value}
+                      onClick={() => setPriceFilter(opt.value as any)}
+                      className={`px-3 py-2 rounded-lg text-xs font-bold ${
+                        priceFilter === opt.value ? "bg-[#ba001c] text-white" : "bg-slate-100 text-slate-600"
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              <div>
+                <p className="text-xs font-bold text-slate-500 uppercase mb-2">Rating</p>
+                <div className="flex gap-2 flex-wrap">
+                  {[
+                    { value: "all", label: "All" },
+                    { value: "4plus", label: "4+ ★" },
+                    { value: "3plus", label: "3+ ★" },
+                  ].map(opt => (
+                    <button
+                      key={opt.value}
+                      onClick={() => setRatingFilter(opt.value as any)}
+                      className={`px-3 py-2 rounded-lg text-xs font-bold ${
+                        ratingFilter === opt.value ? "bg-[#ba001c] text-white" : "bg-slate-100 text-slate-600"
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              {hasActiveFilters && (
+                <button
+                  onClick={() => { setPriceFilter("all"); setRatingFilter("all"); setDietaryFilter("all"); }}
+                  className="text-xs text-[#ba001c] font-bold"
+                >
+                  Clear all filters
+                </button>
+              )}
+            </div>
+          )}
+        </section>
+
+        {/* Results Count */}
+        {(searchQuery || hasActiveFilters) && (
+          <div className="px-6 mb-2">
+            <p className="text-sm text-slate-500">
+              {filteredServices.length} {filteredServices.length === 1 ? "result" : "results"} found
+            </p>
+          </div>
+        )}
+
         {/* Services Grid */}
         <section className="px-6">
           <h2 className="text-lg font-black text-slate-800 mb-4">
             {activeCategory === "all" ? "All Services" : categories.find(c => c.id === activeCategory)?.label}
           </h2>
+          {filteredServices.length === 0 ? (
+            <div className="text-center py-12">
+              <span className="material-symbols-outlined text-5xl text-slate-300">search_off</span>
+              <p className="text-slate-500 mt-4">No services found</p>
+              <button 
+                onClick={() => { setSearchQuery(""); setActiveCategory("all"); setPriceFilter("all"); setRatingFilter("all"); }}
+                className="text-[#ba001c] font-bold text-sm mt-2"
+              >
+                Clear filters
+              </button>
+            </div>
+          ) : (
           <div className="grid grid-cols-2 gap-4">
-            {categories.filter(c => c.id !== "all").map((feature, i) => (
+            {filteredServices.map((feature, i) => (
               <Link 
                 key={feature.id} 
                 href={`/app/${feature.id}`}
@@ -224,6 +357,7 @@ export default function ExplorePage() {
               </Link>
             ))}
           </div>
+          )}
         </section>
 
         {/* Collections */}
