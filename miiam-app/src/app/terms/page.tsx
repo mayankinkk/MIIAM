@@ -200,12 +200,105 @@ export default function TermsOfService() {
                 {/* Refund Policy */}
                 <section id="refund" className="scroll-mt-20">
                   <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">11. Refund Policy</h2>
-                  <div className="space-y-4 text-slate-600 dark:text-slate-400 leading-relaxed">
-                    <p><strong>11.1 Order Cancellation:</strong> You may cancel an order before it is accepted by the vendor. Once accepted, cancellation may not be possible or may incur a fee.</p>
-                    <p><strong>11.2 Non-Delivery:</strong> If your order is not delivered within the estimated time or is not delivered at all, you may request a refund.</p>
-                    <p><strong>11.3 Quality Issues:</strong> If the delivered items are incorrect, damaged, or of poor quality, report it within 30 minutes of delivery for resolution.</p>
-                    <p><strong>11.4 Refund Processing:</strong> Approved refunds are processed within 5-7 business days to the original payment method or MIIAM Wallet.</p>
-                    <p><strong>11.5 Wallet Credits:</strong> MIIAM Wallet credits expire after 6 months of inactivity.</p>
+                  <div className="space-y-6 text-slate-600 dark:text-slate-400 leading-relaxed">
+                    <p>At MIIAM, we want every order and service booking to meet your expectations. If something goes wrong, we're committed to making it right.</p>
+                    
+                    <h3 className="text-lg font-bold text-slate-800 mt-6">2. Food & Grocery Orders</h3>
+                    <p><strong>2.1 Eligible for full refund:</strong></p>
+                    <ul className="list-disc pl-6 space-y-1">
+                      <li>Your order was never picked up or delivered</li>
+                      <li>The wrong items were delivered</li>
+                      <li>Items were missing from your order</li>
+                      <li>The food was in an unacceptable condition (spoiled, contaminated, or severely different from description)</li>
+                      <li>The restaurant cancelled your order after payment</li>
+                    </ul>
+                    
+                    <p><strong>2.2 Eligible for partial refund:</strong></p>
+                    <ul className="list-disc pl-6 space-y-1">
+                      <li>Some items in your order were missing or incorrect</li>
+                      <li>Quality was below standard for specific items but not the entire order</li>
+                    </ul>
+                    
+                    <p><strong>2.3 Not eligible for refund:</strong></p>
+                    <ul className="list-disc pl-6 space-y-1">
+                      <li>You ordered the wrong item by mistake</li>
+                      <li>You changed your mind after the order was confirmed</li>
+                      <li>The delivery was delayed but the food was delivered in acceptable condition</li>
+                      <li>The complaint is raised more than 24 hours after delivery</li>
+                    </ul>
+                    
+                    <h3 className="text-lg font-bold text-slate-800 mt-6">3. Home Services</h3>
+                    <p><strong>3.1 Eligible for full refund:</strong></p>
+                    <ul className="list-disc pl-6 space-y-1">
+                      <li>You cancelled the booking at least 2 hours before the scheduled time</li>
+                      <li>The assigned professional did not show up</li>
+                      <li>The service was not started due to a MIIAM-side issue</li>
+                    </ul>
+                    
+                    <p><strong>3.2 Eligible for partial refund:</strong></p>
+                    <ul className="list-disc pl-6 space-y-1">
+                      <li>The work was incomplete due to the professional's fault</li>
+                      <li>The service quality was significantly below the described standard</li>
+                    </ul>
+                    
+                    <p><strong>3.3 Not eligible for refund:</strong></p>
+                    <ul className="list-disc pl-6 space-y-1">
+                      <li>Cancellation made less than 1 hour before the scheduled time</li>
+                      <li>Service was completed and accepted by you at the time</li>
+                      <li>Dissatisfaction arising from a change of mind after work was completed</li>
+                    </ul>
+                    
+                    <h3 className="text-lg font-bold text-slate-800 mt-6">4. Cancellation Timing & Refunds</h3>
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full border border-slate-200 text-sm">
+                        <thead className="bg-slate-50">
+                          <tr>
+                            <th className="p-3 text-left border-b">Scenario</th>
+                            <th className="p-3 text-left border-b">Refund</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr><td className="p-3 border-b">Before restaurant accepts</td><td className="p-3 border-b">100%</td></tr>
+                          <tr><td className="p-3 border-b">After acceptance, before preparation</td><td className="p-3 border-b">100%</td></tr>
+                          <tr><td className="p-3 border-b">After preparation began</td><td className="p-3 border-b">No refund</td></tr>
+                          <tr><td className="p-3 border-b">After rider picked up</td><td className="p-3 border-b">No refund</td></tr>
+                          <tr><td className="p-3 border-b">Service — 2+ hours before</td><td className="p-3 border-b">100%</td></tr>
+                          <tr><td className="p-3 border-b">Service — 1-2 hours before</td><td className="p-3 border-b">50%</td></tr>
+                          <tr><td className="p-3 border-b">Service — under 1 hour</td><td className="p-3 border-b">No refund</td></tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    
+                    <h3 className="text-lg font-bold text-slate-800 mt-6">5. Refund Processing Timeline</h3>
+                    <ul className="list-disc pl-6 space-y-1">
+                      <li><strong>MIIAM Wallet:</strong> Instant (within minutes)</li>
+                      <li><strong>UPI (GPay, PhonePe, Paytm):</strong> 2-3 business days</li>
+                      <li><strong>Debit / Credit Card:</strong> 5-7 business days</li>
+                      <li><strong>Net Banking:</strong> 3-5 business days</li>
+                      <li><strong>Cash on Delivery:</strong> Refunded to MIIAM Wallet only</li>
+                    </ul>
+                    
+                    <h3 className="text-lg font-bold text-slate-800 mt-6">6. How to Request a Refund</h3>
+                    <ul className="list-disc pl-6 space-y-1">
+                      <li>Go to My Orders → select order → tap Report an Issue</li>
+                      <li>Chat with us via Help section in the app</li>
+                      <li>Email support@miiam.in with order ID and issue description</li>
+                    </ul>
+                    <p className="mt-2">Refund requests for food orders must be raised within 24 hours of delivery. For home services, raise within 48 hours of service completion.</p>
+                    
+                    <h3 className="text-lg font-bold text-slate-800 mt-6">7. MIIAM Wallet Credits</h3>
+                    <ul className="list-disc pl-6 space-y-1">
+                      <li>Valid for 90 days from date of issue</li>
+                      <li>Can be used on any order or service booking</li>
+                      <li>Cannot be transferred or withdrawn as cash</li>
+                      <li>Non-refundable once applied to an order</li>
+                    </ul>
+                    
+                    <h3 className="text-lg font-bold text-slate-800 mt-6">8. Disputes & Escalations</h3>
+                    <p>Escalate by emailing grievance@miiam.in. Our Grievance Officer will respond within 5 business days. MIIAM's decision after escalation review shall be final.</p>
+                    
+                    <h3 className="text-lg font-bold text-slate-800 mt-6">9. Fraud & Misuse</h3>
+                    <p>MIIAM reserves the right to deny refund requests and suspend accounts if we detect a pattern of misuse, including repeated false complaints, manipulation of the refund system, or fraudulent claims.</p>
                   </div>
                 </section>
 
