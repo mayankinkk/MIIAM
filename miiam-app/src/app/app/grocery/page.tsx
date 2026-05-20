@@ -54,11 +54,8 @@ export default function GroceryPage() {
 
   const fetchProducts = async () => {
     setLoading(true);
+    setIsServiceable(true);
     
-    // Check pincode serviceability
-    if (userPincode) {
-      setIsServiceable(true);
-
     let query = supabase.from("grocery_products").select("*").order("created_at", { ascending: false });
     if (userPincode) {
       query = query.eq("pincode", userPincode);
