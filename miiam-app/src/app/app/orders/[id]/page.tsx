@@ -192,6 +192,35 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
     return () => { supabase.removeChannel(channel); };
   }, [id]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      refreshOrder();
+    }, 10000);
+    return () => clearInterval(interval);
+  }, [id]);
+
+  const refreshOrder = async () => {
+    setLoading(true);
+    const { data: orderData, error: orderError } = await supabase
+      .from("orders")
+      .select("*")
+      .eq("id", id)
+      .single();
+    
+    if (orderData) {
+      const [vendorRes, riderRes, itemsRes, locationRes] = await Promise.all([
+        orderData.vendor_id ? supabase.from("vendors").select("*").eq("id", orderData.vendor_id).single() : Promise.resolve({ data: null }),
+        orderData.rider_id ? supabase.from("riders").select("*").eq("id", orderData.rider_id).single() : Promise.resolve({ data: null }),
+        supabase.from("order_items").select("*").eq("order_id", id),
+        supabase.from("rider_locations").select("lat, lng").eq("order_id", id).order('created_at', { ascending: false }).limit(1).maybeSingle()
+      ]);
+      const items = itemsRes.data || [];
+      setOrder({ ...orderData, vendor: vendorRes.data, riders: riderRes.data, items });
+      if (locationRes.data) setRiderLocation({ lat: locationRes.data.lat, lng: locationRes.data.lng });
+    }
+    setLoading(false);
+  };
+
   if (loading) return (
     <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center">
       <div className="w-12 h-12 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin" />
@@ -223,7 +252,10 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
           </Link>
           <span className="text-2xl font-extrabold tracking-tighter text-[#ba001c]">MIIAM</span>
         </div>
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4">
+          <button onClick={() => refreshOrder()} className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 transition-all" title="Refresh Order">
+            <span className="material-symbols-outlined text-[#4d212a]">refresh</span>
+          </button>
           <span className="material-symbols-outlined text-[#4d212a] cursor-pointer hover:opacity-80 transition-opacity">notifications</span>
           <span className="material-symbols-outlined text-[#4d212a] cursor-pointer hover:opacity-80 transition-opacity">account_circle</span>
         </div>
