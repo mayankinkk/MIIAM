@@ -248,23 +248,23 @@ export default function TermsOfService() {
                       <li>Dissatisfaction arising from a change of mind after work was completed</li>
                     </ul>
                     
-                    <h3 className="text-lg font-bold text-slate-800 mt-6">4. Cancellation Timing & Refunds</h3>
+                    <h3 className="text-lg font-bold text-[#ba001c] mt-6">4. Cancellation Timing & Refunds</h3>
                     <div className="overflow-x-auto">
-                      <table className="min-w-full border border-slate-200 text-sm">
-                        <thead className="bg-slate-50">
+                      <table className="min-w-full border border-[#ba001c]/20 text-sm">
+                        <thead className="bg-[#ba001c]">
                           <tr>
-                            <th className="p-3 text-left border-b">Scenario</th>
-                            <th className="p-3 text-left border-b">Refund</th>
+                            <th className="p-3 text-left text-white font-bold">Scenario</th>
+                            <th className="p-3 text-left text-white font-bold">Refund</th>
                           </tr>
                         </thead>
                         <tbody>
-                          <tr><td className="p-3 border-b">Before restaurant accepts</td><td className="p-3 border-b">100%</td></tr>
-                          <tr><td className="p-3 border-b">After acceptance, before preparation</td><td className="p-3 border-b">100%</td></tr>
-                          <tr><td className="p-3 border-b">After preparation began</td><td className="p-3 border-b">No refund</td></tr>
-                          <tr><td className="p-3 border-b">After rider picked up</td><td className="p-3 border-b">No refund</td></tr>
-                          <tr><td className="p-3 border-b">Service — 2+ hours before</td><td className="p-3 border-b">100%</td></tr>
-                          <tr><td className="p-3 border-b">Service — 1-2 hours before</td><td className="p-3 border-b">50%</td></tr>
-                          <tr><td className="p-3 border-b">Service — under 1 hour</td><td className="p-3 border-b">No refund</td></tr>
+                          <tr><td className="p-3 border-b border-[#ba001c]/10">Before restaurant accepts</td><td className="p-3 border-b border-[#ba001c]/10 font-bold text-green-600">100%</td></tr>
+                          <tr><td className="p-3 border-b border-[#ba001c]/10">After acceptance, before preparation</td><td className="p-3 border-b border-[#ba001c]/10 font-bold text-green-600">100%</td></tr>
+                          <tr><td className="p-3 border-b border-[#ba001c]/10">After preparation began</td><td className="p-3 border-b border-[#ba001c]/10 font-bold text-red-600">No refund</td></tr>
+                          <tr><td className="p-3 border-b border-[#ba001c]/10">After rider picked up</td><td className="p-3 border-b border-[#ba001c]/10 font-bold text-red-600">No refund</td></tr>
+                          <tr><td className="p-3 border-b border-[#ba001c]/10">Service — 2+ hours before</td><td className="p-3 border-b border-[#ba001c]/10 font-bold text-green-600">100%</td></tr>
+                          <tr><td className="p-3 border-b border-[#ba001c]/10">Service — 1-2 hours before</td><td className="p-3 border-b border-[#ba001c]/10 font-bold text-amber-600">50%</td></tr>
+                          <tr><td className="p-3 border-b border-[#ba001c]/10">Service — under 1 hour</td><td className="p-3 border-b border-[#ba001c]/10 font-bold text-red-600">No refund</td></tr>
                         </tbody>
                       </table>
                     </div>
