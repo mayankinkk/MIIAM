@@ -13,6 +13,12 @@ interface GroceryPartner {
   phone: string;
   email: string;
   address: string;
+  city?: string;
+  state?: string;
+  pincode?: string;
+  landmark?: string;
+  delivery_charge?: number;
+  min_order_amount?: number;
   status: string;
   rating: number;
   cuisine: string;
@@ -36,6 +42,12 @@ export default function GroceryPartnersPage() {
     phone: "",
     email: "",
     address: "",
+    city: "",
+    state: "",
+    pincode: "",
+    landmark: "",
+    delivery_charge: "",
+    min_order_amount: "",
   });
 
   useEffect(() => {
@@ -101,44 +113,50 @@ export default function GroceryPartnersPage() {
 
   const handleSavePartner = async () => {
     if (!newPartner.shop_name || !newPartner.owner_name || !newPartner.phone) {
-      alert("Please fill in required fields");
+      alert("Please fill in all required fields (Shop Name, Owner Name, Phone)");
+      return;
+    }
+    if (newPartner.pincode && (newPartner.pincode.length !== 6 || !/^\d{6}$/.test(newPartner.pincode))) {
+      alert("Please enter a valid 6-digit PIN code");
       return;
     }
 
     setSaving(true);
     try {
+      const payload: Record<string, any> = {
+        shop_name: newPartner.shop_name,
+        owner_name: newPartner.owner_name,
+        phone: newPartner.phone,
+        email: newPartner.email || null,
+        address: newPartner.address || null,
+        city: newPartner.city || null,
+        state: newPartner.state || null,
+        pincode: newPartner.pincode || null,
+        landmark: newPartner.landmark || null,
+        delivery_charge: newPartner.delivery_charge ? parseFloat(newPartner.delivery_charge) : 0,
+        min_order_amount: newPartner.min_order_amount ? parseFloat(newPartner.min_order_amount) : 0,
+      };
+
       if (editingPartner) {
         const { error } = await supabase
           .from("vendors")
-          .update({
-            shop_name: newPartner.shop_name,
-            owner_name: newPartner.owner_name,
-            phone: newPartner.phone,
-            email: newPartner.email,
-            address: newPartner.address,
-          })
+          .update(payload)
           .eq("id", editingPartner.id);
-
         if (error) throw error;
       } else {
         const { error } = await supabase.from("vendors").insert({
-          shop_name: newPartner.shop_name,
-          owner_name: newPartner.owner_name,
-          phone: newPartner.phone,
-          email: newPartner.email,
-          address: newPartner.address,
+          ...payload,
           type: "grocery",
           status: "active",
           rating: 4.0,
           cuisine: "Grocery",
         });
-
         if (error) throw error;
       }
       
       resetModal();
       loadPartners();
-      alert(editingPartner ? "Partner updated!" : "Partner added!");
+      alert(editingPartner ? "Partner updated successfully!" : "Partner added successfully!");
     } catch (error: any) {
       console.error("Error saving partner:", error);
       alert("Failed to save: " + error.message);
@@ -155,6 +173,12 @@ export default function GroceryPartnersPage() {
       phone: partner.phone,
       email: partner.email || "",
       address: partner.address || "",
+      city: (partner as any).city || "",
+      state: (partner as any).state || "",
+      pincode: (partner as any).pincode || "",
+      landmark: (partner as any).landmark || "",
+      delivery_charge: (partner as any).delivery_charge?.toString() || "",
+      min_order_amount: (partner as any).min_order_amount?.toString() || "",
     });
     setShowAddModal(true);
   };
@@ -162,7 +186,7 @@ export default function GroceryPartnersPage() {
   const resetModal = () => {
     setShowAddModal(false);
     setEditingPartner(null);
-    setNewPartner({ shop_name: "", owner_name: "", phone: "", email: "", address: "" });
+    setNewPartner({ shop_name: "", owner_name: "", phone: "", email: "", address: "", city: "", state: "", pincode: "", landmark: "", delivery_charge: "", min_order_amount: "" });
   };
 
   const filteredPartners = partners.filter(partner => {
@@ -297,80 +321,109 @@ export default function GroceryPartnersPage() {
       )}
 
       {showAddModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl w-full max-w-md mx-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto py-8">
+          <div className="bg-white rounded-2xl w-full max-w-lg mx-4 my-auto">
             <div className="p-6 border-b">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-black text-slate-800">{editingPartner ? "Edit Partner" : "Add Partner"}</h2>
+                <h2 className="text-xl font-black text-slate-800">{editingPartner ? "Edit Partner" : "Add Grocery Partner"}</h2>
                 <button onClick={resetModal} className="text-slate-400 hover:text-slate-600">
                   <span className="material-symbols-outlined text-3xl">close</span>
                 </button>
               </div>
+              <p className="text-slate-500 text-sm mt-1">Fields marked * are required</p>
             </div>
-            
-            <div className="p-6 space-y-4">
+
+            <div className="p-6 space-y-5 max-h-[70vh] overflow-y-auto">
+              {/* Owner Details */}
               <div>
-                <label className="text-xs font-bold text-slate-600 mb-1 block">Shop Name *</label>
-                <input
-                  type="text"
-                  value={newPartner.shop_name}
-                  onChange={(e) => setNewPartner({ ...newPartner, shop_name: e.target.value })}
-                  className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
-                  placeholder="Enter shop name"
-                />
+                <h3 className="text-xs font-black text-slate-500 uppercase tracking-widest mb-3">Owner Details</h3>
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-xs font-bold text-slate-600 mb-1 block">Owner Name *</label>
+                    <input type="text" value={newPartner.owner_name} onChange={(e) => setNewPartner({ ...newPartner, owner_name: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="Enter owner name" />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-xs font-bold text-slate-600 mb-1 block">Phone *</label>
+                      <input type="tel" value={newPartner.phone} onChange={(e) => setNewPartner({ ...newPartner, phone: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="+91 XXXXX XXXXX" />
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold text-slate-600 mb-1 block">Email</label>
+                      <input type="email" value={newPartner.email} onChange={(e) => setNewPartner({ ...newPartner, email: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="owner@email.com" />
+                    </div>
+                  </div>
+                </div>
               </div>
+
+              {/* Shop Details */}
               <div>
-                <label className="text-xs font-bold text-slate-600 mb-1 block">Owner Name *</label>
-                <input
-                  type="text"
-                  value={newPartner.owner_name}
-                  onChange={(e) => setNewPartner({ ...newPartner, owner_name: e.target.value })}
-                  className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
-                  placeholder="Enter owner name"
-                />
+                <h3 className="text-xs font-black text-slate-500 uppercase tracking-widest mb-3">Shop Details</h3>
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-xs font-bold text-slate-600 mb-1 block">Shop Name *</label>
+                    <input type="text" value={newPartner.shop_name} onChange={(e) => setNewPartner({ ...newPartner, shop_name: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="e.g. Fresh Mart, Daily Grocery" />
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-slate-600 mb-1 block">Full Address</label>
+                    <textarea value={newPartner.address} onChange={(e) => setNewPartner({ ...newPartner, address: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="Shop No., Street, Area" rows={2} />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-xs font-bold text-slate-600 mb-1 block">City *</label>
+                      <input type="text" value={newPartner.city} onChange={(e) => setNewPartner({ ...newPartner, city: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="e.g. Gauripur, Delhi" />
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold text-slate-600 mb-1 block">State</label>
+                      <input type="text" value={newPartner.state} onChange={(e) => setNewPartner({ ...newPartner, state: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="e.g. Assam" />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-xs font-bold text-slate-600 mb-1 block">PIN Code *</label>
+                      <input
+                        type="tel"
+                        inputMode="numeric"
+                        maxLength={6}
+                        value={newPartner.pincode}
+                        onChange={(e) => setNewPartner({ ...newPartner, pincode: e.target.value.replace(/\D/g, "") })}
+                        className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                        placeholder="e.g. 783331"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold text-slate-600 mb-1 block">Landmark</label>
+                      <input type="text" value={newPartner.landmark} onChange={(e) => setNewPartner({ ...newPartner, landmark: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="Near Market, Signal" />
+                    </div>
+                  </div>
+                </div>
               </div>
+
+              {/* Delivery */}
               <div>
-                <label className="text-xs font-bold text-slate-600 mb-1 block">Phone *</label>
-                <input
-                  type="tel"
-                  value={newPartner.phone}
-                  onChange={(e) => setNewPartner({ ...newPartner, phone: e.target.value })}
-                  className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
-                  placeholder="Enter phone number"
-                />
-              </div>
-              <div>
-                <label className="text-xs font-bold text-slate-600 mb-1 block">Email</label>
-                <input
-                  type="email"
-                  value={newPartner.email}
-                  onChange={(e) => setNewPartner({ ...newPartner, email: e.target.value })}
-                  className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
-                  placeholder="Enter email"
-                />
-              </div>
-              <div>
-                <label className="text-xs font-bold text-slate-600 mb-1 block">Address</label>
-                <textarea
-                  value={newPartner.address}
-                  onChange={(e) => setNewPartner({ ...newPartner, address: e.target.value })}
-                  className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
-                  placeholder="Enter address"
-                  rows={2}
-                />
+                <h3 className="text-xs font-black text-slate-500 uppercase tracking-widest mb-3">Delivery Settings</h3>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-xs font-bold text-slate-600 mb-1 block">Delivery Charge (₹)</label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">₹</span>
+                      <input type="number" min="0" value={newPartner.delivery_charge} onChange={(e) => setNewPartner({ ...newPartner, delivery_charge: e.target.value })} className="w-full p-3 pl-7 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="0" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-slate-600 mb-1 block">Min Order Amount (₹)</label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">₹</span>
+                      <input type="number" min="0" value={newPartner.min_order_amount} onChange={(e) => setNewPartner({ ...newPartner, min_order_amount: e.target.value })} className="w-full p-3 pl-7 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="0" />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-            
+
             <div className="p-6 border-t flex gap-4">
-              <button onClick={resetModal} className="flex-1 py-3 border border-slate-200 rounded-xl font-bold text-sm hover:bg-slate-50">
-                Cancel
-              </button>
-              <button
-                onClick={handleSavePartner}
-                disabled={saving}
-                className="flex-1 py-3 bg-[#ba001c] text-white rounded-xl font-bold text-sm hover:bg-[#a00018] disabled:opacity-50"
-              >
-                {saving ? "Saving..." : editingPartner ? "Update" : "Add Partner"}
+              <button onClick={resetModal} className="flex-1 py-3 border border-slate-200 rounded-xl font-bold text-sm hover:bg-slate-50">Cancel</button>
+              <button onClick={handleSavePartner} disabled={saving} className="flex-1 py-3 bg-[#ba001c] text-white rounded-xl font-bold text-sm hover:bg-[#a00018] disabled:opacity-50">
+                {saving ? "Saving..." : editingPartner ? "Update Partner" : "Add Partner"}
               </button>
             </div>
           </div>

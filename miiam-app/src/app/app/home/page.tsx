@@ -89,19 +89,43 @@ useEffect(() => {
   if (hour < 12) { greeting = "Good morning"; timeIcon = "☀️"; }
   else if (hour < 18) { greeting = "Good afternoon"; timeIcon = "🌤️"; }
 
-  const handleManualLocation = () => {
+  const resolvePincodeToArea = async (pin: string): Promise<{ area: string; city: string; state: string }> => {
+    try {
+      const res = await fetch(`https://api.postalpincode.in/pincode/${pin}`);
+      const data = await res.json();
+      if (data && data[0]?.Status === "Success" && data[0]?.PostOffice?.length > 0) {
+        const po = data[0].PostOffice[0];
+        const area = po.Name || po.Division || "";
+        const city = po.District || po.Division || "";
+        const state = po.State || "";
+        return { area, city, state };
+      }
+    } catch { /* ignore */ }
+    return { area: "", city: "", state: "" };
+  };
+
+  const handleManualLocation = async () => {
     const pin = manualPincode.trim();
     if (pin.length !== 6 || !/^\d{6}$/.test(pin)) {
       setPincodeError("Please enter a valid 6-digit PIN code");
       return;
     }
     setPincodeError("");
-    setLocation(`PIN: ${pin}`);
+    setIsLoadingLocation(true);
+
+    const { area, city, state } = await resolvePincodeToArea(pin);
+    const displayName = area
+      ? state ? `${area}, ${state}` : area
+      : `PIN: ${pin}`;
+
+    setLocation(displayName);
     locationStore.setLocation({
       pincode: pin,
-      city: null,
-      displayAddress: `PIN: ${pin}`,
+      city: city || null,
+      state: state || null,
+      displayAddress: displayName,
     });
+    setIsLoadingLocation(false);
     setShowLocationModal(false);
     setManualPincode("");
   };
@@ -125,29 +149,38 @@ useEffect(() => {
           const pincode = address.postcode || "";
 
           if (pincode) {
-            setLocation(`PIN: ${pincode}`);
+            // Resolve area name from the detected pincode
+            const { area, city, state } = await resolvePincodeToArea(pincode);
+            const displayName = area
+              ? state ? `${area}, ${state}` : area
+              : data.display_name?.split(",")[0] || `PIN: ${pincode}`;
+
+            setLocation(displayName);
             locationStore.setLocation({
               pincode,
               lat: latitude,
               lng: longitude,
-              displayAddress: data.display_name?.split(",")[0] || `PIN: ${pincode}`,
+              city: city || address.city || address.town || null,
+              state: state || null,
+              displayAddress: displayName,
             });
-            setShowLocationModal(false);
           } else {
-            setLocation(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+            const fallback = data.display_name?.split(",")[0] || `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
+            setLocation(fallback);
             locationStore.setLocation({
               lat: latitude,
               lng: longitude,
-              displayAddress: `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`,
+              displayAddress: fallback,
             });
-            setShowLocationModal(false);
           }
+          setShowLocationModal(false);
         } catch {
-          setLocation(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+          const fallback = `${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`;
+          setLocation(fallback);
           locationStore.setLocation({
-            lat: latitude,
-            lng: longitude,
-            displayAddress: `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`,
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+            displayAddress: fallback,
           });
           setShowLocationModal(false);
         }
@@ -558,10 +591,17 @@ useEffect(() => {
 
             <button
               onClick={handleManualLocation}
-              disabled={manualPincode.length !== 6}
-              className="w-full mb-3 bg-[#ba001c] text-white py-4 rounded-xl font-bold text-base hover:bg-[#a00018] transition-colors disabled:opacity-50 active:scale-[0.98]"
+              disabled={manualPincode.length !== 6 || isLoadingLocation}
+              className="w-full mb-3 bg-[#ba001c] text-white py-4 rounded-xl font-bold text-base hover:bg-[#a00018] transition-colors disabled:opacity-50 active:scale-[0.98] flex items-center justify-center gap-2"
             >
-              Check Availability
+              {isLoadingLocation ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Detecting Area...
+                </>
+              ) : (
+                "Check Availability"
+              )}
             </button>
 
             <div className="flex items-center gap-3 mb-2">
