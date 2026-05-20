@@ -289,7 +289,6 @@ export default function AdminVendorsPage() {
           email: editForm.email,
           shop_name: editForm.shopName,
           address: editForm.address,
-          city: editForm.city || null,
           pincode: editForm.pincode || null,
           cuisine: editForm.cuisine,
           gst_number: editForm.gstNumber,
