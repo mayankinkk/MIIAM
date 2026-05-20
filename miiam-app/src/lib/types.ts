@@ -111,6 +111,7 @@ export interface Rider {
   rating: number;
   balance?: number;
   total_earned?: number;
+  total_earnings?: number;
   tips?: number;
   id_proof_type?: string;
   id_proof_image?: string;

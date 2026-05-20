@@ -290,16 +290,45 @@ export default function RiderOrdersPage() {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
+      const order = orders.find(o => o.id === currentOrderId);
+      const riderEarning = order?.delivery_fee || Math.round(order?.total_amount * 0.15);
+      
       await supabase
         .from("orders")
         .update({ 
           status: "delivered", 
           delivered_at: new Date().toISOString(),
-          customer_collected: cashToCollect
+          customer_collected: cashToCollect,
+          rider_earning: riderEarning
         })
         .eq("id", currentOrderId);
 
-      const order = orders.find(o => o.id === currentOrderId);
+      if (order?.rider_id) {
+        const { data: rider } = await supabase.from("riders").select("total_deliveries, total_earnings").eq("id", order.rider_id).single();
+        if (rider) {
+          await supabase.from("riders").update({
+            total_deliveries: (rider.total_deliveries || 0) + 1,
+            total_earnings: (rider.total_earnings || 0) + riderEarning,
+          }).eq("id", order.rider_id);
+
+          const { data: wallet } = await supabase.from("rider_wallets").select("id, balance, total_earnings").eq("rider_id", order.rider_id).single();
+          if (wallet) {
+            await supabase.from("rider_wallets").update({
+              balance: (wallet.balance || 0) + riderEarning,
+              total_earnings: (wallet.total_earnings || 0) + riderEarning,
+            }).eq("id", wallet.id);
+          } else {
+            await supabase.from("rider_wallets").insert({
+              rider_id: order.rider_id,
+              balance: riderEarning,
+              total_earnings: riderEarning,
+              pending_payout: 0,
+              advance_used: 0,
+            });
+          }
+        }
+      }
+
       if (order?.user_id) {
         await supabase.from("notifications").insert({
           user_id: order.user_id,
@@ -323,7 +352,7 @@ export default function RiderOrdersPage() {
 
       setOrders(orders.map(o => o.id === currentOrderId ? { ...o, status: "delivered", delivered_at: new Date().toISOString(), customer_collected: cashToCollect } : o));
       setShowCashCollectModal(false);
-      alert(`Delivery complete! ₹${cashToCollect} collected from customer.`);
+      alert(`Delivery complete! ₹${cashToCollect} collected. You earned ₹${riderEarning}!`);
     } catch (err) {
       console.error("Error delivering order:", err);
       alert("Failed to complete delivery.");

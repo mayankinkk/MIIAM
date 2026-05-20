@@ -536,9 +536,13 @@ export default function RiderDashboard() {
         </div>
         <div className="flex items-center gap-2">
           <button 
-            onClick={() => {
-              setIsOnline(!isOnline);
-              alert(isOnline ? "You're now OFFLINE. You won't receive new orders." : "You're now ONLINE. Ready to receive orders!");
+            onClick={async () => {
+              const newStatus = !isOnline;
+              setIsOnline(newStatus);
+              if (riderId) {
+                await supabase.from("riders").update({ is_online: newStatus }).eq("id", riderId);
+              }
+              alert(newStatus ? "You're now ONLINE. Ready to receive orders!" : "You're now OFFLINE. You won't receive new orders.");
             }}
             className={`flex items-center gap-2 px-3 py-2 rounded-full border transition-all ${isOnline ? "bg-green-100 border-green-300" : "bg-slate-100 border-slate-300"}`}
           >

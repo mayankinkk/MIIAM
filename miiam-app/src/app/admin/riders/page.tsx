@@ -34,7 +34,10 @@ function RidersPage() {
     const channel = supabase.channel("riders-tracker")
       .on("postgres_changes", { event: "*", schema: "public", table: "riders" }, () => loadRiders())
       .subscribe();
-    return () => { supabase.removeChannel(channel); };
+    const ordersChannel = supabase.channel("admin-orders-tracker")
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "orders" }, () => loadRiders())
+      .subscribe();
+    return () => { supabase.removeChannel(channel); supabase.removeChannel(ordersChannel); };
   }, [supabase]);
 
   async function loadRiders() {
@@ -216,6 +219,20 @@ function RidersPage() {
             <div className="flex-1 overflow-y-auto p-8 space-y-6">
               {activeTab === "overview" && (
                 <>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="bg-green-50 p-4 rounded-2xl">
+                      <p className="text-[10px] font-black text-green-600 uppercase mb-1">Total Deliveries</p>
+                      <p className="text-xl font-black text-green-700">{selectedRider.total_deliveries || 0}</p>
+                    </div>
+                    <div className="bg-[#ba001c]/5 p-4 rounded-2xl">
+                      <p className="text-[10px] font-black text-[#ba001c] uppercase mb-1">Total Earnings</p>
+                      <p className="text-xl font-black text-[#ba001c]">₹{selectedRider.total_earnings || 0}</p>
+                    </div>
+                    <div className="bg-slate-50 p-4 rounded-2xl">
+                      <p className="text-[10px] font-black text-slate-400 uppercase mb-1">Rating</p>
+                      <p className="text-xl font-black text-amber-500">{(selectedRider.rating || 0).toFixed(1)}</p>
+                    </div>
+                  </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="bg-slate-50 p-6 rounded-3xl">
                       <p className="text-[10px] font-black text-slate-400 uppercase mb-1">Vehicle</p>
@@ -226,7 +243,7 @@ function RidersPage() {
                         </p>
                       )}
                     </div>
-                    <div className="bg-slate-50 p-6 rounded-3xl"><p className="text-[10px] font-black text-slate-400 uppercase mb-1">Rating</p><p className="text-lg font-black text-amber-500">{(selectedRider.rating || 0).toFixed(1)}</p></div>
+                    <div className="bg-slate-50 p-6 rounded-3xl"><p className="text-[10px] font-black text-slate-400 uppercase mb-1">Status</p><p className="text-lg font-black">{selectedRider.is_online ? "Online" : "Offline"}</p></div>
                   </div>
                   <div className="space-y-4">
                     <h3 className="text-xs font-black text-slate-400 uppercase">Contact</h3>
@@ -243,13 +260,28 @@ function RidersPage() {
                   </div>
                 </>
               )}
-              {activeTab === "earnings" && <div className="bg-gradient-to-br from-slate-900 to-slate-800 p-8 rounded-[2rem] text-white"><p className="text-[10px] font-black text-white/40 uppercase mb-2">Balance</p><p className="text-4xl font-black">₹{selectedRider.balance || 0}</p></div>}
+              {activeTab === "earnings" && (
+                <>
+                  <div className="bg-gradient-to-br from-slate-900 to-slate-800 p-8 rounded-[2rem] text-white">
+                    <p className="text-[10px] font-black text-white/40 uppercase mb-2">Total Earnings</p>
+                    <p className="text-4xl font-black">₹{selectedRider.total_earnings || 0}</p>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-slate-50 p-4 rounded-2xl">
+                      <p className="text-[10px] font-black text-slate-400 uppercase mb-1">This Month</p>
+                      <p className="text-xl font-black">₹0</p>
+                    </div>
+                    <div className="bg-slate-50 p-4 rounded-2xl">
+                      <p className="text-[10px] font-black text-slate-400 uppercase mb-1">Balance</p>
+                      <p className="text-xl font-black">₹{selectedRider.balance || selectedRider.total_earnings || 0}</p>
+                    </div>
+                  </div>
+                  <p className="text-xs text-slate-400 text-center">Earnings are updated after each delivery</p>
+                </>
+              )}
               
               {activeTab === "orders" && (
-                <div className="text-center py-20 bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200">
-                  <span className="material-symbols-outlined text-4xl text-slate-300 mb-2">delivery_dining</span>
-                  <p className="text-sm font-bold text-slate-400">No recent orders</p>
-                </div>
+                <RiderOrdersHistory riderId={selectedRider.id} />
               )}
 
               {activeTab === "docs" && (
@@ -322,5 +354,63 @@ export default function RiderTracking() {
     <Suspense fallback={<div className="px-8 py-12">Loading...</div>}>
       <RidersPage />
     </Suspense>
+  );
+}
+
+function RiderOrdersHistory({ riderId }: { riderId: string }) {
+  const supabase = createClient();
+  const [orders, setOrders] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchRiderOrders() {
+      setLoading(true);
+      const { data } = await supabase
+        .from("orders")
+        .select("id, status, total_amount, delivery_fee, placed_at, delivered_at")
+        .eq("rider_id", riderId)
+        .order("placed_at", { ascending: false })
+        .limit(20);
+      setOrders(data || []);
+      setLoading(false);
+    }
+    fetchRiderOrders();
+  }, [riderId]);
+
+  if (loading) return <div className="py-8 text-center text-slate-400">Loading orders...</div>;
+
+  if (orders.length === 0) return (
+    <div className="text-center py-16 bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200">
+      <span className="material-symbols-outlined text-4xl text-slate-300 mb-2">delivery_dining</span>
+      <p className="text-sm font-bold text-slate-400">No deliveries yet</p>
+    </div>
+  );
+
+  return (
+    <div className="space-y-3">
+      {orders.map(order => (
+        <div key={order.id} className="bg-white border border-slate-100 rounded-xl p-4">
+          <div className="flex justify-between items-start mb-2">
+            <div>
+              <p className="text-xs font-bold text-slate-500">#{order.id.slice(0, 8)}</p>
+              <p className="text-xs text-slate-400">{order.placed_at ? new Date(order.placed_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) : ""}</p>
+            </div>
+            <span className={`text-[10px] font-black px-2 py-1 rounded-full ${order.status === "delivered" ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-600"}`}>
+              {order.status?.toUpperCase()}
+            </span>
+          </div>
+          <div className="flex justify-between items-center">
+            <div>
+              <p className="text-sm font-bold">₹{order.total_amount}</p>
+              <p className="text-[10px] text-slate-400">Order Value</p>
+            </div>
+            <div className="text-right">
+              <p className="text-sm font-bold text-green-600">₹{order.delivery_fee || 0}</p>
+              <p className="text-[10px] text-slate-400">Rider Earned</p>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
   );
 }
