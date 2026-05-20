@@ -310,9 +310,6 @@ export default function LandingPage() {
             <Link href="/rider/login" className="text-[#ba001c] text-xs uppercase tracking-widest font-black border-l-0 md:border-l border-slate-800 pl-0 md:pl-8 hover:text-white transition-colors duration-200">
               Rider Login
             </Link>
-            <Link href="/admin" className="text-slate-500 text-xs uppercase tracking-widest font-bold hover:text-white transition-colors duration-200">
-              Admin Dashboard
-            </Link>
           </div>
           <div className="text-slate-600 text-xs font-medium">
             {t.footerRights}
