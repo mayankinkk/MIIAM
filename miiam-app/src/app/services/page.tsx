@@ -109,53 +109,10 @@ export default function ServicesLandingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#fff4f4] to-white overflow-x-hidden">
-      {/* Hero Section */}
-      <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-[#ba001c]/5 to-transparent" />
-        <div className="absolute top-20 left-10 w-32 h-32 bg-[#ba001c]/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-40 h-40 bg-pink-500/10 rounded-full blur-3xl" />
 
-        <div className="relative max-w-6xl mx-auto px-6 pt-12 pb-16">
-          <div className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-            {/* Badge */}
-            
-
-            {/* Title */}
-            <div className="text-center mb-16">
-              <h1 className="text-5xl md:text-6xl font-black text-[#4d212a] mb-6 tracking-tight leading-tight">
-                Home Services,<br />
-                <span className="text-[#ba001c]">Simplified</span>
-              </h1>
-              <p className="text-xl text-slate-500 max-w-2xl mx-auto">
-                Expert professionals for beauty, repairs, cleaning & more. 
-                Book in seconds, service in minutes.
-              </p>
-            </div>
-
-            {/* Stats */}
-            <div className="flex flex-wrap justify-center gap-8 md:gap-16 mb-12">
-              {stats.map((stat, i) => (
-                <div 
-                  key={i}
-                  className={`text-center transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-                  style={{ transitionDelay: `${i * 100}ms` }}
-                >
-                  <div className="flex items-center justify-center gap-2 mb-1">
-                    <span className="material-symbols-outlined text-[#ba001c]" style={{ fontVariationSettings: "'FILL' 1" }}>
-                      {stat.icon}
-                    </span>
-                    <div className="text-3xl md:text-4xl font-black text-[#4d212a]">{stat.number}</div>
-                  </div>
-                  <div className="text-sm text-slate-400">{stat.label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* Services Grid */}
-      <div className="relative max-w-7xl mx-auto px-6 pb-20">
+      <div className="relative max-w-7xl mx-auto px-6 pt-16 pb-20">
         <div className={`text-center mb-12 transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           <h2 className="text-3xl md:text-4xl font-black text-[#4d212a] mb-3">Choose Your Service</h2>
           <p className="text-slate-500">Tap a card to explore and book</p>
