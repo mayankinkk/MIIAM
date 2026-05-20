@@ -338,16 +338,16 @@ export default function FoodPage() {
     ]);
 
     let query = supabase.from("vendors").select("*").order("created_at", { ascending: false });
-    if (userPincode) {
-      query = query.eq("pincode", userPincode);
-    }
     const vendorsRes = await query;
 
     if (vendorsRes.data) {
       let filteredVendors = vendorsRes.data;
 
       if (userPincode) {
-        if (vendorsRes.data.length === 0) {
+        const pincodeVendors = vendorsRes.data.filter((v: any) => v.pincode === userPincode);
+        if (pincodeVendors.length > 0) {
+          filteredVendors = pincodeVendors;
+        } else {
           setNoLocalVendors(true);
         }
       } else if (userCity) {

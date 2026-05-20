@@ -50,17 +50,38 @@ export default function HomePage() {
   const [checkingPincode, setCheckingPincode] = useState(false);
   const userPincode = locationStore.pincode;
 
-  useEffect(() => {
-    async function checkServiceability() {
+useEffect(() => {
+    async function checkAndLoad() {
       const { pincode } = locationStore;
-      if (!pincode) { setLocalServiceable(true); return; }
+      
+      if (!pincode) {
+        setLocalServiceable(true);
+        const { data: vendors } = await supabase.from("vendors").select("*").order("created_at", { ascending: false }).limit(30);
+        if (vendors) {
+          setNearbyRestaurants(vendors);
+          setFeaturedRestaurants(vendors.filter((v: any) => v.is_featured || v.is_promoted).slice(0, 6));
+          setSpotlightRestaurant(vendors.find((v: any) => v.is_featured) || null);
+        }
+        return;
+      }
+      
       setCheckingPincode(true);
       const { data } = await supabase.from("vendors").select("id").eq("pincode", pincode).eq("status", "active").limit(1);
       setLocalServiceable(!!(data && data.length > 0));
+      
+      const { data: vendors } = await supabase.from("vendors").select("*").order("created_at", { ascending: false }).limit(30);
+      if (vendors) {
+        let filtered = vendors;
+        const pincodeVendors = vendors.filter((v: any) => v.pincode === pincode);
+        if (pincodeVendors.length > 0) filtered = pincodeVendors;
+        setNearbyRestaurants(filtered);
+        setFeaturedRestaurants(filtered.filter((v: any) => v.is_featured || v.is_promoted).slice(0, 6));
+        setSpotlightRestaurant(filtered.find((v: any) => v.is_featured) || null);
+      }
       setCheckingPincode(false);
     }
-    checkServiceability();
-  }, [userPincode]);
+    checkAndLoad();
+  }, [locationStore.pincode]);
 
   const hour = new Date().getHours();
   let greeting = "Good evening";
