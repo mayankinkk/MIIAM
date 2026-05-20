@@ -116,22 +116,7 @@ export default function BeautyPage() {
   }, [userPincode]);
 
   const checkServiceability = async () => {
-    if (userPincode) {
-      const { data: serviceVendors, error: vendorError } = await supabase
-        .from("vendors")
-        .select("id")
-        .eq("category", "Service")
-        .eq("pincode", userPincode)
-        .eq("status", "active");
-
-      if (!vendorError && (!serviceVendors || serviceVendors.length === 0)) {
-        setIsServiceable(false);
-      } else {
-        setIsServiceable(true);
-      }
-    } else {
-      setIsServiceable(true);
-    }
+    setIsServiceable(true);
   };
 
   const days = getNextDays(7);

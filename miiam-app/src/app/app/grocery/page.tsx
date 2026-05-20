@@ -57,21 +57,7 @@ export default function GroceryPage() {
     
     // Check pincode serviceability
     if (userPincode) {
-      const { data: groceryVendors, error: vendorError } = await supabase
-        .from("vendors")
-        .select("id")
-        .eq("category", "Grocery")
-        .eq("pincode", userPincode)
-        .eq("status", "active");
-      
-      if (!vendorError && (!groceryVendors || groceryVendors.length === 0)) {
-        setIsServiceable(false);
-      } else {
-        setIsServiceable(true);
-      }
-    } else {
       setIsServiceable(true);
-    }
 
     let query = supabase.from("grocery_products").select("*").order("created_at", { ascending: false });
     if (userPincode) {

@@ -59,24 +59,7 @@ export default function PharmacyPage() {
 
   const fetchMedicines = async () => {
     setLoading(true);
-
-    // Check pincode serviceability
-    if (userPincode) {
-      const { data: pharmacyVendors, error: vendorError } = await supabase
-        .from("vendors")
-        .select("id")
-        .eq("category", "Pharmacy")
-        .eq("pincode", userPincode)
-        .eq("status", "active");
-
-      if (!vendorError && (!pharmacyVendors || pharmacyVendors.length === 0)) {
-        setIsServiceable(false);
-      } else {
-        setIsServiceable(true);
-      }
-    } else {
-      setIsServiceable(true);
-    }
+    setIsServiceable(true);
 
     let query = supabase.from("pharmacy_medicines").select("*").order("created_at", { ascending: false });
     if (userPincode) {

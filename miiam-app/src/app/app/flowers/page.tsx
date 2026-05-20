@@ -52,21 +52,7 @@ export default function FlowersPage() {
 
   const fetchFlowers = async () => {
     setLoading(true);
-
-    // Check pincode serviceability
-    if (userPincode) {
-      const { data: flowersVendors, error: vendorError } = await supabase
-        .from("vendors")
-        .select("id")
-        .eq("category", "Flowers")
-        .eq("pincode", userPincode)
-        .eq("status", "active");
-
-      if (!vendorError && (!flowersVendors || flowersVendors.length === 0)) {
-        setIsServiceable(false);
-      } else {
-        setIsServiceable(true);
-      }
+    setIsServiceable(true);
     } else {
       setIsServiceable(true);
     }
