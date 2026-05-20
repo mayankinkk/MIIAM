@@ -43,7 +43,7 @@ export default function LegalPage() {
         </div>
 
         <p className="text-center text-xs text-slate-400 mt-8">
-          MIIAM v1.0 · © 2025 MIIAM Technologies Pvt. Ltd.
+          MIIAM v1.0 · © 2026 MIIAM Technologies Pvt. Ltd.
           <br />Registered in India · CIN: U74999XX2025PTC000001
         </p>
       </main>

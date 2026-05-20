@@ -323,7 +323,7 @@ export default function TermsOfService() {
               <Link href="/terms" className="text-sm text-slate-500 hover:text-[#ba001c]">Terms of Service</Link>
               <Link href="/privacy" className="text-sm text-slate-500 hover:text-[#ba001c]">Privacy Policy</Link>
             </div>
-            <p className="text-sm text-slate-400">© 2025 MIIAM. All rights reserved.</p>
+            <p className="text-sm text-slate-400">© 2026 MIIAM. All rights reserved.</p>
           </div>
         </div>
       </footer>

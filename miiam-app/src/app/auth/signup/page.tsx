@@ -108,7 +108,7 @@ function SignupContent() {
 
         {/* Branding Accent */}
         <div className="absolute bottom-8 left-8 hidden lg:block">
-          <span className="text-[10px] tracking-[0.5em] text-[#5c403d]/20">MIIAM SUPER-APP ECOSYSTEM ©2024</span>
+          <span className="text-[10px] tracking-[0.5em] text-[#5c403d]/20">MIIAM SUPER-APP ECOSYSTEM ©2026</span>
         </div>
       </section>
 
