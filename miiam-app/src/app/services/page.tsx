@@ -81,10 +81,10 @@ const serviceCategories = [
 ];
 
 const stats = [
-  { number: "50K+", label: "Services Done", icon: "check_circle" },
   { number: "4.8★", label: "Avg Rating", icon: "star" },
-  { number: "1000+", label: "Expert Pros", icon: "groups" },
+  { number: "100+", label: "Expert Pros", icon: "groups" },
   { number: "12+", label: "Service Types", icon: "category" },
+  { number: "Growing", label: "In Guwahati", icon: "location_on" },
 ];
 
 const whyChooseUs = [
