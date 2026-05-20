@@ -7,9 +7,9 @@ import { AnalyticsTracker } from "@/lib/analytics";
 import SplashScreen from "@/components/SplashScreen";
 
 export const metadata: Metadata = {
-  title: "MIIAM — The Kinetic Super-App",
+  title: "MIIAM — Food & Services App",
   description:
-    "MIIAM is your premium dual-engine concierge. Food delivery and professional home services, all in one place.",
+    "Order food, book home services - all in one app.",
   keywords: ["food delivery", "home services", "super app", "MIIAM"],
   manifest: "/manifest.json",
   appleWebApp: {

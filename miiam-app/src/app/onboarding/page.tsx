@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Welcome to MIIAM",
-  description: "Your premium dual-engine concierge for food and services.",
+  description: "Order food, book services - all in one app.",
 };
 
 export default function OnboardingPage() {
@@ -34,7 +34,7 @@ export default function OnboardingPage() {
                   Taste the <span className="text-[#ba001c]">Vibrant</span> Side of Life.
                 </h1>
                 <p className="text-[#814c55] max-w-md">
-                  MIIAM is your premium dual-engine concierge. We bridge the gap between world-class culinary experiences and professional urban services.
+                  MIIAM brings you the best of food delivery and home services in one app.
                 </p>
               </div>
               <div className="flex items-center gap-4 mt-8">
@@ -96,7 +96,7 @@ export default function OnboardingPage() {
               <div className="mb-8 w-20 h-20 rounded-full bg-[#ffd2d7] flex items-center justify-center">
                 <span className="material-symbols-outlined text-4xl text-[#ba001c]" style={{ fontVariationSettings: "'FILL' 1" }}>restaurant_menu</span>
               </div>
-              <h3 className="text-3xl font-bold mb-6">Epicurean Desires</h3>
+              <h3 className="text-3xl font-bold mb-6">Food Delivery</h3>
               <p className="text-[#814c55] leading-relaxed mb-8">
                 From local favorites to top restaurants. We don't just deliver food; we deliver the moment.
               </p>
@@ -116,7 +116,7 @@ export default function OnboardingPage() {
               </p>
               <div className="flex flex-wrap gap-3">
                 <span className="px-4 py-2 bg-[#0b50d5]/10 text-[#0b50d5] rounded-full text-xs font-bold uppercase tracking-wider">Certified Pros</span>
-                <span className="px-4 py-2 bg-[#0b50d5]/10 text-[#0b50d5] rounded-full text-xs font-bold uppercase tracking-wider">Secure Escrow</span>
+                <span className="px-4 py-2 bg-[#0b50d5]/10 text-[#0b50d5] rounded-full text-xs font-bold uppercase tracking-wider">Secure Payment</span>
               </div>
             </div>
           </div>

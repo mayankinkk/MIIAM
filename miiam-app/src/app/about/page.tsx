@@ -6,7 +6,7 @@ export default function AboutUsPage() {
   const mission = [
     {
       title: "The Platform",
-      content: "MIIAM is more than just an app; it's a dual-engine concierge designed for the modern world. We bridge the gap between world-class culinary experiences and professional urban services, all within a single, seamless interface.",
+      content: "MIIAM is an all-in-one app for food delivery and home services. Order from local restaurants, book plumbers, electricians, cleaners - everything you need, in one place.",
       icon: "hub"
     },
     {
@@ -85,7 +85,7 @@ export default function AboutUsPage() {
 
       {/* Footer */}
       <footer className="py-12 border-t border-[#ba001c]/10 text-center">
-        <p className="text-slate-400 font-bold text-sm">© 2026 MIIAM Super-App. Built with ❤️ in Guwahati.</p>
+        <p className="text-slate-400 font-bold text-sm">© 2026 MIIAM. Built with ❤️ in Guwahati.</p>
       </footer>
     </div>
   );
