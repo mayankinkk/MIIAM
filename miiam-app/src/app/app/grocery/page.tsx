@@ -180,6 +180,19 @@ export default function GroceryPage() {
         </div>
       </header>
 
+      {/* Breadcrumbs */}
+      <nav className="px-6 py-2.5 text-xs text-slate-500 font-medium flex items-center gap-2 bg-white border-b border-slate-100">
+        <Link href="/app/explore" className="hover:text-[#ba001c] transition-colors">Home</Link>
+        <span className="text-slate-300">/</span>
+        <span className="text-[#ba001c] font-bold">Grocery</span>
+        {groceryVendor && (
+          <>
+            <span className="text-slate-300">/</span>
+            <span className="text-slate-700 font-semibold truncate max-w-[120px]">{groceryVendor.shop_name}</span>
+          </>
+        )}
+      </nav>
+
       {/* Location / Availability Banner */}
       {!isServiceable && (userPincode || userCity) && (
         <div className="bg-amber-50 border-b border-amber-200 px-6 py-3 flex items-center gap-3">
@@ -235,21 +248,49 @@ export default function GroceryPage() {
       </div>
 
       {/* Products Grid */}
-      <main className="p-6">
+      <main className="p-6 animate-in fade-in duration-500">
         {loading ? (
-          <div className="text-center py-8 text-slate-500">Loading products...</div>
+          <div className="grid grid-cols-2 gap-4">
+            {[1,2,3,4].map((i) => (
+              <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-sm animate-pulse" style={{ animationDelay: `${i * 100}ms`, animationDuration: '1.5s' }}>
+                <div className="w-full h-32 bg-slate-200" />
+                <div className="p-3 space-y-2">
+                  <div className="h-4 bg-slate-200 rounded w-3/4" />
+                  <div className="h-3 bg-slate-100 rounded w-1/2" />
+                  <div className="flex items-center justify-between mt-2">
+                    <div className="h-5 bg-slate-200 rounded w-12" />
+                    <div className="w-8 h-8 bg-slate-200 rounded-full" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         ) : filteredProducts.length === 0 ? (
-          <div className="text-center py-8 text-slate-500">No products found</div>
+          <div className="text-center py-16 bg-white rounded-3xl shadow-sm border border-slate-100 mx-2">
+            <span className="material-symbols-outlined text-6xl text-slate-300">search_off</span>
+            <h3 className="text-lg font-black text-slate-800 mt-4">No products found</h3>
+            <p className="text-slate-500 text-sm mt-2 max-w-[200px] mx-auto">
+              {selectedCategory === "all" 
+                ? "Try checking back later or select a different category."
+                : "No products in this category. Try another one!"}
+            </p>
+            <button 
+              onClick={() => setSelectedCategory("all")}
+              className="mt-6 px-6 py-2 bg-[#ba001c] text-white rounded-full font-bold text-sm hover:bg-[#a40017] transition-colors"
+            >
+              Browse All Categories
+            </button>
+          </div>
         ) : (
           <div className="grid grid-cols-2 gap-4">
             {filteredProducts.map((product: any, index) => (
-              <div key={product.id} className="bg-white rounded-2xl overflow-hidden shadow-sm card-lift animate-pop-in" style={{ animationDelay: `${Math.min(index * 80, 500)}ms` }}>
+              <div key={product.id} className="bg-white rounded-2xl overflow-hidden shadow-sm card-lift animate-in fade-in slide-in-from-bottom-4 duration-500" style={{ animationDelay: `${Math.min(index * 50, 500)}ms` }}>
                 <img src={product.image_url || product.image} alt={product.name} className="w-full h-32 object-cover" />
                 <div className="p-3">
                   <p className="font-bold text-slate-800 text-sm">{product.name}</p>
                   <p className="text-xs text-slate-500">{product.category}</p>
                   <div className="flex items-center justify-between mt-2">
-                    <span className="font-black text-[#ba001c] animate-price-tag">₹{product.price}</span>
+                    <span className="font-black text-[#ba001c]">₹{product.price}</span>
                     <ProductAddButton product={product} />
                   </div>
                 </div>
