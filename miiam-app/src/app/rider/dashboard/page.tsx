@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { startLocationTracking, stopLocationTracking } from "@/lib/rider-location-tracker";
 
 interface Order {
   id: string;
@@ -498,11 +499,17 @@ export default function RiderDashboard() {
       const finalEarnings = calculateEarnings(currentOrder.totalDistance, 40, 8, currentOrder.peakMultiplier);
       alert(`Order delivered successfully! ₹${finalEarnings} added to your wallet.`);
       setCurrentOrder(null);
+      // Stop GPS tracking when delivery is finished
+      stopLocationTracking();
     }
   };
 
   const handlePickedUp = () => {
     setDeliveryStep("delivering");
+    // Start GPS tracking when delivery begins
+    if (currentOrder?.orderDbId && riderId) {
+      startLocationTracking(riderId, currentOrder.orderDbId);
+    }
   };
 
   const handleArrived = () => {
