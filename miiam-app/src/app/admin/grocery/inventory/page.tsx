@@ -426,14 +426,25 @@ export default function GroceryInventoryPage() {
                 </div>
               </div>
               <div>
-                <label className="text-xs font-bold text-slate-600 mb-1 block">Image URL</label>
-                <input
-                  type="text"
-                  value={newProduct.image_url}
-                  onChange={(e) => setNewProduct({ ...newProduct, image_url: e.target.value })}
-                  className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
-                  placeholder="https://..."
-                />
+                <label className="text-xs font-bold text-slate-600 mb-1 block">Product Image</label>
+                <div className="flex flex-col gap-3">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setNewProduct({ ...newProduct, imageFile: e.target.files?.[0] || null })}
+                    className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-[#ba001c]/10 file:text-[#ba001c] hover:file:bg-[#ba001c]/20"
+                  />
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-slate-400 font-bold whitespace-nowrap">OR URL:</span>
+                    <input
+                      type="text"
+                      value={newProduct.image_url}
+                      onChange={(e) => setNewProduct({ ...newProduct, image_url: e.target.value })}
+                      className="flex-1 p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      placeholder="https://..."
+                    />
+                  </div>
+                </div>
               </div>
             </div>
 
