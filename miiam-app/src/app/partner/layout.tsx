@@ -26,7 +26,7 @@ export default function PartnerLayout({
             <span className="material-symbols-outlined text-[20px]">point_of_sale</span>
             Live POS
           </Link>
-          <Link href="#" className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-slate-50 font-medium transition-colors">
+          <Link href="/partner/menu" className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-slate-50 font-medium transition-colors">
             <span className="material-symbols-outlined text-[20px]">restaurant_menu</span>
             Menu & Inventory
           </Link>
