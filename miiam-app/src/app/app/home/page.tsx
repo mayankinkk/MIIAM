@@ -50,8 +50,23 @@ export default function HomePage() {
   const [checkingPincode, setCheckingPincode] = useState(false);
   const userPincode = locationStore.pincode;
 
-useEffect(() => {
+  useEffect(() => {
     async function checkAndLoad() {
+      // Fetch user profile for greeting
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profileData } = await supabase
+          .from("profiles")
+          .select("full_name")
+          .eq("id", user.id)
+          .single();
+        
+        setUser({
+          ...user,
+          profile_name: profileData?.full_name || user.user_metadata?.full_name || user.user_metadata?.name
+        });
+      }
+
       const { pincode } = locationStore;
       
       if (!pincode) {
@@ -81,7 +96,7 @@ useEffect(() => {
       setCheckingPincode(false);
     }
     checkAndLoad();
-  }, [locationStore.pincode]);
+  }, [locationStore.pincode, supabase]);
 
   const hour = new Date().getHours();
   let greeting = "Good evening";
