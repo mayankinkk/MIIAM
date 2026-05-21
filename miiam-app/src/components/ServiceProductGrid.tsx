@@ -353,7 +353,7 @@ export default function ServiceProductGrid({
       {/* Products Grid */}
       <main className="p-6 animate-in fade-in duration-500">
         {loading ? (
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {[1, 2, 3, 4].map((i) => (
               <CardSkeleton key={i} />
             ))}
@@ -371,7 +371,7 @@ export default function ServiceProductGrid({
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {filteredProducts.map((product: any, index) => (
               <div
                 key={product.id}

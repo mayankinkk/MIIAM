@@ -328,7 +328,7 @@ export default function ExplorePage() {
               </button>
             </div>
           ) : (
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {filteredServices.map((feature, i) => (
               <Link 
                 key={feature.id} 
@@ -364,7 +364,7 @@ export default function ExplorePage() {
         {/* Collections */}
         <section>
           <h2 className="text-lg font-black text-slate-800 mb-4">Featured Collections</h2>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {collections.map((collection, i) => (
               <div 
                 key={collection.id}

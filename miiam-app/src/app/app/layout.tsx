@@ -7,7 +7,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     <div className="bg-[#fff4f4] min-h-screen">
       <NotificationPermission />
       <InstallPrompt />
-      {children}
+      <div className="max-w-7xl mx-auto">
+        {children}
+      </div>
       <BottomNavBar />
     </div>
   );
