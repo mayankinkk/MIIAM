@@ -88,32 +88,25 @@ export default function HomePage() {
       }
       
       setCheckingPincode(true);
-      const { data } = await supabase.from("vendors").select("id").eq("pincode", pincode).eq("status", "active").limit(1);
-      setLocalServiceable(!!(data && data.length > 0));
       
       const { data: vendors } = await supabase.from("vendors").select("*").order("created_at", { ascending: false }).limit(50);
       if (vendors) {
         const userCity = locationStore.city?.toLowerCase() || "";
         
-        // Tier 1: exact pincode match
-        const pinMatches = vendors.filter((v: any) => v.pincode === pincode);
-        // Tier 2: city match (if no pincode on vendor but city matches)
-        const cityMatches = vendors.filter((v: any) =>
-          v.pincode !== pincode &&
-          userCity &&
-          (v.city?.toLowerCase() === userCity || v.state?.toLowerCase().includes(userCity))
-        );
-        // Tier 3: everything else
-        const others = vendors.filter((v: any) =>
-          v.pincode !== pincode &&
-          !(userCity && (v.city?.toLowerCase() === userCity || v.state?.toLowerCase().includes(userCity)))
-        );
+        // Strict filter: pincode match OR city match only
+        const local = vendors.filter((v: any) => {
+          const pincodeMatch = v.pincode === pincode;
+          const cityMatch = userCity && v.city?.toLowerCase() === userCity;
+          return pincodeMatch || cityMatch;
+        });
         
-        const sorted = [...pinMatches, ...cityMatches, ...others];
+        // Mark serviceable only if we found local vendors
+        setLocalServiceable(local.length > 0);
         
-        setNearbyRestaurants(sorted);
-        setFeaturedRestaurants(sorted.filter((v: any) => v.is_featured || v.is_promoted).slice(0, 6));
-        setSpotlightRestaurant(sorted.find((v: any) => v.is_featured) || null);
+        // Show ONLY local vendors — empty array if none found
+        setNearbyRestaurants(local);
+        setFeaturedRestaurants(local.filter((v: any) => v.is_featured || v.is_promoted).slice(0, 6));
+        setSpotlightRestaurant(local.find((v: any) => v.is_featured) || null);
       }
       setCheckingPincode(false);
     }
@@ -596,6 +589,28 @@ export default function HomePage() {
                 </div>
               </Link>
             ))}
+          </div>
+        ) : locationStore.pincode ? (
+          <div className="bg-white rounded-2xl p-8 text-center shadow-sm">
+            <div className="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span className="material-symbols-outlined text-4xl text-amber-500">location_off</span>
+            </div>
+            <h3 className="text-lg font-black text-[#281716] mb-1">Not Available in Your Area</h3>
+            <p className="text-sm text-[#5c403d] mb-1">
+              We couldn't find any vendors near
+            </p>
+            <p className="text-sm font-bold text-[#ba001c] mb-4">
+              {locationStore.displayAddress} ({locationStore.pincode})
+            </p>
+            <p className="text-xs text-slate-400 mb-5">
+              We're expanding every day! Try a nearby pincode or check back soon.
+            </p>
+            <button
+              onClick={() => setShowLocationModal(true)}
+              className="px-6 py-3 bg-[#ba001c] text-white rounded-xl font-bold text-sm"
+            >
+              Change Location
+            </button>
           </div>
         ) : (
           <div className="text-center py-8 text-slate-500">
