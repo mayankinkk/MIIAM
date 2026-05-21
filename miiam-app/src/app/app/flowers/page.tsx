@@ -7,6 +7,7 @@ import { useCartStore } from "@/lib/store/cartStore";
 import { useServiceSettingsStore } from "@/lib/store/serviceSettingsStore";
 import { useToastStore } from "@/lib/store/toastStore";
 import ServiceUnavailable from "@/components/ServiceUnavailable";
+import { CardSkeleton } from "@/components/Skeletons";
 
 import { useLocationStore } from "@/lib/store/locationStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -245,7 +246,9 @@ export default function FlowersPage() {
       {/* Flowers Grid */}
       <main className="p-6">
         {loading ? (
-          <div className="text-center py-8 text-slate-500">Loading flowers...</div>
+          <div className="grid grid-cols-2 gap-4">
+            {[1,2,3,4].map(i => <CardSkeleton key={i} />)}
+          </div>
         ) : filteredFlowers.length === 0 ? (
           <div className="text-center py-8 text-slate-500">No flowers found</div>
         ) : (

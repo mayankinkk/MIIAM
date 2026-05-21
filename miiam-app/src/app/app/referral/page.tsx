@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { CardSkeleton } from "@/components/Skeletons";
 import { createClient } from "@/lib/supabase/client";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
@@ -79,7 +80,9 @@ export default function ReferralPage() {
 
       <main className="p-6">
         {loading ? (
-          <div className="text-center py-8 text-slate-500">Loading...</div>
+          <div className="space-y-4">
+            {[1,2,3].map(i => <CardSkeleton key={i} />)}
+          </div>
         ) : (
           <>
             <div className="bg-gradient-to-r from-[#ffd709] to-[#ffb700] rounded-3xl p-6 text-center">
