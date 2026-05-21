@@ -35,6 +35,7 @@ export default function FlowersPage() {
   const [flowers, setFlowers] = useState<Flower[]>([]);
   const [loading, setLoading] = useState(true);
   const [isServiceable, setIsServiceable] = useState(true);
+  const [flowersVendor, setFlowersVendor] = useState<any>(null);
   const { addItem, items, updateQuantity, totalItems } = useCartStore();
   const { addToast } = useToastStore();
   const locationStore = useLocationStore();
@@ -47,32 +48,44 @@ export default function FlowersPage() {
   }
 
   useEffect(() => {
-    fetchFlowers();
+    loadVendorAndFlowers();
   }, [userPincode]);
 
-  const fetchFlowers = async () => {
+  async function loadVendorAndFlowers() {
     setLoading(true);
     setIsServiceable(true);
 
-    let query = supabase.from("flower_items").select("*").order("created_at", { ascending: false });
-    if (userPincode) {
-      query = query.eq("pincode", userPincode);
-    }
-    const { data, error } = await query;
-    
-    if (error) {
-      console.error("Error fetching flowers:", error);
+    const { data: vendors } = await supabase
+      .from("vendors")
+      .select("id, shop_name")
+      .eq("type", "flowers")
+      .eq("status", "active")
+      .limit(1);
+
+    const vendor = vendors?.[0] || null;
+    setFlowersVendor(vendor);
+
+    if (vendor) {
+      let query = supabase
+        .from("flower_items")
+        .select("*")
+        .eq("vendor_id", vendor.id)
+        .order("created_at", { ascending: false });
+      const { data, error } = await query;
+      if (error) {
+        console.error("Error fetching flower items:", error);
+      } else {
+        setFlowers(data || []);
+      }
     } else {
-      setFlowers(data || []);
+      setFlowers([]);
     }
     setLoading(false);
-  };
+  }
 
   const filteredFlowers = selectedCategory === "all" 
     ? flowers 
     : flowers.filter(f => f.category?.toLowerCase().replace(" ", "") === selectedCategory);
-
-  const FLOWERS_VENDOR_ID = "00000000-0000-4000-8000-000000000001";
 
   const addToCart = (flower: any) => {
     if (!isServiceable) {
@@ -85,8 +98,8 @@ export default function FlowersPage() {
       name: flower.name,
       price: flower.price,
       image_url: flower.image_url,
-      vendor_id: FLOWERS_VENDOR_ID,
-      vendor_name: "Flowers & Gifts",
+      vendor_id: flowersVendor?.id || "flowers",
+      vendor_name: flowersVendor?.shop_name || "Flowers & Gifts",
     });
     addToast(`${flower.name} added to cart!`, "success");
   };

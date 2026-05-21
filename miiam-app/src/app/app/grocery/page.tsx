@@ -37,6 +37,7 @@ export default function GroceryPage() {
   const [loading, setLoading] = useState(true);
   const [grocerySetting, setGrocerySetting] = useState<any>(null);
   const [isServiceable, setIsServiceable] = useState(true);
+  const [groceryVendor, setGroceryVendor] = useState<any>(null);
   const { items, addItem, updateQuantity, totalItems } = useCartStore();
   const { addToast } = useToastStore();
   const locationStore = useLocationStore();
@@ -49,32 +50,45 @@ export default function GroceryPage() {
   }, []);
 
   useEffect(() => {
-    fetchProducts();
+    loadVendorAndProducts();
   }, [userPincode]);
 
-  const fetchProducts = async () => {
+  async function loadVendorAndProducts() {
     setLoading(true);
     setIsServiceable(true);
-    
-    let query = supabase.from("grocery_products").select("*").order("created_at", { ascending: false });
-    if (userPincode) {
-      query = query.eq("pincode", userPincode);
-    }
-    const { data, error } = await query;
-    
-    if (error) {
-      console.error("Error fetching products:", error);
+
+    // Find first active grocery vendor
+    const { data: vendors } = await supabase
+      .from("vendors")
+      .select("id, shop_name")
+      .eq("type", "grocery")
+      .eq("status", "active")
+      .limit(1);
+
+    const vendor = vendors?.[0] || null;
+    setGroceryVendor(vendor);
+
+    if (vendor) {
+      let query = supabase
+        .from("grocery_products")
+        .select("*")
+        .eq("vendor_id", vendor.id)
+        .order("created_at", { ascending: false });
+      const { data, error } = await query;
+      if (error) {
+        console.error("Error fetching products:", error);
+      } else {
+        setProducts(data || []);
+      }
     } else {
-      setProducts(data || []);
+      setProducts([]);
     }
     setLoading(false);
-  };
+  }
 
   const filteredProducts = selectedCategory === "all" 
     ? products 
     : products.filter(p => p.category?.toLowerCase() === selectedCategory);
-
-  const GROCERY_VENDOR_ID = "00000000-0000-4000-8000-000000000003";
 
   if (grocerySetting && !grocerySetting.isEnabled) {
     return <ServiceUnavailable serviceName="Grocery" message={grocerySetting.message} icon="shopping_cart" />;
@@ -91,8 +105,8 @@ export default function GroceryPage() {
       name: product.name,
       price: product.price,
       image_url: product.image_url,
-      vendor_id: GROCERY_VENDOR_ID,
-      vendor_name: "Grocery",
+      vendor_id: groceryVendor?.id || "grocery",
+      vendor_name: groceryVendor?.shop_name || "Grocery",
     });
     addToast(`${product.name} added to cart!`, "success");
   };

@@ -41,6 +41,7 @@ export default function PharmacyPage() {
   const [uploading, setUploading] = useState(false);
   const [pharmacySetting, setPharmacySetting] = useState<any>(null);
   const [isServiceable, setIsServiceable] = useState(true);
+  const [pharmacyVendor, setPharmacyVendor] = useState<any>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { addItem, items, updateQuantity, totalItems } = useCartStore();
   const { addToast } = useToastStore();
@@ -54,36 +55,44 @@ export default function PharmacyPage() {
   }, []);
 
   useEffect(() => {
-    fetchMedicines();
+    loadVendorAndMedicines();
   }, [userPincode]);
 
-  const fetchMedicines = async () => {
+  async function loadVendorAndMedicines() {
     setLoading(true);
     setIsServiceable(true);
 
-    let query = supabase.from("pharmacy_medicines").select("*").order("created_at", { ascending: false });
-    if (userPincode) {
-      query = query.eq("pincode", userPincode);
-    }
-    const { data, error } = await query;
-    
-    if (error) {
-      console.error("Error fetching medicines:", error);
+    const { data: vendors } = await supabase
+      .from("vendors")
+      .select("id, shop_name")
+      .eq("type", "pharmacy")
+      .eq("status", "active")
+      .limit(1);
+
+    const vendor = vendors?.[0] || null;
+    setPharmacyVendor(vendor);
+
+    if (vendor) {
+      let query = supabase
+        .from("pharmacy_medicines")
+        .select("*")
+        .eq("vendor_id", vendor.id)
+        .order("created_at", { ascending: false });
+      const { data, error } = await query;
+      if (error) {
+        console.error("Error fetching medicines:", error);
+      } else {
+        setMedicines(data || []);
+      }
     } else {
-      setMedicines(data || []);
+      setMedicines([]);
     }
     setLoading(false);
-  };
+  }
 
   const filteredMeds = selectedCategory === "all" 
     ? medicines 
     : medicines.filter(m => m.category?.toLowerCase().replace(" ", "") === selectedCategory);
-
-  const PHARMACY_VENDOR_ID = "00000000-0000-4000-8000-000000000002";
-
-  if (pharmacySetting && !pharmacySetting.isEnabled) {
-    return <ServiceUnavailable serviceName="Pharmacy" message={pharmacySetting.message} icon="medication" />;
-  }
 
   const addToCart = (med: any) => {
     if (!isServiceable) {
@@ -96,8 +105,8 @@ export default function PharmacyPage() {
       name: med.name,
       price: med.price,
       image_url: med.image_url,
-      vendor_id: PHARMACY_VENDOR_ID,
-      vendor_name: "Pharmacy",
+      vendor_id: pharmacyVendor?.id || "pharmacy",
+      vendor_name: pharmacyVendor?.shop_name || "Pharmacy",
     });
     addToast(`${med.name} added to cart!`, "success");
   };
