@@ -64,12 +64,35 @@ export default function PharmacyPage() {
 
     const { data: vendors } = await supabase
       .from("vendors")
-      .select("id, shop_name")
+      .select("id, shop_name, pincode, city")
       .eq("type", "pharmacy")
-      .eq("status", "active")
-      .limit(1);
+      .eq("status", "active");
 
-    const vendor = vendors?.[0] || null;
+    let vendor = null;
+
+    if (vendors && vendors.length > 0) {
+      if (userPincode || userCity) {
+        const cityLower = (userCity || "").toLowerCase();
+        // Strict: only pincode OR city match
+        const localVendors = vendors.filter((v: any) => {
+          const pincodeMatch = userPincode && v.pincode === userPincode;
+          const cityMatch = cityLower && v.city?.toLowerCase() === cityLower;
+          return pincodeMatch || cityMatch;
+        });
+
+        if (localVendors.length > 0) {
+          vendor = localVendors[0]; // pick the first local one
+        } else {
+          setIsServiceable(false);
+        }
+      } else {
+        // No location set — pick the first available
+        vendor = vendors[0];
+      }
+    } else {
+      setIsServiceable(false);
+    }
+
     setPharmacyVendor(vendor);
 
     if (vendor) {
