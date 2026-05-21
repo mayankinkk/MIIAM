@@ -100,7 +100,7 @@ function PromoBannerCarousel() {
               <button 
                 key={i} 
                 onClick={() => setActive(i)}
-                className={`h-1.5 rounded-full transition-all duration-300 ${i === active ? "w-5 bg-white" : "w-1.5 bg-white/40"}`} 
+                className={`h-1.5 rounded-full transition-all duration-300 ${i === active ? "w-5 bg-surface-container-lowest" : "w-1.5 bg-white/40"}`} 
               />
             ))}
           </div>
@@ -138,14 +138,14 @@ function SortDropdown({ sort, setSort }: { sort: SortOption; setSort: (s: SortOp
   ];
   return (
     <div className="relative">
-      <button onClick={() => { setOpen(!open); if (navigator.vibrate) navigator.vibrate(10); }} className="flex items-center gap-2 px-3 py-2 bg-slate-100 rounded-full text-sm font-medium active:scale-95 transition-transform">
+      <button onClick={() => { setOpen(!open); if (navigator.vibrate) navigator.vibrate(10); }} className="flex items-center gap-2 px-3 py-2 bg-surface-container rounded-full text-sm font-medium active:scale-95 transition-transform">
         <span className="material-symbols-outlined text-sm">swap_vert</span>
         {options.find(o => o.value === sort)?.label}
       </button>
       {open && (
-        <div className="absolute top-full right-0 mt-2 bg-white rounded-xl shadow-lg border border-slate-100 z-20 min-w-[180px] animate-pop-in">
+        <div className="absolute top-full right-0 mt-2 bg-surface-container-lowest rounded-xl shadow-lg border border-outline-variant z-20 min-w-[180px] animate-pop-in">
           {options.map((opt) => (
-            <button key={opt.value} onClick={() => { setSort(opt.value); setOpen(false); }} className={`w-full text-left px-4 py-2.5 text-sm hover:bg-slate-50 ${sort === opt.value ? "text-[#ba001c] font-bold" : "text-slate-600"}`}>
+            <button key={opt.value} onClick={() => { setSort(opt.value); setOpen(false); }} className={`w-full text-left px-4 py-2.5 text-sm hover:bg-surface-container-low ${sort === opt.value ? "text-[#ba001c] font-bold" : "text-on-surface-variant"}`}>
               {opt.label}
             </button>
           ))}
@@ -161,16 +161,16 @@ function PriceRangeFilter({ onApply }: { onApply: (min: number, max: number) => 
   const [open, setOpen] = useState(false);
   return (
     <div className="relative">
-      <button onClick={() => { setOpen(!open); if (navigator.vibrate) navigator.vibrate(10); }} className="flex items-center gap-2 px-3 py-2 bg-slate-100 rounded-full text-sm font-medium active:scale-95 transition-transform">
+      <button onClick={() => { setOpen(!open); if (navigator.vibrate) navigator.vibrate(10); }} className="flex items-center gap-2 px-3 py-2 bg-surface-container rounded-full text-sm font-medium active:scale-95 transition-transform">
         <span className="material-symbols-outlined text-sm">attach_money</span>
         ₹{min}-{max}
       </button>
       {open && (
-        <div className="absolute top-full right-0 mt-2 bg-white rounded-xl shadow-lg border border-slate-100 z-20 p-4 min-w-[240px] animate-pop-in">
-          <p className="text-xs font-bold text-slate-500 mb-2">PRICE RANGE</p>
+        <div className="absolute top-full right-0 mt-2 bg-surface-container-lowest rounded-xl shadow-lg border border-outline-variant z-20 p-4 min-w-[240px] animate-pop-in">
+          <p className="text-xs font-bold text-on-surface-variant mb-2">PRICE RANGE</p>
           <div className="flex gap-2 items-center">
             <input type="number" value={min} onChange={(e) => setMin(Number(e.target.value))} className="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Min" />
-            <span className="text-slate-400">-</span>
+            <span className="text-outline">-</span>
             <input type="number" value={max} onChange={(e) => setMax(Number(e.target.value))} className="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Max" />
           </div>
           <button onClick={() => { onApply(min, max); setOpen(false); if (navigator.vibrate) navigator.vibrate(15); }} className="w-full mt-3 py-2 bg-[#ba001c] text-white text-sm font-bold rounded-lg active:scale-95 transition-transform">Apply</button>
@@ -287,7 +287,7 @@ function CartFloater() {
       >
         <div className="flex items-center gap-3">
           <div className={`relative ${showAnimation ? "animate-bounce-sm" : ""}`}>
-            <span className="bg-white text-[#ba001c] font-black text-xs px-2 py-0.5 rounded-full">
+            <span className="bg-surface-container-lowest text-[#ba001c] font-black text-xs px-2 py-0.5 rounded-full">
               {totalItems()}
             </span>
             {showAnimation && (
@@ -415,10 +415,10 @@ export default function FoodPage() {
       : sortedRestaurants.filter((r) => r.cuisine?.toLowerCase() === selectedCategory);
 
   return (
-    <PullToRefresh onRefresh={handleRefresh} className="min-h-screen bg-[#fff4f4]">
+    <PullToRefresh onRefresh={handleRefresh} className="min-h-screen bg-surface">
       {/* Pincode Verification Banner */}
       {userPincode && (
-        <div className={`px-4 py-2 ${noLocalVendors ? "bg-red-50 border-b border-red-200" : "bg-green-50 border-b border-green-200"} flex items-center gap-2`}>
+        <div className={`px-4 py-2 ${noLocalVendors ? "bg-red-50 border-b border-red-200" : "bg-surface-container-low border-b border-green-200"} flex items-center gap-2`}>
           <span className={`material-symbols-outlined text-sm ${noLocalVendors ? "text-red-500" : "text-green-600"}`}>location_on</span>
           <p className={`text-[11px] font-bold flex-1 ${noLocalVendors ? "text-red-700" : "text-green-700"}`}>
             {noLocalVendors
@@ -433,13 +433,13 @@ export default function FoodPage() {
           )}
         </div>
       )}
-      <header className="bg-white px-6 py-4 sticky top-0 z-10 shadow-sm">
+      <header className="bg-surface-container-lowest px-6 py-4 sticky top-0 z-10 shadow-sm">
         <div className="flex items-center justify-between mb-4">
-          <Link href="/app/explore" className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
+          <Link href="/app/explore" className="w-10 h-10 bg-surface-container rounded-full flex items-center justify-center">
             <span className="material-symbols-outlined">arrow_back</span>
           </Link>
-          <h1 className="text-xl font-black text-[#4d212a]">Food Delivery</h1>
-          <Link href="/app/cart" className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center relative">
+          <h1 className="text-xl font-black text-on-surface">Food Delivery</h1>
+          <Link href="/app/cart" className="w-10 h-10 bg-surface-container rounded-full flex items-center justify-center relative">
             <span className="material-symbols-outlined">shopping_cart</span>
           </Link>
         </div>
@@ -464,19 +464,19 @@ export default function FoodPage() {
 
       <PromoBannerCarousel />
 
-      <div className="bg-white px-6 py-4 mt-4">
+      <div className="bg-surface-container-lowest px-6 py-4 mt-4">
         <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-          <button onClick={() => { setSelectedCategory("all"); if (navigator.vibrate) navigator.vibrate(10); }} className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap ${selectedCategory === "all" ? "bg-[#ba001c] text-white" : "bg-slate-100 text-slate-600"} active:scale-95 transition-all`}>
+          <button onClick={() => { setSelectedCategory("all"); if (navigator.vibrate) navigator.vibrate(10); }} className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap ${selectedCategory === "all" ? "bg-[#ba001c] text-white" : "bg-surface-container text-on-surface-variant"} active:scale-95 transition-all`}>
             🍽 All
           </button>
           {foodCategories.map((cat) => (
-            <button key={cat.id} onClick={() => { setSelectedCategory(cat.id); if (navigator.vibrate) navigator.vibrate(10); }} className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap flex items-center gap-2 ${selectedCategory === cat.id ? "bg-[#ba001c] text-white" : "bg-slate-100 text-slate-600"} active:scale-95 transition-all`}>
+            <button key={cat.id} onClick={() => { setSelectedCategory(cat.id); if (navigator.vibrate) navigator.vibrate(10); }} className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap flex items-center gap-2 ${selectedCategory === cat.id ? "bg-[#ba001c] text-white" : "bg-surface-container text-on-surface-variant"} active:scale-95 transition-all`}>
               <span>{cat.icon}</span> {cat.name}
             </button>
           ))}
         </div>
         <div className="flex flex-wrap gap-2 mt-3">
-          <button onClick={() => setVegFilter("all")} className={`px-3 py-1.5 rounded-full text-xs font-bold ${vegFilter === "all" ? "bg-slate-800 text-white" : "bg-slate-100 text-slate-600"}`}>
+          <button onClick={() => setVegFilter("all")} className={`px-3 py-1.5 rounded-full text-xs font-bold ${vegFilter === "all" ? "bg-inverse-surface text-white" : "bg-surface-container text-on-surface-variant"}`}>
             All
           </button>
           <button onClick={() => setVegFilter("veg")} className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 ${vegFilter === "veg" ? "bg-green-600 text-white" : "bg-green-100 text-green-700"}`}>
@@ -494,25 +494,25 @@ export default function FoodPage() {
         {loading ? (
           <div className="space-y-4">
             {[1,2,3,4].map(i => (
-              <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-sm flex">
-                <div className="w-32 h-32 bg-slate-200 animate-pulse flex-shrink-0" />
+              <div key={i} className="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm flex">
+                <div className="w-32 h-32 bg-surface-container-high animate-pulse flex-shrink-0" />
                 <div className="p-4 flex-1 space-y-2">
-                  <div className="h-5 w-36 bg-slate-200 animate-pulse rounded" />
-                  <div className="h-4 w-24 bg-slate-200 animate-pulse rounded" />
-                  <div className="h-4 w-40 bg-slate-200 animate-pulse rounded" />
+                  <div className="h-5 w-36 bg-surface-container-high animate-pulse rounded" />
+                  <div className="h-4 w-24 bg-surface-container-high animate-pulse rounded" />
+                  <div className="h-4 w-40 bg-surface-container-high animate-pulse rounded" />
                 </div>
               </div>
             ))}
           </div>
         ) : noLocalVendors ? (
-          <div className="bg-white rounded-2xl p-8 text-center shadow-sm">
+          <div className="bg-surface-container-lowest rounded-2xl p-8 text-center shadow-sm">
             <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="material-symbols-outlined text-4xl text-red-400">location_off</span>
             </div>
-            <h3 className="text-lg font-black text-slate-800 mb-1">Not Available in Your Area</h3>
-            <p className="text-sm text-slate-500 mb-1">We couldn't find any restaurants near</p>
+            <h3 className="text-lg font-black text-on-surface mb-1">Not Available in Your Area</h3>
+            <p className="text-sm text-on-surface-variant mb-1">We couldn't find any restaurants near</p>
             <p className="text-sm font-bold text-[#ba001c] mb-4">{locationStore.displayAddress}</p>
-            <p className="text-xs text-slate-400 mb-5">We're expanding every day! Try a nearby pincode or check back soon.</p>
+            <p className="text-xs text-outline mb-5">We're expanding every day! Try a nearby pincode or check back soon.</p>
             <button
               onClick={() => { window.location.href = "/app/home?selectLocation=true"; }}
               className="px-6 py-3 bg-[#ba001c] text-white rounded-xl font-bold text-sm"
@@ -527,11 +527,11 @@ export default function FoodPage() {
             <Link
               key={restaurant.id}
               href={`/app/food/${restaurant.id}`}
-              className="block bg-white rounded-2xl overflow-hidden shadow-sm animate-reveal-up card-lift active:scale-[0.98] transition-transform"
+              className="block bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm animate-reveal-up card-lift active:scale-[0.98] transition-transform"
               style={{ animationDelay: `${Math.min(index * 60, 400)}ms`, opacity: 0 }}
             >
               <div className="flex">
-                <div className="w-32 h-32 flex-shrink-0 overflow-hidden bg-slate-100 relative">
+                <div className="w-32 h-32 flex-shrink-0 overflow-hidden bg-surface-container relative">
                   <img
                     src={restaurant.cover_image_url || restaurant.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"}
                     alt={restaurant.shop_name}
@@ -542,7 +542,7 @@ export default function FoodPage() {
                     onClick={(e) => { e.preventDefault(); toggleFavorite(restaurant.id); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }}
                     className="absolute top-2 right-2 w-8 h-8 bg-white/90 rounded-full flex items-center justify-center shadow hover:scale-110 transition-transform"
                   >
-                    <span className={`material-symbols-outlined text-lg ${favorites.has(restaurant.id) ? "text-red-500" : "text-slate-400"}`}>favorite</span>
+                    <span className={`material-symbols-outlined text-lg ${favorites.has(restaurant.id) ? "text-red-500" : "text-outline"}`}>favorite</span>
                   </button>
                   {restaurant.is_new && (
                     <span className="absolute top-2 left-2 bg-green-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full">NEW</span>
@@ -559,17 +559,17 @@ export default function FoodPage() {
                       <div className="w-8 h-8 rounded-full bg-[#ba001c] flex items-center justify-center text-white text-xs font-black flex-shrink-0 overflow-hidden">
                         {restaurant.cover_image_url || restaurant.image_url ? <img src={restaurant.cover_image_url || restaurant.image_url} alt="" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display='none'; }} /> : restaurant.shop_name?.charAt(0)}
                       </div>
-                      <h3 className="font-bold text-slate-800 text-base leading-tight">{restaurant.shop_name}</h3>
+                      <h3 className="font-bold text-on-surface text-base leading-tight">{restaurant.shop_name}</h3>
                     </div>
                     {restaurant.is_featured && <span className="text-amber-400 text-base flex-shrink-0">⭐</span>}
                   </div>
-                  <p className="text-xs text-slate-500 mt-0.5 ml-10">{restaurant.cuisine}</p>
+                  <p className="text-xs text-on-surface-variant mt-0.5 ml-10">{restaurant.cuisine}</p>
                   <div className="flex items-center gap-2 mt-1.5">
                     <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded font-medium">★ {restaurant.rating || "4.0"}</span>
-                    <span className="text-xs text-slate-400">•</span>
-                    <span className="text-xs text-slate-500">{restaurant.delivery_time_minutes ? `${restaurant.delivery_time_minutes - 5}–${restaurant.delivery_time_minutes + 5} min` : restaurant.delivery_time || "30-40 min"}</span>
+                    <span className="text-xs text-outline">•</span>
+                    <span className="text-xs text-on-surface-variant">{restaurant.delivery_time_minutes ? `${restaurant.delivery_time_minutes - 5}–${restaurant.delivery_time_minutes + 5} min` : restaurant.delivery_time || "30-40 min"}</span>
                   </div>
-                  <p className="text-xs text-slate-500 mt-1">Delivery: {restaurant.delivery_fee || "₹49"}</p>
+                  <p className="text-xs text-on-surface-variant mt-1">Delivery: {restaurant.delivery_fee || "₹49"}</p>
                   <div className="mt-2 flex items-center gap-1 text-[#ba001c] font-bold text-xs">
                     <span>View Menu</span>
                     <span className="material-symbols-outlined text-sm">chevron_right</span>

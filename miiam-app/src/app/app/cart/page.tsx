@@ -104,13 +104,13 @@ export default function CartPage() {
   return (
     <>
       {/* TopAppBar */}
-      <header className="fixed top-0 w-full z-50 flex justify-between items-center px-4 py-3 bg-[#fff4f4]/90 backdrop-blur-2xl shadow-[0px_4px_20px_rgba(77,33,42,0.06)]"
+      <header className="fixed top-0 w-full z-50 flex justify-between items-center px-4 py-3 bg-surface/90 backdrop-blur-2xl shadow-[0px_4px_20px_rgba(77,33,42,0.06)]"
         style={{ paddingTop: "calc(0.75rem + env(safe-area-inset-top, 0px))" }}
       >
         <span className="text-xl font-extrabold tracking-tighter text-[#ba001c]">MIIAM</span>
         <div className="flex items-center gap-3">
           <Link href="/app/notifications" className="p-2 rounded-full hover:bg-[#ffe1e4] transition-all">
-            <span className="material-symbols-outlined text-[#4d212a] text-[22px]">notifications</span>
+            <span className="material-symbols-outlined text-on-surface text-[22px]">notifications</span>
           </Link>
           <Link href="/app/profile" className="w-9 h-9 rounded-full overflow-hidden border-2 border-[#ff7670] bg-[#ff7670] flex items-center justify-center">
             <span className="material-symbols-outlined text-white text-[20px]">person</span>
@@ -123,11 +123,11 @@ export default function CartPage() {
       <main className="pt-20 pb-28 px-4 max-w-2xl mx-auto">
         <section className="mb-6">
           <h1 className="text-2xl font-extrabold tracking-tight text-[#ba001c]">Your Cart</h1>
-          <p className="text-[#814c55] text-xs mt-0.5">Review items from your favorite spots.</p>
+          <p className="text-on-surface-variant text-xs mt-0.5">Review items from your favorite spots.</p>
         </section>
 
         {hasMultipleVendors && (
-          <div className="mb-4 bg-amber-50 border border-amber-200 rounded-xl p-3">
+          <div className="mb-4 bg-surface-container-low border border-amber-200 rounded-xl p-3">
             <div className="flex items-start gap-2">
               <span className="material-symbols-outlined text-amber-600 text-[18px] mt-0.5">warning</span>
               <div className="flex-1">
@@ -158,7 +158,7 @@ export default function CartPage() {
                 </div>
                 <div className="space-y-3 relative z-10">
                   {vendor.items.map((item) => (
-                    <div key={item.menu_item_id} className="flex items-center gap-3 bg-white p-3 rounded-xl shadow-sm">
+                    <div key={item.menu_item_id} className="flex items-center gap-3 bg-surface-container-lowest p-3 rounded-xl shadow-sm">
                       {/* Thumbnail */}
                       <div className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-[#ffe1e4]">
                         {item.image_url ? (
@@ -171,8 +171,8 @@ export default function CartPage() {
                       </div>
                       {/* Details */}
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-bold text-[#4d212a] text-sm truncate">{item.name}</h3>
-                        {item.special_notes && <p className="text-xs text-[#814c55] truncate">{item.special_notes}</p>}
+                        <h3 className="font-bold text-on-surface text-sm truncate">{item.name}</h3>
+                        {item.special_notes && <p className="text-xs text-on-surface-variant truncate">{item.special_notes}</p>}
                         <span className="text-[#ba001c] font-bold text-sm">₹{item.price.toFixed(2)}</span>
                       </div>
                       {/* Controls */}
@@ -180,21 +180,21 @@ export default function CartPage() {
                         <div className="flex items-center bg-[#ffe1e4] rounded-full">
                           <button
                             onClick={() => updateQuantity(item.menu_item_id, item.quantity - 1)}
-                            className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-white transition-colors"
+                            className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-surface-container-lowest transition-colors"
                           >
                             <span className="material-symbols-outlined text-sm">remove</span>
                           </button>
                           <span className="px-2 font-bold text-sm">{item.quantity}</span>
                           <button
                             onClick={() => updateQuantity(item.menu_item_id, item.quantity + 1)}
-                            className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-white transition-colors"
+                            className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-surface-container-lowest transition-colors"
                           >
                             <span className="material-symbols-outlined text-sm">add</span>
                           </button>
                         </div>
                         <button
                           onClick={() => removeItem(item.menu_item_id)}
-                          className="text-[9px] font-bold text-[#814c55] hover:text-[#ba001c] transition-colors uppercase tracking-wider"
+                          className="text-[9px] font-bold text-on-surface-variant hover:text-[#ba001c] transition-colors uppercase tracking-wider"
                         >
                           Remove
                         </button>
@@ -203,23 +203,23 @@ export default function CartPage() {
                   ))}
                 </div>
                 <div className="mt-4 flex justify-between items-center text-xs border-t border-[#dd9ca6]/20 pt-3">
-                  <span className="text-[#814c55]">Subtotal ({vendor.name})</span>
+                  <span className="text-on-surface-variant">Subtotal ({vendor.name})</span>
                   <span className="font-bold">₹{subtotalByVendor(vendor.id).toFixed(2)}</span>
                 </div>
               </div>
             ))}
 
             {/* Order Summary */}
-            <section className="bg-white rounded-xl p-4 shadow-[0px_4px_20px_rgba(77,33,42,0.06)] border border-[#dd9ca6]/10">
+            <section className="bg-surface-container-lowest rounded-xl p-4 shadow-[0px_4px_20px_rgba(77,33,42,0.06)] border border-[#dd9ca6]/10">
               <h3 className="text-base font-bold mb-4">Payment Summary</h3>
-              <div className="space-y-3 text-[#814c55] text-sm">
+              <div className="space-y-3 text-on-surface-variant text-sm">
                 <div className="flex justify-between">
                   <span>Items Subtotal</span>
-                  <span className="text-[#4d212a] font-semibold">₹{total.toFixed(2)}</span>
+                  <span className="text-on-surface font-semibold">₹{total.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Delivery &amp; Service Fee</span>
-                  <span className="text-[#4d212a] font-semibold">₹{deliveryFee.toFixed(2)}</span>
+                  <span className="text-on-surface font-semibold">₹{deliveryFee.toFixed(2)}</span>
                 </div>
                 {pointsDiscount > 0 && (
                   <div className="flex justify-between text-[#0b50d5]">
@@ -232,7 +232,7 @@ export default function CartPage() {
                 )}
                 <div className="pt-4 border-t border-[#dd9ca6]/20 flex justify-between items-center">
                   <div>
-                    <p className="text-xs uppercase tracking-widest font-bold text-[#4d212a]">Total Balance</p>
+                    <p className="text-xs uppercase tracking-widest font-bold text-on-surface">Total Balance</p>
                     <p className="text-3xl font-extrabold text-[#ba001c] tracking-tighter">₹{grandTotal.toFixed(2)}</p>
                   </div>
                   <p className="text-[10px] bg-[#ffd709] text-[#453900] px-2 py-1 rounded-full font-bold">
@@ -284,10 +284,10 @@ export default function CartPage() {
 
         {showReorderModal && (
           <div className="fixed inset-0 z-50 bg-black/50 flex items-end justify-center">
-            <div className="bg-white rounded-t-2xl w-full max-h-[80vh] overflow-hidden">
-              <div className="p-4 border-b border-slate-100 flex items-center justify-between">
-                <h3 className="text-base font-bold text-[#4d212a]">Reorder from Past</h3>
-                <button onClick={() => setShowReorderModal(false)} className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center">
+            <div className="bg-surface-container-lowest rounded-t-2xl w-full max-h-[80vh] overflow-hidden">
+              <div className="p-4 border-b border-outline-variant flex items-center justify-between">
+                <h3 className="text-base font-bold text-on-surface">Reorder from Past</h3>
+                <button onClick={() => setShowReorderModal(false)} className="w-8 h-8 bg-surface-container rounded-full flex items-center justify-center">
                   <span className="material-symbols-outlined text-[18px]">close</span>
                 </button>
               </div>
@@ -297,15 +297,15 @@ export default function CartPage() {
                     <div className="w-8 h-8 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin mx-auto" />
                   </div>
                 ) : pastOrders.length === 0 ? (
-                  <div className="text-center py-8 text-slate-500 text-sm">No past orders found</div>
+                  <div className="text-center py-8 text-on-surface-variant text-sm">No past orders found</div>
                 ) : (
                   <div className="space-y-3">
                     {pastOrders.map((order) => (
-                      <div key={order.id} className="border border-slate-100 rounded-xl p-3">
+                      <div key={order.id} className="border border-outline-variant rounded-xl p-3">
                         <div className="flex items-center justify-between mb-2">
                           <div>
-                            <p className="font-bold text-[#4d212a] text-sm">{order.vendors?.name || "Restaurant"}</p>
-                            <p className="text-xs text-slate-500">{new Date(order.placed_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</p>
+                            <p className="font-bold text-on-surface text-sm">{order.vendors?.name || "Restaurant"}</p>
+                            <p className="text-xs text-on-surface-variant">{new Date(order.placed_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</p>
                           </div>
                           <p className="font-bold text-[#ba001c] text-sm">₹{order.total_amount?.toFixed(2)}</p>
                         </div>

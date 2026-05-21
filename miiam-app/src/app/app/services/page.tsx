@@ -59,23 +59,23 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 backdrop-blur-sm animate-fade-in">
-      <div className="bg-white w-full max-w-lg rounded-t-3xl shadow-2xl p-6 pb-10 max-h-[90vh] overflow-y-auto animate-slide-reveal">
+      <div className="bg-surface-container-lowest w-full max-w-lg rounded-t-3xl shadow-2xl p-6 pb-10 max-h-[90vh] overflow-y-auto animate-slide-reveal">
         {/* Handle */}
-        <div className="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-5" />
+        <div className="w-12 h-1.5 bg-surface-container-high rounded-full mx-auto mb-5" />
 
         {step === "pick" && (
           <>
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-14 h-14 rounded-xl overflow-hidden bg-slate-100 flex-shrink-0">
+              <div className="w-14 h-14 rounded-xl overflow-hidden bg-surface-container flex-shrink-0">
                 <img src={service.image} alt={service.name} className="w-full h-full object-cover" />
               </div>
               <div>
-                <h2 className="font-black text-slate-800 text-lg">{service.name}</h2>
+                <h2 className="font-black text-on-surface text-lg">{service.name}</h2>
                 <p className="text-[#ba001c] font-bold">₹{service.price} • {service.duration}</p>
               </div>
             </div>
 
-            <p className="font-bold text-slate-700 mb-3">Select Date</p>
+            <p className="font-bold text-on-surface mb-3">Select Date</p>
             <div className="flex gap-2 flex-wrap mb-5">
               {dateOptions.map((d) => (
                 <button
@@ -84,7 +84,7 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
                   className={`px-4 py-2 rounded-xl text-sm font-bold border-2 transition-all hover:scale-105 active:scale-95 ${
                     selectedDate === d.value
                       ? "bg-[#ba001c] text-white border-[#ba001c]"
-                      : "border-slate-200 text-slate-600 hover:border-[#ba001c]"
+                      : "border-outline text-on-surface-variant hover:border-[#ba001c]"
                   }`}
                 >
                   {d.label}
@@ -92,7 +92,7 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
               ))}
             </div>
 
-            <p className="font-bold text-slate-700 mb-3">Select Time Slot</p>
+            <p className="font-bold text-on-surface mb-3">Select Time Slot</p>
             <div className="grid grid-cols-2 gap-2 mb-5">
               {timeSlots.map((slot) => (
                 <button
@@ -101,7 +101,7 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
                   className={`p-3 rounded-xl text-xs font-bold border-2 transition-all text-left hover:scale-[1.02] active:scale-[0.98] ${
                     selectedSlot === slot
                       ? "bg-[#ba001c] text-white border-[#ba001c]"
-                      : "border-slate-200 text-slate-600 hover:border-[#ba001c]"
+                      : "border-outline text-on-surface-variant hover:border-[#ba001c]"
                   }`}
                 >
                   {slot}
@@ -109,9 +109,9 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
               ))}
             </div>
 
-            <p className="font-bold text-slate-700 mb-2">Service Address</p>
+            <p className="font-bold text-on-surface mb-2">Service Address</p>
             <textarea
-              className="w-full border-2 border-slate-200 rounded-xl p-3 text-sm focus:border-[#ba001c] focus:outline-none resize-none mb-5"
+              className="w-full border-2 border-outline rounded-xl p-3 text-sm focus:border-[#ba001c] focus:outline-none resize-none mb-5"
               rows={2}
               placeholder="Enter your full address..."
               value={address}
@@ -125,7 +125,7 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
             >
               Review Booking
             </button>
-            <button onClick={() => { onClose(); if (navigator.vibrate) navigator.vibrate(10); }} className="w-full mt-3 py-3 text-slate-500 font-semibold text-sm hover:text-slate-700 transition-colors">
+            <button onClick={() => { onClose(); if (navigator.vibrate) navigator.vibrate(10); }} className="w-full mt-3 py-3 text-on-surface-variant font-semibold text-sm hover:text-on-surface transition-colors">
               Cancel
             </button>
           </>
@@ -133,30 +133,30 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
 
         {step === "confirm" && (
           <>
-            <h2 className="font-black text-xl text-slate-800 mb-6">Confirm Booking</h2>
-            <div className="bg-slate-50 rounded-2xl p-4 space-y-3 mb-6">
+            <h2 className="font-black text-xl text-on-surface mb-6">Confirm Booking</h2>
+            <div className="bg-surface-container-low rounded-2xl p-4 space-y-3 mb-6">
               <div className="flex justify-between">
-                <span className="text-slate-500 text-sm">Service</span>
-                <span className="font-bold text-slate-800 text-sm text-right">{service.name}</span>
+                <span className="text-on-surface-variant text-sm">Service</span>
+                <span className="font-bold text-on-surface text-sm text-right">{service.name}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500 text-sm">Date</span>
-                <span className="font-bold text-slate-800 text-sm">
+                <span className="text-on-surface-variant text-sm">Date</span>
+                <span className="font-bold text-on-surface text-sm">
                   {new Date(selectedDate).toLocaleDateString("en-IN", { weekday: "long", month: "long", day: "numeric" })}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500 text-sm">Time</span>
-                <span className="font-bold text-slate-800 text-sm">{selectedSlot}</span>
+                <span className="text-on-surface-variant text-sm">Time</span>
+                <span className="font-bold text-on-surface text-sm">{selectedSlot}</span>
               </div>
               {address && (
                 <div className="flex justify-between">
-                  <span className="text-slate-500 text-sm">Address</span>
-                  <span className="font-bold text-slate-800 text-sm text-right max-w-[60%]">{address}</span>
+                  <span className="text-on-surface-variant text-sm">Address</span>
+                  <span className="font-bold text-on-surface text-sm text-right max-w-[60%]">{address}</span>
                 </div>
               )}
-              <div className="border-t border-slate-200 pt-3 flex justify-between">
-                <span className="font-bold text-slate-700">Total</span>
+              <div className="border-t border-outline pt-3 flex justify-between">
+                <span className="font-bold text-on-surface">Total</span>
                 <span className="font-black text-[#ba001c] text-lg">₹{service.price}</span>
               </div>
             </div>
@@ -170,7 +170,7 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
             >
               Confirm &amp; Book
             </button>
-            <button onClick={() => { setStep("pick"); if (navigator.vibrate) navigator.vibrate(10); }} className="w-full mt-3 py-3 text-slate-500 font-semibold text-sm hover:text-slate-700 transition-colors">
+            <button onClick={() => { setStep("pick"); if (navigator.vibrate) navigator.vibrate(10); }} className="w-full mt-3 py-3 text-on-surface-variant font-semibold text-sm hover:text-on-surface transition-colors">
               Go Back
             </button>
           </>
@@ -181,13 +181,13 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
             <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
               <span className="material-symbols-outlined text-green-600 text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
             </div>
-            <h2 className="font-black text-2xl text-slate-800 mb-2">Booking Confirmed!</h2>
-            <p className="text-slate-500 mb-1">{service.name}</p>
+            <h2 className="font-black text-2xl text-on-surface mb-2">Booking Confirmed!</h2>
+            <p className="text-on-surface-variant mb-1">{service.name}</p>
             <p className="font-bold text-[#ba001c] mb-1">
               {new Date(selectedDate).toLocaleDateString("en-IN", { weekday: "long", month: "long", day: "numeric" })}
             </p>
-            <p className="text-slate-600 font-semibold mb-6">{selectedSlot}</p>
-            <p className="text-sm text-slate-500 mb-8">You will receive a confirmation shortly. Our professional will arrive on time.</p>
+            <p className="text-on-surface-variant font-semibold mb-6">{selectedSlot}</p>
+            <p className="text-sm text-on-surface-variant mb-8">You will receive a confirmation shortly. Our professional will arrive on time.</p>
             <button
               onClick={() => { onClose(); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }}
               className="w-full bg-[#ba001c] text-white py-4 rounded-2xl font-bold text-base hover:bg-[#a40017] transition-all hover:scale-[1.02] active:scale-[0.98]"
@@ -648,7 +648,7 @@ function ServicesContent() {
   return (
     <div className="min-h-screen bg-[#f7f7f7] pb-24">
       {/* Header - Urban Company style */}
-      <header className="bg-white px-4 py-4 sticky top-0 z-30 shadow-sm">
+      <header className="bg-surface-container-lowest px-4 py-4 sticky top-0 z-30 shadow-sm">
         <div className="flex items-center gap-2 mb-2">
           <Link href="/app/explore" className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
             <span className="material-symbols-outlined text-gray-600 text-sm">arrow_back</span>
@@ -662,7 +662,7 @@ function ServicesContent() {
 
       {/* Location / Availability Banner */}
       {!isServiceable && (userPincode || userCity) && (
-        <div className="bg-amber-50 border-b border-amber-200 px-6 py-3 flex items-center gap-3">
+        <div className="bg-surface-container-low border-b border-amber-200 px-6 py-3 flex items-center gap-3">
           <span className="material-symbols-outlined text-amber-600 text-xl animate-bounce">warning</span>
           <div className="flex-1">
             <p className="text-xs font-bold text-amber-800">Not serviceable at {userPincode ? `Pincode ${userPincode}` : userCity}</p>
@@ -671,7 +671,7 @@ function ServicesContent() {
         </div>
       )}
       {isServiceable && (userPincode || userCity) && (
-        <div className="bg-green-50 border-b border-green-200 px-6 py-2 flex items-center gap-2">
+        <div className="bg-surface-container-low border-b border-green-200 px-6 py-2 flex items-center gap-2">
           <span className="material-symbols-outlined text-green-600 text-sm">location_on</span>
           <p className="text-[11px] font-bold text-green-700">Providing doorstep home services to {userPincode ? `Pincode ${userPincode}` : userCity}</p>
         </div>
@@ -694,7 +694,7 @@ function ServicesContent() {
           <button
             onClick={() => { setSelectedCategory("all"); if (navigator.vibrate) navigator.vibrate(10); }}
             className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap active:scale-95 transition-all ${
-              selectedCategory === "all" ? "bg-[#ba001c] text-white" : "bg-white text-gray-600 border border-gray-200"
+              selectedCategory === "all" ? "bg-[#ba001c] text-white" : "bg-surface-container-lowest text-gray-600 border border-gray-200"
             }`}
           >
             All
@@ -704,7 +704,7 @@ function ServicesContent() {
               key={cat.id}
               onClick={() => { setSelectedCategory(cat.id); if (navigator.vibrate) navigator.vibrate(10); }}
               className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap flex items-center gap-1 active:scale-95 transition-all animate-category-slide ${
-                selectedCategory === cat.id ? "bg-[#ba001c] text-white" : "bg-white text-gray-600 border border-gray-200"
+                selectedCategory === cat.id ? "bg-[#ba001c] text-white" : "bg-surface-container-lowest text-gray-600 border border-gray-200"
               }`}
               style={{ animationDelay: `${i * 50}ms` }}
             >
@@ -718,7 +718,7 @@ function ServicesContent() {
       {/* Services List */}
       <main className="px-4 space-y-5 pb-10">
         {filteredServices.map((service, index) => (
-          <div key={service.id} className="bg-white rounded-2xl overflow-hidden shadow-[0_2px_16px_rgba(0,0,0,0.06)] border border-gray-100 card-lift animate-pop-in" style={{ animationDelay: `${Math.min(index * 80, 500)}ms` }}>
+          <div key={service.id} className="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-[0_2px_16px_rgba(0,0,0,0.06)] border border-gray-100 card-lift animate-pop-in" style={{ animationDelay: `${Math.min(index * 80, 500)}ms` }}>
             {/* Image with overlay badges */}
             <div className="relative h-44 overflow-hidden">
               <img
@@ -732,7 +732,7 @@ function ServicesContent() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
               {service.badge && (
-                <span className="absolute top-3 left-3 bg-white/95 backdrop-blur-sm text-green-700 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wide shadow-sm">
+                <span className="absolute top-3 left-3 bg-surface-container-lowest/95 backdrop-blur-sm text-green-700 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wide shadow-sm">
                   {service.badge}
                 </span>
               )}
@@ -743,7 +743,7 @@ function ServicesContent() {
               )}
               {/* Duration floating tag */}
               <div className="absolute bottom-3 left-3 flex gap-2">
-                <span className="bg-white/95 backdrop-blur-sm text-gray-700 text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-sm">
+                <span className="bg-surface-container-lowest/95 backdrop-blur-sm text-gray-700 text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-sm">
                   <span className="material-symbols-outlined text-[12px]">schedule</span>
                   {service.duration}
                 </span>
@@ -754,7 +754,7 @@ function ServicesContent() {
               {/* Title & Rating */}
               <div className="flex items-start justify-between gap-2">
                 <h3 className="font-bold text-gray-800 text-lg leading-tight">{service.name}</h3>
-                <div className="flex items-center gap-1 bg-green-50 border border-green-200 px-2 py-0.5 rounded-lg flex-shrink-0">
+                <div className="flex items-center gap-1 bg-surface-container-low border border-green-200 px-2 py-0.5 rounded-lg flex-shrink-0">
                   <span className="text-green-600 text-xs font-black">★ {service.rating}</span>
                 </div>
               </div>
@@ -791,7 +791,7 @@ function ServicesContent() {
                     if (navigator.vibrate) navigator.vibrate([20, 10, 20]);
                   }}
                   className={`px-6 py-2.5 rounded-xl font-bold text-sm active:scale-95 transition-all shadow-sm ${
-                    isServiceable ? "bg-[#ba001c] text-white hover:bg-[#a40017] shadow-[#ba001c]/20 hover:scale-[1.02]" : "bg-gray-400 text-white cursor-not-allowed shadow-none"
+                    isServiceable ? "bg-[#ba001c] text-white hover:bg-[#a40017] shadow-[#ba001c]/20 hover:scale-[1.02]" : "bg-outline text-white cursor-not-allowed shadow-none"
                   }`}
                 >
                   {isServiceable ? "Book Now" : "Unavailable"}

@@ -8,20 +8,18 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
 
   useEffect(() => {
     setTheme(theme);
-  }, []);
+  }, [theme, setTheme]);
 
   useEffect(() => {
-    const handleChange = () => {
-      if (theme === "system") {
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    const handler = () => {
+      if (useThemeStore.getState().theme === "system") {
         setTheme("system");
       }
     };
-    
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    mediaQuery.addEventListener("change", handleChange);
-    
-    return () => mediaQuery.removeEventListener("change", handleChange);
-  }, [theme, setTheme]);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, [setTheme]);
 
   return <>{children}</>;
 }

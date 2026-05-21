@@ -179,16 +179,16 @@ function ReviewModal({ vendorId, onClose, onSubmitted }: { vendorId: string; onC
 
   return (
     <div className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center animate-fade-in">
-      <div className="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl p-6 animate-slide-up">
+      <div className="bg-surface-container-lowest w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl p-6 animate-slide-up">
         <div className="flex justify-between items-center mb-5">
-          <h3 className="text-xl font-black text-slate-800">Write a Review</h3>
-          <button onClick={onClose} className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center">
+          <h3 className="text-xl font-black text-on-surface">Write a Review</h3>
+          <button onClick={onClose} className="w-8 h-8 bg-surface-container rounded-full flex items-center justify-center">
             <span className="material-symbols-outlined text-sm">close</span>
           </button>
         </div>
 
         {/* Star selector */}
-        <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Your Rating</p>
+        <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2">Your Rating</p>
         <div className="flex gap-2 mb-5">
           {[1, 2, 3, 4, 5].map((star) => (
             <button
@@ -205,21 +205,21 @@ function ReviewModal({ vendorId, onClose, onSubmitted }: { vendorId: string; onC
 
         <div className="space-y-3 mb-5">
           <div>
-            <label className="text-xs font-bold text-slate-500 uppercase tracking-widest block mb-1">Your Name</label>
+            <label className="text-xs font-bold text-on-surface-variant uppercase tracking-widest block mb-1">Your Name</label>
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-3 bg-slate-50 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+              className="w-full px-4 py-3 bg-surface-container-low rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
               placeholder="Enter your name"
             />
           </div>
           <div>
-            <label className="text-xs font-bold text-slate-500 uppercase tracking-widest block mb-1">Your Review</label>
+            <label className="text-xs font-bold text-on-surface-variant uppercase tracking-widest block mb-1">Your Review</label>
             <textarea
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               rows={3}
-              className="w-full px-4 py-3 bg-slate-50 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20 resize-none"
+              className="w-full px-4 py-3 bg-surface-container-low rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20 resize-none"
               placeholder="Tell others what you think..."
             />
           </div>
@@ -249,7 +249,7 @@ function CartFloater() {
         className="flex items-center justify-between bg-[#ba001c] text-white px-5 py-4 rounded-2xl shadow-2xl shadow-[#ba001c]/40 active:scale-[0.98] transition-transform"
       >
         <div className="flex items-center gap-3">
-          <span className="bg-white text-[#ba001c] font-black text-xs px-2 py-0.5 rounded-full">
+          <span className="bg-surface-container-lowest text-[#ba001c] font-black text-xs px-2 py-0.5 rounded-full">
             {totalItems()}
           </span>
           <span className="font-bold">View Cart</span>
@@ -310,8 +310,8 @@ export default function RestaurantProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#fff4f4] p-6 space-y-6">
-        <div className="h-48 w-full bg-slate-200 animate-pulse rounded-2xl" />
+      <div className="min-h-screen bg-surface p-6 space-y-6">
+        <div className="h-48 w-full bg-surface-container-high animate-pulse rounded-2xl" />
         <ProfileSkeleton />
         <div className="space-y-4">
           <MenuItemSkeleton />
@@ -324,9 +324,9 @@ export default function RestaurantProfilePage() {
 
   if (!vendor) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#fff4f4]">
+      <div className="min-h-screen flex items-center justify-center bg-surface">
         <div className="text-center">
-          <p className="text-2xl font-black text-slate-800 mb-2">Restaurant not found</p>
+          <p className="text-2xl font-black text-on-surface mb-2">Restaurant not found</p>
           <Link href="/app/food" className="text-[#ba001c] font-bold">← Back to Food</Link>
         </div>
       </div>
@@ -355,7 +355,7 @@ export default function RestaurantProfilePage() {
   }));
 
   return (
-    <div className="min-h-screen bg-[#fff4f4] pb-32">
+    <div className="min-h-screen bg-surface pb-32">
       {/* Hero Cover */}
       <div className="relative h-64 sm:h-80 overflow-hidden">
         <img
@@ -413,31 +413,31 @@ export default function RestaurantProfilePage() {
       <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Food', href: '/app/food' }, { label: vendor.shop_name }]} />
 
       {/* Info Strip */}
-      <div className="bg-white px-5 py-4 flex items-center gap-4 overflow-x-auto no-scrollbar shadow-sm border-b border-slate-100">
+      <div className="bg-surface-container-lowest px-5 py-4 flex items-center gap-4 overflow-x-auto no-scrollbar shadow-sm border-b border-outline-variant">
         <span className={`flex-shrink-0 px-2.5 py-1 rounded-full text-xs font-black uppercase tracking-wider ${
           isOpen ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"
         }`}>
           {isOpen ? "🟢 Open" : "🔴 Closed"}
         </span>
-        <div className="w-px h-4 bg-slate-200" />
-        <div className="flex items-center gap-1.5 text-slate-600 flex-shrink-0">
+        <div className="w-px h-4 bg-surface-container-high" />
+        <div className="flex items-center gap-1.5 text-on-surface-variant flex-shrink-0">
           <span className="material-symbols-outlined text-[#ba001c] text-base">schedule</span>
           <span className="text-sm font-semibold">{vendor.delivery_time_minutes ? `${vendor.delivery_time_minutes - 5}–${vendor.delivery_time_minutes + 5} min` : vendor.delivery_time || "30-40 min"}</span>
         </div>
-        <div className="w-px h-4 bg-slate-200" />
-        <div className="flex items-center gap-1.5 text-slate-600 flex-shrink-0">
+        <div className="w-px h-4 bg-surface-container-high" />
+        <div className="flex items-center gap-1.5 text-on-surface-variant flex-shrink-0">
           <span className="material-symbols-outlined text-[#ba001c] text-base">delivery_dining</span>
           <span className="text-sm font-semibold">{vendor.delivery_fee || "₹49 delivery"}</span>
         </div>
-        <div className="w-px h-4 bg-slate-200" />
-        <div className="flex items-center gap-1.5 text-slate-600 flex-shrink-0">
+        <div className="w-px h-4 bg-surface-container-high" />
+        <div className="flex items-center gap-1.5 text-on-surface-variant flex-shrink-0">
           <span className="material-symbols-outlined text-[#ba001c] text-base">storefront</span>
           <span className="text-sm font-semibold">{vendor.opening_hours || "10 AM – 11 PM"}</span>
         </div>
         {vendor.address && (
           <>
-            <div className="w-px h-4 bg-slate-200" />
-            <div className="flex items-center gap-1.5 text-slate-600 flex-shrink-0">
+            <div className="w-px h-4 bg-surface-container-high" />
+            <div className="flex items-center gap-1.5 text-on-surface-variant flex-shrink-0">
               <span className="material-symbols-outlined text-[#ba001c] text-base">location_on</span>
               <span className="text-sm font-semibold truncate max-w-[160px]">{vendor.address}</span>
             </div>
@@ -447,8 +447,8 @@ export default function RestaurantProfilePage() {
 
       {/* Description */}
       {vendor.description && (
-        <div className="bg-white mx-4 mt-4 rounded-2xl p-4 shadow-sm border border-slate-100">
-          <p className="text-sm text-slate-600 leading-relaxed">{vendor.description}</p>
+        <div className="bg-surface-container-lowest mx-4 mt-4 rounded-2xl p-4 shadow-sm border border-outline-variant">
+          <p className="text-sm text-on-surface-variant leading-relaxed">{vendor.description}</p>
         </div>
       )}
 
@@ -457,12 +457,12 @@ export default function RestaurantProfilePage() {
         <section className="mt-5 px-4">
           <div className="flex items-center gap-2 mb-3">
             <span className="text-xl">⭐</span>
-            <h2 className="text-lg font-black text-slate-800">Chef's Specials</h2>
+            <h2 className="text-lg font-black text-on-surface">Chef's Specials</h2>
           </div>
           <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2">
             {specials.map((item) => (
-              <div key={item.id} className="flex-shrink-0 w-40 bg-white rounded-2xl overflow-hidden shadow-sm border border-amber-100">
-                <div className="h-28 overflow-hidden bg-slate-100">
+              <div key={item.id} className="flex-shrink-0 w-40 bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm border border-amber-100">
+                <div className="h-28 overflow-hidden bg-surface-container">
                   <img
                     src={item.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"}
                     alt={item.name}
@@ -475,7 +475,7 @@ export default function RestaurantProfilePage() {
                     <span className={`w-3 h-3 border-2 ${item.is_veg ? "border-green-600" : "border-red-600"} rounded-sm flex items-center justify-center flex-shrink-0`}>
                       <span className={`w-1.5 h-1.5 ${item.is_veg ? "bg-green-600" : "bg-red-600"} rounded-full`} />
                     </span>
-                    <p className="font-bold text-slate-800 text-xs truncate">{item.name}</p>
+                    <p className="font-bold text-on-surface text-xs truncate">{item.name}</p>
                   </div>
                   <div className="flex items-center justify-between mt-1">
                     <span className="font-black text-[#ba001c] text-sm">₹{item.price}</span>
@@ -491,9 +491,9 @@ export default function RestaurantProfilePage() {
       {/* Menu Tabs */}
       <section className="mt-5">
         <div className="px-4 mb-3 flex items-center justify-between gap-3">
-          <h2 className="text-lg font-black text-slate-800">Full Menu</h2>
+          <h2 className="text-lg font-black text-on-surface">Full Menu</h2>
           <label className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full cursor-pointer text-xs font-bold transition-all ${
-            vegOnly ? "bg-green-600 text-white" : "bg-green-50 text-green-700 border border-green-200"
+            vegOnly ? "bg-green-600 text-white" : "bg-surface-container-low text-green-700 border border-green-200"
           }`}>
             <input type="checkbox" checked={vegOnly} onChange={(e) => setVegOnly(e.target.checked)} className="hidden" />
             <span className="w-3 h-3 border-2 border-current rounded-sm flex items-center justify-center flex-shrink-0">
@@ -506,16 +506,16 @@ export default function RestaurantProfilePage() {
         {/* Search bar */}
         <div className="px-4 mb-3">
           <div className="relative">
-            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-base">search</span>
+            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-base">search</span>
             <input
               type="text"
               value={menuSearch}
               onChange={(e) => setMenuSearch(e.target.value)}
               placeholder="Search menu items..."
-              className="w-full pl-9 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#ba001c] shadow-sm"
+              className="w-full pl-9 pr-4 py-2.5 bg-surface-container-lowest border border-outline rounded-xl text-sm focus:outline-none focus:border-[#ba001c] shadow-sm"
             />
             {menuSearch && (
-              <button onClick={() => setMenuSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+              <button onClick={() => setMenuSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface-variant">
                 <span className="material-symbols-outlined text-base">close</span>
               </button>
             )}
@@ -531,7 +531,7 @@ export default function RestaurantProfilePage() {
               className={`flex-shrink-0 px-4 py-2 rounded-full font-bold text-sm transition-all active:scale-95 ${
                 activeCategory === cat
                   ? "bg-[#ba001c] text-white"
-                  : "bg-white text-slate-600 border border-slate-200"
+                  : "bg-surface-container-lowest text-on-surface-variant border border-outline"
               }`}
             >
               {cat}
@@ -542,13 +542,13 @@ export default function RestaurantProfilePage() {
         {/* Menu Items */}
         <div className="px-4 mt-3 space-y-3">
           {filteredMenu.length === 0 ? (
-            <div className="bg-white rounded-2xl p-8 text-center text-slate-400 shadow-sm">
+            <div className="bg-surface-container-lowest rounded-2xl p-8 text-center text-outline shadow-sm">
               {menuSearch ? `No results for "${menuSearch}"` : "No items in this category"}
             </div>
           ) : (
             filteredMenu.map((item) => (
-              <div key={item.id} className="bg-white rounded-2xl p-3 shadow-sm flex items-center gap-3">
-                <div className="w-20 h-20 rounded-xl overflow-hidden bg-slate-100 flex-shrink-0 relative">
+              <div key={item.id} className="bg-surface-container-lowest rounded-2xl p-3 shadow-sm flex items-center gap-3">
+                <div className="w-20 h-20 rounded-xl overflow-hidden bg-surface-container flex-shrink-0 relative">
                   <img
                     src={item.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"}
                     alt={item.name}
@@ -566,13 +566,13 @@ export default function RestaurantProfilePage() {
                     <span className={`w-3.5 h-3.5 border-2 ${item.is_veg ? "border-green-600" : "border-red-600"} rounded-sm flex items-center justify-center flex-shrink-0`}>
                       <span className={`w-1.5 h-1.5 ${item.is_veg ? "bg-green-600" : "bg-red-600"} rounded-full`} />
                     </span>
-                    <p className="font-bold text-slate-800 text-sm truncate">{item.name}</p>
+                    <p className="font-bold text-on-surface text-sm truncate">{item.name}</p>
                     {item.is_featured && (
                       <span className="text-amber-500 text-xs flex-shrink-0">⭐</span>
                     )}
                   </div>
                   {item.description && (
-                    <p className="text-xs text-slate-500 mt-0.5 line-clamp-1">{item.description}</p>
+                    <p className="text-xs text-on-surface-variant mt-0.5 line-clamp-1">{item.description}</p>
                   )}
                   <div className="flex items-center justify-between mt-2">
                     <span className="font-black text-[#ba001c] text-base">₹{item.price}</span>
@@ -588,10 +588,10 @@ export default function RestaurantProfilePage() {
       {/* Reviews */}
       <section className="mt-6 px-4">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-black text-slate-800">Reviews & Ratings</h2>
+          <h2 className="text-lg font-black text-on-surface">Reviews & Ratings</h2>
           <button
             onClick={() => setShowReviewModal(true)}
-            className="text-sm font-bold text-[#ba001c] bg-[#fff4f4] px-3 py-1.5 rounded-lg hover:bg-[#ffe4e7] transition-colors active:scale-95"
+            className="text-sm font-bold text-[#ba001c] bg-surface px-3 py-1.5 rounded-lg hover:bg-[#ffe4e7] transition-colors active:scale-95"
           >
             + Write a Review
           </button>
@@ -600,25 +600,25 @@ export default function RestaurantProfilePage() {
         {reviews.length > 0 ? (
           <>
             {/* Rating Summary Card */}
-            <div className="bg-white rounded-2xl p-5 shadow-sm mb-4">
+            <div className="bg-surface-container-lowest rounded-2xl p-5 shadow-sm mb-4">
               <div className="flex items-center gap-6">
                 <div className="text-center">
-                  <p className="text-5xl font-black text-slate-800">{avgRating}</p>
+                  <p className="text-5xl font-black text-on-surface">{avgRating}</p>
                   <StarRating rating={parseFloat(avgRating)} size="sm" />
-                  <p className="text-xs text-slate-500 mt-1">{reviews.length} reviews</p>
+                  <p className="text-xs text-on-surface-variant mt-1">{reviews.length} reviews</p>
                 </div>
                 <div className="flex-1 space-y-1.5">
                   {ratingBreakdown.map(({ star, count, pct }) => (
                     <div key={star} className="flex items-center gap-2">
-                      <span className="text-xs text-slate-500 w-3">{star}</span>
+                      <span className="text-xs text-on-surface-variant w-3">{star}</span>
                       <span className="text-amber-400 text-xs">★</span>
-                      <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                      <div className="flex-1 h-1.5 bg-surface-container rounded-full overflow-hidden">
                         <div
                           className="h-full bg-amber-400 rounded-full transition-all duration-500"
                           style={{ width: `${pct}%` }}
                         />
                       </div>
-                      <span className="text-xs text-slate-400 w-5 text-right">{count}</span>
+                      <span className="text-xs text-outline w-5 text-right">{count}</span>
                     </div>
                   ))}
                 </div>
@@ -628,21 +628,21 @@ export default function RestaurantProfilePage() {
             {/* Review cards */}
             <div className="space-y-3">
               {reviews.map((review) => (
-                <div key={review.id} className="bg-white rounded-2xl p-4 shadow-sm">
+                <div key={review.id} className="bg-surface-container-lowest rounded-2xl p-4 shadow-sm">
                   <div className="flex items-start gap-3">
                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#ba001c] to-[#ff7670] flex items-center justify-center text-white font-black text-sm flex-shrink-0">
                       {review.user_name?.charAt(0).toUpperCase() || "U"}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-2">
-                        <p className="font-bold text-slate-800 text-sm truncate">{review.user_name || "Anonymous"}</p>
-                        <p className="text-[10px] text-slate-400 flex-shrink-0">
+                        <p className="font-bold text-on-surface text-sm truncate">{review.user_name || "Anonymous"}</p>
+                        <p className="text-[10px] text-outline flex-shrink-0">
                           {new Date(review.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
                         </p>
                       </div>
                       <StarRating rating={review.rating} size="sm" />
                       {review.comment && (
-                        <p className="text-sm text-slate-600 mt-2 leading-relaxed">{review.comment}</p>
+                        <p className="text-sm text-on-surface-variant mt-2 leading-relaxed">{review.comment}</p>
                       )}
                     </div>
                   </div>
@@ -651,10 +651,10 @@ export default function RestaurantProfilePage() {
             </div>
           </>
         ) : (
-          <div className="bg-white rounded-2xl p-8 shadow-sm text-center">
+          <div className="bg-surface-container-lowest rounded-2xl p-8 shadow-sm text-center">
             <p className="text-3xl mb-2">💬</p>
-            <p className="font-bold text-slate-700 mb-1">No reviews yet</p>
-            <p className="text-sm text-slate-400 mb-4">Be the first to review this restaurant!</p>
+            <p className="font-bold text-on-surface mb-1">No reviews yet</p>
+            <p className="text-sm text-outline mb-4">Be the first to review this restaurant!</p>
             <button
               onClick={() => setShowReviewModal(true)}
               className="px-6 py-2.5 bg-gradient-to-r from-[#ba001c] to-[#ff7670] text-white font-bold rounded-xl text-sm hover:scale-[1.02] active:scale-[0.98] transition-all"

@@ -214,15 +214,15 @@ export default function PharmacyPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fff4f4] pb-24">
+    <div className="min-h-screen bg-surface pb-24">
       {/* Header */}
-      <header className="bg-white px-6 py-4 sticky top-0 z-10 shadow-sm">
+      <header className="bg-surface-container-lowest px-6 py-4 sticky top-0 z-10 shadow-sm">
         <div className="flex items-center justify-between mb-4">
-          <Link href="/app/explore" className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
+          <Link href="/app/explore" className="w-10 h-10 bg-surface-container rounded-full flex items-center justify-center">
             <span className="material-symbols-outlined">arrow_back</span>
           </Link>
-          <h1 className="text-xl font-black text-[#4d212a]">Pharmacy</h1>
-          <Link href="/app/cart" className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center relative">
+          <h1 className="text-xl font-black text-on-surface">Pharmacy</h1>
+          <Link href="/app/cart" className="w-10 h-10 bg-surface-container rounded-full flex items-center justify-center relative">
             <span className="material-symbols-outlined">shopping_cart</span>
             {totalItems() > 0 && (
               <span className="absolute -top-1 -right-1 w-5 h-5 bg-[#ba001c] text-white text-xs rounded-full flex items-center justify-center">
@@ -237,7 +237,7 @@ export default function PharmacyPage() {
 
       {/* Location / Availability Banner */}
       {!isServiceable && (userPincode || userCity) && (
-        <div className="bg-amber-50 border-b border-amber-200 px-6 py-3 flex items-center gap-3">
+        <div className="bg-surface-container-low border-b border-amber-200 px-6 py-3 flex items-center gap-3">
           <span className="material-symbols-outlined text-amber-600 text-xl animate-bounce">warning</span>
           <div className="flex-1">
             <p className="text-xs font-bold text-amber-800">Not serviceable at {userPincode ? `Pincode ${userPincode}` : userCity}</p>
@@ -246,7 +246,7 @@ export default function PharmacyPage() {
         </div>
       )}
       {isServiceable && (userPincode || userCity) && (
-        <div className="bg-green-50 border-b border-green-200 px-6 py-2 flex items-center gap-2">
+        <div className="bg-surface-container-low border-b border-green-200 px-6 py-2 flex items-center gap-2">
           <span className="material-symbols-outlined text-green-600 text-sm">location_on</span>
           <p className="text-[11px] font-bold text-green-700">Delivering genuine medicines to {userPincode ? `Pincode ${userPincode}` : userCity}</p>
         </div>
@@ -262,13 +262,13 @@ export default function PharmacyPage() {
         </div>
       </div>
 
-      <div className="bg-white px-6 py-4">
+      <div className="bg-surface-container-lowest px-6 py-4">
         <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-          <button onClick={() => { setSelectedCategory("all"); if (navigator.vibrate) navigator.vibrate(10); }} className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap ${selectedCategory === "all" ? "bg-[#ba001c] text-white" : "bg-slate-100 text-slate-600"} active:scale-95 transition-all`}>
+          <button onClick={() => { setSelectedCategory("all"); if (navigator.vibrate) navigator.vibrate(10); }} className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap ${selectedCategory === "all" ? "bg-[#ba001c] text-white" : "bg-surface-container text-on-surface-variant"} active:scale-95 transition-all`}>
             All
           </button>
           {pharmacyCategories.map((cat, i) => (
-            <button key={cat.id} onClick={() => { setSelectedCategory(cat.id); if (navigator.vibrate) navigator.vibrate(10); }} className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap flex items-center gap-2 ${selectedCategory === cat.id ? "bg-[#ba001c] text-white" : "bg-slate-100 text-slate-600"} active:scale-95 transition-all animate-category-slide`} style={{ animationDelay: `${i * 50}ms` }}>
+            <button key={cat.id} onClick={() => { setSelectedCategory(cat.id); if (navigator.vibrate) navigator.vibrate(10); }} className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap flex items-center gap-2 ${selectedCategory === cat.id ? "bg-[#ba001c] text-white" : "bg-surface-container text-on-surface-variant"} active:scale-95 transition-all animate-category-slide`} style={{ animationDelay: `${i * 50}ms` }}>
               <span>{cat.icon}</span> {cat.name}
             </button>
           ))}
@@ -285,11 +285,11 @@ export default function PharmacyPage() {
         ) : (
           <div className="grid grid-cols-2 gap-4">
             {filteredMeds.map((med, index) => (
-              <div key={med.id} className="bg-white rounded-2xl overflow-hidden shadow-sm card-lift animate-pop-in" style={{ animationDelay: `${Math.min(index * 80, 500)}ms` }}>
+              <div key={med.id} className="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm card-lift animate-pop-in" style={{ animationDelay: `${Math.min(index * 80, 500)}ms` }}>
                 <img src={med.image_url || "/images/pharmacy_hero.png"} alt={med.name} className="w-full h-32 object-cover" />
                 <div className="p-3">
-                  <p className="font-bold text-slate-800 text-sm">{med.name}</p>
-                  <p className="text-xs text-slate-500">{med.description}</p>
+                  <p className="font-bold text-on-surface text-sm">{med.name}</p>
+                  <p className="text-xs text-on-surface-variant">{med.description}</p>
                   <div className="flex items-center justify-between mt-2">
                     <span className="font-black text-[#ba001c] animate-price-tag">₹{med.price}</span>
                     <MedAddButton med={med} />
@@ -311,11 +311,11 @@ export default function PharmacyPage() {
             }
           }}
           className={`fixed bottom-6 left-4 right-4 z-50 flex items-center justify-between text-white px-5 py-4 rounded-2xl shadow-2xl active:scale-[0.98] transition-transform animate-slide-reveal ${
-            isServiceable ? "bg-[#ba001c] shadow-[#ba001c]/40" : "bg-gray-400 cursor-not-allowed shadow-none"
+            isServiceable ? "bg-[#ba001c] shadow-primary/40" : "bg-outline cursor-not-allowed shadow-none"
           }`}
         >
           <div className="flex items-center gap-3">
-            <span className="bg-white text-[#ba001c] font-black text-xs px-2 py-0.5 rounded-full">
+            <span className="bg-surface-container-lowest text-[#ba001c] font-black text-xs px-2 py-0.5 rounded-full">
               {totalItems()}
             </span>
             <span className="font-bold">View Cart</span>

@@ -153,12 +153,12 @@ export default function BeautyPage() {
   const currentServices = services[activeCategory as keyof typeof services] || [];
 
   return (
-    <div className="min-h-screen bg-[#fff4f4] pb-24">
+    <div className="min-h-screen bg-surface pb-24">
       {/* Header */}
       <header className="bg-gradient-to-br from-pink-500 to-rose-500 text-white p-4 pb-10">
         <div className="flex items-center justify-between mb-2">
           <h1 className="text-xl font-black">Beauty & Wellness</h1>
-          <button className="p-2 bg-white/20 rounded-full">
+          <button className="p-2 bg-surface-container-lowest/20 rounded-full">
             <span className="material-symbols-outlined text-lg">notifications</span>
           </button>
         </div>
@@ -166,8 +166,8 @@ export default function BeautyPage() {
         
         {/* Search */}
         <div className="relative">
-          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
-          <input type="text" placeholder="Search for services..." className="w-full pl-9 pr-4 py-2.5 rounded-lg text-slate-800 text-sm" />
+          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-lg">search</span>
+          <input type="text" placeholder="Search for services..." className="w-full pl-9 pr-4 py-2.5 rounded-lg text-on-surface text-sm" />
         </div>
       </header>
 
@@ -175,7 +175,7 @@ export default function BeautyPage() {
 
       {/* Location / Availability Banner */}
       {!isServiceable && (userPincode || userCity) && (
-        <div className="bg-amber-50 border-b border-amber-200 px-6 py-3 flex items-center gap-3">
+        <div className="bg-surface-container-low border-b border-amber-200 px-6 py-3 flex items-center gap-3">
           <span className="material-symbols-outlined text-amber-600 text-xl animate-bounce">warning</span>
           <div className="flex-1">
             <p className="text-xs font-bold text-amber-800">Not serviceable at {userPincode ? `Pincode ${userPincode}` : userCity}</p>
@@ -184,7 +184,7 @@ export default function BeautyPage() {
         </div>
       )}
       {isServiceable && (userPincode || userCity) && (
-        <div className="bg-green-50 border-b border-green-200 px-6 py-2 flex items-center gap-2">
+        <div className="bg-surface-container-low border-b border-green-200 px-6 py-2 flex items-center gap-2">
           <span className="material-symbols-outlined text-green-600 text-sm">location_on</span>
           <p className="text-[11px] font-bold text-green-700">Providing beauty & spa services to {userPincode ? `Pincode ${userPincode}` : userCity}</p>
         </div>
@@ -192,7 +192,7 @@ export default function BeautyPage() {
 
       {/* Categories */}
       <div className="px-3 -mt-5">
-        <div className="bg-white rounded-xl p-1.5 shadow-lg">
+        <div className="bg-surface-container-lowest rounded-xl p-1.5 shadow-lg">
           <div className="flex gap-1.5 overflow-x-auto no-scrollbar">
             {categories.map((cat, i) => (
               <button
@@ -201,7 +201,7 @@ export default function BeautyPage() {
                 className={`flex-shrink-0 px-3 py-2 rounded-lg font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 ${
                   activeCategory === cat.id
                     ? "bg-gradient-to-r " + cat.color + " text-white"
-                    : "bg-slate-100 text-slate-600"
+                    : "bg-surface-container text-on-surface-variant"
                 } animate-category-slide`}
                 style={{ animationDelay: `${i * 50}ms` }}
               >
@@ -217,15 +217,15 @@ export default function BeautyPage() {
         {/* Expert Stylists */}
         <section>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-base font-black text-slate-800">Top Stylists</h2>
+            <h2 className="text-base font-black text-on-surface">Top Stylists</h2>
             <span className="text-xs font-bold text-pink-500">View All</span>
           </div>
           <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2">
             {experts.map((expert, i) => (
-              <div key={i} className="flex-shrink-0 w-32 bg-white rounded-xl p-3 shadow-sm text-center card-lift animate-pop-in" style={{ animationDelay: `${i * 80}ms` }}>
+              <div key={i} className="flex-shrink-0 w-32 bg-surface-container-lowest rounded-xl p-3 shadow-sm text-center card-lift animate-pop-in" style={{ animationDelay: `${i * 80}ms` }}>
                 <img src={expert.photo} alt={expert.name} className="w-12 h-12 rounded-full mx-auto object-cover border-2 border-pink-200" />
-                <p className="font-bold text-slate-800 mt-2 text-xs">{expert.name}</p>
-                <p className="text-[10px] text-slate-500">{expert.specialist}</p>
+                <p className="font-bold text-on-surface mt-2 text-xs">{expert.name}</p>
+                <p className="text-[10px] text-on-surface-variant">{expert.specialist}</p>
                 <div className="flex items-center justify-center gap-1 mt-1">
                   <span className="material-symbols-outlined text-amber-500 text-xs" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
                   <span className="text-xs font-bold">{expert.rating}</span>
@@ -237,28 +237,28 @@ export default function BeautyPage() {
 
         {/* Services List */}
         <section>
-          <h2 className="text-lg font-black text-slate-800 mb-4">{categories.find(c => c.id === activeCategory)?.label}</h2>
+          <h2 className="text-lg font-black text-on-surface mb-4">{categories.find(c => c.id === activeCategory)?.label}</h2>
           <div className="space-y-4">
             {currentServices.map((service: any, index) => {
               const qty = getQty(service.id);
               const discount = service.original ? Math.round(((service.original - service.price) / service.original) * 100) : 0;
               
               return (
-                <div key={service.id} className="bg-white rounded-2xl p-3 shadow-sm flex gap-3 card-lift animate-pop-in" style={{ animationDelay: `${Math.min(index * 80, 500)}ms` }}>
-                  <div className="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0 bg-slate-100">
+                <div key={service.id} className="bg-surface-container-lowest rounded-2xl p-3 shadow-sm flex gap-3 card-lift animate-pop-in" style={{ animationDelay: `${Math.min(index * 80, 500)}ms` }}>
+                  <div className="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0 bg-surface-container">
                     <img src={service.image} alt={service.name} className="w-full h-full object-cover" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0">
-                        <h3 className="font-bold text-slate-800 text-sm truncate">{service.name}</h3>
-                        <p className="text-xs text-slate-500 mt-0.5 line-clamp-1">{service.description}</p>
+                        <h3 className="font-bold text-on-surface text-sm truncate">{service.name}</h3>
+                        <p className="text-xs text-on-surface-variant mt-0.5 line-clamp-1">{service.description}</p>
                         <div className="flex items-center gap-2 mt-1">
                           <span className="flex items-center gap-0.5 text-xs font-bold">
                             <span className="material-symbols-outlined text-amber-500 text-[10px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
                             {service.rating}
                           </span>
-                          <span className="text-xs text-slate-400">({service.reviews.toLocaleString()})</span>
+                          <span className="text-xs text-outline">({service.reviews.toLocaleString()})</span>
                         </div>
                       </div>
                       {service.popular && (
@@ -270,12 +270,12 @@ export default function BeautyPage() {
                         <span className="font-black text-lg text-[#ba001c]">₹{service.price}</span>
                         {service.original && (
                           <>
-                            <span className="text-sm text-slate-400 line-through">₹{service.original}</span>
+                            <span className="text-sm text-outline line-through">₹{service.original}</span>
                             <span className="text-xs bg-green-100 text-green-600 font-bold px-2 py-0.5 rounded-full">{discount}% OFF</span>
                           </>
                         )}
                       </div>
-                      <span className="text-xs text-slate-500 flex items-center gap-1">
+                      <span className="text-xs text-on-surface-variant flex items-center gap-1">
                         <span className="material-symbols-outlined text-[12px]">schedule</span>
                         {service.duration}
                       </span>
@@ -292,7 +292,7 @@ export default function BeautyPage() {
                             if (navigator.vibrate) navigator.vibrate([20, 10, 20]);
                           }}
                           className={`w-full font-bold py-1.5 rounded-lg text-xs transition-all ${
-                            isServiceable ? "bg-[#ba001c] text-white hover:scale-[1.02] active:scale-[0.98] animate-glow-pulse" : "bg-gray-400 text-white cursor-not-allowed"
+                            isServiceable ? "bg-[#ba001c] text-white hover:scale-[1.02] active:scale-[0.98] animate-glow-pulse" : "bg-outline text-white cursor-not-allowed"
                           }`}
                         >
                           {isServiceable ? "Book Now" : "Unavailable"}
@@ -320,7 +320,7 @@ export default function BeautyPage() {
 
         {/* Packages */}
         <section>
-          <h2 className="text-lg font-black text-slate-800 mb-4">Special Packages</h2>
+          <h2 className="text-lg font-black text-on-surface mb-4">Special Packages</h2>
           <div className="space-y-4">
             {packages.map((pkg, i) => (
               <div key={pkg.id} className={`bg-gradient-to-r ${pkg.color} rounded-2xl p-5 text-white card-lift animate-pop-in`} style={{ animationDelay: `${i * 100}ms` }}>
@@ -342,7 +342,7 @@ export default function BeautyPage() {
                     <span className="text-sm opacity-80 line-through ml-2">₹{pkg.original}</span>
                   </div>
                 </div>
-                <button onClick={() => { if (navigator.vibrate) navigator.vibrate(10); }} className="w-full mt-4 bg-white text-slate-900 font-bold py-2 rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all">
+                <button onClick={() => { if (navigator.vibrate) navigator.vibrate(10); }} className="w-full mt-4 bg-surface-container-lowest text-slate-900 font-bold py-2 rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all">
                   View Details
                 </button>
               </div>
@@ -352,10 +352,10 @@ export default function BeautyPage() {
 
         {/* Trending */}
         <section>
-          <h2 className="text-lg font-black text-slate-800 mb-4">Trending Searches</h2>
+          <h2 className="text-lg font-black text-on-surface mb-4">Trending Searches</h2>
           <div className="flex flex-wrap gap-2">
             {trending.map((item, i) => (
-              <button key={i} onClick={() => { if (navigator.vibrate) navigator.vibrate(10); }} className="px-4 py-2 bg-white border border-slate-200 rounded-full text-sm font-medium text-slate-600 hover:border-pink-300 hover:text-pink-600 hover:scale-105 active:scale-95 transition-all animate-category-slide" style={{ animationDelay: `${i * 50}ms` }}>
+              <button key={i} onClick={() => { if (navigator.vibrate) navigator.vibrate(10); }} className="px-4 py-2 bg-surface-container-lowest border border-outline rounded-full text-sm font-medium text-on-surface-variant hover:border-pink-300 hover:text-pink-600 hover:scale-105 active:scale-95 transition-all animate-category-slide" style={{ animationDelay: `${i * 50}ms` }}>
                 {item}
               </button>
             ))}
@@ -366,52 +366,52 @@ export default function BeautyPage() {
       {/* Booking Modal */}
       {bookingService && (
         <div className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center animate-fade-in">
-          <div className="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl p-4 sm:p-6 max-h-[85vh] sm:max-h-[90vh] overflow-y-auto animate-slide-up">
+          <div className="bg-surface-container-lowest w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl p-4 sm:p-6 max-h-[85vh] sm:max-h-[90vh] overflow-y-auto animate-slide-up">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-black text-slate-800">Book {bookingService.name}</h3>
-              <button onClick={() => { setBookingService(null); if (navigator.vibrate) navigator.vibrate(10); }} className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center hover:scale-110 active:scale-90 transition-transform">
+              <h3 className="text-xl font-black text-on-surface">Book {bookingService.name}</h3>
+              <button onClick={() => { setBookingService(null); if (navigator.vibrate) navigator.vibrate(10); }} className="w-8 h-8 bg-surface-container rounded-full flex items-center justify-center hover:scale-110 active:scale-90 transition-transform">
                 <span className="material-symbols-outlined text-sm">close</span>
               </button>
             </div>
 
             {/* Location */}
-            <p className="text-xs font-bold text-slate-500 uppercase mb-2">Service Location</p>
+            <p className="text-xs font-bold text-on-surface-variant uppercase mb-2">Service Location</p>
             <div className="flex gap-3 mb-6">
-              <button onClick={() => { setLocation("home"); if (navigator.vibrate) navigator.vibrate(10); }} className={`flex-1 py-3 rounded-xl font-bold text-sm border-2 hover:scale-[1.02] active:scale-[0.98] transition-all ${location === "home" ? "border-[#ba001c] bg-pink-50" : "border-slate-200"}`}>
+              <button onClick={() => { setLocation("home"); if (navigator.vibrate) navigator.vibrate(10); }} className={`flex-1 py-3 rounded-xl font-bold text-sm border-2 hover:scale-[1.02] active:scale-[0.98] transition-all ${location === "home" ? "border-[#ba001c] bg-pink-50" : "border-outline"}`}>
                 🏠 Home
               </button>
-              <button onClick={() => { setLocation("salon"); if (navigator.vibrate) navigator.vibrate(10); }} className={`flex-1 py-3 rounded-xl font-bold text-sm border-2 hover:scale-[1.02] active:scale-[0.98] transition-all ${location === "salon" ? "border-[#ba001c] bg-pink-50" : "border-slate-200"}`}>
+              <button onClick={() => { setLocation("salon"); if (navigator.vibrate) navigator.vibrate(10); }} className={`flex-1 py-3 rounded-xl font-bold text-sm border-2 hover:scale-[1.02] active:scale-[0.98] transition-all ${location === "salon" ? "border-[#ba001c] bg-pink-50" : "border-outline"}`}>
                 🏪 Salon Visit
               </button>
             </div>
 
             {/* Date */}
-            <p className="text-xs font-bold text-slate-500 uppercase mb-2">Select Date</p>
+            <p className="text-xs font-bold text-on-surface-variant uppercase mb-2">Select Date</p>
             <div className="flex gap-2 overflow-x-auto no-scrollbar mb-6">
               {days.map((day, i) => (
-                <button key={i} onClick={() => { setSelectedDate(i); if (navigator.vibrate) navigator.vibrate(10); }} className={`flex-shrink-0 px-4 py-3 rounded-xl font-bold text-sm border-2 hover:scale-105 active:scale-95 transition-all ${selectedDate === i ? "border-[#ba001c] bg-[#ba001c] text-white" : "border-slate-200"}`}>
+                <button key={i} onClick={() => { setSelectedDate(i); if (navigator.vibrate) navigator.vibrate(10); }} className={`flex-shrink-0 px-4 py-3 rounded-xl font-bold text-sm border-2 hover:scale-105 active:scale-95 transition-all ${selectedDate === i ? "border-[#ba001c] bg-[#ba001c] text-white" : "border-outline"}`}>
                   {day.label}
                 </button>
               ))}
             </div>
 
             {/* Time */}
-            <p className="text-xs font-bold text-slate-500 uppercase mb-2">Select Time</p>
+            <p className="text-xs font-bold text-on-surface-variant uppercase mb-2">Select Time</p>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-6">
               {timeSlots.map((time) => (
-                <button key={time} onClick={() => { setSelectedTime(time); if (navigator.vibrate) navigator.vibrate(10); }} className={`py-3 rounded-xl font-bold text-sm border-2 hover:scale-105 active:scale-95 transition-all ${selectedTime === time ? "border-slate-800 bg-slate-800 text-white" : "border-slate-200"}`}>
+                <button key={time} onClick={() => { setSelectedTime(time); if (navigator.vibrate) navigator.vibrate(10); }} className={`py-3 rounded-xl font-bold text-sm border-2 hover:scale-105 active:scale-95 transition-all ${selectedTime === time ? "border-slate-800 bg-inverse-surface text-white" : "border-outline"}`}>
                   {time}
                 </button>
               ))}
             </div>
 
             {/* Price */}
-            <div className="bg-slate-50 rounded-xl p-4 mb-6">
+            <div className="bg-surface-container-low rounded-xl p-4 mb-6">
               <div className="flex justify-between">
-                <span className="text-slate-600">Service Price</span>
+                <span className="text-on-surface-variant">Service Price</span>
                 <span className="font-bold">₹{bookingService.price}</span>
               </div>
-              <div className="flex justify-between mt-2 pt-2 border-t border-slate-200">
+              <div className="flex justify-between mt-2 pt-2 border-t border-outline">
                 <span className="font-bold">Total</span>
                 <span className="font-black text-[#ba001c] text-xl">₹{bookingService.price}</span>
               </div>
