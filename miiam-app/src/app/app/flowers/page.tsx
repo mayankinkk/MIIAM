@@ -12,6 +12,7 @@ import { CardSkeleton } from "@/components/Skeletons";
 
 import { useLocationStore } from "@/lib/store/locationStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import BlurImage from "@/components/BlurImage";
 
 const supabase = createClient();
 
@@ -210,7 +211,7 @@ export default function FlowersPage() {
       {/* Hero Banner */}
       <div className="px-6 mt-4">
         <div className="rounded-2xl overflow-hidden relative h-40 shadow-sm">
-          <img src="/images/flowers_hero.png" alt="Exotic Flowers" className="w-full h-full object-cover" />
+          <BlurImage src="/images/flowers_hero.png" alt="Exotic Flowers" fill className="object-cover" sizes="100vw" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-4">
             <h2 className="text-white text-xl font-black">Premium Bouquets</h2>
             <p className="text-white/90 text-sm">Exotic arrangements for every occasion</p>
@@ -256,7 +257,9 @@ export default function FlowersPage() {
           <div className="grid grid-cols-2 gap-4">
             {filteredFlowers.map((flower: any, index) => (
               <div key={flower.id} className="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm card-lift animate-pop-in" style={{ animationDelay: `${Math.min(index * 80, 500)}ms` }}>
-                <img src={flower.image_url || flower.image} alt={flower.name} className="w-full h-32 object-cover" />
+                <div className="relative w-full h-32">
+                  <BlurImage src={flower.image_url || flower.image} alt={flower.name} fill className="object-cover" sizes="(max-width: 768px) 50vw, 25vw" />
+                </div>
                 <div className="p-3">
                   <p className="font-bold text-on-surface text-sm">{flower.name}</p>
                   <p className="text-xs text-on-surface-variant">{flower.description}</p>

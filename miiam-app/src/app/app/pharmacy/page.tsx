@@ -12,6 +12,7 @@ import { CardSkeleton } from "@/components/Skeletons";
 
 import { useLocationStore } from "@/lib/store/locationStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import BlurImage from "@/components/BlurImage";
 
 const supabase = createClient();
 
@@ -254,7 +255,7 @@ export default function PharmacyPage() {
 
       <div className="px-6 mt-4">
         <div className="rounded-2xl overflow-hidden relative h-40 shadow-sm">
-          <img src="/images/pharmacy_hero.png" alt="Modern Pharmacy" className="w-full h-full object-cover" />
+          <BlurImage src="/images/pharmacy_hero.png" alt="Modern Pharmacy" fill className="object-cover" sizes="100vw" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-4">
             <h2 className="text-white text-xl font-black">Trusted Health Care</h2>
             <p className="text-white/90 text-sm">Genuine medicines delivered fast</p>
@@ -286,7 +287,9 @@ export default function PharmacyPage() {
           <div className="grid grid-cols-2 gap-4">
             {filteredMeds.map((med, index) => (
               <div key={med.id} className="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm card-lift animate-pop-in" style={{ animationDelay: `${Math.min(index * 80, 500)}ms` }}>
-                <img src={med.image_url || "/images/pharmacy_hero.png"} alt={med.name} className="w-full h-32 object-cover" />
+                <div className="relative w-full h-32">
+                  <BlurImage src={med.image_url || "/images/pharmacy_hero.png"} alt={med.name} fill className="object-cover" sizes="(max-width: 768px) 50vw, 25vw" />
+                </div>
                 <div className="p-3">
                   <p className="font-bold text-on-surface text-sm">{med.name}</p>
                   <p className="text-xs text-on-surface-variant">{med.description}</p>

@@ -15,6 +15,7 @@ import { useFavoritesStore } from "@/lib/store/favoritesStore";
 import { useLocationStore } from "@/lib/store/locationStore";
 import EmptyState from "@/components/EmptyState";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import BlurImage from "@/components/BlurImage";
 
 const supabase = createClient();
 
@@ -449,12 +450,7 @@ export default function FoodPage() {
 
       <div className="px-6 mt-4">
         <div className="rounded-2xl overflow-hidden relative h-44 shadow-sm">
-          <img
-            src={heroAsset?.image_url || "/images/food_hero.png"}
-            alt="Food Hero Banner"
-            className="w-full h-full object-cover"
-            onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80"; }}
-          />
+          <BlurImage src={heroAsset?.image_url || "/images/food_hero.png"} alt="Food Hero Banner" fill className="object-cover" sizes="100vw" fallbackSrc="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-5">
             <h2 className="text-white text-2xl font-black">{heroAsset?.title || "Gourmet Selection"}</h2>
             <p className="text-white/90 text-sm mt-1">{heroAsset?.subtitle || "Order food from top restaurants near you"}</p>
@@ -532,12 +528,7 @@ export default function FoodPage() {
             >
               <div className="flex">
                 <div className="w-32 h-32 flex-shrink-0 overflow-hidden bg-surface-container relative">
-                  <img
-                    src={restaurant.cover_image_url || restaurant.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"}
-                    alt={restaurant.shop_name}
-                    className="w-full h-full object-cover"
-                    onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"; }}
-                  />
+                  <BlurImage src={restaurant.cover_image_url || restaurant.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"} alt={restaurant.shop_name} fill className="object-cover" sizes="(max-width: 768px) 50vw, 128px" fallbackSrc="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80" />
                   <button
                     onClick={(e) => { e.preventDefault(); toggleFavorite(restaurant.id); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }}
                     className="absolute top-2 right-2 w-8 h-8 bg-white/90 rounded-full flex items-center justify-center shadow hover:scale-110 transition-transform"
@@ -556,8 +547,8 @@ export default function FoodPage() {
                 <div className="p-4 flex-1">
                   <div className="flex items-start justify-between gap-1">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full bg-[#ba001c] flex items-center justify-center text-white text-xs font-black flex-shrink-0 overflow-hidden">
-                        {restaurant.cover_image_url || restaurant.image_url ? <img src={restaurant.cover_image_url || restaurant.image_url} alt="" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display='none'; }} /> : restaurant.shop_name?.charAt(0)}
+                      <div className="relative w-8 h-8 rounded-full bg-[#ba001c] flex items-center justify-center text-white text-xs font-black flex-shrink-0 overflow-hidden">
+                        {restaurant.cover_image_url || restaurant.image_url ? <BlurImage src={restaurant.cover_image_url || restaurant.image_url} alt="" fill className="object-cover" sizes="32px" /> : restaurant.shop_name?.charAt(0)}
                       </div>
                       <h3 className="font-bold text-on-surface text-base leading-tight">{restaurant.shop_name}</h3>
                     </div>

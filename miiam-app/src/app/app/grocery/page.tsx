@@ -8,6 +8,7 @@ import { useServiceSettingsStore } from "@/lib/store/serviceSettingsStore";
 import { useToastStore } from "@/lib/store/toastStore";
 import ServiceUnavailable from "@/components/ServiceUnavailable";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import BlurImage from "@/components/BlurImage";
 
 import { useLocationStore } from "@/lib/store/locationStore";
 
@@ -203,7 +204,7 @@ export default function GroceryPage() {
       {/* Hero Banner */}
       <div className="px-6 mt-4">
         <div className="rounded-2xl overflow-hidden relative h-40 shadow-sm">
-          <img src="/images/grocery_hero.png" alt="Premium Grocery" className="w-full h-full object-cover" />
+          <BlurImage src="/images/grocery_hero.png" alt="Premium Grocery" fill className="object-cover" sizes="100vw" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-4">
             <h2 className="text-white text-xl font-black">Fresh Organic Selection</h2>
             <p className="text-white/90 text-sm">Handpicked quality for you</p>
@@ -275,7 +276,9 @@ export default function GroceryPage() {
           <div className="grid grid-cols-2 gap-4">
             {filteredProducts.map((product: any, index) => (
               <div key={product.id} className="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm card-lift animate-in fade-in slide-in-from-bottom-4 duration-500" style={{ animationDelay: `${Math.min(index * 50, 500)}ms` }}>
-                <img src={product.image_url || product.image} alt={product.name} className="w-full h-32 object-cover" />
+                <div className="relative w-full h-32">
+                  <BlurImage src={product.image_url || product.image} alt={product.name} fill className="object-cover" sizes="(max-width: 768px) 50vw, 25vw" />
+                </div>
                 <div className="p-3">
                   <p className="font-bold text-on-surface text-sm">{product.name}</p>
                   <p className="text-xs text-on-surface-variant">{product.category}</p>
