@@ -1,43 +1,49 @@
-import Link from "next/link";
-import type { Metadata } from "next";
+"use client";
 
-export const metadata: Metadata = {
-  title: "MIIAM Partner Dashboard",
-  description: "Manage your restaurant orders and bookings.",
-};
+import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+const navLinks = [
+  { href: "/partner", label: "Live POS", icon: "point_of_sale" },
+  { href: "/partner/menu", label: "Menu & Inventory", icon: "restaurant_menu" },
+  { href: "#", label: "Table Bookings", icon: "event_seat" },
+  { href: "#", label: "Analytics", icon: "analytics" },
+];
 
 export default function PartnerLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+
   return (
     <div className="min-h-screen bg-slate-50 flex">
       {/* Sidebar */}
-      <aside className="w-64 bg-white border-r border-slate-200 fixed h-full z-20 flex flex-col hidden md:flex">
+      <aside className="w-64 bg-white border-r border-slate-200 fixed h-full z-20 flex-col hidden md:flex">
         <div className="p-6 border-b border-slate-100 flex items-center justify-center">
           <Link href="/partner" className="text-2xl font-extrabold tracking-tighter text-[#ba001c]">
             MIIAM <span className="text-slate-800 text-sm tracking-normal ml-1">Partner</span>
           </Link>
         </div>
-        
+
         <nav className="flex-1 p-4 space-y-2">
-          <Link href="/partner" className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#ffe1e4] text-[#ba001c] font-bold">
-            <span className="material-symbols-outlined text-[20px]">point_of_sale</span>
-            Live POS
-          </Link>
-          <Link href="/partner/menu" className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-slate-50 font-medium transition-colors">
-            <span className="material-symbols-outlined text-[20px]">restaurant_menu</span>
-            Menu & Inventory
-          </Link>
-          <Link href="#" className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-slate-50 font-medium transition-colors">
-            <span className="material-symbols-outlined text-[20px]">event_seat</span>
-            Table Bookings
-          </Link>
-          <Link href="#" className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-slate-50 font-medium transition-colors">
-            <span className="material-symbols-outlined text-[20px]">analytics</span>
-            Analytics
-          </Link>
+          {navLinks.map((link) => (
+            <Link
+              key={link.href + link.label}
+              href={link.href}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors ${
+                pathname === link.href
+                  ? "bg-[#ffe1e4] text-[#ba001c] font-bold"
+                  : "text-slate-600 hover:bg-slate-50"
+              }`}
+            >
+              <span className="material-symbols-outlined text-[20px]">{link.icon}</span>
+              {link.label}
+            </Link>
+          ))}
         </nav>
 
         <div className="p-4 border-t border-slate-100">
@@ -61,14 +67,35 @@ export default function PartnerLayout({
 
       {/* Main Content */}
       <main className="flex-1 md:ml-64 relative">
-        <header className="md:hidden bg-white border-b border-slate-200 p-4 flex items-center justify-between sticky top-0 z-20">
+        <header className="md:hidden bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between sticky top-0 z-30">
           <Link href="/partner" className="text-xl font-extrabold tracking-tighter text-[#ba001c]">
             MIIAM <span className="text-slate-800 text-xs tracking-normal ml-1">Partner</span>
           </Link>
-          <button className="text-slate-800">
-            <span className="material-symbols-outlined">menu</span>
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="text-slate-800 p-1">
+            <span className="material-symbols-outlined">{mobileMenuOpen ? "close" : "menu"}</span>
           </button>
         </header>
+
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-white border-b border-slate-200 px-4 py-2 relative z-20">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href + link.label}
+                href={link.href}
+                onClick={() => setMobileMenuOpen(false)}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors ${
+                  pathname === link.href
+                    ? "bg-[#ffe1e4] text-[#ba001c] font-bold"
+                    : "text-slate-600"
+                }`}
+              >
+                <span className="material-symbols-outlined text-[20px]">{link.icon}</span>
+                {link.label}
+              </Link>
+            ))}
+          </div>
+        )}
+
         {children}
       </main>
     </div>
