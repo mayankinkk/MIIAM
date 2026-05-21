@@ -80,7 +80,31 @@ export default function PartnerMenuPage() {
     is_veg: true,
     stock: "",
     requires_prescription: false,
+    imageFile: null as File | null,
   });
+  const [uploading, setUploading] = useState(false);
+
+  // Helper: Upload image to Supabase Storage
+  async function uploadImage(file: File): Promise<string | null> {
+    const fileExt = file.name.split(".").pop();
+    const fileName = `${Math.random()}.${fileExt}`;
+    const filePath = `menu/${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from("menu-images")
+      .upload(filePath, file);
+
+    if (uploadError) {
+      console.error("Upload error:", uploadError);
+      return null;
+    }
+
+    const { data: { publicUrl } } = supabase.storage
+      .from("menu-images")
+      .getPublicUrl(filePath);
+
+    return publicUrl;
+  }
 
   const selectedVendor = vendors.find(v => v.id === selectedVendorId);
   const vendorKey = selectedVendor ? getVendorKey(selectedVendor.type) : "food";
@@ -130,6 +154,8 @@ export default function PartnerMenuPage() {
       is_veg: true,
       stock: "",
       requires_prescription: false,
+      imageFile: null,
+      image_url: "",
     });
   }
 
@@ -160,6 +186,7 @@ export default function PartnerMenuPage() {
       name: item.name,
       price: item.price,
       category: item.category,
+      image_url: (item as any).image_url || null,
     };
     if (vendorKey === "food") {
       const m = item as MenuItem;
@@ -184,8 +211,14 @@ export default function PartnerMenuPage() {
       alert("Please fill in item name and price");
       return;
     }
+    setUploading(true);
     try {
+      let imageUrl = newItem.image_url || null;
+      if (newItem.imageFile) {
+        imageUrl = await uploadImage(newItem.imageFile);
+      }
       const payload = buildInsertPayload();
+      if (imageUrl) payload.image_url = imageUrl;
       const { error } = await supabase.from(table).insert(payload);
       if (error) throw error;
       setShowAddModal(false);
@@ -193,6 +226,8 @@ export default function PartnerMenuPage() {
       loadItems();
     } catch (error: any) {
       alert("Failed: " + error.message);
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -566,11 +601,21 @@ export default function PartnerMenuPage() {
                   </label>
                 </div>
               )}
+              <div>
+                <label className="text-sm font-semibold text-slate-700">Image</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setNewItem({ ...newItem, imageFile: e.target.files?.[0] || null })}
+                  className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 text-sm file:mr-3 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-[#ba001c] file:text-white file:font-bold file:text-xs hover:file:bg-[#a40017]"
+                />
+              </div>
               <button
                 onClick={handleAddItem}
-                className="w-full py-4 bg-[#ba001c] text-white font-extrabold rounded-2xl mt-4 hover:bg-[#a40017] transition-colors"
+                disabled={uploading}
+                className="w-full py-4 bg-[#ba001c] text-white font-extrabold rounded-2xl mt-4 hover:bg-[#a40017] transition-colors disabled:opacity-50"
               >
-                Add {vendorKey === "pharmacy" ? "Medicine" : vendorKey === "grocery" ? "Product" : "Item"}
+                {uploading ? "Uploading..." : `Add ${vendorKey === "pharmacy" ? "Medicine" : vendorKey === "grocery" ? "Product" : "Item"}`}
               </button>
             </div>
           </div>
@@ -685,6 +730,29 @@ export default function PartnerMenuPage() {
                   </label>
                 </div>
               )}
+              {editingItem && (editingItem as any).image_url && (
+                <div className="flex items-center gap-3">
+                  <img src={(editingItem as any).image_url} alt="" className="w-12 h-12 rounded-xl object-cover" />
+                  <span className="text-xs text-slate-400">Current image</span>
+                </div>
+              )}
+              <div>
+                <label className="text-sm font-semibold text-slate-700">Change Image</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      setUploading(true);
+                      const url = await uploadImage(file);
+                      if (url) setEditingItem({ ...editingItem, image_url: url } as AnyItem);
+                      setUploading(false);
+                    }
+                  }}
+                  className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 text-sm file:mr-3 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-[#ba001c] file:text-white file:font-bold file:text-xs hover:file:bg-[#a40017]"
+                />
+              </div>
               <div className="flex gap-3">
                 <button
                   onClick={() => setEditingItem(null)}
@@ -694,9 +762,10 @@ export default function PartnerMenuPage() {
                 </button>
                 <button
                   onClick={handleUpdateItem}
-                  className="flex-1 py-4 bg-[#ba001c] text-white font-extrabold rounded-2xl hover:bg-[#a40017] transition-colors"
+                  disabled={uploading}
+                  className="flex-1 py-4 bg-[#ba001c] text-white font-extrabold rounded-2xl hover:bg-[#a40017] transition-colors disabled:opacity-50"
                 >
-                  Save Changes
+                  {uploading ? "Uploading..." : "Save Changes"}
                 </button>
               </div>
             </div>
