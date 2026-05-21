@@ -50,7 +50,8 @@ export default function GroceryInventoryPage() {
   const loadProducts = async () => {
     setLoading(true);
     try {
-      const { data: vendorsData } = await supabase.from("vendors").select("id, shop_name, name").eq("type", "grocery");
+      const { data: vendorsData, error: vendorError } = await supabase.from("vendors").select("id, shop_name").eq("type", "grocery");
+      if (vendorError) console.error("Vendor fetch error:", vendorError);
       if (vendorsData) setVendors(vendorsData);
 
       const { data, error } = await supabase
