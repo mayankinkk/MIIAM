@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import PullToRefresh from "@/components/PullToRefresh";
 import QuickActionsFAB from "@/components/QuickActionsFAB";
+import BlurImage from "@/components/BlurImage";
 import { useCartStore } from "@/lib/store/cartStore";
 
 const categories = [
@@ -370,10 +371,12 @@ export default function ExplorePage() {
                 className="relative rounded-2xl overflow-hidden h-40 group card-lift animate-pop-in"
                 style={{ animationDelay: `${i * 100}ms` }}
               >
-                <img 
+                <BlurImage 
                   src={collection.image} 
                   alt={collection.name} 
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  fill
+                  className="w-full h-full group-hover:scale-110 transition-transform duration-500"
+                  sizes="(max-width: 768px) 100vw, 50vw"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
                 <div className="absolute bottom-4 left-4 right-4">

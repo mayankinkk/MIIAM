@@ -10,6 +10,7 @@ import { useToastStore } from "@/lib/store/toastStore";
 import { createClient } from "@/lib/supabase/client";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
+import PullToRefresh from "@/components/PullToRefresh";
 
 // ---------- Booking Modal ----------
 type Service = {
@@ -670,6 +671,10 @@ function ServicesContent() {
 
       <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Home Services' }]} />
 
+      <PullToRefresh onRefresh={async () => {
+        await checkServiceability();
+      }}>
+
       {/* Location / Availability Banner */}
       {!isServiceable && (userPincode || userCity) && (
         <div className="bg-surface-container-low border-b border-amber-200 px-6 py-3 flex items-center gap-3">
@@ -803,6 +808,7 @@ function ServicesContent() {
           </div>
         ))}
       </main>
+      </PullToRefresh>
 
       {/* Booking Modal */}
       {bookingService && (

@@ -5,6 +5,7 @@ import { useRouter, use } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import BlurImage from "@/components/BlurImage";
 
 function AnimatedStarRating({ 
   rating, 
@@ -254,9 +255,11 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
           <div className="flex flex-col items-center gap-4">
             <div className="relative">
               <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-[#ffe1e4]">
-                <img 
+                <BlurImage 
                   alt="Rider" 
-                  className="w-full h-full object-cover" 
+                  fill
+                  className="w-full h-full"
+                  sizes="80px"
                   src={order?.rider?.profile_image || "https://via.placeholder.com/80"} 
                 />
               </div>

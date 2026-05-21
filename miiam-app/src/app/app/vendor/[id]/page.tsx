@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cartStore";
 import CustomizationModal from "@/components/food/CustomizationModal";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import BlurImage from "@/components/BlurImage";
 
 export default function VendorPage() {
   const params = useParams();
@@ -263,7 +264,7 @@ const handleCustomizeItem = (item: any) => {
               <div key={item.id} className="bg-white rounded-2xl p-4 flex gap-4 shadow-sm">
                 <div className="w-24 h-24 rounded-xl overflow-hidden flex-shrink-0 bg-slate-100">
                   {item.image_url ? (
-                    <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
+                    <BlurImage src={item.image_url} alt={item.name} fill className="w-full h-full" sizes="(max-width: 768px) 50vw, 25vw" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
                       <span className="material-symbols-outlined text-slate-300">restaurant</span>

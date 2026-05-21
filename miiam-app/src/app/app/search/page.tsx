@@ -9,6 +9,7 @@ import { useToastStore } from "@/lib/store/toastStore";
 import { Skeleton, VendorCardSkeleton, SearchResultSkeleton } from "@/components/Skeleton";
 import { EmptySearch } from "@/components/ui/EmptyStates";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import BlurImage from "@/components/BlurImage";
 
 interface VendorResult {
   id: string;
@@ -259,7 +260,7 @@ function SearchContent() {
                     >
                       <div className="h-32 bg-[#ffe1e4] relative">
                         {vendor.cover_image_url || vendor.image_url ? (
-                          <img src={vendor.cover_image_url || vendor.image_url} alt={vendor.shop_name} className="w-full h-full object-cover" />
+                          <BlurImage src={vendor.cover_image_url || vendor.image_url} alt={vendor.shop_name} fill className="w-full h-full" sizes="(max-width: 768px) 100vw, 50vw" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center">
                             <span className="material-symbols-outlined text-4xl text-[#dd9ca6]">restaurant</span>
@@ -295,7 +296,7 @@ function SearchContent() {
                     >
                       <div className="w-20 h-20 bg-[#ffe1e4] rounded-lg overflow-hidden flex-shrink-0">
                         {item.image_url ? (
-                          <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
+                          <BlurImage src={item.image_url} alt={item.name} fill className="w-full h-full" sizes="(max-width: 768px) 50vw, 25vw" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center">
                             <span className="material-symbols-outlined text-2xl text-[#dd9ca6]">fastfood</span>

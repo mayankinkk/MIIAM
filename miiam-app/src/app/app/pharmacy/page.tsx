@@ -1,189 +1,43 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import Link from "next/link";
+import { useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { useCartStore } from "@/lib/store/cartStore";
-import { useServiceSettingsStore } from "@/lib/store/serviceSettingsStore";
 import { useToastStore } from "@/lib/store/toastStore";
-import ServiceUnavailable from "@/components/ServiceUnavailable";
-import EmptyState from "@/components/EmptyState";
-import { CardSkeleton } from "@/components/Skeletons";
-
-import { useLocationStore } from "@/lib/store/locationStore";
-import Breadcrumbs from "@/components/Breadcrumbs";
-import BlurImage from "@/components/BlurImage";
+import ServiceProductGrid from "@/components/ServiceProductGrid";
 
 const supabase = createClient();
 
 const pharmacyCategories = [
-  { id: "pain", name: "Pain Relief", icon: "💊", color: "bg-red-100" },
-  { id: "fever", name: "Fever & Cold", icon: "🌡️", color: "bg-orange-100" },
-  { id: "digestive", name: "Digestive", icon: "💧", color: "bg-green-100" },
-  { id: "vitamins", name: "Vitamins", icon: "💊", color: "bg-purple-100" },
-  { id: "skincare", name: "Skin Care", icon: "🧴", color: "bg-pink-100" },
-  { id: "baby", name: "Baby Care", icon: "👶", color: "bg-blue-100" },
+  { id: "pain", name: "Pain Relief", icon: "\uD83D\uDC8A", color: "bg-red-100" },
+  { id: "fever", name: "Fever & Cold", icon: "\uD83C\uDF21\uFE0F", color: "bg-orange-100" },
+  { id: "digestive", name: "Digestive", icon: "\uD83D\uDCA7", color: "bg-green-100" },
+  { id: "vitamins", name: "Vitamins", icon: "\uD83D\uDC8A", color: "bg-purple-100" },
+  { id: "skincare", name: "Skin Care", icon: "\uD83E\uDDF4", color: "bg-pink-100" },
+  { id: "baby", name: "Baby Care", icon: "\uD83D\uDC76", color: "bg-blue-100" },
 ];
 
-interface Medicine {
-  id: string;
-  name: string;
-  price: number;
-  category: string;
-  description?: string;
-  image_url: string;
-}
-
 export default function PharmacyPage() {
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const [medicines, setMedicines] = useState<Medicine[]>([]);
-  const [loading, setLoading] = useState(true);
   const [showPrescriptionModal, setShowPrescriptionModal] = useState(false);
   const [prescriptionFile, setPrescriptionFile] = useState<File | null>(null);
   const [prescriptionNotes, setPrescriptionNotes] = useState("");
   const [prescriptionPhone, setPrescriptionPhone] = useState("");
   const [uploading, setUploading] = useState(false);
-  const [pharmacySetting, setPharmacySetting] = useState<any>(null);
-  const [isServiceable, setIsServiceable] = useState(true);
-  const [pharmacyVendor, setPharmacyVendor] = useState<any>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { addItem, items, updateQuantity, totalItems } = useCartStore();
   const { addToast } = useToastStore();
-  const locationStore = useLocationStore();
-  const userPincode = locationStore.pincode;
-  const userCity = locationStore.city;
-
-  useEffect(() => {
-    const setting = useServiceSettingsStore.getState().getSetting("pharmacy");
-    setPharmacySetting(setting);
-  }, []);
-
-  useEffect(() => {
-    loadVendorAndMedicines();
-  }, [userPincode]);
-
-  async function loadVendorAndMedicines() {
-    setLoading(true);
-    setIsServiceable(true);
-
-    const { data: vendors } = await supabase
-      .from("vendors")
-      .select("id, shop_name, pincode, city")
-      .eq("type", "pharmacy")
-      .eq("status", "active");
-
-    let vendor = null;
-
-    if (vendors && vendors.length > 0) {
-      if (userPincode || userCity) {
-        const cityLower = (userCity || "").toLowerCase();
-        // Strict: only pincode OR city match
-        const localVendors = vendors.filter((v: any) => {
-          const pincodeMatch = userPincode && v.pincode === userPincode;
-          const cityMatch = cityLower && v.city?.toLowerCase() === cityLower;
-          return pincodeMatch || cityMatch;
-        });
-
-        if (localVendors.length > 0) {
-          vendor = localVendors[0]; // pick the first local one
-        } else {
-          setIsServiceable(false);
-        }
-      } else {
-        // No location set — pick the first available
-        vendor = vendors[0];
-      }
-    } else {
-      setIsServiceable(false);
-    }
-
-    setPharmacyVendor(vendor);
-
-    if (vendor) {
-      let query = supabase
-        .from("pharmacy_medicines")
-        .select("*")
-        .eq("vendor_id", vendor.id)
-        .order("created_at", { ascending: false });
-      const { data, error } = await query;
-      if (error) {
-        console.error("Error fetching medicines:", error);
-        addToast("Failed to load data. Please try again.", "error");
-      } else {
-        setMedicines(data || []);
-      }
-    } else {
-      setMedicines([]);
-    }
-    setLoading(false);
-  }
-
-  const filteredMeds = selectedCategory === "all" 
-    ? medicines 
-    : medicines.filter(m => m.category?.toLowerCase().replace(" ", "") === selectedCategory);
-
-  const addToCart = (med: any) => {
-    if (!isServiceable) {
-      addToast("Pharmacy delivery is not available at your location!", "error");
-      return;
-    }
-    addItem({
-      id: med.id,
-      menu_item_id: med.id,
-      name: med.name,
-      price: med.price,
-      image_url: med.image_url,
-      vendor_id: pharmacyVendor?.id || "pharmacy",
-      vendor_name: pharmacyVendor?.shop_name || "Pharmacy",
-    });
-    addToast(`${med.name} added to cart!`, "success");
-  };
-
-  const getItemQuantity = (medId: string) => {
-    const item = items.find(i => i.menu_item_id === medId);
-    return item?.quantity || 0;
-  };
-
-  const MedAddButton = ({ med }: { med: any }) => {
-    const quantity = getItemQuantity(med.id);
-    if (quantity === 0) {
-      return (
-        <button onClick={() => { addToCart(med); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }} className="w-8 h-8 bg-[#ba001c] text-white rounded-full flex items-center justify-center hover:scale-110 active:scale-90 transition-all animate-glow-pulse">
-          <span className="material-symbols-outlined text-lg">add</span>
-        </button>
-      );
-    }
-    return (
-      <div className="flex items-center gap-2 bg-[#ba001c] rounded-full px-2 animate-cart-pop">
-        <button onClick={() => { updateQuantity(med.id, quantity - 1); if (navigator.vibrate) navigator.vibrate(10); }} className="w-6 h-6 text-white flex items-center justify-center hover:scale-110 active:scale-90 transition-transform">
-          <span className="material-symbols-outlined text-lg">remove</span>
-        </button>
-        <span className="text-white font-bold text-sm min-w-[20px] text-center">{quantity}</span>
-        <button onClick={() => { addToCart(med); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }} className="w-6 h-6 text-white flex items-center justify-center hover:scale-110 active:scale-90 transition-transform">
-          <span className="material-symbols-outlined text-lg">add</span>
-        </button>
-      </div>
-    );
-  };
 
   const handlePrescriptionUpload = async () => {
     if (!prescriptionFile) return;
     setUploading(true);
-
     try {
       const fileExt = prescriptionFile.name.split(".").pop();
       const fileName = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
-      
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from("prescriptions")
         .upload(fileName, prescriptionFile);
-
       if (uploadError) throw uploadError;
-
       const { data: urlData } = supabase.storage
         .from("prescriptions")
         .getPublicUrl(fileName);
-
       const { error: insertError } = await supabase
         .from("user_prescriptions")
         .insert({
@@ -191,11 +45,9 @@ export default function PharmacyPage() {
           image_url: urlData.publicUrl,
           notes: prescriptionNotes,
           phone: prescriptionPhone,
-          status: "pending"
+          status: "pending",
         });
-
       if (insertError) throw insertError;
-
       alert("Prescription uploaded successfully! We'll review and contact you.");
       setShowPrescriptionModal(false);
       setPrescriptionFile(null);
@@ -217,117 +69,35 @@ export default function PharmacyPage() {
   };
 
   return (
-    <div className="min-h-screen bg-surface pb-24">
-      {/* Header */}
-      <header className="bg-surface-container-lowest px-6 py-4 sticky top-0 z-10 shadow-sm">
-        <div className="flex items-center justify-between mb-4">
-          <Link href="/app/explore" className="w-10 h-10 bg-surface-container rounded-full flex items-center justify-center">
-            <span className="material-symbols-outlined">arrow_back</span>
-          </Link>
-          <h1 className="text-xl font-black text-on-surface">Pharmacy</h1>
-          <Link href="/app/cart" className="w-10 h-10 bg-surface-container rounded-full flex items-center justify-center relative">
-            <span className="material-symbols-outlined">shopping_cart</span>
-            {totalItems() > 0 && (
-              <span className="absolute -top-1 -right-1 w-5 h-5 bg-[#ba001c] text-white text-xs rounded-full flex items-center justify-center">
-                {totalItems()}
-              </span>
-            )}
-          </Link>
-        </div>
-      </header>
-
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Pharmacy' }]} />
-
-      {/* Location / Availability Banner */}
-      {!isServiceable && (userPincode || userCity) && (
-        <div className="bg-surface-container-low border-b border-amber-200 px-6 py-3 flex items-center gap-3">
-          <span className="material-symbols-outlined text-amber-600 text-xl animate-bounce">warning</span>
-          <div className="flex-1">
-            <p className="text-xs font-bold text-amber-800">Not serviceable at {userPincode ? `Pincode ${userPincode}` : userCity}</p>
-            <p className="text-[10px] text-amber-600 font-medium">Pharmacy delivery is coming soon to your area. You can still browse our catalog!</p>
-          </div>
-        </div>
-      )}
-      {isServiceable && (userPincode || userCity) && (
-        <div className="bg-surface-container-low border-b border-green-200 px-6 py-2 flex items-center gap-2">
-          <span className="material-symbols-outlined text-green-600 text-sm">location_on</span>
-          <p className="text-[11px] font-bold text-green-700">Delivering genuine medicines to {userPincode ? `Pincode ${userPincode}` : userCity}</p>
-        </div>
-      )}
-
-      <div className="px-6 mt-4">
-        <div className="rounded-2xl overflow-hidden relative h-40 shadow-sm">
-          <BlurImage src="/images/pharmacy_hero.png" alt="Modern Pharmacy" fill className="object-cover" sizes="100vw" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-4">
-            <h2 className="text-white text-xl font-black">Trusted Health Care</h2>
-            <p className="text-white/90 text-sm">Genuine medicines delivered fast</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-surface-container-lowest px-6 py-4">
-        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-          <button onClick={() => { setSelectedCategory("all"); if (navigator.vibrate) navigator.vibrate(10); }} className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap ${selectedCategory === "all" ? "bg-[#ba001c] text-white" : "bg-surface-container text-on-surface-variant"} active:scale-95 transition-all`}>
-            All
-          </button>
-          {pharmacyCategories.map((cat, i) => (
-            <button key={cat.id} onClick={() => { setSelectedCategory(cat.id); if (navigator.vibrate) navigator.vibrate(10); }} className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap flex items-center gap-2 ${selectedCategory === cat.id ? "bg-[#ba001c] text-white" : "bg-surface-container text-on-surface-variant"} active:scale-95 transition-all animate-category-slide`} style={{ animationDelay: `${i * 50}ms` }}>
-              <span>{cat.icon}</span> {cat.name}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <main className="p-6">
-        {loading ? (
-          <div className="grid grid-cols-2 gap-4">
-            {[1,2,3,4].map(i => <CardSkeleton key={i} />)}
-          </div>
-        ) : filteredMeds.length === 0 ? (
-          <EmptyState icon="💊" title="No medicines found" description="Try a different category or check back later!" actionLabel="Browse All" onAction={() => setSelectedCategory("all")} />
-        ) : (
-          <div className="grid grid-cols-2 gap-4">
-            {filteredMeds.map((med, index) => (
-              <div key={med.id} className="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm card-lift animate-pop-in" style={{ animationDelay: `${Math.min(index * 80, 500)}ms` }}>
-                <div className="relative w-full h-32">
-                  <BlurImage src={med.image_url || "/images/pharmacy_hero.png"} alt={med.name} fill className="object-cover" sizes="(max-width: 768px) 50vw, 25vw" />
-                </div>
-                <div className="p-3">
-                  <p className="font-bold text-on-surface text-sm">{med.name}</p>
-                  <p className="text-xs text-on-surface-variant">{med.description}</p>
-                  <div className="flex items-center justify-between mt-2">
-                    <span className="font-black text-[#ba001c] animate-price-tag">₹{med.price}</span>
-                    <MedAddButton med={med} />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </main>
-
-      {totalItems() > 0 && (
-        <button
-          onClick={() => {
-            if (!isServiceable) {
-              addToast("Cannot checkout: Pharmacy is not serviceable at your selected location!", "error");
-            } else {
-              window.location.href = "/app/cart";
-            }
-          }}
-          className={`fixed bottom-6 left-4 right-4 z-50 flex items-center justify-between text-white px-5 py-4 rounded-2xl shadow-2xl active:scale-[0.98] transition-transform animate-slide-reveal ${
-            isServiceable ? "bg-[#ba001c] shadow-primary/40" : "bg-outline cursor-not-allowed shadow-none"
-          }`}
-        >
-          <div className="flex items-center gap-3">
-            <span className="bg-surface-container-lowest text-[#ba001c] font-black text-xs px-2 py-0.5 rounded-full">
-              {totalItems()}
-            </span>
-            <span className="font-bold">View Cart</span>
-          </div>
-          <span className="font-black text-lg">{isServiceable ? "Checkout" : "Unserviceable"}</span>
-        </button>
-      )}
-    </div>
+    <>
+      <ServiceProductGrid
+        serviceName="Pharmacy"
+        supabaseTable="pharmacy_medicines"
+        vendorType="pharmacy"
+        title="Pharmacy"
+        heroImage="/images/pharmacy_hero.png"
+        heroTitle="Trusted Health Care"
+        heroSubtitle="Genuine medicines delivered fast"
+        categories={pharmacyCategories}
+        emptyIcon="\uD83D\uDC8A"
+        emptyTitle="No medicines found"
+        emptyDescription="Try a different category or check back later!"
+        serviceUnavailableIcon="medication"
+        serviceSettingKey="pharmacy"
+        filterTransform={(v) => v.replace(" ", "")}
+        productImageFallback="/images/pharmacy_hero.png"
+        serviceablePrefix="Delivering genuine medicines to"
+        deliveryNoun="Pharmacy"
+        vendorNameDefault="Pharmacy"
+        checkoutUnserviceableMsg="Cannot checkout: Pharmacy is not serviceable at your selected location!"
+      />
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        accept="image/*,.pdf"
+        className="hidden"
+      />
+    </>
   );
 }

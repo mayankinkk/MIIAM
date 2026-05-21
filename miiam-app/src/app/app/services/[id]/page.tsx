@@ -4,6 +4,7 @@ import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCartStore } from "@/lib/store/cartStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import BlurImage from "@/components/BlurImage";
 
 const servicesData: Record<string, any> = {
   s1: { 
@@ -147,7 +148,7 @@ function ServiceDetailContent() {
       <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Home Services', href: '/app/services' }, { label: service.name }]} />
 
       <div className="pt-16">
-        <img src={service.image} alt={service.name} className="w-full h-64 object-cover" />
+        <BlurImage src={service.image} alt={service.name} fill className="w-full h-64" sizes="100vw" />
       </div>
 
       <div className="p-4">

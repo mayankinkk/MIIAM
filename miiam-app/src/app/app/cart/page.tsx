@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import BlurImage from "@/components/BlurImage";
 
 const supabase = createClient();
 const POINTS_TO_RUPEE = 0.1;
@@ -166,7 +167,7 @@ export default function CartPage() {
                       {/* Thumbnail */}
                       <div className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-[#ffe1e4]">
                         {item.image_url ? (
-                          <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
+                          <BlurImage src={item.image_url} alt={item.name} fill className="w-full h-full" sizes="(max-width: 768px) 50vw, 25vw" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center">
                             <span className="material-symbols-outlined text-[#dd9ca6] text-2xl">fastfood</span>

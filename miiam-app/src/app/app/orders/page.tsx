@@ -10,6 +10,8 @@ import { useToastStore } from "@/lib/store/toastStore";
 import { OrderSkeleton } from "@/components/Skeleton";
 import EmptyState from "@/components/EmptyState";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import BlurImage from "@/components/BlurImage";
+import PullToRefresh from "@/components/PullToRefresh";
 
 const statusColors: Record<string, string> = {
   pending: "bg-[#ffd709]/20 text-[#453900]",
@@ -154,6 +156,9 @@ export default function OrdersPage() {
         <span className="text-2xl font-extrabold tracking-tighter text-[#ba001c]">MIIAM</span>
       </header>
       <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'My Orders' }]} />
+      <PullToRefresh onRefresh={async () => {
+        await fetchOrders();
+      }}>
       <main className="pt-24 pb-32 px-6 max-w-4xl mx-auto">
         <section className="mb-10">
           <h1 className="text-[3.5rem] font-extrabold tracking-tight leading-none mb-2 text-[#4d212a]">My Orders</h1>
@@ -194,7 +199,7 @@ export default function OrdersPage() {
                   <div className="flex items-center gap-4">
                     <div className="w-16 h-16 rounded-xl bg-[#ffe1e4] overflow-hidden flex items-center justify-center flex-shrink-0">
                       {order.vendor?.cover_image_url ? (
-                        <img src={order.vendor.cover_image_url} alt={order.vendor.name} className="w-full h-full object-cover" />
+                        <BlurImage src={order.vendor.cover_image_url} alt={order.vendor.name} fill className="w-full h-full" sizes="(max-width: 768px) 50vw, 25vw" />
                       ) : (
                         <span className="material-symbols-outlined text-[#dd9ca6] text-3xl">restaurant</span>
                       )}
@@ -242,6 +247,7 @@ export default function OrdersPage() {
           </div>
         )}
       </main>
+      </PullToRefresh>
     </>
   );
 }

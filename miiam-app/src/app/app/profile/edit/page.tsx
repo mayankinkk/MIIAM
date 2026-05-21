@@ -6,6 +6,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import BlurImage from "@/components/BlurImage";
 
 export default function EditProfilePage() {
   const router = useRouter();
@@ -159,7 +160,7 @@ export default function EditProfilePage() {
             <div className="flex flex-col items-center justify-center border-b border-[#dd9ca6]/20 pb-6 mb-6">
               <div className="w-24 h-24 rounded-full bg-[#ffe1e4] flex items-center justify-center text-[#ba001c] text-3xl font-bold mb-3 overflow-hidden relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
                 {formData.avatarUrl ? (
-                  <img src={formData.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+                  <BlurImage src={formData.avatarUrl} alt="Avatar" fill className="w-full h-full" sizes="96px" />
                 ) : (
                   formData.fullName?.charAt(0).toUpperCase() || "U"
                 )}

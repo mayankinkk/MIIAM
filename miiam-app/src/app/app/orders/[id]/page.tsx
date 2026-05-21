@@ -6,6 +6,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
+import BlurImage from "@/components/BlurImage";
 
 const steps = [
   { key: "pending", label: "Order Placed", icon: "receipt_long", time: "" },
@@ -292,8 +293,8 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
               <div className="relative bg-white rounded-xl p-6 shadow-[0px_20px_40px_rgba(77,33,42,0.04)] overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-[#c4d0ff]/20 rounded-full -mr-16 -mt-16 blur-2xl" />
                 <div className="flex items-center gap-6 relative z-10">
-                  <div className="relative">
-                    <img className="w-20 h-20 rounded-full object-cover border-4 border-[#ffe1e4]" src={riderInfo.image} alt={riderInfo.name} />
+                  <div className="relative w-20 h-20">
+                    <BlurImage src={riderInfo.image} alt={riderInfo.name} fill className="w-full h-full rounded-full overflow-hidden border-4 border-[#ffe1e4]" sizes="80px" />
                     <div className="absolute bottom-0 right-0 bg-[#ffd709] text-[#453900] px-2 py-0.5 rounded-full text-[10px] font-black flex items-center gap-1 shadow-sm">
                       <span className="material-symbols-outlined text-[12px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
                       {riderInfo.rating}

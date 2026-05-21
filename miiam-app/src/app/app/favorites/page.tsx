@@ -7,6 +7,7 @@ import { useToastStore } from "@/lib/store/toastStore";
 import EmptyState from "@/components/EmptyState";
 import { VendorCardSkeleton } from "@/components/Skeleton";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import BlurImage from "@/components/BlurImage";
 import { useState, useEffect } from "react";
 
 const supabase = createClient();
@@ -120,7 +121,7 @@ export default function FavoritesPage() {
                   className="block bg-white rounded-lg overflow-hidden shadow-[0px_10px_30px_rgba(77,33,42,0.04)] hover:shadow-[0px_20px_40px_rgba(77,33,42,0.1)] transition-all"
                 >
                   <div className="h-48 bg-[#ffe1e4] overflow-hidden">
-                    <img src={vendor.cover_image_url || vendor.image_url} alt={vendor.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                    <BlurImage src={vendor.cover_image_url || vendor.image_url} alt={vendor.name} fill className="w-full h-full group-hover:scale-105 transition-transform duration-700" sizes="(max-width: 768px) 100vw, 50vw" />
                   </div>
                   <div className="p-5">
                     <div className="flex justify-between items-start">
