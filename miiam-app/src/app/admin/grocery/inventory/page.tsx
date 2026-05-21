@@ -16,6 +16,7 @@ interface Product {
   price: number;
   stock: number;
   image_url: string;
+  vendor_id?: string;
   created_at: string;
 }
 
@@ -25,6 +26,8 @@ export default function GroceryInventoryPage() {
   const [stats, setStats] = useState({ total: 0, lowStock: 0, outOfStock: 0, totalValue: 0 });
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
+  const [vendorFilter, setVendorFilter] = useState("all");
+  const [vendors, setVendors] = useState<any[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [saving, setSaving] = useState(false);
@@ -36,6 +39,7 @@ export default function GroceryInventoryPage() {
     price: "",
     stock: "",
     image_url: "",
+    vendor_id: "",
     imageFile: null as File | null,
   });
 
@@ -46,6 +50,9 @@ export default function GroceryInventoryPage() {
   const loadProducts = async () => {
     setLoading(true);
     try {
+      const { data: vendorsData } = await supabase.from("vendors").select("id, shop_name, name").eq("type", "grocery");
+      if (vendorsData) setVendors(vendorsData);
+
       const { data, error } = await supabase
         .from("grocery_products")
         .select("*")
@@ -90,8 +97,8 @@ export default function GroceryInventoryPage() {
   };
 
   const handleSaveProduct = async () => {
-    if (!newProduct.name || !newProduct.price) {
-      alert("Please fill in required fields");
+    if (!newProduct.name || !newProduct.price || !newProduct.vendor_id) {
+      alert("Please fill in required fields (Name, Price, Vendor)");
       return;
     }
 
@@ -113,6 +120,7 @@ export default function GroceryInventoryPage() {
             price: parseFloat(newProduct.price),
             stock: parseInt(newProduct.stock) || 0,
             image_url: imageUrl,
+            vendor_id: newProduct.vendor_id,
           })
           .eq("id", editingProduct.id);
 
@@ -124,6 +132,7 @@ export default function GroceryInventoryPage() {
           price: parseFloat(newProduct.price),
           stock: parseInt(newProduct.stock) || 100,
           image_url: imageUrl,
+          vendor_id: newProduct.vendor_id,
         });
 
         if (error) throw error;
@@ -177,6 +186,7 @@ export default function GroceryInventoryPage() {
       price: product.price.toString(),
       stock: product.stock.toString(),
       image_url: product.image_url,
+      vendor_id: product.vendor_id || "",
       imageFile: null,
     });
     setShowAddModal(true);
@@ -185,7 +195,7 @@ export default function GroceryInventoryPage() {
   const resetModal = () => {
     setShowAddModal(false);
     setEditingProduct(null);
-    setNewProduct({ name: "", category: "Fruits", price: "", stock: "", image_url: "", imageFile: null });
+    setNewProduct({ name: "", category: "Fruits", price: "", stock: "", image_url: "", vendor_id: "", imageFile: null });
   };
 
   const filteredProducts = products.filter(product => {
@@ -194,8 +204,9 @@ export default function GroceryInventoryPage() {
       product.category?.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesCategory = categoryFilter === "all" || product.category === categoryFilter;
+    const matchesVendor = vendorFilter === "all" || product.vendor_id === vendorFilter;
 
-    return matchesSearch && matchesCategory;
+    return matchesSearch && matchesCategory && matchesVendor;
   });
 
   return (
@@ -256,6 +267,16 @@ export default function GroceryInventoryPage() {
             <option key={cat} value={cat}>{cat}</option>
           ))}
         </select>
+        <select
+          value={vendorFilter}
+          onChange={(e) => setVendorFilter(e.target.value)}
+          className="px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-[#ba001c]"
+        >
+          <option value="all">All Vendors</option>
+          {vendors.map(v => (
+            <option key={v.id} value={v.id}>{v.shop_name || v.name}</option>
+          ))}
+        </select>
       </div>
 
       {loading ? (
@@ -290,7 +311,8 @@ export default function GroceryInventoryPage() {
               </div>
               <div className="p-4">
                 <p className="text-xs font-bold text-[#ba001c] uppercase">{product.category}</p>
-                <p className="font-bold text-slate-800 mt-1">{product.name}</p>
+                <p className="text-xs text-slate-500 mb-1">{vendors.find(v => v.id === product.vendor_id)?.shop_name || "Unknown Vendor"}</p>
+                <p className="font-bold text-slate-800">{product.name}</p>
                 <div className="flex justify-between items-center mt-3">
                   <p className="text-xl font-black text-slate-800">₹{product.price}</p>
                   <span className={`text-xs ${product.stock === 0 ? "text-red-600 font-bold" : product.stock < 10 ? "text-yellow-600 font-bold" : "text-slate-400"}`}>
@@ -354,6 +376,19 @@ export default function GroceryInventoryPage() {
                   className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
                   placeholder="Enter product name"
                 />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-slate-600 mb-1 block">Vendor *</label>
+                <select
+                  value={newProduct.vendor_id}
+                  onChange={(e) => setNewProduct({ ...newProduct, vendor_id: e.target.value })}
+                  className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                >
+                  <option value="">Select Vendor</option>
+                  {vendors.map(v => (
+                    <option key={v.id} value={v.id}>{v.shop_name || v.name}</option>
+                  ))}
+                </select>
               </div>
               <div>
                 <label className="text-xs font-bold text-slate-600 mb-1 block">Category *</label>
