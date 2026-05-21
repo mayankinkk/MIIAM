@@ -232,8 +232,8 @@ DROP POLICY IF EXISTS "Users can create own reviews" ON public.reviews;
 CREATE POLICY "Anyone can read reviews" ON public.reviews
   FOR SELECT USING (true);
 
-CREATE POLICY "Users can create own reviews" ON public.reviews
-  FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Anyone can create reviews" ON public.reviews
+  FOR INSERT WITH CHECK (true);
 
 CREATE POLICY "Users can manage own reviews" ON public.reviews
   FOR ALL USING (auth.uid() = user_id);
