@@ -91,14 +91,16 @@ export default function HomePage() {
       const { data } = await supabase.from("vendors").select("id").eq("pincode", pincode).eq("status", "active").limit(1);
       setLocalServiceable(!!(data && data.length > 0));
       
-      const { data: vendors } = await supabase.from("vendors").select("*").order("created_at", { ascending: false }).limit(30);
+      const { data: vendors } = await supabase.from("vendors").select("*").order("created_at", { ascending: false }).limit(50);
       if (vendors) {
-        let filtered = vendors;
-        const pincodeVendors = vendors.filter((v: any) => v.pincode === pincode);
-        if (pincodeVendors.length > 0) filtered = pincodeVendors;
-        setNearbyRestaurants(filtered);
-        setFeaturedRestaurants(filtered.filter((v: any) => v.is_featured || v.is_promoted).slice(0, 6));
-        setSpotlightRestaurant(filtered.find((v: any) => v.is_featured) || null);
+        // Sort: pincode-matching vendors first, then all others — never hide vendors
+        const local = vendors.filter((v: any) => v.pincode === pincode);
+        const others = vendors.filter((v: any) => v.pincode !== pincode);
+        const sorted = [...local, ...others];
+        
+        setNearbyRestaurants(sorted);
+        setFeaturedRestaurants(sorted.filter((v: any) => v.is_featured || v.is_promoted).slice(0, 6));
+        setSpotlightRestaurant(sorted.find((v: any) => v.is_featured) || null);
       }
       setCheckingPincode(false);
     }
