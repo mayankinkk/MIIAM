@@ -21,13 +21,7 @@ const offers = [
   { id: "o4", title: "MIIAM+ Exclusive", subtitle: "Get 30% OFF with MIIAM+", color: "from-purple-500 to-pink-500", badge: "MIIAM+" },
 ];
 
-const notifications = [
-  { id: "n1", type: "order", title: "Order Delivered", message: "Your order from Biryani House has been delivered. Rate your experience!", time: "2 min ago", icon: "check_circle", color: "text-green-500" },
-  { id: "n2", type: "offer", title: "50% OFF on Pizza", message: "Get flat 50% off on all pizza orders today. Use code PIZZA50", time: "1 hour ago", icon: "local_offer", color: "text-orange-500" },
-  { id: "n3", type: "promo", title: "Free Delivery", message: "Free delivery on orders above ₹199. Limited time offer!", time: "3 hours ago", icon: "delivery_dining", color: "text-blue-500" },
-  { id: "n4", type: "order", title: "Order Confirmed", message: "Your order #12345 has been confirmed and will be delivered in 25 mins", time: "5 hours ago", icon: "receipt", color: "text-purple-500" },
-  { id: "n5", type: "promo", title: "MIIAM+ Special", message: "Upgrade to MIIAM+ and get 20% off on every order!", time: "Yesterday", icon: "workspace_premium", color: "text-amber-500" },
-];
+
 
 export default function HomePage() {
   const supabase = createClient();
@@ -42,7 +36,8 @@ export default function HomePage() {
   const [manualPincode, setManualPincode] = useState("");
   const [pincodeError, setPincodeError] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
-  const [unreadCount, setUnreadCount] = useState(3);
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
   const [nearbyRestaurants, setNearbyRestaurants] = useState<any[]>([]);
   const [featuredRestaurants, setFeaturedRestaurants] = useState<any[]>([]);
   const [spotlightRestaurant, setSpotlightRestaurant] = useState<any>(null);
@@ -65,6 +60,18 @@ export default function HomePage() {
           ...user,
           profile_name: profileData?.full_name || user.user_metadata?.full_name || user.user_metadata?.name
         });
+        
+        const { data: notifs } = await supabase
+          .from("notifications")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false })
+          .limit(20);
+          
+        if (notifs) {
+          setNotifications(notifs);
+          setUnreadCount(notifs.filter(n => !n.read).length);
+        }
       }
 
       const { pincode } = locationStore;
@@ -234,7 +241,14 @@ export default function HomePage() {
               <h1 className="text-2xl font-black text-[#281716] capitalize">{userName}</h1>
             </div>
             <button 
-              onClick={() => { setShowNotifications(!showNotifications); setUnreadCount(0); }}
+              onClick={async () => { 
+                setShowNotifications(!showNotifications);
+                if (unreadCount > 0 && user) {
+                  setUnreadCount(0);
+                  // Mark as read in background
+                  supabase.from("notifications").update({ read: true }).eq("user_id", user.id).eq("read", false).then();
+                }
+              }}
               className="relative w-10 h-10 bg-[#fff4f4] rounded-full flex items-center justify-center"
             >
               <span className="material-symbols-outlined text-[#ba001c]">notifications</span>
@@ -682,17 +696,25 @@ export default function HomePage() {
             {/* Notifications List */}
             <div className="overflow-y-auto h-[calc(100vh-140px)]">
               {notifications.map((notif) => (
-                <div key={notif.id} className="p-4 border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                <div key={notif.id} className={`p-4 border-b border-gray-50 transition-colors ${!notif.read ? 'bg-orange-50/50' : 'hover:bg-gray-50'}`}>
                   <div className="flex gap-3">
-                    <div className={`w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0`}>
-                      <span className={`material-symbols-outlined ${notif.color}`}>{notif.icon}</span>
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+                      notif.type === "order" ? "bg-[#ffe1e4]" :
+                      notif.type === "promo" ? "bg-amber-100" : "bg-slate-100"
+                    }`}>
+                      <span className="material-symbols-outlined text-[#ba001c]">
+                        {notif.type === "order" ? "restaurant" :
+                         notif.type === "promo" ? "local_offer" : "info"}
+                      </span>
                     </div>
                     <div className="flex-1">
                       <div className="flex items-start justify-between">
-                        <p className="font-bold text-[#281716] text-sm">{notif.title}</p>
-                        <span className="text-[10px] text-gray-400">{notif.time}</span>
+                        <p className={`font-bold text-[#281716] text-sm ${!notif.read ? 'text-[#ba001c]' : ''}`}>{notif.title}</p>
+                        <span className="text-[10px] text-gray-400">
+                          {new Date(notif.created_at).toLocaleDateString()}
+                        </span>
                       </div>
-                      <p className="text-xs text-[#5c403d] mt-1">{notif.message}</p>
+                      <p className="text-xs text-[#5c403d] mt-1">{notif.body || notif.message}</p>
                       {notif.type === "offer" && (
                         <button className="mt-2 text-xs font-bold text-[#ba001c]">
                           Apply Now →
