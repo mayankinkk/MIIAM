@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import ThemeProvider from "@/components/ThemeProvider";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import PageTransition from "@/components/PageTransition";
 import Toaster from "@/components/ui/Toaster";
 import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
@@ -75,7 +76,9 @@ export default function RootLayout({
           <SplashScreen />
           <ServiceWorkerRegistration />
           <AnalyticsTracker />
-          <PageTransition>{children}</PageTransition>
+          <ErrorBoundary>
+            <PageTransition>{children}</PageTransition>
+          </ErrorBoundary>
           <Toaster />
         </ThemeProvider>
       </body>
