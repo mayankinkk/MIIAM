@@ -459,7 +459,7 @@ export default function RestaurantProfilePage() {
             <span className="text-xl">⭐</span>
             <h2 className="text-lg font-black text-on-surface">Chef's Specials</h2>
           </div>
-          <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2">
+          <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2">
             {specials.map((item) => (
               <div key={item.id} className="flex-shrink-0 w-40 bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm border border-amber-100">
                 <div className="h-28 overflow-hidden bg-surface-container">
@@ -523,7 +523,7 @@ export default function RestaurantProfilePage() {
         </div>
 
         {/* Category tabs */}
-        <div className="flex gap-2 overflow-x-auto no-scrollbar px-4 pb-2">
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide px-4 pb-2">
           {availableCategories.map((cat) => (
             <button
               key={cat}

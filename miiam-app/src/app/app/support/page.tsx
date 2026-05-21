@@ -402,7 +402,7 @@ export default function SupportPage() {
             </div>
 
             {/* Category Pills */}
-            <div className="flex gap-2 overflow-x-auto pb-2">
+            <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
               <button className="px-4 py-2 bg-[#ba001c] text-white rounded-full text-sm font-bold whitespace-nowrap">
                 All
               </button>

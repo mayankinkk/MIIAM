@@ -221,7 +221,7 @@ export default function BeautyPage() {
             <h2 className="text-base font-black text-on-surface">Top Stylists</h2>
             <span className="text-xs font-bold text-pink-500">View All</span>
           </div>
-          <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2">
+          <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2">
             {experts.map((expert, i) => (
               <div key={i} className="flex-shrink-0 w-32 bg-surface-container-lowest rounded-xl p-3 shadow-sm text-center card-lift animate-pop-in" style={{ animationDelay: `${i * 80}ms` }}>
                 <div className="relative w-12 h-12 rounded-full mx-auto overflow-hidden border-2 border-pink-200">
