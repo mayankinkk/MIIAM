@@ -648,7 +648,7 @@ export default function HomePage() {
 
       {/* Location Modal */}
       {showLocationModal && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-end md:items-center justify-center">
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end md:items-center justify-center animate-fade-in">
           <div className="bg-white w-full md:w-96 rounded-t-3xl md:rounded-3xl p-6 animate-in slide-in-from-bottom duration-300">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-black text-[#281716]">Enter Delivery PIN Code</h2>

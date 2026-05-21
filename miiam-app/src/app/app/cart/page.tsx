@@ -288,7 +288,7 @@ export default function CartPage() {
         )}
 
         {showReorderModal && (
-          <div className="fixed inset-0 z-50 bg-black/50 flex items-end justify-center">
+          <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end justify-center animate-fade-in">
             <div className="bg-surface-container-lowest rounded-t-2xl w-full max-h-[80vh] overflow-hidden">
               <div className="p-4 border-b border-outline-variant flex items-center justify-between">
                 <h3 className="text-base font-bold text-on-surface">Reorder from Past</h3>

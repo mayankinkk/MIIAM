@@ -439,7 +439,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
             )}
 
             {showHelp && (
-              <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+              <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
                 <div className="bg-white rounded-2xl w-full max-w-md p-6">
                   <div className="flex items-center justify-between mb-4">
                     <h2 className="text-xl font-black text-slate-800">Need Help?</h2>
