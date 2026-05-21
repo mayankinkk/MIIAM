@@ -103,6 +103,28 @@ export default function HomePage() {
       setCheckingPincode(false);
     }
     checkAndLoad();
+
+    // Set up Realtime subscription to get live notification updates
+    let realtimeChannel: any = null;
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return;
+      realtimeChannel = supabase
+        .channel(`notifications-${user.id}`)
+        .on("postgres_changes", {
+          event: "INSERT",
+          schema: "public",
+          table: "notifications",
+          filter: `user_id=eq.${user.id}`,
+        }, (payload) => {
+          setNotifications(prev => [payload.new, ...prev]);
+          setUnreadCount(prev => prev + 1);
+        })
+        .subscribe();
+    });
+
+    return () => {
+      if (realtimeChannel) supabase.removeChannel(realtimeChannel);
+    };
   }, [locationStore.pincode, supabase]);
 
   const hour = new Date().getHours();

@@ -16,6 +16,8 @@ interface FlowerItem {
   price: number;
   description: string;
   image_url: string;
+  vendor_id?: string;
+  created_at: string;
 }
 
 export default function FlowersItemsPage() {
@@ -24,6 +26,8 @@ export default function FlowersItemsPage() {
   const [stats, setStats] = useState({ total: 0, categories: 0 });
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
+  const [vendorFilter, setVendorFilter] = useState("all");
+  const [vendors, setVendors] = useState<any[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingItem, setEditingItem] = useState<FlowerItem | null>(null);
   const [saving, setSaving] = useState(false);
@@ -34,6 +38,8 @@ export default function FlowersItemsPage() {
     price: "",
     description: "",
     image_url: "",
+    vendor_id: "",
+    imageFile: null as File | null,
   });
 
   useEffect(() => {
@@ -43,6 +49,13 @@ export default function FlowersItemsPage() {
   const loadItems = async () => {
     setLoading(true);
     try {
+      const { data: vendorsData, error: vendorError } = await supabase
+        .from("vendors")
+        .select("id, shop_name")
+        .or("type.eq.flower,type.eq.flowers");
+      if (vendorError) console.error("Vendor fetch error:", vendorError);
+      if (vendorsData) setVendors(vendorsData);
+
       const { data, error } = await supabase
         .from("flower_items")
         .select("*")
@@ -60,14 +73,38 @@ export default function FlowersItemsPage() {
     }
   };
 
+  const handleImageUpload = async (file: File): Promise<string | null> => {
+    const fileExt = file.name.split(".").pop();
+    const fileName = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
+    const filePath = `flower-items/${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from("flower-images")
+      .upload(filePath, file);
+
+    if (uploadError) {
+      console.error("Upload error:", uploadError);
+      return null;
+    }
+
+    const { data: urlData } = supabase.storage.from("flower-images").getPublicUrl(filePath);
+    return urlData.publicUrl;
+  };
+
   const handleSave = async () => {
-    if (!newItem.name || !newItem.price) {
-      alert("Please fill in required fields");
+    if (!newItem.name || !newItem.price || !newItem.vendor_id) {
+      alert("Please fill in required fields (Name, Price, Vendor)");
       return;
     }
 
     setSaving(true);
     try {
+      let imageUrl = newItem.image_url;
+      if (newItem.imageFile) {
+        const uploaded = await handleImageUpload(newItem.imageFile);
+        if (uploaded) imageUrl = uploaded;
+      }
+
       if (editingItem) {
         const { error } = await supabase
           .from("flower_items")
@@ -76,10 +113,10 @@ export default function FlowersItemsPage() {
             category: newItem.category,
             price: parseFloat(newItem.price),
             description: newItem.description,
-            image_url: newItem.image_url,
+            image_url: imageUrl,
+            vendor_id: newItem.vendor_id,
           })
           .eq("id", editingItem.id);
-
         if (error) throw error;
       } else {
         const { error } = await supabase.from("flower_items").insert({
@@ -87,9 +124,9 @@ export default function FlowersItemsPage() {
           category: newItem.category,
           price: parseFloat(newItem.price),
           description: newItem.description,
-          image_url: newItem.image_url,
+          image_url: imageUrl,
+          vendor_id: newItem.vendor_id,
         });
-
         if (error) throw error;
       }
 
@@ -106,14 +143,11 @@ export default function FlowersItemsPage() {
 
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this item?")) return;
-
     try {
       const { error } = await supabase.from("flower_items").delete().eq("id", id);
       if (error) throw error;
       setItems(items.filter(i => i.id !== id));
-      alert("Item deleted!");
     } catch (error: any) {
-      console.error("Error deleting:", error);
       alert("Failed: " + error.message);
     }
   };
@@ -126,6 +160,8 @@ export default function FlowersItemsPage() {
       price: item.price.toString(),
       description: item.description,
       image_url: item.image_url,
+      vendor_id: item.vendor_id || "",
+      imageFile: null,
     });
     setShowAddModal(true);
   };
@@ -133,13 +169,14 @@ export default function FlowersItemsPage() {
   const resetModal = () => {
     setShowAddModal(false);
     setEditingItem(null);
-    setNewItem({ name: "", category: "Bouquets", price: "", description: "", image_url: "" });
+    setNewItem({ name: "", category: "Bouquets", price: "", description: "", image_url: "", vendor_id: "", imageFile: null });
   };
 
   const filteredItems = items.filter(item => {
     const matchesSearch = searchTerm === "" || item.name?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = categoryFilter === "all" || item.category === categoryFilter;
-    return matchesSearch && matchesCategory;
+    const matchesVendor = vendorFilter === "all" || item.vendor_id === vendorFilter;
+    return matchesSearch && matchesCategory && matchesVendor;
   });
 
   return (
@@ -152,10 +189,7 @@ export default function FlowersItemsPage() {
           <h1 className="text-2xl font-black text-slate-800">Flowers Items</h1>
           <p className="text-slate-500 text-sm">Manage flower products and catalog</p>
         </div>
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="px-4 py-2 bg-[#ba001c] text-white rounded-lg font-bold text-sm hover:bg-[#a00018]"
-        >
+        <button onClick={() => setShowAddModal(true)} className="px-4 py-2 bg-[#ba001c] text-white rounded-lg font-bold text-sm hover:bg-[#a00018]">
           + Add Item
         </button>
       </div>
@@ -190,15 +224,13 @@ export default function FlowersItemsPage() {
             className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-[#ba001c]"
           />
         </div>
-        <select
-          value={categoryFilter}
-          onChange={(e) => setCategoryFilter(e.target.value)}
-          className="px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-[#ba001c]"
-        >
+        <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} className="px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-[#ba001c]">
           <option value="all">All Categories</option>
-          {mockCategories.map(cat => (
-            <option key={cat} value={cat}>{cat}</option>
-          ))}
+          {mockCategories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+        </select>
+        <select value={vendorFilter} onChange={(e) => setVendorFilter(e.target.value)} className="px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-[#ba001c]">
+          <option value="all">All Vendors</option>
+          {vendors.map(v => <option key={v.id} value={v.id}>{v.shop_name}</option>)}
         </select>
       </div>
 
@@ -224,18 +256,15 @@ export default function FlowersItemsPage() {
               </div>
               <div className="p-4">
                 <span className="px-3 py-1 bg-rose-100 text-rose-700 rounded-full text-xs font-bold">{item.category}</span>
-                <p className="font-bold text-slate-800 mt-2">{item.name}</p>
+                <p className="text-xs text-slate-500 mt-1">{vendors.find(v => v.id === item.vendor_id)?.shop_name || "Unknown Vendor"}</p>
+                <p className="font-bold text-slate-800 mt-1">{item.name}</p>
                 <p className="text-sm text-slate-500 mt-1 line-clamp-2">{item.description || "No description"}</p>
                 <div className="flex justify-between items-center mt-3">
                   <p className="text-xl font-black text-slate-800">₹{item.price}</p>
                 </div>
                 <div className="flex gap-2 mt-3">
-                  <button onClick={() => openEditModal(item)} className="flex-1 py-2 bg-slate-100 text-slate-600 rounded-lg font-bold text-xs hover:bg-slate-200">
-                    Edit
-                  </button>
-                  <button onClick={() => handleDelete(item.id)} className="flex-1 py-2 bg-red-50 text-red-600 rounded-lg font-bold text-xs hover:bg-red-100">
-                    Delete
-                  </button>
+                  <button onClick={() => openEditModal(item)} className="flex-1 py-2 bg-slate-100 text-slate-600 rounded-lg font-bold text-xs hover:bg-slate-200">Edit</button>
+                  <button onClick={() => handleDelete(item.id)} className="flex-1 py-2 bg-red-50 text-red-600 rounded-lg font-bold text-xs hover:bg-red-100">Delete</button>
                 </div>
               </div>
             </div>
@@ -245,8 +274,8 @@ export default function FlowersItemsPage() {
 
       {showAddModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl w-full max-w-md mx-4">
-            <div className="p-6 border-b">
+          <div className="bg-white rounded-2xl w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b sticky top-0 bg-white">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-black text-slate-800">{editingItem ? "Edit Item" : "Add Item"}</h2>
                 <button onClick={resetModal} className="text-slate-400 hover:text-slate-600">
@@ -258,6 +287,13 @@ export default function FlowersItemsPage() {
               <div>
                 <label className="text-xs font-bold text-slate-600 mb-1 block">Item Name *</label>
                 <input type="text" value={newItem.name} onChange={(e) => setNewItem({ ...newItem, name: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="Enter item name" />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-slate-600 mb-1 block">Vendor *</label>
+                <select value={newItem.vendor_id} onChange={(e) => setNewItem({ ...newItem, vendor_id: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none">
+                  <option value="">Select Vendor</option>
+                  {vendors.map(v => <option key={v.id} value={v.id}>{v.shop_name}</option>)}
+                </select>
               </div>
               <div>
                 <label className="text-xs font-bold text-slate-600 mb-1 block">Category *</label>
@@ -274,8 +310,19 @@ export default function FlowersItemsPage() {
                 <textarea value={newItem.description} onChange={(e) => setNewItem({ ...newItem, description: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="Enter description" rows={3} />
               </div>
               <div>
-                <label className="text-xs font-bold text-slate-600 mb-1 block">Image URL</label>
-                <input type="text" value={newItem.image_url} onChange={(e) => setNewItem({ ...newItem, image_url: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="https://..." />
+                <label className="text-xs font-bold text-slate-600 mb-1 block">Product Image</label>
+                <div className="flex flex-col gap-3">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setNewItem({ ...newItem, imageFile: e.target.files?.[0] || null })}
+                    className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-[#ba001c]/10 file:text-[#ba001c] hover:file:bg-[#ba001c]/20"
+                  />
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-slate-400 font-bold whitespace-nowrap">OR URL:</span>
+                    <input type="text" value={newItem.image_url} onChange={(e) => setNewItem({ ...newItem, image_url: e.target.value })} className="flex-1 p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="https://..." />
+                  </div>
+                </div>
               </div>
             </div>
             <div className="p-6 border-t flex gap-4">

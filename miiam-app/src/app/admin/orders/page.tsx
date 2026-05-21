@@ -50,13 +50,46 @@ export default function OrderManagement() {
   }
 
   async function updateStatus(orderId: string, status: OrderStatus) {
+    // Fetch the order first to get user_id
+    const { data: order } = await supabase.from("orders").select("user_id").eq("id", orderId).single();
+    
     await supabase.from("orders").update({ status }).eq("id", orderId);
+    
+    // Send notification to customer
+    if (order?.user_id) {
+      const notifMap: Record<string, { title: string; body: string }> = {
+        accepted: { title: "Order Accepted! 🎉", body: "Your order has been accepted and is being prepared." },
+        preparing: { title: "Order Being Prepared 🍳", body: "Your order is being prepared right now!" },
+        picking_up: { title: "Rider Heading to Vendor 🛵", body: "A rider is on their way to pick up your order." },
+        on_the_way: { title: "Your Order is On the Way! 🚀", body: "Sit tight — your order is heading to you." },
+        delivered: { title: "Order Delivered! ✅", body: "Your order has been delivered. Enjoy! Rate your experience in the app." },
+        cancelled: { title: "Order Cancelled ❌", body: "Your order has been cancelled. Contact support if you need help." },
+        refunded: { title: "Refund Processed 💰", body: "Your refund has been processed and will reflect shortly." },
+      };
+      const notif = notifMap[status];
+      if (notif) {
+        fetch("/api/notify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user_id: order.user_id, ...notif, type: "order" }),
+        });
+      }
+    }
+    
     loadOrders();
     setSelectedOrder(null);
   }
 
   async function refundOrder(orderId: string) {
+    const { data: order } = await supabase.from("orders").select("user_id").eq("id", orderId).single();
     await supabase.from("orders").update({ status: "refunded" }).eq("id", orderId);
+    if (order?.user_id) {
+      fetch("/api/notify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: order.user_id, title: "Refund Processed 💰", body: "Your refund has been processed and will reflect shortly.", type: "order" }),
+      });
+    }
     loadOrders();
     setSelectedOrder(null);
   }
@@ -297,6 +330,21 @@ export default function OrderManagement() {
                 <div className="flex justify-between border-t border-slate-200 pt-2">
                   <span className="font-bold text-slate-800">Total</span>
                   <span className="font-black text-lg">₹{selectedOrder.total_amount}</span>
+                </div>
+              </div>
+              {/* Status Management */}
+              <div className="bg-slate-50 p-4 rounded-xl">
+                <p className="text-[10px] font-black text-slate-400 uppercase mb-3">Update Status</p>
+                <div className="flex flex-wrap gap-2">
+                  {STATUS_OPTIONS.filter(s => s !== selectedOrder.status && s !== "refunded").map(s => (
+                    <button
+                      key={s}
+                      onClick={() => updateStatus(selectedOrder.id, s)}
+                      className={`px-3 py-2 rounded-xl text-xs font-bold transition-all ${STATUS_COLORS[s]} hover:opacity-80`}
+                    >
+                      → {s.replace("_", " ").replace(/\b\w/g, l => l.toUpperCase())}
+                    </button>
+                  ))}
                 </div>
               </div>
               <div className="flex gap-2">

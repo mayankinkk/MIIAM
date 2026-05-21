@@ -68,7 +68,12 @@ export default function VendorPage() {
   });
 
 const handleCustomizeItem = (item: any) => {
-    setCustomizingItem(item);
+    // Food items get the customization modal; non-food items add directly
+    if (!vendor || vendor.type === "food" || vendor.type === "restaurant" || vendor.cuisine) {
+      setCustomizingItem(item);
+    } else {
+      handleAddToCart(item);
+    }
   };
 
   const handleAddToCart = (item: any) => {

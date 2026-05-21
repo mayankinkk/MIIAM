@@ -17,6 +17,8 @@ interface Medicine {
   stock: number;
   image_url: string;
   requires_prescription: boolean;
+  vendor_id?: string;
+  created_at: string;
 }
 
 export default function PharmacyMedicinesPage() {
@@ -25,6 +27,8 @@ export default function PharmacyMedicinesPage() {
   const [stats, setStats] = useState({ total: 0, lowStock: 0, outOfStock: 0, prescription: 0 });
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
+  const [vendorFilter, setVendorFilter] = useState("all");
+  const [vendors, setVendors] = useState<any[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingMedicine, setEditingMedicine] = useState<Medicine | null>(null);
   const [saving, setSaving] = useState(false);
@@ -36,6 +40,8 @@ export default function PharmacyMedicinesPage() {
     stock: "",
     image_url: "",
     requires_prescription: false,
+    vendor_id: "",
+    imageFile: null as File | null,
   });
 
   useEffect(() => {
@@ -45,6 +51,13 @@ export default function PharmacyMedicinesPage() {
   const loadMedicines = async () => {
     setLoading(true);
     try {
+      const { data: vendorsData, error: vendorError } = await supabase
+        .from("vendors")
+        .select("id, shop_name")
+        .eq("type", "pharmacy");
+      if (vendorError) console.error("Vendor fetch error:", vendorError);
+      if (vendorsData) setVendors(vendorsData);
+
       const { data, error } = await supabase
         .from("pharmacy_medicines")
         .select("*")
@@ -57,17 +70,30 @@ export default function PharmacyMedicinesPage() {
       const outOfStock = data?.filter((m: Medicine) => m.stock === 0).length || 0;
       const prescription = data?.filter((m: Medicine) => m.requires_prescription).length || 0;
 
-      setStats({
-        total: data?.length || 0,
-        lowStock,
-        outOfStock,
-        prescription,
-      });
+      setStats({ total: data?.length || 0, lowStock, outOfStock, prescription });
     } catch (error) {
       console.error("Error loading medicines:", error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleImageUpload = async (file: File): Promise<string | null> => {
+    const fileExt = file.name.split(".").pop();
+    const fileName = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
+    const filePath = `pharmacy-medicines/${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from("pharmacy-images")
+      .upload(filePath, file);
+
+    if (uploadError) {
+      console.error("Upload error:", uploadError);
+      return null;
+    }
+
+    const { data: urlData } = supabase.storage.from("pharmacy-images").getPublicUrl(filePath);
+    return urlData.publicUrl;
   };
 
   const updateStock = async (medicineId: string, newStock: number) => {
@@ -76,7 +102,6 @@ export default function PharmacyMedicinesPage() {
         .from("pharmacy_medicines")
         .update({ stock: newStock })
         .eq("id", medicineId);
-
       if (error) throw error;
       loadMedicines();
     } catch (error) {
@@ -85,13 +110,19 @@ export default function PharmacyMedicinesPage() {
   };
 
   const handleSave = async () => {
-    if (!newMedicine.name || !newMedicine.price) {
-      alert("Please fill in required fields");
+    if (!newMedicine.name || !newMedicine.price || !newMedicine.vendor_id) {
+      alert("Please fill in required fields (Name, Price, Vendor)");
       return;
     }
 
     setSaving(true);
     try {
+      let imageUrl = newMedicine.image_url;
+      if (newMedicine.imageFile) {
+        const uploaded = await handleImageUpload(newMedicine.imageFile);
+        if (uploaded) imageUrl = uploaded;
+      }
+
       if (editingMedicine) {
         const { error } = await supabase
           .from("pharmacy_medicines")
@@ -100,11 +131,11 @@ export default function PharmacyMedicinesPage() {
             category: newMedicine.category,
             price: parseFloat(newMedicine.price),
             stock: parseInt(newMedicine.stock) || 0,
-            image_url: newMedicine.image_url,
+            image_url: imageUrl,
             requires_prescription: newMedicine.requires_prescription,
+            vendor_id: newMedicine.vendor_id,
           })
           .eq("id", editingMedicine.id);
-
         if (error) throw error;
       } else {
         const { error } = await supabase.from("pharmacy_medicines").insert({
@@ -112,10 +143,10 @@ export default function PharmacyMedicinesPage() {
           category: newMedicine.category,
           price: parseFloat(newMedicine.price),
           stock: parseInt(newMedicine.stock) || 100,
-          image_url: newMedicine.image_url,
+          image_url: imageUrl,
           requires_prescription: newMedicine.requires_prescription,
+          vendor_id: newMedicine.vendor_id,
         });
-
         if (error) throw error;
       }
 
@@ -132,14 +163,11 @@ export default function PharmacyMedicinesPage() {
 
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this medicine?")) return;
-
     try {
       const { error } = await supabase.from("pharmacy_medicines").delete().eq("id", id);
       if (error) throw error;
       setMedicines(medicines.filter(m => m.id !== id));
-      alert("Medicine deleted!");
     } catch (error: any) {
-      console.error("Error deleting:", error);
       alert("Failed: " + error.message);
     }
   };
@@ -153,6 +181,8 @@ export default function PharmacyMedicinesPage() {
       stock: medicine.stock.toString(),
       image_url: medicine.image_url,
       requires_prescription: medicine.requires_prescription,
+      vendor_id: medicine.vendor_id || "",
+      imageFile: null,
     });
     setShowAddModal(true);
   };
@@ -160,13 +190,14 @@ export default function PharmacyMedicinesPage() {
   const resetModal = () => {
     setShowAddModal(false);
     setEditingMedicine(null);
-    setNewMedicine({ name: "", category: "Pain Relief", price: "", stock: "", image_url: "", requires_prescription: false });
+    setNewMedicine({ name: "", category: "Pain Relief", price: "", stock: "", image_url: "", requires_prescription: false, vendor_id: "", imageFile: null });
   };
 
   const filteredMedicines = medicines.filter(medicine => {
     const matchesSearch = searchTerm === "" || medicine.name?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = categoryFilter === "all" || medicine.category === categoryFilter;
-    return matchesSearch && matchesCategory;
+    const matchesVendor = vendorFilter === "all" || medicine.vendor_id === vendorFilter;
+    return matchesSearch && matchesCategory && matchesVendor;
   });
 
   return (
@@ -214,15 +245,13 @@ export default function PharmacyMedicinesPage() {
             className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-[#ba001c]"
           />
         </div>
-        <select
-          value={categoryFilter}
-          onChange={(e) => setCategoryFilter(e.target.value)}
-          className="px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-[#ba001c]"
-        >
+        <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} className="px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-[#ba001c]">
           <option value="all">All Categories</option>
-          {mockCategories.map(cat => (
-            <option key={cat} value={cat}>{cat}</option>
-          ))}
+          {mockCategories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+        </select>
+        <select value={vendorFilter} onChange={(e) => setVendorFilter(e.target.value)} className="px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-[#ba001c]">
+          <option value="all">All Vendors</option>
+          {vendors.map(v => <option key={v.id} value={v.id}>{v.shop_name}</option>)}
         </select>
       </div>
 
@@ -246,24 +275,19 @@ export default function PharmacyMedicinesPage() {
                   </div>
                 )}
                 {medicine.requires_prescription && (
-                  <div className="absolute top-2 left-2 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded">
-                    Rx
-                  </div>
+                  <div className="absolute top-2 left-2 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded">Rx</div>
                 )}
                 {medicine.stock === 0 && (
-                  <div className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
-                    Out of Stock
-                  </div>
+                  <div className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">Out of Stock</div>
                 )}
                 {medicine.stock > 0 && medicine.stock < 10 && (
-                  <div className="absolute top-2 right-2 bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded">
-                    Low Stock
-                  </div>
+                  <div className="absolute top-2 right-2 bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded">Low Stock</div>
                 )}
               </div>
               <div className="p-4">
                 <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold">{medicine.category}</span>
-                <p className="font-bold text-slate-800 mt-2">{medicine.name}</p>
+                <p className="text-xs text-slate-500 mt-1">{vendors.find(v => v.id === medicine.vendor_id)?.shop_name || "Unknown Vendor"}</p>
+                <p className="font-bold text-slate-800 mt-1">{medicine.name}</p>
                 <div className="flex justify-between items-center mt-3">
                   <p className="text-xl font-black text-slate-800">₹{medicine.price}</p>
                   <span className={`text-xs ${medicine.stock === 0 ? "text-red-600 font-bold" : medicine.stock < 10 ? "text-yellow-600 font-bold" : "text-slate-400"}`}>
@@ -287,8 +311,8 @@ export default function PharmacyMedicinesPage() {
 
       {showAddModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl w-full max-w-md mx-4">
-            <div className="p-6 border-b">
+          <div className="bg-white rounded-2xl w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b sticky top-0 bg-white">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-black text-slate-800">{editingMedicine ? "Edit Medicine" : "Add Medicine"}</h2>
                 <button onClick={resetModal} className="text-slate-400 hover:text-slate-600">
@@ -300,6 +324,13 @@ export default function PharmacyMedicinesPage() {
               <div>
                 <label className="text-xs font-bold text-slate-600 mb-1 block">Medicine Name *</label>
                 <input type="text" value={newMedicine.name} onChange={(e) => setNewMedicine({ ...newMedicine, name: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="Enter medicine name" />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-slate-600 mb-1 block">Vendor *</label>
+                <select value={newMedicine.vendor_id} onChange={(e) => setNewMedicine({ ...newMedicine, vendor_id: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none">
+                  <option value="">Select Vendor</option>
+                  {vendors.map(v => <option key={v.id} value={v.id}>{v.shop_name}</option>)}
+                </select>
               </div>
               <div>
                 <label className="text-xs font-bold text-slate-600 mb-1 block">Category *</label>
@@ -318,8 +349,19 @@ export default function PharmacyMedicinesPage() {
                 </div>
               </div>
               <div>
-                <label className="text-xs font-bold text-slate-600 mb-1 block">Image URL</label>
-                <input type="text" value={newMedicine.image_url} onChange={(e) => setNewMedicine({ ...newMedicine, image_url: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="https://..." />
+                <label className="text-xs font-bold text-slate-600 mb-1 block">Product Image</label>
+                <div className="flex flex-col gap-3">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setNewMedicine({ ...newMedicine, imageFile: e.target.files?.[0] || null })}
+                    className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-[#ba001c]/10 file:text-[#ba001c] hover:file:bg-[#ba001c]/20"
+                  />
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-slate-400 font-bold whitespace-nowrap">OR URL:</span>
+                    <input type="text" value={newMedicine.image_url} onChange={(e) => setNewMedicine({ ...newMedicine, image_url: e.target.value })} className="flex-1 p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="https://..." />
+                  </div>
+                </div>
               </div>
               <div className="flex items-center gap-2">
                 <input type="checkbox" id="prescription" checked={newMedicine.requires_prescription} onChange={(e) => setNewMedicine({ ...newMedicine, requires_prescription: e.target.checked })} className="w-4 h-4" />
