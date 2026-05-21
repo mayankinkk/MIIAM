@@ -37,6 +37,7 @@ const timeSlots = [
 ];
 
 function BookingModal({ service, onClose }: { service: Service; onClose: () => void }) {
+  const { addToast } = useToastStore();
   const [step, setStep] = useState<"pick" | "confirm" | "done">("pick");
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedSlot, setSelectedSlot] = useState("");
@@ -56,7 +57,7 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
     };
   });
 
-  const canProceed = selectedDate && selectedSlot;
+  const canProceed = selectedDate && selectedSlot && address.trim();
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 backdrop-blur-sm animate-fade-in">
@@ -121,7 +122,12 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
 
             <button
               disabled={!canProceed}
-              onClick={() => { setStep("confirm"); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }}
+              onClick={() => {
+                if (!selectedDate) { addToast("Please select a date", "error"); return; }
+                if (!selectedSlot) { addToast("Please select a time slot", "error"); return; }
+                if (!address.trim()) { addToast("Please enter your service address", "error"); return; }
+                setStep("confirm"); if (navigator.vibrate) navigator.vibrate([20, 10, 20]);
+              }}
               className="w-full bg-[#ba001c] text-white py-4 rounded-2xl font-bold text-base disabled:opacity-40 hover:bg-[#a40017] transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
               Review Booking
@@ -166,7 +172,10 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
               <p className="text-xs text-blue-700">A professional will arrive at your location. Payment can be done after service completion.</p>
             </div>
             <button
-              onClick={() => { setStep("done"); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }}
+              onClick={() => {
+                if (!address.trim()) { addToast("Please enter your service address", "error"); return; }
+                setStep("done"); if (navigator.vibrate) navigator.vibrate([20, 10, 20]);
+              }}
               className="w-full bg-[#ba001c] text-white py-4 rounded-2xl font-bold text-base hover:bg-[#a40017] transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
               Confirm &amp; Book

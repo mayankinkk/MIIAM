@@ -5,12 +5,14 @@ import Link from "next/link";
 import { useNotificationStore } from "@/lib/store/notificationStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { createClient } from "@/lib/supabase/client";
+import { useToastStore } from "@/lib/store/toastStore";
 
 export default function NotificationsPage() {
   const { permission, preferences, requestPermission, updatePreferences } = useNotificationStore();
   const [notifications, setNotifications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const supabase = createClient();
+  const { addToast } = useToastStore();
 
   useEffect(() => {
     fetchNotifications();
@@ -33,6 +35,7 @@ export default function NotificationsPage() {
       setNotifications(data || []);
     } catch (error) {
       console.error("Failed to fetch notifications:", error);
+      addToast("Failed to load notifications. Please try again.", "error");
     } finally {
       setLoading(false);
     }
@@ -50,6 +53,7 @@ export default function NotificationsPage() {
       setNotifications(notifications.map(n => ({ ...n, read: true })));
     } catch (error) {
       console.error("Failed to mark all read:", error);
+      addToast("Failed to mark notifications as read. Please try again.", "error");
     }
   };
 

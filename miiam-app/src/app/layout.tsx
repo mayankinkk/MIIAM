@@ -7,6 +7,7 @@ import Toaster from "@/components/ui/Toaster";
 import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
 import { AnalyticsTracker } from "@/lib/analytics";
 import SplashScreen from "@/components/SplashScreen";
+import OfflineBanner from "@/components/OfflineBanner";
 
 export const metadata: Metadata = {
   title: "MIIAM — Food & Services App",
@@ -72,6 +73,7 @@ export default function RootLayout({
         />
       </head>
       <body>
+        <OfflineBanner />
         <ThemeProvider>
           <SplashScreen />
           <ServiceWorkerRegistration />

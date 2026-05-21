@@ -4,11 +4,13 @@ import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { useToastStore } from "@/lib/store/toastStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function EditProfilePage() {
   const router = useRouter();
   const supabase = createClient();
+  const { addToast } = useToastStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [loading, setLoading] = useState(true);
@@ -84,8 +86,23 @@ export default function EditProfilePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSaving(true);
     setError(null);
+
+    if (!formData.fullName.trim()) {
+      addToast("Please enter your full name", "error");
+      return;
+    }
+    const phoneDigits = formData.phone.replace(/\D/g, '');
+    if (phoneDigits.length !== 10) {
+      addToast("Please enter a valid 10-digit phone number", "error");
+      return;
+    }
+    if (!formData.email.includes('@') || !formData.email.includes('.')) {
+      addToast("Please enter a valid email address", "error");
+      return;
+    }
+
+    setSaving(true);
 
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;

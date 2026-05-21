@@ -6,6 +6,7 @@ import { EmptyCart } from "@/components/ui/EmptyStates";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useToastStore } from "@/lib/store/toastStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
 const supabase = createClient();
@@ -20,6 +21,7 @@ export default function CartPage() {
   const [reordering, setReordering] = useState(false);
   const [loadingOrders, setLoadingOrders] = useState(false);
   const router = useRouter();
+  const { addToast } = useToastStore();
 
   useEffect(() => {
     async function loadLoyaltyPoints() {
@@ -65,6 +67,7 @@ export default function CartPage() {
       setPastOrders(orders || []);
     } catch (error) {
       console.error("Failed to fetch past orders:", error);
+      addToast("Failed to load past orders. Please try again.", "error");
     } finally {
       setLoadingOrders(false);
     }
@@ -96,6 +99,7 @@ export default function CartPage() {
       router.push("/app/cart");
     } catch (error) {
       console.error("Reorder failed:", error);
+      addToast("Failed to reorder. Please try again.", "error");
     } finally {
       setReordering(false);
     }

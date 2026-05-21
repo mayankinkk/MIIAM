@@ -108,6 +108,7 @@ export default function PharmacyPage() {
       const { data, error } = await query;
       if (error) {
         console.error("Error fetching medicines:", error);
+        addToast("Failed to load data. Please try again.", "error");
       } else {
         setMedicines(data || []);
       }
@@ -202,6 +203,7 @@ export default function PharmacyPage() {
       setPrescriptionPhone("");
     } catch (error: any) {
       console.error("Upload error:", error);
+      addToast("Failed to upload prescription. Please try again.", "error");
       alert(`Failed to upload: ${error.message}`);
     } finally {
       setUploading(false);

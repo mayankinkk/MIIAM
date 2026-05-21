@@ -4,6 +4,7 @@ import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { useToastStore } from "@/lib/store/toastStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
 type FeedbackData = {
@@ -28,6 +29,7 @@ function FeedbackContent() {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { addToast } = useToastStore();
 
   const tags = [
     "On Time",
@@ -73,6 +75,7 @@ function FeedbackContent() {
       setSubmitted(true);
     } catch (error) {
       console.error("Failed to submit feedback:", error);
+      addToast("Failed to submit feedback. Please try again.", "error");
     } finally {
       setIsSubmitting(false);
     }

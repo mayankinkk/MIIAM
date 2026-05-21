@@ -70,6 +70,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
 
       if (fetchError) {
         console.error("Order fetch error:", fetchError, "ID:", id);
+        addToast("Failed to load order details. Please try again.", "error");
         setOrder(null);
         setLoading(false);
         return;

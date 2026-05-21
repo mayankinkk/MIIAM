@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cartStore";
+import { useToastStore } from "@/lib/store/toastStore";
 import { Skeleton, VendorCardSkeleton, SearchResultSkeleton } from "@/components/Skeleton";
 import { EmptySearch } from "@/components/ui/EmptyStates";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -35,6 +36,7 @@ function SearchContent() {
   const query = searchParams.get("q") || "";
   const supabase = createClient();
   const { addItem } = useCartStore();
+  const { addToast } = useToastStore();
 
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<{ vendors: VendorResult[]; menuItems: MenuResult[] }>({
@@ -96,6 +98,7 @@ function SearchContent() {
       });
     } catch (error) {
       console.error("Search error:", error);
+      addToast("Search failed. Please try again.", "error");
     } finally {
       setLoading(false);
     }

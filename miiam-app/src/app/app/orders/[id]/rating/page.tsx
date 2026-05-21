@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, use } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useToastStore } from "@/lib/store/toastStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
 function AnimatedStarRating({ 
@@ -117,6 +118,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
   const [feedback, setFeedback] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [submitted, setSubmitted] = useState(false);
+  const { addToast } = useToastStore();
 
   useEffect(() => {
     async function loadOrder() {
@@ -176,6 +178,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
       setTimeout(() => router.push("/app/orders"), 2500);
     } catch (err) {
       console.error("Error submitting rating:", err);
+      addToast("Failed to submit rating. Please try again.", "error");
     }
   };
 

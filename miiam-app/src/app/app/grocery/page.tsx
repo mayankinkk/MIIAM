@@ -101,6 +101,7 @@ export default function GroceryPage() {
       const { data, error } = await query;
       if (error) {
         console.error("Error fetching products:", error);
+        addToast("Failed to load data. Please try again.", "error");
       } else {
         setProducts(data || []);
       }

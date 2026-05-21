@@ -3,6 +3,7 @@
 import { use, useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { useToastStore } from "@/lib/store/toastStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
 type RefundStatus = "requested" | "processing" | "approved" | "completed" | "rejected";
@@ -16,6 +17,7 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
   const [showCancelForm, setShowCancelForm] = useState(false);
   const [cancelReason, setCancelReason] = useState("");
   const [showRefundSuccess, setShowRefundSuccess] = useState(false);
+  const { addToast } = useToastStore();
 
   useEffect(() => {
     async function loadOrder() {
@@ -69,6 +71,7 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
       setShowRefundSuccess(true);
     } catch (error) {
       console.error("Failed to cancel order:", error);
+      addToast("Failed to cancel order. Please try again.", "error");
     }
   };
 

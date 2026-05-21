@@ -101,6 +101,7 @@ export default function FlowersPage() {
       const { data, error } = await query;
       if (error) {
         console.error("Error fetching flower items:", error);
+        addToast("Failed to load data. Please try again.", "error");
       } else {
         setFlowers(data || []);
       }

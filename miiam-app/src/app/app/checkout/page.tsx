@@ -139,15 +139,32 @@ export default function CheckoutPage() {
     "07:00 PM - 09:00 PM",
   ];
 
+  const validateCheckout = (): boolean => {
+    if (items.length === 0) {
+      addToast("Your cart is empty! Add items from the Food page first.", "error");
+      return false;
+    }
+    if (!deliveryAddress) {
+      addToast("Please enter your delivery address", "error");
+      return false;
+    }
+    if (!deliveryAddress.flat || !deliveryAddress.street || !deliveryAddress.city || !deliveryAddress.state) {
+      addToast("Please enter your complete delivery address", "error");
+      return false;
+    }
+    if (!deliveryAddress.postal_code || deliveryAddress.postal_code.length !== 6) {
+      addToast("Please enter a valid 6-digit pincode", "error");
+      return false;
+    }
+    return true;
+  };
+
   const placeOrder = async () => {
+    if (!validateCheckout()) return;
+
     const finalAddress = deliveryAddress
       ? [deliveryAddress.flat, deliveryAddress.street, deliveryAddress.city, deliveryAddress.state, deliveryAddress.postal_code].filter(Boolean).join(", ")
       : "452/A Kinetic Plaza, 5th Floor, Skyway Avenue, Tech District, Local Area, State 560001";
-    
-    if (items.length === 0) {
-      alert("Your cart is empty! Add items from the Food page first.");
-      return;
-    }
     
     if (userPincode && userPincode !== "000000") {
       const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id)));
@@ -244,6 +261,7 @@ export default function CheckoutPage() {
           });
         } catch (e) {
           console.error("[checkout] Loyalty redemption error:", e);
+          addToast("Failed to redeem loyalty points. Please try again.", "error");
         }
       }
 
@@ -715,7 +733,7 @@ export default function CheckoutPage() {
 
               <button
                 onClick={placeOrder}
-                disabled={placing || items.length === 0}
+                disabled={placing || items.length === 0 || !deliveryAddress || !deliveryAddress.postal_code || deliveryAddress.postal_code.length !== 6}
                 className="w-full bg-gradient-to-r from-[#ba001c] to-[#ff7670] text-white py-5 rounded-xl text-lg font-extrabold shadow-lg shadow-[#ba001c]/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 disabled:opacity-60"
               >
                 {placing ? "Placing Order..." : "Place Order"}

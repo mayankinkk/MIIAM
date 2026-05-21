@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useFavoritesStore } from "@/lib/store/favoritesStore";
 import { createClient } from "@/lib/supabase/client";
+import { useToastStore } from "@/lib/store/toastStore";
 import EmptyState from "@/components/EmptyState";
 import { VendorCardSkeleton } from "@/components/Skeleton";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -14,6 +15,7 @@ export default function FavoritesPage() {
   const { favoriteIds, toggle, setFavorites } = useFavoritesStore();
   const [favorites, setFavoriteVendors] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const { addToast } = useToastStore();
 
   useEffect(() => {
     async function loadFavorites() {
@@ -46,6 +48,7 @@ export default function FavoritesPage() {
         }
       } catch (error) {
         console.error("Error loading favorites:", error);
+        addToast("Failed to load favorites. Please try again.", "error");
       } finally {
         setLoading(false);
       }
@@ -71,6 +74,7 @@ export default function FavoritesPage() {
       }
     } catch (error) {
       console.error("Error toggling favorite:", error);
+      addToast("Failed to update favorites. Please try again.", "error");
     }
   };
 

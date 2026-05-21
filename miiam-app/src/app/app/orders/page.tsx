@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useCartStore } from "@/lib/store/cartStore";
+import { useToastStore } from "@/lib/store/toastStore";
 import { OrderSkeleton } from "@/components/Skeleton";
 import EmptyState from "@/components/EmptyState";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -30,6 +31,7 @@ export default function OrdersPage() {
   const supabase = createClient();
 
   const [userId, setUserId] = useState<string | null>(null);
+  const { addToast } = useToastStore();
 
   useEffect(() => {
     fetchOrders();
@@ -82,6 +84,7 @@ export default function OrdersPage() {
       console.log("Orders response:", ordersData, "error:", ordersError);
       if (ordersError) {
         console.error("Fetch orders error:", ordersError.message);
+        addToast("Failed to load orders. Please try again.", "error");
         throw ordersError;
       }
       
@@ -104,6 +107,7 @@ export default function OrdersPage() {
       }
     } catch (error: any) {
       console.error("Error fetching orders:", error?.message || error);
+      addToast("Failed to load orders. Please try again.", "error");
     } finally {
       setLoading(false);
     }
@@ -138,6 +142,7 @@ export default function OrdersPage() {
       }
     } catch (error) {
       console.error("Reorder failed:", error);
+      addToast("Failed to reorder. Please try again.", "error");
     } finally {
       setReordering(null);
     }
