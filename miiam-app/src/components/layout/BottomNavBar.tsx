@@ -56,7 +56,7 @@ export default function BottomNavBar() {
                 </span>
 
                 {isMounted && isCart && totalItems > 0 && (
-                  <span className="absolute -top-1.5 -right-2 w-4.5 h-4.5 bg-primary rounded-full text-on-primary text-[9px] font-black flex items-center justify-center shadow-md border-2 border-surface-container-lowest">
+                  <span key={totalItems} className="absolute -top-1.5 -right-2 w-4.5 h-4.5 bg-primary rounded-full text-on-primary text-[9px] font-black flex items-center justify-center shadow-md border-2 border-surface-container-lowest animate-badge-bounce">
                     {totalItems > 9 ? "9+" : totalItems}
                   </span>
                 )}
