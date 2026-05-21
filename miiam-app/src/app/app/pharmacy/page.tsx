@@ -7,6 +7,7 @@ import { useCartStore } from "@/lib/store/cartStore";
 import { useServiceSettingsStore } from "@/lib/store/serviceSettingsStore";
 import { useToastStore } from "@/lib/store/toastStore";
 import ServiceUnavailable from "@/components/ServiceUnavailable";
+import EmptyState from "@/components/EmptyState";
 import { CardSkeleton } from "@/components/Skeletons";
 
 import { useLocationStore } from "@/lib/store/locationStore";
@@ -280,7 +281,7 @@ export default function PharmacyPage() {
             {[1,2,3,4].map(i => <CardSkeleton key={i} />)}
           </div>
         ) : filteredMeds.length === 0 ? (
-          <div className="text-center py-8 text-slate-500">No medicines found</div>
+          <EmptyState icon="💊" title="No medicines found" description="Try a different category or check back later!" actionLabel="Browse All" onAction={() => setSelectedCategory("all")} />
         ) : (
           <div className="grid grid-cols-2 gap-4">
             {filteredMeds.map((med, index) => (

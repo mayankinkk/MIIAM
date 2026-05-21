@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import EmptyState from "@/components/EmptyState";
 
 export default function VendorReviewsPage() {
   const params = useParams();
@@ -108,7 +109,7 @@ export default function VendorReviewsPage() {
       {/* Reviews List */}
       <div className="p-4 space-y-3">
         {filteredReviews.length === 0 ? (
-          <div className="text-center py-12 text-slate-500">No reviews yet</div>
+          <EmptyState icon="⭐" title="No reviews yet" description="Be the first to leave a review!" />
         ) : (
           filteredReviews.map((review: any) => (
             <div key={review.id} className="bg-white rounded-xl p-4 shadow-sm">

@@ -13,6 +13,7 @@ import { VendorCardSkeleton } from "@/components/Skeleton";
 import { useToastStore } from "@/lib/store/toastStore";
 import { useFavoritesStore } from "@/lib/store/favoritesStore";
 import { useLocationStore } from "@/lib/store/locationStore";
+import EmptyState from "@/components/EmptyState";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
 const supabase = createClient();
@@ -520,7 +521,7 @@ export default function FoodPage() {
             </button>
           </div>
         ) : filteredRestaurants.length === 0 ? (
-          <div className="text-center py-8 text-slate-500">No restaurants found</div>
+          <EmptyState icon="🍽️" title="No restaurants found" description="Try adjusting your filters or search query." actionLabel="Show All" onAction={() => setVegFilter("all")} />
         ) : (
           filteredRestaurants.map((restaurant, index) => (
             <Link
