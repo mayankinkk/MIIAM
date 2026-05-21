@@ -533,7 +533,7 @@ export default function FoodPage() {
                   <div className="flex items-start justify-between gap-1">
                     <div className="flex items-center gap-2">
                       <div className="w-8 h-8 rounded-full bg-[#ba001c] flex items-center justify-center text-white text-xs font-black flex-shrink-0 overflow-hidden">
-                        {restaurant.image_url ? <img src={restaurant.image_url} alt="" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display='none'; }} /> : restaurant.shop_name?.charAt(0)}
+                        {restaurant.cover_image_url || restaurant.image_url ? <img src={restaurant.cover_image_url || restaurant.image_url} alt="" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display='none'; }} /> : restaurant.shop_name?.charAt(0)}
                       </div>
                       <h3 className="font-bold text-slate-800 text-base leading-tight">{restaurant.shop_name}</h3>
                     </div>

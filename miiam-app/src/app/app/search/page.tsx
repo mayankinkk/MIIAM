@@ -252,8 +252,8 @@ function SearchContent() {
                       className="bg-white rounded-2xl overflow-hidden border border-slate-100 hover:shadow-lg transition-all"
                     >
                       <div className="h-32 bg-[#ffe1e4] relative">
-                        {vendor.image_url ? (
-                          <img src={vendor.image_url} alt={vendor.shop_name} className="w-full h-full object-cover" />
+                        {vendor.cover_image_url || vendor.image_url ? (
+                          <img src={vendor.cover_image_url || vendor.image_url} alt={vendor.shop_name} className="w-full h-full object-cover" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center">
                             <span className="material-symbols-outlined text-4xl text-[#dd9ca6]">restaurant</span>

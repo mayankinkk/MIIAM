@@ -113,7 +113,7 @@ export default function FavoritesPage() {
                   className="block bg-white rounded-lg overflow-hidden shadow-[0px_10px_30px_rgba(77,33,42,0.04)] hover:shadow-[0px_20px_40px_rgba(77,33,42,0.1)] transition-all"
                 >
                   <div className="h-48 bg-[#ffe1e4] overflow-hidden">
-                    <img src={vendor.image_url} alt={vendor.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                    <img src={vendor.cover_image_url || vendor.image_url} alt={vendor.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                   </div>
                   <div className="p-5">
                     <div className="flex justify-between items-start">

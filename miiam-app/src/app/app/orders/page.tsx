@@ -89,7 +89,7 @@ export default function OrdersPage() {
         const vendorIds = [...new Set(ordersData.map(o => o.vendor_id).filter(Boolean))];
         const { data: vendorsData } = await supabase
           .from("vendors")
-          .select("id, name, image_url")
+          .select("id, name, cover_image_url")
           .in("id", vendorIds);
         
         const vendorMap = new Map(vendorsData?.map(v => [v.id, v]) || []);
@@ -187,8 +187,8 @@ export default function OrdersPage() {
                 <Link href={`/app/orders/${order.id}`} className="block p-6 hover:bg-[#ffecee]/30 transition-all">
                   <div className="flex items-center gap-4">
                     <div className="w-16 h-16 rounded-xl bg-[#ffe1e4] overflow-hidden flex items-center justify-center flex-shrink-0">
-                      {order.vendor?.image_url ? (
-                        <img src={order.vendor.image_url} alt={order.vendor.name} className="w-full h-full object-cover" />
+                      {order.vendor?.cover_image_url ? (
+                        <img src={order.vendor.cover_image_url} alt={order.vendor.name} className="w-full h-full object-cover" />
                       ) : (
                         <span className="material-symbols-outlined text-[#dd9ca6] text-3xl">restaurant</span>
                       )}

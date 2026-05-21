@@ -456,8 +456,8 @@ export default function HomePage() {
             <div className="absolute -right-6 -bottom-6 w-40 h-40 bg-white/10 rounded-full blur-2xl" />
             <div className="relative z-10 flex items-center gap-4">
               <div className="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center overflow-hidden">
-                {spotlightRestaurant.image_url ? (
-                  <img src={spotlightRestaurant.image_url} alt="" className="w-full h-full object-cover" />
+                {spotlightRestaurant.cover_image_url || spotlightRestaurant.image_url ? (
+                  <img src={spotlightRestaurant.cover_image_url || spotlightRestaurant.image_url} alt="" className="w-full h-full object-cover" />
                 ) : (
                   <span className="text-3xl">🍽️</span>
                 )}
@@ -493,8 +493,8 @@ export default function HomePage() {
             {featuredRestaurants.map((restaurant) => (
               <Link key={restaurant.id} href={`/app/vendor/${restaurant.id}`} className="flex-shrink-0 w-36 bg-white rounded-2xl overflow-hidden shadow-sm border-2 border-transparent hover:border-purple-200 transition-all">
                 <div className="relative h-28 bg-slate-100">
-                  {restaurant.image_url ? (
-                    <img src={restaurant.image_url} alt="" className="w-full h-full object-cover" />
+                  {restaurant.cover_image_url || restaurant.image_url ? (
+                    <img src={restaurant.cover_image_url || restaurant.image_url} alt="" className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-2xl">🍽️</div>
                   )}
@@ -534,8 +534,8 @@ export default function HomePage() {
               <Link key={restaurant.id} href={`/app/vendor/${restaurant.id}`} className="block bg-white rounded-2xl overflow-hidden shadow-sm">
                 <div className="flex">
                   <div className="w-28 h-28 flex-shrink-0 bg-slate-100 relative">
-                    {restaurant.image_url ? (
-                      <img src={restaurant.image_url} alt={restaurant.name || restaurant.shop_name} className="w-full h-full object-cover" />
+                    {restaurant.cover_image_url || restaurant.image_url ? (
+                      <img src={restaurant.cover_image_url || restaurant.image_url} alt={restaurant.name || restaurant.shop_name} className="w-full h-full object-cover" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-3xl">🍽️</div>
                     )}

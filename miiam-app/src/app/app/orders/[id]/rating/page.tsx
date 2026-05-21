@@ -121,7 +121,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
     async function loadOrder() {
       const { data: orderData } = await supabase
         .from("orders")
-        .select("*, vendor:vendors(name, image_url), rider:riders(name, profile_image)")
+        .select("*, vendor:vendors(name, cover_image_url), rider:riders(name, profile_image)")
         .eq("id", id)
         .single();
       
