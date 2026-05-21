@@ -320,6 +320,7 @@ export default function FoodPage() {
   const userPincode = locationStore.pincode;
   const userCity = locationStore.city;
   const [noLocalVendors, setNoLocalVendors] = useState(false);
+  const [showLocationModal, setShowLocationModal] = useState(false);
   const foodSetting = getSetting("food");
 
   if (foodSetting && !foodSetting.isEnabled) {
@@ -341,26 +342,24 @@ export default function FoodPage() {
     const vendorsRes = await query;
 
     if (vendorsRes.data) {
-      let filteredVendors = vendorsRes.data;
+      let filteredVendors: any[] = [];
 
-      if (userPincode) {
-        const pincodeVendors = vendorsRes.data.filter((v: any) => v.pincode === userPincode);
-        if (pincodeVendors.length > 0) {
-          filteredVendors = pincodeVendors;
-        } else {
-          setNoLocalVendors(true);
-        }
-      } else if (userCity) {
-        const cityLower = userCity.toLowerCase();
-        const localVendors = vendorsRes.data.filter((v: any) => {
-          const vendorCity = (v.city || v.address || "").toLowerCase();
-          return vendorCity.includes(cityLower);
+      if (userPincode || userCity) {
+        const cityLower = (userCity || "").toLowerCase();
+        // Strict: only pincode OR city match
+        filteredVendors = vendorsRes.data.filter((v: any) => {
+          const pincodeMatch = userPincode && v.pincode === userPincode;
+          const cityMatch = cityLower && v.city?.toLowerCase() === cityLower;
+          return pincodeMatch || cityMatch;
         });
-        if (localVendors.length > 0) {
-          filteredVendors = localVendors;
-        } else {
+
+        if (filteredVendors.length === 0) {
           setNoLocalVendors(true);
+          // Don't fall back — show empty
         }
+      } else {
+        // No location set — show all
+        filteredVendors = vendorsRes.data;
       }
 
       setRestaurants(filteredVendors);
@@ -417,14 +416,19 @@ export default function FoodPage() {
     <PullToRefresh onRefresh={handleRefresh} className="min-h-screen bg-[#fff4f4]">
       {/* Pincode Verification Banner */}
       {userPincode && (
-        <div className={`px-4 py-2 ${noLocalVendors ? "bg-amber-50 border-b border-amber-200" : "bg-green-50 border-b border-green-200"} flex items-center gap-2`}>
-          <span className={`material-symbols-outlined text-sm ${noLocalVendors ? "text-amber-600" : "text-green-600"}`}>location_on</span>
-          <p className={`text-[11px] font-bold ${noLocalVendors ? "text-amber-700" : "text-green-700"}`}>
+        <div className={`px-4 py-2 ${noLocalVendors ? "bg-red-50 border-b border-red-200" : "bg-green-50 border-b border-green-200"} flex items-center gap-2`}>
+          <span className={`material-symbols-outlined text-sm ${noLocalVendors ? "text-red-500" : "text-green-600"}`}>location_on</span>
+          <p className={`text-[11px] font-bold flex-1 ${noLocalVendors ? "text-red-700" : "text-green-700"}`}>
             {noLocalVendors
-              ? `No restaurants delivering to ${userPincode}. Showing all vendors.`
-              : `Showing restaurants delivering to ${userPincode}`
+              ? `No restaurants available near ${locationStore.displayAddress}`
+              : `Showing restaurants near ${locationStore.displayAddress}`
             }
           </p>
+          {noLocalVendors && (
+            <button onClick={() => setShowLocationModal(true)} className="text-[10px] font-black text-[#ba001c] underline whitespace-nowrap">
+              Change
+            </button>
+          )}
         </div>
       )}
       <header className="bg-white px-6 py-4 sticky top-0 z-10 shadow-sm">
@@ -495,6 +499,22 @@ export default function FoodPage() {
                 </div>
               </div>
             ))}
+          </div>
+        ) : noLocalVendors ? (
+          <div className="bg-white rounded-2xl p-8 text-center shadow-sm">
+            <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span className="material-symbols-outlined text-4xl text-red-400">location_off</span>
+            </div>
+            <h3 className="text-lg font-black text-slate-800 mb-1">Not Available in Your Area</h3>
+            <p className="text-sm text-slate-500 mb-1">We couldn't find any restaurants near</p>
+            <p className="text-sm font-bold text-[#ba001c] mb-4">{locationStore.displayAddress}</p>
+            <p className="text-xs text-slate-400 mb-5">We're expanding every day! Try a nearby pincode or check back soon.</p>
+            <button
+              onClick={() => setShowLocationModal(true)}
+              className="px-6 py-3 bg-[#ba001c] text-white rounded-xl font-bold text-sm"
+            >
+              Change Location
+            </button>
           </div>
         ) : filteredRestaurants.length === 0 ? (
           <div className="text-center py-8 text-slate-500">No restaurants found</div>
