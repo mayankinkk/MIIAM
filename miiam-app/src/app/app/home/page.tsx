@@ -93,10 +93,23 @@ export default function HomePage() {
       
       const { data: vendors } = await supabase.from("vendors").select("*").order("created_at", { ascending: false }).limit(50);
       if (vendors) {
-        // Sort: pincode-matching vendors first, then all others — never hide vendors
-        const local = vendors.filter((v: any) => v.pincode === pincode);
-        const others = vendors.filter((v: any) => v.pincode !== pincode);
-        const sorted = [...local, ...others];
+        const userCity = locationStore.city?.toLowerCase() || "";
+        
+        // Tier 1: exact pincode match
+        const pinMatches = vendors.filter((v: any) => v.pincode === pincode);
+        // Tier 2: city match (if no pincode on vendor but city matches)
+        const cityMatches = vendors.filter((v: any) =>
+          v.pincode !== pincode &&
+          userCity &&
+          (v.city?.toLowerCase() === userCity || v.state?.toLowerCase().includes(userCity))
+        );
+        // Tier 3: everything else
+        const others = vendors.filter((v: any) =>
+          v.pincode !== pincode &&
+          !(userCity && (v.city?.toLowerCase() === userCity || v.state?.toLowerCase().includes(userCity)))
+        );
+        
+        const sorted = [...pinMatches, ...cityMatches, ...others];
         
         setNearbyRestaurants(sorted);
         setFeaturedRestaurants(sorted.filter((v: any) => v.is_featured || v.is_promoted).slice(0, 6));
@@ -127,7 +140,7 @@ export default function HomePage() {
     return () => {
       if (realtimeChannel) supabase.removeChannel(realtimeChannel);
     };
-  }, [locationStore.pincode, supabase]);
+  }, [locationStore.pincode, locationStore.city, supabase]);
 
   const hour = new Date().getHours();
   let greeting = "Good evening";
@@ -417,8 +430,8 @@ export default function HomePage() {
             <span className={`material-symbols-outlined text-sm ${localServiceable ? "text-green-600" : "text-amber-600"}`}>location_on</span>
             <p className={`text-[11px] font-bold ${localServiceable ? "text-green-700" : "text-amber-700"}`}>
               {checkingPincode ? "Checking availability..." : localServiceable
-                ? `Showing vendors delivering to ${locationStore.pincode}`
-                : `No vendors available at ${locationStore.pincode}. Showing all instead.`
+                ? `Showing nearby vendors for ${locationStore.displayAddress}`
+                : `No exact match for ${locationStore.pincode}. Showing nearby by city.`
               }
             </p>
           </div>
