@@ -115,10 +115,7 @@ export default function PartnerMenuPage() {
 
   async function loadItems() {
     setLoading(true);
-    let query = supabase.from(table).select("*").order("name");
-    if (vendorKey === "food") {
-      query = query.eq("vendor_id", selectedVendorId);
-    }
+    let query = supabase.from(table).select("*").eq("vendor_id", selectedVendorId).order("name");
     const { data } = await query;
     if (data) setItems(data);
     setLoading(false);
@@ -141,9 +138,9 @@ export default function PartnerMenuPage() {
       name: newItem.name,
       price: parseFloat(newItem.price),
       category: newItem.category || categories[0],
+      vendor_id: selectedVendorId,
     };
     if (vendorKey === "food") {
-      base.vendor_id = selectedVendorId;
       base.description = newItem.description || null;
       base.is_veg = newItem.is_veg;
       base.available = true;
