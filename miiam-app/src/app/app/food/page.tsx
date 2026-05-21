@@ -425,7 +425,7 @@ export default function FoodPage() {
             }
           </p>
           {noLocalVendors && (
-            <button onClick={() => setShowLocationModal(true)} className="text-[10px] font-black text-[#ba001c] underline whitespace-nowrap">
+            <button onClick={() => { window.location.href = "/app/home?selectLocation=true"; }} className="text-[10px] font-black text-[#ba001c] underline whitespace-nowrap">
               Change
             </button>
           )}
@@ -510,7 +510,7 @@ export default function FoodPage() {
             <p className="text-sm font-bold text-[#ba001c] mb-4">{locationStore.displayAddress}</p>
             <p className="text-xs text-slate-400 mb-5">We're expanding every day! Try a nearby pincode or check back soon.</p>
             <button
-              onClick={() => setShowLocationModal(true)}
+              onClick={() => { window.location.href = "/app/home?selectLocation=true"; }}
               className="px-6 py-3 bg-[#ba001c] text-white rounded-xl font-bold text-sm"
             >
               Change Location

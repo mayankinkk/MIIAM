@@ -46,6 +46,14 @@ export default function HomePage() {
   const userPincode = locationStore.pincode;
 
   useEffect(() => {
+    // Check if redirecting from another page requesting location change
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("selectLocation") === "true") {
+        setShowLocationModal(true);
+      }
+    }
+
     async function checkAndLoad() {
       // Fetch user profile for greeting
       const { data: { user } } = await supabase.auth.getUser();
