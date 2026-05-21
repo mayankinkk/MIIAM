@@ -3,43 +3,90 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
-interface MenuItem {
-  id: string;
-  name: string;
-  price: number;
-  category: string;
-  image_url?: string;
-  vendor_id: string;
-  available: boolean;
-  description?: string;
-  is_veg?: boolean;
-}
-
 interface Vendor {
   id: string;
   shop_name: string;
   type?: string;
 }
 
-const defaultCategories = ["Main Course", "Starters", "Beverages", "Desserts", "Snacks", "Rice", "Breads"];
+interface BaseItem {
+  id: string;
+  name: string;
+  price: number;
+  category: string;
+  image_url?: string;
+  created_at: string;
+}
+
+interface MenuItem extends BaseItem {
+  vendor_id: string;
+  available: boolean;
+  description?: string;
+  is_veg?: boolean;
+}
+
+interface GroceryItem extends BaseItem {
+  stock: number;
+}
+
+interface PharmacyItem extends BaseItem {
+  stock: number;
+  requires_prescription: boolean;
+}
+
+interface FlowerItem extends BaseItem {
+  description?: string;
+}
+
+type AnyItem = MenuItem | GroceryItem | PharmacyItem | FlowerItem;
+
+const CATEGORIES: Record<string, string[]> = {
+  food: ["Main Course", "Starters", "Beverages", "Desserts", "Snacks", "Rice", "Breads"],
+  grocery: ["Fruits", "Vegetables", "Dairy", "Bakery", "Spices", "Pulses", "Oils", "Beverages"],
+  pharmacy: ["Pain Relief", "Antibiotics", "Vitamins", "Diabetes", "Blood Pressure", "Heart Care", "Cold & Flu", "Skin Care", "Baby Care"],
+  flowers: ["Bouquets", "Arrangements", "Combos", "Hampers", "Sympathy", "Corporate"],
+};
+
+const TABLE_MAP: Record<string, string> = {
+  food: "menu_items",
+  grocery: "grocery_products",
+  pharmacy: "pharmacy_medicines",
+  flowers: "flower_items",
+};
+
+function getVendorKey(type?: string): string {
+  if (type === "grocery") return "grocery";
+  if (type === "pharmacy") return "pharmacy";
+  if (type === "flowers") return "flowers";
+  return "food";
+}
 
 export default function PartnerMenuPage() {
   const supabase = createClient();
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [selectedVendorId, setSelectedVendorId] = useState("");
-  const [items, setItems] = useState<MenuItem[]>([]);
+  const [items, setItems] = useState<AnyItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
+  const [editingItem, setEditingItem] = useState<AnyItem | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
-  const [newItem, setNewItem] = useState({
+
+  const [newItem, setNewItem] = useState<Record<string, any>>({
     name: "",
     price: "",
-    category: "Main Course",
+    category: "",
     description: "",
     is_veg: true,
+    stock: "",
+    requires_prescription: false,
   });
+
+  const selectedVendor = vendors.find(v => v.id === selectedVendorId);
+  const vendorKey = selectedVendor ? getVendorKey(selectedVendor.type) : "food";
+  const vendorType = selectedVendor?.type || "food";
+  const table = TABLE_MAP[vendorKey];
+  const categories = CATEGORIES[vendorKey];
 
   useEffect(() => {
     loadVendors();
@@ -68,14 +115,71 @@ export default function PartnerMenuPage() {
 
   async function loadItems() {
     setLoading(true);
-    const { data } = await supabase
-      .from("menu_items")
-      .select("*")
-      .eq("vendor_id", selectedVendorId)
-      .order("category")
-      .order("name");
+    let query = supabase.from(table).select("*").order("name");
+    if (vendorKey === "food") {
+      query = query.eq("vendor_id", selectedVendorId);
+    }
+    const { data } = await query;
     if (data) setItems(data);
     setLoading(false);
+  }
+
+  function resetNewItem() {
+    setNewItem({
+      name: "",
+      price: "",
+      category: categories[0] || "",
+      description: "",
+      is_veg: true,
+      stock: "",
+      requires_prescription: false,
+    });
+  }
+
+  function buildInsertPayload() {
+    const base: Record<string, any> = {
+      name: newItem.name,
+      price: parseFloat(newItem.price),
+      category: newItem.category || categories[0],
+    };
+    if (vendorKey === "food") {
+      base.vendor_id = selectedVendorId;
+      base.description = newItem.description || null;
+      base.is_veg = newItem.is_veg;
+      base.available = true;
+    } else if (vendorKey === "grocery") {
+      base.stock = parseInt(newItem.stock) || 0;
+    } else if (vendorKey === "pharmacy") {
+      base.stock = parseInt(newItem.stock) || 0;
+      base.requires_prescription = newItem.requires_prescription;
+    } else if (vendorKey === "flowers") {
+      base.description = newItem.description || null;
+    }
+    return base;
+  }
+
+  function buildUpdatePayload(item: AnyItem) {
+    const base: Record<string, any> = {
+      name: item.name,
+      price: item.price,
+      category: item.category,
+    };
+    if (vendorKey === "food") {
+      const m = item as MenuItem;
+      base.description = m.description || null;
+      base.is_veg = m.is_veg;
+    } else if (vendorKey === "grocery") {
+      const g = item as GroceryItem;
+      base.stock = g.stock;
+    } else if (vendorKey === "pharmacy") {
+      const p = item as PharmacyItem;
+      base.stock = p.stock;
+      base.requires_prescription = p.requires_prescription;
+    } else if (vendorKey === "flowers") {
+      const f = item as FlowerItem;
+      base.description = f.description || null;
+    }
+    return base;
   }
 
   const handleAddItem = async () => {
@@ -84,18 +188,11 @@ export default function PartnerMenuPage() {
       return;
     }
     try {
-      const { error } = await supabase.from("menu_items").insert({
-        name: newItem.name,
-        price: parseFloat(newItem.price),
-        category: newItem.category,
-        vendor_id: selectedVendorId,
-        description: newItem.description || null,
-        is_veg: newItem.is_veg,
-        available: true,
-      });
+      const payload = buildInsertPayload();
+      const { error } = await supabase.from(table).insert(payload);
       if (error) throw error;
       setShowAddModal(false);
-      setNewItem({ name: "", price: "", category: "Main Course", description: "", is_veg: true });
+      resetNewItem();
       loadItems();
     } catch (error: any) {
       alert("Failed: " + error.message);
@@ -105,16 +202,8 @@ export default function PartnerMenuPage() {
   const handleUpdateItem = async () => {
     if (!editingItem) return;
     try {
-      const { error } = await supabase
-        .from("menu_items")
-        .update({
-          name: editingItem.name,
-          price: editingItem.price,
-          category: editingItem.category,
-          description: editingItem.description,
-          is_veg: editingItem.is_veg,
-        })
-        .eq("id", editingItem.id);
+      const payload = buildUpdatePayload(editingItem);
+      const { error } = await supabase.from(table).update(payload).eq("id", editingItem.id);
       if (error) throw error;
       setEditingItem(null);
       loadItems();
@@ -126,27 +215,38 @@ export default function PartnerMenuPage() {
   const handleDeleteItem = async (id: string) => {
     if (!confirm("Delete this item?")) return;
     try {
-      await supabase.from("menu_items").delete().eq("id", id);
+      await supabase.from(table).delete().eq("id", id);
       setItems(items.filter(i => i.id !== id));
     } catch (error: any) {
       alert("Failed: " + error.message);
     }
   };
 
-  const toggleAvailability = async (item: MenuItem) => {
+  const toggleAvailability = async (item: AnyItem) => {
+    const m = item as MenuItem;
     try {
-      await supabase
-        .from("menu_items")
-        .update({ available: !item.available })
-        .eq("id", item.id);
-      setItems(items.map(i => i.id === item.id ? { ...i, available: !i.available } : i));
+      await supabase.from(table).update({ available: !m.available }).eq("id", item.id);
+      setItems(items.map(i => i.id === item.id ? { ...i, available: !m.available } as AnyItem : i));
     } catch (error: any) {
       alert("Failed: " + error.message);
     }
   };
 
-  const selectedVendor = vendors.find(v => v.id === selectedVendorId);
-  const categories = [...new Set(items.map(i => i.category).filter(Boolean))];
+  const handleStockChange = async (item: AnyItem, delta: number) => {
+    let newStock = 0;
+    if (vendorKey === "grocery") {
+      newStock = (item as GroceryItem).stock + delta;
+    } else if (vendorKey === "pharmacy") {
+      newStock = (item as PharmacyItem).stock + delta;
+    }
+    if (newStock < 0) return;
+    try {
+      await supabase.from(table).update({ stock: newStock }).eq("id", item.id);
+      setItems(items.map(i => i.id === item.id ? { ...i, stock: newStock } as AnyItem : i));
+    } catch (error: any) {
+      alert("Failed: " + error.message);
+    }
+  };
 
   const filteredItems = items.filter(item => {
     const matchesSearch = searchQuery === "" ||
@@ -155,12 +255,16 @@ export default function PartnerMenuPage() {
     return matchesSearch && matchesCategory;
   });
 
+  const pageTitle = vendorKey === "food" ? "Menu Items" :
+    vendorKey === "grocery" ? "Grocery Products" :
+    vendorKey === "pharmacy" ? "Medicines" : "Flower Items";
+
   return (
     <div className="p-4 md:p-8 space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Menu & Inventory</h1>
-          <p className="text-slate-500 text-sm mt-1">Manage your menu items and pricing</p>
+          <p className="text-slate-500 text-sm mt-1">{pageTitle}</p>
         </div>
         <div className="flex items-center gap-3">
           <select
@@ -169,15 +273,17 @@ export default function PartnerMenuPage() {
             className="px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-bold bg-white"
           >
             {vendors.map(v => (
-              <option key={v.id} value={v.id}>{v.shop_name}</option>
+              <option key={v.id} value={v.id}>
+                {v.shop_name}{v.type ? ` (${v.type})` : ""}
+              </option>
             ))}
           </select>
           <button
-            onClick={() => setShowAddModal(true)}
+            onClick={() => { resetNewItem(); setShowAddModal(true); }}
             className="bg-[#ba001c] text-white px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2"
           >
             <span className="material-symbols-outlined text-lg">add</span>
-            Add Item
+            Add {vendorKey === "food" ? "Item" : vendorKey === "grocery" ? "Product" : vendorKey === "pharmacy" ? "Medicine" : "Item"}
           </button>
         </div>
       </div>
@@ -212,16 +318,16 @@ export default function PartnerMenuPage() {
           <div className="p-12 text-center text-slate-400 font-medium">Loading items...</div>
         ) : filteredItems.length === 0 ? (
           <div className="p-12 text-center">
-            <span className="material-symbols-outlined text-5xl text-slate-300 mb-3">restaurant_menu</span>
-            <p className="text-slate-400 font-medium">No menu items found</p>
-            {selectedVendor && (
-              <button
-                onClick={() => setShowAddModal(true)}
-                className="mt-4 text-[#ba001c] font-bold text-sm hover:underline"
-              >
-                Add your first item
-              </button>
-            )}
+            <span className="material-symbols-outlined text-5xl text-slate-300 mb-3">
+              {vendorKey === "grocery" ? "shopping_cart" : vendorKey === "pharmacy" ? "medication" : vendorKey === "flowers" ? "local_florist" : "restaurant_menu"}
+            </span>
+            <p className="text-slate-400 font-medium">No {pageTitle.toLowerCase()} found</p>
+            <button
+              onClick={() => { resetNewItem(); setShowAddModal(true); }}
+              className="mt-4 text-[#ba001c] font-bold text-sm hover:underline"
+            >
+              Add your first {vendorKey === "pharmacy" ? "medicine" : vendorKey === "grocery" ? "product" : "item"}
+            </button>
           </div>
         ) : (
           <table className="w-full text-left">
@@ -229,8 +335,18 @@ export default function PartnerMenuPage() {
               <tr>
                 <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Item</th>
                 <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Category</th>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Type</th>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
+                {vendorKey === "food" && (
+                  <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Type</th>
+                )}
+                {(vendorKey === "grocery" || vendorKey === "pharmacy") && (
+                  <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Stock</th>
+                )}
+                {vendorKey === "pharmacy" && (
+                  <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Rx</th>
+                )}
+                {vendorKey === "food" && (
+                  <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
+                )}
                 <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Price</th>
                 <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
               </tr>
@@ -244,13 +360,18 @@ export default function PartnerMenuPage() {
                         {item.image_url ? (
                           <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
                         ) : (
-                          <span className="material-symbols-outlined text-slate-400">restaurant</span>
+                          <span className="material-symbols-outlined text-slate-400">
+                            {vendorKey === "grocery" ? "shopping_cart" : vendorKey === "pharmacy" ? "medication" : vendorKey === "flowers" ? "local_florist" : "restaurant"}
+                          </span>
                         )}
                       </div>
                       <div>
                         <p className="font-bold text-slate-800">{item.name}</p>
-                        {item.description && (
-                          <p className="text-xs text-slate-400 mt-0.5">{item.description}</p>
+                        {(item as MenuItem).description && (
+                          <p className="text-xs text-slate-400 mt-0.5">{(item as MenuItem).description}</p>
+                        )}
+                        {(item as FlowerItem).description && (
+                          <p className="text-xs text-slate-400 mt-0.5">{(item as FlowerItem).description}</p>
                         )}
                       </div>
                     </div>
@@ -258,24 +379,56 @@ export default function PartnerMenuPage() {
                   <td className="p-4">
                     <span className="text-xs font-semibold text-slate-500">{item.category}</span>
                   </td>
-                  <td className="p-4">
-                    <span className={`inline-flex items-center gap-1 text-xs font-bold ${item.is_veg ? 'text-green-600' : 'text-red-600'}`}>
-                      <span className={`w-2 h-2 rounded-sm ${item.is_veg ? 'bg-green-500' : 'bg-red-500'}`}></span>
-                      {item.is_veg ? 'Veg' : 'Non-Veg'}
-                    </span>
-                  </td>
-                  <td className="p-4">
-                    <button
-                      onClick={() => toggleAvailability(item)}
-                      className={`text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider ${
-                        item.available
-                          ? "bg-green-100 text-green-700"
-                          : "bg-red-100 text-red-700"
-                      }`}
-                    >
-                      {item.available ? "Available" : "Unavailable"}
-                    </button>
-                  </td>
+                  {vendorKey === "food" && (
+                    <td className="p-4">
+                      <span className={`inline-flex items-center gap-1 text-xs font-bold ${(item as MenuItem).is_veg ? 'text-green-600' : 'text-red-600'}`}>
+                        <span className={`w-2 h-2 rounded-sm ${(item as MenuItem).is_veg ? 'bg-green-500' : 'bg-red-500'}`}></span>
+                        {(item as MenuItem).is_veg ? 'Veg' : 'Non-Veg'}
+                      </span>
+                    </td>
+                  )}
+                  {(vendorKey === "grocery" || vendorKey === "pharmacy") && (
+                    <td className="p-4">
+                      <div className="flex items-center gap-2">
+                        {'stock' in item && (
+                          <>
+                            <button
+                              onClick={() => handleStockChange(item, -1)}
+                              className="w-6 h-6 bg-slate-100 rounded flex items-center justify-center hover:bg-slate-200 text-sm font-bold"
+                            >−</button>
+                            <span className={`text-sm font-bold min-w-[2ch] text-center ${(item as any).stock === 0 ? 'text-red-600' : (item as any).stock < 10 ? 'text-amber-600' : 'text-slate-800'}`}>
+                              {(item as any).stock}
+                            </span>
+                            <button
+                              onClick={() => handleStockChange(item, 1)}
+                              className="w-6 h-6 bg-slate-100 rounded flex items-center justify-center hover:bg-slate-200 text-sm font-bold"
+                            >+</button>
+                          </>
+                        )}
+                      </div>
+                    </td>
+                  )}
+                  {vendorKey === "pharmacy" && (
+                    <td className="p-4">
+                      {(item as PharmacyItem).requires_prescription && (
+                        <span className="text-[10px] font-bold px-2 py-1 bg-red-100 text-red-700 rounded-full uppercase">Rx</span>
+                      )}
+                    </td>
+                  )}
+                  {vendorKey === "food" && (
+                    <td className="p-4">
+                      <button
+                        onClick={() => toggleAvailability(item)}
+                        className={`text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider ${
+                          (item as MenuItem).available
+                            ? "bg-green-100 text-green-700"
+                            : "bg-red-100 text-red-700"
+                        }`}
+                      >
+                        {(item as MenuItem).available ? "Available" : "Unavailable"}
+                      </button>
+                    </td>
+                  )}
                   <td className="p-4 text-right">
                     <p className="font-extrabold text-slate-800">₹{item.price}</p>
                   </td>
@@ -307,19 +460,21 @@ export default function PartnerMenuPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowAddModal(false)}>
           <div className="bg-white w-full max-w-lg rounded-3xl p-6 m-4" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-extrabold text-slate-900">Add Menu Item</h2>
+              <h2 className="text-xl font-extrabold text-slate-900">
+                Add {vendorKey === "food" ? "Menu Item" : vendorKey === "grocery" ? "Product" : vendorKey === "pharmacy" ? "Medicine" : "Item"}
+              </h2>
               <button onClick={() => setShowAddModal(false)} className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-semibold text-slate-700">Item Name *</label>
+                <label className="text-sm font-semibold text-slate-700">Name *</label>
                 <input
                   type="text"
                   value={newItem.name}
                   onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
-                  placeholder="e.g., Butter Chicken"
+                  placeholder={vendorKey === "food" ? "e.g., Butter Chicken" : vendorKey === "grocery" ? "e.g., Organic Apples" : vendorKey === "pharmacy" ? "e.g., Paracetamol" : "e.g., Rose Bouquet"}
                   className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]"
                 />
               </div>
@@ -338,57 +493,87 @@ export default function PartnerMenuPage() {
               <div>
                 <label className="text-sm font-semibold text-slate-700">Category</label>
                 <select
-                  value={newItem.category}
+                  value={newItem.category || categories[0]}
                   onChange={(e) => setNewItem({ ...newItem, category: e.target.value })}
                   className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]"
                 >
-                  {defaultCategories.map(cat => (
+                  {categories.map(cat => (
                     <option key={cat} value={cat}>{cat}</option>
                   ))}
                 </select>
               </div>
-              <div>
-                <label className="text-sm font-semibold text-slate-700">Description</label>
-                <textarea
-                  value={newItem.description}
-                  onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
-                  placeholder="Brief description of the item"
-                  rows={2}
-                  className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c] resize-none"
-                />
-              </div>
-              <div>
-                <label className="text-sm font-semibold text-slate-700">Type</label>
-                <div className="flex gap-4 mt-2">
-                  <label className="flex items-center gap-2 cursor-pointer">
+              {(vendorKey === "food" || vendorKey === "flowers") && (
+                <div>
+                  <label className="text-sm font-semibold text-slate-700">Description</label>
+                  <textarea
+                    value={newItem.description}
+                    onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
+                    placeholder="Brief description"
+                    rows={2}
+                    className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c] resize-none"
+                  />
+                </div>
+              )}
+              {(vendorKey === "grocery" || vendorKey === "pharmacy") && (
+                <div>
+                  <label className="text-sm font-semibold text-slate-700">Stock Quantity</label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={newItem.stock}
+                    onChange={(e) => setNewItem({ ...newItem, stock: e.target.value })}
+                    placeholder="e.g., 100"
+                    className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]"
+                  />
+                </div>
+              )}
+              {vendorKey === "food" && (
+                <div>
+                  <label className="text-sm font-semibold text-slate-700">Type</label>
+                  <div className="flex gap-4 mt-2">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        checked={newItem.is_veg}
+                        onChange={() => setNewItem({ ...newItem, is_veg: true })}
+                        className="accent-[#ba001c]"
+                      />
+                      <span className="flex items-center gap-1 text-sm font-medium text-green-700">
+                        <span className="w-3 h-3 bg-green-500 rounded-sm"></span> Veg
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        checked={!newItem.is_veg}
+                        onChange={() => setNewItem({ ...newItem, is_veg: false })}
+                        className="accent-[#ba001c]"
+                      />
+                      <span className="flex items-center gap-1 text-sm font-medium text-red-700">
+                        <span className="w-3 h-3 bg-red-500 rounded-sm"></span> Non-Veg
+                      </span>
+                    </label>
+                  </div>
+                </div>
+              )}
+              {vendorKey === "pharmacy" && (
+                <div>
+                  <label className="flex items-center gap-3 cursor-pointer">
                     <input
-                      type="radio"
-                      checked={newItem.is_veg}
-                      onChange={() => setNewItem({ ...newItem, is_veg: true })}
-                      className="accent-[#ba001c]"
+                      type="checkbox"
+                      checked={newItem.requires_prescription}
+                      onChange={(e) => setNewItem({ ...newItem, requires_prescription: e.target.checked })}
+                      className="w-5 h-5 accent-[#ba001c]"
                     />
-                    <span className="flex items-center gap-1 text-sm font-medium text-green-700">
-                      <span className="w-3 h-3 bg-green-500 rounded-sm"></span> Veg
-                    </span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      checked={!newItem.is_veg}
-                      onChange={() => setNewItem({ ...newItem, is_veg: false })}
-                      className="accent-[#ba001c]"
-                    />
-                    <span className="flex items-center gap-1 text-sm font-medium text-red-700">
-                      <span className="w-3 h-3 bg-red-500 rounded-sm"></span> Non-Veg
-                    </span>
+                    <span className="text-sm font-semibold text-slate-700">Requires Prescription</span>
                   </label>
                 </div>
-              </div>
+              )}
               <button
                 onClick={handleAddItem}
                 className="w-full py-4 bg-[#ba001c] text-white font-extrabold rounded-2xl mt-4 hover:bg-[#a40017] transition-colors"
               >
-                Add Item
+                Add {vendorKey === "pharmacy" ? "Medicine" : vendorKey === "grocery" ? "Product" : "Item"}
               </button>
             </div>
           </div>
@@ -400,14 +585,14 @@ export default function PartnerMenuPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setEditingItem(null)}>
           <div className="bg-white w-full max-w-lg rounded-3xl p-6 m-4" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-extrabold text-slate-900">Edit Menu Item</h2>
+              <h2 className="text-xl font-extrabold text-slate-900">Edit Item</h2>
               <button onClick={() => setEditingItem(null)} className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-semibold text-slate-700">Item Name</label>
+                <label className="text-sm font-semibold text-slate-700">Name</label>
                 <input
                   type="text"
                   value={editingItem.name}
@@ -433,47 +618,76 @@ export default function PartnerMenuPage() {
                   onChange={(e) => setEditingItem({ ...editingItem, category: e.target.value })}
                   className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]"
                 >
-                  {defaultCategories.map(cat => (
+                  {categories.map(cat => (
                     <option key={cat} value={cat}>{cat}</option>
                   ))}
                 </select>
               </div>
-              <div>
-                <label className="text-sm font-semibold text-slate-700">Description</label>
-                <textarea
-                  value={editingItem.description || ""}
-                  onChange={(e) => setEditingItem({ ...editingItem, description: e.target.value })}
-                  rows={2}
-                  className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c] resize-none"
-                />
-              </div>
-              <div>
-                <label className="text-sm font-semibold text-slate-700">Type</label>
-                <div className="flex gap-4 mt-2">
-                  <label className="flex items-center gap-2 cursor-pointer">
+              {(vendorKey === "food" || vendorKey === "flowers") && (
+                <div>
+                  <label className="text-sm font-semibold text-slate-700">Description</label>
+                  <textarea
+                    value={(editingItem as MenuItem).description || ""}
+                    onChange={(e) => setEditingItem({ ...editingItem, description: e.target.value })}
+                    rows={2}
+                    className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c] resize-none"
+                  />
+                </div>
+              )}
+              {(vendorKey === "grocery" || vendorKey === "pharmacy") && (
+                <div>
+                  <label className="text-sm font-semibold text-slate-700">Stock Quantity</label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={(editingItem as any).stock}
+                    onChange={(e) => setEditingItem({ ...editingItem, stock: parseInt(e.target.value) || 0 })}
+                    className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]"
+                  />
+                </div>
+              )}
+              {vendorKey === "food" && (
+                <div>
+                  <label className="text-sm font-semibold text-slate-700">Type</label>
+                  <div className="flex gap-4 mt-2">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        checked={(editingItem as MenuItem).is_veg}
+                        onChange={() => setEditingItem({ ...editingItem, is_veg: true })}
+                        className="accent-[#ba001c]"
+                      />
+                      <span className="flex items-center gap-1 text-sm font-medium text-green-700">
+                        <span className="w-3 h-3 bg-green-500 rounded-sm"></span> Veg
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        checked={!(editingItem as MenuItem).is_veg}
+                        onChange={() => setEditingItem({ ...editingItem, is_veg: false })}
+                        className="accent-[#ba001c]"
+                      />
+                      <span className="flex items-center gap-1 text-sm font-medium text-red-700">
+                        <span className="w-3 h-3 bg-red-500 rounded-sm"></span> Non-Veg
+                      </span>
+                    </label>
+                  </div>
+                </div>
+              )}
+              {vendorKey === "pharmacy" && (
+                <div>
+                  <label className="flex items-center gap-3 cursor-pointer">
                     <input
-                      type="radio"
-                      checked={editingItem.is_veg}
-                      onChange={() => setEditingItem({ ...editingItem, is_veg: true })}
-                      className="accent-[#ba001c]"
+                      type="checkbox"
+                      checked={(editingItem as PharmacyItem).requires_prescription}
+                      onChange={(e) => setEditingItem({ ...editingItem, requires_prescription: e.target.checked })}
+                      className="w-5 h-5 accent-[#ba001c]"
                     />
-                    <span className="flex items-center gap-1 text-sm font-medium text-green-700">
-                      <span className="w-3 h-3 bg-green-500 rounded-sm"></span> Veg
-                    </span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      checked={!editingItem.is_veg}
-                      onChange={() => setEditingItem({ ...editingItem, is_veg: false })}
-                      className="accent-[#ba001c]"
-                    />
-                    <span className="flex items-center gap-1 text-sm font-medium text-red-700">
-                      <span className="w-3 h-3 bg-red-500 rounded-sm"></span> Non-Veg
-                    </span>
+                    <span className="text-sm font-semibold text-slate-700">Requires Prescription</span>
                   </label>
                 </div>
-              </div>
+              )}
               <div className="flex gap-3">
                 <button
                   onClick={() => setEditingItem(null)}
