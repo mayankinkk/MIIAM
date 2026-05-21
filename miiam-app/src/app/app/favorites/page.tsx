@@ -5,6 +5,7 @@ import { useFavoritesStore } from "@/lib/store/favoritesStore";
 import { createClient } from "@/lib/supabase/client";
 import EmptyState from "@/components/EmptyState";
 import { VendorCardSkeleton } from "@/components/Skeleton";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { useState, useEffect } from "react";
 
 const supabase = createClient();
@@ -82,6 +83,8 @@ export default function FavoritesPage() {
         <span className="text-2xl font-extrabold tracking-tighter text-[#ba001c]">MIIAM</span>
         <span className="text-[#4d212a] font-semibold ml-2">Favourites</span>
       </header>
+
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'My Favorites' }]} />
 
       <main className="pt-24 pb-32 px-6 max-w-4xl mx-auto">
         <section className="mb-10">

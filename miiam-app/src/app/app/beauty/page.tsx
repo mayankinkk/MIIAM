@@ -8,6 +8,7 @@ import ServiceUnavailable from "@/components/ServiceUnavailable";
 import { useLocationStore } from "@/lib/store/locationStore";
 import { useToastStore } from "@/lib/store/toastStore";
 import { createClient } from "@/lib/supabase/client";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 const categories = [
   { id: "salon", label: "Salon at Home", icon: "content_cut", color: "from-pink-500 to-pink-400", emoji: "💇‍♀️" },
@@ -169,6 +170,8 @@ export default function BeautyPage() {
           <input type="text" placeholder="Search for services..." className="w-full pl-9 pr-4 py-2.5 rounded-lg text-slate-800 text-sm" />
         </div>
       </header>
+
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Beauty & Wellness' }]} />
 
       {/* Location / Availability Banner */}
       {!isServiceable && (userPincode || userCity) && (

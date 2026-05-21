@@ -2,6 +2,7 @@
 
 import { use, useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
@@ -260,7 +261,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
           <span className="material-symbols-outlined text-[#4d212a] cursor-pointer hover:opacity-80 transition-opacity">account_circle</span>
         </div>
       </nav>
-
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'My Orders', href: '/app/orders' }, { label: `Order #${id.slice(0, 8).toUpperCase()}` }]} />
       <div className="bg-gradient-to-b from-[#ffe1e4] to-transparent h-2 mt-16" />
 
       <main className="pt-6 pb-12 min-h-screen">

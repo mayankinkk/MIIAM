@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { createClient } from "@/lib/supabase/client";
 
 const supabase = createClient();
@@ -83,6 +84,8 @@ export default function SupportChatPage() {
           </div>
         </div>
       </header>
+
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Help & Support', href: '/app/support' }, { label: 'Chat' }]} />
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3 pb-40">

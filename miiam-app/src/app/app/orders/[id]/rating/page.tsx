@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, use } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 function AnimatedStarRating({ 
   rating, 
@@ -226,7 +227,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
           </div>
         </div>
       </header>
-
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'My Orders', href: '/app/orders' }, { label: 'Rate & Review' }]} />
       <main className="pt-24 pb-12 px-6 max-w-md mx-auto space-y-6">
         <section className="text-center space-y-2">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-[#ffd2d7] rounded-full mb-4">

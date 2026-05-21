@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useFavoritesStore } from "@/lib/store/favoritesStore";
 import { ProfileSkeleton, MenuItemSkeleton } from "@/components/Skeleton";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 const supabase = createClient();
 
@@ -408,6 +409,8 @@ export default function RestaurantProfilePage() {
           </div>
         </div>
       </div>
+
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Food', href: '/app/food' }, { label: vendor.shop_name }]} />
 
       {/* Info Strip */}
       <div className="bg-white px-5 py-4 flex items-center gap-4 overflow-x-auto no-scrollbar shadow-sm border-b border-slate-100">

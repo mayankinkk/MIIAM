@@ -9,6 +9,7 @@ import { useToastStore } from "@/lib/store/toastStore";
 import { useLocationStore } from "@/lib/store/locationStore";
 import AddressPickerSheet, { type SelectedAddress } from "@/components/AddressPickerSheet";
 import { RiderTipSelector, TipThankYou } from "@/components/RiderTip";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 interface PromoCode {
   code: string;
@@ -294,6 +295,8 @@ export default function CheckoutPage() {
         </div>
         <span className="text-[#4d212a] font-semibold hidden md:block">Checkout</span>
       </nav>
+
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Cart', href: '/app/cart' }, { label: 'Checkout' }]} />
 
       <main className="pt-24 pb-32 px-6 max-w-7xl mx-auto">
         <header className="mb-12">

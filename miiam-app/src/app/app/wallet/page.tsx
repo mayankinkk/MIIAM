@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 interface WalletTransaction {
   id: string;
@@ -75,6 +76,8 @@ export default function WalletPage() {
         </div>
         <span className="text-slate-800 font-bold hidden md:block">Wallet</span>
       </nav>
+
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Profile', href: '/app/profile' }, { label: 'Wallet' }]} />
 
       <main className="pt-24 max-w-2xl mx-auto px-4">
         

@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 interface AddressCardProps {
   address: any;
@@ -350,6 +351,8 @@ export default function AddressBookPage() {
           </Link>
         </div>
       </header>
+
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Profile', href: '/app/profile' }, { label: 'Addresses' }]} />
 
       {/* Content */}
       <main className="max-w-2xl mx-auto px-4 py-6">

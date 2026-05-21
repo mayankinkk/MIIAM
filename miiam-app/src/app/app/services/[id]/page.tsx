@@ -3,6 +3,7 @@
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCartStore } from "@/lib/store/cartStore";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 const servicesData: Record<string, any> = {
   s1: { 
@@ -142,6 +143,8 @@ function ServiceDetailContent() {
         <span className="text-xl font-black text-gray-800">MIIAM</span>
         <div className="w-10" />
       </nav>
+
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Home Services', href: '/app/services' }, { label: service.name }]} />
 
       <div className="pt-16">
         <img src={service.image} alt={service.name} className="w-full h-64 object-cover" />

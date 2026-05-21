@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useLanguageStore } from "@/lib/store/languageStore";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 const LANGUAGES = [
   { code: "en", label: "English", native: "English", flag: "🇺🇸" },
@@ -21,6 +22,8 @@ export default function LanguagePage() {
           <h1 className="text-xl font-black text-on-background">Language</h1>
         </div>
       </header>
+
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Settings', href: '/app/settings' }, { label: 'Language' }]} />
 
       <main className="p-6">
         <p className="text-sm text-on-surface-variant mb-6">Choose your preferred language. UI text will update immediately.</p>

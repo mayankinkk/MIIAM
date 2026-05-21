@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function VendorReviewsPage() {
   const params = useParams();
@@ -64,7 +65,7 @@ export default function VendorReviewsPage() {
           </div>
         </div>
       </header>
-
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Reviews' }]} />
       {/* Rating Summary */}
       <div className="bg-white border-b border-slate-100 p-4">
         <div className="flex items-center gap-6">

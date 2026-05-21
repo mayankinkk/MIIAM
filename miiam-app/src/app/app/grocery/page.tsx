@@ -7,6 +7,7 @@ import { useCartStore } from "@/lib/store/cartStore";
 import { useServiceSettingsStore } from "@/lib/store/serviceSettingsStore";
 import { useToastStore } from "@/lib/store/toastStore";
 import ServiceUnavailable from "@/components/ServiceUnavailable";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 import { useLocationStore } from "@/lib/store/locationStore";
 
@@ -180,18 +181,7 @@ export default function GroceryPage() {
         </div>
       </header>
 
-      {/* Breadcrumbs */}
-      <nav className="px-6 py-2.5 text-xs text-slate-500 font-medium flex items-center gap-2 bg-white border-b border-slate-100">
-        <Link href="/app/explore" className="hover:text-[#ba001c] transition-colors">Home</Link>
-        <span className="text-slate-300">/</span>
-        <span className="text-[#ba001c] font-bold">Grocery</span>
-        {groceryVendor && (
-          <>
-            <span className="text-slate-300">/</span>
-            <span className="text-slate-700 font-semibold truncate max-w-[120px]">{groceryVendor.shop_name}</span>
-          </>
-        )}
-      </nav>
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Grocery' }, ...(groceryVendor ? [{ label: groceryVendor.shop_name }] : [])]} />
 
       {/* Location / Availability Banner */}
       {!isServiceable && (userPincode || userCity) && (

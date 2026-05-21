@@ -8,6 +8,7 @@ import ServiceUnavailable from "@/components/ServiceUnavailable";
 import { useLocationStore } from "@/lib/store/locationStore";
 import { useToastStore } from "@/lib/store/toastStore";
 import { createClient } from "@/lib/supabase/client";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 // ---------- Booking Modal ----------
 type Service = {
@@ -656,6 +657,8 @@ function ServicesContent() {
         </div>
         <p className="text-sm text-gray-500 mt-1">Professional services at your doorstep</p>
       </header>
+
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Home Services' }]} />
 
       {/* Location / Availability Banner */}
       {!isServiceable && (userPincode || userCity) && (

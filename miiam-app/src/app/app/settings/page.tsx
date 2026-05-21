@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 const supabase = createClient();
 
@@ -56,6 +57,8 @@ export default function SettingsPage() {
           <div className="w-10" />
         </div>
       </header>
+
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Profile', href: '/app/profile' }, { label: 'Settings' }]} />
 
       <main className="p-6">
         {settingsSections.map((section, sectionIndex) => (

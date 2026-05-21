@@ -6,6 +6,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cartStore";
 import CustomizationModal from "@/components/food/CustomizationModal";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function VendorPage() {
   const params = useParams();
@@ -124,6 +125,8 @@ const handleCustomizeItem = (item: any) => {
           <p className="text-slate-600 text-sm mt-1">{vendor.cuisine} • {vendor.address}</p>
         </div>
       </div>
+
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: vendor.shop_name }]} />
 
       {/* Restaurant Info Bar */}
       <div className="bg-white border-b border-slate-100 px-4 py-3">

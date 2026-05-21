@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 interface DetectedLocation {
   lat: number;
@@ -371,6 +372,8 @@ export default function AddressPickerPage() {
           </div>
         </div>
       </header>
+
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Addresses', href: '/app/addresses' }, { label: 'Add Address' }]} />
 
       <div className="flex-1 relative pt-[60px]">
         <div ref={mapRef} className="absolute inset-0" />

@@ -3,6 +3,7 @@
 import { use, useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 type RefundStatus = "requested" | "processing" | "approved" | "completed" | "rejected";
 
@@ -107,7 +108,7 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
         <span className="text-xl font-extrabold tracking-tighter text-[#ba001c]">MIIAM</span>
         <div className="w-10" />
       </nav>
-
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'My Orders', href: '/app/orders' }, { label: 'Refund' }]} />
       <main className="pt-24 pb-12 px-6 max-w-lg mx-auto">
         {showRefundSuccess && (
           <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl flex items-center gap-3">

@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { useCartStore } from "@/lib/store/cartStore";
 import { OrderSkeleton } from "@/components/Skeleton";
 import EmptyState from "@/components/EmptyState";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 const statusColors: Record<string, string> = {
   pending: "bg-[#ffd709]/20 text-[#453900]",
@@ -147,7 +148,7 @@ export default function OrdersPage() {
       <header className="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-[#fff4f4]/80 backdrop-blur-2xl shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
         <span className="text-2xl font-extrabold tracking-tighter text-[#ba001c]">MIIAM</span>
       </header>
-
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'My Orders' }]} />
       <main className="pt-24 pb-32 px-6 max-w-4xl mx-auto">
         <section className="mb-10">
           <h1 className="text-[3.5rem] font-extrabold tracking-tight leading-none mb-2 text-[#4d212a]">My Orders</h1>

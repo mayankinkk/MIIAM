@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useHapticStore } from "@/components/HapticFeedback";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 const menuItems = [
   { id: "orders", icon: "receipt_long", label: "My Orders", sub: "View all orders", color: "text-blue-500", bg: "bg-blue-50" },
@@ -131,6 +132,8 @@ export default function EnhancedProfilePage() {
           </div>
         </Link>
       </header>
+
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Profile' }]} />
 
       {/* Menu Items */}
       <main className="px-6 -mt-6 space-y-4">

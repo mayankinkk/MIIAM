@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useDiningStore } from "@/lib/store/diningStore";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function BookingsPage() {
   const { bookings, cancelBooking } = useDiningStore();
@@ -17,6 +18,8 @@ export default function BookingsPage() {
         </div>
         <span className="text-slate-800 font-bold hidden md:block">Table Bookings</span>
       </nav>
+
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'My Bookings' }]} />
 
       <main className="pt-24 max-w-4xl mx-auto px-6">
         <section className="mb-10">

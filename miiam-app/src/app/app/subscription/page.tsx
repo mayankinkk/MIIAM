@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 const membershipTiers = [
   {
@@ -112,6 +113,8 @@ export default function SubscriptionPage() {
           </Link>
         </div>
       </header>
+
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Profile', href: '/app/profile' }, { label: 'MIIAM+' }]} />
 
       {/* Hero */}
       <section className="bg-gradient-to-b from-[#ba001c] to-[#6b0011] px-4 py-12 text-center text-white">

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 const supabase = createClient();
 
@@ -73,6 +74,8 @@ export default function ReferralPage() {
           <div className="w-10" />
         </div>
       </header>
+
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Profile', href: '/app/profile' }, { label: 'Referral' }]} />
 
       <main className="p-6">
         {loading ? (

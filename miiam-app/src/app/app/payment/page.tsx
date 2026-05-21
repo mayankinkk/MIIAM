@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export const metadata: Metadata = { title: "Payment | MIIAM" };
 
@@ -12,6 +13,7 @@ export default function PaymentPage() {
         </Link>
         <span className="text-xl font-extrabold tracking-tight text-[#4d212a]">Payment Methods</span>
       </header>
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Payment Methods' }]} />
       <main className="pt-32 pb-32 px-6 max-w-2xl mx-auto flex flex-col items-center justify-center text-center min-h-[70vh]">
         <div className="w-24 h-24 bg-[#e6eeff] rounded-full flex items-center justify-center mb-6 shadow-lg shadow-[#0b50d5]/10">
           <span className="material-symbols-outlined text-5xl text-[#0b50d5]">payments</span>

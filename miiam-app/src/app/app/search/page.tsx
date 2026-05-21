@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cartStore";
 import { Skeleton, VendorCardSkeleton, SearchResultSkeleton } from "@/components/Skeleton";
 import { EmptySearch } from "@/components/ui/EmptyStates";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 interface VendorResult {
   id: string;
@@ -147,6 +148,8 @@ function SearchContent() {
           </div>
         </div>
       </header>
+
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Search' }]} />
 
       <main className="pt-24 pb-32 px-6 max-w-4xl mx-auto">
         {query && (

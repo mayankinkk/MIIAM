@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { useThemeStore } from "@/lib/store/themeStore";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 const themes = [
   { value: "light" as const, icon: "light_mode", label: "Light", sub: "Always use light theme" },
@@ -28,6 +29,8 @@ export default function ThemePage() {
           <h1 className="text-xl font-black text-on-background">Appearance</h1>
         </div>
       </header>
+
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Settings', href: '/app/settings' }, { label: 'Theme' }]} />
 
       <main className="p-6 space-y-4">
         <p className="text-sm text-on-surface-variant mb-6">Choose how MIIAM looks on this device.</p>

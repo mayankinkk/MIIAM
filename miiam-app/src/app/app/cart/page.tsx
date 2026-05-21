@@ -6,6 +6,7 @@ import { EmptyCart } from "@/components/ui/EmptyStates";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 const supabase = createClient();
 const POINTS_TO_RUPEE = 0.1;
@@ -116,6 +117,8 @@ export default function CartPage() {
           </Link>
         </div>
       </header>
+
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Cart' }]} />
 
       <main className="pt-20 pb-28 px-4 max-w-2xl mx-auto">
         <section className="mb-6">

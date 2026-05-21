@@ -13,6 +13,7 @@ import { VendorCardSkeleton } from "@/components/Skeleton";
 import { useToastStore } from "@/lib/store/toastStore";
 import { useFavoritesStore } from "@/lib/store/favoritesStore";
 import { useLocationStore } from "@/lib/store/locationStore";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 const supabase = createClient();
 
@@ -442,6 +443,8 @@ export default function FoodPage() {
           </Link>
         </div>
       </header>
+
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Food' }]} />
 
       <div className="px-6 mt-4">
         <div className="rounded-2xl overflow-hidden relative h-44 shadow-sm">

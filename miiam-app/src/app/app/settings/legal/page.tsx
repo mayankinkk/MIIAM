@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 const legalLinks = [
   { icon: "description", title: "Terms of Service", sub: "Rules and conditions of use", href: "/terms" },
@@ -21,6 +22,8 @@ export default function LegalPage() {
           <h1 className="text-xl font-black text-on-background">Legal</h1>
         </div>
       </header>
+
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Settings', href: '/app/settings' }, { label: 'Legal' }]} />
 
       <main className="p-6">
         <div className="bg-surface-container border border-outline-variant/10 rounded-2xl overflow-hidden shadow-sm">

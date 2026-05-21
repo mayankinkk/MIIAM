@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useNotificationStore } from "@/lib/store/notificationStore";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { createClient } from "@/lib/supabase/client";
 
 export default function NotificationsPage() {
@@ -71,6 +72,8 @@ export default function NotificationsPage() {
           )}
         </div>
       </header>
+
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Notifications' }]} />
 
       <main className="pt-20 px-6 max-w-2xl mx-auto">
         <section className="mb-8">

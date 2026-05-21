@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useChat } from "@/lib/hooks/useChat";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function ChatPage() {
   const params = useParams();
@@ -90,6 +91,8 @@ export default function ChatPage() {
           </button>
         </div>
       </header>
+
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'My Orders', href: '/app/orders' }, { label: 'Chat' }]} />
 
       {/* Messages */}
       <div className="flex-1 pt-20 pb-24 px-4 overflow-y-auto">

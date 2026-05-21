@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function EditProfilePage() {
   const router = useRouter();
@@ -124,6 +125,8 @@ export default function EditProfilePage() {
         </Link>
         <span className="text-xl font-extrabold tracking-tight text-[#4d212a]">Edit Profile</span>
       </header>
+
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Profile', href: '/app/profile' }, { label: 'Edit Profile' }]} />
 
       <main className="pt-24 pb-32 px-6 max-w-2xl mx-auto">
         {error && (

@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { createClient } from "@/lib/supabase/client";
 
 const quickActions = [
@@ -136,6 +137,8 @@ export default function SupportPage() {
           </div>
         </div>
       </header>
+
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Help & Support' }]} />
 
       {/* Tabs */}
       <div className="bg-white border-b border-slate-100 px-4 shrink-0">

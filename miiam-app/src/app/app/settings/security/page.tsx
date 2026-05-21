@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function SecurityPage() {
   const supabase = createClient();
@@ -32,6 +33,8 @@ export default function SecurityPage() {
           <h1 className="text-xl font-black text-on-background">Security</h1>
         </div>
       </header>
+
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Settings', href: '/app/settings' }, { label: 'Security' }]} />
 
       <main className="p-6 space-y-4">
         {/* Change Password */}

@@ -9,6 +9,7 @@ import { useToastStore } from "@/lib/store/toastStore";
 import ServiceUnavailable from "@/components/ServiceUnavailable";
 
 import { useLocationStore } from "@/lib/store/locationStore";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 const supabase = createClient();
 
@@ -184,6 +185,8 @@ export default function FlowersPage() {
           </Link>
         </div>
       </header>
+
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Flowers' }]} />
 
       {/* Location / Availability Banner */}
       {!isServiceable && (userPincode || userCity) && (

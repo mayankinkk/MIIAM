@@ -3,6 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useState, Suspense } from "react";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 function VendorFailureContent() {
   const searchParams = useSearchParams();
@@ -46,6 +47,8 @@ function VendorFailureContent() {
         <span className="text-xl font-extrabold tracking-tighter text-[#ba001c]">MIIAM</span>
         <div className="w-10" />
       </nav>
+
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Order', href: '/app/orders' }, { label: 'Vendor Unavailable' }]} />
 
       <main className="pt-24 pb-12 px-6 max-w-lg mx-auto">
         <div className="text-center mb-8">

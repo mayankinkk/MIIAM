@@ -4,6 +4,7 @@ import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 type FeedbackData = {
   orderId: string;
@@ -118,6 +119,8 @@ function FeedbackContent() {
           <span className="font-bold">Back</span>
         </Link>
       </div>
+
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Feedback' }]} />
 
       <div className="max-w-lg mx-auto p-6">
         {/* Service Info */}

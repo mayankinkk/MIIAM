@@ -3,6 +3,7 @@
 import { useSearchParams, useRouter } from "next/navigation";
 import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 type PaymentStatus = "processing" | "success" | "failed" | "pending";
 
@@ -133,8 +134,10 @@ function PaymentStatusContent() {
   const config = statusConfig[status];
 
   return (
-    <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center p-6">
-      <div className="w-full max-w-md">
+    <>
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Cart', href: '/app/cart' }, { label: `Payment ${status.charAt(0).toUpperCase() + status.slice(1)}` }]} />
+      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center p-6">
+        <div className="w-full max-w-md">
         <div className="bg-white rounded-3xl p-8 shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
           <div className="text-center mb-8">
             <div className={`w-24 h-24 mx-auto rounded-full ${config.bgColor} flex items-center justify-center mb-6`}>
@@ -245,6 +248,7 @@ function PaymentStatusContent() {
         </p>
       </div>
     </div>
+    </>
   );
 }
 
