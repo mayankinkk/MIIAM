@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import { useToastStore } from "@/lib/store/toastStore";
 
 const membershipTiers = [
   {
@@ -91,13 +92,14 @@ export default function SubscriptionPage() {
   const [activeTier, setActiveTier] = useState("pro");
   const [showFaq, setShowFaq] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
+  const { addToast } = useToastStore();
 
   const handleSubscribe = async (tierId: string) => {
     if (tierId === "free") return;
     
     setLoading(true);
     setTimeout(() => {
-      alert(`Redirecting to payment page for ${tierId} membership...`);
+      addToast("Redirecting to payment...", "info");
       setLoading(false);
     }, 1000);
   };

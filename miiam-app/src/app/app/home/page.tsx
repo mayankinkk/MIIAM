@@ -473,7 +473,7 @@ export default function HomePage() {
             <div className="relative z-10 flex items-center gap-4">
               <div className="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center overflow-hidden">
                 {spotlightRestaurant.cover_image_url || spotlightRestaurant.image_url ? (
-                  <BlurImage src={spotlightRestaurant.cover_image_url || spotlightRestaurant.image_url} alt="" fill className="w-full h-full" sizes="80px" />
+                  <BlurImage src={spotlightRestaurant.cover_image_url || spotlightRestaurant.image_url} alt={`${spotlightRestaurant.name || spotlightRestaurant.shop_name} featured`} fill className="w-full h-full" sizes="80px" />
                 ) : (
                   <span className="text-3xl">🍽️</span>
                 )}
@@ -510,7 +510,7 @@ export default function HomePage() {
               <Link key={restaurant.id} href={`/app/vendor/${restaurant.id}`} className="flex-shrink-0 w-36 bg-white rounded-2xl overflow-hidden shadow-sm border-2 border-transparent hover:border-purple-200 transition-all">
                 <div className="relative h-28 bg-slate-100">
                   {restaurant.cover_image_url || restaurant.image_url ? (
-                    <BlurImage src={restaurant.cover_image_url || restaurant.image_url} alt="" fill className="w-full h-full" sizes="(max-width: 768px) 50vw, 25vw" />
+                    <BlurImage src={restaurant.cover_image_url || restaurant.image_url} alt={`${restaurant.shop_name || restaurant.name} promoted`} fill className="w-full h-full" sizes="(max-width: 768px) 50vw, 25vw" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-2xl">🍽️</div>
                   )}

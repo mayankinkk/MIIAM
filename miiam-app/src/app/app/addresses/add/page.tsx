@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import { useToastStore } from "@/lib/store/toastStore";
 
 interface DetectedLocation {
   lat: number;
@@ -27,6 +28,7 @@ export default function AddressPickerPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [searching, setSearching] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [deliveryInstructions, setDeliveryInstructions] = useState("");
   const [detecting, setDetecting] = useState(false);
   const [locationError, setLocationError] = useState("");
@@ -36,6 +38,7 @@ export default function AddressPickerPage() {
   const [houseNumber, setHouseNumber] = useState("");
   const [landmark, setLandmark] = useState("");
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const { addToast } = useToastStore();
   const [autoDetectOnLoad, setAutoDetectOnLoad] = useState(false);
   const [locationAccuracy, setLocationAccuracy] = useState<number | null>(null);
   const [locationStatus, setLocationStatus] = useState<"detecting" | "improving" | "good" | "error">("detecting");
@@ -308,15 +311,18 @@ export default function AddressPickerPage() {
   };
 
   const handleSave = async () => {
+    if (saving) return;
     if (!currentLocation?.address) {
-      alert("Please select a location on the map");
+      addToast("Please select a location on the map", "error");
       return;
     }
 
     if (currentLocation.address === "Fetching address...") {
-      alert("Please wait for address to load");
+      addToast("Please wait for address to load", "error");
       return;
     }
+
+    setSaving(true);
 
     let fullAddress = currentLocation.address;
     if (houseNumber.trim()) {
@@ -355,7 +361,8 @@ export default function AddressPickerPage() {
       lng: currentLocation.lng
     }));
 
-    alert("Address saved successfully!");
+    setSaving(false);
+    addToast("Address saved successfully!", "success");
     router.push("/app/checkout");
   };
 
@@ -498,10 +505,15 @@ export default function AddressPickerPage() {
                 </button>
                 <button
                   onClick={handleSave}
-                  className="flex-[2] bg-[#ba001c] text-white py-3 rounded-lg font-bold text-sm hover:bg-[#a40017] transition-colors flex items-center justify-center gap-2"
+                  disabled={saving}
+                  className="flex-[2] bg-[#ba001c] text-white py-3 rounded-lg font-bold text-sm hover:bg-[#a40017] transition-colors flex items-center justify-center gap-2 disabled:opacity-60"
                 >
-                  <span className="material-symbols-outlined text-sm">check</span>
-                  Confirm Address
+                  {saving ? (
+                    <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <span className="material-symbols-outlined text-sm">check</span>
+                  )}
+                  {saving ? "Saving..." : "Confirm Address"}
                 </button>
               </div>
             </div>

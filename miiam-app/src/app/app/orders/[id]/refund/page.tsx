@@ -17,6 +17,7 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
   const [showCancelForm, setShowCancelForm] = useState(false);
   const [cancelReason, setCancelReason] = useState("");
   const [showRefundSuccess, setShowRefundSuccess] = useState(false);
+  const [cancelling, setCancelling] = useState(false);
   const { addToast } = useToastStore();
 
   useEffect(() => {
@@ -53,10 +54,11 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
 
   const handleCancelOrder = async () => {
     if (!cancelReason.trim()) {
-      alert("Please select a reason for cancellation");
+      addToast("Please select a reason for cancellation", "error");
       return;
     }
 
+    setCancelling(true);
     try {
       await supabase
         .from("orders")
@@ -72,6 +74,8 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
     } catch (error) {
       console.error("Failed to cancel order:", error);
       addToast("Failed to cancel order. Please try again.", "error");
+    } finally {
+      setCancelling(false);
     }
   };
 
@@ -227,9 +231,15 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
               </button>
               <button
                 onClick={handleCancelOrder}
-                className="flex-1 bg-[#ba001c] text-white py-3 rounded-xl font-bold hover:bg-[#a40017] transition-colors"
+                disabled={cancelling}
+                className="flex-1 bg-[#ba001c] text-white py-3 rounded-xl font-bold hover:bg-[#a40017] transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
               >
-                Submit Request
+                {cancelling ? (
+                  <>
+                    <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    Submitting...
+                  </>
+                ) : "Submit Request"}
               </button>
             </div>
           </div>

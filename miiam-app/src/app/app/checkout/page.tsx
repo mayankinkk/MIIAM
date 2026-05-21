@@ -736,7 +736,12 @@ export default function CheckoutPage() {
                 disabled={placing || items.length === 0 || !deliveryAddress || !deliveryAddress.postal_code || deliveryAddress.postal_code.length !== 6}
                 className="w-full bg-gradient-to-r from-[#ba001c] to-[#ff7670] text-white py-5 rounded-xl text-lg font-extrabold shadow-lg shadow-[#ba001c]/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 disabled:opacity-60"
               >
-                {placing ? "Placing Order..." : "Place Order"}
+                {placing ? (
+                  <>
+                    <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    Placing Order...
+                  </>
+                ) : "Place Order"}
                 {!placing && <span className="material-symbols-outlined">shield</span>}
               </button>
               <p className="text-center mt-6 text-xs text-[#814c55] flex items-center justify-center gap-2">

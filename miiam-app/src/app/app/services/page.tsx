@@ -40,6 +40,7 @@ const timeSlots = [
 function BookingModal({ service, onClose }: { service: Service; onClose: () => void }) {
   const { addToast } = useToastStore();
   const [step, setStep] = useState<"pick" | "confirm" | "done">("pick");
+  const [booking, setBooking] = useState(false);
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedSlot, setSelectedSlot] = useState("");
   const [address, setAddress] = useState("");
@@ -173,13 +174,24 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
               <p className="text-xs text-blue-700">A professional will arrive at your location. Payment can be done after service completion.</p>
             </div>
             <button
-              onClick={() => {
+              onClick={async () => {
+                if (booking) return;
                 if (!address.trim()) { addToast("Please enter your service address", "error"); return; }
+                setBooking(true);
+                // Simulate booking delay
+                await new Promise(resolve => setTimeout(resolve, 500));
                 setStep("done"); if (navigator.vibrate) navigator.vibrate([20, 10, 20]);
+                setBooking(false);
               }}
-              className="w-full bg-[#ba001c] text-white py-4 rounded-2xl font-bold text-base hover:bg-[#a40017] transition-all hover:scale-[1.02] active:scale-[0.98]"
+              disabled={booking}
+              className="w-full bg-[#ba001c] text-white py-4 rounded-2xl font-bold text-base hover:bg-[#a40017] transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 flex items-center justify-center gap-2"
             >
-              Confirm &amp; Book
+              {booking ? (
+                <>
+                  <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Booking...
+                </>
+              ) : "Confirm &amp; Book"}
             </button>
             <button onClick={() => { setStep("pick"); if (navigator.vibrate) navigator.vibrate(10); }} className="w-full mt-3 py-3 text-on-surface-variant font-semibold text-sm hover:text-on-surface transition-colors">
               Go Back

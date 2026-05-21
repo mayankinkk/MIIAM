@@ -220,7 +220,12 @@ function FeedbackContent() {
               : "bg-slate-200 text-slate-400 cursor-not-allowed"
           }`}
         >
-          {isSubmitting ? "Submitting..." : "Submit Feedback"}
+          {isSubmitting ? (
+            <>
+              <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              Submitting...
+            </>
+          ) : "Submit Feedback"}
         </button>
       </div>
 

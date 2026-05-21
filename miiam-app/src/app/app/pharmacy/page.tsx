@@ -48,7 +48,7 @@ export default function PharmacyPage() {
           status: "pending",
         });
       if (insertError) throw insertError;
-      alert("Prescription uploaded successfully! We'll review and contact you.");
+      addToast("Prescription uploaded successfully! We'll review and contact you.", "success");
       setShowPrescriptionModal(false);
       setPrescriptionFile(null);
       setPrescriptionNotes("");
@@ -56,7 +56,6 @@ export default function PharmacyPage() {
     } catch (error: any) {
       console.error("Upload error:", error);
       addToast("Failed to upload prescription. Please try again.", "error");
-      alert(`Failed to upload: ${error.message}`);
     } finally {
       setUploading(false);
     }
