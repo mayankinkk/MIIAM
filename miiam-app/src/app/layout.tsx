@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import ThemeProvider from "@/components/ThemeProvider";
+import PageTransition from "@/components/PageTransition";
 import Toaster from "@/components/ui/Toaster";
 import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
 import { AnalyticsTracker } from "@/lib/analytics";
@@ -74,7 +75,7 @@ export default function RootLayout({
           <SplashScreen />
           <ServiceWorkerRegistration />
           <AnalyticsTracker />
-          {children}
+          <PageTransition>{children}</PageTransition>
           <Toaster />
         </ThemeProvider>
       </body>
