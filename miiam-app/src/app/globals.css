@@ -168,6 +168,40 @@ body {
   border-radius: 10px;
 }
 
+/* Global scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-outline-variant, #dd9ca6);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-outline, #a06770);
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: var(--color-outline-variant, #3d1520);
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: var(--color-outline, #5c3340);
+}
+
+/* Smooth card hover lift */
+.card-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(77, 33, 42, 0.08);
+}
+.dark .card-lift:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
 /* Glassmorphism */
 .glassmorphism {
   background: rgba(255, 255, 255, 0.1);
