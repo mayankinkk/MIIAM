@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-
-const otpStore = new Map<string, { otp: string; expiresAt: number; purpose: string }>();
+import { createAdminClient } from "@/lib/supabase/server";
 
 function generateOTP(): string {
   return Math.floor(100000 + Math.random() * 900000).toString();
@@ -44,6 +43,8 @@ async function sendSMS(phoneNumber: string, message: string): Promise<{ success:
 }
 
 export async function POST(request: NextRequest) {
+  const supabase = createAdminClient();
+
   try {
     const { phoneNumber, purpose } = await request.json();
 
@@ -58,9 +59,20 @@ export async function POST(request: NextRequest) {
     }
 
     const otp = generateOTP();
-    const expiresAt = Date.now() + 10 * 60 * 1000;
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString();
 
-    otpStore.set(cleanPhone, { otp, expiresAt, purpose: purpose || "signup" });
+    // Store OTP in database (upsert to handle duplicates)
+    const { error: insertError } = await supabase
+      .from("phone_otp_verification")
+      .upsert(
+        { phone_number: cleanPhone, otp_code: otp, purpose: purpose || "signup", expires_at: expiresAt },
+        { onConflict: "phone_number" }
+      );
+
+    if (insertError) {
+      console.error("Database error:", insertError);
+      return NextResponse.json({ error: "Failed to store OTP" }, { status: 500 });
+    }
 
     const message = `Your MIIAM verification code is ${otp}. Valid for 10 minutes. Don't share this code.`;
     const result = await sendSMS(cleanPhone, message);
@@ -81,6 +93,8 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
+  const supabase = createAdminClient();
+
   try {
     const { phoneNumber, otpCode } = await request.json();
 
@@ -89,22 +103,29 @@ export async function PUT(request: NextRequest) {
     }
 
     const cleanPhone = phoneNumber.replace(/\D/g, "");
-    const stored = otpStore.get(cleanPhone);
 
-    if (!stored) {
+    // Fetch OTP from database
+    const { data: stored, error: fetchError } = await supabase
+      .from("phone_otp_verification")
+      .select("*")
+      .eq("phone_number", cleanPhone)
+      .single();
+
+    if (fetchError || !stored) {
       return NextResponse.json({ error: "No OTP found. Please request new OTP" }, { status: 400 });
     }
 
-    if (Date.now() > stored.expiresAt) {
-      otpStore.delete(cleanPhone);
+    if (new Date() > new Date(stored.expires_at)) {
+      await supabase.from("phone_otp_verification").delete().eq("phone_number", cleanPhone);
       return NextResponse.json({ error: "OTP expired. Request new one" }, { status: 400 });
     }
 
-    if (stored.otp !== otpCode) {
+    if (stored.otp_code !== otpCode) {
       return NextResponse.json({ error: "Invalid OTP" }, { status: 400 });
     }
 
-    otpStore.delete(cleanPhone);
+    // Delete OTP after successful verification
+    await supabase.from("phone_otp_verification").delete().eq("phone_number", cleanPhone);
 
     return NextResponse.json({
       success: true,
