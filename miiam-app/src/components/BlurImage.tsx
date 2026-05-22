@@ -29,7 +29,7 @@ export default function BlurImage({ src, alt, className = "", fill, width, heigh
 
   if (fill) {
     return (
-      <div className={`relative ${className}`}>
+      <div className={`relative w-full h-full ${className}`}>
         <Image {...commonProps} fill />
         {!isLoaded && <div className="absolute inset-0 bg-surface-variant animate-pulse" />}
       </div>
