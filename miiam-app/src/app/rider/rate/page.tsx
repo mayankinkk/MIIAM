@@ -3,6 +3,7 @@
 import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
+import RiderNavBar from "@/components/rider/RiderNavBar";
 
 const completedOrders = [
   { id: "ORD001", customer: "Priya S.", date: "Today, 2:30 PM", rating: null },
@@ -187,28 +188,5 @@ export default function RateCustomerPage() {
     <Suspense fallback={<LoadingFallback />}>
       <RateCustomerContent />
     </Suspense>
-  );
-}
-
-function RiderNavBar() {
-  return (
-    <nav className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-4 bg-white/90 backdrop-blur-xl shadow-[0px_-10px_30px_rgba(11,80,213,0.1)] rounded-t-[3rem]">
-      <Link href="/rider/dashboard" className="flex flex-col items-center p-2 text-slate-400">
-        <span className="material-symbols-outlined text-3xl">map</span>
-        <span className="text-[10px] font-bold">Map</span>
-      </Link>
-      <Link href="/rider/orders" className="flex flex-col items-center p-2 text-slate-400">
-        <span className="material-symbols-outlined text-3xl">list_alt</span>
-        <span className="text-[10px] font-bold">Orders</span>
-      </Link>
-      <Link href="/rider/wallet" className="flex flex-col items-center p-2 text-slate-400">
-        <span className="material-symbols-outlined text-3xl">account_balance_wallet</span>
-        <span className="text-[10px] font-bold">Wallet</span>
-      </Link>
-      <Link href="/rider/account" className="flex flex-col items-center p-2 text-[#0b50d5]">
-        <span className="material-symbols-outlined text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>person</span>
-        <span className="text-[10px] font-bold">Account</span>
-      </Link>
-    </nav>
   );
 }
