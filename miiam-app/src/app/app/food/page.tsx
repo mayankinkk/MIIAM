@@ -580,7 +580,7 @@ export default function FoodPage() {
                     <span className="text-xs text-outline">•</span>
                     <span className="text-xs text-on-surface-variant">{restaurant.delivery_time_min ? `${restaurant.delivery_time_min}–${restaurant.delivery_time_max || restaurant.delivery_time_min + 15} min` : restaurant.delivery_time_minutes ? `${restaurant.delivery_time_minutes - 5}–${restaurant.delivery_time_minutes + 5} min` : restaurant.delivery_time || "30-40 min"}</span>
                   </div>
-                  <p className="text-xs text-on-surface-variant mt-1">Delivery: {restaurant.delivery_fee || "₹49"}</p>
+                  <p className="text-xs text-on-surface-variant mt-1">Delivery: {restaurant.delivery_charge ? `₹${restaurant.delivery_charge}` : "₹49"}</p>
                   <div className="mt-2 flex items-center gap-1 text-[#ba001c] font-bold text-xs">
                     <span>View Menu</span>
                     <span className="material-symbols-outlined text-sm">chevron_right</span>

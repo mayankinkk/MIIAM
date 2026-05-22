@@ -42,7 +42,7 @@ interface Vendor {
   rating: number;
   rating_count: number;
   delivery_time: string;
-  delivery_fee: string;
+  delivery_charge: number;
   image_url: string;
   cover_image_url: string;
   description: string;
@@ -454,7 +454,7 @@ export default function RestaurantProfilePage() {
         <div className="w-px h-4 bg-surface-container-high" />
         <div className="flex items-center gap-1.5 text-on-surface-variant flex-shrink-0">
           <span className="material-symbols-outlined text-[#ba001c] text-base">delivery_dining</span>
-          <span className="text-sm font-semibold">{vendor.delivery_fee || "₹49 delivery"}</span>
+          <span className="text-sm font-semibold">{vendor.delivery_charge ? `₹${vendor.delivery_charge}` : "₹49 delivery"}</span>
         </div>
         <div className="w-px h-4 bg-surface-container-high" />
         <div className="flex items-center gap-1.5 text-on-surface-variant flex-shrink-0">
