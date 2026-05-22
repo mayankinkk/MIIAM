@@ -9,7 +9,7 @@ interface InsightUser {
   id: string;
   email: string;
   full_name: string;
-  loyalty_points: number;
+  total_loyalty_points: number;
   created_at: string;
 }
 
@@ -46,13 +46,15 @@ export default function CustomerInsights() {
     return created > monthAgo;
   }).length;
 
-  const totalLoyaltyPoints = users.reduce((s, u) => s + (u.loyalty_points || 0), 0);
-  const avgLoyaltyPoints = users.length ? Math.round(totalLoyaltyPoints / users.length) : 0;
+  const totalLoyaltyPoints = users.reduce((s, u) => s + (u.total_loyalty_points || 0), 0);
 
-  // User segments
-  const highValueUsers = users.filter(u => (u.loyalty_points || 0) > 500).length;
-  const regularUsers = users.filter(u => (u.loyalty_points || 0) > 100 && (u.loyalty_points || 0) <= 500).length;
-  const newUsers = users.filter(u => (u.loyalty_points || 0) <= 100).length;
+  const avgPointsPerUser = users.length > 0 ? Math.round(totalLoyaltyPoints / users.length) : 0;
+
+  const highValueUsers = users.filter(u => (u.total_loyalty_points || 0) > 500).length;
+
+  const regularUsers = users.filter(u => (u.total_loyalty_points || 0) > 100 && (u.total_loyalty_points || 0) <= 500).length;
+
+  const newUsers = users.filter(u => (u.total_loyalty_points || 0) <= 100).length;
 
   // Order frequency
   const userOrderCounts: Record<string, number> = {};
@@ -225,7 +227,7 @@ export default function CustomerInsights() {
           <h2 className="font-black text-slate-800 uppercase tracking-widest text-sm">Top Users by Points</h2>
         </div>
         <div className="divide-y divide-slate-50">
-          {users.sort((a, b) => (b.loyalty_points || 0) - (a.loyalty_points || 0)).slice(0, 10).map((user, i) => (
+          {users.sort((a, b) => (b.total_loyalty_points || 0) - (a.total_loyalty_points || 0)).slice(0, 10).map((user, i) => (
             <div key={user.id} className="p-4 flex items-center gap-4 hover:bg-slate-50">
               <span className="w-6 h-6 bg-[#ba001c] text-white rounded-full flex items-center justify-center text-xs font-bold">
                 {i + 1}
@@ -238,7 +240,7 @@ export default function CustomerInsights() {
                 <p className="text-xs text-slate-400">{user.email}</p>
               </div>
               <div className="text-right">
-                <p className="font-black text-amber-500">{user.loyalty_points || 0} pts</p>
+                <p className="font-black text-amber-500">{user.total_loyalty_points || 0} pts</p>
               </div>
             </div>
           ))}

@@ -32,13 +32,11 @@ export default function WalletPage() {
 
     const { data: profile } = await supabase
       .from("profiles")
-      .select("wallet_balance, loyalty_points")
-      .eq("id", user.id)
+      .select("wallet_balance, total_loyalty_points")
       .single();
 
     if (profile) {
-      setBalance(profile.wallet_balance || 0);
-      setPoints(profile.loyalty_points || 0);
+      setPoints(profile.total_loyalty_points || 0);
     }
 
     const { data: orders } = await supabase

@@ -125,9 +125,9 @@ export default function UserRegistry() {
                       <div>
                         <p className="text-sm font-bold text-slate-800">{profile.full_name || "Unknown"}</p>
                         <p className="text-[11px] text-slate-400 font-medium">{profile.email || "No email"}</p>
-                      </div>
                     </div>
-                  </td>
+                  </div>
+                </td>
                   <td className="p-6">
                     <span className={`text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest ${
                       profile.role === 'admin' ? 'bg-[#ba001c] text-white' :
@@ -139,10 +139,11 @@ export default function UserRegistry() {
                   </td>
                   <td className="p-6 text-center">
                     <div className="flex flex-col items-center">
-                      <span className="text-sm font-black text-slate-800">{profile.loyalty_points ?? 0}</span>
-                      <div className="w-12 h-1 bg-slate-100 rounded-full mt-1 overflow-hidden">
-                        <div className="h-full bg-amber-400" style={{ width: `${Math.min(100, ((profile.loyalty_points ?? 0)/500)*100)}%` }} />
-                      </div>
+                      <span className="text-sm font-black text-slate-800">{profile.total_loyalty_points ?? 0}</span>
+                      <p className="text-[10px] text-slate-500">Reward Points</p>
+                    </div>
+                    <div className="bg-slate-100 rounded-full h-2 w-full mt-2">
+                      <div className="h-full bg-amber-400 rounded-full" style={{ width: `${Math.min(100, ((profile.total_loyalty_points ?? 0)/500)*100)}%` }} />
                     </div>
                   </td>
                   <td className="p-6 text-center">
