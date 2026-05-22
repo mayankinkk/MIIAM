@@ -2,7 +2,6 @@ import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
-import RiderNavBar from "@/components/rider/RiderNavBar";
 
 export const metadata: Metadata = { title: "Rider Dashboard | MIIAM" };
 
@@ -107,7 +106,7 @@ export default async function RiderDashboardPage() {
       </main>
 
       {/* Rider Bottom Nav */}
-      <RiderNavBar />
+
     </div>
   );
 }

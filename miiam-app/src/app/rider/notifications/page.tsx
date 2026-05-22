@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import RiderNavBar from "@/components/rider/RiderNavBar";
 import PullToRefresh from "@/components/PullToRefresh";
 
 export default function RiderNotificationsPage() {
@@ -126,7 +125,7 @@ export default function RiderNotificationsPage() {
 
     </div>
     </PullToRefresh>
-      <RiderNavBar active="account" />
+
     </>
   );
 }

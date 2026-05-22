@@ -5,6 +5,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useHapticStore } from "@/components/HapticFeedback";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import BlurImage from "@/components/BlurImage";
 
 const menuItems = [
   { id: "orders", icon: "receipt_long", label: "My Orders", sub: "View all orders", color: "text-blue-500", bg: "bg-blue-50" },
@@ -83,8 +84,12 @@ export default function EnhancedProfilePage() {
 
         {/* Profile Card */}
         <div className="flex items-center gap-4">
-          <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center text-3xl font-black border-4 border-white/30">
-            {user?.email?.[0]?.toUpperCase() || "U"}
+          <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center text-3xl font-black border-4 border-white/30 overflow-hidden">
+            {profile?.avatar_url ? (
+              <BlurImage src={profile.avatar_url} alt="Avatar" fill className="w-full h-full" sizes="80px" />
+            ) : (
+              user?.email?.[0]?.toUpperCase() || "U"
+            )}
           </div>
           <div>
             <h2 className="text-2xl font-black">{displayName}</h2>

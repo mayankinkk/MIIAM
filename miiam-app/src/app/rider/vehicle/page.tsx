@@ -1,10 +1,7 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
-import RiderNavBar from "@/components/rider/RiderNavBar";
 
 interface Vehicle {
   id: string;
@@ -35,13 +32,6 @@ const fuelLog = [
 ];
 
 export default function RiderVehiclePage() {
-  const router = useRouter();
-
-  useEffect(() => {
-    createClient().auth.getUser().then(({ data: { user } }) => {
-      if (!user) router.push("/rider/login");
-    });
-  }, [router]);
   const [showAddVehicle, setShowAddVehicle] = useState(false);
   const [showServiceAlert, setShowServiceAlert] = useState(false);
   const [activeTab, setActiveTab] = useState<"vehicles" | "maintenance" | "fuel">("vehicles");
@@ -300,8 +290,6 @@ export default function RiderVehiclePage() {
           </div>
         </div>
       )}
-
-      <RiderNavBar active="account" />
     </div>
   );
 }

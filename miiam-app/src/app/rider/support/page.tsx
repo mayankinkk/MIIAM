@@ -1,10 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
-import RiderNavBar from "@/components/rider/RiderNavBar";
+import { useState } from "react";
 
 const faqs = [
   { q: "How do I accept an order?", a: "Go to the Orders tab and tap 'Start Shopping' on any available order." },
@@ -14,13 +11,6 @@ const faqs = [
 ];
 
 export default function RiderSupportPage() {
-  const router = useRouter();
-
-  useEffect(() => {
-    createClient().auth.getUser().then(({ data: { user } }) => {
-      if (!user) router.push("/rider/login");
-    });
-  }, [router]);
   const [expanded, setExpanded] = useState<number | null>(null);
 
   return (
@@ -78,8 +68,6 @@ export default function RiderSupportPage() {
           </div>
         </div>
       </main>
-
-      <RiderNavBar active="account" />
     </div>
   );
 }

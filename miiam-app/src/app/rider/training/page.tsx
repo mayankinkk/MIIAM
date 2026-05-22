@@ -1,10 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
-import RiderNavBar from "@/components/rider/RiderNavBar";
 
 interface Video {
   id: string;
@@ -35,13 +32,6 @@ const quizzes = [
 ];
 
 export default function RiderTrainingPage() {
-  const router = useRouter();
-
-  useEffect(() => {
-    createClient().auth.getUser().then(({ data: { user } }) => {
-      if (!user) router.push("/rider/login");
-    });
-  }, [router]);
   const [activeCategory, setActiveCategory] = useState("All");
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
@@ -239,8 +229,6 @@ export default function RiderTrainingPage() {
           </div>
         </div>
       )}
-
-      <RiderNavBar active="account" />
     </div>
   );
 }

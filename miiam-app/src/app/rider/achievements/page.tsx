@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import RiderNavBar from "@/components/rider/RiderNavBar";
 
 interface Achievement {
   id: string;
@@ -274,7 +273,7 @@ export default function RiderAchievementsPage() {
         </div>
       )}
 
-      <RiderNavBar active="account" />
+
     </div>
   );
 }

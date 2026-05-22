@@ -1,10 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
-import RiderNavBar from "@/components/rider/RiderNavBar";
 
 interface IncidentType {
   id: string;
@@ -23,12 +21,6 @@ const incidentTypes: IncidentType[] = [
 
 export default function RiderIncidentPage() {
   const router = useRouter();
-
-  useEffect(() => {
-    createClient().auth.getUser().then(({ data: { user } }) => {
-      if (!user) router.push("/rider/login");
-    });
-  }, [router]);
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [showConfirm, setShowConfirm] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -229,8 +221,6 @@ export default function RiderIncidentPage() {
           </div>
         </div>
       )}
-
-      <RiderNavBar active="account" />
     </div>
   );
 }

@@ -4,7 +4,6 @@ import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import RiderNavBar from "@/components/rider/RiderNavBar";
 import PullToRefresh from "@/components/PullToRefresh";
 
 interface OrderItem {
@@ -747,7 +746,7 @@ export default function RiderOrdersPage() {
 
     </div>
     </PullToRefresh>
-      <RiderNavBar active="orders" />
+
     </>
   );
 }

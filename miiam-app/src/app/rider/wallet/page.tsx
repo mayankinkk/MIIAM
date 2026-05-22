@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
-import RiderNavBar from "@/components/rider/RiderNavBar";
 import PullToRefresh from "@/components/PullToRefresh";
 
 interface Transaction {
@@ -544,7 +543,7 @@ export default function RiderWalletPage() {
 
     </div>
     </PullToRefresh>
-      <RiderNavBar active="wallet" />
+
     </>
   );
 }

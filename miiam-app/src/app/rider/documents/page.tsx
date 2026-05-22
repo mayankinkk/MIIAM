@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import PullToRefresh from "@/components/PullToRefresh";
-import RiderNavBar from "@/components/rider/RiderNavBar";
 
 interface RiderDocument {
   id: string;
@@ -368,7 +367,7 @@ export default function RiderDocumentsPage() {
         </div>
       )}
 
-      <RiderNavBar active="account" />
+
     </div>
     </PullToRefresh>
   );

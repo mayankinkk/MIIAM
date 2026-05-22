@@ -5,7 +5,6 @@ import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import PullToRefresh from "@/components/PullToRefresh";
-import RiderNavBar from "@/components/rider/RiderNavBar";
 
 interface Shift {
   id: string;
@@ -404,7 +403,7 @@ export default function RiderAccountPage() {
         </div>
       )}
 
-      <RiderNavBar active="account" />
+
     </div>
     </PullToRefresh>
   );

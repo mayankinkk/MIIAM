@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import RiderNavBar from "@/components/rider/RiderNavBar";
 
 export default function RiderEarningsGoalsPage() {
   const supabase = createClient();
@@ -211,7 +210,7 @@ export default function RiderEarningsGoalsPage() {
         </div>
       )}
 
-      <RiderNavBar active="earnings-goals" />
+
     </div>
   );
 }

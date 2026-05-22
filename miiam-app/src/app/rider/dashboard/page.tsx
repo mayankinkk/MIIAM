@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { startLocationTracking, stopLocationTracking } from "@/lib/rider-location-tracker";
-import RiderNavBar from "@/components/rider/RiderNavBar";
 
 interface Order {
   id: string;
@@ -1410,7 +1409,7 @@ export default function RiderDashboard() {
       </main>
 
       {/* Bottom Navigation */}
-      <RiderNavBar active="dashboard" />
+
 
       {/* Call Modal */}
       {showCallModal && (
