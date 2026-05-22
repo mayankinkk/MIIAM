@@ -96,6 +96,16 @@ export default function RiderDashboard() {
   // Cash Collection
   const [cashCollected, setCashCollected] = useState(180);
   const [cashPending, setCashPending] = useState(120);
+  const [zoom, setZoom] = useState(1);
+
+  const handleCenterMap = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        () => setZoom(15),
+        () => {}
+      );
+    }
+  };
 
   // Cancel Flow
   const [showCancelModal, setShowCancelModal] = useState(false);
@@ -632,7 +642,7 @@ export default function RiderDashboard() {
       <main className="relative h-screen w-full pt-16">
         {/* Map Background with Heatmap */}
         <div className="absolute inset-0 z-0">
-          <img className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0uiugKcaP2DL9C13e9wDrnek068tIUinJpk04MptyP_MOu7svL-593yK1hDkx7C-MEYEAVoLGe0Q7M--cy1ugPRBsxWIfKaL1S65tI9nJ0kyAE8FKFAUKFyIO3C8mEQvhxjr0v4OZFbepXRxllGTFhhLIJYU3kDCSqCtADWnDZf8Wyx4D6oHuIuXdwmuWMxkyLXy4dft3qR_NeL02fo9_hY8PA4bE55HpKruqId6cpcR48qKrFGQcaInouZkak8LVbYDQt4VBbC8nA" alt="Map" />
+          <img className="w-full h-full object-cover" style={{ transform: `scale(${zoom})` }} src="https://lh3.googleusercontent.com/aida/ADBb0uiugKcaP2DL9C13e9wDrnek068tIUinJpk04MptyP_MOu7svL-593yK1hDkx7C-MEYEAVoLGe0Q7M--cy1ugPRBsxWIfKaL1S65tI9nJ0kyAE8FKFAUKFyIO3C8mEQvhxjr0v4OZFbepXRxllGTFhhLIJYU3kDCSqCtADWnDZf8Wyx4D6oHuIuXdwmuWMxkyLXy4dft3qR_NeL02fo9_hY8PA4bE55HpKruqId6cpcR48qKrFGQcaInouZkak8LVbYDQt4VBbC8nA" alt="Map" />
           <div className="absolute inset-0 bg-black/10"></div>
           
           {/* Heatmap dots for high demand areas */}
@@ -1295,13 +1305,22 @@ export default function RiderDashboard() {
 
         {/* Map Controls */}
         <div className="absolute right-4 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-20">
-          <button className="w-10 h-10 bg-white rounded-lg shadow flex items-center justify-center">
+          <button
+            onClick={() => setZoom(Math.min(zoom + 0.5, 20))}
+            className="w-10 h-10 bg-white rounded-lg shadow flex items-center justify-center"
+          >
             <span className="material-symbols-outlined">add</span>
           </button>
-          <button className="w-10 h-10 bg-white rounded-lg shadow flex items-center justify-center">
+          <button
+            onClick={() => setZoom(Math.max(zoom - 0.5, 1))}
+            className="w-10 h-10 bg-white rounded-lg shadow flex items-center justify-center"
+          >
             <span className="material-symbols-outlined">remove</span>
           </button>
-          <button className="w-10 h-10 bg-[#0b50d5] text-white rounded-lg shadow flex items-center justify-center mt-2">
+          <button
+            onClick={handleCenterMap}
+            className="w-10 h-10 bg-[#0b50d5] text-white rounded-lg shadow flex items-center justify-center mt-2"
+          >
             <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>my_location</span>
           </button>
         </div>

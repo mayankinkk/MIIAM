@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
+import RiderNavBar from "@/components/rider/RiderNavBar";
 
 export const metadata: Metadata = { title: "Rider Dashboard | MIIAM" };
 
@@ -106,24 +107,7 @@ export default async function RiderDashboardPage() {
       </main>
 
       {/* Rider Bottom Nav */}
-      <nav className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-4 bg-white/90 backdrop-blur-xl shadow-[0px_-10px_30px_rgba(11,80,213,0.1)] rounded-t-[3rem]">
-        <Link href="/rider" className="flex flex-col items-center p-2 text-[#0b50d5]">
-          <span className="material-symbols-outlined text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>map</span>
-          <span className="text-[10px] font-bold">Map</span>
-        </Link>
-        <Link href="/rider/orders" className="flex flex-col items-center p-2 text-[#814c55] hover:text-[#0b50d5]">
-          <span className="material-symbols-outlined text-3xl">list_alt</span>
-          <span className="text-[10px] font-bold">Orders</span>
-        </Link>
-        <Link href="/rider/wallet" className="flex flex-col items-center p-2 text-[#814c55] hover:text-[#0b50d5]">
-          <span className="material-symbols-outlined text-3xl">account_balance_wallet</span>
-          <span className="text-[10px] font-bold">Earnings</span>
-        </Link>
-        <Link href="/rider/account" className="flex flex-col items-center p-2 text-[#814c55] hover:text-[#0b50d5]">
-          <span className="material-symbols-outlined text-3xl">person</span>
-          <span className="text-[10px] font-bold">Account</span>
-        </Link>
-      </nav>
+      <RiderNavBar />
     </div>
   );
 }
