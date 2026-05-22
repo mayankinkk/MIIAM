@@ -161,12 +161,12 @@ export default function CheckoutPage() {
       addToast("Please enter your delivery address", "error");
       return false;
     }
-    if (!deliveryAddress.flat || !deliveryAddress.street || !deliveryAddress.city || !deliveryAddress.state) {
+    if (!deliveryAddress.street || !deliveryAddress.city || !deliveryAddress.state) {
       addToast("Please enter your complete delivery address", "error");
       return false;
     }
-    if (!deliveryAddress.postal_code || deliveryAddress.postal_code.length !== 6) {
-      addToast("Please enter a valid 6-digit pincode", "error");
+    if (!deliveryAddress.postal_code || deliveryAddress.postal_code.length < 4) {
+      addToast("Please enter a valid pincode", "error");
       return false;
     }
     return true;
@@ -740,7 +740,7 @@ export default function CheckoutPage() {
 
               <button
                 onClick={placeOrder}
-                disabled={placing || items.length === 0 || !deliveryAddress || !deliveryAddress.postal_code || deliveryAddress.postal_code.length !== 6}
+                disabled={placing || items.length === 0 || !deliveryAddress}
                 className="w-full bg-gradient-to-r from-[#ba001c] to-[#ff7670] text-white py-5 rounded-xl text-lg font-extrabold shadow-lg shadow-[#ba001c]/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 disabled:opacity-60"
               >
                 {placing ? (

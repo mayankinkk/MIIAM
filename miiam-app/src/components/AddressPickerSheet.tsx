@@ -86,9 +86,9 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
           setGpsAddress({
             label: "Current Location",
             street: `${lat.toFixed(5)}, ${lng.toFixed(5)}`,
-            city: "",
+            city: "Unknown",
             state: "",
-            postal_code: "",
+            postal_code: "000000",
             lat,
             lng,
             type: "other",
@@ -183,12 +183,13 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
   function confirmManual() {
     if (!pickedLocation) return;
     const parts = pickedLocation.display.split(",");
+    const rawPostal = parts[parts.length - 2]?.trim() || "";
     onSelect({
       label: addrType === "home" ? "Home" : addrType === "office" ? "Office" : "Other",
       street: [flat, parts[0]].filter(Boolean).join(", "),
       city: parts[1]?.trim() || "",
       state: parts[2]?.trim() || "",
-      postal_code: parts[parts.length - 2]?.trim() || "",
+      postal_code: rawPostal.length >= 4 ? rawPostal : "000000",
       flat,
       landmark,
       instructions,
