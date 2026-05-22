@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import RiderNavBar from "@/components/rider/RiderNavBar";
 
 export default function RiderReferralPage() {
   const supabase = createClient();
@@ -150,6 +151,8 @@ export default function RiderReferralPage() {
           )}
         </div>
       </main>
+
+      <RiderNavBar active="referral" />
     </div>
   );
 }

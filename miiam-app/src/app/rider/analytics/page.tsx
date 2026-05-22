@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import RiderNavBar from "@/components/rider/RiderNavBar";
 
 interface DailyStats {
   day: string;
@@ -215,6 +216,8 @@ export default function RiderAnalyticsPage() {
           </>
         )}
       </main>
+
+      <RiderNavBar active="analytics" />
     </div>
   );
 }
