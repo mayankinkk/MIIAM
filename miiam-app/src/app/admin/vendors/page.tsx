@@ -89,6 +89,7 @@ export default function AdminVendorsPage() {
     cuisine: "",
     gstNumber: "",
     status: "active",
+    minOrderAmount: 0,
     deliveryCharge: "",
     isFeatured: false,
     isPromoted: false,
@@ -294,6 +295,7 @@ export default function AdminVendorsPage() {
           gst_number: editForm.gstNumber,
           status: editForm.status,
           delivery_charge: editForm.deliveryCharge ? parseFloat(editForm.deliveryCharge) : 0,
+          min_order_amount: editForm.minOrderAmount,
           is_featured: editForm.isFeatured,
           is_promoted: editForm.isPromoted,
           is_new: editForm.isNew,
@@ -338,6 +340,7 @@ export default function AdminVendorsPage() {
       gstNumber: vendor.gst_number || "",
       status: vendor.status,
       deliveryCharge: vendor.delivery_charge?.toString() || "",
+      minOrderAmount: vendor.min_order_amount || 0,
       isFeatured: vendor.is_featured || false,
       isPromoted: vendor.is_promoted || false,
       isNew: vendor.is_new || false,
@@ -896,13 +899,22 @@ export default function AdminVendorsPage() {
                     />
                   </div>
                   <div>
+                    <label className="text-xs font-bold text-slate-600 mb-1 block">Min Order Amount (₹)</label>
+                    <input
+                      type="number"
+                      value={editForm.minOrderAmount}
+                      onChange={(e) => setEditForm({ ...editForm, minOrderAmount: Number(e.target.value) })}
+                      className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                    />
+                  </div>
+                  <div>
                     <label className="text-xs font-bold text-slate-600 mb-1 block">Delivery Charge (₹)</label>
                     <div className="relative">
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">₹</span>
                       <input
                         type="number"
                         value={editForm.deliveryCharge}
-                        onChange={(e) => setEditForm({ ...editForm, deliveryCharge: e.target.value })}
+                        onChange={(e) => setEditForm({ ...editForm, deliveryCharge: Number(e.target.value) })}
                         className="w-full p-3 pl-7 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
                       />
                     </div>
