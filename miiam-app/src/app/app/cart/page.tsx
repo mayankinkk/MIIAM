@@ -110,9 +110,9 @@ export default function CartPage() {
   };
 
   return (
-    <>
+    <div className="min-h-screen bg-[#fff4f4] pb-24">
       {/* TopAppBar */}
-      <header className="fixed top-0 w-full z-50 flex justify-between items-center px-4 py-3 bg-surface/90 backdrop-blur-2xl shadow-[0px_4px_20px_rgba(77,33,42,0.06)]"
+      <header className="fixed top-0 w-full z-50 flex justify-between items-center px-4 py-3 bg-[#fff4f4]/90 backdrop-blur-2xl shadow-[0px_4px_20px_rgba(77,33,42,0.06)]"
         style={{ paddingTop: "calc(0.75rem + env(safe-area-inset-top, 0px))" }}
       >
         <span className="text-xl font-extrabold tracking-tighter text-[#ba001c]">MIIAM</span>
@@ -128,10 +128,10 @@ export default function CartPage() {
 
       <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Cart' }]} />
 
-      <main className="pt-20 pb-40 px-4 max-w-2xl mx-auto">
+      <main className="pt-4 pb-40 px-4 max-w-2xl mx-auto">
         <section className="mb-6">
           <h1 className="text-2xl font-extrabold tracking-tight text-[#ba001c]">Your Cart</h1>
-          <p className="text-on-surface-variant text-xs mt-0.5">Review items from your favorite spots.</p>
+          <p className="text-slate-600 text-xs mt-0.5">Review items from your favorite spots.</p>
         </section>
 
         {hasMultipleVendors && (
@@ -334,12 +334,12 @@ export default function CartPage() {
       </main>
 
       {items.length > 0 && (
-        <div className="fixed bottom-16 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-t border-[#dd9ca6]/20 shadow-[0px_-10px_30px_rgba(77,33,42,0.08)]"
+        <div className="fixed bottom-16 left-0 right-0 z-40 bg-[#fff4f4]/95 backdrop-blur-xl border-t border-[#dd9ca6]/20 shadow-[0px_-10px_30px_rgba(77,33,42,0.08)]"
           style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
         >
           <div className="max-w-2xl mx-auto px-4 py-3 flex items-center gap-4">
             <div className="flex-1">
-              <p className="text-[10px] text-on-surface-variant font-semibold uppercase tracking-wider">Total</p>
+              <p className="text-[10px] text-slate-600 font-semibold uppercase tracking-wider">Total</p>
               <p className="text-2xl font-extrabold text-[#ba001c]">₹{grandTotal.toFixed(2)}</p>
               {pointsDiscount > 0 && (
                 <p className="text-[10px] text-[#0b50d5] font-semibold">Saving ₹{pointsDiscount.toFixed(2)}</p>
@@ -355,6 +355,6 @@ export default function CartPage() {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
