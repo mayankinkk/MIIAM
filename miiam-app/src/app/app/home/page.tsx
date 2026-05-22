@@ -147,11 +147,15 @@ export default function HomePage() {
     };
   }, [locationStore.pincode, locationStore.city, supabase]);
 
-  const hour = new Date().getHours();
-  let greeting = "Good evening";
-  let timeIcon = "🌙";
-  if (hour < 12) { greeting = "Good morning"; timeIcon = "☀️"; }
-  else if (hour < 18) { greeting = "Good afternoon"; timeIcon = "🌤️"; }
+  const [greeting, setGreeting] = useState("Hello");
+  const [timeIcon, setTimeIcon] = useState("☀️");
+
+  useEffect(() => {
+    const hour = new Date().getHours();
+    if (hour < 12) { setGreeting("Good morning"); setTimeIcon("☀️"); }
+    else if (hour < 18) { setGreeting("Good afternoon"); setTimeIcon("🌤️"); }
+    else { setGreeting("Good evening"); setTimeIcon("🌙"); }
+  }, []);
 
   const resolvePincodeToArea = async (pin: string): Promise<{ area: string; city: string; state: string }> => {
     try {

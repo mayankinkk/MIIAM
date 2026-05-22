@@ -80,17 +80,6 @@ const packages = [
 
 const trending = ["Hair rebonding", "Keratin treatment", "Bridal makeup", "Hot oil massage", "Gel manicure"];
 
-function getNextDays(n: number) {
-  const days = [];
-  const today = new Date();
-  for (let i = 0; i < n; i++) {
-    const d = new Date(today);
-    d.setDate(today.getDate() + i);
-    days.push({ label: i === 0 ? "Today" : i === 1 ? "Tomorrow" : d.toLocaleDateString("en-IN", { weekday: "short" }), date: d.toISOString().split("T")[0] });
-  }
-  return days;
-}
-
 const timeSlots = ["09:00 AM", "11:00 AM", "01:00 PM", "03:00 PM", "05:00 PM", "07:00 PM"];
 
 export default function BeautyPage() {
@@ -117,11 +106,22 @@ export default function BeautyPage() {
     checkServiceability();
   }, [userPincode]);
 
+  const [days, setDays] = useState<{ label: string; date: string }[]>([]);
+
+  useEffect(() => {
+    const today = new Date();
+    const result = [];
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(today);
+      d.setDate(today.getDate() + i);
+      result.push({ label: i === 0 ? "Today" : i === 1 ? "Tomorrow" : d.toLocaleDateString("en-IN", { weekday: "short" }), date: d.toISOString().split("T")[0] });
+    }
+    setDays(result);
+  }, []);
+
   const checkServiceability = async () => {
     setIsServiceable(true);
   };
-
-  const days = getNextDays(7);
 
   const getQty = (id: string) => items.filter(i => i.menu_item_id === id).reduce((s, i) => s + i.quantity, 0);
 

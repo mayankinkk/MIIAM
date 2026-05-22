@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCartStore } from "@/lib/store/cartStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -129,11 +129,15 @@ function ServiceDetailContent() {
     }, 500);
   };
 
-  const dates = Array.from({ length: 7 }, (_, i) => {
-    const date = new Date();
-    date.setDate(date.getDate() + i);
-    return date;
-  });
+  const [dates, setDates] = useState<Date[]>([]);
+
+  useEffect(() => {
+    setDates(Array.from({ length: 7 }, (_, i) => {
+      const date = new Date();
+      date.setDate(date.getDate() + i);
+      return date;
+    }));
+  }, []);
 
   return (
     <div className="min-h-screen bg-white pb-24">

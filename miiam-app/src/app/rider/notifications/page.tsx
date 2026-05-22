@@ -4,29 +4,41 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import RiderNavBar from "@/components/rider/RiderNavBar";
+import PullToRefresh from "@/components/PullToRefresh";
 
 export default function RiderNotificationsPage() {
   const supabase = createClient();
   const [notifications, setNotifications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function loadNotifications() {
+  async function loadNotifications() {
+    setLoading(true);
+    setError(null);
+    try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) { setLoading(false); return; }
       setUserId(user.id);
 
-      const { data } = await supabase
+      const { data, error: notifError } = await supabase
         .from("rider_notifications")
         .select("*")
         .eq("rider_id", user.id)
         .order("created_at", { ascending: false })
         .limit(20);
-      
+
+      if (notifError) throw new Error(notifError.message);
+
       setNotifications(data || []);
       setLoading(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load notifications");
+      setLoading(false);
     }
+  }
+
+  useEffect(() => {
     loadNotifications();
   }, [supabase]);
 
@@ -42,6 +54,24 @@ export default function RiderNotificationsPage() {
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
+  if (error) {
+    return (
+      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center p-4">
+        <div className="text-center max-w-sm">
+          <span className="material-symbols-outlined text-5xl text-red-400 mb-4 block">wifi_off</span>
+          <h2 className="text-xl font-bold text-[#4d212a] mb-2">Something went wrong</h2>
+          <p className="text-slate-500 mb-6">{error}</p>
+          <button
+            onClick={() => loadNotifications()}
+            className="px-6 py-3 bg-[#0b50d5] text-white rounded-xl font-bold"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   if (loading) return (
     <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center">
       <div className="w-12 h-12 border-4 border-[#0b50d5] border-t-transparent rounded-full animate-spin" />
@@ -49,6 +79,8 @@ export default function RiderNotificationsPage() {
   );
 
   return (
+    <>
+    <PullToRefresh onRefresh={loadNotifications}>
     <div className="min-h-screen bg-[#fff4f4]">
       <header className="bg-[#0b50d5] text-white p-6 pb-8 rounded-b-[3rem]">
         <div className="flex items-center justify-between">
@@ -92,7 +124,9 @@ export default function RiderNotificationsPage() {
         ))}
       </main>
 
-      <RiderNavBar active="account" />
     </div>
+    </PullToRefresh>
+      <RiderNavBar active="account" />
+    </>
   );
 }

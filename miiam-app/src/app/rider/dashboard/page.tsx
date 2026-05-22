@@ -121,16 +121,25 @@ export default function RiderDashboard() {
 
   // Customer Rating Preview
   const [customerRating] = useState(4.7);
+  const [error, setError] = useState<string | null>(null);
+  const [initialLoading, setInitialLoading] = useState(true);
 
   // Get rider ID on mount
   useEffect(() => {
     async function getRiderId() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: riderData } = await supabase.from("riders").select("id").eq("user_id", user.id).single();
-        if (riderData) {
-          setRiderId(riderData.id);
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data: riderData, error: riderError } = await supabase.from("riders").select("id").eq("user_id", user.id).single();
+          if (riderError) throw new Error(riderError.message);
+          if (riderData) {
+            setRiderId(riderData.id);
+          }
         }
+        setInitialLoading(false);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Failed to initialize dashboard");
+        setInitialLoading(false);
       }
     }
     getRiderId();
@@ -530,6 +539,35 @@ export default function RiderDashboard() {
     const hour = new Date().getHours();
     return (hour >= 12 && hour <= 14) || (hour >= 18 && hour <= 21);
   };
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center p-4">
+        <div className="text-center max-w-sm">
+          <span className="material-symbols-outlined text-5xl text-red-400 mb-4 block">wifi_off</span>
+          <h2 className="text-xl font-bold text-[#4d212a] mb-2">Unable to load dashboard</h2>
+          <p className="text-slate-500 mb-6">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-6 py-3 bg-[#0b50d5] text-white rounded-xl font-bold"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (initialLoading) {
+    return (
+      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-[#0b50d5] border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="mt-4 text-slate-500 font-medium">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background font-body-md text-on-surface overflow-hidden">

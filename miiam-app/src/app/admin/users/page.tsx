@@ -120,7 +120,7 @@ export default function UserRegistry() {
                   <td className="p-6">
                     <div className="flex items-center gap-4">
                       <div className="w-10 h-10 rounded-full bg-[#ffe1e4] flex items-center justify-center text-[#ba001c] font-black overflow-hidden shadow-sm">
-                        {profile.avatar_url ? <img src={profile.avatar_url} className="w-full h-full object-cover" /> : profile.full_name?.[0] || "?"}
+                        {profile.avatar_url ? <img src={profile.avatar_url} alt={`${profile.full_name || 'User'}'s avatar`} className="w-full h-full object-cover" /> : profile.full_name?.[0] || "?"}
                       </div>
                       <div>
                         <p className="text-sm font-bold text-slate-800">{profile.full_name || "Unknown"}</p>

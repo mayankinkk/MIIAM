@@ -118,7 +118,7 @@ export default function BannerManagement() {
               </span>
               <div className="w-24 h-16 bg-slate-100 rounded-lg overflow-hidden flex-shrink-0">
                 {banner.image_url ? (
-                  <img src={banner.image_url} className="w-full h-full object-cover" />
+                  <img src={banner.image_url} alt={`Banner: ${banner.title || 'Untitled'}`} className="w-full h-full object-cover" />
                 ) : (
                   <span className="material-symbols-outlined text-2xl text-slate-300">image</span>
                 )}
@@ -163,7 +163,7 @@ export default function BannerManagement() {
             <div key={banner.id} className="p-4 flex items-center gap-4 opacity-60">
               <div className="w-24 h-16 bg-slate-100 rounded-lg overflow-hidden flex-shrink-0">
                 {banner.image_url ? (
-                  <img src={banner.image_url} className="w-full h-full object-cover" />
+                  <img src={banner.image_url} alt={`Banner: ${banner.title || 'Untitled'}`} className="w-full h-full object-cover" />
                 ) : (
                   <span className="material-symbols-outlined text-2xl text-slate-300">image</span>
                 )}

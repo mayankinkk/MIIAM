@@ -732,7 +732,7 @@ export default function PartnerMenuPage() {
               )}
               {editingItem && (editingItem as any).image_url && (
                 <div className="flex items-center gap-3">
-                  <img src={(editingItem as any).image_url} alt="" className="w-12 h-12 rounded-xl object-cover" />
+                  <img src={(editingItem as any).image_url} alt={`Current image of ${(editingItem as any).name || 'menu item'}`} className="w-12 h-12 rounded-xl object-cover" />
                   <span className="text-xs text-slate-400">Current image</span>
                 </div>
               )}

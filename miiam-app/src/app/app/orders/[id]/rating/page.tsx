@@ -68,24 +68,33 @@ function AnimatedStarRating({
 }
 
 function Confetti() {
+  const [pieces] = useState(() =>
+    Array.from({ length: 30 }).map((_, i) => ({
+      left: Math.random() * 100,
+      delay: Math.random() * 0.5,
+      size: Math.random() * 8 + 4,
+      color: ["#ba001c", "#ff7670", "#ffd200", "#0b50d5", "#38ef7d"][i % 5],
+    }))
+  );
+
   return (
     <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
-      {Array.from({ length: 30 }).map((_, i) => (
+      {pieces.map((p, i) => (
         <div
           key={i}
           className="absolute top-0"
           style={{
-            left: `${Math.random() * 100}%`,
-            animationDelay: `${Math.random() * 0.5}s`,
+            left: `${p.left}%`,
+            animationDelay: `${p.delay}s`,
             animation: `confetti-fall 3s ease-out forwards`,
           }}
         >
           <div
             className="rounded-full"
             style={{
-              width: Math.random() * 8 + 4,
-              height: Math.random() * 8 + 4,
-              backgroundColor: ["#ba001c", "#ff7670", "#ffd200", "#0b50d5", "#38ef7d"][i % 5],
+              width: p.size,
+              height: p.size,
+              backgroundColor: p.color,
               animation: `confetti-spin 1.5s linear infinite`,
             }}
           />

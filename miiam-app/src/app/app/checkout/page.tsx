@@ -28,6 +28,19 @@ export default function CheckoutPage() {
   const [promoApplied, setPromoApplied] = useState<{ code: string; discount: number; type: "percent" | "flat" } | null>(null);
   const [promoError, setPromoError] = useState("");
   const [scheduledDate, setScheduledDate] = useState<string>("");
+  const [dateOptions, setDateOptions] = useState<{ label: string; value: string }[]>([]);
+
+  useEffect(() => {
+    const options = [0, 1, 2, 3].map((days) => {
+      const date = new Date();
+      date.setDate(date.getDate() + days);
+      return {
+        value: date.toISOString().split('T')[0],
+        label: days === 0 ? "Today" : days === 1 ? "Tomorrow" : date.toLocaleDateString('en-IN', { weekday: 'short', month: 'short', day: 'numeric' }),
+      };
+    });
+    setDateOptions(options);
+  }, []);
   const [scheduledTime, setScheduledTime] = useState<string>("");
   const [placing, setPlacing] = useState(false);
   const [tipAmount, setTipAmount] = useState(0);
@@ -457,25 +470,19 @@ export default function CheckoutPage() {
                       className="w-full p-4 rounded-lg border-2 border-[#dd9ca6]/30 focus:border-[#ba001c] focus:outline-none"
                     />
                     <div className="flex gap-2 mt-3 flex-wrap">
-                      {[0, 1, 2, 3].map((days) => {
-                        const date = new Date();
-                        date.setDate(date.getDate() + days);
-                        const dateStr = date.toISOString().split('T')[0];
-                        const label = days === 0 ? "Today" : days === 1 ? "Tomorrow" : date.toLocaleDateString('en-IN', { weekday: 'short', month: 'short', day: 'numeric' });
-                        return (
-                          <button
-                            key={days}
-                            onClick={() => setScheduledDate(dateStr)}
-                            className={`px-4 py-2 rounded-lg text-xs font-semibold border transition-all ${
-                              scheduledDate === dateStr
-                                ? "bg-[#ba001c] text-white border-[#ba001c]"
-                                : "border-[#dd9ca6]/30 hover:border-[#ba001c]"
-                            }`}
-                          >
-                            {label}
+                      {dateOptions.map((d) => (
+                        <button
+                          key={d.value}
+                          onClick={() => setScheduledDate(d.value)}
+                          className={`px-4 py-2 rounded-lg text-xs font-semibold border transition-all ${
+                            scheduledDate === d.value
+                              ? "bg-[#ba001c] text-white border-[#ba001c]"
+                              : "border-[#dd9ca6]/30 hover:border-[#ba001c]"
+                          }`}
+                        >
+                          {d.label}
                           </button>
-                        );
-                      })}
+                        ))}
                     </div>
                   </div>
                 )}

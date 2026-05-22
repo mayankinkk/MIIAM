@@ -164,14 +164,15 @@ function RidersPage() {
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-[#ba001c] text-white flex items-center justify-center font-bold overflow-hidden shadow-inner">
                     {rider.profile?.avatar_url ? (
-                      <img 
-                        src={rider.profile.avatar_url} 
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).style.display = 'none';
-                          (e.target as HTMLImageElement).parentElement!.innerText = rider.name?.[0] || "R";
-                        }}
-                      />
+<img 
+  src={rider.profile.avatar_url} 
+  alt={`${rider.name || 'Rider'}'s avatar`}
+  className="w-full h-full object-cover"
+  onError={(e) => {
+    (e.target as HTMLImageElement).style.display = 'none';
+    (e.target as HTMLImageElement).parentElement!.innerText = rider.name?.[0] || "R";
+  }}
+/>
                     ) : (
                       rider.name?.[0] || "R"
                     )}
@@ -201,7 +202,7 @@ function RidersPage() {
               <div className="flex items-center gap-5">
                 <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#ba001c] to-[#ff7670] text-white text-3xl font-black flex items-center justify-center overflow-hidden">
                   {selectedRider.profile?.avatar_url ? (
-                    <img src={selectedRider.profile.avatar_url} className="w-full h-full object-cover" />
+                    <img src={selectedRider.profile.avatar_url} alt={`${selectedRider.name || 'Selected rider'}'s avatar`} className="w-full h-full object-cover" />
                   ) : (
                     selectedRider.name?.[0] || "R"
                   )}
@@ -289,7 +290,7 @@ function RidersPage() {
                   <div className="p-5 bg-white border border-slate-100 rounded-2xl flex items-center justify-between group">
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 rounded-xl bg-slate-100 overflow-hidden flex items-center justify-center">
-                        {selectedRider.profile?.avatar_url ? <img src={selectedRider.profile.avatar_url} className="w-full h-full object-cover" /> : <span className="material-symbols-outlined text-slate-400">person</span>}
+                        {selectedRider.profile?.avatar_url ? <img src={selectedRider.profile.avatar_url} alt={`${selectedRider.name || 'Selected rider'}'s avatar`} className="w-full h-full object-cover" /> : <span className="material-symbols-outlined text-slate-400">person</span>}
                       </div>
                       <div>
                         <p className="font-black text-slate-800 text-sm">Profile Photo</p>
@@ -301,7 +302,7 @@ function RidersPage() {
                   <div className="p-5 bg-white border border-slate-100 rounded-2xl flex items-center justify-between group">
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 rounded-xl bg-slate-100 overflow-hidden flex items-center justify-center">
-                        {selectedRider.id_proof_image ? <img src={selectedRider.id_proof_image} className="w-full h-full object-cover" /> : <span className="material-symbols-outlined text-slate-400">badge</span>}
+                        {selectedRider.id_proof_image ? <img src={selectedRider.id_proof_image} alt={`${selectedRider.id_proof_type || 'Govt ID'} proof image`} className="w-full h-full object-cover" /> : <span className="material-symbols-outlined text-slate-400">badge</span>}
                       </div>
                       <div>
                         <p className="font-black text-slate-800 text-sm">ID Proof ({selectedRider.id_proof_type || "Govt ID"})</p>

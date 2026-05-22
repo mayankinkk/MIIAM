@@ -44,20 +44,24 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedSlot, setSelectedSlot] = useState("");
   const [address, setAddress] = useState("");
+  const [dateOptions, setDateOptions] = useState<{ value: string; label: string }[]>([]);
 
-  const dateOptions = [0, 1, 2, 3, 4].map((d) => {
-    const date = new Date();
-    date.setDate(date.getDate() + d);
-    return {
-      value: date.toISOString().split("T")[0],
-      label:
-        d === 0
-          ? "Today"
-          : d === 1
-          ? "Tomorrow"
-          : date.toLocaleDateString("en-IN", { weekday: "short", month: "short", day: "numeric" }),
-    };
-  });
+  useEffect(() => {
+    const options = [0, 1, 2, 3, 4].map((d) => {
+      const date = new Date();
+      date.setDate(date.getDate() + d);
+      return {
+        value: date.toISOString().split("T")[0],
+        label:
+          d === 0
+            ? "Today"
+            : d === 1
+            ? "Tomorrow"
+            : date.toLocaleDateString("en-IN", { weekday: "short", month: "short", day: "numeric" }),
+      };
+    });
+    setDateOptions(options);
+  }, []);
 
   const canProceed = selectedDate && selectedSlot && address.trim();
 
