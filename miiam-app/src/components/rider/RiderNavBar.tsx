@@ -1,12 +1,40 @@
 "use client";
 
 import Link from "next/link";
+import { useState, useEffect } from "react";
+import { createClient } from "@/lib/supabase/client";
 
 interface RiderNavBarProps {
   active?: string;
 }
 
 export default function RiderNavBar({ active }: RiderNavBarProps) {
+  const supabase = createClient();
+  const [isOnline, setIsOnline] = useState(true);
+  const [riderId, setRiderId] = useState<string | null>(null);
+  const [toggling, setToggling] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return;
+      supabase.from("riders").select("id, is_online").eq("user_id", user.id).single().then(({ data }) => {
+        if (data) {
+          setRiderId(data.id);
+          setIsOnline(data.is_online ?? true);
+        }
+      });
+    });
+  }, [supabase]);
+
+  const toggleOnline = async () => {
+    if (!riderId || toggling) return;
+    setToggling(true);
+    const newStatus = !isOnline;
+    setIsOnline(newStatus);
+    await supabase.from("riders").update({ is_online: newStatus }).eq("id", riderId);
+    setToggling(false);
+  };
+
   const navItems = [
     { name: "Map", href: "/rider/dashboard", icon: "map" },
     { name: "Orders", href: "/rider/orders", icon: "list_alt" },
@@ -20,6 +48,18 @@ export default function RiderNavBar({ active }: RiderNavBarProps) {
       className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pt-4 bg-white/90 backdrop-blur-xl shadow-[0px_-10px_30px_rgba(11,80,213,0.1)] rounded-t-[2rem]"
       style={{ paddingBottom: "calc(1.5rem + env(safe-area-inset-bottom, 0px))" }}
     >
+      <button
+        onClick={toggleOnline}
+        className="flex flex-col items-center p-2"
+        title={isOnline ? "Go Offline" : "Go Online"}
+      >
+        <span className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${isOnline ? "bg-green-500 border-green-500" : "bg-slate-200 border-slate-300"}`}>
+          <span className={`w-2 h-2 rounded-full ${isOnline ? "bg-white" : "bg-slate-400"}`} />
+        </span>
+        <span className={`text-[8px] font-bold mt-0.5 ${isOnline ? "text-green-600" : "text-slate-400"}`}>
+          {isOnline ? "ONLINE" : "OFF"}
+        </span>
+      </button>
       {navItems.map(item => item.external ? (
         <a
           key={item.name}
