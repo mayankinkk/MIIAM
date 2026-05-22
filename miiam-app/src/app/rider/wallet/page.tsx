@@ -79,6 +79,17 @@ export default function RiderWalletPage() {
   const now = Date.now();
   const displayTxns: Transaction[] = transactions;
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-[#0b50d5] border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="mt-4 text-slate-500 font-medium">Loading wallet...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#fff4f4]">
       <header className="bg-gradient-to-br from-[#0b50d5] to-[#0044bf] text-white p-6 pb-12 rounded-b-[3rem]">

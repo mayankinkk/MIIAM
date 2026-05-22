@@ -456,6 +456,17 @@ export default function RiderOrdersPage() {
     .filter(o => new Date(o.delivered_at || "").toDateString() === new Date().toDateString())
     .reduce((sum, o) => sum + (o.customer_collected || 0) - (o.items?.reduce((s, i) => s + (i.actual_price || 0) * i.quantity, 0) || 0), 0);
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-[#0b50d5] border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="mt-4 text-slate-500 font-medium">Loading orders...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#fff4f4]">
       <header className="bg-[#0b50d5] text-white p-4 pb-6 rounded-b-[3rem]">
