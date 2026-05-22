@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { startLocationTracking, stopLocationTracking } from "@/lib/rider-location-tracker";
+import RiderNavBar from "@/components/rider/RiderNavBar";
 
 interface Order {
   id: string;
@@ -38,14 +39,6 @@ interface Order {
     otp: string;
   }[];
 }
-
-const navItems = [
-  { icon: "home", label: "Home", active: true, href: "/rider/dashboard" },
-  { icon: "local_shipping", label: "Orders", active: false, href: "/rider/orders" },
-  { icon: "explore", label: "Navigate", active: false, href: "https://maps.google.com" },
-  { icon: "payments", label: "Wallet", active: false, href: "/rider/wallet" },
-  { icon: "person", label: "Account", active: false, href: "/rider/account" },
-];
 
 
 function calculateEarnings(distance: number, baseFare: number = 40, perKm: number = 8, peakMultiplier: number = 1): number {
@@ -1333,28 +1326,7 @@ export default function RiderDashboard() {
       </main>
 
       {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 w-full z-50 flex justify-around items-center px-2 pb-6 pt-3 bg-white/95 backdrop-blur shadow-lg">
-        {navItems.map((item) => (
-          item.label === "Navigate" ? (
-            <a 
-              key={item.label}
-              href="https://maps.google.com"
-              className="flex flex-col items-center justify-center bg-[#0b50d5] text-white rounded-full w-12 h-12 -mt-8 shadow-lg"
-            >
-              <span className="material-symbols-outlined">{item.icon}</span>
-            </a>
-          ) : (
-            <Link 
-              href={item.href}
-              key={item.label}
-              className={`flex flex-col items-center justify-center p-2 ${item.active ? "text-[#0b50d5]" : "text-slate-400"}`}
-            >
-              <span className="material-symbols-outlined" style={item.active ? { fontVariationSettings: "'FILL' 1" } : {}}>{item.icon}</span>
-              <span className="text-[9px] font-bold mt-1">{item.label}</span>
-            </Link>
-          )
-        ))}
-      </nav>
+      <RiderNavBar active="dashboard" />
 
       {/* Call Modal */}
       {showCallModal && (

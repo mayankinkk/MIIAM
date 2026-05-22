@@ -10,6 +10,7 @@ export default function RiderNavBar({ active }: RiderNavBarProps) {
   const navItems = [
     { name: "Map", href: "/rider/dashboard", icon: "map" },
     { name: "Orders", href: "/rider/orders", icon: "list_alt" },
+    { name: "Navigate", href: "https://maps.google.com", icon: "explore", external: true },
     { name: "Wallet", href: "/rider/wallet", icon: "account_balance_wallet" },
     { name: "Account", href: "/rider/account", icon: "person" },
   ];
@@ -19,7 +20,18 @@ export default function RiderNavBar({ active }: RiderNavBarProps) {
       className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pt-4 bg-white/90 backdrop-blur-xl shadow-[0px_-10px_30px_rgba(11,80,213,0.1)] rounded-t-[2rem]"
       style={{ paddingBottom: "calc(1.5rem + env(safe-area-inset-bottom, 0px))" }}
     >
-      {navItems.map(item => (
+      {navItems.map(item => item.external ? (
+        <a
+          key={item.name}
+          href={item.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex flex-col items-center p-2 text-[#814c55]"
+        >
+          <span className="material-symbols-outlined text-3xl">{item.icon}</span>
+          <span className="text-[10px] font-bold">{item.name}</span>
+        </a>
+      ) : (
         <Link
           key={item.name}
           href={item.href}
