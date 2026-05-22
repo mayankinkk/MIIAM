@@ -128,7 +128,7 @@ export default function CartPage() {
 
       <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Cart' }]} />
 
-      <main className="pt-20 pb-28 px-4 max-w-2xl mx-auto">
+      <main className="pt-20 pb-40 px-4 max-w-2xl mx-auto">
         <section className="mb-6">
           <h1 className="text-2xl font-extrabold tracking-tight text-[#ba001c]">Your Cart</h1>
           <p className="text-on-surface-variant text-xs mt-0.5">Review items from your favorite spots.</p>
@@ -289,14 +289,6 @@ export default function CartPage() {
                 </div>
               </div>
               )}
-
-              <Link
-                href={`/app/checkout${pointsToRedeem > 0 ? `?redeemPts=${pointsToRedeem}` : ""}`}
-                className="w-full mt-4 py-4 bg-gradient-to-r from-[#ba001c] to-[#ff7670] text-white rounded-xl font-bold text-base shadow-lg shadow-[#ba001c]/20 hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-2"
-              >
-                Proceed to Checkout
-                <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
-              </Link>
             </section>
           </div>
         )}
@@ -340,6 +332,29 @@ export default function CartPage() {
           </div>
         )}
       </main>
+
+      {items.length > 0 && (
+        <div className="fixed bottom-16 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-t border-[#dd9ca6]/20 shadow-[0px_-10px_30px_rgba(77,33,42,0.08)]"
+          style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
+        >
+          <div className="max-w-2xl mx-auto px-4 py-3 flex items-center gap-4">
+            <div className="flex-1">
+              <p className="text-[10px] text-on-surface-variant font-semibold uppercase tracking-wider">Total</p>
+              <p className="text-2xl font-extrabold text-[#ba001c]">₹{grandTotal.toFixed(2)}</p>
+              {pointsDiscount > 0 && (
+                <p className="text-[10px] text-[#0b50d5] font-semibold">Saving ₹{pointsDiscount.toFixed(2)}</p>
+              )}
+            </div>
+            <Link
+              href={`/app/checkout${pointsToRedeem > 0 ? `?redeemPts=${pointsToRedeem}` : ""}`}
+              className="px-8 py-3.5 bg-gradient-to-r from-[#ba001c] to-[#ff7670] text-white rounded-xl font-bold text-base shadow-lg shadow-[#ba001c]/20 hover:scale-[1.01] active:scale-95 transition-all flex items-center gap-2 whitespace-nowrap"
+            >
+              Proceed
+              <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
+            </Link>
+          </div>
+        </div>
+      )}
     </>
   );
 }

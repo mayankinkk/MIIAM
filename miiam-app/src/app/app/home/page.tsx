@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useLocationStore } from "@/lib/store/locationStore";
+import { HomeSkeleton } from "@/components/Skeleton";
 
 const categories = [
   { id: "food", label: "Food", icon: "restaurant", color: "bg-orange-100", iconColor: "text-orange-600", offer: "20% OFF" },
@@ -25,6 +26,7 @@ const offers = [
 
 export default function HomePage() {
   const supabase = createClient();
+  const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
   const [currentOffer, setCurrentOffer] = useState(0);
   const locationStore = useLocationStore();
@@ -92,6 +94,7 @@ export default function HomePage() {
           setFeaturedRestaurants(vendors.filter((v: any) => v.is_featured || v.is_promoted).slice(0, 6));
           setSpotlightRestaurant(vendors.find((v: any) => v.is_featured) || null);
         }
+        setLoading(false);
         return;
       }
       
@@ -117,8 +120,9 @@ export default function HomePage() {
         setSpotlightRestaurant(local.find((v: any) => v.is_featured) || null);
       }
       setCheckingPincode(false);
+      setLoading(false);
     }
-    checkAndLoad();
+    checkAndLoad().catch(() => setLoading(false));
 
     // Set up Realtime subscription to get live notification updates
     let realtimeChannel: any = null;
@@ -267,6 +271,8 @@ export default function HomePage() {
     }, 4000);
     return () => clearInterval(timer);
   }, []);
+
+  if (loading) return <HomeSkeleton />;
 
   return (
     <div className="min-h-screen bg-[#fff8f7] pb-24">

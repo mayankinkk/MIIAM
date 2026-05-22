@@ -154,3 +154,79 @@ export function StatsCardSkeleton() {
     </div>
   );
 }
+
+export function HomeSkeleton() {
+  return (
+    <div className="min-h-screen bg-[#fff8f7] pb-24">
+      {/* Header skeleton */}
+      <div className="bg-white shadow-sm px-4 pt-4 pb-4">
+        <Skeleton className="h-4 w-24 mb-2" />
+        <Skeleton className="h-7 w-36 mb-3" />
+        <Skeleton className="h-12 w-full rounded-xl" />
+        <div className="mt-3">
+          <Skeleton className="h-12 w-full rounded-xl" />
+        </div>
+      </div>
+
+      {/* Offers carousel skeleton */}
+      <div className="px-4 py-4">
+        <Skeleton className="h-28 w-full rounded-2xl" />
+      </div>
+
+      {/* Categories skeleton */}
+      <div className="px-4 pb-4">
+        <Skeleton className="h-5 w-24 mb-3" />
+        <div className="grid grid-cols-3 gap-3">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div key={i} className="bg-slate-100 rounded-2xl p-4 text-center">
+              <Skeleton className="h-12 w-12 rounded-xl mx-auto mb-2" />
+              <Skeleton className="h-4 w-16 mx-auto" />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Spotlight skeleton */}
+      <div className="px-4 pb-4">
+        <Skeleton className="h-5 w-32 mb-3" />
+        <Skeleton className="h-32 w-full rounded-2xl" />
+      </div>
+
+      {/* Featured skeleton */}
+      <div className="px-4 pb-4">
+        <Skeleton className="h-5 w-36 mb-3" />
+        <div className="flex gap-3 overflow-hidden">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="flex-shrink-0 w-36 bg-white rounded-2xl overflow-hidden border border-slate-100">
+              <Skeleton className="h-28 w-full" />
+              <div className="p-2 space-y-2">
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-3 w-16" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Nearby restaurants skeleton */}
+      <div className="px-4 pb-4">
+        <Skeleton className="h-5 w-32 mb-3" />
+        <div className="space-y-3">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="flex gap-3 bg-white rounded-2xl overflow-hidden border border-slate-100 p-3">
+              <Skeleton className="h-20 w-20 rounded-xl flex-shrink-0" />
+              <div className="flex-1 space-y-2">
+                <Skeleton className="h-5 w-32" />
+                <Skeleton className="h-4 w-48" />
+                <div className="flex gap-2">
+                  <Skeleton className="h-5 w-12 rounded-full" />
+                  <Skeleton className="h-5 w-16 rounded-full" />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}

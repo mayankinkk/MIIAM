@@ -270,8 +270,9 @@ export default function RestaurantProfilePage() {
 
   const [vendor, setVendor] = useState<Vendor | null>(null);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
-  const [reviews, setReviews] = useState<Review[]>([]);
+  const [reviews, setReviews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState("All");
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [vegOnly, setVegOnly] = useState(false);
@@ -293,15 +294,21 @@ export default function RestaurantProfilePage() {
 
   const fetchData = useCallback(async () => {
     setLoading(true);
-    const [vendorRes, menuRes, reviewsRes] = await Promise.all([
-      supabase.from("vendors").select("*").eq("id", vendorId).single(),
-      supabase.from("menu_items").select("*").eq("vendor_id", vendorId).order("name"),
-      supabase.from("reviews").select("*").eq("vendor_id", vendorId).order("created_at", { ascending: false }),
-    ]);
-    if (vendorRes.data) setVendor(vendorRes.data);
-    if (menuRes.data) setMenuItems(menuRes.data);
-    if (reviewsRes.data) setReviews(reviewsRes.data);
-    setLoading(false);
+    setError(null);
+    try {
+      const [vendorRes, menuRes, reviewsRes] = await Promise.all([
+        supabase.from("vendors").select("*").eq("id", vendorId).single(),
+        supabase.from("menu_items").select("*").eq("vendor_id", vendorId).order("name"),
+        supabase.from("reviews").select("*").eq("vendor_id", vendorId).order("created_at", { ascending: false }),
+      ]);
+      if (vendorRes.data) setVendor(vendorRes.data);
+      if (menuRes.data) setMenuItems(menuRes.data);
+      if (reviewsRes.data) setReviews(reviewsRes.data);
+    } catch {
+      setError("Failed to load. Please check your connection.");
+    } finally {
+      setLoading(false);
+    }
   }, [vendorId]);
 
   useEffect(() => {
@@ -317,6 +324,26 @@ export default function RestaurantProfilePage() {
           <MenuItemSkeleton />
           <MenuItemSkeleton />
           <MenuItemSkeleton />
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-surface p-6">
+        <div className="w-20 h-20 bg-[#ffe1e4] rounded-full flex items-center justify-center mb-4">
+          <span className="material-symbols-outlined text-4xl text-[#ba001c]">wifi_off</span>
+        </div>
+        <p className="text-xl font-black text-on-surface mb-2">Something went wrong</p>
+        <p className="text-on-surface-variant text-sm mb-6 text-center">{error}</p>
+        <div className="flex gap-3">
+          <button onClick={fetchData} className="px-6 py-3 bg-[#ba001c] text-white rounded-xl font-bold hover:opacity-90 transition-opacity">
+            Try Again
+          </button>
+          <Link href="/app/food" className="px-6 py-3 bg-[#ffe1e4] text-[#ba001c] rounded-xl font-bold hover:opacity-90 transition-opacity">
+            ← Back
+          </Link>
         </div>
       </div>
     );
