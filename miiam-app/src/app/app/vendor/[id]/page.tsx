@@ -146,10 +146,12 @@ const handleCustomizeItem = (item: any) => {
             <span className="material-symbols-outlined text-sm">schedule</span>
             {vendor.delivery_time_min || 30}-{vendor.delivery_time_max || 45} min
           </div>
-          <div className="flex items-center gap-2 text-slate-600 text-sm font-semibold">
-            <span className="material-symbols-outlined text-sm">restaurant</span>
-            ₹{vendor.min_order_amount || 99} for two
-          </div>
+          {vendor.min_order_amount > 0 && (
+            <div className="flex items-center gap-2 text-slate-600 text-sm font-semibold">
+              <span className="material-symbols-outlined text-sm">restaurant</span>
+              ₹{vendor.min_order_amount} for two
+            </div>
+          )}
           {vendor.is_veg === true && (
             <div className="flex items-center gap-2 bg-green-100 text-green-700 px-3 py-1.5 rounded-lg text-sm font-bold">
               🌿 Pure Veg
