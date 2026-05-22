@@ -63,6 +63,8 @@ export default function RiderDashboard() {
   const [showCallModal, setShowCallModal] = useState(false);
   const [showChatModal, setShowChatModal] = useState(false);
   const [riderId, setRiderId] = useState<string | null>(null);
+  const [riderDeliveries, setRiderDeliveries] = useState(0);
+  const [riderEarnings, setRiderEarnings] = useState(0);
   const [orderTakenByOther, setOrderTakenByOther] = useState(false);
   
   const [showSkipModal, setShowSkipModal] = useState(false);
@@ -139,10 +141,12 @@ export default function RiderDashboard() {
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
-          const { data: riderData, error: riderError } = await supabase.from("riders").select("id").eq("user_id", user.id).single();
+          const { data: riderData, error: riderError } = await supabase.from("riders").select("id, total_deliveries, total_earnings").eq("user_id", user.id).single();
           if (riderError) throw new Error(riderError.message);
           if (riderData) {
             setRiderId(riderData.id);
+            setRiderDeliveries(riderData.total_deliveries || 0);
+            setRiderEarnings(riderData.total_earnings || 0);
           }
         }
         setInitialLoading(false);
@@ -612,12 +616,28 @@ export default function RiderDashboard() {
     }
   };
 
-  const handleComplete = () => {
+  const handleComplete = async () => {
     if (currentOrder) {
       const finalEarnings = calculateEarnings(currentOrder.totalDistance, 40, 8, currentOrder.peakMultiplier);
-      alert(`Order delivered successfully! ₹${finalEarnings} added to your wallet.`);
+      try {
+        if (currentOrder.orderDbId && riderId) {
+          await supabase.from("orders").update({
+            status: "delivered",
+            delivered_at: new Date().toISOString(),
+          }).eq("id", currentOrder.orderDbId);
+          await supabase.from("riders").update({
+            total_deliveries: riderDeliveries + 1,
+            total_earnings: riderEarnings + finalEarnings,
+          }).eq("id", riderId);
+          setRiderDeliveries(prev => prev + 1);
+          setRiderEarnings(prev => prev + finalEarnings);
+        }
+        alert(`Order delivered successfully! ₹${finalEarnings} added to your wallet.`);
+      } catch (e) {
+        console.error("Failed to persist delivery:", e);
+        alert(`Order delivered! ₹${finalEarnings} earned. (Sync issue — data will update on next refresh.)`);
+      }
       setCurrentOrder(null);
-      // Stop GPS tracking when delivery is finished
       stopLocationTracking();
     }
   };

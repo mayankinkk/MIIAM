@@ -34,7 +34,7 @@ interface AnalyticsRider {
   id: string;
   name: string;
   is_online: boolean;
-  earnings: number;
+  total_earnings: number;
   total_deliveries?: number;
 }
 
@@ -71,11 +71,11 @@ export default function AdvancedAnalytics() {
       const [ordersRes, usersRes, vendorsRes, ridersRes, reviewsRes] = await Promise.all([
         supabase
           .from("orders")
-          .select("*, vendor:vendors(name), rider:riders(name), rider:riders(earnings,total_deliveries)")
+          .select("*, vendor:vendors(name), rider:riders(name, total_deliveries, total_earnings)")
           .gte("placed_at", startDate.toISOString())
           .order("placed_at", { ascending: true }),
         supabase
-          .from("users")
+          .from("profiles")
           .select("id, created_at")
           .gte("created_at", startDate.toISOString()),
         supabase
@@ -83,7 +83,7 @@ export default function AdvancedAnalytics() {
           .select("id, name, category, is_active, created_at"),
         supabase
           .from("riders")
-          .select("id, name, is_online, earnings"),
+          .select("id, name, is_online, total_earnings, total_deliveries"),
         supabase
           .from("reviews")
           .select("rating, created_at")
@@ -106,7 +106,7 @@ export default function AdvancedAnalytics() {
         const startDate = new Date();
         startDate.setDate(startDate.getDate() - days);
         supabase.from("orders")
-          .select("*, vendor:vendors(name), rider:riders(name)")
+          .select("*, vendor:vendors(name), rider:riders(name, total_deliveries, total_earnings)")
           .gte("placed_at", startDate.toISOString())
           .order("placed_at", { ascending: true })
           .then(res => { if (res.data) setOrders(res.data); });
