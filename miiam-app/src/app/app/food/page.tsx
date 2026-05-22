@@ -341,28 +341,45 @@ export default function FoodPage() {
       supabase.from("page_assets").select("*").eq("section", "food_hero").eq("is_active", true).maybeSingle(),
     ]);
 
-    let query = supabase.from("vendors").select("*").in("type", ["food", "restaurant"]).order("created_at", { ascending: false });
+    let query = supabase
+      .from("vendors")
+      .select("*")
+      .in("type", ["food", "restaurant"]);
+
+    if (userPincode) {
+      query = query.eq("pincode", userPincode);
+    } else if (userCity) {
+      query = query.ilike("city", userCity);
+    }
+
+    query = query.order("created_at", { ascending: false });
     const vendorsRes = await query;
 
     if (vendorsRes.data) {
-      let filteredVendors: any[] = [];
+      let filteredVendors = vendorsRes.data;
 
-      if (userPincode || userCity) {
-        const cityLower = (userCity || "").toLowerCase();
-        // Strict: only pincode OR city match
-        filteredVendors = vendorsRes.data.filter((v: any) => {
-          const pincodeMatch = userPincode && v.pincode === userPincode;
-          const cityMatch = cityLower && v.city?.toLowerCase() === cityLower;
-          return pincodeMatch || cityMatch;
-        });
+      if (userCity && !userPincode) {
+        // If only city filter was applied, tighten to exact city match
+        filteredVendors = vendorsRes.data.filter(
+          (v: any) => v.city?.toLowerCase() === userCity.toLowerCase()
+        );
+      }
+
+      if (userPincode && filteredVendors.length === 0 && userCity) {
+        // No pincode match — fall back to city
+        const { data: cityVendors } = await supabase
+          .from("vendors")
+          .select("*")
+          .in("type", ["food", "restaurant"])
+          .ilike("city", `%${userCity}%`)
+          .order("created_at", { ascending: false });
+        filteredVendors = cityVendors || [];
 
         if (filteredVendors.length === 0) {
           setNoLocalVendors(true);
-          // Don't fall back — show empty
         }
-      } else {
-        // No location set — show all
-        filteredVendors = vendorsRes.data;
+      } else if (filteredVendors.length === 0) {
+        setNoLocalVendors(true);
       }
 
       setRestaurants(filteredVendors);
