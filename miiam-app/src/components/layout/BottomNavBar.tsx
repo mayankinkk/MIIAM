@@ -8,7 +8,7 @@ import { useCartStore } from "@/lib/store/cartStore";
 const navItems = [
   { href: "/app/home", icon: "home", label: "Home" },
   { href: "/app/food", icon: "restaurant", label: "Food" },
-  { href: "/services", icon: "handyman", label: "Services" },
+  { href: "/app/services", icon: "handyman", label: "Services" },
   { href: "/app/cart", icon: "shopping_cart", label: "Cart" },
   { href: "/app/profile", icon: "person", label: "Profile" },
 ];
