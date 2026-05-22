@@ -46,6 +46,7 @@ export default function HomePage() {
   const [spotlightRestaurant, setSpotlightRestaurant] = useState<any>(null);
   const [localServiceable, setLocalServiceable] = useState(true);
   const [checkingPincode, setCheckingPincode] = useState(false);
+  const [dataError, setDataError] = useState<string | null>(null);
   const userPincode = locationStore.pincode;
 
   useEffect(() => {
@@ -123,7 +124,11 @@ export default function HomePage() {
       setCheckingPincode(false);
       setLoading(false);
     }
-    checkAndLoad().catch(() => setLoading(false));
+    checkAndLoad().catch((e) => {
+      console.error("Home page data load error:", e);
+      setDataError("Couldn't load recommendations. Pull down to try again.");
+      setLoading(false);
+    });
 
     // Set up Realtime subscription to get live notification updates
     const channelRef = { current: null as any };
@@ -278,6 +283,22 @@ export default function HomePage() {
   }, []);
 
   if (loading) return <HomeSkeleton />;
+
+  if (dataError) {
+    return (
+      <div className="min-h-screen bg-[#fff8f7] flex flex-col items-center justify-center px-6 pb-24">
+        <span className="material-symbols-outlined text-6xl text-slate-300 mb-4">cloud_off</span>
+        <h2 className="text-lg font-bold text-slate-600 mb-2">Something went wrong</h2>
+        <p className="text-sm text-slate-400 text-center mb-6">{dataError}</p>
+        <button
+          onClick={() => { setDataError(null); setLoading(true); window.location.reload(); }}
+          className="bg-[#0b50d5] text-white px-8 py-3 rounded-xl font-bold text-sm"
+        >
+          Try Again
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#fff8f7] pb-24">
