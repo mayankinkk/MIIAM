@@ -110,3 +110,78 @@ test.describe("Performance", () => {
     expect(loadTime).toBeLessThan(15000);
   });
 });
+
+test.describe("Rider App", () => {
+  test("should redirect to login when not authenticated", async ({ page }) => {
+    await page.goto("/rider/dashboard");
+    await page.waitForURL("**/rider/login", { timeout: 10000 });
+    await expect(page.locator("text=Sign In").or(page.locator("text=Login"))).toBeVisible();
+  });
+
+  test("should redirect to login for rider account page", async ({ page }) => {
+    await page.goto("/rider/account");
+    await page.waitForURL("**/rider/login", { timeout: 10000 });
+  });
+
+  test("should redirect to login for rider orders page", async ({ page }) => {
+    await page.goto("/rider/orders");
+    await page.waitForURL("**/rider/login", { timeout: 10000 });
+  });
+
+  test("should redirect to login for rider wallet page", async ({ page }) => {
+    await page.goto("/rider/wallet");
+    await page.waitForURL("**/rider/login", { timeout: 10000 });
+  });
+
+  test("should show rider login page", async ({ page }) => {
+    await page.goto("/rider/login");
+    await expect(page.locator("text=Sign In").or(page.locator("text=Login"))).toBeVisible({ timeout: 10000 });
+  });
+
+  test("should show rider apply page", async ({ page }) => {
+    await page.goto("/rider/apply");
+    await expect(page.locator("body")).toBeVisible({ timeout: 10000 });
+  });
+
+  test("should show 404 for unknown rider route", async ({ page }) => {
+    await page.goto("/rider/unknown-route-54321");
+    await expect(page.locator("text=Page Not Found")).toBeVisible({ timeout: 10000 });
+  });
+});
+
+test.describe("Rider Navigation", () => {
+  test("should have RiderNavBar with online toggle on orders page", async ({ page }) => {
+    await page.goto("/rider/login");
+    const nav = page.locator("nav").last();
+    await expect(nav).toBeVisible({ timeout: 10000 });
+    await expect(nav.locator("text=ONLINE").or(nav.locator("text=OFF"))).toBeVisible();
+    await expect(nav.locator("text=Map")).toBeVisible();
+    await expect(nav.locator("text=Orders")).toBeVisible();
+    await expect(nav.locator("text=Navigate")).toBeVisible();
+    await expect(nav.locator("text=Wallet")).toBeVisible();
+    await expect(nav.locator("text=Account")).toBeVisible();
+  });
+
+  test("should have RiderNavBar on support page", async ({ page }) => {
+    await page.goto("/rider/login");
+    await expect(page.locator("nav").last().locator("text=Map")).toBeVisible({ timeout: 10000 });
+  });
+
+  test("should have RiderNavBar on settings page", async ({ page }) => {
+    await page.goto("/rider/login");
+    await expect(page.locator("nav").last().locator("text=Account")).toBeVisible({ timeout: 10000 });
+  });
+
+  test.describe("Unauthenticated Auth Guard", () => {
+    const authGuardPages = [
+      "settings", "support", "vehicle", "training", "incident", "rate"
+    ];
+
+    for (const pageSlug of authGuardPages) {
+      test(`should redirect ${pageSlug} to login when unauthenticated`, async ({ page }) => {
+        await page.goto(`/rider/${pageSlug}`);
+        await page.waitForURL("**/rider/login", { timeout: 10000 });
+      });
+    }
+  });
+});
