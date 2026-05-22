@@ -333,33 +333,37 @@ export default function CustomizationModal({ item, vendor_id, vendor_name, vendo
             </>
           )}
 
-          {/* Special Instructions */}
-          <div>
-            <h3 className="font-bold text-slate-800 mb-3">Special Instructions</h3>
-            <textarea
-              value={specialInstructions}
-              onChange={(e) => setSpecialInstructions(e.target.value)}
-              placeholder="E.g., Please make it extra spicy, no salt, etc."
-              className="w-full h-24 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#ba001c] focus:ring-2 focus:ring-[#ba001c]/20 resize-none"
-            />
-            <p className="text-xs text-slate-400 mt-2 text-right">{specialInstructions.length}/150 characters</p>
-          </div>
+          {isFood && (
+            <>
+              {/* Special Instructions */}
+              <div>
+                <h3 className="font-bold text-slate-800 mb-3">Special Instructions</h3>
+                <textarea
+                  value={specialInstructions}
+                  onChange={(e) => setSpecialInstructions(e.target.value)}
+                  placeholder="E.g., Please make it extra spicy, no salt, etc."
+                  className="w-full h-24 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#ba001c] focus:ring-2 focus:ring-[#ba001c]/20 resize-none"
+                />
+                <p className="text-xs text-slate-400 mt-2 text-right">{specialInstructions.length}/150 characters</p>
+              </div>
 
-          {/* Quick Notes */}
-          <div>
-            <h3 className="font-bold text-slate-800 mb-3">Quick Notes</h3>
-            <div className="flex flex-wrap gap-2">
-              {["No onions", "No garlic", "Less oil", "Extra spicy", "No salt", "Less spice"].map((note) => (
-                <button
-                  key={note}
-                  onClick={() => setSpecialInstructions((prev) => prev ? `${prev}, ${note}` : note)}
-                  className="px-3 py-1.5 bg-slate-100 text-slate-600 text-xs font-semibold rounded-full hover:bg-[#ffe1e4] hover:text-[#ba001c] transition-colors"
-                >
-                  {note}
-                </button>
-              ))}
-            </div>
-          </div>
+              {/* Quick Notes */}
+              <div>
+                <h3 className="font-bold text-slate-800 mb-3">Quick Notes</h3>
+                <div className="flex flex-wrap gap-2">
+                  {["No onions", "No garlic", "Less oil", "Extra spicy", "No salt", "Less spice"].map((note) => (
+                    <button
+                      key={note}
+                      onClick={() => setSpecialInstructions((prev) => prev ? `${prev}, ${note}` : note)}
+                      className="px-3 py-1.5 bg-slate-100 text-slate-600 text-xs font-semibold rounded-full hover:bg-[#ffe1e4] hover:text-[#ba001c] transition-colors"
+                    >
+                      {note}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Footer */}
