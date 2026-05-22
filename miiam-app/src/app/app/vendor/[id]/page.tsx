@@ -69,9 +69,12 @@ export default function VendorPage() {
     return categoryMatch && vegMatch;
   });
 
-const handleCustomizeItem = (item: any) => {
-    // Food items get the customization modal; non-food items add directly
-    if (!vendor || vendor.type === "food" || vendor.type === "restaurant" || vendor.cuisine) {
+  const handleCustomizeItem = (item: any) => {
+    // Only food/restaurant vendors should use the customization modal, NOT grocery/pharmacy/etc.
+    const isFoodVendor = vendor && (vendor.type === "food" || vendor.type === "restaurant" || vendor.cuisine);
+    const isGroceryOrOther = vendor && (vendor.type === "grocery" || vendor.type === "pharmacy" || vendor.type === "flower" || vendor.type === "flowers");
+    
+    if (isFoodVendor && !isGroceryOrOther) {
       setCustomizingItem(item);
     } else {
       handleAddToCart(item);
