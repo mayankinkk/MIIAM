@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import RiderNavBar from "@/components/rider/RiderNavBar";
+import PullToRefresh from "@/components/PullToRefresh";
 
 interface OrderItem {
   id: string;
@@ -494,6 +495,8 @@ export default function RiderOrdersPage() {
   }
 
   return (
+    <>
+    <PullToRefresh onRefresh={loadOrders}>
     <div className="min-h-screen bg-[#fff4f4]">
       <header className="bg-[#0b50d5] text-white p-4 pb-6 rounded-b-[3rem]">
         <div className="flex justify-between items-center mb-4">
@@ -742,8 +745,10 @@ export default function RiderOrdersPage() {
         </div>
       )}
 
-      <RiderNavBar active="orders" />
     </div>
+    </PullToRefresh>
+      <RiderNavBar active="orders" />
+    </>
   );
 }
 

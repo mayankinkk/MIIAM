@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import RiderNavBar from "@/components/rider/RiderNavBar";
+import PullToRefresh from "@/components/PullToRefresh";
 
 interface Transaction {
   id: string;
@@ -150,6 +151,8 @@ export default function RiderWalletPage() {
   }
 
   return (
+    <>
+    <PullToRefresh onRefresh={loadWalletData}>
     <div className="min-h-screen bg-[#fff4f4]">
       <header className="bg-gradient-to-br from-[#0b50d5] to-[#0044bf] text-white p-6 pb-12 rounded-b-[3rem]">
         <div className="flex justify-between items-center">
@@ -539,7 +542,9 @@ export default function RiderWalletPage() {
         </div>
       )}
 
-      <RiderNavBar active="wallet" />
     </div>
+    </PullToRefresh>
+      <RiderNavBar active="wallet" />
+    </>
   );
 }
