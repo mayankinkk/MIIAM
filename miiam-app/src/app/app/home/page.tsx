@@ -5,6 +5,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useLocationStore } from "@/lib/store/locationStore";
 import { HomeSkeleton } from "@/components/Skeleton";
+import BlurImage from "@/components/BlurImage";
 
 const categories = [
   { id: "food", label: "Food", icon: "restaurant", color: "bg-orange-100", iconColor: "text-orange-600", offer: "20% OFF" },
