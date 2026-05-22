@@ -126,10 +126,10 @@ export default function HomePage() {
     checkAndLoad().catch(() => setLoading(false));
 
     // Set up Realtime subscription to get live notification updates
-    let realtimeChannel: any = null;
+    const channelRef = { current: null as any };
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) return;
-      realtimeChannel = supabase
+      channelRef.current = supabase
         .channel(`notifications-${user.id}`)
         .on("postgres_changes", {
           event: "INSERT",
@@ -144,7 +144,7 @@ export default function HomePage() {
     });
 
     return () => {
-      if (realtimeChannel) supabase.removeChannel(realtimeChannel);
+      if (channelRef.current) supabase.removeChannel(channelRef.current);
     };
   }, [locationStore.pincode, locationStore.city, supabase]);
 
