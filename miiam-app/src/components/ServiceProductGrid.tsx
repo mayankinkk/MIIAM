@@ -29,6 +29,7 @@ interface Product {
   description?: string;
   image_url: string;
   image?: string;
+  stock?: number;
 }
 
 interface ServiceProductGridProps {
@@ -86,6 +87,10 @@ export default function ServiceProductGrid({
   const [isServiceable, setIsServiceable] = useState(true);
   const [locationRequired, setLocationRequired] = useState(false);
   const [vendor, setVendor] = useState<any>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<string>("default");
+  const [inStockOnly, setInStockOnly] = useState(false);
+  const [showSort, setShowSort] = useState(false);
   const { items, addItem, updateQuantity, totalItems } = useCartStore();
   const { addToast } = useToastStore();
   const locationStore = useLocationStore();
@@ -157,12 +162,41 @@ export default function ServiceProductGrid({
     setLoading(false);
   }
 
-  const filteredProducts =
-    selectedCategory === "all"
+  const hasStock = vendorType === "grocery" || vendorType === "pharmacy";
+
+  const filteredProducts = (() => {
+    let result = selectedCategory === "all"
       ? products
       : products.filter(
           (p) => filterTransform(p.category?.toLowerCase() || "") === selectedCategory
         );
+
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter((p) => p.name.toLowerCase().includes(q));
+    }
+
+    if (inStockOnly && hasStock) {
+      result = result.filter((p) => p.stock === undefined || p.stock > 0);
+    }
+
+    switch (sortBy) {
+      case "price_asc":
+        result = [...result].sort((a, b) => a.price - b.price);
+        break;
+      case "price_desc":
+        result = [...result].sort((a, b) => b.price - a.price);
+        break;
+      case "name_asc":
+        result = [...result].sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case "name_desc":
+        result = [...result].sort((a, b) => b.name.localeCompare(a.name));
+        break;
+    }
+
+    return result;
+  })();
 
   if (serviceSetting && !serviceSetting.isEnabled) {
     return (
@@ -323,6 +357,27 @@ export default function ServiceProductGrid({
 
       {/* Categories */}
       <div className="bg-surface-container-lowest px-6 py-4">
+        {/* Search Bar */}
+        <div className="relative mb-4">
+          <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-xl">
+            search
+          </span>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={`Search ${serviceName.toLowerCase()}...`}
+            className="w-full h-12 pl-11 pr-4 bg-surface-container rounded-2xl text-sm font-medium text-on-surface placeholder:text-on-surface-variant/60 focus:outline-none focus:ring-2 focus:ring-[#ba001c]/30 transition-shadow"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery("")}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface"
+            >
+              <span className="material-symbols-outlined text-xl">close</span>
+            </button>
+          )}
+        </div>
         <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
           <button
             onClick={() => {
@@ -355,6 +410,57 @@ export default function ServiceProductGrid({
             </button>
           ))}
         </div>
+      </div>
+
+      {/* Sort & Filter Bar */}
+      <div className="px-6 py-3 flex items-center gap-3 border-b border-outline-variant/20">
+        <div className="relative">
+          <button
+            onClick={() => setShowSort(!showSort)}
+            className="flex items-center gap-2 px-4 py-2 bg-surface-container-lowest rounded-xl text-sm font-semibold text-on-surface hover:bg-surface-container transition-colors"
+          >
+            <span className="material-symbols-outlined text-lg">sort</span>
+            {sortBy === "default" ? "Sort" : sortBy === "price_asc" ? "Price: Low" : sortBy === "price_desc" ? "Price: High" : sortBy === "name_asc" ? "A-Z" : "Z-A"}
+          </button>
+          {showSort && (
+            <>
+              <div className="fixed inset-0 z-10" onClick={() => setShowSort(false)} />
+              <div className="absolute top-full mt-1 left-0 z-20 bg-surface-container-lowest rounded-xl shadow-xl border border-outline-variant/30 min-w-[180px] overflow-hidden">
+                {[
+                  { value: "default", label: "Default" },
+                  { value: "price_asc", label: "Price: Low to High" },
+                  { value: "price_desc", label: "Price: High to Low" },
+                  { value: "name_asc", label: "Name: A-Z" },
+                  { value: "name_desc", label: "Name: Z-A" },
+                ].map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => { setSortBy(opt.value); setShowSort(false); }}
+                    className={`w-full text-left px-4 py-3 text-sm font-semibold hover:bg-surface-container transition-colors ${
+                      sortBy === opt.value ? "text-[#ba001c] bg-[#ffe1e4]" : "text-on-surface"
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+
+        {hasStock && (
+          <button
+            onClick={() => setInStockOnly(!inStockOnly)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${
+              inStockOnly
+                ? "bg-[#ba001c] text-white"
+                : "bg-surface-container-lowest text-on-surface hover:bg-surface-container"
+            }`}
+          >
+            <span className="material-symbols-outlined text-lg">inventory_2</span>
+            In Stock
+          </button>
+        )}
       </div>
 
       {/* Products Grid */}
