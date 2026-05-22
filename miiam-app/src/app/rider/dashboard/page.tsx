@@ -79,6 +79,9 @@ export default function RiderDashboard() {
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [vibrationEnabled, setVibrationEnabled] = useState(true);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const mapRef = useRef<HTMLDivElement | null>(null);
+  const mapInstanceRef = useRef<any>(null);
+  const riderMarkerRef = useRef<any>(null);
 
   // Quest & Streak System
   const [dailyQuests, setDailyQuests] = useState([
@@ -96,12 +99,15 @@ export default function RiderDashboard() {
   // Cash Collection
   const [cashCollected, setCashCollected] = useState(180);
   const [cashPending, setCashPending] = useState(120);
-  const [zoom, setZoom] = useState(1);
 
   const handleCenterMap = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        () => setZoom(15),
+        (pos) => {
+          if (mapInstanceRef.current) {
+            mapInstanceRef.current.setView([pos.coords.latitude, pos.coords.longitude], 15);
+          }
+        },
         () => {}
       );
     }
@@ -390,6 +396,106 @@ export default function RiderDashboard() {
     }
   }, [currentOrder, deliveryStep]);
 
+  // Initialize Leaflet map
+  useEffect(() => {
+    if (!mapRef.current || mapInstanceRef.current) return;
+    let isMounted = true;
+
+    (async () => {
+      const L = await import('leaflet');
+      await import('leaflet/dist/leaflet.css');
+
+      if (!isMounted || !mapRef.current) return;
+
+      const map = L.map(mapRef.current, { zoomControl: false }).setView([28.6139, 77.2090], 14);
+      L.control.zoom({ position: 'bottomright' }).addTo(map);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 18,
+      }).addTo(map);
+      mapInstanceRef.current = map;
+
+      // Try to center on rider's location
+      navigator.geolocation.getCurrentPosition(
+        (pos) => map.setView([pos.coords.latitude, pos.coords.longitude], 15),
+        () => {}
+      );
+
+      // Rider marker
+      const riderIcon = L.divIcon({
+        className: '',
+        html: `<div style="display:flex;align-items:center;justify-content:center;width:40px;height:40px;background:#0b50d5;border-radius:50%;border:3px solid white;box-shadow:0 3px 10px rgba(11,80,213,0.4);"><span style="font-size:20px;color:white;">🏍️</span></div>`,
+        iconSize: [40, 40],
+        iconAnchor: [20, 40],
+      });
+      riderMarkerRef.current = L.marker([28.6139, 77.2090], { icon: riderIcon }).addTo(map);
+
+      // Watch rider position
+      const watchId = navigator.geolocation.watchPosition(
+        (pos) => {
+          const { latitude, longitude } = pos.coords;
+          riderMarkerRef.current?.setLatLng([latitude, longitude]);
+        },
+        () => {},
+        { enableHighAccuracy: true, maximumAge: 5000, timeout: 10000 }
+      );
+
+      mapRef.current._watchId = watchId;
+    })();
+
+    return () => {
+      isMounted = false;
+      if (mapRef.current?._watchId != null) {
+        navigator.geolocation.clearWatch(mapRef.current._watchId);
+      }
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
+    };
+  }, []);
+
+  // Update order markers when currentOrder changes
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (!map) return;
+    const markers: any[] = [];
+
+    (async () => {
+      const L = await import('leaflet');
+
+      if (currentOrder && currentOrder.vendorLat && currentOrder.vendorLng) {
+        const pickupIcon = L.divIcon({
+          className: '',
+          html: `<div style="display:flex;flex-direction:column;align-items:center;"><div style="width:44px;height:44px;background:white;border-radius:50%;border:3px solid #0b50d5;box-shadow:0 3px 10px rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:center;"><span style="font-size:20px;">🍽️</span></div><span style="margin-top:2px;padding:2px 6px;background:white;border-radius:6px;font-size:10px;font-weight:bold;box-shadow:0 1px 4px rgba(0,0,0,0.15);white-space:nowrap;">${currentOrder.vendor}</span></div>`,
+          iconSize: [44, 64],
+          iconAnchor: [22, 64],
+        });
+        markers.push(L.marker([currentOrder.vendorLat, currentOrder.vendorLng], { icon: pickupIcon }).addTo(map));
+
+        if (deliveryStep === "delivering" && currentOrder.customerLat && currentOrder.customerLng) {
+          const deliveryIcon = L.divIcon({
+            className: '',
+            html: `<div style="display:flex;flex-direction:column;align-items:center;"><div style="width:44px;height:44px;background:white;border-radius:50%;border:3px solid #ba001c;box-shadow:0 3px 10px rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:center;"><span style="font-size:20px;">🏠</span></div><span style="margin-top:2px;padding:2px 6px;background:white;border-radius:6px;font-size:10px;font-weight:bold;box-shadow:0 1px 4px rgba(0,0,0,0.15);white-space:nowrap;">${currentOrder.customer}</span></div>`,
+            iconSize: [44, 64],
+            iconAnchor: [22, 64],
+          });
+          markers.push(L.marker([currentOrder.customerLat, currentOrder.customerLng], { icon: deliveryIcon }).addTo(map));
+        }
+      }
+
+      // Clean up old markers on next effect run
+      if (mapRef.current) {
+        (mapRef.current as any)._orderMarkers?.forEach((m: any) => m.remove());
+        (mapRef.current as any)._orderMarkers = markers;
+      }
+    })();
+
+    return () => {
+      markers.forEach(m => m.remove());
+    };
+  }, [currentOrder, deliveryStep]);
+
   const clearAllPendingOrders = async () => {
     if (!confirm("This will delete ALL pending orders from the database. This is intended for testing only. Continue?")) return;
     
@@ -624,54 +730,9 @@ export default function RiderDashboard() {
 
       {/* Main Content */}
       <main className="relative h-screen w-full pt-16">
-        {/* Map Background with Heatmap */}
+        {/* Live Map */}
         <div className="absolute inset-0 z-0">
-          <img className="w-full h-full object-cover" style={{ transform: `scale(${zoom})` }} src="https://lh3.googleusercontent.com/aida/ADBb0uiugKcaP2DL9C13e9wDrnek068tIUinJpk04MptyP_MOu7svL-593yK1hDkx7C-MEYEAVoLGe0Q7M--cy1ugPRBsxWIfKaL1S65tI9nJ0kyAE8FKFAUKFyIO3C8mEQvhxjr0v4OZFbepXRxllGTFhhLIJYU3kDCSqCtADWnDZf8Wyx4D6oHuIuXdwmuWMxkyLXy4dft3qR_NeL02fo9_hY8PA4bE55HpKruqId6cpcR48qKrFGQcaInouZkak8LVbYDQt4VBbC8nA" alt="Map" />
-          <div className="absolute inset-0 bg-black/10"></div>
-          
-          {/* Heatmap dots for high demand areas */}
-          <div className="absolute top-[30%] left-[60%] w-20 h-20 bg-orange-500/30 rounded-full blur-xl animate-pulse"></div>
-          <div className="absolute top-[50%] left-[30%] w-16 h-16 bg-orange-500/20 rounded-full blur-xl animate-pulse"></div>
-          <div className="absolute top-[70%] left-[70%] w-24 h-24 bg-orange-500/25 rounded-full blur-xl animate-pulse"></div>
-          
-          {/* Pickup Marker */}
-          {currentOrder && (
-            <div className="absolute top-[35%] left-[45%] -translate-x-1/2 -translate-y-1/2">
-              <div className="relative">
-                <div className="absolute inset-0 rounded-full bg-primary animate-ping opacity-25"></div>
-                <div className="relative w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-xl border-2 border-primary">
-                  <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>restaurant</span>
-                </div>
-                <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap bg-white px-2 py-1 rounded-lg shadow border text-[10px] font-bold">
-                  {currentOrder.vendor}
-                </div>
-              </div>
-            </div>
-          )}
-          
-          {/* Delivery Marker */}
-          {currentOrder && deliveryStep === "delivering" && (
-            <div className="absolute top-[55%] left-[65%] -translate-x-1/2 -translate-y-1/2">
-              <div className="relative">
-                <div className="absolute inset-0 rounded-full bg-secondary animate-ping opacity-25"></div>
-                <div className="relative w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-xl border-2 border-secondary">
-                  <span className="material-symbols-outlined text-secondary" style={{ fontVariationSettings: "'FILL' 1" }}>home</span>
-                </div>
-                <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap bg-white px-2 py-1 rounded-lg shadow border text-[10px] font-bold">
-                  {currentOrder.customer}
-                </div>
-              </div>
-            </div>
-          )}
-          
-          {/* Rider Marker */}
-          <div className="absolute top-[65%] left-[55%] -translate-x-1/2 -translate-y-1/2">
-            <div className="relative">
-              <div className="w-10 h-10 bg-secondary rounded-full flex items-center justify-center shadow-xl border-2 border-white">
-                <span className="material-symbols-outlined text-white" style={{ fontVariationSettings: "'FILL' 1" }}>moped</span>
-              </div>
-            </div>
-          </div>
+          <div ref={mapRef} className="w-full h-full" />
         </div>
 
         {/* Incoming Order Overlay */}
@@ -1290,13 +1351,13 @@ export default function RiderDashboard() {
         {/* Map Controls */}
         <div className="absolute right-4 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-20">
           <button
-            onClick={() => setZoom(Math.min(zoom + 0.5, 20))}
+            onClick={() => mapInstanceRef.current?.zoomIn()}
             className="w-10 h-10 bg-white rounded-lg shadow flex items-center justify-center"
           >
             <span className="material-symbols-outlined">add</span>
           </button>
           <button
-            onClick={() => setZoom(Math.max(zoom - 0.5, 1))}
+            onClick={() => mapInstanceRef.current?.zoomOut()}
             className="w-10 h-10 bg-white rounded-lg shadow flex items-center justify-center"
           >
             <span className="material-symbols-outlined">remove</span>
