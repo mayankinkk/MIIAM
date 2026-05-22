@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import PullToRefresh from "@/components/PullToRefresh";
 import RiderNavBar from "@/components/rider/RiderNavBar";
 
 interface RiderDocument {
@@ -37,6 +38,7 @@ export default function RiderDocumentsPage() {
   const [riderId, setRiderId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [dataError, setDataError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -44,25 +46,29 @@ export default function RiderDocumentsPage() {
   }, []);
 
   async function loadRiderAndDocuments() {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
 
-    setRiderId(user.id);
+      setRiderId(user.id);
 
-    const { data: rider } = await supabase
-      .from("riders")
-      .select("id")
-      .eq("user_id", user.id)
-      .single();
+      const { data: rider } = await supabase
+        .from("riders")
+        .select("id")
+        .eq("user_id", user.id)
+        .single();
 
-    if (rider) {
-      const { data: docs } = await supabase
-        .from("rider_documents")
-        .select("*")
-        .eq("rider_id", rider.id)
-        .order("created_at", { ascending: false });
-      
-      setDocuments(docs || []);
+      if (rider) {
+        const { data: docs } = await supabase
+          .from("rider_documents")
+          .select("*")
+          .eq("rider_id", rider.id)
+          .order("created_at", { ascending: false });
+        
+        setDocuments(docs || []);
+      }
+    } catch {
+      setDataError("Couldn't load documents. Pull down to try again.");
     }
     setLoading(false);
   }
@@ -137,7 +143,15 @@ export default function RiderDocumentsPage() {
   }
 
   return (
+    <PullToRefresh onRefresh={async () => { setDataError(null); setLoading(true); await loadRiderAndDocuments(); }}>
     <div className="min-h-screen bg-[#fff4f4]">
+      {dataError && (
+        <div className="fixed top-4 left-4 right-4 z-50 bg-red-50 border border-red-200 p-4 rounded-xl flex items-center gap-3 shadow-lg">
+          <span className="material-symbols-outlined text-red-600">wifi_off</span>
+          <p className="text-sm text-red-700 flex-1">{dataError}</p>
+          <button onClick={() => { setDataError(null); loadRiderAndDocuments(); }} className="text-red-700 font-bold text-sm">Retry</button>
+        </div>
+      )}
       <header className="bg-[#0b50d5] text-white p-6 pb-8 rounded-b-[3rem]">
         <div className="flex items-center gap-4">
           <Link href="/rider/account" className="text-white">
@@ -356,5 +370,6 @@ export default function RiderDocumentsPage() {
 
       <RiderNavBar active="account" />
     </div>
+    </PullToRefresh>
   );
 }

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import PullToRefresh from "@/components/PullToRefresh";
 import RiderNavBar from "@/components/rider/RiderNavBar";
 
 interface Shift {
@@ -29,24 +30,29 @@ export default function RiderAccountPage() {
   const [showShiftModal, setShowShiftModal] = useState(false);
   const [activeShift, setActiveShift] = useState<string | null>("Lunch");
   const [isOnline, setIsOnline] = useState(true);
+  const [dataError, setDataError] = useState<string | null>(null);
 
   useEffect(() => {
     loadRider();
   }, [supabase]);
 
   async function loadRider() {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { setLoading(false); return; }
-    
-    const { data: riderData } = await supabase
-      .from("riders")
-      .select("*, profile:profiles(*)")
-      .eq("user_id", user.id)
-      .single();
-    
-    if (riderData) {
-      setRider(riderData);
-      setIsOnline(riderData.is_online || false);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { setLoading(false); return; }
+      
+      const { data: riderData } = await supabase
+        .from("riders")
+        .select("*, profile:profiles(*)")
+        .eq("user_id", user.id)
+        .single();
+      
+      if (riderData) {
+        setRider(riderData);
+        setIsOnline(riderData.is_online || false);
+      }
+    } catch {
+      setDataError("Couldn't load profile. Pull down to try again.");
     }
     setLoading(false);
   }
@@ -115,7 +121,15 @@ export default function RiderAccountPage() {
   };
 
   return (
+    <PullToRefresh onRefresh={async () => { setDataError(null); setLoading(true); await loadRider(); }}>
     <div className="min-h-screen bg-[#fff4f4]">
+      {dataError && (
+        <div className="fixed top-4 left-4 right-4 z-50 bg-red-50 border border-red-200 p-4 rounded-xl flex items-center gap-3">
+          <span className="material-symbols-outlined text-red-600">wifi_off</span>
+          <p className="text-sm text-red-700 flex-1">{dataError}</p>
+          <button onClick={() => { setDataError(null); loadRider(); }} className="text-red-700 font-bold text-sm">Retry</button>
+        </div>
+      )}
       <header className="bg-[#0b50d5] text-white p-6 pb-8 rounded-b-[3rem]">
         <div className="flex justify-between items-center">
           <Link href="/rider/dashboard" className="text-3xl font-black tracking-tighter">MIIAM</Link>
@@ -392,5 +406,6 @@ export default function RiderAccountPage() {
 
       <RiderNavBar active="account" />
     </div>
+    </PullToRefresh>
   );
 }
