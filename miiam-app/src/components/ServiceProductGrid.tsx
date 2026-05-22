@@ -163,6 +163,20 @@ export default function ServiceProductGrid({
   }
 
   const hasStock = vendorType === "grocery" || vendorType === "pharmacy";
+  const categoryIcon = (product: any) => {
+    const cat = (product.category || "").toLowerCase();
+    if (cat.includes("fruit")) return "🍎";
+    if (cat.includes("vegetable") || cat.includes("veg")) return "🥬";
+    if (cat.includes("dairy") || cat.includes("milk") || cat.includes("egg")) return "🥛";
+    if (cat.includes("bakery") || cat.includes("bread")) return "🍞";
+    if (cat.includes("spice")) return "🌶️";
+    if (cat.includes("pulse") || cat.includes("rice") || cat.includes("dal") || cat.includes("grain")) return "🌾";
+    if (cat.includes("oil")) return "🫒";
+    if (cat.includes("beverage") || cat.includes("tea") || cat.includes("drink")) return "🧃";
+    if (vendorType === "pharmacy") return "💊";
+    if (vendorType === "flower" || vendorType === "flowers") return "🌸";
+    return "🛒";
+  };
 
   const filteredProducts = (() => {
     let result = selectedCategory === "all"
@@ -519,14 +533,20 @@ export default function ServiceProductGrid({
                 className="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm card-lift animate-in fade-in slide-in-from-bottom-4 duration-500"
                 style={{ animationDelay: `${Math.min(index * 50, 500)}ms` }}
               >
-                <div className="relative w-full h-32">
-                  <BlurImage
-                    src={product.image_url || productImageFallback || product.image}
-                    alt={product.name}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 50vw, 25vw"
-                  />
+                <div className="relative w-full h-32 bg-slate-100">
+                  {product.image_url || product.image ? (
+                    <BlurImage
+                      src={product.image_url || product.image}
+                      alt={product.name}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 50vw, 25vw"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-4xl">
+                      {categoryIcon(product)}
+                    </div>
+                  )}
                 </div>
                 <div className="p-3">
                   <p className="font-bold text-on-surface text-sm">
