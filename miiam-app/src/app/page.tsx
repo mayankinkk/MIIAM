@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useLanguageStore } from "@/lib/store/languageStore";
-import { translations } from "@/lib/i18n/translations";
+import { getTranslations } from "@/lib/i18n";
 import LanguageSwitcher from "@/components/layout/LanguageSwitcher";
 import { createClient } from "@/lib/supabase/client";
 
@@ -22,7 +22,7 @@ export default function LandingPage() {
     checkUser();
   }, [supabase]);
 
-  const t = mounted ? translations[language] : translations['en'];
+  const t = mounted ? getTranslations(language).landing : getTranslations('en').landing;
 
   const quickServices = [
     { icon: "restaurant", label: "Food", href: "/app/food", color: "from-[#ba001c] to-[#ff5f6d]" },
