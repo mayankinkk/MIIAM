@@ -184,9 +184,17 @@ function RidersPage() {
                       <span className="text-slate-400">{rider.is_online ? "Online" : "Offline"}</span>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-xs font-black text-slate-800 flex items-center gap-1">{(rider.rating || 0).toFixed(1)} <span className="material-symbols-outlined text-amber-500 text-sm">star</span></p>
-                    <p className="text-[10px] text-slate-400">{rider.total_deliveries || 0} deliveries</p>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={(e) => { e.stopPropagation(); toggleOnline(rider.id, !rider.is_online); }}
+                      className={`text-[10px] font-bold uppercase px-2 py-1 rounded-lg border transition-all ${rider.is_online ? "text-red-600 border-red-200 hover:bg-red-50" : "text-green-600 border-green-200 hover:bg-green-50"}`}
+                    >
+                      {rider.is_online ? "Offline" : "Online"}
+                    </button>
+                    <div className="text-right">
+                      <p className="text-xs font-black text-slate-800 flex items-center gap-1">{(rider.rating || 0).toFixed(1)} <span className="material-symbols-outlined text-amber-500 text-sm">star</span></p>
+                      <p className="text-[10px] text-slate-400">{rider.total_deliveries || 0} deliveries</p>
+                    </div>
                   </div>
                 </div>
               </div>
