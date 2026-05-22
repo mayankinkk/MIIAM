@@ -341,7 +341,7 @@ export default function FoodPage() {
       supabase.from("page_assets").select("*").eq("section", "food_hero").eq("is_active", true).maybeSingle(),
     ]);
 
-    let query = supabase.from("vendors").select("*").order("created_at", { ascending: false });
+    let query = supabase.from("vendors").select("*").in("type", ["food", "restaurant"]).order("created_at", { ascending: false });
     const vendorsRes = await query;
 
     if (vendorsRes.data) {
