@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 
 interface AnalyticsOrder {
   id: string;
+  user_id?: string;
   status: string;
   total_amount: number;
   delivery_fee: number;
@@ -24,6 +25,7 @@ interface AnalyticsUser {
 interface AnalyticsVendor {
   id: string;
   name: string;
+  category?: string;
   is_active: boolean;
   created_at: string;
 }
@@ -54,6 +56,7 @@ export default function AdvancedAnalytics() {
   const [users, setUsers] = useState<AnalyticsUser[]>([]);
   const [vendors, setVendors] = useState<AnalyticsVendor[]>([]);
   const [riders, setRiders] = useState<AnalyticsRider[]>([]);
+  const [reviews, setReviews] = useState<{ rating: number; created_at: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState<"7d" | "30d" | "90d">("30d");
   const [activeTab, setActiveTab] = useState<"overview" | "orders" | "users" | "vendors" | "riders" | "reports">("overview");
@@ -65,7 +68,7 @@ export default function AdvancedAnalytics() {
       const startDate = new Date();
       startDate.setDate(startDate.getDate() - days);
 
-      const [ordersRes, usersRes, vendorsRes, ridersRes] = await Promise.all([
+      const [ordersRes, usersRes, vendorsRes, ridersRes, reviewsRes] = await Promise.all([
         supabase
           .from("orders")
           .select("*, vendor:vendors(name), rider:riders(name), rider:riders(earnings,total_deliveries)")
@@ -77,16 +80,21 @@ export default function AdvancedAnalytics() {
           .gte("created_at", startDate.toISOString()),
         supabase
           .from("vendors")
-          .select("id, name, is_active, created_at"),
+          .select("id, name, category, is_active, created_at"),
         supabase
           .from("riders")
           .select("id, name, is_online, earnings"),
+        supabase
+          .from("reviews")
+          .select("rating, created_at")
+          .gte("created_at", startDate.toISOString()),
       ]);
 
       if (ordersRes.data) setOrders(ordersRes.data);
       if (usersRes.data) setUsers(usersRes.data);
       if (vendorsRes.data) setVendors(vendorsRes.data);
       if (ridersRes.data) setRiders(ridersRes.data);
+      if (reviewsRes.data) setReviews(reviewsRes.data);
       setLoading(false);
     }
     loadData();
@@ -181,6 +189,46 @@ export default function AdvancedAnalytics() {
     { status: "other", label: "Other", count: orderCount - deliveredOrders - cancelledOrders - pendingOrders, color: "bg-slate-400" },
   ];
 
+  // --- Real analytics computations for Reports tab ---
+  const deliveredOrdersFull = orders.filter((o) => o.status === "delivered");
+  const uniqueUsersWithOrders = new Set(orders.map((o) => o.user_id)).size;
+  const repeatOrderUsers = orders.reduce<Record<string, number>>((acc, o) => {
+    if (o.user_id) acc[o.user_id] = (acc[o.user_id] || 0) + 1;
+    return acc;
+  }, {});
+  const usersWithRepeatOrders = Object.values(repeatOrderUsers).filter((c) => c > 1).length;
+  const customerRetention = uniqueUsersWithOrders > 0 ? Math.round((usersWithRepeatOrders / uniqueUsersWithOrders) * 100) : 0;
+  const repeatOrderPct = orderCount > 0 ? Math.round((deliveredOrdersFull.length / orderCount) * 100) : 0;
+  const avgOrdersPerCustomer = uniqueUsersWithOrders > 0 ? (orderCount / uniqueUsersWithOrders).toFixed(1) : "0";
+
+  const totalReviews = reviews.length;
+  const avgRating = totalReviews > 0 ? (reviews.reduce((s, r) => s + r.rating, 0) / totalReviews) : 0;
+
+  // Build real heatmap data from order timestamps
+  const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const heatmapData: number[][] = Array.from({ length: 24 }, () => Array(7).fill(0));
+  orders.forEach((o) => {
+    const d = new Date(o.placed_at);
+    const hour = d.getHours();
+    const dayIndex = (d.getDay() + 6) % 7; // Convert Sun=0 to Mon=0 index
+    heatmapData[hour][dayIndex]++;
+  });
+  const maxHeatmapValue = Math.max(...heatmapData.flat(), 1);
+
+  // Build real service category performance from orders x vendors
+  const vendorCategoryMap = new Map(vendors.map((v) => [v.id, v.category || "Other"]));
+  const categoryStats: Record<string, { revenue: number; orders: number }> = {};
+  orders.forEach((o) => {
+    const cat = o.vendor_id ? (vendorCategoryMap.get(o.vendor_id) || "Other") : "Other";
+    if (!categoryStats[cat]) categoryStats[cat] = { revenue: 0, orders: 0 };
+    categoryStats[cat].revenue += o.total_amount || 0;
+    categoryStats[cat].orders += 1;
+  });
+  const topCategories = Object.entries(categoryStats)
+    .sort((a, b) => b[1].revenue - a[1].revenue)
+    .slice(0, 5);
+  const maxCategoryRevenue = topCategories.length > 0 ? topCategories[0][1].revenue : 1;
+
   if (loading) {
     return (
       <div className="px-8 py-12 flex items-center justify-center">
@@ -233,23 +281,23 @@ export default function AdvancedAnalytics() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="bg-white p-6 rounded-2xl shadow-lg">
               <p className="text-sm text-slate-500 mb-1">Customer Retention</p>
-              <p className="text-3xl font-black text-green-600">68%</p>
-              <p className="text-xs text-green-500 mt-1">↑ 12% from last month</p>
+              <p className="text-3xl font-black text-green-600">{customerRetention}%</p>
+              <p className="text-xs text-green-500 mt-1">{uniqueUsersWithOrders} customers, {usersWithRepeatOrders} returning</p>
             </div>
             <div className="bg-white p-6 rounded-2xl shadow-lg">
               <p className="text-sm text-slate-500 mb-1">Repeat Orders</p>
-              <p className="text-3xl font-black text-blue-600">42%</p>
-              <p className="text-xs text-slate-400 mt-1">Avg 2.3 orders/customer</p>
+              <p className="text-3xl font-black text-blue-600">{repeatOrderPct}%</p>
+              <p className="text-xs text-slate-400 mt-1">Avg {avgOrdersPerCustomer} orders/customer</p>
             </div>
             <div className="bg-white p-6 rounded-2xl shadow-lg">
-              <p className="text-sm text-slate-500 mb-1">Avg Response Time</p>
-              <p className="text-3xl font-black text-purple-600">4.2 min</p>
-              <p className="text-xs text-green-500 mt-1">↓ 1.3 min improvement</p>
+              <p className="text-sm text-slate-500 mb-1">Avg Delivery Time</p>
+              <p className="text-3xl font-black text-purple-600">{avgDeliveryMinutes} min</p>
+              <p className="text-xs text-slate-400 mt-1">Across {ordersWithDeliveryTime.length} deliveries</p>
             </div>
             <div className="bg-white p-6 rounded-2xl shadow-lg">
               <p className="text-sm text-slate-500 mb-1">CSAT Score</p>
-              <p className="text-3xl font-black text-amber-600">4.8/5</p>
-              <p className="text-xs text-slate-400 mt-1">Based on 12,450 reviews</p>
+              <p className="text-3xl font-black text-amber-600">{avgRating.toFixed(1)}/5</p>
+              <p className="text-xs text-slate-400 mt-1">Based on {totalReviews.toLocaleString()} reviews</p>
             </div>
           </div>
 
@@ -278,16 +326,14 @@ export default function AdvancedAnalytics() {
             </div>
             <div className="grid grid-cols-8 gap-1 text-xs">
               <div />
-              {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
+              {daysOfWeek.map((day) => (
                 <div key={day} className="text-center font-bold text-slate-500 py-2">{day}</div>
               ))}
-              {Array.from({ length: 24 }, (_, hour) => (
-                <>
-                  <div key={`h-${hour}`} className="text-slate-400 text-right pr-2 py-1">
-                    {hour}:00
-                  </div>
-                  {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((_, dayIndex) => {
-                    const intensity = Math.floor(Math.random() * 5);
+              {heatmapData.map((hours, hour) => (
+                <div key={`row-${hour}`} className="contents">
+                  <div className="text-slate-400 text-right pr-2 py-1">{hour}:00</div>
+                  {hours.map((count, dayIndex) => {
+                    const intensity = maxHeatmapValue > 0 ? Math.floor((count / maxHeatmapValue) * 4) : 0;
                     return (
                       <div
                         key={`${hour}-${dayIndex}`}
@@ -298,11 +344,11 @@ export default function AdvancedAnalytics() {
                           intensity === 3 ? "bg-green-700" :
                           "bg-green-900"
                         }`}
-                        title={`${hour}:00 - ${["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][dayIndex]}: ${Math.floor(Math.random() * 50)} orders`}
+                        title={`${hour}:00 - ${daysOfWeek[dayIndex]}: ${count} orders`}
                       />
                     );
                   })}
-                </>
+                </div>
               ))}
             </div>
           </div>
@@ -311,32 +357,26 @@ export default function AdvancedAnalytics() {
           <div className="bg-white rounded-2xl p-6 shadow-lg">
             <h3 className="text-lg font-black text-slate-800 mb-6">Service Category Performance</h3>
             <div className="space-y-4">
-              {[
-                { name: "Beauty & Wellness", revenue: 156000, orders: 245, growth: 28 },
-                { name: "AC Repair", revenue: 124000, orders: 180, growth: 15 },
-                { name: "Cleaning", revenue: 98000, orders: 156, growth: 22 },
-                { name: "Plumbing", revenue: 67000, orders: 134, growth: 8 },
-                { name: "Electrical", revenue: 45000, orders: 98, growth: 12 },
-              ].map((cat, i) => (
-                <div key={i} className="flex items-center gap-4">
-                  <div className="w-32 font-bold text-slate-700">{cat.name}</div>
+              {topCategories.map(([name, stats]) => (
+                <div key={name} className="flex items-center gap-4">
+                  <div className="w-32 font-bold text-slate-700 capitalize">{name}</div>
                   <div className="flex-1 bg-slate-100 rounded-full h-4 overflow-hidden">
                     <div
                       className="h-full bg-gradient-to-r from-[#ba001c] to-pink-500 rounded-full"
-                      style={{ width: `${(cat.revenue / 156000) * 100}%` }}
+                      style={{ width: `${(stats.revenue / maxCategoryRevenue) * 100}%` }}
                     />
                   </div>
                   <div className="w-24 text-right">
-                    <span className="font-bold text-slate-800">₹{cat.revenue.toLocaleString()}</span>
+                    <span className="font-bold text-slate-800">₹{stats.revenue.toLocaleString()}</span>
                   </div>
                   <div className="w-16 text-right">
-                    <span className="text-sm text-slate-500">{cat.orders} orders</span>
-                  </div>
-                  <div className="w-16 text-right">
-                    <span className="text-sm text-green-600 font-bold">↑{cat.growth}%</span>
+                    <span className="text-sm text-slate-500">{stats.orders} orders</span>
                   </div>
                 </div>
               ))}
+              {topCategories.length === 0 && (
+                <p className="text-slate-400 text-center py-4">No order data available for this period</p>
+              )}
             </div>
           </div>
 
