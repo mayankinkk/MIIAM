@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 import RiderNavBar from "@/components/rider/RiderNavBar";
 
 interface IncidentType {
@@ -18,11 +19,16 @@ const incidentTypes: IncidentType[] = [
   { id: "assault", icon: "⚠️", label: "Safety Concern", color: "bg-purple-100" },
   { id: "vehicle", icon: "🔧", label: "Vehicle Issue", color: "bg-blue-100" },
   { id: "medical", icon: "🏥", label: "Medical Emergency", color: "bg-green-100" },
-  { id: "other", icon: "❓", label: "Other", color: "bg-slate-100" },
 ];
 
 export default function RiderIncidentPage() {
   const router = useRouter();
+
+  useEffect(() => {
+    createClient().auth.getUser().then(({ data: { user } }) => {
+      if (!user) router.push("/rider/login");
+    });
+  }, [router]);
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [showConfirm, setShowConfirm] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);

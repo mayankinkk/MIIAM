@@ -1,15 +1,10 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 import RiderNavBar from "@/components/rider/RiderNavBar";
-
-const completedOrders = [
-  { id: "ORD001", customer: "Priya S.", date: "Today, 2:30 PM", rating: null },
-  { id: "ORD002", customer: "Amit K.", date: "Today, 12:15 PM", rating: null },
-  { id: "ORD003", customer: "Rahul M.", date: "Yesterday, 8:45 PM", rating: null },
-];
 
 function RateCustomerContent() {
   const router = useRouter();
@@ -184,6 +179,14 @@ function LoadingFallback() {
 }
 
 export default function RateCustomerPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    createClient().auth.getUser().then(({ data: { user } }) => {
+      if (!user) router.push("/rider/login");
+    });
+  }, [router]);
+
   return (
     <Suspense fallback={<LoadingFallback />}>
       <RateCustomerContent />
