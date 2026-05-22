@@ -117,13 +117,19 @@ const handleCustomizeItem = (item: any) => {
 
   return (
     <div className="min-h-screen bg-[#f8f8f8] pb-24">
-      <div className="relative h-56 bg-gradient-to-b from-slate-300 to-slate-100">
+      <div className="relative h-56 overflow-hidden">
+        {vendor.cover_image_url || vendor.image_url ? (
+          <BlurImage src={vendor.cover_image_url || vendor.image_url} alt={vendor.shop_name} fill className="w-full h-full" sizes="100vw" />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-b from-slate-300 to-slate-100" />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
         <button onClick={() => router.back()} className="absolute top-4 left-4 bg-white/90 p-2 rounded-full shadow-md">
           <span className="material-symbols-outlined">arrow_back</span>
         </button>
         <div className="absolute bottom-4 left-4 right-4">
-          <h1 className="text-3xl font-black text-slate-800">{vendor.shop_name}</h1>
-          <p className="text-slate-600 text-sm mt-1">{vendor.cuisine} • {vendor.address}</p>
+          <h1 className="text-3xl font-black text-white">{vendor.shop_name}</h1>
+          <p className="text-white/80 text-sm mt-1">{vendor.cuisine} • {vendor.address}</p>
         </div>
       </div>
 
