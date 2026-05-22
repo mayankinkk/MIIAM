@@ -35,6 +35,47 @@ export default function RiderWalletPage() {
   const [weeklyEarnings, setWeeklyEarnings] = useState<DailyEarning[]>([]);
   const [totalWeekEarnings, setTotalWeekEarnings] = useState(0);
   const [totalDeliveries, setTotalDeliveries] = useState(0);
+  const [error, setError] = useState<string | null>(null);
+
+  async function loadWalletData() {
+    setLoading(true);
+    setError(null);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: riderData } = await supabase.from("riders").select("id").eq("user_id", user.id).single();
+        if (riderData) {
+          setRiderId(riderData.id);
+        }
+      }
+
+      const demoTransactions: Transaction[] = [
+        { id: "1", amount: 340, type: "earning", description: "Delivery #1234 - Food", created_at: new Date().toISOString(), order_id: "1234" },
+        { id: "2", amount: 280, type: "earning", description: "Delivery #1235 - Grocery", created_at: new Date(Date.now() - 3600000).toISOString(), order_id: "1235" },
+        { id: "3", amount: 50, type: "expense", description: "Fuel Reimbursement", created_at: new Date(Date.now() - 7200000).toISOString(), order_id: null },
+        { id: "4", amount: 1000, type: "payout", description: "Weekly Payout", created_at: new Date(Date.now() - 86400000).toISOString(), order_id: null },
+        { id: "5", amount: 150, type: "advance", description: "Advance Request", created_at: new Date(Date.now() - 172800000).toISOString(), order_id: null },
+        { id: "6", amount: 420, type: "earning", description: "Delivery #1236 - Food", created_at: new Date(Date.now() - 259200000).toISOString(), order_id: "1236" },
+      ];
+      setTransactions(demoTransactions);
+      setWalletData({ balance: 2340, pendingPayout: 500, totalEarnings: 12450, advanceUsed: 2000, instantPayoutFee: 2 });
+      setWeeklyEarnings([
+        { date: "Mon", deliveries: 8, earnings: 340, avgPerDelivery: 42.5 },
+        { date: "Tue", deliveries: 12, earnings: 520, avgPerDelivery: 43.3 },
+        { date: "Wed", deliveries: 15, earnings: 680, avgPerDelivery: 45.3 },
+        { date: "Thu", deliveries: 10, earnings: 430, avgPerDelivery: 43.0 },
+        { date: "Fri", deliveries: 14, earnings: 590, avgPerDelivery: 42.1 },
+        { date: "Sat", deliveries: 18, earnings: 820, avgPerDelivery: 45.6 },
+        { date: "Sun", deliveries: 0, earnings: 0, avgPerDelivery: 0 },
+      ]);
+      setTotalWeekEarnings(3380);
+      setTotalDeliveries(77);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load wallet data");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
     loadWalletData();
@@ -78,6 +119,24 @@ export default function RiderWalletPage() {
 
   const now = Date.now();
   const displayTxns: Transaction[] = transactions;
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center p-4">
+        <div className="text-center max-w-sm">
+          <span className="material-symbols-outlined text-5xl text-red-400 mb-4 block">wifi_off</span>
+          <h2 className="text-xl font-bold text-[#4d212a] mb-2">Something went wrong</h2>
+          <p className="text-slate-500 mb-6">{error}</p>
+          <button
+            onClick={() => loadWalletData()}
+            className="px-6 py-3 bg-[#0b50d5] text-white rounded-xl font-bold"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (

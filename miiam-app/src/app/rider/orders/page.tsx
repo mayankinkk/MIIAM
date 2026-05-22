@@ -63,55 +63,63 @@ export default function RiderOrdersPage() {
   const [showIssueModal, setShowIssueModal] = useState(false);
   const [issueType, setIssueType] = useState("");
   const [riderLocation, setRiderLocation] = useState({ lat: 28.6139, lng: 77.2090 });
+  const [error, setError] = useState<string | null>(null);
 
   async function loadOrders() {
     setLoading(true);
+    setError(null);
+    try {
+      const yesterday = new Date();
+      yesterday.setHours(yesterday.getHours() - 24);
 
-    const yesterday = new Date();
-    yesterday.setHours(yesterday.getHours() - 24);
+      const { data: dbOrders, error: dbError } = await supabase
+        .from("orders")
+        .select("*")
+        .is("rider_id", null)
+        .in("status", ["pending", "accepted", "preparing"])
+        .gte("placed_at", yesterday.toISOString())
+        .order("placed_at", { ascending: false });
 
-    const { data: dbOrders } = await supabase
-      .from("orders")
-      .select("*")
-      .is("rider_id", null)
-      .in("status", ["pending", "accepted", "preparing"])
-      .gte("placed_at", yesterday.toISOString())
-      .order("placed_at", { ascending: false });
+      if (dbError) throw new Error(dbError.message);
 
-    if (dbOrders && dbOrders.length > 0) {
-      const fullOrders = await Promise.all(dbOrders.map(async (order) => {
-        const [vendorRes, addressRes, itemsRes, userRes] = await Promise.all([
-          order.vendor_id ? supabase.from("vendors").select("*").eq("id", order.vendor_id).single() : Promise.resolve({ data: null }),
-          order.delivery_address_id ? supabase.from("delivery_addresses").select("*").eq("id", order.delivery_address_id).single() : Promise.resolve({ data: null }),
-          supabase.from("order_items").select("*").eq("order_id", order.id),
-          order.user_id ? supabase.from("profiles").select("full_name").eq("id", order.user_id).single() : Promise.resolve({ data: null })
-        ]);
+      if (dbOrders && dbOrders.length > 0) {
+        const fullOrders = await Promise.all(dbOrders.map(async (order) => {
+          const [vendorRes, addressRes, itemsRes, userRes] = await Promise.all([
+            order.vendor_id ? supabase.from("vendors").select("*").eq("id", order.vendor_id).single() : Promise.resolve({ data: null }),
+            order.delivery_address_id ? supabase.from("delivery_addresses").select("*").eq("id", order.delivery_address_id).single() : Promise.resolve({ data: null }),
+            supabase.from("order_items").select("*").eq("order_id", order.id),
+            order.user_id ? supabase.from("profiles").select("full_name").eq("id", order.user_id).single() : Promise.resolve({ data: null })
+          ]);
 
-        let items = itemsRes.data || [];
-        if (items.length > 0) {
-          const menuItemIds = items.map(i => i.menu_item_id).filter(Boolean);
-          if (menuItemIds.length > 0) {
-            const { data: menuItems } = await supabase.from("menu_items").select("*").in("id", menuItemIds);
-            if (menuItems) {
-              items = items.map(item => ({
-                ...item,
-                menu_item: menuItems.find(mi => mi.id === item.menu_item_id) || null
-              }));
+          let items = itemsRes.data || [];
+          if (items.length > 0) {
+            const menuItemIds = items.map(i => i.menu_item_id).filter(Boolean);
+            if (menuItemIds.length > 0) {
+              const { data: menuItems } = await supabase.from("menu_items").select("*").in("id", menuItemIds);
+              if (menuItems) {
+                items = items.map(item => ({
+                  ...item,
+                  menu_item: menuItems.find(mi => mi.id === item.menu_item_id) || null
+                }));
+              }
             }
           }
-        }
 
-        return {
-          ...order,
-          vendor: vendorRes.data,
-          address: addressRes.data,
-          items: items,
-          customer_name: userRes.data?.full_name || "Customer"
-        };
-      }));
-      setOrders(fullOrders);
+          return {
+            ...order,
+            vendor: vendorRes.data,
+            address: addressRes.data,
+            items: items,
+            customer_name: userRes.data?.full_name || "Customer"
+          };
+        }));
+        setOrders(fullOrders);
+      }
+      setLoading(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load orders");
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   useEffect(() => {
@@ -455,6 +463,24 @@ export default function RiderOrdersPage() {
   const todayEarnings = completedOrders
     .filter(o => new Date(o.delivered_at || "").toDateString() === new Date().toDateString())
     .reduce((sum, o) => sum + (o.customer_collected || 0) - (o.items?.reduce((s, i) => s + (i.actual_price || 0) * i.quantity, 0) || 0), 0);
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center p-4">
+        <div className="text-center max-w-sm">
+          <span className="material-symbols-outlined text-5xl text-red-400 mb-4 block">wifi_off</span>
+          <h2 className="text-xl font-bold text-[#4d212a] mb-2">Something went wrong</h2>
+          <p className="text-slate-500 mb-6">{error}</p>
+          <button
+            onClick={() => loadOrders()}
+            className="px-6 py-3 bg-[#0b50d5] text-white rounded-xl font-bold"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
