@@ -22,6 +22,7 @@ type Props = {
   item: MenuItem;
   vendor_id: string;
   vendor_name: string;
+  vendor_type?: string;
   onClose: () => void;
   onAdd?: (item: any) => void;
 };
@@ -80,14 +81,19 @@ const commonCustomizations: Record<string, { label: string; options: { label: st
   },
 };
 
-export default function CustomizationModal({ item, vendor_id, vendor_name, onClose, onAdd }: Props) {
+export default function CustomizationModal({ item, vendor_id, vendor_name, vendor_type, onClose, onAdd }: Props) {
   const { addItem } = useCartStore();
   const [quantity, setQuantity] = useState(1);
   const [specialInstructions, setSpecialInstructions] = useState("");
-  const [customizations, setCustomizations] = useState<Record<string, CustomizationOption[]>>({
-    "Spice Level": commonCustomizations["Spice Level"].options.map((o) => ({ ...o, selected: o.label.includes("Medium") })),
-    "Add Ons": [],
-  });
+  const isFood = vendor_type === "food" || vendor_type === "restaurant";
+  const [customizations, setCustomizations] = useState<Record<string, CustomizationOption[]>>(
+    isFood
+      ? {
+          "Spice Level": commonCustomizations["Spice Level"].options.map((o) => ({ ...o, selected: o.label.includes("Medium") })),
+          "Add Ons": [],
+        }
+      : {}
+  );
   const [showAllCustomizations, setShowAllCustomizations] = useState(false);
 
   useEffect(() => {
@@ -164,7 +170,7 @@ export default function CustomizationModal({ item, vendor_id, vendor_name, onClo
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
       
-      <div className="relative w-full max-w-lg bg-white rounded-t-3xl sm:rounded-3xl max-h-[90vh] overflow-hidden flex flex-col animate-slide-up">
+      <div className="relative w-full max-w-lg bg-white rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col animate-slide-up">
         {/* Header */}
         <div className="sticky top-0 bg-white z-10 border-b border-slate-100 px-6 py-4 flex items-center justify-between">
           <div>
@@ -177,7 +183,7 @@ export default function CustomizationModal({ item, vendor_id, vendor_name, onClo
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto px-6 py-4 space-y-6">
+        <div className="flex-1 overflow-y-auto min-h-0 px-6 py-4 space-y-6">
           {/* Item Preview */}
           <div className="flex gap-4 bg-slate-50 rounded-2xl p-4">
             <div className="w-20 h-20 rounded-xl overflow-hidden bg-slate-200 flex-shrink-0">
@@ -218,75 +224,20 @@ export default function CustomizationModal({ item, vendor_id, vendor_name, onClo
             </div>
           </div>
 
-          {/* Required Customizations */}
-          <div>
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="font-bold text-slate-800">Spice Level <span className="text-[#ba001c]">*</span></h3>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              {customizations["Spice Level"]?.map((opt) => (
-                <button
-                  key={opt.label}
-                  onClick={() => handleCustomizationToggle("Spice Level", opt.label)}
-                  className={`px-4 py-3 rounded-xl text-sm font-semibold border-2 transition-all text-left ${
-                    opt.selected
-                      ? "border-[#ba001c] bg-[#fff4f4] text-[#ba001c]"
-                      : "border-slate-200 text-slate-600 hover:border-[#ba001c]"
-                  }`}
-                >
-                  {opt.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Show More Customizations */}
-          {!showAllCustomizations ? (
-            <button
-              onClick={() => setShowAllCustomizations(true)}
-              className="w-full py-3 text-center text-[#ba001c] font-bold text-sm border border-dashed border-[#ba001c] rounded-xl hover:bg-[#fff4f4] transition-colors"
-            >
-              + Add More Customizations
-            </button>
-          ) : (
+          {isFood && (
             <>
-              {/* Add Ons */}
+              {/* Required Customizations */}
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-bold text-slate-800">Add Ons</h3>
-                  <span className="text-xs text-slate-500">Extra charges may apply</span>
+                  <h3 className="font-bold text-slate-800">Spice Level <span className="text-[#ba001c]">*</span></h3>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
-                  {customizations["Add Ons"]?.map((opt) => (
+                  {customizations["Spice Level"]?.map((opt) => (
                     <button
                       key={opt.label}
-                      onClick={() => handleCustomizationToggle("Add Ons", opt.label)}
-                      className={`px-4 py-3 rounded-xl text-sm font-semibold border-2 transition-all text-left flex items-center justify-between ${
-                        opt.selected
-                          ? "border-[#ba001c] bg-[#fff4f4] text-[#ba001c]"
-                          : "border-slate-200 text-slate-600 hover:border-[#ba001c]"
-                      }`}
-                    >
-                      <span>{opt.label}</span>
-                      {opt.price > 0 && <span className="text-xs font-bold">+₹{opt.price}</span>}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Remove Ingredients */}
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-bold text-slate-800">Remove Ingredients</h3>
-                  <span className="text-xs text-slate-500">Free</span>
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  {commonCustomizations["Remove Ingredients"].options.map((opt) => (
-                    <button
-                      key={opt.label}
-                      onClick={() => handleCustomizationToggle("Remove Ingredients", opt.label)}
+                      onClick={() => handleCustomizationToggle("Spice Level", opt.label)}
                       className={`px-4 py-3 rounded-xl text-sm font-semibold border-2 transition-all text-left ${
-                        customizations["Remove Ingredients"]?.find((o) => o.label === opt.label)?.selected
+                        opt.selected
                           ? "border-[#ba001c] bg-[#fff4f4] text-[#ba001c]"
                           : "border-slate-200 text-slate-600 hover:border-[#ba001c]"
                       }`}
@@ -297,29 +248,88 @@ export default function CustomizationModal({ item, vendor_id, vendor_name, onClo
                 </div>
               </div>
 
-              {/* Bread Type */}
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-bold text-slate-800">Bread Type</h3>
-                  <span className="text-xs text-slate-500">Extra charges may apply</span>
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  {commonCustomizations["Bread Type"].options.map((opt) => (
-                    <button
-                      key={opt.label}
-                      onClick={() => handleCustomizationToggle("Bread Type", opt.label)}
-                      className={`px-4 py-3 rounded-xl text-sm font-semibold border-2 transition-all text-left flex items-center justify-between ${
-                        customizations["Bread Type"]?.find((o) => o.label === opt.label)?.selected
-                          ? "border-[#ba001c] bg-[#fff4f4] text-[#ba001c]"
-                          : "border-slate-200 text-slate-600 hover:border-[#ba001c]"
-                      }`}
-                    >
-                      <span>{opt.label}</span>
-                      {opt.price > 0 && <span className="text-xs font-bold">+₹{opt.price}</span>}
-                    </button>
-                  ))}
-                </div>
-              </div>
+              {/* Show More Customizations */}
+              {!showAllCustomizations ? (
+                <button
+                  onClick={() => setShowAllCustomizations(true)}
+                  className="w-full py-3 text-center text-[#ba001c] font-bold text-sm border border-dashed border-[#ba001c] rounded-xl hover:bg-[#fff4f4] transition-colors"
+                >
+                  + Add More Customizations
+                </button>
+              ) : (
+                <>
+                  {/* Add Ons */}
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="font-bold text-slate-800">Add Ons</h3>
+                      <span className="text-xs text-slate-500">Extra charges may apply</span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      {customizations["Add Ons"]?.map((opt) => (
+                        <button
+                          key={opt.label}
+                          onClick={() => handleCustomizationToggle("Add Ons", opt.label)}
+                          className={`px-4 py-3 rounded-xl text-sm font-semibold border-2 transition-all text-left flex items-center justify-between ${
+                            opt.selected
+                              ? "border-[#ba001c] bg-[#fff4f4] text-[#ba001c]"
+                              : "border-slate-200 text-slate-600 hover:border-[#ba001c]"
+                          }`}
+                        >
+                          <span>{opt.label}</span>
+                          {opt.price > 0 && <span className="text-xs font-bold">+₹{opt.price}</span>}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Remove Ingredients */}
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="font-bold text-slate-800">Remove Ingredients</h3>
+                      <span className="text-xs text-slate-500">Free</span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      {commonCustomizations["Remove Ingredients"].options.map((opt) => (
+                        <button
+                          key={opt.label}
+                          onClick={() => handleCustomizationToggle("Remove Ingredients", opt.label)}
+                          className={`px-4 py-3 rounded-xl text-sm font-semibold border-2 transition-all text-left ${
+                            customizations["Remove Ingredients"]?.find((o) => o.label === opt.label)?.selected
+                              ? "border-[#ba001c] bg-[#fff4f4] text-[#ba001c]"
+                              : "border-slate-200 text-slate-600 hover:border-[#ba001c]"
+                          }`}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Bread Type */}
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="font-bold text-slate-800">Bread Type</h3>
+                      <span className="text-xs text-slate-500">Extra charges may apply</span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      {commonCustomizations["Bread Type"].options.map((opt) => (
+                        <button
+                          key={opt.label}
+                          onClick={() => handleCustomizationToggle("Bread Type", opt.label)}
+                          className={`px-4 py-3 rounded-xl text-sm font-semibold border-2 transition-all text-left flex items-center justify-between ${
+                            customizations["Bread Type"]?.find((o) => o.label === opt.label)?.selected
+                              ? "border-[#ba001c] bg-[#fff4f4] text-[#ba001c]"
+                              : "border-slate-200 text-slate-600 hover:border-[#ba001c]"
+                          }`}
+                        >
+                          <span>{opt.label}</span>
+                          {opt.price > 0 && <span className="text-xs font-bold">+₹{opt.price}</span>}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
             </>
           )}
 

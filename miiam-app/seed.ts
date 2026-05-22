@@ -45,12 +45,12 @@ const flowerItems = [
 ];
 
 const foodVendors = [
-  { shop_name: "Pizza Hut", cuisine: "Pizza", address: "Connaught Place, Delhi", phone: "+919876543210", owner_name: "John Smith" },
-  { shop_name: "Domino's Pizza", cuisine: "Pizza", address: "Karol Bagh, Delhi", phone: "+919876543211", owner_name: "Mike Johnson" },
-  { shop_name: "McDonald's", cuisine: "Burgers", address: "Rajouri Garden, Delhi", phone: "+919876543212", owner_name: "Robert Brown" },
-  { shop_name: "KFC", cuisine: "Burgers", address: "Nehru Place, Delhi", phone: "+919876543213", owner_name: "David Wilson" },
-  { shop_name: "Biryani House", cuisine: "Biryani", address: "Lajpat Nagar, Delhi", phone: "+919876543214", owner_name: "Ahmed Khan" },
-  { shop_name: "Golden Dragon", cuisine: "Chinese", address: "Saket, Delhi", phone: "+919876543215", owner_name: "Chen Wei" },
+  { shop_name: "Pizza Hut", cuisine: "Pizza", address: "Connaught Place, Delhi", phone: "+919876543210", owner_name: "John Smith", city: "Delhi", pincode: "110001", type: "food" },
+  { shop_name: "Domino's Pizza", cuisine: "Pizza", address: "Karol Bagh, Delhi", phone: "+919876543211", owner_name: "Mike Johnson", city: "Delhi", pincode: "110001", type: "food" },
+  { shop_name: "McDonald's", cuisine: "Burgers", address: "Rajouri Garden, Delhi", phone: "+919876543212", owner_name: "Robert Brown", city: "Delhi", pincode: "110001", type: "food" },
+  { shop_name: "KFC", cuisine: "Burgers", address: "Nehru Place, Delhi", phone: "+919876543213", owner_name: "David Wilson", city: "Delhi", pincode: "110001", type: "food" },
+  { shop_name: "Biryani House", cuisine: "Biryani", address: "Lajpat Nagar, Delhi", phone: "+919876543214", owner_name: "Ahmed Khan", city: "Delhi", pincode: "110001", type: "food" },
+  { shop_name: "Golden Dragon", cuisine: "Chinese", address: "Saket, Delhi", phone: "+919876543215", owner_name: "Chen Wei", city: "Delhi", pincode: "110001", type: "food" },
 ];
 
 const menuItems = [
@@ -116,6 +116,9 @@ async function seedDatabase() {
       address: vendor.address,
       phone: vendor.phone,
       owner_name: vendor.owner_name,
+      city: vendor.city,
+      pincode: vendor.pincode,
+      type: vendor.type,
     }).select().single();
     if (error) console.log(`  Error: ${error.message}`);
     else {

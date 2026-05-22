@@ -319,6 +319,7 @@ const handleCustomizeItem = (item: any) => {
           item={customizingItem}
           vendor_id={vendorId}
           vendor_name={vendor?.shop_name}
+          vendor_type={vendor?.type}
           onClose={() => setCustomizingItem(null)}
           onAdd={handleAddToCart}
         />

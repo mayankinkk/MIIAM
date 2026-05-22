@@ -84,6 +84,7 @@ export default function ServiceProductGrid({
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [isServiceable, setIsServiceable] = useState(true);
+  const [locationRequired, setLocationRequired] = useState(false);
   const [vendor, setVendor] = useState<any>(null);
   const { items, addItem, updateQuantity, totalItems } = useCartStore();
   const { addToast } = useToastStore();
@@ -94,11 +95,21 @@ export default function ServiceProductGrid({
 
   useEffect(() => {
     loadVendorAndProducts();
-  }, [userPincode]);
+  }, [userPincode, userCity]);
 
   async function loadVendorAndProducts() {
     setLoading(true);
     setIsServiceable(true);
+    setLocationRequired(false);
+
+    if (!userPincode && !userCity) {
+      setIsServiceable(false);
+      setLocationRequired(true);
+      setVendor(null);
+      setProducts([]);
+      setLoading(false);
+      return;
+    }
 
     const { data: vendors } = await supabase
       .from("vendors")
@@ -109,21 +120,17 @@ export default function ServiceProductGrid({
     let matchedVendor = null;
 
     if (vendors && vendors.length > 0) {
-      if (userPincode || userCity) {
-        const cityLower = (userCity || "").toLowerCase();
-        const localVendors = vendors.filter((v: any) => {
-          const pincodeMatch = userPincode && v.pincode === userPincode;
-          const cityMatch = cityLower && v.city?.toLowerCase() === cityLower;
-          return pincodeMatch || cityMatch;
-        });
+      const cityLower = (userCity || "").toLowerCase();
+      const localVendors = vendors.filter((v: any) => {
+        const pincodeMatch = userPincode && v.pincode === userPincode;
+        const cityMatch = cityLower && v.city?.toLowerCase() === cityLower;
+        return pincodeMatch || cityMatch;
+      });
 
-        if (localVendors.length > 0) {
-          matchedVendor = localVendors[0];
-        } else {
-          setIsServiceable(false);
-        }
+      if (localVendors.length > 0) {
+        matchedVendor = localVendors[0];
       } else {
-        matchedVendor = vendors[0];
+        setIsServiceable(false);
       }
     } else {
       setIsServiceable(false);
@@ -357,6 +364,34 @@ export default function ServiceProductGrid({
             {[1, 2, 3, 4].map((i) => (
               <CardSkeleton key={i} />
             ))}
+          </div>
+        ) : locationRequired ? (
+          <div className="text-center py-16 bg-surface-container-lowest rounded-3xl shadow-sm border border-outline-variant mx-2 animate-reveal-up">
+            <div className="w-20 h-20 bg-[#ba001c]/10 rounded-full flex items-center justify-center mx-auto mb-4 animate-glow-pulse">
+              <span className="material-symbols-outlined text-4xl text-[#ba001c]">location_on</span>
+            </div>
+            <h3 className="text-lg font-black text-on-surface">Location Required</h3>
+            <p className="text-on-surface-variant text-sm mt-2 max-w-[240px] mx-auto">Please set your delivery location to view available products in your area.</p>
+            <button 
+              onClick={() => { window.location.href = "/app/home?selectLocation=true"; }}
+              className="mt-6 px-6 py-2.5 bg-[#ba001c] text-white rounded-full font-bold text-sm hover:bg-[#a00018] active:scale-95 transition-all shadow-md"
+            >
+              Set Location
+            </button>
+          </div>
+        ) : !isServiceable && products.length === 0 ? (
+          <div className="text-center py-16 bg-surface-container-lowest rounded-3xl shadow-sm border border-outline-variant mx-2 animate-reveal-up">
+            <div className="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span className="material-symbols-outlined text-4xl text-amber-500">location_off</span>
+            </div>
+            <h3 className="text-lg font-black text-on-surface">Not Serviceable</h3>
+            <p className="text-on-surface-variant text-sm mt-2 max-w-[240px] mx-auto">{serviceName} delivery is coming soon to your area. Try a nearby pincode!</p>
+            <button 
+              onClick={() => { window.location.href = "/app/home?selectLocation=true"; }}
+              className="mt-6 px-6 py-2.5 bg-amber-600 text-white rounded-full font-bold text-sm hover:bg-amber-700 active:scale-95 transition-all shadow-md"
+            >
+              Change Location
+            </button>
           </div>
         ) : filteredProducts.length === 0 ? (
           <div className="text-center py-16 bg-surface-container-lowest rounded-3xl shadow-sm border border-outline-variant mx-2">
