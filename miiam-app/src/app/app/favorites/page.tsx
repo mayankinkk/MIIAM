@@ -136,7 +136,7 @@ export default function FavoritesPage() {
                       </div>
                     </div>
                     <p className="text-xs text-[#814c55] mt-2">
-                      {vendor.delivery_time_minutes ? `${vendor.delivery_time_minutes - 5}–${vendor.delivery_time_minutes + 5} mins` : (vendor.delivery_time || "30-40 mins")}
+                      {vendor.delivery_time_min ? `${vendor.delivery_time_min}–${vendor.delivery_time_max || vendor.delivery_time_min + 15} min` : vendor.delivery_time_minutes ? `${vendor.delivery_time_minutes - 5}–${vendor.delivery_time_minutes + 5} mins` : (vendor.delivery_time || "30-40 mins")}
                     </p>
                   </div>
                 </Link>

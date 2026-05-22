@@ -578,7 +578,7 @@ export default function FoodPage() {
                   <div className="flex items-center gap-2 mt-1.5">
                     <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded font-medium">★ {restaurant.rating || "4.0"}</span>
                     <span className="text-xs text-outline">•</span>
-                    <span className="text-xs text-on-surface-variant">{restaurant.delivery_time_minutes ? `${restaurant.delivery_time_minutes - 5}–${restaurant.delivery_time_minutes + 5} min` : restaurant.delivery_time || "30-40 min"}</span>
+                    <span className="text-xs text-on-surface-variant">{restaurant.delivery_time_min ? `${restaurant.delivery_time_min}–${restaurant.delivery_time_max || restaurant.delivery_time_min + 15} min` : restaurant.delivery_time_minutes ? `${restaurant.delivery_time_minutes - 5}–${restaurant.delivery_time_minutes + 5} min` : restaurant.delivery_time || "30-40 min"}</span>
                   </div>
                   <p className="text-xs text-on-surface-variant mt-1">Delivery: {restaurant.delivery_fee || "₹49"}</p>
                   <div className="mt-2 flex items-center gap-1 text-[#ba001c] font-bold text-xs">

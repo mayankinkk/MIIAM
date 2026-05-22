@@ -449,7 +449,7 @@ export default function RestaurantProfilePage() {
         <div className="w-px h-4 bg-surface-container-high" />
         <div className="flex items-center gap-1.5 text-on-surface-variant flex-shrink-0">
           <span className="material-symbols-outlined text-[#ba001c] text-base">schedule</span>
-          <span className="text-sm font-semibold">{vendor.delivery_time_minutes ? `${vendor.delivery_time_minutes - 5}–${vendor.delivery_time_minutes + 5} min` : vendor.delivery_time || "30-40 min"}</span>
+          <span className="text-sm font-semibold">{vendor.delivery_time_min ? `${vendor.delivery_time_min}–${vendor.delivery_time_max || vendor.delivery_time_min + 15} min` : vendor.delivery_time_minutes ? `${vendor.delivery_time_minutes - 5}–${vendor.delivery_time_minutes + 5} min` : vendor.delivery_time || "30-40 min"}</span>
         </div>
         <div className="w-px h-4 bg-surface-container-high" />
         <div className="flex items-center gap-1.5 text-on-surface-variant flex-shrink-0">

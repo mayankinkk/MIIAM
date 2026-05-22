@@ -91,6 +91,8 @@ export default function AdminVendorsPage() {
     status: "active",
     minOrderAmount: 0,
     deliveryCharge: "",
+    deliveryTimeMin: "",
+    deliveryTimeMax: "",
     isFeatured: false,
     isPromoted: false,
     isNew: false,
@@ -296,6 +298,8 @@ export default function AdminVendorsPage() {
           status: editForm.status,
           delivery_charge: editForm.deliveryCharge ? parseFloat(editForm.deliveryCharge) : 0,
           min_order_amount: editForm.minOrderAmount,
+          delivery_time_min: editForm.deliveryTimeMin ? parseInt(editForm.deliveryTimeMin) : null,
+          delivery_time_max: editForm.deliveryTimeMax ? parseInt(editForm.deliveryTimeMax) : null,
           is_featured: editForm.isFeatured,
           is_promoted: editForm.isPromoted,
           is_new: editForm.isNew,
@@ -341,6 +345,8 @@ export default function AdminVendorsPage() {
       status: vendor.status,
       deliveryCharge: vendor.delivery_charge?.toString() || "",
       minOrderAmount: vendor.min_order_amount || 0,
+      deliveryTimeMin: vendor.delivery_time_min?.toString() || "",
+      deliveryTimeMax: vendor.delivery_time_max?.toString() || "",
       isFeatured: vendor.is_featured || false,
       isPromoted: vendor.is_promoted || false,
       isNew: vendor.is_new || false,
@@ -918,6 +924,26 @@ export default function AdminVendorsPage() {
                         className="w-full p-3 pl-7 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
                       />
                     </div>
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-slate-600 mb-1 block">Min Delivery Time (min)</label>
+                    <input
+                      type="number"
+                      value={editForm.deliveryTimeMin}
+                      onChange={(e) => setEditForm({ ...editForm, deliveryTimeMin: e.target.value })}
+                      className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      placeholder="e.g. 20"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-slate-600 mb-1 block">Max Delivery Time (min)</label>
+                    <input
+                      type="number"
+                      value={editForm.deliveryTimeMax}
+                      onChange={(e) => setEditForm({ ...editForm, deliveryTimeMax: e.target.value })}
+                      className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      placeholder="e.g. 45"
+                    />
                   </div>
                   <div className="md:col-span-2">
                     <div className="flex justify-between items-center mb-1">
