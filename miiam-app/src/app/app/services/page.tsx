@@ -75,7 +75,7 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
           <>
             <div className="flex items-center gap-3 mb-6">
               <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-surface-container flex-shrink-0">
-                <BlurImage src={service.image} alt={service.name} fill className="object-cover" sizes="56px" />
+                <BlurImage src={service.image} alt={service.name} fill className="w-full h-full" sizes="56px" />
               </div>
               <div>
                 <h2 className="font-black text-on-surface text-lg">{service.name}</h2>
@@ -711,7 +711,7 @@ function ServicesContent() {
       {/* Hero Banner */}
       <div className="px-4 mt-4">
         <div className="rounded-2xl overflow-hidden relative h-40 shadow-sm">
-          <BlurImage src="/images/services_hero.png" alt="Professional Services" fill className="object-cover" sizes="100vw" />
+          <BlurImage src="/images/services_hero.png" alt="Professional Services" fill className="w-full h-full" sizes="100vw" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-4">
             <h2 className="text-white text-xl font-black">Expert Professionals</h2>
             <p className="text-white/90 text-sm">High-quality services for your home</p>
@@ -752,7 +752,7 @@ function ServicesContent() {
           <div key={service.id} className="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-[0_2px_16px_rgba(0,0,0,0.06)] border border-gray-100 card-lift animate-pop-in" style={{ animationDelay: `${Math.min(index * 80, 500)}ms` }}>
             {/* Image with overlay badges */}
             <div className="relative h-44 overflow-hidden">
-              <BlurImage src={service.image} alt={service.name} fill className="object-cover" sizes="(max-width: 768px) 100vw, 50vw" fallbackSrc="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=80" />
+              <BlurImage src={service.image} alt={service.name} fill className="w-full h-full" sizes="(max-width: 768px) 100vw, 50vw" fallbackSrc="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=80" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
               {service.badge && (
                 <span className="absolute top-3 left-3 bg-surface-container-lowest/95 backdrop-blur-sm text-green-700 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wide shadow-sm">

@@ -225,7 +225,7 @@ export default function BeautyPage() {
             {experts.map((expert, i) => (
               <div key={i} className="flex-shrink-0 w-32 bg-surface-container-lowest rounded-xl p-3 shadow-sm text-center card-lift animate-pop-in" style={{ animationDelay: `${i * 80}ms` }}>
                 <div className="relative w-12 h-12 rounded-full mx-auto overflow-hidden border-2 border-pink-200">
-                  <BlurImage src={expert.photo} alt={expert.name} fill className="object-cover" sizes="96px" />
+                  <BlurImage src={expert.photo} alt={expert.name} fill className="w-full h-full" sizes="96px" />
                 </div>
                 <p className="font-bold text-on-surface mt-2 text-xs">{expert.name}</p>
                 <p className="text-[10px] text-on-surface-variant">{expert.specialist}</p>
@@ -249,7 +249,7 @@ export default function BeautyPage() {
               return (
                 <div key={service.id} className="bg-surface-container-lowest rounded-2xl p-3 shadow-sm flex gap-3 card-lift animate-pop-in" style={{ animationDelay: `${Math.min(index * 80, 500)}ms` }}>
                   <div className="relative w-20 h-20 rounded-xl overflow-hidden flex-shrink-0 bg-surface-container">
-                    <BlurImage src={service.image} alt={service.name} fill className="object-cover" sizes="80px" />
+                    <BlurImage src={service.image} alt={service.name} fill className="w-full h-full" sizes="80px" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
