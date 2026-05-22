@@ -573,9 +573,9 @@ export default function HomePage() {
           <h2 className="text-lg font-bold text-[#281716]">Nearby Popular 🔥</h2>
           <Link href="/app/food" className="text-xs font-bold text-[#ba001c]">See All</Link>
         </div>
-        {nearbyRestaurants.length > 0 ? (
+        {nearbyRestaurants.filter(r => r.type === 'food' || r.type === 'restaurant').length > 0 ? (
           <div className="space-y-3">
-            {nearbyRestaurants.map((restaurant) => (
+            {nearbyRestaurants.filter(r => r.type === 'food' || r.type === 'restaurant').map((restaurant) => (
               <Link key={restaurant.id} href={`/app/vendor/${restaurant.id}`} className="block bg-white rounded-2xl overflow-hidden shadow-sm">
                 <div className="flex">
                   <div className="w-28 h-28 flex-shrink-0 bg-slate-100 relative">
