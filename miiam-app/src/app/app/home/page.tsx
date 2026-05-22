@@ -89,13 +89,10 @@ export default function HomePage() {
       const { pincode } = locationStore;
       
       if (!pincode) {
-        setLocalServiceable(true);
-        const { data: vendors } = await supabase.from("vendors").select("*").order("created_at", { ascending: false }).limit(30);
-        if (vendors) {
-          setNearbyRestaurants(vendors);
-          setFeaturedRestaurants(vendors.filter((v: any) => v.is_featured || v.is_promoted).slice(0, 6));
-          setSpotlightRestaurant(vendors.find((v: any) => v.is_featured) || null);
-        }
+        setLocalServiceable(false);
+        setNearbyRestaurants([]);
+        setFeaturedRestaurants([]);
+        setSpotlightRestaurant(null);
         setLoading(false);
         return;
       }
@@ -629,6 +626,22 @@ export default function HomePage() {
                 </div>
               </Link>
             ))}
+          </div>
+        ) : !locationStore.pincode ? (
+          <div className="bg-white rounded-2xl p-8 text-center shadow-sm">
+            <div className="w-20 h-20 bg-[#ba001c]/10 rounded-full flex items-center justify-center mx-auto mb-4 animate-glow-pulse">
+              <span className="material-symbols-outlined text-4xl text-[#ba001c]">location_on</span>
+            </div>
+            <h3 className="text-lg font-black text-[#281716] mb-1">Location Required</h3>
+            <p className="text-sm text-[#5c403d] mb-5">
+              Please select your delivery location to view matching restaurants and vendors near you.
+            </p>
+            <button
+              onClick={() => setShowLocationModal(true)}
+              className="px-6 py-3 bg-[#ba001c] text-white rounded-xl font-bold text-sm hover:bg-[#a00018] active:scale-95 transition-all shadow-md"
+            >
+              Select Delivery PIN Code
+            </button>
           </div>
         ) : locationStore.pincode ? (
           <div className="bg-white rounded-2xl p-8 text-center shadow-sm">

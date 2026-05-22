@@ -322,6 +322,7 @@ export default function FoodPage() {
   const locationStore = useLocationStore();
   const userPincode = locationStore.pincode;
   const userCity = locationStore.city;
+  const hasLocation = !!(userPincode || userCity);
   const [noLocalVendors, setNoLocalVendors] = useState(false);
   const [showLocationModal, setShowLocationModal] = useState(false);
   const foodSetting = getSetting("food");
@@ -341,54 +342,42 @@ export default function FoodPage() {
       supabase.from("page_assets").select("*").eq("section", "food_hero").eq("is_active", true).maybeSingle(),
     ]);
 
+    if (!userPincode && !userCity) {
+      setRestaurants([]);
+      setMenuItems([]);
+      if (heroRes?.data) setHeroAsset(heroRes.data);
+      setLoading(false);
+      return;
+    }
+
     let query = supabase
       .from("vendors")
       .select("*")
-      .in("type", ["food", "restaurant"]);
+      .in("type", ["food", "restaurant"])
+      .eq("status", "active");
 
     if (userPincode) {
       query = query.eq("pincode", userPincode);
     } else if (userCity) {
-      query = query.ilike("city", userCity);
+      query = query.eq("city", userCity.toLowerCase());
     }
 
     query = query.order("created_at", { ascending: false });
     const vendorsRes = await query;
 
-    if (vendorsRes.data) {
-      let filteredVendors = vendorsRes.data;
+    let filteredVendors = vendorsRes.data || [];
 
-      if (userCity && !userPincode) {
-        // If only city filter was applied, tighten to exact city match
-        filteredVendors = vendorsRes.data.filter(
-          (v: any) => v.city?.toLowerCase() === userCity.toLowerCase()
-        );
-      }
-
-      if (userPincode && filteredVendors.length === 0 && userCity) {
-        // No pincode match — fall back to city
-        const { data: cityVendors } = await supabase
-          .from("vendors")
-          .select("*")
-          .in("type", ["food", "restaurant"])
-          .ilike("city", `%${userCity}%`)
-          .order("created_at", { ascending: false });
-        filteredVendors = cityVendors || [];
-
-        if (filteredVendors.length === 0) {
-          setNoLocalVendors(true);
-        }
-      } else if (filteredVendors.length === 0) {
-        setNoLocalVendors(true);
-      }
-
-      setRestaurants(filteredVendors);
-      const { data: items } = await supabase
-        .from("menu_items")
-        .select("*")
-        .order("name");
-      setMenuItems(items || []);
+    if (filteredVendors.length === 0) {
+      setNoLocalVendors(true);
     }
+
+    setRestaurants(filteredVendors);
+    const { data: items } = await supabase
+      .from("menu_items")
+      .select("*")
+      .order("name");
+    setMenuItems(items || []);
+    
     if (heroRes?.data) setHeroAsset(heroRes.data);
     setLoading(false);
   };
@@ -403,7 +392,7 @@ export default function FoodPage() {
         });
       }
     });
-  }, []);
+  }, [userPincode, userCity]);
 
   const toggleFavorite = async (id: string) => {
     toggle(id);
@@ -516,6 +505,20 @@ export default function FoodPage() {
                 </div>
               </div>
             ))}
+          </div>
+        ) : !hasLocation ? (
+          <div className="bg-surface-container-lowest rounded-2xl p-8 text-center shadow-sm">
+            <div className="w-20 h-20 bg-[#ba001c]/10 rounded-full flex items-center justify-center mx-auto mb-4 animate-glow-pulse">
+              <span className="material-symbols-outlined text-4xl text-[#ba001c]">location_on</span>
+            </div>
+            <h3 className="text-lg font-black text-on-surface mb-1">Location Required</h3>
+            <p className="text-sm text-on-surface-variant mb-5">Please set your delivery location to find restaurants serving your area.</p>
+            <button
+              onClick={() => { window.location.href = "/app/home?selectLocation=true"; }}
+              className="px-6 py-3 bg-[#ba001c] text-white rounded-xl font-bold text-sm hover:bg-[#a00018] active:scale-95 transition-all shadow-md"
+            >
+              Set Delivery Location
+            </button>
           </div>
         ) : noLocalVendors ? (
           <div className="bg-surface-container-lowest rounded-2xl p-8 text-center shadow-sm">
