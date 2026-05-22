@@ -31,8 +31,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
+  maximumScale: 3,
   viewportFit: "cover",
   themeColor: "#ba001c",
 };
@@ -45,7 +44,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover" />
         <meta name="theme-color" content="#ba001c" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -73,6 +72,12 @@ export default function RootLayout({
         />
       </head>
       <body>
+        <noscript>
+          <div style={{ padding: "2rem", textAlign: "center", fontFamily: "sans-serif" }}>
+            <h1 style={{ fontSize: "1.5rem", marginBottom: "1rem" }}>JavaScript Required</h1>
+            <p>MIIAM requires JavaScript to function. Please enable JavaScript in your browser settings.</p>
+          </div>
+        </noscript>
         <OfflineBanner />
         <ThemeProvider>
           <SplashScreen />

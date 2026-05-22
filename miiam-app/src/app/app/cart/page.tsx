@@ -17,6 +17,7 @@ export default function CartPage() {
   const { items, updateQuantity, removeItem, totalPrice, subtotalByVendor, clearCart, addItem } = useCartStore();
   const [pointsToRedeem, setPointsToRedeem] = useState(0);
   const [pointsBalance, setPointsBalance] = useState(0);
+  const [loyaltyLoading, setLoyaltyLoading] = useState(true);
   const [pastOrders, setPastOrders] = useState<any[]>([]);
   const [showReorderModal, setShowReorderModal] = useState(false);
   const [reordering, setReordering] = useState(false);
@@ -26,6 +27,7 @@ export default function CartPage() {
 
   useEffect(() => {
     async function loadLoyaltyPoints() {
+      setLoyaltyLoading(true);
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         const { data: profile } = await supabase
@@ -35,6 +37,7 @@ export default function CartPage() {
           .single();
         if (profile) setPointsBalance(profile.total_loyalty_points || 0);
       }
+      setLoyaltyLoading(false);
     }
     loadLoyaltyPoints();
   }, []);
@@ -247,6 +250,16 @@ export default function CartPage() {
               </div>
 
               {/* Loyalty Points Redemption */}
+              {loyaltyLoading ? (
+                <div className="mt-4 bg-gradient-to-r from-[#ffd709]/20 to-[#ffe9a0]/20 rounded-xl p-4 border border-[#ffd709]/40">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="h-4 w-40 bg-[#ffd709]/40 rounded animate-pulse" />
+                    <div className="h-5 w-16 bg-[#ffd709]/40 rounded-full animate-pulse" />
+                  </div>
+                  <div className="h-3 w-56 bg-[#ffd709]/30 rounded mb-3 animate-pulse" />
+                  <div className="h-2 w-full bg-[#ffd709]/30 rounded-full animate-pulse" />
+                </div>
+              ) : (
               <div className="mt-4 bg-gradient-to-r from-[#ffd709]/20 to-[#ffe9a0]/20 rounded-xl p-4 border border-[#ffd709]/40">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-1.5">
@@ -275,6 +288,7 @@ export default function CartPage() {
                   <span>{maxRedeemable} pts (max)</span>
                 </div>
               </div>
+              )}
 
               <Link
                 href={`/app/checkout${pointsToRedeem > 0 ? `?redeemPts=${pointsToRedeem}` : ""}`}

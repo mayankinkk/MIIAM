@@ -56,12 +56,14 @@ export default function SupportPage() {
   const [showQuickActions, setShowQuickActions] = useState(true);
   const [onlineAgents, setOnlineAgents] = useState(3);
   const [userOrders, setUserOrders] = useState<any[]>([]);
+  const [ordersLoading, setOrdersLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
   const [faqSearch, setFaqSearch] = useState("");
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     async function fetchOrders() {
+      setOrdersLoading(true);
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         const { data: orders } = await supabase
@@ -72,6 +74,7 @@ export default function SupportPage() {
           .limit(10);
         setUserOrders(orders || []);
       }
+      setOrdersLoading(false);
     }
     fetchOrders();
   }, []);
@@ -179,7 +182,16 @@ export default function SupportPage() {
             </section>
 
             {/* Select Order */}
-            {userOrders.length > 0 && (
+            {ordersLoading ? (
+              <section>
+                <h2 className="text-lg font-bold text-slate-800 mb-4">Select Order (Optional)</h2>
+                <div className="space-y-2">
+                  <div className="h-14 w-full bg-slate-100 rounded-xl animate-pulse" />
+                  <div className="h-16 w-full bg-slate-100 rounded-xl animate-pulse" />
+                  <div className="h-16 w-full bg-slate-100 rounded-xl animate-pulse" />
+                </div>
+              </section>
+            ) : userOrders.length > 0 && (
               <section>
                 <h2 className="text-lg font-bold text-slate-800 mb-4">Select Order (Optional)</h2>
                 <div className="space-y-2">

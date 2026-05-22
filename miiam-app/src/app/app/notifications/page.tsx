@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useNotificationStore } from "@/lib/store/notificationStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import PullToRefresh from "@/components/PullToRefresh";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 
@@ -60,6 +61,7 @@ export default function NotificationsPage() {
   const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
+    <PullToRefresh onRefresh={fetchNotifications}>
     <div className="min-h-screen bg-[#fff4f4] pb-24">
       <header className="fixed top-0 w-full z-50 bg-white shadow-sm">
         <div className="flex items-center justify-between px-6 py-4">
@@ -200,5 +202,6 @@ export default function NotificationsPage() {
         </section>
       </main>
     </div>
+    </PullToRefresh>
   );
 }

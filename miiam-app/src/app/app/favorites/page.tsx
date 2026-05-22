@@ -8,6 +8,7 @@ import EmptyState from "@/components/EmptyState";
 import { VendorCardSkeleton } from "@/components/Skeleton";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
+import PullToRefresh from "@/components/PullToRefresh";
 import { useState, useEffect } from "react";
 
 const supabase = createClient();
@@ -19,44 +20,44 @@ export default function FavoritesPage() {
   const { addToast } = useToastStore();
 
   useEffect(() => {
-    async function loadFavorites() {
-      setLoading(true);
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
-        let vendorIds = favoriteIds;
-        
-        if (user) {
-          // Fetch from Supabase
-          const { data: userFavorites } = await supabase
-            .from("favorites")
-            .select("vendor_id")
-            .eq("user_id", user.id);
-            
-          if (userFavorites) {
-            vendorIds = userFavorites.map(f => f.vendor_id);
-            setFavorites(vendorIds); // Sync to local store
-          }
-        }
-        
-        if (vendorIds.length > 0) {
-          const { data: vendors } = await supabase
-            .from("vendors")
-            .select("*")
-            .in("id", vendorIds);
-          setFavoriteVendors(vendors || []);
-        } else {
-          setFavoriteVendors([]);
-        }
-      } catch (error) {
-        console.error("Error loading favorites:", error);
-        addToast("Failed to load favorites. Please try again.", "error");
-      } finally {
-        setLoading(false);
-      }
-    }
-    
     loadFavorites();
   }, [favoriteIds.length]);
+
+  async function loadFavorites() {
+    setLoading(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      let vendorIds = favoriteIds;
+      
+      if (user) {
+        // Fetch from Supabase
+        const { data: userFavorites } = await supabase
+          .from("favorites")
+          .select("vendor_id")
+          .eq("user_id", user.id);
+          
+        if (userFavorites) {
+          vendorIds = userFavorites.map(f => f.vendor_id);
+          setFavorites(vendorIds); // Sync to local store
+        }
+      }
+      
+      if (vendorIds.length > 0) {
+        const { data: vendors } = await supabase
+          .from("vendors")
+          .select("*")
+          .in("id", vendorIds);
+        setFavoriteVendors(vendors || []);
+      } else {
+        setFavoriteVendors([]);
+      }
+    } catch (error) {
+      console.error("Error loading favorites:", error);
+      addToast("Failed to load favorites. Please try again.", "error");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const handleToggle = async (vendorId: string) => {
     toggle(vendorId); // Optimistic UI update
@@ -80,7 +81,7 @@ export default function FavoritesPage() {
   };
 
   return (
-    <>
+    <PullToRefresh onRefresh={loadFavorites}>
       <header className="fixed top-0 w-full z-50 flex items-center gap-4 px-6 py-4 bg-[#fff4f4]/80 backdrop-blur-2xl shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
         <Link href="/app/explore" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#ffe1e4] transition-all">
           <span className="material-symbols-outlined text-[#ba001c]">arrow_back</span>
@@ -151,6 +152,6 @@ export default function FavoritesPage() {
           </div>
         )}
       </main>
-    </>
+    </PullToRefresh>
   );
 }

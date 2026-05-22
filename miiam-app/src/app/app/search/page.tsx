@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, useEffect, useRef, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cartStore";
@@ -34,6 +34,7 @@ interface MenuResult {
 
 function SearchContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const query = searchParams.get("q") || "";
   const supabase = createClient();
   const { addItem } = useCartStore();
@@ -47,11 +48,36 @@ function SearchContent() {
   const [activeTab, setActiveTab] = useState<"all" | "vendors" | "food">("all");
   const [vegFilter, setVegFilter] = useState<"all" | "veg" | "non_veg">("all");
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
+  const [inputValue, setInputValue] = useState(query);
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const saved = localStorage.getItem("miiam-search-history");
     if (saved) setSearchHistory(JSON.parse(saved));
   }, []);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const params = new URLSearchParams(window.location.search);
+      const q = params.get("q") || "";
+      setInputValue(q);
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      if (inputValue !== query) {
+        const url = new URL(window.location.href);
+        url.searchParams.set("q", inputValue);
+        window.history.replaceState({}, "", url);
+        router.replace(url.pathname + url.search, { scroll: false });
+      }
+    }, 300);
+    return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
+  }, [inputValue]);
 
   const saveSearch = (term: string) => {
     if (!term.trim()) return;
@@ -135,17 +161,16 @@ function SearchContent() {
             <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#814c55]">search</span>
             <input
               type="text"
-              defaultValue={query}
+              value={inputValue}
               placeholder="Search restaurants, dishes..."
               className="w-full bg-white border-none rounded-xl pl-12 pr-4 py-3 text-[#4d212a] font-medium focus:outline-none focus:ring-2 focus:ring-[#ba001c]/40"
-              onChange={(e) => {
-                const url = new URL(window.location.href);
-                url.searchParams.set("q", e.target.value);
-                window.history.pushState({}, "", url);
-              }}
+              onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                  search((e.target as HTMLInputElement).value);
+                  const url = new URL(window.location.href);
+                  url.searchParams.set("q", inputValue);
+                  window.history.replaceState({}, "", url);
+                  router.replace(url.pathname + url.search, { scroll: false });
                 }
               }}
             />

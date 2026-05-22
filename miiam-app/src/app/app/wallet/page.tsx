@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import PullToRefresh from "@/components/PullToRefresh";
 
 interface WalletTransaction {
   id: string;
@@ -22,50 +23,52 @@ export default function WalletPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function loadWalletData() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { setLoading(false); return; }
-
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("wallet_balance, loyalty_points")
-        .eq("id", user.id)
-        .single();
-
-      if (profile) {
-        setBalance(profile.wallet_balance || 0);
-        setPoints(profile.loyalty_points || 0);
-      }
-
-      const { data: orders } = await supabase
-        .from("orders")
-        .select("id, total_amount, status, placed_at, delivered_at")
-        .eq("user_id", user.id)
-        .in("status", ["delivered", "cancelled"])
-        .order("placed_at", { ascending: false })
-        .limit(20);
-
-      if (orders) {
-        const txns: WalletTransaction[] = orders.map(order => {
-          const isRefund = order.status === "cancelled";
-          return {
-            id: order.id,
-            amount: order.total_amount,
-            type: isRefund ? "refund" : "payment",
-            title: isRefund ? `Refund for Order #${order.id.slice(0, 8).toUpperCase()}` : `Order #${order.id.slice(0, 8).toUpperCase()}`,
-            date: order.placed_at ? new Date(order.placed_at).toLocaleDateString("en-IN", { month: "short", day: "numeric", year: "numeric" }) : "",
-            sign: isRefund ? "+" : "-",
-          };
-        });
-        setTransactions(txns);
-      }
-
-      setLoading(false);
-    }
     loadWalletData();
   }, [supabase]);
 
+  async function loadWalletData() {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setLoading(false); return; }
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("wallet_balance, loyalty_points")
+      .eq("id", user.id)
+      .single();
+
+    if (profile) {
+      setBalance(profile.wallet_balance || 0);
+      setPoints(profile.loyalty_points || 0);
+    }
+
+    const { data: orders } = await supabase
+      .from("orders")
+      .select("id, total_amount, status, placed_at, delivered_at")
+      .eq("user_id", user.id)
+      .in("status", ["delivered", "cancelled"])
+      .order("placed_at", { ascending: false })
+      .limit(20);
+
+    if (orders) {
+      const txns: WalletTransaction[] = orders.map(order => {
+        const isRefund = order.status === "cancelled";
+        return {
+          id: order.id,
+          amount: order.total_amount,
+          type: isRefund ? "refund" : "payment",
+          title: isRefund ? `Refund for Order #${order.id.slice(0, 8).toUpperCase()}` : `Order #${order.id.slice(0, 8).toUpperCase()}`,
+          date: order.placed_at ? new Date(order.placed_at).toLocaleDateString("en-IN", { month: "short", day: "numeric", year: "numeric" }) : "",
+          sign: isRefund ? "+" : "-",
+        };
+      });
+      setTransactions(txns);
+    }
+
+    setLoading(false);
+  }
+
   return (
+    <PullToRefresh onRefresh={loadWalletData}>
     <div className="min-h-screen bg-[#fff4f4] pb-32">
       <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-[#fff4f4]/80 backdrop-blur-2xl shadow-[0px_10px_30px_rgba(77,33,42,0.04)]">
         <div className="flex items-center gap-4">
@@ -168,5 +171,6 @@ export default function WalletPage() {
         </div>
       </main>
     </div>
+    </PullToRefresh>
   );
 }
