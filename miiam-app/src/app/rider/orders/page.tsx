@@ -200,19 +200,35 @@ export default function RiderOrdersPage() {
         return;
       }
 
-      const { error } = await supabase
-        .from("orders")
-        .update({ 
-          status: "accepted", 
-          rider_id: riderProfile.id,
-          accepted_at: new Date().toISOString()
-        })
-        .eq("id", orderId);
+      let accepted = false;
 
-      if (error) {
-        console.error("Update error:", error);
-        alert("Error: " + error.message);
-        return;
+      // Try atomic RPC first
+      try {
+        const { data: success, error } = await supabase.rpc('accept_order_as_rider', {
+          p_order_id: orderId,
+          p_rider_id: riderProfile.id,
+        });
+        if (success && !error) accepted = true;
+      } catch {
+        console.log("RPC not available, using fallback");
+      }
+
+      // Fallback: direct update with guard
+      if (!accepted) {
+        const { error } = await supabase
+          .from("orders")
+          .update({ 
+            status: "accepted", 
+            rider_id: riderProfile.id,
+            accepted_at: new Date().toISOString()
+          })
+          .eq("id", orderId)
+          .is("rider_id", null);
+
+        if (error) {
+          alert("Order was already accepted by another rider.");
+          return;
+        }
       }
 
       const order = orders.find(o => o.id === orderId);
@@ -245,19 +261,53 @@ export default function RiderOrdersPage() {
     }
 
     try {
+      let failedCount = 0;
       for (const orderId of selectedOrders) {
-        await supabase
-          .from("orders")
-          .update({ 
-            status: "accepted", 
-            rider_id: riderProfile.id,
-            accepted_at: new Date().toISOString()
-          })
-          .eq("id", orderId);
+        let accepted = false;
+        try {
+          const { data: success, error } = await supabase.rpc('accept_order_as_rider', {
+            p_order_id: orderId,
+            p_rider_id: riderProfile.id,
+          });
+          if (success && !error) accepted = true;
+        } catch {
+          console.log("RPC not available, using fallback");
+        }
+
+        if (!accepted) {
+          const { error } = await supabase
+            .from("orders")
+            .update({ 
+              status: "accepted", 
+              rider_id: riderProfile.id,
+              accepted_at: new Date().toISOString()
+            })
+            .eq("id", orderId)
+            .is("rider_id", null);
+
+          if (error) {
+            failedCount++;
+            continue;
+          }
+        }
+
+        const order = orders.find(o => o.id === orderId);
+        if (order?.user_id) {
+          try {
+            await supabase.from("notifications").insert({
+              user_id: order.user_id,
+              title: "Order Accepted! 🎉",
+              message: "A rider has accepted your order and will start shopping soon.",
+              type: "order",
+              read: false,
+            });
+          } catch {}
+        }
       }
       
+      const successCount = selectedOrders.length - failedCount;
       setOrders(orders.map(o => selectedOrders.includes(o.id) ? { ...o, status: "accepted", rider_id: riderProfile.id } : o));
-      alert(`${selectedOrders.length} orders accepted!`);
+      alert(`${successCount} order(s) accepted!${failedCount > 0 ? ` ${failedCount} order(s) already taken.` : ''}`);
       setSelectedOrders([]);
     } catch (err) {
       console.error("Error batch accepting:", err);
