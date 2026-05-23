@@ -165,7 +165,7 @@ export default function ChatPage() {
       </div>
 
       {/* Input */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-outline-variant/20">
+      <div className="p-4 bg-white border-t border-outline-variant/20">
         <div className="flex items-center gap-2">
           <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container">
             <span className="material-symbols-outlined text-on-surface-variant">add_circle</span>
