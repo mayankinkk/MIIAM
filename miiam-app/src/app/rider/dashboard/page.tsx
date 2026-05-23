@@ -5,6 +5,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { startLocationTracking, stopLocationTracking } from "@/lib/rider-location-tracker";
 import WeatherWidget from "@/components/rider/WeatherWidget";
+import { RiderDashboardSkeleton } from "@/components/Skeleton";
 
 interface Order {
   id: string;
@@ -788,14 +789,7 @@ export default function RiderDashboard() {
   }
 
   if (initialLoading) {
-    return (
-      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-[#0b50d5] border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="mt-4 text-slate-500 font-medium">Loading dashboard...</p>
-        </div>
-      </div>
-    );
+    return <RiderDashboardSkeleton />;
   }
 
   return (

@@ -155,6 +155,32 @@ export function StatsCardSkeleton() {
   );
 }
 
+export function RiderDashboardSkeleton() {
+  return (
+    <div className="min-h-screen bg-[#fff4f4] p-4 space-y-4">
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <Skeleton className="h-8 w-24" />
+        <div className="flex gap-2">
+          <Skeleton className="h-10 w-10 rounded-full" />
+          <Skeleton className="h-10 w-10 rounded-full" />
+          <Skeleton className="h-10 w-10 rounded-full" />
+        </div>
+      </div>
+      {/* Map area */}
+      <Skeleton className="h-64 w-full rounded-2xl" />
+      {/* Stats cards */}
+      <div className="grid grid-cols-2 gap-3">
+        <Skeleton className="h-20 rounded-xl" />
+        <Skeleton className="h-20 rounded-xl" />
+      </div>
+      {/* Order card */}
+      <Skeleton className="h-40 rounded-2xl" />
+      <Skeleton className="h-40 rounded-2xl" />
+    </div>
+  );
+}
+
 export function HomeSkeleton() {
   return (
     <div className="min-h-screen bg-[#fff8f7] pb-24">
