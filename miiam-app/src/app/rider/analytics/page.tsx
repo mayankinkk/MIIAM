@@ -191,7 +191,7 @@ export default function RiderAnalyticsPage() {
                     <p className="text-xs text-slate-400">This {period}</p>
                   </div>
                 </div>
-                <p className="font-black text-green-600">{totalDeliveries * 3} km</p>
+                <p className="font-black text-green-600">{totalDeliveries > 0 ? `${Math.round(totalDeliveries * 3)} km` : "0 km"}</p>
               </div>
 
               
