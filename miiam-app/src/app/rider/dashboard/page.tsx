@@ -147,7 +147,15 @@ export default function RiderDashboard() {
         }
         setCurrentUserId(user.id);
         const { data: riderData, error: riderError } = await supabase.from("riders").select("id, total_deliveries, total_earnings, rating, streak_days, last_work_date").eq("user_id", user.id).maybeSingle();
-        if (riderError) throw new Error(riderError.message);
+        if (riderError) {
+          // Some columns may not exist in database — try with fewer columns
+          const { data: fallbackRider } = await supabase.from("riders").select("id, total_deliveries").eq("user_id", user.id).maybeSingle();
+          if (!fallbackRider) { setError("You don't have a rider account yet."); setInitialLoading(false); return; }
+          setRiderId(fallbackRider.id);
+          setRiderDeliveries(fallbackRider.total_deliveries || 0);
+          setInitialLoading(false);
+          return;
+        }
         if (!riderData) {
           setError("You don't have a rider account yet.");
           setInitialLoading(false);
@@ -236,10 +244,11 @@ export default function RiderDashboard() {
           }
 
           // Load rider's current active order
+          try {
           const activeStatuses = ["accepted", "preparing", "shopping", "picking_up", "on_the_way", "arrived"];
           const { data: activeOrders } = await supabase
             .from("orders")
-            .select("*, vendor:vendors(*), user:user_id(*)")
+            .select("*, vendor:vendors(*)")
             .eq("rider_id", riderData.id)
             .in("status", activeStatuses)
             .order("placed_at", { ascending: false })
@@ -247,8 +256,22 @@ export default function RiderDashboard() {
 
           if (activeOrders && activeOrders.length > 0) {
             const dbOrder = activeOrders[0];
-            const vendorData = dbOrder.vendor as any;
-            const profileData = dbOrder.user as any;
+            const vendorData = (dbOrder as any).vendor as any;
+
+            // Fetch customer profile separately (user_id -> profiles table)
+            let customerName = "Customer";
+            let customerPhone = dbOrder.customer_phone || "+91 88888 88888";
+            if (dbOrder.user_id) {
+              const { data: profile } = await supabase
+                .from("profiles")
+                .select("full_name, name, phone")
+                .eq("id", dbOrder.user_id)
+                .maybeSingle();
+              if (profile) {
+                customerName = (profile as any).full_name || (profile as any).name || "Customer";
+                customerPhone = (profile as any).phone || customerPhone;
+              }
+            }
 
             const { data: itemsData } = await supabase
               .from("order_items")
@@ -269,8 +292,8 @@ export default function RiderDashboard() {
               vendor: vendorData?.shop_name || vendorData?.name || "Restaurant",
               vendorAddress: vendorData?.address || "Restaurant Address",
               vendorPhone: vendorData?.phone || "+91 99999 99999",
-              customer: profileData?.full_name || profileData?.name || "Customer",
-              customerPhone: profileData?.phone || dbOrder.customer_phone || "+91 88888 88888",
+              customer: customerName,
+              customerPhone: customerPhone,
               customerAddress: dbOrder.delivery_address || "Customer Delivery Location",
               landmark: dbOrder.special_instructions || "N/A",
               distance: d1,
@@ -291,7 +314,6 @@ export default function RiderDashboard() {
             };
             setCurrentOrder(activeOrder);
 
-            // Set delivery step based on current status
             const statusStepMap: Record<string, "shopping" | "picking_up" | "picked" | "delivering" | "arrived"> = {
               accepted: "shopping",
               preparing: "shopping",
@@ -301,6 +323,9 @@ export default function RiderDashboard() {
               arrived: "arrived",
             };
             setDeliveryStep(statusStepMap[dbOrder.status] || "shopping");
+          }
+          } catch (activeErr) {
+            console.warn("Failed to load active order:", activeErr);
           }
         }
         setInitialLoading(false);
