@@ -28,21 +28,52 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
   const [riderLocation, setRiderLocation] = useState<{lat: number, lng: number} | null>(null);
   const [trackingInfo, setTrackingInfo] = useState<{ eta: number; distance: string } | null>(null);
   const [showHelp, setShowHelp] = useState(false);
+  const [showCancelReason, setShowCancelReason] = useState(false);
+  const [cancelReason, setCancelReason] = useState("");
+  const [cancelOtherReason, setCancelOtherReason] = useState("");
+
+  const cancelReasons = [
+    "Changed my mind",
+    "Found a better price",
+    "Delivery time too long",
+    "Wrong items ordered",
+    "Restaurant unavailable",
+    "Payment issue",
+    "Other",
+  ];
 
   const canCancel = order && ["pending", "accepted"].includes(order.status);
 
-  const handleCancelOrder = async () => {
-    if (!confirm("Are you sure you want to cancel this order?")) return;
+  // Request browser notification permission on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+  }, []);
+
+  const handleCancelOrder = async (reason?: string) => {
     try {
-      const { error } = await supabase.from("orders").update({ status: "cancelled" }).eq("id", id);
+      const updates: Record<string, any> = { status: "cancelled" };
+      if (reason) updates.cancel_reason = reason;
+      const { error } = await supabase.from("orders").update(updates).eq("id", id);
       if (error) throw error;
-      // Immediately update local state so UI reflects cancel without waiting for realtime
-      setOrder((prev: any) => prev ? { ...prev, status: "cancelled" } : prev);
+      setOrder((prev: any) => prev ? { ...prev, ...updates } : prev);
       addToast("Order cancelled successfully", "success");
     } catch (error) {
       console.error("Cancel error:", error);
       addToast("Failed to cancel order. Please try again.", "error");
     }
+    setShowCancelReason(false);
+    setCancelReason("");
+    setCancelOtherReason("");
+  };
+
+  const handleCancelWithReason = () => {
+    const finalReason = cancelReason === "Other" && cancelOtherReason.trim()
+      ? cancelOtherReason.trim()
+      : cancelReason;
+    if (!finalReason) return;
+    handleCancelOrder(finalReason);
   };
 
   const riderInfo = order?.riders ? {
@@ -176,6 +207,16 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
             };
             const msg = statusMessages[newStatus];
             if (msg) addToast(msg, "info");
+
+            // Fire browser notification for important statuses
+            const notifyStatuses = ["accepted", "on_the_way", "delivered"];
+            if (notifyStatuses.includes(newStatus) && typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
+              new Notification("MIIAM", {
+                body: statusMessages[newStatus] || `Order status: ${newStatus}`,
+                icon: "/icons/icon-192.svg",
+                tag: `order-${id}`,
+              });
+            }
           }
         }
       })
@@ -492,7 +533,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                     
                     {canCancel && (
                       <button 
-                        onClick={handleCancelOrder}
+                        onClick={() => setShowCancelReason(true)}
                         className="w-full p-4 bg-red-50 text-red-600 rounded-xl font-bold flex items-center justify-center gap-2"
                       >
                         <span className="material-symbols-outlined">cancel</span>
@@ -500,6 +541,68 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                       </button>
                     )}
                   </div>
+                </div>
+              </div>
+            )}
+
+            {/* Cancel Reason Modal */}
+            {showCancelReason && (
+              <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
+                <div className="bg-white rounded-2xl w-full max-w-md p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-xl font-black text-slate-800">Cancel Order</h2>
+                    <button onClick={() => setShowCancelReason(false)} className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center">
+                      <span className="material-symbols-outlined">close</span>
+                    </button>
+                  </div>
+                  <p className="text-sm text-slate-500 mb-4">Please tell us why you&apos;re cancelling:</p>
+                  <div className="space-y-2">
+                    {cancelReasons.map((reason) => (
+                      <div key={reason}>
+                        <button
+                          onClick={() => {
+                            if (reason === "Other") {
+                              setCancelReason(reason);
+                            } else {
+                              handleCancelOrder(reason);
+                            }
+                          }}
+                          className={`w-full text-left p-3 rounded-xl font-medium text-sm transition-all ${
+                            cancelReason === reason
+                              ? "bg-red-50 text-red-700 border border-red-200"
+                              : "bg-slate-50 text-slate-700 hover:bg-slate-100"
+                          }`}
+                        >
+                          {reason}
+                        </button>
+                        {cancelReason === "Other" && reason === "Other" && (
+                          <div className="mt-2 flex gap-2">
+                            <input
+                              type="text"
+                              value={cancelOtherReason}
+                              onChange={(e) => setCancelOtherReason(e.target.value)}
+                              placeholder="Describe your reason..."
+                              className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-300"
+                              autoFocus
+                            />
+                            <button
+                              onClick={handleCancelWithReason}
+                              disabled={!cancelOtherReason.trim()}
+                              className="px-4 py-2 bg-red-500 text-white font-bold rounded-xl text-sm disabled:opacity-50"
+                            >
+                              Submit
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  <button
+                    onClick={() => setShowCancelReason(false)}
+                    className="w-full mt-4 py-3 text-slate-500 font-bold text-sm"
+                  >
+                    Keep Order
+                  </button>
                 </div>
               </div>
             )}
