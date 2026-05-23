@@ -28,6 +28,8 @@ export function useChat(orderId: string, currentUserId: string) {
   const [isTyping, setIsTyping] = useState(false);
   const [typingUsers, setTypingUsers] = useState<string[]>([]);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const userIdRef = useRef(currentUserId);
+  userIdRef.current = currentUserId;
 
   useEffect(() => {
     loadMessages();
@@ -46,7 +48,7 @@ export function useChat(orderId: string, currentUserId: string) {
           const newMessage = payload.new as ChatMessage;
           setMessages((prev) => [...prev, newMessage]);
           
-          if (newMessage.sender_id !== currentUserId) {
+          if (newMessage.sender_id !== userIdRef.current) {
             markAsRead([newMessage.id]);
           }
         }
@@ -94,7 +96,7 @@ export function useChat(orderId: string, currentUserId: string) {
       .from("chat_messages")
       .insert({
         order_id: orderId,
-        sender_id: currentUserId,
+        sender_id: userIdRef.current,
         sender_type: senderType,
         message: message.trim(),
         read: false,
