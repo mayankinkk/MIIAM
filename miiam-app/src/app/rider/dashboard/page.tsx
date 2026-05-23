@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { startLocationTracking, stopLocationTracking } from "@/lib/rider-location-tracker";
 import WeatherWidget from "@/components/rider/WeatherWidget";
 import { RiderDashboardSkeleton } from "@/components/Skeleton";
+import { calculateEarnings } from "@/lib/earnings";
 
 interface Order {
   id: string;
@@ -41,10 +42,6 @@ interface Order {
   }[];
 }
 
-
-function calculateEarnings(distance: number, baseFare: number = 40, perKm: number = 8, peakMultiplier: number = 1): number {
-  return Math.round((baseFare + (distance * perKm)) * peakMultiplier);
-}
 
 // Order with timing info
 interface OrderWithTiming extends Order {

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import PullToRefresh from "@/components/PullToRefresh";
 import { startLocationTracking, stopLocationTracking } from "@/lib/rider-location-tracker";
+import { calculateEarnings } from "@/lib/earnings";
 
 interface OrderItem {
   id: string;
@@ -369,7 +370,7 @@ export default function RiderOrdersPage() {
       const { data: { user } } = await supabase.auth.getUser();
       
       const order = orders.find(o => o.id === currentOrderId);
-      const riderEarning = order?.delivery_fee || Math.round(order?.total_amount * 0.15);
+      const riderEarning = calculateEarnings(0); // base fare ₹40 (distance not tracked in this view)
       
       await supabase
         .from("orders")
