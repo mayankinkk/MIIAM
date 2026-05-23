@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { startLocationTracking, stopLocationTracking } from "@/lib/rider-location-tracker";
 import WeatherWidget from "@/components/rider/WeatherWidget";
@@ -52,6 +53,7 @@ interface OrderWithTiming extends Order {
 }
 
 export default function RiderDashboard() {
+  const router = useRouter();
   const supabase = createClient();
   const [isOnline, setIsOnline] = useState(true);
   const [countdown, setCountdown] = useState(300); // 5 minutes = 300 seconds
@@ -781,7 +783,9 @@ export default function RiderDashboard() {
   };
 
   const handleStartChat = () => {
-    setShowChatModal(true);
+    if (currentOrder?.orderDbId) {
+      router.push(`/rider/orders/${currentOrder.orderDbId}/chat`);
+    }
   };
 
   const handleSendMessage = async () => {
