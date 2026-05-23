@@ -64,6 +64,7 @@ export default function RiderOrdersPage() {
   const [issueType, setIssueType] = useState("");
   const [riderLocation, setRiderLocation] = useState({ lat: 28.6139, lng: 77.2090 });
   const [error, setError] = useState<string | null>(null);
+  const [riderProfile, setRiderProfile] = useState<{ id: string } | null>(null);
 
   async function loadOrders() {
     setLoading(true);
@@ -123,6 +124,13 @@ export default function RiderOrdersPage() {
   }
 
   useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return;
+      supabase.from("riders").select("id").eq("user_id", user.id).single().then(({ data }) => {
+        if (data) setRiderProfile(data);
+      });
+    });
+
     // Use real GPS location
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -186,19 +194,16 @@ export default function RiderOrdersPage() {
 
   async function acceptOrder(orderId: string) {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        alert("Please login first");
+      if (!riderProfile) {
+        alert("Rider profile not loaded. Please wait.");
         return;
       }
-
-      console.log("Accepting order:", orderId, "user:", user.id);
 
       const { error } = await supabase
         .from("orders")
         .update({ 
           status: "accepted", 
-          rider_id: user.id,
+          rider_id: riderProfile.id,
           accepted_at: new Date().toISOString()
         })
         .eq("id", orderId);
@@ -224,8 +229,7 @@ export default function RiderOrdersPage() {
         }
       }
 
-      setOrders(orders.map(o => o.id === orderId ? { ...o, status: "accepted", rider_id: user.id } : o));
-      alert("Order accepted! Start shopping.");
+      setOrders(orders.map(o => o.id === orderId ? { ...o, status: "accepted", rider_id: riderProfile.id } : o));
     } catch (err: any) {
       console.error("Error accepting order:", err);
       alert("Failed to accept order: " + (err?.message || "Unknown error"));
@@ -234,22 +238,24 @@ export default function RiderOrdersPage() {
 
   async function batchAccept() {
     if (selectedOrders.length === 0) return;
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+    if (!riderProfile) {
+      alert("Rider profile not loaded. Please wait.");
+      return;
+    }
 
+    try {
       for (const orderId of selectedOrders) {
         await supabase
           .from("orders")
           .update({ 
             status: "accepted", 
-            rider_id: user.id,
+            rider_id: riderProfile.id,
             accepted_at: new Date().toISOString()
           })
           .eq("id", orderId);
       }
       
-      setOrders(orders.map(o => selectedOrders.includes(o.id) ? { ...o, status: "accepted", rider_id: user.id } : o));
+      setOrders(orders.map(o => selectedOrders.includes(o.id) ? { ...o, status: "accepted", rider_id: riderProfile.id } : o));
       alert(`${selectedOrders.length} orders accepted!`);
       setSelectedOrders([]);
     } catch (err) {
@@ -382,8 +388,7 @@ export default function RiderOrdersPage() {
 
   async function startDelivery(orderId: string) {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!riderProfile) return;
 
       await supabase
         .from("orders")
@@ -421,8 +426,8 @@ export default function RiderOrdersPage() {
 
         await supabase.from("rider_locations").insert({
           order_id: orderId,
-          rider_id: user.id,
-          rider_name: user.email?.split('@')[0] || 'Rider',
+          rider_id: riderProfile.id,
+          rider_name: '',
           rider_phone: '',
           lat: riderLocation.lat,
           lng: riderLocation.lng,
@@ -436,15 +441,12 @@ export default function RiderOrdersPage() {
   }
 
   async function updateRiderLocation(orderId: string) {
-    if (!navigator.geolocation) return;
+    if (!navigator.geolocation || !riderProfile) return;
     navigator.geolocation.getCurrentPosition(async (position) => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
       await supabase.from("rider_locations").insert({
         order_id: orderId,
-        rider_id: user.id,
-        rider_name: user.email?.split('@')[0] || 'Rider',
+        rider_id: riderProfile.id,
+        rider_name: '',
         rider_phone: '',
         lat: position.coords.latitude,
         lng: position.coords.longitude,
@@ -656,7 +658,8 @@ export default function RiderOrdersPage() {
             {shoppingOrders.map(order => (
               <ShoppingCard 
                 key={order.id} 
-                order={order} 
+                order={order}
+                riderId={riderProfile?.id || ''}
                 onUpdateItemStatus={(itemId, status, price) => updateItemStatus(order.id, itemId, status, price)}
                 onMarkDelivered={() => markDelivered(order.id)}
                 onReportIssue={() => { setCurrentOrderId(order.id); setShowIssueModal(true); }}
@@ -835,7 +838,7 @@ function OrderCard({ order, onAccept, isSelected, onToggleSelect }: { order: Ord
   );
 }
 
-function ShoppingCard({ order, onUpdateItemStatus, onMarkDelivered, onReportIssue, onStartDelivery, onShareLocation }: { order: Order; onUpdateItemStatus: (itemId: string, status: string, price?: number) => void; onMarkDelivered: () => void; onReportIssue: () => void; onStartDelivery?: () => void; onShareLocation?: () => void }) {
+function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onReportIssue, onStartDelivery, onShareLocation }: { order: Order; riderId: string; onUpdateItemStatus: (itemId: string, status: string, price?: number) => void; onMarkDelivered: () => void; onReportIssue: () => void; onStartDelivery?: () => void; onShareLocation?: () => void }) {
   const supabase = createClient();
   const items = order.items || [];
   const pickedCount = items.filter((i: any) => i.status === "available").length;
@@ -861,12 +864,10 @@ function ShoppingCard({ order, onUpdateItemStatus, onMarkDelivered, onReportIssu
   // Broadcast GPS position continuously
   useEffect(() => {
     async function broadcastLocation(lat: number, lng: number) {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
       await supabase.from("rider_locations").upsert({
         order_id: order.id,
-        rider_id: user.id,
-        rider_name: user.email?.split('@')[0] || 'Rider',
+        rider_id: riderId,
+        rider_name: '',
         rider_phone: '',
         lat,
         lng,
