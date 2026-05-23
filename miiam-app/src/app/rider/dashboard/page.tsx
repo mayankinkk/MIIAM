@@ -84,22 +84,22 @@ export default function RiderDashboard() {
   const mapInstanceRef = useRef<any>(null);
   const riderMarkerRef = useRef<any>(null);
 
-  // Quest & Streak System
+  // Quest & Streak System - loaded from DB
   const [dailyQuests, setDailyQuests] = useState([
-    { id: 1, title: "Complete 5 Deliveries", current: 3, target: 5, bonus: 100 },
-    { id: 2, title: "Earn ₹500 Today", current: 320, target: 500, bonus: 75 },
-    { id: 3, title: "3-Star Ratings", current: 5, target: 10, bonus: 50 },
+    { id: 1, title: "Complete 5 Deliveries", current: 0, target: 5, bonus: 100 },
+    { id: 2, title: "Earn ₹500 Today", current: 0, target: 500, bonus: 75 },
+    { id: 3, title: "3-Star Ratings", current: 0, target: 10, bonus: 50 },
   ]);
-  const [streakDays, setStreakDays] = useState(7);
+  const [streakDays, setStreakDays] = useState(0);
   const [showQuestModal, setShowQuestModal] = useState(false);
 
-  // Live Earnings
-  const [todayEarnings, setTodayEarnings] = useState(340);
+  // Live Earnings - loaded from orders
+  const [todayEarnings, setTodayEarnings] = useState(0);
   const [liveEarnings, setLiveEarnings] = useState(0);
 
-  // Cash Collection
-  const [cashCollected, setCashCollected] = useState(180);
-  const [cashPending, setCashPending] = useState(120);
+  // Cash Collection - loaded from orders
+  const [cashCollected, setCashCollected] = useState(0);
+  const [cashPending, setCashPending] = useState(0);
 
   const handleCenterMap = () => {
     if (navigator.geolocation) {
@@ -129,23 +129,92 @@ export default function RiderDashboard() {
   const [batteryLevel, setBatteryLevel] = useState(85);
   const [showLowBattery, setShowLowBattery] = useState(false);
 
-  // Customer Rating Preview
-  const [customerRating] = useState(4.7);
+  // Customer Rating Preview - loaded from DB
+  const [customerRating, setCustomerRating] = useState(5.0);
   const [error, setError] = useState<string | null>(null);
   const [initialLoading, setInitialLoading] = useState(true);
 
-  // Get rider ID on mount
+  // Get rider ID on mount + load real stats
   useEffect(() => {
     async function getRiderId() {
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
-          const { data: riderData, error: riderError } = await supabase.from("riders").select("id, total_deliveries, total_earnings").eq("user_id", user.id).single();
+          const { data: riderData, error: riderError } = await supabase.from("riders").select("id, total_deliveries, total_earnings, rating, streak_days, last_work_date").eq("user_id", user.id).single();
           if (riderError) throw new Error(riderError.message);
           if (riderData) {
             setRiderId(riderData.id);
             setRiderDeliveries(riderData.total_deliveries || 0);
             setRiderEarnings(riderData.total_earnings || 0);
+            setCustomerRating(Number(riderData.rating) || 5.0);
+            setStreakDays(riderData.streak_days || 0);
+
+            // Load today's earnings from orders
+            const todayStart = new Date();
+            todayStart.setHours(0, 0, 0, 0);
+            const { data: todayOrders } = await supabase
+              .from("orders")
+              .select("rider_earning, customer_collected")
+              .eq("rider_id", riderData.id)
+              .in("status", ["delivered", "completed"])
+              .gte("placed_at", todayStart.toISOString());
+
+            const earnings = (todayOrders || []).reduce((s, o) => s + (Number(o.rider_earning) || 0), 0);
+            setTodayEarnings(earnings);
+
+            // Cash collection stats
+            let collected = 0, pending = 0;
+            (todayOrders || []).forEach(o => {
+              const cc = Number(o.customer_collected) || 0;
+              collected += cc;
+              pending += cc; // all collected today considered as collected
+            });
+            setCashCollected(collected);
+            setCashPending(0);
+
+            // Load quest progress
+            const { data: quests } = await supabase
+              .from("rider_quest_progress")
+              .select("*")
+              .eq("rider_id", riderData.id);
+            if (quests && quests.length > 0) {
+              setDailyQuests(quests.map(q => ({
+                id: q.quest_id,
+                title: q.quest_id === 1 ? "Complete 5 Deliveries" : q.quest_id === 2 ? "Earn ₹500 Today" : "3-Star Ratings",
+                current: q.current_progress,
+                target: q.target,
+                bonus: q.bonus,
+              })));
+            } else {
+              // Initialize quest progress with real data
+              const defaultQuests = [
+                { quest_id: 1, target: 5, bonus: 100 },
+                { quest_id: 2, target: 500, bonus: 75 },
+                { quest_id: 3, target: 10, bonus: 50 },
+              ];
+              const initialProgress = [
+                { current: riderData.total_deliveries || 0, target: 5 },
+                { current: earnings, target: 500 },
+                { current: 0, target: 10 },
+              ];
+              setDailyQuests(initialProgress.map((p, i) => ({
+                id: defaultQuests[i].quest_id,
+                title: defaultQuests[i].quest_id === 1 ? "Complete 5 Deliveries" : defaultQuests[i].quest_id === 2 ? "Earn ₹500 Today" : "3-Star Ratings",
+                current: p.current,
+                target: p.target,
+                bonus: defaultQuests[i].bonus,
+              })));
+              // Save initial quest progress
+              for (const q of defaultQuests) {
+                await supabase.from("rider_quest_progress").insert({
+                  rider_id: riderData.id,
+                  quest_id: q.quest_id,
+                  current_progress: 0,
+                  target: q.target,
+                  bonus: q.bonus,
+                });
+              }
+            }
           }
         }
         setInitialLoading(false);
