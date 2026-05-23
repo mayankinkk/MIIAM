@@ -67,35 +67,29 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="min-h-screen bg-surface flex flex-col">
+    <div className="h-dvh bg-surface flex flex-col">
       {/* Header */}
-      <header className="fixed top-0 w-full z-50 flex justify-between items-center px-4 py-3 bg-white border-b border-outline-variant/20">
-        <div className="flex items-center gap-3">
-          <Link href={`/app/orders/${orderId}`} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container">
-            <span className="material-symbols-outlined text-primary">arrow_back</span>
-          </Link>
-          <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
-            <span className="material-symbols-outlined text-white">two_wheeler</span>
-          </div>
-          <div>
-            <h1 className="font-bold text-on-surface">Rider Chat</h1>
-            <p className="text-xs text-green-600 flex items-center gap-1">
-              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-              Online
-            </p>
-          </div>
+      <header className="flex items-center gap-3 px-4 py-3 bg-white border-b border-outline-variant/20 shrink-0">
+        <Link href={`/app/orders/${orderId}`} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container">
+          <span className="material-symbols-outlined text-primary">arrow_back</span>
+        </Link>
+        <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+          <span className="material-symbols-outlined text-white">two_wheeler</span>
         </div>
-        <div className="flex items-center gap-2">
-          <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container">
-            <span className="material-symbols-outlined text-primary">call</span>
-          </button>
+        <div className="flex-1">
+          <h1 className="font-bold text-on-surface">Rider Chat</h1>
+          <p className="text-xs text-green-600 flex items-center gap-1">
+            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+            Online
+          </p>
         </div>
+        <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container">
+          <span className="material-symbols-outlined text-primary">call</span>
+        </button>
       </header>
 
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'My Orders', href: '/app/orders' }, { label: 'Chat' }]} />
-
       {/* Messages */}
-      <div className="flex-1 pt-20 pb-24 px-4 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto px-4">
         {loading ? (
           <div className="flex items-center justify-center h-32">
             <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
@@ -152,7 +146,7 @@ export default function ChatPage() {
       </div>
 
       {/* Quick Replies */}
-      <div className="px-4 pb-2 flex gap-2 overflow-x-auto no-scrollbar">
+      <div className="px-4 py-2 flex gap-2 overflow-x-auto no-scrollbar shrink-0">
         {quickReplies.map((reply) => (
           <button
             key={reply}
@@ -165,7 +159,7 @@ export default function ChatPage() {
       </div>
 
       {/* Input */}
-      <div className="p-4 bg-white border-t border-outline-variant/20">
+      <div className="p-4 pt-0 bg-white shrink-0">
         <div className="flex items-center gap-2">
           <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container">
             <span className="material-symbols-outlined text-on-surface-variant">add_circle</span>
