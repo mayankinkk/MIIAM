@@ -3,11 +3,13 @@
 import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 
 function RateCustomerContent() {
   const router = useRouter();
+  const supabase = createClient();
   const searchParams = useSearchParams();
-  const orderId = searchParams?.get("orderId") || "ORD001";
+  const orderId = searchParams?.get("orderId") || "";
   const customerName = searchParams?.get("customer") || "Customer";
   
   const [selectedRating, setSelectedRating] = useState<number | null>(null);
@@ -19,12 +21,34 @@ function RateCustomerContent() {
   const [additionalComment, setAdditionalComment] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (selectedRating === null) {
       alert("Please give a rating");
       return;
     }
     setSubmitted(true);
+
+    // Persist rating to database
+    if (orderId) {
+      try {
+        await supabase
+          .from("orders")
+          .update({
+            rider_rating: selectedRating,
+            rider_feedback: {
+              address_accurate: feedback.addressAccurate,
+              friendly: feedback.friendly,
+              tip_received: feedback.tipReceived,
+              comment: additionalComment,
+            },
+            rider_rated_at: new Date().toISOString(),
+          })
+          .eq("id", orderId);
+      } catch (e) {
+        console.error("Failed to save rating:", e);
+      }
+    }
+
     setTimeout(() => {
       router.push("/rider/dashboard");
     }, 1500);
