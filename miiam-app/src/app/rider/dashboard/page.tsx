@@ -716,6 +716,26 @@ export default function RiderDashboard() {
           setRiderDeliveries(prev => prev + 1);
           setRiderEarnings(prev => prev + finalEarnings);
 
+          // Credit wallet
+          const { data: wallet } = await supabase.from("rider_wallets")
+            .select("id, balance, total_earnings")
+            .eq("rider_id", riderId)
+            .maybeSingle();
+          if (wallet) {
+            await supabase.from("rider_wallets").update({
+              balance: (wallet.balance || 0) + finalEarnings,
+              total_earnings: (wallet.total_earnings || 0) + finalEarnings,
+            }).eq("id", wallet.id);
+          } else {
+            await supabase.from("rider_wallets").insert({
+              rider_id: riderId,
+              balance: finalEarnings,
+              total_earnings: finalEarnings,
+              pending_payout: 0,
+              advance_used: 0,
+            });
+          }
+
           // Notify customer
           if (currentOrder.user_id) {
             await supabase.from("notifications").insert({
