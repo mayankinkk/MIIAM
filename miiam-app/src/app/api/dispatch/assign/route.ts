@@ -80,6 +80,13 @@ export async function POST(request: NextRequest) {
       }, { status: 400 });
     }
 
+    const assignableStatuses = ["pending", "no_rider_available"];
+    if (!assignableStatuses.includes(order.status)) {
+      return NextResponse.json({ 
+        error: `Order status "${order.status}" is not assignable` 
+      }, { status: 400 });
+    }
+
     if (rider_id && !force_assign) {
       const { data: rider } = await supabase
         .from("riders")
@@ -174,7 +181,7 @@ export async function GET() {
     .from("orders")
     .select("id, status, rider_id, vendor_lat, vendor_lng, delivery_lat, delivery_lng")
     .is("rider_id", null)
-    .in("status", ["pending", "accepted"]);
+    .in("status", ["pending", "no_rider_available"]);
 
   const { data: availableRiders } = await supabase
     .from("riders")

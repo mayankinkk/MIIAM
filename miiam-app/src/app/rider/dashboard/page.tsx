@@ -302,12 +302,12 @@ export default function RiderDashboard() {
       const yesterday = new Date();
       yesterday.setHours(yesterday.getHours() - 24);
 
-      // Only fetch orders not assigned to any rider
+      // Only fetch orders not assigned to any rider (include expired ones for reassignment)
       const { data: dbOrders } = await supabase
         .from("orders")
         .select("*")
         .is("rider_id", null)
-        .in("status", ["pending"])
+        .in("status", ["pending", "no_rider_available"])
         .gte("placed_at", yesterday.toISOString())
         .order("placed_at", { ascending: false });
         
