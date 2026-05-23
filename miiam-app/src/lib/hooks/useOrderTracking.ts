@@ -47,6 +47,7 @@ export function useOrderTracking(orderId: string) {
     ready: "Order is ready for pickup",
     picking_up: "Rider is picking up your order",
     on_the_way: "Your order is on the way",
+    arrived: "Rider has arrived at your location",
     delivered: "Order delivered successfully",
     cancelled: "Order has been cancelled",
     refunded: "Order has been refunded",
@@ -155,35 +156,6 @@ export function useOrderTracking(orderId: string) {
           });
         }
       )
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "order_tracking",
-          filter: `order_id=eq.${orderId}`,
-        },
-        (payload) => {
-          const trackingData = payload.new as any;
-          
-          if (trackingData.location) {
-            setTracking((prev) => {
-              if (!prev) return prev;
-              return {
-                ...prev,
-                riderLocation: {
-                  rider_id: trackingData.rider_id || "",
-                  rider_name: trackingData.rider_name || "",
-                  rider_phone: trackingData.rider_phone || "",
-                  location: trackingData.location,
-                  updated_at: trackingData.created_at,
-                  eta_minutes: trackingData.eta_minutes || 0,
-                },
-              };
-            });
-          }
-        }
-      )
       .subscribe();
 
     return () => {
@@ -225,7 +197,7 @@ export function useRiderLocation(orderId: string) {
             rider_id: newLocation.rider_id,
             rider_name: newLocation.rider_name || "",
             rider_phone: newLocation.rider_phone || "",
-            location: newLocation.location,
+            location: { lat: newLocation.lat, lng: newLocation.lng },
             updated_at: newLocation.updated_at,
             eta_minutes: newLocation.eta_minutes || 0,
           });
@@ -252,7 +224,7 @@ export function useActiveOrders(userId: string) {
         .from("orders")
         .select("*, vendor:vendors(name)")
         .eq("user_id", userId)
-        .in("status", ["pending", "accepted", "preparing", "ready", "picking_up", "on_the_way", "scheduled"])
+        .in("status", ["pending", "accepted", "preparing", "ready", "picking_up", "on_the_way", "arrived", "scheduled"])
         .order("created_at", { ascending: false });
 
       if (!error && data) {
