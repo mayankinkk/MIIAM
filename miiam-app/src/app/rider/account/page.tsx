@@ -49,6 +49,18 @@ export default function RiderAccountPage() {
       if (riderData) {
         setRider(riderData);
         setIsOnline(riderData.is_online || false);
+
+        // Load saved shifts
+        const { data: savedShifts } = await supabase
+          .from("rider_shifts")
+          .select("*")
+          .eq("rider_id", riderData.id);
+        if (savedShifts && savedShifts.length > 0) {
+          setShifts(weeklyShifts.map(ws => {
+            const saved = savedShifts.find(s => s.shift_name === ws.name);
+            return saved ? { ...ws, isSelected: saved.is_selected } : ws;
+          }));
+        }
       }
     } catch {
       setDataError("Couldn't load profile. Pull down to try again.");
@@ -113,7 +125,19 @@ export default function RiderAccountPage() {
     })));
   };
 
-  const saveShifts = () => {
+  const saveShifts = async () => {
+    if (rider?.id) {
+      // Delete existing shifts and re-insert
+      await supabase.from("rider_shifts").delete().eq("rider_id", rider.id);
+      for (const shift of shifts) {
+        await supabase.from("rider_shifts").insert({
+          rider_id: rider.id,
+          shift_name: shift.name,
+          hours: shift.hours,
+          is_selected: shift.isSelected,
+        });
+      }
+    }
     const selectedShifts = shifts.filter(s => s.isSelected).map(s => s.name).join(", ");
     alert(`Shifts saved: ${selectedShifts || "No shifts selected"}`);
     setShowShiftModal(false);
@@ -165,10 +189,7 @@ export default function RiderAccountPage() {
 
         {/* Online Toggle */}
         <button
-          onClick={() => {
-            setIsOnline(!isOnline);
-            alert(isOnline ? "You're now OFFLINE" : "You're now ONLINE");
-          }}
+          onClick={toggleOnline}
           className={`w-full p-5 rounded-2xl shadow-lg flex items-center justify-between ${
             isOnline ? "bg-green-500" : "bg-slate-300"
           } text-white`}
