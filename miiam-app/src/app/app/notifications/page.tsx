@@ -7,6 +7,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import PullToRefresh from "@/components/PullToRefresh";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
+import SwipeableRow from "@/components/SwipeableRow";
 
 export default function NotificationsPage() {
   const { permission, preferences, requestPermission, updatePreferences } = useNotificationStore();
@@ -168,34 +169,46 @@ export default function NotificationsPage() {
           ) : (
             <div className="space-y-3">
               {notifications.map((notification) => (
-                <div
+                <SwipeableRow
                   key={notification.id}
-                  className={`bg-white rounded-xl p-4 ${notification.read ? "opacity-70" : "border-l-4 border-primary"}`}
+                  onSwipeLeft={async () => {
+                    try {
+                      await supabase.from("notifications").delete().eq("id", notification.id);
+                      setNotifications(prev => prev.filter(n => n.id !== notification.id));
+                      addToast("Notification dismissed", "success");
+                    } catch {
+                      addToast("Failed to dismiss notification", "error");
+                    }
+                  }}
                 >
-                  <div className="flex items-start gap-3">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                      notification.type === "order" ? "bg-surface-container" :
-                      notification.type === "promo" ? "bg-amber-100" : "bg-slate-100"
-                    }`}>
-                      <span className="material-symbols-outlined text-lg text-primary">
-                        {notification.type === "order" ? "restaurant" :
-                         notification.type === "promo" ? "local_offer" : "info"}
-                      </span>
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-bold text-on-surface">{notification.title}</p>
-                      <p className="text-sm text-on-surface-variant mt-1">{notification.body}</p>
-                      <p className="text-xs text-slate-400 mt-2">
-                        {new Date(notification.created_at).toLocaleDateString("en-IN", {
-                          day: "numeric",
-                          month: "short",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </p>
+                  <div
+                    className={`bg-white rounded-xl p-4 ${notification.read ? "opacity-70" : "border-l-4 border-primary"}`}
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                        notification.type === "order" ? "bg-surface-container" :
+                        notification.type === "promo" ? "bg-amber-100" : "bg-slate-100"
+                      }`}>
+                        <span className="material-symbols-outlined text-lg text-primary">
+                          {notification.type === "order" ? "restaurant" :
+                           notification.type === "promo" ? "local_offer" : "info"}
+                        </span>
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-bold text-on-surface">{notification.title}</p>
+                        <p className="text-sm text-on-surface-variant mt-1">{notification.body}</p>
+                        <p className="text-xs text-slate-400 mt-2">
+                          {new Date(notification.created_at).toLocaleDateString("en-IN", {
+                            day: "numeric",
+                            month: "short",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </SwipeableRow>
               ))}
             </div>
           )}
