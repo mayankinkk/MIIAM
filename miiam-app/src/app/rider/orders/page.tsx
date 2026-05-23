@@ -123,10 +123,22 @@ export default function RiderOrdersPage() {
   }
 
   useEffect(() => {
-    setRiderLocation({
-      lat: 28.6139 + (Math.random() - 0.5) * 0.01,
-      lng: 77.2090 + (Math.random() - 0.5) * 0.01
-    });
+    // Use real GPS location
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setRiderLocation({
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude
+          });
+        },
+        () => {
+          // Fallback to browser location API or keep default
+          console.log("GPS unavailable, using default location");
+        },
+        { enableHighAccuracy: true, timeout: 10000 }
+      );
+    }
     loadOrders();
 
     const channel = supabase
@@ -732,7 +744,27 @@ export default function RiderOrdersPage() {
               {["Wrong Items", "Store Closed", "Customer Unreachable", "Safety Concern", "Other"].map(issue => (
                 <button
                   key={issue}
-                  onClick={() => { setIssueType(issue); alert(`Issue "${issue}" reported. Support will contact you.`); setShowIssueModal(false); }}
+                  onClick={async () => {
+                    setIssueType(issue);
+                    try {
+                      const { data: { user } } = await supabase.auth.getUser();
+                      if (user) {
+                        const { data: rider } = await supabase.from("riders").select("id").eq("user_id", user.id).single();
+                        if (rider) {
+                          await supabase.from("rider_incidents").insert({
+                            rider_id: rider.id,
+                            type: issue,
+                            description: `Issue with order ${currentOrderId}`,
+                            status: "reported",
+                          });
+                        }
+                      }
+                      alert(`Issue "${issue}" reported. Support will contact you.`);
+                    } catch (e) {
+                      alert("Failed to report issue. Please try again.");
+                    }
+                    setShowIssueModal(false);
+                  }}
                   className="w-full p-3 text-left bg-slate-50 rounded-xl font-bold hover:bg-slate-100"
                 >
                   {issue}
