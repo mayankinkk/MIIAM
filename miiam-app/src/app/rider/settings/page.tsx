@@ -1,9 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
 
 export default function RiderSettingsPage() {
+  const supabase = createClient();
+  const [riderId, setRiderId] = useState<string | null>(null);
   const [darkMode, setDarkMode] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [vibrationEnabled, setVibrationEnabled] = useState(true);
@@ -12,6 +15,7 @@ export default function RiderSettingsPage() {
   const [onlyHighEarnings, setOnlyHighEarnings] = useState(false);
   const [preferredOrderTypes, setPreferredOrderTypes] = useState<string[]>(["food", "grocery"]);
   const [showLanguageModal, setShowLanguageModal] = useState(false);
+  const [settingsId, setSettingsId] = useState<string | null>(null);
 
   const orderTypes = [
     { id: "food", label: "Food Delivery", icon: "🍔" },
@@ -20,14 +24,63 @@ export default function RiderSettingsPage() {
     { id: "parcel", label: "Parcels", icon: "📦" },
   ];
 
+  // Load settings from DB on mount
+  useEffect(() => {
+    async function loadSettings() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data: rider } = await supabase.from("riders").select("id").eq("user_id", user.id).single();
+      if (!rider) return;
+      setRiderId(rider.id);
+
+      const { data: settings } = await supabase.from("rider_settings").select("*").eq("rider_id", rider.id).single();
+      if (settings) {
+        setSettingsId(settings.id);
+        setDarkMode(settings.dark_mode || false);
+        setSoundEnabled(settings.sound_enabled !== false);
+        setVibrationEnabled(settings.vibration_enabled !== false);
+        setLanguage(settings.language || "English");
+        setAutoAccept(settings.auto_accept || false);
+        setOnlyHighEarnings(settings.only_high_earnings || false);
+        setPreferredOrderTypes(settings.preferred_order_types || ["food", "grocery"]);
+      } else {
+        // Create default settings
+        const { data: newSettings } = await supabase.from("rider_settings").insert({
+          rider_id: rider.id,
+        }).select().single();
+        if (newSettings) setSettingsId(newSettings.id);
+      }
+    }
+    loadSettings();
+  }, [supabase]);
+
+  // Save individual setting to DB
+  const saveSetting = async (updates: Record<string, any>) => {
+    if (!riderId) return;
+    if (settingsId) {
+      await supabase.from("rider_settings").update(updates).eq("id", settingsId);
+    } else {
+      const { data: newSettings } = await supabase.from("rider_settings").insert({
+        rider_id: riderId,
+        ...updates,
+      }).select().single();
+      if (newSettings) setSettingsId(newSettings.id);
+    }
+  };
+
   const toggleOrderType = (typeId: string) => {
+    let newTypes: string[];
     if (preferredOrderTypes.includes(typeId)) {
       if (preferredOrderTypes.length > 1) {
-        setPreferredOrderTypes(preferredOrderTypes.filter(t => t !== typeId));
+        newTypes = preferredOrderTypes.filter(t => t !== typeId);
+      } else {
+        return;
       }
     } else {
-      setPreferredOrderTypes([...preferredOrderTypes, typeId]);
+      newTypes = [...preferredOrderTypes, typeId];
     }
+    setPreferredOrderTypes(newTypes);
+    saveSetting({ preferred_order_types: newTypes });
   };
 
   return (
@@ -79,7 +132,7 @@ export default function RiderSettingsPage() {
                 <span className="font-bold">Auto-Accept Orders</span>
               </div>
               <button 
-                onClick={() => setAutoAccept(!autoAccept)}
+                onClick={() => { setAutoAccept(!autoAccept); saveSetting({ auto_accept: !autoAccept }); }}
                 className={`w-12 h-6 rounded-full transition-colors ${autoAccept ? "bg-green-500" : "bg-slate-200"}`}
               >
                 <div className={`w-5 h-5 bg-white rounded-full shadow transition-transform ${autoAccept ? "translate-x-6" : "translate-x-0.5"}`} />
@@ -92,7 +145,7 @@ export default function RiderSettingsPage() {
                 <span className="font-bold">Only High Earnings</span>
               </div>
               <button 
-                onClick={() => setOnlyHighEarnings(!onlyHighEarnings)}
+                onClick={() => { setOnlyHighEarnings(!onlyHighEarnings); saveSetting({ only_high_earnings: !onlyHighEarnings }); }}
                 className={`w-12 h-6 rounded-full transition-colors ${onlyHighEarnings ? "bg-green-500" : "bg-slate-200"}`}
               >
                 <div className={`w-5 h-5 bg-white rounded-full shadow transition-transform ${onlyHighEarnings ? "translate-x-6" : "translate-x-0.5"}`} />
@@ -131,7 +184,7 @@ export default function RiderSettingsPage() {
                 <span className="font-bold">Sound</span>
               </div>
               <button 
-                onClick={() => setSoundEnabled(!soundEnabled)}
+                onClick={() => { setSoundEnabled(!soundEnabled); saveSetting({ sound_enabled: !soundEnabled }); }}
                 className={`w-12 h-6 rounded-full transition-colors ${soundEnabled ? "bg-green-500" : "bg-slate-200"}`}
               >
                 <div className={`w-5 h-5 bg-white rounded-full shadow transition-transform ${soundEnabled ? "translate-x-6" : "translate-x-0.5"}`} />
@@ -144,7 +197,7 @@ export default function RiderSettingsPage() {
                 <span className="font-bold">Vibration</span>
               </div>
               <button 
-                onClick={() => setVibrationEnabled(!vibrationEnabled)}
+                onClick={() => { setVibrationEnabled(!vibrationEnabled); saveSetting({ vibration_enabled: !vibrationEnabled }); }}
                 className={`w-12 h-6 rounded-full transition-colors ${vibrationEnabled ? "bg-green-500" : "bg-slate-200"}`}
               >
                 <div className={`w-5 h-5 bg-white rounded-full shadow transition-transform ${vibrationEnabled ? "translate-x-6" : "translate-x-0.5"}`} />
@@ -171,7 +224,7 @@ export default function RiderSettingsPage() {
                 <span className="font-bold">Dark Mode</span>
               </div>
               <button 
-                onClick={() => setDarkMode(!darkMode)}
+                onClick={() => { setDarkMode(!darkMode); saveSetting({ dark_mode: !darkMode }); }}
                 className={`w-12 h-6 rounded-full transition-colors ${darkMode ? "bg-green-500" : "bg-slate-200"}`}
               >
                 <div className={`w-5 h-5 bg-white rounded-full shadow transition-transform ${darkMode ? "translate-x-6" : "translate-x-0.5"}`} />
@@ -254,7 +307,7 @@ export default function RiderSettingsPage() {
               {["English", "Hindi", "Bengali", "Tamil", "Telugu", "Marathi"].map((lang) => (
                 <button
                   key={lang}
-                  onClick={() => { setLanguage(lang); setShowLanguageModal(false); }}
+                  onClick={() => { setLanguage(lang); setShowLanguageModal(false); saveSetting({ language: lang }); }}
                   className={`w-full p-4 rounded-xl font-bold text-left transition-all ${
                     language === lang 
                       ? "bg-[#0b50d5] text-white" 
