@@ -35,6 +35,9 @@ export default function RiderWalletPage() {
   const [weeklyEarnings, setWeeklyEarnings] = useState<DailyEarning[]>([]);
   const [totalWeekEarnings, setTotalWeekEarnings] = useState(0);
   const [totalDeliveries, setTotalDeliveries] = useState(0);
+  const [todayEarnings, setTodayEarnings] = useState(0);
+  const [todayDeliveries, setTodayDeliveries] = useState(0);
+  const [payoutHistory, setPayoutHistory] = useState<{ date: string; amount: number; status: string; method: string }[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   async function loadWalletData() {
@@ -42,34 +45,127 @@ export default function RiderWalletPage() {
     setError(null);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: riderData } = await supabase.from("riders").select("id").eq("user_id", user.id).single();
-        if (riderData) {
-          setRiderId(riderData.id);
+      if (!user) { setLoading(false); return; }
+
+      const { data: riderData } = await supabase.from("riders").select("id").eq("user_id", user.id).single();
+      if (!riderData) { setLoading(false); return; }
+      setRiderId(riderData.id);
+
+      // Load wallet balance
+      const { data: wallet } = await supabase.from("rider_wallets").select("*").eq("rider_id", riderData.id).single();
+      if (wallet) {
+        setWalletData({
+          balance: Number(wallet.balance) || 0,
+          pendingPayout: Number(wallet.pending_payout) || 0,
+          totalEarnings: Number(wallet.total_earnings) || 0,
+          advanceUsed: Number(wallet.advance_used) || 0,
+          instantPayoutFee: 2,
+        });
+      } else {
+        // Create wallet if not exists
+        const { data: newWallet } = await supabase.from("rider_wallets").insert({
+          rider_id: riderData.id,
+          balance: 0,
+          pending_payout: 0,
+          total_earnings: 0,
+          advance_used: 0,
+        }).select().single();
+        if (newWallet) {
+          setWalletData({
+            balance: 0, pendingPayout: 0, totalEarnings: 0, advanceUsed: 0, instantPayoutFee: 2,
+          });
         }
       }
 
-      const demoTransactions: Transaction[] = [
-        { id: "1", amount: 340, type: "earning", description: "Delivery #1234 - Food", created_at: new Date().toISOString(), order_id: "1234" },
-        { id: "2", amount: 280, type: "earning", description: "Delivery #1235 - Grocery", created_at: new Date(Date.now() - 3600000).toISOString(), order_id: "1235" },
-        { id: "3", amount: 50, type: "expense", description: "Fuel Reimbursement", created_at: new Date(Date.now() - 7200000).toISOString(), order_id: null },
-        { id: "4", amount: 1000, type: "payout", description: "Weekly Payout", created_at: new Date(Date.now() - 86400000).toISOString(), order_id: null },
-        { id: "5", amount: 150, type: "advance", description: "Advance Request", created_at: new Date(Date.now() - 172800000).toISOString(), order_id: null },
-        { id: "6", amount: 420, type: "earning", description: "Delivery #1236 - Food", created_at: new Date(Date.now() - 259200000).toISOString(), order_id: "1236" },
-      ];
-      setTransactions(demoTransactions);
-      setWalletData({ balance: 2340, pendingPayout: 500, totalEarnings: 12450, advanceUsed: 2000, instantPayoutFee: 2 });
-      setWeeklyEarnings([
-        { date: "Mon", deliveries: 8, earnings: 340, avgPerDelivery: 42.5 },
-        { date: "Tue", deliveries: 12, earnings: 520, avgPerDelivery: 43.3 },
-        { date: "Wed", deliveries: 15, earnings: 680, avgPerDelivery: 45.3 },
-        { date: "Thu", deliveries: 10, earnings: 430, avgPerDelivery: 43.0 },
-        { date: "Fri", deliveries: 14, earnings: 590, avgPerDelivery: 42.1 },
-        { date: "Sat", deliveries: 18, earnings: 820, avgPerDelivery: 45.6 },
-        { date: "Sun", deliveries: 0, earnings: 0, avgPerDelivery: 0 },
-      ]);
-      setTotalWeekEarnings(3380);
-      setTotalDeliveries(77);
+      // Load transaction history
+      const { data: txns } = await supabase
+        .from("rider_wallet")
+        .select("*")
+        .eq("rider_id", riderData.id)
+        .order("created_at", { ascending: false })
+        .limit(50);
+      if (txns) {
+        setTransactions(txns.map(t => ({
+          id: t.id,
+          amount: Number(t.amount),
+          type: t.type as Transaction["type"],
+          description: t.description || "",
+          created_at: t.created_at,
+          order_id: t.order_id,
+        })));
+      }
+
+      // Load weekly earnings from delivered orders
+      const weekStart = new Date();
+      weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+      weekStart.setHours(0, 0, 0, 0);
+
+      const { data: weekOrders } = await supabase
+        .from("orders")
+        .select("rider_earning, placed_at")
+        .eq("rider_id", riderData.id)
+        .in("status", ["delivered", "completed"])
+        .gte("placed_at", weekStart.toISOString());
+
+      const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      const dailyMap: Record<string, { deliveries: number; earnings: number }> = {};
+      dayNames.forEach(d => { dailyMap[d] = { deliveries: 0, earnings: 0 }; });
+
+      let weekTotalEarnings = 0;
+      let weekTotalDeliveries = 0;
+
+      (weekOrders || []).forEach(order => {
+        const date = new Date(order.placed_at);
+        const dayKey = dayNames[date.getDay()];
+        if (dailyMap[dayKey]) {
+          dailyMap[dayKey].deliveries += 1;
+          const earning = Number(order.rider_earning) || 0;
+          dailyMap[dayKey].earnings += earning;
+          weekTotalEarnings += earning;
+          weekTotalDeliveries += 1;
+        }
+      });
+
+      setWeeklyEarnings(dayNames.map(day => ({
+        date: day,
+        deliveries: dailyMap[day].deliveries,
+        earnings: dailyMap[day].earnings,
+        avgPerDelivery: dailyMap[day].deliveries > 0
+          ? Math.round((dailyMap[day].earnings / dailyMap[day].deliveries) * 10) / 10
+          : 0,
+      })));
+      setTotalWeekEarnings(weekTotalEarnings);
+      setTotalDeliveries(weekTotalDeliveries);
+
+      // Load today's earnings
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
+      const { data: todayOrders } = await supabase
+        .from("orders")
+        .select("rider_earning")
+        .eq("rider_id", riderData.id)
+        .in("status", ["delivered", "completed"])
+        .gte("placed_at", todayStart.toISOString());
+      const todayEarn = (todayOrders || []).reduce((s, o) => s + (Number(o.rider_earning) || 0), 0);
+      setTodayEarnings(todayEarn);
+      setTodayDeliveries(todayOrders?.length || 0);
+
+      // Load payout history from rider_wallet transactions
+      const { data: payoutTxns } = await supabase
+        .from("rider_wallet")
+        .select("amount, created_at, description")
+        .eq("rider_id", riderData.id)
+        .in("type", ["payout", "instant_payout"])
+        .order("created_at", { ascending: false })
+        .limit(20);
+      if (payoutTxns) {
+        setPayoutHistory(payoutTxns.map(t => ({
+          date: new Date(t.created_at).toLocaleDateString(),
+          amount: Number(t.amount),
+          status: "completed",
+          method: t.description?.includes("Instant") ? "Instant UPI" : "Bank Transfer",
+        })));
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load wallet data");
     } finally {
@@ -84,6 +180,13 @@ export default function RiderWalletPage() {
   async function requestPayout(amount: number) {
     if (riderId) {
       await supabase.from("rider_wallets").update({ pending_payout: amount }).eq("rider_id", riderId);
+      await supabase.from("rider_wallet").insert({
+        rider_id: riderId,
+        amount: -amount,
+        type: "payout",
+        description: `Payout request for ₹${amount}`,
+      });
+      await loadWalletData();
     }
     alert(`Payout request of ₹${amount} submitted! Will be processed in 24-48 hours.`);
   }
@@ -108,6 +211,12 @@ export default function RiderWalletPage() {
         balance: walletData.balance - amount,
         pending_payout: walletData.pendingPayout + netAmount,
       }).eq("rider_id", riderId);
+      await supabase.from("rider_wallet").insert({
+        rider_id: riderId,
+        amount: -amount,
+        type: "instant_payout",
+        description: `Instant payout - ₹${netAmount} credited (₹${fee} fee)`,
+      });
       await loadWalletData();
     }
 
@@ -218,23 +327,22 @@ export default function RiderWalletPage() {
               </div>
             </div>
 
-            {/* Quick Stats */}
+            {/* Quick Stats - Real data from orders */}
             <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-2xl border border-green-100">
               <div className="flex items-center justify-between mb-2">
                 <p className="font-bold text-green-800">Today's Performance</p>
-                <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">+12% vs yesterday</span>
               </div>
               <div className="grid grid-cols-3 gap-2 text-center">
                 <div>
-                  <p className="text-2xl font-black text-green-600">₹340</p>
+                  <p className="text-2xl font-black text-green-600">₹{todayEarnings}</p>
                   <p className="text-[9px] text-slate-500">Earned</p>
                 </div>
                 <div>
-                  <p className="text-2xl font-black text-blue-600">8</p>
+                  <p className="text-2xl font-black text-blue-600">{todayDeliveries}</p>
                   <p className="text-[9px] text-slate-500">Deliveries</p>
                 </div>
                 <div>
-                  <p className="text-2xl font-black text-amber-600">₹42.5</p>
+                  <p className="text-2xl font-black text-amber-600">₹{todayDeliveries > 0 ? Math.round(todayEarnings / todayDeliveries * 10) / 10 : 0}</p>
                   <p className="text-[9px] text-slate-500">Avg/Order</p>
                 </div>
               </div>
@@ -318,7 +426,7 @@ export default function RiderWalletPage() {
               <div className="bg-white p-6 rounded-2xl border border-slate-100">
                 <p className="text-xs font-bold text-slate-400">Total Deliveries</p>
                 <p className="text-3xl font-black text-slate-800 mt-2">{totalDeliveries}</p>
-                <p className="text-xs text-green-500 mt-1">₹{Math.round(totalWeekEarnings / totalDeliveries)}/delivery</p>
+                <p className="text-xs text-green-500 mt-1">{totalDeliveries > 0 ? `₹${Math.round(totalWeekEarnings / totalDeliveries)}/delivery` : "No deliveries yet"}</p>
               </div>
             </div>
 
@@ -412,7 +520,7 @@ export default function RiderWalletPage() {
                     <span className="material-symbols-outlined text-blue-600">account_balance</span>
                   </div>
                   <div>
-                    <p className="font-bold">HDFC Bank ****4521</p>
+                    <p className="font-bold">Primary Account</p>
                     <p className="text-xs text-slate-500">Primary Account</p>
                   </div>
                 </div>
@@ -427,12 +535,7 @@ export default function RiderWalletPage() {
             <div className="bg-white rounded-2xl p-6 shadow-sm">
               <h3 className="font-bold text-slate-800 mb-4">Payout History</h3>
               <div className="space-y-3">
-                {[
-                  { date: "2024-01-15", amount: 1500, status: "completed", method: "Bank Transfer" },
-                  { date: "2024-01-10", amount: 2000, status: "completed", method: "Instant UPI" },
-                  { date: "2024-01-05", amount: 800, status: "completed", method: "Bank Transfer" },
-                  { date: "2024-01-03", amount: 500, status: "instant", method: "Instant UPI" },
-                ].map((payout, i) => (
+                {payoutHistory.length > 0 ? payoutHistory.map((payout, i) => (
                   <div key={i} className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
                     <div>
                       <p className="font-bold text-slate-800">₹{payout.amount}</p>
@@ -444,7 +547,9 @@ export default function RiderWalletPage() {
                       {payout.status === "completed" ? "Completed" : "Instant"}
                     </span>
                   </div>
-                ))}
+                )) : (
+                  <p className="text-center text-slate-400 text-sm py-4">No payout history yet</p>
+                )}
               </div>
             </div>
 
