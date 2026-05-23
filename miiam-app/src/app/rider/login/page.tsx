@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -10,9 +10,33 @@ export default function RiderLoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetSent, setResetSent] = useState(false);
+  const [resetError, setResetError] = useState<string | null>(null);
   
   const router = useRouter();
   const supabase = createClient();
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) router.push("/rider/dashboard");
+    });
+  }, [supabase, router]);
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setResetError(null);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+        redirectTo: `${window.location.origin}/rider/login`,
+      });
+      if (error) throw error;
+      setResetSent(true);
+    } catch (err: any) {
+      setResetError(err.message || "Failed to send reset email");
+    }
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -87,6 +111,13 @@ export default function RiderLoginPage() {
                 className="w-full bg-[#ffecee] border border-[#dd9ca6]/30 rounded-xl px-5 py-4 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-[#ba001c]/40 transition-all text-[#4d212a]"
                 placeholder="Enter your password"
               />
+              <button
+                type="button"
+                onClick={() => setShowForgotPassword(true)}
+                className="text-sm text-[#0b50d5] font-bold mt-2 hover:underline"
+              >
+                Forgot Password?
+              </button>
             </div>
             <button
               type="submit"
@@ -138,6 +169,66 @@ export default function RiderLoginPage() {
           </div>
         </div>
       </div>
+
+      {/* Forgot Password Modal */}
+      {showForgotPassword && (
+        <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4" onClick={() => { if (!resetSent) setShowForgotPassword(false); }}>
+          <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl" onClick={e => e.stopPropagation()}>
+            {resetSent ? (
+              <div className="text-center">
+                <span className="text-5xl block mb-4">📧</span>
+                <h3 className="font-bold text-xl mb-2">Check Your Email</h3>
+                <p className="text-sm text-slate-500 mb-6">
+                  We&apos;ve sent a password reset link to <strong className="text-slate-700">{resetEmail}</strong>
+                </p>
+                <button
+                  onClick={() => { setShowForgotPassword(false); setResetSent(false); setResetEmail(""); }}
+                  className="w-full py-3 bg-[#0b50d5] text-white font-bold rounded-xl"
+                >
+                  Done
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-bold text-xl">Reset Password</h3>
+                  <button onClick={() => setShowForgotPassword(false)}>
+                    <span className="material-symbols-outlined text-slate-400">close</span>
+                  </button>
+                </div>
+                <p className="text-sm text-slate-500 mb-6">
+                  Enter your email address and we&apos;ll send you a link to reset your password.
+                </p>
+                {resetError && (
+                  <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm font-medium">
+                    {resetError}
+                  </div>
+                )}
+                <form onSubmit={handleForgotPassword} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-bold text-[#4d212a] mb-2">Email Address</label>
+                    <input
+                      type="email"
+                      required
+                      value={resetEmail}
+                      onChange={(e) => setResetEmail(e.target.value)}
+                      className="w-full bg-[#ffecee] border border-[#dd9ca6]/30 rounded-xl px-4 py-3 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-[#ba001c]/40 text-[#4d212a]"
+                      placeholder="your@email.com"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={!resetEmail}
+                    className="w-full py-3 bg-[#0b50d5] text-white font-bold rounded-xl disabled:opacity-50"
+                  >
+                    Send Reset Link
+                  </button>
+                </form>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import Confetti from "@/components/rider/Confetti";
 
 interface Achievement {
   id: string;
@@ -51,6 +52,8 @@ export default function RiderAchievementsPage() {
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [totalPoints, setTotalPoints] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const confettiKey = useRef(0);
 
   useEffect(() => {
     async function loadAchievements() {
@@ -73,8 +76,18 @@ export default function RiderAchievementsPage() {
       });
 
       setAchievements(built);
-      setTotalPoints(built.filter(a => a.unlocked).length * 100);
+      const newUnlockedCount = built.filter(a => a.unlocked).length;
+      setTotalPoints(newUnlockedCount * 100);
       setLoading(false);
+
+      // Confetti on new unlocks
+      const prevUnlocked = parseInt(localStorage.getItem("rider_unlocked_count") || "0");
+      if (newUnlockedCount > prevUnlocked) {
+        setShowConfetti(true);
+        confettiKey.current += 1;
+        setTimeout(() => setShowConfetti(false), 4000);
+      }
+      localStorage.setItem("rider_unlocked_count", newUnlockedCount.toString());
     }
     loadAchievements();
   }, [supabase]);
@@ -186,9 +199,17 @@ export default function RiderAchievementsPage() {
                     {achievement.icon}
                   </div>
                   <div className="flex-1">
-                    <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2">
                       <h3 className="font-bold text-[#4d212a]">{achievement.title}</h3>
-                      {achievement.unlocked && <span className="text-amber-500">✓</span>}
+                      {achievement.unlocked && (
+                        <button
+                          onClick={() => { setShowConfetti(true); confettiKey.current += 1; setTimeout(() => setShowConfetti(false), 4000); }}
+                          className="text-amber-500 hover:scale-125 transition-transform"
+                          title="Celebrate!"
+                        >
+                          🎉
+                        </button>
+                      )}
                     </div>
                     <p className="text-xs text-slate-500 mt-1">{achievement.description}</p>
                     
@@ -243,6 +264,8 @@ export default function RiderAchievementsPage() {
           </Link>
         </div>
       </main>
+
+      <Confetti key={confettiKey.current} active={showConfetti} />
 
       {/* Reward Modal */}
       {showRewardModal && selectedReward && (

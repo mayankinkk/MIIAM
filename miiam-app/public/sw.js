@@ -1,13 +1,13 @@
-const CACHE_NAME = 'miiam-v1';
-const STATIC_CACHE = 'miiam-static-v1';
-const DYNAMIC_CACHE = 'miiam-dynamic-v1';
+const CACHE_NAME = 'miiam-v2';
+const STATIC_CACHE = 'miiam-static-v2';
+const DYNAMIC_CACHE = 'miiam-dynamic-v2';
 
 const STATIC_ASSETS = [
   '/',
   '/manifest.json',
   '/offline.html',
-  '/icons/icon-192.png',
-  '/icons/icon-512.png',
+  '/icons/icon-192.svg',
+  '/icons/icon-512.svg',
 ];
 
 const API_CACHE_DURATION = 5 * 60 * 1000;
@@ -44,13 +44,12 @@ self.addEventListener('fetch', (event) => {
   }
 
   if (request.mode === 'navigate') {
-    event.respondWith(
-      fetch(request).catch(async () => {
-        const cache = await caches.open(STATIC_CACHE);
-        const offlinePage = await cache.match('/offline.html');
-        return offlinePage || new Response('Offline', { status: 503 });
-      })
-    );
+    event.respondWith(networkFirst(request, DYNAMIC_CACHE, '/offline.html'));
+    return;
+  }
+  
+  if (url.pathname.startsWith('/_next/static/')) {
+    event.respondWith(cacheFirst(request, STATIC_CACHE));
     return;
   }
 
@@ -60,7 +59,7 @@ self.addEventListener('fetch', (event) => {
       return;
     }
 
-    if (request.destination === 'script' || request.destination === 'style') {
+    if (request.destination === 'script' || request.destination === 'style' || request.destination === 'font') {
       event.respondWith(cacheFirst(request, STATIC_CACHE));
       return;
     }
@@ -88,7 +87,7 @@ async function cacheFirst(request, cacheName) {
   }
 }
 
-async function networkFirst(request, cacheName) {
+async function networkFirst(request, cacheName, fallbackUrl) {
   try {
     const response = await fetch(request);
     const cache = await caches.open(cacheName);
@@ -96,7 +95,12 @@ async function networkFirst(request, cacheName) {
     return response;
   } catch {
     const cached = await caches.match(request);
-    return cached || new Response('Offline', { status: 503 });
+    if (cached) return cached;
+    if (fallbackUrl) {
+      const fallback = await caches.match(fallbackUrl);
+      if (fallback) return fallback;
+    }
+    return new Response('Offline', { status: 503 });
   }
 }
 
@@ -119,8 +123,8 @@ self.addEventListener('push', (event) => {
   const title = data.title || 'MIIAM';
   const options = {
     body: data.body || 'You have a new notification',
-    icon: '/icons/icon-192.png',
-    badge: '/icons/badge.png',
+    icon: '/icons/icon-192.svg',
+    badge: '/icons/icon-192.svg',
     data: data.url || '/',
     actions: data.actions || [],
   };

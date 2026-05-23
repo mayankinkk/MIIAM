@@ -2,7 +2,7 @@
   "name": "MIIAM — Super App",
   "short_name": "MIIAM",
   "description": "Premium food delivery and professional home services in one app.",
-  "start_url": "/app/home",
+  "start_url": "/rider/login",
   "display": "standalone",
   "background_color": "#fff4f4",
   "theme_color": "#ba001c",
@@ -11,6 +11,8 @@
   "prefer_related_applications": false,
   "lang": "en-IN",
   "dir": "ltr",
+  "id": "/rider/login",
+  "categories": ["food", "shopping", "lifestyle", "productivity"],
   "icons": [
     {
       "src": "/icons/icon-192.svg",
@@ -58,7 +60,13 @@
       "description": "View your orders",
       "url": "/app/orders",
       "icons": [{ "src": "/icons/icon-192.svg", "sizes": "192x192" }]
+    },
+    {
+      "name": "Rider Dashboard",
+      "short_name": "Ride",
+      "description": "Start accepting orders",
+      "url": "/rider/dashboard",
+      "icons": [{ "src": "/icons/icon-192.svg", "sizes": "192x192" }]
     }
-  ],
-  "categories": ["food", "shopping", "lifestyle", "productivity"]
+  ]
 }

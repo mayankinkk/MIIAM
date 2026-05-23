@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { startLocationTracking, stopLocationTracking } from "@/lib/rider-location-tracker";
+import WeatherWidget from "@/components/rider/WeatherWidget";
 
 interface Order {
   id: string;
@@ -79,6 +80,7 @@ export default function RiderDashboard() {
   const [deliveryStep, setDeliveryStep] = useState<"shopping" | "picking_up" | "picked" | "delivering" | "arrived">("shopping");
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [vibrationEnabled, setVibrationEnabled] = useState(true);
+  const [dndMode, setDndMode] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const mapRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<any>(null);
@@ -171,6 +173,14 @@ export default function RiderDashboard() {
             });
             setCashCollected(collected);
             setCashPending(0);
+
+            // Load DND mode
+            const { data: settings } = await supabase.from("rider_settings").select("dnd_mode, sound_enabled, vibration_enabled").eq("rider_id", riderData.id).single();
+            if (settings) {
+              setDndMode(settings.dnd_mode || false);
+              if (settings.sound_enabled !== undefined) setSoundEnabled(settings.sound_enabled);
+              if (settings.vibration_enabled !== undefined) setVibrationEnabled(settings.vibration_enabled);
+            }
 
             // Load quest progress
             const { data: quests } = await supabase
@@ -405,6 +415,7 @@ export default function RiderDashboard() {
   }, [pendingOrders, isOnline]);
 
   const playNotificationSound = () => {
+    if (dndMode) return;
     if (soundEnabled && audioRef.current) {
       audioRef.current.play().catch(() => {});
     }
@@ -587,6 +598,8 @@ export default function RiderDashboard() {
   };
 
   const handleAccept = async (order: OrderWithTiming) => {
+    let accepted = false;
+
     // Try to accept via atomic database function
     if (order.orderDbId && riderId) {
       try {
@@ -605,13 +618,14 @@ export default function RiderDashboard() {
           }, 2000);
           return;
         }
+        accepted = true; // RPC succeeded, skip fallback
       } catch (e) {
         console.log("RPC not available, using fallback");
       }
     }
     
-    // Fallback: directly update order
-    if (order.orderDbId) {
+    // Fallback: directly update order (only if RPC didn't succeed)
+    if (!accepted && order.orderDbId && riderId) {
       const { error } = await supabase
         .from("orders")
         .update({ 
@@ -1460,6 +1474,7 @@ export default function RiderDashboard() {
 
         {/* Quick Stats */}
         <div className="fixed top-20 left-4 z-20 space-y-2">
+          <WeatherWidget />
           <div className="bg-white/90 backdrop-blur p-3 rounded-xl shadow-lg">
             <p className="text-[10px] text-slate-400">TODAY'S EARNINGS</p>
             <p className="font-black text-xl text-green-600">₹{todayEarnings + liveEarnings}</p>
@@ -1474,6 +1489,12 @@ export default function RiderDashboard() {
               <p className="text-xs font-bold">₹{cashCollected} <span className="text-slate-400">/ ₹{cashPending}</span></p>
             </div>
           </div>
+          {dndMode && (
+            <div className="bg-red-500/90 backdrop-blur px-3 py-2 rounded-xl shadow-lg flex items-center gap-2 text-white">
+              <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>do_not_disturb</span>
+              <span className="text-xs font-bold">DND Active</span>
+            </div>
+          )}
         </div>
       </main>
 

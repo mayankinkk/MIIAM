@@ -13,6 +13,7 @@ export default function RiderSettingsPage() {
   const [language, setLanguage] = useState("English");
   const [autoAccept, setAutoAccept] = useState(false);
   const [onlyHighEarnings, setOnlyHighEarnings] = useState(false);
+  const [dndMode, setDndMode] = useState(false);
   const [preferredOrderTypes, setPreferredOrderTypes] = useState<string[]>(["food", "grocery"]);
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [settingsId, setSettingsId] = useState<string | null>(null);
@@ -42,6 +43,7 @@ export default function RiderSettingsPage() {
         setLanguage(settings.language || "English");
         setAutoAccept(settings.auto_accept || false);
         setOnlyHighEarnings(settings.only_high_earnings || false);
+        setDndMode(settings.dnd_mode || false);
         setPreferredOrderTypes(settings.preferred_order_types || ["food", "grocery"]);
       } else {
         // Create default settings
@@ -201,6 +203,19 @@ export default function RiderSettingsPage() {
                 className={`w-12 h-6 rounded-full transition-colors ${vibrationEnabled ? "bg-green-500" : "bg-slate-200"}`}
               >
                 <div className={`w-5 h-5 bg-white rounded-full shadow transition-transform ${vibrationEnabled ? "translate-x-6" : "translate-x-0.5"}`} />
+              </button>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <span className="material-symbols-outlined text-slate-600">do_not_disturb</span>
+                <span className="font-bold">Do Not Disturb</span>
+              </div>
+              <button 
+                onClick={() => { setDndMode(!dndMode); saveSetting({ dnd_mode: !dndMode }); }}
+                className={`w-12 h-6 rounded-full transition-colors ${dndMode ? "bg-red-500" : "bg-slate-200"}`}
+              >
+                <div className={`w-5 h-5 bg-white rounded-full shadow transition-transform ${dndMode ? "translate-x-6" : "translate-x-0.5"}`} />
               </button>
             </div>
 
