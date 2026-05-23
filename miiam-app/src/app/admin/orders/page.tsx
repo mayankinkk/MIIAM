@@ -4,17 +4,21 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { Order, OrderStatus } from "@/lib/types";
 
-const STATUS_OPTIONS: OrderStatus[] = ["pending", "accepted", "preparing", "picking_up", "on_the_way", "arrived", "delivered", "cancelled", "refunded"];
+const STATUS_OPTIONS: OrderStatus[] = ["pending", "scheduled", "accepted", "preparing", "shopping", "picking_up", "on_the_way", "arrived", "delivered", "cancelled", "refunded", "no_rider_available"];
 
 const STATUS_COLORS: Record<OrderStatus, string> = {
   pending: "bg-yellow-100 text-yellow-700",
+  scheduled: "bg-indigo-100 text-indigo-700",
   accepted: "bg-blue-100 text-blue-700",
   preparing: "bg-purple-100 text-purple-700",
+  shopping: "bg-pink-100 text-pink-700",
   picking_up: "bg-orange-100 text-orange-700",
   on_the_way: "bg-cyan-100 text-cyan-700",
+  arrived: "bg-teal-100 text-teal-700",
   delivered: "bg-green-100 text-green-700",
   cancelled: "bg-red-100 text-red-700",
   refunded: "bg-slate-100 text-slate-700",
+  no_rider_available: "bg-amber-100 text-amber-700",
 };
 
 export default function OrderManagement() {
@@ -60,15 +64,17 @@ export default function OrderManagement() {
       const notifMap: Record<string, { title: string; body: string }> = {
         accepted: { title: "Order Accepted! 🎉", body: "Your order has been accepted and is being prepared." },
         preparing: { title: "Order Being Prepared 🍳", body: "Your order is being prepared right now!" },
+        shopping: { title: "Rider is Shopping 🛒", body: "Your rider is shopping for your items at the store." },
         picking_up: { title: "Rider Heading to Vendor 🛵", body: "A rider is on their way to pick up your order." },
         on_the_way: { title: "Your Order is On the Way! 🚀", body: "Sit tight — your order is heading to you." },
+        arrived: { title: "Rider Has Arrived! 📍", body: "Your rider has arrived at your location." },
         delivered: { title: "Order Delivered! ✅", body: "Your order has been delivered. Enjoy! Rate your experience in the app." },
         cancelled: { title: "Order Cancelled ❌", body: "Your order has been cancelled. Contact support if you need help." },
         refunded: { title: "Refund Processed 💰", body: "Your refund has been processed and will reflect shortly." },
       };
       const notif = notifMap[status];
       if (notif) {
-        fetch("/api/notify", {
+        await fetch("/api/notify", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ user_id: order.user_id, ...notif, type: "order" }),
@@ -84,7 +90,7 @@ export default function OrderManagement() {
     const { data: order } = await supabase.from("orders").select("user_id").eq("id", orderId).single();
     await supabase.from("orders").update({ status: "refunded" }).eq("id", orderId);
     if (order?.user_id) {
-      fetch("/api/notify", {
+      await fetch("/api/notify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ user_id: order.user_id, title: "Refund Processed 💰", body: "Your refund has been processed and will reflect shortly.", type: "order" }),
@@ -129,9 +135,11 @@ export default function OrderManagement() {
   }
 
   async function bulkUpdateStatus(status: OrderStatus) {
-    for (const id of selectedIds) {
-      await supabase.from("orders").update({ status }).eq("id", id);
-    }
+    await Promise.all(
+      Array.from(selectedIds).map(async (id) => {
+        await supabase.from("orders").update({ status }).eq("id", id);
+      })
+    );
     setSelectedIds(new Set());
     loadOrders();
   }

@@ -59,14 +59,17 @@ export interface MenuItem {
 
 export type OrderStatus =
   | "pending"
+  | "scheduled"
   | "accepted"
   | "preparing"
+  | "shopping"
   | "picking_up"
   | "on_the_way"
   | "arrived"
   | "delivered"
   | "cancelled"
-  | "refunded";
+  | "refunded"
+  | "no_rider_available";
 
 export interface Order {
   id: string;
