@@ -232,6 +232,74 @@ export default function RiderDashboard() {
                 });
               }
           }
+
+          // Load rider's current active order
+          const activeStatuses = ["accepted", "preparing", "shopping", "picking_up", "on_the_way", "arrived"];
+          const { data: activeOrders } = await supabase
+            .from("orders")
+            .select("*, vendor:vendors(*), user:user_id(*)")
+            .eq("rider_id", riderData.id)
+            .in("status", activeStatuses)
+            .order("placed_at", { ascending: false })
+            .limit(1);
+
+          if (activeOrders && activeOrders.length > 0) {
+            const dbOrder = activeOrders[0];
+            const vendorData = dbOrder.vendor as any;
+            const profileData = dbOrder.user as any;
+
+            const { data: itemsData } = await supabase
+              .from("order_items")
+              .select("*")
+              .eq("order_id", dbOrder.id);
+
+            const items = itemsData || [];
+            const itemsCount = items.reduce((sum: number, it: any) => sum + it.quantity, 0);
+            const itemsList = items.map((it: any) => `${it.quantity}x ${it.name || "Item"}`);
+
+            const seed = parseInt(dbOrder.id.substring(0, 2), 16) || 1;
+            const d1 = Number((1 + (seed % 20) / 10).toFixed(1));
+            const d2 = Number((1 + ((seed * 3) % 40) / 10).toFixed(1));
+
+            const activeOrder: OrderWithTiming = {
+              id: dbOrder.id,
+              orderDbId: dbOrder.id,
+              vendor: vendorData?.shop_name || vendorData?.name || "Restaurant",
+              vendorAddress: vendorData?.address || "Restaurant Address",
+              vendorPhone: vendorData?.phone || "+91 99999 99999",
+              customer: profileData?.full_name || profileData?.name || "Customer",
+              customerPhone: profileData?.phone || dbOrder.customer_phone || "+91 88888 88888",
+              customerAddress: dbOrder.delivery_address || "Customer Delivery Location",
+              landmark: dbOrder.special_instructions || "N/A",
+              distance: d1,
+              distance2: d2,
+              totalDistance: Number((d1 + d2).toFixed(1)),
+              earnings: calculateEarnings(Number((d1 + d2).toFixed(1))),
+              orderTotal: Math.round(dbOrder.total_amount || 0),
+              items: itemsCount || 1,
+              itemsList: itemsList.length > 0 ? itemsList : ["Items hidden"],
+              time: `${Math.round(d1 * 4)} mins`,
+              time2: `${Math.round(d2 * 5)} mins`,
+              estCompletion: Math.round((d1 + d2) * 5),
+              priority: (dbOrder.total_amount > 500) ? "high" as const : "normal" as const,
+              peakMultiplier: 1.0,
+              specialInstructions: dbOrder.special_instructions || "",
+              otp: Math.floor(1000 + (seed * 7) % 9000).toString(),
+              type: "food",
+            };
+            setCurrentOrder(activeOrder);
+
+            // Set delivery step based on current status
+            const statusStepMap: Record<string, "shopping" | "picking_up" | "picked" | "delivering" | "arrived"> = {
+              accepted: "shopping",
+              preparing: "shopping",
+              shopping: "shopping",
+              picking_up: "picking_up",
+              on_the_way: "delivering",
+              arrived: "arrived",
+            };
+            setDeliveryStep(statusStepMap[dbOrder.status] || "shopping");
+          }
         }
         setInitialLoading(false);
       } catch (err) {
