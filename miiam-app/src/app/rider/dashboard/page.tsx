@@ -139,10 +139,18 @@ export default function RiderDashboard() {
     async function getRiderId() {
       try {
         const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          const { data: riderData, error: riderError } = await supabase.from("riders").select("id, total_deliveries, total_earnings, rating, streak_days, last_work_date").eq("user_id", user.id).single();
-          if (riderError) throw new Error(riderError.message);
-          if (riderData) {
+        if (!user) {
+          window.location.href = "/rider/login";
+          return;
+        }
+        const { data: riderData, error: riderError } = await supabase.from("riders").select("id, total_deliveries, total_earnings, rating, streak_days, last_work_date").eq("user_id", user.id).maybeSingle();
+        if (riderError) throw new Error(riderError.message);
+        if (!riderData) {
+          setError("You don't have a rider account yet.");
+          setInitialLoading(false);
+          return;
+        }
+        if (riderData) {
             setRiderId(riderData.id);
             setRiderDeliveries(riderData.total_deliveries || 0);
             setRiderEarnings(riderData.total_earnings || 0);
@@ -222,7 +230,6 @@ export default function RiderDashboard() {
                   bonus: q.bonus,
                 });
               }
-            }
           }
         }
         setInitialLoading(false);
@@ -815,18 +822,36 @@ export default function RiderDashboard() {
   };
 
   if (error) {
+    const isNotRider = error === "You don't have a rider account yet.";
     return (
       <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center p-4">
         <div className="text-center max-w-sm">
-          <span className="material-symbols-outlined text-5xl text-red-400 mb-4 block">wifi_off</span>
-          <h2 className="text-xl font-bold text-[#4d212a] mb-2">Unable to load dashboard</h2>
-          <p className="text-slate-500 mb-6">{error}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="px-6 py-3 bg-[#0b50d5] text-white rounded-xl font-bold"
-          >
-            Try Again
-          </button>
+          {isNotRider ? (
+            <>
+              <span className="material-symbols-outlined text-5xl text-amber-400 mb-4 block">motorcycle</span>
+              <h2 className="text-xl font-bold text-[#4d212a] mb-2">Not a Rider Yet</h2>
+              <p className="text-slate-500 mb-2">You're logged in, but you don't have a rider account.</p>
+              <p className="text-slate-500 mb-6">Sign up to start delivering and earning.</p>
+              <Link
+                href="/rider/apply"
+                className="inline-block px-6 py-3 bg-[#0b50d5] text-white rounded-xl font-bold"
+              >
+                Apply to Become a Rider
+              </Link>
+            </>
+          ) : (
+            <>
+              <span className="material-symbols-outlined text-5xl text-red-400 mb-4 block">wifi_off</span>
+              <h2 className="text-xl font-bold text-[#4d212a] mb-2">Unable to load dashboard</h2>
+              <p className="text-slate-500 mb-6">{error}</p>
+              <button
+                onClick={() => window.location.reload()}
+                className="px-6 py-3 bg-[#0b50d5] text-white rounded-xl font-bold"
+              >
+                Try Again
+              </button>
+            </>
+          )}
         </div>
       </div>
     );

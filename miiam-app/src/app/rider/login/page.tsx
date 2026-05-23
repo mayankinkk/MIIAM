@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-export default function RiderLoginPage() {
+function RiderLoginContent() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -16,13 +16,15 @@ export default function RiderLoginPage() {
   const [resetError, setResetError] = useState<string | null>(null);
   
   const router = useRouter();
+  const searchParams = useSearchParams();
   const supabase = createClient();
+  const redirectTo = searchParams.get("redirect") || "/rider/dashboard";
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
-      if (user) router.push("/rider/dashboard");
+      if (user) router.push(redirectTo);
     });
-  }, [supabase, router]);
+  }, [supabase, router, redirectTo]);
 
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,7 +58,7 @@ export default function RiderLoginPage() {
       }
 
       if (data.user) {
-        router.push("/rider/dashboard");
+        router.push(redirectTo);
       }
     } catch (err) {
       console.error(err);
@@ -230,5 +232,13 @@ export default function RiderLoginPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function RiderLoginPage() {
+  return (
+    <Suspense>
+      <RiderLoginContent />
+    </Suspense>
   );
 }

@@ -37,7 +37,14 @@ export async function updateSession(request: NextRequest) {
 
   if (isProtected && !user) {
     const url = request.nextUrl.clone();
-    url.pathname = "/auth/login";
+    // Redirect riders to their login page, customers to the general login
+    if (request.nextUrl.pathname.startsWith("/rider")) {
+      url.pathname = "/rider/login";
+    } else {
+      url.pathname = "/auth/login";
+    }
+    // Preserve the intended destination so we can redirect back after login
+    url.searchParams.set("redirect", request.nextUrl.pathname);
     return NextResponse.redirect(url);
   }
 
