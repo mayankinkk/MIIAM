@@ -51,22 +51,22 @@ export async function updateSession(request: NextRequest) {
     // refresh-token race condition (see @supabase/ssr README "Concurrent
     // requests with the same expired session"). The session cookie exists,
     // so the client will handle recovery.
-    await supabase.auth.getUser();
-  }
+    const { data: { user } } = await supabase.auth.getUser();
 
-  // Admin-only routes - check only if user is logged in
-  if (request.nextUrl.pathname.startsWith("/admin") && user) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .single();
+    // Admin-only routes - check only if user is logged in
+    if (request.nextUrl.pathname.startsWith("/admin") && user) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single();
 
-    // Allow access if role is admin or if profile doesn't exist yet (new user)
-    if (profile && profile.role !== "admin") {
-      const url = request.nextUrl.clone();
-      url.pathname = "/denied";
-      return NextResponse.redirect(url);
+      // Allow access if role is admin or if profile doesn't exist yet (new user)
+      if (profile && profile.role !== "admin") {
+        const url = request.nextUrl.clone();
+        url.pathname = "/denied";
+        return NextResponse.redirect(url);
+      }
     }
   }
 
