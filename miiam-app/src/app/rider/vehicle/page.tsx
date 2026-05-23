@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
 
 interface Vehicle {
   id: string;
@@ -14,32 +15,81 @@ interface Vehicle {
   isDefault: boolean;
 }
 
-const vehicles: Vehicle[] = [
-  { id: "1", name: "Honda Activa", type: "scooter", model: "Activa 5G", number: "DL 01 AB 1234", insuranceExpiry: "2024-06-15", licenseExpiry: "2026-03-20", isDefault: true },
-  { id: "2", name: "TVS Jupiter", type: "scooter", model: "Jupiter ZX", number: "DL 01 CD 5678", insuranceExpiry: "2024-08-20", licenseExpiry: "2025-11-15", isDefault: false },
-];
+interface MaintenanceRecord {
+  id: string;
+  date: string;
+  type: string;
+  cost: number;
+  odometer: number;
+}
 
-const maintenanceRecords = [
-  { date: "2024-01-10", type: "Oil Change", cost: 350, odometer: 4500 },
-  { date: "2024-01-25", type: "Tire Pressure", cost: 100, odometer: 4600 },
-  { date: "2024-02-05", type: "Brake Service", cost: 400, odometer: 4800 },
-];
-
-const fuelLog = [
-  { date: "2024-02-10", liters: 3.5, cost: 280, odometer: 5200 },
-  { date: "2024-02-15", liters: 3.2, cost: 256, odometer: 5350 },
-  { date: "2024-02-20", liters: 4.0, cost: 320, odometer: 5500 },
-];
+interface FuelEntry {
+  id: string;
+  date: string;
+  liters: number;
+  cost: number;
+  odometer: number;
+}
 
 export default function RiderVehiclePage() {
+  const supabase = createClient();
+  const [riderId, setRiderId] = useState<string | null>(null);
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [maintenanceRecords, setMaintenanceRecords] = useState<MaintenanceRecord[]>([]);
+  const [fuelLog, setFuelLog] = useState<FuelEntry[]>([]);
   const [showAddVehicle, setShowAddVehicle] = useState(false);
   const [showServiceAlert, setShowServiceAlert] = useState(false);
   const [activeTab, setActiveTab] = useState<"vehicles" | "maintenance" | "fuel">("vehicles");
-  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle>(vehicles[0]);
+  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadData() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { setLoading(false); return; }
+
+      const { data: riderData } = await supabase.from("riders").select("id").eq("user_id", user.id).single();
+      if (!riderData) { setLoading(false); return; }
+      setRiderId(riderData.id);
+
+      // Load vehicles
+      const { data: vdata } = await supabase.from("rider_vehicles").select("*").eq("rider_id", riderData.id);
+      if (vdata && vdata.length > 0) {
+        const mapped: Vehicle[] = vdata.map(v => ({
+          id: v.id,
+          name: v.name,
+          type: v.type as Vehicle["type"],
+          model: v.model || "",
+          number: v.number || "",
+          insuranceExpiry: v.insurance_expiry || "",
+          licenseExpiry: v.license_expiry || "",
+          isDefault: v.is_default || false,
+        }));
+        setVehicles(mapped);
+        if (!selectedVehicle) setSelectedVehicle(mapped[0]);
+      }
+
+      // Load maintenance records for first vehicle
+      if (vdata && vdata[0]) {
+        const { data: mdata } = await supabase.from("rider_vehicle_maintenance").select("*").eq("vehicle_id", vdata[0].id).order("date", { ascending: false });
+        if (mdata) setMaintenanceRecords(mdata.map(m => ({ ...m, cost: Number(m.cost), date: m.date })));
+
+        const { data: fdata } = await supabase.from("rider_vehicle_fuel").select("*").eq("vehicle_id", vdata[0].id).order("date", { ascending: false });
+        if (fdata) setFuelLog(fdata.map(f => ({ ...f, cost: Number(f.cost), liters: Number(f.liters) })));
+      }
+
+      setLoading(false);
+    }
+    loadData();
+  }, [supabase]);
 
   const now = useMemo(() => Date.now(), []);
-  const daysUntilInsurance = useMemo(() => Math.ceil((new Date(selectedVehicle.insuranceExpiry).getTime() - now) / (1000 * 60 * 60 * 24)), [selectedVehicle.insuranceExpiry, now]);
-  const daysUntilLicense = useMemo(() => Math.ceil((new Date(selectedVehicle.licenseExpiry).getTime() - now) / (1000 * 60 * 60 * 24)), [selectedVehicle.licenseExpiry, now]);
+  const daysUntilInsurance = selectedVehicle && selectedVehicle.insuranceExpiry
+    ? Math.ceil((new Date(selectedVehicle.insuranceExpiry).getTime() - now) / (1000 * 60 * 60 * 24))
+    : 365;
+  const daysUntilLicense = selectedVehicle && selectedVehicle.licenseExpiry
+    ? Math.ceil((new Date(selectedVehicle.licenseExpiry).getTime() - now) / (1000 * 60 * 60 * 24))
+    : 365;
 
   return (
     <div className="min-h-screen bg-[#fff4f4]">
@@ -260,36 +310,91 @@ export default function RiderVehiclePage() {
         </div>
       </main>
 
-      {/* Add Vehicle Modal */}
+      {/* Add Vehicle Modal - saves to DB */}
       {showAddVehicle && (
-        <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-sm">
-            <h3 className="font-bold text-xl mb-4">Add New Vehicle</h3>
-            <div className="space-y-3">
-              <select className="w-full p-3 border-2 border-slate-200 rounded-xl">
-                <option>Select Vehicle Type</option>
-                <option>Scooter</option>
-                <option>Bike</option>
-                <option>Car</option>
-              </select>
-              <input placeholder="Vehicle Name (e.g., Honda Activa)" className="w-full p-3 border-2 border-slate-200 rounded-xl" />
-              <input placeholder="Model (e.g., Activa 5G)" className="w-full p-3 border-2 border-slate-200 rounded-xl" />
-              <input placeholder="Vehicle Number (e.g., DL 01 AB 1234)" className="w-full p-3 border-2 border-slate-200 rounded-xl" />
-              <input type="date" placeholder="Insurance Expiry" className="w-full p-3 border-2 border-slate-200 rounded-xl" />
-              <input type="date" placeholder="License Expiry" className="w-full p-3 border-2 border-slate-200 rounded-xl" />
-            </div>
-            <button 
-              onClick={() => { alert("Vehicle added successfully!"); setShowAddVehicle(false); }}
-              className="w-full py-4 bg-[#0b50d5] text-white font-bold rounded-xl mt-4"
-            >
-              Add Vehicle
-            </button>
-            <button onClick={() => setShowAddVehicle(false)} className="w-full py-3 text-slate-500 font-bold mt-2">
-              Cancel
-            </button>
-          </div>
-        </div>
+        <AddVehicleModal 
+          riderId={riderId}
+          onClose={() => setShowAddVehicle(false)}
+          onSaved={async () => {
+            setShowAddVehicle(false);
+            // Reload vehicles
+            if (riderId) {
+              const { data: vdata } = await supabase.from("rider_vehicles").select("*").eq("rider_id", riderId);
+              if (vdata) {
+                const mapped: Vehicle[] = vdata.map(v => ({
+                  id: v.id,
+                  name: v.name,
+                  type: v.type as Vehicle["type"],
+                  model: v.model || "",
+                  number: v.number || "",
+                  insuranceExpiry: v.insurance_expiry || "",
+                  licenseExpiry: v.license_expiry || "",
+                  isDefault: v.is_default || false,
+                }));
+                setVehicles(mapped);
+                if (!selectedVehicle) setSelectedVehicle(mapped[0]);
+              }
+            }
+          }}
+        />
       )}
+    </div>
+  );
+}
+
+function AddVehicleModal({ riderId, onClose, onSaved }: { riderId: string | null; onClose: () => void; onSaved: () => Promise<void> }) {
+  const supabase = createClient();
+  const [name, setName] = useState("");
+  const [type, setType] = useState<"scooter" | "bike" | "car">("scooter");
+  const [model, setModel] = useState("");
+  const [number, setNumber] = useState("");
+  const [insuranceExpiry, setInsuranceExpiry] = useState("");
+  const [licenseExpiry, setLicenseExpiry] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  const handleSave = async () => {
+    if (!name.trim() || !riderId) return;
+    setSaving(true);
+    try {
+      await supabase.from("rider_vehicles").insert({
+        rider_id: riderId,
+        name: name.trim(),
+        type,
+        model: model.trim(),
+        number: number.trim(),
+        insurance_expiry: insuranceExpiry || null,
+        license_expiry: licenseExpiry || null,
+        is_default: false,
+      });
+      await onSaved();
+    } catch (e) {
+      console.error("Failed to save vehicle:", e);
+      alert("Failed to save vehicle");
+    }
+    setSaving(false);
+  };
+
+  return (
+    <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl p-6 w-full max-w-sm">
+        <h3 className="font-bold text-xl mb-4">Add New Vehicle</h3>
+        <div className="space-y-3">
+          <select value={type} onChange={(e) => setType(e.target.value as any)} className="w-full p-3 border-2 border-slate-200 rounded-xl">
+            <option value="scooter">Scooter</option>
+            <option value="bike">Bike</option>
+            <option value="car">Car</option>
+          </select>
+          <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Vehicle Name (e.g., Honda Activa)" className="w-full p-3 border-2 border-slate-200 rounded-xl" />
+          <input value={model} onChange={(e) => setModel(e.target.value)} placeholder="Model (e.g., Activa 5G)" className="w-full p-3 border-2 border-slate-200 rounded-xl" />
+          <input value={number} onChange={(e) => setNumber(e.target.value)} placeholder="Vehicle Number (e.g., DL 01 AB 1234)" className="w-full p-3 border-2 border-slate-200 rounded-xl" />
+          <input type="date" value={insuranceExpiry} onChange={(e) => setInsuranceExpiry(e.target.value)} placeholder="Insurance Expiry" className="w-full p-3 border-2 border-slate-200 rounded-xl" />
+          <input type="date" value={licenseExpiry} onChange={(e) => setLicenseExpiry(e.target.value)} placeholder="License Expiry" className="w-full p-3 border-2 border-slate-200 rounded-xl" />
+        </div>
+        <button onClick={handleSave} disabled={saving || !name.trim()} className="w-full py-4 bg-[#0b50d5] text-white font-bold rounded-xl mt-4 disabled:opacity-50">
+          {saving ? "Saving..." : "Add Vehicle"}
+        </button>
+        <button onClick={onClose} className="w-full py-3 text-slate-500 font-bold mt-2">Cancel</button>
+      </div>
     </div>
   );
 }
