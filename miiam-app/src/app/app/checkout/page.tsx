@@ -204,8 +204,8 @@ export default function CheckoutPage() {
         const vendorItems = items.filter((i) => i.vendor_id === vendorId);
         const vendorTotal = vendorItems.reduce((s, i) => s + i.price * i.quantity, 0);
 
-        const scheduledDelivery = scheduledDate && scheduledTime 
-          ? `${new Date(scheduledDate).toLocaleDateString('en-IN', { weekday: 'long', month: 'long', day: 'numeric' })} at ${scheduledTime}`
+        const scheduledIso = scheduledDate && scheduledTime 
+          ? new Date(`${scheduledDate} ${scheduledTime.split(" - ")[0]}`).toISOString()
           : null;
         
         const { data: order, error: orderError } = await supabase
@@ -213,13 +213,13 @@ export default function CheckoutPage() {
           .insert({
             user_id: user.id,
             vendor_id: vendorId,
-            status: scheduledDelivery ? "scheduled" : "pending",
+            status: scheduledIso ? "scheduled" : "pending",
             total_amount: vendorTotal,
             delivery_fee: 5.99,
             discount_amount: discount,
             payment_method: paymentMethod,
             delivery_address: finalAddress,
-            special_instructions: scheduledDelivery || null,
+            scheduled_delivery: scheduledIso,
             placed_at: new Date().toISOString(),
           })
           .select()
@@ -229,17 +229,11 @@ export default function CheckoutPage() {
 
         if (order) {
           if (!firstOrderId) firstOrderId = order.id;
-          
-          const formatAsUuid = (id: string) => {
-            if (id?.length > 20 && id.includes('-')) return id;
-            const hex = id?.replace(/[^0-9a-fA-F]/g, '0').padStart(12, '0') || '000000000000';
-            return `00000000-0000-4000-8000-${hex}`;
-          };
 
           const { error: itemsError } = await supabase.from("order_items").insert(
             vendorItems.map((i) => ({
               order_id: order.id,
-              menu_item_id: formatAsUuid(i.menu_item_id),
+              menu_item_id: i.menu_item_id,
               name: i.name,
               quantity: i.quantity,
               unit_price: i.price,
