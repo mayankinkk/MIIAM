@@ -125,10 +125,17 @@ export default function RiderAchievementsPage() {
             <p className="text-2xl font-black text-amber-700">{totalPoints}</p>
           </div>
           <button 
-            onClick={() => alert("Redeem points for bonuses, merchandise, and more!")}
+            onClick={() => {
+              if (totalPoints < 100) {
+                alert("You need at least 100 points to redeem. Keep unlocking achievements!");
+              } else {
+                const redeemed = Math.floor(totalPoints / 100) * 100;
+                alert(`You can redeem ${redeemed} points! This feature will connect to the rewards catalog. You have ${totalPoints} points available.`);
+              }
+            }}
             className="px-4 py-2 bg-amber-500 text-white rounded-lg font-bold text-sm"
           >
-            Redeem
+            Redeem ({Math.floor(totalPoints / 100) * 100} pts available)
           </button>
         </div>
 
