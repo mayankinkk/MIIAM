@@ -715,6 +715,27 @@ export default function RiderDashboard() {
           }).eq("id", riderId);
           setRiderDeliveries(prev => prev + 1);
           setRiderEarnings(prev => prev + finalEarnings);
+
+          // Notify customer
+          if (currentOrder.user_id) {
+            await supabase.from("notifications").insert({
+              user_id: currentOrder.user_id,
+              title: "Order Delivered! 🎉",
+              message: "Your order has been delivered. Enjoy your meal!",
+              type: "order",
+              read: false,
+              created_at: new Date().toISOString(),
+            }).maybeSingle();
+            try {
+              await fetch("/api/emails/order-status", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ orderId: currentOrder.orderDbId, status: "delivered" }),
+              });
+            } catch (emailErr) {
+              console.warn("Failed to send delivery email:", emailErr);
+            }
+          }
         }
         alert(`Order delivered successfully! ₹${finalEarnings} added to your wallet.`);
       } catch (e) {
