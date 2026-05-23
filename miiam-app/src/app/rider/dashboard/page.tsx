@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { startLocationTracking, stopLocationTracking } from "@/lib/rider-location-tracker";
@@ -72,9 +72,9 @@ export default function RiderDashboard() {
   const [snoozeMessage, setSnoozeMessage] = useState("");
   
   const [chatMessage, setChatMessage] = useState("");
-  const [chatHistory, setChatHistory] = useState<{from: string; text: string; time: string}[]>([
-    { from: "system", text: "Order confirmed. Please proceed to pickup.", time: "10:30 AM" },
-  ]);
+  const [chatMessages, setChatMessages] = useState<any[]>([]);
+  const [currentUserId, setCurrentUserId] = useState<string>("");
+  const chatChannelRef = useRef<any>(null);
   const [deliveryStep, setDeliveryStep] = useState<"shopping" | "picking_up" | "picked" | "delivering" | "arrived">("shopping");
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [vibrationEnabled, setVibrationEnabled] = useState(true);
@@ -143,6 +143,7 @@ export default function RiderDashboard() {
           window.location.href = "/rider/login";
           return;
         }
+        setCurrentUserId(user.id);
         const { data: riderData, error: riderError } = await supabase.from("riders").select("id, total_deliveries, total_earnings, rating, streak_days, last_work_date").eq("user_id", user.id).maybeSingle();
         if (riderError) throw new Error(riderError.message);
         if (!riderData) {
@@ -414,6 +415,34 @@ export default function RiderDashboard() {
       supabase.removeChannel(channel);
     };
   }, [isOnline, supabase]);
+
+  // Load chat messages from DB when chat modal opens
+  useEffect(() => {
+    if (!showChatModal || !currentOrder?.orderDbId) return;
+
+    async function loadChat() {
+      const { data } = await supabase
+        .from("chat_messages")
+        .select("*")
+        .eq("order_id", currentOrder.orderDbId)
+        .order("created_at", { ascending: true });
+      if (data) setChatMessages(data);
+    }
+    loadChat();
+
+    const channel = supabase
+      .channel(`rider-chat-${currentOrder.orderDbId}`)
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "chat_messages", filter: `order_id=eq.${currentOrder.orderDbId}` }, (payload: any) => {
+        setChatMessages((prev) => [...prev, payload.new]);
+      })
+      .subscribe();
+    chatChannelRef.current = channel;
+
+    return () => {
+      supabase.removeChannel(channel);
+      chatChannelRef.current = null;
+    };
+  }, [showChatModal, currentOrder?.orderDbId, supabase]);
 
   useEffect(() => {
     if (pendingOrders.length > 0 && isOnline && !showNewOrderAlert) {
@@ -689,19 +718,15 @@ export default function RiderDashboard() {
 
   const handleSendMessage = async () => {
     if (chatMessage.trim() && currentOrder) {
-      // Save to database
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         await supabase.from("chat_messages").insert({
-          order_id: currentOrder.id,
+          order_id: currentOrder.orderDbId || currentOrder.id,
           sender_id: user.id,
           sender_type: "rider",
           message: chatMessage.trim(),
         });
       }
-      
-      // Add to local display
-      setChatHistory([...chatHistory, { from: "you", text: chatMessage, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }]);
       setChatMessage("");
     }
   };
@@ -1645,14 +1670,21 @@ export default function RiderDashboard() {
             </div>
             
             <div className="flex-1 p-4 overflow-y-auto space-y-3">
-              {chatHistory.map((msg, i) => (
-                <div key={i} className={`flex ${msg.from === "you" ? "justify-end" : "justify-start"}`}>
-                  <div className={`max-w-[80%] p-3 rounded-2xl ${msg.from === "you" ? "bg-[#0b50d5] text-white" : msg.from === "system" ? "bg-slate-100 text-slate-600 text-xs" : "bg-slate-100"}`}>
-                    <p className="text-sm">{msg.text}</p>
-                    <p className={`text-[9px] ${msg.from === "you" ? "text-white/70" : "text-slate-400"}`}>{msg.time}</p>
+              {chatMessages.length === 0 && (
+                <div className="text-center text-slate-400 text-sm py-8">No messages yet. Start the conversation!</div>
+              )}
+              {chatMessages.map((msg: any) => {
+                const isMe = msg.sender_id === currentUserId;
+                const msgTime = msg.created_at ? new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "";
+                return (
+                  <div key={msg.id} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
+                    <div className={`max-w-[80%] p-3 rounded-2xl ${isMe ? "bg-[#0b50d5] text-white" : "bg-slate-100"}`}>
+                      <p className="text-sm">{msg.message}</p>
+                      <p className={`text-[9px] ${isMe ? "text-white/70" : "text-slate-400"}`}>{msgTime}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
 <div className="p-4 border-t">
