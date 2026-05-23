@@ -67,7 +67,7 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="h-dvh bg-surface flex flex-col">
+    <div className="h-[90vh] bg-surface flex flex-col">
       {/* Header */}
       <header className="flex items-center gap-3 px-4 py-3 bg-white border-b border-outline-variant/20 shrink-0">
         <Link href={`/app/orders/${orderId}`} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container">
@@ -89,7 +89,7 @@ export default function ChatPage() {
       </header>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4">
+      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
         {loading ? (
           <div className="flex items-center justify-center h-32">
             <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
