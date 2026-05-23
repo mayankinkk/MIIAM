@@ -240,7 +240,10 @@ export default function CheckoutPage() {
               price: i.price * i.quantity,
             }))
           );
-          if (itemsError) throw itemsError;
+          if (itemsError) {
+            await supabase.from("orders").delete().eq("id", order.id);
+            throw itemsError;
+          }
 
           try {
             await fetch("/api/emails/order-confirmation", {
