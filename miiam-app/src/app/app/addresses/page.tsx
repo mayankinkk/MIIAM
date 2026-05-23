@@ -23,10 +23,10 @@ function AddressCard({ address, onSelect, onEdit, onDelete, onSetDefault }: Addr
   const colors = labelColors[address.label as keyof typeof labelColors] || labelColors.Other;
   
   return (
-    <div className={`bg-white rounded-2xl overflow-hidden shadow-sm transition-all group ${address.is_default ? "ring-2 ring-[#ba001c]" : ""}`}>
+    <div className={`bg-white rounded-2xl overflow-hidden shadow-sm transition-all group ${address.is_default ? "ring-2 ring-primary" : ""}`}>
       {/* Default badge */}
       {address.is_default && (
-        <div className="bg-[#ba001c] text-white text-xs font-bold px-4 py-2 flex items-center gap-2">
+        <div className="bg-primary text-white text-xs font-bold px-4 py-2 flex items-center gap-2">
           <span className="material-symbols-outlined text-sm">check_circle</span>
           Default Address
         </div>
@@ -59,7 +59,7 @@ function AddressCard({ address, onSelect, onEdit, onDelete, onSetDefault }: Addr
                   {address.icon}
                 </span>
               </div>
-              <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-3 h-3 bg-[#ba001c] rotate-45" />
+              <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-3 h-3 bg-primary rotate-45" />
             </div>
           </div>
           {/* Gradient overlay */}
@@ -107,7 +107,7 @@ function AddressCard({ address, onSelect, onEdit, onDelete, onSetDefault }: Addr
       <div className="border-t border-slate-100 flex">
         <button
           onClick={onSelect}
-          className="flex-1 py-3 text-[#ba001c] font-bold text-sm border-r border-slate-100 hover:bg-[#fff4f4] transition-colors"
+          className="flex-1 py-3 text-primary font-bold text-sm border-r border-slate-100 hover:bg-surface transition-colors"
         >
           Select for Delivery
         </button>
@@ -333,7 +333,7 @@ export default function AddressBookPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f8f8f8] flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin" />
+        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -343,10 +343,10 @@ export default function AddressBookPage() {
       {/* Header */}
       <header className="sticky top-0 z-50 bg-white shadow-sm">
         <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/app/profile" className="text-2xl font-black text-[#ba001c] tracking-tighter">
+          <Link href="/app/profile" className="text-2xl font-black text-primary tracking-tighter">
             MIIAM
           </Link>
-          <Link href="/app/profile" className="text-sm font-bold text-slate-600 hover:text-[#ba001c]">
+          <Link href="/app/profile" className="text-sm font-bold text-slate-600 hover:text-primary">
             Cancel
           </Link>
         </div>
@@ -399,14 +399,14 @@ export default function AddressBookPage() {
         <div className="space-y-3">
           <Link
             href="/app/addresses/add"
-            className="w-full py-4 bg-[#ba001c] text-white font-extrabold rounded-2xl flex items-center justify-center gap-2 hover:bg-[#a40017] transition-colors shadow-lg shadow-[#ba001c]/20"
+            className="w-full py-4 bg-primary text-white font-extrabold rounded-2xl flex items-center justify-center gap-2 hover:bg-primary-dim transition-colors shadow-lg shadow-primary/20"
           >
             <span className="material-symbols-outlined">add_location</span>
             Add New Address
           </Link>
           <Link
             href="/app/addresses/add"
-            className="w-full py-3 bg-[#0b50d5] text-white font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-[#0940b0] transition-colors"
+            className="w-full py-3 bg-secondary text-white font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-[#0940b0] transition-colors"
           >
             <span className="material-symbols-outlined">my_location</span>
             Auto Detect on Map
@@ -493,7 +493,7 @@ export default function AddressBookPage() {
                   value={newAddress.name}
                   onChange={(e) => setNewAddress({ ...newAddress, name: e.target.value })}
                   placeholder="Enter your full name"
-                  className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c] focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
                 />
               </div>
 
@@ -505,7 +505,7 @@ export default function AddressBookPage() {
                   value={newAddress.phone}
                   onChange={(e) => setNewAddress({ ...newAddress, phone: e.target.value })}
                   placeholder="10-digit mobile number"
-                  className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c] focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
                 />
               </div>
 
@@ -517,7 +517,7 @@ export default function AddressBookPage() {
                   value={newAddress.street}
                   onChange={(e) => setNewAddress({ ...newAddress, street: e.target.value })}
                   placeholder="House/Flat/Building name, Street"
-                  className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c] focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
                 />
               </div>
 
@@ -525,7 +525,7 @@ export default function AddressBookPage() {
               <button
                 onClick={handleUseMyLocation}
                 disabled={detectingLocation}
-                className="w-full py-3 bg-white border border-[#ba001c] text-[#ba001c] font-bold rounded-xl flex items-center justify-center gap-2 hover:bg-[#fff4f4] transition-colors"
+                className="w-full py-3 bg-white border border-primary text-primary font-bold rounded-xl flex items-center justify-center gap-2 hover:bg-surface transition-colors"
               >
                 <span className="material-symbols-outlined">{detectingLocation ? "sync" : "my_location"}</span>
                 {detectingLocation ? "Detecting Location..." : "Use My Current Location"}
@@ -543,7 +543,7 @@ export default function AddressBookPage() {
                     value={newAddress.city}
                     onChange={(e) => setNewAddress({ ...newAddress, city: e.target.value })}
                     placeholder="City"
-                    className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c] focus:ring-2 focus:ring-[#ba001c]/20"
+                    className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
                 <div>
@@ -553,7 +553,7 @@ export default function AddressBookPage() {
                     value={newAddress.state}
                     onChange={(e) => setNewAddress({ ...newAddress, state: e.target.value })}
                     placeholder="State"
-                    className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c] focus:ring-2 focus:ring-[#ba001c]/20"
+                    className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
               </div>
@@ -566,7 +566,7 @@ export default function AddressBookPage() {
                   value={newAddress.postal_code}
                   onChange={(e) => setNewAddress({ ...newAddress, postal_code: e.target.value })}
                   placeholder="6-digit PIN code"
-                  className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c] focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
                 />
               </div>
 
@@ -577,7 +577,7 @@ export default function AddressBookPage() {
                   value={newAddress.instructions}
                   onChange={(e) => setNewAddress({ ...newAddress, instructions: e.target.value })}
                   placeholder="E.g., Ring bell, call on arrival, near park"
-                  className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c] focus:ring-2 focus:ring-[#ba001c]/20 resize-none h-20"
+                  className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 resize-none h-20"
                 />
                 <p className="text-xs text-slate-400 mt-1">Max 150 characters</p>
               </div>
@@ -586,7 +586,7 @@ export default function AddressBookPage() {
               <button
                 onClick={handleSave}
                 disabled={!newAddress.name || !newAddress.street || !newAddress.postal_code}
-                className="w-full py-4 bg-[#ba001c] text-white font-extrabold rounded-2xl flex items-center justify-center gap-2 hover:bg-[#a40017] disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-xl shadow-[#ba001c]/30"
+                className="w-full py-4 bg-primary text-white font-extrabold rounded-2xl flex items-center justify-center gap-2 hover:bg-primary-dim disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-xl shadow-primary/30"
               >
                 <span className="material-symbols-outlined">check</span>
                 {editingAddress ? "Update Address" : "Save Address"}

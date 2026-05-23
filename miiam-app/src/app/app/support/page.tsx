@@ -128,7 +128,7 @@ export default function SupportPage() {
   return (
     <div className="h-[100dvh] bg-[#f8f8f8] flex flex-col pb-24 md:pb-0 overflow-hidden">
       {/* Header */}
-      <header className="bg-[#ba001c] text-white px-4 py-6 shrink-0">
+      <header className="bg-primary text-white px-4 py-6 shrink-0">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-extrabold">Help & Support</h1>
@@ -151,7 +151,7 @@ export default function SupportPage() {
               key={t}
               onClick={() => setTab(t as any)}
               className={`flex-1 py-4 text-sm font-bold border-b-2 transition-all ${
-                tab === t ? "border-[#ba001c] text-[#ba001c]" : "border-transparent text-slate-500"
+                tab === t ? "border-primary text-primary" : "border-transparent text-slate-500"
               }`}
             >
               {t === "home" ? "Home" : t === "chat" ? "💬 Chat" : t === "tickets" ? "🎫 Tickets" : "❓ FAQs"}
@@ -197,7 +197,7 @@ export default function SupportPage() {
                 <div className="space-y-2">
                   <button
                     onClick={() => { setSelectedOrder(null); setTab("chat"); }}
-                    className={`w-full text-left p-4 rounded-xl border-2 transition-all ${!selectedOrder ? "border-[#ba001c] bg-[#ffe1e4]" : "border-slate-200 hover:border-[#ba001c]"}`}
+                    className={`w-full text-left p-4 rounded-xl border-2 transition-all ${!selectedOrder ? "border-primary bg-surface-container" : "border-slate-200 hover:border-primary"}`}
                   >
                     <p className="font-semibold text-slate-700">General Query</p>
                     <p className="text-xs text-slate-500">Not related to a specific order</p>
@@ -206,7 +206,7 @@ export default function SupportPage() {
                     <button
                       key={order.id}
                       onClick={() => { setSelectedOrder(order); setTab("chat"); }}
-                      className={`w-full text-left p-4 rounded-xl border-2 transition-all ${selectedOrder?.id === order.id ? "border-[#ba001c] bg-[#ffe1e4]" : "border-slate-200 hover:border-[#ba001c]"}`}
+                      className={`w-full text-left p-4 rounded-xl border-2 transition-all ${selectedOrder?.id === order.id ? "border-primary bg-surface-container" : "border-slate-200 hover:border-primary"}`}
                     >
                       <div className="flex justify-between items-start">
                         <div>
@@ -214,7 +214,7 @@ export default function SupportPage() {
                           <p className="text-xs text-slate-500">#{order.id.slice(0, 8).toUpperCase()}</p>
                         </div>
                         <div className="text-right">
-                          <p className="font-bold text-[#ba001c]">₹{order.total_amount}</p>
+                          <p className="font-bold text-primary">₹{order.total_amount}</p>
                           <span className="text-[10px] px-2 py-0.5 bg-slate-100 rounded-full">{order.status}</span>
                         </div>
                       </div>
@@ -230,7 +230,7 @@ export default function SupportPage() {
               <div className="space-y-3">
                 <button
                   onClick={() => setTab("chat")}
-                  className="w-full bg-[#ba001c] text-white rounded-2xl p-5 flex items-center gap-4 hover:bg-[#a40017] transition-all shadow-md"
+                  className="w-full bg-primary text-white rounded-2xl p-5 flex items-center gap-4 hover:bg-primary-dim transition-all shadow-md"
                 >
                   <span className="material-symbols-outlined text-3xl">chat</span>
                   <div className="text-left flex-1">
@@ -242,9 +242,9 @@ export default function SupportPage() {
 
                 <a
                   href="tel:18001234567"
-                  className="w-full bg-white border border-slate-200 text-slate-800 rounded-2xl p-5 flex items-center gap-4 hover:border-[#ba001c] transition-all"
+                  className="w-full bg-white border border-slate-200 text-slate-800 rounded-2xl p-5 flex items-center gap-4 hover:border-primary transition-all"
                 >
-                  <span className="material-symbols-outlined text-3xl text-[#ba001c]">call</span>
+                  <span className="material-symbols-outlined text-3xl text-primary">call</span>
                   <div className="text-left flex-1">
                     <p className="font-bold text-lg">Call us</p>
                     <p className="text-slate-500 text-sm">1800-123-4567 (Toll free)</p>
@@ -254,9 +254,9 @@ export default function SupportPage() {
 
                 <a
                   href="mailto:support@miiam.com"
-                  className="w-full bg-white border border-slate-200 text-slate-800 rounded-2xl p-5 flex items-center gap-4 hover:border-[#ba001c] transition-all"
+                  className="w-full bg-white border border-slate-200 text-slate-800 rounded-2xl p-5 flex items-center gap-4 hover:border-primary transition-all"
                 >
-                  <span className="material-symbols-outlined text-3xl text-[#ba001c]">email</span>
+                  <span className="material-symbols-outlined text-3xl text-primary">email</span>
                   <div className="text-left flex-1">
                     <p className="font-bold text-lg">Email us</p>
                     <p className="text-slate-500 text-sm">Response within 24 hours</p>
@@ -287,7 +287,7 @@ export default function SupportPage() {
               <h2 className="text-lg font-bold text-slate-800 mb-4">Follow Us</h2>
               <div className="flex gap-3">
                 {["Twitter", "Instagram", "Facebook"].map((social) => (
-                  <button key={social} className="flex-1 bg-white border border-slate-200 py-3 rounded-xl text-sm font-bold text-slate-600 hover:border-[#ba001c] hover:text-[#ba001c] transition-all">
+                  <button key={social} className="flex-1 bg-white border border-slate-200 py-3 rounded-xl text-sm font-bold text-slate-600 hover:border-primary hover:text-primary transition-all">
                     {social}
                   </button>
                 ))}
@@ -304,7 +304,7 @@ export default function SupportPage() {
                 <div key={msg.id} className={`flex ${msg.from === "user" ? "justify-end" : "justify-start"}`}>
                   <div className={`max-w-[85%] rounded-2xl px-5 py-3 ${
                     msg.from === "user"
-                      ? "bg-[#ba001c] text-white rounded-br-md"
+                      ? "bg-primary text-white rounded-br-md"
                       : "bg-white text-slate-800 shadow-sm rounded-bl-md"
                   }`}>
                     <p className="text-sm leading-relaxed">{msg.text}</p>
@@ -322,7 +322,7 @@ export default function SupportPage() {
                   <button
                     key={reply}
                     onClick={() => handleQuickAction(reply.toLowerCase().replace(" ", ""))}
-                    className="bg-white border border-[#ba001c] text-[#ba001c] px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#fff4f4] transition-all"
+                    className="bg-white border border-primary text-primary px-4 py-2 rounded-full text-sm font-semibold hover:bg-surface transition-all"
                   >
                     {reply}
                   </button>
@@ -343,7 +343,7 @@ export default function SupportPage() {
               <button
                 onClick={handleSend}
                 disabled={!newMessage.trim()}
-                className="w-10 h-10 bg-[#ba001c] text-white rounded-xl flex items-center justify-center disabled:opacity-50"
+                className="w-10 h-10 bg-primary text-white rounded-xl flex items-center justify-center disabled:opacity-50"
               >
                 <span className="material-symbols-outlined">send</span>
               </button>
@@ -353,7 +353,7 @@ export default function SupportPage() {
 
         {tab === "tickets" && (
           <div className="space-y-6">
-            <div className="bg-[#ba001c] text-white rounded-2xl p-6">
+            <div className="bg-primary text-white rounded-2xl p-6">
               <h2 className="text-xl font-bold mb-2">Support Tickets</h2>
               <p className="text-white/70 text-sm">Track and manage your support requests</p>
             </div>
@@ -364,7 +364,7 @@ export default function SupportPage() {
               <p className="text-sm mt-2">Start a chat to create a ticket</p>
               <button 
                 onClick={() => setTab("chat")}
-                className="mt-4 bg-[#ba001c] text-white px-6 py-3 rounded-xl font-bold"
+                className="mt-4 bg-primary text-white px-6 py-3 rounded-xl font-bold"
               >
                 Start Chat
               </button>
@@ -374,21 +374,21 @@ export default function SupportPage() {
               <h3 className="font-bold text-slate-800 mb-4">How Tickets Work</h3>
               <div className="space-y-4">
                 <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 rounded-full bg-[#ba001c] text-white flex items-center justify-center font-bold text-sm">1</div>
+                  <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">1</div>
                   <div>
                     <p className="font-semibold text-slate-800">Start a Chat</p>
                     <p className="text-sm text-slate-500">Describe your issue in the chat</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 rounded-full bg-[#ba001c] text-white flex items-center justify-center font-bold text-sm">2</div>
+                  <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">2</div>
                   <div>
                     <p className="font-semibold text-slate-800">We Create a Ticket</p>
                     <p className="text-sm text-slate-500">Our team will create a support ticket for you</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 rounded-full bg-[#ba001c] text-white flex items-center justify-center font-bold text-sm">3</div>
+                  <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">3</div>
                   <div>
                     <p className="font-semibold text-slate-800">Track Here</p>
                     <p className="text-sm text-slate-500">View ticket status and updates</p>
@@ -409,13 +409,13 @@ export default function SupportPage() {
                 value={faqSearch}
                 onChange={(e) => setFaqSearch(e.target.value)}
                 placeholder="Search FAQs..."
-                className="w-full pl-12 pr-4 py-4 bg-white rounded-2xl border border-slate-200 focus:border-[#ba001c] outline-none"
+                className="w-full pl-12 pr-4 py-4 bg-white rounded-2xl border border-slate-200 focus:border-primary outline-none"
               />
             </div>
 
             {/* Category Pills */}
             <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
-              <button className="px-4 py-2 bg-[#ba001c] text-white rounded-full text-sm font-bold whitespace-nowrap">
+              <button className="px-4 py-2 bg-primary text-white rounded-full text-sm font-bold whitespace-nowrap">
                 All
               </button>
               {faqs.map((section) => (
@@ -438,7 +438,7 @@ export default function SupportPage() {
               return (
                 <section key={section.category}>
                   <div className="flex items-center gap-2 mb-4">
-                    <span className="material-symbols-outlined text-[#ba001c]">
+                    <span className="material-symbols-outlined text-primary">
                       {section.category === "Orders & Delivery" ? "local_shipping" :
                        section.category === "Payments & Refunds" ? "payments" :
                        section.category === "Account & Profile" ? "person" : "help"}

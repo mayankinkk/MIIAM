@@ -110,17 +110,17 @@ export default function CartPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fff4f4] pb-24">
+    <div className="min-h-screen bg-surface pb-24">
       {/* TopAppBar */}
-      <header className="fixed top-0 w-full z-50 flex justify-between items-center px-4 py-3 bg-[#fff4f4]/90 backdrop-blur-2xl shadow-[0px_4px_20px_rgba(77,33,42,0.06)]"
+      <header className="fixed top-0 w-full z-50 flex justify-between items-center px-4 py-3 bg-surface/90 backdrop-blur-2xl shadow-[0px_4px_20px_rgba(77,33,42,0.06)]"
         style={{ paddingTop: "calc(0.75rem + env(safe-area-inset-top, 0px))" }}
       >
-        <span className="text-xl font-extrabold tracking-tighter text-[#ba001c]">MIIAM</span>
+        <span className="text-xl font-extrabold tracking-tighter text-primary">MIIAM</span>
         <div className="flex items-center gap-3">
-          <Link href="/app/notifications" className="p-2 rounded-full hover:bg-[#ffe1e4] transition-all">
+          <Link href="/app/notifications" className="p-2 rounded-full hover:bg-surface-container transition-all">
             <span className="material-symbols-outlined text-on-surface text-[22px]">notifications</span>
           </Link>
-          <Link href="/app/profile" className="w-9 h-9 rounded-full overflow-hidden border-2 border-[#ff7670] bg-[#ff7670] flex items-center justify-center">
+          <Link href="/app/profile" className="w-9 h-9 rounded-full overflow-hidden border-2 border-primary-container bg-primary-container flex items-center justify-center">
             <span className="material-symbols-outlined text-white text-[20px]">person</span>
           </Link>
         </div>
@@ -130,7 +130,7 @@ export default function CartPage() {
 
       <main className="pt-4 pb-40 px-4 max-w-2xl mx-auto">
         <section className="mb-6">
-          <h1 className="text-2xl font-extrabold tracking-tight text-[#ba001c]">Your Cart</h1>
+          <h1 className="text-2xl font-extrabold tracking-tight text-primary">Your Cart</h1>
           <p className="text-slate-600 text-xs mt-0.5">Review items from your favorite spots.</p>
         </section>
 
@@ -151,29 +151,29 @@ export default function CartPage() {
         ) : (
           <div className="space-y-4">
             {vendors.map((vendor) => (
-              <div key={vendor.id} className="bg-[#ffecee] rounded-xl p-4 relative overflow-hidden">
+              <div key={vendor.id} className="bg-surface-container-low rounded-xl p-4 relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-2">
-                  <span className="material-symbols-outlined text-[#ba001c]/10 text-6xl absolute -top-2 -right-2">lunch_dining</span>
+                  <span className="material-symbols-outlined text-primary/10 text-6xl absolute -top-2 -right-2">lunch_dining</span>
                 </div>
                 <div className="flex items-center gap-2 mb-4">
-                  <div className="w-9 h-9 rounded-full bg-[#ba001c] flex items-center justify-center shrink-0">
+                  <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center shrink-0">
                     <span className="material-symbols-outlined text-white text-[18px]">restaurant</span>
                   </div>
                   <div>
                     <h2 className="text-base font-bold tracking-tight">{vendor.name}</h2>
-                    <p className="text-[10px] font-medium text-[#ba001c] uppercase tracking-widest">Priority Delivery</p>
+                    <p className="text-[10px] font-medium text-primary uppercase tracking-widest">Priority Delivery</p>
                   </div>
                 </div>
                 <div className="space-y-3 relative z-10">
                   {vendor.items.map((item) => (
                     <div key={item.menu_item_id} className="flex items-center gap-3 bg-surface-container-lowest p-3 rounded-xl shadow-sm">
                       {/* Thumbnail */}
-                      <div className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-[#ffe1e4]">
+                      <div className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-surface-container">
                         {item.image_url ? (
                           <BlurImage src={item.image_url} alt={item.name} fill className="w-full h-full" sizes="(max-width: 768px) 50vw, 25vw" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center">
-                            <span className="material-symbols-outlined text-[#dd9ca6] text-2xl">fastfood</span>
+                            <span className="material-symbols-outlined text-outline-variant text-2xl">fastfood</span>
                           </div>
                         )}
                       </div>
@@ -181,11 +181,11 @@ export default function CartPage() {
                       <div className="flex-1 min-w-0">
                         <h3 className="font-bold text-on-surface text-sm truncate">{item.name}</h3>
                         {item.special_notes && <p className="text-xs text-on-surface-variant truncate">{item.special_notes}</p>}
-                        <span className="text-[#ba001c] font-bold text-sm">₹{item.price.toFixed(2)}</span>
+                        <span className="text-primary font-bold text-sm">₹{item.price.toFixed(2)}</span>
                       </div>
                       {/* Controls */}
                       <div className="flex flex-col items-end gap-1 shrink-0">
-                        <div className="flex items-center bg-[#ffe1e4] rounded-full">
+                        <div className="flex items-center bg-surface-container rounded-full">
                           <button
                             onClick={() => updateQuantity(item.menu_item_id, item.quantity - 1)}
                             className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-surface-container-lowest transition-colors"
@@ -202,7 +202,7 @@ export default function CartPage() {
                         </div>
                         <button
                           onClick={() => removeItem(item.menu_item_id)}
-                          className="text-[9px] font-bold text-on-surface-variant hover:text-[#ba001c] transition-colors uppercase tracking-wider"
+                          className="text-[9px] font-bold text-on-surface-variant hover:text-primary transition-colors uppercase tracking-wider"
                         >
                           Remove
                         </button>
@@ -210,7 +210,7 @@ export default function CartPage() {
                     </div>
                   ))}
                 </div>
-                <div className="mt-4 flex justify-between items-center text-xs border-t border-[#dd9ca6]/20 pt-3">
+                <div className="mt-4 flex justify-between items-center text-xs border-t border-outline-variant/20 pt-3">
                   <span className="text-on-surface-variant">Subtotal ({vendor.name})</span>
                   <span className="font-bold">₹{subtotalByVendor(vendor.id).toFixed(2)}</span>
                 </div>
@@ -218,7 +218,7 @@ export default function CartPage() {
             ))}
 
             {/* Order Summary */}
-            <section className="bg-surface-container-lowest rounded-xl p-4 shadow-[0px_4px_20px_rgba(77,33,42,0.06)] border border-[#dd9ca6]/10">
+            <section className="bg-surface-container-lowest rounded-xl p-4 shadow-[0px_4px_20px_rgba(77,33,42,0.06)] border border-outline-variant/10">
               <h3 className="text-base font-bold mb-4">Payment Summary</h3>
               <div className="space-y-3 text-on-surface-variant text-sm">
                 <div className="flex justify-between">
@@ -230,7 +230,7 @@ export default function CartPage() {
                   <span className="text-on-surface font-semibold">₹{deliveryFee.toFixed(2)}</span>
                 </div>
                 {pointsDiscount > 0 && (
-                  <div className="flex justify-between text-[#0b50d5]">
+                  <div className="flex justify-between text-secondary">
                     <span className="flex items-center gap-1">
                       <span className="material-symbols-outlined text-[13px]" style={{ fontVariationSettings: "'FILL' 1" }}>stars</span>
                       Points Discount
@@ -238,10 +238,10 @@ export default function CartPage() {
                     <span className="font-semibold">–₹{pointsDiscount.toFixed(2)}</span>
                   </div>
                 )}
-                <div className="pt-4 border-t border-[#dd9ca6]/20 flex justify-between items-center">
+                <div className="pt-4 border-t border-outline-variant/20 flex justify-between items-center">
                   <div>
                     <p className="text-xs uppercase tracking-widest font-bold text-on-surface">Total Balance</p>
-                    <p className="text-3xl font-extrabold text-[#ba001c] tracking-tighter">₹{grandTotal.toFixed(2)}</p>
+                    <p className="text-3xl font-extrabold text-primary tracking-tighter">₹{grandTotal.toFixed(2)}</p>
                   </div>
                   <p className="text-[10px] bg-[#ffd709] text-[#453900] px-2 py-1 rounded-full font-bold">
                     EARN {Math.floor(grandTotal)} PTS
@@ -305,7 +305,7 @@ export default function CartPage() {
               <div className="p-4 overflow-y-auto max-h-[65vh]">
                 {loadingOrders ? (
                   <div className="text-center py-8">
-                    <div className="w-8 h-8 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin mx-auto" />
+                    <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
                   </div>
                 ) : pastOrders.length === 0 ? (
                   <div className="text-center py-8 text-on-surface-variant text-sm">No past orders found</div>
@@ -318,9 +318,9 @@ export default function CartPage() {
                             <p className="font-bold text-on-surface text-sm">{order.vendors?.name || "Restaurant"}</p>
                             <p className="text-xs text-on-surface-variant">{new Date(order.placed_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</p>
                           </div>
-                          <p className="font-bold text-[#ba001c] text-sm">₹{order.total_amount?.toFixed(2)}</p>
+                          <p className="font-bold text-primary text-sm">₹{order.total_amount?.toFixed(2)}</p>
                         </div>
-                        <button onClick={() => handleReorder(order.id)} disabled={reordering} className="w-full mt-1 py-2 bg-[#ba001c] text-white text-xs font-bold rounded-lg hover:opacity-90 disabled:opacity-60">
+                        <button onClick={() => handleReorder(order.id)} disabled={reordering} className="w-full mt-1 py-2 bg-primary text-white text-xs font-bold rounded-lg hover:opacity-90 disabled:opacity-60">
                           {reordering ? "Adding..." : "Add to Cart"}
                         </button>
                       </div>
@@ -334,20 +334,20 @@ export default function CartPage() {
       </main>
 
       {items.length > 0 && (
-        <div className="fixed bottom-16 left-0 right-0 z-40 bg-[#fff4f4]/95 backdrop-blur-xl border-t border-[#dd9ca6]/20 shadow-[0px_-10px_30px_rgba(77,33,42,0.08)]"
+        <div className="fixed bottom-16 left-0 right-0 z-40 bg-surface/95 backdrop-blur-xl border-t border-outline-variant/20 shadow-[0px_-10px_30px_rgba(77,33,42,0.08)]"
           style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
         >
           <div className="max-w-2xl mx-auto px-4 py-3 flex items-center gap-4">
             <div className="flex-1">
               <p className="text-[10px] text-slate-600 font-semibold uppercase tracking-wider">Total</p>
-              <p className="text-2xl font-extrabold text-[#ba001c]">₹{grandTotal.toFixed(2)}</p>
+              <p className="text-2xl font-extrabold text-primary">₹{grandTotal.toFixed(2)}</p>
               {pointsDiscount > 0 && (
-                <p className="text-[10px] text-[#0b50d5] font-semibold">Saving ₹{pointsDiscount.toFixed(2)}</p>
+                <p className="text-[10px] text-secondary font-semibold">Saving ₹{pointsDiscount.toFixed(2)}</p>
               )}
             </div>
             <Link
               href={`/app/checkout${pointsToRedeem > 0 ? `?redeemPts=${pointsToRedeem}` : ""}`}
-              className="px-8 py-3.5 bg-gradient-to-r from-[#ba001c] to-[#ff7670] text-white rounded-xl font-bold text-base shadow-lg shadow-[#ba001c]/20 hover:scale-[1.01] active:scale-95 transition-all flex items-center gap-2 whitespace-nowrap"
+              className="px-8 py-3.5 bg-gradient-to-r from-primary to-primary-container text-white rounded-xl font-bold text-base shadow-lg shadow-primary/20 hover:scale-[1.01] active:scale-95 transition-all flex items-center gap-2 whitespace-nowrap"
             >
               Proceed
               <span className="material-symbols-outlined text-[20px]">arrow_forward</span>

@@ -67,13 +67,13 @@ export default function WalletPage() {
 
   return (
     <PullToRefresh onRefresh={loadWalletData}>
-    <div className="min-h-screen bg-[#fff4f4] pb-32">
-      <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-[#fff4f4]/80 backdrop-blur-2xl shadow-[0px_10px_30px_rgba(77,33,42,0.04)]">
+    <div className="min-h-screen bg-surface pb-32">
+      <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-surface/80 backdrop-blur-2xl shadow-[0px_10px_30px_rgba(77,33,42,0.04)]">
         <div className="flex items-center gap-4">
-          <Link href="/app/profile" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#ffe1e4] transition-all">
-            <span className="material-symbols-outlined text-[#ba001c]">arrow_back</span>
+          <Link href="/app/profile" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-all">
+            <span className="material-symbols-outlined text-primary">arrow_back</span>
           </Link>
-          <span className="text-2xl font-extrabold tracking-tighter text-[#ba001c]">MIIAM</span>
+          <span className="text-2xl font-extrabold tracking-tighter text-primary">MIIAM</span>
         </div>
         <span className="text-slate-800 font-bold hidden md:block">Wallet</span>
       </nav>
@@ -83,7 +83,7 @@ export default function WalletPage() {
       <main className="pt-24 max-w-2xl mx-auto px-4">
         
         {/* Wallet Balance Card */}
-        <div className="bg-gradient-to-r from-[#4e0006] to-[#ba001c] rounded-3xl p-8 mb-8 text-white relative overflow-hidden shadow-2xl shadow-[#ba001c]/30">
+        <div className="bg-gradient-to-r from-on-primary to-primary rounded-3xl p-8 mb-8 text-white relative overflow-hidden shadow-2xl shadow-primary/30">
           <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
           <div className="relative z-10 flex flex-col items-start gap-6">
             <div className="w-full flex justify-between items-start">
@@ -100,7 +100,7 @@ export default function WalletPage() {
             </div>
 
             <div className="w-full flex gap-3 mt-2">
-              <button className="flex-1 bg-white text-[#ba001c] py-3 rounded-xl font-bold text-sm shadow-lg hover:scale-[1.02] active:scale-95 transition-all">
+              <button className="flex-1 bg-white text-primary py-3 rounded-xl font-bold text-sm shadow-lg hover:scale-[1.02] active:scale-95 transition-all">
                 Add Money
               </button>
               <button className="flex-1 border border-white/30 text-white py-3 rounded-xl font-bold text-sm hover:bg-white/10 transition-all">
@@ -121,7 +121,7 @@ export default function WalletPage() {
               <p className="text-2xl font-black text-slate-800">{points}</p>
             </div>
           </div>
-          <Link href="/app/referral" className="text-xs font-bold text-[#ba001c]">
+          <Link href="/app/referral" className="text-xs font-bold text-primary">
             Earn More →
           </Link>
         </div>

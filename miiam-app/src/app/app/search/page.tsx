@@ -152,18 +152,18 @@ function SearchContent() {
 
   return (
     <>
-      <header className="fixed top-0 w-full z-50 px-6 py-4 bg-[#fff4f4]/80 backdrop-blur-2xl border-b border-[#dd9ca6]/20">
+      <header className="fixed top-0 w-full z-50 px-6 py-4 bg-surface/80 backdrop-blur-2xl border-b border-outline-variant/20">
         <div className="flex items-center gap-4 max-w-4xl mx-auto">
-          <Link href="/app/explore" className="text-[#ba001c]">
+          <Link href="/app/explore" className="text-primary">
             <span className="material-symbols-outlined">arrow_back</span>
           </Link>
           <div className="flex-1 relative">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#814c55]">search</span>
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
             <input
               type="text"
               value={inputValue}
               placeholder="Search restaurants, dishes..."
-              className="w-full bg-white border-none rounded-xl pl-12 pr-4 py-3 text-[#4d212a] font-medium focus:outline-none focus:ring-2 focus:ring-[#ba001c]/40"
+              className="w-full bg-white border-none rounded-xl pl-12 pr-4 py-3 text-on-surface font-medium focus:outline-none focus:ring-2 focus:ring-primary/40"
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
@@ -190,8 +190,8 @@ function SearchContent() {
                   onClick={() => setActiveTab(tab)}
                   className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${
                     activeTab === tab
-                      ? "bg-[#ba001c] text-white"
-                      : "bg-white text-[#814c55] border border-[#dd9ca6]/30"
+                      ? "bg-primary text-white"
+                      : "bg-white text-on-surface-variant border border-outline-variant/30"
                   }`}
                 >
                   {tab === "all" ? "All" : tab === "vendors" ? "Restaurants" : "Dishes"}
@@ -221,12 +221,12 @@ function SearchContent() {
             {searchHistory.length > 0 && (
               <div className="mb-8">
                 <div className="flex items-center justify-between mb-3">
-                  <h2 className="text-lg font-bold text-[#4d212a]">Recent Searches</h2>
-                  <button onClick={clearHistory} className="text-xs text-[#ba001c] font-bold">Clear All</button>
+                  <h2 className="text-lg font-bold text-on-surface">Recent Searches</h2>
+                  <button onClick={clearHistory} className="text-xs text-primary font-bold">Clear All</button>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {searchHistory.map((term) => (
-                    <Link key={term} href={`/app/search?q=${term}`} className="px-4 py-2 bg-white rounded-full text-sm text-[#814c55] border border-[#dd9ca6]/30 hover:border-[#ba001c] transition-all flex items-center gap-2">
+                    <Link key={term} href={`/app/search?q=${term}`} className="px-4 py-2 bg-white rounded-full text-sm text-on-surface-variant border border-outline-variant/30 hover:border-primary transition-all flex items-center gap-2">
                       <span className="material-symbols-outlined text-sm">history</span>
                       {term}
                     </Link>
@@ -236,14 +236,14 @@ function SearchContent() {
             )}
             <div className="text-center py-8">
               <span className="text-6xl">🔍</span>
-              <h2 className="text-xl font-bold text-[#4d212a] mt-4">Search for anything</h2>
-              <p className="text-[#814c55] mt-2">Find restaurants, dishes, cuisines</p>
+              <h2 className="text-xl font-bold text-on-surface mt-4">Search for anything</h2>
+              <p className="text-on-surface-variant mt-2">Find restaurants, dishes, cuisines</p>
               <div className="mt-8 flex flex-wrap justify-center gap-2">
                 {["Biryani", "Pizza", "Burgers", "Chinese", "South Indian", "Desserts"].map((tag) => (
                   <Link
                     key={tag}
                     href={`/app/search?q=${tag}`}
-                    className="px-4 py-2 bg-white rounded-full text-sm text-[#814c55] border border-[#dd9ca6]/30 hover:border-[#ba001c] transition-all"
+                    className="px-4 py-2 bg-white rounded-full text-sm text-on-surface-variant border border-outline-variant/30 hover:border-primary transition-all"
                   >
                     {tag}
                   </Link>
@@ -255,13 +255,13 @@ function SearchContent() {
           <div className="animate-fade-in">
             <EmptySearch query={query} />
             <div className="mt-8 text-center">
-              <p className="text-sm text-[#814c55] mb-4">Popular searches</p>
+              <p className="text-sm text-on-surface-variant mb-4">Popular searches</p>
               <div className="flex flex-wrap justify-center gap-2">
                 {["Biryani", "Pizza", "Burgers", "Chinese", "South Indian", "Desserts", "North Indian", "Street Food"].map((tag) => (
                   <Link
                     key={tag}
                     href={`/app/search?q=${tag}`}
-                    className="px-4 py-2 bg-white rounded-full text-sm text-[#814c55] border border-[#dd9ca6]/30 hover:border-[#ba001c] hover:bg-[#ba001c]/5 transition-all"
+                    className="px-4 py-2 bg-white rounded-full text-sm text-on-surface-variant border border-outline-variant/30 hover:border-primary hover:bg-primary/5 transition-all"
                   >
                     {tag}
                   </Link>
@@ -273,7 +273,7 @@ function SearchContent() {
           <>
             {filteredResults.vendors.length > 0 && (
               <section className="mb-8">
-                <h3 className="text-lg font-bold text-[#4d212a] mb-4">
+                <h3 className="text-lg font-bold text-on-surface mb-4">
                   Restaurants ({filteredResults.vendors.length})
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -283,22 +283,22 @@ function SearchContent() {
                       href={`/app/vendor/${vendor.id}`}
                       className="bg-white rounded-2xl overflow-hidden border border-slate-100 hover:shadow-lg transition-all"
                     >
-                      <div className="h-32 bg-[#ffe1e4] relative">
+                      <div className="h-32 bg-surface-container relative">
                         {vendor.cover_image_url || vendor.image_url ? (
                           <BlurImage src={vendor.cover_image_url || vendor.image_url} alt={vendor.shop_name} fill className="w-full h-full" sizes="(max-width: 768px) 100vw, 50vw" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center">
-                            <span className="material-symbols-outlined text-4xl text-[#dd9ca6]">restaurant</span>
+                            <span className="material-symbols-outlined text-4xl text-outline-variant">restaurant</span>
                           </div>
                         )}
-                        <div className="absolute bottom-2 left-2 bg-white/90 backdrop-blur px-2 py-1 rounded-lg text-xs font-bold text-[#4d212a]">
+                        <div className="absolute bottom-2 left-2 bg-white/90 backdrop-blur px-2 py-1 rounded-lg text-xs font-bold text-on-surface">
                           ⭐ {vendor.rating?.toFixed(1) || "N/A"}
                         </div>
                       </div>
                       <div className="p-4">
-                        <h4 className="font-bold text-[#4d212a]">{vendor.shop_name}</h4>
-                        <p className="text-sm text-[#814c55]">{vendor.cuisine}</p>
-                        <p className="text-xs text-[#814c55] mt-1">
+                        <h4 className="font-bold text-on-surface">{vendor.shop_name}</h4>
+                        <p className="text-sm text-on-surface-variant">{vendor.cuisine}</p>
+                        <p className="text-xs text-on-surface-variant mt-1">
                           {vendor.delivery_time_min}-{vendor.delivery_time_max} min • ₹{vendor.min_order_amount} min
                         </p>
                       </div>
@@ -310,7 +310,7 @@ function SearchContent() {
 
             {filteredResults.menuItems.length > 0 && (
               <section>
-                <h3 className="text-lg font-bold text-[#4d212a] mb-4">
+                <h3 className="text-lg font-bold text-on-surface mb-4">
                   Dishes ({filteredResults.menuItems.length})
                 </h3>
                 <div className="space-y-3">
@@ -319,12 +319,12 @@ function SearchContent() {
                       key={item.id}
                       className="flex items-center gap-4 p-4 bg-white rounded-xl border border-slate-100"
                     >
-                      <div className="w-20 h-20 bg-[#ffe1e4] rounded-lg overflow-hidden flex-shrink-0">
+                      <div className="w-20 h-20 bg-surface-container rounded-lg overflow-hidden flex-shrink-0">
                         {item.image_url ? (
                           <BlurImage src={item.image_url} alt={item.name} fill className="w-full h-full" sizes="(max-width: 768px) 50vw, 25vw" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center">
-                            <span className="material-symbols-outlined text-2xl text-[#dd9ca6]">fastfood</span>
+                            <span className="material-symbols-outlined text-2xl text-outline-variant">fastfood</span>
                           </div>
                         )}
                       </div>
@@ -333,17 +333,17 @@ function SearchContent() {
                           <span className={`w-3.5 h-3.5 border-2 ${item.is_veg ? "border-green-600" : "border-red-600"} rounded-sm flex items-center justify-center`}>
                             <span className={`w-1.5 h-1.5 ${item.is_veg ? "bg-green-600" : "bg-red-600"} rounded-full`}></span>
                           </span>
-                          <h4 className="font-bold text-[#4d212a] truncate">{item.name}</h4>
+                          <h4 className="font-bold text-on-surface truncate">{item.name}</h4>
                         </div>
-                        <p className="text-sm text-[#814c55]">{item.vendor?.shop_name}</p>
-                        <p className="text-sm font-bold text-[#ba001c] mt-1">₹{item.price}</p>
+                        <p className="text-sm text-on-surface-variant">{item.vendor?.shop_name}</p>
+                        <p className="text-sm font-bold text-primary mt-1">₹{item.price}</p>
                       </div>
                       <button
                         onClick={(e) => {
                           e.preventDefault();
                           handleAddToCart(item);
                         }}
-                        className="bg-[#ba001c] text-white p-2 rounded-lg hover:bg-[#a00018] transition-all"
+                        className="bg-primary text-white p-2 rounded-lg hover:bg-[#a00018] transition-all"
                       >
                         <span className="material-symbols-outlined">add</span>
                       </button>
@@ -362,8 +362,8 @@ function SearchContent() {
 export default function SearchPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-surface flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
       </div>
     }>
       <SearchContent />

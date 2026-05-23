@@ -83,27 +83,27 @@ function FeedbackContent() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#fff4f4] to-white flex items-center justify-center p-6">
+      <div className="min-h-screen bg-gradient-to-b from-surface to-white flex items-center justify-center p-6">
         <div className="text-center max-w-md">
           <div className="w-24 h-24 mx-auto bg-green-100 rounded-full flex items-center justify-center mb-6">
             <span className="material-symbols-outlined text-green-500 text-6xl" style={{ fontVariationSettings: "'FILL' 1" }}>
               check_circle
             </span>
           </div>
-          <h1 className="text-2xl font-black text-[#4d212a] mb-2">Thank You!</h1>
+          <h1 className="text-2xl font-black text-on-surface mb-2">Thank You!</h1>
           <p className="text-slate-600 mb-8">
             Your feedback helps us improve our service.
           </p>
           <div className="space-y-3">
             <Link
               href="/app/home"
-              className="block w-full py-4 bg-[#ba001c] text-white rounded-xl font-bold hover:bg-[#a40017] transition-all"
+              className="block w-full py-4 bg-primary text-white rounded-xl font-bold hover:bg-primary-dim transition-all"
             >
               Back to Home
             </Link>
             <Link
               href="/app/services"
-              className="block w-full py-4 border-2 border-[#ba001c] text-[#ba001c] rounded-xl font-bold hover:bg-[#ffecee] transition-all"
+              className="block w-full py-4 border-2 border-primary text-primary rounded-xl font-bold hover:bg-surface-container-low transition-all"
             >
               Book Another Service
             </Link>
@@ -114,10 +114,10 @@ function FeedbackContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#fff4f4] to-white">
+    <div className="min-h-screen bg-gradient-to-b from-surface to-white">
       {/* Header */}
       <div className="bg-white p-6 border-b border-pink-100">
-        <Link href="/app/home" className="flex items-center gap-2 text-slate-600 hover:text-[#ba001c]">
+        <Link href="/app/home" className="flex items-center gap-2 text-slate-600 hover:text-primary">
           <span className="material-symbols-outlined">arrow_back</span>
           <span className="font-bold">Back</span>
         </Link>
@@ -128,17 +128,17 @@ function FeedbackContent() {
       <div className="max-w-lg mx-auto p-6">
         {/* Service Info */}
         <div className="bg-white rounded-2xl p-6 shadow-lg mb-6">
-          <h2 className="text-lg font-bold text-[#4d212a] mb-1">{serviceName}</h2>
+          <h2 className="text-lg font-bold text-on-surface mb-1">{serviceName}</h2>
           <p className="text-sm text-slate-500 mb-4">by {providerName}</p>
           <div className="flex items-center justify-between">
             <span className="text-sm text-slate-500">Amount Paid</span>
-            <span className="text-xl font-black text-[#ba001c]">₹{price}</span>
+            <span className="text-xl font-black text-primary">₹{price}</span>
           </div>
         </div>
 
         {/* Rating */}
         <div className="bg-white rounded-2xl p-6 shadow-lg mb-6">
-          <h3 className="text-lg font-bold text-[#4d212a] mb-4 text-center">
+          <h3 className="text-lg font-bold text-on-surface mb-4 text-center">
             How was your experience?
           </h3>
           <div className="flex justify-center gap-2 mb-4">
@@ -175,7 +175,7 @@ function FeedbackContent() {
         {/* Tags */}
         {rating > 0 && (
           <div className="bg-white rounded-2xl p-6 shadow-lg mb-6 animate-fade-in">
-            <h3 className="text-lg font-bold text-[#4d212a] mb-4">What did you like?</h3>
+            <h3 className="text-lg font-bold text-on-surface mb-4">What did you like?</h3>
             <div className="flex flex-wrap gap-2">
               {tags.map((tag) => (
                 <button
@@ -183,8 +183,8 @@ function FeedbackContent() {
                   onClick={() => toggleTag(tag)}
                   className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                     selectedTags.includes(tag)
-                      ? "bg-[#ba001c] text-white"
-                      : "bg-pink-50 text-slate-600 border border-pink-200 hover:border-[#ba001c]"
+                      ? "bg-primary text-white"
+                      : "bg-pink-50 text-slate-600 border border-pink-200 hover:border-primary"
                   }`}
                 >
                   {tag}
@@ -197,14 +197,14 @@ function FeedbackContent() {
         {/* Review */}
         {rating > 0 && (
           <div className="bg-white rounded-2xl p-6 shadow-lg mb-6 animate-fade-in">
-            <h3 className="text-lg font-bold text-[#4d212a] mb-4">
+            <h3 className="text-lg font-bold text-on-surface mb-4">
               Share your experience (optional)
             </h3>
             <textarea
               value={review}
               onChange={(e) => setReview(e.target.value)}
               placeholder="Tell us about your experience..."
-              className="w-full p-4 rounded-xl border border-pink-200 focus:border-[#ba001c] focus:ring-2 focus:ring-[#ba001c]/20 outline-none resize-none"
+              className="w-full p-4 rounded-xl border border-pink-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none resize-none"
               rows={4}
             />
           </div>
@@ -216,7 +216,7 @@ function FeedbackContent() {
           disabled={rating === 0 || isSubmitting}
           className={`w-full py-4 rounded-xl font-bold text-lg transition-all ${
             rating > 0
-              ? "bg-[#ba001c] text-white hover:bg-[#a40017]"
+              ? "bg-primary text-white hover:bg-primary-dim"
               : "bg-slate-200 text-slate-400 cursor-not-allowed"
           }`}
         >
@@ -244,7 +244,7 @@ function FeedbackContent() {
 
 function Loading() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#fff4f4] to-white flex items-center justify-center">
+    <div className="min-h-screen bg-gradient-to-b from-surface to-white flex items-center justify-center">
       <div className="animate-pulse">
         <div className="w-12 h-12 bg-pink-200 rounded-full mb-4"></div>
       </div>

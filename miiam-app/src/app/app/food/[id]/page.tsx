@@ -110,7 +110,7 @@ function AddToCartButton({ item, vendor }: { item: MenuItem; vendor: Vendor }) {
     return (
       <button
         onClick={handleAdd}
-        className="px-4 py-1.5 bg-[#ba001c] text-white text-xs font-bold rounded-full hover:bg-[#a40017] active:scale-90 transition-all"
+        className="px-4 py-1.5 bg-primary text-white text-xs font-bold rounded-full hover:bg-primary-dim active:scale-90 transition-all"
       >
         Add +
       </button>
@@ -118,7 +118,7 @@ function AddToCartButton({ item, vendor }: { item: MenuItem; vendor: Vendor }) {
   }
 
   return (
-    <div className="flex items-center gap-1.5 bg-[#ba001c] rounded-full px-2 py-1">
+    <div className="flex items-center gap-1.5 bg-primary rounded-full px-2 py-1">
       <button
         onClick={() => { updateQuantity(item.id, qty - 1); if (navigator.vibrate) navigator.vibrate(10); }}
         className="text-white font-bold w-5 h-5 flex items-center justify-center active:scale-75 transition-transform"
@@ -209,7 +209,7 @@ function ReviewModal({ vendorId, onClose, onSubmitted }: { vendorId: string; onC
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-3 bg-surface-container-low rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+              className="w-full px-4 py-3 bg-surface-container-low rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
               placeholder="Enter your name"
             />
           </div>
@@ -219,7 +219,7 @@ function ReviewModal({ vendorId, onClose, onSubmitted }: { vendorId: string; onC
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               rows={3}
-              className="w-full px-4 py-3 bg-surface-container-low rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20 resize-none"
+              className="w-full px-4 py-3 bg-surface-container-low rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 resize-none"
               placeholder="Tell others what you think..."
             />
           </div>
@@ -230,7 +230,7 @@ function ReviewModal({ vendorId, onClose, onSubmitted }: { vendorId: string; onC
         <button
           onClick={handleSubmit}
           disabled={submitting}
-          className="w-full bg-gradient-to-r from-[#ba001c] to-[#ff7670] text-white py-4 rounded-xl font-extrabold disabled:opacity-50 hover:scale-[1.02] active:scale-[0.98] transition-all"
+          className="w-full bg-gradient-to-r from-primary to-primary-container text-white py-4 rounded-xl font-extrabold disabled:opacity-50 hover:scale-[1.02] active:scale-[0.98] transition-all"
         >
           {submitting ? "Submitting..." : "Submit Review"}
         </button>
@@ -246,10 +246,10 @@ function CartFloater() {
     <div className="fixed bottom-6 left-4 right-4 z-50">
       <Link
         href="/app/cart"
-        className="flex items-center justify-between bg-[#ba001c] text-white px-5 py-4 rounded-2xl shadow-2xl shadow-[#ba001c]/40 active:scale-[0.98] transition-transform"
+        className="flex items-center justify-between bg-primary text-white px-5 py-4 rounded-2xl shadow-2xl shadow-primary/40 active:scale-[0.98] transition-transform"
       >
         <div className="flex items-center gap-3">
-          <span className="bg-surface-container-lowest text-[#ba001c] font-black text-xs px-2 py-0.5 rounded-full">
+          <span className="bg-surface-container-lowest text-primary font-black text-xs px-2 py-0.5 rounded-full">
             {totalItems()}
           </span>
           <span className="font-bold">View Cart</span>
@@ -332,16 +332,16 @@ export default function RestaurantProfilePage() {
   if (error) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-surface p-6">
-        <div className="w-20 h-20 bg-[#ffe1e4] rounded-full flex items-center justify-center mb-4">
-          <span className="material-symbols-outlined text-4xl text-[#ba001c]">wifi_off</span>
+        <div className="w-20 h-20 bg-surface-container rounded-full flex items-center justify-center mb-4">
+          <span className="material-symbols-outlined text-4xl text-primary">wifi_off</span>
         </div>
         <p className="text-xl font-black text-on-surface mb-2">Something went wrong</p>
         <p className="text-on-surface-variant text-sm mb-6 text-center">{error}</p>
         <div className="flex gap-3">
-          <button onClick={fetchData} className="px-6 py-3 bg-[#ba001c] text-white rounded-xl font-bold hover:opacity-90 transition-opacity">
+          <button onClick={fetchData} className="px-6 py-3 bg-primary text-white rounded-xl font-bold hover:opacity-90 transition-opacity">
             Try Again
           </button>
-          <Link href="/app/food" className="px-6 py-3 bg-[#ffe1e4] text-[#ba001c] rounded-xl font-bold hover:opacity-90 transition-opacity">
+          <Link href="/app/food" className="px-6 py-3 bg-surface-container text-primary rounded-xl font-bold hover:opacity-90 transition-opacity">
             ← Back
           </Link>
         </div>
@@ -354,7 +354,7 @@ export default function RestaurantProfilePage() {
       <div className="min-h-screen flex items-center justify-center bg-surface">
         <div className="text-center">
           <p className="text-2xl font-black text-on-surface mb-2">Restaurant not found</p>
-          <Link href="/app/food" className="text-[#ba001c] font-bold">← Back to Food</Link>
+          <Link href="/app/food" className="text-primary font-bold">← Back to Food</Link>
         </div>
       </div>
     );
@@ -448,24 +448,24 @@ export default function RestaurantProfilePage() {
         </span>
         <div className="w-px h-4 bg-surface-container-high" />
         <div className="flex items-center gap-1.5 text-on-surface-variant flex-shrink-0">
-          <span className="material-symbols-outlined text-[#ba001c] text-base">schedule</span>
+          <span className="material-symbols-outlined text-primary text-base">schedule</span>
           <span className="text-sm font-semibold">{vendor.delivery_time_min ? `${vendor.delivery_time_min}–${vendor.delivery_time_max || vendor.delivery_time_min + 15} min` : vendor.delivery_time_minutes ? `${vendor.delivery_time_minutes - 5}–${vendor.delivery_time_minutes + 5} min` : vendor.delivery_time || "30-40 min"}</span>
         </div>
         <div className="w-px h-4 bg-surface-container-high" />
         <div className="flex items-center gap-1.5 text-on-surface-variant flex-shrink-0">
-          <span className="material-symbols-outlined text-[#ba001c] text-base">delivery_dining</span>
+          <span className="material-symbols-outlined text-primary text-base">delivery_dining</span>
           <span className="text-sm font-semibold">{vendor.delivery_charge ? `₹${vendor.delivery_charge}` : "₹49 delivery"}</span>
         </div>
         <div className="w-px h-4 bg-surface-container-high" />
         <div className="flex items-center gap-1.5 text-on-surface-variant flex-shrink-0">
-          <span className="material-symbols-outlined text-[#ba001c] text-base">storefront</span>
+          <span className="material-symbols-outlined text-primary text-base">storefront</span>
           <span className="text-sm font-semibold">{vendor.opening_hours || "10 AM – 11 PM"}</span>
         </div>
         {vendor.address && (
           <>
             <div className="w-px h-4 bg-surface-container-high" />
             <div className="flex items-center gap-1.5 text-on-surface-variant flex-shrink-0">
-              <span className="material-symbols-outlined text-[#ba001c] text-base">location_on</span>
+              <span className="material-symbols-outlined text-primary text-base">location_on</span>
               <span className="text-sm font-semibold truncate max-w-[160px]">{vendor.address}</span>
             </div>
           </>
@@ -505,7 +505,7 @@ export default function RestaurantProfilePage() {
                     <p className="font-bold text-on-surface text-xs truncate">{item.name}</p>
                   </div>
                   <div className="flex items-center justify-between mt-1">
-                    <span className="font-black text-[#ba001c] text-sm">₹{item.price}</span>
+                    <span className="font-black text-primary text-sm">₹{item.price}</span>
                     <AddToCartButton item={item} vendor={vendor} />
                   </div>
                 </div>
@@ -539,7 +539,7 @@ export default function RestaurantProfilePage() {
               value={menuSearch}
               onChange={(e) => setMenuSearch(e.target.value)}
               placeholder="Search menu items..."
-              className="w-full pl-9 pr-4 py-2.5 bg-surface-container-lowest border border-outline rounded-xl text-sm focus:outline-none focus:border-[#ba001c] shadow-sm"
+              className="w-full pl-9 pr-4 py-2.5 bg-surface-container-lowest border border-outline rounded-xl text-sm focus:outline-none focus:border-primary shadow-sm"
             />
             {menuSearch && (
               <button onClick={() => setMenuSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface-variant">
@@ -557,7 +557,7 @@ export default function RestaurantProfilePage() {
               onClick={() => { setActiveCategory(cat); if (navigator.vibrate) navigator.vibrate(10); }}
               className={`flex-shrink-0 px-4 py-2 rounded-full font-bold text-sm transition-all active:scale-95 ${
                 activeCategory === cat
-                  ? "bg-[#ba001c] text-white"
+                  ? "bg-primary text-white"
                   : "bg-surface-container-lowest text-on-surface-variant border border-outline"
               }`}
             >
@@ -602,7 +602,7 @@ export default function RestaurantProfilePage() {
                     <p className="text-xs text-on-surface-variant mt-0.5 line-clamp-1">{item.description}</p>
                   )}
                   <div className="flex items-center justify-between mt-2">
-                    <span className="font-black text-[#ba001c] text-base">₹{item.price}</span>
+                    <span className="font-black text-primary text-base">₹{item.price}</span>
                     <AddToCartButton item={item} vendor={vendor} />
                   </div>
                 </div>
@@ -618,7 +618,7 @@ export default function RestaurantProfilePage() {
           <h2 className="text-lg font-black text-on-surface">Reviews & Ratings</h2>
           <button
             onClick={() => setShowReviewModal(true)}
-            className="text-sm font-bold text-[#ba001c] bg-surface px-3 py-1.5 rounded-lg hover:bg-[#ffe4e7] transition-colors active:scale-95"
+            className="text-sm font-bold text-primary bg-surface px-3 py-1.5 rounded-lg hover:bg-[#ffe4e7] transition-colors active:scale-95"
           >
             + Write a Review
           </button>
@@ -657,7 +657,7 @@ export default function RestaurantProfilePage() {
               {reviews.map((review) => (
                 <div key={review.id} className="bg-surface-container-lowest rounded-2xl p-4 shadow-sm">
                   <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#ba001c] to-[#ff7670] flex items-center justify-center text-white font-black text-sm flex-shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary-container flex items-center justify-center text-white font-black text-sm flex-shrink-0">
                       {review.user_name?.charAt(0).toUpperCase() || "U"}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -684,7 +684,7 @@ export default function RestaurantProfilePage() {
             <p className="text-sm text-outline mb-4">Be the first to review this restaurant!</p>
             <button
               onClick={() => setShowReviewModal(true)}
-              className="px-6 py-2.5 bg-gradient-to-r from-[#ba001c] to-[#ff7670] text-white font-bold rounded-xl text-sm hover:scale-[1.02] active:scale-[0.98] transition-all"
+              className="px-6 py-2.5 bg-gradient-to-r from-primary to-primary-container text-white font-bold rounded-xl text-sm hover:scale-[1.02] active:scale-[0.98] transition-all"
             >
               Write a Review
             </button>

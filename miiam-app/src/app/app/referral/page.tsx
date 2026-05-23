@@ -65,13 +65,13 @@ export default function ReferralPage() {
   const totalEarned = referrals.reduce((sum, r) => sum + (r.reward_amount || 0), 0);
 
   return (
-    <div className="min-h-screen bg-[#fff4f4] pb-24">
+    <div className="min-h-screen bg-surface pb-24">
       <header className="bg-white px-6 py-4 sticky top-0 z-10">
         <div className="flex items-center justify-between">
           <Link href="/app/profile" className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
             <span className="material-symbols-outlined">arrow_back</span>
           </Link>
-          <h1 className="text-xl font-black text-[#4d212a]">Refer & Earn</h1>
+          <h1 className="text-xl font-black text-on-surface">Refer & Earn</h1>
           <div className="w-10" />
         </div>
       </header>
@@ -87,14 +87,14 @@ export default function ReferralPage() {
           <>
             <div className="bg-gradient-to-r from-[#ffd709] to-[#ffb700] rounded-3xl p-6 text-center">
               <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                <span className="material-symbols-outlined text-5xl text-[#ba001c]" style={{ fontVariationSettings: "'FILL' 1" }}>card_membership</span>
+                <span className="material-symbols-outlined text-5xl text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>card_membership</span>
               </div>
               <h2 className="text-2xl font-black text-slate-800 mb-2">Share & Earn</h2>
               <p className="text-slate-600 mb-6">Invite friends and earn ₹100 for every referral!</p>
               
               <div className="bg-white rounded-2xl p-4 mb-4">
                 <p className="text-xs text-slate-500 mb-1">Your Referral Code</p>
-                <p className="text-2xl font-black text-[#ba001c] tracking-wider">{referralCode}</p>
+                <p className="text-2xl font-black text-primary tracking-wider">{referralCode}</p>
               </div>
               
               <div className="flex gap-3">
@@ -107,7 +107,7 @@ export default function ReferralPage() {
                 </button>
                 <button 
                   onClick={shareReferral}
-                  className="flex-1 bg-[#ba001c] text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                  className="flex-1 bg-primary text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all"
                 >
                   <span className="material-symbols-outlined">share</span>
                   Share
@@ -122,7 +122,7 @@ export default function ReferralPage() {
               <div className="space-y-4">
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center">
-                    <span className="material-symbols-outlined text-[#ba001c]">share</span>
+                    <span className="material-symbols-outlined text-primary">share</span>
                   </div>
                   <div>
                     <p className="font-bold text-slate-800">Share your code</p>
@@ -153,7 +153,7 @@ export default function ReferralPage() {
             <div className="bg-white rounded-2xl p-6 mt-6 shadow-sm">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-black text-slate-800">Your Referrals</h3>
-                <span className="text-sm font-bold text-[#ba001c]">₹{totalEarned} earned</span>
+                <span className="text-sm font-bold text-primary">₹{totalEarned} earned</span>
               </div>
               {referrals.length === 0 ? (
                 <div className="text-center py-8">
@@ -166,8 +166,8 @@ export default function ReferralPage() {
                   {referrals.map((ref, i) => (
                     <div key={i} className="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-[#ba001c]/10 rounded-full flex items-center justify-center">
-                          <span className="material-symbols-outlined text-[#ba001c]">person</span>
+                        <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                          <span className="material-symbols-outlined text-primary">person</span>
                         </div>
                         <div>
                           <p className="font-bold text-slate-800 text-sm">Referral #{i + 1}</p>

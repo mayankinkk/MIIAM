@@ -39,7 +39,7 @@ function parseIsOpen(hours: string | null | undefined): boolean {
 }
 
 const DEFAULT_BANNERS = [
-  { id: "1", label: "🔥 Today's Deal", title: "50% OFF your first order", sub: "Use code FIRST50", color: "from-[#ba001c] to-[#ff7670]", image_url: "" },
+  { id: "1", label: "🔥 Today's Deal", title: "50% OFF your first order", sub: "Use code FIRST50", color: "from-primary to-primary-container", image_url: "" },
   { id: "2", label: "⚡ Flash Sale", title: "Free delivery all day", sub: "On orders above ₹299", color: "from-violet-600 to-purple-400", image_url: "" },
   { id: "3", label: "🌟 New Arrival", title: "Try something new", sub: "Freshly added restaurants", color: "from-amber-500 to-yellow-300", image_url: "" },
 ];
@@ -62,7 +62,7 @@ function PromoBannerCarousel() {
           label: "📣 Promotion",
           title: b.title,
           sub: b.link_url || "Check out this offer!",
-          color: "from-[#ba001c] to-[#ff7670]",
+          color: "from-primary to-primary-container",
           image_url: b.image_url,
         })));
       }
@@ -146,7 +146,7 @@ function SortDropdown({ sort, setSort }: { sort: SortOption; setSort: (s: SortOp
       {open && (
         <div className="absolute top-full right-0 mt-2 bg-surface-container-lowest rounded-xl shadow-lg border border-outline-variant z-20 min-w-[180px] animate-pop-in">
           {options.map((opt) => (
-            <button key={opt.value} onClick={() => { setSort(opt.value); setOpen(false); }} className={`w-full text-left px-4 py-2.5 text-sm hover:bg-surface-container-low ${sort === opt.value ? "text-[#ba001c] font-bold" : "text-on-surface-variant"}`}>
+            <button key={opt.value} onClick={() => { setSort(opt.value); setOpen(false); }} className={`w-full text-left px-4 py-2.5 text-sm hover:bg-surface-container-low ${sort === opt.value ? "text-primary font-bold" : "text-on-surface-variant"}`}>
               {opt.label}
             </button>
           ))}
@@ -174,7 +174,7 @@ function PriceRangeFilter({ onApply }: { onApply: (min: number, max: number) => 
             <span className="text-outline">-</span>
             <input type="number" value={max} onChange={(e) => setMax(Number(e.target.value))} className="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Max" />
           </div>
-          <button onClick={() => { onApply(min, max); setOpen(false); if (navigator.vibrate) navigator.vibrate(15); }} className="w-full mt-3 py-2 bg-[#ba001c] text-white text-sm font-bold rounded-lg active:scale-95 transition-transform">Apply</button>
+          <button onClick={() => { onApply(min, max); setOpen(false); if (navigator.vibrate) navigator.vibrate(15); }} className="w-full mt-3 py-2 bg-primary text-white text-sm font-bold rounded-lg active:scale-95 transition-transform">Apply</button>
         </div>
       )}
     </div>
@@ -236,8 +236,8 @@ function AddToCartButton({
     return (
       <button
         onClick={handleAdd}
-        className={`px-4 py-1.5 bg-[#ba001c] text-white text-xs font-bold rounded-full hover:bg-[#a40017] active:scale-95 transition-all ${
-          bouncing ? "animate-bounce shadow-lg shadow-[#ba001c]/40" : ""
+        className={`px-4 py-1.5 bg-primary text-white text-xs font-bold rounded-full hover:bg-primary-dim active:scale-95 transition-all ${
+          bouncing ? "animate-bounce shadow-lg shadow-primary/40" : ""
         }`}
       >
         Add +
@@ -246,7 +246,7 @@ function AddToCartButton({
   }
 
   return (
-      <div className={`flex items-center gap-1.5 bg-[#ba001c] rounded-full px-2 py-1 transition-all ${bouncing ? "scale-125 shadow-lg shadow-[#ba001c]/40" : ""}`}>
+      <div className={`flex items-center gap-1.5 bg-primary rounded-full px-2 py-1 transition-all ${bouncing ? "scale-125 shadow-lg shadow-primary/40" : ""}`}>
       <button
         onClick={() => updateQuantity(item.id, qty - 1)}
         className="text-white font-bold w-5 h-5 flex items-center justify-center active:scale-75 transition-transform"
@@ -284,11 +284,11 @@ function CartFloater() {
     <div className="fixed bottom-6 left-4 right-4 z-50">
       <Link
         href="/app/cart"
-        className="flex items-center justify-between bg-[#ba001c] text-white px-5 py-4 rounded-2xl shadow-2xl shadow-[#ba001c]/40 active:scale-[0.98] transition-transform"
+        className="flex items-center justify-between bg-primary text-white px-5 py-4 rounded-2xl shadow-2xl shadow-primary/40 active:scale-[0.98] transition-transform"
       >
         <div className="flex items-center gap-3">
           <div className={`relative ${showAnimation ? "animate-bounce-sm" : ""}`}>
-            <span className="bg-surface-container-lowest text-[#ba001c] font-black text-xs px-2 py-0.5 rounded-full">
+            <span className="bg-surface-container-lowest text-primary font-black text-xs px-2 py-0.5 rounded-full">
               {totalItems()}
             </span>
             {showAnimation && (
@@ -434,7 +434,7 @@ export default function FoodPage() {
             }
           </p>
           {noLocalVendors && (
-            <button onClick={() => { window.location.href = "/app/home?selectLocation=true"; }} className="text-[10px] font-black text-[#ba001c] underline whitespace-nowrap">
+            <button onClick={() => { window.location.href = "/app/home?selectLocation=true"; }} className="text-[10px] font-black text-primary underline whitespace-nowrap">
               Change
             </button>
           )}
@@ -468,11 +468,11 @@ export default function FoodPage() {
 
       <div className="bg-surface-container-lowest px-6 py-4 mt-4">
         <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-          <button onClick={() => { setSelectedCategory("all"); if (navigator.vibrate) navigator.vibrate(10); }} className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap ${selectedCategory === "all" ? "bg-[#ba001c] text-white" : "bg-surface-container text-on-surface-variant"} active:scale-95 transition-all`}>
+          <button onClick={() => { setSelectedCategory("all"); if (navigator.vibrate) navigator.vibrate(10); }} className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap ${selectedCategory === "all" ? "bg-primary text-white" : "bg-surface-container text-on-surface-variant"} active:scale-95 transition-all`}>
             🍽 All
           </button>
           {foodCategories.map((cat) => (
-            <button key={cat.id} onClick={() => { setSelectedCategory(cat.id); if (navigator.vibrate) navigator.vibrate(10); }} className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap flex items-center gap-2 ${selectedCategory === cat.id ? "bg-[#ba001c] text-white" : "bg-surface-container text-on-surface-variant"} active:scale-95 transition-all`}>
+            <button key={cat.id} onClick={() => { setSelectedCategory(cat.id); if (navigator.vibrate) navigator.vibrate(10); }} className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap flex items-center gap-2 ${selectedCategory === cat.id ? "bg-primary text-white" : "bg-surface-container text-on-surface-variant"} active:scale-95 transition-all`}>
               <span>{cat.icon}</span> {cat.name}
             </button>
           ))}
@@ -508,14 +508,14 @@ export default function FoodPage() {
           </div>
         ) : !hasLocation ? (
           <div className="bg-surface-container-lowest rounded-2xl p-8 text-center shadow-sm">
-            <div className="w-20 h-20 bg-[#ba001c]/10 rounded-full flex items-center justify-center mx-auto mb-4 animate-glow-pulse">
-              <span className="material-symbols-outlined text-4xl text-[#ba001c]">location_on</span>
+            <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 animate-glow-pulse">
+              <span className="material-symbols-outlined text-4xl text-primary">location_on</span>
             </div>
             <h3 className="text-lg font-black text-on-surface mb-1">Location Required</h3>
             <p className="text-sm text-on-surface-variant mb-5">Please set your delivery location to find restaurants serving your area.</p>
             <button
               onClick={() => { window.location.href = "/app/home?selectLocation=true"; }}
-              className="px-6 py-3 bg-[#ba001c] text-white rounded-xl font-bold text-sm hover:bg-[#a00018] active:scale-95 transition-all shadow-md"
+              className="px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-[#a00018] active:scale-95 transition-all shadow-md"
             >
               Set Delivery Location
             </button>
@@ -527,11 +527,11 @@ export default function FoodPage() {
             </div>
             <h3 className="text-lg font-black text-on-surface mb-1">Not Available in Your Area</h3>
             <p className="text-sm text-on-surface-variant mb-1">We couldn't find any restaurants near</p>
-            <p className="text-sm font-bold text-[#ba001c] mb-4">{locationStore.displayAddress}</p>
+            <p className="text-sm font-bold text-primary mb-4">{locationStore.displayAddress}</p>
             <p className="text-xs text-outline mb-5">We're expanding every day! Try a nearby pincode or check back soon.</p>
             <button
               onClick={() => { window.location.href = "/app/home?selectLocation=true"; }}
-              className="px-6 py-3 bg-[#ba001c] text-white rounded-xl font-bold text-sm"
+              className="px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm"
             >
               Change Location
             </button>
@@ -567,7 +567,7 @@ export default function FoodPage() {
                 <div className="p-4 flex-1">
                   <div className="flex items-start justify-between gap-1">
                     <div className="flex items-center gap-2">
-                      <div className="relative w-8 h-8 rounded-full bg-[#ba001c] flex items-center justify-center text-white text-xs font-black flex-shrink-0 overflow-hidden">
+                      <div className="relative w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-xs font-black flex-shrink-0 overflow-hidden">
                         {restaurant.cover_image_url || restaurant.image_url ? <BlurImage src={restaurant.cover_image_url || restaurant.image_url} alt={`${restaurant.shop_name} cover`} fill className="w-full h-full" sizes="32px" /> : restaurant.shop_name?.charAt(0)}
                       </div>
                       <h3 className="font-bold text-on-surface text-base leading-tight">{restaurant.shop_name}</h3>
@@ -581,7 +581,7 @@ export default function FoodPage() {
                     <span className="text-xs text-on-surface-variant">{restaurant.delivery_time_min ? `${restaurant.delivery_time_min}–${restaurant.delivery_time_max || restaurant.delivery_time_min + 15} min` : restaurant.delivery_time_minutes ? `${restaurant.delivery_time_minutes - 5}–${restaurant.delivery_time_minutes + 5} min` : restaurant.delivery_time || "30-40 min"}</span>
                   </div>
                   <p className="text-xs text-on-surface-variant mt-1">Delivery: {restaurant.delivery_charge ? `₹${restaurant.delivery_charge}` : "₹49"}</p>
-                  <div className="mt-2 flex items-center gap-1 text-[#ba001c] font-bold text-xs">
+                  <div className="mt-2 flex items-center gap-1 text-primary font-bold text-xs">
                     <span>View Menu</span>
                     <span className="material-symbols-outlined text-sm">chevron_right</span>
                   </div>

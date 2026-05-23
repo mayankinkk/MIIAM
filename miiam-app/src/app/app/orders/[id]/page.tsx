@@ -267,17 +267,17 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
   };
 
   if (loading) return (
-    <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center">
-      <div className="w-12 h-12 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin" />
+    <div className="min-h-screen bg-surface flex items-center justify-center">
+      <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
     </div>
   );
   
   if (!order) return (
-    <div className="min-h-screen bg-[#fff4f4] flex flex-col items-center justify-center text-[#4d212a] p-6">
+    <div className="min-h-screen bg-surface flex flex-col items-center justify-center text-on-surface p-6">
       <span className="text-6xl mb-4">🔍</span>
       <h2 className="text-xl font-bold mb-2">Order not found</h2>
-      <p className="text-[#814c55] text-center mb-6">We couldn't find this order. It may have been removed or you may not have permission to view it.</p>
-      <Link href="/app/orders" className="bg-[#ba001c] text-white px-6 py-3 rounded-xl font-bold">
+      <p className="text-on-surface-variant text-center mb-6">We couldn't find this order. It may have been removed or you may not have permission to view it.</p>
+      <Link href="/app/orders" className="bg-primary text-white px-6 py-3 rounded-xl font-bold">
         View All Orders
       </Link>
       <button onClick={() => window.location.reload()} className="mt-4 text-sm text-slate-500">
@@ -289,24 +289,24 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
   const currentStepIndex = steps.findIndex((s) => s.key === order.status);
 
   return (
-    <div className="min-h-screen bg-[#fff4f4]">
+    <div className="min-h-screen bg-surface">
       <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-white/90 backdrop-blur-2xl shadow-[0px_10px_30px_rgba(77,33,42,0.04)]">
         <div className="flex items-center gap-4">
-          <Link href="/app/orders" className="w-10 h-10 flex items-center justify-center rounded-full bg-[#ffe1e4] hover:bg-[#ffcfd5] transition-all">
-            <span className="material-symbols-outlined text-[#ba001c]">arrow_back</span>
+          <Link href="/app/orders" className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container hover:bg-surface-container-high transition-all">
+            <span className="material-symbols-outlined text-primary">arrow_back</span>
           </Link>
-          <span className="text-2xl font-extrabold tracking-tighter text-[#ba001c]">MIIAM</span>
+          <span className="text-2xl font-extrabold tracking-tighter text-primary">MIIAM</span>
         </div>
         <div className="flex items-center gap-4">
           <button onClick={() => refreshOrder()} className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 transition-all" title="Refresh Order">
-            <span className="material-symbols-outlined text-[#4d212a]">refresh</span>
+            <span className="material-symbols-outlined text-on-surface">refresh</span>
           </button>
-          <span className="material-symbols-outlined text-[#4d212a] cursor-pointer hover:opacity-80 transition-opacity">notifications</span>
-          <span className="material-symbols-outlined text-[#4d212a] cursor-pointer hover:opacity-80 transition-opacity">account_circle</span>
+          <span className="material-symbols-outlined text-on-surface cursor-pointer hover:opacity-80 transition-opacity">notifications</span>
+          <span className="material-symbols-outlined text-on-surface cursor-pointer hover:opacity-80 transition-opacity">account_circle</span>
         </div>
       </nav>
       <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'My Orders', href: '/app/orders' }, { label: `Order #${id.slice(0, 8).toUpperCase()}` }]} />
-      <div className="bg-gradient-to-b from-[#ffe1e4] to-transparent h-2 mt-16" />
+      <div className="bg-gradient-to-b from-surface-container to-transparent h-2 mt-16" />
 
       <main className="pt-6 pb-12 min-h-screen">
         <div className="max-w-7xl mx-auto px-6 lg:grid lg:grid-cols-12 lg:gap-10 items-start">
@@ -318,7 +318,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                 <div className="absolute top-4 right-4 bg-white/90 backdrop-blur rounded-full px-4 py-3 shadow-lg flex items-center gap-2" style={{ zIndex: 10 }}>
                   <div className="text-center">
                     <p className="text-[10px] text-[#5c403d] font-bold uppercase tracking-wider">ETA</p>
-                    <p className="text-xl font-black text-[#ba001c] leading-none">{trackingInfo.eta} <span className="text-xs">MINS</span></p>
+                    <p className="text-xl font-black text-primary leading-none">{trackingInfo.eta} <span className="text-xs">MINS</span></p>
                   </div>
                 </div>
               )}
@@ -336,26 +336,26 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                 <div className="absolute top-0 right-0 w-32 h-32 bg-[#c4d0ff]/20 rounded-full -mr-16 -mt-16 blur-2xl" />
                 <div className="flex items-center gap-6 relative z-10">
                   <div className="relative w-20 h-20">
-                    <BlurImage src={riderInfo.image} alt={riderInfo.name} fill className="w-full h-full rounded-full overflow-hidden border-4 border-[#ffe1e4]" sizes="80px" />
+                    <BlurImage src={riderInfo.image} alt={riderInfo.name} fill className="w-full h-full rounded-full overflow-hidden border-4 border-surface-container" sizes="80px" />
                     <div className="absolute bottom-0 right-0 bg-[#ffd709] text-[#453900] px-2 py-0.5 rounded-full text-[10px] font-black flex items-center gap-1 shadow-sm">
                       <span className="material-symbols-outlined text-[12px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
                       {riderInfo.rating}
                     </div>
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-xl font-bold tracking-tight text-[#4d212a]">{riderInfo.name}</h3>
-                    <p className="text-[#814c55] font-medium">Your delivery hero is on the move</p>
+                    <h3 className="text-xl font-bold tracking-tight text-on-surface">{riderInfo.name}</h3>
+                    <p className="text-on-surface-variant font-medium">Your delivery hero is on the move</p>
                     <div className="flex gap-3 mt-4">
                       <Link 
                         href={`/app/orders/${id}/chat`}
-                        className="flex-1 bg-[#0b50d5] text-white rounded-xl py-3 font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-all scale-95 active:scale-90"
+                        className="flex-1 bg-secondary text-white rounded-xl py-3 font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-all scale-95 active:scale-90"
                       >
                         <span className="material-symbols-outlined text-lg">chat_bubble</span>
                         Chat
                       </Link>
                       <a 
                         href={`tel:${riderInfo.phone || ''}`}
-                        className="w-14 h-14 bg-[#ffe1e4] text-[#0b50d5] rounded-xl flex items-center justify-center hover:opacity-90 transition-all scale-95 active:scale-90"
+                        className="w-14 h-14 bg-surface-container text-secondary rounded-xl flex items-center justify-center hover:opacity-90 transition-all scale-95 active:scale-90"
                       >
                         <span className="material-symbols-outlined text-2xl">call</span>
                       </a>
@@ -370,14 +370,14 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
               <div className="relative bg-white rounded-xl p-6 shadow-[0px_20px_40px_rgba(77,33,42,0.04)] overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-[#c4d0ff]/20 rounded-full -mr-16 -mt-16 blur-2xl" />
                 <div className="flex items-center gap-6 relative z-10">
-                  <div className="w-20 h-20 rounded-full object-cover border-4 border-[#ffe1e4] bg-[#ffe1e4] flex items-center justify-center">
-                    <span className="material-symbols-outlined text-4xl text-[#ba001c]" style={{ fontVariationSettings: "'FILL' 1" }}>person_search</span>
+                  <div className="w-20 h-20 rounded-full object-cover border-4 border-surface-container bg-surface-container flex items-center justify-center">
+                    <span className="material-symbols-outlined text-4xl text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>person_search</span>
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-xl font-bold tracking-tight text-[#4d212a]">Finding a Rider</h3>
-                    <p className="text-[#814c55] font-medium">A rider will accept your order soon</p>
-                    <p className="text-xs text-[#ba001c] font-bold mt-2 flex items-center gap-1">
-                      <span className="w-2 h-2 bg-[#ba001c] rounded-full animate-pulse" />
+                    <h3 className="text-xl font-bold tracking-tight text-on-surface">Finding a Rider</h3>
+                    <p className="text-on-surface-variant font-medium">A rider will accept your order soon</p>
+                    <p className="text-xs text-primary font-bold mt-2 flex items-center gap-1">
+                      <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
                       Waiting for rider acceptance...
                     </p>
                   </div>
@@ -388,9 +388,9 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
 
           <div className="lg:col-span-5 space-y-6 mt-6 lg:mt-0">
             <div className="bg-white rounded-xl p-8 shadow-[0px_20px_40px_rgba(77,33,42,0.04)]">
-              <h2 className="text-xl font-extrabold tracking-tight mb-8 text-[#4d212a]">Order Journey</h2>
+              <h2 className="text-xl font-extrabold tracking-tight mb-8 text-on-surface">Order Journey</h2>
               <div className="space-y-0 relative">
-                <div className="absolute left-[19px] top-4 bottom-10 w-0.5 bg-gradient-to-b from-[#ba001c] via-[#ba001c] to-[#ffd9de]" />
+                <div className="absolute left-[19px] top-4 bottom-10 w-0.5 bg-gradient-to-b from-primary via-primary to-outline" />
 
                 {steps.map((step, index) => {
                   const isCompleted = currentStepIndex >= index;
@@ -401,20 +401,20 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                     <div key={step.key} className={`relative flex items-start gap-6 pb-8 ${isPending ? "opacity-40" : ""}`}>
                       <div className={`relative z-10 w-10 h-10 rounded-full flex items-center justify-center ${
                         isCurrent 
-                          ? "bg-[#ba001c] text-white shadow-lg shadow-[#ba001c]/20 ring-4 ring-[#ff7670]/30" 
+                          ? "bg-primary text-white shadow-lg shadow-primary/20 ring-4 ring-primary-container/30" 
                           : isCompleted 
-                            ? "bg-[#ba001c] text-white shadow-md" 
-                            : "bg-[#ffd9de] text-[#a06770]"
+                            ? "bg-primary text-white shadow-md" 
+                            : "bg-on-background text-outline"
                       }`}>
                         <span className={`material-symbols-outlined text-xl ${isCurrent ? "animate-pulse" : ""}`} style={{ fontVariationSettings: isCurrent || isCompleted ? "'FILL' 1" : "'FILL' 0" }}>
                           {isCompleted && !isCurrent ? "check" : step.icon}
                         </span>
                       </div>
                       <div>
-                        <h4 className={`text-md font-bold ${isCurrent ? "text-[#ba001c]" : isCompleted ? "text-[#4d212a]" : "text-[#a06770]"}`}>
+                        <h4 className={`text-md font-bold ${isCurrent ? "text-primary" : isCompleted ? "text-on-surface" : "text-outline"}`}>
                           {step.label}
                         </h4>
-                        <p className={`text-sm ${isCurrent ? "text-[#4d212a] font-medium" : "text-[#814c55]"}`}>
+                        <p className={`text-sm ${isCurrent ? "text-on-surface font-medium" : "text-on-surface-variant"}`}>
                           {isCurrent ? (
                             step.key === "on_the_way" && trackingInfo
                               ? `${trackingInfo.distance} away · ${trackingInfo.eta} min ETA`
@@ -435,10 +435,10 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                           ) : "Pending"}
                         </p>
                         {isCurrent && (
-                          <p className="text-xs text-[#ba001c]/60 font-bold mt-1 uppercase tracking-tighter">Current Step • {step.time}</p>
+                          <p className="text-xs text-primary/60 font-bold mt-1 uppercase tracking-tighter">Current Step • {step.time}</p>
                         )}
                         {isCompleted && !isCurrent && (
-                          <p className="text-xs text-[#a06770] font-medium mt-1">{step.time}</p>
+                          <p className="text-xs text-outline font-medium mt-1">{step.time}</p>
                         )}
                       </div>
                     </div>
@@ -447,36 +447,36 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
               </div>
             </div>
 
-            <div className="bg-[#ffe1e4] rounded-xl p-6 flex flex-col gap-4">
+            <div className="bg-surface-container rounded-xl p-6 flex flex-col gap-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-[#ba001c] shadow-sm">
+                  <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-primary shadow-sm">
                     <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>restaurant</span>
                   </div>
                   <div>
-                    <h3 className="font-extrabold text-[#4d212a]">{order.vendor?.name || "Restaurant"}</h3>
-                    <p className="text-xs font-bold text-[#ba001c] uppercase tracking-widest">Order #{order.id.slice(0, 8).toUpperCase()}</p>
+                    <h3 className="font-extrabold text-on-surface">{order.vendor?.name || "Restaurant"}</h3>
+                    <p className="text-xs font-bold text-primary uppercase tracking-widest">Order #{order.id.slice(0, 8).toUpperCase()}</p>
                   </div>
                 </div>
-                <Link href={`/app/orders/${id}`} className="text-[#0b50d5] font-bold text-sm hover:underline">View Details</Link>
+                <Link href={`/app/orders/${id}`} className="text-secondary font-bold text-sm hover:underline">View Details</Link>
               </div>
               <div className="bg-white/50 rounded-xl p-4 space-y-3">
                 {order.items?.map((item: any, idx: number) => (
                   <div key={idx} className="flex justify-between items-center text-sm">
-                    <span className="text-[#814c55] font-medium">{item.quantity}x {item.menu_item?.name || "Item"}</span>
-                    <span className="font-bold text-[#4d212a]">₹{item.price?.toFixed(2) || "0.00"}</span>
+                    <span className="text-on-surface-variant font-medium">{item.quantity}x {item.menu_item?.name || "Item"}</span>
+                    <span className="font-bold text-on-surface">₹{item.price?.toFixed(2) || "0.00"}</span>
                   </div>
                 ))}
-                <div className="pt-3 border-t border-[#dd9ca6]/20 flex justify-between items-center">
-                  <span className="text-[#4d212a] font-bold">Total (incl. Delivery)</span>
-                  <span className="text-lg font-black text-[#ba001c]">₹{order.total_amount?.toFixed(2) || "0.00"}</span>
+                <div className="pt-3 border-t border-outline-variant/20 flex justify-between items-center">
+                  <span className="text-on-surface font-bold">Total (incl. Delivery)</span>
+                  <span className="text-lg font-black text-primary">₹{order.total_amount?.toFixed(2) || "0.00"}</span>
                 </div>
               </div>
             </div>
 
             <button 
               onClick={() => setShowHelp(true)}
-              className="w-full bg-gradient-to-r from-[#ba001c] to-[#ff7670] text-white rounded-xl py-5 text-lg font-extrabold shadow-lg shadow-[#ba001c]/20 hover:scale-[1.02] active:scale-95 transition-all"
+              className="w-full bg-gradient-to-r from-primary to-primary-container text-white rounded-xl py-5 text-lg font-extrabold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all"
             >
               {canCancel ? "Cancel Order" : "Help with Order"}
             </button>
@@ -667,7 +667,7 @@ function MainOrderMap({ orderId, riderLocation, deliveryAddress, onRouteUpdate }
         className: '',
         html: `<div style="position:relative;width:44px;height:44px">
           <div style="position:absolute;inset:0;background:rgba(186,0,28,0.15);border-radius:50%;animation:pulse-ring 1.4s ease-out infinite"></div>
-          <div style="position:absolute;inset:4px;background:#ba001c;border-radius:50%;border:3px solid white;box-shadow:0 3px 10px rgba(186,0,28,0.4);display:flex;align-items:center;justify-content:center;font-size:18px;">🏠</div>
+          <div style="position:absolute;inset:4px;background:var(--color-primary);border-radius:50%;border:3px solid white;box-shadow:0 3px 10px rgba(var(--color-primary),,0.4);display:flex;align-items:center;justify-content:center;font-size:18px;">🏠</div>
         </div>`,
         iconSize: [44, 44],
         iconAnchor: [22, 44],
@@ -722,7 +722,7 @@ function MainOrderMap({ orderId, riderLocation, deliveryAddress, onRouteUpdate }
           className: '',
           html: `<div style="position:relative;width:46px;height:46px">
             <div style="position:absolute;inset:0;background:rgba(11,80,213,0.2);border-radius:50%;animation:pulse-ring 1s ease-out infinite"></div>
-            <div style="position:absolute;inset:4px;background:#0b50d5;border-radius:50%;border:3px solid white;box-shadow:0 3px 10px rgba(11,80,213,0.4);display:flex;align-items:center;justify-content:center;font-size:20px;">🛵</div>
+            <div style="position:absolute;inset:4px;background:var(--color-secondary);border-radius:50%;border:3px solid white;box-shadow:0 3px 10px rgba(var(--color-secondary),,0.4);display:flex;align-items:center;justify-content:center;font-size:20px;">🛵</div>
           </div>`,
           iconSize: [46, 46],
           iconAnchor: [23, 46],
@@ -746,7 +746,7 @@ function MainOrderMap({ orderId, riderLocation, deliveryAddress, onRouteUpdate }
             routeLayerRef.current = [];
             const coords = data.routes[0].geometry.coordinates.map((c: [number,number]) => [c[1], c[0]]);
             const shadow = L.polyline(coords, { color: `rgba(186,0,28,0.2)`, weight: 10, lineCap: 'round' }).addTo(map);
-            const line = L.polyline(coords, { color: '#ba001c', weight: 5, lineCap: 'round' }).addTo(map);
+            const line = L.polyline(coords, { color: 'var(--color-primary)', weight: 5, lineCap: 'round' }).addTo(map);
             routeLayerRef.current = [shadow, line];
             
             const eta = Math.round(data.routes[0].duration / 60);

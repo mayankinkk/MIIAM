@@ -88,18 +88,18 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-surface flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   if (!order) {
     return (
-      <div className="min-h-screen bg-[#fff4f4] flex flex-col items-center justify-center p-6">
+      <div className="min-h-screen bg-surface flex flex-col items-center justify-center p-6">
         <span className="text-6xl mb-4">🔍</span>
-        <h2 className="text-xl font-bold text-[#4d212a] mb-2">Order not found</h2>
-        <Link href="/app/orders" className="bg-[#ba001c] text-white px-6 py-3 rounded-xl font-bold mt-4">
+        <h2 className="text-xl font-bold text-on-surface mb-2">Order not found</h2>
+        <Link href="/app/orders" className="bg-primary text-white px-6 py-3 rounded-xl font-bold mt-4">
           View All Orders
         </Link>
       </div>
@@ -107,12 +107,12 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
   }
 
   return (
-    <div className="min-h-screen bg-[#fff4f4]">
+    <div className="min-h-screen bg-surface">
       <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-white/90 backdrop-blur-2xl shadow-sm">
-        <Link href={`/app/orders/${id}`} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#ffe1e4] transition-all">
-          <span className="material-symbols-outlined text-[#ba001c]">arrow_back</span>
+        <Link href={`/app/orders/${id}`} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-all">
+          <span className="material-symbols-outlined text-primary">arrow_back</span>
         </Link>
-        <span className="text-xl font-extrabold tracking-tighter text-[#ba001c]">MIIAM</span>
+        <span className="text-xl font-extrabold tracking-tighter text-primary">MIIAM</span>
         <div className="w-10" />
       </nav>
       <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'My Orders', href: '/app/orders' }, { label: 'Refund' }]} />
@@ -146,10 +146,10 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
               }
             </span>
           </div>
-          <h1 className="text-2xl font-extrabold text-[#4d212a] mb-2">
+          <h1 className="text-2xl font-extrabold text-on-surface mb-2">
             {order.status === "refunded" ? "Refund Complete" : "Request Cancellation & Refund"}
           </h1>
-          <p className="text-[#814c55]">
+          <p className="text-on-surface-variant">
             {order.status === "refunded" 
               ? "Your refund has been processed successfully"
               : "Your order is still being processed"
@@ -159,7 +159,7 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
 
         <div className="bg-white rounded-xl p-6 shadow-sm mb-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-bold text-[#4d212a]">Order Details</h2>
+            <h2 className="font-bold text-on-surface">Order Details</h2>
             <span className="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded-full font-bold">
               #{id.slice(0, 8).toUpperCase()}
             </span>
@@ -167,16 +167,16 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
           
           <div className="space-y-3 pb-4 border-b border-slate-100">
             <div className="flex justify-between">
-              <span className="text-[#814c55]">Restaurant</span>
-              <span className="font-bold text-[#4d212a]">{order.vendor?.name || "Unknown"}</span>
+              <span className="text-on-surface-variant">Restaurant</span>
+              <span className="font-bold text-on-surface">{order.vendor?.name || "Unknown"}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-[#814c55]">Order Total</span>
-              <span className="font-bold text-[#ba001c]">₹{order.total_amount?.toFixed(2)}</span>
+              <span className="text-on-surface-variant">Order Total</span>
+              <span className="font-bold text-primary">₹{order.total_amount?.toFixed(2)}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-[#814c55]">Payment Method</span>
-              <span className="font-bold text-[#4d212a] capitalize">{order.payment_method || "Card"}</span>
+              <span className="text-on-surface-variant">Payment Method</span>
+              <span className="font-bold text-on-surface capitalize">{order.payment_method || "Card"}</span>
             </div>
           </div>
         </div>
@@ -184,7 +184,7 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
         {order.status !== "refunded" && !showCancelForm && (
           <button
             onClick={() => setShowCancelForm(true)}
-            className="w-full bg-[#ba001c] text-white py-4 rounded-xl font-bold hover:bg-[#a40017] transition-colors mb-4"
+            className="w-full bg-primary text-white py-4 rounded-xl font-bold hover:bg-primary-dim transition-colors mb-4"
           >
             Request Cancellation
           </button>
@@ -192,7 +192,7 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
 
         {showCancelForm && (
           <div className="bg-white rounded-xl p-6 shadow-sm mb-6">
-            <h3 className="font-bold text-[#4d212a] mb-4">Why are you cancelling?</h3>
+            <h3 className="font-bold text-on-surface mb-4">Why are you cancelling?</h3>
             <div className="space-y-3">
               {[
                 "Order taking too long",
@@ -206,7 +206,7 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
                   key={reason}
                   className={`flex items-center gap-3 p-3 rounded-lg border-2 cursor-pointer transition-all ${
                     cancelReason === reason
-                      ? "border-[#ba001c] bg-[#ffecee]"
+                      ? "border-primary bg-surface-container-low"
                       : "border-slate-100 hover:border-slate-200"
                   }`}
                 >
@@ -216,23 +216,23 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
                     value={reason}
                     checked={cancelReason === reason}
                     onChange={(e) => setCancelReason(e.target.value)}
-                    className="text-[#ba001c]"
+                    className="text-primary"
                   />
-                  <span className="text-sm text-[#4d212a]">{reason}</span>
+                  <span className="text-sm text-on-surface">{reason}</span>
                 </label>
               ))}
             </div>
             <div className="flex gap-3 mt-4">
               <button
                 onClick={() => setShowCancelForm(false)}
-                className="flex-1 py-3 border-2 border-slate-200 rounded-xl font-bold text-[#4d212a]"
+                className="flex-1 py-3 border-2 border-slate-200 rounded-xl font-bold text-on-surface"
               >
                 Go Back
               </button>
               <button
                 onClick={handleCancelOrder}
                 disabled={cancelling}
-                className="flex-1 bg-[#ba001c] text-white py-3 rounded-xl font-bold hover:bg-[#a40017] transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+                className="flex-1 bg-primary text-white py-3 rounded-xl font-bold hover:bg-primary-dim transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
               >
                 {cancelling ? (
                   <>
@@ -246,7 +246,7 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
         )}
 
         <div className="bg-white rounded-xl p-6 shadow-sm">
-          <h3 className="font-bold text-[#4d212a] mb-4">Refund Status</h3>
+          <h3 className="font-bold text-on-surface mb-4">Refund Status</h3>
           <div className="space-y-4 relative">
             <div className="absolute left-[19px] top-4 bottom-4 w-0.5 bg-slate-100" />
             
@@ -254,7 +254,7 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
               <div key={step.status} className={`relative flex items-start gap-4 ${!step.completed ? "opacity-40" : ""}`}>
                 <div className={`relative z-10 w-10 h-10 rounded-full flex items-center justify-center ${
                   step.completed 
-                    ? "bg-[#ba001c] text-white" 
+                    ? "bg-primary text-white" 
                     : "bg-slate-100 text-slate-400"
                 }`}>
                   {step.completed ? (
@@ -264,10 +264,10 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
                   )}
                 </div>
                 <div className="flex-1 pt-2">
-                  <h4 className={`font-bold ${step.completed ? "text-[#4d212a]" : "text-slate-400"}`}>
+                  <h4 className={`font-bold ${step.completed ? "text-on-surface" : "text-slate-400"}`}>
                     {step.label}
                   </h4>
-                  <p className="text-xs text-[#814c55]">{step.time}</p>
+                  <p className="text-xs text-on-surface-variant">{step.time}</p>
                 </div>
               </div>
             ))}
@@ -289,13 +289,13 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
         <div className="mt-4 flex gap-3">
           <Link 
             href="/app/orders"
-            className="flex-1 text-center py-4 border-2 border-slate-200 rounded-xl font-bold text-[#4d212a] hover:border-[#ba001c] transition-colors"
+            className="flex-1 text-center py-4 border-2 border-slate-200 rounded-xl font-bold text-on-surface hover:border-primary transition-colors"
           >
             View All Orders
           </Link>
           <Link 
             href="/app/support"
-            className="flex-1 text-center py-4 border-2 border-slate-200 rounded-xl font-bold text-[#4d212a] hover:border-[#ba001c] transition-colors"
+            className="flex-1 text-center py-4 border-2 border-slate-200 rounded-xl font-bold text-on-surface hover:border-primary transition-colors"
           >
             Contact Support
           </Link>

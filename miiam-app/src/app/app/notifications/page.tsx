@@ -62,17 +62,17 @@ export default function NotificationsPage() {
 
   return (
     <PullToRefresh onRefresh={fetchNotifications}>
-    <div className="min-h-screen bg-[#fff4f4] pb-24">
+    <div className="min-h-screen bg-surface pb-24">
       <header className="fixed top-0 w-full z-50 bg-white shadow-sm">
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-4">
             <Link href="/app/explore" className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
-              <span className="material-symbols-outlined text-[#ba001c]">arrow_back</span>
+              <span className="material-symbols-outlined text-primary">arrow_back</span>
             </Link>
-            <span className="text-2xl font-extrabold text-[#ba001c]">MIIAM</span>
+            <span className="text-2xl font-extrabold text-primary">MIIAM</span>
           </div>
           {unreadCount > 0 && (
-            <button onClick={markAllRead} className="text-sm font-bold text-[#ba001c]">
+            <button onClick={markAllRead} className="text-sm font-bold text-primary">
               Mark all read
             </button>
           )}
@@ -83,13 +83,13 @@ export default function NotificationsPage() {
 
       <main className="pt-20 px-6 max-w-2xl mx-auto">
         <section className="mb-8">
-          <h1 className="text-3xl font-extrabold text-[#4d212a] mb-1">Notifications</h1>
-          <p className="text-[#814c55]">Stay updated with your orders and offers</p>
+          <h1 className="text-3xl font-extrabold text-on-surface mb-1">Notifications</h1>
+          <p className="text-on-surface-variant">Stay updated with your orders and offers</p>
         </section>
 
         {/* Push Notification Settings */}
         <section className="bg-white rounded-2xl p-6 shadow-sm mb-8">
-          <h2 className="text-lg font-bold text-[#4d212a] mb-4">Push Notifications</h2>
+          <h2 className="text-lg font-bold text-on-surface mb-4">Push Notifications</h2>
           
           {permission === "denied" ? (
             <div className="bg-red-50 border border-red-200 rounded-xl p-4">
@@ -109,38 +109,38 @@ export default function NotificationsPage() {
               <div className="space-y-3">
                 <label className="flex items-center justify-between p-4 bg-slate-50 rounded-xl cursor-pointer">
                   <div>
-                    <p className="font-bold text-[#4d212a]">Order Updates</p>
-                    <p className="text-xs text-[#814c55]">Get notified when order status changes</p>
+                    <p className="font-bold text-on-surface">Order Updates</p>
+                    <p className="text-xs text-on-surface-variant">Get notified when order status changes</p>
                   </div>
                   <input
                     type="checkbox"
                     checked={preferences.orderUpdates}
                     onChange={(e) => updatePreferences({ orderUpdates: e.target.checked })}
-                    className="w-5 h-5 accent-[#ba001c]"
+                    className="w-5 h-5 accent-primary"
                   />
                 </label>
                 <label className="flex items-center justify-between p-4 bg-slate-50 rounded-xl cursor-pointer">
                   <div>
-                    <p className="font-bold text-[#4d212a]">Promotions & Offers</p>
-                    <p className="text-xs text-[#814c55]">Receive deals and discounts</p>
+                    <p className="font-bold text-on-surface">Promotions & Offers</p>
+                    <p className="text-xs text-on-surface-variant">Receive deals and discounts</p>
                   </div>
                   <input
                     type="checkbox"
                     checked={preferences.promotions}
                     onChange={(e) => updatePreferences({ promotions: e.target.checked })}
-                    className="w-5 h-5 accent-[#ba001c]"
+                    className="w-5 h-5 accent-primary"
                   />
                 </label>
               </div>
             </div>
           ) : (
             <div className="space-y-4">
-              <p className="text-sm text-[#814c55]">
+              <p className="text-sm text-on-surface-variant">
                 Enable notifications to get real-time updates about your orders and exclusive offers.
               </p>
               <button
                 onClick={requestPermission}
-                className="w-full py-4 bg-[#ba001c] text-white font-bold rounded-xl hover:bg-[#a40017] transition-colors"
+                className="w-full py-4 bg-primary text-white font-bold rounded-xl hover:bg-primary-dim transition-colors"
               >
                 Enable Notifications
               </button>
@@ -150,7 +150,7 @@ export default function NotificationsPage() {
 
         {/* Notification History */}
         <section>
-          <h2 className="text-lg font-bold text-[#4d212a] mb-4">Recent</h2>
+          <h2 className="text-lg font-bold text-on-surface mb-4">Recent</h2>
           {loading ? (
             <div className="space-y-4">
               {[1, 2, 3].map(i => (
@@ -163,28 +163,28 @@ export default function NotificationsPage() {
           ) : notifications.length === 0 ? (
             <div className="text-center py-12 bg-white rounded-xl">
               <span className="text-5xl">🔔</span>
-              <p className="text-[#814c55] mt-4">No notifications yet</p>
+              <p className="text-on-surface-variant mt-4">No notifications yet</p>
             </div>
           ) : (
             <div className="space-y-3">
               {notifications.map((notification) => (
                 <div
                   key={notification.id}
-                  className={`bg-white rounded-xl p-4 ${notification.read ? "opacity-70" : "border-l-4 border-[#ba001c]"}`}
+                  className={`bg-white rounded-xl p-4 ${notification.read ? "opacity-70" : "border-l-4 border-primary"}`}
                 >
                   <div className="flex items-start gap-3">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                      notification.type === "order" ? "bg-[#ffe1e4]" :
+                      notification.type === "order" ? "bg-surface-container" :
                       notification.type === "promo" ? "bg-amber-100" : "bg-slate-100"
                     }`}>
-                      <span className="material-symbols-outlined text-lg text-[#ba001c]">
+                      <span className="material-symbols-outlined text-lg text-primary">
                         {notification.type === "order" ? "restaurant" :
                          notification.type === "promo" ? "local_offer" : "info"}
                       </span>
                     </div>
                     <div className="flex-1">
-                      <p className="font-bold text-[#4d212a]">{notification.title}</p>
-                      <p className="text-sm text-[#814c55] mt-1">{notification.body}</p>
+                      <p className="font-bold text-on-surface">{notification.title}</p>
+                      <p className="text-sm text-on-surface-variant mt-1">{notification.body}</p>
                       <p className="text-xs text-slate-400 mt-2">
                         {new Date(notification.created_at).toLocaleDateString("en-IN", {
                           day: "numeric",

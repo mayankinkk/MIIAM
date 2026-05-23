@@ -30,7 +30,7 @@ const membershipTiers = [
     price: 149,
     period: "3 months",
     tagline: "Most popular for foodies",
-    color: "from-[#ba001c] to-[#6b0011]",
+    color: "from-primary to-[#6b0011]",
     popular: true,
     badge: "BEST VALUE",
     features: [
@@ -109,8 +109,8 @@ export default function SubscriptionPage() {
       {/* Header */}
       <header className="sticky top-0 z-50 bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/app" className="text-2xl font-black text-[#ba001c] tracking-tighter">MIIAM</Link>
-          <Link href="/app/profile" className="text-sm font-bold text-slate-600 hover:text-[#ba001c]">
+          <Link href="/app" className="text-2xl font-black text-primary tracking-tighter">MIIAM</Link>
+          <Link href="/app/profile" className="text-sm font-bold text-slate-600 hover:text-primary">
             Skip for now
           </Link>
         </div>
@@ -119,7 +119,7 @@ export default function SubscriptionPage() {
       <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Profile', href: '/app/profile' }, { label: 'MIIAM+' }]} />
 
       {/* Hero */}
-      <section className="bg-gradient-to-b from-[#ba001c] to-[#6b0011] px-4 py-12 text-center text-white">
+      <section className="bg-gradient-to-b from-primary to-[#6b0011] px-4 py-12 text-center text-white">
         <div className="inline-block bg-white/20 text-white text-xs font-bold px-4 py-2 rounded-full mb-4 backdrop-blur-sm">
           💎 MEMBER BENEFITS
         </div>
@@ -134,15 +134,15 @@ export default function SubscriptionPage() {
         <h2 className="text-lg font-bold text-slate-800 mb-4 text-center">💰 See How Much You Can Save</h2>
         <div className="grid grid-cols-3 gap-4 text-center">
           <div className="bg-slate-50 rounded-xl p-4">
-            <p className="text-2xl font-extrabold text-[#ba001c]">₹40+</p>
+            <p className="text-2xl font-extrabold text-primary">₹40+</p>
             <p className="text-xs text-slate-500 mt-1">Delivery fees saved/month</p>
           </div>
           <div className="bg-slate-50 rounded-xl p-4">
-            <p className="text-2xl font-extrabold text-[#ba001c]">₹150+</p>
+            <p className="text-2xl font-extrabold text-primary">₹150+</p>
             <p className="text-xs text-slate-500 mt-1">Exclusive offers/month</p>
           </div>
           <div className="bg-slate-50 rounded-xl p-4">
-            <p className="text-2xl font-extrabold text-[#ba001c]">₹500</p>
+            <p className="text-2xl font-extrabold text-primary">₹500</p>
             <p className="text-xs text-slate-500 mt-1">Welcome reward</p>
           </div>
         </div>
@@ -158,12 +158,12 @@ export default function SubscriptionPage() {
             <div
               key={tier.id}
               className={`relative bg-white rounded-3xl overflow-hidden transition-all duration-300 ${
-                activeTier === tier.id ? "ring-2 ring-[#ba001c] shadow-xl scale-[1.02]" : "shadow-md hover:shadow-lg"
+                activeTier === tier.id ? "ring-2 ring-primary shadow-xl scale-[1.02]" : "shadow-md hover:shadow-lg"
               }`}
               onClick={() => setActiveTier(tier.id)}
             >
               {tier.popular && (
-                <div className="bg-[#ba001c] text-white text-xs font-bold px-4 py-2 text-center">
+                <div className="bg-primary text-white text-xs font-bold px-4 py-2 text-center">
                   ⭐ MOST POPULAR
                 </div>
               )}
@@ -206,7 +206,7 @@ export default function SubscriptionPage() {
                     tier.price === 0
                       ? "bg-slate-100 text-slate-500 cursor-not-allowed"
                       : tier.id === activeTier
-                      ? "bg-[#ba001c] text-white hover:bg-[#a40017] shadow-lg shadow-[#ba001c]/30"
+                      ? "bg-primary text-white hover:bg-primary-dim shadow-lg shadow-primary/30"
                       : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                   }`}
                 >
@@ -231,7 +231,7 @@ export default function SubscriptionPage() {
       </section>
 
       {/* Social Proof */}
-      <section className="bg-gradient-to-r from-[#fff4f4] to-[#ffe1e4] px-4 py-12">
+      <section className="bg-gradient-to-r from-surface to-surface-container px-4 py-12">
         <h2 className="text-2xl font-extrabold text-slate-900 mb-8 text-center">❤️ Loved by Foodies</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
           {[
@@ -280,14 +280,14 @@ export default function SubscriptionPage() {
       </section>
 
       {/* CTA */}
-      <section className="bg-[#ba001c] px-4 py-16 text-center text-white">
+      <section className="bg-primary px-4 py-16 text-center text-white">
         <h2 className="text-3xl font-extrabold mb-3">Ready to Start Saving?</h2>
         <p className="text-white/80 mb-8 max-w-md mx-auto">
           Join thousands of happy foodies who eat more for less with MIIAM Pro.
         </p>
         <button
           onClick={() => handleSubscribe("pro")}
-          className="bg-white text-[#ba001c] px-10 py-4 rounded-2xl font-extrabold inline-flex items-center gap-2 hover:scale-105 transition-transform shadow-xl"
+          className="bg-white text-primary px-10 py-4 rounded-2xl font-extrabold inline-flex items-center gap-2 hover:scale-105 transition-transform shadow-xl"
         >
           Get MIIAM Pro - ₹149/3 months
           <span className="material-symbols-outlined">arrow_forward</span>

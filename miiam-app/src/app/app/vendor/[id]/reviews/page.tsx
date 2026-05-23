@@ -48,7 +48,7 @@ export default function VendorReviewsPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f8f8f8] flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin" />
+        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -78,9 +78,9 @@ export default function VendorReviewsPage() {
             {ratingCounts.map(({ star, count, percent }) => (
               <div key={star} className="flex items-center gap-2">
                 <span className="text-xs text-slate-600 w-3">{star}</span>
-                <span className="material-symbols-outlined text-[#ba001c] text-sm">star</span>
+                <span className="material-symbols-outlined text-primary text-sm">star</span>
                 <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-[#ba001c] rounded-full" style={{ width: `${percent}%` }} />
+                  <div className="h-full bg-primary rounded-full" style={{ width: `${percent}%` }} />
                 </div>
                 <span className="text-xs text-slate-400 w-8">{count}</span>
               </div>
@@ -97,7 +97,7 @@ export default function VendorReviewsPage() {
               key={f}
               onClick={() => setFilter(f)}
               className={`px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap ${
-                filter === f ? "bg-[#ba001c] text-white" : "bg-slate-100 text-slate-600"
+                filter === f ? "bg-primary text-white" : "bg-slate-100 text-slate-600"
               }`}
             >
               {f === "all" ? "All" : `${f} ★`}
@@ -114,7 +114,7 @@ export default function VendorReviewsPage() {
           filteredReviews.map((review: any) => (
             <div key={review.id} className="bg-white rounded-xl p-4 shadow-sm">
               <div className="flex items-start gap-3">
-                <div className="w-10 h-10 bg-[#ba001c] text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
+                <div className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
                   {review.profile?.full_name?.[0] || "U"}
                 </div>
                 <div className="flex-1">
@@ -129,7 +129,7 @@ export default function VendorReviewsPage() {
                       <span
                         key={star}
                         className={`material-symbols-outlined text-sm ${
-                          star <= review.rating ? "text-[#ba001c]" : "text-slate-300"
+                          star <= review.rating ? "text-primary" : "text-slate-300"
                         }`}
                         style={{ fontVariationSettings: `'FILL' ${star <= review.rating ? 1 : 0}` }}
                       >

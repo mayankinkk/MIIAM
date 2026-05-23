@@ -79,7 +79,7 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
               </div>
               <div>
                 <h2 className="font-black text-on-surface text-lg">{service.name}</h2>
-                <p className="text-[#ba001c] font-bold">₹{service.price} • {service.duration}</p>
+                <p className="text-primary font-bold">₹{service.price} • {service.duration}</p>
               </div>
             </div>
 
@@ -91,8 +91,8 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
                   onClick={() => { setSelectedDate(d.value); if (navigator.vibrate) navigator.vibrate(10); }}
                   className={`px-4 py-2 rounded-xl text-sm font-bold border-2 transition-all hover:scale-105 active:scale-95 ${
                     selectedDate === d.value
-                      ? "bg-[#ba001c] text-white border-[#ba001c]"
-                      : "border-outline text-on-surface-variant hover:border-[#ba001c]"
+                      ? "bg-primary text-white border-primary"
+                      : "border-outline text-on-surface-variant hover:border-primary"
                   }`}
                 >
                   {d.label}
@@ -108,8 +108,8 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
                   onClick={() => { setSelectedSlot(slot); if (navigator.vibrate) navigator.vibrate(10); }}
                   className={`p-3 rounded-xl text-xs font-bold border-2 transition-all text-left hover:scale-[1.02] active:scale-[0.98] ${
                     selectedSlot === slot
-                      ? "bg-[#ba001c] text-white border-[#ba001c]"
-                      : "border-outline text-on-surface-variant hover:border-[#ba001c]"
+                      ? "bg-primary text-white border-primary"
+                      : "border-outline text-on-surface-variant hover:border-primary"
                   }`}
                 >
                   {slot}
@@ -119,7 +119,7 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
 
             <p className="font-bold text-on-surface mb-2">Service Address</p>
             <textarea
-              className="w-full border-2 border-outline rounded-xl p-3 text-sm focus:border-[#ba001c] focus:outline-none resize-none mb-5"
+              className="w-full border-2 border-outline rounded-xl p-3 text-sm focus:border-primary focus:outline-none resize-none mb-5"
               rows={2}
               placeholder="Enter your full address..."
               value={address}
@@ -134,7 +134,7 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
                 if (!address.trim()) { addToast("Please enter your service address", "error"); return; }
                 setStep("confirm"); if (navigator.vibrate) navigator.vibrate([20, 10, 20]);
               }}
-              className="w-full bg-[#ba001c] text-white py-4 rounded-2xl font-bold text-base disabled:opacity-40 hover:bg-[#a40017] transition-all hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full bg-primary text-white py-4 rounded-2xl font-bold text-base disabled:opacity-40 hover:bg-primary-dim transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
               Review Booking
             </button>
@@ -170,7 +170,7 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
               )}
               <div className="border-t border-outline pt-3 flex justify-between">
                 <span className="font-bold text-on-surface">Total</span>
-                <span className="font-black text-[#ba001c] text-lg">₹{service.price}</span>
+                <span className="font-black text-primary text-lg">₹{service.price}</span>
               </div>
             </div>
             <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 flex gap-2 mb-5">
@@ -188,7 +188,7 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
                 setBooking(false);
               }}
               disabled={booking}
-              className="w-full bg-[#ba001c] text-white py-4 rounded-2xl font-bold text-base hover:bg-[#a40017] transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 flex items-center justify-center gap-2"
+              className="w-full bg-primary text-white py-4 rounded-2xl font-bold text-base hover:bg-primary-dim transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 flex items-center justify-center gap-2"
             >
               {booking ? (
                 <>
@@ -210,14 +210,14 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
             </div>
             <h2 className="font-black text-2xl text-on-surface mb-2">Booking Confirmed!</h2>
             <p className="text-on-surface-variant mb-1">{service.name}</p>
-            <p className="font-bold text-[#ba001c] mb-1">
+            <p className="font-bold text-primary mb-1">
               {new Date(selectedDate).toLocaleDateString("en-IN", { weekday: "long", month: "long", day: "numeric" })}
             </p>
             <p className="text-on-surface-variant font-semibold mb-6">{selectedSlot}</p>
             <p className="text-sm text-on-surface-variant mb-8">You will receive a confirmation shortly. Our professional will arrive on time.</p>
             <button
               onClick={() => { onClose(); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }}
-              className="w-full bg-[#ba001c] text-white py-4 rounded-2xl font-bold text-base hover:bg-[#a40017] transition-all hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full bg-primary text-white py-4 rounded-2xl font-bold text-base hover:bg-primary-dim transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
               Done
             </button>
@@ -725,7 +725,7 @@ function ServicesContent() {
           <button
             onClick={() => { setSelectedCategory("all"); if (navigator.vibrate) navigator.vibrate(10); }}
             className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap active:scale-95 transition-all ${
-              selectedCategory === "all" ? "bg-[#ba001c] text-white" : "bg-surface-container-lowest text-gray-600 border border-gray-200"
+              selectedCategory === "all" ? "bg-primary text-white" : "bg-surface-container-lowest text-gray-600 border border-gray-200"
             }`}
           >
             All
@@ -735,7 +735,7 @@ function ServicesContent() {
               key={cat.id}
               onClick={() => { setSelectedCategory(cat.id); if (navigator.vibrate) navigator.vibrate(10); }}
               className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap flex items-center gap-1 active:scale-95 transition-all animate-category-slide ${
-                selectedCategory === cat.id ? "bg-[#ba001c] text-white" : "bg-surface-container-lowest text-gray-600 border border-gray-200"
+                selectedCategory === cat.id ? "bg-primary text-white" : "bg-surface-container-lowest text-gray-600 border border-gray-200"
               }`}
               style={{ animationDelay: `${i * 50}ms` }}
             >
@@ -760,7 +760,7 @@ function ServicesContent() {
                 </span>
               )}
               {service.originalPrice && (
-                <span className="absolute top-3 right-3 bg-[#ba001c] text-white text-[10px] font-black px-2.5 py-1 rounded-full">
+                <span className="absolute top-3 right-3 bg-primary text-white text-[10px] font-black px-2.5 py-1 rounded-full">
                   {Math.round(((service.originalPrice - service.price) / service.originalPrice) * 100)}% OFF
                 </span>
               )}
@@ -814,7 +814,7 @@ function ServicesContent() {
                     if (navigator.vibrate) navigator.vibrate([20, 10, 20]);
                   }}
                   className={`px-6 py-2.5 rounded-xl font-bold text-sm active:scale-95 transition-all shadow-sm ${
-                    isServiceable ? "bg-[#ba001c] text-white hover:bg-[#a40017] shadow-[#ba001c]/20 hover:scale-[1.02]" : "bg-outline text-white cursor-not-allowed shadow-none"
+                    isServiceable ? "bg-primary text-white hover:bg-primary-dim shadow-primary/20 hover:scale-[1.02]" : "bg-outline text-white cursor-not-allowed shadow-none"
                   }`}
                 >
                   {isServiceable ? "Book Now" : "Unavailable"}

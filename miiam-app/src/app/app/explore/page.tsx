@@ -124,8 +124,8 @@ export default function ExplorePage() {
 
   if (!isLoaded) {
     return (
-      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center">
-        <div className="w-16 h-16 bg-[#ba001c] rounded-2xl flex items-center justify-center animate-pulse">
+      <div className="min-h-screen bg-surface flex items-center justify-center">
+        <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center animate-pulse">
           <span className="material-symbols-outlined text-3xl text-white">M</span>
         </div>
       </div>
@@ -133,7 +133,7 @@ export default function ExplorePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#fff4f4]">
+    <div className="min-h-screen bg-surface">
       {error && (
         <div className="bg-red-50 border border-red-200 px-4 py-3 flex items-center gap-2">
           <span className="material-symbols-outlined text-red-500">error</span>
@@ -148,7 +148,7 @@ export default function ExplorePage() {
         <header className="bg-white px-6 pt-8 pb-4">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-3xl font-black text-[#4d212a]">Explore</h1>
+              <h1 className="text-3xl font-black text-on-surface">Explore</h1>
               <p className="text-slate-500">Discover everything MIIAM has to offer</p>
             </div>
             <div className="flex items-center gap-3">
@@ -159,7 +159,7 @@ export default function ExplorePage() {
               >
                 <span className="material-symbols-outlined text-2xl text-slate-700">shopping_cart</span>
                 {totalItems() > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-[#ba001c] text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center animate-bounce-in">
+                  <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center animate-bounce-in">
                     {totalItems()}
                   </span>
                 )}
@@ -180,7 +180,7 @@ export default function ExplorePage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search dishes, cuisines, services..."
-              className="w-full pl-12 pr-4 py-4 bg-slate-100 rounded-2xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+              className="w-full pl-12 pr-4 py-4 bg-slate-100 rounded-2xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
           </div>
         </header>
@@ -201,7 +201,7 @@ export default function ExplorePage() {
                   flex items-center gap-2 px-5 py-2.5 rounded-full font-semibold text-sm whitespace-nowrap
                   transition-all duration-300 snap-start active:scale-95 animate-category-slide
                   ${activeCategory === cat.id 
-                    ? 'bg-[#ba001c] text-white shadow-lg shadow-[#ba001c]/25 scale-105' 
+                    ? 'bg-primary text-white shadow-lg shadow-primary/25 scale-105' 
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:scale-[1.02]'}
                 `}
                 style={{ animationDelay: `${i * 50}ms` }}
@@ -223,7 +223,7 @@ export default function ExplorePage() {
             </span>
             <button 
               onClick={() => setActiveCategory("all")}
-              className="text-xs text-[#ba001c] font-bold hover:underline"
+              className="text-xs text-primary font-bold hover:underline"
             >
               Clear
             </button>
@@ -236,7 +236,7 @@ export default function ExplorePage() {
             <button
               onClick={() => setShowFilters(!showFilters)}
               className={`flex items-center gap-2 px-4 py-3 rounded-xl font-bold text-sm ${
-                hasActiveFilters ? "bg-[#ba001c] text-white" : "bg-white text-slate-600 border border-slate-200"
+                hasActiveFilters ? "bg-primary text-white" : "bg-white text-slate-600 border border-slate-200"
               }`}
             >
               <span className="material-symbols-outlined text-lg">filter_list</span>
@@ -260,7 +260,7 @@ export default function ExplorePage() {
                       key={opt.value}
                       onClick={() => setPriceFilter(opt.value as any)}
                       className={`px-3 py-2 rounded-lg text-xs font-bold ${
-                        priceFilter === opt.value ? "bg-[#ba001c] text-white" : "bg-slate-100 text-slate-600"
+                        priceFilter === opt.value ? "bg-primary text-white" : "bg-slate-100 text-slate-600"
                       }`}
                     >
                       {opt.label}
@@ -281,7 +281,7 @@ export default function ExplorePage() {
                       key={opt.value}
                       onClick={() => setRatingFilter(opt.value as any)}
                       className={`px-3 py-2 rounded-lg text-xs font-bold ${
-                        ratingFilter === opt.value ? "bg-[#ba001c] text-white" : "bg-slate-100 text-slate-600"
+                        ratingFilter === opt.value ? "bg-primary text-white" : "bg-slate-100 text-slate-600"
                       }`}
                     >
                       {opt.label}
@@ -293,7 +293,7 @@ export default function ExplorePage() {
               {hasActiveFilters && (
                 <button
                   onClick={() => { setPriceFilter("all"); setRatingFilter("all"); setDietaryFilter("all"); }}
-                  className="text-xs text-[#ba001c] font-bold"
+                  className="text-xs text-primary font-bold"
                 >
                   Clear all filters
                 </button>
@@ -322,7 +322,7 @@ export default function ExplorePage() {
               <p className="text-slate-500 mt-4">No services found</p>
               <button 
                 onClick={() => { setSearchQuery(""); setActiveCategory("all"); setPriceFilter("all"); setRatingFilter("all"); }}
-                className="text-[#ba001c] font-bold text-sm mt-2"
+                className="text-primary font-bold text-sm mt-2"
               >
                 Clear filters
               </button>
@@ -407,7 +407,7 @@ export default function ExplorePage() {
         </div>
 
         {/* Download App CTA */}
-        <div className="bg-[#ba001c] rounded-2xl p-6 text-white text-center">
+        <div className="bg-primary rounded-2xl p-6 text-white text-center">
           <h3 className="font-black text-2xl mb-2">Download MIIAM App</h3>
           <p className="text-sm text-white/80 mb-4">Get exclusive deals and faster ordering</p>
           <div className="flex gap-3 justify-center">

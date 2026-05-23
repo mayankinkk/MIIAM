@@ -136,7 +136,7 @@ function PaymentStatusContent() {
   return (
     <>
       <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Cart', href: '/app/cart' }, { label: `Payment ${status.charAt(0).toUpperCase() + status.slice(1)}` }]} />
-      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center p-6">
+      <div className="min-h-screen bg-surface flex items-center justify-center p-6">
         <div className="w-full max-w-md">
         <div className="bg-white rounded-3xl p-8 shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
           <div className="text-center mb-8">
@@ -145,8 +145,8 @@ function PaymentStatusContent() {
                 {config.icon}
               </span>
             </div>
-            <h1 className="text-2xl font-extrabold text-[#4d212a] mb-2">{config.title}</h1>
-            <p className="text-[#814c55]">{config.message}</p>
+            <h1 className="text-2xl font-extrabold text-on-surface mb-2">{config.title}</h1>
+            <p className="text-on-surface-variant">{config.message}</p>
           </div>
 
           {status === "processing" && (
@@ -165,12 +165,12 @@ function PaymentStatusContent() {
             <div className={`p-4 rounded-xl ${config.bgColor} border ${config.borderColor} mb-6`}>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-bold text-[#814c55] uppercase tracking-widest">Order ID</p>
-                  <p className="font-bold text-[#4d212a]">{orderId.slice(0, 8).toUpperCase()}</p>
+                  <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Order ID</p>
+                  <p className="font-bold text-on-surface">{orderId.slice(0, 8).toUpperCase()}</p>
                 </div>
                 <Link 
                   href={`/app/orders/${orderId}`}
-                  className="text-[#0b50d5] font-bold text-sm hover:underline"
+                  className="text-secondary font-bold text-sm hover:underline"
                 >
                   View Order
                 </Link>
@@ -182,13 +182,13 @@ function PaymentStatusContent() {
             <div className="space-y-3 mb-6">
               <button 
                 onClick={() => router.push("/app/checkout")}
-                className="w-full bg-[#ba001c] text-white py-4 rounded-xl font-bold hover:bg-[#a40017] transition-colors"
+                className="w-full bg-primary text-white py-4 rounded-xl font-bold hover:bg-primary-dim transition-colors"
               >
                 Try Again
               </button>
               <Link 
                 href="/app/support"
-                className="block w-full text-center text-[#ba001c] font-bold py-3"
+                className="block w-full text-center text-primary font-bold py-3"
               >
                 Contact Support
               </Link>
@@ -214,14 +214,14 @@ function PaymentStatusContent() {
               )}
               <Link 
                 href={`/app/orders/${orderId}`}
-                className="block w-full bg-[#ba001c] text-white py-4 rounded-xl font-bold text-center hover:bg-[#a40017] transition-colors flex items-center justify-center gap-2"
+                className="block w-full bg-primary text-white py-4 rounded-xl font-bold text-center hover:bg-primary-dim transition-colors flex items-center justify-center gap-2"
               >
                 <span className="material-symbols-outlined">order_play</span>
                 Track Order
               </Link>
               <Link 
                 href="/app/food"
-                className="block w-full text-center text-[#ba001c] font-bold py-3"
+                className="block w-full text-center text-primary font-bold py-3"
               >
                 Order More
               </Link>
@@ -232,18 +232,18 @@ function PaymentStatusContent() {
           {showConfetti && <Confetti />}
 
           <div className="flex justify-center gap-4 pt-6 border-t border-slate-100">
-            <Link href="/app/home" className="flex items-center gap-2 text-[#814c55] hover:text-[#ba001c] transition-colors">
+            <Link href="/app/home" className="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors">
               <span className="material-symbols-outlined">home</span>
               <span className="font-bold text-sm">Home</span>
             </Link>
-            <Link href="/app/orders" className="flex items-center gap-2 text-[#814c55] hover:text-[#ba001c] transition-colors">
+            <Link href="/app/orders" className="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors">
               <span className="material-symbols-outlined">receipt_long</span>
               <span className="font-bold text-sm">Orders</span>
             </Link>
           </div>
         </div>
 
-        <p className="text-center mt-6 text-xs text-[#814c55]">
+        <p className="text-center mt-6 text-xs text-on-surface-variant">
           Payment powered by MIIAM Secure
         </p>
       </div>
@@ -254,7 +254,7 @@ function PaymentStatusContent() {
 
 function Loading() {
   return (
-    <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center p-6">
+    <div className="min-h-screen bg-surface flex items-center justify-center p-6">
       <div className="w-full max-w-md">
         <div className="bg-white rounded-3xl p-8 shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
           <div className="animate-pulse">

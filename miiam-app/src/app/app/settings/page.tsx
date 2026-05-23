@@ -47,13 +47,13 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fff4f4] pb-24">
+    <div className="min-h-screen bg-surface pb-24">
       <header className="bg-white px-6 py-4 sticky top-0 z-10">
         <div className="flex items-center justify-between">
           <Link href="/app/profile" className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
             <span className="material-symbols-outlined">arrow_back</span>
           </Link>
-          <h1 className="text-xl font-black text-[#4d212a]">Settings</h1>
+          <h1 className="text-xl font-black text-on-surface">Settings</h1>
           <div className="w-10" />
         </div>
       </header>

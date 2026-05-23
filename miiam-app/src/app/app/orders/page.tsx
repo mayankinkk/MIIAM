@@ -17,10 +17,10 @@ const statusColors: Record<string, string> = {
   pending: "bg-[#ffd709]/20 text-[#453900]",
   accepted: "bg-[#c4d0ff]/30 text-[#003dac]",
   preparing: "bg-[#c4d0ff]/30 text-[#003dac]",
-  picking_up: "bg-[#ffe1e4] text-[#ba001c]",
-  on_the_way: "bg-[#ffe1e4] text-[#ba001c]",
+  picking_up: "bg-surface-container text-primary",
+  on_the_way: "bg-surface-container text-primary",
   delivered: "bg-green-100 text-green-700",
-  cancelled: "bg-[#f95630]/10 text-[#b02500]",
+  cancelled: "bg-error-container/10 text-error",
 };
 
 export default function OrdersPage() {
@@ -152,8 +152,8 @@ export default function OrdersPage() {
 
   return (
     <>
-      <header className="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-[#fff4f4]/80 backdrop-blur-2xl shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
-        <span className="text-2xl font-extrabold tracking-tighter text-[#ba001c]">MIIAM</span>
+      <header className="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-surface/80 backdrop-blur-2xl shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
+        <span className="text-2xl font-extrabold tracking-tighter text-primary">MIIAM</span>
       </header>
       <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'My Orders' }]} />
       <PullToRefresh onRefresh={async () => {
@@ -161,8 +161,8 @@ export default function OrdersPage() {
       }}>
       <main className="pt-24 pb-32 px-6 max-w-4xl mx-auto">
         <section className="mb-10">
-          <h1 className="text-[3.5rem] font-extrabold tracking-tight leading-none mb-2 text-[#4d212a]">My Orders</h1>
-          <p className="text-[#814c55] text-lg">Track and manage your orders.</p>
+          <h1 className="text-[3.5rem] font-extrabold tracking-tight leading-none mb-2 text-on-surface">My Orders</h1>
+          <p className="text-on-surface-variant text-lg">Track and manage your orders.</p>
         </section>
 
         {loading ? (
@@ -195,47 +195,47 @@ export default function OrdersPage() {
           <div className="space-y-6">
             {orders.map((order) => (
               <div key={order.id} className="bg-white rounded-lg shadow-[0px_10px_30px_rgba(77,33,42,0.04)] overflow-hidden">
-                <Link href={`/app/orders/${order.id}`} className="block p-6 hover:bg-[#ffecee]/30 transition-all">
+                <Link href={`/app/orders/${order.id}`} className="block p-6 hover:bg-surface-container-low/30 transition-all">
                   <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-xl bg-[#ffe1e4] overflow-hidden flex items-center justify-center flex-shrink-0">
+                    <div className="w-16 h-16 rounded-xl bg-surface-container overflow-hidden flex items-center justify-center flex-shrink-0">
                       {order.vendor?.cover_image_url ? (
                         <BlurImage src={order.vendor.cover_image_url} alt={order.vendor.name} fill className="w-full h-full" sizes="(max-width: 768px) 50vw, 25vw" />
                       ) : (
-                        <span className="material-symbols-outlined text-[#dd9ca6] text-3xl">restaurant</span>
+                        <span className="material-symbols-outlined text-outline-variant text-3xl">restaurant</span>
                       )}
                     </div>
                     <div className="flex-1">
                       <div className="flex justify-between items-start">
                         <div>
-                          <h3 className="font-bold text-[#4d212a]">{order.vendor?.name ?? "Order"}</h3>
-                          <p className="text-xs text-[#814c55]">
+                          <h3 className="font-bold text-on-surface">{order.vendor?.name ?? "Order"}</h3>
+                          <p className="text-xs text-on-surface-variant">
                             {new Date(order.placed_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
                           </p>
                         </div>
                         <div className="text-right">
-                          <span className={`text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider ${statusColors[order.status] ?? "bg-[#ffe1e4] text-[#ba001c]"}`}>
+                          <span className={`text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider ${statusColors[order.status] ?? "bg-surface-container text-primary"}`}>
                             {order.status.replace(/_/g, " ")}
                           </span>
-                          <p className="font-bold text-[#4d212a] mt-2">₹{order.total_amount.toFixed(2)}</p>
+                          <p className="font-bold text-on-surface mt-2">₹{order.total_amount.toFixed(2)}</p>
                         </div>
                       </div>
                     </div>
-                    <span className="material-symbols-outlined text-[#814c55]">chevron_right</span>
+                    <span className="material-symbols-outlined text-on-surface-variant">chevron_right</span>
                   </div>
                 </Link>
                 {order.status === "delivered" && (
-                  <div className="border-t border-[#dd9ca6]/20 px-6 py-4 flex gap-3">
+                  <div className="border-t border-outline-variant/20 px-6 py-4 flex gap-3">
                     <button
                       onClick={() => handleReorder(order)}
                       disabled={reordering === order.id}
-                      className="flex-1 bg-[#ba001c] text-white py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:opacity-90 disabled:opacity-60"
+                      className="flex-1 bg-primary text-white py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:opacity-90 disabled:opacity-60"
                     >
                       <span className="material-symbols-outlined text-sm">refresh</span>
                       {reordering === order.id ? "Adding..." : "Reorder"}
                     </button>
                     <Link
                       href={`/app/orders/${order.id}/review`}
-                      className="flex-1 bg-white border border-[#dd9ca6]/30 text-[#4d212a] py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:border-[#ba001c]"
+                      className="flex-1 bg-white border border-outline-variant/30 text-on-surface py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:border-primary"
                     >
                       <span className="material-symbols-outlined text-sm">star</span>
                       Rate

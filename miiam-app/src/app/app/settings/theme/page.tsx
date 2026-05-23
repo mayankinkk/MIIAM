@@ -61,9 +61,9 @@ export default function ThemePage() {
 
         <div className="mt-8 bg-surface-container border border-outline-variant/10 rounded-2xl p-5 shadow-sm">
           <p className="text-xs font-black text-on-surface-variant uppercase tracking-widest mb-2">Preview</p>
-          <div className={`rounded-xl p-4 border border-outline-variant/10 ${theme === "dark" ? "bg-[#0f0506]" : "bg-[#fff4f4]"}`}>
-            <div className={`h-3 w-24 rounded-full mb-2 ${theme === "dark" ? "bg-[#240b0e]" : "bg-[#ffe1e4]"}`} />
-            <div className={`h-3 w-40 rounded-full mb-2 ${theme === "dark" ? "bg-[#240b0e]" : "bg-[#ffe1e4]"}`} />
+          <div className={`rounded-xl p-4 border border-outline-variant/10 ${theme === "dark" ? "bg-surface-container-lowest" : "bg-surface"}`}>
+            <div className={`h-3 w-24 rounded-full mb-2 ${theme === "dark" ? "bg-surface-bright" : "bg-surface-container"}`} />
+            <div className={`h-3 w-40 rounded-full mb-2 ${theme === "dark" ? "bg-surface-bright" : "bg-surface-container"}`} />
             <div className="h-8 w-28 bg-primary rounded-lg mt-3" />
           </div>
         </div>

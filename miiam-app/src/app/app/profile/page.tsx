@@ -13,7 +13,7 @@ const menuItems = [
   { id: "addresses", icon: "location_on", label: "Saved Addresses", sub: "Manage delivery addresses", color: "text-green-500", bg: "bg-green-50" },
   { id: "favorites", icon: "favorite", label: "Favorites", sub: "Your saved items", color: "text-red-500", bg: "bg-red-50" },
   { id: "payment", icon: "payment", label: "Payment Methods", sub: "Cards, UPI, wallets", color: "text-purple-500", bg: "bg-purple-50" },
-  { id: "referral", icon: "card_membership", label: "Refer & Earn", sub: "Share code & earn points", color: "text-[#ba001c]", bg: "bg-[#ffe1e4]" },
+  { id: "referral", icon: "card_membership", label: "Refer & Earn", sub: "Share code & earn points", color: "text-primary", bg: "bg-surface-container" },
   { id: "subscription", icon: "workspace_premium", label: "MIIAM+", sub: "Premium membership", color: "text-amber-500", bg: "bg-amber-50", badge: "ACTIVE" },
   { id: "support", icon: "support_agent", label: "Help & Support", sub: "24/7 customer care", color: "text-indigo-500", bg: "bg-indigo-50" },
   { id: "settings", icon: "settings", label: "Settings", sub: "App preferences", color: "text-slate-500", bg: "bg-slate-50" },
@@ -72,9 +72,9 @@ export default function EnhancedProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fff4f4] pb-24">
+    <div className="min-h-screen bg-surface pb-24">
       {/* Header */}
-      <header className="bg-gradient-to-br from-[#ba001c] to-[#ff7670] text-white p-6 pb-12 rounded-b-[3rem]">
+      <header className="bg-gradient-to-br from-primary to-primary-container text-white p-6 pb-12 rounded-b-[3rem]">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-xl font-black">My Profile</h1>
           <Link href="/app/profile/edit" className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors">
@@ -235,7 +235,7 @@ export default function EnhancedProfilePage() {
         {showHapticSettings && (
           <div className="bg-white rounded-2xl p-4 space-y-2 animate-fade-in">
             <div className="flex items-center gap-3 mb-4 pb-3 border-b border-slate-100">
-              <span className="material-symbols-outlined text-[#ba001c]">vibration</span>
+              <span className="material-symbols-outlined text-primary">vibration</span>
               <p className="font-bold text-slate-800">Haptic Feedback Settings</p>
             </div>
             
@@ -252,7 +252,7 @@ export default function EnhancedProfilePage() {
                   <p className="text-xs text-slate-500">Master toggle for all vibrations</p>
                 </div>
               </div>
-              <div className={`w-12 h-7 rounded-full relative transition-colors ${settings.enabled ? "bg-[#ba001c]" : "bg-slate-300"}`}>
+              <div className={`w-12 h-7 rounded-full relative transition-colors ${settings.enabled ? "bg-primary" : "bg-slate-300"}`}>
                 <div className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow-md transition-all ${settings.enabled ? "left-6" : "left-1"}`} />
               </div>
             </button>
@@ -273,7 +273,7 @@ export default function EnhancedProfilePage() {
                   <p className="text-xs text-slate-500">Brief feedback (10ms)</p>
                 </div>
               </div>
-              <div className={`w-12 h-7 rounded-full relative transition-colors ${settings.light ? "bg-[#ba001c]" : "bg-slate-300"}`}>
+              <div className={`w-12 h-7 rounded-full relative transition-colors ${settings.light ? "bg-primary" : "bg-slate-300"}`}>
                 <div className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow-md transition-all ${settings.light ? "left-6" : "left-1"}`} />
               </div>
             </button>
@@ -294,7 +294,7 @@ export default function EnhancedProfilePage() {
                   <p className="text-xs text-slate-500">Standard feedback (25ms)</p>
                 </div>
               </div>
-              <div className={`w-12 h-7 rounded-full relative transition-colors ${settings.medium ? "bg-[#ba001c]" : "bg-slate-300"}`}>
+              <div className={`w-12 h-7 rounded-full relative transition-colors ${settings.medium ? "bg-primary" : "bg-slate-300"}`}>
                 <div className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow-md transition-all ${settings.medium ? "left-6" : "left-1"}`} />
               </div>
             </button>
@@ -315,7 +315,7 @@ export default function EnhancedProfilePage() {
                   <p className="text-xs text-slate-500">Strong feedback (150ms)</p>
                 </div>
               </div>
-              <div className={`w-12 h-7 rounded-full relative transition-colors ${settings.heavy ? "bg-[#ba001c]" : "bg-slate-300"}`}>
+              <div className={`w-12 h-7 rounded-full relative transition-colors ${settings.heavy ? "bg-primary" : "bg-slate-300"}`}>
                 <div className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow-md transition-all ${settings.heavy ? "left-6" : "left-1"}`} />
               </div>
             </button>

@@ -60,25 +60,25 @@ export default function ChatPage() {
 
   if (!currentUserId) {
     return (
-      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-surface flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#fff4f4] flex flex-col">
+    <div className="min-h-screen bg-surface flex flex-col">
       {/* Header */}
-      <header className="fixed top-0 w-full z-50 flex justify-between items-center px-4 py-3 bg-white border-b border-[#dd9ca6]/20">
+      <header className="fixed top-0 w-full z-50 flex justify-between items-center px-4 py-3 bg-white border-b border-outline-variant/20">
         <div className="flex items-center gap-3">
-          <Link href={`/app/orders/${orderId}`} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#ffe1e4]">
-            <span className="material-symbols-outlined text-[#ba001c]">arrow_back</span>
+          <Link href={`/app/orders/${orderId}`} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container">
+            <span className="material-symbols-outlined text-primary">arrow_back</span>
           </Link>
-          <div className="w-10 h-10 rounded-full bg-[#ba001c] flex items-center justify-center">
+          <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
             <span className="material-symbols-outlined text-white">two_wheeler</span>
           </div>
           <div>
-            <h1 className="font-bold text-[#4d212a]">Rider Chat</h1>
+            <h1 className="font-bold text-on-surface">Rider Chat</h1>
             <p className="text-xs text-green-600 flex items-center gap-1">
               <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
               Online
@@ -86,8 +86,8 @@ export default function ChatPage() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#ffe1e4]">
-            <span className="material-symbols-outlined text-[#ba001c]">call</span>
+          <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container">
+            <span className="material-symbols-outlined text-primary">call</span>
           </button>
         </div>
       </header>
@@ -98,18 +98,18 @@ export default function ChatPage() {
       <div className="flex-1 pt-20 pb-24 px-4 overflow-y-auto">
         {loading ? (
           <div className="flex items-center justify-center h-32">
-            <div className="w-8 h-8 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
           </div>
         ) : messages.length === 0 ? (
           <div className="text-center py-12">
             <span className="material-symbols-outlined text-6xl text-slate-300">chat</span>
-            <p className="text-[#814c55] mt-4">No messages yet</p>
+            <p className="text-on-surface-variant mt-4">No messages yet</p>
             <p className="text-sm text-slate-400">Start the conversation!</p>
           </div>
         ) : (
           <div className="space-y-4">
             <div className="flex justify-center">
-              <span className="text-xs text-[#814c55] bg-white/80 px-4 py-1 rounded-full">
+              <span className="text-xs text-on-surface-variant bg-white/80 px-4 py-1 rounded-full">
                 Today
               </span>
             </div>
@@ -122,12 +122,12 @@ export default function ChatPage() {
                 <div
                   className={`max-w-[75%] px-4 py-3 rounded-2xl ${
                     msg.sender_id === currentUserId
-                      ? "bg-[#ba001c] text-white rounded-br-md"
-                      : "bg-white text-[#4d212a] rounded-bl-md shadow-sm"
+                      ? "bg-primary text-white rounded-br-md"
+                      : "bg-white text-on-surface rounded-bl-md shadow-sm"
                   }`}
                 >
                   <p className="text-sm">{msg.message}</p>
-                  <p className={`text-[10px] mt-1 ${msg.sender_id === currentUserId ? "text-white/70" : "text-[#814c55]"}`}>
+                  <p className={`text-[10px] mt-1 ${msg.sender_id === currentUserId ? "text-white/70" : "text-on-surface-variant"}`}>
                     {formatTime(msg.created_at)}
                   </p>
                 </div>
@@ -138,9 +138,9 @@ export default function ChatPage() {
               <div className="flex justify-start">
                 <div className="bg-white px-4 py-3 rounded-2xl rounded-bl-md shadow-sm">
                   <div className="flex gap-1">
-                    <span className="w-2 h-2 bg-[#814c55] rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></span>
-                    <span className="w-2 h-2 bg-[#814c55] rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></span>
-                    <span className="w-2 h-2 bg-[#814c55] rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></span>
+                    <span className="w-2 h-2 bg-on-surface-variant rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></span>
+                    <span className="w-2 h-2 bg-on-surface-variant rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></span>
+                    <span className="w-2 h-2 bg-on-surface-variant rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></span>
                   </div>
                 </div>
               </div>
@@ -157,7 +157,7 @@ export default function ChatPage() {
           <button
             key={reply}
             onClick={() => setNewMessage(reply)}
-            className="flex-shrink-0 px-4 py-2 bg-white border border-[#dd9ca6]/30 rounded-full text-xs font-medium text-[#4d212a] hover:border-[#ba001c]"
+            className="flex-shrink-0 px-4 py-2 bg-white border border-outline-variant/30 rounded-full text-xs font-medium text-on-surface hover:border-primary"
           >
             {reply}
           </button>
@@ -165,10 +165,10 @@ export default function ChatPage() {
       </div>
 
       {/* Input */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-[#dd9ca6]/20">
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-outline-variant/20">
         <div className="flex items-center gap-2">
-          <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#ffe1e4]">
-            <span className="material-symbols-outlined text-[#814c55]">add_circle</span>
+          <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container">
+            <span className="material-symbols-outlined text-on-surface-variant">add_circle</span>
           </button>
           <input
             type="text"
@@ -176,12 +176,12 @@ export default function ChatPage() {
             onChange={handleTyping}
             onKeyDown={(e) => e.key === "Enter" && handleSend()}
             placeholder="Type a message..."
-            className="flex-1 bg-[#fff4f4] rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+            className="flex-1 bg-surface rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/20"
           />
           <button
             onClick={handleSend}
             disabled={!newMessage.trim() || sending}
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-[#ba001c] text-white disabled:opacity-50"
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-primary text-white disabled:opacity-50"
           >
             {sending ? (
               <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />

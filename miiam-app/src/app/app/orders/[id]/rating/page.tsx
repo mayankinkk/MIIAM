@@ -45,7 +45,7 @@ function AnimatedStarRating({
             >
               <span
                 className={`material-symbols-outlined text-5xl transition-all duration-300 ${
-                  isActive ? "text-[#ba001c]" : "text-[#dd9ca6]"
+                  isActive ? "text-primary" : "text-outline-variant"
                 } ${hover === star ? "scale-110" : ""}`}
                 style={{ 
                   fontVariationSettings: `'FILL' ${isActive ? 1 : 0}`,
@@ -59,7 +59,7 @@ function AnimatedStarRating({
         })}
       </div>
       {rating > 0 && (
-        <p className="text-sm text-[#ba001c] font-bold animate-fade-in">
+        <p className="text-sm text-primary font-bold animate-fade-in">
           {rating === 5 ? "🌟 Excellent!" : rating >= 4 ? "⭐ Great!" : rating >= 3 ? "👍 Good" : "💫 Okay"}
         </p>
       )}
@@ -200,8 +200,8 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-surface flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -210,13 +210,13 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
     return (
       <>
         <Confetti />
-        <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center p-6">
+        <div className="min-h-screen bg-surface flex items-center justify-center p-6">
           <div className="text-center animate-bounce-in">
-            <div className="w-32 h-32 bg-gradient-to-br from-[#ba001c] to-[#ff7670] rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-[#ba001c]/30">
+            <div className="w-32 h-32 bg-gradient-to-br from-primary to-primary-container rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-primary/30">
               <span className="material-symbols-outlined text-white text-6xl" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
             </div>
-            <h2 className="text-3xl font-extrabold text-[#4d212a] mb-2">Thanks for rating! 💖</h2>
-            <p className="text-[#814c55] font-medium">Your feedback helps us serve you better</p>
+            <h2 className="text-3xl font-extrabold text-on-surface mb-2">Thanks for rating! 💖</h2>
+            <p className="text-on-surface-variant font-medium">Your feedback helps us serve you better</p>
             <div className="mt-8 flex justify-center gap-4">
               {[1, 2, 3, 4, 5].map((i) => (
                 <span key={i} className="text-2xl animate-bounce-in" style={{ animationDelay: `${i * 0.1}s` }}>⭐</span>
@@ -230,24 +230,24 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
 
   return (
     <>
-      <header className="fixed top-0 w-full z-50 bg-[#fff4f4]/80 backdrop-blur-xl shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
+      <header className="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
         <div className="flex justify-between items-center w-full px-6 py-4">
           <div className="flex items-center gap-4">
             <button onClick={() => router.back()} className="hover:opacity-80 transition-opacity">
-              <span className="material-symbols-outlined text-[#4d212a]">close</span>
+              <span className="material-symbols-outlined text-on-surface">close</span>
             </button>
-            <span className="text-2xl font-extrabold tracking-tighter text-[#ba001c]">MIIAM</span>
+            <span className="text-2xl font-extrabold tracking-tighter text-primary">MIIAM</span>
           </div>
         </div>
       </header>
       <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'My Orders', href: '/app/orders' }, { label: 'Rate & Review' }]} />
       <main className="pt-24 pb-12 px-6 max-w-md mx-auto space-y-6">
         <section className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-[#ffd2d7] rounded-full mb-4">
-            <span className="material-symbols-outlined text-[#ba001c] text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-surface-container-highest rounded-full mb-4">
+            <span className="material-symbols-outlined text-primary text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
           </div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-[#4d212a]">Delivered!</h1>
-          <p className="text-[#814c55] font-medium">How was your experience today?</p>
+          <h1 className="text-3xl font-extrabold tracking-tight text-on-surface">Delivered!</h1>
+          <p className="text-on-surface-variant font-medium">How was your experience today?</p>
         </section>
 
         <section className="bg-white rounded-xl p-8 shadow-[0px_20px_40px_rgba(77,33,42,0.04)] space-y-6">
@@ -263,7 +263,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
         <section className="bg-white rounded-xl p-8 shadow-[0px_20px_40px_rgba(77,33,42,0.04)] space-y-6">
           <div className="flex flex-col items-center gap-4">
             <div className="relative">
-              <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-[#ffe1e4]">
+              <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-surface-container">
                 <BlurImage 
                   alt="Rider" 
                   fill
@@ -272,11 +272,11 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
                   src={order?.rider?.profile_image || "https://via.placeholder.com/80"} 
                 />
               </div>
-              <div className="absolute -bottom-2 -right-2 bg-[#0b50d5] text-white rounded-full p-1.5 shadow-md">
+              <div className="absolute -bottom-2 -right-2 bg-secondary text-white rounded-full p-1.5 shadow-md">
                 <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>electric_moped</span>
               </div>
             </div>
-            <p className="text-sm text-[#814c55]">Rate Delivery Service</p>
+            <p className="text-sm text-on-surface-variant">Rate Delivery Service</p>
           </div>
           <AnimatedStarRating
             rating={riderRating}
@@ -291,7 +291,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
           <textarea
             value={feedback}
             onChange={(e) => setFeedback(e.target.value)}
-            className="w-full bg-white rounded-xl border-none focus:ring-2 focus:ring-[#ba001c]/40 p-6 min-h-[120px] text-[#4d212a] shadow-[0px_10px_20px_rgba(77,33,42,0.02)] resize-none"
+            className="w-full bg-white rounded-xl border-none focus:ring-2 focus:ring-primary/40 p-6 min-h-[120px] text-on-surface shadow-[0px_10px_20px_rgba(77,33,42,0.02)] resize-none"
             placeholder="Share your experience (optional)"
           />
         </section>
@@ -303,8 +303,8 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
               onClick={() => toggleTag(tag)}
               className={`px-4 py-2 rounded-full text-sm font-semibold transition-all active:scale-95 ${
                 selectedTags.includes(tag)
-                  ? "bg-[#ba001c] text-white"
-                  : "bg-white text-[#814c55] hover:bg-[#ffe1e4]"
+                  ? "bg-primary text-white"
+                  : "bg-white text-on-surface-variant hover:bg-surface-container"
               }`}
             >
               {tag}
@@ -315,12 +315,12 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
         <button
           onClick={handleSubmit}
           disabled={foodRating === 0 || riderRating === 0}
-          className="w-full bg-gradient-to-r from-[#ba001c] to-[#a40017] text-white rounded-xl py-5 text-lg font-bold shadow-[0px_15px_30px_rgba(186,0,28,0.2)] active:scale-[0.98] transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full bg-gradient-to-r from-primary to-[#a40017] text-white rounded-xl py-5 text-lg font-bold shadow-[0px_15px_30px_rgba(186,0,28,0.2)] active:scale-[0.98] transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Submit Review
         </button>
 
-        <p className="text-center text-[#814c55] text-xs px-8 leading-relaxed">
+        <p className="text-center text-on-surface-variant text-xs px-8 leading-relaxed">
           Your feedback helps us improve our service and rewards our best performing vendors and riders.
         </p>
       </main>

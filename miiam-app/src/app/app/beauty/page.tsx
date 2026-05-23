@@ -270,7 +270,7 @@ export default function BeautyPage() {
                     </div>
                     <div className="flex items-center justify-between mt-2">
                       <div className="flex items-center gap-2">
-                        <span className="font-black text-lg text-[#ba001c]">₹{service.price}</span>
+                        <span className="font-black text-lg text-primary">₹{service.price}</span>
                         {service.original && (
                           <>
                             <span className="text-sm text-outline line-through">₹{service.original}</span>
@@ -295,14 +295,14 @@ export default function BeautyPage() {
                             if (navigator.vibrate) navigator.vibrate([20, 10, 20]);
                           }}
                           className={`w-full font-bold py-1.5 rounded-lg text-xs transition-all ${
-                            isServiceable ? "bg-[#ba001c] text-white hover:scale-[1.02] active:scale-[0.98] animate-glow-pulse" : "bg-outline text-white cursor-not-allowed"
+                            isServiceable ? "bg-primary text-white hover:scale-[1.02] active:scale-[0.98] animate-glow-pulse" : "bg-outline text-white cursor-not-allowed"
                           }`}
                         >
                           {isServiceable ? "Book Now" : "Unavailable"}
                         </button>
                       ) : (
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2 bg-[#ba001c] rounded-xl px-2 animate-cart-pop">
+                          <div className="flex items-center gap-2 bg-primary rounded-xl px-2 animate-cart-pop">
                             <button onClick={() => { updateQuantity(service.id, qty - 1); if (navigator.vibrate) navigator.vibrate(10); }} className="w-6 h-6 flex items-center justify-center text-white hover:scale-110 active:scale-90 transition-transform">
                               <span className="material-symbols-outlined text-sm">remove</span>
                             </button>
@@ -380,10 +380,10 @@ export default function BeautyPage() {
             {/* Location */}
             <p className="text-xs font-bold text-on-surface-variant uppercase mb-2">Service Location</p>
             <div className="flex gap-3 mb-6">
-              <button onClick={() => { setLocation("home"); if (navigator.vibrate) navigator.vibrate(10); }} className={`flex-1 py-3 rounded-xl font-bold text-sm border-2 hover:scale-[1.02] active:scale-[0.98] transition-all ${location === "home" ? "border-[#ba001c] bg-pink-50" : "border-outline"}`}>
+              <button onClick={() => { setLocation("home"); if (navigator.vibrate) navigator.vibrate(10); }} className={`flex-1 py-3 rounded-xl font-bold text-sm border-2 hover:scale-[1.02] active:scale-[0.98] transition-all ${location === "home" ? "border-primary bg-pink-50" : "border-outline"}`}>
                 🏠 Home
               </button>
-              <button onClick={() => { setLocation("salon"); if (navigator.vibrate) navigator.vibrate(10); }} className={`flex-1 py-3 rounded-xl font-bold text-sm border-2 hover:scale-[1.02] active:scale-[0.98] transition-all ${location === "salon" ? "border-[#ba001c] bg-pink-50" : "border-outline"}`}>
+              <button onClick={() => { setLocation("salon"); if (navigator.vibrate) navigator.vibrate(10); }} className={`flex-1 py-3 rounded-xl font-bold text-sm border-2 hover:scale-[1.02] active:scale-[0.98] transition-all ${location === "salon" ? "border-primary bg-pink-50" : "border-outline"}`}>
                 🏪 Salon Visit
               </button>
             </div>
@@ -392,7 +392,7 @@ export default function BeautyPage() {
             <p className="text-xs font-bold text-on-surface-variant uppercase mb-2">Select Date</p>
             <div className="flex gap-2 overflow-x-auto no-scrollbar mb-6">
               {days.map((day, i) => (
-                <button key={i} onClick={() => { setSelectedDate(i); if (navigator.vibrate) navigator.vibrate(10); }} className={`flex-shrink-0 px-4 py-3 rounded-xl font-bold text-sm border-2 hover:scale-105 active:scale-95 transition-all ${selectedDate === i ? "border-[#ba001c] bg-[#ba001c] text-white" : "border-outline"}`}>
+                <button key={i} onClick={() => { setSelectedDate(i); if (navigator.vibrate) navigator.vibrate(10); }} className={`flex-shrink-0 px-4 py-3 rounded-xl font-bold text-sm border-2 hover:scale-105 active:scale-95 transition-all ${selectedDate === i ? "border-primary bg-primary text-white" : "border-outline"}`}>
                   {day.label}
                 </button>
               ))}
@@ -416,11 +416,11 @@ export default function BeautyPage() {
               </div>
               <div className="flex justify-between mt-2 pt-2 border-t border-outline">
                 <span className="font-bold">Total</span>
-                <span className="font-black text-[#ba001c] text-xl">₹{bookingService.price}</span>
+                <span className="font-black text-primary text-xl">₹{bookingService.price}</span>
               </div>
             </div>
 
-            <button onClick={() => { confirmBooking(); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }} disabled={!selectedTime} className="w-full bg-gradient-to-r from-[#ba001c] to-[#ff7670] text-white py-4 rounded-xl font-extrabold disabled:opacity-50 hover:scale-[1.02] active:scale-[0.98] transition-all">
+            <button onClick={() => { confirmBooking(); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }} disabled={!selectedTime} className="w-full bg-gradient-to-r from-primary to-primary-container text-white py-4 rounded-xl font-extrabold disabled:opacity-50 hover:scale-[1.02] active:scale-[0.98] transition-all">
               Confirm Booking
             </button>
           </div>

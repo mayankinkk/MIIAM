@@ -68,13 +68,13 @@ export default function SupportChatPage() {
   const quickReplies = ["Track my order", "Request refund", "Payment issue", "Delivery problem"];
 
   return (
-    <div className="min-h-screen bg-[#fff4f4] flex flex-col">
+    <div className="min-h-screen bg-surface flex flex-col">
       <header className="bg-white px-4 py-4 sticky top-0 z-10 shadow-sm border-b border-slate-100">
         <div className="flex items-center gap-3">
           <Link href="/app/support" className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
             <span className="material-symbols-outlined">arrow_back</span>
           </Link>
-          <div className="w-10 h-10 bg-gradient-to-br from-[#ba001c] to-[#ff7670] rounded-full flex items-center justify-center text-white font-black text-sm">M</div>
+          <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary-container rounded-full flex items-center justify-center text-white font-black text-sm">M</div>
           <div className="flex-1">
             <p className="font-bold text-slate-800">MIIAM Support</p>
             <div className="flex items-center gap-1">
@@ -92,11 +92,11 @@ export default function SupportChatPage() {
         {messages.map((msg) => (
           <div key={msg.id} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
             {msg.role === "bot" && (
-              <div className="w-8 h-8 bg-gradient-to-br from-[#ba001c] to-[#ff7670] rounded-full flex items-center justify-center text-white text-xs font-black mr-2 flex-shrink-0 mt-auto">M</div>
+              <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary-container rounded-full flex items-center justify-center text-white text-xs font-black mr-2 flex-shrink-0 mt-auto">M</div>
             )}
             <div className={`max-w-[78%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${
               msg.role === "user"
-                ? "bg-[#ba001c] text-white rounded-br-sm"
+                ? "bg-primary text-white rounded-br-sm"
                 : "bg-white text-slate-800 shadow-sm rounded-bl-sm"
             }`}>
               {msg.text}
@@ -109,7 +109,7 @@ export default function SupportChatPage() {
 
         {typing && (
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-[#ba001c] to-[#ff7670] rounded-full flex items-center justify-center text-white text-xs font-black">M</div>
+            <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary-container rounded-full flex items-center justify-center text-white text-xs font-black">M</div>
             <div className="bg-white rounded-2xl rounded-bl-sm px-4 py-3 shadow-sm flex gap-1 items-center">
               {[0, 1, 2].map((i) => (
                 <span key={i} className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
@@ -127,7 +127,7 @@ export default function SupportChatPage() {
             <button
               key={r}
               onClick={() => { setInput(r); }}
-              className="flex-shrink-0 px-3 py-1.5 bg-white border border-[#ba001c] text-[#ba001c] rounded-full text-xs font-bold hover:bg-[#fff4f4] transition-colors"
+              className="flex-shrink-0 px-3 py-1.5 bg-white border border-primary text-primary rounded-full text-xs font-bold hover:bg-surface transition-colors"
             >
               {r}
             </button>
@@ -143,12 +143,12 @@ export default function SupportChatPage() {
           onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }}}
           placeholder="Type a message..."
           rows={1}
-          className="flex-1 px-4 py-3 bg-slate-50 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20 resize-none max-h-24"
+          className="flex-1 px-4 py-3 bg-slate-50 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 resize-none max-h-24"
         />
         <button
           onClick={sendMessage}
           disabled={!input.trim()}
-          className="w-11 h-11 bg-[#ba001c] disabled:bg-slate-200 text-white rounded-2xl flex items-center justify-center transition-all active:scale-90"
+          className="w-11 h-11 bg-primary disabled:bg-slate-200 text-white rounded-2xl flex items-center justify-center transition-all active:scale-90"
         >
           <span className="material-symbols-outlined">send</span>
         </button>

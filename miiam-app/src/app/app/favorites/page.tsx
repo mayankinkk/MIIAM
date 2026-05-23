@@ -82,20 +82,20 @@ export default function FavoritesPage() {
 
   return (
     <PullToRefresh onRefresh={loadFavorites}>
-      <header className="fixed top-0 w-full z-50 flex items-center gap-4 px-6 py-4 bg-[#fff4f4]/80 backdrop-blur-2xl shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
-        <Link href="/app/explore" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#ffe1e4] transition-all">
-          <span className="material-symbols-outlined text-[#ba001c]">arrow_back</span>
+      <header className="fixed top-0 w-full z-50 flex items-center gap-4 px-6 py-4 bg-surface/80 backdrop-blur-2xl shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
+        <Link href="/app/explore" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-all">
+          <span className="material-symbols-outlined text-primary">arrow_back</span>
         </Link>
-        <span className="text-2xl font-extrabold tracking-tighter text-[#ba001c]">MIIAM</span>
-        <span className="text-[#4d212a] font-semibold ml-2">Favourites</span>
+        <span className="text-2xl font-extrabold tracking-tighter text-primary">MIIAM</span>
+        <span className="text-on-surface font-semibold ml-2">Favourites</span>
       </header>
 
       <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'My Favorites' }]} />
 
       <main className="pt-24 pb-32 px-6 max-w-4xl mx-auto">
         <section className="mb-10">
-          <h1 className="text-[3.5rem] font-extrabold tracking-tight leading-none mb-2 text-[#ba001c]">Your Faves</h1>
-          <p className="text-[#814c55] text-lg">Places you&apos;ve saved for later.</p>
+          <h1 className="text-[3.5rem] font-extrabold tracking-tight leading-none mb-2 text-primary">Your Faves</h1>
+          <p className="text-on-surface-variant text-lg">Places you&apos;ve saved for later.</p>
         </section>
 
         {loading ? (
@@ -121,28 +121,28 @@ export default function FavoritesPage() {
                   href={`/vendor/${vendor.id}`}
                   className="block bg-white rounded-lg overflow-hidden shadow-[0px_10px_30px_rgba(77,33,42,0.04)] hover:shadow-[0px_20px_40px_rgba(77,33,42,0.1)] transition-all"
                 >
-                  <div className="h-48 bg-[#ffe1e4] overflow-hidden">
+                  <div className="h-48 bg-surface-container overflow-hidden">
                     <BlurImage src={vendor.cover_image_url || vendor.image_url} alt={vendor.name} fill className="w-full h-full group-hover:scale-105 transition-transform duration-700" sizes="(max-width: 768px) 100vw, 50vw" />
                   </div>
                   <div className="p-5">
                     <div className="flex justify-between items-start">
                       <div>
-                        <h3 className="font-bold text-[#4d212a] text-lg">{vendor.shop_name || vendor.name}</h3>
-                        <span className="text-xs bg-[#ff7670]/20 text-[#4e0006] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">{vendor.cuisine || "Food"}</span>
+                        <h3 className="font-bold text-on-surface text-lg">{vendor.shop_name || vendor.name}</h3>
+                        <span className="text-xs bg-primary-container/20 text-on-primary px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">{vendor.cuisine || "Food"}</span>
                       </div>
-                      <div className="flex items-center gap-1 text-sm font-bold text-[#4d212a]">
-                        <span className="material-symbols-outlined text-[#ba001c] text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                      <div className="flex items-center gap-1 text-sm font-bold text-on-surface">
+                        <span className="material-symbols-outlined text-primary text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
                         {vendor.rating.toFixed(1)}
                       </div>
                     </div>
-                    <p className="text-xs text-[#814c55] mt-2">
+                    <p className="text-xs text-on-surface-variant mt-2">
                       {vendor.delivery_time_min ? `${vendor.delivery_time_min}–${vendor.delivery_time_max || vendor.delivery_time_min + 15} min` : vendor.delivery_time_minutes ? `${vendor.delivery_time_minutes - 5}–${vendor.delivery_time_minutes + 5} mins` : (vendor.delivery_time || "30-40 mins")}
                     </p>
                   </div>
                 </Link>
                 <button
                   onClick={(e) => { e.preventDefault(); handleToggle(vendor.id); }}
-                  className="absolute top-3 right-3 w-9 h-9 rounded-full bg-[#ba001c] text-white flex items-center justify-center shadow-lg transition-all active:scale-90 hover:bg-[#a40017]"
+                  className="absolute top-3 right-3 w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center shadow-lg transition-all active:scale-90 hover:bg-primary-dim"
                   aria-label="Remove from favourites"
                 >
                   <span className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>

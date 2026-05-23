@@ -309,30 +309,30 @@ export default function CheckoutPage() {
 
   if (!isMounted) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#fff4f4]">
-        <div className="w-8 h-8 border-4 border-[#ba001c]/20 border-t-[#ba001c] rounded-full animate-spin"></div>
+      <div className="min-h-screen flex items-center justify-center bg-surface">
+        <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
       </div>
     );
   }
 
   return (
     <>
-      <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-[#fff4f4]/80 backdrop-blur-2xl shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
+      <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-surface/80 backdrop-blur-2xl shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
         <div className="flex items-center gap-4">
-          <Link href="/app/cart" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#ffe1e4] transition-all">
-            <span className="material-symbols-outlined text-[#ba001c]">arrow_back</span>
+          <Link href="/app/cart" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-all">
+            <span className="material-symbols-outlined text-primary">arrow_back</span>
           </Link>
-          <span className="text-2xl font-extrabold tracking-tighter text-[#ba001c]">MIIAM</span>
+          <span className="text-2xl font-extrabold tracking-tighter text-primary">MIIAM</span>
         </div>
-        <span className="text-[#4d212a] font-semibold hidden md:block">Checkout</span>
+        <span className="text-on-surface font-semibold hidden md:block">Checkout</span>
       </nav>
 
       <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Cart', href: '/app/cart' }, { label: 'Checkout' }]} />
 
       <main className="pt-24 pb-32 px-6 max-w-7xl mx-auto">
         <header className="mb-12">
-          <h1 className="text-5xl font-extrabold tracking-tight text-[#4d212a] mb-2">Secure Checkout</h1>
-          <p className="text-[#814c55]">Complete your order with peace of mind.</p>
+          <h1 className="text-5xl font-extrabold tracking-tight text-on-surface mb-2">Secure Checkout</h1>
+          <p className="text-on-surface-variant">Complete your order with peace of mind.</p>
         </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -341,30 +341,30 @@ export default function CheckoutPage() {
             {/* Delivery Address */}
             <section className="bg-white p-6 rounded-2xl shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
               <div className="flex items-center gap-3 mb-5">
-                <div className="w-10 h-10 rounded-full bg-[#ffe1e4] flex items-center justify-center">
-                  <span className="material-symbols-outlined text-[#ba001c]">location_on</span>
+                <div className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
+                  <span className="material-symbols-outlined text-primary">location_on</span>
                 </div>
                 <div className="flex-1">
-                  <h2 className="text-lg font-extrabold text-[#4d212a]">Delivery Address</h2>
-                  <p className="text-xs text-[#814c55]">Where should we deliver?</p>
+                  <h2 className="text-lg font-extrabold text-on-surface">Delivery Address</h2>
+                  <p className="text-xs text-on-surface-variant">Where should we deliver?</p>
                 </div>
                 <button
                   onClick={() => setShowAddressPicker(true)}
-                  className="text-[#ba001c] font-bold text-sm bg-[#fff4f4] px-3 py-1.5 rounded-lg hover:bg-[#ffe1e4] transition-colors"
+                  className="text-primary font-bold text-sm bg-surface px-3 py-1.5 rounded-lg hover:bg-surface-container transition-colors"
                 >
                   Change
                 </button>
               </div>
 
               {deliveryAddress ? (
-                <div className="p-4 rounded-xl border-2 border-[#ba001c] bg-[#fff8f8] flex items-start gap-4">
-                  <div className="w-11 h-11 rounded-xl bg-[#ffe1e4] flex items-center justify-center flex-shrink-0">
-                    <span className="material-symbols-outlined text-[#ba001c]" style={{ fontVariationSettings: "'FILL' 1" }}>
+                <div className="p-4 rounded-xl border-2 border-primary bg-[#fff8f8] flex items-start gap-4">
+                  <div className="w-11 h-11 rounded-xl bg-surface-container flex items-center justify-center flex-shrink-0">
+                    <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>
                       {deliveryAddress.type === "office" ? "business" : deliveryAddress.type === "other" ? "place" : "home"}
                     </span>
                   </div>
                   <div className="flex-1">
-                    <p className="font-bold text-[#4d212a] flex items-center gap-2">
+                    <p className="font-bold text-on-surface flex items-center gap-2">
                       {deliveryAddress.label || "Home"}
                       {deliveryAddress.lat && (
                         <span className="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-semibold flex items-center gap-1">
@@ -372,21 +372,21 @@ export default function CheckoutPage() {
                         </span>
                       )}
                     </p>
-                    <p className="text-sm text-[#814c55] mt-1 leading-relaxed">
+                    <p className="text-sm text-on-surface-variant mt-1 leading-relaxed">
                       {[deliveryAddress.flat, deliveryAddress.street, deliveryAddress.city, deliveryAddress.state].filter(Boolean).join(", ")}
                     </p>
                     {deliveryAddress.landmark && (
                       <p className="text-xs text-slate-400 mt-1">📍 Near {deliveryAddress.landmark}</p>
                     )}
                   </div>
-                  <div className="w-6 h-6 bg-[#ba001c] rounded-full flex items-center justify-center flex-shrink-0">
+                  <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
                     <span className="material-symbols-outlined text-white text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>check</span>
                   </div>
                 </div>
               ) : (
                 <button
                   onClick={() => setShowAddressPicker(true)}
-                  className="w-full p-5 rounded-xl border-2 border-dashed border-[#dd9ca6]/50 flex flex-col items-center gap-2 text-[#814c55] hover:border-[#ba001c] hover:text-[#ba001c] hover:bg-[#fff4f4] transition-all"
+                  className="w-full p-5 rounded-xl border-2 border-dashed border-outline-variant/50 flex flex-col items-center gap-2 text-on-surface-variant hover:border-primary hover:text-primary hover:bg-surface transition-all"
                 >
                   <span className="material-symbols-outlined text-3xl">add_location</span>
                   <span className="font-bold">Add Delivery Address</span>
@@ -397,7 +397,7 @@ export default function CheckoutPage() {
               {deliveryAddress && (
                 <button
                   onClick={() => setShowAddressPicker(true)}
-                  className="mt-3 w-full py-3 rounded-xl border-2 border-dashed border-[#dd9ca6]/40 text-sm font-bold text-[#814c55] hover:border-[#ba001c] hover:text-[#ba001c] flex items-center justify-center gap-2 transition-all"
+                  className="mt-3 w-full py-3 rounded-xl border-2 border-dashed border-outline-variant/40 text-sm font-bold text-on-surface-variant hover:border-primary hover:text-primary flex items-center justify-center gap-2 transition-all"
                 >
                   <span className="material-symbols-outlined text-sm">add</span>
                   Use a Different Address
@@ -409,22 +409,22 @@ export default function CheckoutPage() {
             {items.some(i => i.vendor_id === "5e700000-0000-4000-8000-000000000000") && (
               <section className="bg-white p-8 rounded-lg shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
                 <div className="flex items-center gap-4 mb-8">
-                  <div className="w-12 h-12 rounded-full bg-[#dcfce7] flex items-center justify-center text-[#166534]">
+                  <div className="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center text-green-700">
                     <span className="material-symbols-outlined">event_available</span>
                   </div>
                   <h2 className="text-2xl font-bold">Scheduled Services</h2>
                 </div>
                 <div className="space-y-4">
                   {items.filter(i => i.vendor_id === "5e700000-0000-4000-8000-000000000000").map(item => (
-                    <div key={item.menu_item_id} className="p-4 rounded-lg border border-[#dd9ca6]/20 bg-slate-50 flex justify-between items-center">
+                    <div key={item.menu_item_id} className="p-4 rounded-lg border border-outline-variant/20 bg-slate-50 flex justify-between items-center">
                       <div>
                         <h3 className="font-bold">{item.name.split(' (')[0]}</h3>
-                        <p className="text-sm text-[#0b50d5] flex items-center gap-1 font-semibold mt-1">
+                        <p className="text-sm text-secondary flex items-center gap-1 font-semibold mt-1">
                           <span className="material-symbols-outlined text-[14px]">schedule</span>
                           {item.name.includes('(') ? item.name.substring(item.name.indexOf('(') + 1, item.name.lastIndexOf(')')) : "Scheduled"}
                         </p>
                       </div>
-                      <div className="font-bold text-[#ba001c]">₹{item.price} x {item.quantity}</div>
+                      <div className="font-bold text-primary">₹{item.price} x {item.quantity}</div>
                     </div>
                   ))}
                 </div>
@@ -435,27 +435,27 @@ export default function CheckoutPage() {
             {!items.some(i => i.vendor_id === "5e700000-0000-4000-8000-000000000000") && (
               <section className="bg-white p-8 rounded-lg shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
                 <div className="flex items-center gap-4 mb-8">
-                  <div className="w-12 h-12 rounded-full bg-[#fef3c7] flex items-center justify-center text-[#92400e]">
+                  <div className="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center text-amber-700">
                     <span className="material-symbols-outlined">schedule</span>
                   </div>
                   <div>
                     <h2 className="text-2xl font-bold">Schedule Delivery</h2>
-                    <p className="text-sm text-[#814c55]">Select date & time for delivery</p>
+                    <p className="text-sm text-on-surface-variant">Select date & time for delivery</p>
                   </div>
                 </div>
                 
                 {/* Date Picker */}
                 <button
                   onClick={() => setShowDatePicker(!showDatePicker)}
-                  className="w-full p-4 rounded-lg border-2 border-[#dd9ca6]/30 flex items-center justify-between hover:border-[#ba001c] transition-all mb-4"
+                  className="w-full p-4 rounded-lg border-2 border-outline-variant/30 flex items-center justify-between hover:border-primary transition-all mb-4"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-[#ba001c]">calendar_month</span>
-                    <span className={scheduledDate ? "font-bold text-[#4d212a]" : "text-[#814c55]"}>
+                    <span className="material-symbols-outlined text-primary">calendar_month</span>
+                    <span className={scheduledDate ? "font-bold text-on-surface" : "text-on-surface-variant"}>
                       {scheduledDate || "Select a date"}
                     </span>
                   </div>
-                  <span className="material-symbols-outlined text-[#ba001c]">
+                  <span className="material-symbols-outlined text-primary">
                     {showDatePicker ? "expand_less" : "expand_more"}
                   </span>
                 </button>
@@ -467,7 +467,7 @@ export default function CheckoutPage() {
                       min={new Date().toISOString().split('T')[0]}
                       value={scheduledDate}
                       onChange={(e) => setScheduledDate(e.target.value)}
-                      className="w-full p-4 rounded-lg border-2 border-[#dd9ca6]/30 focus:border-[#ba001c] focus:outline-none"
+                      className="w-full p-4 rounded-lg border-2 border-outline-variant/30 focus:border-primary focus:outline-none"
                     />
                     <div className="flex gap-2 mt-3 flex-wrap">
                       {dateOptions.map((d) => (
@@ -476,8 +476,8 @@ export default function CheckoutPage() {
                           onClick={() => setScheduledDate(d.value)}
                           className={`px-4 py-2 rounded-lg text-xs font-semibold border transition-all ${
                             scheduledDate === d.value
-                              ? "bg-[#ba001c] text-white border-[#ba001c]"
-                              : "border-[#dd9ca6]/30 hover:border-[#ba001c]"
+                              ? "bg-primary text-white border-primary"
+                              : "border-outline-variant/30 hover:border-primary"
                           }`}
                         >
                           {d.label}
@@ -490,15 +490,15 @@ export default function CheckoutPage() {
                 {/* Time Picker */}
                 <button
                   onClick={() => setShowTimePicker(!showTimePicker)}
-                  className="w-full p-4 rounded-lg border-2 border-[#dd9ca6]/30 flex items-center justify-between hover:border-[#ba001c] transition-all"
+                  className="w-full p-4 rounded-lg border-2 border-outline-variant/30 flex items-center justify-between hover:border-primary transition-all"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-[#ba001c]">access_time</span>
-                    <span className={scheduledTime ? "font-bold text-[#4d212a]" : "text-[#814c55]"}>
+                    <span className="material-symbols-outlined text-primary">access_time</span>
+                    <span className={scheduledTime ? "font-bold text-on-surface" : "text-on-surface-variant"}>
                       {scheduledTime || "Select a time slot"}
                     </span>
                   </div>
-                  <span className="material-symbols-outlined text-[#ba001c]">
+                  <span className="material-symbols-outlined text-primary">
                     {showTimePicker ? "expand_less" : "expand_more"}
                   </span>
                 </button>
@@ -510,8 +510,8 @@ export default function CheckoutPage() {
                         onClick={() => { setScheduledTime(slot); setShowTimePicker(false); }}
                         className={`p-3 rounded-lg text-sm font-semibold border transition-all ${
                           scheduledTime === slot
-                            ? "bg-[#ba001c] text-white border-[#ba001c]"
-                            : "border-[#dd9ca6]/30 hover:border-[#ba001c]"
+                            ? "bg-primary text-white border-primary"
+                            : "border-outline-variant/30 hover:border-primary"
                         }`}
                       >
                         {slot}
@@ -564,8 +564,8 @@ export default function CheckoutPage() {
                     key={pm.id}
                     className={`flex items-center justify-between p-6 rounded-lg cursor-pointer transition-all ${
                       paymentMethod === pm.id
-                        ? "bg-[#ffecee] border-2 border-[#ba001c]"
-                        : "hover:bg-[#ffecee] border-2 border-transparent"
+                        ? "bg-surface-container-low border-2 border-primary"
+                        : "hover:bg-surface-container-low border-2 border-transparent"
                     }`}
                   >
                     <div className="flex items-center gap-4">
@@ -574,12 +574,12 @@ export default function CheckoutPage() {
                         name="payment"
                         checked={paymentMethod === pm.id}
                         onChange={() => setPaymentMethod(pm.id)}
-                        className="w-5 h-5 text-[#ba001c]"
+                        className="w-5 h-5 text-primary"
                       />
-                      <span className="material-symbols-outlined text-[#0b50d5]">{pm.icon}</span>
+                      <span className="material-symbols-outlined text-secondary">{pm.icon}</span>
                       <div>
                         <p className="font-bold">{pm.label}</p>
-                        <p className="text-xs text-[#814c55]">{pm.sub}</p>
+                        <p className="text-xs text-on-surface-variant">{pm.sub}</p>
                       </div>
                     </div>
                   </label>
@@ -590,13 +590,13 @@ export default function CheckoutPage() {
 
           {/* Right: Order Summary */}
           <div className="lg:col-span-4 sticky top-24">
-            <aside className="bg-[#ffecee] p-8 rounded-lg shadow-[0px_20px_40px_rgba(77,33,42,0.06)] relative overflow-hidden">
-              <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#ff7670]/20 rounded-full blur-3xl" />
+            <aside className="bg-surface-container-low p-8 rounded-lg shadow-[0px_20px_40px_rgba(77,33,42,0.06)] relative overflow-hidden">
+              <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary-container/20 rounded-full blur-3xl" />
               <h2 className="text-2xl font-extrabold mb-8 tracking-tight">Order Summary</h2>
               <div className="space-y-4 mb-8">
-                <div className="flex justify-between text-[#814c55]">
+                <div className="flex justify-between text-on-surface-variant">
                   <span>Subtotal ({items.length} items)</span>
-                  <span className="font-semibold text-[#4d212a]">₹{subtotal.toFixed(2)}</span>
+                  <span className="font-semibold text-on-surface">₹{subtotal.toFixed(2)}</span>
                 </div>
                 {discount > 0 && (
                   <div className="flex justify-between text-green-600">
@@ -604,17 +604,17 @@ export default function CheckoutPage() {
                     <span className="font-semibold">-₹{discount.toFixed(2)}</span>
                   </div>
                 )}
-                <div className="flex justify-between text-[#814c55]">
+                <div className="flex justify-between text-on-surface-variant">
                   <span>Delivery Fee</span>
-                  <span className="font-semibold text-[#0b50d5]">FREE</span>
+                  <span className="font-semibold text-secondary">FREE</span>
                 </div>
-                <div className="flex justify-between text-[#814c55]">
+                <div className="flex justify-between text-on-surface-variant">
                   <span>Tax (5%)</span>
-                  <span className="font-semibold text-[#4d212a]">₹{tax}</span>
+                  <span className="font-semibold text-on-surface">₹{tax}</span>
                 </div>
                 
                 {/* Rider Tip */}
-                <div className="py-3 border-t border-dashed border-[#dd9ca6]/30">
+                <div className="py-3 border-t border-dashed border-outline-variant/30">
                   {showTipSelector ? (
                     <RiderTipSelector 
                       orderAmount={subtotal} 
@@ -624,9 +624,9 @@ export default function CheckoutPage() {
                   ) : (
                     <div className="space-y-2">
                       <div className="flex justify-between items-center text-sm">
-                        <span className="font-bold text-[#4d212a]">Rider Tip</span>
+                        <span className="font-bold text-on-surface">Rider Tip</span>
                         <div className="flex items-center gap-2">
-                          <span className="font-semibold text-[#ba001c]">₹{tipAmount}</span>
+                          <span className="font-semibold text-primary">₹{tipAmount}</span>
                           <button onClick={() => setShowTipSelector(true)} className="text-xs text-blue-600 underline">Edit</button>
                         </div>
                       </div>
@@ -637,10 +637,10 @@ export default function CheckoutPage() {
                 
                 {/* Loyalty Points Redemption */}
                 {loyaltyPoints > 0 && (
-                  <div className="py-3 border-t border-dashed border-[#dd9ca6]/30">
+                  <div className="py-3 border-t border-dashed border-outline-variant/30">
                     <div className="flex items-center justify-between mb-2">
-                      <p className="text-sm font-bold text-[#4d212a]">💎 Use Loyalty Points</p>
-                      <span className="text-xs text-[#814c55]">{loyaltyPoints} points available</span>
+                      <p className="text-sm font-bold text-on-surface">💎 Use Loyalty Points</p>
+                      <span className="text-xs text-on-surface-variant">{loyaltyPoints} points available</span>
                     </div>
                     <div className="mt-3 bg-white p-4 rounded-xl border border-slate-200 shadow-inner">
                       <div className="flex justify-between items-center mb-2">
@@ -660,7 +660,7 @@ export default function CheckoutPage() {
                               setUseLoyaltyPoints(true);
                               setLoyaltyPointsToRedeem(maxRedeemable);
                             }}
-                            className="text-[10px] font-bold text-[#453900] px-2 py-1 rounded bg-[#ffd709] hover:bg-[#e5c100]"
+                            className="text-[10px] font-bold text-[#453900] px-2 py-1 rounded bg-[#ffd709] hover:bg-tertiary-dim"
                           >
                             Use Max
                           </button>
@@ -678,9 +678,9 @@ export default function CheckoutPage() {
                             setLoyaltyPointsToRedeem(val);
                             setUseLoyaltyPoints(val > 0);
                           }}
-                          className="w-full accent-[#ba001c] h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer"
+                          className="w-full accent-primary h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer"
                         />
-                        <div className="shrink-0 w-16 text-right font-bold text-[#4d212a] bg-[#ffecee] px-2 py-1 rounded-md">
+                        <div className="shrink-0 w-16 text-right font-bold text-on-surface bg-surface-container-low px-2 py-1 rounded-md">
                           {loyaltyPointsToRedeem}
                         </div>
                       </div>
@@ -693,11 +693,11 @@ export default function CheckoutPage() {
                   </div>
                 )}
                 
-                <div className="pt-4 border-t border-[#dd9ca6]/30 flex justify-between items-end">
+                <div className="pt-4 border-t border-outline-variant/30 flex justify-between items-end">
                   <span className="text-lg font-bold">Total Amount</span>
                   <div className="text-right">
-                    <p className="text-3xl font-extrabold text-[#ba001c] tracking-tighter">₹{grand}</p>
-                    <p className="text-[10px] text-[#814c55] uppercase tracking-widest font-bold">Inc. all taxes</p>
+                    <p className="text-3xl font-extrabold text-primary tracking-tighter">₹{grand}</p>
+                    <p className="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">Inc. all taxes</p>
                   </div>
                 </div>
               </div>
@@ -720,7 +720,7 @@ export default function CheckoutPage() {
                 ) : (
                   <div className="relative">
                     <input
-                      className="w-full bg-white border-none rounded-xl py-4 pl-4 pr-32 focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                      className="w-full bg-white border-none rounded-xl py-4 pl-4 pr-32 focus:outline-none focus:ring-2 focus:ring-primary/20"
                       placeholder="Promo Code"
                       value={promoCode}
                       onChange={(e) => { setPromoCode(e.target.value); setPromoError(""); }}
@@ -728,20 +728,20 @@ export default function CheckoutPage() {
                     />
                     <button 
                       onClick={handleApplyPromo}
-                      className="absolute right-2 top-2 bottom-2 px-4 bg-[#4d212a] text-white rounded-lg font-bold text-xs hover:bg-black transition-colors"
+                      className="absolute right-2 top-2 bottom-2 px-4 bg-on-surface text-white rounded-lg font-bold text-xs hover:bg-black transition-colors"
                     >
                       APPLY
                     </button>
                   </div>
                 )}
                 {promoError && <p className="text-red-500 text-xs mt-2">{promoError}</p>}
-                <p className="text-xs text-[#814c55] mt-2">Try: FIRST50, MIIAM20, SAVE50</p>
+                <p className="text-xs text-on-surface-variant mt-2">Try: FIRST50, MIIAM20, SAVE50</p>
               </div>
 
               <button
                 onClick={placeOrder}
                 disabled={placing || items.length === 0 || !deliveryAddress}
-                className="w-full bg-gradient-to-r from-[#ba001c] to-[#ff7670] text-white py-5 rounded-xl text-lg font-extrabold shadow-lg shadow-[#ba001c]/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 disabled:opacity-60"
+                className="w-full bg-gradient-to-r from-primary to-primary-container text-white py-5 rounded-xl text-lg font-extrabold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 disabled:opacity-60"
               >
                 {placing ? (
                   <>
@@ -751,7 +751,7 @@ export default function CheckoutPage() {
                 ) : "Place Order"}
                 {!placing && <span className="material-symbols-outlined">shield</span>}
               </button>
-              <p className="text-center mt-6 text-xs text-[#814c55] flex items-center justify-center gap-2">
+              <p className="text-center mt-6 text-xs text-on-surface-variant flex items-center justify-center gap-2">
                 <span className="material-symbols-outlined text-sm">lock</span>
                 100% Encrypted &amp; Secure Payment
               </p>

@@ -86,8 +86,8 @@ export default function AddressPickerPage() {
 
       const accuracyCircle = L.circle([defaultLat, defaultLng], {
         radius: 20,
-        color: '#0b50d5',
-        fillColor: '#0b50d5',
+        color: 'var(--color-secondary)',
+        fillColor: 'var(--color-secondary)',
         fillOpacity: 0.15,
         weight: 2
       }).addTo(map);
@@ -371,10 +371,10 @@ export default function AddressPickerPage() {
       <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md">
         <div className="flex items-center gap-3 px-4 py-3">
           <Link href="/app/checkout">
-            <span className="material-symbols-outlined text-[#4d212a]">arrow_back</span>
+            <span className="material-symbols-outlined text-on-surface">arrow_back</span>
           </Link>
           <div className="flex-1">
-            <h1 className="text-lg font-bold text-[#4d212a]">Select Delivery Address</h1>
+            <h1 className="text-lg font-bold text-on-surface">Select Delivery Address</h1>
             <p className="text-xs text-slate-500">Choose location on map or search</p>
           </div>
         </div>
@@ -392,9 +392,9 @@ export default function AddressPickerPage() {
           title="Use current location"
         >
           {detecting ? (
-            <span className="w-5 h-5 border-2 border-[#ba001c] border-t-transparent rounded-full animate-spin block" />
+            <span className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin block" />
           ) : (
-            <span className="material-symbols-outlined text-[#ba001c]">my_location</span>
+            <span className="material-symbols-outlined text-primary">my_location</span>
           )}
         </button>
 
@@ -430,7 +430,7 @@ export default function AddressPickerPage() {
                   {locationAccuracy ? `GPS Accuracy: ${locationAccuracy.toFixed(0)}m` : "Location Selected"}
                 </span>
               </div>
-              <p className="font-medium text-[#4d212a] text-sm">{currentLocation.address}</p>
+              <p className="font-medium text-on-surface text-sm">{currentLocation.address}</p>
               <p className="text-xs text-slate-400 mt-1">{currentLocation.lat.toFixed(6)}, {currentLocation.lng.toFixed(6)}</p>
             </div>
 
@@ -440,7 +440,7 @@ export default function AddressPickerPage() {
                 <button
                   onClick={() => setAddressLabel("home")}
                   className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium flex items-center justify-center gap-1 transition-all ${
-                    addressLabel === "home" ? "bg-[#ba001c] text-white" : "bg-slate-100 text-slate-600"
+                    addressLabel === "home" ? "bg-primary text-white" : "bg-slate-100 text-slate-600"
                   }`}
                 >
                   <span className="material-symbols-outlined text-sm">home</span>
@@ -449,7 +449,7 @@ export default function AddressPickerPage() {
                 <button
                   onClick={() => setAddressLabel("office")}
                   className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium flex items-center justify-center gap-1 transition-all ${
-                    addressLabel === "office" ? "bg-[#ba001c] text-white" : "bg-slate-100 text-slate-600"
+                    addressLabel === "office" ? "bg-primary text-white" : "bg-slate-100 text-slate-600"
                   }`}
                 >
                   <span className="material-symbols-outlined text-sm">work</span>
@@ -458,7 +458,7 @@ export default function AddressPickerPage() {
                 <button
                   onClick={() => setAddressLabel("other")}
                   className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium flex items-center justify-center gap-1 transition-all ${
-                    addressLabel === "other" ? "bg-[#ba001c] text-white" : "bg-slate-100 text-slate-600"
+                    addressLabel === "other" ? "bg-primary text-white" : "bg-slate-100 text-slate-600"
                   }`}
                 >
                   <span className="material-symbols-outlined text-sm">location_on</span>
@@ -471,7 +471,7 @@ export default function AddressPickerPage() {
                 value={houseNumber}
                 onChange={(e) => setHouseNumber(e.target.value)}
                 placeholder="House/Flat No., Building Name"
-                className="w-full p-3 border border-slate-200 rounded-lg text-sm focus:border-[#ba001c] focus:outline-none"
+                className="w-full p-3 border border-slate-200 rounded-lg text-sm focus:border-primary focus:outline-none"
               />
 
               <input
@@ -479,14 +479,14 @@ export default function AddressPickerPage() {
                 value={landmark}
                 onChange={(e) => setLandmark(e.target.value)}
                 placeholder="Nearby Landmark (optional)"
-                className="w-full p-3 border border-slate-200 rounded-lg text-sm focus:border-[#ba001c] focus:outline-none"
+                className="w-full p-3 border border-slate-200 rounded-lg text-sm focus:border-primary focus:outline-none"
               />
 
               <textarea
                 value={deliveryInstructions}
                 onChange={(e) => setDeliveryInstructions(e.target.value)}
                 placeholder="Delivery instructions (e.g., gate code, floor)"
-                className="w-full p-3 border border-slate-200 rounded-lg text-sm focus:border-[#ba001c] focus:outline-none"
+                className="w-full p-3 border border-slate-200 rounded-lg text-sm focus:border-primary focus:outline-none"
                 rows={2}
               />
 
@@ -494,10 +494,10 @@ export default function AddressPickerPage() {
                 <button
                   onClick={() => handleDetectLocation(true)}
                   disabled={detecting}
-                  className="flex-1 py-3 rounded-lg border-2 border-[#0b50d5] text-[#0b50d5] font-bold text-sm hover:bg-blue-50 transition-colors flex items-center justify-center gap-2"
+                  className="flex-1 py-3 rounded-lg border-2 border-secondary text-secondary font-bold text-sm hover:bg-blue-50 transition-colors flex items-center justify-center gap-2"
                 >
                   {detecting ? (
-                    <span className="w-4 h-4 border-2 border-[#0b50d5] border-t-transparent rounded-full animate-spin" />
+                    <span className="w-4 h-4 border-2 border-secondary border-t-transparent rounded-full animate-spin" />
                   ) : (
                     <span className="material-symbols-outlined text-sm">my_location</span>
                   )}
@@ -506,7 +506,7 @@ export default function AddressPickerPage() {
                 <button
                   onClick={handleSave}
                   disabled={saving}
-                  className="flex-[2] bg-[#ba001c] text-white py-3 rounded-lg font-bold text-sm hover:bg-[#a40017] transition-colors flex items-center justify-center gap-2 disabled:opacity-60"
+                  className="flex-[2] bg-primary text-white py-3 rounded-lg font-bold text-sm hover:bg-primary-dim transition-colors flex items-center justify-center gap-2 disabled:opacity-60"
                 >
                   {saving ? (
                     <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -529,10 +529,10 @@ export default function AddressPickerPage() {
                 value={searchQuery}
                 onChange={(e) => handleSearchInput(e.target.value)}
                 placeholder="Search for area, street, landmark..."
-                className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg text-sm focus:border-[#ba001c] focus:outline-none"
+                className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg text-sm focus:border-primary focus:outline-none"
               />
               {searching && (
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 border-2 border-slate-300 border-t-[#ba001c] rounded-full animate-spin" />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 border-2 border-slate-300 border-t-primary rounded-full animate-spin" />
               )}
             </div>
 
@@ -544,7 +544,7 @@ export default function AddressPickerPage() {
                     onClick={() => handleSelectSearchResult(result)}
                     className="w-full text-left p-3 border-b border-slate-100 hover:bg-slate-50 last:border-0"
                   >
-                    <p className="text-sm text-[#4d212a] line-clamp-2">{result.display_name.split(", ").slice(0, 3).join(", ")}</p>
+                    <p className="text-sm text-on-surface line-clamp-2">{result.display_name.split(", ").slice(0, 3).join(", ")}</p>
                   </button>
                 ))}
               </div>

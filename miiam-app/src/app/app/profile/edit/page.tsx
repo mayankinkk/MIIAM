@@ -129,26 +129,26 @@ export default function EditProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#fff4f4] flex justify-center pt-32">
-        <div className="w-8 h-8 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-surface flex justify-center pt-32">
+        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
     <>
-      <header className="fixed top-0 w-full z-50 flex items-center px-6 py-4 bg-[#fff4f4]/80 backdrop-blur-2xl shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
-        <Link href="/app/profile" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#ffe1e4] transition-all mr-4">
-          <span className="material-symbols-outlined text-[#ba001c]">arrow_back</span>
+      <header className="fixed top-0 w-full z-50 flex items-center px-6 py-4 bg-surface/80 backdrop-blur-2xl shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
+        <Link href="/app/profile" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-all mr-4">
+          <span className="material-symbols-outlined text-primary">arrow_back</span>
         </Link>
-        <span className="text-xl font-extrabold tracking-tight text-[#4d212a]">Edit Profile</span>
+        <span className="text-xl font-extrabold tracking-tight text-on-surface">Edit Profile</span>
       </header>
 
       <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Profile', href: '/app/profile' }, { label: 'Edit Profile' }]} />
 
       <main className="pt-24 pb-32 px-6 max-w-2xl mx-auto">
         {error && (
-          <div className="mb-6 p-4 bg-[#f95630]/10 border border-[#f95630]/30 rounded-xl text-[#b02500] text-sm font-medium">
+          <div className="mb-6 p-4 bg-error-container/10 border border-[#f95630]/30 rounded-xl text-error text-sm font-medium">
             {error}
           </div>
         )}
@@ -157,8 +157,8 @@ export default function EditProfilePage() {
           <div className="bg-white rounded-xl p-6 shadow-[0px_10px_30px_rgba(77,33,42,0.04)] space-y-6">
             
             {/* Avatar Upload */}
-            <div className="flex flex-col items-center justify-center border-b border-[#dd9ca6]/20 pb-6 mb-6">
-              <div className="w-24 h-24 rounded-full bg-[#ffe1e4] flex items-center justify-center text-[#ba001c] text-3xl font-bold mb-3 overflow-hidden relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+            <div className="flex flex-col items-center justify-center border-b border-outline-variant/20 pb-6 mb-6">
+              <div className="w-24 h-24 rounded-full bg-surface-container flex items-center justify-center text-primary text-3xl font-bold mb-3 overflow-hidden relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
                 {formData.avatarUrl ? (
                   <BlurImage src={formData.avatarUrl} alt="Avatar" fill className="w-full h-full" sizes="96px" />
                 ) : (
@@ -166,7 +166,7 @@ export default function EditProfilePage() {
                 )}
                 {uploading && (
                   <div className="absolute inset-0 bg-white/60 flex items-center justify-center">
-                    <span className="w-6 h-6 border-2 border-[#ba001c] border-t-transparent rounded-full animate-spin" />
+                    <span className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
                   </div>
                 )}
               </div>
@@ -177,41 +177,41 @@ export default function EditProfilePage() {
                 accept="image/*"
                 className="hidden"
               />
-              <button type="button" onClick={() => fileInputRef.current?.click()} disabled={uploading} className="text-[#0b50d5] text-sm font-bold hover:underline disabled:opacity-50">
+              <button type="button" onClick={() => fileInputRef.current?.click()} disabled={uploading} className="text-secondary text-sm font-bold hover:underline disabled:opacity-50">
                 {uploading ? "Uploading..." : "Change Photo"}
               </button>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#814c55] uppercase tracking-widest mb-2 px-1">Full Name</label>
+              <label className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2 px-1">Full Name</label>
               <input
                 type="text"
                 required
                 value={formData.fullName}
                 onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                className="w-full bg-[#ffecee] border-none rounded-xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-[#ba001c]/40 font-medium text-[#4d212a]"
+                className="w-full bg-surface-container-low border-none rounded-xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-primary/40 font-medium text-on-surface"
                 placeholder="John Doe"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#814c55] uppercase tracking-widest mb-2 px-1">Email Address</label>
+              <label className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2 px-1">Email Address</label>
               <input
                 type="email"
                 disabled
                 value={formData.email}
-                className="w-full bg-[#f8f9fa] border-none rounded-xl px-5 py-4 text-[#814c55] cursor-not-allowed opacity-70 font-medium"
+                className="w-full bg-[#f8f9fa] border-none rounded-xl px-5 py-4 text-on-surface-variant cursor-not-allowed opacity-70 font-medium"
               />
-              <p className="text-[10px] text-[#814c55] mt-2 px-1 font-medium">Email address cannot be changed from this screen.</p>
+              <p className="text-[10px] text-on-surface-variant mt-2 px-1 font-medium">Email address cannot be changed from this screen.</p>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#814c55] uppercase tracking-widest mb-2 px-1">Phone Number</label>
+              <label className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2 px-1">Phone Number</label>
               <input
                 type="tel"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                className="w-full bg-[#ffecee] border-none rounded-xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-[#ba001c]/40 font-medium text-[#4d212a]"
+                className="w-full bg-surface-container-low border-none rounded-xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-primary/40 font-medium text-on-surface"
                 placeholder="+1 234 567 8900"
               />
             </div>
@@ -220,7 +220,7 @@ export default function EditProfilePage() {
           <button
             type="submit"
             disabled={saving || uploading}
-            className="w-full bento-gradient-red text-white py-5 rounded-xl font-extrabold text-lg shadow-lg shadow-[#ba001c]/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-70 flex justify-center items-center gap-2"
+            className="w-full bento-gradient-red text-white py-5 rounded-xl font-extrabold text-lg shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-70 flex justify-center items-center gap-2"
           >
             {saving ? (
               <>

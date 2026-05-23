@@ -102,7 +102,7 @@ export default function VendorPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f8f8f8] flex items-center justify-center">
-        <span className="material-symbols-outlined text-6xl text-[#ba001c] animate-spin">sync</span>
+        <span className="material-symbols-outlined text-6xl text-primary animate-spin">sync</span>
       </div>
     );
   }
@@ -112,7 +112,7 @@ export default function VendorPage() {
       <div className="min-h-screen bg-[#f8f8f8] flex items-center justify-center">
         <div className="text-center">
           <p className="text-slate-600">Vendor not found</p>
-          <Link href="/app/food" className="text-[#ba001c] font-bold mt-4 block">Go Back</Link>
+          <Link href="/app/food" className="text-primary font-bold mt-4 block">Go Back</Link>
         </div>
       </div>
     );
@@ -168,7 +168,7 @@ export default function VendorPage() {
         <div className="bg-white border-b border-slate-100 px-4 py-4">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-bold text-slate-800">Customer Reviews</h2>
-            <Link href={`/app/vendor/${vendorId}/reviews`} className="text-sm text-[#ba001c] font-bold">
+            <Link href={`/app/vendor/${vendorId}/reviews`} className="text-sm text-primary font-bold">
               See All
             </Link>
           </div>
@@ -176,7 +176,7 @@ export default function VendorPage() {
             {reviews.slice(0, 3).map((review: any) => (
               <div key={review.id} className="bg-slate-50 rounded-xl p-3">
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="w-8 h-8 bg-[#ba001c] text-white rounded-full flex items-center justify-center text-xs font-bold">
+                  <div className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-xs font-bold">
                     {review.profile?.full_name?.[0] || "U"}
                   </div>
                   <div>
@@ -186,7 +186,7 @@ export default function VendorPage() {
                         <span
                           key={star}
                           className={`material-symbols-outlined text-sm ${
-                            star <= review.rating ? "text-[#ba001c]" : "text-slate-300"
+                            star <= review.rating ? "text-primary" : "text-slate-300"
                           }`}
                           style={{ fontVariationSettings: `'FILL' ${star <= review.rating ? 1 : 0}` }}
                         >
@@ -220,14 +220,14 @@ export default function VendorPage() {
       {/* Restaurant Details */}
       <div className="bg-white border-b border-slate-100 px-4 py-4">
         <div className="flex items-start gap-3 mb-3">
-          <span className="material-symbols-outlined text-[#ba001c]">location_on</span>
+          <span className="material-symbols-outlined text-primary">location_on</span>
           <div>
             <p className="font-semibold text-slate-800 text-sm">{vendor.address || "Address not available"}</p>
             <p className="text-xs text-slate-500 mt-1">Live tracking not available for this restaurant</p>
           </div>
         </div>
         <div className="flex items-center gap-3 text-sm">
-          <span className="material-symbols-outlined text-[#ba001c]">access_time</span>
+          <span className="material-symbols-outlined text-primary">access_time</span>
           <div>
             <p className="font-semibold text-slate-800">Open now</p>
             <p className="text-xs text-slate-500">9:00 AM - 10:00 PM (Today)</p>
@@ -242,7 +242,7 @@ export default function VendorPage() {
               key={cat}
               onClick={() => setActiveCategory(cat)}
               className={`px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap ${
-                activeCategory === cat ? "bg-[#ba001c] text-white" : "bg-slate-100 text-slate-600"
+                activeCategory === cat ? "bg-primary text-white" : "bg-slate-100 text-slate-600"
               }`}
             >
               {cat}
@@ -297,12 +297,12 @@ export default function VendorPage() {
                     {qty === 0 ? (
                       <button
                         onClick={() => handleCustomizeItem(item)}
-                        className="px-4 py-1.5 bg-[#ba001c] text-white text-sm font-bold rounded-full"
+                        className="px-4 py-1.5 bg-primary text-white text-sm font-bold rounded-full"
                       >
                         Add +
                       </button>
                     ) : (
-                      <div className="flex items-center gap-2 bg-[#ba001c] rounded-full px-2 py-1">
+                      <div className="flex items-center gap-2 bg-primary rounded-full px-2 py-1">
                         <button onClick={() => handleUpdateQty(item.id, -1)} className="text-white font-bold w-6">-</button>
                         <span className="text-white font-bold text-sm">{qty}</span>
                         <button onClick={() => handleUpdateQty(item.id, 1)} className="text-white font-bold w-6">+</button>

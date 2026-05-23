@@ -289,7 +289,7 @@ export default function HomePage() {
         <p className="text-sm text-slate-400 text-center mb-6">{dataError}</p>
         <button
           onClick={() => { setDataError(null); setLoading(true); window.location.reload(); }}
-          className="bg-[#0b50d5] text-white px-8 py-3 rounded-xl font-bold text-sm"
+          className="bg-secondary text-white px-8 py-3 rounded-xl font-bold text-sm"
         >
           Try Again
         </button>
@@ -316,9 +316,9 @@ export default function HomePage() {
                   supabase.from("notifications").update({ read: true }).eq("user_id", user.id).eq("read", false).then();
                 }
               }}
-              className="relative w-10 h-10 bg-[#fff4f4] rounded-full flex items-center justify-center"
+              className="relative w-10 h-10 bg-surface rounded-full flex items-center justify-center"
             >
-              <span className="material-symbols-outlined text-[#ba001c]">notifications</span>
+              <span className="material-symbols-outlined text-primary">notifications</span>
               {unreadCount > 0 && (
                 <span className="absolute top-0 right-0 w-4 h-4 bg-red-500 rounded-full border-2 border-white text-[10px] text-white font-bold flex items-center justify-center">
                   {unreadCount}
@@ -332,9 +332,9 @@ export default function HomePage() {
         <div className="px-4 pb-3">
           <button 
             onClick={() => setShowLocationModal(true)}
-            className="flex items-center gap-2 bg-[#fff4f4] px-4 py-2.5 rounded-xl w-full hover:bg-[#ffecee] transition-colors"
+            className="flex items-center gap-2 bg-surface px-4 py-2.5 rounded-xl w-full hover:bg-surface-container-low transition-colors"
           >
-            <span className="material-symbols-outlined text-[#ba001c]">location_on</span>
+            <span className="material-symbols-outlined text-primary">location_on</span>
             <div className="flex-1 text-left">
               <p className="text-xs text-[#5c403d]">Delivering to</p>
               <p className="font-bold text-[#281716] text-sm">{location}</p>
@@ -430,7 +430,7 @@ export default function HomePage() {
                   <p className="text-xs text-[#5c403d]">Estimated Delivery</p>
                   <p className="font-bold text-orange-600">{activeOrder.eta}</p>
                 </div>
-                <Link href={`/app/orders/${activeOrder.id}`} className="text-[#ba001c] font-bold text-sm">
+                <Link href={`/app/orders/${activeOrder.id}`} className="text-primary font-bold text-sm">
                   Track Order →
                 </Link>
               </div>
@@ -441,7 +441,7 @@ export default function HomePage() {
           <button
             onClick={() => setOrderBubbleExpanded(!orderBubbleExpanded)}
             className={`w-14 h-14 rounded-full shadow-xl flex items-center justify-center transition-all ${
-              orderBubbleExpanded ? 'bg-[#ba001c]' : 'bg-white'
+              orderBubbleExpanded ? 'bg-primary' : 'bg-white'
             }`}
           >
             <span className={`material-symbols-outlined text-2xl ${
@@ -571,7 +571,7 @@ export default function HomePage() {
       <div className="px-4 pb-4">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-lg font-bold text-[#281716]">Nearby Popular 🔥</h2>
-          <Link href="/app/food" className="text-xs font-bold text-[#ba001c]">See All</Link>
+          <Link href="/app/food" className="text-xs font-bold text-primary">See All</Link>
         </div>
         {nearbyRestaurants.filter(r => r.type === 'food' || r.type === 'restaurant').length > 0 ? (
           <div className="space-y-3">
@@ -629,8 +629,8 @@ export default function HomePage() {
           </div>
         ) : !locationStore.pincode ? (
           <div className="bg-white rounded-2xl p-8 text-center shadow-sm">
-            <div className="w-20 h-20 bg-[#ba001c]/10 rounded-full flex items-center justify-center mx-auto mb-4 animate-glow-pulse">
-              <span className="material-symbols-outlined text-4xl text-[#ba001c]">location_on</span>
+            <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 animate-glow-pulse">
+              <span className="material-symbols-outlined text-4xl text-primary">location_on</span>
             </div>
             <h3 className="text-lg font-black text-[#281716] mb-1">Location Required</h3>
             <p className="text-sm text-[#5c403d] mb-5">
@@ -638,7 +638,7 @@ export default function HomePage() {
             </p>
             <button
               onClick={() => setShowLocationModal(true)}
-              className="px-6 py-3 bg-[#ba001c] text-white rounded-xl font-bold text-sm hover:bg-[#a00018] active:scale-95 transition-all shadow-md"
+              className="px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-[#a00018] active:scale-95 transition-all shadow-md"
             >
               Select Delivery PIN Code
             </button>
@@ -652,7 +652,7 @@ export default function HomePage() {
             <p className="text-sm text-[#5c403d] mb-1">
               We couldn't find any vendors near
             </p>
-            <p className="text-sm font-bold text-[#ba001c] mb-4">
+            <p className="text-sm font-bold text-primary mb-4">
               {locationStore.displayAddress} ({locationStore.pincode})
             </p>
             <p className="text-xs text-slate-400 mb-5">
@@ -660,7 +660,7 @@ export default function HomePage() {
             </p>
             <button
               onClick={() => setShowLocationModal(true)}
-              className="px-6 py-3 bg-[#ba001c] text-white rounded-xl font-bold text-sm"
+              className="px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm"
             >
               Change Location
             </button>
@@ -675,7 +675,7 @@ export default function HomePage() {
 
       {/* MIIAM+ Banner */}
       <div className="px-4 pb-4">
-        <Link href="/app/subscription" className="block bg-gradient-to-r from-[#281716] to-[#4d212a] rounded-2xl p-5 text-white relative overflow-hidden">
+        <Link href="/app/subscription" className="block bg-gradient-to-r from-[#281716] to-on-surface rounded-2xl p-5 text-white relative overflow-hidden">
           <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-3xl" />
           <div className="relative z-10">
             <div className="flex items-center gap-2 mb-2">
@@ -684,7 +684,7 @@ export default function HomePage() {
             </div>
             <h3 className="text-lg font-black">Unlock Unlimited Benefits</h3>
             <p className="text-white/80 text-xs mt-1">Free delivery • 20% off • Priority support</p>
-            <span className="inline-block mt-3 bg-white text-[#ba001c] px-4 py-1.5 rounded-full text-xs font-bold">
+            <span className="inline-block mt-3 bg-white text-primary px-4 py-1.5 rounded-full text-xs font-bold">
               Subscribe for ₹99/month
             </span>
           </div>
@@ -717,7 +717,7 @@ export default function HomePage() {
                   setPincodeError("");
                 }}
                 placeholder="Enter 6-digit PIN Code"
-                className="w-full px-4 py-4 bg-gray-100 rounded-xl border-2 border-transparent focus:border-[#ba001c] outline-none text-2xl font-black tracking-[0.5em] text-center"
+                className="w-full px-4 py-4 bg-gray-100 rounded-xl border-2 border-transparent focus:border-primary outline-none text-2xl font-black tracking-[0.5em] text-center"
                 autoFocus
               />
               {pincodeError && <p className="text-red-500 text-xs mt-2 text-center font-bold">{pincodeError}</p>}
@@ -726,7 +726,7 @@ export default function HomePage() {
             <button
               onClick={handleManualLocation}
               disabled={manualPincode.length !== 6 || isLoadingLocation}
-              className="w-full mb-3 bg-[#ba001c] text-white py-4 rounded-xl font-bold text-base hover:bg-[#a00018] transition-colors disabled:opacity-50 active:scale-[0.98] flex items-center justify-center gap-2"
+              className="w-full mb-3 bg-primary text-white py-4 rounded-xl font-bold text-base hover:bg-[#a00018] transition-colors disabled:opacity-50 active:scale-[0.98] flex items-center justify-center gap-2"
             >
               {isLoadingLocation ? (
                 <>
@@ -787,7 +787,7 @@ export default function HomePage() {
 
             {/* Tabs */}
             <div className="flex border-b border-gray-100">
-              <button className="flex-1 py-3 text-sm font-bold text-[#ba001c] border-b-2 border-[#ba001c]">
+              <button className="flex-1 py-3 text-sm font-bold text-primary border-b-2 border-primary">
                 All
               </button>
               <button className="flex-1 py-3 text-sm font-bold text-gray-400">
@@ -804,24 +804,24 @@ export default function HomePage() {
                 <div key={notif.id} className={`p-4 border-b border-gray-50 transition-colors ${!notif.read ? 'bg-orange-50/50' : 'hover:bg-gray-50'}`}>
                   <div className="flex gap-3">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      notif.type === "order" ? "bg-[#ffe1e4]" :
+                      notif.type === "order" ? "bg-surface-container" :
                       notif.type === "promo" ? "bg-amber-100" : "bg-slate-100"
                     }`}>
-                      <span className="material-symbols-outlined text-[#ba001c]">
+                      <span className="material-symbols-outlined text-primary">
                         {notif.type === "order" ? "restaurant" :
                          notif.type === "promo" ? "local_offer" : "info"}
                       </span>
                     </div>
                     <div className="flex-1">
                       <div className="flex items-start justify-between">
-                        <p className={`font-bold text-[#281716] text-sm ${!notif.read ? 'text-[#ba001c]' : ''}`}>{notif.title}</p>
+                        <p className={`font-bold text-[#281716] text-sm ${!notif.read ? 'text-primary' : ''}`}>{notif.title}</p>
                         <span className="text-[10px] text-gray-400">
                           {new Date(notif.created_at).toLocaleDateString()}
                         </span>
                       </div>
                       <p className="text-xs text-[#5c403d] mt-1">{notif.body || notif.message}</p>
                       {notif.type === "offer" && (
-                        <button className="mt-2 text-xs font-bold text-[#ba001c]">
+                        <button className="mt-2 text-xs font-bold text-primary">
                           Apply Now →
                         </button>
                       )}
