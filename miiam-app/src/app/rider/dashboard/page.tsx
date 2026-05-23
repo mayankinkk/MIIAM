@@ -402,7 +402,10 @@ export default function RiderDashboard() {
     
     const channel = supabase
       .channel('rider-orders-dash')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => {
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders' }, () => {
+        fetchRealOrders();
+      })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'orders', filter: `status=in.(pending,no_rider_available,scheduled)` }, () => {
         fetchRealOrders();
       })
       .subscribe();
