@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import PullToRefresh from "@/components/PullToRefresh";
+import { startLocationTracking, stopLocationTracking } from "@/lib/rider-location-tracker";
 
 interface OrderItem {
   id: string;
@@ -863,28 +864,13 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
 
   // Broadcast GPS position continuously
   useEffect(() => {
-    async function broadcastLocation(lat: number, lng: number) {
-      await supabase.from("rider_locations").upsert({
-        order_id: order.id,
-        rider_id: riderId,
-        rider_name: '',
-        rider_phone: '',
-        lat,
-        lng,
-        updated_at: new Date().toISOString(),
-      }, { onConflict: 'order_id' });
-    }
-    if (navigator.geolocation) {
-      locationWatchRef.current = navigator.geolocation.watchPosition(
-        (pos) => broadcastLocation(pos.coords.latitude, pos.coords.longitude),
-        null,
-        { enableHighAccuracy: true, maximumAge: 3000, timeout: 10000 }
-      );
+    if (riderId) {
+      startLocationTracking(riderId, order.id);
     }
     return () => {
-      if (locationWatchRef.current !== null) navigator.geolocation.clearWatch(locationWatchRef.current);
+      stopLocationTracking();
     };
-  }, [order.id]);
+  }, [order.id, riderId]);
 
   // When phase changes, destroy map so it re-initialises for new destination
   useEffect(() => {
