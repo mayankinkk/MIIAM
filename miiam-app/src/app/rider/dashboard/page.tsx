@@ -788,7 +788,13 @@ export default function RiderDashboard() {
       }
       alert(`Stop ${currentStopIndex + 1} delivered! Moving to stop ${currentStopIndex + 2}...`);
     } else {
-      await handleComplete();
+      if (currentOrder?.orderDbId) {
+        await supabase.from("orders").update({
+          status: "arrived",
+          arrived_at: new Date().toISOString(),
+        }).eq("id", currentOrder.orderDbId);
+      }
+      setDeliveryStep("arrived");
     }
   };
 

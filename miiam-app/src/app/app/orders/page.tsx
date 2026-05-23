@@ -19,6 +19,7 @@ const statusColors: Record<string, string> = {
   preparing: "bg-[#c4d0ff]/30 text-[#003dac]",
   picking_up: "bg-surface-container text-primary",
   on_the_way: "bg-surface-container text-primary",
+  arrived: "bg-green-100 text-green-700",
   delivered: "bg-green-100 text-green-700",
   cancelled: "bg-error-container/10 text-error",
 };

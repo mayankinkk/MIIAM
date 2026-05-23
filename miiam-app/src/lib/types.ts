@@ -63,6 +63,7 @@ export type OrderStatus =
   | "preparing"
   | "picking_up"
   | "on_the_way"
+  | "arrived"
   | "delivered"
   | "cancelled"
   | "refunded";

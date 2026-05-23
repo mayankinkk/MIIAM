@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { Order, OrderStatus } from "@/lib/types";
 
-const STATUS_OPTIONS: OrderStatus[] = ["pending", "accepted", "preparing", "picking_up", "on_the_way", "delivered", "cancelled", "refunded"];
+const STATUS_OPTIONS: OrderStatus[] = ["pending", "accepted", "preparing", "picking_up", "on_the_way", "arrived", "delivered", "cancelled", "refunded"];
 
 const STATUS_COLORS: Record<OrderStatus, string> = {
   pending: "bg-yellow-100 text-yellow-700",

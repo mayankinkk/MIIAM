@@ -15,6 +15,7 @@ const steps = [
   { key: "shopping", label: "Shopping", icon: "shopping_cart", time: "" },
   { key: "picking_up", label: "Picking Up", icon: "storefront", time: "" },
   { key: "on_the_way", label: "On the Way", icon: "directions_bike", time: "" },
+  { key: "arrived", label: "Arrived", icon: "location_on", time: "" },
   { key: "delivered", label: "Delivered", icon: "home_pin", time: "" },
 ];
 
@@ -202,6 +203,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
               shopping: "Rider is shopping for your items",
               picking_up: "Rider is picking up your order",
               on_the_way: "🚴 Rider is on the way!",
+              arrived: "📍 Rider has arrived!",
               delivered: "✅ Order delivered!",
               no_rider_available: "❌ No riders available — please try again",
             };
@@ -209,7 +211,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
             if (msg) addToast(msg, "info");
 
             // Fire browser notification for important statuses
-            const notifyStatuses = ["accepted", "on_the_way", "delivered"];
+            const notifyStatuses = ["accepted", "on_the_way", "arrived", "delivered"];
             if (notifyStatuses.includes(newStatus) && typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
               new Notification("MIIAM", {
                 body: statusMessages[newStatus] || `Order status: ${newStatus}`,
