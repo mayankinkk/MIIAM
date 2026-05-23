@@ -706,6 +706,7 @@ export default function RiderDashboard() {
           await supabase.from("orders").update({
             status: "delivered",
             delivered_at: new Date().toISOString(),
+            rider_earning: finalEarnings,
           }).eq("id", currentOrder.orderDbId);
           await supabase.from("riders").update({
             total_deliveries: riderDeliveries + 1,
@@ -724,21 +725,38 @@ export default function RiderDashboard() {
     }
   };
 
-  const handlePickedUp = () => {
+  const handlePickedUp = async () => {
     setDeliveryStep("delivering");
-    // Start GPS tracking when delivery begins
     if (currentOrder?.orderDbId && riderId) {
+      await supabase.from("orders").update({
+        status: "on_the_way",
+        picked_at: new Date().toISOString(),
+      }).eq("id", currentOrder.orderDbId);
       startLocationTracking(riderId, currentOrder.orderDbId);
     }
   };
 
-  const handleArrived = () => {
+  const handleArrived = async () => {
     if (currentOrder?.type === "multi_stop" && currentOrder.stops && currentStopIndex < currentOrder.stops.length - 1) {
       setCurrentStopIndex(currentStopIndex + 1);
+      if (currentOrder.orderDbId) {
+        await supabase.from("orders").update({
+          delivery_notes: `Stop ${currentStopIndex + 2}/${currentOrder.stops.length} - ${currentOrder.stops[currentStopIndex + 1]?.name}`,
+        }).eq("id", currentOrder.orderDbId);
+      }
       alert(`Stop ${currentStopIndex + 1} delivered! Moving to stop ${currentStopIndex + 2}...`);
     } else {
-      handleComplete();
+      await handleComplete();
     }
+  };
+
+  const handleItemsCollected = async () => {
+    if (currentOrder?.orderDbId) {
+      await supabase.from("orders").update({
+        status: "picking_up",
+      }).eq("id", currentOrder.orderDbId);
+    }
+    setDeliveryStep("picking_up");
   };
 
   const calculatePeakEarnings = (order: Order) => {
@@ -1176,7 +1194,7 @@ export default function RiderDashboard() {
                     </Link>
 
                     <button 
-                      onClick={() => setDeliveryStep("picking_up")}
+                      onClick={handleItemsCollected}
                       className="w-full mt-3 py-3 bg-green-500 text-white font-bold rounded-xl"
                     >
                       ALL ITEMS COLLECTED ✓
