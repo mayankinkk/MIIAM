@@ -92,17 +92,13 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "Rider not available" }, { status: 400 });
       }
 
-      const { error: assignError } = await supabase
-        .from("orders")
-        .update({ 
-          rider_id: rider_id,
-          status: "accepted",
-          assigned_at: new Date().toISOString()
-        })
-        .eq("id", order_id);
+      const { data: rpcSuccess, error: rpcError } = await supabase.rpc('accept_order_as_rider', {
+        p_order_id: order_id,
+        p_rider_id: rider_id,
+      });
 
-      if (assignError) {
-        return NextResponse.json({ error: "Failed to assign rider" }, { status: 500 });
+      if (rpcError || !rpcSuccess) {
+        return NextResponse.json({ error: "Failed to assign rider — order may already be taken" }, { status: 409 });
       }
 
       return NextResponse.json({ 

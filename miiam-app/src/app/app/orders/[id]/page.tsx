@@ -172,6 +172,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
               picking_up: "Rider is picking up your order",
               on_the_way: "🚴 Rider is on the way!",
               delivered: "✅ Order delivered!",
+              no_rider_available: "❌ No riders available — please try again",
             };
             const msg = statusMessages[newStatus];
             if (msg) addToast(msg, "info");
@@ -432,7 +433,21 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
               </div>
             )}
 
-            {!canCancel && order && order.status !== "delivered" && order.status !== "cancelled" && (
+            {order.status === "no_rider_available" && (
+              <div className="w-full bg-amber-50 border border-amber-200 rounded-xl py-4 text-center">
+                <span className="material-symbols-outlined text-amber-500 text-3xl block mb-1">local_shipping</span>
+                <p className="text-amber-700 font-bold">No Riders Available</p>
+                <p className="text-sm text-amber-500 mt-1">No rider could accept your order in time. Please try placing the order again or contact support.</p>
+                <Link
+                  href="/app/home"
+                  className="inline-block mt-3 px-6 py-2 bg-amber-500 text-white font-bold rounded-xl text-sm"
+                >
+                  Browse Restaurants
+                </Link>
+              </div>
+            )}
+
+            {!canCancel && order && order.status !== "delivered" && order.status !== "cancelled" && order.status !== "no_rider_available" && (
               <p className="text-center text-sm text-slate-500 mt-2">
                 Contact rider or customer support to make changes
               </p>
