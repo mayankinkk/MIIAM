@@ -28,11 +28,13 @@ export default function EditProfilePage() {
 
   useEffect(() => {
     async function loadProfile() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
         router.push("/auth/login");
         return;
       }
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
 
       const { data: profile } = await supabase
         .from("profiles")

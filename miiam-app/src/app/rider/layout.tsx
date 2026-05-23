@@ -31,8 +31,8 @@ export default function RiderLayout({ children }: { children: React.ReactNode })
 
   useEffect(() => {
     if (isAuthPage) return;
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (!user) router.push("/rider/login");
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) router.push("/rider/login");
     });
   }, [isAuthPage, router, supabase]);
 
