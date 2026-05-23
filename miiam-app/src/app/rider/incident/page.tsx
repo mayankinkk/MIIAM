@@ -1,14 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 
 interface IncidentType {
   id: string;
   icon: string;
   label: string;
   color: string;
+}
+
+interface IncidentReport {
+  id: string;
+  type: string;
+  date: string;
+  status: string;
 }
 
 const incidentTypes: IncidentType[] = [
@@ -20,32 +28,80 @@ const incidentTypes: IncidentType[] = [
 ];
 
 export default function RiderIncidentPage() {
+  const supabase = createClient();
   const router = useRouter();
+  const [riderId, setRiderId] = useState<string | null>(null);
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [showConfirm, setShowConfirm] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [description, setDescription] = useState("");
   const [location, setLocation] = useState("");
+  const [recentIncidents, setRecentIncidents] = useState<IncidentReport[]>([]);
   const [emergencyContacts] = useState([
     { name: "Emergency Services", number: "102" },
     { name: "Police", number: "100" },
     { name: "Support Team", number: "1800-XXX-XXXX" },
   ]);
 
+  useEffect(() => {
+    async function loadRider() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data: rider } = await supabase.from("riders").select("id").eq("user_id", user.id).single();
+      if (rider) {
+        setRiderId(rider.id);
+        const { data: incidents } = await supabase.from("rider_incidents").select("*").eq("rider_id", rider.id).order("created_at", { ascending: false }).limit(5);
+        if (incidents) {
+          setRecentIncidents(incidents.map(i => ({
+            id: i.id,
+            type: i.type,
+            date: new Date(i.created_at).toLocaleDateString(),
+            status: i.status,
+          })));
+        }
+      }
+    }
+    loadRider();
+  }, [supabase]);
+
   const handleQuickReport = (type: string) => {
     setSelectedType(type);
     setShowConfirm(true);
   };
 
-  const submitReport = () => {
+  const submitReport = async () => {
     setIsSubmitting(true);
-    setTimeout(() => {
+    try {
+      if (riderId) {
+        await supabase.from("rider_incidents").insert({
+          rider_id: riderId,
+          type: selectedType || "other",
+          description: description,
+          location: location,
+          status: "reported",
+        });
+
+        // Reload incidents
+        const { data: incidents } = await supabase.from("rider_incidents").select("*").eq("rider_id", riderId).order("created_at", { ascending: false }).limit(5);
+        if (incidents) {
+          setRecentIncidents(incidents.map(i => ({
+            id: i.id,
+            type: i.type,
+            date: new Date(i.created_at).toLocaleDateString(),
+            status: i.status,
+          })));
+        }
+      }
       alert("Incident reported successfully! Support team has been notified and will contact you shortly.");
-      setIsSubmitting(false);
-      setShowConfirm(false);
-      setSelectedType(null);
-      router.push("/rider/dashboard");
-    }, 1500);
+    } catch (e) {
+      alert("Failed to submit report. Please try again.");
+    }
+    setIsSubmitting(false);
+    setShowConfirm(false);
+    setSelectedType(null);
+    setDescription("");
+    setLocation("");
+    router.push("/rider/dashboard");
   };
 
   return (
@@ -135,22 +191,20 @@ export default function RiderIncidentPage() {
         <div className="bg-white rounded-2xl p-5 shadow-lg">
           <h3 className="font-bold text-[#4d212a] mb-4">Recent Reports</h3>
           <div className="space-y-3">
-            {[
-              { type: "Vehicle Issue", date: "2024-02-15", status: "Resolved" },
-              { type: "Road Block", date: "2024-02-10", status: "Resolved" },
-            ].map((report, i) => (
+            {recentIncidents.length > 0 ? recentIncidents.map((report, i) => (
               <div key={i} className="flex items-center justify-between p-3 border-b border-slate-100">
                 <div>
-                  <p className="font-bold text-sm">{report.type}</p>
+                  <p className="font-bold text-sm capitalize">{report.type.replace("_", " ")}</p>
                   <p className="text-xs text-slate-400">{report.date}</p>
                 </div>
-                <span className="text-xs bg-green-100 text-green-600 px-2 py-1 rounded-full">
+                <span className={`text-xs px-2 py-1 rounded-full ${report.status === "resolved" ? "bg-green-100 text-green-600" : "bg-amber-100 text-amber-600"}`}>
                   {report.status}
                 </span>
               </div>
-            ))}
+            )) : (
+              <p className="text-center text-xs text-slate-400 mt-4">No recent issues</p>
+            )}
           </div>
-          <p className="text-center text-xs text-slate-400 mt-4">No recent issues</p>
         </div>
 
         {/* Safety Tips */}
