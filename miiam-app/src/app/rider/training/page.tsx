@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
 
 interface Video {
   id: string;
@@ -13,15 +14,15 @@ interface Video {
   isWatched: boolean;
 }
 
-const videos: Video[] = [
-  { id: "1", title: "Getting Started", description: "Learn the basics of the MIIAM rider app", duration: "5:30", category: "Basics", thumbnail: "🎯", isWatched: true },
-  { id: "2", title: "Accepting Orders", description: "How to accept and manage delivery orders", duration: "4:15", category: "Basics", thumbnail: "📦", isWatched: true },
-  { id: "3", title: "Delivery Best Practices", description: "Tips for efficient and safe deliveries", duration: "8:20", category: "Safety", thumbnail: "🚴", isWatched: false },
-  { id: "4", title: "Customer Communication", description: "How to handle customer interactions", duration: "6:45", category: "Service", thumbnail: "💬", isWatched: false },
-  { id: "5", title: "Safety Guidelines", description: "Road safety and accident prevention", duration: "10:00", category: "Safety", thumbnail: "🛡️", isWatched: false },
-  { id: "6", title: "Handling Complaints", description: "Resolving issues effectively", duration: "7:30", category: "Service", thumbnail: "✅", isWatched: false },
-  { id: "7", title: "Earning More", description: "Tips to maximize your earnings", duration: "5:50", category: "Earnings", thumbnail: "💰", isWatched: false },
-  { id: "8", title: "App Features Tour", description: "Complete guide to all features", duration: "12:00", category: "Basics", thumbnail: "📱", isWatched: false },
+const videoDefs: Omit<Video, "isWatched">[] = [
+  { id: "1", title: "Getting Started", description: "Learn the basics of the MIIAM rider app", duration: "5:30", category: "Basics", thumbnail: "🎯" },
+  { id: "2", title: "Accepting Orders", description: "How to accept and manage delivery orders", duration: "4:15", category: "Basics", thumbnail: "📦" },
+  { id: "3", title: "Delivery Best Practices", description: "Tips for efficient and safe deliveries", duration: "8:20", category: "Safety", thumbnail: "🚴" },
+  { id: "4", title: "Customer Communication", description: "How to handle customer interactions", duration: "6:45", category: "Service", thumbnail: "💬" },
+  { id: "5", title: "Safety Guidelines", description: "Road safety and accident prevention", duration: "10:00", category: "Safety", thumbnail: "🛡️" },
+  { id: "6", title: "Handling Complaints", description: "Resolving issues effectively", duration: "7:30", category: "Service", thumbnail: "✅" },
+  { id: "7", title: "Earning More", description: "Tips to maximize your earnings", duration: "5:50", category: "Earnings", thumbnail: "💰" },
+  { id: "8", title: "App Features Tour", description: "Complete guide to all features", duration: "12:00", category: "Basics", thumbnail: "📱" },
 ];
 
 const categories = ["All", "Basics", "Safety", "Service", "Earnings"];
@@ -32,11 +33,42 @@ const quizzes = [
 ];
 
 export default function RiderTrainingPage() {
+  const supabase = createClient();
   const [activeCategory, setActiveCategory] = useState("All");
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
   const [showQuiz, setShowQuiz] = useState(false);
   const [quizIndex, setQuizIndex] = useState(0);
+  const [videos, setVideos] = useState<Video[]>(videoDefs.map(v => ({ ...v, isWatched: false })));
+  const [pointsEarned, setPointsEarned] = useState(0);
+  const [riderId, setRiderId] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function loadProgress() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: riderData } = await supabase.from("riders").select("id").eq("user_id", user.id).single();
+      if (!riderData) return;
+      setRiderId(riderData.id);
+
+      const { data: progress } = await supabase
+        .from("rider_training_progress")
+        .select("*")
+        .eq("rider_id", riderData.id);
+
+      const totalPoints = (progress || []).reduce((s, p) => s + (p.points_earned || 0), 0);
+      setPointsEarned(totalPoints);
+
+      if (progress && progress.length > 0) {
+        setVideos(videoDefs.map(v => ({
+          ...v,
+          isWatched: progress.some(p => p.video_id === v.id && p.is_watched),
+        })));
+      }
+    }
+    loadProgress();
+  }, [supabase]);
 
   const filteredVideos = activeCategory === "All" 
     ? videos 
@@ -49,8 +81,18 @@ export default function RiderTrainingPage() {
     setShowVideoModal(true);
   };
 
-  const completeVideo = () => {
-    alert("Video completed! +10 points earned");
+  const completeVideo = async () => {
+    if (selectedVideo && riderId) {
+      await supabase.from("rider_training_progress").upsert({
+        rider_id: riderId,
+        video_id: selectedVideo.id,
+        is_watched: true,
+        points_earned: 10,
+      }, { onConflict: 'rider_id,video_id' });
+
+      setVideos(prev => prev.map(v => v.id === selectedVideo.id ? { ...v, isWatched: true } : v));
+      setPointsEarned(prev => prev + 10);
+    }
     setShowVideoModal(false);
   };
 
@@ -78,7 +120,7 @@ export default function RiderTrainingPage() {
           </div>
           <div className="flex justify-between mt-2 text-xs">
             <span className="text-slate-400">Keep learning!</span>
-            <span className="text-blue-600 font-bold">80 points earned</span>
+            <span className="text-blue-600 font-bold">{pointsEarned} points earned</span>
           </div>
         </div>
 
@@ -163,8 +205,8 @@ export default function RiderTrainingPage() {
           <div className="text-4xl mb-2">🏆</div>
           <h3 className="font-bold text-purple-800">Complete All Training</h3>
           <p className="text-xs text-purple-600 mb-3">Get your official MIIAM rider certificate</p>
-          <button className="px-6 py-2 bg-purple-500 text-white font-bold rounded-full text-sm">
-            View Certificate
+          <button onClick={() => alert(watchedCount === videos.length ? "Congratulations! You've completed all training. Certificate available." : `Complete all ${videos.length} videos to unlock your certificate (${watchedCount}/${videos.length})`)} className="px-6 py-2 bg-purple-500 text-white font-bold rounded-full text-sm">
+            {watchedCount === videos.length ? "View Certificate 🎉" : `${watchedCount}/${videos.length} Videos`}
           </button>
         </div>
       </main>
@@ -208,9 +250,18 @@ export default function RiderTrainingPage() {
                 {quizzes[quizIndex].options.map((opt, i) => (
                   <button 
                     key={i}
-                    onClick={() => {
+                    onClick={async () => {
                       if (opt === quizzes[quizIndex].answer) {
-                        alert("Correct! +20 points");
+                        if (riderId) {
+                          await supabase.from("rider_training_progress").upsert({
+                            rider_id: riderId,
+                            video_id: `quiz_${quizIndex}`,
+                            is_watched: true,
+                            quiz_score: 20,
+                            points_earned: 20,
+                          }, { onConflict: 'rider_id,video_id' });
+                          setPointsEarned(prev => prev + 20);
+                        }
                         setShowQuiz(false);
                       } else {
                         alert("Try again!");
