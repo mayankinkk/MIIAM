@@ -415,8 +415,24 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                           {step.label}
                         </h4>
                         <p className={`text-sm ${isCurrent ? "text-[#4d212a] font-medium" : "text-[#814c55]"}`}>
-                          {isCurrent ? `Marco is currently in traffic near your street` : 
-                           isCompleted ? `Step completed` : "Pending delivery"}
+                          {isCurrent ? (
+                            step.key === "on_the_way" && trackingInfo
+                              ? `${trackingInfo.distance} away · ${trackingInfo.eta} min ETA`
+                              : step.key === "delivered"
+                              ? "Order delivered successfully"
+                              : step.key === "accepted"
+                              ? "Rider is heading to pickup"
+                              : step.key === "picking_up"
+                              ? "Rider is picking up your order"
+                              : step.key === "preparing"
+                              ? "Restaurant is preparing your food"
+                              : step.key === "shopping"
+                              ? "Rider is shopping for your items"
+                              : "In progress"
+                          ) : isCompleted ? (
+                            step.key === "pending" ? "Order placed successfully" :
+                            step.key === "delivered" ? "Delivered" : "Completed"
+                          ) : "Pending"}
                         </p>
                         {isCurrent && (
                           <p className="text-xs text-[#ba001c]/60 font-bold mt-1 uppercase tracking-tighter">Current Step • {step.time}</p>
