@@ -172,17 +172,19 @@ export default function PartnerMenuPage() {
       category: newItem.category || categories[0],
       vendor_id: selectedVendorId,
     };
+    if (newItem.image_url) base.image_url = newItem.image_url;
     if (vendorKey === "food") {
-      base.description = newItem.description || null;
+      if (newItem.description) base.description = newItem.description;
       base.is_veg = newItem.is_veg;
-      base.available = true;
     } else if (vendorKey === "grocery") {
       base.stock = parseInt(newItem.stock) || 0;
+      if (newItem.description) base.description = newItem.description;
     } else if (vendorKey === "pharmacy") {
       base.stock = parseInt(newItem.stock) || 0;
       base.requires_prescription = newItem.requires_prescription;
+      if (newItem.description) base.description = newItem.description;
     } else if (vendorKey === "flowers") {
-      base.description = newItem.description || null;
+      if (newItem.description) base.description = newItem.description;
     }
     return base;
   }
@@ -192,11 +194,11 @@ export default function PartnerMenuPage() {
       name: item.name,
       price: item.price,
       category: item.category,
-      image_url: (item as any).image_url || null,
     };
+    if ((item as any).image_url) base.image_url = (item as any).image_url;
     if (vendorKey === "food") {
       const m = item as MenuItem;
-      base.description = m.description || null;
+      if (m.description) base.description = m.description;
       base.is_veg = m.is_veg;
     } else if (vendorKey === "grocery") {
       const g = item as GroceryItem;
@@ -207,7 +209,7 @@ export default function PartnerMenuPage() {
       base.requires_prescription = p.requires_prescription;
     } else if (vendorKey === "flowers") {
       const f = item as FlowerItem;
-      base.description = f.description || null;
+      if (f.description) base.description = f.description;
     }
     return base;
   }
@@ -263,10 +265,14 @@ export default function PartnerMenuPage() {
   const toggleAvailability = async (item: AnyItem) => {
     const m = item as MenuItem;
     try {
-      await supabase.from(table).update({ available: !m.available }).eq("id", item.id);
+      const { error } = await supabase.from(table).update({ available: !m.available }).eq("id", item.id);
+      if (error) {
+        console.warn("Toggle availability not supported:", error.message);
+        return;
+      }
       setItems(items.map(i => i.id === item.id ? { ...i, available: !m.available } as AnyItem : i));
     } catch (error: any) {
-      alert("Failed: " + error.message);
+      console.warn("Toggle availability failed:", error.message);
     }
   };
 
@@ -279,10 +285,14 @@ export default function PartnerMenuPage() {
     }
     if (newStock < 0) return;
     try {
-      await supabase.from(table).update({ stock: newStock }).eq("id", item.id);
+      const { error } = await supabase.from(table).update({ stock: newStock }).eq("id", item.id);
+      if (error) {
+        console.warn("Stock update not supported:", error.message);
+        return;
+      }
       setItems(items.map(i => i.id === item.id ? { ...i, stock: newStock } as AnyItem : i));
     } catch (error: any) {
-      alert("Failed: " + error.message);
+      console.warn("Stock update failed:", error.message);
     }
   };
 
