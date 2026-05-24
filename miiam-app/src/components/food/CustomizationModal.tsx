@@ -170,7 +170,7 @@ export default function CustomizationModal({ item, vendor_id, vendor_name, vendo
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
       
-      <div className="relative w-full max-w-lg bg-white rounded-t-3xl sm:rounded-3xl max-h-[80vh] flex flex-col animate-slide-up">
+        <div className="relative w-full max-w-lg bg-white rounded-t-3xl sm:rounded-3xl max-h-[90dvh] flex flex-col animate-slide-up">
         {/* Header */}
         <div className="sticky top-0 bg-white z-10 border-b border-slate-100 px-6 py-4 flex items-center justify-between">
           <div>
@@ -367,7 +367,7 @@ export default function CustomizationModal({ item, vendor_id, vendor_name, vendo
         </div>
 
         {/* Footer */}
-        <div className="sticky bottom-0 bg-white border-t border-slate-100 px-6 py-4 shadow-[0_-10px_40px_rgba(0,0,0,0.1)]">
+        <div className="sticky bottom-0 bg-white border-t border-slate-100 px-6 py-4 pb-[env(safe-area-inset-bottom)] shadow-[0_-10px_40px_rgba(0,0,0,0.1)]">
           <button
             onClick={handleAddToCart}
             className="w-full py-4 bg-[#ba001c] text-white font-extrabold rounded-2xl flex items-center justify-center gap-3 hover:bg-[#a40017] active:scale-95 transition-all shadow-xl shadow-[#ba001c]/30"

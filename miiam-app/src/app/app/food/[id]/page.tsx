@@ -243,7 +243,7 @@ function CartFloater() {
   const { items, totalPrice, totalItems } = useCartStore();
   if (items.length === 0) return null;
   return (
-    <div className="fixed bottom-6 left-4 right-4 z-50">
+    <div className="fixed bottom-6 left-4 right-4 z-50" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
       <Link
         href="/app/cart"
         className="flex items-center justify-between bg-primary text-white px-5 py-4 rounded-2xl shadow-2xl shadow-primary/40 active:scale-[0.98] transition-transform"
