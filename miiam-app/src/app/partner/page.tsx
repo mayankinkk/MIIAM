@@ -72,7 +72,7 @@ export default function PartnerPOS() {
       return;
     }
 
-    if (["accepted", "preparing"].includes(newStatus)) {
+    if (["accepted", "preparing", "ready_for_pickup"].includes(newStatus)) {
       try {
         await fetch("/api/emails/order-status", {
           method: "POST",
@@ -83,13 +83,25 @@ export default function PartnerPOS() {
     }
   };
 
-  const statusActions: Record<string, { label: string; next: OrderStatus; color: string }[]> = {
+  const statusActions: Record<string, { label: string; next: OrderStatus; color: string }[] | null> = {
     pending: [{ label: "Accept Order", next: "accepted", color: "bg-green-600 hover:bg-green-700" }],
     accepted: [{ label: "Start Preparing", next: "preparing", color: "bg-amber-600 hover:bg-amber-700" }],
-    preparing: [{ label: "Mark Ready", next: "picking_up", color: "bg-indigo-600 hover:bg-indigo-700" }],
-    picking_up: [{ label: "Hand to Rider", next: "on_the_way", color: "bg-[#ba001c] hover:bg-[#a40017]" }],
-    on_the_way: [{ label: "Mark Delivered", next: "delivered", color: "bg-green-600 hover:bg-green-700" }],
+    preparing: [{ label: "Mark Ready for Pickup", next: "ready_for_pickup", color: "bg-indigo-600 hover:bg-indigo-700" }],
+    ready_for_pickup: null,
+    on_the_way: null,
   };
+
+  const statusBadge: Record<string, string> = {
+    pending: "bg-amber-100 text-amber-700",
+    accepted: "bg-blue-100 text-blue-700",
+    preparing: "bg-indigo-100 text-indigo-700",
+    ready_for_pickup: "bg-purple-100 text-purple-700",
+    on_the_way: "bg-cyan-100 text-cyan-700",
+    delivered: "bg-green-100 text-green-700",
+    cancelled: "bg-red-100 text-red-700",
+  };
+
+  const terminalStatuses = ["delivered", "cancelled", "refunded"];
 
   if (loading) {
     return <div className="p-8 text-center text-slate-400 font-medium animate-pulse">Loading POS...</div>;
@@ -115,14 +127,14 @@ export default function PartnerPOS() {
     );
   }
 
-  const activeOrders = orders.filter((o) => !["delivered", "cancelled", "refunded"].includes(o.status));
-  const pastOrders = orders.filter((o) => ["delivered", "cancelled", "refunded"].includes(o.status));
+  const activeOrders = orders.filter((o) => !terminalStatuses.includes(o.status));
+  const pastOrders = orders.filter((o) => terminalStatuses.includes(o.status));
 
   return (
     <div className="p-4 md:p-8 space-y-8">
       <div>
         <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight mb-2">Live Order POS</h1>
-        <p className="text-slate-500">Manage real-time incoming orders</p>
+        <p className="text-slate-500">Manage real-time incoming orders — your job ends when order is ready for pickup</p>
       </div>
 
       {/* Stats */}
@@ -136,13 +148,11 @@ export default function PartnerPOS() {
           <p className="text-4xl font-black text-amber-600">{orders.filter((o) => o.status === "pending").length}</p>
         </div>
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-          <p className="text-slate-500 text-sm font-bold uppercase tracking-wider mb-1">Today Revenue</p>
-          <p className="text-4xl font-black text-slate-900">
-            ₹{orders.filter((o) => o.status === "delivered").reduce((a, c) => a + c.total_amount, 0).toFixed(0)}
-          </p>
+          <p className="text-slate-500 text-sm font-bold uppercase tracking-wider mb-1">Ready for Pickup</p>
+          <p className="text-4xl font-black text-purple-600">{orders.filter((o) => o.status === "ready_for_pickup").length}</p>
         </div>
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-          <p className="text-slate-500 text-sm font-bold uppercase tracking-wider mb-1">Completed</p>
+          <p className="text-slate-500 text-sm font-bold uppercase tracking-wider mb-1">Delivered</p>
           <p className="text-4xl font-black text-green-600">{pastOrders.length}</p>
         </div>
       </div>
@@ -165,83 +175,92 @@ export default function PartnerPOS() {
           </div>
         ) : (
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-            {activeOrders.map((order) => (
-              <div
-                key={order.id}
-                className="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 hover:shadow-md transition-shadow"
-              >
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <div className="flex items-center gap-3 mb-1">
-                      <span className="text-lg font-black text-slate-900">
-                        #{order.id.slice(0, 8).toUpperCase()}
-                      </span>
-                      <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${
-                        order.status === "pending" ? "bg-amber-100 text-amber-700" :
-                        order.status === "accepted" ? "bg-blue-100 text-blue-700" :
-                        order.status === "preparing" ? "bg-indigo-100 text-indigo-700" :
-                        order.status === "picking_up" ? "bg-purple-100 text-purple-700" :
-                        "bg-green-100 text-green-700"
-                      }`}>
-                        {order.status.replace(/_/g, " ")}
-                      </span>
+            {activeOrders.map((order) => {
+              const actions = statusActions[order.status];
+              return (
+                <div
+                  key={order.id}
+                  className="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 hover:shadow-md transition-shadow"
+                >
+                  <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <div className="flex items-center gap-3 mb-1">
+                        <span className="text-lg font-black text-slate-900">
+                          #{order.id.slice(0, 8).toUpperCase()}
+                        </span>
+                        <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${statusBadge[order.status] || "bg-slate-100 text-slate-600"}`}>
+                          {order.status.replace(/_/g, " ")}
+                        </span>
+                      </div>
+                      <p className="text-slate-400 text-xs font-medium">
+                        {new Date(order.placed_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                        {" • "}
+                        {order.payment_method === "wallet" ? "Wallet" : "Online"}
+                      </p>
                     </div>
-                    <p className="text-slate-400 text-xs font-medium">
-                      {new Date(order.placed_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                      {" • "}
-                      {order.payment_method === "wallet" ? "Wallet" : "Online"}
-                    </p>
+                    <div className="text-right">
+                      <p className="text-2xl font-black text-[#ba001c]">₹{order.total_amount.toFixed(2)}</p>
+                      {order.delivery_address && (
+                        <p className="text-[10px] text-slate-400 mt-1 max-w-[160px] truncate">{order.delivery_address}</p>
+                      )}
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-2xl font-black text-[#ba001c]">₹{order.total_amount.toFixed(2)}</p>
-                    {order.delivery_address && (
-                      <p className="text-[10px] text-slate-400 mt-1 max-w-[160px] truncate">{order.delivery_address}</p>
+
+                  <div className="space-y-2 mb-6 bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                    {order.items?.map((item, idx) => (
+                      <div key={idx} className="flex justify-between items-center text-sm">
+                        <p className="text-slate-700 font-bold">
+                          <span className="text-slate-400 mr-2">{item.quantity}x</span>
+                          {item.menu_item?.name || "Unknown Item"}
+                        </p>
+                        <p className="text-slate-500 font-medium">
+                          ₹{(item.unit_price * item.quantity).toFixed(0)}
+                        </p>
+                      </div>
+                    ))}
+                    {order.special_instructions && (
+                      <div className="mt-3 pt-3 border-t border-slate-200">
+                        <p className="text-xs text-slate-500">
+                          <span className="font-bold">Note: </span>{order.special_instructions}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex gap-3">
+                    {actions ? (
+                      actions.map((action, i) => (
+                        <button
+                          key={i}
+                          onClick={() => updateStatus(order.id, action.next)}
+                          className={`flex-1 ${action.color} text-white py-4 rounded-xl font-bold transition-all active:scale-95 shadow-lg shadow-slate-200`}
+                        >
+                          {action.label}
+                        </button>
+                      ))
+                    ) : order.status === "ready_for_pickup" ? (
+                      <div className="flex-1 text-center py-4 rounded-xl bg-purple-50 text-purple-700 font-bold text-sm border border-purple-200">
+                        <span className="material-symbols-outlined align-middle text-lg mr-1">pedal_bike</span>
+                        Waiting for Rider to Pick Up
+                      </div>
+                    ) : order.status === "on_the_way" ? (
+                      <div className="flex-1 text-center py-4 rounded-xl bg-cyan-50 text-cyan-700 font-bold text-sm border border-cyan-200">
+                        <span className="material-symbols-outlined align-middle text-lg mr-1">delivery_truck</span>
+                        Out for Delivery — Rider on the Way
+                      </div>
+                    ) : null}
+                    {order.status === "pending" && (
+                      <button
+                        onClick={() => updateStatus(order.id, "cancelled")}
+                        className="px-6 border border-red-200 text-red-400 hover:text-red-600 hover:border-red-300 transition-colors rounded-xl font-bold text-xs"
+                      >
+                        Decline
+                      </button>
                     )}
                   </div>
                 </div>
-
-                <div className="space-y-2 mb-6 bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                  {order.items?.map((item, idx) => (
-                    <div key={idx} className="flex justify-between items-center text-sm">
-                      <p className="text-slate-700 font-bold">
-                        <span className="text-slate-400 mr-2">{item.quantity}x</span>
-                        {item.menu_item?.name || "Unknown Item"}
-                      </p>
-                      <p className="text-slate-500 font-medium">
-                        ₹{(item.unit_price * item.quantity).toFixed(0)}
-                      </p>
-                    </div>
-                  ))}
-                  {order.special_instructions && (
-                    <div className="mt-3 pt-3 border-t border-slate-200">
-                      <p className="text-xs text-slate-500">
-                        <span className="font-bold">Note: </span>{order.special_instructions}
-                      </p>
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex gap-3">
-                  {statusActions[order.status]?.map((action, i) => (
-                    <button
-                      key={i}
-                      onClick={() => updateStatus(order.id, action.next)}
-                      className={`flex-1 ${action.color} text-white py-4 rounded-xl font-bold transition-all active:scale-95 shadow-lg shadow-slate-200`}
-                    >
-                      {action.label}
-                    </button>
-                  ))}
-                  {order.status === "pending" && (
-                    <button
-                      onClick={() => updateStatus(order.id, "cancelled")}
-                      className="px-6 border border-red-200 text-red-400 hover:text-red-600 hover:border-red-300 transition-colors rounded-xl font-bold text-xs"
-                    >
-                      Decline
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </section>
