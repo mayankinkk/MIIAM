@@ -68,10 +68,17 @@ export async function updateSession(request: NextRequest) {
         return NextResponse.redirect(url);
       }
 
-      // Partner/vendor routes - allow admin or vendor role
-      if (request.nextUrl.pathname.startsWith("/partner") && profile && profile.role !== "vendor" && profile.role !== "admin") {
+      // Partner/vendor routes - allow admin or vendor role, or registration page
+      if (
+        request.nextUrl.pathname.startsWith("/partner") &&
+        !request.nextUrl.pathname.startsWith("/partner/register") &&
+        profile &&
+        profile.role !== "vendor" &&
+        profile.role !== "admin"
+      ) {
         const url = request.nextUrl.clone();
         url.pathname = "/denied";
+        url.searchParams.set("from", "partner");
         return NextResponse.redirect(url);
       }
     }
