@@ -7,11 +7,12 @@ import { getVendorIdForUser } from "@/lib/vendor";
 interface PromoCode {
   id: string;
   code: string;
-  discount_percent: number;
-  max_discount: number;
-  min_order: number;
-  usage_limit: number;
-  used_count: number;
+  discount_value: number;
+  discount_type?: string;
+  max_discount?: number;
+  min_order_amount?: number;
+  usage_limit?: number;
+  used_count?: number;
   is_active: boolean;
   valid_from: string;
   valid_until: string;
@@ -26,9 +27,9 @@ export default function VendorPromotions() {
   const [showCreate, setShowCreate] = useState(false);
   const [newPromo, setNewPromo] = useState({
     code: "",
-    discount_percent: 10,
+    discount_value: 10,
     max_discount: 100,
-    min_order: 0,
+    min_order_amount: 0,
     usage_limit: 100,
     valid_until: "",
   });
@@ -71,9 +72,10 @@ export default function VendorPromotions() {
     const { error } = await supabase.from("promo_codes").insert({
       vendor_id: vendorId,
       code: newPromo.code.toUpperCase(),
-      discount_percent: newPromo.discount_percent,
+      discount_value: newPromo.discount_value,
+      discount_type: "percentage",
       max_discount: newPromo.max_discount,
-      min_order: newPromo.min_order,
+      min_order_amount: newPromo.min_order_amount,
       usage_limit: newPromo.usage_limit,
       used_count: 0,
       is_active: true,
@@ -87,7 +89,7 @@ export default function VendorPromotions() {
     }
 
     setShowCreate(false);
-    setNewPromo({ code: "", discount_percent: 10, max_discount: 100, min_order: 0, usage_limit: 100, valid_until: "" });
+    setNewPromo({ code: "", discount_value: 10, max_discount: 100, min_order_amount: 0, usage_limit: 100, valid_until: "" });
     if (vendorId) loadPromos(vendorId);
   };
 
@@ -138,7 +140,7 @@ export default function VendorPromotions() {
                   <div>
                     <p className="text-2xl font-black tracking-wider text-[#ba001c]">{promo.code}</p>
                     <p className="text-sm text-slate-500 mt-1">
-                      {promo.discount_percent}% off • Up to ₹{promo.max_discount}
+                      {promo.discount_value}% off{promo.max_discount ? ` • Up to ₹${promo.max_discount}` : ""}
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
@@ -159,11 +161,11 @@ export default function VendorPromotions() {
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-slate-500">Min Order</span>
-                    <span className="font-bold text-slate-700">₹{promo.min_order}</span>
+                    <span className="font-bold text-slate-700">₹{promo.min_order_amount || 0}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-500">Usage</span>
-                    <span className="font-bold text-slate-700">{promo.used_count}/{promo.usage_limit}</span>
+                    <span className="font-bold text-slate-700">{promo.used_count || 0}/{promo.usage_limit || "∞"}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-500">Valid Until</span>
@@ -177,7 +179,7 @@ export default function VendorPromotions() {
                 <div className="mt-4 h-1.5 bg-slate-100 rounded-full overflow-hidden">
                   <div
                     className="h-full bg-[#ba001c] rounded-full transition-all"
-                    style={{ width: `${Math.min((promo.used_count / promo.usage_limit) * 100, 100)}%` }}
+                    style={{ width: `${promo.usage_limit ? Math.min((promo.used_count! / promo.usage_limit) * 100, 100) : 0}%` }}
                   />
                 </div>
               </div>
@@ -219,8 +221,8 @@ export default function VendorPromotions() {
                     type="number"
                     min="1"
                     max="100"
-                    value={newPromo.discount_percent}
-                    onChange={(e) => setNewPromo({ ...newPromo, discount_percent: parseInt(e.target.value) || 0 })}
+                    value={newPromo.discount_value}
+                    onChange={(e) => setNewPromo({ ...newPromo, discount_value: parseInt(e.target.value) || 0 })}
                     className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]"
                   />
                 </div>
@@ -236,14 +238,14 @@ export default function VendorPromotions() {
                 </div>
               </div>
               <div>
-                <label className="text-sm font-semibold text-slate-700">Min Order Amount (₹)</label>
-                <input
-                  type="number"
-                  min="0"
-                  value={newPromo.min_order}
-                  onChange={(e) => setNewPromo({ ...newPromo, min_order: parseInt(e.target.value) || 0 })}
-                  className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]"
-                />
+                  <label className="text-sm font-semibold text-slate-700">Min Order Amount (₹)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={newPromo.min_order_amount}
+                    onChange={(e) => setNewPromo({ ...newPromo, min_order_amount: parseInt(e.target.value) || 0 })}
+                    className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]"
+                  />
               </div>
               <div>
                 <label className="text-sm font-semibold text-slate-700">Usage Limit</label>

@@ -259,7 +259,6 @@ export default function PartnerPOS() {
                       </div>
                     ) : order.status === "on_the_way" ? (
                       <div className="flex-1 text-center py-4 rounded-xl bg-cyan-50 text-cyan-700 font-bold text-sm border border-cyan-200">
-                        <span className="material-symbols-outlined align-middle text-lg mr-1">delivery_truck</span>
                         Out for Delivery — Rider on the Way
                       </div>
                     ) : null}

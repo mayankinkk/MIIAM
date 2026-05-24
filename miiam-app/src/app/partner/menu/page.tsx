@@ -8,6 +8,7 @@ interface Vendor {
   id: string;
   shop_name: string;
   type?: string;
+  categories?: string[];
 }
 
 interface BaseItem {
@@ -84,6 +85,10 @@ export default function PartnerMenuPage() {
     imageFile: null as File | null,
   });
   const [uploading, setUploading] = useState(false);
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [vendorCategories, setVendorCategories] = useState<string[]>([]);
+  const [newCategoryName, setNewCategoryName] = useState("");
+  const [editingCategory, setEditingCategory] = useState<{ oldName: string; newName: string } | null>(null);
 
   // Helper: Upload image to Supabase Storage
   async function uploadImage(file: File): Promise<string | null> {
@@ -111,7 +116,7 @@ export default function PartnerMenuPage() {
   const vendorKey = selectedVendor ? getVendorKey(selectedVendor.type) : "food";
   const vendorType = selectedVendor?.type || "food";
   const table = TABLE_MAP[vendorKey];
-  const categories = CATEGORIES[vendorKey];
+  const categories = vendorCategories.length > 0 ? vendorCategories : CATEGORIES[vendorKey];
 
   useEffect(() => {
     loadVendors();
@@ -125,13 +130,23 @@ export default function PartnerMenuPage() {
     }
   }, [selectedVendorId]);
 
+  useEffect(() => {
+    const vendor = vendors.find(v => v.id === selectedVendorId);
+    if (vendor?.categories && Array.isArray(vendor.categories) && vendor.categories.length > 0) {
+      setVendorCategories(vendor.categories);
+    } else {
+      const key = vendor ? getVendorKey(vendor.type) : "food";
+      setVendorCategories(CATEGORIES[key]);
+    }
+  }, [selectedVendorId, vendors]);
+
   async function loadVendors() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
     const { data } = await supabase
       .from("vendors")
-      .select("id, shop_name, type")
+      .select("id, shop_name, type, categories")
       .eq("user_id", user.id)
       .order("shop_name");
     
@@ -212,6 +227,19 @@ export default function PartnerMenuPage() {
       if (f.description) base.description = f.description;
     }
     return base;
+  }
+
+  async function saveCategories(newCats: string[]) {
+    const { error } = await supabase
+      .from("vendors")
+      .update({ categories: newCats })
+      .eq("id", selectedVendorId);
+    if (error) {
+      alert("Failed to save categories: " + error.message);
+      return;
+    }
+    setVendorCategories(newCats);
+    setVendors(prev => prev.map(v => v.id === selectedVendorId ? { ...v, categories: newCats } : v));
   }
 
   const handleAddItem = async () => {
@@ -376,6 +404,13 @@ export default function PartnerMenuPage() {
             <option key={cat} value={cat}>{cat}</option>
           ))}
         </select>
+        <button
+          onClick={() => setShowCategoryModal(true)}
+          className="px-4 py-2 border border-slate-200 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-slate-50"
+        >
+          <span className="material-symbols-outlined text-lg">edit</span>
+          Manage Categories
+        </button>
       </div>
 
       {/* Items Table */}
@@ -814,6 +849,90 @@ export default function PartnerMenuPage() {
                   {uploading ? "Uploading..." : "Save Changes"}
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Category Management Modal */}
+      {showCategoryModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowCategoryModal(false)}>
+          <div className="bg-white w-full max-w-lg rounded-3xl p-6 m-4" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-extrabold text-slate-900">Manage Categories</h2>
+              <button onClick={() => setShowCategoryModal(false)} className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
+            <div className="space-y-3 mb-6">
+              {vendorCategories.map((cat, idx) => (
+                <div key={idx} className="flex items-center gap-2">
+                  {editingCategory?.oldName === cat ? (
+                    <input
+                      type="text"
+                      value={editingCategory.newName}
+                      onChange={(e) => setEditingCategory({ ...editingCategory, newName: e.target.value })}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && editingCategory.newName.trim()) {
+                          const updated = vendorCategories.map(c => c === cat ? editingCategory.newName.trim() : c);
+                          saveCategories(updated);
+                          setEditingCategory(null);
+                        }
+                        if (e.key === "Escape") setEditingCategory(null);
+                      }}
+                      className="flex-1 px-3 py-2 bg-slate-50 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-[#ba001c]"
+                      autoFocus
+                    />
+                  ) : (
+                    <span className="flex-1 px-3 py-2 text-sm font-medium">{cat}</span>
+                  )}
+                  {editingCategory?.oldName !== cat && (
+                    <>
+                      <button
+                        onClick={() => setEditingCategory({ oldName: cat, newName: cat })}
+                        className="p-2 hover:bg-slate-100 rounded-lg"
+                      >
+                        <span className="material-symbols-outlined text-lg text-slate-500">edit</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          if (confirm(`Delete category "${cat}"? Items in this category won't be deleted.`)) {
+                            saveCategories(vendorCategories.filter(c => c !== cat));
+                          }
+                        }}
+                        className="p-2 hover:bg-red-50 rounded-lg"
+                      >
+                        <span className="material-symbols-outlined text-lg text-red-400">delete</span>
+                      </button>
+                    </>
+                  )}
+                </div>
+              ))}
+            </div>
+            <div className="flex items-center gap-2 border-t border-slate-100 pt-4">
+              <input
+                type="text"
+                value={newCategoryName}
+                onChange={(e) => setNewCategoryName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && newCategoryName.trim()) {
+                    saveCategories([...vendorCategories, newCategoryName.trim()]);
+                    setNewCategoryName("");
+                  }
+                }}
+                placeholder="New category name..."
+                className="flex-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-[#ba001c]"
+              />
+              <button
+                onClick={() => {
+                  if (newCategoryName.trim()) {
+                    saveCategories([...vendorCategories, newCategoryName.trim()]);
+                    setNewCategoryName("");
+                  }
+                }}
+                className="px-5 py-3 bg-[#ba001c] text-white font-bold rounded-xl text-sm hover:bg-[#a40017]"
+              >
+                Add
+              </button>
             </div>
           </div>
         </div>
