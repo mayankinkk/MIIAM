@@ -12,8 +12,7 @@ interface VendorVerification {
   address: string;
   cuisine: string;
   status: "pending" | "active" | "inactive" | "suspended";
-  submitted_at: string;
-  document_status: "pending" | "submitted" | "verified" | "rejected";
+  created_at: string;
 }
 
 export default function VerificationPage() {
@@ -37,27 +36,19 @@ export default function VerificationPage() {
     setLoading(false);
   }
 
-  const updateVendorStatus = async (vendorId: string, newStatus: string, action: "approve" | "reject") => {
+  const updateVendorStatus = async (vendorId: string, newStatus: string) => {
     try {
       const { error } = await supabase
         .from("vendors")
-        .update({ 
-          status: newStatus,
-          document_status: action === "approve" ? "verified" : "rejected"
-        })
+        .update({ status: newStatus })
         .eq("id", vendorId);
 
       if (error) throw error;
 
       setVendors(vendors.map(v => 
-        v.id === vendorId ? { 
-          ...v, 
-          status: newStatus as any,
-          document_status: (action === "approve" ? "verified" : "rejected") as any
-        } : v
+        v.id === vendorId ? { ...v, status: newStatus as any } : v
       ));
 
-      alert(`Vendor ${action === "approve" ? "approved" : "rejected"} successfully!`);
       setSelectedVendor(null);
     } catch (error: any) {
       console.error("Error updating vendor:", error);
@@ -79,13 +70,6 @@ export default function VerificationPage() {
     active: "bg-green-100 text-green-700",
     inactive: "bg-slate-100 text-slate-700",
     suspended: "bg-red-100 text-red-700",
-  };
-
-  const docStatusColors: Record<string, string> = {
-    pending: "bg-yellow-100 text-yellow-700",
-    submitted: "bg-blue-100 text-blue-700",
-    verified: "bg-green-100 text-green-700",
-    rejected: "bg-red-100 text-red-700",
   };
 
   if (loading) return <div className="px-8">Loading verifications...</div>;
@@ -180,20 +164,20 @@ export default function VerificationPage() {
                       </span>
                     </td>
                     <td className="p-4 text-slate-400">
-                      {vendor.submitted_at ? new Date(vendor.submitted_at).toLocaleDateString() : "-"}
+                      {vendor.created_at ? new Date(vendor.created_at).toLocaleDateString() : "-"}
                     </td>
                     <td className="p-4">
                       <div className="flex gap-2">
                         {vendor.status !== "active" && (
                           <>
                             <button
-                              onClick={() => updateVendorStatus(vendor.id, "active", "approve")}
+                              onClick={() => updateVendorStatus(vendor.id, "active")}
                               className="px-3 py-1 bg-green-600 text-white rounded-lg font-bold hover:opacity-90"
                             >
                               Approve
                             </button>
                             <button
-                              onClick={() => updateVendorStatus(vendor.id, "suspended", "reject")}
+                              onClick={() => updateVendorStatus(vendor.id, "suspended")}
                               className="px-3 py-1 bg-red-600 text-white rounded-lg font-bold hover:opacity-90"
                             >
                               Reject
@@ -264,13 +248,13 @@ export default function VerificationPage() {
                 {selectedVendor.status !== "active" ? (
                   <>
                     <button
-                      onClick={() => updateVendorStatus(selectedVendor.id, "active", "approve")}
+                      onClick={() => updateVendorStatus(selectedVendor.id, "active")}
                       className="flex-1 py-3 bg-green-600 text-white rounded-xl font-bold"
                     >
                       Approve Partner
                     </button>
                     <button
-                      onClick={() => updateVendorStatus(selectedVendor.id, "suspended", "reject")}
+                      onClick={() => updateVendorStatus(selectedVendor.id, "suspended")}
                       className="flex-1 py-3 bg-red-600 text-white rounded-xl font-bold"
                     >
                       Reject
@@ -278,7 +262,7 @@ export default function VerificationPage() {
                   </>
                 ) : (
                   <button
-                    onClick={() => updateVendorStatus(selectedVendor.id, "suspended", "reject")}
+                    onClick={() => updateVendorStatus(selectedVendor.id, "suspended")}
                     className="flex-1 py-3 bg-red-600 text-white rounded-xl font-bold"
                   >
                     Suspend Partner
