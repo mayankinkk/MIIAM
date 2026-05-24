@@ -439,26 +439,35 @@ export default function RiderOrdersPage() {
             .eq("id", order.rider_id);
         } catch { /* column may not exist */ }
 
-        // Credit wallet — upsert (only balance column, avoid total_earnings if missing)
+        // Credit wallet — upsert with all known columns
         try {
           const { data: wallet } = await supabase
             .from("rider_wallets")
-            .select("id, balance")
+            .select("id, balance, total_earnings")
             .eq("rider_id", order.rider_id)
             .maybeSingle();
           if (wallet) {
             await supabase
               .from("rider_wallets")
-              .update({ balance: (wallet.balance || 0) + riderEarning })
+              .update({
+                balance: (wallet.balance || 0) + riderEarning,
+                total_earnings: (wallet.total_earnings || 0) + riderEarning,
+              })
               .eq("id", wallet.id);
           } else {
             await supabase
               .from("rider_wallets")
-              .insert({ rider_id: order.rider_id, balance: riderEarning });
+              .insert({
+                rider_id: order.rider_id,
+                balance: riderEarning,
+                total_earnings: riderEarning,
+                pending_payout: 0,
+                advance_used: 0,
+              });
           }
         } catch { /* table or column may not exist */ }
 
-        // Log transaction (minimal columns)
+        // Log transaction
         try {
           await supabase
             .from("rider_wallet")
@@ -467,6 +476,7 @@ export default function RiderOrdersPage() {
               amount: riderEarning,
               type: "earning",
               description: `Delivery earnings for order #${currentOrderId.slice(0, 8)}`,
+              order_id: currentOrderId,
               created_at: new Date().toISOString(),
             });
         } catch { /* table or column may not exist */ }

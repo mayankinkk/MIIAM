@@ -52,7 +52,7 @@ export default function RiderWalletPage() {
       setRiderId(riderData.id);
 
       // Load wallet balance
-      const { data: wallet } = await supabase.from("rider_wallets").select("*").eq("rider_id", riderData.id).single();
+      const { data: wallet } = await supabase.from("rider_wallets").select("*").eq("rider_id", riderData.id).maybeSingle();
       if (wallet) {
         setWalletData({
           balance: Number(wallet.balance) || 0,

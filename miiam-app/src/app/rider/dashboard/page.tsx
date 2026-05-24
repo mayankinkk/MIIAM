@@ -164,18 +164,29 @@ export default function RiderDashboard() {
         setRiderId(riderIdVal);
         setRiderDeliveries(riderRow.total_deliveries || 0);
 
-        // Calculate total earnings from orders (reliable — doesn't depend on riders.total_earnings column)
+        // Calculate total earnings from orders (falls back to rider_wallets if rider_earning column missing)
+        let totalEarnings = 0;
         const { data: allDeliveredOrders } = await supabase
           .from("orders")
           .select("rider_earning")
           .eq("rider_id", riderIdVal)
           .in("status", ["delivered", "completed"]);
-        const totalEarnings = (allDeliveredOrders || []).reduce((s, o) => s + (Number(o.rider_earning) || 0), 0);
+        totalEarnings = (allDeliveredOrders || []).reduce((s, o) => s + (Number(o.rider_earning) || 0), 0);
+        if (!totalEarnings) {
+          const { data: walletFallback } = await supabase
+            .from("rider_wallets")
+            .select("total_earnings")
+            .eq("rider_id", riderIdVal)
+            .maybeSingle();
+          totalEarnings = Number(walletFallback?.total_earnings) || 0;
+        }
         setRiderEarnings(totalEarnings);
 
         // Load today's earnings
         const todayStart = new Date();
         todayStart.setHours(0, 0, 0, 0);
+        let todayEarned = 0;
+        let collected = 0;
         const { data: todayOrders } = await supabase
           .from("orders")
           .select("rider_earning, customer_collected")
@@ -183,10 +194,20 @@ export default function RiderDashboard() {
           .in("status", ["delivered", "completed"])
           .gte("placed_at", todayStart.toISOString());
 
-        const todayEarned = (todayOrders || []).reduce((s, o) => s + (Number(o.rider_earning) || 0), 0);
+        todayEarned = (todayOrders || []).reduce((s, o) => s + (Number(o.rider_earning) || 0), 0);
+        if (!todayEarned) {
+          const weekStart = new Date();
+          weekStart.setHours(0, 0, 0, 0);
+          const { data: todayTxns } = await supabase
+            .from("rider_wallet")
+            .select("amount")
+            .eq("rider_id", riderIdVal)
+            .eq("type", "earning")
+            .gte("created_at", weekStart.toISOString());
+          todayEarned = (todayTxns || []).reduce((s, t) => s + Number(t.amount), 0);
+        }
         setTodayEarnings(todayEarned);
 
-        let collected = 0;
         (todayOrders || []).forEach(o => { collected += Number(o.customer_collected) || 0; });
         setCashCollected(collected);
         setCashPending(0);
