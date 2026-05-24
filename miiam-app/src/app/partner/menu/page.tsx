@@ -125,10 +125,15 @@ export default function PartnerMenuPage() {
   }, [selectedVendorId]);
 
   async function loadVendors() {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
     const { data } = await supabase
       .from("vendors")
       .select("id, shop_name, type")
+      .eq("user_id", user.id)
       .order("shop_name");
+    
     if (data) {
       setVendors(data);
       if (data.length > 0 && !selectedVendorId) {
