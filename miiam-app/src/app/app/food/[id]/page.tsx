@@ -45,6 +45,7 @@ interface Vendor {
   delivery_charge: number;
   image_url: string;
   cover_image_url: string;
+  banner_url: string;
   description: string;
   opening_hours: string;
   is_featured: boolean;
@@ -360,7 +361,7 @@ export default function RestaurantProfilePage() {
     );
   }
 
-  const coverImage = vendor.cover_image_url || vendor.image_url || "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80";
+  const coverImage = vendor.banner_url || vendor.cover_image_url || vendor.image_url || "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80";
   const isOpen = parseIsOpen(vendor.opening_hours);
   const specials = menuItems.filter((item) => item.is_featured);
   const filteredMenu = menuItems

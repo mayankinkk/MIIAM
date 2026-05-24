@@ -17,6 +17,7 @@ interface VendorProfile {
   cuisine: string;
   description: string;
   cover_image_url: string;
+  banner_url: string;
   opening_hours: string;
   min_order_amount: number;
   delivery_charge: number;
@@ -171,6 +172,45 @@ export default function VendorProfilePage() {
               <h3 className="text-lg font-bold text-slate-800">{form.shop_name || "Your Store"}</h3>
               <p className="text-sm text-slate-500">{form.cuisine || "No cuisine set"}</p>
             </div>
+          </div>
+
+          {/* Banner Image */}
+          <div>
+            <label className="text-sm font-semibold text-slate-700 mb-2 block">Banner Image</label>
+            <div className="relative w-full h-40 bg-slate-100 rounded-2xl overflow-hidden group">
+              {form.banner_url ? (
+                <img src={form.banner_url} alt="Store Banner" className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full flex flex-col items-center justify-center text-slate-300">
+                  <span className="material-symbols-outlined text-5xl">panorama</span>
+                  <span className="text-sm mt-1">Click to upload banner</span>
+                </div>
+              )}
+              <label className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer rounded-2xl">
+                <span className="material-symbols-outlined text-white text-3xl">camera_alt</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  disabled={uploading}
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      setUploading(true);
+                      const url = await uploadImage(file);
+                      if (url) setForm({ ...form, banner_url: url });
+                      setUploading(false);
+                    }
+                  }}
+                />
+              </label>
+              {uploading && (
+                <div className="absolute inset-0 bg-white/60 flex items-center justify-center rounded-2xl">
+                  <span className="material-symbols-outlined text-[#ba001c] animate-spin">progress_activity</span>
+                </div>
+              )}
+            </div>
+            <p className="text-xs text-slate-400 mt-1">Recommended: 1200×400px. Shows at the top of your store page.</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

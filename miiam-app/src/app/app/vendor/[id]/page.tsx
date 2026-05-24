@@ -121,8 +121,8 @@ export default function VendorPage() {
   return (
     <div className="min-h-screen bg-[#f8f8f8] pb-24">
       <div className="relative h-56 overflow-hidden">
-        {vendor.cover_image_url || vendor.image_url ? (
-          <BlurImage src={vendor.cover_image_url || vendor.image_url} alt={vendor.shop_name} fill className="w-full h-full" sizes="100vw" />
+        {vendor.banner_url || vendor.cover_image_url || vendor.image_url ? (
+        <BlurImage src={vendor.banner_url || vendor.cover_image_url || vendor.image_url} alt={vendor.shop_name} fill className="w-full h-full" sizes="100vw" />
         ) : (
           <div className="w-full h-full bg-gradient-to-b from-slate-300 to-slate-100" />
         )}
