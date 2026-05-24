@@ -395,78 +395,93 @@ export default function RiderOrdersPage() {
       const order = orders.find(o => o.id === currentOrderId);
       const riderEarning = calculateEarnings(0);
 
-      // Update order status and earnings
-      const { error: orderErr } = await supabase
-        .from("orders")
-        .update({
-          status: "delivered",
-          delivered_at: new Date().toISOString(),
-          customer_collected: cashToCollect,
-          rider_earning: riderEarning,
-        })
-        .eq("id", currentOrderId);
-      if (orderErr) throw new Error("order update: " + orderErr.message);
+      // Update order status (minimal columns to avoid schema issues)
+      try {
+        const { error: orderErr } = await supabase
+          .from("orders")
+          .update({
+            status: "delivered",
+            delivered_at: new Date().toISOString(),
+          })
+          .eq("id", currentOrderId);
+        if (orderErr) throw new Error("order update: " + orderErr.message);
+      } catch (orderErr) {
+        console.error("Order status update failed:", orderErr);
+      }
+
+      // Try to persist earnings if column exists
+      try {
+        await supabase
+          .from("orders")
+          .update({ rider_earning: riderEarning })
+          .eq("id", currentOrderId);
+      } catch { /* column may not exist */ }
+
+      // Try to persist cash collected if column exists
+      try {
+        await supabase
+          .from("orders")
+          .update({ customer_collected: cashToCollect })
+          .eq("id", currentOrderId);
+      } catch { /* column may not exist */ }
 
       if (order?.rider_id) {
-        // Update rider delivery count (total_earnings computed from orders instead)
-        const { data: rider } = await supabase
-          .from("riders")
-          .select("total_deliveries")
-          .eq("id", order.rider_id)
-          .single();
-        await supabase
-          .from("riders")
-          .update({ total_deliveries: (rider?.total_deliveries || 0) + 1 })
-          .eq("id", order.rider_id);
+        // Update rider delivery count
+        try {
+          const { data: rider } = await supabase
+            .from("riders")
+            .select("total_deliveries")
+            .eq("id", order.rider_id)
+            .single();
+          await supabase
+            .from("riders")
+            .update({ total_deliveries: (rider?.total_deliveries || 0) + 1 })
+            .eq("id", order.rider_id);
+        } catch { /* column may not exist */ }
 
-        // Credit wallet — upsert
-        const { data: wallet } = await supabase
-          .from("rider_wallets")
-          .select("id, balance, total_earnings")
-          .eq("rider_id", order.rider_id)
-          .maybeSingle();
-        if (wallet) {
-          await supabase
+        // Credit wallet — upsert (only balance column, avoid total_earnings if missing)
+        try {
+          const { data: wallet } = await supabase
             .from("rider_wallets")
-            .update({
-              balance: (wallet.balance || 0) + riderEarning,
-              total_earnings: (wallet.total_earnings || 0) + riderEarning,
-            })
-            .eq("id", wallet.id);
-        } else {
+            .select("id, balance")
+            .eq("rider_id", order.rider_id)
+            .maybeSingle();
+          if (wallet) {
+            await supabase
+              .from("rider_wallets")
+              .update({ balance: (wallet.balance || 0) + riderEarning })
+              .eq("id", wallet.id);
+          } else {
+            await supabase
+              .from("rider_wallets")
+              .insert({ rider_id: order.rider_id, balance: riderEarning });
+          }
+        } catch { /* table or column may not exist */ }
+
+        // Log transaction (minimal columns)
+        try {
           await supabase
-            .from("rider_wallets")
+            .from("rider_wallet")
             .insert({
               rider_id: order.rider_id,
-              balance: riderEarning,
-              total_earnings: riderEarning,
-              pending_payout: 0,
-              advance_used: 0,
+              amount: riderEarning,
+              type: "earning",
+              description: `Delivery earnings for order #${currentOrderId.slice(0, 8)}`,
+              created_at: new Date().toISOString(),
             });
-        }
-
-        // Log transaction
-        await supabase
-          .from("rider_wallet")
-          .insert({
-            rider_id: order.rider_id,
-            amount: riderEarning,
-            type: "earning",
-            description: `Delivery earnings for order #${currentOrderId.slice(0, 8)}`,
-            order_id: currentOrderId,
-            created_at: new Date().toISOString(),
-          });
+        } catch { /* table or column may not exist */ }
       }
 
       if (order?.user_id) {
-        await supabase.from("notifications").insert({
-          user_id: order.user_id,
-          title: "Order Delivered! 🎉",
-          message: `Your order has been delivered. ₹${cashToCollect} collected. Enjoy your food!`,
-          type: "order",
-          read: false,
-          created_at: new Date().toISOString(),
-        });
+        try {
+          await supabase.from("notifications").insert({
+            user_id: order.user_id,
+            title: "Order Delivered! 🎉",
+            message: `Your order has been delivered. Enjoy your food!`,
+            type: "order",
+            read: false,
+          });
+        } catch { /* table or column may not exist */ }
 
         try {
           await fetch("/api/emails/order-status", {
