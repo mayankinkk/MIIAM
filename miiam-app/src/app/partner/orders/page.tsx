@@ -142,6 +142,7 @@ export default function VendorOrders() {
                       order.status === "pending" ? "bg-amber-100 text-amber-700" :
                       order.status === "accepted" ? "bg-blue-100 text-blue-700" :
                       order.status === "preparing" ? "bg-indigo-100 text-indigo-700" :
+                      order.status === "ready_for_pickup" ? "bg-purple-100 text-purple-700" :
                       order.status === "delivered" ? "bg-green-100 text-green-700" :
                       order.status === "cancelled" ? "bg-red-100 text-red-700" :
                       "bg-slate-100 text-slate-600"
@@ -227,13 +228,19 @@ export default function VendorOrders() {
                       <button onClick={() => updateStatus(order.id, "preparing")} className="px-6 py-3 bg-amber-600 text-white rounded-xl font-bold text-sm hover:bg-amber-700 transition-colors">Start Preparing</button>
                     )}
                     {order.status === "preparing" && (
-                      <button onClick={() => updateStatus(order.id, "picking_up")} className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold text-sm hover:bg-indigo-700 transition-colors">Mark Ready</button>
+                      <button onClick={() => updateStatus(order.id, "ready_for_pickup")} className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold text-sm hover:bg-indigo-700 transition-colors">Mark Ready for Pickup</button>
                     )}
-                    {order.status === "picking_up" && (
-                      <button onClick={() => updateStatus(order.id, "on_the_way")} className="px-6 py-3 bg-[#ba001c] text-white rounded-xl font-bold text-sm hover:bg-[#a40017] transition-colors">Hand to Rider</button>
+                    {order.status === "ready_for_pickup" && (
+                      <div className="px-6 py-3 bg-purple-50 text-purple-700 rounded-xl font-bold text-sm border border-purple-200">
+                        <span className="material-symbols-outlined align-middle text-lg mr-1">pedal_bike</span>
+                        Waiting for Rider
+                      </div>
                     )}
                     {order.status === "on_the_way" && (
-                      <button onClick={() => updateStatus(order.id, "delivered")} className="px-6 py-3 bg-green-600 text-white rounded-xl font-bold text-sm hover:bg-green-700 transition-colors">Mark Delivered</button>
+                      <div className="px-6 py-3 bg-cyan-50 text-cyan-700 rounded-xl font-bold text-sm border border-cyan-200">
+                        <span className="material-symbols-outlined align-middle text-lg mr-1">delivery_truck</span>
+                        Out for Delivery
+                      </div>
                     )}
                   </div>
                 </div>
