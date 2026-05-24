@@ -62,6 +62,7 @@ export type OrderStatus =
   | "scheduled"
   | "accepted"
   | "preparing"
+  | "ready_for_pickup"
   | "shopping"
   | "picking_up"
   | "on_the_way"
