@@ -1016,6 +1016,7 @@ export default function AdminVendorsPage() {
                       onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
                       className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
                     >
+                      <option value="pending">Pending</option>
                       <option value="active">Active</option>
                       <option value="inactive">Inactive</option>
                       <option value="suspended">Suspended</option>
@@ -1291,7 +1292,10 @@ export default function AdminVendorsPage() {
                     <td className="p-4 text-slate-500">₹{vendor.delivery_charge || 0}</td>
                     <td className="p-4">
                       <span className={`text-[10px] font-black px-2 py-1 rounded-full uppercase ${
-                        vendor.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'
+                        vendor.status === 'active' ? 'bg-green-100 text-green-700' :
+                        vendor.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
+                        vendor.status === 'suspended' ? 'bg-red-100 text-red-700' :
+                        'bg-slate-100 text-slate-700'
                       }`}>
                         {vendor.status}
                       </span>
