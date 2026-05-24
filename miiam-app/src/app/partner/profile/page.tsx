@@ -36,8 +36,25 @@ export default function VendorProfilePage() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [activeTab, setActiveTab] = useState<"store" | "business" | "delivery">("store");
+  const [uploading, setUploading] = useState(false);
 
   const [form, setForm] = useState<Partial<VendorProfile>>({});
+
+  async function uploadImage(file: File): Promise<string | null> {
+    const fileExt = file.name.split(".").pop();
+    const fileName = `vendor/${vendor?.id || "new"}_${Date.now()}.${fileExt}`;
+    const { error: uploadError } = await supabase.storage
+      .from("menu-images")
+      .upload(fileName, file);
+    if (uploadError) {
+      alert("Upload failed. Make sure the 'menu-images' bucket exists in Supabase Storage with public read access.");
+      return null;
+    }
+    const { data: { publicUrl } } = supabase.storage
+      .from("menu-images")
+      .getPublicUrl(fileName);
+    return publicUrl;
+  }
 
   useEffect(() => {
     init();
@@ -120,11 +137,34 @@ export default function VendorProfilePage() {
       {activeTab === "store" && (
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-6">
           <div className="flex items-center gap-6">
-            <div className="w-24 h-24 bg-slate-100 rounded-2xl flex items-center justify-center overflow-hidden flex-shrink-0">
+            <div className="relative w-24 h-24 bg-slate-100 rounded-2xl flex items-center justify-center overflow-hidden flex-shrink-0 group">
               {form.cover_image_url ? (
                 <img src={form.cover_image_url} alt="Store" className="w-full h-full object-cover" />
               ) : (
                 <span className="material-symbols-outlined text-4xl text-slate-300">store</span>
+              )}
+              <label className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer rounded-2xl">
+                <span className="material-symbols-outlined text-white text-2xl">camera_alt</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  disabled={uploading}
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      setUploading(true);
+                      const url = await uploadImage(file);
+                      if (url) setForm({ ...form, cover_image_url: url });
+                      setUploading(false);
+                    }
+                  }}
+                />
+              </label>
+              {uploading && (
+                <div className="absolute inset-0 bg-white/60 flex items-center justify-center rounded-2xl">
+                  <span className="material-symbols-outlined text-[#ba001c] animate-spin">progress_activity</span>
+                </div>
               )}
             </div>
             <div>

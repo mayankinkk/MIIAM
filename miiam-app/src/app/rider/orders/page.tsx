@@ -68,14 +68,15 @@ export default function RiderOrdersPage() {
   const [error, setError] = useState<string | null>(null);
   const [riderProfile, setRiderProfile] = useState<{ id: string } | null>(null);
 
-  async function loadOrders() {
+  async function loadOrders(riderId?: string) {
     setLoading(true);
     setError(null);
     try {
       const yesterday = new Date();
       yesterday.setHours(yesterday.getHours() - 24);
 
-      const { data: dbOrders, error: dbError } = await supabase
+      // Fetch available orders (not assigned to any rider)
+      const { data: availableOrders, error: dbError } = await supabase
         .from("orders")
         .select("*")
         .is("rider_id", null)
@@ -85,8 +86,25 @@ export default function RiderOrdersPage() {
 
       if (dbError) throw new Error(dbError.message);
 
-      if (dbOrders && dbOrders.length > 0) {
-        const fullOrders = await Promise.all(dbOrders.map(async (order) => {
+      // Also fetch this rider's own accepted orders
+      const { data: myOrders } = riderId ? await supabase
+        .from("orders")
+        .select("*")
+        .eq("rider_id", riderId)
+        .in("status", ["ready_for_pickup", "on_the_way"])
+        .order("placed_at", { ascending: false }) : { data: [] };
+
+      const allDbOrders = [...(availableOrders || []), ...(myOrders || [])];
+      // Deduplicate by id
+      const seen = new Set<string>();
+      const uniqueOrders = allDbOrders.filter(o => {
+        if (seen.has(o.id)) return false;
+        seen.add(o.id);
+        return true;
+      });
+
+      if (uniqueOrders.length > 0) {
+        const fullOrders = await Promise.all(uniqueOrders.map(async (order) => {
           const [vendorRes, addressRes, itemsRes, userRes] = await Promise.all([
             order.vendor_id ? supabase.from("vendors").select("*").eq("id", order.vendor_id).single() : Promise.resolve({ data: null }),
             order.delivery_address_id ? supabase.from("delivery_addresses").select("*").eq("id", order.delivery_address_id).single() : Promise.resolve({ data: null }),
@@ -117,6 +135,8 @@ export default function RiderOrdersPage() {
           };
         }));
         setOrders(fullOrders);
+      } else {
+        setOrders([]);
       }
       setLoading(false);
     } catch (err) {
@@ -129,7 +149,12 @@ export default function RiderOrdersPage() {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) return;
       supabase.from("riders").select("id").eq("user_id", user.id).single().then(({ data }) => {
-        if (data) setRiderProfile(data);
+        if (data) {
+          setRiderProfile(data);
+          loadOrders(data.id);
+        } else {
+          loadOrders();
+        }
       });
     });
 
@@ -547,8 +572,8 @@ export default function RiderOrdersPage() {
     }
   });
 
-  const availableOrders = filteredOrders.filter(o => o.status === "ready_for_pickup");
-  const shoppingOrders = filteredOrders.filter(o => o.status === "on_the_way");
+  const availableOrders = filteredOrders.filter(o => o.status === "ready_for_pickup" && !o.rider_id);
+  const shoppingOrders = filteredOrders.filter(o => o.rider_id && ["ready_for_pickup", "on_the_way"].includes(o.status));
   const completedOrders = filteredOrders.filter(o => o.status === "delivered");
 
   const todayEarnings = completedOrders
