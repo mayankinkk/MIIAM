@@ -226,8 +226,16 @@ export default function PartnerMenuPage() {
         imageUrl = await uploadImage(newItem.imageFile);
       }
       const payload = buildInsertPayload();
-      if (imageUrl) payload.image_url = imageUrl;
-      const { error } = await supabase.from(table).insert(payload);
+      // Only include columns known to exist
+      const safePayload: Record<string, any> = {
+        name: payload.name,
+        price: payload.price,
+        category: payload.category || "General",
+        vendor_id: payload.vendor_id,
+      };
+      if (imageUrl) safePayload.image_url = imageUrl;
+      if (payload.description && typeof payload.description === "string") safePayload.description = payload.description;
+      const { error } = await supabase.from(table).insert(safePayload);
       if (error) throw error;
       setShowAddModal(false);
       resetNewItem();
@@ -242,8 +250,14 @@ export default function PartnerMenuPage() {
   const handleUpdateItem = async () => {
     if (!editingItem) return;
     try {
-      const payload = buildUpdatePayload(editingItem);
-      const { error } = await supabase.from(table).update(payload).eq("id", editingItem.id);
+      const base: Record<string, any> = {
+        name: editingItem.name,
+        price: editingItem.price,
+        category: editingItem.category,
+      };
+      if ((editingItem as any).image_url) base.image_url = (editingItem as any).image_url;
+      if ((editingItem as any).description) base.description = (editingItem as any).description;
+      const { error } = await supabase.from(table).update(base).eq("id", editingItem.id);
       if (error) throw error;
       setEditingItem(null);
       loadItems();
