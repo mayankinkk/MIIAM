@@ -96,6 +96,12 @@ export default function VendorPromotions() {
     setPromoCodes(promoCodes.map((p) => (p.id === promo.id ? { ...p, is_active: !p.is_active } : p)));
   };
 
+  const handleDelete = async (id: string) => {
+    if (!confirm("Delete this promotion?")) return;
+    await supabase.from("promo_codes").delete().eq("id", id);
+    setPromoCodes(promoCodes.filter((p) => p.id !== id));
+  };
+
   const isExpired = (date: string) => new Date(date) < new Date();
 
   return (
@@ -152,6 +158,13 @@ export default function VendorPromotions() {
                       }`}
                     >
                       {promo.is_active && !expired ? "Active" : expired ? "Expired" : "Paused"}
+                    </button>
+                    <button
+                      onClick={() => handleDelete(promo.id)}
+                      className="p-1.5 hover:bg-red-50 rounded-lg"
+                      title="Delete"
+                    >
+                      <span className="material-symbols-outlined text-lg text-red-400">delete</span>
                     </button>
                   </div>
                 </div>
