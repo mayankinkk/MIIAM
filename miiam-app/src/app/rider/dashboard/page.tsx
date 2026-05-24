@@ -146,110 +146,108 @@ export default function RiderDashboard() {
           return;
         }
         setCurrentUserId(user.id);
-        const { data: riderData, error: riderError } = await supabase.from("riders").select("id, total_deliveries, total_earnings, rating, streak_days, last_work_date").eq("user_id", user.id).maybeSingle();
-        if (riderError) {
-          // Some columns may not exist in database — try with fewer columns
-          const { data: fallbackRider } = await supabase.from("riders").select("id, total_deliveries").eq("user_id", user.id).maybeSingle();
-          if (!fallbackRider) { setError("You don't have a rider account yet."); setInitialLoading(false); return; }
-          setRiderId(fallbackRider.id);
-          setRiderDeliveries(fallbackRider.total_deliveries || 0);
-          setInitialLoading(false);
-          return;
-        }
-        if (!riderData) {
+
+        // Fetch rider profile — only select columns that are guaranteed to exist
+        const { data: riderRow } = await supabase
+          .from("riders")
+          .select("id, total_deliveries")
+          .eq("user_id", user.id)
+          .maybeSingle();
+
+        if (!riderRow) {
           setError("You don't have a rider account yet.");
           setInitialLoading(false);
           return;
         }
-        if (riderData) {
-            setRiderId(riderData.id);
-            setRiderDeliveries(riderData.total_deliveries || 0);
-            setRiderEarnings(riderData.total_earnings || 0);
-            setCustomerRating(Number(riderData.rating) || 5.0);
-            setStreakDays(riderData.streak_days || 0);
 
-            // Load today's earnings from orders
-            const todayStart = new Date();
-            todayStart.setHours(0, 0, 0, 0);
-            const { data: todayOrders } = await supabase
-              .from("orders")
-              .select("rider_earning, customer_collected")
-              .eq("rider_id", riderData.id)
-              .in("status", ["delivered", "completed"])
-              .gte("placed_at", todayStart.toISOString());
+        const riderIdVal = riderRow.id;
+        setRiderId(riderIdVal);
+        setRiderDeliveries(riderRow.total_deliveries || 0);
 
-            const earnings = (todayOrders || []).reduce((s, o) => s + (Number(o.rider_earning) || 0), 0);
-            setTodayEarnings(earnings);
+        // Calculate total earnings from orders (reliable — doesn't depend on riders.total_earnings column)
+        const { data: allDeliveredOrders } = await supabase
+          .from("orders")
+          .select("rider_earning")
+          .eq("rider_id", riderIdVal)
+          .in("status", ["delivered", "completed"]);
+        const totalEarnings = (allDeliveredOrders || []).reduce((s, o) => s + (Number(o.rider_earning) || 0), 0);
+        setRiderEarnings(totalEarnings);
 
-            // Cash collection stats
-            let collected = 0, pending = 0;
-            (todayOrders || []).forEach(o => {
-              const cc = Number(o.customer_collected) || 0;
-              collected += cc;
-              pending += cc; // all collected today considered as collected
+        // Load today's earnings
+        const todayStart = new Date();
+        todayStart.setHours(0, 0, 0, 0);
+        const { data: todayOrders } = await supabase
+          .from("orders")
+          .select("rider_earning, customer_collected")
+          .eq("rider_id", riderIdVal)
+          .in("status", ["delivered", "completed"])
+          .gte("placed_at", todayStart.toISOString());
+
+        const todayEarned = (todayOrders || []).reduce((s, o) => s + (Number(o.rider_earning) || 0), 0);
+        setTodayEarnings(todayEarned);
+
+        let collected = 0;
+        (todayOrders || []).forEach(o => { collected += Number(o.customer_collected) || 0; });
+        setCashCollected(collected);
+        setCashPending(0);
+
+        // Load DND mode
+        const { data: settings } = await supabase.from("rider_settings").select("dnd_mode, sound_enabled, vibration_enabled").eq("rider_id", riderIdVal).single();
+        if (settings) {
+          setDndMode(settings.dnd_mode || false);
+          if (settings.sound_enabled !== undefined) setSoundEnabled(settings.sound_enabled);
+          if (settings.vibration_enabled !== undefined) setVibrationEnabled(settings.vibration_enabled);
+        }
+
+        // Load quest progress
+        const { data: quests } = await supabase
+          .from("rider_quest_progress")
+          .select("*")
+          .eq("rider_id", riderIdVal);
+        if (quests && quests.length > 0) {
+          setDailyQuests(quests.map(q => ({
+            id: q.quest_id,
+            title: q.quest_id === 1 ? "Complete 5 Deliveries" : q.quest_id === 2 ? "Earn ₹500 Today" : "3-Star Ratings",
+            current: q.current_progress,
+            target: q.target,
+            bonus: q.bonus,
+          })));
+        } else {
+          const defaultQuests = [
+            { quest_id: 1, target: 5, bonus: 100 },
+            { quest_id: 2, target: 500, bonus: 75 },
+            { quest_id: 3, target: 10, bonus: 50 },
+          ];
+          const initialProgress = [
+            { current: riderRow.total_deliveries || 0, target: 5 },
+            { current: todayEarned, target: 500 },
+            { current: 0, target: 10 },
+          ];
+          setDailyQuests(initialProgress.map((p, i) => ({
+            id: defaultQuests[i].quest_id,
+            title: defaultQuests[i].quest_id === 1 ? "Complete 5 Deliveries" : defaultQuests[i].quest_id === 2 ? "Earn ₹500 Today" : "3-Star Ratings",
+            current: p.current,
+            target: p.target,
+            bonus: defaultQuests[i].bonus,
+          })));
+          for (const q of defaultQuests) {
+            await supabase.from("rider_quest_progress").insert({
+              rider_id: riderIdVal,
+              quest_id: q.quest_id,
+              current_progress: 0,
+              target: q.target,
+              bonus: q.bonus,
             });
-            setCashCollected(collected);
-            setCashPending(0);
-
-            // Load DND mode
-            const { data: settings } = await supabase.from("rider_settings").select("dnd_mode, sound_enabled, vibration_enabled").eq("rider_id", riderData.id).single();
-            if (settings) {
-              setDndMode(settings.dnd_mode || false);
-              if (settings.sound_enabled !== undefined) setSoundEnabled(settings.sound_enabled);
-              if (settings.vibration_enabled !== undefined) setVibrationEnabled(settings.vibration_enabled);
-            }
-
-            // Load quest progress
-            const { data: quests } = await supabase
-              .from("rider_quest_progress")
-              .select("*")
-              .eq("rider_id", riderData.id);
-            if (quests && quests.length > 0) {
-              setDailyQuests(quests.map(q => ({
-                id: q.quest_id,
-                title: q.quest_id === 1 ? "Complete 5 Deliveries" : q.quest_id === 2 ? "Earn ₹500 Today" : "3-Star Ratings",
-                current: q.current_progress,
-                target: q.target,
-                bonus: q.bonus,
-              })));
-            } else {
-              // Initialize quest progress with real data
-              const defaultQuests = [
-                { quest_id: 1, target: 5, bonus: 100 },
-                { quest_id: 2, target: 500, bonus: 75 },
-                { quest_id: 3, target: 10, bonus: 50 },
-              ];
-              const initialProgress = [
-                { current: riderData.total_deliveries || 0, target: 5 },
-                { current: earnings, target: 500 },
-                { current: 0, target: 10 },
-              ];
-              setDailyQuests(initialProgress.map((p, i) => ({
-                id: defaultQuests[i].quest_id,
-                title: defaultQuests[i].quest_id === 1 ? "Complete 5 Deliveries" : defaultQuests[i].quest_id === 2 ? "Earn ₹500 Today" : "3-Star Ratings",
-                current: p.current,
-                target: p.target,
-                bonus: defaultQuests[i].bonus,
-              })));
-              // Save initial quest progress
-              for (const q of defaultQuests) {
-                await supabase.from("rider_quest_progress").insert({
-                  rider_id: riderData.id,
-                  quest_id: q.quest_id,
-                  current_progress: 0,
-                  target: q.target,
-                  bonus: q.bonus,
-                });
-              }
           }
+        }
 
-          // Load rider's current active order
-          try {
-          const activeStatuses = ["accepted", "preparing", "shopping", "picking_up", "on_the_way", "arrived"];
+        // Load rider's current active order
+        try {
+          const activeStatuses = ["accepted", "preparing", "ready_for_pickup", "shopping", "picking_up", "on_the_way", "arrived"];
           const { data: activeOrders } = await supabase
             .from("orders")
             .select("*, vendor:vendors(*)")
-            .eq("rider_id", riderData.id)
+            .eq("rider_id", riderIdVal)
             .in("status", activeStatuses)
             .order("placed_at", { ascending: false })
             .limit(1);
@@ -324,10 +322,10 @@ export default function RiderDashboard() {
             };
             setDeliveryStep(statusStepMap[dbOrder.status] || "shopping");
           }
-          } catch (activeErr) {
-            console.warn("Failed to load active order:", activeErr);
-          }
+        } catch (activeErr) {
+          console.warn("Failed to load active order:", activeErr);
         }
+
         setInitialLoading(false);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to initialize dashboard");
@@ -405,12 +403,12 @@ export default function RiderDashboard() {
       const yesterday = new Date();
       yesterday.setHours(yesterday.getHours() - 24);
 
-      // Only fetch orders not assigned to any rider (include expired ones for reassignment)
+      // Only fetch orders that vendor marked ready, not yet assigned to a rider
       const { data: dbOrders } = await supabase
         .from("orders")
         .select("*")
         .is("rider_id", null)
-        .in("status", ["pending", "no_rider_available"])
+        .in("status", ["ready_for_pickup"])
         .gte("placed_at", yesterday.toISOString())
         .order("placed_at", { ascending: false });
         
@@ -501,7 +499,7 @@ export default function RiderDashboard() {
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders' }, () => {
         fetchRealOrders();
       })
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'orders', filter: `status=in.(pending,no_rider_available,scheduled)` }, () => {
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'orders', filter: `status=in.(ready_for_pickup)` }, () => {
         fetchRealOrders();
       })
       .subscribe();
@@ -756,13 +754,12 @@ export default function RiderDashboard() {
       }
     }
     
-    // Fallback: directly update order (only if RPC didn't succeed)
+    // Fallback: directly update order — assign rider to ready_for_pickup order
     if (!accepted && order.orderDbId && riderId) {
       const { error } = await supabase
         .from("orders")
         .update({ 
           rider_id: riderId, 
-          status: 'accepted', 
           accepted_at: new Date().toISOString() 
         })
         .eq("id", order.orderDbId)
@@ -831,50 +828,92 @@ export default function RiderDashboard() {
   const handleComplete = async () => {
     if (currentOrder) {
       const finalEarnings = calculateEarnings(currentOrder.totalDistance, 40, 8, currentOrder.peakMultiplier);
+      let persisted = false;
       try {
         if (currentOrder.orderDbId && riderId) {
-          await supabase.from("orders").update({
-            status: "delivered",
-            delivered_at: new Date().toISOString(),
-            rider_earning: finalEarnings,
-          }).eq("id", currentOrder.orderDbId);
-          await supabase.from("riders").update({
-            total_deliveries: riderDeliveries + 1,
-            total_earnings: riderEarnings + finalEarnings,
-          }).eq("id", riderId);
-          setRiderDeliveries(prev => prev + 1);
-          setRiderEarnings(prev => prev + finalEarnings);
+          const { error: orderErr } = await supabase
+            .from("orders")
+            .update({
+              status: "delivered",
+              delivered_at: new Date().toISOString(),
+              rider_earning: finalEarnings,
+            })
+            .eq("id", currentOrder.orderDbId);
+          if (orderErr) throw new Error("order update: " + orderErr.message);
 
-          // Credit wallet
-          const { data: wallet } = await supabase.from("rider_wallets")
+          // Update rider's delivery count (only total_deliveries, not total_earnings which may not exist)
+          await supabase
+            .from("riders")
+            .update({ total_deliveries: riderDeliveries + 1 })
+            .eq("id", riderId);
+          setRiderDeliveries((prev) => prev + 1);
+
+          // Credit wallet — upsert to handle both create and update
+          const { data: wallet } = await supabase
+            .from("rider_wallets")
             .select("id, balance, total_earnings")
             .eq("rider_id", riderId)
             .maybeSingle();
+
           if (wallet) {
-            await supabase.from("rider_wallets").update({
-              balance: (wallet.balance || 0) + finalEarnings,
-              total_earnings: (wallet.total_earnings || 0) + finalEarnings,
-            }).eq("id", wallet.id);
+            await supabase
+              .from("rider_wallets")
+              .update({
+                balance: (wallet.balance || 0) + finalEarnings,
+                total_earnings: (wallet.total_earnings || 0) + finalEarnings,
+              })
+              .eq("id", wallet.id);
           } else {
-            await supabase.from("rider_wallets").insert({
+            await supabase
+              .from("rider_wallets")
+              .insert({
+                rider_id: riderId,
+                balance: finalEarnings,
+                total_earnings: finalEarnings,
+                pending_payout: 0,
+                advance_used: 0,
+              });
+          }
+
+          // Log transaction in rider_wallet table for history
+          await supabase
+            .from("rider_wallet")
+            .insert({
               rider_id: riderId,
-              balance: finalEarnings,
-              total_earnings: finalEarnings,
-              pending_payout: 0,
-              advance_used: 0,
+              amount: finalEarnings,
+              type: "earning",
+              description: `Delivery earnings for order #${currentOrder.orderDbId.slice(0, 8)}`,
+              order_id: currentOrder.orderDbId,
+              created_at: new Date().toISOString(),
             });
+
+          // Verify the write by re-reading earnings
+          const { data: verify } = await supabase
+            .from("orders")
+            .select("rider_earning")
+            .eq("id", currentOrder.orderDbId)
+            .single();
+          if (verify && Number(verify.rider_earning) > 0) {
+            persisted = true;
+            setRiderEarnings((prev) => prev + finalEarnings);
+          } else {
+            console.warn("Earnings write verification returned 0, but update succeeded");
+            setRiderEarnings((prev) => prev + finalEarnings);
           }
 
           // Notify customer
           if (currentOrder.user_id) {
-            await supabase.from("notifications").insert({
-              user_id: currentOrder.user_id,
-              title: "Order Delivered! 🎉",
-              message: "Your order has been delivered. Enjoy your meal!",
-              type: "order",
-              read: false,
-              created_at: new Date().toISOString(),
-            }).maybeSingle();
+            await supabase
+              .from("notifications")
+              .insert({
+                user_id: currentOrder.user_id,
+                title: "Order Delivered! 🎉",
+                message: "Your order has been delivered. Enjoy your meal!",
+                type: "order",
+                read: false,
+                created_at: new Date().toISOString(),
+              })
+              .maybeSingle();
             try {
               await fetch("/api/emails/order-status", {
                 method: "POST",
@@ -886,10 +925,10 @@ export default function RiderDashboard() {
             }
           }
         }
-        alert(`Order delivered successfully! ₹${finalEarnings} added to your wallet.`);
+        alert(`Order delivered successfully! ₹${finalEarnings} earned.${persisted ? "" : " (pending sync)"}`);
       } catch (e) {
         console.error("Failed to persist delivery:", e);
-        alert(`Order delivered! ₹${finalEarnings} earned. (Sync issue — data will update on next refresh.)`);
+        alert(`Order delivered! ₹${finalEarnings} earned. (Sync will complete on next refresh.)`);
       }
       setCurrentOrder(null);
       stopLocationTracking();
