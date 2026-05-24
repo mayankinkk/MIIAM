@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { getVendorIdForUser } from "@/lib/vendor";
 import type { Order, OrderStatus } from "@/lib/types";
@@ -10,27 +10,40 @@ export default function PartnerPOS() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [vendorId, setVendorId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let channel: any = null;
+
+    async function init() {
+      try {
+        const id = await getVendorIdForUser();
+        if (id) {
+          setVendorId(id);
+          await loadOrders(id);
+          channel = subscribeToOrders(id);
+        }
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
     init();
+
+    return () => {
+      if (channel) supabase.removeChannel(channel);
+    };
   }, []);
 
-  async function init() {
-    const id = await getVendorIdForUser();
-    if (id) {
-      setVendorId(id);
-      loadOrders(id);
-      subscribeToOrders(id);
-    }
-    setLoading(false);
-  }
-
   async function loadOrders(vId: string) {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("orders")
       .select("*, vendor:vendors(name), items:order_items(*, menu_item:menu_items(name))")
       .eq("vendor_id", vId)
       .order("placed_at", { ascending: false });
+    if (error) throw error;
     if (data) setOrders(data);
   }
 
@@ -45,8 +58,7 @@ export default function PartnerPOS() {
         }
       )
       .subscribe();
-
-    return () => { supabase.removeChannel(channel); };
+    return channel;
   }
 
   const updateStatus = async (orderId: string, newStatus: OrderStatus) => {
@@ -81,6 +93,16 @@ export default function PartnerPOS() {
 
   if (loading) {
     return <div className="p-8 text-center text-slate-400 font-medium animate-pulse">Loading POS...</div>;
+  }
+
+  if (error) {
+    return (
+      <div className="p-8 flex flex-col items-center justify-center min-h-[60vh] text-center">
+        <span className="material-symbols-outlined text-6xl text-red-300 mb-4">error</span>
+        <h2 className="text-2xl font-extrabold text-slate-800 mb-2">Something went wrong</h2>
+        <p className="text-slate-500">{error}</p>
+      </div>
+    );
   }
 
   if (!vendorId) {
@@ -148,7 +170,6 @@ export default function PartnerPOS() {
                 key={order.id}
                 className="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 hover:shadow-md transition-shadow"
               >
-                {/* Order Header */}
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <div className="flex items-center gap-3 mb-1">
@@ -179,7 +200,6 @@ export default function PartnerPOS() {
                   </div>
                 </div>
 
-                {/* Order Items */}
                 <div className="space-y-2 mb-6 bg-slate-50 p-4 rounded-2xl border border-slate-100">
                   {order.items?.map((item, idx) => (
                     <div key={idx} className="flex justify-between items-center text-sm">
@@ -201,7 +221,6 @@ export default function PartnerPOS() {
                   )}
                 </div>
 
-                {/* Action Buttons */}
                 <div className="flex gap-3">
                   {statusActions[order.status]?.map((action, i) => (
                     <button
