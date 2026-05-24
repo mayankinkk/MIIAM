@@ -3,12 +3,12 @@
 import Link from "next/link";
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import { auth } from "@/lib/firebase/config";
+import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const supabase = createClient();
   const resetSuccess = searchParams.get("reset") === "success";
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -25,61 +25,24 @@ function LoginContent() {
     
     setIsLoading(true);
     try {
-      // First attempt to sign in
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      
-      if (signInError) {
-        console.log("[login] First attempt failed:", signInError.message);
-        
-        // Call admin API to fix email confirmation AND re-set password
-        const confirmRes = await fetch("/api/auth/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
-        });
-        
-        if (confirmRes.ok) {
-          // Retry sign in after admin fix
-          const { error: retryError } = await supabase.auth.signInWithPassword({
-            email,
-            password,
-          });
-          
-          if (retryError) {
-            setError(retryError.message);
-            return;
-          }
-          
-          // Success on retry
-          window.location.href = "/app/explore";
-          return;
-        } else {
-          const data = await confirmRes.json();
-          setError(data.error || "Login failed. Please try again.");
-          return;
-        }
-      }
-      
+      await signInWithEmailAndPassword(auth, email, password);
       // Success on first attempt
       window.location.href = "/app/explore";
-    } catch { setError("Something went wrong"); }
+    } catch (err: any) { 
+      setError(err.message || "Something went wrong"); 
+    }
     finally { setIsLoading(false); }
   };
 
   const handleGoogleLogin = async () => {
     setIsGoogleLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-        },
-      });
-      if (error) { setError(error.message); }
-    } catch { setError("Something went wrong"); }
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+      window.location.href = "/app/explore";
+    } catch (err: any) { 
+      setError(err.message || "Something went wrong"); 
+    }
     finally { setIsGoogleLoading(false); }
   };
 

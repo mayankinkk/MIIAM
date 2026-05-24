@@ -1,0 +1,306 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Profile {
+  id                    String    @id @default(uuid())
+  fullName              String?   @map("full_name")
+  phone                 String?
+  email                 String?
+  avatarUrl             String?   @map("avatar_url")
+  role                  String?   @default("user")
+  city                  String?
+  state                 String?
+  isProfileComplete     Boolean?  @default(false) @map("is_profile_complete")
+  referralCode          String?   @unique @map("referral_code")
+  referredById          String?   @map("referred_by")
+  referredBy            Profile?  @relation("Referrals", fields: [referredById], references: [id])
+  referrals             Profile[] @relation("Referrals")
+  totalLoyaltyPoints    Int?      @default(0) @map("total_loyalty_points")
+  createdAt             DateTime? @default(now()) @map("created_at")
+
+  orders                Order[]
+  riders                Rider[]
+  reviews               Review[]
+  auditLogs             AuditLog[]
+  chatMessages          ChatMessage[]
+  notifications         Notification[]
+  loyaltyPoints         LoyaltyPointsTransaction[]
+
+  @@map("profiles")
+}
+
+model Vendor {
+  id          String    @id @default(uuid())
+  ownerName   String    @map("owner_name")
+  phone       String
+  email       String?
+  shopName    String    @map("shop_name")
+  address     String
+  city        String?
+  pincode     String?
+  cuisine     String?
+  category    String?
+  gstNumber   String?   @map("gst_number")
+  status      String?   @default("active")
+  createdAt   DateTime? @default(now()) @map("created_at")
+
+  menuItems   MenuItem[]
+  orders      Order[]
+  reviews     Review[]
+
+  @@map("vendors")
+}
+
+model MenuItem {
+  id          String    @id @default(uuid())
+  vendorId    String?   @map("vendor_id")
+  vendor      Vendor?   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  name        String
+  price       Decimal
+  category    String?
+  imageUrl    String?   @map("image_url")
+  createdAt   DateTime? @default(now()) @map("created_at")
+
+  orderItems  OrderItem[]
+
+  @@map("menu_items")
+}
+
+model Order {
+  id                  String    @id @default(uuid())
+  userId              String?   @map("user_id")
+  user                Profile?  @relation(fields: [userId], references: [id])
+  vendorId            String?   @map("vendor_id")
+  vendor              Vendor?   @relation(fields: [vendorId], references: [id])
+  riderId             String?   @map("rider_id")
+  status              String?   @default("pending")
+  totalAmount         Decimal?  @default(0) @map("total_amount")
+  deliveryFee         Decimal?  @default(0) @map("delivery_fee")
+  discountAmount      Decimal?  @default(0) @map("discount_amount")
+  paymentMethod       String?   @map("payment_method")
+  deliveryAddress     String?   @map("delivery_address")
+  deliveryInstructions String?  @map("delivery_instructions")
+  specialInstructions String?   @map("special_instructions")
+  scheduledDelivery   String?   @map("scheduled_delivery")
+  placedAt            DateTime? @default(now()) @map("placed_at")
+  acceptedAt          DateTime? @map("accepted_at")
+  pickedAt            DateTime? @map("picked_at")
+  deliveredAt         DateTime? @map("delivered_at")
+
+  orderItems          OrderItem[]
+  reviews             Review[]
+  chatMessages        ChatMessage[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id          String    @id @default(uuid())
+  orderId     String?   @map("order_id")
+  order       Order?    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  menuItemId  String?   @map("menu_item_id")
+  menuItem    MenuItem? @relation(fields: [menuItemId], references: [id])
+  name        String
+  quantity    Decimal?  @default(1)
+  unitPrice   Decimal   @map("unit_price")
+  price       Decimal
+  specialNotes String?  @map("special_notes")
+  status      String?   @default("pending")
+  picked      Boolean?  @default(false)
+  actualPrice Decimal?  @map("actual_price")
+
+  @@map("order_items")
+}
+
+model Rider {
+  id            String    @id @default(uuid())
+  userId        String?   @map("user_id")
+  user          Profile?  @relation(fields: [userId], references: [id])
+  name          String
+  phone         String
+  email         String?
+  vehicleType   String?   @map("vehicle_type")
+  vehicleNumber String?   @map("vehicle_number")
+  isOnline      Boolean?  @default(false) @map("is_online")
+  status        String?   @default("active")
+  createdAt     DateTime? @default(now()) @map("created_at")
+
+  riderWallet   RiderWallet[]
+
+  @@map("riders")
+}
+
+model RiderWallet {
+  id            String    @id @default(uuid())
+  riderId       String?   @map("rider_id")
+  rider         Rider?    @relation(fields: [riderId], references: [id])
+  balance       Decimal?  @default(0)
+  totalEarnings Decimal?  @default(0) @map("total_earnings")
+  updatedAt     DateTime? @default(now()) @map("updated_at")
+
+  @@map("rider_wallet")
+}
+
+model Banner {
+  id          String    @id @default(uuid())
+  title       String
+  imageUrl    String    @map("image_url")
+  linkUrl     String?   @map("link_url")
+  position    Int?      @default(0)
+  isActive    Boolean?  @default(true) @map("is_active")
+  createdAt   DateTime? @default(now()) @map("created_at")
+
+  @@map("banners")
+}
+
+model Review {
+  id          String    @id @default(uuid())
+  userId      String?   @map("user_id")
+  user        Profile?  @relation(fields: [userId], references: [id])
+  vendorId    String?   @map("vendor_id")
+  vendor      Vendor?   @relation(fields: [vendorId], references: [id])
+  orderId     String?   @map("order_id")
+  order       Order?    @relation(fields: [orderId], references: [id])
+  rating      Int?
+  comment     String?
+  createdAt   DateTime? @default(now()) @map("created_at")
+
+  @@map("reviews")
+}
+
+model PromoCode {
+  id              String    @id @default(uuid())
+  code            String    @unique
+  discountType    String?   @map("discount_type")
+  discountValue   Decimal?  @map("discount_value")
+  minOrderAmount  Decimal?  @map("min_order_amount")
+  maxDiscount     Decimal?  @map("max_discount")
+  isActive        Boolean?  @default(true) @map("is_active")
+  validFrom       DateTime? @map("valid_from")
+  validUntil      DateTime? @map("valid_until")
+  createdAt       DateTime? @default(now()) @map("created_at")
+
+  @@map("promo_codes")
+}
+
+model AuditLog {
+  id          String    @id @default(uuid())
+  userId      String?   @map("user_id")
+  user        Profile?  @relation(fields: [userId], references: [id])
+  action      String
+  details     Json?
+  createdAt   DateTime? @default(now()) @map("created_at")
+
+  @@map("audit_logs")
+}
+
+model ChatMessage {
+  id          String    @id @default(uuid())
+  orderId     String?   @map("order_id")
+  order       Order?    @relation(fields: [orderId], references: [id])
+  senderId    String?   @map("sender_id")
+  sender      Profile?  @relation(fields: [senderId], references: [id])
+  message     String
+  createdAt   DateTime? @default(now()) @map("created_at")
+
+  @@map("chat_messages")
+}
+
+model Notification {
+  id          String    @id @default(uuid())
+  userId      String?   @map("user_id")
+  user        Profile?  @relation(fields: [userId], references: [id])
+  title       String
+  body        String?
+  message     String?
+  type        String?
+  isRead      Boolean?  @default(false) @map("is_read")
+  read        Boolean?  @default(false)
+  icon        String?
+  actionUrl   String?   @map("action_url")
+  createdAt   DateTime? @default(now()) @map("created_at")
+
+  @@map("notifications")
+}
+
+model LoyaltyPointsTransaction {
+  id          String    @id @default(uuid())
+  userId      String?   @map("user_id")
+  user        Profile?  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  points      Int
+  type        String
+  description String?
+  referenceId String?   @map("reference_id")
+  createdAt   DateTime? @default(now()) @map("created_at")
+
+  @@map("loyalty_points_transactions")
+}
+
+model GroceryProduct {
+  id          String    @id @default(uuid())
+  name        String
+  category    String
+  price       Decimal
+  stock       Int?      @default(0)
+  imageUrl    String?   @map("image_url")
+  isActive    Boolean?  @default(true) @map("is_active")
+  createdAt   DateTime? @default(now()) @map("created_at")
+  updatedAt   DateTime? @default(now()) @map("updated_at")
+
+  @@map("grocery_products")
+}
+
+model PharmacyMedicine {
+  id                  String    @id @default(uuid())
+  name                String
+  category            String
+  price               Decimal
+  stock               Int?      @default(0)
+  imageUrl            String?   @map("image_url")
+  requiresPrescription Boolean? @default(false) @map("requires_prescription")
+  isActive            Boolean?  @default(true) @map("is_active")
+  createdAt           DateTime? @default(now()) @map("created_at")
+  updatedAt           DateTime? @default(now()) @map("updated_at")
+
+  @@map("pharmacy_medicines")
+}
+
+model FlowerItem {
+  id          String    @id @default(uuid())
+  name        String
+  category    String
+  price       Decimal
+  description String?
+  imageUrl    String?   @map("image_url")
+  isActive    Boolean?  @default(true) @map("is_active")
+  createdAt   DateTime? @default(now()) @map("created_at")
+  updatedAt   DateTime? @default(now()) @map("updated_at")
+
+  @@map("flower_items")
+}
+
+model EmailOtp {
+  id          String    @id @default(uuid())
+  email       String    @unique
+  otp         String
+  expiresAt   DateTime  @map("expires_at")
+  createdAt   DateTime? @default(now()) @map("created_at")
+
+  @@map("email_otps")
+}
+
+model UserPrescription {
+  id          String    @id @default(uuid())
+  userId      String?   @map("user_id")
+  imageUrl    String    @map("image_url")
+  notes       String?
+  status      String?   @default("pending")
+  createdAt   DateTime? @default(now()) @map("created_at")
+
+  @@map("user_prescriptions")
+}

@@ -1,10 +1,5 @@
-import { createClient } from "@supabase/supabase-js";
+import { query } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
 
 interface Order {
   id: string;
@@ -63,13 +58,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Order ID required" }, { status: 400 });
     }
 
-    const { data: order, error: orderError } = await supabase
-      .from("orders")
-      .select("*")
-      .eq("id", order_id)
-      .single();
+    const { rows: orderRows } = await query("SELECT * FROM orders WHERE id = $1", [order_id]);
+    const order = orderRows[0];
 
-    if (orderError || !order) {
+    if (!order) {
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
 
@@ -88,23 +80,17 @@ export async function POST(request: NextRequest) {
     }
 
     if (rider_id && !force_assign) {
-      const { data: rider } = await supabase
-        .from("riders")
-        .select("*")
-        .eq("id", rider_id)
-        .eq("is_online", true)
-        .single();
+      const { rows: riderRows } = await query("SELECT * FROM riders WHERE id = $1 AND is_online = $2", [rider_id, true]);
+      const rider = riderRows[0];
 
       if (!rider) {
         return NextResponse.json({ error: "Rider not available" }, { status: 400 });
       }
 
-      const { data: rpcSuccess, error: rpcError } = await supabase.rpc('accept_order_as_rider', {
-        p_order_id: order_id,
-        p_rider_id: rider_id,
-      });
+      const { rows: rpcRows } = await query("SELECT accept_order_as_rider($1, $2) AS success", [order_id, rider_id]);
+      const rpcSuccess = rpcRows[0]?.success;
 
-      if (rpcError || !rpcSuccess) {
+      if (!rpcSuccess) {
         return NextResponse.json({ error: "Failed to assign rider — order may already be taken" }, { status: 409 });
       }
 
@@ -115,12 +101,10 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    const { data: availableRiders } = await supabase
-      .from("riders")
-      .select("*")
-      .eq("is_online", true)
-      .eq("is_available", true)
-      .eq("verification_status", "verified");
+    const { rows: availableRiders } = await query(
+      "SELECT * FROM riders WHERE is_online = $1 AND is_available = $2 AND verification_status = $3",
+      [true, true, "verified"]
+    );
 
     if (!availableRiders || availableRiders.length === 0) {
       return NextResponse.json({ 
@@ -138,18 +122,10 @@ export async function POST(request: NextRequest) {
 
     const bestRider = scoredRiders[0];
 
-    const { error: assignError } = await supabase
-      .from("orders")
-      .update({ 
-        rider_id: bestRider.id,
-        status: "accepted",
-        assigned_at: new Date().toISOString()
-      })
-      .eq("id", order_id);
-
-    if (assignError) {
-      return NextResponse.json({ error: "Failed to assign rider" }, { status: 500 });
-    }
+    await query(
+      "UPDATE orders SET rider_id = $1, status = $2, assigned_at = $3 WHERE id = $4",
+      [bestRider.id, "accepted", new Date().toISOString(), order_id]
+    );
 
     return NextResponse.json({ 
       success: true,
@@ -177,17 +153,15 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET() {
-  const { data: pendingOrders } = await supabase
-    .from("orders")
-    .select("id, status, rider_id, vendor_lat, vendor_lng, delivery_lat, delivery_lng")
-    .is("rider_id", null)
-    .in("status", ["pending", "no_rider_available"]);
+  const { rows: pendingOrders } = await query(
+    "SELECT id, status, rider_id, vendor_lat, vendor_lng, delivery_lat, delivery_lng FROM orders WHERE rider_id IS NULL AND status = ANY($1)",
+    [["pending", "no_rider_available"]]
+  );
 
-  const { data: availableRiders } = await supabase
-    .from("riders")
-    .select("id, name, current_lat, current_lng, is_online")
-    .eq("is_online", true)
-    .eq("is_available", true);
+  const { rows: availableRiders } = await query(
+    "SELECT id, name, current_lat, current_lng, is_online FROM riders WHERE is_online = $1 AND is_available = $2",
+    [true, true]
+  );
 
   return NextResponse.json({
     unassigned_orders: pendingOrders?.length || 0,

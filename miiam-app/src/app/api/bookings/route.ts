@@ -1,10 +1,5 @@
-import { createClient } from "@supabase/supabase-js";
+import { query } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
 
 export async function POST(request: NextRequest) {
   try {
@@ -23,38 +18,21 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    const { data: existingBooking } = await supabase
-      .from("service_bookings")
-      .select("id")
-      .eq("provider_id", provider_id)
-      .eq("scheduled_date", scheduled_date)
-      .eq("scheduled_time", scheduled_time)
-      .eq("status", "confirmed")
-      .single();
+    const { rows: existingRows } = await query(
+      "SELECT id FROM service_bookings WHERE provider_id = $1 AND scheduled_date = $2 AND scheduled_time = $3 AND status = $4",
+      [provider_id, scheduled_date, scheduled_time, "confirmed"]
+    );
+    const existingBooking = existingRows[0];
 
     if (existingBooking) {
       return NextResponse.json({ error: "Time slot already booked" }, { status: 409 });
     }
 
-    const { data: booking, error } = await supabase
-      .from("service_bookings")
-      .insert({
-        service_id,
-        user_id,
-        provider_id,
-        scheduled_date,
-        scheduled_time,
-        address: address || null,
-        notes: notes || null,
-        total_amount: total_amount || null,
-        status: "confirmed",
-      })
-      .select()
-      .single();
-
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
+    const { rows } = await query(
+      "INSERT INTO service_bookings (service_id, user_id, provider_id, scheduled_date, scheduled_time, address, notes, total_amount, status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *",
+      [service_id, user_id, provider_id, scheduled_date, scheduled_time, address || null, notes || null, total_amount || null, "confirmed"]
+    );
+    const booking = rows[0];
 
     return NextResponse.json({ success: true, booking });
   } catch (error) {
@@ -70,31 +48,26 @@ export async function GET(request: NextRequest) {
   const user_id = searchParams.get("user_id");
 
   if (provider_id && date) {
-    const { data: bookings } = await supabase
-      .from("service_bookings")
-      .select("*")
-      .eq("provider_id", provider_id)
-      .eq("scheduled_date", date)
-      .eq("status", "confirmed");
+    const { rows: bookings } = await query(
+      "SELECT * FROM service_bookings WHERE provider_id = $1 AND scheduled_date = $2 AND status = $3",
+      [provider_id, date, "confirmed"]
+    );
 
     return NextResponse.json({ booked_slots: bookings || [] });
   }
 
   if (user_id) {
-    const { data: bookings } = await supabase
-      .from("service_bookings")
-      .select("*, service:services(name, category)")
-      .eq("user_id", user_id)
-      .order("scheduled_date", { ascending: false });
+    const { rows: bookings } = await query(
+      "SELECT sb.*, json_build_object('name', s.name, 'category', s.category) AS service FROM service_bookings sb LEFT JOIN services s ON s.id = sb.service_id WHERE sb.user_id = $1 ORDER BY sb.scheduled_date DESC",
+      [user_id]
+    );
 
     return NextResponse.json({ bookings });
   }
 
-  const { data: allBookings } = await supabase
-    .from("service_bookings")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .limit(50);
+  const { rows: allBookings } = await query(
+    "SELECT * FROM service_bookings ORDER BY created_at DESC LIMIT 50"
+  );
 
   return NextResponse.json({ bookings: allBookings || [] });
 }

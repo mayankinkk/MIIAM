@@ -1,10 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+import { query } from "@/lib/db";
 
 export async function POST(req: NextRequest) {
   try {
@@ -14,16 +9,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "user_id and title are required" }, { status: 400 });
     }
 
-    const { error } = await supabase.from("notifications").insert({
-      user_id,
-      title,
-      body,
-      type: type || "system",
-      action_url: action_url || null,
-      read: false,
-    });
-
-    if (error) throw error;
+    await query(
+      "INSERT INTO notifications (user_id, title, body, type, action_url, read) VALUES ($1, $2, $3, $4, $5, $6)",
+      [user_id, title, body, type || "system", action_url || null, false]
+    );
 
     return NextResponse.json({ success: true });
   } catch (err: any) {

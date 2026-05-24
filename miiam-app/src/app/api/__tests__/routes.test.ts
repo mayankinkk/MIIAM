@@ -1,18 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { NextRequest } from "next/server";
 
-vi.mock("@supabase/supabase-js", () => ({
-  createClient: () => ({
-    from: vi.fn().mockReturnThis(),
-    select: vi.fn().mockReturnThis(),
-    insert: vi.fn().mockReturnThis(),
-    update: vi.fn().mockReturnThis(),
-    delete: vi.fn().mockReturnThis(),
-    eq: vi.fn().mockReturnThis(),
-    order: vi.fn().mockReturnThis(),
-    single: vi.fn().mockReturnThis(),
-    maybeSingle: vi.fn().mockReturnThis(),
-  }),
+vi.mock("@/lib/db", () => ({
+  query: vi.fn().mockResolvedValue({ rows: [], rowCount: 0 }),
 }));
 
 function mockRequest(method: string, url: string, body?: unknown) {

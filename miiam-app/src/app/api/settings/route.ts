@@ -1,23 +1,11 @@
-import { createClient } from "@supabase/supabase-js";
+import { query } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
-
 export async function GET(request: NextRequest) {
-  const { data, error } = await supabase
-    .from("site_settings")
-    .select("*")
-    .order("key", { ascending: true });
-
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
+  const { rows } = await query("SELECT * FROM site_settings ORDER BY key ASC");
 
   const settings: Record<string, string> = {};
-  (data || []).forEach((row: any) => {
+  (rows || []).forEach((row: any) => {
     settings[row.key] = row.value;
   });
 
@@ -33,28 +21,22 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: "Key is required" }, { status: 400 });
     }
 
-    const { data: existing } = await supabase
-      .from("site_settings")
-      .select("id")
-      .eq("key", key)
-      .single();
+    const { rows: existingRows } = await query("SELECT id FROM site_settings WHERE key = $1", [key]);
+    const existing = existingRows[0];
 
     let result;
     if (existing) {
-      const { data } = await supabase
-        .from("site_settings")
-        .update({ value, updated_at: new Date().toISOString() })
-        .eq("key", key)
-        .select()
-        .single();
-      result = data;
+      const { rows } = await query(
+        "UPDATE site_settings SET value = $1, updated_at = $2 WHERE key = $3 RETURNING *",
+        [value, new Date().toISOString(), key]
+      );
+      result = rows[0];
     } else {
-      const { data } = await supabase
-        .from("site_settings")
-        .insert({ key, value })
-        .select()
-        .single();
-      result = data;
+      const { rows } = await query(
+        "INSERT INTO site_settings (key, value) VALUES ($1, $2) RETURNING *",
+        [key, value]
+      );
+      result = rows[0];
     }
 
     return NextResponse.json({ success: true, setting: result });
@@ -80,21 +62,19 @@ export async function POST(request: NextRequest) {
     }));
 
     for (const update of updates) {
-      const { data: existing } = await supabase
-        .from("site_settings")
-        .select("id")
-        .eq("key", update.key)
-        .single();
+      const { rows: existingRows } = await query("SELECT id FROM site_settings WHERE key = $1", [update.key]);
+      const existing = existingRows[0];
 
       if (existing) {
-        await supabase
-          .from("site_settings")
-          .update({ value: update.value, updated_at: update.updated_at })
-          .eq("key", update.key);
+        await query(
+          "UPDATE site_settings SET value = $1, updated_at = $2 WHERE key = $3",
+          [update.value, update.updated_at, update.key]
+        );
       } else {
-        await supabase
-          .from("site_settings")
-          .insert({ key: update.key, value: update.value });
+        await query(
+          "INSERT INTO site_settings (key, value) VALUES ($1, $2)",
+          [update.key, update.value]
+        );
       }
     }
 

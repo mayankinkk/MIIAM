@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
-import type { RealtimeChannel } from "@supabase/supabase-js";
 
 interface OrderStatusUpdate {
   id: string;
@@ -40,8 +39,8 @@ export function useOrderSubscription({
   useEffect(() => {
     if (!orderId) return;
 
-    let orderChannel: RealtimeChannel | null = null;
-    let locationChannel: RealtimeChannel | null = null;
+    let orderChannel: any = null;
+    let locationChannel: any = null;
 
     const subscribeToOrderUpdates = async () => {
       try {
