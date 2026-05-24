@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { getVendorForUser } from "@/lib/vendor";
 
 interface VendorProfile {
   id: string;
@@ -43,17 +44,10 @@ export default function VendorProfilePage() {
   }, []);
 
   async function init() {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { setLoading(false); return; }
-
-    const { data } = await supabase
-      .from("vendors")
-      .select("*")
-      .eq("user_id", user.id)
-      .maybeSingle();
+    const data = await getVendorForUser();
     if (data) {
-      setVendor(data);
-      setForm(data);
+      setVendor(data as any);
+      setForm(data as any);
     }
     setLoading(false);
   }

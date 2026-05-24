@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { getVendorIdForUser } from "@/lib/vendor";
 import type { Order } from "@/lib/types";
 
 interface VendorWallet {
@@ -32,18 +33,10 @@ export default function VendorWalletPage() {
   }, []);
 
   async function init() {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { setLoading(false); return; }
-
-    const { data: vendor } = await supabase
-      .from("vendors")
-      .select("id")
-      .eq("user_id", user.id)
-      .maybeSingle();
-
-    if (vendor) {
-      setVendorId(vendor.id);
-      await loadOrders(vendor.id);
+    const id = await getVendorIdForUser();
+    if (id) {
+      setVendorId(id);
+      await loadOrders(id);
     }
     setLoading(false);
   }

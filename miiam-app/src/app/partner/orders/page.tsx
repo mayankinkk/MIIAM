@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { getVendorIdForUser } from "@/lib/vendor";
 import type { Order, OrderStatus } from "@/lib/types";
 
 type FilterStatus = "all" | "active" | "delivered" | "cancelled";
@@ -20,18 +21,10 @@ export default function VendorOrders() {
   }, []);
 
   async function init() {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { setLoading(false); return; }
-
-    const { data: vendor } = await supabase
-      .from("vendors")
-      .select("id")
-      .eq("user_id", user.id)
-      .maybeSingle();
-
-    if (vendor) {
-      setVendorId(vendor.id);
-      loadOrders(vendor.id);
+    const id = await getVendorIdForUser();
+    if (id) {
+      setVendorId(id);
+      loadOrders(id);
     }
     setLoading(false);
   }

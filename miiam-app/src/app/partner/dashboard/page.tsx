@@ -3,20 +3,12 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { getVendorForUser } from "@/lib/vendor";
 import type { Order } from "@/lib/types";
-
-interface VendorInfo {
-  id: string;
-  shop_name: string;
-  status: string;
-  rating: number;
-  review_count: number;
-  type?: string;
-}
 
 export default function VendorDashboard() {
   const supabase = createClient();
-  const [vendor, setVendor] = useState<VendorInfo | null>(null);
+  const [vendor, setVendor] = useState<{ id: string; shop_name: string; status: string; rating: number; review_count: number; type?: string } | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
   const [isOpen, setIsOpen] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -26,16 +18,9 @@ export default function VendorDashboard() {
   }, []);
 
   async function init() {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    const { data: v } = await supabase
-      .from("vendors")
-      .select("id, shop_name, status, rating, review_count, type")
-      .eq("user_id", user.id)
-      .maybeSingle();
+    const v = await getVendorForUser();
     if (v) {
-      setVendor(v);
+      setVendor({ id: v.id, shop_name: v.shop_name, status: v.status, rating: v.rating || 0, review_count: v.review_count || 0, type: v.type });
       setIsOpen(v.status === "active");
       loadOrders(v.id);
     }

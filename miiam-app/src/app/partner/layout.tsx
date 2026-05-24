@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { getVendorForUser } from "@/lib/vendor";
 
 const navLinks = [
   { href: "/partner/dashboard", label: "Dashboard", icon: "dashboard" },
@@ -28,18 +29,8 @@ export default function PartnerLayout({
   const supabase = createClient();
 
   useEffect(() => {
-    async function loadVendor() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-      const { data } = await supabase
-        .from("vendors")
-        .select("shop_name, status, owner_name")
-        .eq("user_id", user.id)
-        .maybeSingle();
-      if (data) setVendor(data);
-    }
-    loadVendor();
-  }, [supabase]);
+    getVendorForUser().then(setVendor);
+  }, []);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();

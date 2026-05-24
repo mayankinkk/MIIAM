@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { getVendorForUser } from "@/lib/vendor";
 
 interface Vendor {
   id: string;

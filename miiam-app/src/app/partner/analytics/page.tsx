@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import type { Order, OrderItem } from "@/lib/types";
+import { getVendorForUser } from "@/lib/vendor";
+import type { Order } from "@/lib/types";
 
 interface MenuItemInfo {
   name: string;
@@ -30,15 +31,7 @@ export default function VendorAnalytics() {
   }, []);
 
   async function init() {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { setLoading(false); return; }
-
-    const { data: vendor } = await supabase
-      .from("vendors")
-      .select("id, shop_name, rating, review_count")
-      .eq("user_id", user.id)
-      .maybeSingle();
-
+    const vendor = await getVendorForUser();
     if (vendor) {
       setVendorId(vendor.id);
       await loadOrders(vendor.id);

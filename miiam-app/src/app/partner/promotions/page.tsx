@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { getVendorIdForUser } from "@/lib/vendor";
 
 interface PromoCode {
   id: string;
@@ -37,18 +38,10 @@ export default function VendorPromotions() {
   }, []);
 
   async function init() {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { setLoading(false); return; }
-
-    const { data: vendor } = await supabase
-      .from("vendors")
-      .select("id")
-      .eq("user_id", user.id)
-      .maybeSingle();
-
-    if (vendor) {
-      setVendorId(vendor.id);
-      await loadPromos(vendor.id);
+    const id = await getVendorIdForUser();
+    if (id) {
+      setVendorId(id);
+      await loadPromos(id);
     }
     setLoading(false);
   }
