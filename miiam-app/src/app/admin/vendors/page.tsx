@@ -220,6 +220,14 @@ export default function AdminVendorsPage() {
       if (vendorError) throw vendorError;
       if (!data || data.length === 0) throw new Error("No data returned");
       
+      // Update profile role if user_id was found
+      if (userId) {
+        await supabase
+          .from("profiles")
+          .update({ role: "vendor" })
+          .eq("id", userId);
+      }
+      
       const vendor = data[0];
 
       const menuData = menuItems
@@ -322,6 +330,18 @@ export default function AdminVendorsPage() {
         .eq("id", editingVendor.id);
 
       if (error) throw error;
+
+      // Sync profile role when status changes to active
+      if (editForm.status === "active" && editingVendor.email) {
+        const { data: userProfile } = await supabase
+          .from("profiles")
+          .select("id")
+          .eq("email", editingVendor.email)
+          .maybeSingle();
+        if (userProfile) {
+          await supabase.from("profiles").update({ role: "vendor" }).eq("id", userProfile.id);
+        }
+      }
 
       alert("Vendor updated successfully!");
       setEditingVendor(null);
