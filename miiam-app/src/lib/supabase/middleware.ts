@@ -26,7 +26,7 @@ export async function updateSession(request: NextRequest) {
   );
 
   // Protected routes — require auth
-  const protectedPaths = ["/app", "/admin", "/rider"];
+  const protectedPaths = ["/app", "/admin", "/rider", "/partner"];
   const isProtected = protectedPaths.some((p) =>
     request.nextUrl.pathname.startsWith(p)
   );
@@ -53,16 +53,23 @@ export async function updateSession(request: NextRequest) {
     // so the client will handle recovery.
     const { data: { user } } = await supabase.auth.getUser();
 
-    // Admin-only routes - check only if user is logged in
-    if (request.nextUrl.pathname.startsWith("/admin") && user) {
+    // Role-only routes - check only if user is logged in
+    if (user) {
       const { data: profile } = await supabase
         .from("profiles")
         .select("role")
         .eq("id", user.id)
         .single();
 
-      // Allow access if role is admin or if profile doesn't exist yet (new user)
-      if (profile && profile.role !== "admin") {
+      // Admin-only routes
+      if (request.nextUrl.pathname.startsWith("/admin") && profile && profile.role !== "admin") {
+        const url = request.nextUrl.clone();
+        url.pathname = "/denied";
+        return NextResponse.redirect(url);
+      }
+
+      // Partner/vendor routes - allow admin or vendor role
+      if (request.nextUrl.pathname.startsWith("/partner") && profile && profile.role !== "vendor" && profile.role !== "admin") {
         const url = request.nextUrl.clone();
         url.pathname = "/denied";
         return NextResponse.redirect(url);
