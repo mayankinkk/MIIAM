@@ -79,7 +79,7 @@ export default function RiderOrdersPage() {
         .from("orders")
         .select("*")
         .is("rider_id", null)
-        .in("status", ["pending", "accepted", "preparing"])
+        .in("status", ["ready_for_pickup"])
         .gte("placed_at", yesterday.toISOString())
         .order("placed_at", { ascending: false });
 
@@ -159,7 +159,7 @@ export default function RiderOrdersPage() {
         table: 'orders',
       }, (payload) => {
         const newOrder = payload.new as { id?: string; status: string; total_amount: number };
-        if (newOrder.status === 'pending' || newOrder.status === 'preparing') {
+        if (newOrder.status === 'ready_for_pickup') {
           setOrders(prev => [newOrder as Order, ...prev]);
           if (Notification.permission === 'granted') {
             new Notification('New Order Available!', {
@@ -214,14 +214,13 @@ export default function RiderOrdersPage() {
         console.log("RPC not available, using fallback");
       }
 
-      // Fallback: direct update with guard
+      // Fallback: direct update — just assign rider to ready_for_pickup order
       if (!accepted) {
         const { error } = await supabase
           .from("orders")
-          .update({ 
-            status: "accepted", 
+          .update({
             rider_id: riderProfile.id,
-            accepted_at: new Date().toISOString()
+            accepted_at: new Date().toISOString(),
           })
           .eq("id", orderId)
           .is("rider_id", null);
@@ -237,8 +236,8 @@ export default function RiderOrdersPage() {
         try {
           await supabase.from("notifications").insert({
             user_id: order.user_id,
-            title: "Order Accepted! 🎉",
-            message: "A rider has accepted your order and will start shopping soon.",
+            title: "Rider Assigned! 🛵",
+            message: "A rider is on their way to pick up your order.",
             type: "order",
             read: false,
           });
@@ -247,7 +246,7 @@ export default function RiderOrdersPage() {
         }
       }
 
-      setOrders(orders.map(o => o.id === orderId ? { ...o, status: "accepted", rider_id: riderProfile.id } : o));
+      setOrders(orders.map(o => o.id === orderId ? { ...o, rider_id: riderProfile.id } : o));
     } catch (err: any) {
       console.error("Error accepting order:", err);
       alert("Failed to accept order: " + (err?.message || "Unknown error"));
@@ -278,10 +277,9 @@ export default function RiderOrdersPage() {
         if (!accepted) {
           const { error } = await supabase
             .from("orders")
-            .update({ 
-              status: "accepted", 
+            .update({
               rider_id: riderProfile.id,
-              accepted_at: new Date().toISOString()
+              accepted_at: new Date().toISOString(),
             })
             .eq("id", orderId)
             .is("rider_id", null);
@@ -297,8 +295,8 @@ export default function RiderOrdersPage() {
           try {
             await supabase.from("notifications").insert({
               user_id: order.user_id,
-              title: "Order Accepted! 🎉",
-              message: "A rider has accepted your order and will start shopping soon.",
+              title: "Rider Assigned! 🛵",
+              message: "A rider is on their way to pick up your order.",
               type: "order",
               read: false,
             });
@@ -307,7 +305,7 @@ export default function RiderOrdersPage() {
       }
       
       const successCount = selectedOrders.length - failedCount;
-      setOrders(orders.map(o => selectedOrders.includes(o.id) ? { ...o, status: "accepted", rider_id: riderProfile.id } : o));
+      setOrders(orders.map(o => selectedOrders.includes(o.id) ? { ...o, rider_id: riderProfile.id } : o));
       alert(`${successCount} order(s) accepted!${failedCount > 0 ? ` ${failedCount} order(s) already taken.` : ''}`);
       setSelectedOrders([]);
     } catch (err) {
@@ -368,44 +366,71 @@ export default function RiderOrdersPage() {
   async function confirmDelivery() {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      
+
       const order = orders.find(o => o.id === currentOrderId);
-      const riderEarning = calculateEarnings(0); // base fare ₹40 (distance not tracked in this view)
-      
-      await supabase
+      const riderEarning = calculateEarnings(0);
+
+      // Update order status and earnings
+      const { error: orderErr } = await supabase
         .from("orders")
-        .update({ 
-          status: "delivered", 
+        .update({
+          status: "delivered",
           delivered_at: new Date().toISOString(),
           customer_collected: cashToCollect,
-          rider_earning: riderEarning
+          rider_earning: riderEarning,
         })
         .eq("id", currentOrderId);
+      if (orderErr) throw new Error("order update: " + orderErr.message);
 
       if (order?.rider_id) {
-        const { data: rider } = await supabase.from("riders").select("total_deliveries, total_earnings").eq("id", order.rider_id).single();
-        if (rider) {
-          await supabase.from("riders").update({
-            total_deliveries: (rider.total_deliveries || 0) + 1,
-            total_earnings: (rider.total_earnings || 0) + riderEarning,
-          }).eq("id", order.rider_id);
+        // Update rider delivery count (total_earnings computed from orders instead)
+        const { data: rider } = await supabase
+          .from("riders")
+          .select("total_deliveries")
+          .eq("id", order.rider_id)
+          .single();
+        await supabase
+          .from("riders")
+          .update({ total_deliveries: (rider?.total_deliveries || 0) + 1 })
+          .eq("id", order.rider_id);
 
-          const { data: wallet } = await supabase.from("rider_wallets").select("id, balance, total_earnings").eq("rider_id", order.rider_id).single();
-          if (wallet) {
-            await supabase.from("rider_wallets").update({
+        // Credit wallet — upsert
+        const { data: wallet } = await supabase
+          .from("rider_wallets")
+          .select("id, balance, total_earnings")
+          .eq("rider_id", order.rider_id)
+          .maybeSingle();
+        if (wallet) {
+          await supabase
+            .from("rider_wallets")
+            .update({
               balance: (wallet.balance || 0) + riderEarning,
               total_earnings: (wallet.total_earnings || 0) + riderEarning,
-            }).eq("id", wallet.id);
-          } else {
-            await supabase.from("rider_wallets").insert({
+            })
+            .eq("id", wallet.id);
+        } else {
+          await supabase
+            .from("rider_wallets")
+            .insert({
               rider_id: order.rider_id,
               balance: riderEarning,
               total_earnings: riderEarning,
               pending_payout: 0,
               advance_used: 0,
             });
-          }
         }
+
+        // Log transaction
+        await supabase
+          .from("rider_wallet")
+          .insert({
+            rider_id: order.rider_id,
+            amount: riderEarning,
+            type: "earning",
+            description: `Delivery earnings for order #${currentOrderId.slice(0, 8)}`,
+            order_id: currentOrderId,
+            created_at: new Date().toISOString(),
+          });
       }
 
       if (order?.user_id) {
@@ -522,8 +547,8 @@ export default function RiderOrdersPage() {
     }
   });
 
-  const availableOrders = filteredOrders.filter(o => o.status === "pending" || o.status === "preparing");
-  const shoppingOrders = filteredOrders.filter(o => o.status === "shopping" || o.status === "accepted" || o.status === "on_the_way");
+  const availableOrders = filteredOrders.filter(o => o.status === "ready_for_pickup");
+  const shoppingOrders = filteredOrders.filter(o => o.status === "on_the_way");
   const completedOrders = filteredOrders.filter(o => o.status === "delivered");
 
   const todayEarnings = completedOrders
