@@ -45,6 +45,25 @@ export default function VerificationPage() {
 
       if (error) throw error;
 
+      // If approving, also update the user's profile role to vendor
+      if (newStatus === "active") {
+        const vendor = vendors.find(v => v.id === vendorId);
+        if (vendor?.email) {
+          const { data: userProfile } = await supabase
+            .from("profiles")
+            .select("id")
+            .eq("email", vendor.email)
+            .maybeSingle();
+
+          if (userProfile) {
+            await supabase
+              .from("profiles")
+              .update({ role: "vendor" })
+              .eq("id", userProfile.id);
+          }
+        }
+      }
+
       setVendors(vendors.map(v => 
         v.id === vendorId ? { ...v, status: newStatus as any } : v
       ));

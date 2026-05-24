@@ -43,7 +43,7 @@ export default function VendorPromotions() {
     const { data: vendor } = await supabase
       .from("vendors")
       .select("id")
-      .eq("email", user.email)
+      .eq("user_id", user.id)
       .maybeSingle();
 
     if (vendor) {

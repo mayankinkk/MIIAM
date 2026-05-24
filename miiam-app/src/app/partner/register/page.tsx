@@ -53,10 +53,10 @@ export default function VendorRegister() {
         return;
       }
 
-      // Set email to current user's email if not provided
       const payload = {
         ...form,
         email: form.email || user.email,
+        user_id: user.id,
         status: "pending",
       };
 

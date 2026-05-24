@@ -34,7 +34,7 @@ export default function PartnerLayout({
       const { data } = await supabase
         .from("vendors")
         .select("shop_name, status, owner_name")
-        .eq("email", user.email)
+        .eq("user_id", user.id)
         .maybeSingle();
       if (data) setVendor(data);
     }

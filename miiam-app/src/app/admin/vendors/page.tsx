@@ -178,12 +178,24 @@ export default function AdminVendorsPage() {
     setLoading(true);
 
     try {
+      // Look up user_id by email if provided
+      let userId: string | null = null;
+      if (vendorForm.email) {
+        const { data: userProfile } = await supabase
+          .from("profiles")
+          .select("id")
+          .eq("email", vendorForm.email)
+          .maybeSingle();
+        if (userProfile) userId = userProfile.id;
+      }
+
       const { data, error: vendorError } = await supabase
         .from("vendors")
         .insert([{
           owner_name: vendorForm.ownerName,
           phone: vendorForm.phone,
           email: vendorForm.email || null,
+          user_id: userId,
           shop_name: vendorForm.shopName,
           address: vendorForm.address,
           city: vendorForm.city || null,

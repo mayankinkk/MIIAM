@@ -36,7 +36,7 @@ export default function VendorAnalytics() {
     const { data: vendor } = await supabase
       .from("vendors")
       .select("id, shop_name, rating, review_count")
-      .eq("email", user.email)
+      .eq("user_id", user.id)
       .maybeSingle();
 
     if (vendor) {

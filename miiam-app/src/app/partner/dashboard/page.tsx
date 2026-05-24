@@ -32,7 +32,7 @@ export default function VendorDashboard() {
     const { data: v } = await supabase
       .from("vendors")
       .select("id, shop_name, status, rating, review_count, type")
-      .eq("email", user.email)
+      .eq("user_id", user.id)
       .maybeSingle();
     if (v) {
       setVendor(v);

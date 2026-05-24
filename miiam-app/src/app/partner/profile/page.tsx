@@ -49,7 +49,7 @@ export default function VendorProfilePage() {
     const { data } = await supabase
       .from("vendors")
       .select("*")
-      .eq("email", user.email)
+      .eq("user_id", user.id)
       .maybeSingle();
     if (data) {
       setVendor(data);
