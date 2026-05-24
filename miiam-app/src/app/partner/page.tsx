@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { getVendorIdForUser } from "@/lib/vendor";
+import { getVendorIdForUser, getVendorMenuItems } from "@/lib/vendor";
 import type { Order, OrderStatus } from "@/lib/types";
 
 export default function PartnerPOS() {
@@ -11,6 +11,7 @@ export default function PartnerPOS() {
   const [vendorId, setVendorId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [menuItemNames, setMenuItemNames] = useState<Map<string, { name: string }>>(new Map());
 
   useEffect(() => {
     let channel: any = null;
@@ -40,11 +41,15 @@ export default function PartnerPOS() {
   async function loadOrders(vId: string) {
     const { data, error } = await supabase
       .from("orders")
-      .select("*, items:order_items(*, menu_item:menu_items(name))")
+      .select("*, items:order_items(*)")
       .eq("vendor_id", vId)
       .order("placed_at", { ascending: false });
     if (error) throw error;
-    if (data) setOrders(data);
+    if (data) {
+      setOrders(data);
+      const names = await getVendorMenuItems(vId);
+      setMenuItemNames(names);
+    }
   }
 
   function subscribeToOrders(vId: string) {
@@ -211,7 +216,7 @@ export default function PartnerPOS() {
                       <div key={idx} className="flex justify-between items-center text-sm">
                         <p className="text-slate-700 font-bold">
                           <span className="text-slate-400 mr-2">{item.quantity}x</span>
-                          {item.menu_item?.name || "Unknown Item"}
+                          {menuItemNames.get(item.menu_item_id)?.name || "Unknown Item"}
                         </p>
                         <p className="text-slate-500 font-medium">
                           ₹{(item.unit_price * item.quantity).toFixed(0)}

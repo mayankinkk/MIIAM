@@ -1,6 +1,7 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
+import { getVendorMenuTable } from "@/lib/vendor";
 import type { Order } from "@/lib/types";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -122,23 +123,34 @@ export default function OrdersPage() {
     try {
       const { data: orderItems } = await supabase
         .from("order_items")
-        .select("*, menu_item:menu_items(*)")
+        .select("*")
         .eq("order_id", order.id);
 
-      if (orderItems) {
+      if (orderItems && orderItems.length > 0) {
+        const table = await getVendorMenuTable(order.vendor_id);
+        const ids = orderItems.map(i => i.menu_item_id);
+        const { data: menuItems } = await supabase
+          .from(table)
+          .select("id, name, image_url")
+          .in("id", ids);
+
+        const menuMap = new Map<string, { name: string; image_url?: string }>();
+        if (menuItems) {
+          menuItems.forEach((mi: any) => menuMap.set(mi.id, mi));
+        }
+
         for (const item of orderItems) {
-          if (item.menu_item) {
-            for (let i = 0; i < item.quantity; i++) {
-              addItem({
-                id: item.menu_item_id,
-                menu_item_id: item.menu_item_id,
-                vendor_id: order.vendor_id,
-                vendor_name: order.vendor?.name || "Vendor",
-                name: item.menu_item.name,
-                price: item.unit_price,
-                image_url: item.menu_item.image_url || undefined,
-              });
-            }
+          const mi = menuMap.get(item.menu_item_id);
+          for (let i = 0; i < item.quantity; i++) {
+            addItem({
+              id: item.menu_item_id,
+              menu_item_id: item.menu_item_id,
+              vendor_id: order.vendor_id,
+              vendor_name: order.vendor?.name || "Vendor",
+              name: mi?.name || "Item",
+              price: item.unit_price,
+              image_url: mi?.image_url || undefined,
+            });
           }
         }
         router.push("/app/cart");

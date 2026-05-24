@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { getVendorForUser } from "@/lib/vendor";
+import { getVendorForUser, getVendorMenuItems } from "@/lib/vendor";
 import type { Order } from "@/lib/types";
 
 interface MenuItemInfo {
@@ -25,6 +25,7 @@ export default function VendorAnalytics() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [period, setPeriod] = useState<"week" | "month" | "all">("week");
   const [loading, setLoading] = useState(true);
+  const [menuItemNames, setMenuItemNames] = useState<Map<string, { name: string; category: string }>>(new Map());
 
   useEffect(() => {
     init();
@@ -42,10 +43,14 @@ export default function VendorAnalytics() {
   async function loadOrders(vId: string) {
     const { data } = await supabase
       .from("orders")
-      .select("*, items:order_items(*, menu_item:menu_items(name))")
+      .select("*, items:order_items(*)")
       .eq("vendor_id", vId)
       .order("placed_at", { ascending: false });
-    if (data) setOrders(data);
+    if (data) {
+      setOrders(data);
+      const names = await getVendorMenuItems(vId);
+      setMenuItemNames(names);
+    }
   }
 
   const now = new Date();
@@ -79,13 +84,14 @@ export default function VendorAnalytics() {
   const itemMap = new Map<string, MenuItemInfo>();
   deliveredOrders.forEach((o) => {
     o.items?.forEach((item) => {
-      const name = item.menu_item?.name || "Unknown";
+      const menuItem = menuItemNames.get(item.menu_item_id);
+      const name = menuItem?.name || "Unknown";
       const existing = itemMap.get(name) || {
         name,
         total_qty: 0,
         total_revenue: 0,
         order_count: 0,
-        category: item.menu_item?.category || "",
+        category: menuItem?.category || "",
       };
       existing.total_qty += item.quantity;
       existing.total_revenue += item.unit_price * item.quantity;

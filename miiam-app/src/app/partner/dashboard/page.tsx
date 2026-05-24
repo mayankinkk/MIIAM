@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import { getVendorForUser } from "@/lib/vendor";
+import { getVendorForUser, getVendorMenuItems } from "@/lib/vendor";
 import type { Order } from "@/lib/types";
 
 export default function VendorDashboard() {
@@ -12,6 +12,7 @@ export default function VendorDashboard() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [isOpen, setIsOpen] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [menuItemNames, setMenuItemNames] = useState<Map<string, { name: string }>>(new Map());
 
   useEffect(() => {
     init();
@@ -30,10 +31,14 @@ export default function VendorDashboard() {
   async function loadOrders(vendorId: string) {
     const { data } = await supabase
       .from("orders")
-      .select("*, items:order_items(*, menu_item:menu_items(name))")
+      .select("*, items:order_items(*)")
       .eq("vendor_id", vendorId)
       .order("placed_at", { ascending: false });
-    if (data) setOrders(data);
+    if (data) {
+      setOrders(data);
+      const names = await getVendorMenuItems(vendorId);
+      setMenuItemNames(names);
+    }
   }
 
   const toggleOpen = async () => {
@@ -187,7 +192,7 @@ export default function VendorDashboard() {
                     {order.items?.slice(0, 3).map((item, i) => (
                       <p key={i} className="text-sm text-slate-600">
                         <span className="font-bold text-slate-400 mr-1">{item.quantity}x</span>
-                        {item.menu_item?.name || "Item"}
+                        {menuItemNames.get(item.menu_item_id)?.name || "Item"}
                       </p>
                     ))}
                     {(order.items?.length || 0) > 3 && (

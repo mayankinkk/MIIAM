@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { getVendorIdForUser } from "@/lib/vendor";
+import { getVendorIdForUser, getVendorMenuItems } from "@/lib/vendor";
 import type { Order, OrderStatus } from "@/lib/types";
 
 type FilterStatus = "all" | "active" | "delivered" | "cancelled";
@@ -15,6 +15,7 @@ export default function VendorOrders() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [menuItemNames, setMenuItemNames] = useState<Map<string, { name: string }>>(new Map());
 
   useEffect(() => {
     init();
@@ -32,10 +33,14 @@ export default function VendorOrders() {
   async function loadOrders(vId: string) {
     const { data } = await supabase
       .from("orders")
-      .select("*, items:order_items(*, menu_item:menu_items(name))")
+      .select("*, items:order_items(*)")
       .eq("vendor_id", vId)
       .order("placed_at", { ascending: false });
-    if (data) setOrders(data);
+    if (data) {
+      setOrders(data);
+      const names = await getVendorMenuItems(vId);
+      setMenuItemNames(names);
+    }
   }
 
   const updateStatus = async (orderId: string, status: OrderStatus) => {
@@ -158,7 +163,7 @@ export default function VendorOrders() {
                   <div className="flex flex-wrap gap-2 mt-2">
                     {order.items?.slice(0, 4).map((item, i) => (
                       <span key={i} className="text-xs bg-slate-50 px-2 py-1 rounded-full text-slate-600">
-                        {item.quantity}x {item.menu_item?.name || "Item"}
+                        {item.quantity}x {menuItemNames.get(item.menu_item_id)?.name || "Item"}
                       </span>
                     ))}
                     {(order.items?.length || 0) > 4 && (
@@ -191,7 +196,7 @@ export default function VendorOrders() {
                           <div key={i} className="flex justify-between text-sm">
                             <span className="text-slate-700">
                               <span className="text-slate-400 mr-1">{item.quantity}x</span>
-                              {item.menu_item?.name || "Item"}
+                              {menuItemNames.get(item.menu_item_id)?.name || "Item"}
                             </span>
                             <span className="font-bold text-slate-800">₹{(item.unit_price * item.quantity).toFixed(0)}</span>
                           </div>

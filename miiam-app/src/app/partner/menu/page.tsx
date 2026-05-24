@@ -224,9 +224,13 @@ export default function PartnerMenuPage() {
       let imageUrl = newItem.image_url || null;
       if (newItem.imageFile) {
         imageUrl = await uploadImage(newItem.imageFile);
+        if (!imageUrl) {
+          alert("Image upload failed. Make sure the 'menu-images' bucket exists in Supabase Storage and has public read access enabled.");
+          setUploading(false);
+          return;
+        }
       }
       const payload = buildInsertPayload();
-      // Only include columns known to exist
       const safePayload: Record<string, any> = {
         name: payload.name,
         price: payload.price,
@@ -420,12 +424,20 @@ export default function PartnerMenuPage() {
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center overflow-hidden">
                         {item.image_url ? (
-                          <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
-                        ) : (
-                          <span className="material-symbols-outlined text-slate-400">
-                            {vendorKey === "grocery" ? "shopping_cart" : vendorKey === "pharmacy" ? "medication" : vendorKey === "flowers" ? "local_florist" : "restaurant"}
-                          </span>
-                        )}
+                          <img
+                            src={item.image_url}
+                            alt={item.name}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.currentTarget.style.display = "none";
+                              const el = e.currentTarget.parentElement?.querySelector(".mi-fallback");
+                              if (el) (el as HTMLElement).style.display = "flex";
+                            }}
+                          />
+                        ) : null}
+                        <span className="mi-fallback material-symbols-outlined text-slate-400" style={{ display: item.image_url ? "none" : "flex" }}>
+                          {vendorKey === "grocery" ? "shopping_cart" : vendorKey === "pharmacy" ? "medication" : vendorKey === "flowers" ? "local_florist" : "restaurant"}
+                        </span>
                       </div>
                       <div>
                         <p className="font-bold text-slate-800">{item.name}</p>
@@ -776,7 +788,11 @@ export default function PartnerMenuPage() {
                     if (file) {
                       setUploading(true);
                       const url = await uploadImage(file);
-                      if (url) setEditingItem({ ...editingItem, image_url: url } as AnyItem);
+                      if (url) {
+                        setEditingItem({ ...editingItem, image_url: url } as AnyItem);
+                      } else {
+                        alert("Image upload failed. Make sure the 'menu-images' bucket exists in Supabase Storage with public read access.");
+                      }
                       setUploading(false);
                     }
                   }}
