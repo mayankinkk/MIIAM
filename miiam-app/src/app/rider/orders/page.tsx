@@ -974,7 +974,8 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
 
   // Phase: "pickup" = go to restaurant, "delivery" = go to customer
   const phase = order.status === "on_the_way" ? "delivery" : "pickup";
-  const [showMap, setShowMap] = useState(true); // always open
+  const [expanded, setExpanded] = useState(false);
+  const [showMap, setShowMap] = useState(false);
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
   const riderMarkerRef = useRef<any>(null);
@@ -1141,213 +1142,191 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
 
   return (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-      {/* CSS */}
       <style>{`
         @keyframes pulse-ring { 0%{transform:scale(0.8);opacity:0.8} 100%{transform:scale(1.8);opacity:0} }
         @keyframes slide-up { from{transform:translateY(6px);opacity:0} to{transform:translateY(0);opacity:1} }
       `}</style>
 
-      {/* Phase Banner — like Uber/Ola top strip */}
-      <div className={`px-4 py-3 flex items-center gap-3 ${phase === "pickup" ? "bg-gradient-to-r from-green-600 to-emerald-500" : "bg-gradient-to-r from-[#0b50d5] to-indigo-600"}`}>
-        <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center text-xl flex-shrink-0">
-          {phase === "pickup" ? "🏪" : "🏠"}
-        </div>
-        <div className="flex-1">
-          <p className="text-white font-extrabold text-sm">
-            {phase === "pickup" ? "Phase 1 — Go to Restaurant" : "Phase 2 — Deliver to Customer"}
-          </p>
-          <p className="text-white/80 text-xs truncate">
-            {phase === "pickup" ? (vendorAddress || order.vendor?.name || "Vendor location") : (deliveryAddress || "Customer address")}
-          </p>
-        </div>
-        {phase === "pickup" && (
-          <span className="text-white/70 text-[10px] font-bold bg-white/10 px-2 py-1 rounded-full">STEP 1/2</span>
-        )}
-        {phase === "delivery" && (
-          <span className="text-white/70 text-[10px] font-bold bg-white/10 px-2 py-1 rounded-full">STEP 2/2</span>
-        )}
-      </div>
-
-      {/* ETA Strip */}
-      {trackingInfo && (
-        <div className="flex border-b border-slate-100" style={{ animation: 'slide-up 0.3s ease' }}>
-          <div className={`flex-1 py-3 text-center border-r border-slate-100 ${phase === "pickup" ? "bg-green-50" : "bg-blue-50"}`}>
-            <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400">ETA</p>
-            <p className={`text-2xl font-black ${phase === "pickup" ? "text-green-600" : "text-[#0b50d5]"}`}>
-              {trackingInfo.eta}<span className="text-xs font-normal ml-0.5">min</span>
+      {/* === Compact Header — always visible === */}
+      <button onClick={() => setExpanded(!expanded)} className="w-full text-left">
+        <div className={`px-4 py-3 flex items-center gap-3 ${phase === "pickup" ? "bg-gradient-to-r from-green-600 to-emerald-500" : "bg-gradient-to-r from-[#0b50d5] to-indigo-600"}`}>
+          <div className="w-9 h-9 bg-white/20 rounded-full flex items-center justify-center text-base flex-shrink-0">
+            {phase === "pickup" ? "🏪" : "🏠"}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2">
+              <p className="text-white font-extrabold text-xs truncate">{order.vendor?.name || "Order"}</p>
+              <span className="text-[10px] text-white/70 font-bold bg-white/10 px-1.5 py-0.5 rounded-full shrink-0">{phase === "pickup" ? "Pickup" : "Delivery"}</span>
+            </div>
+            <p className="text-white/80 text-[10px] truncate mt-0.5">
+              {phase === "pickup" ? vendorAddress : deliveryAddress}
             </p>
           </div>
-          <div className="flex-1 py-3 text-center">
-            <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400">Distance</p>
-            <p className="text-2xl font-black text-slate-700">{trackingInfo.distance}<span className="text-xs font-normal ml-0.5">km</span></p>
+          <div className="text-right shrink-0">
+            <p className="text-white font-extrabold text-sm">₹{order.total_amount + (order.delivery_fee || 0)}</p>
+            <p className="text-[9px] text-white/70 font-bold">{pickedCount}/{items.length} picked</p>
           </div>
-          <div className={`flex-1 py-3 text-center border-l border-slate-100`}>
-            <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400">GPS</p>
-            <div className="flex items-center justify-center gap-1 mt-0.5">
-              <span style={{ width:8,height:8,borderRadius:'50%',background:'#22c55e',display:'inline-block',boxShadow:'0 0 0 3px rgba(34,197,94,0.25)' }}></span>
-              <span className="text-xs font-bold text-green-600">Live</span>
+          <span className="material-symbols-outlined text-white text-lg transition-transform" style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)' }}>
+            expand_more
+          </span>
+        </div>
+      </button>
+
+      {/* === Expanded Details === */}
+      {expanded && (
+        <div style={{ animation: 'slide-up 0.25s ease' }}>
+          {/* ETA Strip */}
+          {trackingInfo && (
+            <div className="flex border-b border-slate-100">
+              <div className={`flex-1 py-2 text-center border-r border-slate-100 ${phase === "pickup" ? "bg-green-50" : "bg-blue-50"}`}>
+                <p className="text-[9px] font-bold uppercase tracking-wide text-slate-400">ETA</p>
+                <p className={`text-lg font-black ${phase === "pickup" ? "text-green-600" : "text-[#0b50d5]"}`}>
+                  {trackingInfo.eta}<span className="text-xs font-normal ml-0.5">min</span>
+                </p>
+              </div>
+              <div className="flex-1 py-2 text-center">
+                <p className="text-[9px] font-bold uppercase tracking-wide text-slate-400">Distance</p>
+                <p className="text-lg font-black text-slate-700">{trackingInfo.distance}<span className="text-xs font-normal ml-0.5">km</span></p>
+              </div>
+              <div className="flex-1 py-2 text-center border-l border-slate-100">
+                <p className="text-[9px] font-bold uppercase tracking-wide text-slate-400">GPS</p>
+                <div className="flex items-center justify-center gap-1 mt-0.5">
+                  <span style={{ width:7,height:7,borderRadius:'50%',background:'#22c55e',display:'inline-block',boxShadow:'0 0 0 2px rgba(34,197,94,0.25)'}}></span>
+                  <span className="text-[10px] font-bold text-green-600">Live</span>
+                </div>
+              </div>
             </div>
+          )}
+
+          {/* Map (collapsible) */}
+          {showMap && (
+            <div className="relative">
+              <div ref={mapRef} className="w-full" style={{ height: 200 }} />
+              {!trackingInfo && (
+                <div className="absolute inset-0 bg-slate-900/20 flex items-center justify-center z-[400]">
+                  <div className="bg-white rounded-xl px-4 py-3 flex items-center gap-2 shadow-lg">
+                    <div className="w-4 h-4 border-2 border-[#0b50d5] border-t-transparent rounded-full animate-spin"/>
+                    <span className="text-sm font-bold text-slate-700">Loading route...</span>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+          <div className="px-4 pt-2 pb-1 flex gap-2">
+            <button onClick={() => setShowMap(!showMap)} className="text-[10px] font-bold text-[#0b50d5] bg-blue-50 px-3 py-1.5 rounded-lg flex items-center gap-1">
+              <span className="material-symbols-outlined text-sm">{showMap ? "visibility_off" : "map"}</span>
+              {showMap ? "Hide Map" : "Show Map"}
+            </button>
+            <a href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(phase === "pickup" ? vendorAddress : deliveryAddress)}&travelmode=driving`} target="_blank" rel="noreferrer" className="text-[10px] font-bold text-white bg-[#0b50d5] px-3 py-1.5 rounded-lg flex items-center gap-1">
+              <span className="material-symbols-outlined text-sm">navigation</span>
+              Google Maps
+            </a>
+          </div>
+
+          {/* Vendor / Customer Info */}
+          <div className="px-4 py-2 space-y-1">
+            <div className="flex justify-between items-start">
+              <div className="flex-1 min-w-0">
+                <p className="text-xs text-slate-400 truncate">{order.vendor?.address}</p>
+                <p className="text-[10px] text-[#ba001c] font-semibold flex items-center gap-1 mt-0.5">
+                  <span className="material-symbols-outlined text-[10px]">location_on</span>
+                  <span className="truncate">{deliveryAddress}</span>
+                </p>
+                {customerPhone && (
+                  <a href={`tel:${customerPhone}`} className="text-[10px] text-[#0b50d5] font-semibold flex items-center gap-1 mt-0.5">
+                    <span className="material-symbols-outlined text-[10px]">call</span>
+                    Call {customerPhone}
+                  </a>
+                )}
+              </div>
+            </div>
+            {/* Progress */}
+            <div className="bg-slate-50 rounded-lg p-2">
+              <div className="bg-slate-200 rounded-full h-1.5 overflow-hidden">
+                <div className="h-full bg-green-500 transition-all" style={{ width: `${items.length ? (pickedCount / items.length) * 100 : 0}%` }} />
+              </div>
+              <p className="text-[10px] text-slate-500 mt-1">{pickedCount}/{items.length} items picked</p>
+            </div>
+          </div>
+
+          {/* Items List (compact) */}
+          <div className="px-4 space-y-1 mb-2 max-h-40 overflow-y-auto">
+            {items.map((item: any) => (
+              <div key={item.id} className="flex items-center gap-1.5 p-2 bg-slate-50 rounded-lg">
+                <select
+                  value={item.status || "pending"}
+                  onChange={(e) => onUpdateItemStatus(item.id, e.target.value, item.actual_price)}
+                  className={`text-[10px] font-bold px-1.5 py-1 rounded border-0 ${
+                    item.status === "available" ? "bg-green-100 text-green-700" :
+                    item.status === "unavailable" ? "bg-red-100 text-red-700" :
+                    item.status === "different_brand" ? "bg-amber-100 text-amber-700" :
+                    "bg-slate-100 text-slate-500"
+                  }`}
+                >
+                  <option value="pending">Pending</option>
+                  <option value="available">✅ Available</option>
+                  <option value="unavailable">❌ Unavail</option>
+                  <option value="different_brand">🔄 Diff Brand</option>
+                </select>
+                <span className="flex-1 text-[11px] font-medium truncate">{item.quantity}x {item.menu_item?.name || item.name}</span>
+                <span className="text-[10px] text-slate-400 shrink-0">₹{item.unit_price}</span>
+                {item.status === "available" && (
+                  <input
+                    type="number"
+                    placeholder="Actual"
+                    value={item.actual_price || ""}
+                    onChange={(e) => onUpdateItemStatus(item.id, "available", parseFloat(e.target.value))}
+                    className="w-14 text-[10px] border border-slate-200 rounded px-1.5 py-1 bg-white"
+                  />
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Financial Summary */}
+          <div className="px-4 mb-2">
+            <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-2 rounded-lg">
+              <div className="flex justify-between text-[11px]">
+                <span className="text-slate-500">Spent</span>
+                <span className="font-bold">₹{totalSpent.toFixed(0)}</span>
+              </div>
+              <div className="flex justify-between text-[11px]">
+                <span className="text-slate-500">Collect</span>
+                <span className="font-bold text-[#0b50d5]">₹{order.total_amount + (order.delivery_fee || 0)}</span>
+              </div>
+              <div className="flex justify-between text-[11px] border-t pt-0.5 mt-0.5">
+                <span className="font-bold">Profit</span>
+                <span className="font-black text-green-600">₹{profit.toFixed(0)}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Actions */}
+          <div className="px-4 pb-4 space-y-1.5">
+            <div className="flex gap-1.5">
+              {pickedCount === items.length && items.length > 0 && onStartDelivery && order.status !== "on_the_way" && (
+                <button onClick={onStartDelivery} className="flex-1 py-2 bg-[#0b50d5] text-white rounded-lg text-[11px] font-bold flex items-center justify-center gap-1">
+                  <span className="material-symbols-outlined text-sm">directions_bike</span>
+                  Start Delivery
+                </button>
+              )}
+              {order.status === "on_the_way" && onShareLocation && (
+                <button onClick={onShareLocation} className="flex-1 py-2 bg-green-500 text-white rounded-lg text-[11px] font-bold flex items-center justify-center gap-1">
+                  <span className="material-symbols-outlined text-sm">share_location</span>
+                  Share Location
+                </button>
+              )}
+              <button onClick={onReportIssue} className="py-2 px-3 bg-red-50 text-red-600 rounded-lg text-[11px] font-bold border border-red-100">
+                Report
+              </button>
+            </div>
+            <button onClick={onMarkDelivered} disabled={pickedCount === 0} className="w-full bg-green-500 text-white py-2.5 rounded-lg font-bold disabled:opacity-40 flex items-center justify-center gap-1.5 text-xs">
+              <span className="material-symbols-outlined text-sm">payments</span>
+              Complete & Collect ₹{(order.total_amount || 0) + (order.delivery_fee || 0)}
+            </button>
           </div>
         </div>
       )}
-
-      {/* Map */}
-      <div className="relative">
-        <div ref={mapRef} className="w-full" style={{ height: 240 }} />
-        <button
-          onClick={() => setShowMap(!showMap)}
-          className="absolute top-2 right-2 z-[400] bg-white rounded-xl px-3 py-1.5 text-xs font-bold text-slate-600 shadow-md flex items-center gap-1"
-        >
-          <span className="material-symbols-outlined text-sm">{showMap ? "visibility_off" : "map"}</span>
-          {showMap ? "Hide" : "Map"}
-        </button>
-        {!trackingInfo && (
-          <div className="absolute inset-0 bg-slate-900/20 flex items-center justify-center z-[400]">
-            <div className="bg-white rounded-xl px-4 py-3 flex items-center gap-2 shadow-lg">
-              <div className="w-4 h-4 border-2 border-[#0b50d5] border-t-transparent rounded-full animate-spin"/>
-              <span className="text-sm font-bold text-slate-700">Loading route...</span>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Navigate button */}
-      <div className="px-4 pt-3 pb-2">
-        <a
-          href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(phase === "pickup" ? vendorAddress : deliveryAddress)}&travelmode=driving`}
-          target="_blank"
-          rel="noreferrer"
-          className={`w-full py-2.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 ${phase === "pickup" ? "bg-green-500 text-white" : "bg-[#0b50d5] text-white"}`}
-        >
-          <span className="material-symbols-outlined text-sm">navigation</span>
-          Open in Google Maps →
-        </a>
-      </div>
-
-      <div className="px-4 pb-3 space-y-1">
-        {/* Vendor info */}
-        <div className="flex justify-between items-start">
-          <div>
-            <h3 className="font-bold text-base text-[#4d212a]">{order.vendor?.name}</h3>
-            <p className="text-xs text-slate-400">{order.vendor?.address}</p>
-            <p className="text-xs text-[#ba001c] font-semibold flex items-center gap-1 mt-0.5">
-              <span className="material-symbols-outlined text-xs">location_on</span>
-              Deliver: {deliveryAddress}
-            </p>
-            {customerPhone && (
-              <a href={`tel:${customerPhone}`} className="text-xs text-[#0b50d5] font-semibold flex items-center gap-1 mt-0.5">
-                <span className="material-symbols-outlined text-xs">call</span>
-                Call Customer: {customerPhone}
-              </a>
-            )}
-          </div>
-          <div className="text-right">
-            <p className="text-base font-black text-[#0b50d5]">₹{order.total_amount + (order.delivery_fee || 0)}</p>
-            <p className="text-[10px] text-slate-400">Collect from customer</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Progress Bar */}
-      <div className="px-4">
-        <div className="bg-slate-100 rounded-full h-2 mb-1 overflow-hidden">
-          <div className="h-full bg-green-500 transition-all" style={{ width: `${items.length ? (pickedCount / items.length) * 100 : 0}%` }} />
-        </div>
-        <p className="text-xs text-slate-500 mb-2">{pickedCount}/{items.length} items picked</p>
-      </div>
-
-      {/* Items List */}
-      <div className="px-4 space-y-2 mb-3 max-h-48 overflow-y-auto">
-        {items.map((item: any) => (
-          <div key={item.id} className="flex flex-col gap-1 p-3 bg-slate-50 rounded-lg">
-            <div className="flex items-center justify-between gap-2">
-              <p className="font-medium text-sm flex-1 min-w-0 truncate">{item.quantity}x {item.menu_item?.name || item.name}</p>
-              <p className="text-xs text-slate-400 shrink-0">₹{item.unit_price}</p>
-            </div>
-            <div className="flex items-center gap-2">
-              <select
-                value={item.status || "pending"}
-                onChange={(e) => onUpdateItemStatus(item.id, e.target.value, item.actual_price)}
-                className={`flex-1 text-xs font-bold px-2 py-1.5 rounded-lg border-0 ${
-                  item.status === "available" ? "bg-green-100 text-green-700" :
-                  item.status === "unavailable" ? "bg-red-100 text-red-700" :
-                  item.status === "different_brand" ? "bg-amber-100 text-amber-700" :
-                  "bg-slate-100 text-slate-500"
-                }`}
-              >
-                <option value="pending">Pending</option>
-                <option value="available">✅ Available</option>
-                <option value="unavailable">❌ Not Available</option>
-                <option value="different_brand">🔄 Different Brand</option>
-              </select>
-              {item.status === "available" && (
-                <input
-                  type="number"
-                  placeholder="Actual ₹"
-                  value={item.actual_price || ""}
-                  onChange={(e) => onUpdateItemStatus(item.id, "available", parseFloat(e.target.value))}
-                  className="w-20 text-xs border border-slate-200 rounded-lg px-2 py-1.5 bg-white"
-                />
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Barcode Scanner */}
-      <div className="px-4 mb-3">
-        <button className="w-full py-2 border-2 border-dashed border-slate-300 rounded-lg text-slate-500 text-sm font-bold flex items-center justify-center gap-1">
-          <span className="material-symbols-outlined text-sm">qr_code_scanner</span>
-          Scan Barcode (Optional)
-        </button>
-      </div>
-
-      {/* Financial Summary */}
-      <div className="px-4 mb-3">
-        <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-3 rounded-lg">
-          <div className="flex justify-between text-sm">
-            <span className="text-slate-500">You spent:</span>
-            <span className="font-bold">₹{totalSpent.toFixed(0)}</span>
-          </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-slate-500">Collect from customer:</span>
-            <span className="font-bold text-[#0b50d5]">₹{order.total_amount + (order.delivery_fee || 0)}</span>
-          </div>
-          <div className="flex justify-between text-sm border-t pt-1 mt-1">
-            <span className="font-bold">Your profit:</span>
-            <span className="font-black text-green-600">₹{profit.toFixed(0)}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Actions */}
-      <div className="px-4 pb-4 space-y-2">
-        <div className="flex gap-2">
-          {pickedCount === items.length && items.length > 0 && onStartDelivery && order.status !== "on_the_way" && (
-            <button onClick={onStartDelivery} className="flex-1 py-2.5 px-3 bg-[#0b50d5] text-white rounded-xl text-sm font-bold flex items-center justify-center gap-1.5">
-              <span className="material-symbols-outlined text-sm">directions_bike</span>
-              Start Delivery
-            </button>
-          )}
-          {order.status === "on_the_way" && onShareLocation && (
-            <button onClick={onShareLocation} className="flex-1 py-2.5 px-3 bg-green-500 text-white rounded-xl text-sm font-bold flex items-center justify-center gap-1.5">
-              <span className="material-symbols-outlined text-sm">share_location</span>
-              Share Location
-            </button>
-          )}
-          <button onClick={onReportIssue} className="py-2.5 px-4 bg-red-50 text-red-600 rounded-xl text-sm font-bold border border-red-100">
-            Report
-          </button>
-        </div>
-        <button
-          onClick={onMarkDelivered}
-          disabled={pickedCount === 0}
-          className="w-full bg-green-500 text-white py-3 rounded-xl font-bold disabled:opacity-40 flex items-center justify-center gap-2 text-sm"
-        >
-          <span className="material-symbols-outlined text-sm">payments</span>
-          Complete &amp; Collect ₹{(order.total_amount || 0) + (order.delivery_fee || 0)}
-        </button>
-      </div>
     </div>
   );
 }
