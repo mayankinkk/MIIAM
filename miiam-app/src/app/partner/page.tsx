@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { getVendorIdForUser, getVendorMenuItems } from "@/lib/vendor";
 import type { Order, OrderStatus } from "@/lib/types";
@@ -13,28 +13,37 @@ export default function PartnerPOS() {
   const [error, setError] = useState<string | null>(null);
   const [menuItemNames, setMenuItemNames] = useState<Map<string, { name: string }>>(new Map());
 
+  const channelRef = useRef<any>(null);
+  const mountedRef = useRef(true);
+
   useEffect(() => {
-    let channel: any = null;
+    mountedRef.current = true;
 
     async function init() {
       try {
         const id = await getVendorIdForUser();
-        if (id) {
-          setVendorId(id);
-          await loadOrders(id);
-          channel = subscribeToOrders(id);
+        if (!mountedRef.current || !id) return;
+        setVendorId(id);
+        await loadOrders(id);
+        if (mountedRef.current) {
+          if (channelRef.current) supabase.removeChannel(channelRef.current);
+          channelRef.current = subscribeToOrders(id);
         }
       } catch (err: any) {
-        setError(err.message);
+        if (mountedRef.current) setError(err.message);
       } finally {
-        setLoading(false);
+        if (mountedRef.current) setLoading(false);
       }
     }
 
     init();
 
     return () => {
-      if (channel) supabase.removeChannel(channel);
+      mountedRef.current = false;
+      if (channelRef.current) {
+        supabase.removeChannel(channelRef.current);
+        channelRef.current = null;
+      }
     };
   }, []);
 
