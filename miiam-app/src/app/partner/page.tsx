@@ -40,7 +40,7 @@ export default function PartnerPOS() {
   async function loadOrders(vId: string) {
     const { data, error } = await supabase
       .from("orders")
-      .select("*, vendor:vendors(name), items:order_items(*, menu_item:menu_items(name))")
+      .select("*, items:order_items(*, menu_item:menu_items(name))")
       .eq("vendor_id", vId)
       .order("placed_at", { ascending: false });
     if (error) throw error;
