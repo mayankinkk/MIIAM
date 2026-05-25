@@ -29,14 +29,38 @@ export function usePushNotifications(userId?: string) {
         return;
       }
 
-      console.log("Browser notifications enabled");
+      const registration = await navigator.serviceWorker.register("/sw.js");
+      const existingSubscription = await registration.pushManager.getSubscription();
+
+      if (existingSubscription) {
+        await existingSubscription.unsubscribe();
+      }
+
+      const VAPID_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+      if (!VAPID_PUBLIC_KEY) {
+        console.warn("VAPID public key not configured, push subscription skipped");
+        setIsLoading(false);
+        return;
+      }
+
+      const subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: VAPID_PUBLIC_KEY,
+      });
+
+      await fetch("/api/notifications/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, subscription }),
+      });
+
       setIsLoading(false);
     } catch (err) {
       console.error("Notification setup error:", err);
       setError("Failed to setup notifications");
       setIsLoading(false);
     }
-  }, [userId, supabase, setPermission]);
+  }, [userId, setPermission]);
 
   const sendNotification = useCallback(async (
     title: string,
