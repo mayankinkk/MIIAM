@@ -129,6 +129,12 @@ export default function VendorReviews({ vendorId }: VendorReviewsProps) {
                 {review.comment && (
                   <p className="text-sm text-slate-600 mt-2">{review.comment}</p>
                 )}
+                {review.vendor_reply && (
+                  <div className="mt-2 ml-2 pl-3 border-l-2 border-green-400 bg-green-50 p-2 rounded-r-lg">
+                    <p className="text-[10px] font-bold text-green-700 mb-0.5">Vendor reply</p>
+                    <p className="text-xs text-green-800">{review.vendor_reply}</p>
+                  </div>
+                )}
               </div>
             ))}
           </div>

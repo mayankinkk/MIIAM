@@ -12,6 +12,7 @@ const navLinks = [
   { href: "/partner/orders", label: "Orders", icon: "receipt_long" },
   { href: "/partner/menu", label: "Menu & Inventory", icon: "restaurant_menu" },
   { href: "/partner/analytics", label: "Analytics", icon: "analytics" },
+  { href: "/partner/reviews", label: "Reviews", icon: "reviews" },
   { href: "/partner/wallet", label: "Wallet & Payouts", icon: "account_balance_wallet" },
   { href: "/partner/promotions", label: "Promotions", icon: "local_offer" },
   { href: "/partner/profile", label: "Store Settings", icon: "store" },

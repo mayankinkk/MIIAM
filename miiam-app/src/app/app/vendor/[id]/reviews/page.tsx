@@ -149,6 +149,12 @@ export default function VendorReviewsPage() {
                       ))}
                     </div>
                   )}
+                  {review.vendor_reply && (
+                    <div className="mt-3 ml-2 pl-3 border-l-2 border-green-400 bg-green-50 p-3 rounded-r-lg">
+                      <p className="text-[10px] font-bold text-green-700 mb-0.5">Vendor reply</p>
+                      <p className="text-xs text-green-800">{review.vendor_reply}</p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
