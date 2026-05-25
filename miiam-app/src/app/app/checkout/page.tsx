@@ -233,7 +233,7 @@ export default function CheckoutPage() {
         const vendorTotal = vendorItems.reduce((s, i) => s + i.price * i.quantity, 0);
 
         const scheduledIso = scheduledDate && scheduledTime 
-          ? new Date(`${scheduledDate} ${scheduledTime.split(" - ")[0]}`).toISOString()
+          ? new Date(`${scheduledDate}T${scheduledTime.split(" - ")[0].trim()}`).toISOString()
           : null;
         
         const { data: order, error: orderError } = await supabase
@@ -244,7 +244,7 @@ export default function CheckoutPage() {
             status: scheduledIso ? "scheduled" : "pending",
             total_amount: vendorTotal,
             delivery_fee: 5.99,
-            discount_amount: discount,
+            discount_amount: subtotal > 0 ? +(discount * (vendorTotal / subtotal)).toFixed(2) : 0,
             payment_method: paymentMethod,
             delivery_address: finalAddress,
             scheduled_delivery: scheduledIso,
@@ -631,7 +631,7 @@ export default function CheckoutPage() {
                 )}
                 <div className="flex justify-between text-on-surface-variant">
                   <span>Delivery Fee</span>
-                  <span className="font-semibold text-secondary">FREE</span>
+                    <span className="font-semibold text-secondary">₹{(deliveryFee * vendorIds.length).toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-on-surface-variant">
                   <span>Tax (5%)</span>

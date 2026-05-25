@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import crypto from "crypto";
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,7 +16,10 @@ export async function POST(request: NextRequest) {
 
     const cookieStore = await cookies();
     
-    const verifiedToken = Buffer.from(`${email}:${Date.now()}`).toString("base64");
+    // Use a random token + HMAC signature to prevent forgery
+    const randomToken = crypto.randomUUID();
+    const hmac = crypto.createHmac("sha256", process.env.SUPABASE_SERVICE_ROLE_KEY || "fallback-secret").update(`${email}:${randomToken}`).digest("hex");
+    const verifiedToken = `${randomToken}.${hmac}`;
     
     cookieStore.set("password_reset_verified", verifiedToken, {
       httpOnly: true,

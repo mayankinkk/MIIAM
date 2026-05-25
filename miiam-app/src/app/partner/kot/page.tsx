@@ -31,7 +31,7 @@ export default function PartnerKOTPage() {
       .from("orders")
       .select("*")
       .eq("vendor_id", vId)
-      .in("status", ["confirmed", "preparing"])
+      .in("status", ["accepted", "preparing"])
       .order("placed_at", { ascending: true });
     if (mountedRef.current && data) setOrders(data as Order[]);
     setLoading(false);
@@ -83,7 +83,7 @@ export default function PartnerKOTPage() {
                 {new Date(order.placed_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
               </div>
               <div className="flex gap-2 pt-1">
-                {order.status === "confirmed" && (
+                {order.status === "accepted" && (
                   <button
                     onClick={() => updateStatus(order.id, "preparing")}
                     className="flex-1 py-2.5 bg-blue-600 text-white text-xs font-bold rounded-xl hover:bg-blue-700"
@@ -93,7 +93,7 @@ export default function PartnerKOTPage() {
                 )}
                 {order.status === "preparing" && (
                   <button
-                    onClick={() => updateStatus(order.id, "ready")}
+                    onClick={() => updateStatus(order.id, "ready_for_pickup")}
                     className="flex-1 py-2.5 bg-green-600 text-white text-xs font-bold rounded-xl hover:bg-green-700"
                   >
                     Mark Ready

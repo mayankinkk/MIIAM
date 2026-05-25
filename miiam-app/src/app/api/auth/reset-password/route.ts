@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/server";
 import { cookies } from "next/headers";
+import crypto from "crypto";
 
 export async function POST(request: NextRequest) {
   const supabaseAdmin = createAdminClient();
@@ -15,18 +16,23 @@ export async function POST(request: NextRequest) {
 
     const cleanEmail = email.toLowerCase().trim();
 
-    // Check cookie verification
+    // Check cookie verification with HMAC validation
     const verifiedToken = cookieStore.get("password_reset_verified")?.value;
     if (!verifiedToken) {
       return NextResponse.json({ error: "Please verify your email first" }, { status: 403 });
     }
 
-    const [verifiedEmail] = Buffer.from(verifiedToken, "base64").toString().split(":");
-    if (verifiedEmail?.toLowerCase() !== cleanEmail) {
+    const [randomToken, hmac] = verifiedToken.split(".");
+    if (!randomToken || !hmac) {
+      return NextResponse.json({ error: "Invalid verification token" }, { status: 403 });
+    }
+
+    const expectedHmac = crypto.createHmac("sha256", process.env.SUPABASE_SERVICE_ROLE_KEY || "fallback-secret").update(`${cleanEmail}:${randomToken}`).digest("hex");
+    if (hmac !== expectedHmac) {
       return NextResponse.json({ error: "Verification mismatch" }, { status: 403 });
     }
 
-    // Find user using listUsers (getUserByEmail does NOT exist in supabase-js)
+    // Find user using listUsers
     const { data: { users }, error: listError } = await supabaseAdmin.auth.admin.listUsers({
       page: 1,
       perPage: 1000,
