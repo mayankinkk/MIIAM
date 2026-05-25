@@ -4,9 +4,8 @@ import { useEffect, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import {
   useNotificationStore,
-  requestNotificationPermission,
-  subscribeToPushNotifications,
-  showLocalNotification,
+  subscribe,
+  notify,
 } from "@/lib/store/notificationStore";
 
 export function useNotifications() {
@@ -14,21 +13,22 @@ export function useNotifications() {
   const {
     notifications,
     permission,
-    pushToken,
+    token: pushToken,
     addNotification,
     markAsRead,
     markAllAsRead,
     removeNotification,
     clearAll,
     unreadCount,
+    requestPermission: requestNotificationPermission,
   } = useNotificationStore();
 
   const initializeNotifications = useCallback(async () => {
-    const perm = await requestNotificationPermission();
-    if (perm === "granted") {
-      subscribeToPushNotifications();
+    const granted = await requestNotificationPermission();
+    if (granted) {
+      subscribe();
     }
-  }, []);
+  }, [requestNotificationPermission]);
 
   useEffect(() => {
     initializeNotifications();
@@ -52,7 +52,7 @@ export function useNotifications() {
             data: newNotification.data,
             actionUrl: newNotification.action_url,
           });
-          showLocalNotification(newNotification.title, {
+          notify(newNotification.title, {
             body: newNotification.body,
             tag: newNotification.type,
           });
