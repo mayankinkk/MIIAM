@@ -177,40 +177,18 @@ self.addEventListener('notificationclick', (event) => {
 });
 
 self.addEventListener('sync', (event) => {
-  if (event.tag === 'sync-orders') {
-    event.waitUntil(syncOrders());
-  }
-  if (event.tag === 'sync-reviews') {
-    event.waitUntil(syncReviews());
+  if (event.tag === 'sync-orders' || event.tag === 'sync-reviews') {
+    event.waitUntil(syncPendingRequests());
   }
 });
 
-async function syncOrders() {
+async function syncPendingRequests() {
   try {
     const cache = await caches.open('miiam-pending-v3');
     const requests = await cache.keys();
     for (const request of requests) {
       try {
-        const response = await fetch(request);
-        if (response.ok) {
-          await cache.delete(request);
-        }
-      } catch {
-        // Will retry on next sync
-      }
-    }
-  } catch {
-    // Queue not available
-  }
-}
-
-async function syncReviews() {
-  try {
-    const cache = await caches.open('miiam-pending-v3');
-    const requests = await cache.keys();
-    for (const request of requests) {
-      try {
-        const response = await fetch(request);
+        const response = await fetch(request.clone());
         if (response.ok) {
           await cache.delete(request);
         }
