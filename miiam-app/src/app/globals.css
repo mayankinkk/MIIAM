@@ -651,25 +651,7 @@ textarea:focus-visible {
   --color-on-secondary-fixed-variant: #0045c1;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-surface: #1a0a0c;
-    --color-surface-bright: #240b0e;
-    --color-surface-dim: #4d212a;
-    --color-surface-variant: #5c2d34;
-    --color-surface-container-lowest: #0f0506;
-    --color-surface-container-low: #1a0a0c;
-    --color-surface-container: #240b0e;
-    --color-surface-container-high: #2e1014;
-    --color-surface-container-highest: #3d1a1e;
-    --color-background: #0f0506;
-    --color-on-background: #ffd9de;
-    --color-on-surface: #ffd9de;
-    --color-on-surface-variant: #dd9ca6;
-    --color-outline: #a06770;
-    --color-outline-variant: #5c2d34;
-  }
-}
+
 
 /* Scroll reveal animations */
 @keyframes reveal-up {
