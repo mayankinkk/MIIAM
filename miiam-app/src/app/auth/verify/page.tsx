@@ -88,7 +88,13 @@ function OTPVerificationContent() {
       }
 
       if (data.userExists) {
-        router.push(`/app/home?verified=true`);
+        // Check if session exists before navigating to protected route
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+          router.push(`/app/home?verified=true`);
+        } else {
+          router.push(`/auth/login?verified=true`);
+        }
       } else {
         router.push(`/auth/profile-setup?phone=${phone}`);
       }

@@ -94,7 +94,7 @@ export default function PartnerMenuPage() {
   // Helper: Upload image to Supabase Storage
   async function uploadImage(file: File): Promise<string | null> {
     const fileExt = file.name.split(".").pop();
-    const fileName = `${Math.random()}.${fileExt}`;
+    const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
     const filePath = `menu/${fileName}`;
 
     const { error: uploadError } = await supabase.storage

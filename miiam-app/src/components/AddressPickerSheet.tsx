@@ -122,17 +122,18 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
     }, 400);
   }, [searchQuery]);
 
-  // Init map when a location is picked manually
+  // Init map once on mount
   useEffect(() => {
-    if (!pickedLocation || !mapRef.current || mapInstanceRef.current) return;
+    if (!mapRef.current || mapInstanceRef.current) return;
     let mounted = true;
     (async () => {
       const L = await import("leaflet");
       await import("leaflet/dist/leaflet.css");
       if (!mounted || !mapRef.current) return;
 
+      const initialLoc = pickedLocation || { lat: 28.6139, lng: 77.2090 };
       const map = L.map(mapRef.current, { zoomControl: false }).setView(
-        [pickedLocation.lat, pickedLocation.lng], 16
+        [initialLoc.lat, initialLoc.lng], 16
       );
       L.control.zoom({ position: "bottomright" }).addTo(map);
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19 }).addTo(map);
@@ -144,7 +145,7 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
         iconAnchor: [20, 40],
       });
 
-      const marker = L.marker([pickedLocation.lat, pickedLocation.lng], { icon, draggable: true }).addTo(map);
+      const marker = L.marker([initialLoc.lat, initialLoc.lng], { icon, draggable: true }).addTo(map);
       markerRef.current = marker;
       mapInstanceRef.current = map;
 
@@ -166,7 +167,7 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
       mounted = false;
       if (mapInstanceRef.current) { mapInstanceRef.current.remove(); mapInstanceRef.current = null; }
     };
-  }, [pickedLocation?.lat, pickedLocation?.lng]);
+  }, []);
 
   function pickSuggestion(s: any) {
     const addr = s.address || {};
