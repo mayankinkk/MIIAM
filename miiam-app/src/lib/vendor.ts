@@ -47,7 +47,8 @@ export async function getVendorMenuItems(vendorId: string): Promise<Map<string, 
   const table = MENU_TABLE_MAP[vendor?.type || "food"] || "menu_items";
   const { data } = await supabase
     .from(table)
-    .select("id, name, category");
+    .select("id, name, category")
+    .eq("vendor_id", vendorId);
 
   const map = new Map<string, { name: string; category: string }>();
   if (data) {
