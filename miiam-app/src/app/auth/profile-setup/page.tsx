@@ -91,29 +91,6 @@ function ProfileSetupContent() {
 
       if (user) {
         // We have a session - save profile directly
-        if (formData.phone) {
-          await supabase
-            .from("users")
-            .update({ 
-              phone_verified: true, 
-              phone_verified_at: new Date().toISOString(),
-              phone: formData.phone,
-              full_name: formData.full_name,
-            })
-            .eq("id", user.id);
-        }
-
-        if (formData.email) {
-          await supabase
-            .from("users")
-            .update({ 
-              email_verified: true, 
-              email_verified_at: new Date().toISOString(),
-              email: formData.email,
-            })
-            .eq("id", user.id);
-        }
-
         const { error: profileError } = await supabase.from("profiles").upsert({
           id: user.id,
           full_name: formData.full_name,
