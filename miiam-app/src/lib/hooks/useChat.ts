@@ -22,7 +22,8 @@ export interface ChatRoom {
 }
 
 export function useChat(orderId: string, currentUserId: string) {
-  const supabase = createClient();
+  const supabaseRef = useRef(createClient());
+  const supabase = supabaseRef.current;
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [isTyping, setIsTyping] = useState(false);
@@ -30,6 +31,7 @@ export function useChat(orderId: string, currentUserId: string) {
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const userIdRef = useRef(currentUserId);
   userIdRef.current = currentUserId;
+  const typingChannelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
 
   useEffect(() => {
     loadMessages();
@@ -46,7 +48,10 @@ export function useChat(orderId: string, currentUserId: string) {
         },
         (payload) => {
           const newMessage = payload.new as ChatMessage;
-          setMessages((prev) => [...prev, newMessage]);
+          setMessages((prev) => {
+            if (prev.some((m) => m.id === newMessage.id)) return prev;
+            return [...prev, newMessage];
+          });
           
           if (newMessage.sender_id !== userIdRef.current) {
             markAsRead([newMessage.id]);
@@ -73,7 +78,7 @@ export function useChat(orderId: string, currentUserId: string) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [orderId, supabase, currentUserId]);
+  }, [orderId, currentUserId]);
 
   async function loadMessages() {
     setLoading(true);
@@ -121,7 +126,11 @@ export function useChat(orderId: string, currentUserId: string) {
   }
 
   async function sendTypingIndicator(isTyping: boolean) {
-    const channel = supabase.channel(`typing-${orderId}`);
+    if (!typingChannelRef.current) {
+      typingChannelRef.current = supabase.channel(`typing-${orderId}`);
+      typingChannelRef.current.subscribe();
+    }
+    const channel = typingChannelRef.current;
     
     if (isTyping) {
       await channel.track({ user_id: currentUserId, typing: true });
@@ -161,7 +170,7 @@ export function useChat(orderId: string, currentUserId: string) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [orderId, supabase, currentUserId]);
+  }, [orderId, currentUserId]);
 
   return {
     messages,
@@ -176,7 +185,8 @@ export function useChat(orderId: string, currentUserId: string) {
 }
 
 export function useChatList(userId: string) {
-  const supabase = createClient();
+  const supabaseRef = useRef(createClient());
+  const supabase = supabaseRef.current;
   const [chats, setChats] = useState<ChatRoom[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -230,7 +240,7 @@ export function useChatList(userId: string) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [userId, supabase]);
+  }, [userId]);
 
   return { chats, loading };
 }
