@@ -1,5 +1,5 @@
-import { query } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
+import { createAdminClient } from "@/lib/supabase/server";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -9,15 +9,26 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "user_id required" }, { status: 400 });
   }
 
-  const { rows: addresses } = await query(
-    "SELECT * FROM user_addresses WHERE user_id = $1 ORDER BY is_default DESC, created_at DESC",
-    [user_id]
-  );
+  const supabase = createAdminClient();
+
+  const { data: addresses, error } = await supabase
+    .from("user_addresses")
+    .select("*")
+    .eq("user_id", user_id)
+    .order("is_default", { ascending: false })
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Address fetch error:", error);
+    return NextResponse.json({ addresses: [] });
+  }
 
   return NextResponse.json({ addresses: addresses || [] });
 }
 
 export async function POST(request: NextRequest) {
+  const supabase = createAdminClient();
+
   try {
     const body = await request.json();
     const { user_id, label, address, city, state, pincode, lat, lng, is_default } = body;
@@ -27,14 +38,29 @@ export async function POST(request: NextRequest) {
     }
 
     if (is_default) {
-      await query("UPDATE user_addresses SET is_default = false WHERE user_id = $1", [user_id]);
+      await supabase
+        .from("user_addresses")
+        .update({ is_default: false })
+        .eq("user_id", user_id);
     }
 
-    const { rows } = await query(
-      "INSERT INTO user_addresses (user_id, label, address, city, state, pincode, lat, lng, is_default) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *",
-      [user_id, label, address, city, state || "", pincode, lat || null, lng || null, is_default || false]
-    );
-    const addressData = rows[0];
+    const { data: addressData, error } = await supabase
+      .from("user_addresses")
+      .insert({
+        user_id,
+        label,
+        address,
+        city,
+        state: state || "",
+        pincode,
+        lat: lat || null,
+        lng: lng || null,
+        is_default: is_default || false,
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
 
     return NextResponse.json({ success: true, address: addressData });
   } catch (error) {
@@ -44,6 +70,8 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
+  const supabase = createAdminClient();
+
   try {
     const body = await request.json();
     const { id, user_id, label, address, city, state, pincode, lat, lng, is_default } = body;
@@ -53,14 +81,29 @@ export async function PUT(request: NextRequest) {
     }
 
     if (is_default && user_id) {
-      await query("UPDATE user_addresses SET is_default = false WHERE user_id = $1", [user_id]);
+      await supabase
+        .from("user_addresses")
+        .update({ is_default: false })
+        .eq("user_id", user_id);
     }
 
-    const { rows } = await query(
-      "UPDATE user_addresses SET label = $1, address = $2, city = $3, state = $4, pincode = $5, lat = $6, lng = $7, is_default = $8 WHERE id = $9 RETURNING *",
-      [label, address, city, state || "", pincode, lat || null, lng || null, is_default || false, id]
-    );
-    const addressData = rows[0];
+    const { data: addressData, error } = await supabase
+      .from("user_addresses")
+      .update({
+        label,
+        address,
+        city,
+        state: state || "",
+        pincode,
+        lat: lat || null,
+        lng: lng || null,
+        is_default: is_default || false,
+      })
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) throw error;
 
     if (!addressData) {
       return NextResponse.json({ error: "Address not found" }, { status: 404 });
@@ -74,6 +117,7 @@ export async function PUT(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
+  const supabase = createAdminClient();
   const { searchParams } = new URL(request.url);
   const id = searchParams.get("id");
 
@@ -81,7 +125,15 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: "Address ID required" }, { status: 400 });
   }
 
-  await query("DELETE FROM user_addresses WHERE id = $1", [id]);
+  const { error } = await supabase
+    .from("user_addresses")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+    console.error("Address delete error:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
 
   return NextResponse.json({ success: true });
 }

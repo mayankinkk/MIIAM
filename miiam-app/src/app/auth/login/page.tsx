@@ -3,8 +3,7 @@
 import Link from "next/link";
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { auth } from "@/lib/firebase/config";
-import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { createClient } from "@/lib/supabase/client";
 
 function LoginContent() {
   const router = useRouter();
@@ -25,8 +24,9 @@ function LoginContent() {
     
     setIsLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      // Success on first attempt
+      const supabase = createClient();
+      const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+      if (signInError) throw signInError;
       window.location.href = "/app/explore";
     } catch (err: any) { 
       setError(err.message || "Something went wrong"); 
@@ -37,13 +37,13 @@ function LoginContent() {
   const handleGoogleLogin = async () => {
     setIsGoogleLoading(true);
     try {
-      const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
-      window.location.href = "/app/explore";
+      const supabase = createClient();
+      const { error } = await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: `${window.location.origin}/app/explore` } });
+      if (error) throw error;
     } catch (err: any) { 
       setError(err.message || "Something went wrong"); 
+      setIsGoogleLoading(false);
     }
-    finally { setIsGoogleLoading(false); }
   };
 
   

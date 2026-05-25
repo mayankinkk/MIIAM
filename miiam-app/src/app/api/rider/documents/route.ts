@@ -1,8 +1,10 @@
-import { query } from "@/lib/db";
+import { createAdminClient } from "@/lib/supabase/server";
 import { uploadFile } from "@/lib/storage";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
+  const supabaseAdmin = createAdminClient();
+
   try {
     const formData = await request.formData();
     const rider_id = formData.get("rider_id") as string;
@@ -36,25 +38,42 @@ export async function POST(request: NextRequest) {
     
     const publicUrl = await uploadFile(buffer, fileName, file.type);
 
-    const { rows: existingRows } = await query(
-      "SELECT id FROM rider_documents WHERE rider_id = $1 AND doc_type = $2",
-      [rider_id, doc_type]
-    );
-    const existingDoc = existingRows[0];
+    const { data: existingDoc } = await supabaseAdmin
+      .from("rider_documents")
+      .select("id")
+      .eq("rider_id", rider_id)
+      .eq("doc_type", doc_type)
+      .maybeSingle();
 
     let doc;
     if (existingDoc) {
-      const { rows } = await query(
-        "UPDATE rider_documents SET document_number = $1, document_url = $2, expiry_date = $3, status = $4, updated_at = $5 WHERE id = $6 RETURNING *",
-        [formData.get("document_number") || null, publicUrl, formData.get("expiry_date") || null, "pending", new Date().toISOString(), existingDoc.id]
-      );
-      doc = rows[0];
+      const { data } = await supabaseAdmin
+        .from("rider_documents")
+        .update({
+          document_number: formData.get("document_number") || null,
+          document_url: publicUrl,
+          expiry_date: formData.get("expiry_date") || null,
+          status: "pending",
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", existingDoc.id)
+        .select()
+        .single();
+      doc = data;
     } else {
-      const { rows } = await query(
-        "INSERT INTO rider_documents (rider_id, doc_type, document_number, document_url, expiry_date, status) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
-        [rider_id, doc_type, formData.get("document_number") || null, publicUrl, formData.get("expiry_date") || null, "pending"]
-      );
-      doc = rows[0];
+      const { data } = await supabaseAdmin
+        .from("rider_documents")
+        .insert({
+          rider_id,
+          doc_type,
+          document_number: formData.get("document_number") || null,
+          document_url: publicUrl,
+          expiry_date: formData.get("expiry_date") || null,
+          status: "pending",
+        })
+        .select()
+        .single();
+      doc = data;
     }
 
     return NextResponse.json({
@@ -70,6 +89,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
+  const supabaseAdmin = createAdminClient();
   const { searchParams } = new URL(request.url);
   const rider_id = searchParams.get("rider_id");
 
@@ -77,10 +97,11 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "rider_id required" }, { status: 400 });
   }
 
-  const { rows: documents } = await query(
-    "SELECT * FROM rider_documents WHERE rider_id = $1 ORDER BY created_at DESC",
-    [rider_id]
-  );
+  const { data: documents } = await supabaseAdmin
+    .from("rider_documents")
+    .select("*")
+    .eq("rider_id", rider_id)
+    .order("created_at", { ascending: false });
 
   return NextResponse.json({ documents: documents || [] });
 }

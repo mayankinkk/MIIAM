@@ -1,8 +1,29 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { NextRequest } from "next/server";
 
-vi.mock("@/lib/db", () => ({
-  query: vi.fn().mockResolvedValue({ rows: [], rowCount: 0 }),
+const mockFrom = vi.fn(() => ({
+  select: vi.fn().mockReturnThis(),
+  order: vi.fn().mockReturnThis(),
+  insert: vi.fn().mockReturnThis(),
+  update: vi.fn().mockReturnThis(),
+  delete: vi.fn().mockReturnThis(),
+  eq: vi.fn().mockReturnThis(),
+  is: vi.fn().mockReturnThis(),
+  in: vi.fn().mockReturnThis(),
+  gte: vi.fn().mockReturnThis(),
+  lte: vi.fn().mockReturnThis(),
+  single: vi.fn().mockResolvedValue({ data: null, error: null }),
+  maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }),
+}));
+
+vi.mock("@/lib/supabase/server", () => ({
+  createAdminClient: vi.fn(() => ({
+    from: mockFrom,
+    auth: { admin: { listUsers: vi.fn().mockResolvedValue({ data: { users: [] }, error: null }) } },
+    rpc: vi.fn().mockResolvedValue({ data: null, error: null }),
+    storage: { from: () => ({ upload: vi.fn(), getPublicUrl: vi.fn() }) },
+  })),
+  createClient: vi.fn(),
 }));
 
 function mockRequest(method: string, url: string, body?: unknown) {
@@ -17,7 +38,7 @@ function mockRequest(method: string, url: string, body?: unknown) {
 
 describe("Addresses API", () => {
   beforeEach(() => {
-    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("GET /api/addresses returns 400 without user_id", async () => {
@@ -40,10 +61,6 @@ describe("Addresses API", () => {
 });
 
 describe("Settings API", () => {
-  beforeEach(() => {
-    vi.resetModules();
-  });
-
   it("GET /api/settings returns valid response", async () => {
     const { GET } = await import("../settings/route");
     const req = mockRequest("GET", "http://localhost:3000/api/settings");

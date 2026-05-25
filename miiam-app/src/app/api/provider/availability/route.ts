@@ -1,5 +1,5 @@
-import { query } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
+import { createAdminClient } from "@/lib/supabase/server";
 
 function generateTimeSlots(startHour: number = 8, endHour: number = 20, intervalMinutes: number = 60): string[] {
   const slots: string[] = [];
@@ -11,6 +11,7 @@ function generateTimeSlots(startHour: number = 8, endHour: number = 20, interval
 }
 
 export async function GET(request: NextRequest) {
+  const supabase = createAdminClient();
   const { searchParams } = new URL(request.url);
   const provider_id = searchParams.get("provider_id");
   const date = searchParams.get("date");
@@ -22,16 +23,19 @@ export async function GET(request: NextRequest) {
   }
 
   if (date) {
-    const { rows: availabilityRows } = await query(
-      "SELECT * FROM provider_availability WHERE provider_id = $1 AND date = $2",
-      [provider_id, date]
-    );
-    const availability = availabilityRows[0];
+    const { data: availability } = await supabase
+      .from("provider_availability")
+      .select("*")
+      .eq("provider_id", provider_id)
+      .eq("date", date)
+      .maybeSingle();
 
-    const { rows: bookings } = await query(
-      "SELECT scheduled_time FROM service_bookings WHERE provider_id = $1 AND scheduled_date = $2 AND status = $3",
-      [provider_id, date, "confirmed"]
-    );
+    const { data: bookings } = await supabase
+      .from("service_bookings")
+      .select("scheduled_time")
+      .eq("provider_id", provider_id)
+      .eq("scheduled_date", date)
+      .eq("status", "confirmed");
 
     const bookedTimes = (bookings || []).map(b => b.scheduled_time);
     const allSlots = generateTimeSlots();
@@ -50,19 +54,6 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    if (availability?.available_hours) {
-      const availableHours = JSON.parse(availability.available_hours);
-      return NextResponse.json({
-        available: true,
-        date,
-        slots: availableSlots.map((time: string) => ({
-          time,
-          available: !bookedTimes.includes(time),
-          reason: bookedTimes.includes(time) ? "booked" : null
-        }))
-      });
-    }
-
     return NextResponse.json({
       available: true,
       date,
@@ -71,10 +62,13 @@ export async function GET(request: NextRequest) {
   }
 
   if (start_date && end_date) {
-    const { rows: availabilities } = await query(
-      "SELECT * FROM provider_availability WHERE provider_id = $1 AND date >= $2 AND date <= $3 ORDER BY date",
-      [provider_id, start_date, end_date]
-    );
+    const { data: availabilities } = await supabase
+      .from("provider_availability")
+      .select("*")
+      .eq("provider_id", provider_id)
+      .gte("date", start_date)
+      .lte("date", end_date)
+      .order("date");
 
     const days: Record<string, any> = {};
     const currentDate = new Date(start_date);
@@ -100,6 +94,8 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const supabase = createAdminClient();
+
   try {
     const body = await request.json();
     const { provider_id, date, is_unavailable, available_hours, reason } = body;
@@ -113,25 +109,39 @@ export async function POST(request: NextRequest) {
       formattedHours = JSON.stringify(available_hours);
     }
 
-    const { rows: existingRows } = await query(
-      "SELECT id FROM provider_availability WHERE provider_id = $1 AND date = $2",
-      [provider_id, date]
-    );
-    const existing = existingRows[0];
+    const { data: existing } = await supabase
+      .from("provider_availability")
+      .select("id")
+      .eq("provider_id", provider_id)
+      .eq("date", date)
+      .maybeSingle();
 
     let result;
     if (existing) {
-      const { rows } = await query(
-        "UPDATE provider_availability SET is_unavailable = $1, available_hours = $2, reason = $3 WHERE id = $4 RETURNING *",
-        [is_unavailable, available_hours, reason, existing.id]
-      );
-      result = rows[0];
+      const { data } = await supabase
+        .from("provider_availability")
+        .update({
+          is_unavailable,
+          available_hours,
+          reason,
+        })
+        .eq("id", existing.id)
+        .select()
+        .single();
+      result = data;
     } else {
-      const { rows } = await query(
-        "INSERT INTO provider_availability (provider_id, date, is_unavailable, available_hours, reason) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-        [provider_id, date, is_unavailable, available_hours, reason]
-      );
-      result = rows[0];
+      const { data } = await supabase
+        .from("provider_availability")
+        .insert({
+          provider_id,
+          date,
+          is_unavailable,
+          available_hours,
+          reason,
+        })
+        .select()
+        .single();
+      result = data;
     }
 
     return NextResponse.json({ success: true, availability: result });
