@@ -25,6 +25,7 @@ interface MenuItem extends BaseItem {
   available: boolean;
   description?: string;
   is_veg?: boolean;
+  stock?: number;
 }
 
 interface GroceryItem extends BaseItem {
@@ -191,6 +192,7 @@ export default function PartnerMenuPage() {
     if (vendorKey === "food") {
       if (newItem.description) base.description = newItem.description;
       base.is_veg = newItem.is_veg;
+      base.stock = parseInt(newItem.stock) || 0;
     } else if (vendorKey === "grocery") {
       base.stock = parseInt(newItem.stock) || 0;
       if (newItem.description) base.description = newItem.description;
@@ -215,6 +217,7 @@ export default function PartnerMenuPage() {
       const m = item as MenuItem;
       if (m.description) base.description = m.description;
       base.is_veg = m.is_veg;
+      base.stock = (m as any).stock ?? 0;
     } else if (vendorKey === "grocery") {
       const g = item as GroceryItem;
       base.stock = g.stock;
@@ -259,15 +262,9 @@ export default function PartnerMenuPage() {
         }
       }
       const payload = buildInsertPayload();
-      const safePayload: Record<string, any> = {
-        name: payload.name,
-        price: payload.price,
-        category: payload.category || "General",
-        vendor_id: payload.vendor_id,
-      };
-      if (imageUrl) safePayload.image_url = imageUrl;
-      if (payload.description && typeof payload.description === "string") safePayload.description = payload.description;
-      const { error } = await supabase.from(table).insert(safePayload);
+      if (imageUrl) payload.image_url = imageUrl;
+      payload.category = payload.category || "General";
+      const { error } = await supabase.from(table).insert(payload);
       if (error) throw error;
       setShowAddModal(false);
       resetNewItem();
@@ -282,13 +279,7 @@ export default function PartnerMenuPage() {
   const handleUpdateItem = async () => {
     if (!editingItem) return;
     try {
-      const base: Record<string, any> = {
-        name: editingItem.name,
-        price: editingItem.price,
-        category: editingItem.category,
-      };
-      if ((editingItem as any).image_url) base.image_url = (editingItem as any).image_url;
-      if ((editingItem as any).description) base.description = (editingItem as any).description;
+      const base = buildUpdatePayload(editingItem);
       const { error } = await supabase.from(table).update(base).eq("id", editingItem.id);
       if (error) throw error;
       setEditingItem(null);
@@ -413,6 +404,98 @@ export default function PartnerMenuPage() {
         </button>
       </div>
 
+      {/* Menu Intelligence + Bulk Import */}
+      {selectedVendorId && items.length > 0 && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          {/* Optimization Suggestions */}
+          <div className="lg:col-span-2 bg-gradient-to-br from-[#fef7f8] to-white rounded-2xl border border-[#f5d0d6] p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="material-symbols-outlined text-[#ba001c]">insights</span>
+              <h3 className="font-extrabold text-slate-900 text-sm">Menu Intelligence</h3>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+              {(() => {
+                const total = items.length;
+                const noDesc = items.filter(i => !('description' in i) || !(i as any).description).length;
+                const outOfStock = items.filter(i => 'stock' in i && (i as any).stock === 0).length;
+                const noImg = items.filter(i => !i.image_url).length;
+                const suggestions: string[] = [];
+                if (noDesc > 0) suggestions.push(`Add descriptions to ${noDesc} item${noDesc > 1 ? 's' : ''} to boost conversion`);
+                if (outOfStock > 0) suggestions.push(`${outOfStock} item${outOfStock > 1 ? 's are' : ' is'} out of stock — restock soon`);
+                if (noImg > 0) suggestions.push(`Upload images for ${noImg} item${noImg > 1 ? 's' : ''} — items with images sell 30% more`);
+                if (total < 10) suggestions.push(`Consider adding more items — menus with 15+ items get 2x more orders`);
+                if (noImg === 0 && noDesc === 0 && outOfStock === 0 && total >= 10) suggestions.push(`Your menu looks great! Continue adding seasonal specials.`);
+                return suggestions;
+              })().map((s, i) => (
+                <div key={i} className="bg-white rounded-xl p-3 border border-slate-100 flex items-start gap-2">
+                  <span className="material-symbols-outlined text-[#ba001c] text-lg shrink-0">lightbulb</span>
+                  <span className="text-slate-700">{s}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          {/* Bulk Import Card */}
+          <div className="bg-white rounded-2xl border border-slate-200 p-5 flex flex-col items-center justify-center text-center">
+            <span className="material-symbols-outlined text-3xl text-slate-400 mb-2">file_upload</span>
+            <p className="font-bold text-slate-800 text-sm">Bulk Import Items</p>
+            <p className="text-xs text-slate-400 mt-1 mb-3">CSV upload</p>
+            <label className="cursor-pointer px-4 py-2 bg-[#ba001c] text-white text-xs font-bold rounded-xl hover:bg-[#a40017]">
+              Upload CSV
+              <input
+                type="file"
+                accept=".csv"
+                className="hidden"
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  const text = await file.text();
+                  const rows = text.split('\n').slice(1).filter(r => r.trim());
+                  const cols = rows.map(r => {
+                    const [name, price, category, description, stock, isVeg] = r.split(',').map(c => c.trim());
+                    return { name, price, category, description, stock, is_veg: isVeg === 'veg' };
+                  });
+                  const table = TABLE_MAP[vendorKey];
+                  const vendorId = selectedVendorId;
+                  let imported = 0;
+                  for (const c of cols) {
+                    if (!c.name || !c.price) continue;
+                    const payload: any = {
+                      vendor_id: vendorId,
+                      name: c.name,
+                      price: parseFloat(c.price),
+                      category: c.category || categories[0],
+                      image_url: null,
+                    };
+                    if (vendorKey === 'food') {
+                      payload.description = c.description || '';
+                      payload.available = true;
+                      payload.is_veg = c.is_veg;
+                      payload.stock = parseInt(c.stock || '0', 10) || 0;
+                    }
+                    if (vendorKey === 'grocery' || vendorKey === 'pharmacy') {
+                      payload.stock = parseInt(c.stock || '0', 10) || 0;
+                    }
+                    const { error } = await supabase.from(table).insert(payload);
+                    if (!error) imported++;
+                  }
+                  alert(`Imported ${imported} of ${rows.length} items`);
+                  loadItems();
+                  e.target.value = '';
+                }}
+              />
+            </label>
+            <a href="#" onClick={(e) => {
+              e.preventDefault();
+              const blob = new Blob([['name,price,category,description,stock,isVeg', 'Butter Chicken,350,Main Course,Creamy tomato gravy,50,veg', 'Naan,40,Breads,Tandoor baked,100,veg'].join('\n')], { type: 'text/csv' });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url; a.download = 'menu_template.csv'; a.click();
+              URL.revokeObjectURL(url);
+            }} className="text-[10px] text-[#ba001c] font-semibold mt-2 hover:underline">Download template</a>
+          </div>
+        </div>
+      )}
+
       {/* Items Table */}
       <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
         {loading ? (
@@ -439,7 +522,7 @@ export default function PartnerMenuPage() {
                 {vendorKey === "food" && (
                   <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Type</th>
                 )}
-                {(vendorKey === "grocery" || vendorKey === "pharmacy") && (
+                {(vendorKey === "food" || vendorKey === "grocery" || vendorKey === "pharmacy") && (
                   <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Stock</th>
                 )}
                 {vendorKey === "pharmacy" && (
@@ -496,7 +579,7 @@ export default function PartnerMenuPage() {
                       </span>
                     </td>
                   )}
-                  {(vendorKey === "grocery" || vendorKey === "pharmacy") && (
+                  {(vendorKey === "food" || vendorKey === "grocery" || vendorKey === "pharmacy") && (
                     <td className="p-4">
                       <div className="flex items-center gap-2">
                         {'stock' in item && (
@@ -636,6 +719,19 @@ export default function PartnerMenuPage() {
                   />
                 </div>
               )}
+              {(vendorKey === "food") && (
+                <div>
+                  <label className="text-sm font-semibold text-slate-700">Stock Quantity</label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={newItem.stock}
+                    onChange={(e) => setNewItem({ ...newItem, stock: e.target.value })}
+                    placeholder="e.g., 50"
+                    className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]"
+                  />
+                </div>
+              )}
               {vendorKey === "food" && (
                 <div>
                   <label className="text-sm font-semibold text-slate-700">Type</label>
@@ -753,7 +849,7 @@ export default function PartnerMenuPage() {
                   />
                 </div>
               )}
-              {(vendorKey === "grocery" || vendorKey === "pharmacy") && (
+              {(vendorKey === "food" || vendorKey === "grocery" || vendorKey === "pharmacy") && (
                 <div>
                   <label className="text-sm font-semibold text-slate-700">Stock Quantity</label>
                   <input
