@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createAdminClient } from "@/lib/supabase/server";
+import { createAdminClient, createClient } from "@/lib/supabase/server";
 
 interface Order {
   id: string;
@@ -52,6 +52,17 @@ function calculateRiderScore(rider: Rider, order: Order): number {
 
 export async function POST(request: NextRequest) {
   const supabaseAdmin = createAdminClient();
+
+  // Verify the user is authenticated and is an admin
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
+  if (!profile || profile.role !== "admin") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
 
   try {
     const { order_id, rider_id, force_assign = false } = await request.json();
