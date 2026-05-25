@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useServiceSettingsStore } from "@/lib/store/serviceSettingsStore";
 import ServiceUnavailable from "@/components/ServiceUnavailable";
@@ -16,6 +17,7 @@ import { useLocationStore } from "@/lib/store/locationStore";
 import EmptyState from "@/components/EmptyState";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
+import { StaggerContainer, StaggerItem, PressScale, CartBounce } from "@/components/ui/AnimationWrappers";
 
 const supabase = createClient();
 
@@ -234,33 +236,40 @@ function AddToCartButton({
 
   if (qty === 0) {
     return (
-      <button
+      <motion.button
         onClick={handleAdd}
-        className={`px-4 py-1.5 bg-primary text-white text-xs font-bold rounded-full hover:bg-primary-dim active:scale-95 transition-all ${
-          bouncing ? "animate-bounce shadow-lg shadow-primary/40" : ""
-        }`}
+        whileTap={{ scale: 0.9 }}
+        animate={bouncing ? { scale: [1, 1.15, 0.95, 1.05, 1] } : { scale: 1 }}
+        transition={{ duration: 0.4 }}
+        className="px-4 py-1.5 bg-primary text-white text-xs font-bold rounded-full hover:bg-primary-dim shadow-sm"
       >
         Add +
-      </button>
+      </motion.button>
     );
   }
 
   return (
-      <div className={`flex items-center gap-1.5 bg-primary rounded-full px-2 py-1 transition-all ${bouncing ? "scale-125 shadow-lg shadow-primary/40" : ""}`}>
-      <button
+    <motion.div
+      animate={bouncing ? { scale: [1, 1.2, 0.95, 1.05, 1] } : { scale: 1 }}
+      transition={{ duration: 0.4 }}
+      className="flex items-center gap-1.5 bg-primary rounded-full px-2 py-1 shadow-md"
+    >
+      <motion.button
         onClick={() => updateQuantity(item.id, qty - 1)}
-        className="text-white font-bold w-5 h-5 flex items-center justify-center active:scale-75 transition-transform"
+        whileTap={{ scale: 0.75 }}
+        className="text-white font-bold w-5 h-5 flex items-center justify-center"
       >
         −
-      </button>
+      </motion.button>
       <span className="text-white font-bold text-xs min-w-[16px] text-center">{qty}</span>
-      <button
+      <motion.button
         onClick={handleAdd}
-        className="text-white font-bold w-5 h-5 flex items-center justify-center active:scale-125 transition-transform"
+        whileTap={{ scale: 1.25 }}
+        className="text-white font-bold w-5 h-5 flex items-center justify-center"
       >
         +
-      </button>
-    </div>
+      </motion.button>
+    </motion.div>
   );
 }
 
@@ -281,18 +290,32 @@ function CartFloater() {
   
   if (items.length === 0) return null;
   return (
-    <div className="fixed bottom-6 left-4 right-4 z-50">
+    <motion.div
+      initial={{ y: 100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ type: "spring", stiffness: 300, damping: 25, delay: 0.5 }}
+      className="fixed bottom-6 left-4 right-4 z-50"
+    >
       <Link
         href="/app/cart"
-        className="flex items-center justify-between bg-primary text-white px-5 py-4 rounded-2xl shadow-2xl shadow-primary/40 active:scale-[0.98] transition-transform"
+        className="flex items-center justify-between bg-primary text-white px-5 py-4 rounded-2xl shadow-2xl shadow-primary/40"
       >
         <div className="flex items-center gap-3">
-          <div className={`relative ${showAnimation ? "animate-bounce-sm" : ""}`}>
-            <span className="bg-surface-container-lowest text-primary font-black text-xs px-2 py-0.5 rounded-full">
+          <div className="relative">
+            <motion.span
+              animate={showAnimation ? { scale: [1, 1.3, 1] } : { scale: 1 }}
+              transition={{ duration: 0.4 }}
+              className="bg-surface-container-lowest text-primary font-black text-xs px-2 py-0.5 rounded-full inline-block"
+            >
               {totalItems()}
-            </span>
+            </motion.span>
             {showAnimation && (
-              <span className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-ping" />
+              <motion.span
+                initial={{ scale: 1, opacity: 1 }}
+                animate={{ scale: 2, opacity: 0 }}
+                transition={{ duration: 0.5 }}
+                className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full"
+              />
             )}
           </div>
           <span className="font-bold">View Cart</span>
@@ -302,7 +325,7 @@ function CartFloater() {
           <span className="material-symbols-outlined text-white/80">arrow_forward</span>
         </div>
       </Link>
-    </div>
+    </motion.div>
   );
 }
 
@@ -442,12 +465,12 @@ export default function FoodPage() {
       )}
       <header className="bg-surface-container-lowest px-6 py-4 sticky top-0 z-10 shadow-sm">
         <div className="flex items-center justify-between mb-4">
-          <Link href="/app/explore" className="w-10 h-10 bg-surface-container rounded-full flex items-center justify-center">
-            <span className="material-symbols-outlined">arrow_back</span>
+          <Link href="/app/explore" aria-label="Back to explore" className="w-10 h-10 bg-surface-container rounded-full flex items-center justify-center">
+            <span className="material-symbols-outlined" aria-hidden="true">arrow_back</span>
           </Link>
           <h1 className="text-xl font-black text-on-surface">Food Delivery</h1>
-          <Link href="/app/cart" className="w-10 h-10 bg-surface-container rounded-full flex items-center justify-center relative">
-            <span className="material-symbols-outlined">shopping_cart</span>
+          <Link href="/app/cart" aria-label="View cart" className="w-10 h-10 bg-surface-container rounded-full flex items-center justify-center relative">
+            <span className="material-symbols-outlined" aria-hidden="true">shopping_cart</span>
           </Link>
         </div>
       </header>
@@ -539,12 +562,12 @@ export default function FoodPage() {
         ) : filteredRestaurants.length === 0 ? (
           <EmptyState icon="🍽️" title="No restaurants found" description="Try adjusting your filters or search query." actionLabel="Show All" onAction={() => setVegFilter("all")} />
         ) : (
-          filteredRestaurants.map((restaurant, index) => (
+          <StaggerContainer className="space-y-4">
+          {filteredRestaurants.map((restaurant, index) => (
+            <StaggerItem key={restaurant.id}>
             <Link
-              key={restaurant.id}
               href={`/app/food/${restaurant.id}`}
-              className="block bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm animate-reveal-up card-lift active:scale-[0.98] transition-transform"
-              style={{ animationDelay: `${Math.min(index * 60, 400)}ms` }}
+              className="block bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm card-lift active:scale-[0.98] transition-transform"
             >
               <div className="flex">
                 <div className="w-32 h-32 flex-shrink-0 overflow-hidden bg-surface-container relative">
@@ -588,7 +611,9 @@ export default function FoodPage() {
                 </div>
               </div>
             </Link>
-          ))
+            </StaggerItem>
+          ))}
+          </StaggerContainer>
         )}
       </main>
       <CartFloater />

@@ -23,7 +23,7 @@ export default function BottomNavBar() {
   }, []);
 
   return (
-    <nav
+    <nav aria-label="Main navigation"
       className="fixed bottom-0 left-0 right-0 z-50 bg-surface-container-lowest/95 backdrop-blur-xl shadow-[0px_-4px_20px_rgba(0,0,0,0.08)] md:hidden border-t border-outline-variant"
       style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
     >

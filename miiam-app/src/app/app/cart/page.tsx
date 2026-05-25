@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useCartStore } from "@/lib/store/cartStore";
 import { EmptyCart } from "@/components/ui/EmptyStates";
 import Link from "next/link";
@@ -9,6 +10,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
+import { StaggerContainer, StaggerItem } from "@/components/ui/AnimationWrappers";
 
 const supabase = createClient();
 const POINTS_TO_RUPEE = 0.1;
@@ -165,8 +167,10 @@ export default function CartPage() {
                   </div>
                 </div>
                 <div className="space-y-3 relative z-10">
+                  <StaggerContainer staggerDelay={0.03}>
                   {vendor.items.map((item) => (
-                    <div key={item.menu_item_id} className="flex items-center gap-3 bg-surface-container-lowest p-3 rounded-xl shadow-sm">
+                    <StaggerItem key={item.menu_item_id}>
+                    <div className="flex items-center gap-3 bg-surface-container-lowest p-3 rounded-xl shadow-sm">
                       {/* Thumbnail */}
                       <div className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-surface-container">
                         {item.image_url ? (
@@ -188,16 +192,18 @@ export default function CartPage() {
                         <div className="flex items-center bg-surface-container rounded-full">
                           <button
                             onClick={() => updateQuantity(item.menu_item_id, item.quantity - 1)}
+                            aria-label={`Decrease quantity of ${item.name}`}
                             className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-surface-container-lowest transition-colors"
                           >
-                            <span className="material-symbols-outlined text-sm">remove</span>
+                            <span className="material-symbols-outlined text-sm" aria-hidden="true">remove</span>
                           </button>
-                          <span className="px-2 font-bold text-sm">{item.quantity}</span>
+                          <span className="px-2 font-bold text-sm" aria-live="polite" aria-atomic="true">{item.quantity}</span>
                           <button
                             onClick={() => updateQuantity(item.menu_item_id, item.quantity + 1)}
+                            aria-label={`Increase quantity of ${item.name}`}
                             className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-surface-container-lowest transition-colors"
                           >
-                            <span className="material-symbols-outlined text-sm">add</span>
+                            <span className="material-symbols-outlined text-sm" aria-hidden="true">add</span>
                           </button>
                         </div>
                         <button
@@ -208,7 +214,9 @@ export default function CartPage() {
                         </button>
                       </div>
                     </div>
+                    </StaggerItem>
                   ))}
+                  </StaggerContainer>
                 </div>
                 <div className="mt-4 flex justify-between items-center text-xs border-t border-outline-variant/20 pt-3">
                   <span className="text-on-surface-variant">Subtotal ({vendor.name})</span>

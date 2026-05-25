@@ -2,10 +2,12 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import PullToRefresh from "@/components/PullToRefresh";
 import QuickActionsFAB from "@/components/QuickActionsFAB";
 import BlurImage from "@/components/BlurImage";
 import { useCartStore } from "@/lib/store/cartStore";
+import { StaggerContainer, StaggerItem, FadeIn } from "@/components/ui/AnimationWrappers";
 
 const categories = [
   { id: "all", icon: "apps", label: "All" },
@@ -155,9 +157,10 @@ export default function ExplorePage() {
               {/* Cart with animated badge */}
               <Link 
                 href="/app/cart" 
+                aria-label={`Cart (${totalItems()} items)`}
                 className={`relative p-2 bg-surface-container-high rounded-full hover:bg-surface-container-highest transition-colors ${cartBounce ? "animate-bounce-sm" : ""}`}
               >
-                <span className="material-symbols-outlined text-2xl text-on-surface-variant">shopping_cart</span>
+                <span className="material-symbols-outlined text-2xl text-on-surface-variant" aria-hidden="true">shopping_cart</span>
                 {totalItems() > 0 && (
                   <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center animate-bounce-in">
                     {totalItems()}
@@ -165,8 +168,8 @@ export default function ExplorePage() {
                 )}
               </Link>
               {/* Notifications */}
-              <Link href="/app/notifications" className="p-2 bg-surface-container-high rounded-full hover:bg-surface-container-highest transition-colors relative">
-                <span className="material-symbols-outlined text-2xl text-on-surface-variant">notifications</span>
+              <Link href="/app/notifications" aria-label="Notifications" className="p-2 bg-surface-container-high rounded-full hover:bg-surface-container-highest transition-colors relative">
+                <span className="material-symbols-outlined text-2xl text-on-surface-variant" aria-hidden="true">notifications</span>
                 <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse" />
               </Link>
             </div>
@@ -328,15 +331,14 @@ export default function ExplorePage() {
               </button>
             </div>
           ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <StaggerContainer className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {filteredServices.map((feature, i) => (
+              <StaggerItem key={feature.id}>
               <Link 
-                key={feature.id} 
                 href={`/app/${feature.id}`}
-                className={`bg-surface-container-lowest border border-outline-variant/10 rounded-2xl p-5 shadow-sm hover:shadow-lg transition-all group card-lift animate-pop-in ${
+                className={`bg-surface-container-lowest border border-outline-variant/10 rounded-2xl p-5 shadow-sm hover:shadow-lg transition-all group card-lift ${
                   activeCategory !== "all" && activeCategory !== feature.id ? "opacity-40 scale-95" : ""
                 }`}
-                style={{ animationDelay: `${i * 80}ms` }}
               >
                 <div className={`w-14 h-14 rounded-2xl ${colorMap[feature.id]} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
                   <span className="material-symbols-outlined text-2xl">{feature.icon}</span>
@@ -356,20 +358,21 @@ export default function ExplorePage() {
                   {feature.id === "pest" && "Cockroach & Pest Control"}
                 </p>
               </Link>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
           )}
         </section>
 
         {/* Collections */}
         <section>
           <h2 className="text-lg font-black text-on-surface mb-4">Featured Collections</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <StaggerContainer className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" staggerDelay={0.08}>
             {collections.map((collection, i) => (
+              <StaggerItem key={collection.id}>
               <div 
                 key={collection.id}
-                className="relative rounded-2xl overflow-hidden h-40 group card-lift animate-pop-in"
-                style={{ animationDelay: `${i * 100}ms` }}
+                className="relative rounded-2xl overflow-hidden h-40 group card-lift"
               >
                 <BlurImage 
                   src={collection.image} 
@@ -385,11 +388,13 @@ export default function ExplorePage() {
                   <p className="text-xs text-white/70">{collection.count} places</p>
                 </div>
               </div>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         </section>
 
         {/* Become a Partner CTA */}
+        <FadeIn>
         <div className="bg-gradient-to-r from-slate-800 to-slate-900 rounded-2xl p-6 text-white">
           <div className="flex items-center gap-4 mb-4">
             <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center">
@@ -405,8 +410,10 @@ export default function ExplorePage() {
             Register Your Business
           </button>
         </div>
+        </FadeIn>
 
         {/* Download App CTA */}
+        <FadeIn delay={0.1}>
         <div className="bg-primary rounded-2xl p-6 text-white text-center">
           <h3 className="font-black text-2xl mb-2">Download MIIAM App</h3>
           <p className="text-sm text-white/80 mb-4">Get exclusive deals and faster ordering</p>
@@ -421,6 +428,7 @@ export default function ExplorePage() {
             </button>
           </div>
         </div>
+        </FadeIn>
         </main>
       </PullToRefresh>
       

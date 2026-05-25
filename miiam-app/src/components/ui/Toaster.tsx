@@ -1,14 +1,30 @@
 "use client";
 
+import { useEffect } from "react";
 import { useToastStore } from "@/lib/store/toastStore";
+import { VisuallyHidden } from "@/lib/accessibility";
 
 export default function Toaster() {
   const { toasts, removeToast } = useToastStore();
 
-  if (toasts.length === 0) return null;
+  useEffect(() => {
+    if (toasts.length > 0) {
+      const lastToast = toasts[toasts.length - 1];
+      const announcement = document.createElement("div");
+      announcement.setAttribute("role", "status");
+      announcement.setAttribute("aria-live", "polite");
+      announcement.setAttribute("aria-atomic", "true");
+      announcement.className = "sr-only";
+      announcement.textContent = `${lastToast.type}: ${lastToast.message}`;
+      document.body.appendChild(announcement);
+      setTimeout(() => announcement.remove(), 1000);
+    }
+  }, [toasts]);
+
+  if (toasts.length === 0) return <div role="status" aria-live="polite" aria-atomic="true" className="sr-only" />;
 
   return (
-    <div className="fixed bottom-24 left-4 right-4 md:bottom-6 md:left-auto md:right-6 md:max-w-sm z-[9999] flex flex-col gap-2 pointer-events-none">
+    <div className="fixed bottom-24 left-4 right-4 md:bottom-6 md:left-auto md:right-6 md:max-w-sm z-[9999] flex flex-col gap-2 pointer-events-none" role="log" aria-label="Notifications">
       {toasts.map((toast) => (
         <div
           key={toast.id}
@@ -25,7 +41,7 @@ export default function Toaster() {
             toast.type === "error" ? "text-red-500" :
             toast.type === "warning" ? "text-amber-500" :
             "text-primary"
-          }`}>
+          }`} aria-hidden="true">
             {toast.type === "success" ? "check_circle" :
              toast.type === "error" ? "error" :
              toast.type === "warning" ? "warning" :

@@ -8,6 +8,7 @@ import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistratio
 import { AnalyticsTracker } from "@/lib/analytics";
 import SplashScreen from "@/components/SplashScreen";
 import OfflineBanner from "@/components/OfflineBanner";
+import { SkipLink } from "@/lib/accessibility";
 
 export const metadata: Metadata = {
   title: "MIIAM — Food & Services App",
@@ -72,6 +73,7 @@ export default function RootLayout({
         />
       </head>
       <body>
+        <SkipLink href="#main-content">Skip to main content</SkipLink>
         <noscript>
           <div style={{ padding: "2rem", textAlign: "center", fontFamily: "sans-serif" }}>
             <h1 style={{ fontSize: "1.5rem", marginBottom: "1rem" }}>JavaScript Required</h1>
@@ -84,7 +86,9 @@ export default function RootLayout({
           <ServiceWorkerRegistration />
           <AnalyticsTracker />
           <ErrorBoundary>
-            <PageTransition>{children}</PageTransition>
+            <div id="main-content">
+              <PageTransition>{children}</PageTransition>
+            </div>
           </ErrorBoundary>
           <Toaster />
         </ThemeProvider>

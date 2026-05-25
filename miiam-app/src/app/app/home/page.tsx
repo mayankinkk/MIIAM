@@ -308,17 +308,17 @@ export default function HomePage() {
               <h1 className="text-2xl font-black text-on-background capitalize">{userName}</h1>
             </div>
             <button 
+              aria-label={`Notifications${unreadCount > 0 ? `, ${unreadCount} unread` : ''}`}
               onClick={async () => { 
                 setShowNotifications(!showNotifications);
                 if (unreadCount > 0 && user) {
                   setUnreadCount(0);
-                  // Mark as read in background
                   supabase.from("notifications").update({ read: true }).eq("user_id", user.id).eq("read", false).then();
                 }
               }}
               className="relative w-10 h-10 bg-surface-container-high hover:bg-surface-container-highest transition-colors rounded-full flex items-center justify-center"
             >
-              <span className="material-symbols-outlined text-primary">notifications</span>
+              <span className="material-symbols-outlined text-primary" aria-hidden="true">notifications</span>
               {unreadCount > 0 && (
                 <span className="absolute top-0 right-0 w-4 h-4 bg-red-500 rounded-full border-2 border-surface-container text-[10px] text-white font-bold flex items-center justify-center">
                   {unreadCount}
@@ -394,8 +394,8 @@ export default function HomePage() {
                     <p className="text-xs text-on-surface-variant">{activeOrder.items}</p>
                   </div>
                 </div>
-                <button onClick={() => setOrderBubbleExpanded(false)} className="text-gray-400">
-                  <span className="material-symbols-outlined">close</span>
+                <button onClick={() => setOrderBubbleExpanded(false)} aria-label="Close order details" className="text-gray-400">
+                  <span className="material-symbols-outlined" aria-hidden="true">close</span>
                 </button>
               </div>
               
@@ -693,12 +693,12 @@ export default function HomePage() {
 
       {/* Location Modal */}
       {showLocationModal && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end md:items-center justify-center animate-fade-in">
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end md:items-center justify-center animate-fade-in" role="dialog" aria-modal="true" aria-labelledby="location-modal-title">
           <div className="bg-surface-container w-full md:w-96 rounded-t-3xl md:rounded-3xl p-6 border-t border-x border-outline-variant/10 md:border animate-in slide-in-from-bottom duration-300">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-black text-on-surface">Enter Delivery PIN Code</h2>
-              <button onClick={() => setShowLocationModal(false)} className="w-8 h-8 bg-surface-container-high rounded-full flex items-center justify-center">
-                <span className="material-symbols-outlined text-on-surface-variant">close</span>
+              <h2 id="location-modal-title" className="text-xl font-black text-on-surface">Enter Delivery PIN Code</h2>
+              <button onClick={() => setShowLocationModal(false)} aria-label="Close location modal" className="w-8 h-8 bg-surface-container-high rounded-full flex items-center justify-center">
+                <span className="material-symbols-outlined text-on-surface-variant" aria-hidden="true">close</span>
               </button>
             </div>
 
@@ -768,7 +768,7 @@ export default function HomePage() {
 
       {/* Notifications Dropdown */}
       {showNotifications && (
-        <div className="fixed inset-0 z-50" onClick={() => setShowNotifications(false)}>
+        <div className="fixed inset-0 z-50" onClick={() => setShowNotifications(false)} role="dialog" aria-modal="true" aria-labelledby="notifications-title">
           <div className="absolute inset-0 bg-black/30" />
           <div 
             className="absolute right-0 top-0 h-full w-full max-w-md bg-surface-container-lowest border-l border-outline-variant/10 shadow-2xl animate-in slide-in-from-right duration-300"
@@ -776,24 +776,25 @@ export default function HomePage() {
           >
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-outline-variant/10">
-              <h2 className="text-xl font-black text-on-surface">Notifications</h2>
+              <h2 id="notifications-title" className="text-xl font-black text-on-surface">Notifications</h2>
               <button 
                 onClick={() => setShowNotifications(false)}
+                aria-label="Close notifications"
                 className="w-8 h-8 bg-surface-container-high rounded-full flex items-center justify-center"
               >
-                <span className="material-symbols-outlined text-on-surface-variant">close</span>
+                <span className="material-symbols-outlined text-on-surface-variant" aria-hidden="true">close</span>
               </button>
             </div>
 
             {/* Tabs */}
-            <div className="flex border-b border-outline-variant/10">
-              <button className="flex-1 py-3 text-sm font-bold text-primary border-b-2 border-primary">
+            <div className="flex border-b border-outline-variant/10" role="tablist" aria-label="Notification categories">
+              <button role="tab" aria-selected="true" className="flex-1 py-3 text-sm font-bold text-primary border-b-2 border-primary">
                 All
               </button>
-              <button className="flex-1 py-3 text-sm font-bold text-gray-400">
+              <button role="tab" aria-selected="false" className="flex-1 py-3 text-sm font-bold text-gray-400">
                 Orders
               </button>
-              <button className="flex-1 py-3 text-sm font-bold text-gray-400">
+              <button role="tab" aria-selected="false" className="flex-1 py-3 text-sm font-bold text-gray-400">
                 Offers
               </button>
             </div>
@@ -821,7 +822,7 @@ export default function HomePage() {
                       </div>
                       <p className="text-xs text-on-surface-variant mt-1">{notif.body || notif.message}</p>
                       {notif.type === "offer" && (
-                        <button className="mt-2 text-xs font-bold text-primary">
+                        <button className="mt-2 text-xs font-bold text-primary" aria-label={`Apply offer: ${notif.title}`}>
                           Apply Now →
                         </button>
                       )}
