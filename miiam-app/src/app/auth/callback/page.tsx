@@ -1,13 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-export default function AuthCallback() {
+function CallbackContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const supabase = createClient();
   const [loading, setLoading] = useState(true);
+
+  const redirectTo = searchParams?.get("redirect") || "/app/explore";
 
   useEffect(() => {
     async function handleCallback() {
@@ -46,7 +49,7 @@ export default function AuthCallback() {
           } else if (!existingProfile?.is_profile_complete) {
             window.location.href = "/auth/profile-setup";
           } else {
-            window.location.href = "/app/explore";
+            window.location.href = redirectTo;
           }
         } else {
           router.push("/auth/login");
@@ -60,7 +63,7 @@ export default function AuthCallback() {
     }
 
     handleCallback();
-  }, [router, supabase]);
+  }, []);
 
   if (loading) {
     return (
@@ -74,4 +77,12 @@ export default function AuthCallback() {
   }
 
   return null;
+}
+
+export default function AuthCallback() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-[#fff4f4]"><div className="w-8 h-8 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin" /></div>}>
+      <CallbackContent />
+    </Suspense>
+  );
 }

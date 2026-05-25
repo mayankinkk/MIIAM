@@ -181,7 +181,7 @@ function ProfileSetupContent() {
         }
       }
 
-      window.location.href = "/app/explore";
+      window.location.href = searchParams.get("redirect") || "/app/explore";
     } catch (error) {
       console.error("Setup error:", error);
     } finally {

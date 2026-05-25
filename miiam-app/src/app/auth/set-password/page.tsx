@@ -113,7 +113,8 @@ function SetPasswordContent() {
 
       // Session is now established, go to profile setup
       const refParam = referralCode ? `&ref=${encodeURIComponent(referralCode)}` : "";
-      router.push(`/auth/profile-setup?email=${encodeURIComponent(email)}${refParam}`);
+      const redirParam = searchParams.get("redirect") ? `&redirect=${encodeURIComponent(searchParams.get("redirect")!)}` : "";
+      router.push(`/auth/profile-setup?email=${encodeURIComponent(email)}${refParam}${redirParam}`);
     } catch { setError("Something went wrong"); }
     finally { setIsLoading(false); }
   };

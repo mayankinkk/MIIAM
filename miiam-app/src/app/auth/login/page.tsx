@@ -27,7 +27,7 @@ function LoginContent() {
       const supabase = createClient();
       const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
       if (signInError) throw signInError;
-      window.location.href = "/app/explore";
+      window.location.href = searchParams.get("redirect") || "/app/explore";
     } catch (err: any) { 
       setError(err.message || "Something went wrong"); 
     }
@@ -38,7 +38,8 @@ function LoginContent() {
     setIsGoogleLoading(true);
     try {
       const supabase = createClient();
-      const { error } = await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: `${window.location.origin}/app/explore` } });
+      const redirectTo = searchParams.get("redirect") || "/app/explore";
+      const { error } = await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: `${window.location.origin}/auth/callback?redirect=${encodeURIComponent(redirectTo)}` } });
       if (error) throw error;
     } catch (err: any) { 
       setError(err.message || "Something went wrong"); 
