@@ -14,7 +14,7 @@ interface BreadcrumbsProps {
 
 export default function Breadcrumbs({ items, className = "" }: BreadcrumbsProps) {
   return (
-    <nav aria-label="Breadcrumbs" className={`hidden px-6 py-2.5 text-xs text-slate-500 font-medium flex items-center gap-2 bg-white border-b border-slate-100 ${className}`}>
+    <nav aria-label="Breadcrumbs" className={`px-6 py-2.5 text-xs text-slate-500 font-medium flex items-center gap-2 bg-white border-b border-slate-100 ${className}`}>
       {items.map((item, i) => (
         <span key={i} className="flex items-center gap-2">
           {i > 0 && <span className="text-slate-300">/</span>}

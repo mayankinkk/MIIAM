@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useHapticStore } from "@/components/HapticFeedback";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -21,6 +22,7 @@ const menuItems = [
 
 export default function EnhancedProfilePage() {
   const supabase = createClient();
+  const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
   const [stats, setStats] = useState({ orders: 0, reviews: 0, saved: 0 });
@@ -67,7 +69,7 @@ export default function EnhancedProfilePage() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    window.location.href = "/";
+    router.push("/");
   };
 
   return (

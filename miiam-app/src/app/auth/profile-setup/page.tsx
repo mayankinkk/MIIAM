@@ -144,7 +144,7 @@ function ProfileSetupContent() {
         }
       }
 
-      window.location.href = searchParams.get("redirect") || "/app/explore";
+      router.push(searchParams.get("redirect") || "/app/explore");
     } catch (error) {
       console.error("Setup error:", error);
     } finally {

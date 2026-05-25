@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useToastStore } from "@/lib/store/toastStore";
@@ -91,6 +92,7 @@ export default function ServiceProductGrid({
   const [sortBy, setSortBy] = useState<string>("default");
   const [inStockOnly, setInStockOnly] = useState(false);
   const [showSort, setShowSort] = useState(false);
+  const router = useRouter();
   const { items, addItem, updateQuantity, totalItems } = useCartStore();
   const { addToast } = useToastStore();
   const locationStore = useLocationStore();
@@ -493,7 +495,7 @@ export default function ServiceProductGrid({
             <h3 className="text-lg font-black text-on-surface">Location Required</h3>
             <p className="text-on-surface-variant text-sm mt-2 max-w-[240px] mx-auto">Please set your delivery location to view available products in your area.</p>
             <button 
-              onClick={() => { window.location.href = "/app/home?selectLocation=true"; }}
+              onClick={() => { router.push("/app/home?selectLocation=true"); }}
               className="mt-6 px-6 py-2.5 bg-[#ba001c] text-white rounded-full font-bold text-sm hover:bg-[#a00018] active:scale-95 transition-all shadow-md"
             >
               Set Location
@@ -507,7 +509,7 @@ export default function ServiceProductGrid({
             <h3 className="text-lg font-black text-on-surface">Not Serviceable</h3>
             <p className="text-on-surface-variant text-sm mt-2 max-w-[240px] mx-auto">{serviceName} delivery is coming soon to your area. Try a nearby pincode!</p>
             <button 
-              onClick={() => { window.location.href = "/app/home?selectLocation=true"; }}
+              onClick={() => { router.push("/app/home?selectLocation=true"); }}
               className="mt-6 px-6 py-2.5 bg-amber-600 text-white rounded-full font-bold text-sm hover:bg-amber-700 active:scale-95 transition-all shadow-md"
             >
               Change Location
@@ -576,7 +578,7 @@ export default function ServiceProductGrid({
             if (!isServiceable) {
               addToast(checkoutUnserviceableMsg, "error");
             } else {
-              window.location.href = "/app/cart";
+              router.push("/app/cart");
             }
           }}
           className={`fixed bottom-6 left-4 right-4 z-50 flex items-center justify-between text-white px-5 py-4 rounded-2xl shadow-2xl active:scale-[0.98] transition-transform animate-slide-reveal ${

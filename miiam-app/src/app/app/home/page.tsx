@@ -192,8 +192,8 @@ export default function HomePage() {
     setLocation(displayName);
     locationStore.setLocation({
       pincode: pin,
-      city: city || null,
-      state: state || null,
+      city: city || undefined,
+      state: state || undefined,
       displayAddress: displayName,
     });
     setIsLoadingLocation(false);

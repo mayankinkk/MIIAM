@@ -952,7 +952,7 @@ export default function AdminVendorsPage() {
                       <input
                         type="number"
                         value={editForm.deliveryCharge}
-                        onChange={(e) => setEditForm({ ...editForm, deliveryCharge: Number(e.target.value) })}
+                        onChange={(e) => setEditForm({ ...editForm, deliveryCharge: e.target.value })}
                         className="w-full p-3 pl-7 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
                       />
                     </div>

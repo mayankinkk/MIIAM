@@ -147,7 +147,7 @@ export default function RiderDashboard() {
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) {
-          window.location.href = "/rider/login";
+          router.push("/rider/login");
           return;
         }
         setCurrentUserId(user.id);

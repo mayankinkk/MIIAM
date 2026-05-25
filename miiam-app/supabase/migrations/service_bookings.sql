@@ -1,7 +1,7 @@
 -- Service Bookings Table
 CREATE TABLE IF NOT EXISTS service_bookings (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID REFERENCES users(id) ON DELETE SET NULL,
+  user_id UUID REFERENCES profiles(id) ON DELETE SET NULL,
   service_type VARCHAR(50) NOT NULL,
   sub_service VARCHAR(100),
   user_name VARCHAR(100) NOT NULL,
@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS service_bookings (
   scheduled_time VARCHAR(20) NOT NULL,
   status VARCHAR(30) DEFAULT 'pending' CHECK (status IN ('pending', 'confirmed', 'in_progress', 'completed', 'cancelled')),
   amount DECIMAL(10, 2) NOT NULL,
-  provider_id UUID REFERENCES users(id) ON DELETE SET NULL,
+  provider_id UUID REFERENCES profiles(id) ON DELETE SET NULL,
   provider_name VARCHAR(100),
   notes TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS service_bookings (
 -- Service Providers Table
 CREATE TABLE IF NOT EXISTS service_providers (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
   service_type VARCHAR(50) NOT NULL,
   is_available BOOLEAN DEFAULT true,
   rating DECIMAL(3, 2) DEFAULT 0,
@@ -78,7 +78,7 @@ CREATE POLICY "Users can view own bookings" ON service_bookings
 
 CREATE POLICY "Admin can view all bookings" ON service_bookings
   FOR SELECT USING (
-    EXISTS (SELECT 1 FROM users WHERE id = auth.uid() AND role = 'admin')
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
   );
 
 CREATE POLICY "Users can create bookings" ON service_bookings
@@ -86,7 +86,7 @@ CREATE POLICY "Users can create bookings" ON service_bookings
 
 CREATE POLICY "Admin can update bookings" ON service_bookings
   FOR UPDATE USING (
-    EXISTS (SELECT 1 FROM users WHERE id = auth.uid() AND role = 'admin')
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
   );
 
 -- Service Providers Policies
@@ -95,7 +95,7 @@ CREATE POLICY "Public can view available providers" ON service_providers
 
 CREATE POLICY "Admin can manage providers" ON service_providers
   FOR ALL USING (
-    EXISTS (SELECT 1 FROM users WHERE id = auth.uid() AND role = 'admin')
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
   );
 
 -- Insert default service categories

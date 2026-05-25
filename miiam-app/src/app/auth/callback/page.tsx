@@ -45,11 +45,11 @@ function CallbackContent() {
           }
 
           if (existingProfile?.role === "admin") {
-            window.location.href = "/admin";
+            router.push("/admin");
           } else if (!existingProfile?.is_profile_complete) {
-            window.location.href = "/auth/profile-setup";
+            router.push("/auth/profile-setup");
           } else {
-            window.location.href = redirectTo;
+            router.push(redirectTo);
           }
         } else {
           router.push("/auth/login");

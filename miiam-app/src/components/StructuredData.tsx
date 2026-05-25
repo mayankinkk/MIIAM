@@ -5,13 +5,15 @@ interface OrganizationSchemaProps {
   logo?: string;
   url?: string;
   description?: string;
+  telephone?: string;
 }
 
 export function OrganizationSchema({
   name = "MIIAM",
-  logo = "https://miiam.app/icons/icon-512.svg",
+  logo = "/icons/icon-512.svg",
   url = "https://miiam.app",
   description = "Food delivery and professional home services",
+  telephone,
 }: OrganizationSchemaProps) {
   const schema = {
     "@context": "https://schema.org",
@@ -25,12 +27,14 @@ export function OrganizationSchema({
       "https://twitter.com/miiam",
       "https://facebook.com/miiam",
     ],
-    contactPoint: {
-      "@type": "ContactPoint",
-      telephone: "+91-9876543210",
-      contactType: "customer service",
-      availableHours: "Mo-Su 08:00-22:00",
-    },
+    ...(telephone && {
+      contactPoint: {
+        "@type": "ContactPoint",
+        telephone,
+        contactType: "customer service",
+        availableHours: "Mo-Su 08:00-22:00",
+      },
+    }),
   };
 
   return (

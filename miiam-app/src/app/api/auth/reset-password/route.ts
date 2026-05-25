@@ -27,7 +27,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid verification token" }, { status: 403 });
     }
 
-    const expectedHmac = crypto.createHmac("sha256", process.env.SUPABASE_SERVICE_ROLE_KEY || "fallback-secret").update(`${cleanEmail}:${randomToken}`).digest("hex");
+    const secret = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!secret) {
+      return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
+    }
+    const expectedHmac = crypto.createHmac("sha256", secret).update(`${cleanEmail}:${randomToken}`).digest("hex");
     if (hmac !== expectedHmac) {
       return NextResponse.json({ error: "Verification mismatch" }, { status: 403 });
     }

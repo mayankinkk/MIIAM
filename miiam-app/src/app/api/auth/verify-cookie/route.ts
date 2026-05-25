@@ -17,8 +17,12 @@ export async function POST(request: NextRequest) {
     const cookieStore = await cookies();
     
     // Use a random token + HMAC signature to prevent forgery
+    const secret = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!secret) {
+      return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
+    }
     const randomToken = crypto.randomUUID();
-    const hmac = crypto.createHmac("sha256", process.env.SUPABASE_SERVICE_ROLE_KEY || "fallback-secret").update(`${email}:${randomToken}`).digest("hex");
+    const hmac = crypto.createHmac("sha256", secret).update(`${email}:${randomToken}`).digest("hex");
     const verifiedToken = `${randomToken}.${hmac}`;
     
     cookieStore.set("password_reset_verified", verifiedToken, {

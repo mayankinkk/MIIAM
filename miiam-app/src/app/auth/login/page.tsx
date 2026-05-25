@@ -27,7 +27,7 @@ function LoginContent() {
       const supabase = createClient();
       const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
       if (signInError) throw signInError;
-      window.location.href = searchParams.get("redirect") || "/app/explore";
+      router.push(searchParams.get("redirect") || "/app/explore");
     } catch (err: any) { 
       setError(err.message || "Something went wrong"); 
     }

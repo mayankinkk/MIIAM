@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense, useEffect } from "react";
+import { useState, Suspense, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
@@ -18,7 +18,7 @@ function EmailVerifyContent() {
   const [resendTimer, setResendTimer] = useState(0);
   const [resent, setResent] = useState(false);
   
-  const inputRefs: any = [];
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   // Countdown timer for resend
   useEffect(() => {
@@ -33,7 +33,7 @@ function EmailVerifyContent() {
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
-    if (value && index < 5) inputRefs[index + 1]?.focus();
+    if (value && index < 5) inputRefs.current[index + 1]?.focus();
     if (newOtp.every((d) => d) && value) verifyOTP(newOtp.join(""));
   };
 
@@ -97,7 +97,7 @@ function EmailVerifyContent() {
         <div className="w-full max-w-sm">
           <div className="flex justify-center gap-2 mb-6">
             {otp.map((d, i) => (
-              <input key={i} ref={(el: any) => inputRefs[i] = el} type="text" inputMode="numeric" maxLength={1} value={d} onChange={(e) => handleChange(i, e.target.value)}
+              <input key={i} ref={(el) => { inputRefs.current[i] = el; }} type="text" inputMode="numeric" pattern="[0-9]*" maxLength={1} value={d} onChange={(e) => handleChange(i, e.target.value)}
                 className={`w-12 h-14 text-center text-xl font-bold rounded-xl border-2 ${error ? "border-red-300 bg-red-50" : d ? "border-[#ba001c] bg-[#ba001c]/5" : "border-slate-200 bg-white"} focus:border-[#ba001c] outline-none`} />
             ))}
           </div>

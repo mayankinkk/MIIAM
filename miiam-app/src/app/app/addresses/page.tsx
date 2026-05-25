@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
@@ -167,6 +168,7 @@ const defaultAddresses = [
 
 export default function AddressBookPage() {
   const supabase = createClient();
+  const router = useRouter();
   const [addresses, setAddresses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isClient, setIsClient] = useState(false);
@@ -273,7 +275,7 @@ export default function AddressBookPage() {
   const handleSelectAddress = (address: typeof addresses[0]) => {
     const fullAddress = `${address.address}, ${address.city}, ${address.state} - ${address.pincode}`;
     localStorage.setItem('miiam_selected_address', JSON.stringify({ address: fullAddress }));
-    window.location.href = '/app/checkout';
+    router.push('/app/checkout');
   };
 
   const handleDelete = async (addressId: string) => {
