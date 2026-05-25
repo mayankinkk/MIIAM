@@ -314,12 +314,8 @@ export default function PartnerMenuPage() {
   };
 
   const handleStockChange = async (item: AnyItem, delta: number) => {
-    let newStock = 0;
-    if (vendorKey === "grocery") {
-      newStock = (item as GroceryItem).stock + delta;
-    } else if (vendorKey === "pharmacy") {
-      newStock = (item as PharmacyItem).stock + delta;
-    }
+    const currentStock = (item as any).stock ?? 0;
+    const newStock = currentStock + delta;
     if (newStock < 0) return;
     try {
       const { error } = await supabase.from(table).update({ stock: newStock }).eq("id", item.id);
@@ -559,11 +555,8 @@ export default function PartnerMenuPage() {
                       </div>
                       <div>
                         <p className="font-bold text-slate-800">{item.name}</p>
-                        {(item as MenuItem).description && (
-                          <p className="text-xs text-slate-400 mt-0.5">{(item as MenuItem).description}</p>
-                        )}
-                        {(item as FlowerItem).description && (
-                          <p className="text-xs text-slate-400 mt-0.5">{(item as FlowerItem).description}</p>
+                        {'description' in item && (item as any).description && (
+                          <p className="text-xs text-slate-400 mt-0.5">{(item as any).description}</p>
                         )}
                       </div>
                     </div>

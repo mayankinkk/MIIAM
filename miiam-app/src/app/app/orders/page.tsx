@@ -247,7 +247,7 @@ export default function OrdersPage() {
                       {reordering === order.id ? "Adding..." : "Reorder"}
                     </button>
                     <Link
-                      href={`/app/orders/${order.id}/review`}
+                      href={`/app/orders/${order.id}/rating`}
                       className="flex-1 bg-white border border-outline-variant/30 text-on-surface py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:border-primary"
                     >
                       <span className="material-symbols-outlined text-sm">star</span>

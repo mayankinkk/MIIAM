@@ -97,7 +97,7 @@ export default function CartPage() {
               name: item.menu_items.name,
               price: item.unit_price,
               image_url: item.menu_items.image_url,
-            }, item.quantity);
+            }, item.quantity, true);
           }
         }
       }

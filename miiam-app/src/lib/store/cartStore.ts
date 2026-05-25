@@ -18,7 +18,7 @@ export interface CartItem {
 
 interface CartStore {
   items: CartItem[];
-  addItem: (item: Omit<CartItem, "quantity">, quantity?: number) => void;
+  addItem: (item: Omit<CartItem, "quantity">, quantity?: number, suppressToast?: boolean) => void;
   removeItem: (menu_item_id: string) => void;
   updateQuantity: (menu_item_id: string, quantity: number) => void;
   clearCart: () => void;
@@ -32,7 +32,7 @@ export const useCartStore = create<CartStore>()(
     (set, get) => ({
       items: [],
 
-      addItem: (item, quantity = 1) => {
+      addItem: (item, quantity = 1, suppressToast = false) => {
         const existing = (get().items || []).find(
           (i) => i.menu_item_id === item.menu_item_id
         );
@@ -48,10 +48,11 @@ export const useCartStore = create<CartStore>()(
           set({ items: [...(get().items || []), { ...item, quantity }] });
         }
         
-        // Show success toast (using dynamic import to avoid circular dependency issues)
-        import('./toastStore').then(({ useToastStore }) => {
-          useToastStore.getState().addToast(`Added ${item.name} to cart`, "success");
-        });
+        if (!suppressToast) {
+          import('./toastStore').then(({ useToastStore }) => {
+            useToastStore.getState().addToast(`Added ${item.name} to cart`, "success");
+          });
+        }
       },
 
       removeItem: (menu_item_id) => {

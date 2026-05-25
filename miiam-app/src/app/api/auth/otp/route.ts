@@ -61,12 +61,17 @@ export async function POST(request: NextRequest) {
     const otp = generateOTP();
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString();
 
-    // Store OTP in database (upsert to handle duplicates)
+    // Store OTP in database (delete existing first, then insert)
+    const { error: deleteError } = await supabase
+      .from("phone_otp_verification")
+      .delete()
+      .eq("phone_number", cleanPhone)
+      .eq("purpose", purpose || "signup");
+
     const { error: insertError } = await supabase
       .from("phone_otp_verification")
-      .upsert(
-        { phone_number: cleanPhone, otp_code: otp, purpose: purpose || "signup", expires_at: expiresAt },
-        { onConflict: "phone_number" }
+      .insert(
+        { phone_number: cleanPhone, otp_code: otp, purpose: purpose || "signup", expires_at: expiresAt }
       );
 
     if (insertError) {

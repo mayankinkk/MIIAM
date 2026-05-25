@@ -148,7 +148,7 @@ export default function HomePage() {
     return () => {
       if (channelRef.current) supabase.removeChannel(channelRef.current);
     };
-  }, [locationStore.pincode, locationStore.city, supabase]);
+  }, [locationStore.pincode, locationStore.city]);
 
   const [greeting, setGreeting] = useState("Hello");
   const [timeIcon, setTimeIcon] = useState("☀️");
