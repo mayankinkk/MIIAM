@@ -11,6 +11,7 @@ const menuGroups = [
       { name: "Dashboard", href: "/admin", icon: "dashboard" },
       { name: "Analytics", href: "/admin/analytics", icon: "analytics" },
       { name: "Insights", href: "/admin/analytics/insights", icon: "insights" },
+      { name: "Customer Insights", href: "/admin/insights", icon: "group_work" },
       { name: "Users", href: "/admin/users", icon: "group" },
       { name: "Orders", href: "/admin/orders", icon: "receipt_long" },
       { name: "Applications", href: "/admin/applications", icon: "work" },
