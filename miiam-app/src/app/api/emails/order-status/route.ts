@@ -35,9 +35,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
 
-    const user = order.users as { email: string; full_name: string } | null;
-    const vendor = order.vendors as { name: string } | null;
-    const rider = order.riders as { name: string; phone: string } | null;
+    const users = (order.users as { email: string; full_name: string }[]) || [];
+    const vendors = (order.vendors as { name: string }[]) || [];
+    const riders = (order.riders as { name: string; phone: string }[]) || [];
+    const user = users[0] || null;
+    const vendor = vendors[0] || null;
+    const rider = riders[0] || null;
 
     if (!user?.email) {
       return NextResponse.json({ error: "User email not found" }, { status: 400 });
