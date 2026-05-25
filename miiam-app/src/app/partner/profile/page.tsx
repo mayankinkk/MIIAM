@@ -28,6 +28,8 @@ interface VendorProfile {
   fssai_number: string;
   pan_number: string;
   type: string;
+  cancellation_policy: string;
+  delivery_zones: string[];
 }
 
 export default function VendorProfilePage() {
@@ -385,44 +387,90 @@ export default function VendorProfilePage() {
 
       {/* Delivery Settings */}
       {activeTab === "delivery" && (
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="text-sm font-semibold text-slate-700">Min Order Amount (₹)</label>
-              <input
-                type="number"
-                value={form.min_order_amount || 0}
-                onChange={(e) => setForm({ ...form, min_order_amount: parseFloat(e.target.value) || 0 })}
-                className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]"
-              />
+        <div className="space-y-6">
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-semibold text-slate-700">Min Order Amount (₹)</label>
+                <input
+                  type="number"
+                  value={form.min_order_amount || 0}
+                  onChange={(e) => setForm({ ...form, min_order_amount: parseFloat(e.target.value) || 0 })}
+                  className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-semibold text-slate-700">Delivery Charge (₹)</label>
+                <input
+                  type="number"
+                  value={form.delivery_charge || 0}
+                  onChange={(e) => setForm({ ...form, delivery_charge: parseFloat(e.target.value) || 0 })}
+                  className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-semibold text-slate-700">Min Delivery Time (min)</label>
+                <input
+                  type="number"
+                  value={form.delivery_time_min || 0}
+                  onChange={(e) => setForm({ ...form, delivery_time_min: parseInt(e.target.value) || 0 })}
+                  className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-semibold text-slate-700">Max Delivery Time (min)</label>
+                <input
+                  type="number"
+                  value={form.delivery_time_max || 0}
+                  onChange={(e) => setForm({ ...form, delivery_time_max: parseInt(e.target.value) || 0 })}
+                  className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]"
+                />
+              </div>
             </div>
-            <div>
-              <label className="text-sm font-semibold text-slate-700">Delivery Charge (₹)</label>
-              <input
-                type="number"
-                value={form.delivery_charge || 0}
-                onChange={(e) => setForm({ ...form, delivery_charge: parseFloat(e.target.value) || 0 })}
-                className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]"
-              />
+          </div>
+
+          {/* Delivery Zones */}
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-[#ba001c]">location_on</span>
+              <h3 className="font-extrabold text-slate-900 text-lg">Delivery Zones</h3>
             </div>
-            <div>
-              <label className="text-sm font-semibold text-slate-700">Min Delivery Time (min)</label>
-              <input
-                type="number"
-                value={form.delivery_time_min || 0}
-                onChange={(e) => setForm({ ...form, delivery_time_min: parseInt(e.target.value) || 0 })}
-                className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]"
-              />
+            <p className="text-sm text-slate-500">Enter pincodes you deliver to (comma separated)</p>
+            <input
+              type="text"
+              value={(form.delivery_zones || []).join(", ")}
+              onChange={(e) => setForm({ ...form, delivery_zones: e.target.value.split(",").map(s => s.trim()).filter(Boolean) })}
+              placeholder="e.g., 110001, 110002, 110003, 110004"
+              className="w-full px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c] font-mono"
+            />
+            {(form.delivery_zones || []).length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {form.delivery_zones!.map((z, i) => (
+                  <span key={i} className="px-3 py-1 bg-slate-100 rounded-full text-xs font-bold text-slate-700">
+                    {z}
+                    <button
+                      onClick={() => setForm({ ...form, delivery_zones: form.delivery_zones!.filter((_, j) => j !== i) })}
+                      className="ml-2 text-red-400 hover:text-red-600"
+                    >×</button>
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Cancellation Policy */}
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-[#ba001c]">cancel_schedule_send</span>
+              <h3 className="font-extrabold text-slate-900 text-lg">Cancellation Policy</h3>
             </div>
-            <div>
-              <label className="text-sm font-semibold text-slate-700">Max Delivery Time (min)</label>
-              <input
-                type="number"
-                value={form.delivery_time_max || 0}
-                onChange={(e) => setForm({ ...form, delivery_time_max: parseInt(e.target.value) || 0 })}
-                className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]"
-              />
-            </div>
+            <textarea
+              value={form.cancellation_policy || ""}
+              onChange={(e) => setForm({ ...form, cancellation_policy: e.target.value })}
+              placeholder="e.g., Orders can be cancelled within 5 minutes of placing. Full refund will be issued."
+              rows={4}
+              className="w-full px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c] resize-none text-sm"
+            />
           </div>
         </div>
       )}

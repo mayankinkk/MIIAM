@@ -179,6 +179,24 @@ export default function VendorAnalytics() {
     );
   }
 
+  function exportCSV() {
+    const rows = [["Date", "Orders", "Revenue", "Avg Order Value"]];
+    dailyRevenue.forEach(d => {
+      rows.push([d.date, String(d.orders), String(d.revenue), d.orders > 0 ? String(Math.round(d.revenue / d.orders)) : "0"]);
+    });
+    rows.push([]);
+    rows.push(["Popular Items", "Qty Sold", "Revenue", "Orders"]);
+    popularItems.forEach(i => {
+      rows.push([i.name, String(i.total_qty), String(i.total_revenue), String(i.order_count)]);
+    });
+    const csv = rows.map(r => r.map(c => `"${c.replace(/"/g, '""')}"`).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = `analytics_export_${new Date().toISOString().split("T")[0]}.csv`; a.click();
+    URL.revokeObjectURL(url);
+  }
+
   if (!vendorId) {
     return (
       <div className="p-8 flex flex-col items-center justify-center min-h-[60vh] text-center">
@@ -203,6 +221,9 @@ export default function VendorAnalytics() {
               {p === "week" ? "This Week" : p === "month" ? "This Month" : "All Time"}
             </button>
           ))}
+          <button onClick={exportCSV} className="px-4 py-2 rounded-xl text-sm font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 flex items-center gap-1">
+            <span className="material-symbols-outlined text-base">download</span> Export
+          </button>
         </div>
       </div>
 
