@@ -1,5 +1,3 @@
-import { createClient } from "@/lib/supabase/client";
-
 const statusMessages: Record<string, { title: string; body: (orderId: string) => string }> = {
   accepted: {
     title: "Order Accepted! 🎉",
@@ -27,11 +25,14 @@ const statusMessages: Record<string, { title: string; body: (orderId: string) =>
   },
 };
 
-export async function sendOrderNotification(orderId: string, status: string, userId: string) {
+export async function sendOrderNotification(
+  orderId: string,
+  status: string,
+  userId: string,
+  supabase: any
+) {
   const message = statusMessages[status];
   if (!message) return;
-
-  const supabase = createClient();
 
   // Save to notifications table
   await supabase.from("notifications").insert({
@@ -48,7 +49,7 @@ export async function sendOrderNotification(orderId: string, status: string, use
   if (typeof window !== "undefined" && Notification.permission === "granted") {
     new Notification(message.title, {
       body: message.body(orderId),
-      icon: "/icon.png",
+      icon: "/icons/icon-192.svg",
       tag: orderId,
     });
   }
@@ -65,7 +66,7 @@ export function showLocalNotification(title: string, body: string) {
   if (typeof window !== "undefined" && Notification.permission === "granted") {
     new Notification(title, {
       body,
-      icon: "/icon.png",
+      icon: "/icons/icon-192.svg",
     });
   }
 }
