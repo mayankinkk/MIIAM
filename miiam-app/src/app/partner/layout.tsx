@@ -9,10 +9,12 @@ import { getVendorForUser } from "@/lib/vendor";
 const navLinks = [
   { href: "/partner/dashboard", label: "Dashboard", icon: "dashboard" },
   { href: "/partner", label: "Live POS", icon: "point_of_sale" },
+  { href: "/partner/kot", label: "KOT", icon: "receipt" },
   { href: "/partner/orders", label: "Orders", icon: "receipt_long" },
   { href: "/partner/menu", label: "Menu & Inventory", icon: "restaurant_menu" },
   { href: "/partner/analytics", label: "Analytics", icon: "analytics" },
   { href: "/partner/reviews", label: "Reviews", icon: "reviews" },
+  { href: "/partner/chat", label: "Chat Support", icon: "chat" },
   { href: "/partner/wallet", label: "Wallet & Payouts", icon: "account_balance_wallet" },
   { href: "/partner/promotions", label: "Promotions", icon: "local_offer" },
   { href: "/partner/profile", label: "Store Settings", icon: "store" },

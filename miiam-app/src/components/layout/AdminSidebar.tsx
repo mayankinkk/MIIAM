@@ -79,6 +79,7 @@ const menuGroups = [
     items: [
       { name: "Coupons", href: "/admin/coupons", icon: "confirmation_number" },
       { name: "Promotions", href: "/admin/promotions", icon: "local_offer" },
+      { name: "Sponsored Listings", href: "/admin/sponsored-listings", icon: "campaign" },
     ],
   },
   {
