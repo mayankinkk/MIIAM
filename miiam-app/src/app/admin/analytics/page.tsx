@@ -8,11 +8,13 @@ import { createClient } from "@/lib/supabase/client";
 interface AnalyticsOrder {
   id: string;
   user_id?: string;
+  vendor_id?: string;
   status: string;
   total_amount: number;
   delivery_fee: number;
   discount_amount: number;
   placed_at: string;
+  delivered_at?: string;
   vendor?: { name: string };
   rider?: { name: string };
 }
@@ -715,7 +717,7 @@ export default function AdvancedAnalytics() {
             <div className="p-6 bg-white border border-slate-100 rounded-2xl">
               <p className="text-xs font-bold text-slate-400">Total Earnings</p>
               <p className="text-4xl font-black text-slate-800 mt-2">
-                ₹{riders.reduce((s, r) => s + (r.earnings || 0), 0).toLocaleString()}
+                ₹{riders.reduce((s, r) => s + (r.total_earnings || 0), 0).toLocaleString()}
               </p>
             </div>
           </div>

@@ -27,14 +27,14 @@ export default function RiderLayout({ children }: { children: React.ReactNode })
       }
     }
     loadDarkMode();
-  }, [supabase]);
+  }, []);
 
   useEffect(() => {
     if (isAuthPage) return;
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) router.push("/rider/login");
     });
-  }, [isAuthPage, router, supabase]);
+  }, [isAuthPage, router]);
 
   return (
     <>

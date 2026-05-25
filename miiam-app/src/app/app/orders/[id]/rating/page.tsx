@@ -283,6 +283,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
             hover={hoverRider}
             setHover={setHoverRider}
             setRating={setRiderRating}
+            label={order?.rider?.full_name || "Rider"}
           />
         </section>
 

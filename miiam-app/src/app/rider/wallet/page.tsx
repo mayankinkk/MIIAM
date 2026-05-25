@@ -348,22 +348,6 @@ export default function RiderWalletPage() {
               </div>
             </div>
 
-            {/* Referral Program */}
-            <div className="bg-gradient-to-r from-purple-50 to-indigo-50 p-4 rounded-2xl border border-purple-100">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                  <span className="material-symbols-outlined text-purple-600">group_add</span>
-                </div>
-                <div className="flex-1">
-                  <p className="font-bold text-purple-800">Refer Friends & Earn</p>
-                  <p className="text-xs text-purple-600">₹500 for each friend who joins</p>
-                </div>
-                <button className="px-4 py-2 bg-purple-500 text-white rounded-lg text-sm font-bold">
-                  Refer Now
-                </button>
-              </div>
-            </div>
-
             <h2 className="text-lg font-bold text-[#4d212a]">Recent Transactions</h2>
             
             <div className="space-y-3">

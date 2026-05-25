@@ -10,6 +10,7 @@ import { useLocationStore } from "@/lib/store/locationStore";
 import AddressPickerSheet, { type SelectedAddress } from "@/components/AddressPickerSheet";
 import { RiderTipSelector, TipThankYou } from "@/components/RiderTip";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import { SERVICES_VENDOR_ID } from "@/lib/constants";
 
 interface PromoCode {
   code: string;
@@ -391,7 +392,7 @@ export default function CheckoutPage() {
             </section>
 
             {/* Scheduled Services */}
-            {items.some(i => i.vendor_id === "5e700000-0000-4000-8000-000000000000") && (
+            {items.some(i => i.vendor_id === SERVICES_VENDOR_ID) && (
               <section className="bg-white p-8 rounded-lg shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
                 <div className="flex items-center gap-4 mb-8">
                   <div className="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center text-green-700">
@@ -400,7 +401,7 @@ export default function CheckoutPage() {
                   <h2 className="text-2xl font-bold">Scheduled Services</h2>
                 </div>
                 <div className="space-y-4">
-                  {items.filter(i => i.vendor_id === "5e700000-0000-4000-8000-000000000000").map(item => (
+                  {items.filter(i => i.vendor_id === SERVICES_VENDOR_ID).map(item => (
                     <div key={item.menu_item_id} className="p-4 rounded-lg border border-outline-variant/20 bg-slate-50 flex justify-between items-center">
                       <div>
                         <h3 className="font-bold">{item.name.split(' (')[0]}</h3>
@@ -417,7 +418,7 @@ export default function CheckoutPage() {
             )}
 
             {/* Scheduled Delivery */}
-            {!items.some(i => i.vendor_id === "5e700000-0000-4000-8000-000000000000") && (
+            {!items.some(i => i.vendor_id === SERVICES_VENDOR_ID) && (
               <section className="bg-white p-8 rounded-lg shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
                 <div className="flex items-center gap-4 mb-8">
                   <div className="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center text-amber-700">

@@ -14,9 +14,13 @@ interface Order {
   vendor: string;
   vendorAddress: string;
   vendorPhone: string;
+  vendorLat?: number;
+  vendorLng?: number;
   customer: string;
   customerPhone: string;
   customerAddress: string;
+  customerLat?: number;
+  customerLng?: number;
   landmark: string;
   distance: number;
   distance2: number;
@@ -85,6 +89,7 @@ export default function RiderDashboard() {
   const mapRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<any>(null);
   const riderMarkerRef = useRef<any>(null);
+  const watchIdRef = useRef<number | null>(null);
 
   // Quest & Streak System - loaded from DB
   const [dailyQuests, setDailyQuests] = useState([
@@ -311,6 +316,8 @@ export default function RiderDashboard() {
               vendor: vendorData?.shop_name || vendorData?.name || "Restaurant",
               vendorAddress: vendorData?.address || "Restaurant Address",
               vendorPhone: vendorData?.phone || "+91 99999 99999",
+              vendorLat: vendorData?.lat || undefined,
+              vendorLng: vendorData?.lng || undefined,
               customer: customerName,
               customerPhone: customerPhone,
               customerAddress: dbOrder.delivery_address || "Customer Delivery Location",
@@ -674,13 +681,13 @@ export default function RiderDashboard() {
         { enableHighAccuracy: true, maximumAge: 5000, timeout: 10000 }
       );
 
-      mapRef.current._watchId = watchId;
+      watchIdRef.current = watchId;
     })();
 
     return () => {
       isMounted = false;
-      if (mapRef.current?._watchId != null) {
-        navigator.geolocation.clearWatch(mapRef.current._watchId);
+      if (watchIdRef.current != null) {
+        navigator.geolocation.clearWatch(watchIdRef.current);
       }
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove();

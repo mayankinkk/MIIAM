@@ -26,6 +26,8 @@ interface OrderItem {
 interface Order {
   id: string;
   user_id?: string;
+  rider_id?: string;
+  vendor_id?: string;
   status: string;
   total_amount: number;
   delivery_fee: number;
@@ -33,17 +35,19 @@ interface Order {
   placed_at: string;
   delivered_at?: string;
   customer_collected?: number;
+  customer_name?: string;
+  customer_phone?: string;
   vendor?: {
     name: string;
     address: string;
     phone: string;
+    lat?: number;
+    lng?: number;
   };
   address?: {
     street: string;
     city: string;
   };
-  customer_phone?: string;
-  customer_name?: string;
   items?: OrderItem[];
 }
 

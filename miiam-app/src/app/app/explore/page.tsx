@@ -343,7 +343,7 @@ export default function ExplorePage() {
                 <div className={`w-14 h-14 rounded-2xl ${colorMap[feature.id]} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
                   <span className="material-symbols-outlined text-2xl">{feature.icon}</span>
                 </div>
-                <h3 className="font-bold text-on-surface">{feature.label}</h3>
+                <h3 className="font-bold text-on-surface">{feature.name}</h3>
                 <p className="text-xs text-on-surface-variant mt-1">
                   {feature.id === "food" && "Order from top restaurants"}
                   {feature.id === "grocery" && "Fresh groceries delivered"}

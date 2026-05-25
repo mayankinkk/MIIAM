@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useCartStore } from "@/lib/store/cartStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
+import { SERVICES_VENDOR_ID } from "@/lib/constants";
 
 const servicesData: Record<string, any> = {
   s1: { 
@@ -120,7 +121,7 @@ function ServiceDetailContent() {
       price: service.price,
       image_url: service.image,
       vendor_name: "MIIAM Services",
-      vendor_id: "5e700000-0000-4000-8000-000000000000",
+      vendor_id: SERVICES_VENDOR_ID,
       menu_item_id: service.id,
     }, 1);
     setTimeout(() => {

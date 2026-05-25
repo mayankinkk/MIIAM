@@ -35,6 +35,12 @@ export default function PartnerLayout({
     getVendorForUser().then(setVendor);
   }, []);
 
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) router.push("/auth/login?redirect=/partner");
+    });
+  }, [router, supabase]);
+
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     router.push("/");

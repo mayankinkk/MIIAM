@@ -275,10 +275,6 @@ export default function RiderAccountPage() {
             <span className="text-2xl">🛵</span>
             <span className="text-[10px] font-bold">Vehicle</span>
           </Link>
-          <Link href="/rider/referral" className="bg-white p-3 rounded-xl shadow-sm flex flex-col items-center gap-1">
-            <span className="text-2xl">🎁</span>
-            <span className="text-[10px] font-bold">Refer</span>
-          </Link>
         </div>
 
         {/* Menu */}
@@ -311,11 +307,6 @@ export default function RiderAccountPage() {
           <Link href="/rider/training" className="flex items-center gap-3 p-4 border-b border-slate-100">
             <span className="material-symbols-outlined text-[#0b50d5]">school</span>
             <span className="flex-1 font-bold text-[#4d212a]">Training Center</span>
-            <span className="material-symbols-outlined text-slate-400">chevron_right</span>
-          </Link>
-          <Link href="/rider/referral" className="flex items-center gap-3 p-4 border-b border-slate-100">
-            <span className="material-symbols-outlined text-purple-500">group_add</span>
-            <span className="flex-1 font-bold text-[#4d212a]">Refer & Earn</span>
             <span className="material-symbols-outlined text-slate-400">chevron_right</span>
           </Link>
           <Link href="/rider/incident" className="flex items-center gap-3 p-4 border-b border-slate-100">
