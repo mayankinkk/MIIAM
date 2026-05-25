@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 interface OrderStatusUpdate {
@@ -34,88 +34,72 @@ export function useOrderSubscription({
   const [isConnected, setIsConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const supabase = createClient();
+  const supabaseRef = useRef(createClient());
+  const supabase = supabaseRef.current;
+  const orderStatusRef = useRef(orderStatus);
+  orderStatusRef.current = orderStatus;
+  const onStatusChangeRef = useRef(onStatusChange);
+  onStatusChangeRef.current = onStatusChange;
+  const onRiderLocationChangeRef = useRef(onRiderLocationChange);
+  onRiderLocationChangeRef.current = onRiderLocationChange;
 
   useEffect(() => {
     if (!orderId) return;
 
-    let orderChannel: any = null;
-    let locationChannel: any = null;
+    const orderChannel = supabase
+      .channel(`order:${orderId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "orders",
+          filter: `id=eq.${orderId}`,
+        },
+        (payload: { new: OrderStatusUpdate }) => {
+          const newStatus = payload.new?.status;
+          if (newStatus && newStatus !== orderStatusRef.current) {
+            setOrderStatus(newStatus);
+            onStatusChangeRef.current?.(newStatus);
+          }
+        }
+      )
+      .subscribe((status) => {
+        if (status === "SUBSCRIBED") {
+          setIsConnected(true);
+          setError(null);
+        } else if (status === "CHANNEL_ERROR") {
+          setError("Failed to subscribe to order updates");
+          setIsConnected(false);
+        }
+      });
 
-    const subscribeToOrderUpdates = async () => {
-      try {
-        orderChannel = supabase
-          .channel(`order:${orderId}`)
-          .on(
-            "postgres_changes",
-            {
-              event: "UPDATE",
-              schema: "public",
-              table: "orders",
-              filter: `id=eq.${orderId}`,
-            },
-            (payload: { new: OrderStatusUpdate }) => {
-              const newStatus = payload.new?.status;
-              if (newStatus && newStatus !== orderStatus) {
-                setOrderStatus(newStatus);
-                onStatusChange?.(newStatus);
-              }
-            }
-          )
-          .subscribe((status) => {
-            if (status === "SUBSCRIBED") {
-              setIsConnected(true);
-              setError(null);
-            } else if (status === "CHANNEL_ERROR") {
-              setError("Failed to subscribe to order updates");
-              setIsConnected(false);
-            }
-          });
-      } catch (err) {
-        console.error("Order subscription error:", err);
-        setError("Failed to subscribe to order updates");
-      }
-    };
-
-    const subscribeToRiderLocation = async () => {
-      try {
-        locationChannel = supabase
-          .channel(`rider-location:${orderId}`)
-          .on(
-            "postgres_changes",
-            {
-              event: "INSERT",
-              schema: "public",
-              table: "rider_locations",
-              filter: `order_id=eq.${orderId}`,
-            },
-            (payload: { new: RiderLocationUpdate }) => {
-              const newLocation = payload.new;
-              if (newLocation?.lat && newLocation?.lng) {
-                setRiderLocation({ lat: newLocation.lat, lng: newLocation.lng });
-                onRiderLocationChange?.({ lat: newLocation.lat, lng: newLocation.lng });
-              }
-            }
-          )
-          .subscribe();
-      } catch (err) {
-        console.error("Rider location subscription error:", err);
-      }
-    };
-
-    subscribeToOrderUpdates();
-    subscribeToRiderLocation();
+    const locationChannel = supabase
+      .channel(`rider-location:${orderId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "rider_locations",
+          filter: `order_id=eq.${orderId}`,
+        },
+        (payload: { new: RiderLocationUpdate }) => {
+          const newLocation = payload.new;
+          if (newLocation?.lat && newLocation?.lng) {
+            setRiderLocation({ lat: newLocation.lat, lng: newLocation.lng });
+            onRiderLocationChangeRef.current?.({ lat: newLocation.lat, lng: newLocation.lng });
+          }
+        }
+      )
+      .subscribe();
 
     return () => {
-      if (orderChannel) {
-        supabase.removeChannel(orderChannel);
-      }
-      if (locationChannel) {
-        supabase.removeChannel(locationChannel);
-      }
+      supabase.removeChannel(orderChannel);
+      supabase.removeChannel(locationChannel);
       setIsConnected(false);
     };
-  }, [orderId, supabase, onStatusChange, onRiderLocationChange]);
+  }, [orderId]);
 
   const refreshOrderStatus = useCallback(async () => {
     const { data } = await supabase
@@ -127,7 +111,7 @@ export function useOrderSubscription({
     if (data) {
       setOrderStatus(data.status);
     }
-  }, [orderId, supabase]);
+  }, [orderId]);
 
   return {
     orderStatus,
@@ -140,7 +124,8 @@ export function useOrderSubscription({
 
 export function useRiderLocationSubscription(orderId: string) {
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const supabase = createClient();
+  const supabaseRef = useRef(createClient());
+  const supabase = supabaseRef.current;
 
   useEffect(() => {
     if (!orderId) return;
@@ -166,7 +151,7 @@ export function useRiderLocationSubscription(orderId: string) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [orderId, supabase]);
+  }, [orderId]);
 
   return location;
 }
