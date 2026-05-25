@@ -6,6 +6,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Service role key not configured" }, { status: 500 });
   }
   
+  const supabase = await createClient();
+  const { data: { user: currentUser } } = await supabase.auth.getUser();
+  
   const adminClient = createAdminClient();
   
   const formData = await request.formData();
@@ -22,30 +25,39 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
   }
   
-  const { data: authData, error: authError } = await adminClient.auth.admin.createUser({
-    email,
-    phone,
-    email_confirm: true,
-  });
+  if (currentUser && currentUser.email !== email) {
+    return NextResponse.json(
+      { error: "Logged-in email does not match application email" },
+      { status: 403 }
+    );
+  }
   
-  let userId = "";
+  let userId = currentUser?.id || "";
+  
+  if (!userId) {
+    const { data: authData, error: authError } = await adminClient.auth.admin.createUser({
+      email,
+      phone,
+      email_confirm: true,
+    });
 
-  if (authError) {
-    if (authError.message.toLowerCase().includes("email") || authError.message.toLowerCase().includes("phone") || authError.code === "email_exists" || authError.code === "phone_exists") {
-      const { data: users } = await adminClient.auth.admin.listUsers();
-      const existingUser = users.users.find(u => u.email === email || u.phone === phone);
-      if (existingUser) {
-        userId = existingUser.id;
+    if (authError) {
+      if (authError.message.toLowerCase().includes("email") || authError.message.toLowerCase().includes("phone") || authError.code === "email_exists" || authError.code === "phone_exists") {
+        const { data: users } = await adminClient.auth.admin.listUsers();
+        const existingUser = users.users.find(u => u.email === email || u.phone === phone);
+        if (existingUser) {
+          userId = existingUser.id;
+        } else {
+          return NextResponse.json({ error: "User already exists" }, { status: 400 });
+        }
       } else {
-        return NextResponse.json({ error: "User already exists" }, { status: 400 });
+        return NextResponse.json({ error: authError.message || "Failed to create user" }, { status: 400 });
       }
+    } else if (authData.user) {
+      userId = authData.user.id;
     } else {
-      return NextResponse.json({ error: authError.message || "Failed to create user" }, { status: 400 });
+      return NextResponse.json({ error: "Failed to create user" }, { status: 400 });
     }
-  } else if (authData.user) {
-    userId = authData.user.id;
-  } else {
-    return NextResponse.json({ error: "Failed to create user" }, { status: 400 });
   }
   
   let profilePhotoUrl = "";
