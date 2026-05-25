@@ -106,14 +106,17 @@ export default function CustomizationModal({ item, vendor_id, vendor_name, vendo
   const handleCustomizationToggle = (group: string, optionLabel: string) => {
     const isRadio = ["Spice Level", "Size", "Bread Type", "Rice Type"].includes(group);
     
-    setCustomizations((prev) => ({
-      ...prev,
-      [group]: prev[group].map((opt) =>
-        isRadio
-          ? { ...opt, selected: opt.label === optionLabel }
-          : { ...opt, selected: opt.label === optionLabel ? !opt.selected : opt.selected }
-      ),
-    }));
+    setCustomizations((prev) => {
+      const groupOptions = prev[group] || (commonCustomizations[group]?.options.map((o) => ({ ...o, selected: isRadio ? o.label === optionLabel : false })) || []);
+      return {
+        ...prev,
+        [group]: groupOptions.map((opt) =>
+          isRadio
+            ? { ...opt, selected: opt.label === optionLabel }
+            : { ...opt, selected: opt.label === optionLabel ? !opt.selected : opt.selected }
+        ),
+      };
+    });
   };
 
   const calculateExtraPrice = () => {
