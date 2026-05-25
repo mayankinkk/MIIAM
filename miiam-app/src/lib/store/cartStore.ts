@@ -66,11 +66,11 @@ export const useCartStore = create<CartStore>()(
       },
 
       updateQuantity: (menu_item_id, quantity) => {
-        const clamped = Math.min(Math.max(1, quantity), 99);
-        if (clamped <= 0) {
+        if (quantity <= 0) {
           get().removeItem(menu_item_id);
           return;
         }
+        const clamped = Math.min(quantity, 99);
         set({
           items: (get().items || []).map((i) =>
             i.menu_item_id === menu_item_id ? { ...i, quantity: clamped } : i

@@ -55,9 +55,6 @@ export default function CheckoutPage() {
   const [deliveryAddress, setDeliveryAddress] = useState<SelectedAddress | null>(null);
   const [savedAddresses, setSavedAddresses] = useState<SelectedAddress[]>([]);
   const [showAddressPicker, setShowAddressPicker] = useState(false);
-  const [loyaltyPoints, setLoyaltyPoints] = useState(0);
-  const [useLoyaltyPoints, setUseLoyaltyPoints] = useState(false);
-  const [loyaltyPointsToRedeem, setLoyaltyPointsToRedeem] = useState(0);
   const router = useRouter();
   const { items, totalPrice, clearCart } = useCartStore();
   const supabase = createClient();
@@ -75,11 +72,6 @@ export default function CheckoutPage() {
     // Read URL params
     try {
       const params = new URLSearchParams(window.location.search);
-      const redeemPts = Number(params.get("redeemPts"));
-      if (redeemPts > 0) {
-        setUseLoyaltyPoints(true);
-        setLoyaltyPointsToRedeem(redeemPts);
-      }
     } catch (e) {}
 
     const saved = localStorage.getItem('miiam_selected_address');
@@ -98,19 +90,6 @@ export default function CheckoutPage() {
       if (data) setPromoCodes(data);
     }
     loadPromoCodes();
-
-    async function loadLoyaltyPoints() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("total_loyalty_points")
-          .eq("id", user.id)
-          .single();
-        if (profile) setLoyaltyPoints(profile.total_loyalty_points || 0);
-      }
-    }
-    loadLoyaltyPoints();
   }, []);
 
   const subtotal = totalPrice();
@@ -119,12 +98,11 @@ export default function CheckoutPage() {
       ? +(subtotal * (promoApplied.discount / 100)).toFixed(2)
       : promoApplied.discount
     : 0;
-  const loyaltyDiscount = useLoyaltyPoints ? +(loyaltyPointsToRedeem * 0.1).toFixed(2) : 0;
-  const baseAmountForTax = Math.max(0, subtotal - discount - loyaltyDiscount);
+  const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean)));
+  const baseAmountForTax = Math.max(0, subtotal - discount);
   const tax = +(baseAmountForTax * 0.05).toFixed(2);
   const deliveryFee = 5.99;
-  const grand = Math.max(0, +(subtotal - discount - loyaltyDiscount + tax + deliveryFee + tipAmount).toFixed(2));
-  const maxRedeemable = Math.min(loyaltyPoints, Math.floor((subtotal - discount + deliveryFee + tipAmount) / 0.1));
+  const grand = Math.max(0, +(subtotal - discount + tax + deliveryFee + tipAmount).toFixed(2));
 
   const handleApplyPromo = () => {
     const code = promoCode.toUpperCase().trim();
@@ -282,24 +260,6 @@ export default function CheckoutPage() {
           } catch (emailErr) {
             console.warn("Failed to send confirmation email:", emailErr);
           }
-        }
-      }
-
-      // Redeem loyalty points if selected
-      if (useLoyaltyPoints && loyaltyPointsToRedeem > 0 && user) {
-        try {
-          await fetch("/api/loyalty/redeem", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              user_id: user.id,
-              points: loyaltyPointsToRedeem,
-              order_id: firstOrderId,
-            }),
-          });
-        } catch (e) {
-          console.error("[checkout] Loyalty redemption error:", e);
-          addToast("Failed to redeem loyalty points. Please try again.", "error");
         }
       }
 
@@ -659,64 +619,6 @@ export default function CheckoutPage() {
                     </div>
                   )}
                 </div>
-                
-                {/* Loyalty Points Redemption */}
-                {loyaltyPoints > 0 && (
-                  <div className="py-3 border-t border-dashed border-outline-variant/30">
-                    <div className="flex items-center justify-between mb-2">
-                      <p className="text-sm font-bold text-on-surface">💎 Use Loyalty Points</p>
-                      <span className="text-xs text-on-surface-variant">{loyaltyPoints} points available</span>
-                    </div>
-                    <div className="mt-3 bg-white p-4 rounded-xl border border-slate-200 shadow-inner">
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="text-xs font-semibold text-slate-500">Slide to adjust</span>
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => {
-                              setUseLoyaltyPoints(false);
-                              setLoyaltyPointsToRedeem(0);
-                            }}
-                            className="text-[10px] font-bold text-slate-500 px-2 py-1 rounded bg-slate-100 hover:bg-slate-200"
-                          >
-                            Clear
-                          </button>
-                          <button
-                            onClick={() => {
-                              setUseLoyaltyPoints(true);
-                              setLoyaltyPointsToRedeem(maxRedeemable);
-                            }}
-                            className="text-[10px] font-bold text-[#453900] px-2 py-1 rounded bg-[#ffd709] hover:bg-tertiary-dim"
-                          >
-                            Use Max
-                          </button>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <input
-                          type="range"
-                          min={0}
-                          max={maxRedeemable}
-                          step={10}
-                          value={loyaltyPointsToRedeem}
-                          onChange={(e) => {
-                            const val = Number(e.target.value);
-                            setLoyaltyPointsToRedeem(val);
-                            setUseLoyaltyPoints(val > 0);
-                          }}
-                          className="w-full accent-primary h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer"
-                        />
-                        <div className="shrink-0 w-16 text-right font-bold text-on-surface bg-surface-container-low px-2 py-1 rounded-md">
-                          {loyaltyPointsToRedeem}
-                        </div>
-                      </div>
-                    </div>
-                    {useLoyaltyPoints && loyaltyPointsToRedeem > 0 && (
-                      <p className="text-xs text-green-600 mt-2 font-medium">
-                        ✓ Using {loyaltyPointsToRedeem} points = ₹{(loyaltyPointsToRedeem * 0.1).toFixed(2)} off
-                      </p>
-                    )}
-                  </div>
-                )}
                 
                 <div className="pt-4 border-t border-outline-variant/30 flex justify-between items-end">
                   <span className="text-lg font-bold">Total Amount</span>

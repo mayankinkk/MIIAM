@@ -23,7 +23,11 @@ vi.mock("@/lib/supabase/server", () => ({
     rpc: vi.fn().mockResolvedValue({ data: null, error: null }),
     storage: { from: () => ({ upload: vi.fn(), getPublicUrl: vi.fn() }) },
   })),
-  createClient: vi.fn(),
+  createClient: vi.fn(() => ({
+    auth: {
+      getUser: vi.fn().mockResolvedValue({ data: { user: { id: "test-user" } }, error: null }),
+    },
+  })),
 }));
 
 function mockRequest(method: string, url: string, body?: unknown) {
@@ -41,13 +45,13 @@ describe("Addresses API", () => {
     vi.clearAllMocks();
   });
 
-  it("GET /api/addresses returns 400 without user_id", async () => {
+  it("GET /api/addresses returns addresses when authenticated", async () => {
     const { GET } = await import("../addresses/route");
     const req = mockRequest("GET", "http://localhost:3000/api/addresses");
     const res = await GET(req);
     const body = await res.json();
-    expect(res.status).toBe(400);
-    expect(body.error).toBe("user_id required");
+    expect(res.status).toBe(200);
+    expect(body).toHaveProperty("addresses");
   });
 
   it("POST /api/addresses returns 400 with missing fields", async () => {
