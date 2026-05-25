@@ -13,36 +13,15 @@ import BlurImage from "@/components/BlurImage";
 import { StaggerContainer, StaggerItem } from "@/components/ui/AnimationWrappers";
 
 const supabase = createClient();
-const POINTS_TO_RUPEE = 0.1;
 
 export default function CartPage() {
   const { items, updateQuantity, removeItem, totalPrice, subtotalByVendor, clearCart, addItem } = useCartStore();
-  const [pointsToRedeem, setPointsToRedeem] = useState(0);
-  const [pointsBalance, setPointsBalance] = useState(0);
-  const [loyaltyLoading, setLoyaltyLoading] = useState(true);
   const [pastOrders, setPastOrders] = useState<any[]>([]);
   const [showReorderModal, setShowReorderModal] = useState(false);
   const [reordering, setReordering] = useState(false);
   const [loadingOrders, setLoadingOrders] = useState(false);
   const router = useRouter();
   const { addToast } = useToastStore();
-
-  useEffect(() => {
-    async function loadLoyaltyPoints() {
-      setLoyaltyLoading(true);
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("total_loyalty_points")
-          .eq("id", user.id)
-          .single();
-        if (profile) setPointsBalance(profile.total_loyalty_points || 0);
-      }
-      setLoyaltyLoading(false);
-    }
-    loadLoyaltyPoints();
-  }, []);
 
   const vendors = Array.from(new Set(items.map((i) => i.vendor_id))).map((vid) => ({
     id: vid,
@@ -54,9 +33,7 @@ export default function CartPage() {
 
   const total = totalPrice();
   const deliveryFee = total > 0 ? 5.99 : 0;
-  const pointsDiscount = +(pointsToRedeem * POINTS_TO_RUPEE).toFixed(2);
-  const grandTotal = Math.max(0, total + deliveryFee - pointsDiscount);
-  const maxRedeemable = Math.min(pointsBalance, Math.floor((total + deliveryFee) / POINTS_TO_RUPEE));
+  const grandTotal = Math.max(0, total + deliveryFee);
 
   const fetchPastOrders = async () => {
     setLoadingOrders(true);
@@ -251,52 +228,8 @@ export default function CartPage() {
                     <p className="text-xs uppercase tracking-widest font-bold text-on-surface">Total Balance</p>
                     <p className="text-3xl font-extrabold text-primary tracking-tighter">₹{grandTotal.toFixed(2)}</p>
                   </div>
-                  <p className="text-[10px] bg-[#ffd709] text-[#453900] px-2 py-1 rounded-full font-bold">
-                    EARN {Math.floor(grandTotal)} PTS
-                  </p>
                 </div>
               </div>
-
-              {/* Loyalty Points Redemption */}
-              {loyaltyLoading ? (
-                <div className="mt-4 bg-gradient-to-r from-[#ffd709]/20 to-[#ffe9a0]/20 rounded-xl p-4 border border-[#ffd709]/40">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="h-4 w-40 bg-[#ffd709]/40 rounded animate-pulse" />
-                    <div className="h-5 w-16 bg-[#ffd709]/40 rounded-full animate-pulse" />
-                  </div>
-                  <div className="h-3 w-56 bg-[#ffd709]/30 rounded mb-3 animate-pulse" />
-                  <div className="h-2 w-full bg-[#ffd709]/30 rounded-full animate-pulse" />
-                </div>
-              ) : (
-              <div className="mt-4 bg-gradient-to-r from-[#ffd709]/20 to-[#ffe9a0]/20 rounded-xl p-4 border border-[#ffd709]/40">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-1.5">
-                    <span className="material-symbols-outlined text-[#b08800] text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>stars</span>
-                    <span className="font-extrabold text-[#453900] text-sm">Redeem Loyalty Points</span>
-                  </div>
-                  <span className="text-[10px] font-bold bg-[#ffd709] text-[#453900] px-2 py-0.5 rounded-full">
-                    {pointsBalance} pts
-                  </span>
-                </div>
-                <p className="text-[11px] text-[#665500] mb-3">1 pt = ₹{POINTS_TO_RUPEE} &nbsp;|&nbsp; Using {pointsToRedeem} pts = saves ₹{pointsDiscount.toFixed(2)}</p>
-                <div className="flex items-center gap-3">
-                  <input
-                    type="range"
-                    min={0}
-                    max={maxRedeemable}
-                    step={10}
-                    value={pointsToRedeem}
-                    onChange={(e) => setPointsToRedeem(Number(e.target.value))}
-                    className="flex-1 accent-[#b08800] h-2 rounded-full cursor-pointer"
-                  />
-                  <span className="text-sm font-extrabold text-[#453900] w-14 text-right">{pointsToRedeem} pts</span>
-                </div>
-                <div className="flex justify-between mt-1.5 text-[10px] font-semibold text-[#665500]">
-                  <span>0</span>
-                  <span>{maxRedeemable} pts (max)</span>
-                </div>
-              </div>
-              )}
             </section>
           </div>
         )}
@@ -349,12 +282,9 @@ export default function CartPage() {
             <div className="flex-1">
               <p className="text-[10px] text-slate-600 font-semibold uppercase tracking-wider">Total</p>
               <p className="text-2xl font-extrabold text-primary">₹{grandTotal.toFixed(2)}</p>
-              {pointsDiscount > 0 && (
-                <p className="text-[10px] text-secondary font-semibold">Saving ₹{pointsDiscount.toFixed(2)}</p>
-              )}
             </div>
             <Link
-              href={`/app/checkout${pointsToRedeem > 0 ? `?redeemPts=${pointsToRedeem}` : ""}`}
+              href="/app/checkout"
               className="px-8 py-3.5 bg-gradient-to-r from-primary to-primary-container text-white rounded-xl font-bold text-base shadow-lg shadow-primary/20 hover:scale-[1.01] active:scale-95 transition-all flex items-center gap-2 whitespace-nowrap"
             >
               Proceed

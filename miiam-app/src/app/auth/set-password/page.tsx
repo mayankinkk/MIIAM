@@ -10,7 +10,6 @@ function SetPasswordContent() {
   const supabase = createClient();
   const email = searchParams.get("email") || "";
   const isPasswordReset = searchParams.get("password_reset") === "true";
-  const referralCode = searchParams.get("ref") || "";
   
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -112,9 +111,8 @@ function SetPasswordContent() {
       }
 
       // Session is now established, go to profile setup
-      const refParam = referralCode ? `&ref=${encodeURIComponent(referralCode)}` : "";
       const redirParam = searchParams.get("redirect") ? `&redirect=${encodeURIComponent(searchParams.get("redirect")!)}` : "";
-      router.push(`/auth/profile-setup?email=${encodeURIComponent(email)}${refParam}${redirParam}`);
+      router.push(`/auth/profile-setup?email=${encodeURIComponent(email)}${redirParam}`);
     } catch { setError("Something went wrong"); }
     finally { setIsLoading(false); }
   };

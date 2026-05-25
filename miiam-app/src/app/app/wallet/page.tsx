@@ -18,7 +18,6 @@ interface WalletTransaction {
 export default function WalletPage() {
   const supabase = createClient();
   const [balance, setBalance] = useState(0);
-  const [points, setPoints] = useState(0);
   const [transactions, setTransactions] = useState<WalletTransaction[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -32,12 +31,8 @@ export default function WalletPage() {
 
     const { data: profile } = await supabase
       .from("profiles")
-      .select("wallet_balance, total_loyalty_points")
+      .select("wallet_balance")
       .single();
-
-    if (profile) {
-      setPoints(profile.total_loyalty_points || 0);
-    }
 
     const { data: orders } = await supabase
       .from("orders")
@@ -108,22 +103,6 @@ export default function WalletPage() {
               </button>
             </div>
           </div>
-        </div>
-
-        {/* Points Card */}
-        <div className="bg-white rounded-2xl p-6 mb-8 flex items-center justify-between shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
-              <span className="material-symbols-outlined text-amber-600">stars</span>
-            </div>
-            <div>
-              <p className="text-xs text-slate-500 font-medium">MIIAM Points</p>
-              <p className="text-2xl font-black text-slate-800">{points}</p>
-            </div>
-          </div>
-          <Link href="/app/referral" className="text-xs font-bold text-primary">
-            Earn More →
-          </Link>
         </div>
 
         {/* Transactions */}

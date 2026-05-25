@@ -13,7 +13,6 @@ const menuItems = [
   { id: "addresses", icon: "location_on", label: "Saved Addresses", sub: "Manage delivery addresses", color: "text-green-500", bg: "bg-green-50" },
   { id: "favorites", icon: "favorite", label: "Favorites", sub: "Your saved items", color: "text-red-500", bg: "bg-red-50" },
   { id: "payment", icon: "payment", label: "Payment Methods", sub: "Cards, UPI, wallets", color: "text-purple-500", bg: "bg-purple-50" },
-  { id: "referral", icon: "card_membership", label: "Refer & Earn", sub: "Share code & earn points", color: "text-primary", bg: "bg-surface-container" },
   { id: "subscription", icon: "workspace_premium", label: "MIIAM+", sub: "Premium membership", color: "text-amber-500", bg: "bg-amber-50", badge: "ACTIVE" },
   { id: "support", icon: "support_agent", label: "Help & Support", sub: "24/7 customer care", color: "text-indigo-500", bg: "bg-indigo-50" },
   { id: "settings", icon: "settings", label: "Settings", sub: "App preferences", color: "text-slate-500", bg: "bg-slate-50" },
@@ -119,23 +118,6 @@ export default function EnhancedProfilePage() {
             <p className="text-[10px] text-white/70 uppercase tracking-wider">Saved</p>
           </div>
         </div>
-
-        {/* Loyalty Points Banner */}
-        <Link href="/app/referral" className="mt-4 bg-gradient-to-r from-[#ffd709] to-[#ffb700] rounded-2xl p-4 flex items-center justify-between block">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-white/30 rounded-xl flex items-center justify-center">
-              <span className="material-symbols-outlined text-amber-800 text-2xl">stars</span>
-            </div>
-            <div>
-              <p className="font-bold text-amber-900">Loyalty Points</p>
-              <p className="text-xs text-amber-800">₹{(profile?.total_loyalty_points || 0) * 0.1} value</p>
-            </div>
-          </div>
-          <div className="text-right">
-            <p className="text-3xl font-black text-amber-900">{profile?.total_loyalty_points || 0}</p>
-            <p className="text-[10px] text-amber-800 font-bold">POINTS</p>
-          </div>
-        </Link>
       </header>
 
       <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Profile' }]} />
