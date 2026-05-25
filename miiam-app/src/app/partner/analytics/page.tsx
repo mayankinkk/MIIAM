@@ -22,20 +22,28 @@ interface HourlyData {
 export default function VendorAnalytics() {
   const supabase = createClient();
   const [vendorId, setVendorId] = useState<string | null>(null);
+  const [vendor, setVendor] = useState<any>(null);
   const [orders, setOrders] = useState<Order[]>([]);
   const [period, setPeriod] = useState<"week" | "month" | "all">("week");
   const [loading, setLoading] = useState(true);
   const [menuItemNames, setMenuItemNames] = useState<Map<string, { name: string; category: string }>>(new Map());
+  const [competitors, setCompetitors] = useState<any[]>([]);
+  const [forecast, setForecast] = useState<any>(null);
 
   useEffect(() => {
     init();
   }, []);
 
   async function init() {
-    const vendor = await getVendorForUser();
-    if (vendor) {
-      setVendorId(vendor.id);
-      await loadOrders(vendor.id);
+    const v = await getVendorForUser();
+    if (v) {
+      setVendor(v);
+      setVendorId(v.id);
+      await Promise.all([
+        loadOrders(v.id),
+        loadCompetitors(v),
+        loadForecast(v.id),
+      ]);
     }
     setLoading(false);
   }
@@ -53,6 +61,58 @@ export default function VendorAnalytics() {
     }
   }
 
+  async function loadCompetitors(v: any) {
+    if (!v.city && !v.pincode) return;
+    const { data } = await supabase
+      .from("vendors")
+      .select("shop_name, type, rating, review_count, delivery_time_min, delivery_time_max, min_order_amount, city, pincode")
+      .neq("id", v.id)
+      .eq("status", "active");
+    if (!data) return;
+
+    const sameCity = data.filter((c: any) => c.city === v.city || c.pincode === v.pincode);
+    const sameType = sameCity.filter((c: any) => c.type === v.type);
+    setCompetitors(sameType.length > 0 ? sameType : sameCity.slice(0, 10));
+  }
+
+  async function loadForecast(vId: string) {
+    const ninetyDaysAgo = new Date(Date.now() - 90 * 86400000).toISOString();
+    const { data } = await supabase
+      .from("orders")
+      .select("placed_at, total_amount")
+      .eq("vendor_id", vId)
+      .eq("status", "delivered")
+      .gte("placed_at", ninetyDaysAgo);
+
+    if (!data || data.length < 5) return;
+
+    const dayOfWeek: Record<number, { count: number; revenue: number }> = {};
+    for (let i = 0; i < 7; i++) dayOfWeek[i] = { count: 0, revenue: 0 };
+    data.forEach((o: any) => {
+      const d = new Date(o.placed_at);
+      const dow = d.getDay();
+      dayOfWeek[dow].count++;
+      dayOfWeek[dow].revenue += o.total_amount || 0;
+    });
+
+    const avgDailyOrders = Object.values(dayOfWeek).reduce((s, d) => s + d.count, 0) / 7;
+    const peakDay = Object.entries(dayOfWeek).sort((a: any, b: any) => b[1].count - a[1].count)[0];
+    const slowDay = Object.entries(dayOfWeek).sort((a: any, b: any) => a[1].count - b[1].count)[0];
+
+    const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    setForecast({
+      avgDailyOrders: Math.round(avgDailyOrders * 10) / 10,
+      peakDay: { name: dayNames[parseInt(peakDay[0])], orders: (peakDay[1] as any).count },
+      slowDay: { name: dayNames[parseInt(slowDay[0])], orders: (slowDay[1] as any).count },
+      projectedWeekly: Math.round(avgDailyOrders * 7),
+      dayOfWeek: Object.entries(dayOfWeek).map(([day, val]: any) => ({
+        day: dayNames[parseInt(day)],
+        orders: val.count,
+        revenue: val.revenue,
+      })),
+    });
+  }
+
   const now = new Date();
   const periodStart = new Date(now);
   if (period === "week") periodStart.setDate(periodStart.getDate() - 7);
@@ -62,12 +122,10 @@ export default function VendorAnalytics() {
   const filteredOrders = orders.filter((o) => new Date(o.placed_at) >= periodStart);
   const deliveredOrders = filteredOrders.filter((o) => o.status === "delivered");
 
-  // Revenue
   const totalRevenue = deliveredOrders.reduce((s, o) => s + o.total_amount, 0);
   const totalOrders = filteredOrders.length;
   const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
 
-  // Revenue chart (daily)
   const dailyRevenue: { date: string; revenue: number; orders: number }[] = [];
   const dateMap = new Map<string, { revenue: number; orders: number }>();
   deliveredOrders.forEach((o) => {
@@ -80,19 +138,12 @@ export default function VendorAnalytics() {
   dateMap.forEach((v, k) => dailyRevenue.push({ date: k, ...v }));
   dailyRevenue.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
-  // Popular items
   const itemMap = new Map<string, MenuItemInfo>();
   deliveredOrders.forEach((o) => {
     o.items?.forEach((item) => {
       const menuItem = menuItemNames.get(item.menu_item_id);
       const name = menuItem?.name || "Unknown";
-      const existing = itemMap.get(name) || {
-        name,
-        total_qty: 0,
-        total_revenue: 0,
-        order_count: 0,
-        category: menuItem?.category || "",
-      };
+      const existing = itemMap.get(name) || { name, total_qty: 0, total_revenue: 0, order_count: 0, category: menuItem?.category || "" };
       existing.total_qty += item.quantity;
       existing.total_revenue += item.unit_price * item.quantity;
       existing.order_count += 1;
@@ -101,7 +152,6 @@ export default function VendorAnalytics() {
   });
   const popularItems = Array.from(itemMap.values()).sort((a, b) => b.total_qty - a.total_qty).slice(0, 10);
 
-  // Peak hours
   const hourMap = new Map<number, { orders: number; revenue: number }>();
   for (let i = 0; i < 24; i++) hourMap.set(i, { orders: 0, revenue: 0 });
   deliveredOrders.forEach((o) => {
@@ -110,29 +160,46 @@ export default function VendorAnalytics() {
     entry.orders += 1;
     entry.revenue += o.total_amount;
   });
-  const peakHours: HourlyData[] = Array.from(hourMap.entries()).map(([hour, data]) => ({
-    hour,
-    ...data,
-  }));
-
+  const peakHours: HourlyData[] = Array.from(hourMap.entries()).map(([hour, data]) => ({ hour, ...data }));
   const maxOrders = Math.max(...peakHours.map((h) => h.orders), 1);
+
+  const avgCompetitorRating = competitors.length
+    ? (competitors.reduce((s: number, c: any) => s + (c.rating || 0), 0) / competitors.length).toFixed(1)
+    : "N/A";
+  const avgCompetitorDeliveryMin = competitors.length
+    ? Math.round(competitors.reduce((s: number, c: any) => s + ((c.delivery_time_min || 0) + (c.delivery_time_max || 30)) / 2, 0) / competitors.length)
+    : 0;
+  const competitorCount = competitors.length;
+
+  if (loading) {
+    return (
+      <div className="p-8 flex items-center justify-center min-h-[60vh]">
+        <div className="text-slate-400 font-medium animate-pulse">Loading analytics...</div>
+      </div>
+    );
+  }
+
+  if (!vendorId) {
+    return (
+      <div className="p-8 flex flex-col items-center justify-center min-h-[60vh] text-center">
+        <span className="material-symbols-outlined text-6xl text-slate-300 mb-4">analytics</span>
+        <h2 className="text-2xl font-extrabold text-slate-800 mb-2">No Vendor Found</h2>
+        <p className="text-slate-500">Register your store to see analytics.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 md:p-8 space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Analytics</h1>
-          <p className="text-slate-500 mt-1">Sales performance and insights</p>
+          <p className="text-slate-500 mt-1">Sales performance, competitor insights & demand forecast</p>
         </div>
         <div className="flex gap-2">
           {(["week", "month", "all"] as const).map((p) => (
-            <button
-              key={p}
-              onClick={() => setPeriod(p)}
-              className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${
-                period === p ? "bg-[#ba001c] text-white" : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50"
-              }`}
-            >
+            <button key={p} onClick={() => setPeriod(p)}
+              className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${period === p ? "bg-[#ba001c] text-white" : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50"}`}>
               {p === "week" ? "This Week" : p === "month" ? "This Month" : "All Time"}
             </button>
           ))}
@@ -178,10 +245,7 @@ export default function VendorAnalytics() {
                   <div key={d.date} className="flex items-center gap-3">
                     <span className="text-xs text-slate-500 w-24 font-medium">{d.date}</span>
                     <div className="flex-1 h-7 bg-slate-50 rounded-lg overflow-hidden">
-                      <div
-                        className="h-full bg-gradient-to-r from-[#ba001c] to-[#e83350] rounded-lg flex items-center justify-end pr-2 transition-all"
-                        style={{ width: `${Math.max(pct, 5)}%` }}
-                      >
+                      <div className="h-full bg-gradient-to-r from-[#ba001c] to-[#e83350] rounded-lg flex items-center justify-end pr-2 transition-all" style={{ width: `${Math.max(pct, 5)}%` }}>
                         <span className="text-[10px] text-white font-bold">₹{d.revenue.toFixed(0)}</span>
                       </div>
                     </div>
@@ -199,19 +263,12 @@ export default function VendorAnalytics() {
           <div className="space-y-2">
             {peakHours.map((h) => {
               const pct = (h.orders / maxOrders) * 100;
-              const label =
-                h.hour === 0 ? "12 AM" :
-                h.hour < 12 ? `${h.hour} AM` :
-                h.hour === 12 ? "12 PM" :
-                `${h.hour - 12} PM`;
+              const label = h.hour === 0 ? "12 AM" : h.hour < 12 ? `${h.hour} AM` : h.hour === 12 ? "12 PM" : `${h.hour - 12} PM`;
               return (
                 <div key={h.hour} className="flex items-center gap-3">
                   <span className="text-xs text-slate-500 w-12 font-medium">{label}</span>
                   <div className="flex-1 h-5 bg-slate-50 rounded-lg overflow-hidden">
-                    <div
-                      className="h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-lg transition-all"
-                      style={{ width: `${Math.max(pct, 2)}%` }}
-                    />
+                    <div className="h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-lg transition-all" style={{ width: `${Math.max(pct, 2)}%` }} />
                   </div>
                   <span className="text-xs text-slate-500 w-16 text-right font-medium">{h.orders} orders</span>
                   <span className="text-xs text-slate-400 w-16 text-right">₹{h.revenue.toFixed(0)}</span>
@@ -221,6 +278,109 @@ export default function VendorAnalytics() {
           </div>
         </div>
       </div>
+
+      {/* Competitor Benchmarking */}
+      {competitors.length > 0 && (
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-bold text-slate-800">Competitor Benchmarking</h3>
+            <span className="text-xs text-slate-400 bg-slate-100 px-2 py-1 rounded-full">{competitorCount} similar vendors</span>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+            <div className="p-4 bg-slate-50 rounded-xl text-center">
+              <p className="text-xs text-slate-500 mb-1">Your Rating</p>
+              <p className="text-2xl font-black text-amber-500">{vendor?.rating?.toFixed(1) || "0.0"}</p>
+              <p className="text-[10px] text-slate-400 mt-1">vs avg {avgCompetitorRating}</p>
+            </div>
+            <div className="p-4 bg-slate-50 rounded-xl text-center">
+              <p className="text-xs text-slate-500 mb-1">Delivery Time</p>
+              <p className="text-2xl font-black text-blue-600">
+                {vendor?.delivery_time_min || vendor?.delivery_time_minutes || "30"} min
+              </p>
+              <p className="text-[10px] text-slate-400 mt-1">vs avg {avgCompetitorDeliveryMin} min</p>
+            </div>
+            <div className="p-4 bg-slate-50 rounded-xl text-center">
+              <p className="text-xs text-slate-500 mb-1">Min Order</p>
+              <p className="text-2xl font-black text-green-600">₹{vendor?.min_order_amount || 0}</p>
+            </div>
+            <div className="p-4 bg-slate-50 rounded-xl text-center">
+              <p className="text-xs text-slate-500 mb-1">Reviews</p>
+              <p className="text-2xl font-black text-purple-600">{vendor?.review_count || 0}</p>
+              <p className="text-[10px] text-slate-400 mt-1">competitors in area</p>
+            </div>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm">
+              <thead className="bg-slate-50 rounded-xl">
+                <tr>
+                  <th className="p-3 text-[10px] font-black text-slate-400 uppercase">Vendor</th>
+                  <th className="p-3 text-[10px] font-black text-slate-400 uppercase">Rating</th>
+                  <th className="p-3 text-[10px] font-black text-slate-400 uppercase">Reviews</th>
+                  <th className="p-3 text-[10px] font-black text-slate-400 uppercase">Delivery</th>
+                  <th className="p-3 text-[10px] font-black text-slate-400 uppercase">Min Order</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {competitors.slice(0, 5).map((c: any) => (
+                  <tr key={c.shop_name + Math.random()} className="hover:bg-slate-50">
+                    <td className="p-3 font-bold text-slate-800">{c.shop_name}</td>
+                    <td className="p-3"><span className="text-amber-500">★</span> {c.rating?.toFixed(1) || "N/A"}</td>
+                    <td className="p-3 text-slate-600">{c.review_count || 0}</td>
+                    <td className="p-3 text-slate-600">{c.delivery_time_min || c.delivery_time_minutes || "N/A"} min</td>
+                    <td className="p-3 text-slate-600">₹{c.min_order_amount || 0}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* Demand Forecasting */}
+      {forecast && (
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="material-symbols-outlined text-purple-500">trending_up</span>
+            <h3 className="font-bold text-slate-800">Demand Forecast</h3>
+            <span className="text-[10px] text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">Based on last 90 days</span>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+            <div className="p-4 bg-purple-50 rounded-xl text-center">
+              <p className="text-xs text-purple-600 mb-1">Avg Daily Orders</p>
+              <p className="text-2xl font-black text-purple-700">{forecast.avgDailyOrders}</p>
+            </div>
+            <div className="p-4 bg-green-50 rounded-xl text-center">
+              <p className="text-xs text-green-600 mb-1">Busiest Day</p>
+              <p className="text-2xl font-black text-green-700">{forecast.peakDay.name}</p>
+              <p className="text-[10px] text-green-500">{forecast.peakDay.orders} orders</p>
+            </div>
+            <div className="p-4 bg-amber-50 rounded-xl text-center">
+              <p className="text-xs text-amber-600 mb-1">Slowest Day</p>
+              <p className="text-2xl font-black text-amber-700">{forecast.slowDay.name}</p>
+              <p className="text-[10px] text-amber-500">{forecast.slowDay.orders} orders</p>
+            </div>
+            <div className="p-4 bg-blue-50 rounded-xl text-center">
+              <p className="text-xs text-blue-600 mb-1">Projected Weekly</p>
+              <p className="text-2xl font-black text-blue-700">{forecast.projectedWeekly}</p>
+              <p className="text-[10px] text-blue-500">orders</p>
+            </div>
+          </div>
+          <div className="flex gap-3 overflow-x-auto pb-2">
+            {forecast.dayOfWeek.map((d: any) => {
+              const maxOrders = Math.max(...forecast.dayOfWeek.map((x: any) => x.orders), 1);
+              return (
+                <div key={d.day} className="flex flex-col items-center gap-2 min-w-[60px]">
+                  <span className="text-xs font-bold text-slate-500">{d.day}</span>
+                  <div className="w-8 h-24 bg-slate-100 rounded-lg overflow-hidden relative">
+                    <div className="absolute bottom-0 w-full bg-gradient-to-t from-purple-500 to-purple-300 rounded-lg transition-all" style={{ height: `${(d.orders / maxOrders) * 100}%` }} />
+                  </div>
+                  <span className="text-[10px] font-bold text-slate-600">{d.orders}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Popular Items */}
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
