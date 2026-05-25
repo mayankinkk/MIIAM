@@ -7,6 +7,7 @@ interface FavoritesStore {
   favoriteIds: string[];
   toggle: (id: string) => void;
   isFavorite: (id: string) => boolean;
+  setFavorites: (ids: string[]) => void;
 }
 
 export const useFavoritesStore = create<FavoritesStore>()(
@@ -22,6 +23,7 @@ export const useFavoritesStore = create<FavoritesStore>()(
         });
       },
       isFavorite: (id) => get().favoriteIds.includes(id),
+      setFavorites: (ids) => set({ favoriteIds: ids }),
     }),
     { name: "miiam-favorites" }
   )
