@@ -76,6 +76,7 @@ export default function VendorPromotions() {
       discount_type: "percentage",
       max_discount: newPromo.max_discount,
       min_order_amount: newPromo.min_order_amount,
+      usage_limit: newPromo.usage_limit,
       is_active: true,
       valid_from: new Date().toISOString(),
       valid_until: new Date(newPromo.valid_until).toISOString(),

@@ -17,6 +17,11 @@ interface PromoCode {
   min_order_amount: number;
   discount_type: string;
   is_active: boolean;
+  vendor_id?: string;
+  max_discount?: number;
+  usage_limit?: number;
+  used_count?: number;
+  valid_until?: string;
 }
 
 
@@ -88,7 +93,7 @@ export default function CheckoutPage() {
     async function loadPromoCodes() {
       const { data } = await supabase
         .from("promo_codes")
-        .select("code, discount_value, min_order_amount, discount_type, is_active")
+        .select("code, discount_value, min_order_amount, discount_type, is_active, vendor_id, max_discount, usage_limit, used_count, valid_until")
         .eq("is_active", true);
       if (data) setPromoCodes(data);
     }
@@ -132,10 +137,33 @@ export default function CheckoutPage() {
       setPromoError(`Minimum order ₹${promo.min_order_amount} required`);
       return;
     }
+    if (promo.valid_until && new Date(promo.valid_until) < new Date()) {
+      setPromoError("This promo code has expired");
+      return;
+    }
+    if (promo.usage_limit && promo.used_count !== undefined && promo.used_count >= promo.usage_limit) {
+      setPromoError("This promo code has reached its usage limit");
+      return;
+    }
+    if (promo.vendor_id) {
+      const cartVendor = items[0]?.vendor_id;
+      if (cartVendor && cartVendor !== promo.vendor_id) {
+        setPromoError("This promo code is not applicable to items in your cart");
+        return;
+      }
+    }
     const discountType = promo.discount_type === "percentage" ? "percent" : "flat";
-    setPromoApplied({ code, discount: promo.discount_value, type: discountType });
+    let finalDiscount = promo.discount_value;
+    if (discountType === "percent") {
+      const raw = subtotal * (promo.discount_value / 100);
+      finalDiscount = promo.max_discount ? Math.min(raw, promo.max_discount) : raw;
+      finalDiscount = +finalDiscount.toFixed(2);
+      setPromoApplied({ code, discount: finalDiscount, type: "flat" });
+    } else {
+      setPromoApplied({ code, discount: finalDiscount, type: "flat" });
+    }
     setPromoError("");
-    addToast(`Promo code applied: ${promo.discount_value}${discountType === "percent" ? "%" : "₹"} off`, "success");
+    addToast(`Promo code applied!`, "success");
   };
 
   const removePromo = () => {
