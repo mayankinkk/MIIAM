@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
-export default function AccessDenied() {
+function AccessDeniedContent() {
   const searchParams = useSearchParams();
   const fromVendor = searchParams.get("from") === "partner";
 
@@ -59,5 +60,13 @@ export default function AccessDenied() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function AccessDenied() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-[#fff4f4]"><div className="w-8 h-8 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin" /></div>}>
+      <AccessDeniedContent />
+    </Suspense>
   );
 }
