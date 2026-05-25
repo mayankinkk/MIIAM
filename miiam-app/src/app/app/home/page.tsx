@@ -283,7 +283,7 @@ export default function HomePage() {
 
   if (dataError) {
     return (
-      <div className="min-h-screen bg-[#fff8f7] flex flex-col items-center justify-center px-6 pb-24">
+      <div className="min-h-screen bg-background text-on-background flex flex-col items-center justify-center px-6 pb-24">
         <span className="material-symbols-outlined text-6xl text-slate-300 mb-4">cloud_off</span>
         <h2 className="text-lg font-bold text-slate-600 mb-2">Something went wrong</h2>
         <p className="text-sm text-slate-400 text-center mb-6">{dataError}</p>
@@ -298,14 +298,14 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#fff8f7] pb-24">
+    <div className="min-h-screen bg-background text-on-background pb-24">
       {/* Header */}
-      <header className="bg-white shadow-sm">
+      <header className="bg-surface-container border-b border-outline-variant/10 shadow-sm">
         <div className="px-4 pt-4 pb-2">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-[#5c403d]">{greeting} {timeIcon}</p>
-              <h1 className="text-2xl font-black text-[#281716] capitalize">{userName}</h1>
+              <p className="text-sm text-on-surface-variant">{greeting} {timeIcon}</p>
+              <h1 className="text-2xl font-black text-on-background capitalize">{userName}</h1>
             </div>
             <button 
               onClick={async () => { 
@@ -316,11 +316,11 @@ export default function HomePage() {
                   supabase.from("notifications").update({ read: true }).eq("user_id", user.id).eq("read", false).then();
                 }
               }}
-              className="relative w-10 h-10 bg-surface rounded-full flex items-center justify-center"
+              className="relative w-10 h-10 bg-surface-container-high hover:bg-surface-container-highest transition-colors rounded-full flex items-center justify-center"
             >
               <span className="material-symbols-outlined text-primary">notifications</span>
               {unreadCount > 0 && (
-                <span className="absolute top-0 right-0 w-4 h-4 bg-red-500 rounded-full border-2 border-white text-[10px] text-white font-bold flex items-center justify-center">
+                <span className="absolute top-0 right-0 w-4 h-4 bg-red-500 rounded-full border-2 border-surface-container text-[10px] text-white font-bold flex items-center justify-center">
                   {unreadCount}
                 </span>
               )}
@@ -332,22 +332,22 @@ export default function HomePage() {
         <div className="px-4 pb-3">
           <button 
             onClick={() => setShowLocationModal(true)}
-            className="flex items-center gap-2 bg-surface px-4 py-2.5 rounded-xl w-full hover:bg-surface-container-low transition-colors"
+            className="flex items-center gap-2 bg-surface-container-high px-4 py-2.5 rounded-xl w-full hover:bg-surface-container-highest transition-colors"
           >
             <span className="material-symbols-outlined text-primary">location_on</span>
             <div className="flex-1 text-left">
-              <p className="text-xs text-[#5c403d]">Delivering to</p>
-              <p className="font-bold text-[#281716] text-sm">{location}</p>
+              <p className="text-xs text-on-surface-variant">Delivering to</p>
+              <p className="font-bold text-on-surface text-sm">{location}</p>
             </div>
-            <span className="material-symbols-outlined text-[#5c403d]">expand_more</span>
+            <span className="material-symbols-outlined text-on-surface-variant">expand_more</span>
           </button>
         </div>
 
         {/* Search */}
         <div className="px-4 pb-4">
-          <Link href="/app/search" className="flex items-center w-full bg-gray-100 rounded-xl px-4 py-3 hover:bg-gray-200 transition-colors">
-            <span className="material-symbols-outlined text-gray-400">search</span>
-            <span className="ml-3 text-gray-400 text-sm">Search for food, restaurants...</span>
+          <Link href="/app/search" className="flex items-center w-full bg-surface-container-high rounded-xl px-4 py-3 hover:bg-surface-container-highest transition-colors">
+            <span className="material-symbols-outlined text-on-surface-variant/60">search</span>
+            <span className="ml-3 text-on-surface-variant/60 text-sm">Search for food, restaurants...</span>
           </Link>
         </div>
       </header>
@@ -383,15 +383,15 @@ export default function HomePage() {
         <div className="fixed bottom-20 right-4 z-40">
           {/* Expanded Order Details */}
           {orderBubbleExpanded && (
-            <div className="absolute bottom-16 right-0 w-72 bg-white rounded-2xl shadow-2xl p-4 mb-2 animate-in fade-in zoom-in duration-300">
+            <div className="absolute bottom-16 right-0 w-72 bg-surface-container rounded-2xl border border-outline-variant/10 shadow-2xl p-4 mb-2 animate-in fade-in zoom-in duration-300">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <div className="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center">
                     <span className="material-symbols-outlined text-orange-600">delivery_dining</span>
                   </div>
                   <div>
-                    <p className="font-bold text-[#281716]">{activeOrder.vendor}</p>
-                    <p className="text-xs text-[#5c403d]">{activeOrder.items}</p>
+                    <p className="font-bold text-on-surface">{activeOrder.vendor}</p>
+                    <p className="text-xs text-on-surface-variant">{activeOrder.items}</p>
                   </div>
                 </div>
                 <button onClick={() => setOrderBubbleExpanded(false)} className="text-gray-400">
@@ -404,21 +404,21 @@ export default function HomePage() {
                 {activeOrder.steps.map((step, index) => (
                   <div key={step.id} className="flex items-center gap-3">
                     <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                      step.completed ? 'bg-green-500' : index === 2 ? 'bg-orange-500 animate-pulse' : 'bg-gray-200'
+                      step.completed ? 'bg-green-500' : index === 2 ? 'bg-orange-500 animate-pulse' : 'bg-surface-container-high'
                     }`}>
                       {step.completed ? (
                         <span className="material-symbols-outlined text-white text-sm">check</span>
                       ) : index === 2 ? (
                         <span className="material-symbols-outlined text-white text-xs">local_shipping</span>
                       ) : (
-                        <div className="w-2 h-2 bg-gray-400 rounded-full" />
+                        <div className="w-2 h-2 bg-on-surface-variant/40 rounded-full" />
                       )}
                     </div>
                     <div className="flex-1">
-                      <p className={`text-sm font-bold ${step.completed ? 'text-[#281716]' : index === 2 ? 'text-orange-600' : 'text-gray-400'}`}>
+                      <p className={`text-sm font-bold ${step.completed ? 'text-on-surface' : index === 2 ? 'text-orange-600' : 'text-on-surface-variant/60'}`}>
                         {step.label}
                       </p>
-                      {step.time && <p className="text-xs text-gray-400">{step.time}</p>}
+                      {step.time && <p className="text-xs text-on-surface-variant/60">{step.time}</p>}
                     </div>
                   </div>
                 ))}
@@ -427,7 +427,7 @@ export default function HomePage() {
               {/* ETA */}
               <div className="mt-4 p-3 bg-orange-50 rounded-xl flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-[#5c403d]">Estimated Delivery</p>
+                  <p className="text-xs text-on-surface-variant">Estimated Delivery</p>
                   <p className="font-bold text-orange-600">{activeOrder.eta}</p>
                 </div>
                 <Link href={`/app/orders/${activeOrder.id}`} className="text-primary font-bold text-sm">
@@ -441,7 +441,7 @@ export default function HomePage() {
           <button
             onClick={() => setOrderBubbleExpanded(!orderBubbleExpanded)}
             className={`w-14 h-14 rounded-full shadow-xl flex items-center justify-center transition-all ${
-              orderBubbleExpanded ? 'bg-primary' : 'bg-white'
+              orderBubbleExpanded ? 'bg-primary' : 'bg-surface-container-lowest border border-outline-variant/15'
             }`}
           >
             <span className={`material-symbols-outlined text-2xl ${
@@ -455,10 +455,10 @@ export default function HomePage() {
 
       {/* Serviceability Banner */}
       {locationStore.pincode && (
-        <div className={`px-4 py-2 ${localServiceable ? "bg-green-50 border-b border-green-200" : "bg-amber-50 border-b border-amber-200"}`}>
+        <div className={`px-4 py-2 ${localServiceable ? "bg-green-500/10 border-b border-green-500/20" : "bg-amber-500/10 border-b border-amber-500/20"}`}>
           <div className="flex items-center gap-2">
-            <span className={`material-symbols-outlined text-sm ${localServiceable ? "text-green-600" : "text-amber-600"}`}>location_on</span>
-            <p className={`text-[11px] font-bold ${localServiceable ? "text-green-700" : "text-amber-700"}`}>
+            <span className={`material-symbols-outlined text-sm ${localServiceable ? "text-green-600 animate-pulse" : "text-amber-600"}`}>location_on</span>
+            <p className={`text-[11px] font-bold ${localServiceable ? "text-green-600 dark:text-green-400" : "text-amber-600 dark:text-amber-400"}`}>
               {checkingPincode ? "Checking availability..." : localServiceable
                 ? `Showing nearby vendors for ${locationStore.displayAddress}`
                 : `No exact match for ${locationStore.pincode}. Showing nearby by city.`
@@ -470,15 +470,15 @@ export default function HomePage() {
 
       {/* Categories with Offers */}
       <div className="px-4 pb-4">
-        <h2 className="text-lg font-bold text-[#281716] mb-3">Categories</h2>
+        <h2 className="text-lg font-bold text-on-surface mb-3">Categories</h2>
         <div className="grid grid-cols-3 gap-3">
           {categories.map((cat) => (
             <Link key={cat.id} href={`/app/${cat.id}`} className="relative">
-              <div className={`${cat.color} rounded-2xl p-4 text-center shadow-sm`}>
-                <div className={`w-12 h-12 rounded-xl bg-white mx-auto flex items-center justify-center mb-2`}>
+              <div className={`${cat.color} dark:bg-surface-container rounded-2xl p-4 text-center shadow-sm`}>
+                <div className={`w-12 h-12 rounded-xl bg-surface-container-lowest mx-auto flex items-center justify-center mb-2`}>
                   <span className={`material-symbols-outlined ${cat.iconColor} text-xl`}>{cat.icon}</span>
                 </div>
-                <p className="font-bold text-[#281716] text-sm">{cat.label}</p>
+                <p className="font-bold text-on-surface text-sm">{cat.label}</p>
               </div>
               {cat.offer && (
                 <div className="absolute -top-1 -right-1 bg-green-500 text-white text-[8px] font-bold px-2 py-0.5 rounded-full">
@@ -495,7 +495,7 @@ export default function HomePage() {
         <div className="px-4 pb-4">
           <div className="flex items-center gap-2 mb-3">
             <span className="material-symbols-outlined text-amber-500" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-            <h2 className="text-lg font-bold text-[#281716]">Featured Today</h2>
+            <h2 className="text-lg font-bold text-on-surface">Featured Today</h2>
           </div>
           <Link href={`/app/vendor/${spotlightRestaurant.id}`} className="block relative bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl p-5 text-white overflow-hidden">
             <div className="absolute -right-6 -bottom-6 w-40 h-40 bg-white/10 rounded-full blur-2xl" />
@@ -531,13 +531,13 @@ export default function HomePage() {
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined text-purple-500" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
-              <h2 className="text-lg font-bold text-[#281716]">Promoted Partners</h2>
+              <h2 className="text-lg font-bold text-on-surface">Promoted Partners</h2>
             </div>
           </div>
           <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
             {featuredRestaurants.map((restaurant) => (
-              <Link key={restaurant.id} href={`/app/vendor/${restaurant.id}`} className="flex-shrink-0 w-36 bg-white rounded-2xl overflow-hidden shadow-sm border-2 border-transparent hover:border-purple-200 transition-all">
-                <div className="relative h-28 bg-slate-100">
+              <Link key={restaurant.id} href={`/app/vendor/${restaurant.id}`} className="flex-shrink-0 w-36 bg-surface-container-lowest border border-outline-variant/10 rounded-2xl overflow-hidden shadow-sm hover:border-purple-500/30 transition-all">
+                <div className="relative h-28 bg-surface-container">
                   {restaurant.cover_image_url || restaurant.image_url ? (
                     <BlurImage src={restaurant.cover_image_url || restaurant.image_url} alt={`${restaurant.shop_name || restaurant.name} promoted`} fill className="w-full h-full" sizes="(max-width: 768px) 50vw, 25vw" />
                   ) : (
@@ -555,10 +555,10 @@ export default function HomePage() {
                   )}
                 </div>
                 <div className="p-2">
-                  <h4 className="font-bold text-sm text-[#281716] truncate">{restaurant.name || restaurant.shop_name}</h4>
+                  <h4 className="font-bold text-sm text-on-surface truncate">{restaurant.name || restaurant.shop_name}</h4>
                   <div className="flex items-center gap-1 mt-1">
-                    <span className="text-xs font-bold text-green-700">★ {restaurant.rating || 4.0}</span>
-                    <span className="text-xs text-slate-400">• {restaurant.cuisine?.split(",")[0] || "Food"}</span>
+                    <span className="text-xs font-bold text-green-700 dark:text-green-400">★ {restaurant.rating || 4.0}</span>
+                    <span className="text-xs text-on-surface-variant/70">• {restaurant.cuisine?.split(",")[0] || "Food"}</span>
                   </div>
                 </div>
               </Link>
@@ -570,15 +570,15 @@ export default function HomePage() {
       {/* Nearby Popular Restaurants */}
       <div className="px-4 pb-4">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-lg font-bold text-[#281716]">Nearby Popular 🔥</h2>
+          <h2 className="text-lg font-bold text-on-surface">Nearby Popular 🔥</h2>
           <Link href="/app/food" className="text-xs font-bold text-primary">See All</Link>
         </div>
         {nearbyRestaurants.filter(r => r.type === 'food' || r.type === 'restaurant').length > 0 ? (
           <div className="space-y-3">
             {nearbyRestaurants.filter(r => r.type === 'food' || r.type === 'restaurant').map((restaurant) => (
-              <Link key={restaurant.id} href={`/app/vendor/${restaurant.id}`} className="block bg-white rounded-2xl overflow-hidden shadow-sm">
+              <Link key={restaurant.id} href={`/app/vendor/${restaurant.id}`} className="block bg-surface-container-lowest border border-outline-variant/10 rounded-2xl overflow-hidden shadow-sm">
                 <div className="flex">
-                  <div className="w-28 h-28 flex-shrink-0 bg-slate-100 relative">
+                  <div className="w-28 h-28 flex-shrink-0 bg-surface-container relative">
                     {restaurant.cover_image_url || restaurant.image_url ? (
                       <BlurImage src={restaurant.cover_image_url || restaurant.image_url} alt={restaurant.name || restaurant.shop_name} fill className="w-full h-full" sizes="112px" />
                     ) : (
@@ -603,14 +603,14 @@ export default function HomePage() {
                   </div>
                   <div className="flex-1 p-3">
                     <div className="flex items-start justify-between">
-                      <h3 className="font-bold text-[#281716]">{restaurant.name || restaurant.shop_name}</h3>
-                      <div className="flex items-center gap-1 bg-green-100 px-1.5 py-0.5 rounded">
-                        <span className="text-xs font-bold text-green-700">{restaurant.rating || 4.0}</span>
-                        <span className="text-green-700 text-xs">★</span>
+                      <h3 className="font-bold text-on-surface">{restaurant.name || restaurant.shop_name}</h3>
+                      <div className="flex items-center gap-1 bg-green-500/15 px-1.5 py-0.5 rounded">
+                        <span className="text-xs font-bold text-green-600 dark:text-green-400">{restaurant.rating || 4.0}</span>
+                        <span className="text-green-600 dark:text-green-400 text-xs">★</span>
                       </div>
                     </div>
-                    <p className="text-xs text-[#5c403d] mt-1">{restaurant.cuisine || "Various"}</p>
-                    <div className="flex items-center gap-2 mt-2 text-xs text-[#5c403d]">
+                    <p className="text-xs text-on-surface-variant mt-1">{restaurant.cuisine || "Various"}</p>
+                    <div className="flex items-center gap-2 mt-2 text-xs text-on-surface-variant">
                       <span className="flex items-center gap-0.5">
                         <span className="material-symbols-outlined text-sm">schedule</span>
                         25-35 min
@@ -628,12 +628,12 @@ export default function HomePage() {
             ))}
           </div>
         ) : !locationStore.pincode ? (
-          <div className="bg-white rounded-2xl p-8 text-center shadow-sm">
+          <div className="bg-surface-container border border-outline-variant/10 rounded-2xl p-8 text-center shadow-sm">
             <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 animate-glow-pulse">
               <span className="material-symbols-outlined text-4xl text-primary">location_on</span>
             </div>
-            <h3 className="text-lg font-black text-[#281716] mb-1">Location Required</h3>
-            <p className="text-sm text-[#5c403d] mb-5">
+            <h3 className="text-lg font-black text-on-surface mb-1">Location Required</h3>
+            <p className="text-sm text-on-surface-variant mb-5">
               Please select your delivery location to view matching restaurants and vendors near you.
             </p>
             <button
@@ -644,12 +644,12 @@ export default function HomePage() {
             </button>
           </div>
         ) : locationStore.pincode ? (
-          <div className="bg-white rounded-2xl p-8 text-center shadow-sm">
+          <div className="bg-surface-container border border-outline-variant/10 rounded-2xl p-8 text-center shadow-sm">
             <div className="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="material-symbols-outlined text-4xl text-amber-500">location_off</span>
             </div>
-            <h3 className="text-lg font-black text-[#281716] mb-1">Not Available in Your Area</h3>
-            <p className="text-sm text-[#5c403d] mb-1">
+            <h3 className="text-lg font-black text-on-surface mb-1">Not Available in Your Area</h3>
+            <p className="text-sm text-on-surface-variant mb-1">
               We couldn't find any vendors near
             </p>
             <p className="text-sm font-bold text-primary mb-4">
@@ -666,7 +666,7 @@ export default function HomePage() {
             </button>
           </div>
         ) : (
-          <div className="text-center py-8 text-slate-500">
+          <div className="text-center py-8 text-on-surface-variant/70">
             <span className="material-symbols-outlined text-4xl mb-2">restaurant</span>
             <p>No restaurants available nearby</p>
           </div>
@@ -694,15 +694,15 @@ export default function HomePage() {
       {/* Location Modal */}
       {showLocationModal && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end md:items-center justify-center animate-fade-in">
-          <div className="bg-white w-full md:w-96 rounded-t-3xl md:rounded-3xl p-6 animate-in slide-in-from-bottom duration-300">
+          <div className="bg-surface-container w-full md:w-96 rounded-t-3xl md:rounded-3xl p-6 border-t border-x border-outline-variant/10 md:border animate-in slide-in-from-bottom duration-300">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-black text-[#281716]">Enter Delivery PIN Code</h2>
-              <button onClick={() => setShowLocationModal(false)} className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
-                <span className="material-symbols-outlined text-gray-600">close</span>
+              <h2 className="text-xl font-black text-on-surface">Enter Delivery PIN Code</h2>
+              <button onClick={() => setShowLocationModal(false)} className="w-8 h-8 bg-surface-container-high rounded-full flex items-center justify-center">
+                <span className="material-symbols-outlined text-on-surface-variant">close</span>
               </button>
             </div>
 
-            <p className="text-sm text-[#5c403d] mb-4">Enter your 6-digit PIN code to check delivery availability in your area.</p>
+            <p className="text-sm text-on-surface-variant mb-4">Enter your 6-digit PIN code to check delivery availability in your area.</p>
 
             {/* Pincode Entry */}
             <div className="mb-4">
@@ -717,7 +717,7 @@ export default function HomePage() {
                   setPincodeError("");
                 }}
                 placeholder="Enter 6-digit PIN Code"
-                className="w-full px-4 py-4 bg-gray-100 rounded-xl border-2 border-transparent focus:border-primary outline-none text-2xl font-black tracking-[0.5em] text-center"
+                className="w-full px-4 py-4 bg-surface-container-high rounded-xl border-2 border-transparent focus:border-primary outline-none text-2xl font-black tracking-[0.5em] text-center text-on-surface"
                 autoFocus
               />
               {pincodeError && <p className="text-red-500 text-xs mt-2 text-center font-bold">{pincodeError}</p>}
@@ -739,18 +739,18 @@ export default function HomePage() {
             </button>
 
             <div className="flex items-center gap-3 mb-2">
-              <div className="flex-1 h-px bg-gray-200" />
+              <div className="flex-1 h-px bg-outline-variant/20" />
               <span className="text-xs text-gray-400 font-bold">OR</span>
-              <div className="flex-1 h-px bg-gray-200" />
+              <div className="flex-1 h-px bg-outline-variant/20" />
             </div>
 
             {/* GPS Button */}
             <button
               onClick={getCurrentLocation}
               disabled={isLoadingLocation}
-              className="w-full flex items-center gap-4 p-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
+              className="w-full flex items-center gap-4 p-4 border border-outline-variant/20 rounded-xl hover:bg-surface-container-high transition-colors"
             >
-              <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-green-500/10 rounded-xl flex items-center justify-center">
                 {isLoadingLocation ? (
                   <div className="w-5 h-5 border-2 border-green-600 border-t-transparent rounded-full animate-spin" />
                 ) : (
@@ -758,8 +758,8 @@ export default function HomePage() {
                 )}
               </div>
               <div className="text-left">
-                <p className="font-bold text-[#281716] text-sm">Detect My Location</p>
-                <p className="text-[10px] text-[#5c403d]">Use GPS to auto-fill PIN code</p>
+                <p className="font-bold text-on-surface text-sm">Detect My Location</p>
+                <p className="text-[10px] text-on-surface-variant">Use GPS to auto-fill PIN code</p>
               </div>
             </button>
           </div>
@@ -771,22 +771,22 @@ export default function HomePage() {
         <div className="fixed inset-0 z-50" onClick={() => setShowNotifications(false)}>
           <div className="absolute inset-0 bg-black/30" />
           <div 
-            className="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl animate-in slide-in-from-right duration-300"
+            className="absolute right-0 top-0 h-full w-full max-w-md bg-surface-container-lowest border-l border-outline-variant/10 shadow-2xl animate-in slide-in-from-right duration-300"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-gray-100">
-              <h2 className="text-xl font-black text-[#281716]">Notifications</h2>
+            <div className="flex items-center justify-between p-4 border-b border-outline-variant/10">
+              <h2 className="text-xl font-black text-on-surface">Notifications</h2>
               <button 
                 onClick={() => setShowNotifications(false)}
-                className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center"
+                className="w-8 h-8 bg-surface-container-high rounded-full flex items-center justify-center"
               >
-                <span className="material-symbols-outlined text-gray-600">close</span>
+                <span className="material-symbols-outlined text-on-surface-variant">close</span>
               </button>
             </div>
 
             {/* Tabs */}
-            <div className="flex border-b border-gray-100">
+            <div className="flex border-b border-outline-variant/10">
               <button className="flex-1 py-3 text-sm font-bold text-primary border-b-2 border-primary">
                 All
               </button>
@@ -801,11 +801,11 @@ export default function HomePage() {
             {/* Notifications List */}
             <div className="overflow-y-auto h-[calc(100vh-140px)]">
               {notifications.map((notif) => (
-                <div key={notif.id} className={`p-4 border-b border-gray-50 transition-colors ${!notif.read ? 'bg-orange-50/50' : 'hover:bg-gray-50'}`}>
+                <div key={notif.id} className={`p-4 border-b border-outline-variant/10 transition-colors ${!notif.read ? 'bg-primary/10' : 'hover:bg-surface-container-high/50'}`}>
                   <div className="flex gap-3">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      notif.type === "order" ? "bg-surface-container" :
-                      notif.type === "promo" ? "bg-amber-100" : "bg-slate-100"
+                      notif.type === "order" ? "bg-surface-container-high" :
+                      notif.type === "promo" ? "bg-amber-500/10" : "bg-surface-container-low"
                     }`}>
                       <span className="material-symbols-outlined text-primary">
                         {notif.type === "order" ? "restaurant" :
@@ -814,12 +814,12 @@ export default function HomePage() {
                     </div>
                     <div className="flex-1">
                       <div className="flex items-start justify-between">
-                        <p className={`font-bold text-[#281716] text-sm ${!notif.read ? 'text-primary' : ''}`}>{notif.title}</p>
+                        <p className={`font-bold text-on-surface text-sm ${!notif.read ? 'text-primary' : ''}`}>{notif.title}</p>
                         <span className="text-[10px] text-gray-400">
                           {new Date(notif.created_at).toLocaleDateString()}
                         </span>
                       </div>
-                      <p className="text-xs text-[#5c403d] mt-1">{notif.body || notif.message}</p>
+                      <p className="text-xs text-on-surface-variant mt-1">{notif.body || notif.message}</p>
                       {notif.type === "offer" && (
                         <button className="mt-2 text-xs font-bold text-primary">
                           Apply Now →

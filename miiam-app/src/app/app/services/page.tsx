@@ -673,16 +673,16 @@ function ServicesContent() {
     : services.filter(s => s.category === selectedCategory);
 
   return (
-    <div className="min-h-screen bg-[#f7f7f7] pb-24">
+    <div className="min-h-screen bg-background text-on-background pb-24">
       {/* Header - Urban Company style */}
       <header className="bg-surface-container-lowest px-4 py-4 sticky top-0 z-30 shadow-sm">
         <div className="flex items-center gap-2 mb-2">
-          <Link href="/app/explore" className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
-            <span className="material-symbols-outlined text-gray-600 text-sm">arrow_back</span>
+          <Link href="/app/explore" className="w-8 h-8 bg-surface-container-high rounded-full flex items-center justify-center hover:bg-surface-container-highest transition-colors">
+            <span className="material-symbols-outlined text-on-surface-variant text-sm">arrow_back</span>
           </Link>
-          <h1 className="text-xl font-black text-gray-800">Home Services</h1>
+          <h1 className="text-xl font-black text-on-surface">Home Services</h1>
         </div>
-        <p className="text-sm text-gray-500 mt-1">Professional services at your doorstep</p>
+        <p className="text-sm text-on-surface-variant mt-1">Professional services at your doorstep</p>
       </header>
 
       <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Home Services' }]} />
@@ -725,7 +725,7 @@ function ServicesContent() {
           <button
             onClick={() => { setSelectedCategory("all"); if (navigator.vibrate) navigator.vibrate(10); }}
             className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap active:scale-95 transition-all ${
-              selectedCategory === "all" ? "bg-primary text-white" : "bg-surface-container-lowest text-gray-600 border border-gray-200"
+              selectedCategory === "all" ? "bg-primary text-white" : "bg-surface-container-lowest text-on-surface-variant border border-outline-variant/20 hover:bg-surface-container-low"
             }`}
           >
             All
@@ -735,7 +735,7 @@ function ServicesContent() {
               key={cat.id}
               onClick={() => { setSelectedCategory(cat.id); if (navigator.vibrate) navigator.vibrate(10); }}
               className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap flex items-center gap-1 active:scale-95 transition-all animate-category-slide ${
-                selectedCategory === cat.id ? "bg-primary text-white" : "bg-surface-container-lowest text-gray-600 border border-gray-200"
+                selectedCategory === cat.id ? "bg-primary text-white" : "bg-surface-container-lowest text-on-surface-variant border border-outline-variant/20 hover:bg-surface-container-low"
               }`}
               style={{ animationDelay: `${i * 50}ms` }}
             >
@@ -749,13 +749,13 @@ function ServicesContent() {
       {/* Services List */}
       <main className="px-4 space-y-5 pb-10">
         {filteredServices.map((service, index) => (
-          <div key={service.id} className="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-[0_2px_16px_rgba(0,0,0,0.06)] border border-gray-100 card-lift animate-pop-in" style={{ animationDelay: `${Math.min(index * 80, 500)}ms` }}>
+          <div key={service.id} className="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-[0_2px_16px_rgba(0,0,0,0.06)] border border-outline-variant/10 card-lift animate-pop-in" style={{ animationDelay: `${Math.min(index * 80, 500)}ms` }}>
             {/* Image with overlay badges */}
             <div className="relative h-44 overflow-hidden">
               <BlurImage src={service.image} alt={service.name} fill className="w-full h-full" sizes="(max-width: 768px) 100vw, 50vw" fallbackSrc="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=80" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
               {service.badge && (
-                <span className="absolute top-3 left-3 bg-surface-container-lowest/95 backdrop-blur-sm text-green-700 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wide shadow-sm">
+                <span className="absolute top-3 left-3 bg-surface-container-lowest/95 backdrop-blur-sm text-green-600 dark:text-green-400 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wide shadow-sm">
                   {service.badge}
                 </span>
               )}
@@ -766,7 +766,7 @@ function ServicesContent() {
               )}
               {/* Duration floating tag */}
               <div className="absolute bottom-3 left-3 flex gap-2">
-                <span className="bg-surface-container-lowest/95 backdrop-blur-sm text-gray-700 text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-sm">
+                <span className="bg-surface-container-lowest/95 backdrop-blur-sm text-on-surface-variant text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-sm">
                   <span className="material-symbols-outlined text-[12px]">schedule</span>
                   {service.duration}
                 </span>
@@ -776,33 +776,33 @@ function ServicesContent() {
             <div className="p-4">
               {/* Title & Rating */}
               <div className="flex items-start justify-between gap-2">
-                <h3 className="font-bold text-gray-800 text-lg leading-tight">{service.name}</h3>
-                <div className="flex items-center gap-1 bg-surface-container-low border border-green-200 px-2 py-0.5 rounded-lg flex-shrink-0">
-                  <span className="text-green-600 text-xs font-black">★ {service.rating}</span>
+                <h3 className="font-bold text-on-surface text-lg leading-tight">{service.name}</h3>
+                <div className="flex items-center gap-1 bg-surface-container-low border border-green-500/20 px-2 py-0.5 rounded-lg flex-shrink-0">
+                  <span className="text-green-600 dark:text-green-400 text-xs font-black">★ {service.rating}</span>
                 </div>
               </div>
-              <p className="text-xs text-gray-400 mt-0.5">{service.reviews.toLocaleString()} reviews</p>
+              <p className="text-xs text-on-surface-variant/70 mt-0.5">{service.reviews.toLocaleString()} reviews</p>
 
               {/* What's Included */}
-              <div className="mt-3 bg-gray-50 rounded-xl p-3">
-                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">What&apos;s Included</p>
+              <div className="mt-3 bg-surface-container-low rounded-xl p-3">
+                <p className="text-[10px] font-black text-on-surface-variant/60 uppercase tracking-widest mb-2">What&apos;s Included</p>
                 <div className="grid grid-cols-2 gap-x-3 gap-y-1.5">
                   {service.included.map((item: string, idx: number) => (
                     <div key={idx} className="flex items-center gap-1.5">
                       <span className="material-symbols-outlined text-green-500 text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-                      <span className="text-xs text-gray-600 font-medium">{item.trim()}</span>
+                      <span className="text-xs text-on-surface-variant font-medium">{item.trim()}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
               {/* Price & CTA */}
-              <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-100">
+              <div className="flex items-center justify-between mt-4 pt-3 border-t border-outline-variant/10">
                 <div>
                   {service.originalPrice && (
-                    <span className="text-sm text-gray-400 line-through mr-2">₹{service.originalPrice}</span>
+                    <span className="text-sm text-on-surface-variant/60 line-through mr-2">₹{service.originalPrice}</span>
                   )}
-                  <span className="font-black text-2xl text-gray-800 animate-price-tag">₹{service.price}</span>
+                  <span className="font-black text-2xl text-on-surface animate-price-tag">₹{service.price}</span>
                 </div>
                 <button
                   onClick={() => {
