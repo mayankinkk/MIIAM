@@ -34,10 +34,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
 
-    const users = (order.users as { email: string; full_name: string }[]) || [];
-    const vendors = (order.vendors as { name: string }[]) || [];
-    const user = users[0] || null;
-    const vendor = vendors[0] || null;
+    const usersData = order.users;
+    const user = Array.isArray(usersData)
+      ? usersData[0]
+      : (usersData as { email: string; full_name: string } | null);
+
+    const vendorsData = order.vendors;
+    const vendor = Array.isArray(vendorsData)
+      ? vendorsData[0]
+      : (vendorsData as { name: string } | null);
 
     if (!user?.email) {
       return NextResponse.json({ error: "User email not found" }, { status: 400 });
