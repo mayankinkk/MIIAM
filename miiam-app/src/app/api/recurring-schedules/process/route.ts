@@ -148,11 +148,14 @@ function calculateNextDeliveryDate(
   }
 
   if (frequency === "monthly" && dayOfMonth !== undefined) {
-    const targetDay = Math.min(dayOfMonth, new Date(next.getFullYear(), next.getMonth() + 1, 0).getDate());
-    next.setDate(targetDay);
+    next.setDate(1);
+    const lastDay = new Date(next.getFullYear(), next.getMonth() + 1, 0).getDate();
+    next.setDate(Math.min(dayOfMonth, lastDay));
     if (next <= (from || new Date())) {
+      next.setDate(1);
       next.setMonth(next.getMonth() + 1);
-      next.setDate(Math.min(dayOfMonth, new Date(next.getFullYear(), next.getMonth() + 1, 0).getDate()));
+      const lastDayNext = new Date(next.getFullYear(), next.getMonth() + 1, 0).getDate();
+      next.setDate(Math.min(dayOfMonth, lastDayNext));
     }
     return next;
   }
