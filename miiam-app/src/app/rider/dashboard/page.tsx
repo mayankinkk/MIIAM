@@ -5,57 +5,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { startLocationTracking, stopLocationTracking } from "@/lib/rider-location-tracker";
-import WeatherWidget from "@/components/rider/WeatherWidget";
 import { RiderDashboardSkeleton } from "@/components/Skeleton";
 import { calculateEarnings } from "@/lib/earnings";
-
-interface Order {
-  id: string;
-  user_id?: string;
-  vendor: string;
-  vendorAddress: string;
-  vendorPhone: string;
-  vendorLat?: number;
-  vendorLng?: number;
-  customer: string;
-  customerPhone: string;
-  customerAddress: string;
-  customerLat?: number;
-  customerLng?: number;
-  landmark: string;
-  distance: number;
-  distance2: number;
-  totalDistance: number;
-  earnings: number;
-  orderTotal: number;
-  items: number;
-  itemsList: string[];
-  time: string;
-  time2: string;
-  estCompletion: number;
-  priority: "high" | "normal";
-  peakMultiplier: number;
-  specialInstructions: string;
-  otp: string;
-  type: "food" | "grocery" | "multi_stop";
-  stops?: {
-    name: string;
-    address: string;
-    landmark: string;
-    distance: number;
-    time: string;
-    otp: string;
-  }[];
-}
-
-
-// Order with timing info
-interface OrderWithTiming extends Order {
-  expiresAt?: number; // timestamp when order expires
-  isSnoozed?: boolean;
-  snoozeUntil?: number;
-  orderDbId?: string; // actual DB ID for transactions
-}
+import type { Order, OrderWithTiming, DeliveryStep } from "./types";
+import { calculatePeakEarnings, isPeakHour } from "./utils";
+import QuickStats from "@/components/rider/QuickStats";
+import MapControls from "@/components/rider/MapControls";
+import CallModal from "@/components/rider/CallModal";
+import ChatModal from "@/components/rider/ChatModal";
 
 export default function RiderDashboard() {
   const router = useRouter();
@@ -1004,16 +961,6 @@ export default function RiderDashboard() {
     setDeliveryStep("picking_up");
   };
 
-  const calculatePeakEarnings = (order: Order) => {
-    const base = calculateEarnings(order.totalDistance);
-    return Math.round(base * order.peakMultiplier);
-  };
-
-  const isPeakHour = () => {
-    const hour = new Date().getHours();
-    return (hour >= 12 && hour <= 14) || (hour >= 18 && hour <= 21);
-  };
-
   if (error) {
     const isNotRider = error === "You don't have a rider account yet.";
     return (
@@ -1724,186 +1671,44 @@ export default function RiderDashboard() {
           </div>
         )}
 
-        {/* Map Controls */}
-        <div className="absolute right-4 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-20">
-          <button
-            onClick={() => mapInstanceRef.current?.zoomIn()}
-            className="w-10 h-10 bg-white rounded-lg shadow flex items-center justify-center"
-          >
-            <span className="material-symbols-outlined">add</span>
-          </button>
-          <button
-            onClick={() => mapInstanceRef.current?.zoomOut()}
-            className="w-10 h-10 bg-white rounded-lg shadow flex items-center justify-center"
-          >
-            <span className="material-symbols-outlined">remove</span>
-          </button>
-          <button
-            onClick={handleCenterMap}
-            className="w-10 h-10 bg-[#0b50d5] text-white rounded-lg shadow flex items-center justify-center mt-2"
-          >
-            <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>my_location</span>
-          </button>
-        </div>
+        <MapControls
+          onZoomIn={() => mapInstanceRef.current?.zoomIn()}
+          onZoomOut={() => mapInstanceRef.current?.zoomOut()}
+          onCenter={handleCenterMap}
+        />
 
-        {/* Quick Stats */}
-        <div className="fixed top-20 left-4 z-20 space-y-2">
-          <WeatherWidget />
-          <div className="bg-white/90 backdrop-blur p-3 rounded-xl shadow-lg">
-            <p className="text-[10px] text-slate-400">TODAY'S EARNINGS</p>
-            <p className="font-black text-xl text-green-600">₹{todayEarnings + liveEarnings}</p>
-            {currentOrder && (deliveryStep === "delivering" || deliveryStep === "picking_up") && (
-              <p className="text-[8px] text-orange-500 animate-pulse">+₹{liveEarnings} (Live)</p>
-            )}
-          </div>
-          <div className="bg-white/90 backdrop-blur p-2 rounded-xl shadow-lg flex items-center gap-2">
-            <span className="material-symbols-outlined text-green-600 text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>account_balance_wallet</span>
-            <div>
-              <p className="text-[8px] text-slate-400">CASH</p>
-              <p className="text-xs font-bold">₹{cashCollected} <span className="text-slate-400">/ ₹{cashPending}</span></p>
-            </div>
-          </div>
-          {dndMode && (
-            <div className="bg-red-500/90 backdrop-blur px-3 py-2 rounded-xl shadow-lg flex items-center gap-2 text-white">
-              <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>do_not_disturb</span>
-              <span className="text-xs font-bold">DND Active</span>
-            </div>
-          )}
-        </div>
+        <QuickStats
+          todayEarnings={todayEarnings}
+          liveEarnings={liveEarnings}
+          cashCollected={cashCollected}
+          cashPending={cashPending}
+          dndMode={dndMode}
+          hasActiveOrder={!!currentOrder}
+          deliveryStep={deliveryStep}
+        />
       </main>
 
       {/* Bottom Navigation */}
 
 
-      {/* Call Modal */}
-      {showCallModal && (
-        <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-sm">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-bold text-lg">Call</h3>
-              <button onClick={() => setShowCallModal(false)}>
-                <span className="material-symbols-outlined">close</span>
-              </button>
-            </div>
-            <div className="text-center py-6">
-              <div className="w-16 h-16 bg-[#0b50d5]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="material-symbols-outlined text-[#0b50d5] text-3xl">person</span>
-              </div>
-              <p className="font-bold mb-1">{currentOrder?.vendor || "Vendor"}</p>
-              <p className="text-sm text-slate-500">{currentOrder?.vendorPhone || currentOrder?.customerPhone}</p>
-            </div>
-            <a 
-              href={`tel:${currentOrder?.vendorPhone || currentOrder?.customerPhone}`}
-              className="w-full py-4 bg-green-500 text-white font-bold rounded-xl flex items-center justify-center gap-2"
-            >
-              <span className="material-symbols-outlined">call</span>
-              Call Now
-            </a>
-          </div>
-        </div>
-      )}
+      <CallModal
+        open={showCallModal}
+        onClose={() => setShowCallModal(false)}
+        name={currentOrder?.vendor}
+        phone={currentOrder?.vendorPhone || currentOrder?.customerPhone}
+      />
 
-      {/* Chat Modal */}
-      {showChatModal && (
-        <div className="fixed inset-0 z-[100] bg-black/50 flex items-end">
-          <div className="bg-white rounded-t-2xl w-full h-[70vh] flex flex-col">
-            <div className="p-4 border-b flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <button onClick={() => setShowChatModal(false)}>
-                  <span className="material-symbols-outlined text-slate-600">arrow_back</span>
-                </button>
-                <div className="w-10 h-10 bg-[#0b50d5]/10 rounded-full flex items-center justify-center">
-                  <span className="material-symbols-outlined text-[#0b50d5]">person</span>
-                </div>
-                <div>
-                  <p className="font-bold">{currentOrder?.customer || "Customer"}</p>
-                  <p className="text-[10px] text-green-500">Online</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-1">
-                <button 
-                  onClick={handleCallCustomer}
-                  className="p-2 text-green-500 hover:bg-green-50 rounded-full"
-                  title="Call Customer"
-                >
-                  <span className="material-symbols-outlined">call</span>
-                </button>
-                <button onClick={() => setShowChatModal(false)}>
-                  <span className="material-symbols-outlined text-slate-600">close</span>
-                </button>
-              </div>
-            </div>
-            
-            <div className="flex-1 p-4 overflow-y-auto space-y-3">
-              {chatMessages.length === 0 && (
-                <div className="text-center text-slate-400 text-sm py-8">No messages yet. Start the conversation!</div>
-              )}
-              {chatMessages.map((msg: any) => {
-                const isMe = msg.sender_id === currentUserId;
-                const msgTime = msg.created_at ? new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "";
-                return (
-                  <div key={msg.id} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
-                    <div className={`max-w-[80%] p-3 rounded-2xl ${isMe ? "bg-[#0b50d5] text-white" : "bg-slate-100"}`}>
-                      <p className="text-sm">{msg.message}</p>
-                      <p className={`text-[9px] ${isMe ? "text-white/70" : "text-slate-400"}`}>{msgTime}</p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-<div className="p-4 border-t">
-              {/* Quick Message Shortcuts */}
-              <div className="flex gap-2 mb-3 overflow-x-auto pb-2">
-                {["I'm on my way", "I've arrived", "Item not available", "Traffic delay", "Contacting support"].map((msg) => (
-                  <button
-                    key={msg}
-                    onClick={() => setChatMessage(msg)}
-                    className="flex-shrink-0 px-3 py-1.5 bg-[#0b50d5]/10 text-[#0b50d5] rounded-full text-xs font-bold"
-                  >
-                    {msg}
-                  </button>
-                ))}
-              </div>
-              <div className="flex gap-2 items-center">
-                <button className="p-2 text-slate-400 hover:text-[#0b50d5] hover:bg-slate-100 rounded-full" title="Attach file">
-                  <span className="material-symbols-outlined">attach_file</span>
-                </button>
-                <button className="p-2 text-slate-400 hover:text-[#0b50d5] hover:bg-slate-100 rounded-full" title="Voice message">
-                  <span className="material-symbols-outlined">mic</span>
-                </button>
-                <input
-                  type="text"
-                  value={chatMessage}
-                  onChange={(e) => setChatMessage(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
-                  placeholder="Type a message..."
-                  className="flex-1 bg-slate-100 rounded-full px-4 py-2 text-sm"
-                />
-<button 
-                  onClick={handleSendMessage}
-                  disabled={!chatMessage.trim()}
-                  className="w-10 h-10 bg-[#0b50d5] text-white rounded-full flex items-center justify-center disabled:opacity-50"
-                >
-                  <span className="material-symbols-outlined">send</span>
-                </button>
-                <button onClick={() => setShowAlertSettings(true)} className="relative p-2">
-                  <span className="material-symbols-outlined text-slate-600">
-                    {soundEnabled && vibrationEnabled ? "notifications_active" : soundEnabled ? "volume_up" : vibrationEnabled ? "vibration" : "notifications_off"}
-                  </span>
-                </button>
-                <Link href="/rider/notifications" className="relative p-2">
-                  <span className="material-symbols-outlined text-slate-600">notifications</span>
-                  <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-                </Link>
-                <Link href="/rider/login" className="p-2">
-                  <span className="material-symbols-outlined text-slate-600">power_settings_new</span>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <ChatModal
+        open={showChatModal}
+        onClose={() => setShowChatModal(false)}
+        messages={chatMessages}
+        currentUserId={currentUserId}
+        customerName={currentOrder?.customer}
+        chatMessage={chatMessage}
+        onChatMessageChange={setChatMessage}
+        onSend={handleSendMessage}
+        onCall={handleCallCustomer}
+      />
 
       {/* Skip Modal */}
       {showSkipModal && (
