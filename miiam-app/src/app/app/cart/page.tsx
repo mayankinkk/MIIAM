@@ -12,9 +12,8 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
 import { StaggerContainer, StaggerItem } from "@/components/ui/AnimationWrappers";
 
-const supabase = createClient();
-
 export default function CartPage() {
+  const supabase = createClient();
   const { items, updateQuantity, removeItem, totalPrice, subtotalByVendor, clearCart, addItem } = useCartStore();
   const [pastOrders, setPastOrders] = useState<any[]>([]);
   const [showReorderModal, setShowReorderModal] = useState(false);
@@ -22,6 +21,19 @@ export default function CartPage() {
   const [loadingOrders, setLoadingOrders] = useState(false);
   const router = useRouter();
   const { addToast } = useToastStore();
+
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-surface">
+        <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   const vendors = Array.from(new Set(items.map((i) => i.vendor_id))).map((vid) => ({
     id: vid,
@@ -214,15 +226,7 @@ export default function CartPage() {
                   <span>Delivery &amp; Service Fee</span>
                   <span className="text-on-surface font-semibold">₹{deliveryFee.toFixed(2)}</span>
                 </div>
-                {pointsDiscount > 0 && (
-                  <div className="flex justify-between text-secondary">
-                    <span className="flex items-center gap-1">
-                      <span className="material-symbols-outlined text-[13px]" style={{ fontVariationSettings: "'FILL' 1" }}>stars</span>
-                      Points Discount
-                    </span>
-                    <span className="font-semibold">–₹{pointsDiscount.toFixed(2)}</span>
-                  </div>
-                )}
+
                 <div className="pt-4 border-t border-outline-variant/20 flex justify-between items-center">
                   <div>
                     <p className="text-xs uppercase tracking-widest font-bold text-on-surface">Total Balance</p>
