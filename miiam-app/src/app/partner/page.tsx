@@ -21,7 +21,7 @@ const faqs = [
   { q: "What documents do I need?", a: "You'll need a valid GST number, FSSAI license (for food), and PAN card." },
   { q: "Are there any hidden fees?", a: "No hidden fees. We charge a flat 5% commission per order with no monthly or listing fees." },
   { q: "When do I get paid?", a: "Payouts are processed every Monday for the previous week's orders." },
-  { q: "Can I partner from any city?", a: "We're currently active in major Indian cities. Check during registration for your area." },
+  { q: "Can I partner from any city?", a: "We're currently active in Gauripur and Dhubri only." },
 ];
 
 export default function PartnerLanding() {
@@ -175,6 +175,10 @@ export default function PartnerLanding() {
 
       {/* Footer */}
       <footer className="border-t border-slate-200 py-8 text-center text-sm text-slate-400">
+        <div className="flex justify-center gap-6 mb-3">
+          <Link href="/terms" className="hover:text-slate-600 transition-colors">Terms</Link>
+          <Link href="/privacy" className="hover:text-slate-600 transition-colors">Privacy</Link>
+        </div>
         <p>&copy; {new Date().getFullYear()} MIIAM. All rights reserved.</p>
       </footer>
     </div>

@@ -401,6 +401,10 @@ export default function CareersPage() {
 
       {/* Footer */}
       <footer className="bg-slate-950 px-4 py-12 text-center">
+        <div className="flex justify-center gap-6 mb-4">
+          <Link href="/terms" className="text-slate-500 text-sm hover:text-white transition-colors">Terms</Link>
+          <Link href="/privacy" className="text-slate-500 text-sm hover:text-white transition-colors">Privacy</Link>
+        </div>
         <p className="text-slate-500 text-sm">
           © 2026 MIIAM. All rights reserved. Guwahati, Assam.
         </p>

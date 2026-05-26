@@ -85,6 +85,10 @@ export default function AboutUsPage() {
 
       {/* Footer */}
       <footer className="py-12 border-t border-[#ba001c]/10 text-center">
+        <div className="flex justify-center gap-6 mb-4">
+          <Link href="/terms" className="text-slate-400 text-sm hover:text-[#ba001c] transition-colors">Terms</Link>
+          <Link href="/privacy" className="text-slate-400 text-sm hover:text-[#ba001c] transition-colors">Privacy</Link>
+        </div>
         <p className="text-slate-400 font-bold text-sm">© 2026 MIIAM. Built with ❤️ in Guwahati.</p>
       </footer>
     </div>
