@@ -167,7 +167,7 @@ export default function PartnerPOS() {
         </div>
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
           <p className="text-slate-500 text-sm font-bold uppercase tracking-wider mb-1">Delivered</p>
-          <p className="text-4xl font-black text-green-600">{pastOrders.length}</p>
+          <p className="text-4xl font-black text-green-600">{orders.filter((o) => o.status === "delivered").length}</p>
         </div>
       </div>
 
