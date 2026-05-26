@@ -6,13 +6,14 @@ import ThemeProvider from "@/components/ThemeProvider";
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen">
-      <ThemeProvider />
-      <NotificationPermission />
+      <ThemeProvider>
+        <NotificationPermission />
       <InstallPrompt />
       <div className="max-w-7xl mx-auto">
         {children}
       </div>
       <BottomNavBar />
+    </ThemeProvider>
     </div>
   );
 }

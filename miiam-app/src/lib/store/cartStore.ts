@@ -27,27 +27,46 @@ interface CartStore {
   subtotalByVendor: (vendor_id: string) => number;
 }
 
+function isCartItemArray(value: unknown): value is CartItem[] {
+  if (!Array.isArray(value)) return false;
+  return value.every(
+    (i) =>
+      i &&
+      typeof i === "object" &&
+      typeof i.menu_item_id === "string" &&
+      typeof i.vendor_id === "string" &&
+      typeof i.name === "string" &&
+      typeof i.price === "number" &&
+      typeof i.quantity === "number"
+  );
+}
+
 export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
       items: [],
 
       addItem: (item, quantity = 1, suppressToast = false) => {
-        const existing = (get().items || []).find(
+        const currentItems = get().items;
+        if (!Array.isArray(currentItems)) {
+          set({ items: [{ ...item, quantity }] });
+          return;
+        }
+        const existing = currentItems.find(
           (i) => i.menu_item_id === item.menu_item_id
         );
         if (existing) {
           set({
-            items: (get().items || []).map((i) =>
+            items: currentItems.map((i) =>
               i.menu_item_id === item.menu_item_id
                 ? { ...i, quantity: i.quantity + quantity }
                 : i
             ),
           });
         } else {
-          set({ items: [...(get().items || []), { ...item, quantity }] });
+          set({ items: [...currentItems, { ...item, quantity }] });
         }
-        
+
         if (!suppressToast) {
           import('./toastStore').then(({ useToastStore }) => {
             useToastStore.getState().addToast(`Added ${item.name} to cart`, "success");
@@ -56,8 +75,10 @@ export const useCartStore = create<CartStore>()(
       },
 
       removeItem: (menu_item_id) => {
-        const item = get().items.find(i => i.menu_item_id === menu_item_id);
-        set({ items: (get().items || []).filter((i) => i.menu_item_id !== menu_item_id) });
+        const currentItems = get().items;
+        if (!Array.isArray(currentItems)) return;
+        const item = currentItems.find(i => i.menu_item_id === menu_item_id);
+        set({ items: currentItems.filter((i) => i.menu_item_id !== menu_item_id) });
         if (item) {
           import('./toastStore').then(({ useToastStore }) => {
             useToastStore.getState().addToast(`Removed ${item.name}`, "info");
@@ -70,9 +91,11 @@ export const useCartStore = create<CartStore>()(
           get().removeItem(menu_item_id);
           return;
         }
+        const currentItems = get().items;
+        if (!Array.isArray(currentItems)) return;
         const clamped = Math.min(quantity, 99);
         set({
-          items: (get().items || []).map((i) =>
+          items: currentItems.map((i) =>
             i.menu_item_id === menu_item_id ? { ...i, quantity: clamped } : i
           ),
         });
@@ -80,16 +103,36 @@ export const useCartStore = create<CartStore>()(
 
       clearCart: () => set({ items: [] }),
 
-      totalItems: () => (get().items || []).reduce((sum, i) => sum + i.quantity, 0),
+      totalItems: () => {
+        const items = get().items;
+        return Array.isArray(items) ? items.reduce((sum, i) => sum + i.quantity, 0) : 0;
+      },
 
-      totalPrice: () =>
-        (get().items || []).reduce((sum, i) => sum + i.price * i.quantity, 0),
+      totalPrice: () => {
+        const items = get().items;
+        return Array.isArray(items)
+          ? items.reduce((sum, i) => sum + i.price * i.quantity, 0)
+          : 0;
+      },
 
-      subtotalByVendor: (vendor_id) =>
-        (get().items || [])
+      subtotalByVendor: (vendor_id) => {
+        const items = get().items;
+        if (!Array.isArray(items)) return 0;
+        return items
           .filter((i) => i.vendor_id === vendor_id)
-          .reduce((sum, i) => sum + i.price * i.quantity, 0),
+          .reduce((sum, i) => sum + i.price * i.quantity, 0);
+      },
     }),
-    { name: "miiam-cart" }
+    {
+      name: "miiam-cart",
+      partialize: (state) => ({ items: state.items }),
+      merge: (persisted, current) => {
+        const p = persisted as { items?: unknown };
+        if (p && isCartItemArray(p.items)) {
+          return { ...current, items: p.items };
+        }
+        return current;
+      },
+    }
   )
 );
