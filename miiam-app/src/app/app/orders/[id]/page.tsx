@@ -7,6 +7,8 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import BlurImage from "@/components/BlurImage";
+import OrderChatOverlay from "@/components/order/OrderChatOverlay";
+import { useUnreadMessages } from "@/lib/hooks/useUnreadMessages";
 
 const steps = [
   { key: "pending", label: "Order Placed", icon: "receipt_long", time: "" },
@@ -32,6 +34,11 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
   const [showCancelReason, setShowCancelReason] = useState(false);
   const [cancelReason, setCancelReason] = useState("");
   const [cancelOtherReason, setCancelOtherReason] = useState("");
+  const [currentUserId, setCurrentUserId] = useState<string>("");
+  const [showChat, setShowChat] = useState(false);
+
+  const { unreadByOrder } = useUnreadMessages(currentUserId);
+  const unreadCount = unreadByOrder[id] || 0;
 
   const cancelReasons = [
     "Changed my mind",
@@ -94,6 +101,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
       await new Promise(r => setTimeout(r, 500));
       
       const { data: { user } } = await supabase.auth.getUser();
+      if (user) setCurrentUserId(user.id);
       
       const { data: basicOrder, error: fetchError } = await supabase
         .from("orders")
@@ -348,13 +356,18 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                     <h3 className="text-xl font-bold tracking-tight text-on-surface">{riderInfo.name}</h3>
                     <p className="text-on-surface-variant font-medium">Your delivery hero is on the move</p>
                     <div className="flex gap-3 mt-4">
-                      <Link 
-                        href={`/app/orders/${id}/chat`}
-                        className="flex-1 bg-secondary text-white rounded-xl py-3 font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-all scale-95 active:scale-90"
+                      <button
+                        onClick={() => setShowChat(true)}
+                        className="flex-1 bg-secondary text-white rounded-xl py-3 font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-all scale-95 active:scale-90 relative"
                       >
                         <span className="material-symbols-outlined text-lg">chat_bubble</span>
                         Chat
-                      </Link>
+                        {unreadCount > 0 && (
+                          <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-500 text-white text-[10px] font-black rounded-full flex items-center justify-center shadow-md">
+                            {unreadCount > 9 ? "9+" : unreadCount}
+                          </span>
+                        )}
+                      </button>
                       <a 
                         href={`tel:${riderInfo.phone || ''}`}
                         className="w-14 h-14 bg-surface-container text-secondary rounded-xl flex items-center justify-center hover:opacity-90 transition-all scale-95 active:scale-90"
@@ -626,6 +639,17 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
             )}
           </div>
         </div>
+
+        {/* Chat Overlay */}
+        {showChat && currentUserId && (
+          <OrderChatOverlay
+            orderId={id}
+            currentUserId={currentUserId}
+            senderType="user"
+            otherName={riderInfo?.name || "Rider"}
+            onClose={() => setShowChat(false)}
+          />
+        )}
       </main>
     </div>
   );

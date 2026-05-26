@@ -12,7 +12,7 @@ import { calculatePeakEarnings, isPeakHour } from "./utils";
 import QuickStats from "@/components/rider/QuickStats";
 import MapControls from "@/components/rider/MapControls";
 import CallModal from "@/components/rider/CallModal";
-import ChatModal from "@/components/rider/ChatModal";
+import OrderChatOverlay from "@/components/order/OrderChatOverlay";
 
 export default function RiderDashboard() {
   const router = useRouter();
@@ -35,10 +35,7 @@ export default function RiderDashboard() {
   const [currentStopIndex, setCurrentStopIndex] = useState(0);
   const [snoozeMessage, setSnoozeMessage] = useState("");
   
-  const [chatMessage, setChatMessage] = useState("");
-  const [chatMessages, setChatMessages] = useState<any[]>([]);
   const [currentUserId, setCurrentUserId] = useState<string>("");
-  const chatChannelRef = useRef<any>(null);
   const [deliveryStep, setDeliveryStep] = useState<"shopping" | "picking_up" | "picked" | "delivering" | "arrived">("shopping");
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [vibrationEnabled, setVibrationEnabled] = useState(true);
@@ -495,34 +492,6 @@ export default function RiderDashboard() {
     };
   }, [isOnline, supabase]);
 
-  // Load chat messages from DB when chat modal opens
-  useEffect(() => {
-    if (!showChatModal || !currentOrder?.orderDbId) return;
-
-    async function loadChat() {
-      const { data } = await supabase
-        .from("chat_messages")
-        .select("*")
-        .eq("order_id", currentOrder?.orderDbId)
-        .order("created_at", { ascending: true });
-      if (data) setChatMessages(data);
-    }
-    if (currentOrder) loadChat();
-
-    const channel = supabase
-      .channel(`rider-chat-${currentOrder?.orderDbId}`)
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "chat_messages", filter: `order_id=eq.${currentOrder.orderDbId}` }, (payload: any) => {
-        setChatMessages((prev) => [...prev, payload.new]);
-      })
-      .subscribe();
-    chatChannelRef.current = channel;
-
-    return () => {
-      supabase.removeChannel(channel);
-      chatChannelRef.current = null;
-    };
-  }, [showChatModal, currentOrder?.orderDbId, supabase]);
-
   useEffect(() => {
     if (pendingOrders.length > 0 && isOnline && !showNewOrderAlert) {
       setShowNewOrderAlert(true);
@@ -792,22 +761,7 @@ export default function RiderDashboard() {
 
   const handleStartChat = () => {
     if (currentOrder?.orderDbId) {
-      router.push(`/rider/orders/${currentOrder.orderDbId}/chat`);
-    }
-  };
-
-  const handleSendMessage = async () => {
-    if (chatMessage.trim() && currentOrder) {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        await supabase.from("chat_messages").insert({
-          order_id: currentOrder.orderDbId || currentOrder.id,
-          sender_id: user.id,
-          sender_type: "rider",
-          message: chatMessage.trim(),
-        });
-      }
-      setChatMessage("");
+      setShowChatModal(true);
     }
   };
 
@@ -1698,17 +1652,15 @@ export default function RiderDashboard() {
         phone={currentOrder?.vendorPhone || currentOrder?.customerPhone}
       />
 
-      <ChatModal
-        open={showChatModal}
-        onClose={() => setShowChatModal(false)}
-        messages={chatMessages}
-        currentUserId={currentUserId}
-        customerName={currentOrder?.customer}
-        chatMessage={chatMessage}
-        onChatMessageChange={setChatMessage}
-        onSend={handleSendMessage}
-        onCall={handleCallCustomer}
-      />
+      {showChatModal && currentOrder && currentUserId && (
+        <OrderChatOverlay
+          orderId={currentOrder.orderDbId || currentOrder.id}
+          currentUserId={currentUserId}
+          senderType="rider"
+          otherName={currentOrder.customer || "Customer"}
+          onClose={() => setShowChatModal(false)}
+        />
+      )}
 
       {/* Skip Modal */}
       {showSkipModal && (
