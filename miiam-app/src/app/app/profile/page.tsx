@@ -16,6 +16,7 @@ const menuItems = [
   { id: "favorites", icon: "favorite", label: "Favorites", sub: "Your saved items", color: "text-red-500", bg: "bg-red-50" },
   { id: "payment", icon: "payment", label: "Payment Methods", sub: "Cards, UPI, wallets", color: "text-purple-500", bg: "bg-purple-50" },
   { id: "subscription", icon: "workspace_premium", label: "MIIAM+", sub: "Premium membership", color: "text-amber-500", bg: "bg-amber-50", badge: "ACTIVE" },
+  { id: "gift-cards", icon: "card_giftcard", label: "Gift Cards", sub: "Send and receive gift cards", color: "text-pink-500", bg: "bg-pink-50" },
   { id: "support", icon: "support_agent", label: "Help & Support", sub: "24/7 customer care", color: "text-indigo-500", bg: "bg-indigo-50" },
   { id: "settings", icon: "settings", label: "Settings", sub: "App preferences", color: "text-slate-500", bg: "bg-slate-50" },
   { id: "haptic", icon: "vibration", label: "Haptic Feedback", sub: "Vibration settings", color: "text-cyan-500", bg: "bg-cyan-50", special: true },
