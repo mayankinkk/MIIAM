@@ -121,7 +121,7 @@ export default function SupportChatPage() {
       </div>
 
       {/* Quick Replies */}
-      <div className="fixed bottom-20 left-0 right-0 px-4 pb-2">
+      <div className="fixed bottom-28 left-0 right-0 px-4 pb-2">
         <div className="flex gap-2 overflow-x-auto no-scrollbar">
           {quickReplies.map((r) => (
             <button

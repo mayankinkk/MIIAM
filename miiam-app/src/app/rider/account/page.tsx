@@ -262,7 +262,7 @@ export default function RiderAccountPage() {
         </div>
 
         {/* Quick Links */}
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <Link href="/rider/analytics" className="bg-white p-3 rounded-xl shadow-sm flex flex-col items-center gap-1">
             <span className="text-2xl">📊</span>
             <span className="text-[10px] font-bold">Analytics</span>

@@ -59,7 +59,8 @@ export function QuickCommerceBadge() {
   if (!isQuickMode) return null;
 
   return (
-    <div className="fixed bottom-20 left-1/2 -translate-x-1/2 bg-[#ba001c] text-white px-4 py-2 rounded-full font-bold text-sm shadow-lg flex items-center gap-2 z-40">
+    <div className="fixed bottom-20 left-1/2 -translate-x-1/2 bg-[#ba001c] text-white px-4 py-2 rounded-full font-bold text-sm shadow-lg flex items-center gap-2 z-40"
+      style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}>
       <span className="material-symbols-outlined text-lg animate-pulse">flash_on</span>
       <span>10-min delivery</span>
       <button 

@@ -294,6 +294,7 @@ function CartFloater() {
       animate={{ y: 0, opacity: 1 }}
       transition={{ type: "spring", stiffness: 300, damping: 25, delay: 0.5 }}
       className="fixed bottom-6 left-4 right-4 z-50"
+      style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
     >
       <Link
         href="/app/cart"

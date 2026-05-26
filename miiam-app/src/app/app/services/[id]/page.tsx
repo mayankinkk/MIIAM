@@ -273,6 +273,7 @@ function ServiceDetailContent() {
           onClick={handleAddToCart}
           disabled={adding}
           className="fixed bottom-6 left-4 right-4 bg-[#5b31fc] text-white py-4 rounded-xl font-bold text-lg shadow-lg active:scale-95 transition-transform z-50"
+          style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}
         >
           {adding ? "Adding..." : "Book Now"}
         </button>

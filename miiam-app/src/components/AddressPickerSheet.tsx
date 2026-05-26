@@ -217,7 +217,8 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
       />
 
       {/* Sheet */}
-      <div className="addr-sheet fixed bottom-0 left-0 right-0 z-[201] bg-white rounded-t-3xl max-h-[92vh] flex flex-col shadow-2xl">
+      <div className="addr-sheet fixed bottom-0 left-0 right-0 z-[201] bg-white rounded-t-3xl max-h-[92vh] flex flex-col shadow-2xl"
+        style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
         {/* Handle + Header */}
         <div className="flex-shrink-0 px-5 pt-4 pb-3 border-b border-slate-100">
           <div className="w-10 h-1 bg-slate-300 rounded-full mx-auto mb-4" />

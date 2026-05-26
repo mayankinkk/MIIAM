@@ -178,6 +178,7 @@ export function SupportButton() {
       <button
         onClick={() => setShowChat(true)}
         className="fixed bottom-24 right-4 w-14 h-14 bg-[#ba001c] text-white rounded-full shadow-lg flex items-center justify-center hover:scale-105 transition-transform z-30"
+        style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}
       >
         <span className="material-symbols-outlined text-2xl">chat</span>
         <span className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white" />

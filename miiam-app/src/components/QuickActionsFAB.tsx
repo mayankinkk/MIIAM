@@ -36,7 +36,8 @@ export default function QuickActionsFAB({ actions = defaultActions }: QuickActio
   return (
     <>
       {/* Quick Actions Menu */}
-      <div className="fixed bottom-24 right-6 z-40 flex flex-col items-end gap-3">
+      <div className="fixed bottom-24 right-6 z-40 flex flex-col items-end gap-3"
+        style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}>
         {isOpen && (
           <div className="flex flex-col gap-2 animate-fade-in">
             {actions.map((action) => (
@@ -100,7 +101,8 @@ export function MiniFAB() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="fixed bottom-24 right-6 z-40">
+    <div className="fixed bottom-24 right-6 z-40"
+      style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-12 h-12 bg-[#ba001c] rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform"
@@ -141,6 +143,7 @@ export function ChatFAB() {
     <Link
       href="/app/support/chat"
       className="fixed bottom-24 right-6 z-40 w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform animate-bounce-in"
+      style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}
     >
       <span className="material-symbols-outlined text-white text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>
         chat

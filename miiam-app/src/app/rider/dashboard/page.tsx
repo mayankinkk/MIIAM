@@ -1002,7 +1002,7 @@ export default function RiderDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-background font-body-md text-on-surface overflow-hidden">
+    <div className="min-h-screen bg-background font-body-md text-on-surface">
       <audio ref={audioRef} src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2teleQoKJZPl" preload="auto" />
 
       {/* Header */}

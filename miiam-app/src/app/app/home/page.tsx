@@ -383,7 +383,8 @@ export default function HomePage() {
 
       {/* Floating Order Bubble */}
       {activeOrder && (
-        <div className="fixed bottom-20 right-4 z-40">
+        <div className="fixed bottom-20 right-4 z-40"
+          style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}>
           {/* Expanded Order Details */}
           {orderBubbleExpanded && (
             <div className="absolute bottom-16 right-0 w-72 bg-surface-container rounded-2xl border border-outline-variant/10 shadow-2xl p-4 mb-2 animate-in fade-in zoom-in duration-300">

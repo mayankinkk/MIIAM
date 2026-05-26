@@ -585,6 +585,7 @@ export default function ServiceProductGrid({
               ? "bg-[#ba001c] shadow-primary/40"
               : "bg-outline cursor-not-allowed shadow-none"
           }`}
+          style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}
         >
           <div className="flex items-center gap-3">
             <span className="bg-surface-container-lowest text-[#ba001c] font-black text-xs px-2 py-0.5 rounded-full">

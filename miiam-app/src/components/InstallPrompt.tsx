@@ -45,7 +45,8 @@ export default function InstallPrompt() {
   if (installed || !showPrompt) return null;
 
   return (
-    <div className="fixed bottom-24 left-4 right-4 z-50 bg-surface-container-lowest rounded-2xl shadow-2xl border border-outline-variant p-4 animate-in slide-in-from-bottom-8 duration-300">
+    <div className="fixed bottom-24 left-4 right-4 z-50 bg-surface-container-lowest rounded-2xl shadow-2xl border border-outline-variant p-4 animate-in slide-in-from-bottom-8 duration-300"
+      style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}>
       <div className="flex items-start gap-3">
         <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center flex-shrink-0">
           <span className="material-symbols-outlined text-white text-xl">install_mobile</span>

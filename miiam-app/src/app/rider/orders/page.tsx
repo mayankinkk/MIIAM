@@ -757,7 +757,8 @@ export default function RiderOrdersPage() {
 
         {/* Batch Accept Bar */}
         {activeTab === "available" && selectedOrders.length > 0 && (
-          <div className="fixed bottom-24 left-4 right-4 bg-green-500 text-white p-3 rounded-xl flex items-center justify-between shadow-lg z-40">
+          <div className="fixed bottom-24 left-4 right-4 bg-green-500 text-white p-3 rounded-xl flex items-center justify-between shadow-lg z-40"
+            style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}>
             <span className="font-bold">{selectedOrders.length} orders selected</span>
             <button onClick={batchAccept} className="bg-white text-green-600 px-4 py-1 rounded-lg font-bold">
               Accept All
