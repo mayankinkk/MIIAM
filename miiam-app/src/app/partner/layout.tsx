@@ -8,7 +8,7 @@ import { getVendorForUser } from "@/lib/vendor";
 
 const navLinks = [
   { href: "/partner/dashboard", label: "Dashboard", icon: "dashboard" },
-  { href: "/partner", label: "Live POS", icon: "point_of_sale" },
+  { href: "/partner/pos", label: "Live POS", icon: "point_of_sale" },
   { href: "/partner/kot", label: "KOT", icon: "receipt" },
   { href: "/partner/orders", label: "Orders", icon: "receipt_long" },
   { href: "/partner/menu", label: "Menu & Inventory", icon: "restaurant_menu" },
@@ -36,10 +36,11 @@ export default function PartnerLayout({
   }, []);
 
   useEffect(() => {
+    if (pathname === "/partner" || pathname === "/partner/register") return;
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) router.push("/auth/login?redirect=/partner");
+      if (!session) router.push("/auth/login?redirect=" + pathname);
     });
-  }, [router, supabase]);
+  }, [router, supabase, pathname]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -50,12 +51,18 @@ export default function PartnerLayout({
     ? vendor.shop_name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase()
     : "VD";
 
+  const isPublicPage = pathname === "/partner" || pathname === "/partner/register";
+
+  if (isPublicPage) {
+    return <>{children}</>;
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 flex">
       {/* Sidebar */}
       <aside className="w-64 bg-white border-r border-slate-200 fixed h-full z-20 flex-col hidden md:flex">
         <div className="p-6 border-b border-slate-100 flex items-center justify-center">
-          <Link href="/partner" className="text-2xl font-extrabold tracking-tighter text-[#ba001c]">
+          <Link href="/partner/dashboard" className="text-2xl font-extrabold tracking-tighter text-[#ba001c]">
             MIIAM <span className="text-slate-800 text-sm tracking-normal ml-1">Partner</span>
           </Link>
         </div>
@@ -108,7 +115,7 @@ export default function PartnerLayout({
       {/* Main Content */}
       <main className="flex-1 md:ml-64 relative">
         <header className="md:hidden bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between sticky top-0 z-30">
-          <Link href="/partner" className="text-xl font-extrabold tracking-tighter text-[#ba001c]">
+          <Link href="/partner/dashboard" className="text-xl font-extrabold tracking-tighter text-[#ba001c]">
             MIIAM <span className="text-slate-800 text-xs tracking-normal ml-1">Partner</span>
           </Link>
           <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="text-slate-800 p-1">

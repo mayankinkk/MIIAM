@@ -25,8 +25,12 @@ export async function updateSession(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
 
+  const publicPartnerPaths = ['/partner', '/partner/register']
+  const isPublicPartner = publicPartnerPaths.some(p =>
+    request.nextUrl.pathname === p
+  )
   const protectedPaths = ['/app', '/admin', '/rider', '/partner']
-  const isProtected = protectedPaths.some(p =>
+  const isProtected = !isPublicPartner && protectedPaths.some(p =>
     request.nextUrl.pathname.startsWith(p)
   )
 
