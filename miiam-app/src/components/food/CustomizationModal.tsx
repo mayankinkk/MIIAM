@@ -170,7 +170,7 @@ export default function CustomizationModal({ item, vendor_id, vendor_name, vendo
   const totalPrice = (item.price + extraPrice) * quantity;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
+    <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
       
         <div className="relative w-full max-w-lg bg-white rounded-t-3xl sm:rounded-3xl max-h-[90dvh] flex flex-col animate-slide-up">
