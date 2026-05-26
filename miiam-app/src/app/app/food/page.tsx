@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useServiceSettingsStore } from "@/lib/store/serviceSettingsStore";
@@ -330,7 +329,6 @@ function CartFloater() {
 }
 
 export default function FoodPage() {
-  const router = useRouter();
   const { getSetting } = useServiceSettingsStore();
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [vegFilter, setVegFilter] = useState<"all" | "veg" | "non_veg">("all");
@@ -458,7 +456,7 @@ export default function FoodPage() {
             }
           </p>
           {noLocalVendors && (
-            <button onClick={() => { router.push("/app/home?selectLocation=true"); }} className="text-[10px] font-black text-primary underline whitespace-nowrap">
+            <button onClick={() => { window.location.href = "/app/home?selectLocation=true"; }} className="text-[10px] font-black text-primary underline whitespace-nowrap">
               Change
             </button>
           )}
@@ -538,7 +536,7 @@ export default function FoodPage() {
             <h3 className="text-lg font-black text-on-surface mb-1">Location Required</h3>
             <p className="text-sm text-on-surface-variant mb-5">Please set your delivery location to find restaurants serving your area.</p>
             <button
-              onClick={() => { router.push("/app/home?selectLocation=true"); }}
+              onClick={() => { window.location.href = "/app/home?selectLocation=true"; }}
               className="px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-[#a00018] active:scale-95 transition-all shadow-md"
             >
               Set Delivery Location
@@ -554,7 +552,7 @@ export default function FoodPage() {
             <p className="text-sm font-bold text-primary mb-4">{locationStore.displayAddress}</p>
             <p className="text-xs text-outline mb-5">We're expanding every day! Try a nearby pincode or check back soon.</p>
             <button
-              onClick={() => { router.push("/app/home?selectLocation=true"); }}
+              onClick={() => { window.location.href = "/app/home?selectLocation=true"; }}
               className="px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm"
             >
               Change Location
