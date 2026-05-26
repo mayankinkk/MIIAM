@@ -11,6 +11,7 @@ import BlurImage from "@/components/BlurImage";
 const menuItems = [
   { id: "orders", icon: "receipt_long", label: "My Orders", sub: "View all orders", color: "text-blue-500", bg: "bg-blue-50" },
   { id: "bookings", icon: "calendar_month", label: "Bookings", sub: "Service appointments", color: "text-amber-500", bg: "bg-amber-50" },
+  { id: "subscriptions", icon: "repeat", label: "Recurring Orders", sub: "Scheduled subscriptions", color: "text-purple-500", bg: "bg-purple-50" },
   { id: "addresses", icon: "location_on", label: "Saved Addresses", sub: "Manage delivery addresses", color: "text-green-500", bg: "bg-green-50" },
   { id: "favorites", icon: "favorite", label: "Favorites", sub: "Your saved items", color: "text-red-500", bg: "bg-red-50" },
   { id: "payment", icon: "payment", label: "Payment Methods", sub: "Cards, UPI, wallets", color: "text-purple-500", bg: "bg-purple-50" },

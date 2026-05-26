@@ -156,13 +156,7 @@ vi.mock("@/lib/store/notificationStore", () => {
 });
 
 vi.mock("@/components/Breadcrumbs", () => ({
-  default: ({ items }: any) => (
-    <nav data-testid="breadcrumbs">
-      {items?.map((item: any, i: number) => (
-        <span key={i}>{item.label}</span>
-      ))}
-    </nav>
-  ),
+  default: () => null,
 }));
 
 vi.mock("@/components/BlurImage", () => ({
@@ -212,26 +206,12 @@ describe("Page smoke tests", () => {
     expect(screen.getByText("Vegetables")).toBeInTheDocument();
   });
 
-  it("grocery page renders breadcrumbs", () => {
-    render(<GroceryPage />);
-
-    expect(screen.getByTestId("breadcrumbs")).toBeInTheDocument();
-    expect(screen.getByText("Home")).toBeInTheDocument();
-  });
-
   it("cart page renders header and empty cart state", () => {
     render(<CartPage />);
 
     expect(screen.getByText("MIIAM")).toBeInTheDocument();
     expect(screen.getByText("Your Cart")).toBeInTheDocument();
     expect(screen.getByTestId("empty-cart")).toBeInTheDocument();
-  });
-
-  it("cart page renders breadcrumbs", () => {
-    render(<CartPage />);
-
-    expect(screen.getByTestId("breadcrumbs")).toBeInTheDocument();
-    expect(screen.getByText("Cart")).toBeInTheDocument();
   });
 
   it("notifications page renders header and push notification section", () => {

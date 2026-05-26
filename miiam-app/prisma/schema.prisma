@@ -30,6 +30,7 @@ model Profile {
   chatMessages          ChatMessage[]
   notifications         Notification[]
   loyaltyPoints         LoyaltyPointsTransaction[]
+  recurringSchedules    RecurringSchedule[]
 
   @@map("profiles")
 }
@@ -292,6 +293,29 @@ model EmailOtp {
   createdAt   DateTime? @default(now()) @map("created_at")
 
   @@map("email_otps")
+}
+
+model RecurringSchedule {
+  id                  String    @id @default(uuid())
+  userId              String?   @map("user_id")
+  user                Profile?  @relation(fields: [userId], references: [id])
+  vendorId            String?   @map("vendor_id")
+  status              String?   @default("active")
+  frequency           String    // "daily" | "weekly" | "biweekly" | "monthly"
+  dayOfWeek           Int?      @map("day_of_week") // 0=Sun..6=Sat (for weekly/biweekly)
+  dayOfMonth          Int?      @map("day_of_month") // 1-31 (for monthly)
+  deliveryTime        String?   @map("delivery_time") // "09:00 AM - 11:00 AM"
+  deliveryAddress     String?   @map("delivery_address")
+  paymentMethod       String?   @map("payment_method")
+  items               Json      // Array of { menu_item_id, name, price, quantity, image_url }
+  nextDeliveryDate    DateTime? @map("next_delivery_date")
+  lastOrderCreatedAt  DateTime? @map("last_order_created_at")
+  startDate           DateTime? @map("start_date")
+  endDate             DateTime? @map("end_date")
+  createdAt           DateTime? @default(now()) @map("created_at")
+  updatedAt           DateTime? @default(now()) @map("updated_at")
+
+  @@map("recurring_schedules")
 }
 
 model UserPrescription {

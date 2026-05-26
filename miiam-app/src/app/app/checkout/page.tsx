@@ -51,6 +51,9 @@ export default function CheckoutPage() {
   const [placing, setPlacing] = useState(false);
   const [tipAmount, setTipAmount] = useState(0);
   const [showTipSelector, setShowTipSelector] = useState(true);
+  const [isRecurring, setIsRecurring] = useState(false);
+  const [recurringFrequency, setRecurringFrequency] = useState<string>("weekly");
+  const [recurringDayOfWeek, setRecurringDayOfWeek] = useState<number>(new Date().getDay());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [deliveryAddress, setDeliveryAddress] = useState<SelectedAddress | null>(null);
@@ -264,8 +267,39 @@ export default function CheckoutPage() {
         }
       }
 
+      // Create recurring schedule if opted in
+      if (isRecurring && vendorIds.length === 1) {
+        try {
+          const { error: scheduleError } = await supabase
+            .from("recurring_schedules")
+            .insert({
+              user_id: user.id,
+              vendor_id: vendorIds[0],
+              status: "active",
+              frequency: recurringFrequency,
+              day_of_week: recurringFrequency === "weekly" || recurringFrequency === "biweekly" ? recurringDayOfWeek : null,
+              delivery_time: scheduledTime || null,
+              delivery_address: finalAddress,
+              payment_method: paymentMethod,
+              items: items.map((i) => ({
+                menu_item_id: i.menu_item_id,
+                name: i.name,
+                price: i.price,
+                quantity: i.quantity,
+                image_url: i.image_url || null,
+              })),
+              start_date: new Date().toISOString(),
+              next_delivery_date: new Date(`${scheduledDate}T${(scheduledTime || "09:00 AM").split(" - ")[0].trim()}`).toISOString(),
+            });
+          if (scheduleError) console.warn("Failed to create recurring schedule:", scheduleError);
+        } catch (scheduleErr) {
+          console.warn("Failed to create recurring schedule:", scheduleErr);
+        }
+      }
+
       clearCart();
-      addToast("🎉 Order placed! Tracking your order...", "success");
+      const msg = isRecurring ? "🎉 Recurring order set up! First order on its way." : "🎉 Order placed! Tracking your order...";
+      addToast(msg, "success");
       const targetPath = firstOrderId ? `/app/orders/${firstOrderId}` : "/app/orders";
       router.push(targetPath);
     } catch (error: any) {
@@ -509,11 +543,68 @@ export default function CheckoutPage() {
                 {/* Clear Schedule */}
                 {(scheduledDate || scheduledTime) && (
                   <button
-                    onClick={() => { setScheduledDate(""); setScheduledTime(""); }}
+                    onClick={() => { setScheduledDate(""); setScheduledTime(""); setIsRecurring(false); }}
                     className="mt-4 w-full p-3 rounded-lg text-sm font-semibold border border-red-300 text-red-600 hover:bg-red-50"
                   >
                     Clear Schedule
                   </button>
+                )}
+
+                {/* Recurring Order Toggle */}
+                {scheduledDate && scheduledTime && (
+                  <div className="mt-6 p-4 rounded-xl border-2 border-purple-200 bg-purple-50">
+                    <label className="flex items-center justify-between cursor-pointer">
+                      <div className="flex items-center gap-3">
+                        <span className="material-symbols-outlined text-purple-600">repeat</span>
+                        <div>
+                          <p className="font-bold text-purple-800 text-sm">Make this a recurring order</p>
+                          <p className="text-xs text-purple-600">Auto-reorder on schedule</p>
+                        </div>
+                      </div>
+                      <input
+                        type="checkbox"
+                        checked={isRecurring}
+                        onChange={(e) => setIsRecurring(e.target.checked)}
+                        className="w-5 h-5 text-purple-600 rounded"
+                      />
+                    </label>
+
+                    {isRecurring && (
+                      <div className="mt-4 space-y-3">
+                        <div>
+                          <label className="text-xs font-bold text-purple-700 block mb-1">Repeat every</label>
+                          <select
+                            value={recurringFrequency}
+                            onChange={(e) => setRecurringFrequency(e.target.value)}
+                            className="w-full p-3 rounded-lg border-2 border-purple-200 text-sm font-semibold focus:outline-none focus:border-purple-400"
+                          >
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="biweekly">Every 2 weeks</option>
+                            <option value="monthly">Monthly</option>
+                          </select>
+                        </div>
+                        {(recurringFrequency === "weekly" || recurringFrequency === "biweekly") && (
+                          <div>
+                            <label className="text-xs font-bold text-purple-700 block mb-1">On day</label>
+                            <select
+                              value={recurringDayOfWeek}
+                              onChange={(e) => setRecurringDayOfWeek(Number(e.target.value))}
+                              className="w-full p-3 rounded-lg border-2 border-purple-200 text-sm font-semibold focus:outline-none focus:border-purple-400"
+                            >
+                              {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((day, i) => (
+                                <option key={day} value={i}>{day}</option>
+                              ))}
+                            </select>
+                          </div>
+                        )}
+                        <p className="text-xs text-purple-500 flex items-center gap-1">
+                          <span className="material-symbols-outlined text-[14px]">info</span>
+                          Orders will be created automatically on your chosen schedule
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 )}
                 
                 {/* Scheduled Order Info */}
