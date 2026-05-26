@@ -178,6 +178,7 @@ export default function PartnerLanding() {
         <div className="flex justify-center gap-6 mb-3">
           <Link href="/terms" className="hover:text-slate-600 transition-colors">Terms</Link>
           <Link href="/privacy" className="hover:text-slate-600 transition-colors">Privacy</Link>
+          <Link href="/refunds" className="hover:text-slate-600 transition-colors">Refund Policy</Link>
         </div>
         <p>&copy; {new Date().getFullYear()} MIIAM. All rights reserved.</p>
       </footer>

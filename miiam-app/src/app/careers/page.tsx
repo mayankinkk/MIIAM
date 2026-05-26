@@ -404,6 +404,7 @@ export default function CareersPage() {
         <div className="flex justify-center gap-6 mb-4">
           <Link href="/terms" className="text-slate-500 text-sm hover:text-white transition-colors">Terms</Link>
           <Link href="/privacy" className="text-slate-500 text-sm hover:text-white transition-colors">Privacy</Link>
+          <Link href="/refunds" className="text-slate-500 text-sm hover:text-white transition-colors">Refund Policy</Link>
         </div>
         <p className="text-slate-500 text-sm">
           © 2026 MIIAM. All rights reserved. Guwahati, Assam.

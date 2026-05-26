@@ -88,6 +88,7 @@ export default function AboutUsPage() {
         <div className="flex justify-center gap-6 mb-4">
           <Link href="/terms" className="text-slate-400 text-sm hover:text-[#ba001c] transition-colors">Terms</Link>
           <Link href="/privacy" className="text-slate-400 text-sm hover:text-[#ba001c] transition-colors">Privacy</Link>
+          <Link href="/refunds" className="text-slate-400 text-sm hover:text-[#ba001c] transition-colors">Refund Policy</Link>
         </div>
         <p className="text-slate-400 font-bold text-sm">© 2026 MIIAM. Built with ❤️ in Guwahati.</p>
       </footer>
