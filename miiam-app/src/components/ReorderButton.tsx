@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/lib/store/cartStore";
 import { createClient } from "@/lib/supabase/client";
@@ -30,7 +29,7 @@ export function ReorderButton({ order }: ReorderButtonProps) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const supabase = createClient();
-  const { addItem, clearCart, items } = useCartStore();
+  const { addItem } = useCartStore();
 
   const handleReorder = async () => {
     setLoading(true);
@@ -45,15 +44,6 @@ export function ReorderButton({ order }: ReorderButtonProps) {
         alert("Menu items not available");
         setLoading(false);
         return;
-      }
-
-      const existingVendorItems = items.filter(i => i.vendor_id !== order.vendor_id);
-      if (existingVendorItems.length > 0) {
-        if (!confirm("Adding items from a different restaurant will clear your cart. Continue?")) {
-          setLoading(false);
-          return;
-        }
-        clearCart();
       }
 
       for (const orderItem of order.items) {
