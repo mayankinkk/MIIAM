@@ -642,7 +642,7 @@ function ServicesContent() {
   const mappedCategory = categoryIdMap[rawCategory];
   const initialCategory = categoryIdMap[rawCategory] ?? (rawCategory === "all" ? "all" : "all");
 
-  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
+  const [selectedCategory, setSelectedCategory] = useState<ServiceCategory | "all">(initialCategory as ServiceCategory | "all");
   const [bookingService, setBookingService] = useState<Service | null>(null);
 
   // Keep in sync if the user navigates directly with a URL change

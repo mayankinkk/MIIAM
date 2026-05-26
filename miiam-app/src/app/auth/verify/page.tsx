@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 function OTPVerificationContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const supabase = createClient();
   
   const phone = searchParams.get("phone") || "";
   const purpose = searchParams.get("purpose") || "signup";
