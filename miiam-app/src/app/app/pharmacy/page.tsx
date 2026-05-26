@@ -5,8 +5,6 @@ import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import ServiceProductGrid from "@/components/ServiceProductGrid";
 
-const supabase = createClient();
-
 const pharmacyCategories = [
   { id: "pain", name: "Pain Relief", icon: "\uD83D\uDC8A", color: "bg-red-100" },
   { id: "fever", name: "Fever & Cold", icon: "\uD83C\uDF21\uFE0F", color: "bg-orange-100" },
@@ -17,6 +15,7 @@ const pharmacyCategories = [
 ];
 
 export default function PharmacyPage() {
+  const supabase = createClient();
   const [showPrescriptionModal, setShowPrescriptionModal] = useState(false);
   const [prescriptionFile, setPrescriptionFile] = useState<File | null>(null);
   const [prescriptionNotes, setPrescriptionNotes] = useState("");

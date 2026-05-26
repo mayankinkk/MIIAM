@@ -50,7 +50,7 @@ export async function POST() {
         .insert({
           user_id: order.user_id,
           title: "No Rider Available",
-          message: "Sorry, no riders are available for your order right now. Please try again in a few minutes.",
+          body: "Sorry, no riders are available for your order right now. Please try again in a few minutes.",
           type: "order_failed",
           read: false,
           icon: "local_shipping"

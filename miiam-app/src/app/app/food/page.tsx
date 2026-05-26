@@ -330,6 +330,7 @@ function CartFloater() {
 }
 
 export default function FoodPage() {
+  const router = useRouter();
   const { getSetting } = useServiceSettingsStore();
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [vegFilter, setVegFilter] = useState<"all" | "veg" | "non_veg">("all");

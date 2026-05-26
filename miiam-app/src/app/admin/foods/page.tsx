@@ -25,7 +25,7 @@ export default function AdminFoodsDashboard() {
 
   useEffect(() => {
     loadData();
-  }, [supabase]);
+  }, []);
 
   async function loadData() {
     setLoading(true);

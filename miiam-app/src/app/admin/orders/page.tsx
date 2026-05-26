@@ -43,7 +43,7 @@ export default function OrderManagement() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [supabase]);
+  }, []);
 
   async function loadOrders() {
     const { data } = await supabase

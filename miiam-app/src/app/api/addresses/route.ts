@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createAdminClient, createClient } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/server";
 
 export async function GET(request: NextRequest) {
   const supabase = await createClient();
@@ -8,9 +8,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const supabaseAdmin = createAdminClient();
-
-  const { data: addresses, error } = await supabaseAdmin
+  const { data: addresses, error } = await supabase
     .from("user_addresses")
     .select("*")
     .eq("user_id", user.id)
@@ -31,14 +29,16 @@ export async function POST(request: NextRequest) {
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  const supabaseAdmin = createAdminClient();
-
   try {
     const body = await request.json();
     const { user_id, label, address, city, state, pincode, lat, lng, is_default } = body;
 
     if (!user_id || !label || !address || !city || !pincode) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    }
+
+    if (user_id !== user.id) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     if (is_default) {
@@ -79,14 +79,16 @@ export async function PUT(request: NextRequest) {
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  const supabaseAdmin = createAdminClient();
-
   try {
     const body = await request.json();
     const { id, user_id, label, address, city, state, pincode, lat, lng, is_default } = body;
 
     if (!id) {
       return NextResponse.json({ error: "Address ID required" }, { status: 400 });
+    }
+
+    if (user_id && user_id !== user.id) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     if (is_default && user_id) {
@@ -131,7 +133,6 @@ export async function DELETE(request: NextRequest) {
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  const supabaseAdmin = createAdminClient();
   const { searchParams } = new URL(request.url);
   const id = searchParams.get("id");
 
