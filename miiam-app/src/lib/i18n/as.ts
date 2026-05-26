@@ -34,6 +34,7 @@ const as: Translations = {
     note: "ৰেষ্টুৰেণ্টৰ নামৰ দৰে কিছুমান বিষয়বস্তু সদায় মূল ভাষাতে দেখুওৱা হয়।",
   },
   landing: {
+    navFood: "খাদ্য",
     navVendors: "বিক্ৰেতা",
     navServices: "সেৱা",
     navBusiness: "আমাৰ বিষয়ে",

@@ -404,7 +404,7 @@ export default function HomePage() {
               
               {/* Progress Steps */}
               <div className="space-y-3">
-                {activeOrder.steps.map((step, index) => (
+                {activeOrder.steps.map((step: any, index: number) => (
                   <div key={step.id} className="flex items-center gap-3">
                     <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
                       step.completed ? 'bg-green-500' : index === 2 ? 'bg-orange-500 animate-pulse' : 'bg-surface-container-high'

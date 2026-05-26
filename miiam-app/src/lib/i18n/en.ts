@@ -32,6 +32,7 @@ const en = {
     note: "Some content like restaurant names is always shown in its original language.",
   },
   landing: {
+    navFood: "Food",
     navVendors: "Vendors",
     navServices: "Services",
     navBusiness: "About Us",

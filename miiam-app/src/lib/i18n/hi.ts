@@ -34,6 +34,7 @@ const hi: Translations = {
     note: "रेस्तरां के नाम जैसी कुछ सामग्री हमेशा मूल भाषा में दिखाई जाती है।",
   },
   landing: {
+    navFood: "भोजन",
     navVendors: "विक्रेता",
     navServices: "सेवाएं",
     navBusiness: "हमारे बारे में",

@@ -286,7 +286,7 @@ function SearchContent() {
                     >
                       <div className="h-32 bg-surface-container relative">
                         {vendor.cover_image_url || vendor.image_url ? (
-                          <BlurImage src={vendor.cover_image_url || vendor.image_url} alt={vendor.shop_name} fill className="w-full h-full" sizes="(max-width: 768px) 100vw, 50vw" />
+                          <BlurImage src={vendor.cover_image_url || vendor.image_url || ""} alt={vendor.shop_name} fill className="w-full h-full" sizes="(max-width: 768px) 100vw, 50vw" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center">
                             <span className="material-symbols-outlined text-4xl text-outline-variant">restaurant</span>
