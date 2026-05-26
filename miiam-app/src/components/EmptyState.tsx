@@ -1,9 +1,12 @@
+import Link from "next/link";
+
 interface EmptyStateProps {
   icon: string;
   title: string;
   description: string;
   actionLabel?: string;
   onAction?: () => void;
+  actionHref?: string;
 }
 
 export default function EmptyState({
@@ -12,13 +15,22 @@ export default function EmptyState({
   description,
   actionLabel,
   onAction,
+  actionHref,
 }: EmptyStateProps) {
   return (
     <div className="flex flex-col items-center justify-center py-16 px-8 text-center">
       <span className="text-7xl mb-4">{icon}</span>
       <h3 className="text-xl font-bold text-[var(--color-on-surface)] mb-2">{title}</h3>
       <p className="text-[var(--color-on-surface-variant)] text-sm max-w-xs">{description}</p>
-      {actionLabel && onAction && (
+      {actionLabel && actionHref && (
+        <Link
+          href={actionHref}
+          className="mt-6 px-6 py-3 bg-[var(--color-primary)] text-[var(--color-on-primary)] rounded-full font-bold text-sm hover:opacity-90 transition-opacity inline-block"
+        >
+          {actionLabel}
+        </Link>
+      )}
+      {actionLabel && onAction && !actionHref && (
         <button
           onClick={onAction}
           className="mt-6 px-6 py-3 bg-[var(--color-primary)] text-[var(--color-on-primary)] rounded-full font-bold text-sm hover:opacity-90 transition-opacity"

@@ -34,6 +34,7 @@ export interface Vendor {
   description: string | null;
   image_url: string | null;
   banner_url: string | null;
+  cover_image_url?: string | null;
   is_active: boolean;
   rating: number;
   review_count: number;
