@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useLocationStore } from "@/lib/store/locationStore";
 import { HomeSkeleton } from "@/components/Skeleton";
@@ -26,6 +27,7 @@ const offers = [
 
 
 export default function HomePage() {
+  const router = useRouter();
   const supabase = createClient();
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
@@ -131,7 +133,7 @@ export default function HomePage() {
     const channelRef = { current: null as any };
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) return;
-      channelRef.current = supabase
+      const channel = supabase
         .channel(`notifications-${user.id}`)
         .on("postgres_changes", {
           event: "INSERT",
@@ -143,6 +145,7 @@ export default function HomePage() {
           setUnreadCount(prev => prev + 1);
         })
         .subscribe();
+      channelRef.current = channel;
     });
 
     return () => {
@@ -232,7 +235,7 @@ export default function HomePage() {
               lat: latitude,
               lng: longitude,
               city: city || address.city || address.town || null,
-              state: state || null,
+              state: state || undefined,
               displayAddress: displayName,
             });
           } else {

@@ -733,7 +733,7 @@ function ServicesContent() {
           {serviceCategories.map((cat, i) => (
             <button
               key={cat.id}
-              onClick={() => { setSelectedCategory(cat.id); if (navigator.vibrate) navigator.vibrate(10); }}
+              onClick={() => { setSelectedCategory(cat.id as ServiceCategory); if (navigator.vibrate) navigator.vibrate(10); }}
               className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap flex items-center gap-1 active:scale-95 transition-all animate-category-slide ${
                 selectedCategory === cat.id ? "bg-primary text-white" : "bg-surface-container-lowest text-on-surface-variant border border-outline-variant/20 hover:bg-surface-container-low"
               }`}

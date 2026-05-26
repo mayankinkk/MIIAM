@@ -20,6 +20,7 @@ interface VendorResult {
   delivery_time_max: number;
   min_order_amount: number;
   image_url: string | null;
+  cover_image_url?: string | null;
 }
 
 interface MenuResult {

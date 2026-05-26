@@ -8,6 +8,7 @@ interface Review {
   rating: number;
   comment: string;
   created_at: string;
+  vendor_reply?: string | null;
   user: { full_name: string; avatar_url?: string } | null;
 }
 

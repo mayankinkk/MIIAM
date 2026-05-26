@@ -7,13 +7,11 @@ import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useToastStore } from "@/lib/store/toastStore";
 import { useLocationStore } from "@/lib/store/locationStore";
-import { useServiceSettingsStore } from "@/lib/store/serviceSettingsStore";
+import { useServiceSettingsStore, ServiceCategory } from "@/lib/store/serviceSettingsStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
 import { CardSkeleton } from "@/components/Skeletons";
 import ServiceUnavailable from "@/components/ServiceUnavailable";
-
-const supabase = createClient();
 
 interface Category {
   id: string;
@@ -47,7 +45,7 @@ interface ServiceProductGridProps {
   emptyDescription: string;
   emptyActionLabel?: string;
   serviceUnavailableIcon: string;
-  serviceSettingKey: string;
+  serviceSettingKey: ServiceCategory;
   priceLabel?: string;
   filterTransform?: (value: string) => string;
   productImageFallback?: string;
@@ -92,6 +90,7 @@ export default function ServiceProductGrid({
   const [sortBy, setSortBy] = useState<string>("default");
   const [inStockOnly, setInStockOnly] = useState(false);
   const [showSort, setShowSort] = useState(false);
+  const supabase = createClient();
   const router = useRouter();
   const { items, addItem, updateQuantity, totalItems } = useCartStore();
   const { addToast } = useToastStore();
