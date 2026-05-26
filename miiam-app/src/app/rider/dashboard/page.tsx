@@ -11,6 +11,7 @@ import { calculateEarnings } from "@/lib/earnings";
 
 interface Order {
   id: string;
+  user_id?: string;
   vendor: string;
   vendorAddress: string;
   vendorPhone: string;
@@ -545,14 +546,14 @@ export default function RiderDashboard() {
       const { data } = await supabase
         .from("chat_messages")
         .select("*")
-        .eq("order_id", currentOrder.orderDbId)
+        .eq("order_id", currentOrder?.orderDbId)
         .order("created_at", { ascending: true });
       if (data) setChatMessages(data);
     }
-    loadChat();
+    if (currentOrder) loadChat();
 
     const channel = supabase
-      .channel(`rider-chat-${currentOrder.orderDbId}`)
+      .channel(`rider-chat-${currentOrder?.orderDbId}`)
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "chat_messages", filter: `order_id=eq.${currentOrder.orderDbId}` }, (payload: any) => {
         setChatMessages((prev) => [...prev, payload.new]);
       })
@@ -930,7 +931,7 @@ export default function RiderDashboard() {
           }
 
           // Notify customer
-          if (currentOrder.user_id) {
+          if (currentOrder?.user_id) {
             await supabase
               .from("notifications")
               .insert({

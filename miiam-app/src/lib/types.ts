@@ -76,6 +76,7 @@ export type OrderStatus =
 export interface Order {
   id: string;
   user_id: string;
+  customer_name?: string;
   vendor_id: string;
   rider_id: string | null;
   status: OrderStatus;

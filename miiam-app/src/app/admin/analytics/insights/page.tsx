@@ -47,6 +47,7 @@ export default function CustomerInsights() {
   }).length;
 
   const totalLoyaltyPoints = users.reduce((s, u) => s + (u.total_loyalty_points || 0), 0);
+  const avgLoyaltyPoints = users.length > 0 ? Math.round(totalLoyaltyPoints / users.length) : 0;
 
   const avgPointsPerUser = users.length > 0 ? Math.round(totalLoyaltyPoints / users.length) : 0;
 

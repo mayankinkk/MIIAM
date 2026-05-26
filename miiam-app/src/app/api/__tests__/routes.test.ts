@@ -27,6 +27,7 @@ vi.mock("@/lib/supabase/server", () => ({
     auth: {
       getUser: vi.fn().mockResolvedValue({ data: { user: { id: "test-user" } }, error: null }),
     },
+    from: mockFrom,
   })),
 }));
 
@@ -67,8 +68,7 @@ describe("Addresses API", () => {
 describe("Settings API", () => {
   it("GET /api/settings returns valid response", async () => {
     const { GET } = await import("../settings/route");
-    const req = mockRequest("GET", "http://localhost:3000/api/settings");
-    const res = await GET(req);
+    const res = await GET();
     expect(res.status).toBe(200);
   });
 });

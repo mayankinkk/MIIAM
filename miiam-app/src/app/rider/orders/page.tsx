@@ -396,6 +396,7 @@ export default function RiderOrdersPage() {
     try {
       const { data: { user } } = await supabase.auth.getUser();
 
+      if (!currentOrderId) return;
       const order = orders.find(o => o.id === currentOrderId);
       const riderEarning = calculateEarnings(0);
 

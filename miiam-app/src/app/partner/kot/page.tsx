@@ -65,7 +65,7 @@ export default function PartnerKOTPage() {
                   <p className="text-xs font-bold text-slate-400">#{order.id.slice(0, 8).toUpperCase()}</p>
                   <p className="text-lg font-extrabold text-slate-900 mt-0.5">{order.customer_name || "Guest"}</p>
                 </div>
-                <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase ${order.status === "confirmed" ? "bg-amber-100 text-amber-700" : "bg-blue-100 text-blue-700"}`}>
+                <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase ${order.status === ("confirmed" as OrderStatus) ? "bg-amber-100 text-amber-700" : "bg-blue-100 text-blue-700"}`}>
                   {order.status}
                 </span>
               </div>

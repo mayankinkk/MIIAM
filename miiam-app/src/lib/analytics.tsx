@@ -3,7 +3,13 @@
 import { Suspense, useEffect, useRef } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 
-type EventParams = Record<string, string | number | boolean | undefined>;
+type EventParams = Record<string, string | number | boolean | undefined | Record<string, unknown>[]>;
+
+declare global {
+  interface Window {
+    dataLayer: unknown[];
+  }
+}
 
 const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_ID;
 
