@@ -143,10 +143,12 @@ function ProfileSetupContent() {
         }
       }
 
+      // Show celebration briefly before redirect
+      setLoading(false);
+      await new Promise(r => setTimeout(r, 800));
       router.push(searchParams.get("redirect") || "/app/explore");
     } catch (error) {
       console.error("Setup error:", error);
-    } finally {
       setLoading(false);
     }
   };
@@ -163,19 +165,31 @@ function ProfileSetupContent() {
             />
           </div>
         )}
-        <h1 className="text-2xl font-black text-[#4d212a] mb-2">Complete Your Profile</h1>
-        <p className="text-slate-500 mb-8">Step {step} of 3</p>
+        <h1 className="text-2xl font-black text-[#4d212a] mb-1">Complete Your Profile</h1>
+        <p className="text-slate-500 mb-4">Step {step} of 3</p>
+
+        {/* Incentive Banner */}
+        <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl px-4 py-3 mb-6 flex items-center gap-3">
+          <span className="text-2xl">🎁</span>
+          <div>
+            <p className="text-sm font-bold text-amber-800">Complete your profile & unlock 10% OFF</p>
+            <p className="text-xs text-amber-700">Your first order deserves a warm welcome!</p>
+          </div>
+        </div>
 
         {/* Progress */}
-        <div className="flex gap-2 mb-8">
-          {[1, 2, 3].map((s) => (
-            <div
-              key={s}
-              className={`h-2 flex-1 rounded-full transition-all ${
-                s <= step ? "bg-[#ba001c]" : "bg-slate-200"
-              }`}
-            />
-          ))}
+        <div className="mb-6">
+          <div className="flex gap-2 mb-2">
+            {[1, 2, 3].map((s) => (
+              <div
+                key={s}
+                className={`h-2 flex-1 rounded-full transition-all ${
+                  s <= step ? "bg-[#ba001c]" : "bg-slate-200"
+                }`}
+              />
+            ))}
+          </div>
+          <p className="text-xs text-slate-400 text-right">{Math.round((step / 3) * 100)}% complete</p>
         </div>
 
         {/* Step 1: Basic Info */}
@@ -322,6 +336,18 @@ function ProfileSetupContent() {
               >
                 {loading ? "Saving..." : "Complete Setup"}
               </button>
+            </div>
+          </div>
+        )}
+
+        {/* Completion celebration overlay */}
+        {loading && (
+          <div className="fixed inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-50">
+            <div className="text-center animate-fade-in">
+              <div className="text-6xl mb-4">🎉</div>
+              <p className="text-xl font-black text-[#4d212a]">Welcome to MIIAM!</p>
+              <p className="text-sm text-slate-500 mt-2">Your 10% off coupon is waiting...</p>
+              <div className="mt-4 w-8 h-8 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin mx-auto" />
             </div>
           </div>
         )}
