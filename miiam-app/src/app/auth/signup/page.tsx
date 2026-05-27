@@ -43,8 +43,16 @@ function SignupContent() {
           redirectTo: callbackUrl,
         },
       });
-      if (error) { setError(error.message); }
-    } catch { setError("Something went wrong"); }
+      if (error) {
+        if (error.message?.includes("popup") || error.message?.includes("closed")) {
+          setError("Google sign-in was cancelled. Try again or use email to sign up.");
+        } else {
+          setError("Google sign-in is temporarily unavailable. Please use email instead.");
+        }
+      }
+    } catch {
+      setError("Google sign-in is temporarily unavailable. Please use email to sign up.");
+    }
     finally { setIsGoogleLoading(false); }
   };
 

@@ -42,8 +42,12 @@ function LoginContent() {
       const { error } = await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: `${window.location.origin}/auth/callback?redirect=${encodeURIComponent(redirectTo)}` } });
       if (error) throw error;
     } catch (err: any) { 
-      setError(err.message || "Something went wrong"); 
       setIsGoogleLoading(false);
+      if (err.message?.includes("popup") || err.message?.includes("closed")) {
+        setError("Google sign-in was cancelled. Try again or use email instead.");
+      } else {
+        setError("Google sign-in is temporarily unavailable. Please use email to sign in.");
+      }
     }
   };
 
