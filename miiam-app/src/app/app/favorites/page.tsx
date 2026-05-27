@@ -9,21 +9,16 @@ import { VendorCardSkeleton } from "@/components/Skeleton";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
 import PullToRefresh from "@/components/PullToRefresh";
-import { useState, useEffect } from "react";
-
-const supabase = createClient();
+import { useState, useEffect, useMemo, useCallback } from "react";
 
 export default function FavoritesPage() {
+  const supabase = useMemo(() => createClient(), []);
   const { favoriteIds, toggle, setFavorites } = useFavoritesStore();
   const [favorites, setFavoriteVendors] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const { addToast } = useToastStore();
 
-  useEffect(() => {
-    loadFavorites();
-  }, [favoriteIds.length]);
-
-  async function loadFavorites() {
+  const loadFavorites = useCallback(async () => {
     setLoading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -57,7 +52,7 @@ export default function FavoritesPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [supabase, favoriteIds, addToast, setFavorites]);
 
   const handleToggle = async (vendorId: string) => {
     toggle(vendorId); // Optimistic UI update
@@ -79,6 +74,10 @@ export default function FavoritesPage() {
       addToast("Failed to update favorites. Please try again.", "error");
     }
   };
+
+  useEffect(() => {
+    loadFavorites();
+  }, [loadFavorites]);
 
   return (
     <PullToRefresh onRefresh={loadFavorites}>
