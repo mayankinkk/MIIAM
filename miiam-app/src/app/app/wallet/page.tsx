@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import PullToRefresh from "@/components/PullToRefresh";
@@ -16,14 +16,14 @@ interface WalletTransaction {
 }
 
 export default function WalletPage() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [balance, setBalance] = useState(0);
   const [transactions, setTransactions] = useState<WalletTransaction[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadWalletData();
-  }, [supabase]);
+  }, []);
 
   async function loadWalletData() {
     const { data: { user } } = await supabase.auth.getUser();
