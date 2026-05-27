@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
@@ -54,6 +54,7 @@ function ProfileSetupContent() {
   const emailFromVerify = searchParams.get("email") || "";
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
+  const [avatarUrl, setAvatarUrl] = useState("");
   const [formData, setFormData] = useState({
     full_name: "",
     phone: phoneFromVerify,
@@ -63,6 +64,24 @@ function ProfileSetupContent() {
     location: "",
     dietary_preference: "both" as "veg" | "non_veg" | "both",
   });
+
+  useEffect(() => {
+    async function loadProfile() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("avatar_url, full_name, email")
+        .eq("id", session.user.id)
+        .single();
+      if (profile) {
+        if (profile.avatar_url) setAvatarUrl(profile.avatar_url);
+        if (profile.full_name && !formData.full_name) updateField("full_name", profile.full_name);
+        if (profile.email && !emailFromVerify) updateField("email", profile.email);
+      }
+    }
+    loadProfile();
+  }, []);
 
   const updateField = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -135,6 +154,15 @@ function ProfileSetupContent() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#fff4f4] to-white p-6">
       <div className="max-w-md mx-auto">
+        {avatarUrl && (
+          <div className="flex justify-center mb-6">
+            <img
+              src={avatarUrl}
+              alt="Profile"
+              className="w-20 h-20 rounded-full border-4 border-white shadow-lg object-cover"
+            />
+          </div>
+        )}
         <h1 className="text-2xl font-black text-[#4d212a] mb-2">Complete Your Profile</h1>
         <p className="text-slate-500 mb-8">Step {step} of 3</p>
 
