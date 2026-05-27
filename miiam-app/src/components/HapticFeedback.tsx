@@ -38,9 +38,9 @@ export const useHapticStore = create<HapticStore>()(
         
         if (typeof navigator !== "undefined" && navigator.vibrate) {
           const patterns: Record<string, number | number[]> = {
-            light: 10,
-            medium: 25,
-            heavy: [50, 30, 50],
+            light: 40,
+            medium: 80,
+            heavy: [60, 40, 60],
           };
           navigator.vibrate(patterns[type]);
         }
