@@ -7,6 +7,7 @@ import PullToRefresh from "@/components/PullToRefresh";
 import QuickActionsFAB from "@/components/QuickActionsFAB";
 import BlurImage from "@/components/BlurImage";
 import { useCartStore } from "@/lib/store/cartStore";
+import { createClient } from "@/lib/supabase/client";
 import { StaggerContainer, StaggerItem, FadeIn } from "@/components/ui/AnimationWrappers";
 
 const categories = [
@@ -61,6 +62,9 @@ export default function ExplorePage() {
   const { totalItems } = useCartStore();
   const [cartBounce, setCartBounce] = useState(false);
   const [prevCartCount, setPrevCartCount] = useState(0);
+  const [showLocationBanner, setShowLocationBanner] = useState(false);
+  const [dismissedLocationBanner, setDismissedLocationBanner] = useState(false);
+  const supabase = createClient();
 
   const filteredServices = servicesData.filter(service => {
     const matchesSearch = searchQuery === "" || 
@@ -85,9 +89,24 @@ export default function ExplorePage() {
   const hasActiveFilters = priceFilter !== "all" || ratingFilter !== "all" || dietaryFilter !== "all";
 
   useEffect(() => {
-    // Ensure client-side rendering is complete
     setIsLoaded(true);
   }, []);
+
+  useEffect(() => {
+    async function checkLocation() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("city, state")
+        .eq("id", session.user.id)
+        .single();
+      if (profile && !profile.city && !dismissedLocationBanner) {
+        setShowLocationBanner(true);
+      }
+    }
+    checkLocation();
+  }, [dismissedLocationBanner]);
 
   useEffect(() => {
     const count = totalItems();
@@ -141,6 +160,27 @@ export default function ExplorePage() {
           <span className="material-symbols-outlined text-red-500">error</span>
           <span className="text-sm text-red-700">{error}</span>
           <button onClick={() => setError(null)} className="ml-auto text-red-500">
+            <span className="material-symbols-outlined text-sm">close</span>
+          </button>
+        </div>
+      )}
+      {showLocationBanner && (
+        <div className="bg-amber-50 border border-amber-200 px-4 py-3 flex items-center gap-3">
+          <span className="material-symbols-outlined text-amber-600">location_on</span>
+          <div className="flex-1">
+            <p className="text-sm font-bold text-amber-800">Set your location</p>
+            <p className="text-xs text-amber-700">Discover services near you</p>
+          </div>
+          <Link
+            href="/auth/profile-setup?redirect=/app/explore"
+            className="text-xs font-bold bg-amber-500 text-white px-3 py-1.5 rounded-lg hover:bg-amber-600 transition-colors"
+          >
+            Set Location
+          </Link>
+          <button
+            onClick={() => { setShowLocationBanner(false); setDismissedLocationBanner(true); }}
+            className="text-amber-500"
+          >
             <span className="material-symbols-outlined text-sm">close</span>
           </button>
         </div>

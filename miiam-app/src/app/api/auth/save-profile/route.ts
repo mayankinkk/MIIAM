@@ -25,26 +25,25 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // Update profile using admin client (bypasses RLS)
-    const { error: profileError } = await supabaseAdmin.from("profiles").upsert({
+    const profileData: Record<string, any> = {
       id: user.id,
       full_name,
       phone,
       email: cleanEmail,
-      city,
-      state,
       is_profile_complete: true,
       updated_at: new Date().toISOString(),
-    });
+    };
+
+    if (city) profileData.city = city;
+    if (state) profileData.state = state;
+
+    // Update profile using admin client (bypasses RLS)
+    const { error: profileError } = await supabaseAdmin.from("profiles").upsert(profileData);
 
     if (profileError) {
       console.error("[save-profile] Profile error:", profileError);
       return NextResponse.json({ error: profileError.message }, { status: 500 });
     }
-
-    // The profiles table already has full_name, phone, and city updated in the upsert above.
-    // There is no public.users table (it's auth.users), and email_verified/phone_verified are not valid columns.
-    // So we don't need a separate update to a non-existent users table.
 
     return NextResponse.json({ success: true, userId: user.id });
   } catch (error: any) {

@@ -68,10 +68,12 @@ function ProfileSetupContent() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+  const [skipProfile, setSkipProfile] = useState(false);
+
   const canProceed = () => {
     if (step === 1) return formData.full_name.trim().length > 0;
-    if (step === 2) return formData.state.length > 0;
-    if (step === 3) return formData.city.length > 0;
+    if (step === 2) return formData.state.length > 0 || skipProfile;
+    if (step === 3) return formData.city.length > 0 || skipProfile;
     return true;
   };
 
@@ -87,32 +89,32 @@ function ProfileSetupContent() {
         user = userResponse.data?.user ?? undefined;
       }
 
+      const profileData: Record<string, any> = {
+        full_name: formData.full_name,
+        phone: formData.phone,
+        email: formData.email,
+        is_profile_complete: true,
+        updated_at: new Date().toISOString(),
+      };
+
+      if (formData.city) profileData.city = formData.city;
+      if (formData.state) profileData.state = formData.state;
+
       if (user) {
-        // We have a session - save profile directly
         const { error: profileError } = await supabase.from("profiles").upsert({
           id: user.id,
-          full_name: formData.full_name,
-          phone: formData.phone,
-          email: formData.email,
-          city: formData.city,
-          state: formData.state,
-          is_profile_complete: true,
-          updated_at: new Date().toISOString(),
+          ...profileData,
         });
 
         if (profileError) console.error("Profile error:", profileError);
       } else {
-        // No session - save profile via server-side admin API
         console.log("[profile-setup] No session found, saving via admin API");
         const res = await fetch("/api/auth/save-profile", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             email: formData.email || emailFromVerify,
-            full_name: formData.full_name,
-            phone: formData.phone,
-            city: formData.city,
-            state: formData.state,
+            ...profileData,
           }),
         });
         
@@ -199,6 +201,7 @@ function ProfileSetupContent() {
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-bold text-slate-700 mb-2">Select State</label>
+              <p className="text-xs text-slate-400 mb-3">Select your state to find services near you, or skip for now.</p>
               <div className="grid grid-cols-2 gap-2 max-h-[50vh] overflow-y-auto">
                 {INDIAN_STATES.map((state) => (
                   <button
@@ -226,8 +229,17 @@ function ProfileSetupContent() {
                 Back
               </button>
               <button
+                onClick={() => {
+                  setSkipProfile(true);
+                  handleComplete();
+                }}
+                className="flex-1 py-4 border-2 border-slate-200 rounded-xl font-bold text-slate-600 hover:border-[#ba001c]"
+              >
+                Skip for now
+              </button>
+              <button
                 onClick={() => setStep(3)}
-                disabled={!canProceed()}
+                disabled={!formData.state}
                 className="flex-1 py-4 bg-[#ba001c] text-white rounded-xl font-bold hover:bg-[#a00018] transition-all disabled:opacity-50"
               >
                 Next
@@ -242,6 +254,7 @@ function ProfileSetupContent() {
             <div>
               <p className="text-sm text-slate-500 mb-2">Selected: <span className="font-bold text-slate-700">{formData.state}</span></p>
               <label className="block text-sm font-bold text-slate-700 mb-2">Select City</label>
+              <p className="text-xs text-slate-400 mb-3">Choose your city to discover nearby services, or skip for now.</p>
               <div className="grid grid-cols-2 gap-2 max-h-[45vh] overflow-y-auto">
                 {(CITIES_BY_STATE[formData.state] || []).map((city) => (
                   <button
@@ -264,6 +277,15 @@ function ProfileSetupContent() {
                 className="flex-1 py-4 border-2 border-slate-200 rounded-xl font-bold text-slate-600 hover:border-[#ba001c]"
               >
                 Back
+              </button>
+              <button
+                onClick={() => {
+                  setSkipProfile(true);
+                  handleComplete();
+                }}
+                className="flex-1 py-4 border-2 border-slate-200 rounded-xl font-bold text-slate-600 hover:border-[#ba001c]"
+              >
+                Skip for now
               </button>
               <button
                 onClick={handleComplete}
