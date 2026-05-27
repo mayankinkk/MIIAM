@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCartStore } from "@/lib/store/cartStore";
 import { EmptyCart } from "@/components/ui/EmptyStates";
@@ -13,7 +13,7 @@ import BlurImage from "@/components/BlurImage";
 import { StaggerContainer, StaggerItem } from "@/components/ui/AnimationWrappers";
 
 export default function CartPage() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const { items, updateQuantity, removeItem, totalPrice, subtotalByVendor, clearCart, addItem } = useCartStore();
   const [pastOrders, setPastOrders] = useState<any[]>([]);
   const [showReorderModal, setShowReorderModal] = useState(false);

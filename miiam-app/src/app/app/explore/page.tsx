@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import PullToRefresh from "@/components/PullToRefresh";
@@ -65,7 +65,7 @@ export default function ExplorePage() {
   const [prevCartCount, setPrevCartCount] = useState(0);
   const [showLocationBanner, setShowLocationBanner] = useState(false);
   const [dismissedLocationBanner, setDismissedLocationBanner] = useState(false);
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
 
   const filteredServices = servicesData.filter(service => {
     const matchesSearch = searchQuery === "" || 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useNotificationStore } from "@/lib/store/notificationStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -13,7 +13,7 @@ export default function NotificationsPage() {
   const { permission, preferences, requestPermission, updatePreferences } = useNotificationStore();
   const [notifications, setNotifications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const { addToast } = useToastStore();
 
   useEffect(() => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
@@ -61,7 +61,7 @@ export default function CheckoutPage() {
   const [showAddressPicker, setShowAddressPicker] = useState(false);
   const router = useRouter();
   const { items, totalPrice, clearCart } = useCartStore();
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const { addToast } = useToastStore();
   const locationStore = useLocationStore();
   const userPincode = locationStore.pincode;
