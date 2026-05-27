@@ -145,12 +145,7 @@ export default function EnhancedProfilePage() {
                 <span className={`material-symbols-outlined ${item.color}`}>{item.icon}</span>
               </div>
               <div className="flex-1">
-                <p className="font-bold text-slate-800 flex items-center gap-2">
-                  {item.label}
-                  {item.badge && (
-                    <span className="bg-green-100 text-green-700 text-[8px] font-bold px-2 py-0.5 rounded-full">{item.badge}</span>
-                  )}
-                </p>
+                <p className="font-bold text-slate-800">{item.label}</p>
                 <p className="text-xs text-slate-500">{item.sub}</p>
               </div>
               <span className="material-symbols-outlined text-slate-300">chevron_right</span>

@@ -139,11 +139,11 @@ export default function UserRegistry() {
                   </td>
                   <td className="p-6 text-center">
                     <div className="flex flex-col items-center">
-                      <span className="text-sm font-black text-slate-800">{profile.total_loyalty_points ?? 0}</span>
-                      <p className="text-[10px] text-slate-500">Reward Points</p>
+                      <span className="text-sm font-black text-slate-800">{0}</span>
+                      <p className="text-[10px] text-slate-500">Loyalty Pts</p>
                     </div>
                     <div className="bg-slate-100 rounded-full h-2 w-full mt-2">
-                      <div className="h-full bg-amber-400 rounded-full" style={{ width: `${Math.min(100, ((profile.total_loyalty_points ?? 0)/500)*100)}%` }} />
+                      <div className="h-full bg-amber-400 rounded-full" style={{ width: '0%' }} />
                     </div>
                   </td>
                   <td className="p-6 text-center">
