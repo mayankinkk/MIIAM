@@ -7,7 +7,6 @@ export interface Profile {
   phone: string | null;
   avatar_url: string | null;
   role: UserRole;
-  total_loyalty_points: number;
   created_at: string;
   location: string | null;
   city: string | null;

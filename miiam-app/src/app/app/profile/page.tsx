@@ -15,7 +15,6 @@ const menuItems = [
   { id: "addresses", icon: "location_on", label: "Saved Addresses", sub: "Manage delivery addresses", color: "text-green-500", bg: "bg-green-50" },
   { id: "favorites", icon: "favorite", label: "Favorites", sub: "Your saved items", color: "text-red-500", bg: "bg-red-50" },
   { id: "payment", icon: "payment", label: "Payment Methods", sub: "Cards, UPI, wallets", color: "text-purple-500", bg: "bg-purple-50" },
-  { id: "subscription", icon: "workspace_premium", label: "MIIAM+", sub: "Premium membership", color: "text-amber-500", bg: "bg-amber-50", badge: "ACTIVE" },
   { id: "support", icon: "support_agent", label: "Help & Support", sub: "24/7 customer care", color: "text-indigo-500", bg: "bg-indigo-50" },
   { id: "settings", icon: "settings", label: "Settings", sub: "App preferences", color: "text-slate-500", bg: "bg-slate-50" },
   { id: "haptic", icon: "vibration", label: "Haptic Feedback", sub: "Vibration settings", color: "text-cyan-500", bg: "bg-cyan-50", special: true },
@@ -97,12 +96,7 @@ export default function EnhancedProfilePage() {
             <h2 className="text-2xl font-black">{displayName}</h2>
             <p className="text-white/80 text-sm">{user?.email}</p>
             {profile?.phone && <p className="text-white/60 text-sm">{profile.phone}</p>}
-            <div className="flex items-center gap-2 mt-2">
-              <span className="bg-amber-400 text-amber-900 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
-                <span className="material-symbols-outlined text-[10px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                MIIAM+ Member
-              </span>
-            </div>
+
           </div>
         </div>
 
@@ -127,22 +121,6 @@ export default function EnhancedProfilePage() {
 
       {/* Menu Items */}
       <main className="px-6 -mt-6 space-y-4">
-        {/* MIIAM+ Promo */}
-        <Link href="/app/subscription" className="block bg-gradient-to-r from-amber-500 to-amber-600 rounded-2xl p-4 text-white">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>workspace_premium</span>
-              <div>
-                <p className="font-bold">Upgrade to MIIAM+</p>
-                <p className="text-xs text-white/80">Free delivery & 20% off</p>
-              </div>
-            </div>
-            <span className="material-symbols-outlined">chevron_right</span>
-          </div>
-        </Link>
-
-        
-
         {/* Menu Sections */}
         <div className="space-y-2">
           {menuItems.slice(0, 4).map((item) => (

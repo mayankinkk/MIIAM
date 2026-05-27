@@ -21,7 +21,6 @@ const offers = [
   { id: "o1", title: "First Order Discount", subtitle: "Get 50% OFF on first order", color: "from-orange-500 to-red-500", badge: "NEW USER" },
   { id: "o2", title: "Free Delivery", subtitle: "On orders above ₹199", color: "from-green-500 to-emerald-500", badge: "FREE DELIVERY" },
   { id: "o3", title: "Flat ₹100 OFF", subtitle: "On orders above ₹300", color: "from-blue-500 to-indigo-500", badge: "FLAT OFF" },
-  { id: "o4", title: "MIIAM+ Exclusive", subtitle: "Get 30% OFF with MIIAM+", color: "from-purple-500 to-pink-500", badge: "MIIAM+" },
 ];
 
 
@@ -675,24 +674,6 @@ export default function HomePage() {
             <p>No restaurants available nearby</p>
           </div>
         )}
-      </div>
-
-      {/* MIIAM+ Banner */}
-      <div className="px-4 pb-4">
-        <Link href="/app/subscription" className="block bg-gradient-to-r from-[#281716] to-on-surface rounded-2xl p-5 text-white relative overflow-hidden">
-          <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-3xl" />
-          <div className="relative z-10">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="material-symbols-outlined text-amber-400" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-              <span className="font-bold text-amber-400">MIIAM+</span>
-            </div>
-            <h3 className="text-lg font-black">Unlock Unlimited Benefits</h3>
-            <p className="text-white/80 text-xs mt-1">Free delivery • 20% off • Priority support</p>
-            <span className="inline-block mt-3 bg-white text-primary px-4 py-1.5 rounded-full text-xs font-bold">
-              Subscribe for ₹99/month
-            </span>
-          </div>
-        </Link>
       </div>
 
       {/* Location Modal */}
