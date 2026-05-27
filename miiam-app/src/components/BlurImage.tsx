@@ -22,6 +22,7 @@ export default function BlurImage({ src, alt, className = "", fill, width, heigh
     src: imgSrc,
     alt,
     sizes,
+    loading: "lazy" as const,
     className: `object-cover transition-opacity duration-500 ${isLoaded ? "opacity-100" : "opacity-0"}`,
     onLoad: () => setIsLoaded(true),
     onError: fallbackSrc ? () => setImgSrc(fallbackSrc) : undefined,
