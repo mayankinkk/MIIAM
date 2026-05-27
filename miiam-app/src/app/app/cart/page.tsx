@@ -106,7 +106,12 @@ export default function CartPage() {
       <header className="fixed top-0 w-full z-50 flex justify-between items-center px-4 py-3 bg-surface/90 backdrop-blur-2xl shadow-[0px_4px_20px_rgba(77,33,42,0.06)]"
         style={{ paddingTop: "calc(0.75rem + env(safe-area-inset-top, 0px))" }}
       >
-        <span className="text-xl font-extrabold tracking-tighter text-primary">MIIAM</span>
+        <div className="flex items-center gap-3">
+          <Link href="/app/explore" className="p-2 rounded-full hover:bg-surface-container transition-all" aria-label="Back">
+            <span className="material-symbols-outlined text-on-surface text-[22px]">arrow_back</span>
+          </Link>
+          <span className="text-xl font-extrabold tracking-tighter text-primary">MIIAM</span>
+        </div>
         <div className="flex items-center gap-3">
           <Link href="/app/notifications" className="p-2 rounded-full hover:bg-surface-container transition-all">
             <span className="material-symbols-outlined text-on-surface text-[22px]">notifications</span>
