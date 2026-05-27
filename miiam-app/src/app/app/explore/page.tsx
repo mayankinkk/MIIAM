@@ -8,6 +8,7 @@ import QuickActionsFAB from "@/components/QuickActionsFAB";
 import BlurImage from "@/components/BlurImage";
 import { useCartStore } from "@/lib/store/cartStore";
 import { createClient } from "@/lib/supabase/client";
+import OnboardingTour from "@/components/OnboardingTour";
 import { StaggerContainer, StaggerItem, FadeIn } from "@/components/ui/AnimationWrappers";
 
 const categories = [
@@ -208,6 +209,13 @@ export default function ExplorePage() {
                 )}
               </Link>
               {/* Notifications */}
+              <button
+                onClick={() => { localStorage.removeItem("miiam_onboarding_tour_done"); window.location.reload(); }}
+                aria-label="Take a tour"
+                className="p-2 bg-surface-container-high rounded-full hover:bg-surface-container-highest transition-colors"
+              >
+                <span className="material-symbols-outlined text-2xl text-on-surface-variant">help_outline</span>
+              </button>
               <Link href="/app/notifications" aria-label="Notifications" className="p-2 bg-surface-container-high rounded-full hover:bg-surface-container-highest transition-colors relative">
                 <span className="material-symbols-outlined text-2xl text-on-surface-variant" aria-hidden="true">notifications</span>
                 <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse" />
@@ -473,6 +481,7 @@ export default function ExplorePage() {
       </PullToRefresh>
       
       <QuickActionsFAB />
+      <OnboardingTour />
     </div>
   );
 }
