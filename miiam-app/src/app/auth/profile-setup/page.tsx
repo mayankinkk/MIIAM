@@ -5,12 +5,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 const INDIAN_STATES = [
-  "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
-  "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand",
-  "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur",
-  "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab",
-  "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura",
-  "Uttar Pradesh", "Uttarakhand", "West Bengal", "Delhi"
+  "Maharashtra", "Delhi", "Karnataka", "Tamil Nadu", "Telangana",
+  "Uttar Pradesh", "West Bengal", "Gujarat", "Rajasthan", "Haryana",
+  "Punjab", "Kerala", "Andhra Pradesh", "Madhya Pradesh", "Bihar",
+  "Odisha", "Assam", "Jharkhand", "Chhattisgarh", "Uttarakhand",
+  "Himachal Pradesh", "Goa", "Arunachal Pradesh", "Manipur",
+  "Meghalaya", "Mizoram", "Nagaland", "Sikkim", "Tripura"
 ];
 
 const CITIES_BY_STATE: Record<string, string[]> = {
@@ -201,9 +201,10 @@ function ProfileSetupContent() {
                 type="text"
                 value={formData.full_name}
                 onChange={(e) => updateField("full_name", e.target.value)}
-                placeholder="Enter your name"
+                placeholder="e.g. John Doe"
                 className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-[#ba001c] focus:ring-2 focus:ring-[#ba001c]/20 outline-none"
               />
+              <p className="text-xs text-slate-400 mt-1 ml-1">Enter your full name as you'd like it shown on your profile</p>
             </div>
             <div>
               <label className="block text-sm font-bold text-slate-700 mb-2">Phone Number</label>
@@ -211,9 +212,10 @@ function ProfileSetupContent() {
                 type="tel"
                 value={formData.phone}
                 onChange={(e) => updateField("phone", e.target.value)}
-                placeholder="Enter phone number"
+                placeholder="e.g. 9876543210"
                 className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-[#ba001c] focus:ring-2 focus:ring-[#ba001c]/20 outline-none"
               />
+              <p className="text-xs text-slate-400 mt-1 ml-1">Used for order updates and delivery coordination</p>
             </div>
             {emailFromVerify && (
               <div>
@@ -297,21 +299,29 @@ function ProfileSetupContent() {
               <p className="text-sm text-slate-500 mb-2">Selected: <span className="font-bold text-slate-700">{formData.state}</span></p>
               <label className="block text-sm font-bold text-slate-700 mb-2">Select City</label>
               <p className="text-xs text-slate-400 mb-3">Choose your city to discover nearby services, or skip for now.</p>
-              <div className="grid grid-cols-2 gap-2 max-h-[45vh] overflow-y-auto">
-                {(CITIES_BY_STATE[formData.state] || []).map((city) => (
-                  <button
-                    key={city}
-                    onClick={() => updateField("city", city)}
-                    className={`py-3 px-4 rounded-xl font-bold text-sm transition-all ${
-                      formData.city === city
-                        ? "bg-[#ba001c] text-white"
-                        : "bg-white border-2 border-slate-200 text-slate-600 hover:border-[#ba001c]"
-                    }`}
-                  >
-                    {city}
-                  </button>
-                ))}
-              </div>
+              {(CITIES_BY_STATE[formData.state] || []).length > 0 ? (
+                <div className="grid grid-cols-2 gap-2 max-h-[45vh] overflow-y-auto">
+                  {(CITIES_BY_STATE[formData.state] || []).map((city) => (
+                    <button
+                      key={city}
+                      onClick={() => updateField("city", city)}
+                      className={`py-3 px-4 rounded-xl font-bold text-sm transition-all ${
+                        formData.city === city
+                          ? "bg-[#ba001c] text-white"
+                          : "bg-white border-2 border-slate-200 text-slate-600 hover:border-[#ba001c]"
+                      }`}
+                    >
+                      {city}
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 bg-slate-50 rounded-xl">
+                  <span className="material-symbols-outlined text-3xl text-slate-300">location_city</span>
+                  <p className="text-sm text-slate-400 mt-2">No cities listed yet for this state</p>
+                  <p className="text-xs text-slate-300 mt-1">You can skip this step and set it later</p>
+                </div>
+              )}
             </div>
             <div className="flex gap-3">
               <button
