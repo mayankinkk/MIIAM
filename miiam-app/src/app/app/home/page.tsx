@@ -7,6 +7,8 @@ import { createClient } from "@/lib/supabase/client";
 import { useLocationStore } from "@/lib/store/locationStore";
 import { HomeSkeleton } from "@/components/Skeleton";
 import BlurImage from "@/components/BlurImage";
+import { NetworkError } from "@/components/ui/EmptyStates";
+import { withRetry } from "@/lib/retry";
 
 const categories = [
   { id: "food", label: "Food", icon: "restaurant", color: "bg-orange-100", iconColor: "text-orange-600", offer: "20% OFF" },
@@ -60,7 +62,6 @@ export default function HomePage() {
     }
 
     async function checkAndLoad() {
-      // Fetch user profile for greeting
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         const { data: profileData } = await supabase
@@ -122,7 +123,7 @@ export default function HomePage() {
       setCheckingPincode(false);
       setLoading(false);
     }
-    checkAndLoad().catch((e) => {
+    withRetry(checkAndLoad).catch((e) => {
       console.error("Home page data load error:", e);
       setDataError("Couldn't load recommendations. Pull down to try again.");
       setLoading(false);
@@ -285,16 +286,8 @@ export default function HomePage() {
 
   if (dataError) {
     return (
-      <div className="min-h-screen bg-background text-on-background flex flex-col items-center justify-center px-6 pb-24">
-        <span className="material-symbols-outlined text-6xl text-slate-300 mb-4">cloud_off</span>
-        <h2 className="text-lg font-bold text-slate-600 mb-2">Something went wrong</h2>
-        <p className="text-sm text-slate-400 text-center mb-6">{dataError}</p>
-        <button
-          onClick={() => { setDataError(null); setLoading(true); window.location.reload(); }}
-          className="bg-secondary text-white px-8 py-3 rounded-xl font-bold text-sm"
-        >
-          Try Again
-        </button>
+      <div className="min-h-screen bg-background text-on-background flex items-center justify-center px-6 pb-24">
+        <NetworkError onRetry={() => { setDataError(null); setLoading(true); window.location.reload(); }} />
       </div>
     );
   }
