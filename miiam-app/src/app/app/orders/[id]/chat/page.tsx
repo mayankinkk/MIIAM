@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
@@ -9,8 +9,8 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function ChatPage() {
   const params = useParams();
-  const orderId = params?.id as string;
-  const supabase = createClient();
+  const orderId = useMemo(() => params?.id as string, [params?.id]);
+  const supabase = useMemo(() => createClient(), []);
   const [currentUserId, setCurrentUserId] = useState<string>("");
   const [newMessage, setNewMessage] = useState("");
   const [sending, setSending] = useState(false);
@@ -22,7 +22,7 @@ export default function ChatPage() {
       if (user) setCurrentUserId(user.id);
     }
     getUser();
-  }, [supabase]);
+  }, []);
 
   const { messages, loading, isTyping, sendMessage, sendTypingIndicator } = useChat(
     orderId,
