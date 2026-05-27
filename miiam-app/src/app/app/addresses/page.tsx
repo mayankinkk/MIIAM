@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -167,11 +167,10 @@ const defaultAddresses = [
 ];
 
 export default function AddressBookPage() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const router = useRouter();
   const [addresses, setAddresses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isClient, setIsClient] = useState(false);
 
   const loadAddresses = useCallback(async () => {
     setLoading(true);
@@ -187,7 +186,6 @@ export default function AddressBookPage() {
   }, [supabase]);
 
   useEffect(() => {
-    setIsClient(true);
     loadAddresses();
   }, [loadAddresses]);
 
