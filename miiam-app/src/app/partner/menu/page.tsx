@@ -97,6 +97,10 @@ export default function PartnerMenuPage() {
   const [newCategoryName, setNewCategoryName] = useState("");
   const [editingCategory, setEditingCategory] = useState<{ oldName: string; newName: string } | null>(null);
   const [showQRModal, setShowQRModal] = useState(false);
+  const [bulkMode, setBulkMode] = useState(false);
+  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
+  const [bulkAction, setBulkAction] = useState<string>("");
+  const [bulkValue, setBulkValue] = useState<string>("");
 
   // Helper: Upload image to Supabase Storage
   async function uploadImage(file: File): Promise<string | null> {
@@ -390,6 +394,15 @@ export default function PartnerMenuPage() {
             <span className="material-symbols-outlined text-lg">add</span>
             Add {vendorKey === "food" ? "Item" : vendorKey === "grocery" ? "Product" : vendorKey === "pharmacy" ? "Medicine" : "Item"}
           </button>
+          <button
+            onClick={() => { setBulkMode(!bulkMode); setSelectedItems(new Set()); }}
+            className={`px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 border transition-colors ${
+              bulkMode ? "bg-[#ba001c] text-white border-[#ba001c]" : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
+            }`}
+          >
+            <span className="material-symbols-outlined text-lg">select_all</span>
+            Bulk Edit
+          </button>
         </div>
       </div>
 
@@ -534,6 +547,113 @@ export default function PartnerMenuPage() {
         </div>
       )}
 
+      {/* Bulk Actions Toolbar */}
+      {bulkMode && selectedItems.size > 0 && (
+        <div className="bg-[#ba001c]/5 border border-[#ba001c]/20 rounded-2xl p-4 flex items-center gap-4 flex-wrap">
+          <span className="text-sm font-bold text-slate-700">{selectedItems.size} selected</span>
+          <select
+            value={bulkAction}
+            onChange={(e) => setBulkAction(e.target.value)}
+            className="px-3 py-2 border border-slate-200 rounded-xl text-sm font-bold bg-white"
+          >
+            <option value="">Select action...</option>
+            {vendorKey === "food" && (
+              <>
+                <option value="discount">Set Discount %</option>
+                <option value="remove_discount">Remove Discount</option>
+                <option value="menu_slot">Set Menu Slot</option>
+              </>
+            )}
+            <option value="category">Change Category</option>
+            <option value="price_percent">Adjust Price by %</option>
+            <option value="price_fixed">Set Price (fixed)</option>
+            <option value="stock">Set Stock</option>
+          </select>
+          {bulkAction && (
+            <div className="flex items-center gap-2">
+              {bulkAction === "menu_slot" ? (
+                <select
+                  value={bulkValue}
+                  onChange={(e) => setBulkValue(e.target.value)}
+                  className="px-3 py-2 border border-slate-200 rounded-xl text-sm font-bold bg-white"
+                >
+                  <option value="all_day">All Day</option>
+                  <option value="breakfast">Breakfast</option>
+                  <option value="lunch">Lunch</option>
+                  <option value="dinner">Dinner</option>
+                </select>
+              ) : bulkAction === "category" ? (
+                <select
+                  value={bulkValue}
+                  onChange={(e) => setBulkValue(e.target.value)}
+                  className="px-3 py-2 border border-slate-200 rounded-xl text-sm font-bold bg-white"
+                >
+                  <option value="">Select category...</option>
+                  {categories.map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
+              ) : (
+                <input
+                  type="number"
+                  value={bulkValue}
+                  onChange={(e) => setBulkValue(e.target.value)}
+                  placeholder={bulkAction === "price_percent" ? "+/- %" : "Value"}
+                  className="w-24 px-3 py-2 border border-slate-200 rounded-xl text-sm"
+                />
+              )}
+              <button
+                onClick={async () => {
+                  if (!bulkAction || !bulkValue) return;
+                  const updates: Record<string, any> = {};
+                  if (bulkAction === "discount") {
+                    updates.discount_percent = parseInt(bulkValue);
+                  } else if (bulkAction === "remove_discount") {
+                    updates.discount_percent = 0;
+                    updates.original_price = null;
+                  } else if (bulkAction === "menu_slot") {
+                    updates.menu_slot = bulkValue;
+                  } else if (bulkAction === "category") {
+                    updates.category = bulkValue;
+                  } else if (bulkAction === "price_percent") {
+                    const pct = parseFloat(bulkValue);
+                    const itemData = items.filter(i => selectedItems.has(i.id));
+                    for (const item of itemData) {
+                      const newPrice = Math.round(item.price * (1 + pct / 100) * 100) / 100;
+                      await supabase.from(table).update({ price: newPrice }).eq("id", item.id);
+                    }
+                    loadItems();
+                    setSelectedItems(new Set());
+                    setBulkAction("");
+                    setBulkValue("");
+                    return;
+                  } else if (bulkAction === "price_fixed") {
+                    updates.price = parseFloat(bulkValue);
+                  } else if (bulkAction === "stock") {
+                    updates.stock = parseInt(bulkValue);
+                  }
+                  const ids = Array.from(selectedItems);
+                  const { error } = await supabase.from(table).update(updates).in("id", ids);
+                  if (!error) {
+                    loadItems();
+                    setSelectedItems(new Set());
+                    setBulkAction("");
+                    setBulkValue("");
+                  }
+                }}
+                className="px-4 py-2 bg-[#ba001c] text-white font-bold rounded-xl text-sm"
+              >
+                Apply
+              </button>
+            </div>
+          )}
+          <button
+            onClick={() => { setSelectedItems(new Set()); setBulkAction(""); setBulkValue(""); }}
+            className="px-4 py-2 border border-slate-200 text-slate-500 font-bold rounded-xl text-sm hover:bg-slate-50"
+          >
+            Clear
+          </button>
+        </div>
+      )}
+
       {/* Items Table */}
       <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
         {loading ? (
@@ -555,6 +675,22 @@ export default function PartnerMenuPage() {
           <table className="w-full text-left">
             <thead className="bg-slate-50 border-b border-slate-100">
               <tr>
+                {bulkMode && (
+                  <th className="p-4 w-10">
+                    <input
+                      type="checkbox"
+                      checked={selectedItems.size === filteredItems.length && filteredItems.length > 0}
+                      onChange={() => {
+                        if (selectedItems.size === filteredItems.length) {
+                          setSelectedItems(new Set());
+                        } else {
+                          setSelectedItems(new Set(filteredItems.map(i => i.id)));
+                        }
+                      }}
+                      className="w-4 h-4 accent-[#ba001c]"
+                    />
+                  </th>
+                )}
                 <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Item</th>
                 <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Category</th>
                 {vendorKey === "food" && (
@@ -575,7 +711,21 @@ export default function PartnerMenuPage() {
             </thead>
             <tbody className="divide-y divide-slate-100">
               {filteredItems.map((item) => (
-                <tr key={item.id} className="hover:bg-slate-50 transition-colors">
+                <tr key={item.id} className={`hover:bg-slate-50 transition-colors ${selectedItems.has(item.id) ? "bg-[#ba001c]/5" : ""}`}>
+                  {bulkMode && (
+                    <td className="p-4 w-10">
+                      <input
+                        type="checkbox"
+                        checked={selectedItems.has(item.id)}
+                        onChange={() => {
+                          const next = new Set(selectedItems);
+                          if (next.has(item.id)) next.delete(item.id); else next.add(item.id);
+                          setSelectedItems(next);
+                        }}
+                        className="w-4 h-4 accent-[#ba001c]"
+                      />
+                    </td>
+                  )}
                   <td className="p-4">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center overflow-hidden">
