@@ -19,6 +19,14 @@ interface PromoCode {
   created_at: string;
 }
 
+interface CustomerSegment {
+  label: string;
+  key: string;
+  count: number;
+  icon: string;
+  description: string;
+}
+
 export default function VendorPromotions() {
   const supabase = createClient();
   const [vendorId, setVendorId] = useState<string | null>(null);
@@ -33,6 +41,7 @@ export default function VendorPromotions() {
     usage_limit: 100,
     valid_until: "",
   });
+  const [segments, setSegments] = useState<CustomerSegment[]>([]);
 
   useEffect(() => {
     init();
@@ -43,6 +52,7 @@ export default function VendorPromotions() {
     if (id) {
       setVendorId(id);
       await loadPromos(id);
+      await loadSegments(id);
     }
     setLoading(false);
   }
@@ -54,6 +64,38 @@ export default function VendorPromotions() {
       .eq("vendor_id", vId)
       .order("created_at", { ascending: false });
     if (data) setPromoCodes(data);
+  }
+
+  async function loadSegments(vId: string) {
+    const { data: orders } = await supabase
+      .from("orders")
+      .select("user_id, total_amount, placed_at")
+      .eq("vendor_id", vId)
+      .eq("status", "delivered");
+    if (!orders || orders.length === 0) return;
+
+    const userMap = new Map<string, { count: number; total: number; lastDate: Date }>();
+    orders.forEach((o: any) => {
+      const existing = userMap.get(o.user_id) || { count: 0, total: 0, lastDate: new Date(0) };
+      existing.count++;
+      existing.total += o.total_amount || 0;
+      existing.lastDate = new Date(o.placed_at) > existing.lastDate ? new Date(o.placed_at) : existing.lastDate;
+      userMap.set(o.user_id, existing);
+    });
+
+    const all = userMap.size;
+    const returning = Array.from(userMap.values()).filter(u => u.count > 1).length;
+    const avgSpend = Array.from(userMap.values()).reduce((s, u) => s + u.total, 0) / all;
+    const highValue = Array.from(userMap.values()).filter(u => u.total > avgSpend * 1.5).length;
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000);
+    const lapsed = Array.from(userMap.values()).filter(u => u.lastDate < thirtyDaysAgo).length;
+
+    setSegments([
+      { label: "All Customers", key: "all", count: all, icon: "people", description: "Everyone who ordered from you" },
+      { label: "Returning", key: "returning", count: returning, icon: "repeat", description: `Ordered more than once (${all > 0 ? Math.round(returning / all * 100) : 0}% of customers)` },
+      { label: "High Spenders", key: "high_value", count: highValue, icon: "award_star", description: `Spent >₹${avgSpend.toFixed(0)} total (1.5x avg)` },
+      { label: "Lapsed", key: "lapsed", count: lapsed, icon: "schedule", description: "No order in 30+ days" },
+    ]);
   }
 
   const generateCode = () => {
@@ -120,6 +162,31 @@ export default function VendorPromotions() {
           Create Offer
         </button>
       </div>
+
+      {/* Customer Segments */}
+      {segments.length > 0 && (
+        <div>
+          <div className="flex items-center gap-2 mb-4">
+            <span className="material-symbols-outlined text-slate-500">campaign</span>
+            <h2 className="text-lg font-extrabold text-slate-800">Targeted Offers</h2>
+            <span className="text-[10px] text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">Send offers to segments</span>
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {segments.map((seg) => (
+              <div key={seg.key} className="bg-white rounded-2xl p-5 border border-slate-200 hover:shadow-sm transition-shadow">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center">
+                    <span className="material-symbols-outlined text-slate-600">{seg.icon}</span>
+                  </div>
+                  <span className="text-2xl font-black text-slate-900">{seg.count}</span>
+                </div>
+                <p className="font-bold text-slate-800 text-sm">{seg.label}</p>
+                <p className="text-[10px] text-slate-500 mt-1">{seg.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Active Promos */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

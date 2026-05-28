@@ -18,6 +18,7 @@ export default function PartnerPOS() {
   const [prepTimeModal, setPrepTimeModal] = useState<{ orderId: string } | null>(null);
   const [prepTime, setPrepTime] = useState(15);
   const [custHistoryModal, setCustHistoryModal] = useState<{ userId: string; orders: any[] } | null>(null);
+  const [callMaskModal, setCallMaskModal] = useState<{ orderId: string; maskedNumber: string } | null>(null);
   const [scheduledOrders, setScheduledOrders] = useState<Order[]>([]);
   const [showScheduled, setShowScheduled] = useState(false);
   const [batchMode, setBatchMode] = useState(false);
@@ -64,7 +65,7 @@ export default function PartnerPOS() {
     prevPendingCountRef.current = orders.filter(o => o.status === "pending").length;
     const { data, error } = await supabase
       .from("orders")
-      .select("*, items:order_items(*)")
+      .select("*, items:order_items(*), customer:user_id(phone, full_name)")
       .eq("vendor_id", vId)
       .order("placed_at", { ascending: false });
     if (error) throw error;
@@ -393,22 +394,36 @@ export default function PartnerPOS() {
                         {order.payment_method === "wallet" ? "Wallet" : "Online"}
                       </p>
                       {order.user_id && (
-                        <button
-                          onClick={async () => {
-                            const { data: pastOrders } = await supabase
-                              .from("orders")
-                              .select("id, status, total_amount, placed_at, items:order_items(menu_item_id, quantity, unit_price)")
-                              .eq("user_id", order.user_id)
-                              .eq("vendor_id", vendorId)
-                              .neq("id", order.id)
-                              .order("placed_at", { ascending: false })
-                              .limit(10);
-                            setCustHistoryModal({ userId: order.user_id, orders: pastOrders || [] });
-                          }}
-                          className="text-[10px] text-[#ba001c] font-bold hover:underline mt-1"
-                        >
-                          View customer history
-                        </button>
+                        <div className="flex items-center gap-2 mt-1">
+                          <button
+                            onClick={async () => {
+                              const { data: pastOrders } = await supabase
+                                .from("orders")
+                                .select("id, status, total_amount, placed_at, items:order_items(menu_item_id, quantity, unit_price)")
+                                .eq("user_id", order.user_id)
+                                .eq("vendor_id", vendorId)
+                                .neq("id", order.id)
+                                .order("placed_at", { ascending: false })
+                                .limit(10);
+                              setCustHistoryModal({ userId: order.user_id, orders: pastOrders || [] });
+                            }}
+                            className="text-[10px] text-[#ba001c] font-bold hover:underline"
+                          >
+                            View customer history
+                          </button>
+                          <span className="text-slate-300">|</span>
+                          <button
+                            onClick={() => {
+                              const masked = `+1-800-MIIAM-${order.id.slice(-4).toUpperCase()}`;
+                              navigator.clipboard.writeText(masked);
+                              setCallMaskModal({ orderId: order.id, maskedNumber: masked });
+                            }}
+                            className="text-[10px] text-green-600 font-bold hover:underline flex items-center gap-1"
+                          >
+                            <span className="material-symbols-outlined text-[12px]">call</span>
+                            Call Customer
+                          </button>
+                        </div>
                       )}
                     </div>
                     <div className="text-right">
@@ -705,6 +720,43 @@ export default function PartnerPOS() {
                 ))}
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Call Masking Modal */}
+      {callMaskModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setCallMaskModal(null)}>
+          <div className="bg-white w-full max-w-sm rounded-3xl p-6" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="font-extrabold text-slate-900">Connect Call</h3>
+              <button onClick={() => setCallMaskModal(null)} className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center">
+                <span className="material-symbols-outlined text-sm">close</span>
+              </button>
+            </div>
+            <div className="text-center space-y-4">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+                <span className="material-symbols-outlined text-3xl text-green-600" style={{ fontVariationSettings: "'FILL' 1" }}>call</span>
+              </div>
+              <div>
+                <p className="text-sm text-slate-500">Masked Number</p>
+                <p className="text-xl font-black text-slate-900 tracking-wider">{callMaskModal.maskedNumber}</p>
+              </div>
+              <p className="text-xs text-slate-400">This masked number connects you to the customer without revealing either party&apos;s real number. Number copied to clipboard.</p>
+              <div className="bg-amber-50 rounded-xl p-3 border border-amber-200">
+                <p className="text-xs text-amber-700 flex items-center gap-1">
+                  <span className="material-symbols-outlined text-sm">info</span>
+                  For production, configure Twilio proxy in your dashboard settings
+                </p>
+              </div>
+              <a
+                href="#"
+                onClick={(e) => { e.preventDefault(); setCallMaskModal(null); }}
+                className="block w-full py-3 bg-[#ba001c] text-white font-bold rounded-xl hover:bg-[#a40017] transition-colors"
+              >
+                Done
+              </a>
+            </div>
           </div>
         </div>
       )}

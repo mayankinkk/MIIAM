@@ -124,6 +124,9 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
   const [order, setOrder] = useState<any>(null);
   const [foodRating, setFoodRating] = useState(0);
   const [riderRating, setRiderRating] = useState(0);
+  const [dimTaste, setDimTaste] = useState(0);
+  const [dimPackaging, setDimPackaging] = useState(0);
+  const [dimDelivery, setDimDelivery] = useState(0);
   const [hoverFood, setHoverFood] = useState(0);
   const [hoverRider, setHoverRider] = useState(0);
   const [feedback, setFeedback] = useState("");
@@ -151,7 +154,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
     try {
       // Save rating to reviews table
       if (foodRating > 0) {
-        await supabase.from("reviews").insert({
+        const reviewData: Record<string, any> = {
           order_id: id,
           user_id: order.user_id,
           vendor_id: order.vendor_id,
@@ -159,7 +162,11 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
           review_text: feedback,
           tags: selectedTags,
           type: "food",
-        });
+        };
+        if (dimTaste > 0) reviewData.food_quality = dimTaste;
+        if (dimPackaging > 0) reviewData.packaging = dimPackaging;
+        if (dimDelivery > 0) reviewData.delivery_time = dimDelivery;
+        await supabase.from("reviews").insert(reviewData);
       }
 
       // Update rider rating
@@ -259,6 +266,39 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
             setRating={setFoodRating}
             label={order?.vendor?.name || "Restaurant"}
           />
+        </section>
+
+        <section className="bg-white rounded-xl p-6 shadow-[0px_20px_40px_rgba(77,33,42,0.04)] space-y-4">
+          <h3 className="text-sm font-bold text-on-surface-variant text-center uppercase tracking-wider">Rate in Detail</h3>
+          <div className="space-y-3">
+            {[
+              { label: "Taste & Quality", state: dimTaste, setter: setDimTaste },
+              { label: "Packaging", state: dimPackaging, setter: setDimPackaging },
+              { label: "Delivery Time", state: dimDelivery, setter: setDimDelivery },
+            ].map((dim) => (
+              <div key={dim.label} className="flex items-center justify-between">
+                <span className="text-sm font-medium text-on-surface">{dim.label}</span>
+                <div className="flex gap-1">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      onClick={() => dim.setter(star)}
+                      className="transition-transform hover:scale-110 active:scale-95"
+                    >
+                      <span
+                        className={`material-symbols-outlined text-xl transition-all ${
+                          star <= dim.state ? "text-primary" : "text-outline-variant"
+                        }`}
+                        style={{ fontVariationSettings: `'FILL' ${star <= dim.state ? 1 : 0}` }}
+                      >
+                        star
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
         </section>
 
         <section className="bg-white rounded-xl p-8 shadow-[0px_20px_40px_rgba(77,33,42,0.04)] space-y-6">

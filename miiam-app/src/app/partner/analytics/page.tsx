@@ -29,6 +29,7 @@ export default function VendorAnalytics() {
   const [menuItemNames, setMenuItemNames] = useState<Map<string, { name: string; category: string }>>(new Map());
   const [competitors, setCompetitors] = useState<any[]>([]);
   const [forecast, setForecast] = useState<any>(null);
+  const [dimRatings, setDimRatings] = useState<{ food_quality: number; packaging: number; delivery_time: number } | null>(null);
 
   useEffect(() => {
     init();
@@ -43,6 +44,7 @@ export default function VendorAnalytics() {
         loadOrders(v.id),
         loadCompetitors(v),
         loadForecast(v.id),
+        loadReviews(v.id),
       ]);
     }
     setLoading(false);
@@ -110,6 +112,22 @@ export default function VendorAnalytics() {
         orders: val.count,
         revenue: val.revenue,
       })),
+    });
+  }
+
+  async function loadReviews(vId: string) {
+    const { data } = await supabase
+      .from("reviews")
+      .select("food_quality, packaging, delivery_time")
+      .eq("vendor_id", vId)
+      .not("food_quality", "is", null);
+    if (!data || data.length === 0) return;
+    const sum = (field: "food_quality" | "packaging" | "delivery_time") =>
+      data.reduce((s, r: any) => s + (r[field] || 0), 0) / data.length;
+    setDimRatings({
+      food_quality: Math.round(sum("food_quality") * 10) / 10,
+      packaging: Math.round(sum("packaging") * 10) / 10,
+      delivery_time: Math.round(sum("delivery_time") * 10) / 10,
     });
   }
 
@@ -358,6 +376,37 @@ export default function VendorAnalytics() {
           </div>
         );
       })()}
+
+      {/* Rating Breakdown */}
+      {dimRatings && (
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="material-symbols-outlined text-amber-500">star</span>
+            <h3 className="font-bold text-slate-800">Rating Breakdown</h3>
+            <span className="text-[10px] text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">Detailed scores</span>
+          </div>
+          <div className="grid grid-cols-3 gap-4">
+            {[
+              { label: "Taste & Quality", field: dimRatings.food_quality, icon: "restaurant" },
+              { label: "Packaging", field: dimRatings.packaging, icon: "inventory_2" },
+              { label: "Delivery Time", field: dimRatings.delivery_time, icon: "schedule" },
+            ].map((dim) => (
+              <div key={dim.label} className="p-4 bg-slate-50 rounded-xl text-center">
+                <div className="flex justify-center mb-2">
+                  <span className="material-symbols-outlined text-2xl text-amber-500">{dim.icon}</span>
+                </div>
+                <p className="text-3xl font-black text-slate-900">{dim.field.toFixed(1)}</p>
+                <div className="flex justify-center gap-0.5 mt-1">
+                  {[1, 2, 3, 4, 5].map((s) => (
+                    <span key={s} className={`material-symbols-outlined text-sm ${s <= Math.round(dim.field) ? "text-amber-500" : "text-slate-200"}`} style={{ fontVariationSettings: `'FILL' ${s <= Math.round(dim.field) ? 1 : 0}` }}>star</span>
+                  ))}
+                </div>
+                <p className="text-xs text-slate-500 mt-1">{dim.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Competitor Benchmarking */}
       {competitors.length > 0 && (

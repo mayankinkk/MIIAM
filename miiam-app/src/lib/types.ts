@@ -58,6 +58,7 @@ export interface MenuItem {
   menu_slot?: "breakfast" | "lunch" | "dinner" | "all_day";
   original_price?: number | null;
   discount_percent?: number | null;
+  featured?: boolean;
 }
 
 export type MenuSlot = "breakfast" | "lunch" | "dinner" | "all_day";
@@ -153,6 +154,9 @@ export interface Review {
   comment: string | null;
   created_at: string;
   profile?: Profile;
+  food_quality?: number | null;
+  packaging?: number | null;
+  delivery_time?: number | null;
 }
 
 export interface Flower {

@@ -90,6 +90,7 @@ export default function PartnerMenuPage() {
     imageFiles: [] as File[],
     has_discount: false,
     discount_percent: 20,
+    featured: false,
   });
   const [uploading, setUploading] = useState(false);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
@@ -191,6 +192,7 @@ export default function PartnerMenuPage() {
       image_url: "",
       has_discount: false,
       discount_percent: 20,
+      featured: false,
     });
   }
 
@@ -207,6 +209,7 @@ export default function PartnerMenuPage() {
       base.is_veg = newItem.is_veg;
       base.stock = parseInt(newItem.stock) || 0;
       if (newItem.menu_slot) base.menu_slot = newItem.menu_slot;
+      base.featured = !!newItem.featured;
       if (newItem.has_discount && newItem.discount_percent > 0) {
         const discount = parseFloat(newItem.discount_percent);
         base.discount_percent = discount;
@@ -240,6 +243,7 @@ export default function PartnerMenuPage() {
       base.is_veg = m.is_veg;
       base.stock = (m as any).stock ?? 0;
       if ((m as any).menu_slot) base.menu_slot = (m as any).menu_slot;
+      base.featured = !!(m as any).featured;
       if (m.discount_percent && m.discount_percent > 0) {
         base.discount_percent = m.discount_percent;
         base.original_price = m.original_price || m.price;
@@ -338,6 +342,20 @@ export default function PartnerMenuPage() {
       setItems(items.map(i => i.id === item.id ? { ...i, available: !m.available } as AnyItem : i));
     } catch (error: any) {
       console.warn("Toggle availability failed:", error.message);
+    }
+  };
+
+  const toggleFeatured = async (item: AnyItem) => {
+    const current = !!(item as any).featured;
+    try {
+      const { error } = await supabase.from(table).update({ featured: !current }).eq("id", item.id);
+      if (error) {
+        console.warn("Toggle featured not supported:", error.message);
+        return;
+      }
+      setItems(items.map(i => i.id === item.id ? { ...i, featured: !current } as any : i));
+    } catch (error: any) {
+      console.warn("Toggle featured failed:", error.message);
     }
   };
 
@@ -705,6 +723,9 @@ export default function PartnerMenuPage() {
                 {vendorKey === "food" && (
                   <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
                 )}
+                {vendorKey === "food" && (
+                  <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Featured</th>
+                )}
                 <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Price</th>
                 <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
               </tr>
@@ -803,6 +824,20 @@ export default function PartnerMenuPage() {
                         }`}
                       >
                         {(item as MenuItem).available ? "Available" : "Unavailable"}
+                      </button>
+                    </td>
+                  )}
+                  {vendorKey === "food" && (
+                    <td className="p-4">
+                      <button
+                        onClick={() => toggleFeatured(item)}
+                        className={`text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider ${
+                          (item as any).featured
+                            ? "bg-amber-100 text-amber-700"
+                            : "bg-slate-100 text-slate-500"
+                        }`}
+                      >
+                        {(item as any).featured ? "Featured" : "Promote"}
                       </button>
                     </td>
                   )}
@@ -1016,6 +1051,20 @@ export default function PartnerMenuPage() {
                   </select>
                 </div>
               )}
+              {vendorKey === "food" && (
+                <div className="bg-amber-50 rounded-xl p-4 border border-amber-200">
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={newItem.featured}
+                      onChange={(e) => setNewItem({ ...newItem, featured: e.target.checked })}
+                      className="w-5 h-5 accent-[#ba001c]"
+                    />
+                    <span className="text-sm font-bold text-amber-700">Promote as Featured</span>
+                  </label>
+                  <p className="text-xs text-amber-600 mt-2 ml-8">Featured items appear first on your menu with a special badge</p>
+                </div>
+              )}
               {vendorKey === "pharmacy" && (
                 <div>
                   <label className="flex items-center gap-3 cursor-pointer">
@@ -1182,6 +1231,20 @@ export default function PartnerMenuPage() {
                       </p>
                     </div>
                   )}
+                </div>
+              )}
+              {vendorKey === "food" && (
+                <div className="bg-amber-50 rounded-xl p-4 border border-amber-200">
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={!!(editingItem as any).featured}
+                      onChange={(e) => setEditingItem({ ...editingItem, featured: e.target.checked } as any)}
+                      className="w-5 h-5 accent-[#ba001c]"
+                    />
+                    <span className="text-sm font-bold text-amber-700">Promote as Featured</span>
+                  </label>
+                  <p className="text-xs text-amber-600 mt-2 ml-8">Featured items appear first on your menu</p>
                 </div>
               )}
               {vendorKey === "food" && (

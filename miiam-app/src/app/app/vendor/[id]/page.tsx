@@ -71,8 +71,9 @@ export default function VendorPage() {
     const categoryMatch = activeCategory === "All" || m.category === activeCategory;
     const vegMatch = vegFilter === "all" || m.is_veg === (vegFilter === "veg");
     const slotMatch = !m.menu_slot || m.menu_slot === "all_day" || m.menu_slot === currentSlot;
-    return categoryMatch && vegMatch && slotMatch;
-  });
+  return categoryMatch && vegMatch && slotMatch;
+});
+const sortedItems = [...filteredItems].sort((a, b) => ((b as any).featured ? 1 : 0) - ((a as any).featured ? 1 : 0));
 
   const handleCustomizeItem = (item: any) => {
     // Only food/restaurant vendors should use the customization modal, NOT grocery/pharmacy/etc.
@@ -278,7 +279,7 @@ export default function VendorPage() {
         {filteredItems.length === 0 ? (
           <p className="text-slate-400 text-center py-8">No menu items available</p>
         ) : (
-          filteredItems.map((item) => {
+          sortedItems.map((item) => {
             const qty = getQty(item.id);
             return (
               <div key={item.id} className="bg-white rounded-2xl p-4 flex gap-4 shadow-sm">
@@ -322,6 +323,9 @@ export default function VendorPage() {
                       </span>
                     )}
                     <h3 className="font-bold text-slate-800">{item.name}</h3>
+                    {(item as any).featured && (
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded-full">★ Featured</span>
+                    )}
                     {item.discount_percent > 0 && (
                       <span className="text-[10px] font-bold px-1.5 py-0.5 bg-red-100 text-red-700 rounded-full">-{item.discount_percent}%</span>
                     )}
