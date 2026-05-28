@@ -96,6 +96,7 @@ export default function PartnerMenuPage() {
   const [vendorCategories, setVendorCategories] = useState<string[]>([]);
   const [newCategoryName, setNewCategoryName] = useState("");
   const [editingCategory, setEditingCategory] = useState<{ oldName: string; newName: string } | null>(null);
+  const [showQRModal, setShowQRModal] = useState(false);
 
   // Helper: Upload image to Supabase Storage
   async function uploadImage(file: File): Promise<string | null> {
@@ -421,6 +422,24 @@ export default function PartnerMenuPage() {
           <span className="material-symbols-outlined text-lg">edit</span>
           Manage Categories
         </button>
+        {selectedVendorId && (
+          <>
+            <button
+              onClick={() => setShowQRModal(true)}
+              className="px-4 py-2 border border-slate-200 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-slate-50"
+            >
+              <span className="material-symbols-outlined text-lg">qr_code</span>
+              QR Code
+            </button>
+            <button
+              onClick={() => window.print()}
+              className="px-4 py-2 border border-slate-200 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-slate-50"
+            >
+              <span className="material-symbols-outlined text-lg">print</span>
+              Print Menu
+            </button>
+          </>
+        )}
       </div>
 
       {/* Menu Intelligence + Bulk Import */}
@@ -1216,6 +1235,44 @@ export default function PartnerMenuPage() {
                 className="px-5 py-3 bg-[#ba001c] text-white font-bold rounded-xl text-sm hover:bg-[#a40017]"
               >
                 Add
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* QR Code Modal */}
+      {showQRModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowQRModal(false)}>
+          <div className="bg-white w-full max-w-sm rounded-3xl p-8 m-4 text-center" onClick={e => e.stopPropagation()}>
+            <span className="material-symbols-outlined text-6xl text-slate-800 mb-4">qr_code_scanner</span>
+            <h2 className="text-xl font-extrabold text-slate-900 mb-2">Menu QR Code</h2>
+            <p className="text-sm text-slate-500 mb-6">Scan to view {selectedVendor?.shop_name || "store"}'s menu</p>
+            {selectedVendorId && (
+              <img
+                src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(`${window.location.origin}/app/vendor/${selectedVendorId}`)}`}
+                alt="Menu QR Code"
+                className="w-48 h-48 mx-auto mb-6"
+              />
+            )}
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowQRModal(false)}
+                className="flex-1 py-3 border border-slate-200 text-slate-600 font-bold rounded-xl text-sm hover:bg-slate-50"
+              >
+                Close
+              </button>
+              <button
+                onClick={() => {
+                  const link = document.createElement("a");
+                  link.download = `${selectedVendor?.shop_name || "menu"}-qr.png`;
+                  const qr = document.querySelector("#qr-modal img") as HTMLImageElement;
+                  if (qr) link.href = qr.src;
+                  link.click();
+                }}
+                className="flex-1 py-3 bg-[#ba001c] text-white font-bold rounded-xl text-sm hover:bg-[#a40017]"
+              >
+                Download
               </button>
             </div>
           </div>
