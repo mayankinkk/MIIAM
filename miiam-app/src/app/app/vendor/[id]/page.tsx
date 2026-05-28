@@ -22,6 +22,7 @@ export default function VendorPage() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [vegFilter, setVegFilter] = useState<"all" | "veg" | "non_veg">("all");
   const [customizingItem, setCustomizingItem] = useState<any>(null);
+  const [imageIndex, setImageIndex] = useState<Record<string, number>>({});
   const { addItem, items, updateQuantity } = useCartStore();
 
   useEffect(() => {
@@ -281,14 +282,37 @@ export default function VendorPage() {
             const qty = getQty(item.id);
             return (
               <div key={item.id} className="bg-white rounded-2xl p-4 flex gap-4 shadow-sm">
-                <div className="w-24 h-24 rounded-xl overflow-hidden flex-shrink-0 bg-slate-100">
-                  {item.image_url ? (
-                    <BlurImage src={item.image_url} alt={item.name} fill className="w-full h-full" sizes="(max-width: 768px) 50vw, 25vw" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <span className="material-symbols-outlined text-slate-300">restaurant</span>
-                    </div>
-                  )}
+                <div className="w-24 h-24 rounded-xl overflow-hidden flex-shrink-0 bg-slate-100 relative cursor-pointer" onClick={() => {
+                  const imgs = item.images?.filter(Boolean) || (item.image_url ? [item.image_url] : []);
+                  if (imgs.length > 1) {
+                    setImageIndex((prev: Record<string, number>) => ({
+                      ...prev,
+                      [item.id]: ((prev[item.id] || 0) + 1) % imgs.length
+                    }));
+                  }
+                }}>
+                  {(() => {
+                    const imgs = item.images?.filter(Boolean) || (item.image_url ? [item.image_url] : []);
+                    const idx = imageIndex[item.id] || 0;
+                    const src = imgs[idx] || item.image_url;
+                    return src ? (
+                      <BlurImage key={idx} src={src} alt={item.name} fill className="w-full h-full" sizes="(max-width: 768px) 50vw, 25vw" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <span className="material-symbols-outlined text-slate-300">restaurant</span>
+                      </div>
+                    );
+                  })()}
+                  {(() => {
+                    const imgs = item.images?.filter(Boolean) || (item.image_url ? [item.image_url] : []);
+                    return imgs.length > 1 && (
+                      <div className="absolute bottom-1 left-1/2 -translate-x-1/2 flex gap-1">
+                        {imgs.map((_: string, i: number) => (
+                          <span key={i} className={`w-1.5 h-1.5 rounded-full ${i === (imageIndex[item.id] || 0) ? 'bg-white' : 'bg-white/50'}`} />
+                        ))}
+                      </div>
+                    );
+                  })()}
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-1.5">

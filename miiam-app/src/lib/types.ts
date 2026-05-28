@@ -51,6 +51,7 @@ export interface MenuItem {
   category: string;
   description?: string;
   image_url?: string;
+  images?: string[];
   is_veg?: boolean;
   available?: boolean;
   stock?: number;

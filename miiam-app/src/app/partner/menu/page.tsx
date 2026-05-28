@@ -17,6 +17,7 @@ interface BaseItem {
   price: number;
   category: string;
   image_url?: string;
+  images?: string[];
   created_at: string;
   menu_slot?: string;
 }
@@ -86,7 +87,7 @@ export default function PartnerMenuPage() {
     is_veg: true,
     stock: "",
     requires_prescription: false,
-    imageFile: null as File | null,
+    imageFiles: [] as File[],
     has_discount: false,
     discount_percent: 20,
   });
@@ -181,7 +182,7 @@ export default function PartnerMenuPage() {
       is_veg: true,
       stock: "",
       requires_prescription: false,
-      imageFile: null,
+      imageFiles: [],
       image_url: "",
       has_discount: false,
       discount_percent: 20,
@@ -227,6 +228,7 @@ export default function PartnerMenuPage() {
       category: item.category,
     };
     if ((item as any).image_url) base.image_url = (item as any).image_url;
+    if ((item as any).images) base.images = (item as any).images;
     if (vendorKey === "food") {
       const m = item as MenuItem;
       if (m.description) base.description = m.description;
@@ -272,17 +274,18 @@ export default function PartnerMenuPage() {
     }
     setUploading(true);
     try {
-      let imageUrl = newItem.image_url || null;
-      if (newItem.imageFile) {
-        imageUrl = await uploadImage(newItem.imageFile);
-        if (!imageUrl) {
-          alert("Image upload failed. Make sure the 'menu-images' bucket exists in Supabase Storage and has public read access enabled.");
-          setUploading(false);
-          return;
+      const uploadedUrls: string[] = [];
+      if (newItem.imageFiles?.length > 0) {
+        for (const file of newItem.imageFiles) {
+          const url = await uploadImage(file);
+          if (url) uploadedUrls.push(url);
         }
       }
       const payload = buildInsertPayload();
-      if (imageUrl) payload.image_url = imageUrl;
+      if (uploadedUrls.length > 0) {
+        payload.image_url = uploadedUrls[0];
+        payload.images = uploadedUrls;
+      }
       payload.category = payload.category || "General";
       const { error } = await supabase.from(table).insert(payload);
       if (error) throw error;
@@ -858,13 +861,36 @@ export default function PartnerMenuPage() {
                 </div>
               )}
               <div>
-                <label className="text-sm font-semibold text-slate-700">Image</label>
+                <label className="text-sm font-semibold text-slate-700">Images</label>
                 <input
                   type="file"
+                  multiple
                   accept="image/*"
-                  onChange={(e) => setNewItem({ ...newItem, imageFile: e.target.files?.[0] || null })}
+                  onChange={(e) => {
+                    const files = Array.from(e.target.files || []);
+                    setNewItem({ ...newItem, imageFiles: [...(newItem.imageFiles || []), ...files] });
+                    e.target.value = "";
+                  }}
                   className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 text-sm file:mr-3 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-[#ba001c] file:text-white file:font-bold file:text-xs hover:file:bg-[#a40017]"
                 />
+                {newItem.imageFiles?.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    {newItem.imageFiles.map((file: File, idx: number) => (
+                      <div key={idx} className="relative w-16 h-16 rounded-xl overflow-hidden border border-slate-200 group">
+                        <img src={URL.createObjectURL(file)} alt="" className="w-full h-full object-cover" />
+                        <button
+                          onClick={() => setNewItem({
+                            ...newItem,
+                            imageFiles: newItem.imageFiles.filter((_: File, i: number) => i !== idx)
+                          })}
+                          className="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-[10px] font-bold flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-bl-xl"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
               <button
                 onClick={handleAddItem}
@@ -1046,29 +1072,48 @@ export default function PartnerMenuPage() {
                   </label>
                 </div>
               )}
-              {editingItem && (editingItem as any).image_url && (
-                <div className="flex items-center gap-3">
-                  <img src={(editingItem as any).image_url} alt={`Current image of ${(editingItem as any).name || 'menu item'}`} className="w-12 h-12 rounded-xl object-cover" />
-                  <span className="text-xs text-slate-400">Current image</span>
+              {editingItem && ((editingItem as any).images?.length > 0 || (editingItem as any).image_url) && (
+                <div>
+                  <label className="text-sm font-semibold text-slate-700 block mb-2">Current Images</label>
+                  <div className="flex flex-wrap gap-2">
+                    {((editingItem as any).images?.length > 0 ? (editingItem as any).images : [(editingItem as any).image_url]).map((url: string, idx: number) => (
+                      <div key={idx} className="relative w-16 h-16 rounded-xl overflow-hidden border border-slate-200 group">
+                        <img src={url} alt="" className="w-full h-full object-cover" />
+                        <button
+                          onClick={() => {
+                            const imgs = ((editingItem as any).images || [(editingItem as any).image_url]).filter((_: string, i: number) => i !== idx);
+                            setEditingItem({ ...editingItem, images: imgs, image_url: imgs[0] || null } as AnyItem);
+                          }}
+                          className="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-[10px] font-bold flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-bl-xl"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
               <div>
-                <label className="text-sm font-semibold text-slate-700">Change Image</label>
+                <label className="text-sm font-semibold text-slate-700">Add Images</label>
                 <input
                   type="file"
+                  multiple
                   accept="image/*"
                   onChange={async (e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
+                    const files = Array.from(e.target.files || []);
+                    const newUrls: string[] = [];
+                    for (const file of files) {
                       setUploading(true);
                       const url = await uploadImage(file);
-                      if (url) {
-                        setEditingItem({ ...editingItem, image_url: url } as AnyItem);
-                      } else {
-                        alert("Image upload failed. Make sure the 'menu-images' bucket exists in Supabase Storage with public read access.");
-                      }
+                      if (url) newUrls.push(url);
                       setUploading(false);
                     }
+                    if (newUrls.length > 0) {
+                      const existing: string[] = (editingItem as any).images || ((editingItem as any).image_url ? [(editingItem as any).image_url] : []);
+                      const all = [...existing, ...newUrls];
+                      setEditingItem({ ...editingItem, images: all, image_url: all[0] } as AnyItem);
+                    }
+                    e.target.value = "";
                   }}
                   className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 text-sm file:mr-3 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-[#ba001c] file:text-white file:font-bold file:text-xs hover:file:bg-[#a40017]"
                 />
