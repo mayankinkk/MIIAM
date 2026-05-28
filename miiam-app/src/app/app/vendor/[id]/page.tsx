@@ -298,10 +298,22 @@ export default function VendorPage() {
                       </span>
                     )}
                     <h3 className="font-bold text-slate-800">{item.name}</h3>
+                    {item.discount_percent > 0 && (
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 bg-red-100 text-red-700 rounded-full">-{item.discount_percent}%</span>
+                    )}
                   </div>
                   <p className="text-xs text-slate-500 mt-1">{item.category}</p>
                   <div className="flex items-center justify-between mt-2">
-                    <span className="font-black text-slate-800">₹{item.price}</span>
+                    <span className="font-black text-slate-800">
+                      {item.original_price ? (
+                        <>
+                          <span className="line-through text-slate-400 text-xs mr-1">₹{item.original_price}</span>
+                          ₹{item.price}
+                        </>
+                      ) : (
+                        <>₹{item.price}</>
+                      )}
+                    </span>
                     {qty === 0 ? (
                       <button
                         onClick={() => handleCustomizeItem(item)}

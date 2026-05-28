@@ -27,6 +27,8 @@ interface MenuItem extends BaseItem {
   description?: string;
   is_veg?: boolean;
   stock?: number;
+  original_price?: number | null;
+  discount_percent?: number | null;
 }
 
 interface GroceryItem extends BaseItem {
@@ -85,6 +87,8 @@ export default function PartnerMenuPage() {
     stock: "",
     requires_prescription: false,
     imageFile: null as File | null,
+    has_discount: false,
+    discount_percent: 20,
   });
   const [uploading, setUploading] = useState(false);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
@@ -179,6 +183,8 @@ export default function PartnerMenuPage() {
       requires_prescription: false,
       imageFile: null,
       image_url: "",
+      has_discount: false,
+      discount_percent: 20,
     });
   }
 
@@ -195,6 +201,12 @@ export default function PartnerMenuPage() {
       base.is_veg = newItem.is_veg;
       base.stock = parseInt(newItem.stock) || 0;
       if (newItem.menu_slot) base.menu_slot = newItem.menu_slot;
+      if (newItem.has_discount && newItem.discount_percent > 0) {
+        const discount = parseFloat(newItem.discount_percent);
+        base.discount_percent = discount;
+        base.original_price = parseFloat(newItem.price);
+        base.price = Math.round(parseFloat(newItem.price) * (1 - discount / 100) * 100) / 100;
+      }
     } else if (vendorKey === "grocery") {
       base.stock = parseInt(newItem.stock) || 0;
       if (newItem.description) base.description = newItem.description;
@@ -221,6 +233,11 @@ export default function PartnerMenuPage() {
       base.is_veg = m.is_veg;
       base.stock = (m as any).stock ?? 0;
       if ((m as any).menu_slot) base.menu_slot = (m as any).menu_slot;
+      if (m.discount_percent && m.discount_percent > 0) {
+        base.discount_percent = m.discount_percent;
+        base.original_price = m.original_price || m.price;
+        base.price = Math.round((m.original_price || m.price) * (1 - m.discount_percent / 100) * 100) / 100;
+      }
     } else if (vendorKey === "grocery") {
       const g = item as GroceryItem;
       base.stock = g.stock;
@@ -618,7 +635,21 @@ export default function PartnerMenuPage() {
                     </td>
                   )}
                   <td className="p-4 text-right">
-                    <p className="font-extrabold text-slate-800">₹{item.price}</p>
+                    <div className="flex items-center justify-end gap-2">
+                      {(item as any).discount_percent > 0 && (
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 bg-red-100 text-red-700 rounded-full">-{(item as any).discount_percent}%</span>
+                      )}
+                      <p className="font-extrabold text-slate-800">
+                        {(item as any).original_price ? (
+                          <>
+                            <span className="line-through text-slate-400 text-xs mr-1">₹{(item as any).original_price}</span>
+                            ₹{item.price}
+                          </>
+                        ) : (
+                          <>₹{item.price}</>
+                        )}
+                      </p>
+                    </div>
                   </td>
                   <td className="p-4 text-right">
                     <div className="flex items-center justify-end gap-2">
@@ -726,6 +757,47 @@ export default function PartnerMenuPage() {
                     placeholder="e.g., 50"
                     className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]"
                   />
+                </div>
+              )}
+              {vendorKey === "food" && (
+                <div className="bg-red-50 rounded-xl p-4 border border-red-200">
+                  <label className="flex items-center gap-3 cursor-pointer mb-3">
+                    <input
+                      type="checkbox"
+                      checked={newItem.has_discount}
+                      onChange={(e) => setNewItem({ ...newItem, has_discount: e.target.checked })}
+                      className="w-5 h-5 accent-[#ba001c]"
+                    />
+                    <span className="text-sm font-bold text-red-700">Put on Sale</span>
+                  </label>
+                  {newItem.has_discount && (
+                    <div>
+                      <label className="text-xs font-semibold text-slate-700 mb-2 block">Discount %</label>
+                      <div className="flex gap-2">
+                        {[10, 15, 20, 25, 30, 40, 50].map((p) => (
+                          <button
+                            key={p}
+                            onClick={() => setNewItem({ ...newItem, discount_percent: p })}
+                            className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${
+                              newItem.discount_percent === p
+                                ? "bg-[#ba001c] text-white shadow-md"
+                                : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50"
+                            }`}
+                          >
+                            {p}%
+                          </button>
+                        ))}
+                      </div>
+                      {newItem.price && (
+                        <p className="text-xs text-slate-500 mt-2">
+                          Original: ₹{parseFloat(newItem.price).toFixed(2)} →{" "}
+                          <span className="font-bold text-red-600">
+                            ₹{(parseFloat(newItem.price) * (1 - newItem.discount_percent / 100)).toFixed(2)}
+                          </span>
+                        </p>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
               {vendorKey === "food" && (
@@ -870,6 +942,51 @@ export default function PartnerMenuPage() {
                     onChange={(e) => setEditingItem({ ...editingItem, stock: parseInt(e.target.value) || 0 })}
                     className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]"
                   />
+                </div>
+              )}
+              {vendorKey === "food" && (
+                <div className="bg-red-50 rounded-xl p-4 border border-red-200">
+                  <label className="flex items-center gap-3 cursor-pointer mb-3">
+                    <input
+                      type="checkbox"
+                      checked={(editingItem as any).discount_percent > 0}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setEditingItem({ ...editingItem, discount_percent: 20, original_price: editingItem.price } as AnyItem);
+                        } else {
+                          setEditingItem({ ...editingItem, discount_percent: 0 } as AnyItem);
+                        }
+                      }}
+                      className="w-5 h-5 accent-[#ba001c]"
+                    />
+                    <span className="text-sm font-bold text-red-700">On Sale</span>
+                  </label>
+                  {(editingItem as any).discount_percent > 0 && (
+                    <div>
+                      <label className="text-xs font-semibold text-slate-700 mb-2 block">Discount %</label>
+                      <div className="flex gap-2">
+                        {[10, 15, 20, 25, 30, 40, 50].map((p) => (
+                          <button
+                            key={p}
+                            onClick={() => setEditingItem({ ...editingItem, discount_percent: p } as AnyItem)}
+                            className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${
+                              (editingItem as any).discount_percent === p
+                                ? "bg-[#ba001c] text-white shadow-md"
+                                : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50"
+                            }`}
+                          >
+                            {p}%
+                          </button>
+                        ))}
+                      </div>
+                      <p className="text-xs text-slate-500 mt-2">
+                        Original: ₹{((editingItem as any).original_price || editingItem.price).toFixed(2)} →{" "}
+                        <span className="font-bold text-red-600">
+                          ₹{Math.round(((editingItem as any).original_price || editingItem.price) * (1 - ((editingItem as any).discount_percent || 0) / 100) * 100) / 100}
+                        </span>
+                      </p>
+                    </div>
+                  )}
                 </div>
               )}
               {vendorKey === "food" && (

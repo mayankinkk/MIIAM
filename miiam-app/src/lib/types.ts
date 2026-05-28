@@ -55,6 +55,8 @@ export interface MenuItem {
   available?: boolean;
   stock?: number;
   menu_slot?: "breakfast" | "lunch" | "dinner" | "all_day";
+  original_price?: number | null;
+  discount_percent?: number | null;
 }
 
 export type MenuSlot = "breakfast" | "lunch" | "dinner" | "all_day";
