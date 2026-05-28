@@ -14,6 +14,7 @@ const steps = [
   { key: "pending", label: "Order Placed", icon: "receipt_long", time: "" },
   { key: "accepted", label: "Order Accepted", icon: "check_circle", time: "" },
   { key: "preparing", label: "Preparing", icon: "skillet", time: "" },
+  { key: "ready_for_pickup", label: "Ready for Pickup", icon: "inventory_2", time: "" },
   { key: "shopping", label: "Shopping", icon: "shopping_cart", time: "" },
   { key: "picking_up", label: "Picking Up", icon: "storefront", time: "" },
   { key: "on_the_way", label: "On the Way", icon: "directions_bike", time: "" },
@@ -36,6 +37,8 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
   const [cancelOtherReason, setCancelOtherReason] = useState("");
   const [currentUserId, setCurrentUserId] = useState<string>("");
   const [showChat, setShowChat] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const statusRef = useRef(order?.status);
 
   const { unreadByOrder } = useUnreadMessages(currentUserId);
   const unreadCount = unreadByOrder[id] || 0;
@@ -51,6 +54,8 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
   ];
 
   const canCancel = order && ["pending", "accepted"].includes(order.status);
+
+  useEffect(() => { statusRef.current = order?.status; }, [order?.status]);
 
   // Request browser notification permission on mount
   useEffect(() => {
@@ -186,7 +191,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
         if (payload.new && typeof payload.new === 'object') {
           const newData = payload.new as any;
           const newStatus = newData.status;
-          const oldStatus = order?.status;
+          const oldStatus = statusRef.current;
 
           let riderData = null;
           if (newData.rider_id) {
@@ -208,6 +213,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
               pending: "Order placed!",
               accepted: "🚴 Rider accepted your order!",
               preparing: "Restaurant is preparing your order",
+              ready_for_pickup: "📦 Order is ready for pickup!",
               shopping: "Rider is shopping for your items",
               picking_up: "Rider is picking up your order",
               on_the_way: "🚴 Rider is on the way!",
@@ -255,7 +261,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
   }, [id]);
 
   const refreshOrder = async () => {
-    setLoading(true);
+    setIsRefreshing(true);
     const { data: orderData, error: orderError } = await supabase
       .from("orders")
       .select("*")
@@ -273,7 +279,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
       setOrder({ ...orderData, vendor: vendorRes.data, riders: riderRes.data, items });
       if (locationRes.data) setRiderLocation({ lat: locationRes.data.lat, lng: locationRes.data.lng });
     }
-    setLoading(false);
+    setIsRefreshing(false);
   };
 
   if (loading) return (
@@ -309,7 +315,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
         </div>
         <div className="flex items-center gap-4">
           <button onClick={() => refreshOrder()} className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 transition-all" title="Refresh Order">
-            <span className="material-symbols-outlined text-on-surface">refresh</span>
+            <span className={`material-symbols-outlined text-on-surface ${isRefreshing ? "animate-spin" : ""}`}>refresh</span>
           </button>
           <span className="material-symbols-outlined text-on-surface cursor-pointer hover:opacity-80 transition-opacity">notifications</span>
           <span className="material-symbols-outlined text-on-surface cursor-pointer hover:opacity-80 transition-opacity">account_circle</span>
@@ -443,6 +449,8 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                               ? "Restaurant is preparing your food"
                               : step.key === "shopping"
                               ? "Rider is shopping for your items"
+                              : step.key === "ready_for_pickup"
+                              ? "Your order is ready! Waiting for rider pickup"
                               : "In progress"
                           ) : isCompleted ? (
                             step.key === "pending" ? "Order placed successfully" :
