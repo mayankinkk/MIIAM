@@ -438,6 +438,72 @@ export default function VendorAnalytics() {
         )}
       </div>
 
+      {/* Re-order Analysis */}
+      {(() => {
+        const userItemOrders = new Map<string, Map<string, number>>();
+        deliveredOrders.forEach((o) => {
+          if (!o.user_id) return;
+          if (!userItemOrders.has(o.user_id)) userItemOrders.set(o.user_id, new Map());
+          const seen = new Set<string>();
+          o.items?.forEach((item) => {
+            const name = menuItemNames.get(item.menu_item_id)?.name || "Unknown";
+            if (seen.has(name)) return;
+            seen.add(name);
+            const m = userItemOrders.get(o.user_id)!;
+            m.set(name, (m.get(name) || 0) + 1);
+          });
+        });
+        const itemStats = new Map<string, { totalCustomers: number; repeatCustomers: number }>();
+        userItemOrders.forEach((itemCounts) => {
+          itemCounts.forEach((count, itemName) => {
+            if (!itemStats.has(itemName)) itemStats.set(itemName, { totalCustomers: 0, repeatCustomers: 0 });
+            const s = itemStats.get(itemName)!;
+            s.totalCustomers++;
+            if (count > 1) s.repeatCustomers++;
+          });
+        });
+        const reorderItems = Array.from(itemStats.entries())
+          .map(([name, s]) => ({ name, ...s, reorderRate: Math.round((s.repeatCustomers / s.totalCustomers) * 100) }))
+          .filter(i => i.totalCustomers > 1)
+          .sort((a, b) => b.reorderRate - a.reorderRate)
+          .slice(0, 10);
+        return reorderItems.length > 0 ? (
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="material-symbols-outlined text-indigo-500">replay</span>
+              <h3 className="font-bold text-slate-800">Re-order Analysis</h3>
+              <span className="text-[10px] text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">Customer favorites</span>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <thead className="bg-slate-50 rounded-xl">
+                  <tr>
+                    <th className="p-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">Item</th>
+                    <th className="p-3 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Repeat Customers</th>
+                    <th className="p-3 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Re-order Rate</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {reorderItems.map((item) => (
+                    <tr key={item.name} className="hover:bg-slate-50 transition-colors">
+                      <td className="p-3 text-sm font-bold text-slate-800">{item.name}</td>
+                      <td className="p-3 text-sm font-bold text-indigo-600 text-right">{item.repeatCustomers}/{item.totalCustomers}</td>
+                      <td className="p-3 text-right">
+                        <span className={`text-xs font-bold px-2 py-1 rounded-full ${
+                          item.reorderRate >= 50 ? "bg-green-100 text-green-700" : item.reorderRate >= 25 ? "bg-amber-100 text-amber-700" : "bg-slate-100 text-slate-600"
+                        }`}>
+                          {item.reorderRate}%
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        ) : null;
+      })()}
+
       {/* Order Status Breakdown */}
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
         <h3 className="font-bold text-slate-800 mb-4">Order Status Breakdown</h3>
