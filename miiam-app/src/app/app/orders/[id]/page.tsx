@@ -256,7 +256,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
   useEffect(() => {
     const interval = setInterval(() => {
       refreshOrder();
-    }, 10000);
+    }, 25000);
     return () => clearInterval(interval);
   }, [id]);
 
