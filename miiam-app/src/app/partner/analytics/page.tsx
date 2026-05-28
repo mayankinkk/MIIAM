@@ -300,6 +300,65 @@ export default function VendorAnalytics() {
         </div>
       </div>
 
+      {/* Performance & Staffing */}
+      {(() => {
+        const topHours = [...peakHours].sort((a, b) => b.orders - a.orders).slice(0, 3);
+        const peakLabel = topHours.length > 0
+          ? `${topHours.map(h => `${h.hour === 0 ? "12 AM" : h.hour < 12 ? `${h.hour} AM` : h.hour === 12 ? "12 PM" : `${h.hour - 12} PM`} (${h.orders} orders)`).join(", ")}`
+          : "N/A";
+        const prepTimes: number[] = [];
+        const delayedOrders = orders.filter(o => o.delay_minutes && o.delay_minutes > 0);
+        orders.forEach((o) => {
+          if (o.status === "delivered" || o.status === "ready_for_pickup") {
+            const placed = new Date(o.placed_at).getTime();
+            if (o.delivered_at) {
+              const diff = (new Date(o.delivered_at).getTime() - placed) / 60000;
+              if (diff > 0 && diff < 300) prepTimes.push(diff);
+            }
+          }
+        });
+        const avgPrepTime = prepTimes.length > 0 ? Math.round(prepTimes.reduce((a, b) => a + b, 0) / prepTimes.length) : null;
+        const onTimeRate = prepTimes.length > 0
+          ? Math.round((prepTimes.filter(t => t <= 45).length / prepTimes.length) * 100)
+          : null;
+        return (
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="material-symbols-outlined text-emerald-500">speed</span>
+              <h3 className="font-bold text-slate-800">Performance & Staffing</h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="p-4 bg-emerald-50 rounded-xl">
+                <p className="text-xs text-emerald-600 mb-2 font-bold uppercase tracking-wider">Staffing Recommendation</p>
+                <p className="text-sm text-emerald-800">
+                  {topHours.length > 0
+                    ? `Schedule extra staff during peak: ${peakLabel}`
+                    : "Insufficient data for recommendation"}
+                </p>
+              </div>
+              <div className="p-4 bg-blue-50 rounded-xl text-center">
+                <p className="text-xs text-blue-600 mb-1 font-bold uppercase tracking-wider">Avg Prep Time</p>
+                <p className="text-3xl font-black text-blue-700">{avgPrepTime ?? "—"}</p>
+                <p className="text-xs text-blue-500 mt-1">minutes</p>
+              </div>
+              <div className="p-4 bg-green-50 rounded-xl text-center">
+                <p className="text-xs text-green-600 mb-1 font-bold uppercase tracking-wider">On-time Rate</p>
+                <p className="text-3xl font-black text-green-700">{onTimeRate != null ? `${onTimeRate}%` : "—"}</p>
+                <p className="text-xs text-green-500 mt-1">delivered within 45 min</p>
+              </div>
+            </div>
+            {delayedOrders.length > 0 && (
+              <div className="mt-4 p-3 bg-red-50 rounded-xl flex items-center gap-2">
+                <span className="material-symbols-outlined text-red-500 text-sm">warning</span>
+                <p className="text-xs text-red-700">
+                  {delayedOrders.length} order{delayedOrders.length > 1 ? "s" : ""} reported with delays — avg {Math.round(delayedOrders.reduce((s, o) => s + (o.delay_minutes || 0), 0) / delayedOrders.length)} min delay
+                </p>
+              </div>
+            )}
+          </div>
+        );
+      })()}
+
       {/* Competitor Benchmarking */}
       {competitors.length > 0 && (
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
