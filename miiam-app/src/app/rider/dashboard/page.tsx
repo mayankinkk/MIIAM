@@ -34,6 +34,7 @@ export default function RiderDashboard() {
   const [showNewOrderAlert, setShowNewOrderAlert] = useState(false);
   const [currentStopIndex, setCurrentStopIndex] = useState(0);
   const [snoozeMessage, setSnoozeMessage] = useState("");
+  const [activeOrders, setActiveOrders] = useState<OrderWithTiming[]>([]);
   
   const [currentUserId, setCurrentUserId] = useState<string>("");
   const [deliveryStep, setDeliveryStep] = useState<"shopping" | "picking_up" | "picked" | "delivering" | "arrived">("shopping");
@@ -664,6 +665,39 @@ export default function RiderDashboard() {
     };
   }, [currentOrder, deliveryStep]);
 
+  // Show pending order markers on map (demand heat visualization)
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (!map) return;
+    (async () => {
+      const L = await import('leaflet');
+      if ((mapRef.current as any)?._demandMarkers) {
+        (mapRef.current as any)._demandMarkers.forEach((m: any) => m.remove());
+      }
+      const demandMarkers: any[] = [];
+      pendingOrders.forEach((order) => {
+        if (order.vendorLat && order.vendorLng) {
+          const dotIcon = L.divIcon({
+            className: '',
+            html: `<div style="width:16px;height:16px;background:rgba(11,80,213,0.5);border:2px solid #0b50d5;border-radius:50%;box-shadow:0 0 12px rgba(11,80,213,0.4);animation:pulse-dot 2s ease-in-out infinite;"></div>`,
+            iconSize: [16, 16],
+            iconAnchor: [8, 8],
+          });
+          const marker = L.marker([order.vendorLat, order.vendorLng], { icon: dotIcon })
+            .addTo(map)
+            .bindPopup(`<b>${order.vendor}</b><br/>₹${order.earnings} • ${order.items} items`);
+          demandMarkers.push(marker);
+        }
+      });
+      (mapRef.current as any)._demandMarkers = demandMarkers;
+    })();
+    return () => {
+      if ((mapRef.current as any)?._demandMarkers) {
+        (mapRef.current as any)._demandMarkers.forEach((m: any) => m.remove());
+      }
+    };
+  }, [pendingOrders]);
+
   const clearAllPendingOrders = async () => {
     if (!confirm("This will delete ALL pending orders from the database. This is intended for testing only. Continue?")) return;
     
@@ -733,9 +767,12 @@ export default function RiderDashboard() {
     }
     
     setPendingOrders(pendingOrders.filter(o => o.id !== order.id));
-    setCurrentOrder(order);
+    setActiveOrders(prev => [...prev, order]);
+    if (!currentOrder) {
+      setCurrentOrder(order);
+    }
     setSelectedOrder(null);
-    setCountdown(300); // Reset timer for next order
+    setCountdown(300);
     
     if (order.type === "multi_stop") {
       setDeliveryStep("picking_up");
@@ -744,11 +781,21 @@ export default function RiderDashboard() {
     }
   };
 
-  const handleDecline = (orderId: string) => {
+  const handleDecline = async (orderId: string, reason?: string) => {
     setPendingOrders(pendingOrders.filter(o => o.id !== orderId));
     setSelectedOrder(null);
     setShowSkipModal(false);
-    setCountdown(300); // Reset to 5 minutes
+    setCountdown(300);
+    const order = pendingOrders.find(o => o.id === orderId);
+    if (order?.orderDbId && riderId && reason) {
+      try {
+        await fetch("/api/rider/cancel-order", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ order_id: order.orderDbId, rider_id: riderId, reason }),
+        });
+      } catch { /* silent */ }
+    }
   };
 
   const handleSkip = (order: OrderWithTiming) => {
@@ -872,6 +919,14 @@ export default function RiderDashboard() {
       }
       setCurrentOrder(null);
       stopLocationTracking();
+      setActiveOrders(prev => {
+        const remaining = prev.filter(o => o.id !== currentOrder?.id);
+        if (remaining.length > 0) {
+          setCurrentOrder(remaining[0]);
+          setDeliveryStep("shopping");
+        }
+        return remaining;
+      });
     }
   };
 
@@ -961,9 +1016,21 @@ export default function RiderDashboard() {
 
       {/* Header */}
       <header className="fixed top-0 w-full z-50 flex justify-between items-center px-4 py-3 bg-white/90 backdrop-blur-lg border-b border-white/20 shadow-lg">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <span className="text-xl font-black italic tracking-tighter text-primary">MIIAM</span>
-          <span className="text-xs font-bold bg-green-100 text-green-700 px-2 py-0.5 rounded-full">RIDER</span>
+          <button
+            onClick={async () => {
+              const newStatus = !isOnline;
+              setIsOnline(newStatus);
+              if (riderId) await supabase.from("riders").update({ is_online: newStatus }).eq("id", riderId);
+            }}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold transition-all ${
+              isOnline ? "bg-green-100 text-green-700" : "bg-slate-200 text-slate-500"
+            }`}
+          >
+            <span className={`w-2 h-2 rounded-full ${isOnline ? "bg-green-500" : "bg-slate-400"}`} />
+            {isOnline ? "Online" : "Offline"}
+          </button>
         </div>
         <div className="flex items-center gap-2">
           <button 
@@ -996,6 +1063,24 @@ export default function RiderDashboard() {
           </Link>
         </div>
       </header>
+
+      {/* Batch Mode Indicator */}
+      {isOnline && pendingOrders.length > 1 && !currentOrder && (
+        <div className="fixed top-16 left-0 right-0 z-40 bg-[#0b50d5]/5 border-b border-[#0b50d5]/10 px-4 py-2 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="material-symbols-outlined text-[#0b50d5] text-sm">stacked_bar_chart</span>
+            <span className="text-sm font-bold text-[#0b50d5]">{pendingOrders.length} orders available</span>
+          </div>
+          <button
+            onClick={() => {
+              pendingOrders.forEach((order) => handleAccept(order));
+            }}
+            className="px-4 py-1.5 bg-[#0b50d5] text-white text-xs font-bold rounded-full"
+          >
+            Accept All
+          </button>
+        </div>
+      )}
 
       {/* Snooze Message Toast */}
       {snoozeMessage && (
@@ -1209,6 +1294,28 @@ export default function RiderDashboard() {
         {currentOrder && (
           <div className="absolute inset-0 z-10 flex items-end justify-center pb-24 px-4">
             <div className="max-w-md w-full bg-white rounded-2xl overflow-hidden shadow-2xl">
+              {/* Multi-order Switcher */}
+              {activeOrders.length > 1 && (
+                <div className="bg-slate-50 border-b border-slate-200 px-3 py-2 flex items-center gap-1 overflow-x-auto">
+                  <span className="material-symbols-outlined text-slate-400 text-sm">stack</span>
+                  {activeOrders.map((ao, idx) => (
+                    <button
+                      key={ao.id}
+                      onClick={() => {
+                        setCurrentOrder(ao);
+                        setDeliveryStep("shopping");
+                      }}
+                      className={`flex-shrink-0 px-3 py-1 rounded-full text-[10px] font-bold transition-all ${
+                        currentOrder?.id === ao.id
+                          ? "bg-[#0b50d5] text-white"
+                          : "bg-white text-slate-500 border border-slate-200"
+                      }`}
+                    >
+                      #{ao.id.slice(-4).toUpperCase()}
+                    </button>
+                  ))}
+                </div>
+              )}
               <div className={`p-4 text-white ${deliveryStep === "shopping" ? "bg-purple-600" : deliveryStep === "picking_up" ? "bg-[#0b50d5]" : deliveryStep === "delivering" ? "bg-[#4d212a]" : "bg-green-600"}`}>
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
@@ -1549,7 +1656,7 @@ export default function RiderDashboard() {
                         <button
                           key={reason}
                           onClick={() => {
-                            handleDecline(pendingOrders[0].id);
+                            handleDecline(pendingOrders[0]?.id || "", reason);
                             setShowCancelModal(false);
                           }}
                           className="w-full text-left p-3 bg-slate-50 rounded-xl hover:bg-slate-100 text-sm"

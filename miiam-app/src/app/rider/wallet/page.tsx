@@ -556,7 +556,10 @@ export default function RiderWalletPage() {
               >
                 Withdraw Full Balance (₹{walletData.balance})
               </button>
-              <p className="text-xs text-slate-400 text-center mt-2">Standard payout: 24-48 hours • Free</p>
+              <div className="mt-3 p-3 bg-green-50 rounded-xl flex items-center gap-2">
+                <span className="material-symbols-outlined text-green-600 text-sm">info</span>
+                <p className="text-xs text-green-700">Standard payout: 24-48 hours • Free | Instant: 2% fee • 5-30 min</p>
+              </div>
             </div>
           </>
         )}

@@ -38,7 +38,7 @@ export default function RiderNavBar({ active }: RiderNavBarProps) {
   const navItems = [
     { name: "Map", href: "/rider/dashboard", icon: "map" },
     { name: "Orders", href: "/rider/orders", icon: "list_alt" },
-    { name: "Navigate", href: "https://maps.google.com", icon: "explore", external: true },
+    { name: "Shifts", href: "/rider/shifts", icon: "schedule" },
     { name: "Wallet", href: "/rider/wallet", icon: "account_balance_wallet" },
     { name: "Account", href: "/rider/account", icon: "person" },
   ];
@@ -60,18 +60,7 @@ export default function RiderNavBar({ active }: RiderNavBarProps) {
           {isOnline ? "ONLINE" : "OFF"}
         </span>
       </button>
-      {navItems.map(item => item.external ? (
-        <a
-          key={item.name}
-          href={item.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex flex-col items-center p-2 text-[#814c55]"
-        >
-          <span className="material-symbols-outlined text-3xl">{item.icon}</span>
-          <span className="text-[10px] font-bold">{item.name}</span>
-        </a>
-      ) : (
+      {navItems.map(item => (
         <Link
           key={item.name}
           href={item.href}
