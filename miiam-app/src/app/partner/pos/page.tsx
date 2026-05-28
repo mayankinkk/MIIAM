@@ -20,6 +20,8 @@ export default function PartnerPOS() {
   const [custHistoryModal, setCustHistoryModal] = useState<{ userId: string; orders: any[] } | null>(null);
   const [scheduledOrders, setScheduledOrders] = useState<Order[]>([]);
   const [showScheduled, setShowScheduled] = useState(false);
+  const [batchMode, setBatchMode] = useState(false);
+  const [batchSelected, setBatchSelected] = useState<Set<string>>(new Set());
 
   const channelRef = useRef<any>(null);
   const mountedRef = useRef(true);
@@ -280,11 +282,67 @@ export default function PartnerPOS() {
       {/* Active Orders Feed */}
       <section>
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-            <span className="w-2 h-2 bg-red-500 rounded-full animate-ping"></span>
-            Active Orders
-          </h2>
-          <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Real-time</span>
+          <div className="flex items-center gap-3">
+            <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+              <span className="w-2 h-2 bg-red-500 rounded-full animate-ping"></span>
+              Active Orders
+            </h2>
+            <button
+              onClick={() => { setBatchMode(!batchMode); setBatchSelected(new Set()); }}
+              className={`text-xs font-bold px-3 py-1.5 rounded-lg border transition-colors ${
+                batchMode ? "bg-[#ba001c] text-white border-[#ba001c]" : "bg-white text-slate-500 border-slate-200 hover:bg-slate-50"
+              }`}
+            >
+              Batch
+            </button>
+          </div>
+          <div className="flex items-center gap-2">
+            {batchMode && batchSelected.size > 0 && (
+              <>
+                <span className="text-xs text-slate-500">{batchSelected.size} selected</span>
+                {activeOrders.some(o => o.status === "pending" && batchSelected.has(o.id)) && (
+                  <button
+                    onClick={async () => {
+                      const ids = activeOrders.filter(o => o.status === "pending" && batchSelected.has(o.id)).map(o => o.id);
+                      for (const oid of ids) await updateStatus(oid, "accepted");
+                      setBatchSelected(new Set());
+                      setBatchMode(false);
+                    }}
+                    className="text-xs font-bold px-3 py-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                  >
+                    Accept All
+                  </button>
+                )}
+                {activeOrders.some(o => o.status === "pending" && batchSelected.has(o.id)) && (
+                  <button
+                    onClick={async () => {
+                      const ids = activeOrders.filter(o => o.status === "pending" && batchSelected.has(o.id)).map(o => o.id);
+                      for (const oid of ids) await updateStatus(oid, "cancelled");
+                      setBatchSelected(new Set());
+                      setBatchMode(false);
+                    }}
+                    className="text-xs font-bold px-3 py-1.5 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                  >
+                    Decline All
+                  </button>
+                )}
+                {activeOrders.some(o => o.status === "accepted" && batchSelected.has(o.id)) && (
+                  <button
+                    onClick={async () => {
+                      const ids = activeOrders.filter(o => o.status === "accepted" && batchSelected.has(o.id)).map(o => o.id);
+                      for (const oid of ids) await updateStatus(oid, "preparing", { estimated_prep_time: 15 });
+                      setBatchSelected(new Set());
+                      setBatchMode(false);
+                    }}
+                    className="text-xs font-bold px-3 py-1.5 bg-amber-600 text-white rounded-lg hover:bg-amber-700"
+                  >
+                    Start All
+                  </button>
+                )}
+              </>
+            )}
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Real-time</span>
+          </div>
         </div>
 
         {activeOrders.length === 0 ? (
@@ -300,8 +358,25 @@ export default function PartnerPOS() {
               return (
                 <div
                   key={order.id}
-                  className="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 hover:shadow-md transition-shadow"
+                  className={`bg-white rounded-3xl p-6 shadow-sm border transition-all ${
+                    batchSelected.has(order.id) ? "border-[#ba001c] ring-2 ring-[#ba001c]/20" : "border-slate-200 hover:shadow-md"
+                  }`}
                 >
+                  {batchMode && (
+                    <div className="flex items-center gap-3 mb-3">
+                      <input
+                        type="checkbox"
+                        checked={batchSelected.has(order.id)}
+                        onChange={() => {
+                          const next = new Set(batchSelected);
+                          if (next.has(order.id)) next.delete(order.id); else next.add(order.id);
+                          setBatchSelected(next);
+                        }}
+                        className="w-4 h-4 accent-[#ba001c]"
+                      />
+                      <span className="text-xs text-slate-500">Select</span>
+                    </div>
+                  )}
                   <div className="flex justify-between items-start mb-4">
                     <div>
                       <div className="flex items-center gap-3 mb-1">
