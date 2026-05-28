@@ -47,15 +47,17 @@ export interface MenuItem {
   id: string;
   vendor_id: string;
   name: string;
-  description: string | null;
   price: number;
-  image_url: string | null;
   category: string;
-  is_available: boolean;
-  is_featured: boolean;
-  is_veg: boolean | null;
-  created_at: string;
+  description?: string;
+  image_url?: string;
+  is_veg?: boolean;
+  available?: boolean;
+  stock?: number;
+  menu_slot?: "breakfast" | "lunch" | "dinner" | "all_day";
 }
+
+export type MenuSlot = "breakfast" | "lunch" | "dinner" | "all_day";
 
 export type OrderStatus =
   | "pending"

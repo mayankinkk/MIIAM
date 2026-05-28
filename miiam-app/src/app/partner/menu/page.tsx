@@ -18,6 +18,7 @@ interface BaseItem {
   category: string;
   image_url?: string;
   created_at: string;
+  menu_slot?: string;
 }
 
 interface MenuItem extends BaseItem {
@@ -193,6 +194,7 @@ export default function PartnerMenuPage() {
       if (newItem.description) base.description = newItem.description;
       base.is_veg = newItem.is_veg;
       base.stock = parseInt(newItem.stock) || 0;
+      if (newItem.menu_slot) base.menu_slot = newItem.menu_slot;
     } else if (vendorKey === "grocery") {
       base.stock = parseInt(newItem.stock) || 0;
       if (newItem.description) base.description = newItem.description;
@@ -218,6 +220,7 @@ export default function PartnerMenuPage() {
       if (m.description) base.description = m.description;
       base.is_veg = m.is_veg;
       base.stock = (m as any).stock ?? 0;
+      if ((m as any).menu_slot) base.menu_slot = (m as any).menu_slot;
     } else if (vendorKey === "grocery") {
       const g = item as GroceryItem;
       base.stock = g.stock;
@@ -754,6 +757,21 @@ export default function PartnerMenuPage() {
                   </div>
                 </div>
               )}
+              {vendorKey === "food" && (
+                <div>
+                  <label className="text-sm font-semibold text-slate-700">Available For</label>
+                  <select
+                    value={newItem.menu_slot || "all_day"}
+                    onChange={(e) => setNewItem({ ...newItem, menu_slot: e.target.value })}
+                    className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]"
+                  >
+                    <option value="all_day">All Day</option>
+                    <option value="breakfast">Breakfast (6 AM – 11 AM)</option>
+                    <option value="lunch">Lunch (11 AM – 4 PM)</option>
+                    <option value="dinner">Dinner (4 PM – 11 PM)</option>
+                  </select>
+                </div>
+              )}
               {vendorKey === "pharmacy" && (
                 <div>
                   <label className="flex items-center gap-3 cursor-pointer">
@@ -881,6 +899,21 @@ export default function PartnerMenuPage() {
                       </span>
                     </label>
                   </div>
+                </div>
+              )}
+              {vendorKey === "food" && (
+                <div>
+                  <label className="text-sm font-semibold text-slate-700">Available For</label>
+                  <select
+                    value={(editingItem as any).menu_slot || "all_day"}
+                    onChange={(e) => setEditingItem({ ...editingItem, menu_slot: e.target.value })}
+                    className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]"
+                  >
+                    <option value="all_day">All Day</option>
+                    <option value="breakfast">Breakfast (6 AM – 11 AM)</option>
+                    <option value="lunch">Lunch (11 AM – 4 PM)</option>
+                    <option value="dinner">Dinner (4 PM – 11 PM)</option>
+                  </select>
                 </div>
               )}
               {vendorKey === "pharmacy" && (

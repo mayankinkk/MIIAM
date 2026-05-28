@@ -8,6 +8,7 @@ import { useCartStore } from "@/lib/store/cartStore";
 import CustomizationModal from "@/components/food/CustomizationModal";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
+import { getCurrentMenuSlot } from "@/lib/menuSlots";
 
 export default function VendorPage() {
   const params = useParams();
@@ -63,10 +64,13 @@ export default function VendorPage() {
 
   const categories = ["All", ...new Set(menuItems.map((m) => m.category).filter(Boolean))];
 
+  const currentSlot = getCurrentMenuSlot();
+
   const filteredItems = menuItems.filter((m) => {
     const categoryMatch = activeCategory === "All" || m.category === activeCategory;
     const vegMatch = vegFilter === "all" || m.is_veg === (vegFilter === "veg");
-    return categoryMatch && vegMatch;
+    const slotMatch = !m.menu_slot || m.menu_slot === "all_day" || m.menu_slot === currentSlot;
+    return categoryMatch && vegMatch && slotMatch;
   });
 
   const handleCustomizeItem = (item: any) => {
@@ -155,6 +159,10 @@ export default function VendorPage() {
               ₹{vendor.min_order_amount} for two
             </div>
           )}
+          <div className="flex items-center gap-2 bg-amber-100 text-amber-700 px-3 py-1.5 rounded-lg text-sm font-bold capitalize">
+            <span className="material-symbols-outlined text-sm">schedule</span>
+            {currentSlot}
+          </div>
           {vendor.is_veg === true && (
             <div className="flex items-center gap-2 bg-green-100 text-green-700 px-3 py-1.5 rounded-lg text-sm font-bold">
               🌿 Pure Veg
