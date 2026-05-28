@@ -90,6 +90,7 @@ export interface Order {
   delivered_at: string | null;
   delay_minutes?: number | null;
   delay_reason?: string | null;
+  estimated_prep_time?: number | null;
   vendor?: Vendor;
   items?: OrderItem[];
   address?: Address;

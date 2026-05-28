@@ -15,6 +15,8 @@ export default function PartnerPOS() {
   const [delayModal, setDelayModal] = useState<{ orderId: string } | null>(null);
   const [delayMinutes, setDelayMinutes] = useState(10);
   const [delayReason, setDelayReason] = useState("");
+  const [prepTimeModal, setPrepTimeModal] = useState<{ orderId: string } | null>(null);
+  const [prepTime, setPrepTime] = useState(15);
 
   const channelRef = useRef<any>(null);
   const mountedRef = useRef(true);
@@ -78,10 +80,10 @@ export default function PartnerPOS() {
     return channel;
   }
 
-  const updateStatus = async (orderId: string, newStatus: OrderStatus) => {
+  const updateStatus = async (orderId: string, newStatus: OrderStatus, extra?: Record<string, any>) => {
     const { error } = await supabase
       .from("orders")
-      .update({ status: newStatus })
+      .update({ status: newStatus, ...extra })
       .eq("id", orderId);
 
     if (error) {
@@ -264,7 +266,13 @@ export default function PartnerPOS() {
                       actions.map((action, i) => (
                         <button
                           key={i}
-                          onClick={() => updateStatus(order.id, action.next)}
+                          onClick={() => {
+                            if (action.label === "Start Preparing") {
+                              setPrepTimeModal({ orderId: order.id });
+                            } else {
+                              updateStatus(order.id, action.next);
+                            }
+                          }}
                           className={`flex-1 ${action.color} text-white py-4 rounded-xl font-bold transition-all active:scale-95 shadow-lg shadow-slate-200`}
                         >
                           {action.label}
@@ -425,6 +433,63 @@ export default function PartnerPOS() {
                   className="flex-1 py-3 rounded-xl bg-orange-500 text-white font-bold text-sm hover:bg-orange-600 transition-all shadow-md"
                 >
                   Notify Customer
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Prep Time Modal */}
+      {prepTimeModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setPrepTimeModal(null)}>
+          <div className="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center gap-3 mb-4">
+              <span className="material-symbols-outlined text-3xl text-amber-500">timer</span>
+              <div>
+                <h3 className="text-lg font-extrabold text-slate-900">Set Preparation Time</h3>
+                <p className="text-xs text-slate-500">How long will this order take to prepare?</p>
+              </div>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider block mb-3">Estimated time</label>
+                <div className="flex gap-2">
+                  {[5, 10, 15, 20, 25, 30, 45, 60].map((m) => (
+                    <button
+                      key={m}
+                      onClick={() => setPrepTime(m)}
+                      className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all ${
+                        prepTime === m
+                          ? "bg-amber-500 text-white shadow-md"
+                          : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                      }`}
+                    >
+                      {m < 60 ? `${m}m` : `${Math.floor(m/60)}h`}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="bg-amber-50 rounded-xl p-3 text-xs text-amber-700 flex items-start gap-2">
+                <span className="material-symbols-outlined text-sm">info</span>
+                <p>The customer will see &ldquo;Estimated ready by {new Date(Date.now() + prepTime * 60000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}&rdquo;</p>
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button
+                  onClick={() => setPrepTimeModal(null)}
+                  className="flex-1 py-3 rounded-xl border border-slate-200 text-slate-600 font-bold text-sm hover:bg-slate-50 transition-all"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    updateStatus(prepTimeModal.orderId, "preparing", { estimated_prep_time: prepTime });
+                    setPrepTimeModal(null);
+                    setPrepTime(15);
+                  }}
+                  className="flex-1 py-3 rounded-xl bg-amber-500 text-white font-bold text-sm hover:bg-amber-600 transition-all shadow-md"
+                >
+                  Start Preparing
                 </button>
               </div>
             </div>
