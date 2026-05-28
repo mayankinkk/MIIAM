@@ -17,6 +17,7 @@ export default function PartnerPOS() {
   const [delayReason, setDelayReason] = useState("");
   const [prepTimeModal, setPrepTimeModal] = useState<{ orderId: string } | null>(null);
   const [prepTime, setPrepTime] = useState(15);
+  const [custHistoryModal, setCustHistoryModal] = useState<{ userId: string; orders: any[] } | null>(null);
 
   const channelRef = useRef<any>(null);
   const mountedRef = useRef(true);
@@ -231,6 +232,24 @@ export default function PartnerPOS() {
                         {" • "}
                         {order.payment_method === "wallet" ? "Wallet" : "Online"}
                       </p>
+                      {order.user_id && (
+                        <button
+                          onClick={async () => {
+                            const { data: pastOrders } = await supabase
+                              .from("orders")
+                              .select("id, status, total_amount, placed_at, items:order_items(menu_item_id, quantity, unit_price)")
+                              .eq("user_id", order.user_id)
+                              .eq("vendor_id", vendorId)
+                              .neq("id", order.id)
+                              .order("placed_at", { ascending: false })
+                              .limit(10);
+                            setCustHistoryModal({ userId: order.user_id, orders: pastOrders || [] });
+                          }}
+                          className="text-[10px] text-[#ba001c] font-bold hover:underline mt-1"
+                        >
+                          View customer history
+                        </button>
+                      )}
                     </div>
                     <div className="text-right">
                       <p className="text-2xl font-black text-[#ba001c]">₹{order.total_amount.toFixed(2)}</p>
@@ -493,6 +512,39 @@ export default function PartnerPOS() {
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Customer History Modal */}
+      {custHistoryModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setCustHistoryModal(null)}>
+          <div className="bg-white rounded-3xl p-6 max-w-lg w-full shadow-2xl max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-extrabold text-slate-900">Customer Order History</h3>
+              <button onClick={() => setCustHistoryModal(null)} className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center">
+                <span className="material-symbols-outlined text-sm">close</span>
+              </button>
+            </div>
+            {custHistoryModal.orders.length === 0 ? (
+              <p className="text-slate-400 text-sm text-center py-8">No previous orders from this customer</p>
+            ) : (
+              <div className="space-y-3">
+                {custHistoryModal.orders.map((o: any) => (
+                  <div key={o.id} className="bg-slate-50 rounded-xl p-4 border border-slate-100">
+                    <div className="flex justify-between items-start mb-2">
+                      <span className="text-xs font-bold text-slate-700">#{o.id.slice(0, 8).toUpperCase()}</span>
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                        o.status === "delivered" ? "bg-green-100 text-green-700" : o.status === "cancelled" ? "bg-red-100 text-red-700" : "bg-slate-100 text-slate-600"
+                      }`}>{o.status}</span>
+                    </div>
+                    <div className="text-xs text-slate-500">
+                      {new Date(o.placed_at).toLocaleDateString()} • ₹{o.total_amount.toFixed(2)} • {o.items?.length || 0} items
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}
