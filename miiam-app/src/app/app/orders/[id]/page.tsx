@@ -347,6 +347,20 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
               />
             </div>
 
+            {order?.delay_minutes && order.delay_minutes > 0 && (
+              <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-start gap-3">
+                <span className="material-symbols-outlined text-red-500 text-2xl mt-0.5">warning</span>
+                <div>
+                  <p className="font-bold text-red-800">Order is Delayed</p>
+                  <p className="text-sm text-red-600">
+                    {order.delay_reason
+                      ? `${order.delay_reason} — approximately ${order.delay_minutes} min extra`
+                      : `Approximately ${order.delay_minutes} min extra wait time`}
+                  </p>
+                </div>
+              </div>
+            )}
+
             {order.status !== "pending" && order.riders && (
               <div className="relative bg-white rounded-xl p-6 shadow-[0px_20px_40px_rgba(77,33,42,0.04)] overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-[#c4d0ff]/20 rounded-full -mr-16 -mt-16 blur-2xl" />

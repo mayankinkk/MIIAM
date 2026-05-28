@@ -88,6 +88,8 @@ export interface Order {
   special_instructions: string | null;
   placed_at: string;
   delivered_at: string | null;
+  delay_minutes?: number | null;
+  delay_reason?: string | null;
   vendor?: Vendor;
   items?: OrderItem[];
   address?: Address;

@@ -12,6 +12,9 @@ export default function PartnerPOS() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [menuItemNames, setMenuItemNames] = useState<Map<string, { name: string }>>(new Map());
+  const [delayModal, setDelayModal] = useState<{ orderId: string } | null>(null);
+  const [delayMinutes, setDelayMinutes] = useState(10);
+  const [delayReason, setDelayReason] = useState("");
 
   const channelRef = useRef<any>(null);
   const mountedRef = useRef(true);
@@ -97,6 +100,20 @@ export default function PartnerPOS() {
     }
   };
 
+  const notifyDelay = async (orderId: string) => {
+    const { error } = await supabase
+      .from("orders")
+      .update({ delay_minutes: delayMinutes, delay_reason: delayReason })
+      .eq("id", orderId);
+    if (error) {
+      alert("Error: " + error.message);
+      return;
+    }
+    setDelayModal(null);
+    setDelayMinutes(10);
+    setDelayReason("");
+  };
+
   const statusActions: Record<string, { label: string; next: OrderStatus; color: string }[] | null> = {
     pending: [{ label: "Accept Order", next: "accepted", color: "bg-green-600 hover:bg-green-700" }],
     accepted: [{ label: "Start Preparing", next: "preparing", color: "bg-amber-600 hover:bg-amber-700" }],
@@ -145,6 +162,7 @@ export default function PartnerPOS() {
   const pastOrders = orders.filter((o) => terminalStatuses.includes(o.status));
 
   return (
+    <>
     <div className="p-4 md:p-8 space-y-8">
       <div>
         <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight mb-2">Live Order POS</h1>
@@ -262,6 +280,20 @@ export default function PartnerPOS() {
                         Out for Delivery — Rider on the Way
                       </div>
                     ) : null}
+                    {order.delay_minutes && order.delay_minutes > 0 ? (
+                      <div className="w-full mt-2 py-2 px-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-bold flex items-center gap-2">
+                        <span className="material-symbols-outlined text-sm">warning</span>
+                        Delayed — {order.delay_reason || "Running late"} (+{order.delay_minutes} min)
+                      </div>
+                    ) : ["accepted", "preparing"].includes(order.status) ? (
+                      <button
+                        onClick={() => setDelayModal({ orderId: order.id })}
+                        className="w-full mt-2 py-2 rounded-xl border border-orange-200 text-orange-600 hover:bg-orange-50 transition-colors text-xs font-bold"
+                      >
+                        <span className="material-symbols-outlined align-middle text-sm mr-1">schedule</span>
+                        Notify Delay
+                      </button>
+                    ) : null}
                     {order.status === "pending" && (
                       <button
                         onClick={() => updateStatus(order.id, "cancelled")}
@@ -324,6 +356,81 @@ export default function PartnerPOS() {
           </div>
         </div>
       </section>
-    </div>
+      </div>
+
+      {/* Delay Notification Modal */}
+      {delayModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setDelayModal(null)}>
+          <div className="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center gap-3 mb-4">
+              <span className="material-symbols-outlined text-3xl text-orange-500">schedule</span>
+              <div>
+                <h3 className="text-lg font-extrabold text-slate-900">Notify Delay</h3>
+                <p className="text-xs text-slate-500">Inform customer about the delay</p>
+              </div>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider block mb-1">Delay (minutes)</label>
+                <div className="flex gap-2">
+                  {[5, 10, 15, 20, 30].map((m) => (
+                    <button
+                      key={m}
+                      onClick={() => setDelayMinutes(m)}
+                      className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all ${
+                        delayMinutes === m
+                          ? "bg-orange-500 text-white shadow-md"
+                          : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                      }`}
+                    >
+                      {m}m
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider block mb-1">Reason (optional)</label>
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {["High order volume", "Staff shortage", "Ingredient unavailable", "Equipment issue"].map((r) => (
+                    <button
+                      key={r}
+                      onClick={() => setDelayReason(r)}
+                      className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${
+                        delayReason === r
+                          ? "bg-orange-100 text-orange-700 border border-orange-300"
+                          : "bg-slate-100 text-slate-500 border border-slate-200 hover:bg-slate-200"
+                      }`}
+                    >
+                      {r}
+                    </button>
+                  ))}
+                </div>
+                <input
+                  type="text"
+                  placeholder="Or type a custom reason..."
+                  value={delayReason}
+                  onChange={(e) => setDelayReason(e.target.value)}
+                  className="w-full p-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300"
+                />
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button
+                  onClick={() => setDelayModal(null)}
+                  className="flex-1 py-3 rounded-xl border border-slate-200 text-slate-600 font-bold text-sm hover:bg-slate-50 transition-all"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => notifyDelay(delayModal.orderId)}
+                  className="flex-1 py-3 rounded-xl bg-orange-500 text-white font-bold text-sm hover:bg-orange-600 transition-all shadow-md"
+                >
+                  Notify Customer
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
