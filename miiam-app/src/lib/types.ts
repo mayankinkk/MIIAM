@@ -93,6 +93,7 @@ export interface Order {
   special_instructions: string | null;
   placed_at: string;
   delivered_at: string | null;
+  scheduled_delivery?: string | null;
   delay_minutes?: number | null;
   delay_reason?: string | null;
   estimated_prep_time?: number | null;

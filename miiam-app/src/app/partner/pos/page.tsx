@@ -18,9 +18,13 @@ export default function PartnerPOS() {
   const [prepTimeModal, setPrepTimeModal] = useState<{ orderId: string } | null>(null);
   const [prepTime, setPrepTime] = useState(15);
   const [custHistoryModal, setCustHistoryModal] = useState<{ userId: string; orders: any[] } | null>(null);
+  const [scheduledOrders, setScheduledOrders] = useState<Order[]>([]);
+  const [showScheduled, setShowScheduled] = useState(false);
 
   const channelRef = useRef<any>(null);
   const mountedRef = useRef(true);
+  const prevPendingCountRef = useRef(0);
+  const audioCtxRef = useRef<AudioContext | null>(null);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -31,6 +35,7 @@ export default function PartnerPOS() {
         if (!mountedRef.current || !id) return;
         setVendorId(id);
         await loadOrders(id);
+        await loadScheduledOrders(id);
         if (mountedRef.current) {
           if (channelRef.current) supabase.removeChannel(channelRef.current);
           channelRef.current = subscribeToOrders(id);
@@ -54,6 +59,7 @@ export default function PartnerPOS() {
   }, []);
 
   async function loadOrders(vId: string) {
+    prevPendingCountRef.current = orders.filter(o => o.status === "pending").length;
     const { data, error } = await supabase
       .from("orders")
       .select("*, items:order_items(*)")
@@ -67,14 +73,41 @@ export default function PartnerPOS() {
     }
   }
 
+  async function loadScheduledOrders(vId: string) {
+    const { data } = await supabase
+      .from("orders")
+      .select("*, items:order_items(*)")
+      .eq("vendor_id", vId)
+      .eq("status", "scheduled")
+      .order("scheduled_delivery", { ascending: true });
+    if (data) setScheduledOrders(data);
+  }
+
   function subscribeToOrders(vId: string) {
     const channel = supabase
       .channel("pos_orders_" + vId)
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "orders", filter: `vendor_id=eq.${vId}` },
-        () => {
-          loadOrders(vId);
+        async (payload) => {
+          const prevCount = prevPendingCountRef.current;
+          await loadOrders(vId);
+          if (prevPendingCountRef.current > prevCount && payload.eventType === "INSERT") {
+            try {
+              if (!audioCtxRef.current) audioCtxRef.current = new AudioContext();
+              const ctx = audioCtxRef.current;
+              const osc = ctx.createOscillator();
+              const gain = ctx.createGain();
+              osc.connect(gain);
+              gain.connect(ctx.destination);
+              osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+              osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.15);
+              gain.gain.setValueAtTime(0.3, ctx.currentTime);
+              gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+              osc.start(ctx.currentTime);
+              osc.stop(ctx.currentTime + 0.4);
+            } catch { /* audio not supported */ }
+          }
         }
       )
       .subscribe();
@@ -173,7 +206,7 @@ export default function PartnerPOS() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-5 gap-4">
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
           <p className="text-slate-500 text-sm font-bold uppercase tracking-wider mb-1">Active</p>
           <p className="text-4xl font-black text-[#ba001c]">{activeOrders.length}</p>
@@ -190,7 +223,59 @@ export default function PartnerPOS() {
           <p className="text-slate-500 text-sm font-bold uppercase tracking-wider mb-1">Delivered</p>
           <p className="text-4xl font-black text-green-600">{orders.filter((o) => o.status === "delivered").length}</p>
         </div>
+        <button onClick={() => setShowScheduled(!showScheduled)} className={`p-6 rounded-2xl shadow-sm border text-left transition-colors ${showScheduled ? "bg-indigo-50 border-indigo-300" : "bg-white border-slate-200 hover:bg-slate-50"}`}>
+          <p className="text-slate-500 text-sm font-bold uppercase tracking-wider mb-1">Scheduled</p>
+          <p className="text-4xl font-black text-indigo-600">{scheduledOrders.length}</p>
+        </button>
       </div>
+
+      {/* Scheduled Orders */}
+      {showScheduled && (
+        <section>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+              <span className="material-symbols-outlined text-indigo-500">calendar_month</span>
+              Scheduled Orders
+            </h2>
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Upcoming</span>
+          </div>
+          {scheduledOrders.length === 0 ? (
+            <div className="bg-white border-2 border-dashed border-slate-200 rounded-3xl p-12 text-center">
+              <span className="material-symbols-outlined text-5xl text-slate-300 mb-3">calendar_month</span>
+              <p className="text-slate-400 font-medium">No scheduled orders</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+              {scheduledOrders.map((order) => (
+                <div key={order.id} className="bg-white rounded-3xl p-5 shadow-sm border border-indigo-100 border-l-4 border-l-indigo-500">
+                  <div className="flex justify-between items-start mb-3">
+                    <div>
+                      <span className="text-lg font-black text-slate-900">#{order.id.slice(0, 8).toUpperCase()}</span>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="material-symbols-outlined text-sm text-indigo-500">schedule</span>
+                        <span className="text-sm font-bold text-indigo-600">
+                          {order.scheduled_delivery ? new Date(order.scheduled_delivery).toLocaleDateString([], { weekday: "short", month: "short", day: "numeric" }) : "N/A"}
+                        </span>
+                        <span className="text-sm text-indigo-400">
+                          {order.scheduled_delivery ? new Date(order.scheduled_delivery).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : ""}
+                        </span>
+                      </div>
+                    </div>
+                    <p className="text-xl font-black text-indigo-600">₹{order.total_amount.toFixed(2)}</p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {order.items?.map((item: any, idx: number) => (
+                      <span key={idx} className="text-xs bg-slate-100 px-2 py-1 rounded-lg font-medium text-slate-600">
+                        {item.quantity}x {menuItemNames.get(item.menu_item_id)?.name || "Item"}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+      )}
 
       {/* Active Orders Feed */}
       <section>
