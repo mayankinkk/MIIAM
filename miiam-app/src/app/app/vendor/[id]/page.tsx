@@ -69,7 +69,7 @@ export default function VendorPage() {
 
   const filteredItems = menuItems.filter((m) => {
     const categoryMatch = activeCategory === "All" || m.category === activeCategory;
-    const vegMatch = vegFilter === "all" || m.is_veg === (vegFilter === "veg");
+    const vegMatch = vendor?.type === "food" ? (vegFilter === "all" || m.is_veg === (vegFilter === "veg")) : true;
     const slotMatch = !m.menu_slot || m.menu_slot === "all_day" || m.menu_slot === currentSlot;
   return categoryMatch && vegMatch && slotMatch;
 });
