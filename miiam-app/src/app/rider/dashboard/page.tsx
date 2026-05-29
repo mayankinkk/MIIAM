@@ -300,6 +300,7 @@ export default function RiderDashboard() {
               accepted: "shopping",
               preparing: "shopping",
               shopping: "shopping",
+              ready_for_pickup: "picking_up",
               picking_up: "picking_up",
               on_the_way: "delivering",
               arrived: "arrived",
