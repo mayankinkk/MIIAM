@@ -731,7 +731,7 @@ function MainOrderMap({ orderId, riderLocation, deliveryAddress, onRouteUpdate }
         className: '',
         html: `<div style="position:relative;width:44px;height:44px">
           <div style="position:absolute;inset:0;background:rgba(186,0,28,0.15);border-radius:50%;animation:pulse-ring 1.4s ease-out infinite"></div>
-          <div style="position:absolute;inset:4px;background:var(--color-primary);border-radius:50%;border:3px solid white;box-shadow:0 3px 10px rgba(var(--color-primary),,0.4);display:flex;align-items:center;justify-content:center;font-size:18px;">🏠</div>
+          <div style="position:absolute;inset:4px;background:var(--color-primary);border-radius:50%;border:3px solid white;box-shadow:0 3px 10px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:18px;">🏠</div>
         </div>`,
         iconSize: [44, 44],
         iconAnchor: [22, 44],
@@ -786,7 +786,7 @@ function MainOrderMap({ orderId, riderLocation, deliveryAddress, onRouteUpdate }
           className: '',
           html: `<div style="position:relative;width:46px;height:46px">
             <div style="position:absolute;inset:0;background:rgba(11,80,213,0.2);border-radius:50%;animation:pulse-ring 1s ease-out infinite"></div>
-            <div style="position:absolute;inset:4px;background:var(--color-secondary);border-radius:50%;border:3px solid white;box-shadow:0 3px 10px rgba(var(--color-secondary),,0.4);display:flex;align-items:center;justify-content:center;font-size:20px;">🛵</div>
+            <div style="position:absolute;inset:4px;background:var(--color-secondary);border-radius:50%;border:3px solid white;box-shadow:0 3px 10px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:20px;">🛵</div>
           </div>`,
           iconSize: [46, 46],
           iconAnchor: [23, 46],
