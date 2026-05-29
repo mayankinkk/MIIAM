@@ -383,7 +383,8 @@ export default function RiderDashboard() {
 
   useEffect(() => {
     async function fetchRealOrders() {
-      if (!isOnline) return;
+      try {
+        if (!isOnline) return;
       
       const yesterday = new Date();
       yesterday.setHours(yesterday.getHours() - 24);
