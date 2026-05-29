@@ -169,25 +169,35 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
         await supabase.from("reviews").insert(reviewData);
       }
 
-      // Update rider rating
+      // Update rider rating atomically via RPC
       if (riderRating > 0 && order.rider_id) {
-        const { data: rider } = await supabase
-          .from("riders")
-          .select("rating, total_ratings")
-          .eq("id", order.rider_id)
-          .single();
-        
-        if (rider) {
-          const newRating = ((rider.rating || 0) * (rider.total_ratings || 0) + riderRating) / ((rider.total_ratings || 0) + 1);
-          await supabase.from("riders").update({ 
-            rating: Math.round(newRating * 10) / 10,
-            total_ratings: (rider.total_ratings || 0) + 1
-          }).eq("id", order.rider_id);
+        const { error: rpcErr } = await supabase.rpc("update_rider_rating", {
+          p_rider_id: order.rider_id,
+          p_rating: riderRating,
+        });
+        if (rpcErr) {
+          // Fallback: read-update with retry
+          for (let attempt = 0; attempt < 3; attempt++) {
+            const { data: rider, error: fetchErr } = await supabase
+              .from("riders")
+              .select("rating, total_ratings")
+              .eq("id", order.rider_id)
+              .single();
+            if (fetchErr || !rider) break;
+            const newRating = ((rider.rating || 0) * (rider.total_ratings || 0) + riderRating) / ((rider.total_ratings || 0) + 1);
+            const { error: updateErr } = await supabase
+              .from("riders")
+              .update({ rating: Math.round(newRating * 10) / 10, total_ratings: (rider.total_ratings || 0) + 1 })
+              .eq("id", order.rider_id)
+              .eq("total_ratings", rider.total_ratings || 0);
+            if (!updateErr) break;
+          }
         }
       }
 
       // Mark order as rated
-      await supabase.from("orders").update({ rating_submitted: true }).eq("id", id);
+      const { error: markErr } = await supabase.from("orders").update({ rating_submitted: true }).eq("id", id);
+      if (markErr) console.warn("rating_submitted column may not exist:", markErr.message);
 
       setSubmitted(true);
       if (typeof navigator !== "undefined" && navigator.vibrate) {
