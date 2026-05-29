@@ -467,16 +467,11 @@ export default function RiderDashboard() {
         } as OrderWithTiming;
       }));
       
-      // Filter out orders that are snoozed for this rider
-      const now2 = Date.now();
-      const filteredOrders = mappedOrders.filter(o => {
-        if (o.isSnoozed && o.snoozeUntil && now2 < o.snoozeUntil) {
-          return false; // Skip snoozed orders
-        }
-        return true;
-      });
-      
-      setPendingOrders(filteredOrders);
+      setPendingOrders(mappedOrders);
+    } catch (err) {
+      console.error("Failed to fetch pending orders:", err);
+      setPendingOrders([]);
+    }
     }
     
     fetchRealOrders();
