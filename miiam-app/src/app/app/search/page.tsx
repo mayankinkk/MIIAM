@@ -54,7 +54,7 @@ function SearchContent() {
 
   useEffect(() => {
     const saved = localStorage.getItem("miiam-search-history");
-    if (saved) setSearchHistory(JSON.parse(saved));
+    if (saved) { try { setSearchHistory(JSON.parse(saved)); } catch {} }
   }, []);
 
   useEffect(() => {

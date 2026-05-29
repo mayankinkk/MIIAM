@@ -76,13 +76,18 @@ export default function CartPage() {
         .select("*, menu_items(*)")
         .eq("order_id", orderId);
       if (orderItems) {
+        let vendorName = "Vendor";
+        if (orderItems.length > 0 && orderItems[0].menu_items?.vendor_id) {
+          const { data: vendor } = await supabase.from("vendors").select("shop_name").eq("id", orderItems[0].menu_items.vendor_id).maybeSingle();
+          if (vendor) vendorName = vendor.shop_name;
+        }
         for (const item of orderItems) {
           if (item.menu_items) {
             addItem({
               id: item.menu_item_id,
               menu_item_id: item.menu_item_id,
               vendor_id: item.menu_items.vendor_id,
-              vendor_name: item.menu_items.vendor_name || "Vendor",
+              vendor_name: vendorName,
               name: item.menu_items.name,
               price: item.unit_price,
               image_url: item.menu_items.image_url,
