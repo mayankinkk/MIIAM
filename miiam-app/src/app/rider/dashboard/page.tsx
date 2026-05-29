@@ -441,6 +441,8 @@ export default function RiderDashboard() {
           vendor: vendorRes.data?.shop_name || vendorRes.data?.name || "Restaurant",
           vendorAddress: vendorRes.data?.address || "Restaurant Address",
           vendorPhone: vendorRes.data?.phone || "+91 99999 99999",
+          vendorLat: vendorRes.data?.latitude || vendorRes.data?.lat || 0,
+          vendorLng: vendorRes.data?.longitude || vendorRes.data?.lng || 0,
           customer: profileRes.data?.full_name || (profileRes.data as any)?.name || "Customer",
           customerPhone: profileRes.data?.phone || dbOrder.customer_phone || "+91 88888 88888",
           customerAddress: dbOrder.delivery_address || "Customer Delivery Location",
