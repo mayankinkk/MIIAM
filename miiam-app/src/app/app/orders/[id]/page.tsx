@@ -101,22 +101,24 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
   };
 
   useEffect(() => {
+    let mounted = true;
     async function loadData() {
       setLoading(true);
       await new Promise(r => setTimeout(r, 500));
       
       const { data: { user } } = await supabase.auth.getUser();
-      if (user) setCurrentUserId(user.id);
+      if (user && mounted) setCurrentUserId(user.id);
       
       const { data: basicOrder, error: fetchError } = await supabase
         .from("orders")
         .select("id, user_id, status")
         .eq("id", id)
-        .single();
+        .maybeSingle();
 
       if (fetchError) {
         console.error("Order fetch error:", fetchError, "ID:", id);
         addToast("Failed to load order details. Please try again.", "error");
+        if (!mounted) return;
         setOrder(null);
         setLoading(false);
         return;
@@ -125,6 +127,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
       if (!user) {
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) {
+          if (!mounted) return;
           setOrder(null);
           setLoading(false);
           return;
@@ -135,9 +138,10 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
         .from("orders")
         .select("*")
         .eq("id", id)
-        .single();
+        .maybeSingle();
         
       if (orderError || !orderData) {
+        if (!mounted) return;
         setOrder(null);
         setLoading(false);
         return;
@@ -175,6 +179,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
         items: items
       };
 
+      if (!mounted) return;
       setOrder(fullOrder);
       setLoading(false);
     }
@@ -195,7 +200,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
 
           let riderData = null;
           if (newData.rider_id) {
-            const { data } = await supabase.from("riders").select("*").eq("id", newData.rider_id).single();
+            const { data } = await supabase.from("riders").select("*").eq("id", newData.rider_id).maybeSingle();
             riderData = data;
           }
 
