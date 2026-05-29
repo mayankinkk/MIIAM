@@ -258,7 +258,7 @@ export default function VendorPromotions() {
                 <div className="mt-4 h-1.5 bg-slate-100 rounded-full overflow-hidden">
                   <div
                     className="h-full bg-[#ba001c] rounded-full transition-all"
-                    style={{ width: `${promo.usage_limit ? Math.min((promo.used_count! / promo.usage_limit) * 100, 100) : 0}%` }}
+                    style={{ width: `${promo.usage_limit ? Math.min(((promo.used_count || 0) / promo.usage_limit) * 100, 100) : 0}%` }}
                   />
                 </div>
               </div>
