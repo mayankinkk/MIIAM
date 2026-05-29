@@ -17,14 +17,14 @@ export default function RiderNavBar({ active }: RiderNavBarProps) {
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) return;
-      supabase.from("riders").select("id, is_online").eq("user_id", user.id).single().then(({ data }) => {
+      supabase.from("riders").select("id, is_online").eq("user_id", user.id).maybeSingle().then(({ data }) => {
         if (data) {
           setRiderId(data.id);
           setIsOnline(data.is_online ?? true);
         }
       });
     });
-  }, [supabase]);
+  }, []);
 
   const toggleOnline = async () => {
     if (!riderId || toggling) return;

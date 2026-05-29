@@ -174,7 +174,7 @@ export default function RiderDashboard() {
         setCashPending(0);
 
         // Load DND mode
-        const { data: settings } = await supabase.from("rider_settings").select("dnd_mode, sound_enabled, vibration_enabled").eq("rider_id", riderIdVal).single();
+        const { data: settings } = await supabase.from("rider_settings").select("dnd_mode, sound_enabled, vibration_enabled").eq("rider_id", riderIdVal).maybeSingle();
         if (settings) {
           setDndMode(settings.dnd_mode || false);
           if (settings.sound_enabled !== undefined) setSoundEnabled(settings.sound_enabled);
@@ -409,9 +409,9 @@ export default function RiderDashboard() {
       const mappedOrders: OrderWithTiming[] = await Promise.all(dbOrders.map(async (dbOrder) => {
         // Fetch related data sequentially
         const [vendorRes, itemsRes, profileRes] = await Promise.all([
-          dbOrder.vendor_id ? supabase.from("vendors").select("*").eq("id", dbOrder.vendor_id).single() : Promise.resolve({ data: null }),
+          dbOrder.vendor_id ? supabase.from("vendors").select("*").eq("id", dbOrder.vendor_id).maybeSingle() : Promise.resolve({ data: null }),
           supabase.from("order_items").select("*").eq("order_id", dbOrder.id),
-          dbOrder.user_id ? supabase.from("profiles").select("full_name, name, phone").eq("id", dbOrder.user_id).single() : Promise.resolve({ data: null }),
+          dbOrder.user_id ? supabase.from("profiles").select("full_name, name, phone").eq("id", dbOrder.user_id).maybeSingle() : Promise.resolve({ data: null }),
         ]);
         let itemsList: string[] = [];
         let itemsCount = 0;
@@ -882,7 +882,7 @@ export default function RiderDashboard() {
             .from("orders")
             .select("rider_earning")
             .eq("id", currentOrder.orderDbId)
-            .single();
+            .maybeSingle();
           if (verify && Number(verify.rider_earning) > 0) {
             persisted = true;
             setRiderEarnings((prev) => prev + finalEarnings);
