@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { getVendorForUser } from "@/lib/vendor";
 
@@ -102,6 +102,10 @@ export default function PartnerMenuPage() {
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
   const [bulkAction, setBulkAction] = useState<string>("");
   const [bulkValue, setBulkValue] = useState<string>("");
+  const itemsRef = useRef(items);
+  const selectedItemsRef = useRef(selectedItems);
+  itemsRef.current = items;
+  selectedItemsRef.current = selectedItems;
 
   // Helper: Upload image to Supabase Storage
   async function uploadImage(file: File): Promise<string | null> {
@@ -332,6 +336,7 @@ export default function PartnerMenuPage() {
   };
 
   const toggleAvailability = async (item: AnyItem) => {
+    if (!("available" in item)) return;
     const m = item as MenuItem;
     try {
       const { error } = await supabase.from(table).update({ available: !m.available }).eq("id", item.id);
@@ -621,6 +626,8 @@ export default function PartnerMenuPage() {
               <button
                 onClick={async () => {
                   if (!bulkAction || !bulkValue) return;
+                  const currentItems = itemsRef.current;
+                  const currentSelected = selectedItemsRef.current;
                   const updates: Record<string, any> = {};
                   if (bulkAction === "discount") {
                     updates.discount_percent = parseInt(bulkValue);
@@ -633,7 +640,7 @@ export default function PartnerMenuPage() {
                     updates.category = bulkValue;
                   } else if (bulkAction === "price_percent") {
                     const pct = parseFloat(bulkValue);
-                    const itemData = items.filter(i => selectedItems.has(i.id));
+                    const itemData = currentItems.filter(i => currentSelected.has(i.id));
                     for (const item of itemData) {
                       const newPrice = Math.round(item.price * (1 + pct / 100) * 100) / 100;
                       await supabase.from(table).update({ price: newPrice }).eq("id", item.id);
@@ -648,7 +655,7 @@ export default function PartnerMenuPage() {
                   } else if (bulkAction === "stock") {
                     updates.stock = parseInt(bulkValue);
                   }
-                  const ids = Array.from(selectedItems);
+                  const ids = Array.from(currentSelected);
                   const { error } = await supabase.from(table).update(updates).in("id", ids);
                   if (!error) {
                     loadItems();
