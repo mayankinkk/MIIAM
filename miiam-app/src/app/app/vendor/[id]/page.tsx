@@ -96,7 +96,6 @@ const sortedItems = [...filteredItems].sort((a, b) => ((b as any).featured ? 1 :
       image_url: item.image_url,
       vendor_id: vendorId,
       vendor_name: vendor?.shop_name,
-      special_notes: item.special_notes,
     }, item.quantity || 1);
   };
 
