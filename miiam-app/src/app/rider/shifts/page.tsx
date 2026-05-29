@@ -111,7 +111,7 @@ export default function RiderShifts() {
                           <span className="material-symbols-outlined text-slate-400 text-lg">schedule</span>
                           <div>
                             <p className="text-sm font-bold text-slate-700">{shift.start_time.slice(0, 5)} - {shift.end_time.slice(0, 5)}</p>
-                            <p className="text-[10px] text-slate-400">{Math.round((new Date(`2000-01-01T${shift.end_time}`).getTime() - new Date(`2000-01-01T${shift.start_time}`).getTime()) / 3600000)} hrs</p>
+                            <p className="text-[10px] text-slate-400">{(() => { const diff = new Date(`2000-01-01T${shift.end_time}`).getTime() - new Date(`2000-01-01T${shift.start_time}`).getTime(); return Math.round((diff < 0 ? diff + 86400000 : diff) / 3600000); })()} hrs</p>
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
