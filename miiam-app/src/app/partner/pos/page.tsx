@@ -113,7 +113,10 @@ export default function PartnerPOS() {
           }
         }
       )
-      .subscribe();
+      .subscribe((status: string) => {
+        if (status === "SUBSCRIBED") console.log("POS channel subscribed");
+        else if (status === "CHANNEL_ERROR") console.error("POS channel error");
+      });
     return channel;
   }
 
