@@ -55,7 +55,7 @@ export default function RiderIncidentPage() {
           setRecentIncidents(incidents.map(i => ({
             id: i.id,
             type: i.type,
-            date: new Date(i.created_at).toLocaleDateString(),
+            date: new Date(i.created_at).toLocaleDateString("en-IN"),
             status: i.status,
           })));
         }
@@ -87,7 +87,7 @@ export default function RiderIncidentPage() {
           setRecentIncidents(incidents.map(i => ({
             id: i.id,
             type: i.type,
-            date: new Date(i.created_at).toLocaleDateString(),
+            date: new Date(i.created_at).toLocaleDateString("en-IN"),
             status: i.status,
           })));
         }

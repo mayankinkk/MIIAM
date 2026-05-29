@@ -1364,7 +1364,7 @@ function HistoryCard({ order }: { order: Order }) {
       <div className="flex justify-between items-center">
         <div>
           <p className="font-bold text-sm">{order.vendor?.name}</p>
-          <p className="text-xs text-slate-400">{new Date(order.placed_at).toLocaleDateString()}</p>
+          <p className="text-xs text-slate-400">{new Date(order.placed_at).toLocaleDateString("en-IN")}</p>
         </div>
         <div className="text-right">
           <p className={`font-bold ${earned >= 0 ? "text-green-600" : "text-red-500"}`}>

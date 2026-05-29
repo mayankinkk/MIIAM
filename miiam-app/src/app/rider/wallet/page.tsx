@@ -160,7 +160,7 @@ export default function RiderWalletPage() {
         .limit(20);
       if (payoutTxns) {
         setPayoutHistory(payoutTxns.map(t => ({
-          date: new Date(t.created_at).toLocaleDateString(),
+          date: new Date(t.created_at).toLocaleDateString("en-IN"),
           amount: Number(t.amount),
           status: "completed",
           method: t.description?.includes("Instant") ? "Instant UPI" : "Bank Transfer",

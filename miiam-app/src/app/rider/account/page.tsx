@@ -78,6 +78,7 @@ export default function RiderAccountPage() {
     name: rider.name || rider.profile?.full_name || "Rider",
     vehicle: rider.vehicle_type,
     isOnline: rider.is_online,
+    joined: rider.created_at ? new Date(rider.created_at).toLocaleDateString("en-IN", { month: "long", year: "numeric" }) : "N/A",
   } : null;
 
   async function toggleOnline() {
