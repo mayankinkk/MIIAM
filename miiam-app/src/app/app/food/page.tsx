@@ -405,8 +405,13 @@ export default function FoodPage() {
       }
 
       setRestaurants(filteredVendors);
-      const itemsRes = await supabase.from("menu_items").select("*").order("name");
-      setMenuItems(itemsRes.data || []);
+      const vendorIds = filteredVendors.map(v => v.id);
+      if (vendorIds.length > 0) {
+        const itemsRes = await supabase.from("menu_items").select("*").in("vendor_id", vendorIds).order("name");
+        setMenuItems(itemsRes.data || []);
+      } else {
+        setMenuItems([]);
+      }
       
       if (heroRes?.data) setHeroAsset(heroRes.data);
     } catch (err) {

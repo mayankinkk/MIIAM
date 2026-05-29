@@ -98,10 +98,10 @@ export default function ExplorePage() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) return;
       const { data: profile } = await supabase
-        .from("profiles")
-        .select("city, state")
-        .eq("id", session.user.id)
-        .single();
+          .from("profiles")
+          .select("city, state")
+          .eq("id", session.user.id)
+          .maybeSingle();
       if (profile && !profile.city && !dismissedLocationBanner) {
         setShowLocationBanner(true);
       }
