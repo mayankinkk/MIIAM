@@ -47,7 +47,7 @@ export default function RiderWalletPage() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { setLoading(false); return; }
 
-      const { data: riderData } = await supabase.from("riders").select("id").eq("user_id", user.id).single();
+      const { data: riderData } = await supabase.from("riders").select("id").eq("user_id", user.id).maybeSingle();
       if (!riderData) { setLoading(false); return; }
       setRiderId(riderData.id);
 
@@ -175,7 +175,7 @@ export default function RiderWalletPage() {
 
   useEffect(() => {
     loadWalletData();
-  }, [supabase]);
+  }, []);
 
   async function requestPayout(amount: number) {
     if (riderId) {
@@ -193,7 +193,7 @@ export default function RiderWalletPage() {
 
   async function instantPayout() {
     const amount = parseInt(instantPayoutAmount);
-    if (amount < 100) {
+    if (isNaN(amount) || amount < 100) {
       alert("Minimum instant payout is ₹100");
       return;
     }
