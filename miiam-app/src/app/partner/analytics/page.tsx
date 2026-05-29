@@ -451,7 +451,7 @@ export default function VendorAnalytics() {
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {competitors.slice(0, 5).map((c: any) => (
-                  <tr key={c.shop_name + Math.random()} className="hover:bg-slate-50">
+                  <tr key={c.id || c.shop_name} className="hover:bg-slate-50">
                     <td className="p-3 font-bold text-slate-800">{c.shop_name}</td>
                     <td className="p-3"><span className="text-amber-500">★</span> {c.rating?.toFixed(1) || "N/A"}</td>
                     <td className="p-3 text-slate-600">{c.review_count || 0}</td>

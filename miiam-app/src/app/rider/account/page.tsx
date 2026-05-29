@@ -30,9 +30,6 @@ export default function RiderAccountPage() {
   const [activeShift, setActiveShift] = useState<string | null>("Lunch");
   const [isOnline, setIsOnline] = useState(true);
   const [dataError, setDataError] = useState<string | null>(null);
-  const [referralCode, setReferralCode] = useState("");
-  const [totalReferrals, setTotalReferrals] = useState(0);
-  const [referralEarnings, setReferralEarnings] = useState(0);
 
   useEffect(() => {
     loadRider();
@@ -63,20 +60,6 @@ export default function RiderAccountPage() {
             const saved = savedShifts.find(s => s.shift_name === ws.name);
             return saved ? { ...ws, isSelected: saved.is_selected } : ws;
           }));
-        }
-      }
-
-      // Load referral data
-      if (riderData?.id) {
-        const { data: refData } = await supabase
-          .from("riders")
-          .select("referral_code, total_referrals, referral_earnings")
-          .eq("id", riderData.id)
-          .single();
-        if (refData) {
-          setReferralCode(refData.referral_code || `MIIAM${riderData.id.slice(-4).toUpperCase()}`);
-          setTotalReferrals(refData.total_referrals || 0);
-          setReferralEarnings(refData.referral_earnings || 0);
         }
       }
     } catch {
@@ -276,33 +259,6 @@ export default function RiderAccountPage() {
             <div className="bg-green-500 h-2 rounded-full" style={{ width: `${((displayRider?.rating || 5) / 5) * 100}%` }}></div>
           </div>
           <p className="text-xs text-slate-400 mt-2">Maintain 4.5+ to avoid suspension</p>
-        </div>
-
-        {/* Referral Program */}
-        <div className="bg-gradient-to-br from-[#0b50d5] to-[#0044bf] rounded-2xl p-5 shadow-lg text-white">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined">referral</span>
-              <h3 className="font-bold">Refer & Earn</h3>
-            </div>
-            <span className="text-xs bg-white/20 px-2 py-1 rounded-full">₹50 per referral</span>
-          </div>
-          <div className="flex items-center justify-between mb-3">
-            <div>
-              <p className="text-2xl font-black">₹{referralEarnings}</p>
-              <p className="text-xs text-white/70">earned from {totalReferrals} referrals</p>
-            </div>
-            <div className="text-right">
-              <p className="text-xs text-white/70">Your Code</p>
-              <p className="text-lg font-black tracking-wider">{referralCode}</p>
-            </div>
-          </div>
-          <button
-            onClick={() => { navigator.clipboard.writeText(referralCode); alert("Referral code copied!"); }}
-            className="w-full py-2.5 bg-white/20 rounded-xl font-bold text-sm hover:bg-white/30 transition-colors"
-          >
-            Share Referral Code
-          </button>
         </div>
 
         {/* Quick Links */}
