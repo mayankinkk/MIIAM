@@ -68,7 +68,7 @@ export default function HomePage() {
           .from("profiles")
           .select("full_name")
           .eq("id", user.id)
-          .single();
+          .maybeSingle();
         
         setUser({
           ...user,
