@@ -67,17 +67,6 @@ export default function CheckoutPage() {
   const userPincode = locationStore.pincode;
 
   useEffect(() => {
-    if (!userPincode) {
-      locationStore.setLocation({ pincode: "000000", displayAddress: "Checking..." });
-    }
-  }, []);
-
-  useEffect(() => {
-    // Read URL params
-    try {
-      const params = new URLSearchParams(window.location.search);
-    } catch (e) {}
-
     const saved = localStorage.getItem('miiam_selected_address');
     if (saved) {
       try { setDeliveryAddress(JSON.parse(saved)); } catch {}
@@ -140,7 +129,7 @@ export default function CheckoutPage() {
       const raw = subtotal * (promo.discount_value / 100);
       finalDiscount = promo.max_discount ? Math.min(raw, promo.max_discount) : raw;
       finalDiscount = +finalDiscount.toFixed(2);
-      setPromoApplied({ code, discount: finalDiscount, type: "flat" });
+      setPromoApplied({ code, discount: finalDiscount, type: "percent" });
     } else {
       setPromoApplied({ code, discount: finalDiscount, type: "flat" });
     }
