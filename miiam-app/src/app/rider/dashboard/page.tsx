@@ -292,7 +292,7 @@ export default function RiderDashboard() {
               peakMultiplier: 1.0,
               specialInstructions: dbOrder.special_instructions || "",
               otp: Math.floor(1000 + (seed * 7) % 9000).toString(),
-              type: "food",
+              type: vendorData?.type || "food",
             };
             setCurrentOrder(activeOrder);
 
@@ -462,7 +462,7 @@ export default function RiderDashboard() {
           peakMultiplier: 1.0,
           specialInstructions: dbOrder.special_instructions || "",
           otp: Math.floor(1000 + (seed * 7) % 9000).toString(),
-          type: "food",
+          type: vendorRes.data?.type || "food",
           expiresAt: expirationTime,
           isSnoozed: false,
         } as OrderWithTiming;
@@ -479,7 +479,7 @@ export default function RiderDashboard() {
     
     const channel = supabase
       .channel('rider-orders-dash')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders' }, () => {
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders', filter: `status=eq.ready_for_pickup` }, () => {
         fetchRealOrders();
       })
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'orders', filter: `status=in.(ready_for_pickup)` }, () => {
