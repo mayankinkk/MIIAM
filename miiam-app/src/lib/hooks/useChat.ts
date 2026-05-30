@@ -192,10 +192,16 @@ export function useChatList(userId: string) {
 
   useEffect(() => {
     async function loadChats() {
+      const { data: userOrders } = await supabase
+        .from("orders")
+        .select("id")
+        .eq("user_id", userId);
+      const orderIds = userOrders?.map(o => o.id) || [];
+      if (orderIds.length === 0) { setChats([]); setLoading(false); return; }
       const { data, error } = await supabase
         .from("chat_messages")
         .select("order_id, sender_id, message, created_at")
-        .or(`sender_id.eq.${userId}`)
+        .in("order_id", orderIds)
         .order("created_at", { ascending: false });
 
       if (!error && data) {
@@ -229,11 +235,7 @@ export function useChatList(userId: string) {
           schema: "public",
           table: "chat_messages",
         },
-        (payload) => {
-          if (payload.new.sender_id !== userId) {
-            loadChats();
-          }
-        }
+        () => { loadChats(); }
       )
       .subscribe();
 
