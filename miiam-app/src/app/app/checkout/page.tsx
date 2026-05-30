@@ -95,7 +95,7 @@ export default function CheckoutPage() {
   const baseAmountForTax = Math.max(0, subtotal - discount);
   const tax = +(baseAmountForTax * 0.05).toFixed(2);
   const deliveryFee = 5.99;
-  const grand = Math.max(0, +(subtotal - discount + tax + deliveryFee + tipAmount).toFixed(2));
+  const grand = Math.max(0, +(subtotal - discount + tax + deliveryFee * vendorIds.length + tipAmount).toFixed(2));
 
   const handleApplyPromo = () => {
     const code = promoCode.toUpperCase().trim();
