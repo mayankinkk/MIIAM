@@ -144,7 +144,7 @@ export default function HomePage() {
         if (active) {
           setActiveOrder({
             id: active.id,
-            vendor: active.vendors?.name || "Restaurant",
+            vendor: (active.vendors as any)?.name || (active.vendors as any)?.[0]?.name || "Restaurant",
             items: "Order in progress",
             steps: [
               { id: 1, label: "Order Placed", completed: true, time: new Date(active.placed_at).toLocaleTimeString() },
@@ -336,7 +336,7 @@ export default function HomePage() {
                 setShowNotifications(!showNotifications);
                 if (unreadCount > 0 && user) {
                   setUnreadCount(0);
-                  supabase.from("notifications").update({ read: true }).eq("user_id", user.id).eq("read", false).then().catch(() => {});
+                  void supabase.from("notifications").update({ read: true }).eq("user_id", user.id).eq("read", false);
                 }
               }}
               className="relative w-10 h-10 bg-surface-container-high hover:bg-surface-container-highest transition-colors rounded-full flex items-center justify-center"
