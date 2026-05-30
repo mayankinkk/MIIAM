@@ -336,7 +336,7 @@ export default function HomePage() {
                 setShowNotifications(!showNotifications);
                 if (unreadCount > 0 && user) {
                   setUnreadCount(0);
-                  supabase.from("notifications").update({ read: true }).eq("user_id", user.id).eq("read", false).then();
+                  supabase.from("notifications").update({ read: true }).eq("user_id", user.id).eq("read", false).then().catch(() => {});
                 }
               }}
               className="relative w-10 h-10 bg-surface-container-high hover:bg-surface-container-highest transition-colors rounded-full flex items-center justify-center"
