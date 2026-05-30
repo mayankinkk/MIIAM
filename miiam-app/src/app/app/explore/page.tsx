@@ -418,7 +418,6 @@ export default function ExplorePage() {
             {collections.map((collection, i) => (
               <StaggerItem key={collection.id}>
               <div 
-                key={collection.id}
                 className="relative rounded-2xl overflow-hidden h-40 group card-lift"
               >
                 <BlurImage 
