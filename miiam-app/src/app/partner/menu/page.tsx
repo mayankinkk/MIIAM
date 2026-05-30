@@ -1380,16 +1380,16 @@ export default function PartnerMenuPage() {
                 <div className="mt-2">
                   <button
                     type="button"
-                    onClick={() => setEditingItem({ ...editingItem, _showUrlInput: !(editingItem as any)._showUrlInput } as AnyItem)}
+                    onClick={() => setEditingItem({ ...(editingItem as any), _showUrlInput: !(editingItem as any)._showUrlInput })}
                     className="text-xs font-bold text-[#ba001c] hover:underline"
                   >
-                    {(editingItem as any)._showUrlInput ? "Hide URL input" : "Or enter image URL instead"}
+                    {(editingItem as any)._showUrlInput ? "Hide URL input" : "Or enter URL instead"}
                   </button>
                   {(editingItem as any)._showUrlInput && (
                     <input
                       type="url"
                       value={(editingItem as any).image_url || ""}
-                      onChange={(e) => setEditingItem({ ...editingItem, image_url: e.target.value } as AnyItem)}
+                      onChange={(e) => setEditingItem({ ...(editingItem as any), image_url: e.target.value })}
                       placeholder="https://example.com/image.jpg"
                       className="mt-2 w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#ba001c]"
                     />
