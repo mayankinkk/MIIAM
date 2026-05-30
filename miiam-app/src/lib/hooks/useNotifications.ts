@@ -33,35 +33,40 @@ export function useNotifications() {
   useEffect(() => {
     initializeNotifications();
 
-    const channel = supabase
-      .channel("notifications")
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "notifications",
-        },
-        (payload) => {
-          const newNotification = payload.new as any;
-          addNotification({
-            title: newNotification.title,
-            body: newNotification.body,
-            icon: newNotification.icon_url,
-            tag: newNotification.type,
-            data: newNotification.data,
-            actionUrl: newNotification.action_url,
-          });
-          notify(newNotification.title, {
-            body: newNotification.body,
-            tag: newNotification.type,
-          });
-        }
-      )
-      .subscribe();
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return;
+      channel = supabase
+        .channel(`notifications-${user.id}`)
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "notifications",
+            filter: `user_id=eq.${user.id}`,
+          },
+          (payload) => {
+            const newNotification = payload.new as any;
+            addNotification({
+              title: newNotification.title,
+              body: newNotification.body,
+              icon: newNotification.icon_url,
+              tag: newNotification.type,
+              data: newNotification.data,
+              actionUrl: newNotification.action_url,
+            });
+            notify(newNotification.title, {
+              body: newNotification.body,
+              tag: newNotification.type,
+            });
+          }
+        )
+        .subscribe();
+    });
 
     return () => {
-      supabase.removeChannel(channel);
+      if (channel) supabase.removeChannel(channel);
     };
   }, [supabase, addNotification, initializeNotifications]);
 
