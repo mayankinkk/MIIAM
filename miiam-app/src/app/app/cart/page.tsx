@@ -96,7 +96,6 @@ export default function CartPage() {
         }
       }
       setShowReorderModal(false);
-      router.push("/app/cart");
     } catch (error) {
       console.error("Reorder failed:", error);
       addToast("Failed to reorder. Please try again.", "error");
@@ -131,8 +130,21 @@ export default function CartPage() {
 
       <main className="pt-4 pb-40 px-4 max-w-2xl mx-auto">
         <section className="mb-6">
-          <h1 className="text-2xl font-extrabold tracking-tight text-primary">Your Cart</h1>
-          <p className="text-slate-600 text-xs mt-0.5">Review items from your favorite spots.</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-extrabold tracking-tight text-primary">Your Cart</h1>
+              <p className="text-slate-600 text-xs mt-0.5">Review items from your favorite spots.</p>
+            </div>
+            <button
+              onClick={async () => {
+                await fetchPastOrders();
+                setShowReorderModal(true);
+              }}
+              className="text-xs font-bold text-primary bg-primary/5 px-3 py-2 rounded-lg hover:bg-primary/10 transition-colors"
+            >
+              Reorder
+            </button>
+          </div>
         </section>
 
         {hasMultipleVendors && (
