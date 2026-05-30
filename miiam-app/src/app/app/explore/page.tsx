@@ -123,8 +123,8 @@ export default function ExplorePage() {
     try {
       setError(null);
       await new Promise(resolve => setTimeout(resolve, 1500));
-      setRefreshKey(k => k + 1);
-    } catch (err) {
+      window.location.reload();
+    } catch {
       setError("Failed to refresh. Please try again.");
     }
   };
