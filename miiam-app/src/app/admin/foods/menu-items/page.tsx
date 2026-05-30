@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import ImageUpload from "@/components/ImageUpload";
 
 interface MenuItem {
   id: string;
@@ -89,6 +90,7 @@ export default function AdminMenuItemsPage() {
           name: editingItem.name,
           price: editingItem.price,
           category: editingItem.category,
+          image_url: editingItem.image_url || null,
           available: editingItem.available,
         })
         .eq("id", editingItem.id);
@@ -326,6 +328,14 @@ export default function AdminMenuItemsPage() {
                   </div>
                 </div>
               </div>
+              <ImageUpload
+                value={newItem.image_url}
+                onChange={(url) => setNewItem({ ...newItem, image_url: url })}
+                bucket="menu-images"
+                folder="menu-items"
+                label="Item Image"
+                previewHeight="h-32"
+              />
               <button
                 onClick={handleAddItem}
                 disabled={loading}
@@ -384,6 +394,14 @@ export default function AdminMenuItemsPage() {
                   </div>
                 </div>
               </div>
+              <ImageUpload
+                value={editingItem.image_url || ""}
+                onChange={(url) => setEditingItem({ ...editingItem, image_url: url })}
+                bucket="menu-images"
+                folder="menu-items"
+                label="Item Image"
+                previewHeight="h-32"
+              />
               <div className="flex items-center gap-3">
                 <input
                   type="checkbox"
