@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import ImageUpload from "@/components/ImageUpload";
 
 interface Banner {
   id: string;
@@ -216,16 +217,14 @@ export default function BannerManagement() {
                   placeholder="Banner title"
                 />
               </div>
-              <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase mb-1">Image URL</label>
-                <input
-                  type="text"
-                  value={newBanner.image_url}
-                  onChange={(e) => setNewBanner({ ...newBanner, image_url: e.target.value })}
-                  className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#ba001c]/10"
-                  placeholder="https://..."
-                />
-              </div>
+              <ImageUpload
+                value={newBanner.image_url}
+                onChange={(url) => setNewBanner({ ...newBanner, image_url: url })}
+                bucket="menu-images"
+                folder="banners"
+                label="Banner Image"
+                previewHeight="h-32"
+              />
               <div>
                 <label className="block text-xs font-bold text-slate-400 uppercase mb-1">Link (optional)</label>
                 <input
