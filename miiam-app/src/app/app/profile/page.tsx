@@ -217,10 +217,11 @@ export default function EnhancedProfilePage() {
 
             <button
               onClick={() => {
-                if (settings.enabled) triggerHaptic("light");
+                if (!settings.enabled) return;
+                triggerHaptic("light");
                 updateSetting("light", !settings.light);
               }}
-              className="w-full flex items-center justify-between py-3 hover:bg-slate-50 rounded-xl px-2 transition-colors"
+              className={`w-full flex items-center justify-between py-3 hover:bg-slate-50 rounded-xl px-2 transition-colors ${!settings.enabled ? "opacity-50" : ""}`}
             >
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center">
@@ -238,10 +239,11 @@ export default function EnhancedProfilePage() {
 
             <button
               onClick={() => {
-                if (settings.enabled) triggerHaptic("medium");
+                if (!settings.enabled) return;
+                triggerHaptic("medium");
                 updateSetting("medium", !settings.medium);
               }}
-              className="w-full flex items-center justify-between py-3 hover:bg-slate-50 rounded-xl px-2 transition-colors"
+              className={`w-full flex items-center justify-between py-3 hover:bg-slate-50 rounded-xl px-2 transition-colors ${!settings.enabled ? "opacity-50" : ""}`}
             >
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center">
@@ -259,10 +261,11 @@ export default function EnhancedProfilePage() {
 
             <button
               onClick={() => {
-                if (settings.enabled) triggerHaptic("heavy");
+                if (!settings.enabled) return;
+                triggerHaptic("heavy");
                 updateSetting("heavy", !settings.heavy);
               }}
-              className="w-full flex items-center justify-between py-3 hover:bg-slate-50 rounded-xl px-2 transition-colors"
+              className={`w-full flex items-center justify-between py-3 hover:bg-slate-50 rounded-xl px-2 transition-colors ${!settings.enabled ? "opacity-50" : ""}`}
             >
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center">
