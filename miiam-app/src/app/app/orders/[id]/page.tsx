@@ -709,6 +709,7 @@ function MainOrderMap({ orderId, riderLocation, deliveryAddress, onRouteUpdate }
   const riderMarkerRef = useRef<any>(null);
   const destLatLngRef = useRef<[number, number] | null>(null);
   const routeLayerRef = useRef<any[]>([]);
+  const leafletRef = useRef<any>(null);
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -716,6 +717,7 @@ function MainOrderMap({ orderId, riderLocation, deliveryAddress, onRouteUpdate }
 
     async function initMap() {
       const L = await import('leaflet');
+      leafletRef.current = L;
       await import('leaflet/dist/leaflet.css');
 
       if (!isMounted || !mapRef.current) return;
@@ -782,7 +784,8 @@ function MainOrderMap({ orderId, riderLocation, deliveryAddress, onRouteUpdate }
     let isMounted = true;
 
     async function updateRider() {
-      const L = await import('leaflet');
+      const L = leafletRef.current;
+      if (!L) return;
       const map = mapInstanceRef.current;
       const { lat, lng } = riderLocation!;
       
