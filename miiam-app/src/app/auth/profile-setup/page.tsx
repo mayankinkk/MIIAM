@@ -112,7 +112,7 @@ function ProfileSetupContent() {
         full_name: formData.full_name,
         phone: formData.phone,
         email: formData.email,
-        is_profile_complete: true,
+        is_profile_complete: !skipProfile,
         updated_at: new Date().toISOString(),
       };
 
