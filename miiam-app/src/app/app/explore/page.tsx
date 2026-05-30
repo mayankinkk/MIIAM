@@ -55,7 +55,6 @@ export default function ExplorePage() {
   const [showFilters, setShowFilters] = useState(false);
   const [priceFilter, setPriceFilter] = useState<"all" | "under_200" | "200_500" | "over_500">("all");
   const [ratingFilter, setRatingFilter] = useState<"all" | "4plus" | "3plus">("all");
-  const [dietaryFilter, setDietaryFilter] = useState<"all" | "veg" | "nonveg">("all");
   const scrollRef = useRef<HTMLDivElement>(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -87,7 +86,7 @@ export default function ExplorePage() {
     return matchesSearch && matchesCategory && matchesPrice && matchesRating;
   });
 
-  const hasActiveFilters = priceFilter !== "all" || ratingFilter !== "all" || dietaryFilter !== "all";
+  const hasActiveFilters = priceFilter !== "all" || ratingFilter !== "all";
 
   useEffect(() => {
     setIsLoaded(true);
@@ -343,7 +342,7 @@ export default function ExplorePage() {
               
               {hasActiveFilters && (
                 <button
-                  onClick={() => { setPriceFilter("all"); setRatingFilter("all"); setDietaryFilter("all"); }}
+                  onClick={() => { setPriceFilter("all"); setRatingFilter("all"); }}
                   className="text-xs text-primary font-bold"
                 >
                   Clear all filters
