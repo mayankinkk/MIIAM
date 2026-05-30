@@ -88,6 +88,8 @@ export default function PartnerMenuPage() {
     stock: "",
     requires_prescription: false,
     imageFiles: [] as File[],
+    image_url: "",
+    showUrlInput: false,
     has_discount: false,
     discount_percent: 20,
     featured: false,
@@ -194,6 +196,7 @@ export default function PartnerMenuPage() {
       requires_prescription: false,
       imageFiles: [],
       image_url: "",
+      showUrlInput: false,
       has_discount: false,
       discount_percent: 20,
       featured: false,
@@ -1116,6 +1119,24 @@ export default function PartnerMenuPage() {
                     ))}
                   </div>
                 )}
+                <div className="mt-2">
+                  <button
+                    type="button"
+                    onClick={() => setNewItem({ ...newItem, showUrlInput: !newItem.showUrlInput })}
+                    className="text-xs font-bold text-[#ba001c] hover:underline"
+                  >
+                    {newItem.showUrlInput ? "Hide URL input" : "Or enter image URL instead"}
+                  </button>
+                  {newItem.showUrlInput && (
+                    <input
+                      type="url"
+                      value={newItem.image_url}
+                      onChange={(e) => setNewItem({ ...newItem, image_url: e.target.value, imageFiles: [] })}
+                      placeholder="https://example.com/image.jpg"
+                      className="mt-2 w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#ba001c]"
+                    />
+                  )}
+                </div>
               </div>
               <button
                 onClick={handleAddItem}
@@ -1356,6 +1377,24 @@ export default function PartnerMenuPage() {
                   }}
                   className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 text-sm file:mr-3 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-[#ba001c] file:text-white file:font-bold file:text-xs hover:file:bg-[#a40017]"
                 />
+                <div className="mt-2">
+                  <button
+                    type="button"
+                    onClick={() => setEditingItem({ ...editingItem, _showUrlInput: !(editingItem as any)._showUrlInput } as AnyItem)}
+                    className="text-xs font-bold text-[#ba001c] hover:underline"
+                  >
+                    {(editingItem as any)._showUrlInput ? "Hide URL input" : "Or enter image URL instead"}
+                  </button>
+                  {(editingItem as any)._showUrlInput && (
+                    <input
+                      type="url"
+                      value={(editingItem as any).image_url || ""}
+                      onChange={(e) => setEditingItem({ ...editingItem, image_url: e.target.value } as AnyItem)}
+                      placeholder="https://example.com/image.jpg"
+                      className="mt-2 w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#ba001c]"
+                    />
+                  )}
+                </div>
               </div>
               <div className="flex gap-3">
                 <button

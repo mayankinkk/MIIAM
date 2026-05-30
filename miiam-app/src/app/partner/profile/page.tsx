@@ -40,6 +40,7 @@ export default function VendorProfilePage() {
   const [saved, setSaved] = useState(false);
   const [activeTab, setActiveTab] = useState<"store" | "business" | "delivery">("store");
   const [uploading, setUploading] = useState(false);
+  const [showUrlInput, setShowUrlInput] = useState<"cover" | "banner" | null>(null);
 
   const [form, setForm] = useState<Partial<VendorProfile>>({});
 
@@ -170,6 +171,24 @@ export default function VendorProfilePage() {
                 </div>
               )}
             </div>
+            <div className="flex flex-col gap-1">
+              <button
+                type="button"
+                onClick={() => setShowUrlInput(showUrlInput === "cover" ? null : "cover")}
+                className="text-xs font-bold text-[#ba001c] hover:underline text-left"
+              >
+                {showUrlInput === "cover" ? "Hide URL input" : "Or enter image URL"}
+              </button>
+              {showUrlInput === "cover" && (
+                <input
+                  type="url"
+                  value={form.cover_image_url || ""}
+                  onChange={(e) => setForm({ ...form, cover_image_url: e.target.value })}
+                  placeholder="https://example.com/image.jpg"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#ba001c]"
+                />
+              )}
+            </div>
             <div>
               <h3 className="text-lg font-bold text-slate-800">{form.shop_name || "Your Store"}</h3>
               <p className="text-sm text-slate-500">{form.cuisine || "No cuisine set"}</p>
@@ -212,6 +231,22 @@ export default function VendorProfilePage() {
                 </div>
               )}
             </div>
+            <button
+              type="button"
+              onClick={() => setShowUrlInput(showUrlInput === "banner" ? null : "banner")}
+              className="text-xs font-bold text-[#ba001c] hover:underline mt-2"
+            >
+              {showUrlInput === "banner" ? "Hide URL input" : "Or enter image URL"}
+            </button>
+            {showUrlInput === "banner" && (
+              <input
+                type="url"
+                value={form.banner_url || ""}
+                onChange={(e) => setForm({ ...form, banner_url: e.target.value })}
+                placeholder="https://example.com/banner.jpg"
+                className="mt-2 w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#ba001c]"
+              />
+            )}
             <p className="text-xs text-slate-400 mt-1">Recommended: 1200×400px. Shows at the top of your store page.</p>
           </div>
 
