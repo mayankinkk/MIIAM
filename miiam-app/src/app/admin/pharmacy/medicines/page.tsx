@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
+import ImageUpload from "@/components/ImageUpload";
 
 const supabase = createClient();
 
@@ -41,7 +42,6 @@ export default function PharmacyMedicinesPage() {
     image_url: "",
     requires_prescription: false,
     vendor_id: "",
-    imageFile: null as File | null,
   });
 
   useEffect(() => {
@@ -78,24 +78,6 @@ export default function PharmacyMedicinesPage() {
     }
   };
 
-  const handleImageUpload = async (file: File): Promise<string | null> => {
-    const fileExt = file.name.split(".").pop();
-    const fileName = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
-    const filePath = `pharmacy-medicines/${fileName}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from("pharmacy-images")
-      .upload(filePath, file);
-
-    if (uploadError) {
-      console.error("Upload error:", uploadError);
-      return null;
-    }
-
-    const { data: urlData } = supabase.storage.from("pharmacy-images").getPublicUrl(filePath);
-    return urlData.publicUrl;
-  };
-
   const updateStock = async (medicineId: string, newStock: number) => {
     try {
       const { error } = await supabase
@@ -117,12 +99,6 @@ export default function PharmacyMedicinesPage() {
 
     setSaving(true);
     try {
-      let imageUrl = newMedicine.image_url;
-      if (newMedicine.imageFile) {
-        const uploaded = await handleImageUpload(newMedicine.imageFile);
-        if (uploaded) imageUrl = uploaded;
-      }
-
       if (editingMedicine) {
         const { error } = await supabase
           .from("pharmacy_medicines")
@@ -131,7 +107,7 @@ export default function PharmacyMedicinesPage() {
             category: newMedicine.category,
             price: parseFloat(newMedicine.price),
             stock: parseInt(newMedicine.stock) || 0,
-            image_url: imageUrl,
+            image_url: newMedicine.image_url || null,
             requires_prescription: newMedicine.requires_prescription,
             vendor_id: newMedicine.vendor_id,
           })
@@ -143,7 +119,7 @@ export default function PharmacyMedicinesPage() {
           category: newMedicine.category,
           price: parseFloat(newMedicine.price),
           stock: parseInt(newMedicine.stock) || 100,
-          image_url: imageUrl,
+          image_url: newMedicine.image_url || null,
           requires_prescription: newMedicine.requires_prescription,
           vendor_id: newMedicine.vendor_id,
         });
@@ -182,7 +158,6 @@ export default function PharmacyMedicinesPage() {
       image_url: medicine.image_url,
       requires_prescription: medicine.requires_prescription,
       vendor_id: medicine.vendor_id || "",
-      imageFile: null,
     });
     setShowAddModal(true);
   };
@@ -190,7 +165,7 @@ export default function PharmacyMedicinesPage() {
   const resetModal = () => {
     setShowAddModal(false);
     setEditingMedicine(null);
-    setNewMedicine({ name: "", category: "Pain Relief", price: "", stock: "", image_url: "", requires_prescription: false, vendor_id: "", imageFile: null });
+    setNewMedicine({ name: "", category: "Pain Relief", price: "", stock: "", image_url: "", requires_prescription: false, vendor_id: "" });
   };
 
   const filteredMedicines = medicines.filter(medicine => {
@@ -348,21 +323,14 @@ export default function PharmacyMedicinesPage() {
                   <input type="number" value={newMedicine.stock} onChange={(e) => setNewMedicine({ ...newMedicine, stock: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="100" />
                 </div>
               </div>
-              <div>
-                <label className="text-xs font-bold text-slate-600 mb-1 block">Product Image</label>
-                <div className="flex flex-col gap-3">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => setNewMedicine({ ...newMedicine, imageFile: e.target.files?.[0] || null })}
-                    className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-[#ba001c]/10 file:text-[#ba001c] hover:file:bg-[#ba001c]/20"
-                  />
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs text-slate-400 font-bold whitespace-nowrap">OR URL:</span>
-                    <input type="text" value={newMedicine.image_url} onChange={(e) => setNewMedicine({ ...newMedicine, image_url: e.target.value })} className="flex-1 p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="https://..." />
-                  </div>
-                </div>
-              </div>
+              <ImageUpload
+                value={newMedicine.image_url}
+                onChange={(url) => setNewMedicine({ ...newMedicine, image_url: url })}
+                bucket="pharmacy-images"
+                folder="pharmacy-medicines"
+                label="Product Image"
+                previewHeight="h-32"
+              />
               <div className="flex items-center gap-2">
                 <input type="checkbox" id="prescription" checked={newMedicine.requires_prescription} onChange={(e) => setNewMedicine({ ...newMedicine, requires_prescription: e.target.checked })} className="w-4 h-4" />
                 <label htmlFor="prescription" className="text-sm text-slate-600">Requires Prescription</label>

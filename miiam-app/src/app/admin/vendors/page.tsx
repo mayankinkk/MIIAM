@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import ImageUpload from "@/components/ImageUpload";
 
 interface Vendor {
   id: string;
@@ -111,41 +112,6 @@ export default function AdminVendorsPage() {
     is_featured: false,
   });
   const [editingMenuItem, setEditingMenuItem] = useState<MenuItem | null>(null);
-  const [uploading, setUploading] = useState(false);
-
-  const handleUploadImage = async (file: File, bucket = "grocery-images"): Promise<string | null> => {
-    try {
-      setUploading(true);
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
-      const filePath = `food-vendor-images/${fileName}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from(bucket)
-        .upload(filePath, file);
-
-      if (uploadError) {
-        // Fall back to avatars bucket if grocery-images throws an error or is unconfigured
-        const { error: fallbackError } = await supabase.storage
-          .from("avatars")
-          .upload(filePath, file);
-          
-        if (fallbackError) throw fallbackError;
-        
-        const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(filePath);
-        return urlData.publicUrl;
-      }
-
-      const { data: urlData } = supabase.storage.from(bucket).getPublicUrl(filePath);
-      return urlData.publicUrl;
-    } catch (error: any) {
-      console.error("Error uploading image:", error);
-      alert(`Failed to upload image: ${error.message}`);
-      return null;
-    } finally {
-      setUploading(false);
-    }
-  };
 
   useEffect(() => {
     loadVendors();
@@ -978,48 +944,14 @@ export default function AdminVendorsPage() {
                     />
                   </div>
                   <div className="md:col-span-2">
-                    <div className="flex justify-between items-center mb-1">
-                      <label className="text-xs font-bold text-slate-600 block">Cover Image</label>
-                      <span className="text-[10px] text-slate-400 font-bold">Upload a file or paste a URL</span>
-                    </div>
-                    <div className="flex gap-2">
-                      <input
-                        type="text"
-                        value={editForm.coverImageUrl}
-                        onChange={(e) => setEditForm({ ...editForm, coverImageUrl: e.target.value })}
-                        className="flex-1 p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
-                        placeholder="https://... or click Upload"
-                      />
-                      <label className="bg-slate-100 border border-slate-200 hover:bg-slate-200 transition-all text-slate-700 font-bold px-4 py-3 rounded-xl cursor-pointer text-sm flex items-center gap-1 flex-shrink-0">
-                        <span className="material-symbols-outlined text-sm">upload</span>
-                        {uploading ? "Uploading..." : "Upload File"}
-                        <input
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          disabled={uploading}
-                          onChange={async (e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              const url = await handleUploadImage(file);
-                              if (url) setEditForm({ ...editForm, coverImageUrl: url });
-                            }
-                          }}
-                        />
-                      </label>
-                    </div>
-                    {editForm.coverImageUrl && (
-                      <div className="mt-2 h-24 rounded-xl overflow-hidden relative group">
-                        <img src={editForm.coverImageUrl} alt="Cover preview" className="w-full h-full object-cover animate-fade-in" />
-                        <button
-                          type="button"
-                          onClick={() => setEditForm({ ...editForm, coverImageUrl: "" })}
-                          className="absolute top-2 right-2 bg-red-600 text-white p-1 rounded-full hover:bg-red-700 transition-all"
-                        >
-                          <span className="material-symbols-outlined text-xs flex items-center justify-center">delete</span>
-                        </button>
-                      </div>
-                    )}
+                    <ImageUpload
+                      value={editForm.coverImageUrl}
+                      onChange={(url) => setEditForm({ ...editForm, coverImageUrl: url })}
+                      bucket="grocery-images"
+                      folder="food-vendor-images"
+                      label="Cover Image"
+                      previewHeight="h-24"
+                    />
                   </div>
                   <div className="md:col-span-2">
                     <label className="text-xs font-bold text-slate-600 mb-1 block">Restaurant Description</label>
@@ -1210,23 +1142,41 @@ export default function AdminVendorsPage() {
                         <option value="Desserts">Desserts</option>
                       </select>
 
-                      <label className="bg-white border border-slate-200 hover:border-[#ba001c] hover:bg-slate-50 transition-all text-slate-600 font-bold px-3 py-2.5 rounded-lg cursor-pointer text-xs flex items-center justify-center gap-1.5 h-[42px] min-w-0">
-                        <span className="material-symbols-outlined text-sm flex-shrink-0">upload</span>
-                        <span className="truncate">{uploading ? "Uploading..." : newMenuItem.image_url ? "Image Selected" : "Upload Image"}</span>
+                      <div>
+                        <label className="bg-white border border-slate-200 hover:border-[#ba001c] hover:bg-slate-50 transition-all text-slate-600 font-bold px-3 py-2.5 rounded-lg cursor-pointer text-xs flex items-center justify-center gap-1.5 h-[42px] min-w-0">
+                          <span className="material-symbols-outlined text-sm flex-shrink-0">upload</span>
+                          <span className="truncate">{newMenuItem.image_url ? "Image Selected" : "Upload Image"}</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={async (e) => {
+                              const file = e.target.files?.[0];
+                              if (file) {
+                                setNewMenuItem({ ...(newMenuItem as any), image_url: URL.createObjectURL(file) });
+                              }
+                            }}
+                          />
+                        </label>
+                      </div>
+                    </div>
+                    <div className="mt-1">
+                      <button
+                        type="button"
+                        onClick={() => setNewMenuItem({ ...(newMenuItem as any), _showUrl: !(newMenuItem as any)._showUrl })}
+                        className="text-xs font-bold text-[#ba001c] hover:underline"
+                      >
+                        {(newMenuItem as any)._showUrl ? "Hide URL" : "Or enter URL"}
+                      </button>
+                      {(newMenuItem as any)._showUrl && (
                         <input
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          disabled={uploading}
-                          onChange={async (e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              const url = await handleUploadImage(file);
-                              if (url) setNewMenuItem({ ...newMenuItem, image_url: url });
-                            }
-                          }}
+                          type="url"
+                          value={newMenuItem.image_url}
+                          onChange={(e) => setNewMenuItem({ ...(newMenuItem as any), image_url: e.target.value })}
+                          placeholder="https://example.com/image.jpg"
+                          className="mt-1 w-full p-2.5 border border-slate-200 rounded-lg text-sm focus:border-[#ba001c] focus:outline-none"
                         />
-                      </label>
+                      )}
                     </div>
 
                     <input
@@ -1409,45 +1359,15 @@ export default function AdminVendorsPage() {
                     <option value="Desserts">Desserts</option>
                   </select>
                 </div>
-                <div>
-                  <div className="flex justify-between items-center mb-1">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Food Image</label>
-                    <span className="text-[9px] text-slate-400 font-bold">Upload or paste URL</span>
-                  </div>
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      value={editingMenuItem.image_url || ""}
-                      onChange={(e) => setEditingMenuItem({ ...editingMenuItem, image_url: e.target.value })}
-                      className="flex-1 p-2.5 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none h-[38px]"
-                      placeholder="https://... or click Upload"
-                    />
-                    <label className="bg-slate-100 border border-slate-200 hover:bg-slate-200 transition-all text-slate-700 font-bold px-3 py-2 rounded-xl cursor-pointer text-xs flex items-center justify-center gap-1 flex-shrink-0 h-[38px]">
-                      <span className="material-symbols-outlined text-xs">upload</span>
-                      {uploading ? "..." : "Upload"}
-                      <input
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        disabled={uploading}
-                        onChange={async (e) => {
-                          const file = e.target.files?.[0];
-                          if (file) {
-                            const url = await handleUploadImage(file);
-                            if (url) setEditingMenuItem({ ...editingMenuItem, image_url: url });
-                          }
-                        }}
-                      />
-                    </label>
-                  </div>
-                </div>
+                <ImageUpload
+                  value={editingMenuItem.image_url || ""}
+                  onChange={(url) => setEditingMenuItem({ ...editingMenuItem, image_url: url })}
+                  bucket="grocery-images"
+                  folder="food-vendor-images"
+                  label="Food Image"
+                  previewHeight="h-20"
+                />
               </div>
-
-              {editingMenuItem.image_url && (
-                <div className="h-20 rounded-xl overflow-hidden bg-slate-100">
-                  <img src={editingMenuItem.image_url} alt="Food item preview" className="w-full h-full object-cover" onError={(e) => {(e.target as HTMLImageElement).style.opacity = '0.3';}} />
-                </div>
-              )}
 
               <div>
                 <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Description</label>

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
+import ImageUpload from "@/components/ImageUpload";
 
 const supabase = createClient();
 
@@ -31,7 +32,6 @@ export default function GroceryInventoryPage() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [saving, setSaving] = useState(false);
-  const [uploading, setUploading] = useState(false);
 
   const [newProduct, setNewProduct] = useState({
     name: "",
@@ -40,7 +40,6 @@ export default function GroceryInventoryPage() {
     stock: "",
     image_url: "",
     vendor_id: "",
-    imageFile: null as File | null,
   });
 
   useEffect(() => {
@@ -79,24 +78,6 @@ export default function GroceryInventoryPage() {
     }
   };
 
-  const handleImageUpload = async (file: File): Promise<string | null> => {
-    const fileExt = file.name.split(".").pop();
-    const fileName = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
-    const filePath = `grocery-products/${fileName}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from("grocery-images")
-      .upload(filePath, file);
-
-    if (uploadError) {
-      console.error("Upload error:", uploadError);
-      return null;
-    }
-
-    const { data: urlData } = supabase.storage.from("grocery-images").getPublicUrl(filePath);
-    return urlData.publicUrl;
-  };
-
   const handleSaveProduct = async () => {
     if (!newProduct.name || !newProduct.price || !newProduct.vendor_id) {
       alert("Please fill in required fields (Name, Price, Vendor)");
@@ -105,13 +86,6 @@ export default function GroceryInventoryPage() {
 
     setSaving(true);
     try {
-      let imageUrl = newProduct.image_url;
-
-      if (newProduct.imageFile) {
-        const uploaded = await handleImageUpload(newProduct.imageFile);
-        if (uploaded) imageUrl = uploaded;
-      }
-
       if (editingProduct) {
         const { error } = await supabase
           .from("grocery_products")
@@ -120,7 +94,7 @@ export default function GroceryInventoryPage() {
             category: newProduct.category,
             price: parseFloat(newProduct.price),
             stock: parseInt(newProduct.stock) || 0,
-            image_url: imageUrl,
+            image_url: newProduct.image_url || null,
             vendor_id: newProduct.vendor_id,
           })
           .eq("id", editingProduct.id);
@@ -132,7 +106,7 @@ export default function GroceryInventoryPage() {
           category: newProduct.category,
           price: parseFloat(newProduct.price),
           stock: parseInt(newProduct.stock) || 100,
-          image_url: imageUrl,
+          image_url: newProduct.image_url || null,
           vendor_id: newProduct.vendor_id,
         });
 
@@ -188,7 +162,6 @@ export default function GroceryInventoryPage() {
       stock: product.stock.toString(),
       image_url: product.image_url,
       vendor_id: product.vendor_id || "",
-      imageFile: null,
     });
     setShowAddModal(true);
   };
@@ -196,7 +169,7 @@ export default function GroceryInventoryPage() {
   const resetModal = () => {
     setShowAddModal(false);
     setEditingProduct(null);
-    setNewProduct({ name: "", category: "Fruits", price: "", stock: "", image_url: "", vendor_id: "", imageFile: null });
+    setNewProduct({ name: "", category: "Fruits", price: "", stock: "", image_url: "", vendor_id: "" });
   };
 
   const filteredProducts = products.filter(product => {
@@ -425,27 +398,14 @@ export default function GroceryInventoryPage() {
                   />
                 </div>
               </div>
-              <div>
-                <label className="text-xs font-bold text-slate-600 mb-1 block">Product Image</label>
-                <div className="flex flex-col gap-3">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => setNewProduct({ ...newProduct, imageFile: e.target.files?.[0] || null })}
-                    className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-[#ba001c]/10 file:text-[#ba001c] hover:file:bg-[#ba001c]/20"
-                  />
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs text-slate-400 font-bold whitespace-nowrap">OR URL:</span>
-                    <input
-                      type="text"
-                      value={newProduct.image_url}
-                      onChange={(e) => setNewProduct({ ...newProduct, image_url: e.target.value })}
-                      className="flex-1 p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
-                      placeholder="https://..."
-                    />
-                  </div>
-                </div>
-              </div>
+              <ImageUpload
+                value={newProduct.image_url}
+                onChange={(url) => setNewProduct({ ...newProduct, image_url: url })}
+                bucket="grocery-images"
+                folder="grocery-products"
+                label="Product Image"
+                previewHeight="h-32"
+              />
             </div>
 
             <div className="p-6 border-t flex gap-4">

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
+import ImageUpload from "@/components/ImageUpload";
 
 const supabase = createClient();
 
@@ -39,7 +40,6 @@ export default function FlowersItemsPage() {
     description: "",
     image_url: "",
     vendor_id: "",
-    imageFile: null as File | null,
   });
 
   useEffect(() => {
@@ -73,24 +73,6 @@ export default function FlowersItemsPage() {
     }
   };
 
-  const handleImageUpload = async (file: File): Promise<string | null> => {
-    const fileExt = file.name.split(".").pop();
-    const fileName = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
-    const filePath = `flower-items/${fileName}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from("flower-images")
-      .upload(filePath, file);
-
-    if (uploadError) {
-      console.error("Upload error:", uploadError);
-      return null;
-    }
-
-    const { data: urlData } = supabase.storage.from("flower-images").getPublicUrl(filePath);
-    return urlData.publicUrl;
-  };
-
   const handleSave = async () => {
     if (!newItem.name || !newItem.price || !newItem.vendor_id) {
       alert("Please fill in required fields (Name, Price, Vendor)");
@@ -99,12 +81,6 @@ export default function FlowersItemsPage() {
 
     setSaving(true);
     try {
-      let imageUrl = newItem.image_url;
-      if (newItem.imageFile) {
-        const uploaded = await handleImageUpload(newItem.imageFile);
-        if (uploaded) imageUrl = uploaded;
-      }
-
       if (editingItem) {
         const { error } = await supabase
           .from("flower_items")
@@ -113,7 +89,7 @@ export default function FlowersItemsPage() {
             category: newItem.category,
             price: parseFloat(newItem.price),
             description: newItem.description,
-            image_url: imageUrl,
+            image_url: newItem.image_url || null,
             vendor_id: newItem.vendor_id,
           })
           .eq("id", editingItem.id);
@@ -124,7 +100,7 @@ export default function FlowersItemsPage() {
           category: newItem.category,
           price: parseFloat(newItem.price),
           description: newItem.description,
-          image_url: imageUrl,
+          image_url: newItem.image_url || null,
           vendor_id: newItem.vendor_id,
         });
         if (error) throw error;
@@ -161,7 +137,6 @@ export default function FlowersItemsPage() {
       description: item.description,
       image_url: item.image_url,
       vendor_id: item.vendor_id || "",
-      imageFile: null,
     });
     setShowAddModal(true);
   };
@@ -169,7 +144,7 @@ export default function FlowersItemsPage() {
   const resetModal = () => {
     setShowAddModal(false);
     setEditingItem(null);
-    setNewItem({ name: "", category: "Bouquets", price: "", description: "", image_url: "", vendor_id: "", imageFile: null });
+    setNewItem({ name: "", category: "Bouquets", price: "", description: "", image_url: "", vendor_id: "" });
   };
 
   const filteredItems = items.filter(item => {
@@ -309,21 +284,14 @@ export default function FlowersItemsPage() {
                 <label className="text-xs font-bold text-slate-600 mb-1 block">Description</label>
                 <textarea value={newItem.description} onChange={(e) => setNewItem({ ...newItem, description: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="Enter description" rows={3} />
               </div>
-              <div>
-                <label className="text-xs font-bold text-slate-600 mb-1 block">Product Image</label>
-                <div className="flex flex-col gap-3">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => setNewItem({ ...newItem, imageFile: e.target.files?.[0] || null })}
-                    className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-[#ba001c]/10 file:text-[#ba001c] hover:file:bg-[#ba001c]/20"
-                  />
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs text-slate-400 font-bold whitespace-nowrap">OR URL:</span>
-                    <input type="text" value={newItem.image_url} onChange={(e) => setNewItem({ ...newItem, image_url: e.target.value })} className="flex-1 p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="https://..." />
-                  </div>
-                </div>
-              </div>
+              <ImageUpload
+                value={newItem.image_url}
+                onChange={(url) => setNewItem({ ...newItem, image_url: url })}
+                bucket="flower-images"
+                folder="flower-items"
+                label="Product Image"
+                previewHeight="h-32"
+              />
             </div>
             <div className="p-6 border-t flex gap-4">
               <button onClick={resetModal} className="flex-1 py-3 border border-slate-200 rounded-xl font-bold text-sm hover:bg-slate-50">Cancel</button>
