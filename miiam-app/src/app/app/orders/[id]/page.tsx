@@ -68,7 +68,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
     try {
       const updates: Record<string, any> = { status: "cancelled" };
       if (reason) updates.cancel_reason = reason;
-      const { error } = await supabase.from("orders").update(updates).eq("id", id);
+      const { error } = await supabase.from("orders").update(updates).eq("id", id).eq("user_id", currentUserId);
       if (error) throw error;
       setOrder((prev: any) => prev ? { ...prev, ...updates } : prev);
       addToast("Order cancelled successfully", "success");
