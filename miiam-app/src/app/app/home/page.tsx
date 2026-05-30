@@ -129,7 +129,35 @@ export default function HomePage() {
       setLoading(false);
     });
 
-    // Set up Realtime subscription to get live notification updates
+      // Fetch active order for tracking bubble
+      async function fetchActiveOrder() {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+        const { data: active } = await supabase
+          .from("orders")
+          .select("id, status, total_amount, placed_at, vendors(name)")
+          .eq("user_id", user.id)
+          .in("status", ["pending", "accepted", "preparing", "ready_for_pickup", "picking_up", "on_the_way"])
+          .order("placed_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        if (active) {
+          setActiveOrder({
+            id: active.id,
+            vendor: active.vendors?.name || "Restaurant",
+            items: "Order in progress",
+            steps: [
+              { id: 1, label: "Order Placed", completed: true, time: new Date(active.placed_at).toLocaleTimeString() },
+              { id: 2, label: "Accepted", completed: ["accepted", "preparing", "ready_for_pickup", "picking_up", "on_the_way"].includes(active.status), time: "" },
+              { id: 3, label: "On the Way", completed: ["on_the_way"].includes(active.status), time: "" },
+            ],
+            eta: active.status === "on_the_way" ? "5-10 min" : "20-30 min",
+          });
+        }
+      }
+      fetchActiveOrder();
+
+      // Set up Realtime subscription to get live notification updates
     const channelRef = { current: null as any };
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) return;
