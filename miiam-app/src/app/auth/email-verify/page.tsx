@@ -58,18 +58,23 @@ function EmailVerifyContent() {
       // For password reset - go to set new password with verified flag
       if (purpose === "password_reset") {
         // Set cookie by calling an API endpoint
-        await fetch("/api/auth/verify-cookie", {
+        const cookieRes = await fetch("/api/auth/verify-cookie", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, purpose: "password_reset" }),
         });
+        if (!cookieRes.ok) {
+          setError("Failed to verify. Please try again.");
+          setIsLoading(false);
+          return;
+        }
         router.push(`/auth/set-password?email=${encodeURIComponent(email)}&password_reset=true`);
         return;
       }
 
       // For login - try to get or create session (existing user with password)
       router.push("/auth/login");
-    } catch { setError("Something went wrong"); }
+    } catch { setError("Something went wrong. Please try again."); }
     finally { setIsLoading(false); }
   };
 
