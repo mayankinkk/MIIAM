@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
+import ImageUpload from "@/components/ImageUpload";
 
 interface PageAsset {
   id: string;
@@ -282,15 +283,14 @@ export default function PageAssetsPage() {
                 </div>
               )}
 
-              <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Image URL *</label>
-                <input
-                  value={editForm.image_url}
-                  onChange={(e) => setEditForm({ ...editForm, image_url: e.target.value })}
-                  className="w-full px-4 py-3 bg-slate-50 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
-                  placeholder="https://images.unsplash.com/..."
-                />
-              </div>
+              <ImageUpload
+                value={editForm.image_url}
+                onChange={(url) => setEditForm({ ...editForm, image_url: url })}
+                bucket="menu-images"
+                folder="page-assets"
+                label="Hero Image"
+                previewHeight="h-32"
+              />
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Title</label>
@@ -362,15 +362,14 @@ export default function PageAssetsPage() {
                 />
                 <p className="text-[10px] text-slate-400 mt-1">Use snake_case. Existing keys will be updated.</p>
               </div>
-              <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Image URL *</label>
-                <input
-                  value={newForm.image_url}
-                  onChange={(e) => setNewForm({ ...newForm, image_url: e.target.value })}
-                  className="w-full px-4 py-3 bg-slate-50 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
-                  placeholder="https://..."
-                />
-              </div>
+              <ImageUpload
+                value={newForm.image_url}
+                onChange={(url) => setNewForm({ ...newForm, image_url: url })}
+                bucket="menu-images"
+                folder="page-assets"
+                label="Hero Image"
+                previewHeight="h-32"
+              />
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Title</label>
