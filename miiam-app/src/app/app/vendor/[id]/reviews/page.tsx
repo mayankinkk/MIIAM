@@ -19,17 +19,21 @@ export default function VendorReviewsPage() {
 
   useEffect(() => {
     async function loadData() {
-      const [{ data: vendorData }, { data: reviewsData }] = await Promise.all([
-        supabase.from("vendors").select("shop_name, rating, review_count").eq("id", vendorId).single(),
-        supabase
-          .from("reviews")
-          .select("*, profile:profiles(full_name, avatar_url)")
-          .eq("vendor_id", vendorId)
-          .order("created_at", { ascending: false })
-      ]);
+      try {
+        const [{ data: vendorData }, { data: reviewsData }] = await Promise.all([
+          supabase.from("vendors").select("shop_name, rating, review_count").eq("id", vendorId).single(),
+          supabase
+            .from("reviews")
+            .select("*, profile:profiles(full_name, avatar_url)")
+            .eq("vendor_id", vendorId)
+            .order("created_at", { ascending: false })
+        ]);
 
-      if (vendorData) setVendor(vendorData);
-      if (reviewsData) setReviews(reviewsData);
+        if (vendorData) setVendor(vendorData);
+        if (reviewsData) setReviews(reviewsData);
+      } catch (err) {
+        console.error("Failed to load reviews:", err);
+      }
       setLoading(false);
     }
     loadData();

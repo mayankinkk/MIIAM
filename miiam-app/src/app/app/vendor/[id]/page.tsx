@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
@@ -14,7 +14,7 @@ export default function VendorPage() {
   const params = useParams();
   const router = useRouter();
   const vendorId = params.id as string;
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [vendor, setVendor] = useState<any>(null);
   const [menuItems, setMenuItems] = useState<any[]>([]);
   const [reviews, setReviews] = useState<any[]>([]);
@@ -27,35 +27,38 @@ export default function VendorPage() {
 
   useEffect(() => {
     async function loadData() {
-      const { data: vendorData } = await supabase
-        .from("vendors")
-        .select("*")
-        .eq("id", vendorId)
-        .single();
+      try {
+        const { data: vendorData } = await supabase
+          .from("vendors")
+          .select("*")
+          .eq("id", vendorId)
+          .single();
 
-      if (vendorData) setVendor(vendorData);
+        if (vendorData) setVendor(vendorData);
 
-      let itemsTable = "menu_items";
-      if (vendorData?.type === "grocery") itemsTable = "grocery_products";
-      else if (vendorData?.type === "pharmacy") itemsTable = "pharmacy_medicines";
-      else if (vendorData?.type === "flower" || vendorData?.type === "flowers") itemsTable = "flower_items";
+        let itemsTable = "menu_items";
+        if (vendorData?.type === "grocery") itemsTable = "grocery_products";
+        else if (vendorData?.type === "pharmacy") itemsTable = "pharmacy_medicines";
+        else if (vendorData?.type === "flower" || vendorData?.type === "flowers") itemsTable = "flower_items";
 
-      const { data: menuData } = await supabase
-        .from(itemsTable)
-        .select("*")
-        .eq("vendor_id", vendorId);
+        const { data: menuData } = await supabase
+          .from(itemsTable)
+          .select("*")
+          .eq("vendor_id", vendorId);
 
-      if (menuData) setMenuItems(menuData);
+        if (menuData) setMenuItems(menuData);
 
-      // Load reviews
-      const { data: reviewsData } = await supabase
-        .from("reviews")
-        .select("*, profile:profiles(full_name, avatar_url)")
-        .eq("vendor_id", vendorId)
-        .order("created_at", { ascending: false })
-        .limit(10);
+        const { data: reviewsData } = await supabase
+          .from("reviews")
+          .select("*, profile:profiles(full_name, avatar_url)")
+          .eq("vendor_id", vendorId)
+          .order("created_at", { ascending: false })
+          .limit(10);
 
-      if (reviewsData) setReviews(reviewsData);
+        if (reviewsData) setReviews(reviewsData);
+      } catch (err) {
+        console.error("Failed to load vendor data:", err);
+      }
       setLoading(false);
     }
     loadData();
