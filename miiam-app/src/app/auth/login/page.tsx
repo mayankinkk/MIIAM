@@ -27,7 +27,7 @@ function LoginContent() {
       const supabase = createClient();
       const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
       if (signInError) throw signInError;
-      router.push(searchParams.get("redirect") || "/app/explore");
+      router.push(searchParams.get("redirect") || "/app/home");
     } catch (err: any) { 
       setError(err.message || "Something went wrong"); 
     }
@@ -38,7 +38,7 @@ function LoginContent() {
     setIsGoogleLoading(true);
     try {
       const supabase = createClient();
-      const redirectTo = searchParams.get("redirect") || "/app/explore";
+      const redirectTo = searchParams.get("redirect") || "/app/home";
       const { error } = await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: `${window.location.origin}/auth/callback?redirect=${encodeURIComponent(redirectTo)}` } });
       if (error) throw error;
     } catch (err: any) { 

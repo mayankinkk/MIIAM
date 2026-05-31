@@ -147,7 +147,7 @@ function ProfileSetupContent() {
       setLoading(false);
       await new Promise(r => setTimeout(r, 800));
       localStorage.setItem("miiam_onboarding_tour_done", "false");
-      router.push(searchParams.get("redirect") || "/app/explore");
+      router.push(searchParams.get("redirect") || "/app/home");
     } catch (error) {
       console.error("Setup error:", error);
       setLoading(false);
