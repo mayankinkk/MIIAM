@@ -35,6 +35,7 @@ export default function AdminDashboard() {
   });
   const [categoryRevenue, setCategoryRevenue] = useState<Record<string, { revenue: number; orders: number }>>({});
   const [recentOrders, setRecentOrders] = useState<any[]>([]);
+  const [recentVendors, setRecentVendors] = useState<any[]>([]);
 
   useEffect(() => {
     loadDashboardData();
@@ -48,7 +49,7 @@ export default function AdminDashboard() {
 
       const [ordersRes, vendorsRes, ridersRes] = await Promise.all([
         supabase.from("orders").select("id, total_amount, status, placed_at, vendor_id").order("placed_at", { ascending: false }),
-        supabase.from("vendors").select("id, type, status"),
+        supabase.from("vendors").select("id, shop_name, owner_name, type, status, created_at").order("created_at", { ascending: false }).limit(8),
         supabase.from("riders").select("id, status"),
       ]);
 
@@ -64,6 +65,7 @@ export default function AdminDashboard() {
 
       setStats({ totalRevenue, ordersToday, totalOrders: orders.length, activeVendors, onlineRiders, pendingOrders });
       setRecentOrders(orders.slice(0, 8));
+      setRecentVendors(vendors.slice(0, 8));
 
       // Build vendor map for type lookup
       const vendorMap: Record<string, string> = {};
@@ -203,6 +205,52 @@ export default function AdminDashboard() {
                       <td className="py-3 text-slate-400">{new Date(order.placed_at).toLocaleDateString()}</td>
                     </tr>
                   ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Recent Vendors */}
+          <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-black text-slate-800">Recent Vendors</h2>
+              <button onClick={() => router.push("/admin/vendors")} className="text-sm font-bold text-[#ba001c]">View All →</button>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-slate-100">
+                    <th className="text-left py-3 text-xs font-bold text-slate-400 uppercase">Shop Name</th>
+                    <th className="text-left py-3 text-xs font-bold text-slate-400 uppercase">Owner</th>
+                    <th className="text-left py-3 text-xs font-bold text-slate-400 uppercase">Category</th>
+                    <th className="text-left py-3 text-xs font-bold text-slate-400 uppercase">Status</th>
+                    <th className="text-left py-3 text-xs font-bold text-slate-400 uppercase">Added</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {recentVendors.map(v => (
+                    <tr key={v.id} className="border-b border-slate-50 hover:bg-slate-50">
+                      <td className="py-3 font-bold text-slate-800">{v.shop_name}</td>
+                      <td className="py-3 text-slate-600">{v.owner_name || "—"}</td>
+                      <td className="py-3">
+                        <span className="capitalize text-slate-600">{v.type || "food"}</span>
+                      </td>
+                      <td className="py-3">
+                        <span className={`px-2 py-1 rounded-full text-xs font-bold ${
+                          v.status === "active" ? "bg-green-100 text-green-700" :
+                          v.status === "pending" ? "bg-amber-100 text-amber-700" :
+                          v.status === "suspended" ? "bg-red-100 text-red-700" :
+                          "bg-slate-100 text-slate-600"
+                        }`}>{v.status}</span>
+                      </td>
+                      <td className="py-3 text-slate-400">{new Date(v.created_at).toLocaleDateString()}</td>
+                    </tr>
+                  ))}
+                  {recentVendors.length === 0 && (
+                    <tr>
+                      <td colSpan={5} className="py-8 text-center text-slate-400">No vendors yet</td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
