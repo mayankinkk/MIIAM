@@ -61,21 +61,16 @@ export async function POST(request: NextRequest) {
     const otp = generateOTP();
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString();
 
-    // Store OTP in database (delete existing first, then insert)
-    const { error: deleteError } = await supabase
+    // Store OTP in database (upsert to avoid race condition)
+    const { error: upsertError } = await supabase
       .from("phone_otp_verification")
-      .delete()
-      .eq("phone_number", cleanPhone)
-      .eq("purpose", purpose || "signup");
-
-    const { error: insertError } = await supabase
-      .from("phone_otp_verification")
-      .insert(
-        { phone_number: cleanPhone, otp_code: otp, purpose: purpose || "signup", expires_at: expiresAt }
+      .upsert(
+        { phone_number: cleanPhone, otp_code: otp, purpose: purpose || "signup", expires_at: expiresAt },
+        { onConflict: "phone_number,purpose" }
       );
 
-    if (insertError) {
-      console.error("Database error:", insertError);
+    if (upsertError) {
+      console.error("Database error:", upsertError);
       return NextResponse.json({ error: "Failed to store OTP" }, { status: 500 });
     }
 
@@ -114,7 +109,9 @@ export async function PUT(request: NextRequest) {
       .from("phone_otp_verification")
       .select("*")
       .eq("phone_number", cleanPhone)
-      .single();
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
 
     if (fetchError || !stored) {
       return NextResponse.json({ error: "No OTP found. Please request new OTP" }, { status: 400 });
