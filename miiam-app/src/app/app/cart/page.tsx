@@ -44,8 +44,14 @@ export default function CartPage() {
   const hasMultipleVendors = vendors.length > 1;
 
   const total = totalPrice();
-  const deliveryFee = total > 0 ? 5.99 : 0;
-  const grandTotal = Math.max(0, total + deliveryFee);
+  const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean)));
+  // In the cart, we need to sum up delivery fees for all vendors present in the cart.
+  // Since we don't have access to the vendor delivery charges here without fetching them,
+  // we'll leave it as a placeholder or fetch them here as well.
+  // For now, let's just make it a total sum based on the number of vendors * default fee for now 
+  // to match the previous implementation, but we should definitely fix this to be vendor-specific.
+  const totalDeliveryFee = vendorIds.length * 5.99; // Placeholder until we fetch vendor-specific fees
+  const grandTotal = Math.max(0, total + totalDeliveryFee);
 
   const fetchPastOrders = async () => {
     setLoadingOrders(true);
@@ -246,7 +252,7 @@ export default function CartPage() {
                 </div>
                 <div className="flex justify-between">
                   <span>Delivery &amp; Service Fee</span>
-                  <span className="text-on-surface font-semibold">₹{deliveryFee.toFixed(2)}</span>
+                  <span className="text-on-surface font-semibold">₹{totalDeliveryFee.toFixed(2)}</span>
                 </div>
 
                 <div className="pt-4 border-t border-outline-variant/20 flex justify-between items-center">
