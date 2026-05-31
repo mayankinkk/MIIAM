@@ -12,20 +12,13 @@ interface ThemeStore {
   toggleTheme: () => void;
 }
 
-const getSystemTheme = (): "light" | "dark" => {
+export const getSystemTheme = (): "light" | "dark" => {
   if (typeof window === "undefined") return "light";
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 };
 
-const applyTheme = (theme: Theme) => {
-  const resolved = theme === "system" ? getSystemTheme() : theme;
-  const root = document.documentElement;
-  if (resolved === "dark") {
-    root.classList.add("dark");
-  } else {
-    root.classList.remove("dark");
-  }
-  return resolved;
+export const applyTheme = (resolved: "light" | "dark") => {
+  document.documentElement.classList.toggle("dark", resolved === "dark");
 };
 
 export const useThemeStore = create<ThemeStore>()(
@@ -34,27 +27,15 @@ export const useThemeStore = create<ThemeStore>()(
       theme: "light",
       resolvedTheme: "light",
       setTheme: (theme) => {
-        const resolvedTheme = applyTheme(theme);
+        const resolvedTheme = theme === "system" ? getSystemTheme() : theme;
         set({ theme, resolvedTheme });
       },
       toggleTheme: () => {
         const current = get().resolvedTheme;
         const newTheme = current === "dark" ? "light" : "dark";
-        const resolvedTheme = applyTheme(newTheme);
-        set({ theme: newTheme, resolvedTheme });
+        set({ theme: newTheme, resolvedTheme: newTheme });
       },
     }),
     { name: "miiam-theme" }
   )
 );
-
-if (typeof window !== "undefined") {
-  const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-  mediaQuery.addEventListener("change", () => {
-    const { theme } = useThemeStore.getState();
-    if (theme === "system") {
-      const resolvedTheme = applyTheme("system");
-      useThemeStore.setState({ resolvedTheme });
-    }
-  });
-}
