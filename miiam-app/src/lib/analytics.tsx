@@ -1,7 +1,7 @@
 "use client";
 
-import { Suspense, useEffect, useRef } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 
 type EventParams = Record<string, string | number | boolean | undefined | Record<string, unknown>[]>;
 
@@ -132,7 +132,6 @@ export function trackShare(
 
 function AnalyticsTrackerInner() {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const initialized = useRef(false);
 
   useEffect(() => {
@@ -157,18 +156,15 @@ function AnalyticsTrackerInner() {
 
   useEffect(() => {
     if (pathname) {
-      const url = pathname + (searchParams?.toString() ? `?${searchParams}` : "");
+      const search = typeof window !== "undefined" ? window.location.search : "";
+      const url = pathname + search;
       trackPageView(url, document.title);
     }
-  }, [pathname, searchParams]);
+  }, [pathname]);
 
   return null;
 }
 
 export function AnalyticsTracker() {
-  return (
-    <Suspense fallback={null}>
-      <AnalyticsTrackerInner />
-    </Suspense>
-  );
+  return <AnalyticsTrackerInner />;
 }
