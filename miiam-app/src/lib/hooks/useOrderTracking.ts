@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 export interface OrderStatus {
@@ -35,7 +35,8 @@ export interface OrderTracking {
 }
 
 export function useOrderTracking(orderId: string, userId?: string) {
-  const supabase = createClient();
+  const supabaseRef = useRef(createClient());
+  const supabase = supabaseRef.current;
   const [tracking, setTracking] = useState<OrderTracking | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -175,7 +176,8 @@ export function useOrderTracking(orderId: string, userId?: string) {
 }
 
 export function useRiderLocation(orderId: string) {
-  const supabase = createClient();
+  const supabaseRef = useRef(createClient());
+  const supabase = supabaseRef.current;
   const [location, setLocation] = useState<RiderLocation | null>(null);
 
   useEffect(() => {
@@ -212,7 +214,8 @@ export function useRiderLocation(orderId: string) {
 }
 
 export function useActiveOrders(userId: string) {
-  const supabase = createClient();
+  const supabaseRef = useRef(createClient());
+  const supabase = supabaseRef.current;
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
