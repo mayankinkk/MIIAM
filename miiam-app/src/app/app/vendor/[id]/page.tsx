@@ -152,14 +152,8 @@ const sortedItems = [...filteredItems].sort((a, b) => ((b as any).featured ? 1 :
           </div>
           <div className="flex items-center gap-2 text-slate-600 text-sm font-semibold">
             <span className="material-symbols-outlined text-sm">schedule</span>
-            {vendor.delivery_time_min || 30}-{vendor.delivery_time_max || 45} min
+            {vendor.delivery_time_min || 30}-{vendor.delivery_time_max || 45} min • ₹{vendor.min_order_amount} for two
           </div>
-          {vendor.min_order_amount > 0 && (
-            <div className="flex items-center gap-2 text-slate-600 text-sm font-semibold">
-              <span className="material-symbols-outlined text-sm">restaurant</span>
-              ₹{vendor.min_order_amount} for two
-            </div>
-          )}
           <div className="flex items-center gap-2 bg-amber-100 text-amber-700 px-3 py-1.5 rounded-lg text-sm font-bold capitalize">
             <span className="material-symbols-outlined text-sm">schedule</span>
             {currentSlot}
