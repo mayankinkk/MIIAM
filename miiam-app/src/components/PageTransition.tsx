@@ -3,6 +3,8 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 
+import { useState, useEffect } from "react";
+
 const routeVariants = {
   forward: {
     initial: { opacity: 0, x: 20 },
@@ -23,6 +25,11 @@ const routeVariants = {
 
 export default function PageTransition({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const isModalRoute =
     pathname.includes("/checkout") ||
@@ -31,6 +38,10 @@ export default function PageTransition({ children }: { children: React.ReactNode
 
   const variantKey = isModalRoute ? "fade" : "forward";
   const variant = routeVariants[variantKey];
+
+  if (!mounted) {
+    return <div key={pathname}>{children}</div>;
+  }
 
   return (
     <AnimatePresence mode="wait">
