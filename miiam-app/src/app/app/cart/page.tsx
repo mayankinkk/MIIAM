@@ -35,10 +35,12 @@ export default function CartPage() {
     );
   }
 
-  const vendors = Array.from(new Set(items.map((i) => i.vendor_id))).map((vid) => ({
+  const safeItems = Array.isArray(items) ? items : [];
+
+  const vendors = Array.from(new Set(safeItems.map((i) => i.vendor_id))).map((vid) => ({
     id: vid,
-    name: items.find((i) => i.vendor_id === vid)?.vendor_name ?? vid,
-    items: items.filter((i) => i.vendor_id === vid),
+    name: safeItems.find((i) => i.vendor_id === vid)?.vendor_name ?? vid,
+    items: safeItems.filter((i) => i.vendor_id === vid),
   }));
 
   const hasMultipleVendors = vendors.length > 1;
@@ -48,7 +50,7 @@ export default function CartPage() {
 
   useEffect(() => {
     async function loadVendorDetails() {
-      const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean)));
+      const vendorIds = Array.from(new Set(safeItems.map((i) => i.vendor_id).filter(Boolean)));
       if (vendorIds.length === 0) {
         setVendorDeliveryCharges({});
         return;
@@ -66,9 +68,9 @@ export default function CartPage() {
       }
     }
     loadVendorDetails();
-  }, [items, supabase]);
+  }, [safeItems, supabase]);
 
-  const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean)));
+  const vendorIds = Array.from(new Set(safeItems.map((i) => i.vendor_id).filter(Boolean)));
   const totalDeliveryFee = vendorIds.reduce((sum, id) => sum + (vendorDeliveryCharges[id] || 0), 0);
   const grandTotal = Math.max(0, total + totalDeliveryFee);
 
@@ -184,7 +186,7 @@ export default function CartPage() {
           </div>
         )}
 
-        {items.length === 0 ? (
+        {safeItems.length === 0 ? (
           <EmptyCart />
         ) : (
           <div className="space-y-4">
@@ -325,7 +327,7 @@ export default function CartPage() {
         )}
       </main>
 
-      {items.length > 0 && (
+      {safeItems.length > 0 && (
         <div className="fixed bottom-16 left-0 right-0 z-40 bg-surface/95 backdrop-blur-xl border-t border-outline-variant/20 shadow-[0px_-10px_30px_rgba(77,33,42,0.08)]"
           style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
         >
