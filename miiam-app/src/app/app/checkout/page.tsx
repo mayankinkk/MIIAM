@@ -95,6 +95,11 @@ export default function CheckoutPage() {
   const baseAmountForTax = Math.max(0, subtotal - discount);
   const tax = +(baseAmountForTax * 0.05).toFixed(2);
   const deliveryFee = 5.99;
+  // TODO: Implement vendor-specific delivery fee fetching.
+  // Currently, the vendor object is not directly available here in the CheckoutPage component,
+  // which causes issues with dynamically calculating the delivery fee based on vendor settings.
+  // The cart items contain `vendor_id`, so we could fetch vendor details here or pass it through the cart store.
+  // For now, using the default fee as a placeholder.
   const grand = Math.max(0, +(subtotal - discount + tax + deliveryFee * vendorIds.length + tipAmount).toFixed(2));
 
   const handleApplyPromo = () => {
