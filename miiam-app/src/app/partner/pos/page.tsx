@@ -65,7 +65,7 @@ export default function PartnerPOS() {
     prevPendingCountRef.current = orders.filter(o => o.status === "pending").length;
     const { data, error } = await supabase
       .from("orders")
-      .select("*, items:order_items(*), customer:user_id(phone, full_name)")
+      .select("*, items:order_items(*)")
       .eq("vendor_id", vId)
       .order("placed_at", { ascending: false });
     if (error) throw error;
