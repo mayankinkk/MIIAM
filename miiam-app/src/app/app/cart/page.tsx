@@ -49,7 +49,10 @@ export default function CartPage() {
   useEffect(() => {
     async function loadVendorDetails() {
       const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean)));
-      if (vendorIds.length === 0) return;
+      if (vendorIds.length === 0) {
+        setVendorDeliveryCharges({});
+        return;
+      }
       const { data } = await supabase
         .from("vendors")
         .select("id, delivery_charge")
