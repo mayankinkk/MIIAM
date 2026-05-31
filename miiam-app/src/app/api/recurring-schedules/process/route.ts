@@ -38,6 +38,9 @@ export async function POST() {
 
       const vendorTotal = items.reduce((sum: number, i: { price: number; quantity: number }) => sum + i.price * i.quantity, 0);
 
+      const { data: vendor } = await supabase.from("vendors").select("delivery_charge").eq("id", schedule.vendor_id).single();
+      const deliveryFee = vendor?.delivery_charge || 0;
+
       const { data: order, error: orderError } = await supabase
         .from("orders")
         .insert({
@@ -45,7 +48,7 @@ export async function POST() {
           vendor_id: schedule.vendor_id,
           status: "scheduled",
           total_amount: vendorTotal,
-          delivery_fee: 5.99,
+          delivery_fee: deliveryFee,
           discount_amount: 0,
           payment_method: schedule.payment_method || "card",
           delivery_address: schedule.delivery_address,
