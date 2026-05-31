@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import PullToRefresh from "@/components/PullToRefresh";
 import QuickActionsFAB from "@/components/QuickActionsFAB";
 import BlurImage from "@/components/BlurImage";
@@ -59,7 +58,7 @@ export default function ExplorePage() {
   const [refreshKey, setRefreshKey] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
-  const { totalItems } = useCartStore();
+  const cartCount = useCartStore((s) => s.items.reduce((sum, i) => sum + i.quantity, 0));
   const [cartBounce, setCartBounce] = useState(false);
   const [prevCartCount, setPrevCartCount] = useState(0);
   const [showLocationBanner, setShowLocationBanner] = useState(false);
@@ -113,14 +112,14 @@ export default function ExplorePage() {
   }, [dismissedLocationBanner]);
 
   useEffect(() => {
-    const count = totalItems();
-    if (count > prevCartCount && count > 0) {
+    if (cartCount > prevCartCount && cartCount > 0) {
       setCartBounce(true);
       const timer = setTimeout(() => setCartBounce(false), 500);
+      setPrevCartCount(cartCount);
       return () => clearTimeout(timer);
     }
-    setPrevCartCount(count);
-  }, [totalItems(), prevCartCount]);
+    setPrevCartCount(cartCount);
+  }, [cartCount, prevCartCount]);
 
   const handleRefresh = async () => {
     try {
@@ -201,13 +200,13 @@ export default function ExplorePage() {
               {/* Cart with animated badge */}
               <Link 
                 href="/app/cart" 
-                aria-label={`Cart (${totalItems()} items)`}
+                aria-label={`Cart (${cartCount} items)`}
                 className={`relative p-2 bg-surface-container-high rounded-full hover:bg-surface-container-highest transition-colors ${cartBounce ? "animate-bounce-sm" : ""}`}
               >
                 <span className="material-symbols-outlined text-2xl text-on-surface-variant" aria-hidden="true">shopping_cart</span>
-                {totalItems() > 0 && (
+                {cartCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center animate-bounce-in">
-                    {totalItems()}
+                    {cartCount > 99 ? "99+" : cartCount}
                   </span>
                 )}
               </Link>

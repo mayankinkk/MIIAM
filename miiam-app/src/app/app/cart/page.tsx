@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+
 import { useCartStore } from "@/lib/store/cartStore";
 import { EmptyCart } from "@/components/ui/EmptyStates";
 import Link from "next/link";

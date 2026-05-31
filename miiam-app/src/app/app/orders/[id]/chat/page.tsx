@@ -37,8 +37,12 @@ export default function ChatPage() {
     if (!newMessage.trim() || sending || !currentUserId) return;
 
     setSending(true);
-    await sendMessage(newMessage.trim(), "user");
-    setNewMessage("");
+    try {
+      await sendMessage(newMessage.trim(), "user");
+      setNewMessage("");
+    } catch (err) {
+      console.error("Failed to send message:", err);
+    }
     setSending(false);
   };
 

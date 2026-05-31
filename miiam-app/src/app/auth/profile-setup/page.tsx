@@ -76,7 +76,7 @@ function ProfileSetupContent() {
         .single();
       if (profile) {
         if (profile.avatar_url) setAvatarUrl(profile.avatar_url);
-        if (profile.full_name && !formData.full_name) updateField("full_name", profile.full_name);
+        if (profile.full_name) updateField("full_name", profile.full_name);
         if (profile.email && !emailFromVerify) updateField("email", profile.email);
       }
     }
