@@ -181,6 +181,16 @@ export function RiderDashboardSkeleton() {
   );
 }
 
+export function CardSkeleton() {
+  return (
+    <div className="bg-white rounded-xl p-4 shadow-sm">
+      <Skeleton className="h-40 w-full rounded-lg mb-4" />
+      <Skeleton className="h-5 w-3/4 mb-2" />
+      <Skeleton className="h-4 w-1/2" />
+    </div>
+  );
+}
+
 export function HomeSkeleton() {
   return (
     <div className="min-h-screen bg-[#fff8f7] pb-24">

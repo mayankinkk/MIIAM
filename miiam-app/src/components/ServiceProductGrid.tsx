@@ -10,7 +10,7 @@ import { useLocationStore } from "@/lib/store/locationStore";
 import { useServiceSettingsStore, ServiceCategory } from "@/lib/store/serviceSettingsStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
-import { CardSkeleton } from "@/components/Skeletons";
+import { CardSkeleton } from "@/components/Skeleton";
 import ServiceUnavailable from "@/components/ServiceUnavailable";
 
 interface Category {
