@@ -44,13 +44,29 @@ export default function CartPage() {
   const hasMultipleVendors = vendors.length > 1;
 
   const total = totalPrice();
+  const [vendorDeliveryCharges, setVendorDeliveryCharges] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    async function loadVendorDetails() {
+      const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean)));
+      if (vendorIds.length === 0) return;
+      const { data } = await supabase
+        .from("vendors")
+        .select("id, delivery_charge")
+        .in("id", vendorIds);
+      if (data) {
+        const charges = data.reduce((acc, v) => {
+          acc[v.id] = v.delivery_charge || 0;
+          return acc;
+        }, {} as Record<string, number>);
+        setVendorDeliveryCharges(charges);
+      }
+    }
+    loadVendorDetails();
+  }, [items, supabase]);
+
   const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean)));
-  // In the cart, we need to sum up delivery fees for all vendors present in the cart.
-  // Since we don't have access to the vendor delivery charges here without fetching them,
-  // we'll leave it as a placeholder or fetch them here as well.
-  // For now, let's just make it a total sum based on the number of vendors * default fee for now 
-  // to match the previous implementation, but we should definitely fix this to be vendor-specific.
-  const totalDeliveryFee = vendorIds.length * 5.99; // Placeholder until we fetch vendor-specific fees
+  const totalDeliveryFee = vendorIds.reduce((sum, id) => sum + (vendorDeliveryCharges[id] || 0), 0);
   const grandTotal = Math.max(0, total + totalDeliveryFee);
 
   const fetchPastOrders = async () => {
