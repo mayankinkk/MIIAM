@@ -21,10 +21,21 @@ async function sendSMS(phoneNumber: string, message: string): Promise<{ success:
   }
 
   try {
-    if (apiUrl.includes("fast2sms")) {
-      const response = await fetch(`${apiUrl}?authorization=${apiKey}&sender_id=FSTSMS&message=${encodeURIComponent(message)}&language=english&route=p&numbers=${phoneNumber}`, {
-        method: "GET"
-      });
+      if (apiUrl.includes("fast2sms")) {
+        const response = await fetch(apiUrl, {
+          method: "POST",
+          headers: {
+            "authorization": apiKey,
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: new URLSearchParams({
+            sender_id: "FSTSMS",
+            message: message,
+            language: "english",
+            route: "p",
+            numbers: phoneNumber,
+          })
+        });
       
       const data = await response.json();
       
