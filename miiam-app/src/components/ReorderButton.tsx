@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/lib/store/cartStore";
 import { createClient } from "@/lib/supabase/client";
+import { useToastStore } from "@/lib/store/toastStore";
 
 interface OrderHistoryItem {
   id: string;
@@ -30,6 +31,7 @@ export function ReorderButton({ order }: ReorderButtonProps) {
   const router = useRouter();
   const supabase = createClient();
   const { addItem } = useCartStore();
+  const { addToast } = useToastStore();
 
   const handleReorder = async () => {
     setLoading(true);
@@ -41,7 +43,7 @@ export function ReorderButton({ order }: ReorderButtonProps) {
         .eq("vendor_id", order.vendor_id);
 
       if (!menuItems?.length) {
-        alert("Menu items not available");
+        addToast("Menu items not available", "error");
         setLoading(false);
         return;
       }
@@ -67,7 +69,7 @@ export function ReorderButton({ order }: ReorderButtonProps) {
       router.push("/app/cart");
     } catch (error) {
       console.error("Reorder error:", error);
-      alert("Failed to reorder. Please try again.");
+      addToast("Failed to reorder. Please try again.", "error");
     }
     
     setLoading(false);
