@@ -112,27 +112,10 @@ export function PaymentOptions({ total, selected, onSelect, walletBalance = 0 }:
       )}
 
       {selected === "card" && (
-        <div className="ml-14 p-4 bg-slate-50 rounded-xl space-y-3">
-          <input
-            type="text"
-            placeholder="Card Number"
-            maxLength={19}
-            className="w-full px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#ba001c]"
-          />
-          <div className="flex gap-3">
-            <input
-              type="text"
-              placeholder="MM/YY"
-              maxLength={5}
-              className="flex-1 px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#ba001c]"
-            />
-            <input
-              type="text"
-              placeholder="CVV"
-              maxLength={4}
-              className="w-20 px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#ba001c]"
-            />
-          </div>
+        <div className="ml-14 p-4 bg-slate-50 rounded-xl">
+          <p className="text-sm text-slate-500 text-center py-4">
+            Card payments will be processed securely via Razorpay/Stripe — coming soon.
+          </p>
         </div>
       )}
     </div>

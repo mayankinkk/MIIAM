@@ -54,8 +54,20 @@ async function activateScheduledOrders() {
   });
 }
 
+async function requireCronAuth(request: NextRequest) {
+  const authHeader = request.headers.get("authorization") || request.headers.get("x-cron-secret");
+  const secret = process.env.CRON_SECRET;
+  if (secret && authHeader === `Bearer ${secret}`) return true;
+  if (!secret) return true;
+  return false;
+}
+
 export async function POST(request: NextRequest) {
   try {
+    const authorized = await requireCronAuth(request);
+    if (!authorized) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
     return await activateScheduledOrders();
   } catch (error: any) {
     console.error("[activate-scheduled] Error:", error);
@@ -63,8 +75,12 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const authorized = await requireCronAuth(request);
+    if (!authorized) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
     return await activateScheduledOrders();
   } catch (error: any) {
     console.error("[activate-scheduled] Error:", error);
