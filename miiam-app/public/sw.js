@@ -55,7 +55,8 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  if (request.method === 'POST' || request.method === 'PUT' || request.method === 'DELETE') {
+  // Only handle HTTP/HTTPS GET requests
+  if (request.method !== 'GET' || !url.protocol.startsWith('http')) {
     return;
   }
 
@@ -79,21 +80,19 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  if (request.method === 'GET') {
-    if (request.destination === 'image') {
-      event.respondWith(cacheFirst(request, DYNAMIC_CACHE));
-      return;
-    }
+  if (request.destination === 'image') {
+    event.respondWith(cacheFirst(request, DYNAMIC_CACHE));
+    return;
+  }
 
-    if (request.destination === 'script' || request.destination === 'style' || request.destination === 'font') {
-      event.respondWith(cacheFirst(request, STATIC_CACHE));
-      return;
-    }
+  if (request.destination === 'script' || request.destination === 'style' || request.destination === 'font') {
+    event.respondWith(cacheFirst(request, STATIC_CACHE));
+    return;
+  }
 
-    if (url.origin === location.origin) {
-      event.respondWith(staleWhileRevalidate(request, STATIC_CACHE));
-      return;
-    }
+  if (url.origin === location.origin) {
+    event.respondWith(staleWhileRevalidate(request, STATIC_CACHE));
+    return;
   }
 
   event.respondWith(networkFirst(request, DYNAMIC_CACHE));
@@ -103,42 +102,70 @@ async function cacheFirst(request, cacheName) {
   const cached = await caches.match(request);
   if (cached) return cached;
 
+  let response;
   try {
-    const response = await fetch(request);
-    const cache = await caches.open(cacheName);
-    cache.put(request, response.clone());
-    return response;
-  } catch {
+    response = await fetch(request);
+  } catch (fetchErr) {
+    console.error('Fetch failed in cacheFirst:', fetchErr);
     return new Response('Offline', { status: 503 });
   }
+
+  if (response && response.ok) {
+    try {
+      const cache = await caches.open(cacheName);
+      await cache.put(request, response.clone());
+    } catch (cacheErr) {
+      console.warn('Failed to cache response in cacheFirst:', cacheErr);
+    }
+  }
+
+  return response;
 }
 
 async function networkFirst(request, cacheName) {
+  let response;
   try {
-    const response = await fetch(request);
-    const cache = await caches.open(cacheName);
-    cache.put(request, response.clone());
-    return response;
-  } catch {
+    response = await fetch(request);
+  } catch (fetchErr) {
     const cached = await caches.match(request);
     if (cached) return cached;
     return new Response('Offline', { status: 503 });
   }
+
+  if (response && response.ok) {
+    try {
+      const cache = await caches.open(cacheName);
+      await cache.put(request, response.clone());
+    } catch (cacheErr) {
+      console.warn('Failed to cache response in networkFirst:', cacheErr);
+    }
+  }
+
+  return response;
 }
 
 async function networkFirstWithCachedFallback(request, shellCacheName, dynamicCacheName) {
+  let response;
   try {
-    const response = await fetch(request);
-    const dynamicCache = await caches.open(dynamicCacheName);
-    dynamicCache.put(request, response.clone());
-    return response;
-  } catch {
+    response = await fetch(request);
+  } catch (fetchErr) {
     const cached = await caches.match(request);
     if (cached) return cached;
     const shellCached = await caches.match('/offline.html');
     if (shellCached) return shellCached;
     return new Response('Offline', { status: 503 });
   }
+
+  if (response && response.ok) {
+    try {
+      const dynamicCache = await caches.open(dynamicCacheName);
+      await dynamicCache.put(request, response.clone());
+    } catch (cacheErr) {
+      console.warn('Failed to cache response in networkFirstWithCachedFallback:', cacheErr);
+    }
+  }
+
+  return response;
 }
 
 async function staleWhileRevalidate(request, cacheName) {
@@ -146,8 +173,16 @@ async function staleWhileRevalidate(request, cacheName) {
 
   const fetchPromise = fetch(request)
     .then((response) => {
-      const cache = caches.open(cacheName);
-      cache.then((c) => c.put(request, response.clone()));
+      if (response && response.ok) {
+        const responseToCache = response.clone();
+        caches.open(cacheName).then((cache) => {
+          cache.put(request, responseToCache).catch((cacheErr) => {
+            console.warn('Failed to cache response in staleWhileRevalidate:', cacheErr);
+          });
+        }).catch((err) => {
+          console.warn('Failed to open cache in staleWhileRevalidate:', err);
+        });
+      }
       return response;
     })
     .catch(() => cached);
