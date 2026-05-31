@@ -34,7 +34,7 @@ export interface OrderTracking {
   isLive: boolean;
 }
 
-export function useOrderTracking(orderId: string) {
+export function useOrderTracking(orderId: string, userId?: string) {
   const supabase = createClient();
   const [tracking, setTracking] = useState<OrderTracking | null>(null);
   const [loading, setLoading] = useState(true);
@@ -55,11 +55,9 @@ export function useOrderTracking(orderId: string) {
 
   const fetchOrderData = useCallback(async () => {
     try {
-      const { data: orderData, error: orderError } = await supabase
-        .from("orders")
-        .select("*")
-        .eq("id", orderId)
-        .single();
+      const query = supabase.from("orders").select("*").eq("id", orderId);
+      if (userId) query.eq("user_id", userId);
+      const { data: orderData, error: orderError } = await query.single();
 
       if (orderError) throw orderError;
 
