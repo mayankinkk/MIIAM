@@ -77,27 +77,35 @@ export default function CheckoutPage() {
       try { setSavedAddresses(JSON.parse(allSaved)); } catch {}
     }
     async function loadPromoCodes() {
-      const { data } = await supabase
-        .from("promo_codes")
-        .select("code, discount_value, min_order_amount, discount_type, is_active, vendor_id, max_discount, usage_limit, used_count, valid_until")
-        .eq("is_active", true);
-      if (data) setPromoCodes(data);
+      try {
+        const { data } = await supabase
+          .from("promo_codes")
+          .select("code, discount_value, min_order_amount, discount_type, is_active, vendor_id, max_discount, usage_limit, used_count, valid_until")
+          .eq("is_active", true);
+        if (data) setPromoCodes(data);
+      } catch (err) {
+        console.error("Failed to load promo codes:", err);
+      }
     }
     loadPromoCodes();
 
     async function loadVendorDetails() {
-      const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean)));
-      if (vendorIds.length === 0) return;
-      const { data } = await supabase
-        .from("vendors")
-        .select("id, delivery_charge")
-        .in("id", vendorIds);
-      if (data) {
-        const charges = data.reduce((acc, v) => {
-          acc[v.id] = v.delivery_charge || 0;
-          return acc;
-        }, {} as Record<string, number>);
-        setVendorDeliveryCharges(charges);
+      try {
+        const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean)));
+        if (vendorIds.length === 0) return;
+        const { data } = await supabase
+          .from("vendors")
+          .select("id, delivery_charge")
+          .in("id", vendorIds);
+        if (data) {
+          const charges = data.reduce((acc, v) => {
+            acc[v.id] = v.delivery_charge || 0;
+            return acc;
+          }, {} as Record<string, number>);
+          setVendorDeliveryCharges(charges);
+        }
+      } catch (err) {
+        console.error("Failed to load vendor delivery charges:", err);
       }
     }
     loadVendorDetails();

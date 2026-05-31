@@ -132,10 +132,17 @@ export async function PUT(request: NextRequest) {
     // Delete OTP after successful verification
     await supabase.from("phone_otp_verification").delete().eq("phone_number", cleanPhone);
 
+    const { data: existingProfile } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("phone", cleanPhone)
+      .maybeSingle();
+
     return NextResponse.json({
       success: true,
       verified: true,
       phoneNumber: cleanPhone,
+      userExists: !!existingProfile,
     });
   } catch (error) {
     return NextResponse.json({ error: "Server error" }, { status: 500 });
