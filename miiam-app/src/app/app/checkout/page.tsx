@@ -621,8 +621,6 @@ export default function CheckoutPage() {
               </div>
               <div className="space-y-4">
                 {[
-                  { id: "wallet", label: "MIIAM Wallet", sub: "Balance: ₹500.00", icon: "account_balance_wallet" },
-                  { id: "card", label: "Credit / Debit Card", sub: "Visa, Mastercard, Amex", icon: "credit_card" },
                   { id: "upi", label: "UPI Payment", sub: "Google Pay, PhonePe, Paytm", icon: "qr_code_scanner" },
                   { id: "cod", label: "Cash on Delivery", sub: "Pay when you receive the order", icon: "payments" },
                 ].map((pm) => (
