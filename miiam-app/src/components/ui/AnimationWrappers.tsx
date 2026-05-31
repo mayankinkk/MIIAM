@@ -1,7 +1,13 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ReactNode } from "react";
+import { ReactNode, useState, useEffect } from "react";
+
+function useMounted() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+  return mounted;
+}
 
 interface Props {
   children: ReactNode;
@@ -10,6 +16,8 @@ interface Props {
 }
 
 export function FadeIn({ children, className = "", delay = 0 }: Props) {
+  const mounted = useMounted();
+  if (!mounted) return <div className={className}>{children}</div>;
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -24,6 +32,8 @@ export function FadeIn({ children, className = "", delay = 0 }: Props) {
 }
 
 export function ScaleIn({ children, className = "", delay = 0 }: Props) {
+  const mounted = useMounted();
+  if (!mounted) return <div className={className}>{children}</div>;
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
@@ -38,6 +48,8 @@ export function ScaleIn({ children, className = "", delay = 0 }: Props) {
 }
 
 export function SlideInLeft({ children, className = "", delay = 0 }: Props) {
+  const mounted = useMounted();
+  if (!mounted) return <div className={className}>{children}</div>;
   return (
     <motion.div
       initial={{ opacity: 0, x: -24 }}
@@ -52,6 +64,8 @@ export function SlideInLeft({ children, className = "", delay = 0 }: Props) {
 }
 
 export function SlideInRight({ children, className = "", delay = 0 }: Props) {
+  const mounted = useMounted();
+  if (!mounted) return <div className={className}>{children}</div>;
   return (
     <motion.div
       initial={{ opacity: 0, x: 24 }}
@@ -72,6 +86,8 @@ interface StaggerProps {
 }
 
 export function StaggerContainer({ children, className = "", staggerDelay = 0.05 }: StaggerProps) {
+  const mounted = useMounted();
+  if (!mounted) return <div className={className}>{children}</div>;
   return (
     <motion.div
       initial="hidden"
@@ -93,6 +109,8 @@ export function StaggerContainer({ children, className = "", staggerDelay = 0.05
 }
 
 export function StaggerItem({ children, className = "" }: Props) {
+  const mounted = useMounted();
+  if (!mounted) return <div className={className}>{children}</div>;
   return (
     <motion.div
       variants={{
@@ -108,6 +126,8 @@ export function StaggerItem({ children, className = "" }: Props) {
 }
 
 export function PressScale({ children, onClick, className = "" }: { children: ReactNode; onClick?: () => void; className?: string }) {
+  const mounted = useMounted();
+  if (!mounted) return <div className={`cursor-pointer ${className}`} onClick={onClick}>{children}</div>;
   return (
     <motion.div
       whileHover={{ scale: 1.02 }}
@@ -121,6 +141,8 @@ export function PressScale({ children, onClick, className = "" }: { children: Re
 }
 
 export function CartBounce({ children, isBouncing, className = "" }: { children: ReactNode; isBouncing: boolean; className?: string }) {
+  const mounted = useMounted();
+  if (!mounted) return <div className={className}>{children}</div>;
   return (
     <motion.div
       animate={isBouncing ? { scale: [1, 1.2, 0.95, 1.05, 1] } : { scale: 1 }}
