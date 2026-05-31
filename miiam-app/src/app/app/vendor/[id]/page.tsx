@@ -76,7 +76,7 @@ export default function VendorPage() {
     const slotMatch = !m.menu_slot || m.menu_slot === "all_day" || m.menu_slot === currentSlot;
   return categoryMatch && vegMatch && slotMatch;
 });
-const sortedItems = [...filteredItems].sort((a, b) => ((b as any).featured ? 1 : 0) - ((a as any).featured ? 1 : 0));
+const sortedItems = [...filteredItems].sort((a, b) => (((b as any).is_featured || (b as any).featured) ? 1 : 0) - (((a as any).is_featured || (a as any).featured) ? 1 : 0));
 
   const handleCustomizeItem = (item: any) => {
     // Only food/restaurant vendors should use the customization modal, NOT grocery/pharmacy/etc.
@@ -319,7 +319,7 @@ const sortedItems = [...filteredItems].sort((a, b) => ((b as any).featured ? 1 :
                       </span>
                     )}
                     <h3 className="font-bold text-slate-800">{item.name}</h3>
-                    {(item as any).featured && (
+                    {((item as any).is_featured || (item as any).featured) && (
                       <span className="text-[10px] font-bold px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded-full">★ Featured</span>
                     )}
                     {item.discount_percent > 0 && (

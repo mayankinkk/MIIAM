@@ -92,7 +92,7 @@ export default function PartnerMenuPage() {
     showUrlInput: false,
     has_discount: false,
     discount_percent: 20,
-    featured: false,
+    is_featured: false,
   });
   const [uploading, setUploading] = useState(false);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
@@ -199,7 +199,7 @@ export default function PartnerMenuPage() {
       showUrlInput: false,
       has_discount: false,
       discount_percent: 20,
-      featured: false,
+      is_featured: false,
     });
   }
 
@@ -216,7 +216,7 @@ export default function PartnerMenuPage() {
       base.is_veg = newItem.is_veg;
       base.stock = parseInt(newItem.stock) || 0;
       if (newItem.menu_slot) base.menu_slot = newItem.menu_slot;
-      base.featured = !!newItem.featured;
+      base.is_featured = !!newItem.is_featured;
       if (newItem.has_discount && newItem.discount_percent > 0) {
         const discount = parseFloat(newItem.discount_percent);
         base.discount_percent = discount;
@@ -250,7 +250,7 @@ export default function PartnerMenuPage() {
       base.is_veg = m.is_veg;
       base.stock = (m as any).stock ?? 0;
       if ((m as any).menu_slot) base.menu_slot = (m as any).menu_slot;
-      base.featured = !!(m as any).featured;
+      base.is_featured = !!(m as any).is_featured;
       if (m.discount_percent && m.discount_percent > 0) {
         base.discount_percent = m.discount_percent;
         base.original_price = m.original_price || m.price;
@@ -354,14 +354,14 @@ export default function PartnerMenuPage() {
   };
 
   const toggleFeatured = async (item: AnyItem) => {
-    const current = !!(item as any).featured;
+    const current = !!(item as any).is_featured;
     try {
-      const { error } = await supabase.from(table).update({ featured: !current }).eq("id", item.id);
+      const { error } = await supabase.from(table).update({ is_featured: !current }).eq("id", item.id);
       if (error) {
         console.warn("Toggle featured not supported:", error.message);
         return;
       }
-      setItems(items.map(i => i.id === item.id ? { ...i, featured: !current } as any : i));
+      setItems(items.map(i => i.id === item.id ? { ...i, is_featured: !current } as any : i));
     } catch (error: any) {
       console.warn("Toggle featured failed:", error.message);
     }
@@ -842,12 +842,12 @@ export default function PartnerMenuPage() {
                       <button
                         onClick={() => toggleFeatured(item)}
                         className={`text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider ${
-                          (item as any).featured
+                          (item as any).is_featured
                             ? "bg-amber-100 text-amber-700"
                             : "bg-slate-100 text-slate-500"
                         }`}
                       >
-                        {(item as any).featured ? "Featured" : "Promote"}
+                        {(item as any).is_featured ? "Featured" : "Promote"}
                       </button>
                     </td>
                   )}
@@ -1066,8 +1066,8 @@ export default function PartnerMenuPage() {
                   <label className="flex items-center gap-3 cursor-pointer">
                     <input
                       type="checkbox"
-                      checked={newItem.featured}
-                      onChange={(e) => setNewItem({ ...newItem, featured: e.target.checked })}
+                      checked={newItem.is_featured}
+                      onChange={(e) => setNewItem({ ...newItem, is_featured: e.target.checked })}
                       className="w-5 h-5 accent-[#ba001c]"
                     />
                     <span className="text-sm font-bold text-amber-700">Promote as Featured</span>
@@ -1266,8 +1266,8 @@ export default function PartnerMenuPage() {
                   <label className="flex items-center gap-3 cursor-pointer">
                     <input
                       type="checkbox"
-                      checked={!!(editingItem as any).featured}
-                      onChange={(e) => setEditingItem({ ...editingItem, featured: e.target.checked } as any)}
+                      checked={!!(editingItem as any).is_featured}
+                      onChange={(e) => setEditingItem({ ...editingItem, is_featured: e.target.checked } as any)}
                       className="w-5 h-5 accent-[#ba001c]"
                     />
                     <span className="text-sm font-bold text-amber-700">Promote as Featured</span>

@@ -58,6 +58,7 @@ export interface MenuItem {
   menu_slot?: "breakfast" | "lunch" | "dinner" | "all_day";
   original_price?: number | null;
   discount_percent?: number | null;
+  is_featured?: boolean;
   featured?: boolean;
 }
 
