@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState, useEffect } from "react";
+import { use, useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
@@ -10,7 +10,7 @@ type RefundStatus = "requested" | "processing" | "approved" | "completed" | "rej
 
 export default function OrderRefundPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [refundStatus, setRefundStatus] = useState<RefundStatus>("requested");
@@ -50,7 +50,7 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
       setLoading(false);
     }
     loadOrder();
-  }, [id, supabase]);
+  }, [id]);
 
   const handleCancelOrder = async () => {
     if (!cancelReason.trim()) {

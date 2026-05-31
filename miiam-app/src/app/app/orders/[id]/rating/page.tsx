@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { use } from "react";
 import { createClient } from "@/lib/supabase/client";
@@ -119,7 +119,7 @@ const feedbackTags = [
 export default function RatingReviewPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [loading, setLoading] = useState(true);
   const [order, setOrder] = useState<any>(null);
   const [foodRating, setFoodRating] = useState(0);
@@ -146,7 +146,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
       setLoading(false);
     }
     loadOrder();
-  }, [id, supabase]);
+  }, [id]);
 
   const handleSubmit = async () => {
     if (!order) return;
