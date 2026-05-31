@@ -110,10 +110,8 @@ export default function CheckoutPage() {
       : promoApplied.discount
     : 0;
   const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean)));
-  const baseAmountForTax = Math.max(0, subtotal - discount);
-  const tax = +(baseAmountForTax * 0.05).toFixed(2);
   const totalDeliveryFee = vendorIds.reduce((sum, id) => sum + (vendorDeliveryCharges[id] || 0), 0);
-  const grand = Math.max(0, +(subtotal - discount + tax + totalDeliveryFee + tipAmount).toFixed(2));
+  const grand = Math.max(0, +(subtotal - discount + totalDeliveryFee + tipAmount).toFixed(2));
 
   const handleApplyPromo = () => {
     const code = promoCode.toUpperCase().trim();
@@ -689,10 +687,6 @@ export default function CheckoutPage() {
                 <div className="flex justify-between text-on-surface-variant">
                   <span>Delivery Fee</span>
                     <span className="font-semibold text-secondary">₹{totalDeliveryFee.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between text-on-surface-variant">
-                  <span>Tax (5%)</span>
-                  <span className="font-semibold text-on-surface">₹{tax}</span>
                 </div>
                 
                 {/* Rider Tip */}
