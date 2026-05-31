@@ -23,9 +23,34 @@ export default function CartPage() {
   const { addToast } = useToastStore();
 
   const [isMounted, setIsMounted] = useState(false);
+  const [vendorDeliveryCharges, setVendorDeliveryCharges] = useState<Record<string, number>>({});
+
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  useEffect(() => {
+    async function loadVendorDetails() {
+      const safeItems = Array.isArray(items) ? items : [];
+      const vendorIds = Array.from(new Set(safeItems.map((i) => i.vendor_id).filter(Boolean)));
+      if (vendorIds.length === 0) {
+        setVendorDeliveryCharges({});
+        return;
+      }
+      const { data } = await supabase
+        .from("vendors")
+        .select("id, delivery_charge")
+        .in("id", vendorIds);
+      if (data) {
+        const charges = data.reduce((acc, v) => {
+          acc[v.id] = v.delivery_charge || 0;
+          return acc;
+        }, {} as Record<string, number>);
+        setVendorDeliveryCharges(charges);
+      }
+    }
+    loadVendorDetails();
+  }, [items, supabase]);
 
   if (!isMounted) {
     return (
@@ -46,30 +71,6 @@ export default function CartPage() {
   const hasMultipleVendors = vendors.length > 1;
 
   const total = totalPrice();
-  const [vendorDeliveryCharges, setVendorDeliveryCharges] = useState<Record<string, number>>({});
-
-  useEffect(() => {
-    async function loadVendorDetails() {
-      const vendorIds = Array.from(new Set(safeItems.map((i) => i.vendor_id).filter(Boolean)));
-      if (vendorIds.length === 0) {
-        setVendorDeliveryCharges({});
-        return;
-      }
-      const { data } = await supabase
-        .from("vendors")
-        .select("id, delivery_charge")
-        .in("id", vendorIds);
-      if (data) {
-        const charges = data.reduce((acc, v) => {
-          acc[v.id] = v.delivery_charge || 0;
-          return acc;
-        }, {} as Record<string, number>);
-        setVendorDeliveryCharges(charges);
-      }
-    }
-    loadVendorDetails();
-  }, [safeItems, supabase]);
-
   const vendorIds = Array.from(new Set(safeItems.map((i) => i.vendor_id).filter(Boolean)));
   const totalDeliveryFee = vendorIds.reduce((sum, id) => sum + (vendorDeliveryCharges[id] || 0), 0);
   const grandTotal = Math.max(0, total + totalDeliveryFee);
