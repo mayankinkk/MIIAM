@@ -77,11 +77,11 @@ export default function VerificationPage() {
 
   const filtered = vendors.filter(v => {
     if (filter === "all") return true;
-    if (filter === "pending") return v.status === "pending" || v.status === "inactive";
+    if (filter === "pending") return v.status === "pending";
     return v.status === filter;
   });
 
-  const pendingCount = vendors.filter(v => v.status === "pending" || v.status === "inactive").length;
+  const pendingCount = vendors.filter(v => v.status === "pending").length;
   const approvedToday = vendors.filter(v => v.status === "active").length;
 
   const statusColors: Record<string, string> = {

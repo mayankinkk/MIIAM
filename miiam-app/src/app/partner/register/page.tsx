@@ -43,6 +43,8 @@ export default function VendorRegister() {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   const [form, setForm] = useState(loadSavedForm);
 
@@ -59,6 +61,7 @@ export default function VendorRegister() {
 
   const handleSubmit = async () => {
     setSubmitting(true);
+    setSubmitError("");
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
@@ -77,14 +80,11 @@ export default function VendorRegister() {
       const { error } = await supabase.from("vendors").insert(payload);
       if (error) throw error;
 
-      // Update user role to vendor
-      await supabase.from("profiles").update({ role: "vendor" }).eq("id", user.id);
-
+      // NOTE: profile role is updated to 'vendor' ONLY when admin approves — not here.
       sessionStorage.removeItem(STORAGE_KEY);
-      alert("Registration submitted! Your store is pending review.");
-      router.push("/partner/dashboard");
+      setSubmitted(true);
     } catch (err: any) {
-      alert("Registration failed: " + err.message);
+      setSubmitError(err.message || "Submission failed. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -94,6 +94,54 @@ export default function VendorRegister() {
 
   const inputClass = "w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]";
   const labelClass = "text-sm font-semibold text-slate-700";
+
+  // ── Success screen ─────────────────────────────────────────────────────────
+  if (submitted) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-[#ba001c]/5 to-white flex items-center justify-center p-4">
+        <div className="w-full max-w-lg text-center">
+          <div className="bg-white rounded-3xl p-10 shadow-lg border border-slate-200 space-y-6">
+            {/* Animated checkmark */}
+            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+              <span className="material-symbols-outlined text-green-600 text-5xl">check_circle</span>
+            </div>
+            <div className="space-y-2">
+              <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
+                Application Submitted!
+              </h1>
+              <p className="text-slate-500 text-base leading-relaxed">
+                Thanks for registering,{" "}
+                <span className="font-semibold text-slate-700">{form.owner_name || "partner"}</span>!<br />
+                Kindly wait — your application is currently under review.<br />
+                Our team will verify your details and get back to you shortly.
+              </p>
+            </div>
+            <div className="bg-slate-50 rounded-2xl p-4 text-left space-y-2">
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Submission Summary</p>
+              <div className="flex justify-between text-sm">
+                <span className="text-slate-500">Store</span>
+                <span className="font-bold text-slate-800">{form.shop_name || "-"}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-slate-500">Type</span>
+                <span className="font-bold text-slate-800 capitalize">{form.type}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-slate-500">Status</span>
+                <span className="font-bold text-yellow-600">⏳ Pending Review</span>
+              </div>
+            </div>
+            <button
+              onClick={() => router.push("/")}
+              className="w-full py-3 bg-[#ba001c] text-white rounded-xl font-bold hover:bg-[#a40017] transition-colors"
+            >
+              Go to Home
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#ba001c]/5 to-white flex items-center justify-center p-4">
@@ -252,6 +300,11 @@ export default function VendorRegister() {
           )}
 
           {/* Navigation */}
+          {submitError && (
+            <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm font-medium">
+              ⚠️ {submitError}
+            </div>
+          )}
           <div className="flex justify-between mt-8">
             {step > 1 ? (
               <button onClick={() => setStep(step - 1)} className="px-6 py-3 border border-slate-200 text-slate-600 rounded-xl font-bold hover:bg-slate-50 transition-colors">
