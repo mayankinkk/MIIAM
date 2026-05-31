@@ -206,10 +206,8 @@ export default function CartPage() {
                   </div>
                 </div>
                 <div className="space-y-3 relative z-10">
-                  <StaggerContainer staggerDelay={0.03}>
                   {vendor.items.map((item) => (
-                    <StaggerItem key={item.menu_item_id}>
-                    <div className="flex items-center gap-3 bg-surface-container-lowest p-3 rounded-xl shadow-sm">
+                    <div key={item.menu_item_id} className="flex items-center gap-3 bg-surface-container-lowest p-3 rounded-xl shadow-sm">
                       {/* Thumbnail */}
                       <div className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-surface-container">
                         {item.image_url ? (
@@ -253,9 +251,7 @@ export default function CartPage() {
                         </button>
                       </div>
                     </div>
-                    </StaggerItem>
                   ))}
-                  </StaggerContainer>
                 </div>
                 <div className="mt-4 flex justify-between items-center text-xs border-t border-outline-variant/20 pt-3">
                   <span className="text-on-surface-variant">Subtotal ({vendor.name})</span>
