@@ -10,7 +10,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
-import { StaggerContainer, StaggerItem } from "@/components/ui/AnimationWrappers";
+
 
 export default function CartPage() {
   const supabase = useMemo(() => createClient(), []);
@@ -22,8 +22,14 @@ export default function CartPage() {
   const router = useRouter();
   const { addToast } = useToastStore();
 
-  const [isMounted, setIsMounted] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
   const [vendorDeliveryCharges, setVendorDeliveryCharges] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    const unsub = useCartStore.persist.onFinishHydration(() => setHydrated(true));
+    if (useCartStore.persist.hasHydrated()) setHydrated(true);
+    return unsub;
+  }, []);
 
   useEffect(() => {
     async function loadVendorDetails() {
@@ -48,7 +54,7 @@ export default function CartPage() {
     loadVendorDetails();
   }, [items, supabase]);
 
-  if (!isMounted) {
+  if (!hydrated) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-surface">
         <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
