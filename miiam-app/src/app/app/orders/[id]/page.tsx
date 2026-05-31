@@ -103,6 +103,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
   useEffect(() => {
     let mounted = true;
     async function loadData() {
+      try {
       setLoading(true);
       await new Promise(r => setTimeout(r, 500));
       
@@ -181,7 +182,12 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
 
       if (!mounted) return;
       setOrder(fullOrder);
-      setLoading(false);
+    } catch (err) {
+      console.error("Failed to load order:", err);
+      if (!mounted) return;
+      setOrder(null);
+    }
+    setLoading(false);
     }
     loadData();
 
@@ -267,22 +273,26 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
 
   const refreshOrder = async () => {
     setIsRefreshing(true);
-    const { data: orderData, error: orderError } = await supabase
-      .from("orders")
-      .select("*")
-      .eq("id", id)
-      .single();
-    
-    if (orderData) {
-      const [vendorRes, riderRes, itemsRes, locationRes] = await Promise.all([
-        orderData.vendor_id ? supabase.from("vendors").select("*").eq("id", orderData.vendor_id).single() : Promise.resolve({ data: null }),
-        orderData.rider_id ? supabase.from("riders").select("*").eq("id", orderData.rider_id).single() : Promise.resolve({ data: null }),
-        supabase.from("order_items").select("*").eq("order_id", id),
-        supabase.from("rider_locations").select("lat, lng").eq("order_id", id).order('created_at', { ascending: false }).limit(1).maybeSingle()
-      ]);
-      const items = itemsRes.data || [];
-      setOrder({ ...orderData, vendor: vendorRes.data, riders: riderRes.data, items });
-      if (locationRes.data) setRiderLocation({ lat: locationRes.data.lat, lng: locationRes.data.lng });
+    try {
+      const { data: orderData, error: orderError } = await supabase
+        .from("orders")
+        .select("*")
+        .eq("id", id)
+        .single();
+      
+      if (orderData) {
+        const [vendorRes, riderRes, itemsRes, locationRes] = await Promise.all([
+          orderData.vendor_id ? supabase.from("vendors").select("*").eq("id", orderData.vendor_id).single() : Promise.resolve({ data: null }),
+          orderData.rider_id ? supabase.from("riders").select("*").eq("id", orderData.rider_id).single() : Promise.resolve({ data: null }),
+          supabase.from("order_items").select("*").eq("order_id", id),
+          supabase.from("rider_locations").select("lat, lng").eq("order_id", id).order('created_at', { ascending: false }).limit(1).maybeSingle()
+        ]);
+        const items = itemsRes.data || [];
+        setOrder({ ...orderData, vendor: vendorRes.data, riders: riderRes.data, items });
+        if (locationRes.data) setRiderLocation({ lat: locationRes.data.lat, lng: locationRes.data.lng });
+      }
+    } catch (err) {
+      console.error("Failed to refresh order:", err);
     }
     setIsRefreshing(false);
   };

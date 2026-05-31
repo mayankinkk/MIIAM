@@ -94,15 +94,19 @@ export default function ExplorePage() {
 
   useEffect(() => {
     async function checkLocation() {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) return;
-      const { data: profile } = await supabase
-          .from("profiles")
-          .select("city, state")
-          .eq("id", session.user.id)
-          .maybeSingle();
-      if (profile && !profile.city && !dismissedLocationBanner) {
-        setShowLocationBanner(true);
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) return;
+        const { data: profile } = await supabase
+            .from("profiles")
+            .select("city, state")
+            .eq("id", session.user.id)
+            .maybeSingle();
+        if (profile && !profile.city && !dismissedLocationBanner) {
+          setShowLocationBanner(true);
+        }
+      } catch (err) {
+        console.error("Failed to check location:", err);
       }
     }
     checkLocation();

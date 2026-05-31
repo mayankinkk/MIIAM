@@ -136,13 +136,17 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
 
   useEffect(() => {
     async function loadOrder() {
-      const { data: orderData } = await supabase
-        .from("orders")
-        .select("*, vendor:vendors(name, cover_image_url), rider:riders(name, profile_image)")
-        .eq("id", id)
-        .single();
-      
-      if (orderData) setOrder(orderData);
+      try {
+        const { data: orderData } = await supabase
+          .from("orders")
+          .select("*, vendor:vendors(name, cover_image_url), rider:riders(name, profile_image)")
+          .eq("id", id)
+          .single();
+        
+        if (orderData) setOrder(orderData);
+      } catch (err) {
+        console.error("Failed to load order:", err);
+      }
       setLoading(false);
     }
     loadOrder();

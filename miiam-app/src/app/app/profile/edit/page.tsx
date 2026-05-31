@@ -28,27 +28,31 @@ export default function EditProfilePage() {
 
   useEffect(() => {
     async function loadProfile() {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        router.push("/auth/login");
-        return;
-      }
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          router.push("/auth/login");
+          return;
+        }
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) { setLoading(false); return; }
 
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", user.id)
-        .single();
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", user.id)
+          .single();
 
-      if (profile) {
-        setFormData({
-          fullName: profile.full_name || "",
-          phone: profile.phone || "",
-          email: profile.email || user.email || "",
-          avatarUrl: profile.avatar_url || "",
-        });
+        if (profile) {
+          setFormData({
+            fullName: profile.full_name || "",
+            phone: profile.phone || "",
+            email: profile.email || user.email || "",
+            avatarUrl: profile.avatar_url || "",
+          });
+        }
+      } catch (err) {
+        console.error("Failed to load profile:", err);
       }
       setLoading(false);
     }

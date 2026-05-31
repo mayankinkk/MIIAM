@@ -26,37 +26,42 @@ export default function WalletPage() {
   }, []);
 
   async function loadWalletData() {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { setLoading(false); return; }
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { setLoading(false); return; }
 
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("wallet_balance")
-      .single();
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("wallet_balance")
+        .single();
 
-    const { data: orders } = await supabase
-      .from("orders")
-      .select("id, total_amount, status, placed_at, delivered_at")
-      .eq("user_id", user.id)
-      .in("status", ["delivered", "cancelled"])
-      .order("placed_at", { ascending: false })
-      .limit(20);
+      if (profile) setBalance(profile.wallet_balance || 0);
 
-    if (orders) {
-      const txns: WalletTransaction[] = orders.map(order => {
-        const isRefund = order.status === "cancelled";
-        return {
-          id: order.id,
-          amount: order.total_amount,
-          type: isRefund ? "refund" : "payment",
-          title: isRefund ? `Refund for Order #${order.id.slice(0, 8).toUpperCase()}` : `Order #${order.id.slice(0, 8).toUpperCase()}`,
-          date: order.placed_at ? new Date(order.placed_at).toLocaleDateString("en-IN", { month: "short", day: "numeric", year: "numeric" }) : "",
-          sign: isRefund ? "+" : "-",
-        };
-      });
-      setTransactions(txns);
+      const { data: orders } = await supabase
+        .from("orders")
+        .select("id, total_amount, status, placed_at, delivered_at")
+        .eq("user_id", user.id)
+        .in("status", ["delivered", "cancelled"])
+        .order("placed_at", { ascending: false })
+        .limit(20);
+
+      if (orders) {
+        const txns: WalletTransaction[] = orders.map(order => {
+          const isRefund = order.status === "cancelled";
+          return {
+            id: order.id,
+            amount: order.total_amount,
+            type: isRefund ? "refund" : "payment",
+            title: isRefund ? `Refund for Order #${order.id.slice(0, 8).toUpperCase()}` : `Order #${order.id.slice(0, 8).toUpperCase()}`,
+            date: order.placed_at ? new Date(order.placed_at).toLocaleDateString("en-IN", { month: "short", day: "numeric", year: "numeric" }) : "",
+            sign: isRefund ? "+" : "-",
+          };
+        });
+        setTransactions(txns);
+      }
+    } catch (err) {
+      console.error("Failed to load wallet data:", err);
     }
-
     setLoading(false);
   }
 

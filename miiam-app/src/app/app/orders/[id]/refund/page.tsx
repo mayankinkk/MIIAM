@@ -22,30 +22,34 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
 
   useEffect(() => {
     async function loadOrder() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) { setLoading(false); return; }
 
-      const { data: orderData } = await supabase
-        .from("orders")
-        .select("*")
-        .eq("id", id)
-        .eq("user_id", user.id)
-        .single();
+        const { data: orderData } = await supabase
+          .from("orders")
+          .select("*")
+          .eq("id", id)
+          .eq("user_id", user.id)
+          .single();
 
-      const data = orderData;
-      if (data && data.vendor_id) {
-        const { data: vendorData } = await supabase.from("vendors").select("shop_name").eq("id", data.vendor_id).single();
-        data.vendor = vendorData;
-      }
-
-      if (data) {
-        setOrder(data);
-        if (data.status === "cancelled" || data.status === "refund_requested") {
-          setRefundStatus("processing");
+        const data = orderData;
+        if (data && data.vendor_id) {
+          const { data: vendorData } = await supabase.from("vendors").select("shop_name").eq("id", data.vendor_id).single();
+          data.vendor = vendorData;
         }
-        if (data.status === "refunded") {
-          setRefundStatus("completed");
+
+        if (data) {
+          setOrder(data);
+          if (data.status === "cancelled" || data.status === "refund_requested") {
+            setRefundStatus("processing");
+          }
+          if (data.status === "refunded") {
+            setRefundStatus("completed");
+          }
         }
+      } catch (err) {
+        console.error("Failed to load order:", err);
       }
       setLoading(false);
     }

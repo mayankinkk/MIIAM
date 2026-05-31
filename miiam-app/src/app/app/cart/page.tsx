@@ -64,7 +64,7 @@ export default function CartPage() {
 
   const safeItems = Array.isArray(items) ? items : [];
 
-  const vendors = Array.from(new Set(safeItems.map((i) => i.vendor_id))).map((vid) => ({
+  const vendors = Array.from(new Set(safeItems.map((i) => i.vendor_id).filter(Boolean))).map((vid) => ({
     id: vid,
     name: safeItems.find((i) => i.vendor_id === vid)?.vendor_name ?? vid,
     items: safeItems.filter((i) => i.vendor_id === vid),

@@ -31,35 +31,38 @@ export default function EnhancedProfilePage() {
 
   useEffect(() => {
     async function loadUserAndProfile() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        setUser(user);
-        const { data: profileData } = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("id", user.id)
-          .single();
-        setProfile(profileData);
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          setUser(user);
+          const { data: profileData } = await supabase
+            .from("profiles")
+            .select("*")
+            .eq("id", user.id)
+            .single();
+          setProfile(profileData);
 
-        // Fetch real stats
-        const { count: orderCount } = await supabase
-          .from("orders")
-          .select("*", { count: "exact", head: true })
-          .eq("user_id", user.id);
-        const { count: reviewCount } = await supabase
-          .from("reviews")
-          .select("*", { count: "exact", head: true })
-          .eq("user_id", user.id);
-        const { count: favCount } = await supabase
-          .from("favorites")
-          .select("*", { count: "exact", head: true })
-          .eq("user_id", user.id);
-        
-        setStats({
-          orders: orderCount || 0,
-          reviews: reviewCount || 0,
-          saved: favCount || 0
-        });
+          const { count: orderCount } = await supabase
+            .from("orders")
+            .select("*", { count: "exact", head: true })
+            .eq("user_id", user.id);
+          const { count: reviewCount } = await supabase
+            .from("reviews")
+            .select("*", { count: "exact", head: true })
+            .eq("user_id", user.id);
+          const { count: favCount } = await supabase
+            .from("favorites")
+            .select("*", { count: "exact", head: true })
+            .eq("user_id", user.id);
+          
+          setStats({
+            orders: orderCount || 0,
+            reviews: reviewCount || 0,
+            saved: favCount || 0
+          });
+        }
+      } catch (err) {
+        console.error("Failed to load profile:", err);
       }
     }
     loadUserAndProfile();
