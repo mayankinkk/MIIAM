@@ -29,7 +29,7 @@ export default function PartnerKOTPage() {
   async function loadOrders(vId: string) {
     const { data } = await supabase
       .from("orders")
-      .select("*")
+      .select("*, items:order_items(*)")
       .eq("vendor_id", vId)
       .in("status", ["accepted", "preparing"])
       .order("placed_at", { ascending: true });
@@ -71,14 +71,25 @@ export default function PartnerKOTPage() {
               </div>
               <div className="border-t border-slate-100 pt-3 space-y-2">
                 {order.items?.map((item: any, i: number) => (
-                  <div key={i} className="flex items-center justify-between text-sm">
-                    <span className="text-slate-700">
-                      <span className="font-bold mr-2">×{item.quantity}</span>
-                      {item.name || "Unknown"}
-                    </span>
+                  <div key={i}>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-slate-700">
+                        <span className="font-bold mr-2">×{item.quantity}</span>
+                        {item.name || "Unknown"}
+                      </span>
+                    </div>
+                    {item.special_notes && (
+                      <p className="text-xs text-amber-600 ml-6 mt-0.5">📝 {item.special_notes}</p>
+                    )}
                   </div>
                 ))}
               </div>
+              {order.special_instructions && (
+                <div className="bg-amber-50 border border-amber-200 rounded-xl p-3">
+                  <p className="text-xs font-bold text-amber-700 mb-0.5">Order Note:</p>
+                  <p className="text-xs text-amber-800">{order.special_instructions}</p>
+                </div>
+              )}
               <div className="text-xs text-slate-400">
                 {new Date(order.placed_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
               </div>

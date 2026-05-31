@@ -439,14 +439,19 @@ export default function PartnerPOS() {
 
                   <div className="space-y-2 mb-6 bg-slate-50 p-4 rounded-2xl border border-slate-100">
                     {order.items?.map((item, idx) => (
-                      <div key={idx} className="flex justify-between items-center text-sm">
-                        <p className="text-slate-700 font-bold">
-                          <span className="text-slate-400 mr-2">{item.quantity}x</span>
-                          {menuItemNames.get(item.menu_item_id)?.name || "Unknown Item"}
-                        </p>
-                        <p className="text-slate-500 font-medium">
-                          ₹{(item.unit_price * item.quantity).toFixed(0)}
-                        </p>
+                      <div key={idx}>
+                        <div className="flex justify-between items-center text-sm">
+                          <p className="text-slate-700 font-bold">
+                            <span className="text-slate-400 mr-2">{item.quantity}x</span>
+                            {menuItemNames.get(item.menu_item_id)?.name || "Unknown Item"}
+                          </p>
+                          <p className="text-slate-500 font-medium">
+                            ₹{(item.unit_price * item.quantity).toFixed(0)}
+                          </p>
+                        </div>
+                        {item.special_notes && (
+                          <p className="text-xs text-amber-600 ml-6 mt-0.5">📝 {item.special_notes}</p>
+                        )}
                       </div>
                     ))}
                     {order.special_instructions && (

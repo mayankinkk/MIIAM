@@ -36,6 +36,7 @@ export default function CheckoutPage() {
   const [promoError, setPromoError] = useState("");
   const [scheduledDate, setScheduledDate] = useState<string>("");
   const [dateOptions, setDateOptions] = useState<{ label: string; value: string }[]>([]);
+  const [specialInstructions, setSpecialInstructions] = useState("");
 
   useEffect(() => {
     const options = [0, 1, 2, 3].map((days) => {
@@ -232,20 +233,21 @@ export default function CheckoutPage() {
           ? new Date(`${scheduledDate}T${scheduledTime.split(" - ")[0].trim()}`).toISOString()
           : null;
         
-        const { data: order, error: orderError } = await supabase
-          .from("orders")
-          .insert({
-            user_id: user.id,
-            vendor_id: vendorId,
-            status: scheduledIso ? "scheduled" : "pending",
-            total_amount: vendorTotal,
-            delivery_fee: 0, // Delivery is FREE
-            discount_amount: subtotal > 0 ? +(discount * (vendorTotal / subtotal)).toFixed(2) : 0,
-            payment_method: paymentMethod,
-            delivery_address: finalAddress,
-            scheduled_delivery: scheduledIso,
-            placed_at: new Date().toISOString(),
-          })
+          const { data: order, error: orderError } = await supabase
+            .from("orders")
+            .insert({
+              user_id: user.id,
+              vendor_id: vendorId,
+              status: scheduledIso ? "scheduled" : "pending",
+              total_amount: vendorTotal,
+              delivery_fee: 0,
+              discount_amount: subtotal > 0 ? +(discount * (vendorTotal / subtotal)).toFixed(2) : 0,
+              payment_method: paymentMethod,
+              delivery_address: finalAddress,
+              scheduled_delivery: scheduledIso,
+              special_instructions: specialInstructions || null,
+              placed_at: new Date().toISOString(),
+            })
           .select()
           .single();
 
@@ -262,6 +264,7 @@ export default function CheckoutPage() {
               quantity: i.quantity,
               unit_price: i.price,
               price: i.price * i.quantity,
+              special_notes: i.special_notes || null,
             }))
           );
           if (itemsError) {
@@ -736,6 +739,18 @@ export default function CheckoutPage() {
               </div>
 
 
+
+              {/* Special Instructions */}
+              <div className="mb-4">
+                <label className="text-sm font-bold text-on-surface block mb-2">Special Instructions</label>
+                <textarea
+                  value={specialInstructions}
+                  onChange={(e) => setSpecialInstructions(e.target.value)}
+                  placeholder="E.g., Add extra cheese, no onions, etc."
+                  rows={3}
+                  className="w-full bg-white border border-outline-variant/30 rounded-xl p-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 resize-none"
+                />
+              </div>
 
               {/* Promo Code */}
               <div className="mb-8">
