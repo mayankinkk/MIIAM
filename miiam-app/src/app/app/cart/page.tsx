@@ -26,10 +26,6 @@ export default function CartPage() {
   const [vendorDeliveryCharges, setVendorDeliveryCharges] = useState<Record<string, number>>({});
 
   useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  useEffect(() => {
     async function loadVendorDetails() {
       const safeItems = Array.isArray(items) ? items : [];
       const vendorIds = Array.from(new Set(safeItems.map((i) => i.vendor_id).filter(Boolean)));
@@ -39,11 +35,11 @@ export default function CartPage() {
       }
       const { data } = await supabase
         .from("vendors")
-        .select("id, delivery_charge")
+        .select("id")
         .in("id", vendorIds);
       if (data) {
         const charges = data.reduce((acc, v) => {
-          acc[v.id] = v.delivery_charge || 0;
+          acc[v.id] = 0;
           return acc;
         }, {} as Record<string, number>);
         setVendorDeliveryCharges(charges);
@@ -71,34 +67,10 @@ export default function CartPage() {
   const hasMultipleVendors = vendors.length > 1;
 
   const total = totalPrice();
-  const [vendorDeliveryCharges, setVendorDeliveryCharges] = useState<Record<string, number>>({});
-
-  useEffect(() => {
-    async function loadVendorDetails() {
-      const safeItems = Array.isArray(items) ? items : [];
-      const vendorIds = Array.from(new Set(safeItems.map((i) => i.vendor_id).filter(Boolean)));
-      if (vendorIds.length === 0) {
-        setVendorDeliveryCharges({});
-        return;
-      }
-      const { data } = await supabase
-        .from("vendors")
-        .select("id, delivery_charge")
-        .in("id", vendorIds);
-      if (data) {
-        const charges = data.reduce((acc, v) => {
-          acc[v.id] = 0; // Set all delivery charges to 0
-          return acc;
-        }, {} as Record<string, number>);
-        setVendorDeliveryCharges(charges);
-      }
-    }
-    loadVendorDetails();
-  }, [items, supabase]);
 
   const vendorIds = Array.from(new Set(safeItems.map((i) => i.vendor_id).filter(Boolean)));
-  const totalDeliveryFee = 0; // Delivery is now FREE
-  const serviceCharge = 8; // Added 8rs service charge
+  const totalDeliveryFee = 0;
+  const serviceCharge = 8;
   const grandTotal = Math.max(0, total + totalDeliveryFee + (vendorIds.length * serviceCharge));
 
 
