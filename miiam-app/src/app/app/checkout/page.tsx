@@ -29,7 +29,8 @@ interface PromoCode {
 
 export default function CheckoutPage() {
   const [promoCodes, setPromoCodes] = useState<PromoCode[]>([]);
-  const [paymentMethod, setPaymentMethod] = useState("card");
+  const [vendorDeliveryCharges, setVendorDeliveryCharges] = useState<Record<string, number>>({});
+  const [paymentMethod, setPaymentMethod] = useState("upi");
   const [promoCode, setPromoCode] = useState("");
   const [promoApplied, setPromoApplied] = useState<{ code: string; discount: number; type: "percent" | "flat" } | null>(null);
   const [promoError, setPromoError] = useState("");
@@ -83,7 +84,24 @@ export default function CheckoutPage() {
       if (data) setPromoCodes(data);
     }
     loadPromoCodes();
-  }, []);
+
+    async function loadVendorDetails() {
+      const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean)));
+      if (vendorIds.length === 0) return;
+      const { data } = await supabase
+        .from("vendors")
+        .select("id, delivery_charge")
+        .in("id", vendorIds);
+      if (data) {
+        const charges = data.reduce((acc, v) => {
+          acc[v.id] = v.delivery_charge || 0;
+          return acc;
+        }, {} as Record<string, number>);
+        setVendorDeliveryCharges(charges);
+      }
+    }
+    loadVendorDetails();
+  }, [items]);
 
   const subtotal = totalPrice();
   const discount = promoApplied
@@ -94,13 +112,8 @@ export default function CheckoutPage() {
   const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean)));
   const baseAmountForTax = Math.max(0, subtotal - discount);
   const tax = +(baseAmountForTax * 0.05).toFixed(2);
-  const deliveryFee = 5.99;
-  // TODO: Implement vendor-specific delivery fee fetching.
-  // Currently, the vendor object is not directly available here in the CheckoutPage component,
-  // which causes issues with dynamically calculating the delivery fee based on vendor settings.
-  // The cart items contain `vendor_id`, so we could fetch vendor details here or pass it through the cart store.
-  // For now, using the default fee as a placeholder.
-  const grand = Math.max(0, +(subtotal - discount + tax + deliveryFee * vendorIds.length + tipAmount).toFixed(2));
+  const totalDeliveryFee = vendorIds.reduce((sum, id) => sum + (vendorDeliveryCharges[id] || 0), 0);
+  const grand = Math.max(0, +(subtotal - discount + tax + totalDeliveryFee + tipAmount).toFixed(2));
 
   const handleApplyPromo = () => {
     const code = promoCode.toUpperCase().trim();
@@ -219,7 +232,7 @@ export default function CheckoutPage() {
             vendor_id: vendorId,
             status: scheduledIso ? "scheduled" : "pending",
             total_amount: vendorTotal,
-            delivery_fee: 5.99,
+            delivery_fee: vendorDeliveryCharges[vendorId] || 0,
             discount_amount: subtotal > 0 ? +(discount * (vendorTotal / subtotal)).toFixed(2) : 0,
             payment_method: paymentMethod,
             delivery_address: finalAddress,
@@ -675,7 +688,7 @@ export default function CheckoutPage() {
                 )}
                 <div className="flex justify-between text-on-surface-variant">
                   <span>Delivery Fee</span>
-                    <span className="font-semibold text-secondary">₹{(deliveryFee * vendorIds.length).toFixed(2)}</span>
+                    <span className="font-semibold text-secondary">₹{totalDeliveryFee.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-on-surface-variant">
                   <span>Tax (5%)</span>
