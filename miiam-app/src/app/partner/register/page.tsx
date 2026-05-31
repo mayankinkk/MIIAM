@@ -1,40 +1,68 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+
+const STORAGE_KEY = "miiam-partner-registration";
+
+const defaultForm = {
+  owner_name: "",
+  phone: "",
+  email: "",
+  shop_name: "",
+  type: "food",
+  cuisine: "",
+  address: "",
+  city: "",
+  state: "",
+  pincode: "",
+  description: "",
+  is_pure_veg: false,
+  gst_number: "",
+  fssai_number: "",
+  pan_number: "",
+  min_order_amount: 0,
+  delivery_charge: 0,
+  delivery_time_min: 30,
+  delivery_time_max: 45,
+};
+
+function loadSavedForm() {
+  if (typeof window === "undefined") return defaultForm;
+  try {
+    const saved = sessionStorage.getItem(STORAGE_KEY);
+    return saved ? { ...defaultForm, ...JSON.parse(saved) } : defaultForm;
+  } catch {
+    return defaultForm;
+  }
+}
 
 export default function VendorRegister() {
   const supabase = createClient();
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
 
-  const [form, setForm] = useState({
-    // Owner Details
-    owner_name: "",
-    phone: "",
-    email: "",
-    // Shop Details
-    shop_name: "",
-    type: "food",
-    cuisine: "",
-    address: "",
-    city: "",
-    state: "",
-    pincode: "",
-    description: "",
-    is_pure_veg: false,
-    // Business Docs
-    gst_number: "",
-    fssai_number: "",
-    pan_number: "",
-    // Delivery
-    min_order_amount: 0,
-    delivery_charge: 0,
-    delivery_time_min: 30,
-    delivery_time_max: 45,
-  });
+  const [form, setForm] = useState(loadSavedForm);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) {
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(form));
+        router.push("/auth/login?redirect=/partner/register");
+        return;
+      }
+      setCheckingAuth(false);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!checkingAuth) {
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(form));
+    }
+  }, [form, checkingAuth]);
 
   const steps = [
     { num: 1, label: "Owner Details" },
@@ -43,13 +71,20 @@ export default function VendorRegister() {
     { num: 4, label: "Delivery Settings" },
   ];
 
+  if (checkingAuth) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
   const handleSubmit = async () => {
     setSubmitting(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        alert("Please log in first");
-        router.push("/auth/login");
+        router.push("/auth/login?redirect=/partner/register");
         return;
       }
 
@@ -66,6 +101,7 @@ export default function VendorRegister() {
       // Update user role to vendor
       await supabase.from("profiles").update({ role: "vendor" }).eq("id", user.id);
 
+      sessionStorage.removeItem(STORAGE_KEY);
       alert("Registration submitted! Your store is pending review.");
       router.push("/partner/dashboard");
     } catch (err: any) {
