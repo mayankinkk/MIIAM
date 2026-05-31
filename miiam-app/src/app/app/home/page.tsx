@@ -62,34 +62,40 @@ export default function HomePage() {
     }
 
     async function checkAndLoad() {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { pincode } = locationStore;
+
+      const [userResult, vendorsResult] = await Promise.all([
+        supabase.auth.getUser(),
+        pincode
+          ? supabase.from("vendors").select("*").order("created_at", { ascending: false }).limit(50)
+          : Promise.resolve({ data: null }),
+      ]);
+
+      const { user } = userResult.data;
       if (user) {
-        const { data: profileData } = await supabase
-          .from("profiles")
-          .select("full_name")
-          .eq("id", user.id)
-          .maybeSingle();
-        
+        const [profileResult, notifsResult] = await Promise.all([
+          supabase.from("profiles")
+            .select("full_name")
+            .eq("id", user.id)
+            .maybeSingle(),
+          supabase.from("notifications")
+            .select("*")
+            .eq("user_id", user.id)
+            .order("created_at", { ascending: false })
+            .limit(20),
+        ]);
+
         setUser({
           ...user,
-          profile_name: profileData?.full_name || user.user_metadata?.full_name || user.user_metadata?.name
+          profile_name: profileResult.data?.full_name || user.user_metadata?.full_name || user.user_metadata?.name
         });
-        
-        const { data: notifs } = await supabase
-          .from("notifications")
-          .select("*")
-          .eq("user_id", user.id)
-          .order("created_at", { ascending: false })
-          .limit(20);
-          
-        if (notifs) {
-          setNotifications(notifs);
-          setUnreadCount(notifs.filter(n => !n.read).length);
+
+        if (notifsResult.data) {
+          setNotifications(notifsResult.data);
+          setUnreadCount(notifsResult.data.filter(n => !n.read).length);
         }
       }
 
-      const { pincode } = locationStore;
-      
       if (!pincode) {
         setLocalServiceable(false);
         setNearbyRestaurants([]);
@@ -101,7 +107,7 @@ export default function HomePage() {
       
       setCheckingPincode(true);
       
-      const { data: vendors } = await supabase.from("vendors").select("*").order("created_at", { ascending: false }).limit(50);
+      const vendors = vendorsResult.data;
       if (vendors) {
         const userCity = locationStore.city?.toLowerCase() || "";
         
