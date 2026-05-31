@@ -47,10 +47,27 @@ export default function VendorRegister() {
   const [submitError, setSubmitError] = useState("");
 
   const [form, setForm] = useState(loadSavedForm);
+  const [authChecked, setAuthChecked] = useState(false);
+
+  // Check auth on mount — redirect to login immediately if not signed in
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) {
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(form));
+        router.push("/auth/login?redirect=/partner/register");
+      } else {
+        setAuthChecked(true);
+      }
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(form));
   }, [form]);
+
+  // Show nothing while auth check is in progress
+  if (!authChecked && !submitted) return null;
 
   const steps = [
     { num: 1, label: "Owner Details" },
