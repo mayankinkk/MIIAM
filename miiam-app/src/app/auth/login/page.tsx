@@ -164,14 +164,6 @@ function LoginContent() {
         </div>
       </section>
 
-      {/* Header */}
-      <header className="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-transparent">
-        <div className="text-2xl font-black tracking-tighter text-red-700">MIIAM</div>
-        <div className="flex items-center gap-4">
-          <span className="text-[10px] tracking-[0.3em] font-bold text-[#5c403d] cursor-pointer hover:opacity-80 transition-opacity">Help</span>
-        </div>
-      </header>
-
       {/* Footer */}
       <footer className="fixed bottom-0 right-0 p-6 z-40">
         <p className="text-[10px] tracking-[0.3em] text-[#5c403d]/60">© 2026 MIIAM INC. ALL RIGHTS RESERVED.</p>
