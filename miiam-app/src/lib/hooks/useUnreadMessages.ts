@@ -33,7 +33,7 @@ export function useUnreadMessages(userId: string) {
 
     async function setupChannel() {
       const { data: orders } = await supabase.from("orders").select("id").eq("user_id", userId);
-      const orderIds = orders?.map(o => o.id) || [];
+      const orderIds = (orders?.map(o => o.id) || []).filter((id): id is string => typeof id === "string" && /^[0-9a-f-]{36}$/.test(id));
       const channel = supabase
         .channel(`unread-messages-${userId}`)
         .on("postgres_changes", { event: "INSERT", schema: "public", table: "chat_messages", filter: orderIds.length > 0 ? `order_id=in.(${orderIds.join(",")})` : undefined }, () => {
