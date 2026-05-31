@@ -38,8 +38,7 @@ export async function POST() {
 
       const vendorTotal = items.reduce((sum: number, i: { price: number; quantity: number }) => sum + i.price * i.quantity, 0);
 
-      const { data: vendor } = await supabase.from("vendors").select("delivery_charge").eq("id", schedule.vendor_id).single();
-      const deliveryFee = vendor?.delivery_charge || 0;
+      const deliveryFee = 0;
 
       const { data: order, error: orderError } = await supabase
         .from("orders")

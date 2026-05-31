@@ -71,9 +71,36 @@ export default function CartPage() {
   const hasMultipleVendors = vendors.length > 1;
 
   const total = totalPrice();
+  const [vendorDeliveryCharges, setVendorDeliveryCharges] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    async function loadVendorDetails() {
+      const safeItems = Array.isArray(items) ? items : [];
+      const vendorIds = Array.from(new Set(safeItems.map((i) => i.vendor_id).filter(Boolean)));
+      if (vendorIds.length === 0) {
+        setVendorDeliveryCharges({});
+        return;
+      }
+      const { data } = await supabase
+        .from("vendors")
+        .select("id, delivery_charge")
+        .in("id", vendorIds);
+      if (data) {
+        const charges = data.reduce((acc, v) => {
+          acc[v.id] = 0; // Set all delivery charges to 0
+          return acc;
+        }, {} as Record<string, number>);
+        setVendorDeliveryCharges(charges);
+      }
+    }
+    loadVendorDetails();
+  }, [items, supabase]);
+
   const vendorIds = Array.from(new Set(safeItems.map((i) => i.vendor_id).filter(Boolean)));
-  const totalDeliveryFee = vendorIds.reduce((sum, id) => sum + (vendorDeliveryCharges[id] || 0), 0);
-  const grandTotal = Math.max(0, total + totalDeliveryFee);
+  const totalDeliveryFee = 0; // Delivery is now FREE
+  const serviceCharge = 8; // Added 8rs service charge
+  const grandTotal = Math.max(0, total + totalDeliveryFee + (vendorIds.length * serviceCharge));
+
 
   const fetchPastOrders = async () => {
     setLoadingOrders(true);
@@ -269,8 +296,12 @@ export default function CartPage() {
                   <span className="text-on-surface font-semibold">₹{total.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Delivery &amp; Service Fee</span>
-                  <span className="text-on-surface font-semibold">₹{totalDeliveryFee.toFixed(2)}</span>
+                  <span>Delivery Fee</span>
+                  <span className="text-green-600 font-semibold">FREE</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Service Charge</span>
+                  <span className="text-on-surface font-semibold">₹{(vendorIds.length * serviceCharge).toFixed(2)}</span>
                 </div>
 
                 <div className="pt-4 border-t border-outline-variant/20 flex justify-between items-center">

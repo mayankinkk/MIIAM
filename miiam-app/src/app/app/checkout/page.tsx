@@ -110,8 +110,9 @@ export default function CheckoutPage() {
       : promoApplied.discount
     : 0;
   const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean)));
-  const totalDeliveryFee = vendorIds.reduce((sum, id) => sum + (vendorDeliveryCharges[id] || 0), 0);
-  const grand = Math.max(0, +(subtotal - discount + totalDeliveryFee + tipAmount).toFixed(2));
+  const totalDeliveryFee = 0; // Delivery is now FREE
+  const serviceCharge = 8;
+  const grand = Math.max(0, +(subtotal - discount + totalDeliveryFee + (vendorIds.length * serviceCharge) + tipAmount).toFixed(2));
 
   const handleApplyPromo = () => {
     const code = promoCode.toUpperCase().trim();
@@ -230,7 +231,7 @@ export default function CheckoutPage() {
             vendor_id: vendorId,
             status: scheduledIso ? "scheduled" : "pending",
             total_amount: vendorTotal,
-            delivery_fee: vendorDeliveryCharges[vendorId] || 0,
+            delivery_fee: 0, // Delivery is FREE
             discount_amount: subtotal > 0 ? +(discount * (vendorTotal / subtotal)).toFixed(2) : 0,
             payment_method: paymentMethod,
             delivery_address: finalAddress,
@@ -686,7 +687,11 @@ export default function CheckoutPage() {
                 )}
                 <div className="flex justify-between text-on-surface-variant">
                   <span>Delivery Fee</span>
-                    <span className="font-semibold text-secondary">₹{totalDeliveryFee.toFixed(2)}</span>
+                    <span className="font-semibold text-green-600">FREE</span>
+                </div>
+                <div className="flex justify-between text-on-surface-variant">
+                  <span>Service Charge</span>
+                    <span className="font-semibold text-on-surface">₹{(vendorIds.length * serviceCharge).toFixed(2)}</span>
                 </div>
                 
                 {/* Rider Tip */}
