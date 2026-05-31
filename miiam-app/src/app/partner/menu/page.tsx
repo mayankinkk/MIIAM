@@ -163,11 +163,22 @@ export default function PartnerMenuPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    const { data } = await supabase
+    // Try user_id first
+    let { data } = await supabase
       .from("vendors")
       .select("id, shop_name, type, categories")
       .eq("user_id", user.id)
       .order("shop_name");
+    
+    // Fallback to email matching
+    if (!data || data.length === 0) {
+      const { data: fallbackData } = await supabase
+        .from("vendors")
+        .select("id, shop_name, type, categories")
+        .eq("email", user.email)
+        .order("shop_name");
+      if (fallbackData) data = fallbackData;
+    }
     
     if (data) {
       setVendors(data);
@@ -415,7 +426,10 @@ export default function PartnerMenuPage() {
           </select>
           <button
             onClick={() => { resetNewItem(); setShowAddModal(true); }}
-            className="bg-[#ba001c] text-white px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2"
+            disabled={!selectedVendorId}
+            className={`px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 transition-opacity ${
+              selectedVendorId ? "bg-[#ba001c] text-white cursor-pointer" : "bg-slate-300 text-slate-500 cursor-not-allowed opacity-50"
+            }`}
           >
             <span className="material-symbols-outlined text-lg">add</span>
             Add {vendorKey === "food" ? "Item" : vendorKey === "grocery" ? "Product" : vendorKey === "pharmacy" ? "Medicine" : "Item"}
