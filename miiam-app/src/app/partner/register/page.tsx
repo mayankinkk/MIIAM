@@ -43,26 +43,12 @@ export default function VendorRegister() {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
-  const [checkingAuth, setCheckingAuth] = useState(true);
 
   const [form, setForm] = useState(loadSavedForm);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (!user) {
-        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(form));
-        router.push("/auth/login?redirect=/partner/register");
-        return;
-      }
-      setCheckingAuth(false);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (!checkingAuth) {
-      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(form));
-    }
-  }, [form, checkingAuth]);
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(form));
+  }, [form]);
 
   const steps = [
     { num: 1, label: "Owner Details" },
@@ -71,19 +57,12 @@ export default function VendorRegister() {
     { num: 4, label: "Delivery Settings" },
   ];
 
-  if (checkingAuth) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
-
   const handleSubmit = async () => {
     setSubmitting(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(form));
         router.push("/auth/login?redirect=/partner/register");
         return;
       }
