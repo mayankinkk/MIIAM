@@ -2,6 +2,7 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { useToastStore } from "./toastStore";
 
 export interface CartItem {
   id: string;
@@ -68,9 +69,7 @@ export const useCartStore = create<CartStore>()(
         }
 
         if (!suppressToast) {
-          import('./toastStore').then(({ useToastStore }) => {
-            useToastStore.getState().addToast(`Added ${item.name} to cart`, "success");
-          });
+          useToastStore.getState().addToast(`Added ${item.name} to cart`, "success");
         }
       },
 
@@ -80,9 +79,7 @@ export const useCartStore = create<CartStore>()(
         const item = currentItems.find(i => i.menu_item_id === menu_item_id);
         set({ items: currentItems.filter((i) => i.menu_item_id !== menu_item_id) });
         if (item) {
-          import('./toastStore').then(({ useToastStore }) => {
-            useToastStore.getState().addToast(`Removed ${item.name}`, "info");
-          });
+          useToastStore.getState().addToast(`Removed ${item.name}`, "info");
         }
       },
 
