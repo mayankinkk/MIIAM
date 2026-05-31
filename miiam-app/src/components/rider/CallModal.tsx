@@ -14,7 +14,7 @@ export default function CallModal({ open, onClose, name, phone }: CallModalProps
       <div className="bg-white rounded-2xl p-6 w-full max-w-sm">
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-bold text-lg">Call</h3>
-          <button onClick={onClose}>
+          <button onClick={onClose} aria-label="Close">
             <span className="material-symbols-outlined">close</span>
           </button>
         </div>

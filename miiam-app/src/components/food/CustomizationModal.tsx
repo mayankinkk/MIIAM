@@ -180,7 +180,7 @@ export default function CustomizationModal({ item, vendor_id, vendor_name, vendo
             <h2 className="text-xl font-extrabold text-slate-900">Customize Your Order</h2>
             <p className="text-sm text-slate-500">{item.name}</p>
           </div>
-          <button onClick={onClose} className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center">
+          <button onClick={onClose} aria-label="Close" className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center">
             <span className="material-symbols-outlined text-slate-600">close</span>
           </button>
         </div>

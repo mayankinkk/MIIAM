@@ -63,7 +63,7 @@ export default function ChatModal({
             >
               <span className="material-symbols-outlined">call</span>
             </button>
-            <button onClick={onClose}>
+            <button onClick={onClose} aria-label="Close">
               <span className="material-symbols-outlined text-slate-600">close</span>
             </button>
           </div>

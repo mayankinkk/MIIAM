@@ -72,9 +72,9 @@ export default function OrderChatOverlay({ orderId, currentUserId, senderType, o
               <p className="text-[10px] text-green-600 font-medium">Online</p>
             </div>
           </div>
-          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center">
-            <span className="material-symbols-outlined text-slate-400">close</span>
-          </button>
+            <button onClick={onClose} aria-label="Close" className="w-8 h-8 flex items-center justify-center">
+              <span className="material-symbols-outlined text-slate-400">close</span>
+            </button>
         </div>
 
         {/* Messages */}
