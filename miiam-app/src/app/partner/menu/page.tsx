@@ -161,26 +161,32 @@ export default function PartnerMenuPage() {
 
   async function loadVendors() {
     const { data: { user } } = await supabase.auth.getUser();
+    console.log("DEBUG: Current user:", user);
     if (!user) return;
 
     // Try user_id first
-    let { data } = await supabase
+    let { data, error } = await supabase
       .from("vendors")
       .select("id, shop_name, type")
       .eq("user_id", user.id)
       .order("shop_name");
     
+    console.log("DEBUG: Vendor query by user_id:", data, "Error:", error);
+    
     // Fallback to email matching
     if (!data || data.length === 0) {
-      const { data: fallbackData } = await supabase
+      const { data: fallbackData, error: fallbackError } = await supabase
         .from("vendors")
         .select("id, shop_name, type")
         .eq("email", user.email)
         .order("shop_name");
+      
+      console.log("DEBUG: Vendor fallback by email:", fallbackData, "Error:", fallbackError);
       if (fallbackData) data = fallbackData;
     }
     
     if (data) {
+      console.log("DEBUG: Setting vendors:", data);
       setVendors(data);
       if (data.length > 0 && !selectedVendorId) {
         setSelectedVendorId(data[0].id);
