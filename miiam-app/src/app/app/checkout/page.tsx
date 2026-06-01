@@ -739,19 +739,6 @@ export default function CheckoutPage() {
               </div>
 
 
-
-              {/* Special Instructions */}
-              <div className="mb-4">
-                <label className="text-sm font-bold text-on-surface block mb-2">Special Instructions</label>
-                <textarea
-                  value={specialInstructions}
-                  onChange={(e) => setSpecialInstructions(e.target.value)}
-                  placeholder="E.g., Add extra cheese, no onions, etc."
-                  rows={3}
-                  className="w-full bg-white border border-outline-variant/30 rounded-xl p-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 resize-none"
-                />
-              </div>
-
               {/* Promo Code */}
               <div className="mb-8">
                 {promoApplied ? (
