@@ -299,6 +299,10 @@ export default function PartnerMenuPage() {
       alert("Please fill in item name and price");
       return;
     }
+    if (!selectedVendorId) {
+      alert("No vendor selected. Please select a vendor first.");
+      return;
+    }
     setUploading(true);
     try {
       const uploadedUrls: string[] = [];
