@@ -425,11 +425,15 @@ export default function PartnerMenuPage() {
             ))}
           </select>
           <button
-            onClick={() => { resetNewItem(); setShowAddModal(true); }}
-            disabled={!selectedVendorId}
-            className={`px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 transition-opacity ${
-              selectedVendorId ? "bg-[#ba001c] text-white cursor-pointer" : "bg-slate-300 text-slate-500 cursor-not-allowed opacity-50"
-            }`}
+            onClick={() => {
+              if (!selectedVendorId) {
+                alert("Cannot add item: No active vendor is selected or associated with your account.");
+                return;
+              }
+              resetNewItem();
+              setShowAddModal(true);
+            }}
+            className="bg-[#ba001c] text-white px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 cursor-pointer"
           >
             <span className="material-symbols-outlined text-lg">add</span>
             Add {vendorKey === "food" ? "Item" : vendorKey === "grocery" ? "Product" : vendorKey === "pharmacy" ? "Medicine" : "Item"}
