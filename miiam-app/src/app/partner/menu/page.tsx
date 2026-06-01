@@ -166,7 +166,7 @@ export default function PartnerMenuPage() {
     // Try user_id first
     let { data } = await supabase
       .from("vendors")
-      .select("id, shop_name, type, categories")
+      .select("id, shop_name, type")
       .eq("user_id", user.id)
       .order("shop_name");
     
@@ -174,7 +174,7 @@ export default function PartnerMenuPage() {
     if (!data || data.length === 0) {
       const { data: fallbackData } = await supabase
         .from("vendors")
-        .select("id, shop_name, type, categories")
+        .select("id, shop_name, type")
         .eq("email", user.email)
         .order("shop_name");
       if (fallbackData) data = fallbackData;
