@@ -141,7 +141,7 @@ export default function HomePage() {
           if (!user) return;
           const { data: active } = await supabase
             .from("orders")
-            .select("id, status, total_amount, placed_at, vendors(name)")
+            .select("id, status, total_amount, placed_at, vendors(shop_name)")
             .eq("user_id", user.id)
             .in("status", ["pending", "accepted", "preparing", "ready_for_pickup", "picking_up", "on_the_way"])
             .order("placed_at", { ascending: false })
@@ -150,7 +150,7 @@ export default function HomePage() {
           if (active) {
             setActiveOrder({
               id: active.id,
-              vendor: (active.vendors as any)?.name || (active.vendors as any)?.[0]?.name || "Restaurant",
+              vendor: (active.vendors as any)?.shop_name || (active.vendors as any)?.[0]?.shop_name || "Restaurant",
               items: "Order in progress",
               steps: [
                 { id: 1, label: "Order Placed", completed: true, time: new Date(active.placed_at).toLocaleTimeString() },
