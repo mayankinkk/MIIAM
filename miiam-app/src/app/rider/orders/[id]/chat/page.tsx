@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { useChat } from "@/lib/hooks/useChat";
+import { useChat, type ChatMessage } from "@/lib/hooks/useChat";
 
 export default function RiderChatPage() {
   const params = useParams();
@@ -22,7 +22,7 @@ export default function RiderChatPage() {
     });
   }, [supabase, router]);
 
-  const { messages, loading, sendMessage } = useChat(orderId, currentUserId);
+  const { messages, loading, isTyping, sendMessage, sendTypingIndicator } = useChat(orderId, currentUserId);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -38,11 +38,20 @@ export default function RiderChatPage() {
 
   const handleTyping = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewMessage(e.target.value);
+    sendTypingIndicator(e.target.value.length > 0);
   };
 
   const formatTime = (timestamp: string) => {
     return new Date(timestamp).toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit" });
   };
+
+  if (!orderId) {
+    return (
+      <div className="min-h-screen bg-surface flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   if (!currentUserId) {
     return (
@@ -86,7 +95,7 @@ export default function RiderChatPage() {
           </div>
         ) : (
           <div className="flex flex-col gap-6">
-            {messages.map((msg: any) => (
+            {messages.map((msg: ChatMessage) => (
               <div
                 key={msg.id}
                 className={`flex flex-col gap-1 max-w-[85%] ${
@@ -108,6 +117,16 @@ export default function RiderChatPage() {
               </div>
             ))}
             <div ref={messagesEndRef} />
+          </div>
+        )}
+
+        {isTyping && (
+          <div className="self-start bg-secondary-container p-4 rounded-t-2xl rounded-br-2xl rounded-bl-sm">
+            <div className="flex gap-1">
+              <span className="w-2 h-2 bg-on-secondary-container rounded-full animate-bounce" />
+              <span className="w-2 h-2 bg-on-secondary-container rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+              <span className="w-2 h-2 bg-on-secondary-container rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+            </div>
           </div>
         )}
       </main>

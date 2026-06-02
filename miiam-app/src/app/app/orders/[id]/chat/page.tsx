@@ -62,6 +62,14 @@ export default function ChatPage() {
     return date.toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit" });
   };
 
+  if (!orderId) {
+    return (
+      <div className="min-h-screen bg-surface flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
   if (!currentUserId) {
     return (
       <div className="min-h-screen bg-surface flex items-center justify-center">
@@ -135,26 +143,27 @@ export default function ChatPage() {
                 </span>
               </div>
             ))}
-            {isTyping && (
-              <div className="self-start bg-secondary-container p-4 rounded-t-2xl rounded-br-2xl rounded-bl-sm">
-                <div className="flex gap-1">
-                  <span className="w-2 h-2 bg-on-secondary-container rounded-full animate-bounce"></span>
-                  <span className="w-2 h-2 bg-on-secondary-container rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></span>
-                  <span className="w-2 h-2 bg-on-secondary-container rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></span>
-                </div>
-              </div>
-            )}
             <div ref={messagesEndRef} />
+          </div>
+        )}
+
+        {isTyping && (
+          <div className="self-start bg-secondary-container p-4 rounded-t-2xl rounded-br-2xl rounded-bl-sm">
+            <div className="flex gap-1">
+              <span className="w-2 h-2 bg-on-secondary-container rounded-full animate-bounce"></span>
+              <span className="w-2 h-2 bg-on-secondary-container rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></span>
+              <span className="w-2 h-2 bg-on-secondary-container rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></span>
+            </div>
           </div>
         )}
       </main>
 
       {/* Quick Replies */}
-      <div className="px-4 py-2 flex gap-2 overflow-x-auto hide-scrollbar shrink-0 fixed bottom-24 w-full">
+      <div className="px-4 py-2 flex gap-2 overflow-x-auto no-scrollbar shrink-0 fixed bottom-24 w-full">
         {quickReplies.map((reply) => (
           <button
             key={reply}
-            onClick={() => setNewMessage(reply)}
+            onClick={() => { sendMessage(reply, "user"); }}
             className="whitespace-nowrap bg-surface-container-lowest border border-outline-variant/20 px-4 py-2 rounded-full text-xs font-bold text-secondary shadow-sm active:scale-95 transition-transform"
           >
             {reply}
