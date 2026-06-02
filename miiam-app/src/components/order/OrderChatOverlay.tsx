@@ -20,7 +20,6 @@ export default function OrderChatOverlay({ orderId, currentUserId, senderType, o
   const { messages, loading, isTyping, sendMessage, sendTypingIndicator } = useChat(orderId, currentUserId);
   const [input, setInput] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
-  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -41,9 +40,7 @@ export default function OrderChatOverlay({ orderId, currentUserId, senderType, o
 
   const handleInputChange = (val: string) => {
     setInput(val);
-    sendTypingIndicator(true);
-    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
-    typingTimeoutRef.current = setTimeout(() => sendTypingIndicator(false), 2000);
+    sendTypingIndicator(val.length > 0);
   };
 
   const handleQuickReply = (msg: string) => {
