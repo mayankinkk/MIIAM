@@ -71,29 +71,38 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="h-[90vh] bg-surface flex flex-col">
+    <div className="bg-surface text-on-surface min-h-screen flex flex-col">
       {/* Header */}
-      <header className="flex items-center gap-3 px-4 py-3 bg-white border-b border-outline-variant/20 shrink-0">
-        <Link href={`/app/orders/${orderId}`} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container">
-          <span className="material-symbols-outlined text-primary">arrow_back</span>
-        </Link>
-        <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
-          <span className="material-symbols-outlined text-white">two_wheeler</span>
+      <header className="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-[#fff4f4]/80 backdrop-blur-xl shadow-[0_20px_40px_rgba(77,33,42,0.06)]">
+        <div className="flex items-center gap-4">
+          <Link href={`/app/orders/${orderId}`} className="text-secondary hover:bg-surface-container rounded-full p-2 transition-colors active:scale-95 duration-200">
+            <span className="material-symbols-outlined">arrow_back</span>
+          </Link>
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white">
+                <span className="material-symbols-outlined">two_wheeler</span>
+              </div>
+              <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+            </div>
+            <div>
+              <h1 className="font-bold text-on-surface">Rider</h1>
+              <p className="text-[10px] font-medium text-secondary flex items-center gap-1">
+                <span className="w-1.5 h-1.5 bg-secondary rounded-full"></span>
+                Active
+              </p>
+            </div>
+          </div>
         </div>
-        <div className="flex-1">
-          <h1 className="font-bold text-on-surface">Rider Chat</h1>
-          <p className="text-xs text-green-600 flex items-center gap-1">
-            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-            Online
-          </p>
+        <div className="flex items-center gap-2">
+          <button className="w-10 h-10 flex items-center justify-center text-primary hover:bg-[#ffe1e4] rounded-full transition-colors active:scale-95 duration-200">
+            <span className="material-symbols-outlined">phone</span>
+          </button>
         </div>
-        <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container">
-          <span className="material-symbols-outlined text-primary">call</span>
-        </button>
       </header>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+      <main className="flex-1 mt-16 mb-32 px-4 pt-6 overflow-y-auto flex flex-col gap-6">
         {loading ? (
           <div className="flex items-center justify-center h-32">
             <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
@@ -102,60 +111,51 @@ export default function ChatPage() {
           <div className="text-center py-12">
             <span className="material-symbols-outlined text-6xl text-slate-300">chat</span>
             <p className="text-on-surface-variant mt-4">No messages yet</p>
-            <p className="text-sm text-slate-400">Start the conversation!</p>
           </div>
         ) : (
-          <div className="space-y-4">
-            <div className="flex justify-center">
-              <span className="text-xs text-on-surface-variant bg-white/80 px-4 py-1 rounded-full">
-                Today
-              </span>
-            </div>
-
+          <div className="flex flex-col gap-6">
             {messages.map((msg) => (
               <div
                 key={msg.id}
-                className={`flex ${msg.sender_id === currentUserId ? "justify-end" : "justify-start"}`}
+                className={`flex flex-col gap-1 max-w-[85%] ${
+                  msg.sender_id === currentUserId ? "self-end items-end" : "self-start items-start"
+                }`}
               >
                 <div
-                  className={`max-w-[75%] px-4 py-3 rounded-2xl ${
+                  className={`p-4 rounded-t-2xl shadow-sm ${
                     msg.sender_id === currentUserId
-                      ? "bg-primary text-white rounded-br-md"
-                      : "bg-white text-on-surface rounded-bl-md shadow-sm"
+                      ? "bg-primary text-on-primary rounded-bl-2xl rounded-br-sm"
+                      : "bg-secondary-container text-on-secondary-container rounded-br-2xl rounded-bl-sm"
                   }`}
                 >
-                  <p className="text-sm">{msg.message}</p>
-                  <p className={`text-[10px] mt-1 ${msg.sender_id === currentUserId ? "text-white/70" : "text-on-surface-variant"}`}>
-                    {formatTime(msg.created_at)}
-                  </p>
+                  <p className="text-sm font-medium">{msg.message}</p>
                 </div>
+                <span className="text-[10px] text-on-surface-variant font-medium mx-1">
+                  {formatTime(msg.created_at)}
+                </span>
               </div>
             ))}
-
             {isTyping && (
-              <div className="flex justify-start">
-                <div className="bg-white px-4 py-3 rounded-2xl rounded-bl-md shadow-sm">
-                  <div className="flex gap-1">
-                    <span className="w-2 h-2 bg-on-surface-variant rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></span>
-                    <span className="w-2 h-2 bg-on-surface-variant rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></span>
-                    <span className="w-2 h-2 bg-on-surface-variant rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></span>
-                  </div>
+              <div className="self-start bg-secondary-container p-4 rounded-t-2xl rounded-br-2xl rounded-bl-sm">
+                <div className="flex gap-1">
+                  <span className="w-2 h-2 bg-on-secondary-container rounded-full animate-bounce"></span>
+                  <span className="w-2 h-2 bg-on-secondary-container rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></span>
+                  <span className="w-2 h-2 bg-on-secondary-container rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></span>
                 </div>
               </div>
             )}
-
             <div ref={messagesEndRef} />
           </div>
         )}
-      </div>
+      </main>
 
       {/* Quick Replies */}
-      <div className="px-4 py-2 flex gap-2 overflow-x-auto no-scrollbar shrink-0">
+      <div className="px-4 py-2 flex gap-2 overflow-x-auto hide-scrollbar shrink-0 fixed bottom-24 w-full">
         {quickReplies.map((reply) => (
           <button
             key={reply}
             onClick={() => setNewMessage(reply)}
-            className="flex-shrink-0 px-4 py-2 bg-white border border-outline-variant/30 rounded-full text-xs font-medium text-on-surface hover:border-primary"
+            className="whitespace-nowrap bg-surface-container-lowest border border-outline-variant/20 px-4 py-2 rounded-full text-xs font-bold text-secondary shadow-sm active:scale-95 transition-transform"
           >
             {reply}
           </button>
@@ -163,32 +163,29 @@ export default function ChatPage() {
       </div>
 
       {/* Input */}
-      <div className="p-4 pt-0 bg-white shrink-0">
-        <div className="flex items-center gap-2">
-          <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container">
-            <span className="material-symbols-outlined text-on-surface-variant">add_circle</span>
-          </button>
+      <footer className="fixed bottom-0 left-0 w-full bg-surface-container-low/90 backdrop-blur-2xl rounded-t-[2.5rem] px-6 pt-4 pb-8 z-50">
+        <div className="flex items-center gap-3">
           <input
             type="text"
             value={newMessage}
             onChange={handleTyping}
             onKeyDown={(e) => e.key === "Enter" && handleSend()}
             placeholder="Type a message..."
-            className="flex-1 bg-surface rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/20"
+            className="flex-1 bg-surface-container-lowest rounded-full h-12 px-4 border border-outline-variant/10 focus:ring-2 focus:ring-secondary/20 transition-all"
           />
           <button
             onClick={handleSend}
             disabled={!newMessage.trim() || sending}
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-primary text-white disabled:opacity-50"
+            className="w-12 h-12 flex items-center justify-center bg-primary text-on-primary rounded-full shadow-lg shadow-primary/20 active:scale-95 transition-transform disabled:opacity-50"
           >
             {sending ? (
               <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
             ) : (
-              <span className="material-symbols-outlined">send</span>
+              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>send</span>
             )}
           </button>
         </div>
-      </div>
+      </footer>
     </div>
   );
 }
