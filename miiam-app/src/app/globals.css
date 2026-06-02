@@ -213,7 +213,7 @@ body {
   animation: badge-bounce 0.4s ease-out;
 }
 
-/* Hide scrollbar utility */
+/* Hide scrollbar utility (alias: no-scrollbar below) */
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -361,7 +361,7 @@ body {
   }
 }
 
-/* Hide scrollbar utility */
+/* Hide scrollbar utility (alias: scrollbar-hide above) */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }

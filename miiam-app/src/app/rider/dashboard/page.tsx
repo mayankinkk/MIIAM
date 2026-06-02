@@ -319,7 +319,7 @@ export default function RiderDashboard() {
       }
     }
     getRiderId();
-  }, [supabase]);
+  }, [supabase, router]);
 
   // 5-minute countdown timer
   useEffect(() => {
