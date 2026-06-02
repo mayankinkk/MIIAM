@@ -55,7 +55,12 @@ export default function RiderDashboard() {
         .eq("order_id", orderId)
         .neq("sender_id", currentUserId)
         .eq("read", false);
-      setUnreadCount(count || 0);
+      setUnreadCount(prev => {
+        if (count && count > prev && prev > 0) {
+          playMessageAlert();
+        }
+        return count || 0;
+      });
     }
 
     loadUnread();
@@ -842,6 +847,37 @@ export default function RiderDashboard() {
       setShowChatModal(true);
     }
   };
+
+  function playMessageAlert() {
+    // Browser notification
+    if (typeof Notification !== "undefined" && Notification.permission === "granted") {
+      new Notification("New message from customer", {
+        body: `Order #${currentOrder?.id?.slice(0, 8) || ""}`,
+        icon: "/icon.png",
+      });
+    }
+    // Sound alert
+    try {
+      const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = 880;
+      osc.type = "sine";
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.3);
+    } catch (_) { /* audio not supported */ }
+  }
+
+  // Request notification permission on mount
+  useEffect(() => {
+    if (typeof Notification !== "undefined" && Notification.permission === "default") {
+      Notification.requestPermission();
+    }
+  }, []);
 
   const handleComplete = async () => {
     if (currentOrder) {

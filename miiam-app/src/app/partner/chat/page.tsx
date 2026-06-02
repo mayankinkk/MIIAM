@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { getVendorForUser } from "@/lib/vendor";
 
@@ -15,7 +15,8 @@ interface ChatMessage {
 }
 
 export default function PartnerChatPage() {
-  const supabase = createClient();
+  const supabaseRef = useRef(createClient());
+  const supabase = supabaseRef.current;
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [vendorId, setVendorId] = useState<string | null>(null);
   const [reply, setReply] = useState("");
@@ -25,6 +26,18 @@ export default function PartnerChatPage() {
   useEffect(() => {
     init();
   }, []);
+
+  // Real-time subscription for new messages
+  useEffect(() => {
+    if (!vendorId) return;
+    const channel = supabase
+      .channel("partner-chat")
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "order_chat" }, () => {
+        init();
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [vendorId]);
 
   async function init() {
     const v = await getVendorForUser();
