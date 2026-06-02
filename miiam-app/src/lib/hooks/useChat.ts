@@ -35,6 +35,7 @@ export function useChat(orderId: string, currentUserId: string) {
 
   useEffect(() => {
     loadMessages();
+    if (!currentUserId) return;
 
     const channel = supabase
       .channel(`chat-${orderId}`)
@@ -52,7 +53,7 @@ export function useChat(orderId: string, currentUserId: string) {
             if (prev.some((m) => m.id === newMessage.id)) return prev;
             return [...prev, newMessage];
           });
-          
+
           if (newMessage.sender_id !== userIdRef.current) {
             markAsRead([newMessage.id]);
           }
@@ -77,6 +78,10 @@ export function useChat(orderId: string, currentUserId: string) {
 
     return () => {
       supabase.removeChannel(channel);
+      if (typingChannelRef.current) {
+        supabase.removeChannel(typingChannelRef.current);
+        typingChannelRef.current = null;
+      }
     };
   }, [orderId, currentUserId]);
 
@@ -122,7 +127,7 @@ export function useChat(orderId: string, currentUserId: string) {
       .from("chat_messages")
       .update({ read: true })
       .in("id", messageIds)
-      .neq("sender_id", currentUserId);
+      .neq("sender_id", userIdRef.current);
   }
 
   async function sendTypingIndicator(isTyping: boolean) {
