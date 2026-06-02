@@ -806,7 +806,7 @@ export default function RiderDashboard() {
   };
 
   const handleStartChat = () => {
-    if (currentOrder?.orderDbId) {
+    if (currentOrder) {
       setShowChatModal(true);
     }
   };
@@ -1760,7 +1760,7 @@ export default function RiderDashboard() {
 
       {showChatModal && currentOrder && currentUserId && (
         <OrderChatOverlay
-          orderId={currentOrder.orderDbId || currentOrder.id}
+          orderId={currentOrder.id}
           currentUserId={currentUserId}
           senderType="rider"
           otherName={currentOrder.customer || "Customer"}
