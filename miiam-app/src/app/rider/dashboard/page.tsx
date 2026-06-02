@@ -16,7 +16,8 @@ import OrderChatOverlay from "@/components/order/OrderChatOverlay";
 
 export default function RiderDashboard() {
   const router = useRouter();
-  const supabase = createClient();
+  const supabaseRef = useRef(createClient());
+  const supabase = supabaseRef.current;
   const [isOnline, setIsOnline] = useState(true);
   const [countdown, setCountdown] = useState(300); // 5 minutes = 300 seconds
   const [pendingOrders, setPendingOrders] = useState<OrderWithTiming[]>([]);
@@ -482,7 +483,7 @@ export default function RiderDashboard() {
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders', filter: `status=eq.ready_for_pickup` }, () => {
         fetchRealOrders();
       })
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'orders', filter: `status=in.(ready_for_pickup)` }, () => {
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'orders', filter: `status=eq.ready_for_pickup` }, () => {
         fetchRealOrders();
       })
       .subscribe();
