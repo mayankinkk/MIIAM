@@ -206,10 +206,23 @@ model ChatMessage {
   order       Order?    @relation(fields: [orderId], references: [id])
   senderId    String?   @map("sender_id")
   sender      Profile?  @relation(fields: [senderId], references: [id])
+  senderType  String?   @map("sender_type")
   message     String
+  read        Boolean?  @default(false)
   createdAt   DateTime? @default(now()) @map("created_at")
 
   @@map("chat_messages")
+}
+
+model OrderChat {
+  id        String    @id @default(uuid())
+  orderId   String?   @map("order_id")
+  order     Order?    @relation(fields: [orderId], references: [id])
+  sender    String
+  message   String
+  createdAt DateTime? @default(now()) @map("created_at")
+
+  @@map("order_chat")
 }
 
 model Notification {

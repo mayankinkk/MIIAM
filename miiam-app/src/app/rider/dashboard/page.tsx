@@ -25,6 +25,7 @@ export default function RiderDashboard() {
   const [currentOrder, setCurrentOrder] = useState<OrderWithTiming | null>(null);
   const [showCallModal, setShowCallModal] = useState(false);
   const [showChatModal, setShowChatModal] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
   const [riderId, setRiderId] = useState<string | null>(null);
   const [riderDeliveries, setRiderDeliveries] = useState(0);
   const [riderEarnings, setRiderEarnings] = useState(0);
@@ -38,6 +39,36 @@ export default function RiderDashboard() {
   const [activeOrders, setActiveOrders] = useState<OrderWithTiming[]>([]);
   
   const [currentUserId, setCurrentUserId] = useState<string>("");
+
+  // Subscribe to unread messages for the current order
+  useEffect(() => {
+    if (!currentOrder?.id || !currentUserId) {
+      setUnreadCount(0);
+      return;
+    }
+    const orderId = currentOrder.id;
+
+    async function loadUnread() {
+      const { count } = await supabase
+        .from("chat_messages")
+        .select("*", { count: "exact", head: true })
+        .eq("order_id", orderId)
+        .neq("sender_id", currentUserId)
+        .eq("read", false);
+      setUnreadCount(count || 0);
+    }
+
+    loadUnread();
+
+    const channel = supabase
+      .channel(`rider-unread-${orderId}`)
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "chat_messages", filter: `order_id=eq.${orderId}` }, () => { loadUnread(); })
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "chat_messages", filter: `order_id=eq.${orderId}` }, () => { loadUnread(); })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, [currentOrder?.id, currentUserId, supabase]);
+
   const [deliveryStep, setDeliveryStep] = useState<"shopping" | "picking_up" | "picked" | "delivering" | "arrived">("shopping");
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [vibrationEnabled, setVibrationEnabled] = useState(true);
@@ -1442,10 +1473,15 @@ export default function RiderDashboard() {
                       </button>
                       <button 
                         onClick={handleStartChat}
-                        className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl flex items-center justify-center gap-2"
+                        className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl flex items-center justify-center gap-2 relative"
                       >
                         <span className="material-symbols-outlined">chat</span>
                         Chat
+                        {unreadCount > 0 && (
+                          <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                            {unreadCount > 9 ? "9+" : unreadCount}
+                          </span>
+                        )}
                       </button>
                     </div>
 
@@ -1502,10 +1538,15 @@ export default function RiderDashboard() {
                       </button>
                       <button 
                         onClick={handleStartChat}
-                        className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl flex items-center justify-center gap-2"
+                        className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl flex items-center justify-center gap-2 relative"
                       >
                         <span className="material-symbols-outlined">chat</span>
                         Chat
+                        {unreadCount > 0 && (
+                          <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                            {unreadCount > 9 ? "9+" : unreadCount}
+                          </span>
+                        )}
                       </button>
                     </div>
                     <button 
@@ -1553,10 +1594,15 @@ export default function RiderDashboard() {
                       </button>
                       <button 
                         onClick={handleStartChat}
-                        className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl flex items-center justify-center gap-2"
+                        className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl flex items-center justify-center gap-2 relative"
                       >
                         <span className="material-symbols-outlined">chat</span>
                         Chat
+                        {unreadCount > 0 && (
+                          <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                            {unreadCount > 9 ? "9+" : unreadCount}
+                          </span>
+                        )}
                       </button>
                     </div>
                     <button 
@@ -1599,10 +1645,15 @@ export default function RiderDashboard() {
                       </button>
                       <button 
                         onClick={handleStartChat}
-                        className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl flex items-center justify-center gap-2"
+                        className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl flex items-center justify-center gap-2 relative"
                       >
                         <span className="material-symbols-outlined">chat</span>
                         Chat
+                        {unreadCount > 0 && (
+                          <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                            {unreadCount > 9 ? "9+" : unreadCount}
+                          </span>
+                        )}
                       </button>
                     </div>
                     <button 

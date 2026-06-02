@@ -6,10 +6,11 @@ import { createClient } from "@/lib/supabase/client";
 interface ChatMessage {
   id: string;
   order_id: string;
-  user_id: string;
-  sender: "user" | "rider" | "support";
+  sender_id: string;
+  sender_type: string;
   message: string;
   created_at: string;
+  read: boolean;
 }
 
 interface ActiveChat {
@@ -21,12 +22,19 @@ interface ActiveChat {
 
 export default function LiveChatSupport() {
   const supabase = createClient();
+  const [currentUserId, setCurrentUserId] = useState<string>("");
   const [chats, setChats] = useState<ActiveChat[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedChat, setSelectedChat] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) setCurrentUserId(user.id);
+    });
+  }, [supabase]);
 
   useEffect(() => {
     loadChats();
@@ -88,11 +96,11 @@ export default function LiveChatSupport() {
   }, [messages]);
 
   async function sendMessage() {
-    if (!newMessage.trim() || !selectedChat) return;
+    if (!newMessage.trim() || !selectedChat || !currentUserId) return;
     await supabase.from("chat_messages").insert({
       order_id: selectedChat,
-      user_id: "admin",
-      sender: "support",
+      sender_id: currentUserId,
+      sender_type: "support",
       message: newMessage
     });
     setNewMessage("");
@@ -160,17 +168,17 @@ export default function LiveChatSupport() {
                 {messages.map(msg => (
                   <div
                     key={msg.id}
-                    className={`flex ${msg.sender === "support" ? "justify-end" : "justify-start"}`}
+                    className={`flex ${msg.sender_type === "support" ? "justify-end" : "justify-start"}`}
                   >
                     <div
-                      className={`max-w-[70%] p-3 rounded-2xl ${
-                        msg.sender === "support"
-                          ? "bg-[#ba001c] text-white"
-                          : "bg-slate-100 text-slate-800"
+                      className={`max-w-[75%] p-3 rounded-2xl ${
+                        msg.sender_type === "support"
+                          ? "bg-[#ba001c] text-white rounded-br-md"
+                          : "bg-slate-100 text-slate-800 rounded-bl-md"
                       }`}
                     >
                       <p className="text-sm">{msg.message}</p>
-                      <p className={`text-[10px] mt-1 ${msg.sender === "support" ? "text-white/60" : "text-slate-400"}`}>
+                      <p className={`text-[10px] mt-1 ${msg.sender_type === "support" ? "text-white/60" : "text-slate-400"}`}>
                         {new Date(msg.created_at).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}
                       </p>
                     </div>
