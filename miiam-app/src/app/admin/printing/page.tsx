@@ -10,9 +10,8 @@ const supabase = createClient();
 
 const statusColors: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-700",
-  accepted: "bg-blue-100 text-blue-700",
-  preparing: "bg-purple-100 text-purple-700",
-  picking_up: "bg-orange-100 text-orange-700",
+  processing: "bg-indigo-100 text-indigo-700",
+  ready_for_pickup: "bg-blue-100 text-blue-700",
   on_the_way: "bg-cyan-100 text-cyan-700",
   delivered: "bg-green-100 text-green-700",
   cancelled: "bg-red-100 text-red-700",
@@ -53,7 +52,7 @@ export default function AdminPrintingPage() {
 
   const stats = {
     total: orders.length,
-    pending: orders.filter(o => o.status === "pending" || o.status === "accepted").length,
+    pending: orders.filter(o => o.status === "pending" || o.status === "processing").length,
     delivered: orders.filter(o => o.status === "delivered").length,
     cancelled: orders.filter(o => o.status === "cancelled").length,
   };
@@ -115,8 +114,8 @@ export default function AdminPrintingPage() {
         >
           <option value="all">All Status</option>
           <option value="pending">Pending</option>
-          <option value="accepted">Accepted</option>
-          <option value="preparing">Preparing</option>
+          <option value="processing">Processing</option>
+          <option value="ready_for_pickup">Ready for Pickup</option>
           <option value="on_the_way">On the Way</option>
           <option value="delivered">Delivered</option>
           <option value="cancelled">Cancelled</option>
@@ -198,7 +197,7 @@ export default function AdminPrintingPage() {
             </div>
             <p className="text-sm text-slate-500 mb-4">Order #{selectedOrder.id.slice(0, 8)}</p>
             <div className="flex flex-wrap gap-2">
-              {["pending", "accepted", "preparing", "on_the_way", "delivered", "cancelled"].map((status) => (
+              {["pending", "processing", "ready_for_pickup", "on_the_way", "delivered", "cancelled"].map((status) => (
                 <button
                   key={status}
                   onClick={() => updateOrderStatus(selectedOrder.id, status as OrderStatus)}

@@ -9,14 +9,24 @@ import { useToastStore } from "@/lib/store/toastStore";
 import BlurImage from "@/components/BlurImage";
 import OrderChatOverlay from "@/components/order/OrderChatOverlay";
 import { useUnreadMessages } from "@/lib/hooks/useUnreadMessages";
+import { PRINTING_VENDOR_ID } from "@/lib/constants";
 
-const steps = [
+const foodSteps = [
   { key: "pending", label: "Order Placed", icon: "receipt_long", time: "" },
   { key: "accepted", label: "Order Accepted", icon: "check_circle", time: "" },
   { key: "preparing", label: "Preparing", icon: "skillet", time: "" },
   { key: "ready_for_pickup", label: "Ready for Pickup", icon: "inventory_2", time: "" },
   { key: "shopping", label: "Shopping", icon: "shopping_cart", time: "" },
   { key: "picking_up", label: "Picking Up", icon: "storefront", time: "" },
+  { key: "on_the_way", label: "On the Way", icon: "directions_bike", time: "" },
+  { key: "arrived", label: "Arrived", icon: "location_on", time: "" },
+  { key: "delivered", label: "Delivered", icon: "home_pin", time: "" },
+];
+
+const printSteps = [
+  { key: "pending", label: "Order Placed", icon: "receipt_long", time: "" },
+  { key: "processing", label: "Printing in Progress", icon: "print", time: "" },
+  { key: "ready_for_pickup", label: "Ready for Pickup", icon: "inventory_2", time: "" },
   { key: "on_the_way", label: "On the Way", icon: "directions_bike", time: "" },
   { key: "arrived", label: "Arrived", icon: "location_on", time: "" },
   { key: "delivered", label: "Delivered", icon: "home_pin", time: "" },
@@ -223,8 +233,9 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
             const statusMessages: Record<string, string> = {
               pending: "Order placed!",
               accepted: "🚴 Rider accepted your order!",
+              processing: "🖨️ We're printing your documents!",
               preparing: "Restaurant is preparing your order",
-              ready_for_pickup: "📦 Order is ready for pickup!",
+              ready_for_pickup: "📦 Order is ready for rider pickup!",
               shopping: "Rider is shopping for your items",
               picking_up: "Rider is picking up your order",
               on_the_way: "🚴 Rider is on the way!",
@@ -317,6 +328,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
     </div>
   );
 
+  const steps = order?.vendor_id === PRINTING_VENDOR_ID ? printSteps : foodSteps;
   const currentStepIndex = steps.findIndex((s) => s.key === order.status);
 
   return (
@@ -431,8 +443,8 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
               </div>
             )}
 
-            {/* Waiting for rider - shown before acceptance */}
-            {order.status === "pending" && (
+            {/* Waiting for processing/acceptance */}
+            {order.status === "pending" && order.vendor_id !== PRINTING_VENDOR_ID && (
               <div className="relative bg-white rounded-xl p-6 shadow-[0px_20px_40px_rgba(77,33,42,0.04)] overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-[#c4d0ff]/20 rounded-full -mr-16 -mt-16 blur-2xl" />
                 <div className="flex items-center gap-6 relative z-10">
@@ -445,6 +457,26 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                     <p className="text-xs text-primary font-bold mt-2 flex items-center gap-1">
                       <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
                       Waiting for rider acceptance...
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Printing order pending */}
+            {order.status === "pending" && order.vendor_id === PRINTING_VENDOR_ID && (
+              <div className="relative bg-white rounded-xl p-6 shadow-[0px_20px_40px_rgba(77,33,42,0.04)] overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-100/40 rounded-full -mr-16 -mt-16 blur-2xl" />
+                <div className="flex items-center gap-6 relative z-10">
+                  <div className="w-20 h-20 rounded-full object-cover border-4 border-surface-container bg-indigo-50 flex items-center justify-center">
+                    <span className="material-symbols-outlined text-4xl text-indigo-600" style={{ fontVariationSettings: "'FILL' 1" }}>print</span>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold tracking-tight text-on-surface">Order Received</h3>
+                    <p className="text-on-surface-variant font-medium">We're reviewing your print order</p>
+                    <p className="text-xs text-indigo-600 font-bold mt-2 flex items-center gap-1">
+                      <span className="w-2 h-2 bg-indigo-600 rounded-full animate-pulse" />
+                      Preparing your documents for printing...
                     </p>
                   </div>
                 </div>
@@ -492,6 +524,8 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                               ? "Rider is picking up your order"
                               : step.key === "preparing"
                               ? "Restaurant is preparing your food"
+                              : step.key === "processing"
+                              ? "We're printing your documents"
                               : step.key === "shopping"
                               ? "Rider is shopping for your items"
                               : step.key === "ready_for_pickup"
@@ -518,8 +552,10 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
             <div className="bg-surface-container rounded-xl p-6 flex flex-col gap-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-primary shadow-sm">
-                    <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>restaurant</span>
+                  <div className={`w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm ${order.vendor_id === PRINTING_VENDOR_ID ? "text-indigo-600" : "text-primary"}`}>
+                    <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>
+                      {order.vendor_id === PRINTING_VENDOR_ID ? "print" : "restaurant"}
+                    </span>
                   </div>
                   <div>
                     <h3 className="font-extrabold text-on-surface">{order.vendor?.name || "Restaurant"}</h3>
