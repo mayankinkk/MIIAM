@@ -43,14 +43,6 @@ const menuGroups = [
     ],
   },
   {
-    title: "Pharmacy",
-    items: [
-      { name: "Pharmacy Orders", href: "/admin/pharmacy", icon: "medication" },
-      { name: "Prescriptions", href: "/admin/pharmacy?tab=prescriptions", icon: "prescriptions" },
-      { name: "Partners", href: "/admin/pharmacy?tab=partners", icon: "local_pharmacy" },
-    ],
-  },
-  {
     title: "Grocery",
     items: [
       { name: "Grocery Orders", href: "/admin/grocery", icon: "shopping_cart" },
@@ -59,11 +51,11 @@ const menuGroups = [
     ],
   },
   {
-    title: "Flowers & Gifts",
+    title: "Printing",
     items: [
-      { name: "Flower Orders", href: "/admin/flowers", icon: "local_florist" },
-      { name: "Custom Arrangements", href: "/admin/flowers?tab=arrangements", icon: "eco" },
-      { name: "Partners", href: "/admin/flowers?tab=partners", icon: "storefront" },
+      { name: "Print Orders", href: "/admin/printing", icon: "print" },
+      { name: "Services", href: "/admin/printing?tab=services", icon: "description" },
+      { name: "Partners", href: "/admin/printing?tab=partners", icon: "storefront" },
     ],
   },
   {

@@ -29,9 +29,8 @@ export default function LandingPage() {
     { icon: "restaurant", label: "Food", href: "/app/food", color: "from-[#ba001c] to-[#ff5f6d]" },
     { icon: "home_repair_service", label: "Services", href: "/services", color: "from-[#0b50d5] to-[#667eea]" },
     { icon: "local_grocery_store", label: "Grocery", href: "/app/grocery", color: "from-[#11998e] to-[#38ef7d]" },
-    { icon: "local_pharmacy", label: "Pharmacy", href: "/app/pharmacy", color: "from-[#8e2de2] to-[#da22ff]" },
-    { icon: "local_florist", label: "Flowers", href: "/app/flowers", color: "from-[#f7971e] to-[#ffd200]" },
     { icon: "spa", label: "Beauty", href: "/app/beauty", color: "from-[#ee0979] to-[#ff6a00]" },
+    { icon: "print", label: "Printing", href: "/app/printing", color: "from-[#6366f1] to-[#8b5cf6]" },
   ];
 
   return (

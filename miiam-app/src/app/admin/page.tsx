@@ -7,16 +7,14 @@ import { createClient } from "@/lib/supabase/client";
 const modules = [
   { id: "foods", title: "Foods", icon: "restaurant", color: "bg-[#ba001c]/10 text-[#ba001c]", route: "/admin/foods", type: "food" },
   { id: "grocery", title: "Grocery", icon: "shopping_basket", color: "bg-green-50 text-green-600", route: "/admin/grocery", type: "grocery" },
-  { id: "pharmacy", title: "Pharmacy", icon: "medication", color: "bg-purple-50 text-purple-600", route: "/admin/pharmacy", type: "pharmacy" },
-  { id: "flowers", title: "Flowers & Gifts", icon: "local_florist", color: "bg-rose-50 text-rose-600", route: "/admin/flowers", type: "flowers" },
+  { id: "printing", title: "Printing", icon: "print", color: "bg-indigo-50 text-indigo-600", route: "/admin/printing", type: "printing" },
   { id: "services", title: "Services", icon: "home_repair_service", color: "bg-blue-50 text-blue-600", route: "/admin/services", type: "services" },
 ];
 
 const categoryColors: Record<string, string> = {
   food: "bg-[#ba001c]",
   grocery: "bg-green-500",
-  pharmacy: "bg-purple-500",
-  flowers: "bg-rose-500",
+  printing: "bg-indigo-500",
   services: "bg-blue-500",
 };
 

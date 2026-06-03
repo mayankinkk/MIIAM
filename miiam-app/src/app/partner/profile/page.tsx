@@ -269,8 +269,7 @@ export default function VendorProfilePage() {
               >
                 <option value="food">Food & Restaurant</option>
                 <option value="grocery">Grocery</option>
-                <option value="pharmacy">Pharmacy</option>
-                <option value="flowers">Flowers & Gifts</option>
+                <option value="printing">Printing</option>
               </select>
             </div>
             <div>

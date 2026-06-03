@@ -4,7 +4,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 export type ServiceCategory = 
-  | "food" | "grocery" | "pharmacy" | "flowers" | "beauty"
+  | "food" | "grocery" | "printing" | "pharmacy" | "flowers" | "beauty"
   | "ac" | "cleaning" | "plumbing" | "electrical" | "pest" | "car" | "appliance";
 
 export interface ServiceSetting {
@@ -25,8 +25,7 @@ interface ServiceSettingsStore {
 const defaultSettings: ServiceSetting[] = [
   { id: "food", name: "Food Delivery", isEnabled: true, message: "Food delivery is currently under maintenance", icon: "restaurant" },
   { id: "grocery", name: "Grocery", isEnabled: true, message: "Grocery service is coming soon!", icon: "shopping_cart" },
-  { id: "pharmacy", name: "Pharmacy", isEnabled: true, message: "Pharmacy service is under maintenance", icon: "medication" },
-  { id: "flowers", name: "Flowers", isEnabled: true, message: "Flower delivery is coming soon!", icon: "local_florist" },
+  { id: "printing", name: "Printing", isEnabled: true, message: "Printing service is under maintenance", icon: "print" },
   { id: "beauty", name: "Beauty & Wellness", isEnabled: true, message: "Beauty service is under maintenance", icon: "spa" },
   { id: "ac", name: "AC Repair", isEnabled: true, message: "AC repair service is under maintenance", icon: "ac_unit" },
   { id: "cleaning", name: "Home Cleaning", isEnabled: true, message: "Home cleaning service is coming soon!", icon: "cleaning_services" },

@@ -16,8 +16,7 @@ const categories = [
   { id: "grocery", icon: "shopping_basket", label: "Grocery" },
   { id: "beauty", icon: "spa", label: "Beauty" },
   { id: "services", icon: "handyman", label: "Services" },
-  { id: "pharmacy", icon: "medication", label: "Pharmacy" },
-  { id: "flowers", icon: "local_florist", label: "Flowers" },
+  { id: "printing", icon: "print", label: "Printing" },
   { id: "cleaning", icon: "cleaning_services", label: "Cleaning" },
   { id: "ac", icon: "ac_unit", label: "AC Repair" },
   { id: "plumbing", icon: "plumbing", label: "Plumbing" },
@@ -39,8 +38,7 @@ const servicesData = [
   { id: "grocery", name: "Grocery", desc: "Fresh groceries delivered", icon: "shopping_basket", price: null, rating: 4.3, dietary: "both", cuisine: "grocery" },
   { id: "beauty", name: "Beauty & Spa", desc: "Salon, Spa, Nails", icon: "spa", price: 299, rating: 4.7, dietary: "both", cuisine: "beauty" },
   { id: "services", name: "Home Services", desc: "AC, Plumbing, Cleaning", icon: "handyman", price: 199, rating: 4.4, dietary: "both", cuisine: "services" },
-  { id: "pharmacy", name: "Pharmacy", desc: "Medicines at your door", icon: "medication", price: null, rating: 4.6, dietary: "both", cuisine: "pharmacy" },
-  { id: "flowers", name: "Flowers & Gifts", desc: "Send love & wishes", icon: "local_florist", price: 299, rating: 4.5, dietary: "both", cuisine: "flowers" },
+  { id: "printing", name: "Printing", desc: "Print docs, photos & more", icon: "print", price: 5, rating: 4.7, dietary: "both", cuisine: "printing" },
   { id: "cleaning", name: "Cleaning", desc: "Home & Office Cleaning", icon: "cleaning_services", price: 499, rating: 4.6, dietary: "both", cuisine: "cleaning" },
   { id: "ac", name: "AC Repair", desc: "AC Repair & Service", icon: "ac_unit", price: 299, rating: 4.7, dietary: "both", cuisine: "ac" },
   { id: "plumbing", name: "Plumbing", desc: "Pipe & Leak Repair", icon: "plumbing", price: 149, rating: 4.5, dietary: "both", cuisine: "plumbing" },
@@ -137,8 +135,7 @@ export default function ExplorePage() {
     grocery: "bg-green-100 text-green-600",
     beauty: "bg-pink-100 text-pink-600",
     services: "bg-blue-100 text-blue-600",
-    pharmacy: "bg-purple-100 text-purple-600",
-    flowers: "bg-rose-100 text-rose-600",
+    printing: "bg-indigo-100 text-indigo-600",
     cleaning: "bg-cyan-100 text-cyan-600",
     ac: "bg-sky-100 text-sky-600",
     plumbing: "bg-teal-100 text-teal-600",
@@ -399,8 +396,7 @@ export default function ExplorePage() {
                   {feature.id === "grocery" && "Fresh groceries delivered"}
                   {feature.id === "beauty" && "Salon, Spa, Nails"}
                   {feature.id === "services" && "AC, Plumbing, Cleaning"}
-                  {feature.id === "pharmacy" && "Medicines at your door"}
-                  {feature.id === "flowers" && "Send love & wishes"}
+                  {feature.id === "printing" && "Print docs, photos & more"}
                   {feature.id === "cleaning" && "Home & Office Cleaning"}
                   {feature.id === "ac" && "AC Repair & Service"}
                   {feature.id === "plumbing" && "Pipe & Leak Repair"}

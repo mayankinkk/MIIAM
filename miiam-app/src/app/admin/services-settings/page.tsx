@@ -5,9 +5,9 @@ import { useServiceSettingsStore, ServiceCategory } from "@/lib/store/serviceSet
 
 const defaultSettings = [
   { id: "food", name: "Food Delivery", isEnabled: true, message: "Food delivery is currently under maintenance", icon: "restaurant" },
+  { id: "beauty", name: "Beauty & Wellness", isEnabled: true, message: "Beauty service is under maintenance", icon: "spa" },
   { id: "grocery", name: "Grocery", isEnabled: true, message: "Grocery service is coming soon!", icon: "shopping_cart" },
-  { id: "pharmacy", name: "Pharmacy", isEnabled: true, message: "Pharmacy service is under maintenance", icon: "medication" },
-  { id: "flowers", name: "Flowers", isEnabled: true, message: "Flower delivery is coming soon!", icon: "local_florist" },
+  { id: "printing", name: "Printing", isEnabled: true, message: "Printing service is under maintenance", icon: "print" },
   { id: "ac", name: "AC Repair", isEnabled: true, message: "AC repair service is under maintenance", icon: "ac_unit" },
   { id: "cleaning", name: "Home Cleaning", isEnabled: true, message: "Home cleaning service is coming soon!", icon: "cleaning_services" },
   { id: "plumbing", name: "Plumbing", isEnabled: true, message: "Plumbing service is under maintenance", icon: "plumbing" },
