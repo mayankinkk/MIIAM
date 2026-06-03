@@ -612,6 +612,17 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
               );
             })}
 
+            {/* Print Again */}
+            {order.vendor_id === PRINTING_VENDOR_ID && order.status === "delivered" && (
+              <button
+                onClick={() => router.push("/app/printing")}
+                className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl py-5 text-lg font-extrabold shadow-lg shadow-indigo-600/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
+              >
+                <span className="material-symbols-outlined">refresh</span>
+                Print Again
+              </button>
+            )}
+
             <button 
               onClick={() => setShowHelp(true)}
               className="w-full bg-gradient-to-r from-primary to-primary-container text-white rounded-xl py-5 text-lg font-extrabold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all"
