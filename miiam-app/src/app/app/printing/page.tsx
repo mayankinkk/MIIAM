@@ -1,17 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import ImageUpload from "@/components/ImageUpload";
+import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useLocationStore } from "@/lib/store/locationStore";
 import { useServiceSettingsStore } from "@/lib/store/serviceSettingsStore";
 
+interface UploadedFile {
+  id: string;
+  name: string;
+  url: string;
+  type: string;
+  size: number;
+}
+
 const STEPS = ["Upload", "Customize", "Checkout"] as const;
+const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/jpg", "application/pdf"];
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
 export default function PrintingPage() {
   const [step, setStep] = useState(1);
-  const [file, setFile] = useState<string>("");
+  const [files, setFiles] = useState<UploadedFile[]>([]);
+  const [uploading, setUploading] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const supabase = createClient();
   const [colorMode, setColorMode] = useState<"bw" | "color">("bw");
   const [sides, setSides] = useState<"single" | "double">("single");
   const [pages, setPages] = useState<number>(1);
@@ -20,12 +34,49 @@ export default function PrintingPage() {
   const serviceSettings = useServiceSettingsStore();
   
   const isEnabled = serviceSettings.isServiceEnabled("printing");
+
+  const uploadFile = async (file: File): Promise<string | null> => {
+    const fileExt = file.name.split(".").pop();
+    const fileName = `prints/${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
+    const { error: uploadError } = await supabase.storage
+      .from("menu-images")
+      .upload(fileName, file);
+    if (uploadError) {
+      alert("Upload failed. Make sure the 'menu-images' bucket exists.");
+      return null;
+    }
+    const { data: { publicUrl } } = supabase.storage
+      .from("menu-images")
+      .getPublicUrl(fileName);
+    return publicUrl;
+  };
+
+  const handleFilesSelected = async (newFiles: FileList | File[]) => {
+    const validFiles = Array.from(newFiles).filter(f => {
+      if (!ALLOWED_TYPES.includes(f.type)) { alert(`${f.name} is not supported. Please upload PDF or images.`); return false; }
+      if (f.size > MAX_FILE_SIZE) { alert(`${f.name} exceeds 10MB limit.`); return false; }
+      return true;
+    });
+    if (validFiles.length === 0) return;
+
+    setUploading(true);
+    for (const f of validFiles) {
+      const url = await uploadFile(f);
+      if (url) {
+        setFiles(prev => [...prev, { id: `${Date.now()}-${Math.random()}`, name: f.name, url, type: f.type, size: f.size }]);
+      }
+    }
+    setUploading(false);
+  };
+
+  const removeFile = (id: string) => setFiles(prev => prev.filter(f => f.id !== id));
+
   const pricePerBW = 2;
   const pricePerColor = 10;
-  const totalPrice = pages * (colorMode === "bw" ? pricePerBW : pricePerColor);
+  const totalPrice = (files.length || 1) * pages * (colorMode === "bw" ? pricePerBW : pricePerColor);
 
   const handleAddToCart = () => {
-    if (!file) { alert("Please upload a file"); return; }
+    if (files.length === 0) { alert("Please upload at least one file"); return; }
     if (!isEnabled) { alert("Printing service is currently unavailable"); return; }
     
     cartStore.addItem({
@@ -35,7 +86,7 @@ export default function PrintingPage() {
       vendor_name: "MIIAM Printing",
       name: `Printing (${colorMode}, ${sides})`,
       price: totalPrice,
-      image_url: file,
+      image_url: files[0].url,
     }, 1);
     alert("Added to cart!");
   };
@@ -85,20 +136,68 @@ export default function PrintingPage() {
       
       {step === 1 && (
         <div className="bg-surface-container rounded-2xl p-6 shadow-sm border border-outline-variant/10 space-y-6">
-          <ImageUpload 
-            label="Upload PDF or Image"
-            onChange={(url) => setFile(url)}
-            value={file}
-          />
-          {file && (
-            <div className="p-3 bg-green-50 text-green-700 rounded-xl text-sm font-bold flex items-center gap-2">
-              <span className="material-symbols-outlined text-sm">check_circle</span>
-              File uploaded successfully
+          {/* Drag & Drop Zone */}
+          <div
+            onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+            onDragLeave={() => setDragOver(false)}
+            onDrop={(e) => { e.preventDefault(); setDragOver(false); handleFilesSelected(e.dataTransfer.files); }}
+            onClick={() => fileInputRef.current?.click()}
+            className={`relative border-2 border-dashed rounded-2xl p-10 text-center cursor-pointer transition-all ${
+              dragOver ? "border-primary bg-primary/5 scale-[1.02]" : "border-outline-variant hover:border-primary/50"
+            }`}
+          >
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              accept=".pdf,.jpg,.jpeg,.png"
+              className="hidden"
+              disabled={uploading}
+              onChange={(e) => { if (e.target.files) handleFilesSelected(e.target.files); e.target.value = ""; }}
+            />
+            <div className="w-16 h-16 bg-indigo-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <span className="material-symbols-outlined text-3xl text-indigo-600">cloud_upload</span>
+            </div>
+            <p className="font-bold text-on-surface mb-1">Upload your files</p>
+            <p className="text-sm text-on-surface-variant">Drag & drop or click to browse</p>
+            <p className="text-xs text-on-surface-variant/60 mt-2">PDF, JPG, PNG (max 10MB each)</p>
+          </div>
+
+          {uploading && (
+            <div className="flex items-center gap-3 p-4 bg-surface-container-high rounded-xl">
+              <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+              <span className="text-sm font-bold text-on-surface-variant">Uploading files...</span>
             </div>
           )}
+
+          {/* File List */}
+          {files.length > 0 && (
+            <div className="space-y-3">
+              <p className="text-sm font-bold text-on-surface-variant">{files.length} file{files.length > 1 ? "s" : ""} uploaded</p>
+              {files.map((f) => (
+                <div key={f.id} className="flex items-center gap-3 p-3 bg-surface-container-high rounded-xl">
+                  <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
+                    {f.type === "application/pdf" ? (
+                      <span className="material-symbols-outlined text-indigo-600 text-lg">description</span>
+                    ) : (
+                      <img src={f.url} alt={f.name} className="w-full h-full object-cover" />
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-bold text-on-surface truncate">{f.name}</p>
+                    <p className="text-xs text-on-surface-variant/60">{(f.size / 1024).toFixed(1)} KB</p>
+                  </div>
+                  <button onClick={() => removeFile(f.id)} className="w-8 h-8 bg-red-50 rounded-full flex items-center justify-center hover:bg-red-100">
+                    <span className="material-symbols-outlined text-red-500 text-sm">close</span>
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
           <button
             onClick={() => setStep(2)}
-            disabled={!file}
+            disabled={files.length === 0}
             className="w-full py-4 bg-primary text-white rounded-xl font-bold hover:bg-primary/90 transition-colors disabled:opacity-50"
           >
             Continue to Customize →
