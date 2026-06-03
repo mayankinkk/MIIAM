@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { Order, OrderStatus } from "@/lib/types";
+import { PRINTING_VENDOR_ID } from "@/lib/constants";
 
 const STATUS_OPTIONS: OrderStatus[] = ["pending", "scheduled", "accepted", "preparing", "ready_for_pickup", "shopping", "picking_up", "on_the_way", "arrived", "delivered", "cancelled", "refunded", "no_rider_available"];
 
@@ -54,12 +55,35 @@ export default function OrderManagement() {
     setLoading(false);
   }
 
+  async function deletePrintFiles(orderId: string) {
+    const { data: items } = await supabase.from("order_items").select("special_notes").eq("order_id", orderId);
+    if (!items) return;
+    for (const item of items) {
+      if (!item.special_notes) continue;
+      try {
+        const settings = JSON.parse(item.special_notes);
+        const urls: string[] = settings.fileUrls || [];
+        for (const url of urls) {
+          const path = url.split("/menu-images/")[1];
+          if (path) {
+            await supabase.storage.from("menu-images").remove([path]);
+          }
+        }
+      } catch {}
+    }
+  }
+
   async function updateStatus(orderId: string, status: OrderStatus) {
     // Fetch the order first to get user_id
-    const { data: order } = await supabase.from("orders").select("user_id").eq("id", orderId).single();
+    const { data: order } = await supabase.from("orders").select("user_id, vendor_id").eq("id", orderId).single();
     
     await supabase.from("orders").update({ status }).eq("id", orderId);
     
+    // Clean up print files when order is delivered or cancelled
+    if (order?.vendor_id === PRINTING_VENDOR_ID && (status === "delivered" || status === "cancelled")) {
+      deletePrintFiles(orderId);
+    }
+
     // Send notification to customer
     if (order?.user_id) {
       const notifMap: Record<string, { title: string; body: string }> = {
