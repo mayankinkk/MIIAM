@@ -309,7 +309,7 @@ export default function AdminPrintingPage() {
                 <span className="material-symbols-outlined text-sm">close</span>
               </button>
             </div>
-            <p className="text-sm text-slate-500 mb-4">Order #{selectedOrder.id.slice(0, 8)}</p>
+            <p className="text-sm text-slate-500 mb-4">Order #{selectedOrder.id.slice(0, 8)} · ₹{selectedOrder.total_amount}</p>
             <div className="flex flex-wrap gap-2">
               {["pending", "processing", "ready_for_pickup", "on_the_way", "delivered", "cancelled"].map((status) => (
                 <button
@@ -325,6 +325,20 @@ export default function AdminPrintingPage() {
                 </button>
               ))}
             </div>
+            {selectedOrder.status === "cancelled" && selectedOrder.payment_method !== "cod" && (
+              <div className="mt-4 pt-4 border-t border-slate-100">
+                <button
+                  onClick={async () => {
+                    await supabase.from("orders").update({ status: "refunded" }).eq("id", selectedOrder.id);
+                    loadOrders();
+                    setSelectedOrder(null);
+                  }}
+                  className="w-full py-3 bg-red-50 text-red-700 rounded-xl font-bold text-sm hover:bg-red-100"
+                >
+                  Process Refund (₹{selectedOrder.total_amount})
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
