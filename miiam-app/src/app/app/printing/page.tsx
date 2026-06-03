@@ -2,24 +2,38 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import ImageUpload from "@/components/ImageUpload";
 
 export default function PrintingPage() {
+  const [file, setFile] = useState<string | null>(null);
+
   return (
-    <div className="min-h-screen bg-background text-on-background flex flex-col items-center justify-center p-6 text-center">
-      <div className="w-24 h-24 bg-indigo-100 rounded-3xl flex items-center justify-center mb-6">
-        <span className="material-symbols-outlined text-5xl text-indigo-600">print</span>
+    <div className="min-h-screen bg-background text-on-background p-6">
+      <Link href="/app/home" className="text-primary font-bold mb-6 block">← Back</Link>
+      
+      <h1 className="text-2xl font-black text-on-surface mb-6">Upload Documents</h1>
+      
+      <div className="bg-surface-container rounded-2xl p-6 shadow-sm border border-outline-variant/10">
+        <ImageUpload 
+          label="Upload PDF or Image"
+          onUpload={(url) => setFile(url)}
+          currentImage={file}
+        />
+        {file && (
+          <div className="mt-4 p-3 bg-green-50 text-green-700 rounded-xl text-sm font-bold">
+            File uploaded successfully!
+          </div>
+        )}
       </div>
-      <h1 className="text-3xl font-black text-on-surface mb-2">Printing Service</h1>
-      <p className="text-on-surface-variant max-w-sm mb-8">
-        We're working hard to bring you fast and convenient printing services. 
-        Upload your documents, choose your preferences, and get them delivered to your doorstep.
-      </p>
-      <Link 
-        href="/app/home" 
-        className="px-8 py-3 bg-primary text-white rounded-xl font-bold hover:bg-primary/90 transition-colors"
-      >
-        Go Home
-      </Link>
+
+      <div className="mt-8">
+        <Link 
+          href="/app/home" 
+          className="w-full py-4 bg-primary text-white rounded-xl font-bold hover:bg-primary/90 transition-colors block text-center"
+        >
+          Continue to Settings →
+        </Link>
+      </div>
     </div>
   );
 }
