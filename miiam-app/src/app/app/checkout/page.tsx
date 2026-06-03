@@ -69,6 +69,9 @@ export default function CheckoutPage() {
   const userPincode = locationStore.pincode;
 
   useEffect(() => {
+    if (items.some(i => i.vendor_id === PRINTING_VENDOR_ID)) {
+      setPaymentMethod("cod");
+    }
     const saved = localStorage.getItem('miiam_selected_address');
     if (saved) {
       try { setDeliveryAddress(JSON.parse(saved)); } catch {}

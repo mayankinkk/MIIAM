@@ -190,8 +190,14 @@ export default function AdminPrintingPage() {
                         {settings.colorMode && <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded text-xs font-semibold">{settings.colorMode === "bw" ? "B&W" : "Color"}</span>}
                         {settings.paperSize && <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded text-xs font-semibold uppercase">{settings.paperSize}</span>}
                       </div>
-                      {settings.fileNames && (
-                        <p className="text-xs text-slate-400 mt-1 truncate max-w-[200px]">{settings.fileNames.join(", ")}</p>
+                      {settings.fileNames && settings.fileUrls && (
+                        <div className="mt-1 space-y-0.5">
+                          {settings.fileNames.map((name: string, fi: number) => (
+                            <a key={fi} href={settings.fileUrls[fi]} target="_blank" rel="noopener noreferrer" className="text-xs text-indigo-600 hover:text-indigo-800 hover:underline truncate block max-w-[200px]">
+                              {name}
+                            </a>
+                          ))}
+                        </div>
                       )}
                     </td>
                     <td className="p-4 font-bold text-slate-800">₹{order.total_amount}</td>
