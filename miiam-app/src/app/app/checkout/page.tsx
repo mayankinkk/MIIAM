@@ -208,9 +208,15 @@ export default function CheckoutPage() {
       : "452/A Kinetic Plaza, 5th Floor, Skyway Avenue, Tech District, Local Area, State 560001";
     
     if (userPincode && userPincode !== "000000") {
-      const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean)));
+      const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean))).filter(v => v !== PRINTING_VENDOR_ID);
+      if (vendorIds.length > 0) {
       const { data: vendors } = await supabase.from("vendors").select("id, pincode, name").in("id", vendorIds);
       const unserviceable = vendors?.filter(v => v.pincode && v.pincode !== userPincode) || [];
+      if (unserviceable.length > 0) {
+        addToast(`Some items (${unserviceable.map(v => v.name).join(", ")}) are not deliverable at your location. Please remove them to proceed.`, "error");
+        return;
+      }
+      }
       if (unserviceable.length > 0) {
         addToast(`Some items (${unserviceable.map(v => v.name).join(", ")}) are not deliverable at your location. Please remove them to proceed.`, "error");
         return;
