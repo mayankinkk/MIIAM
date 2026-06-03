@@ -578,6 +578,40 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
               </div>
             </div>
 
+            {/* Print File Details */}
+            {order.vendor_id === PRINTING_VENDOR_ID && order.items?.map((item: any, idx: number) => {
+              let settings: Record<string, any> = {};
+              try { if (item.special_notes) settings = JSON.parse(item.special_notes); } catch {}
+              if (!settings.fileUrls?.length) return null;
+              return (
+                <div key={idx} className="bg-surface-container rounded-xl p-6 space-y-3">
+                  <h3 className="font-extrabold text-on-surface flex items-center gap-2">
+                    <span className="material-symbols-outlined text-indigo-600">description</span>
+                    Print Files
+                  </h3>
+                  <div className="space-y-2">
+                    {settings.fileNames?.map((name: string, fi: number) => (
+                      <div key={fi} className="flex items-center gap-3 bg-white/50 rounded-xl p-3">
+                        <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
+                          <span className="material-symbols-outlined text-indigo-600 text-sm">description</span>
+                        </div>
+                        <span className="text-sm text-on-surface truncate flex-1">{name}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    {settings.pages && <span className="px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-semibold">{settings.pages} pages</span>}
+                    {settings.copies && <span className="px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-semibold">{settings.copies} copies</span>}
+                    {settings.colorMode && <span className="px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-semibold capitalize">{settings.colorMode === "bw" ? "B&W" : "Color"}</span>}
+                    {settings.paperSize && <span className="px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-semibold uppercase">{settings.paperSize}</span>}
+                    {settings.orientation && <span className="px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-semibold capitalize">{settings.orientation}</span>}
+                    {settings.paperType && <span className="px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-semibold capitalize">{settings.paperType}</span>}
+                    {settings.sides && <span className="px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-semibold capitalize">{settings.sides} sided</span>}
+                  </div>
+                </div>
+              );
+            })}
+
             <button 
               onClick={() => setShowHelp(true)}
               className="w-full bg-gradient-to-r from-primary to-primary-container text-white rounded-xl py-5 text-lg font-extrabold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all"
