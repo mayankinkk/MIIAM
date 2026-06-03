@@ -211,6 +211,7 @@ export default function AdminPrintingPage() {
           <table className="w-full">
             <thead className="bg-slate-50">
               <tr>
+                <th className="text-left p-4 font-bold text-slate-600 text-sm">Priority</th>
                 <th className="text-left p-4 font-bold text-slate-600 text-sm">Order ID</th>
                 <th className="text-left p-4 font-bold text-slate-600 text-sm">Items</th>
                 <th className="text-left p-4 font-bold text-slate-600 text-sm">Print Settings</th>
@@ -226,7 +227,16 @@ export default function AdminPrintingPage() {
                 let settings: Record<string, any> = {};
                 try { if (item?.special_notes) settings = JSON.parse(item.special_notes); } catch {}
                 return (
-                  <tr key={order.id} className="border-t border-slate-100 hover:bg-slate-50">
+                  <tr key={order.id} className={`border-t border-slate-100 hover:bg-slate-50 ${order.priority > 0 ? "bg-amber-50/50" : ""}`}>
+                    <td className="p-4">
+                      <button onClick={async () => {
+                        const newPriority = order.priority > 0 ? 0 : 1;
+                        await supabase.from("orders").update({ priority: newPriority }).eq("id", order.id);
+                        loadOrders();
+                      }} className={`w-7 h-7 rounded-full flex items-center justify-center ${order.priority > 0 ? "bg-amber-200 text-amber-700" : "bg-slate-100 text-slate-400 hover:bg-amber-100"}`}>
+                        <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                      </button>
+                    </td>
                     <td className="p-4 font-bold text-slate-800 text-sm">{order.id.slice(0, 8)}...</td>
                     <td className="p-4 text-slate-600 text-sm">
                       {item?.name || "-"}
