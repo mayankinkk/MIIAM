@@ -8,6 +8,11 @@ export default function PrintingPage() {
   const [file, setFile] = useState<string | null>(null);
   const [colorMode, setColorMode] = useState<"bw" | "color">("bw");
   const [sides, setSides] = useState<"single" | "double">("single");
+  const [pages, setPages] = useState<number>(1);
+
+  const pricePerBW = 2;
+  const pricePerColor = 10;
+  const totalPrice = pages * (colorMode === "bw" ? pricePerBW : pricePerColor);
 
   return (
     <div className="min-h-screen bg-background text-on-background p-6">
@@ -24,10 +29,20 @@ export default function PrintingPage() {
         
         <div className="space-y-4">
           <div>
+            <label className="text-sm font-bold text-on-surface-variant block mb-2">Number of Pages</label>
+            <input 
+              type="number" 
+              value={pages} 
+              onChange={(e) => setPages(Math.max(1, parseInt(e.target.value) || 1))}
+              className="w-full p-3 bg-surface-container-high rounded-xl border border-outline-variant"
+            />
+          </div>
+
+          <div>
             <label className="text-sm font-bold text-on-surface-variant block mb-2">Color Mode</label>
             <div className="grid grid-cols-2 gap-3">
-              <button onClick={() => setColorMode("bw")} className={`p-3 rounded-xl border-2 font-bold ${colorMode === "bw" ? "border-primary bg-primary/10" : "border-outline-variant"}`}>B&W</button>
-              <button onClick={() => setColorMode("color")} className={`p-3 rounded-xl border-2 font-bold ${colorMode === "color" ? "border-primary bg-primary/10" : "border-outline-variant"}`}>Color</button>
+              <button onClick={() => setColorMode("bw")} className={`p-3 rounded-xl border-2 font-bold ${colorMode === "bw" ? "border-primary bg-primary/10" : "border-outline-variant"}`}>B&W (₹{pricePerBW}/pg)</button>
+              <button onClick={() => setColorMode("color")} className={`p-3 rounded-xl border-2 font-bold ${colorMode === "color" ? "border-primary bg-primary/10" : "border-outline-variant"}`}>Color (₹{pricePerColor}/pg)</button>
             </div>
           </div>
           
@@ -38,6 +53,11 @@ export default function PrintingPage() {
               <button onClick={() => setSides("double")} className={`p-3 rounded-xl border-2 font-bold ${sides === "double" ? "border-primary bg-primary/10" : "border-outline-variant"}`}>Double Sided</button>
             </div>
           </div>
+        </div>
+
+        <div className="pt-4 border-t border-outline-variant/10 flex justify-between items-center">
+            <span className="text-lg font-bold">Total Price</span>
+            <span className="text-2xl font-black text-primary">₹{totalPrice}</span>
         </div>
       </div>
 
