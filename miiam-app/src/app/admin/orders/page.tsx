@@ -50,6 +50,7 @@ export default function OrderManagement() {
     const { data } = await supabase
       .from("orders")
       .select("*, vendor:vendors(name), rider:riders(*), user:user_id(*)")
+      .neq("vendor_id", PRINTING_VENDOR_ID)
       .order("placed_at", { ascending: false });
     if (data) setOrders(data);
     setLoading(false);
