@@ -52,6 +52,17 @@ export default function AdminPrintingPage() {
     setSelectedOrder(null);
   }
 
+  async function toggleFilePrinted(orderId: string, fileIndex: number, currentSettings: any) {
+    const fileStatuses = currentSettings.fileStatuses || currentSettings.fileUrls?.map(() => false) || [];
+    fileStatuses[fileIndex] = !fileStatuses[fileIndex];
+    const updated = { ...currentSettings, fileStatuses };
+    const { data: items } = await supabase.from("order_items").select("id").eq("order_id", orderId);
+    if (items?.[0]) {
+      await supabase.from("order_items").update({ special_notes: JSON.stringify(updated) }).eq("id", items[0].id);
+    }
+    loadOrders();
+  }
+
   const filteredOrders = orders.filter(order => {
     const matchesSearch = searchTerm === "" || order.id.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "all" || order.status === statusFilter;
@@ -250,11 +261,19 @@ export default function AdminPrintingPage() {
                       </div>
                       {settings.fileNames && settings.fileUrls && (
                         <div className="mt-1 space-y-0.5">
-                          {settings.fileNames.map((name: string, fi: number) => (
-                            <a key={fi} href={settings.fileUrls[fi]} target="_blank" rel="noopener noreferrer" className="text-xs text-indigo-600 hover:text-indigo-800 hover:underline truncate block max-w-[200px]">
-                              {name}
-                            </a>
-                          ))}
+                          {settings.fileNames.map((name: string, fi: number) => {
+                            const printed = settings.fileStatuses?.[fi];
+                            return (
+                              <div key={fi} className="flex items-center gap-1">
+                                <button onClick={() => toggleFilePrinted(order.id, fi, settings)} className={`w-3.5 h-3.5 rounded border flex items-center justify-center ${printed ? "bg-green-500 border-green-500" : "border-slate-300"}`}>
+                                  {printed && <span className="material-symbols-outlined text-white text-[10px]" style={{ fontVariationSettings: "'FILL' 1" }}>check</span>}
+                                </button>
+                                <a href={settings.fileUrls[fi]} target="_blank" rel="noopener noreferrer" className={`text-xs truncate block max-w-[180px] ${printed ? "text-green-600 line-through" : "text-indigo-600 hover:underline"}`}>
+                                  {name}
+                                </a>
+                              </div>
+                            );
+                          })}
                         </div>
                       )}
                     </td>
