@@ -5,6 +5,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { PRINTING_VENDOR_ID } from "@/lib/constants";
 import type { OrderStatus } from "@/lib/types";
+import { getPrintingPricing, savePrintingPricing, type PrintingPricing } from "@/lib/printing-pricing";
 
 const supabase = createClient();
 
@@ -23,10 +24,17 @@ export default function AdminPrintingPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
+  const [showPricing, setShowPricing] = useState(false);
+  const [pricing, setPricing] = useState<PrintingPricing>(getPrintingPricing());
 
   useEffect(() => {
     loadOrders();
   }, []);
+
+  const handleSavePricing = () => {
+    savePrintingPricing(pricing);
+    setShowPricing(false);
+  };
 
   async function loadOrders() {
     const { data } = await supabase
@@ -75,6 +83,29 @@ export default function AdminPrintingPage() {
           <h1 className="text-2xl font-black text-slate-800">Print Store Orders</h1>
           <p className="text-slate-500 text-sm">Manage print delivery orders</p>
         </div>
+      </div>
+
+      {/* Pricing Settings */}
+      <div className="mb-4">
+        <button onClick={() => setShowPricing(!showPricing)} className="flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-slate-800">
+          <span className="material-symbols-outlined text-lg">payments</span>
+          Pricing Settings
+          <span className="material-symbols-outlined text-sm">{showPricing ? "expand_less" : "expand_more"}</span>
+        </button>
+        {showPricing && (
+          <div className="mt-2 bg-white rounded-xl border border-slate-100 p-4 max-w-md space-y-3">
+            {(["bwPerPage", "colorPerPage", "glossySurcharge", "a3Surcharge"] as const).map((key) => (
+              <div key={key} className="flex items-center justify-between">
+                <label className="text-sm font-bold text-slate-600 capitalize">{key.replace(/([A-Z])/g, " $1")} (₹)</label>
+                <input type="number" value={pricing[key]} onChange={(e) => setPricing({ ...pricing, [key]: Math.max(0, parseInt(e.target.value) || 0) })} className="w-24 px-3 py-1.5 border border-slate-200 rounded-lg text-sm text-right" />
+              </div>
+            ))}
+            <div className="flex gap-2 pt-2">
+              <button onClick={handleSavePricing} className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-bold hover:bg-indigo-700">Save</button>
+              <button onClick={() => { setPricing(getPrintingPricing()); setShowPricing(false); }} className="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-sm font-bold">Cancel</button>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-4 gap-4 mb-6">

@@ -8,6 +8,7 @@ import { useCartStore } from "@/lib/store/cartStore";
 import { useLocationStore } from "@/lib/store/locationStore";
 import { useServiceSettingsStore } from "@/lib/store/serviceSettingsStore";
 import { PRINTING_VENDOR_ID } from "@/lib/constants";
+import { getPrintingPricing } from "@/lib/printing-pricing";
 
 interface UploadedFile {
   id: string;
@@ -78,10 +79,11 @@ export default function PrintingPage() {
 
   const removeFile = (id: string) => setFiles(prev => prev.filter(f => f.id !== id));
 
-  const pricePerBW = 2;
-  const pricePerColor = 10;
-  const glossySurcharge = paperType === "glossy" ? 5 : 0;
-  const a3Surcharge = paperSize === "a3" ? 3 : 0;
+  const printPrices = getPrintingPricing();
+  const pricePerBW = printPrices.bwPerPage;
+  const pricePerColor = printPrices.colorPerPage;
+  const glossySurcharge = paperType === "glossy" ? printPrices.glossySurcharge : 0;
+  const a3Surcharge = paperSize === "a3" ? printPrices.a3Surcharge : 0;
   const perPagePrice = (colorMode === "bw" ? pricePerBW : pricePerColor) + glossySurcharge + a3Surcharge;
   const subtotal = perPagePrice * pages;
   const totalPrice = subtotal * copies;
