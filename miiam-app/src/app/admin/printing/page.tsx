@@ -47,7 +47,26 @@ export default function AdminPrintingPage() {
   }
 
   async function updateOrderStatus(orderId: string, status: OrderStatus) {
+    const { data: order } = await supabase.from("orders").select("user_id").eq("id", orderId).single();
     await supabase.from("orders").update({ status }).eq("id", orderId);
+    if (order?.user_id) {
+      const notifMap: Record<string, { title: string; body: string }> = {
+        processing: { title: "Printing in Progress 🖨️", body: "Your print order is being processed and will be ready soon." },
+        ready_for_pickup: { title: "Print Order Ready 📦", body: "Your prints are ready! Waiting for rider pickup." },
+        on_the_way: { title: "Print Order On the Way 🛵", body: "Your prints are on their way!" },
+        delivered: { title: "Print Delivered ✅", body: "Your prints have been delivered. Enjoy!" },
+        cancelled: { title: "Print Order Cancelled ❌", body: "Your print order has been cancelled." },
+      };
+      const notif = notifMap[status];
+      if (notif) {
+        await fetch("/api/notify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user_id: order.user_id, ...notif, type: "order" }),
+        });
+      }
+      try { await fetch("/api/emails/order-status", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ orderId, status }) }); } catch {}
+    }
     loadOrders();
     setSelectedOrder(null);
   }

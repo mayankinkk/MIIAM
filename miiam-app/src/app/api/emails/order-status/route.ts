@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Order ID and status required" }, { status: 400 });
     }
 
-    const validStatuses = ["accepted", "preparing", "shopping", "picking_up", "on_the_way", "delivered", "cancelled"];
+    const validStatuses = ["accepted", "processing", "preparing", "shopping", "picking_up", "on_the_way", "delivered", "cancelled"];
     if (!validStatuses.includes(status)) {
       return NextResponse.json({ error: "Invalid status" }, { status: 400 });
     }
