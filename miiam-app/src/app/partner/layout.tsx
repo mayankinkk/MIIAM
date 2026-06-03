@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { getVendorForUser } from "@/lib/vendor";
+import { PRINTING_VENDOR_ID } from "@/lib/constants";
 
 const navLinks = [
   { href: "/partner/dashboard", label: "Dashboard", icon: "dashboard" },
@@ -26,7 +27,7 @@ export default function PartnerLayout({
   children: React.ReactNode;
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [vendor, setVendor] = useState<{ shop_name: string; status: string; owner_name: string } | null>(null);
+  const [vendor, setVendor] = useState<{ shop_name: string; status: string; owner_name: string; type?: string; id?: string } | null>(null);
   const pathname = usePathname();
   const router = useRouter();
   const supabase = createClient();
@@ -37,10 +38,16 @@ export default function PartnerLayout({
 
   useEffect(() => {
     if (pathname === "/partner" || pathname === "/partner/register") return;
+
+    if (vendor?.id === PRINTING_VENDOR_ID) {
+      router.push("/denied?from=partner");
+      return;
+    }
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) router.push("/auth/login?redirect=" + pathname);
     });
-  }, [router, supabase, pathname]);
+  }, [router, supabase, pathname, vendor]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();

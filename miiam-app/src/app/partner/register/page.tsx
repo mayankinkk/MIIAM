@@ -221,7 +221,6 @@ export default function VendorRegister() {
                 <select value={form.type} onChange={(e) => update("type", e.target.value)} className={inputClass}>
                   <option value="food">Food & Restaurant</option>
                   <option value="grocery">Grocery</option>
-                  <option value="printing">Printing</option>
                 </select>
               </div>
               <div>
