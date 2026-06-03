@@ -5,14 +5,31 @@ import Link from "next/link";
 import ImageUpload from "@/components/ImageUpload";
 
 export default function PrintingPage() {
+import { useCartStore } from "@/lib/store/cartStore";
+
+export default function PrintingPage() {
   const [file, setFile] = useState<string | null>(null);
   const [colorMode, setColorMode] = useState<"bw" | "color">("bw");
   const [sides, setSides] = useState<"single" | "double">("single");
   const [pages, setPages] = useState<number>(1);
+  const cartStore = useCartStore();
 
   const pricePerBW = 2;
   const pricePerColor = 10;
   const totalPrice = pages * (colorMode === "bw" ? pricePerBW : pricePerColor);
+
+  const handleAddToCart = () => {
+    if (!file) { alert("Please upload a file"); return; }
+    cartStore.addItem({
+      id: `print_${Date.now()}`,
+      name: `Printing (${colorMode}, ${sides})`,
+      price: totalPrice,
+      quantity: 1,
+      image_url: file,
+      vendor_id: "printing_service" // Need a dummy vendor ID or handle properly
+    });
+    alert("Added to cart!");
+  };
 
   return (
     <div className="min-h-screen bg-background text-on-background p-6">
@@ -62,12 +79,12 @@ export default function PrintingPage() {
       </div>
 
       <div className="mt-8">
-        <Link 
-          href="/app/home" 
-          className="w-full py-4 bg-primary text-white rounded-xl font-bold hover:bg-primary/90 transition-colors block text-center"
+        <button 
+          onClick={handleAddToCart}
+          className="w-full py-4 bg-primary text-white rounded-xl font-bold hover:bg-primary/90 transition-colors"
         >
-          Add to Cart →
-        </Link>
+          Add to Cart
+        </button>
       </div>
     </div>
   );
