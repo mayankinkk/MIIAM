@@ -3,14 +3,12 @@
 import { useState } from "react";
 import Link from "next/link";
 import ImageUpload from "@/components/ImageUpload";
-
-export default function PrintingPage() {
 import { useCartStore } from "@/lib/store/cartStore";
 import { useLocationStore } from "@/lib/store/locationStore";
 import { useServiceSettingsStore } from "@/lib/store/serviceSettingsStore";
 
 export default function PrintingPage() {
-  const [file, setFile] = useState<string | null>(null);
+  const [file, setFile] = useState<string>("");
   const [colorMode, setColorMode] = useState<"bw" | "color">("bw");
   const [sides, setSides] = useState<"single" | "double">("single");
   const [pages, setPages] = useState<number>(1);
@@ -29,12 +27,13 @@ export default function PrintingPage() {
     
     cartStore.addItem({
       id: `print_${Date.now()}`,
+      menu_item_id: `print_${Date.now()}`,
+      vendor_id: "printing_service",
+      vendor_name: "MIIAM Printing",
       name: `Printing (${colorMode}, ${sides})`,
       price: totalPrice,
-      quantity: 1,
       image_url: file,
-      vendor_id: "printing_service"
-    });
+    }, 1);
     alert("Added to cart!");
   };
 
@@ -58,8 +57,8 @@ export default function PrintingPage() {
       <div className="bg-surface-container rounded-2xl p-6 shadow-sm border border-outline-variant/10 space-y-6">
         <ImageUpload 
           label="Upload PDF or Image"
-          onUpload={(url) => setFile(url)}
-          currentImage={file}
+          onChange={(url) => setFile(url)}
+          value={file}
         />
         
         <div className="space-y-4">
