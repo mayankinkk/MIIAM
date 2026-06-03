@@ -58,11 +58,36 @@ export default function AdminPrintingPage() {
     return matchesSearch && matchesStatus;
   });
 
+  const todayStr = new Date().toDateString();
+  const todayOrders = orders.filter(o => new Date(o.placed_at).toDateString() === todayStr);
+  const bwOrders = orders.filter(o => {
+    const item = o.order_items?.[0];
+    try { const s = JSON.parse(item?.special_notes || "{}"); return s.colorMode === "bw"; } catch { return false; }
+  });
+  const colorOrders = orders.filter(o => {
+    const item = o.order_items?.[0];
+    try { const s = JSON.parse(item?.special_notes || "{}"); return s.colorMode === "color"; } catch { return false; }
+  });
+  const a4Orders = orders.filter(o => {
+    const item = o.order_items?.[0];
+    try { const s = JSON.parse(item?.special_notes || "{}"); return s.paperSize === "a4"; } catch { return false; }
+  });
+  const a3Orders = orders.filter(o => {
+    const item = o.order_items?.[0];
+    try { const s = JSON.parse(item?.special_notes || "{}"); return s.paperSize === "a3"; } catch { return false; }
+  });
+
   const stats = {
     total: orders.length,
     pending: orders.filter(o => o.status === "pending" || o.status === "processing").length,
     delivered: orders.filter(o => o.status === "delivered").length,
     cancelled: orders.filter(o => o.status === "cancelled").length,
+    today: todayOrders.length,
+    bw: bwOrders.length,
+    color: colorOrders.length,
+    a4: a4Orders.length,
+    a3: a3Orders.length,
+    avgOrderValue: orders.length > 0 ? (orders.reduce((s, o) => s + (o.total_amount || 0), 0) / orders.length).toFixed(0) : "0",
   };
 
   if (loading) {
@@ -108,9 +133,9 @@ export default function AdminPrintingPage() {
         )}
       </div>
 
-      <div className="grid grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-4 gap-4 mb-4">
         <div className="bg-white p-4 rounded-xl border border-slate-100">
-          <p className="text-slate-400 text-xs font-bold">TOTAL ORDERS</p>
+          <p className="text-slate-400 text-xs font-bold">TOTAL</p>
           <p className="text-2xl font-black text-slate-800 mt-1">{stats.total}</p>
         </div>
         <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-200">
@@ -124,6 +149,29 @@ export default function AdminPrintingPage() {
         <div className="bg-red-50 p-4 rounded-xl border border-red-200">
           <p className="text-red-600 text-xs font-bold">CANCELLED</p>
           <p className="text-2xl font-black text-red-700 mt-1">{stats.cancelled}</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-5 gap-3 mb-6">
+        <div className="bg-indigo-50 p-3 rounded-xl border border-indigo-100">
+          <p className="text-indigo-500 text-[10px] font-bold">TODAY</p>
+          <p className="text-xl font-black text-indigo-700">{stats.today}</p>
+        </div>
+        <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
+          <p className="text-slate-400 text-[10px] font-bold">B&W</p>
+          <p className="text-xl font-black text-slate-700">{stats.bw}</p>
+        </div>
+        <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
+          <p className="text-slate-400 text-[10px] font-bold">COLOR</p>
+          <p className="text-xl font-black text-slate-700">{stats.color}</p>
+        </div>
+        <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
+          <p className="text-slate-400 text-[10px] font-bold">A4/A3</p>
+          <p className="text-xl font-black text-slate-700">{stats.a4}/{stats.a3}</p>
+        </div>
+        <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
+          <p className="text-slate-400 text-[10px] font-bold">AVG ORDER</p>
+          <p className="text-xl font-black text-slate-700">₹{stats.avgOrderValue}</p>
         </div>
       </div>
 

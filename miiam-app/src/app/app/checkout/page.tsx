@@ -217,10 +217,6 @@ export default function CheckoutPage() {
         return;
       }
       }
-      if (unserviceable.length > 0) {
-        addToast(`Some items (${unserviceable.map(v => v.name).join(", ")}) are not deliverable at your location. Please remove them to proceed.`, "error");
-        return;
-      }
     }
     
     setPlacing(true);
