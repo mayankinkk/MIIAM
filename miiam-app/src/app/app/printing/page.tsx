@@ -2,10 +2,12 @@
 
 import { useState, useRef } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useLocationStore } from "@/lib/store/locationStore";
 import { useServiceSettingsStore } from "@/lib/store/serviceSettingsStore";
+import { PRINTING_VENDOR_ID } from "@/lib/constants";
 
 interface UploadedFile {
   id: string;
@@ -33,6 +35,7 @@ export default function PrintingPage() {
   const [paperSize, setPaperSize] = useState<"a4" | "a3">("a4");
   const [orientation, setOrientation] = useState<"portrait" | "landscape">("portrait");
   const [paperType, setPaperType] = useState<"standard" | "glossy">("standard");
+  const router = useRouter();
   const cartStore = useCartStore();
   const locationStore = useLocationStore();
   const serviceSettings = useServiceSettingsStore();
@@ -87,16 +90,31 @@ export default function PrintingPage() {
     if (files.length === 0) { alert("Please upload at least one file"); return; }
     if (!isEnabled) { alert("Printing service is currently unavailable"); return; }
     
+    const settings = {
+      pages,
+      copies,
+      colorMode,
+      sides,
+      paperSize,
+      orientation,
+      paperType,
+      perPagePrice,
+      subtotal,
+      fileUrls: files.map(f => f.url),
+      fileNames: files.map(f => f.name),
+    };
+    
     cartStore.addItem({
       id: `print_${Date.now()}`,
       menu_item_id: `print_${Date.now()}`,
-      vendor_id: "printing_service",
-      vendor_name: "MIIAM Printing",
-      name: `Printing (${colorMode}, ${sides})`,
+      vendor_id: PRINTING_VENDOR_ID,
+      vendor_name: "MIIAM Print Store",
+      name: `Print (${pages}pg × ${copies}cp · ${colorMode})`,
       price: totalPrice,
       image_url: files[0].url,
+      special_notes: JSON.stringify(settings),
     }, 1);
-    alert("Added to cart!");
+    router.push("/app/cart");
   };
 
   if (!isEnabled) {

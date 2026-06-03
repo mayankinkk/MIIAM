@@ -10,6 +10,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
+import { PRINTING_VENDOR_ID } from "@/lib/constants";
 
 
 export default function CartPage() {
@@ -203,7 +204,9 @@ export default function CartPage() {
                 </div>
                 <div className="flex items-center gap-2 mb-4">
                   <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center shrink-0">
-                    <span className="material-symbols-outlined text-white text-[18px]">restaurant</span>
+                    <span className="material-symbols-outlined text-white text-[18px]">
+                      {vendor.id === PRINTING_VENDOR_ID ? "print" : "restaurant"}
+                    </span>
                   </div>
                   <div>
                     <h2 className="text-base font-bold tracking-tight">{vendor.name}</h2>
@@ -226,7 +229,13 @@ export default function CartPage() {
                       {/* Details */}
                       <div className="flex-1 min-w-0">
                         <h3 className="font-bold text-on-surface text-sm truncate">{item.name}</h3>
-                        {item.special_notes && <p className="text-xs text-on-surface-variant truncate">{item.special_notes}</p>}
+                        {item.special_notes && item.vendor_id === PRINTING_VENDOR_ID ? (
+                          <p className="text-xs text-on-surface-variant truncate">
+                            {(() => { try { const s = JSON.parse(item.special_notes!); return `${s.pages}pg × ${s.copies}cp · ${s.colorMode === "bw" ? "B&W" : "Color"} · ${s.paperSize?.toUpperCase()}`; } catch { return item.special_notes; } })()}
+                          </p>
+                        ) : item.special_notes ? (
+                          <p className="text-xs text-on-surface-variant truncate">{item.special_notes}</p>
+                        ) : null}
                         <span className="text-primary font-bold text-sm">₹{item.price.toFixed(2)}</span>
                       </div>
                       {/* Controls */}

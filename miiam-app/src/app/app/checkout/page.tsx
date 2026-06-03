@@ -10,7 +10,7 @@ import { useLocationStore } from "@/lib/store/locationStore";
 import AddressPickerSheet, { type SelectedAddress } from "@/components/AddressPickerSheet";
 import { RiderTipSelector, TipThankYou } from "@/components/RiderTip";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import { SERVICES_VENDOR_ID } from "@/lib/constants";
+import { SERVICES_VENDOR_ID, PRINTING_VENDOR_ID } from "@/lib/constants";
 
 interface PromoCode {
   code: string;
@@ -466,6 +466,49 @@ export default function CheckoutPage() {
                       <div className="font-bold text-primary">₹{item.price} x {item.quantity}</div>
                     </div>
                   ))}
+                </div>
+              </section>
+            )}
+
+            {/* Print Order Summary */}
+            {items.some(i => i.vendor_id === PRINTING_VENDOR_ID) && (
+              <section className="bg-white p-8 rounded-lg shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-700">
+                    <span className="material-symbols-outlined">print</span>
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold">Print Order</h2>
+                    <p className="text-sm text-on-surface-variant">We'll print & deliver in minutes</p>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  {items.filter(i => i.vendor_id === PRINTING_VENDOR_ID).map(item => {
+                    let settings: Record<string, any> = {};
+                    try { if (item.special_notes) settings = JSON.parse(item.special_notes); } catch {}
+                    return (
+                      <div key={item.menu_item_id} className="p-4 rounded-lg border border-outline-variant/20 bg-indigo-50/30">
+                        <div className="flex justify-between items-start mb-2">
+                          <h3 className="font-bold">{item.name}</h3>
+                          <div className="font-bold text-indigo-700">₹{item.price} x {item.quantity}</div>
+                        </div>
+                        <div className="flex flex-wrap gap-2 text-xs">
+                          {settings.pages && <span className="px-2 py-1 bg-white rounded-lg font-semibold">{settings.pages} pg</span>}
+                          {settings.copies && <span className="px-2 py-1 bg-white rounded-lg font-semibold">{settings.copies} cp</span>}
+                          {settings.colorMode && <span className="px-2 py-1 bg-white rounded-lg font-semibold capitalize">{settings.colorMode === "bw" ? "B&W" : "Color"}</span>}
+                          {settings.paperSize && <span className="px-2 py-1 bg-white rounded-lg font-semibold uppercase">{settings.paperSize}</span>}
+                          {settings.orientation && <span className="px-2 py-1 bg-white rounded-lg font-semibold capitalize">{settings.orientation}</span>}
+                          {settings.paperType && <span className="px-2 py-1 bg-white rounded-lg font-semibold capitalize">{settings.paperType}</span>}
+                          {settings.sides && <span className="px-2 py-1 bg-white rounded-lg font-semibold capitalize">{settings.sides} sided</span>}
+                        </div>
+                        {settings.fileNames && (
+                          <div className="mt-2 text-xs text-on-surface-variant">
+                            Files: {settings.fileNames.join(", ")}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </section>
             )}
