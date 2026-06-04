@@ -6,6 +6,13 @@ import { createClient } from "@/lib/supabase/client";
 import { PRINTING_VENDOR_ID } from "@/lib/constants";
 import type { OrderStatus } from "@/lib/types";
 import { getPrintingPricing, savePrintingPricing, type PrintingPricing } from "@/lib/printing-pricing";
+import {
+  ADDON_CATALOG,
+  DEFAULT_ADDON_PRICING,
+  getAddOnPricing,
+  saveAddOnPricing,
+  type AddOnPricing,
+} from "@/lib/printing-addons";
 
 const supabase = createClient();
 
@@ -26,6 +33,8 @@ export default function AdminPrintingPage() {
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
   const [showPricing, setShowPricing] = useState(false);
   const [pricing, setPricing] = useState<PrintingPricing>(getPrintingPricing());
+  const [showAddons, setShowAddons] = useState(false);
+  const [addOnPricing, setAddOnPricing] = useState<AddOnPricing>(getAddOnPricing());
 
   useEffect(() => {
     loadOrders();
@@ -34,6 +43,11 @@ export default function AdminPrintingPage() {
   const handleSavePricing = () => {
     savePrintingPricing(pricing);
     setShowPricing(false);
+  };
+
+  const handleSaveAddons = () => {
+    saveAddOnPricing(addOnPricing);
+    setShowAddons(false);
   };
 
   async function loadOrders() {
@@ -158,6 +172,81 @@ export default function AdminPrintingPage() {
             <div className="flex gap-2 pt-2">
               <button onClick={handleSavePricing} className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-bold hover:bg-indigo-700">Save</button>
               <button onClick={() => { setPricing(getPrintingPricing()); setShowPricing(false); }} className="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-sm font-bold">Cancel</button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Add-on & Rush Pricing */}
+      <div className="mb-4">
+        <button onClick={() => setShowAddons(!showAddons)} className="flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-slate-800">
+          <span className="material-symbols-outlined text-lg">add_circle</span>
+          Add-on & rush pricing
+          <span className="material-symbols-outlined text-sm">{showAddons ? "expand_less" : "expand_more"}</span>
+        </button>
+        {showAddons && (
+          <div className="mt-2 bg-white rounded-xl border border-slate-100 p-4 max-w-2xl space-y-4">
+            <div>
+              <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Rush tier multipliers</p>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="flex items-center justify-between">
+                  <label className="text-sm text-slate-600">Rush 30-min (×)</label>
+                  <input
+                    type="number"
+                    step="0.05"
+                    min={1}
+                    value={addOnPricing.rush30Multiplier}
+                    onChange={(e) => setAddOnPricing({ ...addOnPricing, rush30Multiplier: Math.max(1, parseFloat(e.target.value) || 1) })}
+                    className="w-24 px-3 py-1.5 border border-slate-200 rounded-lg text-sm text-right"
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <label className="text-sm text-slate-600">Rush 15-min (×)</label>
+                  <input
+                    type="number"
+                    step="0.05"
+                    min={1}
+                    value={addOnPricing.rush15Multiplier}
+                    onChange={(e) => setAddOnPricing({ ...addOnPricing, rush15Multiplier: Math.max(1, parseFloat(e.target.value) || 1) })}
+                    className="w-24 px-3 py-1.5 border border-slate-200 rounded-lg text-sm text-right"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Add-on prices (₹)</p>
+              <div className="grid grid-cols-2 gap-2">
+                {ADDON_CATALOG.map((a) => (
+                  <div key={a.id} className="flex items-center justify-between">
+                    <label className="text-xs text-slate-600 truncate pr-2">{a.label} {a.unitLabel}</label>
+                    <input
+                      type="number"
+                      step="0.5"
+                      min={0}
+                      value={addOnPricing[a.pricingKey] as number}
+                      onChange={(e) =>
+                        setAddOnPricing({
+                          ...addOnPricing,
+                          [a.pricingKey]: Math.max(0, parseFloat(e.target.value) || 0),
+                        })
+                      }
+                      className="w-20 px-2 py-1 border border-slate-200 rounded-lg text-xs text-right"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex gap-2 pt-2">
+              <button onClick={handleSaveAddons} className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-bold hover:bg-indigo-700">Save</button>
+              <button onClick={() => { setAddOnPricing(getAddOnPricing()); setShowAddons(false); }} className="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-sm font-bold">Cancel</button>
+              <button
+                onClick={() => setAddOnPricing(DEFAULT_ADDON_PRICING)}
+                className="px-4 py-2 bg-amber-50 text-amber-700 rounded-lg text-sm font-bold"
+              >
+                Reset to defaults
+              </button>
             </div>
           </div>
         )}

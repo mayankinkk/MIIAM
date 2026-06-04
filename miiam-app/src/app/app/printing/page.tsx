@@ -9,9 +9,18 @@ import { useServiceSettingsStore } from "@/lib/store/serviceSettingsStore";
 import { usePrintLibraryStore } from "@/lib/store/printLibraryStore";
 import { usePrintSettingsStore, QUALITY_MULTIPLIER } from "@/lib/store/printSettingsStore";
 import { usePrintDraftStore } from "@/lib/store/printDraftStore";
+import { usePrintAddonsStore } from "@/lib/store/printAddonsStore";
 import { useToastStore } from "@/lib/store/toastStore";
 import { PRINTING_VENDOR_ID } from "@/lib/constants";
 import { getPrintingPricing } from "@/lib/printing-pricing";
+import {
+  ADDON_CATALOG,
+  calculateAddOnCost,
+  getAddOnPricing,
+  rushEtaMinutes,
+  rushLabel,
+  rushMultiplier,
+} from "@/lib/printing-addons";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import PrintHero from "@/components/print/PrintHero";
 import PrintFirstOrderCoupon from "@/components/print/PrintFirstOrderCoupon";
@@ -19,6 +28,7 @@ import WhyPrintWithMiiam from "@/components/print/WhyPrintWithMiiam";
 import PrintTestimonials from "@/components/print/PrintTestimonials";
 import FilePreviewModal, { type PreviewFile } from "@/components/print/FilePreviewModal";
 import FileSettingsRow, { type PrintFileItem, DEFAULT_FILE_SETTINGS } from "@/components/print/FileSettingsRow";
+import PrintAddOns from "@/components/print/PrintAddOns";
 import {
   PRINT_ALLOWED_TYPES,
   PRINT_MAX_FILE_SIZE,
@@ -257,6 +267,8 @@ export default function PrintingPage() {
       : f.pageCount;
     return perPage * pagesInRange * f.settings.copies;
   });
+  const printAddons = usePrintAddonsStore();
+  const totalCopies = files.reduce((acc, f) => acc + f.settings.copies, 0);
   const totalPrice = fileSubtotals.reduce((acc, n) => acc + n, 0);
   const totalPagesEffective = files.reduce(
     (acc, f) =>
@@ -267,6 +279,23 @@ export default function PrintingPage() {
         f.settings.copies,
     0
   );
+
+  const addOnPricing =
+    typeof window === "undefined"
+      ? {
+          coverPage: 10, collatePerPage: 0.5, holePunch2: 8, holePunch3: 10, holePunch4: 12,
+          foldBi: 5, foldTri: 8, bindingSpiral: 35, bindingSoft: 80, bindingHard: 150,
+          laminationA4: 25, laminationId: 15, rush30Multiplier: 1.4, rush15Multiplier: 1.85,
+        }
+      : getAddOnPricing();
+  const addOnsTotal = printAddons.selected.reduce(
+    (acc, id) => acc + calculateAddOnCost(id, addOnPricing, { totalPages: totalPagesEffective, copies: totalCopies }),
+    0
+  );
+  const rushMult = rushMultiplier(printAddons.rushTier, addOnPricing);
+  const baseSubtotal = totalPrice + addOnsTotal;
+  const grandTotal = baseSubtotal * rushMult;
+  const etaMinutes = rushEtaMinutes(printAddons.rushTier);
 
   const handleAddToCart = () => {
     if (files.length === 0) { alert("Please upload at least one file"); return; }
@@ -279,8 +308,17 @@ export default function PrintingPage() {
         pageCount: f.pageCount,
         ...f.settings,
       })),
+      addOns: printAddons.selected.map((id) => {
+        const desc = ADDON_CATALOG.find((a) => a.id === id);
+        return { id, label: desc?.label || id };
+      }),
+      rushTier: printAddons.rushTier,
+      rushLabel: rushLabel(printAddons.rushTier),
+      rushMultiplier: rushMult,
+      etaMinutes,
       totalPages: totalPagesEffective,
-      subtotal: totalPrice,
+      subtotal: grandTotal,
+      baseSubtotal,
     };
 
     cartStore.addItem({
@@ -288,8 +326,8 @@ export default function PrintingPage() {
       menu_item_id: `print_${Date.now()}`,
       vendor_id: PRINTING_VENDOR_ID,
       vendor_name: "MIIAM Print Store",
-      name: `Print (${totalPagesEffective}pg · ${files.length} file${files.length > 1 ? "s" : ""})`,
-      price: totalPrice,
+      name: `Print (${totalPagesEffective}pg · ETA ${etaMinutes}m)`,
+      price: grandTotal,
       image_url: files[0].url,
       special_notes: JSON.stringify(settings),
     }, 1);
@@ -314,6 +352,7 @@ export default function PrintingPage() {
     if (draft) {
       clearDraft();
     }
+    printAddons.clear();
     router.push("/app/cart");
   };
 
@@ -523,9 +562,17 @@ export default function PrintingPage() {
         )}
 
         {step === 2 && (
-          <div className="bg-surface-container rounded-2xl p-6 shadow-sm border border-outline-variant/10 space-y-6">
-            <div className="text-sm text-on-surface-variant space-y-2">
-              <p className="font-bold text-on-surface">Per-file summary</p>
+          <div className="space-y-4">
+            <div className="bg-surface-container rounded-2xl p-6 shadow-sm border border-outline-variant/10 space-y-3">
+              <div className="flex items-center justify-between">
+                <p className="font-bold text-on-surface">Per-file summary</p>
+                <button
+                  onClick={() => setStep(1)}
+                  className="text-primary text-xs font-bold"
+                >
+                  ← Edit
+                </button>
+              </div>
               {files.map((f) => (
                 <div key={f.id} className="flex items-center justify-between p-2 bg-surface-container-high rounded-lg text-xs">
                   <span className="truncate flex-1 font-bold text-on-surface">{f.name}</span>
@@ -534,20 +581,25 @@ export default function PrintingPage() {
                   </span>
                 </div>
               ))}
-              <button
-                onClick={() => setStep(1)}
-                className="text-primary text-xs font-bold"
-              >
-                ← Edit per-file settings
-              </button>
             </div>
 
-            <div className="pt-4 border-t border-outline-variant/10 space-y-2 text-sm">
+            <PrintAddOns totalPages={totalPagesEffective} copies={totalCopies} />
+
+            <div className="bg-surface-container rounded-2xl p-6 shadow-sm border border-outline-variant/10 space-y-2 text-sm">
               <div className="flex justify-between"><span className="text-on-surface-variant">Effective pages</span><span className="font-bold">{totalPagesEffective}</span></div>
-              <div className="flex justify-between"><span className="text-on-surface-variant">Subtotal</span><span className="font-bold">₹{totalPrice.toFixed(2)}</span></div>
+              <div className="flex justify-between"><span className="text-on-surface-variant">Print subtotal</span><span className="font-bold">₹{totalPrice.toFixed(2)}</span></div>
+              {addOnsTotal > 0 && (
+                <div className="flex justify-between"><span className="text-on-surface-variant">Add-ons</span><span className="font-bold">₹{addOnsTotal.toFixed(2)}</span></div>
+              )}
+              {rushMult !== 1 && (
+                <div className="flex justify-between">
+                  <span className="text-on-surface-variant">{rushLabel(printAddons.rushTier)} (×{rushMult.toFixed(2)})</span>
+                  <span className="font-bold">+{Math.round((rushMult - 1) * 100)}%</span>
+                </div>
+              )}
               <div className="pt-2 border-t border-outline-variant/10 flex justify-between text-base">
-                <span className="font-bold">Total</span>
-                <span className="text-xl font-black text-primary">₹{totalPrice.toFixed(2)}</span>
+                <span className="font-bold">Total · ETA {etaMinutes} min</span>
+                <span className="text-xl font-black text-primary">₹{grandTotal.toFixed(2)}</span>
               </div>
             </div>
 
@@ -574,10 +626,31 @@ export default function PrintingPage() {
                   </div>
                 ))}
               </div>
+              {printAddons.selected.length > 0 && (
+                <div className="pt-2 space-y-1">
+                  <p className="text-xs font-bold text-on-surface-variant">Add-ons</p>
+                  {printAddons.selected.map((id) => {
+                    const desc = ADDON_CATALOG.find((a) => a.id === id);
+                    const cost = calculateAddOnCost(id, addOnPricing, { totalPages: totalPagesEffective, copies: totalCopies });
+                    return (
+                      <div key={id} className="flex items-center justify-between text-xs">
+                        <span className="text-on-surface-variant">+ {desc?.label}</span>
+                        <span className="font-bold">₹{cost.toFixed(2)}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+              {printAddons.rushTier !== "standard" && (
+                <div className="flex justify-between text-xs">
+                  <span className="text-on-surface-variant">{rushLabel(printAddons.rushTier)}</span>
+                  <span className="font-bold text-primary">ETA {etaMinutes} min</span>
+                </div>
+              )}
               <div className="pt-3 border-t border-outline-variant/10 space-y-1">
                 <div className="flex justify-between text-lg pt-1">
                   <span className="font-black">Total</span>
-                  <span className="text-2xl font-black text-primary">₹{totalPrice.toFixed(2)}</span>
+                  <span className="text-2xl font-black text-primary">₹{grandTotal.toFixed(2)}</span>
                 </div>
               </div>
             </div>
