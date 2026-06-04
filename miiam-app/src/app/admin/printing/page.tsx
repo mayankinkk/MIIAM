@@ -152,6 +152,22 @@ export default function AdminPrintingPage() {
           <h1 className="text-2xl font-black text-slate-800">Print Store Orders</h1>
           <p className="text-slate-500 text-sm">Manage print delivery orders</p>
         </div>
+        <div className="flex gap-2">
+          <Link
+            href="/admin/printing/kanban"
+            className="flex items-center gap-1.5 px-3 py-2 bg-indigo-50 text-indigo-700 rounded-lg text-sm font-bold hover:bg-indigo-100"
+          >
+            <span className="material-symbols-outlined text-base">view_kanban</span>
+            Kanban
+          </Link>
+          <Link
+            href="/admin/printing/analytics"
+            className="flex items-center gap-1.5 px-3 py-2 bg-emerald-50 text-emerald-700 rounded-lg text-sm font-bold hover:bg-emerald-100"
+          >
+            <span className="material-symbols-outlined text-base">monitoring</span>
+            Analytics
+          </Link>
+        </div>
       </div>
 
       {/* Pricing Settings */}

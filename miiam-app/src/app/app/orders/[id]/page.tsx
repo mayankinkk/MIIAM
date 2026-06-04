@@ -609,22 +609,56 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
             {order.vendor_id === PRINTING_VENDOR_ID && order.items?.map((item: any, idx: number) => {
               let settings: Record<string, any> = {};
               try { if (item.special_notes) settings = JSON.parse(item.special_notes); } catch {}
-              if (!settings.fileUrls?.length) return null;
+              const fileUrls: string[] = settings.fileUrls || [];
+              const fileNames: string[] = settings.fileNames || [];
+              if (fileUrls.length === 0 && fileNames.length === 0) return null;
+              const fileStatuses: boolean[] = settings.fileStatuses || [];
+              const printedCount = fileStatuses.filter(Boolean).length;
+
               return (
                 <div key={idx} className="bg-surface-container rounded-xl p-6 space-y-3">
                   <h3 className="font-extrabold text-on-surface flex items-center gap-2">
                     <span className="material-symbols-outlined text-indigo-600">description</span>
                     Print Files
+                    {fileStatuses.length > 0 && (
+                      <span className="ml-auto text-xs font-bold text-on-surface-variant">
+                        {printedCount}/{fileStatuses.length} printed
+                      </span>
+                    )}
                   </h3>
+                  {printedCount > 0 && fileStatuses.length > 0 && (
+                    <div className="h-1.5 bg-indigo-100 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-emerald-500 transition-all"
+                        style={{ width: `${(printedCount / fileStatuses.length) * 100}%` }}
+                      />
+                    </div>
+                  )}
                   <div className="space-y-2">
-                    {settings.fileNames?.map((name: string, fi: number) => (
-                      <div key={fi} className="flex items-center gap-3 bg-white/50 rounded-xl p-3">
-                        <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
-                          <span className="material-symbols-outlined text-indigo-600 text-sm">description</span>
+                    {(fileNames.length > 0 ? fileNames : fileUrls).map((name: string, fi: number) => {
+                      const isPrinted = fileStatuses[fi] === true;
+                      return (
+                        <div key={fi} className="flex items-center gap-3 bg-white/50 rounded-xl p-3">
+                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                            isPrinted ? "bg-emerald-100" : "bg-indigo-100"
+                          }`}>
+                            <span className={`material-symbols-outlined text-sm ${
+                              isPrinted ? "text-emerald-600" : "text-indigo-600"
+                            }`}>
+                              {isPrinted ? "check_circle" : "description"}
+                            </span>
+                          </div>
+                          <span className="text-sm text-on-surface truncate flex-1">{name}</span>
+                          {fileStatuses.length > 0 && (
+                            <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${
+                              isPrinted ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"
+                            }`}>
+                              {isPrinted ? "PRINTED" : "IN QUEUE"}
+                            </span>
+                          )}
                         </div>
-                        <span className="text-sm text-on-surface truncate flex-1">{name}</span>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                   <div className="flex flex-wrap gap-2 pt-1">
                     {settings.pages && <span className="px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-semibold">{settings.pages} pages</span>}
@@ -634,6 +668,16 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                     {settings.orientation && <span className="px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-semibold capitalize">{settings.orientation}</span>}
                     {settings.paperType && <span className="px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-semibold capitalize">{settings.paperType}</span>}
                     {settings.sides && <span className="px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-semibold capitalize">{settings.sides} sided</span>}
+                    {settings.addOns && settings.addOns.length > 0 && (
+                      <span className="px-3 py-1 bg-purple-50 text-purple-700 rounded-full text-xs font-semibold">
+                        +{settings.addOns.length} add-on{settings.addOns.length > 1 ? "s" : ""}
+                      </span>
+                    )}
+                    {settings.rushTier && settings.rushTier !== "standard" && (
+                      <span className="px-3 py-1 bg-rose-50 text-rose-700 rounded-full text-xs font-semibold">
+                        ⚡ {settings.rushLabel || settings.rushTier}
+                      </span>
+                    )}
                   </div>
                 </div>
               );
