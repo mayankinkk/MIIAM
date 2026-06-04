@@ -13,15 +13,14 @@
 -- this single menu_item row and just carry different settings in the
 -- special_notes payload.
 
-INSERT INTO public.menu_items (id, vendor_id, name, description, price, image_url, is_veg, is_available)
+INSERT INTO public.menu_items (id, vendor_id, name, description, price, category, is_veg)
 VALUES (
   'a1111111-1111-4000-8000-000000000001',
   'f1111111-1111-4000-8000-000000000000',
   'Print Service',
   'Custom print job — B&W, colour, passport photos, binding, lamination and more. Settings configured per order.',
   0,
-  '/print-icon.png',
-  NULL,
-  true
+  'print',
+  NULL
 )
 ON CONFLICT (id) DO NOTHING;
