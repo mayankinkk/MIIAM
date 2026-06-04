@@ -173,6 +173,7 @@ const en = {
     referralTitle: "Refer & earn free pages",
     referralDesc: "Share your code. Each friend who prints = 5 free pages for you.",
     referralLinkLabel: "Referral link",
+    bulkTitle: "Quick copies",
   },
 };
 

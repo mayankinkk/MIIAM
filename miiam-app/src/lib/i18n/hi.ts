@@ -175,6 +175,7 @@ const hi: Translations = {
     referralTitle: "रेफर करें, मुफ्त पेज कमाएँ",
     referralDesc: "अपना कोड शेयर करें। हर दोस्त की प्रिंट पर आपको 5 मुफ्त पेज।",
     referralLinkLabel: "रेफरल लिंक",
+    bulkTitle: "त्वरित कॉपी",
   },
 };
 

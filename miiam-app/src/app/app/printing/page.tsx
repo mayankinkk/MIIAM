@@ -30,6 +30,7 @@ import FilePreviewModal, { type PreviewFile } from "@/components/print/FilePrevi
 import FileSettingsRow, { type PrintFileItem, DEFAULT_FILE_SETTINGS } from "@/components/print/FileSettingsRow";
 import PrintAddOns from "@/components/print/PrintAddOns";
 import PrintReferral from "@/components/print/PrintReferral";
+import BulkOrderShortcuts from "@/components/print/BulkOrderShortcuts";
 import {
   PRINT_ALLOWED_TYPES,
   PRINT_MAX_FILE_SIZE,
@@ -529,6 +530,17 @@ export default function PrintingPage() {
                 </div>
 
                 <div className="space-y-2">
+                  {files.length > 0 && (
+                    <BulkOrderShortcuts
+                      copies={files[0]?.settings.copies || 1}
+                      onChange={(n) => {
+                        if (files.length === 0) return;
+                        const updated = { ...files[0], settings: { ...files[0].settings, copies: n } };
+                        setFiles((prev) => prev.map((f) => ({ ...f, settings: { ...f.settings, copies: n } })));
+                        updateFile(files[0].id, updated);
+                      }}
+                    />
+                  )}
                   {files.map((f, idx) => (
                     <FileSettingsRow
                       key={f.id}

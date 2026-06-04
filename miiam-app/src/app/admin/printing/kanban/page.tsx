@@ -42,19 +42,19 @@ export default function AdminPrintingKanban() {
 
     await supabase.from("orders").update({ status: newStatus }).eq("id", orderId);
     if (order.user_id) {
-      const notifMap: Record<string, { title: string; body: string }> = {
-        processing: { title: "Printing in Progress 🖨️", body: "Your print order is being processed." },
-        ready_for_pickup: { title: "Print Order Ready 📦", body: "Your prints are ready! Waiting for pickup." },
-        on_the_way: { title: "Print Order On the Way 🛵", body: "Your prints are on their way!" },
-        delivered: { title: "Print Delivered ✅", body: "Your prints have been delivered." },
-        cancelled: { title: "Print Order Cancelled ❌", body: "Your print order has been cancelled." },
+      const eventMap: Record<string, string> = {
+        processing: "print_started",
+        ready_for_pickup: "print_ready",
+        on_the_way: "out_for_delivery",
+        delivered: "delivered",
+        cancelled: "print_failed",
       };
-      const notif = notifMap[newStatus];
-      if (notif) {
-        await fetch("/api/notify", {
+      const event = eventMap[newStatus];
+      if (event) {
+        await fetch("/api/printing/notify", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ user_id: order.user_id, ...notif, type: "order" }),
+          body: JSON.stringify({ user_id: order.user_id, event, order_id: orderId }),
         });
       }
     }
