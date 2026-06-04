@@ -151,7 +151,7 @@ export default function PassportPage() {
     <div className="min-h-screen bg-background text-on-background">
       <PrintHero showBackLink backHref="/app/printing" />
 
-      <div className="p-6 -mt-4 space-y-4">
+      <div className="p-6 -mt-4 space-y-4 pb-24">
         <div className="bg-surface-container rounded-2xl p-5 border border-outline-variant/10 shadow-sm">
           <div className="flex items-center gap-2 mb-3">
             <span className="material-symbols-outlined text-primary">face</span>

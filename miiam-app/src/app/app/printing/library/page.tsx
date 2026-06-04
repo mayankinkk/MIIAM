@@ -71,7 +71,7 @@ export default function PrintLibraryPage() {
     <div className="min-h-screen bg-background text-on-background">
       <PrintHero />
 
-      <div className="p-6 -mt-4 space-y-4">
+      <div className="p-6 -mt-4 space-y-4 pb-24">
         <div className="bg-surface-container rounded-2xl p-5 border border-outline-variant/10 shadow-sm">
           <div className="flex items-center justify-between mb-1">
             <h2 className="text-lg font-black text-on-surface">{t.print.libraryTitle}</h2>

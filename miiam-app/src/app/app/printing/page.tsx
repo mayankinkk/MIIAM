@@ -403,7 +403,7 @@ export default function PrintingPage() {
     <div className="min-h-screen bg-background text-on-background overflow-x-hidden">
       <PrintHero />
 
-      <div className="px-3 sm:px-6 py-4 sm:py-6 -mt-4 space-y-4">
+      <div className="px-3 sm:px-6 py-4 sm:py-6 -mt-4 space-y-4 pb-24">
         {/* Draft prompt */}
         {draft && files.length === 0 && !draftPromptShown && (
           <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-start gap-3">
