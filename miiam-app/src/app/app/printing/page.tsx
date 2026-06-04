@@ -428,13 +428,22 @@ export default function PrintingPage() {
               );
             })}
           </div>
-          <Link
-            href="/app/printing/library"
-            className="flex items-center gap-1 text-xs font-bold text-primary hover:underline"
-          >
-            <span className="material-symbols-outlined text-sm">folder</span>
-            {t.print.libraryTitle}
-          </Link>
+          <div className="flex flex-col items-end gap-1">
+            <Link
+              href="/app/printing/library"
+              className="flex items-center gap-1 text-xs font-bold text-primary hover:underline"
+            >
+              <span className="material-symbols-outlined text-sm">folder</span>
+              {t.print.libraryTitle}
+            </Link>
+            <Link
+              href="/app/printing/passport"
+              className="flex items-center gap-1 text-xs font-bold text-indigo-600 hover:underline"
+            >
+              <span className="material-symbols-outlined text-sm">face</span>
+              Passport / ID Photos
+            </Link>
+          </div>
         </div>
 
         {step === 1 && (
