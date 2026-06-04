@@ -10,7 +10,12 @@ import { useLocationStore } from "@/lib/store/locationStore";
 import AddressPickerSheet, { type SelectedAddress } from "@/components/AddressPickerSheet";
 import { RiderTipSelector, TipThankYou } from "@/components/RiderTip";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import { SERVICES_VENDOR_ID, PRINTING_VENDOR_ID } from "@/lib/constants";
+import { SERVICES_VENDOR_ID, PRINTING_VENDOR_ID, PRINT_MENU_ITEM_ID } from "@/lib/constants";
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+function safeMenuItemId(id: string) {
+  return UUID_RE.test(id) ? id : PRINT_MENU_ITEM_ID;
+}
 
 interface PromoCode {
   code: string;
@@ -264,7 +269,7 @@ export default function CheckoutPage() {
           const { error: itemsError } = await supabase.from("order_items").insert(
             vendorItems.map((i) => ({
               order_id: order.id,
-              menu_item_id: i.menu_item_id,
+              menu_item_id: safeMenuItemId(i.menu_item_id),
               name: i.name,
               quantity: i.quantity,
               unit_price: i.price,

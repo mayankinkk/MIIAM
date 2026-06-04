@@ -3,6 +3,9 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { useToastStore } from "./toastStore";
+import { PRINT_MENU_ITEM_ID } from "@/lib/constants";
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export interface CartItem {
   id: string;
@@ -122,7 +125,13 @@ export const useCartStore = create<CartStore>()(
       merge: (persisted, current) => {
         const p = persisted as { items?: unknown };
         if (p && isCartItemArray(p.items)) {
-          return { ...current, items: p.items };
+          const items = p.items.map((item) => {
+            if (item.vendor_id === "f1111111-1111-4000-8000-000000000000" && !UUID_RE.test(item.menu_item_id)) {
+              return { ...item, menu_item_id: PRINT_MENU_ITEM_ID };
+            }
+            return item;
+          });
+          return { ...current, items };
         }
         return current;
       },
