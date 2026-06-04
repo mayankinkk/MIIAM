@@ -9,6 +9,7 @@ import { useToastStore } from "@/lib/store/toastStore";
 import BlurImage from "@/components/BlurImage";
 import OrderChatOverlay from "@/components/order/OrderChatOverlay";
 import PrintButton from "@/components/print/PrintButton";
+import RiderMap from "@/components/rider/RiderMap";
 import { useUnreadMessages } from "@/lib/hooks/useUnreadMessages";
 import { PRINTING_VENDOR_ID } from "@/lib/constants";
 
@@ -41,7 +42,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [riderLocation, setRiderLocation] = useState<{lat: number, lng: number} | null>(null);
-  const [trackingInfo, setTrackingInfo] = useState<{ eta: number; distance: string } | null>(null);
+  const [trackingInfo, setTrackingInfo] = useState<{ eta: number; distance: string; leg: "to_pickup" | "to_drop" } | null>(null);
   const [showHelp, setShowHelp] = useState(false);
   const [showCancelReason, setShowCancelReason] = useState(false);
   const [cancelReason, setCancelReason] = useState("");
@@ -356,21 +357,30 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
         <div className="max-w-7xl mx-auto px-6 lg:grid lg:grid-cols-12 lg:gap-10 items-start">
           <div className="lg:col-span-7 space-y-6">
             <div className="relative w-full h-[420px] rounded-xl overflow-hidden shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
-              
+
               {/* ETA Overlay */}
               {trackingInfo && (
                 <div className="absolute top-4 right-4 bg-white/90 backdrop-blur rounded-full px-4 py-3 shadow-lg flex items-center gap-2" style={{ zIndex: 10 }}>
                   <div className="text-center">
                     <p className="text-[10px] text-[#5c403d] font-bold uppercase tracking-wider">ETA</p>
                     <p className="text-xl font-black text-primary leading-none">{trackingInfo.eta} <span className="text-xs">MINS</span></p>
+                    <p className="text-[10px] text-[#5c403d] font-medium">{trackingInfo.distance} km · {trackingInfo.leg === "to_pickup" ? "to pickup" : "to you"}</p>
                   </div>
                 </div>
               )}
 
-              <MainOrderMap
-                orderId={id}
+              <RiderMap
+                dropoff={{
+                  lat: 0, lng: 0,
+                  label: order?.delivery_address || "",
+                  kind: "home",
+                }}
+                pickup={order?.vendor?.address ? {
+                  lat: 0, lng: 0,
+                  label: order.vendor.address,
+                  kind: "vendor",
+                } : null}
                 riderLocation={riderLocation}
-                deliveryAddress={order?.delivery_address}
                 onRouteUpdate={setTrackingInfo}
               />
             </div>
@@ -801,161 +811,6 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
           />
         )}
       </main>
-    </div>
-  );
-}
-
-function MainOrderMap({ orderId, riderLocation, deliveryAddress, onRouteUpdate }: {
-  orderId: string;
-  riderLocation: { lat: number; lng: number } | null;
-  deliveryAddress?: string;
-  onRouteUpdate?: (info: { eta: number; distance: string }) => void;
-}) {
-  const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<any>(null);
-  const riderMarkerRef = useRef<any>(null);
-  const destLatLngRef = useRef<[number, number] | null>(null);
-  const routeLayerRef = useRef<any[]>([]);
-  const leafletRef = useRef<any>(null);
-
-  useEffect(() => {
-    if (!mapRef.current) return;
-    let isMounted = true;
-
-    async function initMap() {
-      const L = await import('leaflet');
-      leafletRef.current = L;
-      await import('leaflet/dist/leaflet.css');
-
-      if (!isMounted || !mapRef.current) return;
-
-      // Default: New Delhi
-      let centerLat = 28.6139;
-      let centerLng = 77.2090;
-
-      const map = L.map(mapRef.current, { zoomControl: false }).setView([centerLat, centerLng], 14);
-      L.control.zoom({ position: 'bottomright' }).addTo(map);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors',
-        maxZoom: 18,
-      }).addTo(map);
-      mapInstanceRef.current = map;
-
-      const homeIcon = L.divIcon({
-        className: '',
-        html: `<div style="position:relative;width:44px;height:44px">
-          <div style="position:absolute;inset:0;background:rgba(186,0,28,0.15);border-radius:50%;animation:pulse-ring 1.4s ease-out infinite"></div>
-          <div style="position:absolute;inset:4px;background:#ba001c;border-radius:50%;border:3px solid white;box-shadow:0 3px 10px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:18px;">🏠</div>
-        </div>`,
-        iconSize: [44, 44],
-        iconAnchor: [22, 44],
-      });
-
-      // Geocode delivery address to place home pin
-      if (deliveryAddress) {
-        try {
-          // Add India fallback for better search accuracy
-          const searchAddress = deliveryAddress.toLowerCase().includes('india') ? deliveryAddress : `${deliveryAddress}, India`;
-          const res = await fetch(
-            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchAddress)}&limit=1`,
-            { headers: { 'Accept-Language': 'en' } }
-          );
-          const data = await res.json();
-          if (data[0] && isMounted) {
-            const dLat = parseFloat(data[0].lat);
-            const dLng = parseFloat(data[0].lon);
-            destLatLngRef.current = [dLat, dLng];
-            L.marker([dLat, dLng], { icon: homeIcon })
-              .bindPopup('Your delivery location')
-              .addTo(map);
-            map.setView([dLat, dLng], 15);
-          }
-        } catch (_) {
-          // Geocoding failed
-        }
-      }
-    }
-
-    initMap();
-
-    return () => {
-      isMounted = false;
-      mapInstanceRef.current?.remove();
-      mapInstanceRef.current = null;
-    };
-  }, [deliveryAddress]);
-
-  // Sync rider location prop changes to marker and draw route
-  useEffect(() => {
-    if (!riderLocation || !mapInstanceRef.current) return;
-    let isMounted = true;
-
-    async function updateRider() {
-      const L = leafletRef.current;
-      if (!L) return;
-      const map = mapInstanceRef.current;
-      const { lat, lng } = riderLocation!;
-      
-      if (!riderMarkerRef.current) {
-        const riderIcon = L.divIcon({
-          className: '',
-          html: `<div style="position:relative;width:46px;height:46px">
-            <div style="position:absolute;inset:0;background:rgba(11,80,213,0.2);border-radius:50%;animation:pulse-ring 1s ease-out infinite"></div>
-            <div style="position:absolute;inset:4px;background:#0b50d5;border-radius:50%;border:3px solid white;box-shadow:0 3px 10px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:20px;">🛵</div>
-          </div>`,
-          iconSize: [46, 46],
-          iconAnchor: [23, 46],
-        });
-        riderMarkerRef.current = L.marker([lat, lng], { icon: riderIcon, zIndexOffset: 1000 })
-          .bindPopup('Rider')
-          .addTo(map);
-      } else {
-        riderMarkerRef.current.setLatLng([lat, lng]);
-      }
-
-      const dest = destLatLngRef.current;
-      if (dest) {
-        try {
-          const res = await fetch(
-            `https://router.project-osrm.org/route/v1/driving/${lng},${lat};${dest[1]},${dest[0]}?overview=full&geometries=geojson`
-          );
-          const data = await res.json();
-          if (data.routes?.[0] && isMounted && mapInstanceRef.current) {
-            routeLayerRef.current.forEach(l => map.removeLayer(l));
-            routeLayerRef.current = [];
-            const coords = data.routes[0].geometry.coordinates.map((c: [number,number]) => [c[1], c[0]]);
-            const shadow = L.polyline(coords, { color: `rgba(186,0,28,0.2)`, weight: 10, lineCap: 'round' }).addTo(map);
-            const line = L.polyline(coords, { color: '#ba001c', weight: 5, lineCap: 'round' }).addTo(map);
-            routeLayerRef.current = [shadow, line];
-            
-            const eta = Math.round(data.routes[0].duration / 60);
-            const distance = (data.routes[0].distance / 1000).toFixed(1);
-            if (onRouteUpdate) onRouteUpdate({ eta, distance });
-            
-            map.fitBounds([[lat, lng], [dest[0], dest[1]]], { padding: [40, 40] });
-          }
-        } catch (_) {}
-      } else {
-        map.setView([lat, lng], 15, { animate: true });
-      }
-    }
-
-    updateRider();
-
-    return () => { isMounted = false; };
-  }, [riderLocation]);
-
-  return (
-    <div className="relative w-full h-full">
-      <style>{`
-        @keyframes pulse-ring { 0%{transform:scale(0.8);opacity:0.8} 100%{transform:scale(1.8);opacity:0} }
-      `}</style>
-      {/* LIVE badge */}
-      <div className="absolute top-3 left-3 z-10 bg-red-600 text-white text-[10px] font-black px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
-        <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
-        LIVE
-      </div>
-      <div ref={mapRef} className="w-full h-full" style={{ zIndex: 1 }} />
     </div>
   );
 }
