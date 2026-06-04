@@ -172,6 +172,9 @@ const hi: Translations = {
     bindingHard: "हार्ड कवर बाइंडिंग",
     laminationA4: "A4 लैमिनेशन",
     laminationId: "ID लैमिनेशन",
+    referralTitle: "रेफर करें, मुफ्त पेज कमाएँ",
+    referralDesc: "अपना कोड शेयर करें। हर दोस्त की प्रिंट पर आपको 5 मुफ्त पेज।",
+    referralLinkLabel: "रेफरल लिंक",
   },
 };
 

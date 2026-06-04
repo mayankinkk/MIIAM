@@ -9,6 +9,7 @@ import { useToastStore } from "@/lib/store/toastStore";
 import BlurImage from "@/components/BlurImage";
 import OrderChatOverlay from "@/components/order/OrderChatOverlay";
 import PrintButton from "@/components/print/PrintButton";
+import { usePrintLibraryStore } from "@/lib/store/printLibraryStore";
 import RiderMap from "@/components/rider/RiderMap";
 import ShareLocationToggle from "@/components/rider/ShareLocationToggle";
 import { useUnreadMessages } from "@/lib/hooks/useUnreadMessages";
@@ -54,6 +55,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
   const statusRef = useRef(order?.status);
 
   const { unreadByOrder } = useUnreadMessages(currentUserId);
+  const library = usePrintLibraryStore();
   const unreadCount = unreadByOrder[id] || 0;
 
   const cancelReasons = [
@@ -686,7 +688,22 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
             {/* Print Again */}
             {order.vendor_id === PRINTING_VENDOR_ID && order.status === "delivered" && (
               <button
-                onClick={() => router.push("/app/printing")}
+                onClick={() => {
+                  let added = 0;
+                  order.items?.forEach((item: any) => {
+                    let settings: Record<string, any> = {};
+                    try { if (item.special_notes) settings = JSON.parse(item.special_notes); } catch {}
+                    const fileUrls: string[] = settings.fileUrls || [];
+                    const fileNames: string[] = settings.fileNames || [];
+                    const before = library.files.length;
+                    fileUrls.forEach((url, i) => {
+                      library.addFile({ url, name: fileNames[i] || `print-${i + 1}.pdf`, size: 0, type: "application/pdf" });
+                    });
+                    added += Math.max(0, library.files.length - before);
+                  });
+                  addToast(added > 0 ? `Added ${added} file${added === 1 ? "" : "s"} to your library — one tap to re-print` : "Files already in your library", added > 0 ? "success" : "info");
+                  router.push("/app/printing/library");
+                }}
                 className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl py-5 text-lg font-extrabold shadow-lg shadow-indigo-600/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
               >
                 <span className="material-symbols-outlined">refresh</span>

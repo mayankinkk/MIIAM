@@ -29,6 +29,7 @@ import PrintTestimonials from "@/components/print/PrintTestimonials";
 import FilePreviewModal, { type PreviewFile } from "@/components/print/FilePreviewModal";
 import FileSettingsRow, { type PrintFileItem, DEFAULT_FILE_SETTINGS } from "@/components/print/FileSettingsRow";
 import PrintAddOns from "@/components/print/PrintAddOns";
+import PrintReferral from "@/components/print/PrintReferral";
 import {
   PRINT_ALLOWED_TYPES,
   PRINT_MAX_FILE_SIZE,
@@ -674,6 +675,7 @@ export default function PrintingPage() {
           <>
             <WhyPrintWithMiiam />
             <PrintTestimonials />
+            <PrintReferral />
           </>
         )}
       </div>

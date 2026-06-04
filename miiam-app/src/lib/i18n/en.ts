@@ -170,6 +170,9 @@ const en = {
     bindingHard: "Hard cover binding",
     laminationA4: "Laminate A4",
     laminationId: "Laminate ID",
+    referralTitle: "Refer & earn free pages",
+    referralDesc: "Share your code. Each friend who prints = 5 free pages for you.",
+    referralLinkLabel: "Referral link",
   },
 };
 

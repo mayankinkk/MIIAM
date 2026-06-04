@@ -172,6 +172,9 @@ const as: Translations = {
     bindingHard: "হাৰ্ড কভাৰ বাইণ্ডিং",
     laminationA4: "A4 লেমিনেচন",
     laminationId: "ID লেমিনেচন",
+    referralTitle: "ৰেফাৰ কৰক, বিনামূলীয়া পৃষ্ঠা উপাৰ্জন কৰক",
+    referralDesc: "আপোনাৰ ক'ড শ্বেয়াৰ কৰক। প্ৰতিটো বন্ধুৰ প্ৰিণ্টত আপোনাক 5টা বিনামূলীয়া পৃষ্ঠা।",
+    referralLinkLabel: "ৰেফাৰেল লিংক",
   },
 };
 
