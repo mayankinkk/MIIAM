@@ -443,6 +443,13 @@ export default function AdminPrintingPage() {
         const selFileNames: string[] = selSettings.fileNames || [];
         const selFileUrls: string[] = selSettings.fileUrls || [];
         const selFileStatuses: boolean[] = selSettings.fileStatuses || [];
+
+        const nameMatch = (selItem?.name || "").match(/Print\s*\((\d+)pg.*?ETA\s*(\d+)m?\)/i);
+        const fallbackPages = nameMatch?.[1] ? parseInt(nameMatch[1], 10) : null;
+        const fallbackEta = nameMatch?.[2] ? parseInt(nameMatch[2], 10) : null;
+        const hasAnySettings = selSettings.pages || selSettings.copies || selSettings.colorMode || selSettings.paperSize || fallbackPages;
+        const hasAnyFiles = selFileNames.length > 0;
+        const hasAnyAddOns = selSettings.addOns && selSettings.addOns.length > 0;
         return (
           <div className="fixed inset-0 z-50 bg-black/50 flex items-start justify-center p-4 pt-[5vh] overflow-y-auto">
             <div className="bg-white rounded-2xl w-full max-w-2xl">
@@ -472,28 +479,105 @@ export default function AdminPrintingPage() {
                   </div>
                 </div>
 
-                <div className="bg-indigo-50 rounded-xl p-4 space-y-2">
-                  <h4 className="text-xs font-bold text-indigo-800 uppercase tracking-wider">Print Settings</h4>
-                  <div className="flex flex-wrap gap-1.5">
-                    {selSettings.pages && <span className="px-2.5 py-1 bg-white text-indigo-700 rounded-lg text-xs font-bold">{selSettings.pages} pages</span>}
-                    {selSettings.copies && <span className="px-2.5 py-1 bg-white text-indigo-700 rounded-lg text-xs font-bold">{selSettings.copies} copies</span>}
-                    {selSettings.colorMode && <span className="px-2.5 py-1 bg-white text-indigo-700 rounded-lg text-xs font-bold capitalize">{selSettings.colorMode === "bw" ? "B&W" : "Color"}</span>}
-                    {selSettings.paperSize && <span className="px-2.5 py-1 bg-white text-indigo-700 rounded-lg text-xs font-bold uppercase">{selSettings.paperSize}</span>}
-                    {selSettings.orientation && <span className="px-2.5 py-1 bg-white text-indigo-700 rounded-lg text-xs font-bold capitalize">{selSettings.orientation}</span>}
-                    {selSettings.sides && <span className="px-2.5 py-1 bg-white text-indigo-700 rounded-lg text-xs font-bold capitalize">{selSettings.sides} sided</span>}
-                    {selSettings.paperType && <span className="px-2.5 py-1 bg-white text-indigo-700 rounded-lg text-xs font-bold capitalize">{selSettings.paperType}</span>}
-                    {selSettings.rushTier && selSettings.rushTier !== "standard" && (
-                      <span className="px-2.5 py-1 bg-rose-100 text-rose-700 rounded-lg text-xs font-bold">⚡ {selSettings.rushLabel || selSettings.rushTier}</span>
+                {hasAnySettings && (
+                  <div className="bg-indigo-50 rounded-xl p-4 space-y-2">
+                    <h4 className="text-xs font-bold text-indigo-800 uppercase tracking-wider">Print Settings</h4>
+                    <div className="flex flex-wrap gap-1.5">
+                      {(selSettings.pages || fallbackPages) && <span className="px-2.5 py-1 bg-white text-indigo-700 rounded-lg text-xs font-bold">{selSettings.pages || fallbackPages} pages</span>}
+                      {selSettings.copies && <span className="px-2.5 py-1 bg-white text-indigo-700 rounded-lg text-xs font-bold">{selSettings.copies} copies</span>}
+                      {selSettings.colorMode && <span className="px-2.5 py-1 bg-white text-indigo-700 rounded-lg text-xs font-bold capitalize">{selSettings.colorMode === "bw" ? "B&W" : "Color"}</span>}
+                      {selSettings.paperSize && <span className="px-2.5 py-1 bg-white text-indigo-700 rounded-lg text-xs font-bold uppercase">{selSettings.paperSize}</span>}
+                      {selSettings.orientation && <span className="px-2.5 py-1 bg-white text-indigo-700 rounded-lg text-xs font-bold capitalize">{selSettings.orientation}</span>}
+                      {selSettings.sides && <span className="px-2.5 py-1 bg-white text-indigo-700 rounded-lg text-xs font-bold capitalize">{selSettings.sides} sided</span>}
+                      {selSettings.paperType && <span className="px-2.5 py-1 bg-white text-indigo-700 rounded-lg text-xs font-bold capitalize">{selSettings.paperType}</span>}
+                      {fallbackEta && <span className="px-2.5 py-1 bg-white text-indigo-700 rounded-lg text-xs font-bold">ETA {fallbackEta}m</span>}
+                      {selSettings.rushTier && selSettings.rushTier !== "standard" && (
+                        <span className="px-2.5 py-1 bg-rose-100 text-rose-700 rounded-lg text-xs font-bold">⚡ {selSettings.rushLabel || selSettings.rushTier}</span>
+                      )}
+                    </div>
+                    {hasAnyAddOns && (
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {selSettings.addOns.map((a: any, ai: number) => (
+                          <span key={ai} className="px-2 py-0.5 bg-purple-100 text-purple-700 rounded text-[10px] font-bold">{a.name || a.id}</span>
+                        ))}
+                      </div>
                     )}
                   </div>
-                  {selSettings.addOns && selSettings.addOns.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mt-1">
-                      {selSettings.addOns.map((a: any, ai: number) => (
-                        <span key={ai} className="px-2 py-0.5 bg-purple-100 text-purple-700 rounded text-[10px] font-bold">{a.name || a.id}</span>
-                      ))}
+                )}
+
+                {!hasAnySettings && (
+                  <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 flex items-start gap-2">
+                    <span className="material-symbols-outlined text-amber-600 text-sm mt-0.5">info</span>
+                    <p className="text-xs text-amber-800">Detailed print settings unavailable for this order. Contact customer if needed.</p>
+                  </div>
+                )}
+
+                {hasAnyFiles && (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider">Customer Files ({selFileNames.length})</h4>
+                      {selFileStatuses.length > 0 && (
+                        <span className="text-xs font-bold text-emerald-600">{selFileStatuses.filter(Boolean).length}/{selFileStatuses.length} printed</span>
+                      )}
                     </div>
-                  )}
-                </div>
+                    <div className="divide-y divide-slate-100 border border-slate-100 rounded-xl overflow-hidden">
+                      {selFileNames.map((name: string, fi: number) => {
+                        const printed = selFileStatuses[fi];
+                        const url = selFileUrls[fi] || "";
+                        const isPdf = name.toLowerCase().endsWith(".pdf");
+                        const isImage = /\.(jpg|jpeg|png|webp)$/i.test(name);
+                        return (
+                          <div key={fi} className={`flex items-center gap-3 p-3 ${printed ? "bg-emerald-50/50" : "bg-white"}`}>
+                            <button
+                              onClick={() => toggleFilePrinted(selectedOrder.id, fi, selSettings)}
+                              className={`w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 ${printed ? "bg-emerald-500 border-emerald-500" : "border-slate-300 hover:border-indigo-400"}`}
+                            >
+                              {printed && <span className="material-symbols-outlined text-white text-xs" style={{ fontVariationSettings: "'FILL' 1" }}>check</span>}
+                            </button>
+                            <div className="min-w-0 flex-1">
+                              <p className={`text-sm font-bold truncate ${printed ? "text-emerald-700 line-through" : "text-slate-800"}`}>{name}</p>
+                              <p className="text-[10px] text-slate-400">{isPdf ? "PDF" : isImage ? "Image" : "File"}</p>
+                            </div>
+                            <div className="flex items-center gap-1 shrink-0">
+                              {url && (
+                                <a
+                                  href={url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center hover:bg-indigo-100 transition-colors"
+                                  title="Preview"
+                                >
+                                  <span className="material-symbols-outlined text-base">visibility</span>
+                                </a>
+                              )}
+                              {url && (
+                                <a
+                                  href={url}
+                                  download={name}
+                                  className="w-8 h-8 rounded-lg bg-slate-50 text-slate-600 flex items-center justify-center hover:bg-slate-100 transition-colors"
+                                  title="Download"
+                                >
+                                  <span className="material-symbols-outlined text-base">download</span>
+                                </a>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {!hasAnyFiles && (
+                  <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex flex-col items-center gap-2 text-center">
+                    <span className="material-symbols-outlined text-amber-500 text-2xl">folder_off</span>
+                    <p className="text-sm font-bold text-amber-900">No files attached to this order</p>
+                    <p className="text-xs text-amber-700 max-w-sm">
+                      This order was placed before file attachments were tracked, or the files were not saved correctly.
+                      Please contact the customer at {selectedOrder.delivery_address || "their registered address"} to get the documents.
+                    </p>
+                  </div>
+                )}
 
                 {selFileNames.length > 0 && (
                   <div className="space-y-2">

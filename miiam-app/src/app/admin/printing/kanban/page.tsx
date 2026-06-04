@@ -186,6 +186,11 @@ export default function AdminPrintingKanban() {
         const selFileNames: string[] = selSettings.fileNames || [];
         const selFileUrls: string[] = selSettings.fileUrls || [];
         const selFileStatuses: boolean[] = selSettings.fileStatuses || [];
+
+        const nameMatch = (selItem?.name || "").match(/Print\s*\((\d+)pg.*?ETA\s*(\d+)m?\)/i);
+        const fallbackPages = nameMatch?.[1] ? parseInt(nameMatch[1], 10) : null;
+        const fallbackEta = nameMatch?.[2] ? parseInt(nameMatch[2], 10) : null;
+        const hasAnySettings = selSettings.pages || selSettings.copies || selSettings.colorMode || selSettings.paperSize || fallbackPages;
         return (
           <div className="fixed inset-0 z-50 bg-black/50 flex items-start justify-center p-4 pt-[5vh] overflow-y-auto" onClick={() => setSelectedOrder(null)}>
             <div className="bg-white rounded-2xl w-full max-w-lg" onClick={(e) => e.stopPropagation()}>
@@ -199,12 +204,15 @@ export default function AdminPrintingKanban() {
                 </button>
               </div>
               <div className="p-5 space-y-4">
-                <div className="flex flex-wrap gap-1.5">
-                  {selSettings.pages && <span className="px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-lg text-xs font-bold">{selSettings.pages} pages</span>}
-                  {selSettings.copies && <span className="px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-lg text-xs font-bold">{selSettings.copies} copies</span>}
-                  {selSettings.colorMode && <span className="px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-lg text-xs font-bold capitalize">{selSettings.colorMode === "bw" ? "B&W" : "Color"}</span>}
-                  {selSettings.paperSize && <span className="px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-lg text-xs font-bold uppercase">{selSettings.paperSize}</span>}
-                </div>
+                {hasAnySettings && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {(selSettings.pages || fallbackPages) && <span className="px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-lg text-xs font-bold">{selSettings.pages || fallbackPages} pages</span>}
+                    {selSettings.copies && <span className="px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-lg text-xs font-bold">{selSettings.copies} copies</span>}
+                    {selSettings.colorMode && <span className="px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-lg text-xs font-bold capitalize">{selSettings.colorMode === "bw" ? "B&W" : "Color"}</span>}
+                    {selSettings.paperSize && <span className="px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-lg text-xs font-bold uppercase">{selSettings.paperSize}</span>}
+                    {fallbackEta && <span className="px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-lg text-xs font-bold">ETA {fallbackEta}m</span>}
+                  </div>
+                )}
 
                 {selFileNames.length > 0 && (
                   <div className="space-y-1.5">
@@ -230,6 +238,13 @@ export default function AdminPrintingKanban() {
                         );
                       })}
                     </div>
+                  </div>
+                )}
+
+                {selFileNames.length === 0 && (
+                  <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 flex items-start gap-2">
+                    <span className="material-symbols-outlined text-amber-600 text-sm mt-0.5">folder_off</span>
+                    <p className="text-xs text-amber-800">No files attached to this order. Contact the customer for the documents.</p>
                   </div>
                 )}
 
