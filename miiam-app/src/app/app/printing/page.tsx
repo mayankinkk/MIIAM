@@ -5,9 +5,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cartStore";
-import { useLocationStore } from "@/lib/store/locationStore";
 import { useServiceSettingsStore } from "@/lib/store/serviceSettingsStore";
 import { usePrintLibraryStore } from "@/lib/store/printLibraryStore";
+import { usePrintSettingsStore, QUALITY_MULTIPLIER } from "@/lib/store/printSettingsStore";
+import { usePrintDraftStore } from "@/lib/store/printDraftStore";
 import { useToastStore } from "@/lib/store/toastStore";
 import { PRINTING_VENDOR_ID } from "@/lib/constants";
 import { getPrintingPricing } from "@/lib/printing-pricing";
@@ -17,55 +18,50 @@ import PrintFirstOrderCoupon from "@/components/print/PrintFirstOrderCoupon";
 import WhyPrintWithMiiam from "@/components/print/WhyPrintWithMiiam";
 import PrintTestimonials from "@/components/print/PrintTestimonials";
 import FilePreviewModal, { type PreviewFile } from "@/components/print/FilePreviewModal";
+import FileSettingsRow, { type PrintFileItem, DEFAULT_FILE_SETTINGS } from "@/components/print/FileSettingsRow";
 import {
   PRINT_ALLOWED_TYPES,
   PRINT_MAX_FILE_SIZE,
   PRINT_MAX_FILE_COUNT,
   bytesToHumanReadable,
-  extractPdfPageCountFromText,
   getPdfPageCount,
-  isPdfEncrypted,
   parsePrintRange,
-  readPdfFirstBytes,
-  summarizeRange,
   validatePdfFile,
 } from "@/lib/printing-utils";
 
-interface UploadedFile {
-  id: string;
-  name: string;
-  url: string;
-  type: string;
-  size: number;
-  pageCount: number;
-  blob?: File;
-  saveToLibrary: boolean;
-}
-
 const STEPS = ["Upload", "Customize", "Checkout"] as const;
+
+function formatRelativeTime(timestamp: number): string {
+  const diff = Date.now() - timestamp;
+  const minutes = Math.floor(diff / 60000);
+  if (minutes < 1) return "just now";
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  return `${days}d ago`;
+}
 
 export default function PrintingPage() {
   const [step, setStep] = useState(1);
-  const [files, setFiles] = useState<UploadedFile[]>([]);
+  const [files, setFiles] = useState<PrintFileItem[]>([]);
   const [uploading, setUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const [previewFile, setPreviewFile] = useState<PreviewFile | null>(null);
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [draftPromptShown, setDraftPromptShown] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const supabase = createClient();
-  const [colorMode, setColorMode] = useState<"bw" | "color">("bw");
-  const [sides, setSides] = useState<"single" | "double">("single");
-  const [pagesInput, setPagesInput] = useState<number>(1);
-  const [copies, setCopies] = useState<number>(1);
-  const [paperSize, setPaperSize] = useState<"a4" | "a3">("a4");
-  const [orientation, setOrientation] = useState<"portrait" | "landscape">("portrait");
-  const [paperType, setPaperType] = useState<"standard" | "glossy">("standard");
-  const [printRange, setPrintRange] = useState<string>("");
-  const [parsedRange, setParsedRange] = useState<number[]>([]);
   const router = useRouter();
   const cartStore = useCartStore();
-  const locationStore = useLocationStore();
   const serviceSettings = useServiceSettingsStore();
   const library = usePrintLibraryStore();
+  const defaults = usePrintSettingsStore((s) => s.defaults);
+  const setDefault = usePrintSettingsStore((s) => s.setDefault);
+  const setDefaults = usePrintSettingsStore((s) => s.setDefaults);
+  const draft = usePrintDraftStore((s) => s.draft);
+  const saveDraft = usePrintDraftStore((s) => s.saveDraft);
+  const clearDraft = usePrintDraftStore((s) => s.clearDraft);
   const toast = useToastStore();
   const { t } = useTranslation();
 
@@ -87,13 +83,31 @@ export default function PrintingPage() {
     return publicUrl;
   };
 
+  const makeFileItem = (f: {
+    id?: string;
+    name: string;
+    url: string;
+    type: string;
+    size: number;
+    pageCount: number;
+    saveToLibrary?: boolean;
+  }): PrintFileItem => ({
+    id: f.id || `${Date.now()}-${Math.random()}`,
+    name: f.name,
+    url: f.url,
+    type: f.type,
+    size: f.size,
+    pageCount: f.pageCount,
+    saveToLibrary: f.saveToLibrary ?? true,
+    settings: { ...DEFAULT_FILE_SETTINGS, ...defaults },
+  });
+
   const handleFilesSelected = async (newFiles: FileList | File[]) => {
     const remainingSlots = PRINT_MAX_FILE_COUNT - files.length;
     if (remainingSlots <= 0) {
       alert(t.print.fileLimitReached.replace("{max}", String(PRINT_MAX_FILE_COUNT)));
       return;
     }
-
     const candidates = Array.from(newFiles).slice(0, remainingSlots);
     if (newFiles.length > remainingSlots) {
       alert(t.print.fileLimitReached.replace("{max}", String(PRINT_MAX_FILE_COUNT)));
@@ -135,67 +149,138 @@ export default function PrintingPage() {
         pageCount = await getPdfPageCount(f);
       }
 
-      const uploaded: UploadedFile = {
-        id: `${Date.now()}-${Math.random()}`,
+      setFiles((prev) => [...prev, makeFileItem({
         name: f.name,
         url,
         type: f.type,
         size: f.size,
         pageCount,
-        blob: f,
-        saveToLibrary: true,
-      };
-      setFiles((prev) => [...prev, uploaded]);
+      })]);
     }
     setUploading(false);
+  };
+
+  const updateFile = (id: string, next: PrintFileItem) => {
+    setFiles((prev) => prev.map((f) => (f.id === id ? next : f)));
   };
 
   const removeFile = (id: string) => {
     setFiles((prev) => prev.filter((f) => f.id !== id));
   };
 
-  const toggleSaveToLibrary = (id: string) => {
-    setFiles((prev) => prev.map((f) => f.id === id ? { ...f, saveToLibrary: !f.saveToLibrary } : f));
+  const reorderFile = (from: number, to: number) => {
+    if (from === to) return;
+    setFiles((prev) => {
+      const next = [...prev];
+      const [moved] = next.splice(from, 1);
+      next.splice(to, 0, moved);
+      return next;
+    });
   };
 
-  // Re-derive parsed range + per-page total whenever range or files change
-  useEffect(() => {
-    const totalPages = files.reduce((acc, f) => acc + f.pageCount, 0) || pagesInput;
-    if (!printRange.trim()) {
-      setParsedRange(Array.from({ length: totalPages }, (_, i) => i + 1));
-    } else {
-      setParsedRange(parsePrintRange(printRange, totalPages));
-    }
-  }, [printRange, files, pagesInput]);
+  const applyToAll = () => {
+    if (files.length === 0) return;
+    const first = files[0].settings;
+    setFiles((prev) => prev.map((f) => ({ ...f, settings: { ...first } })));
+  };
 
+  const handleSaveAsDefault = () => {
+    if (files.length === 0) return;
+    const first = files[0].settings;
+    setDefaults({
+      colorMode: first.colorMode,
+      sides: first.sides,
+      flipDirection: first.flipDirection,
+      paperSize: first.paperSize,
+      orientation: first.orientation,
+      paperType: first.paperType,
+      quality: first.quality,
+      copies: first.copies,
+    });
+    toast.addToast(t.print.defaultsSaved, "success");
+  };
+
+  const handleSaveDraft = () => {
+    saveDraft({
+      files: files.map((f) => ({
+        id: f.id,
+        name: f.name,
+        url: f.url,
+        type: f.type,
+        size: f.size,
+        pageCount: f.pageCount,
+      })),
+      colorMode: defaults.colorMode,
+      sides: defaults.sides,
+      flipDirection: defaults.flipDirection,
+      paperSize: defaults.paperSize,
+      orientation: defaults.orientation,
+      paperType: defaults.paperType,
+      quality: defaults.quality,
+      copies: defaults.copies,
+      printRange: "",
+    });
+    toast.addToast(t.print.draftSaved, "success");
+  };
+
+  const handleResumeDraft = () => {
+    if (!draft) return;
+    setFiles(draft.files.map((f) => makeFileItem(f)));
+    setDefaults({
+      colorMode: draft.colorMode,
+      sides: draft.sides,
+      flipDirection: draft.flipDirection,
+      paperSize: draft.paperSize,
+      orientation: draft.orientation,
+      paperType: draft.paperType,
+      quality: draft.quality,
+      copies: draft.copies,
+    });
+    clearDraft();
+    toast.addToast(t.print.draftResume, "info");
+  };
+
+  const handleDiscardDraft = () => {
+    clearDraft();
+    toast.addToast(t.print.draftDiscarded, "info");
+  };
+
+  // Compute pricing from per-file settings
   const printPrices = getPrintingPricing();
-  const pricePerBW = printPrices.bwPerPage;
-  const pricePerColor = printPrices.colorPerPage;
-  const glossySurcharge = paperType === "glossy" ? printPrices.glossySurcharge : 0;
-  const a3Surcharge = paperSize === "a3" ? printPrices.a3Surcharge : 0;
-  const perPagePrice = (colorMode === "bw" ? pricePerBW : pricePerColor) + glossySurcharge + a3Surcharge;
-  const effectivePages = parsedRange.length > 0 ? parsedRange.length : pagesInput;
-  const subtotal = perPagePrice * effectivePages;
-  const totalPrice = subtotal * copies;
+  const fileSubtotals = files.map((f) => {
+    const base = f.settings.colorMode === "bw" ? printPrices.bwPerPage : printPrices.colorPerPage;
+    const glossy = f.settings.paperType === "glossy" ? printPrices.glossySurcharge : 0;
+    const a3 = f.settings.paperSize === "a3" ? printPrices.a3Surcharge : 0;
+    const perPage = (base + glossy + a3) * QUALITY_MULTIPLIER[f.settings.quality];
+    const pagesInRange = f.settings.range.trim()
+      ? parsePrintRange(f.settings.range, f.pageCount).length
+      : f.pageCount;
+    return perPage * pagesInRange * f.settings.copies;
+  });
+  const totalPrice = fileSubtotals.reduce((acc, n) => acc + n, 0);
+  const totalPagesEffective = files.reduce(
+    (acc, f) =>
+      acc +
+      (f.settings.range.trim()
+        ? parsePrintRange(f.settings.range, f.pageCount).length
+        : f.pageCount) *
+        f.settings.copies,
+    0
+  );
 
   const handleAddToCart = () => {
     if (files.length === 0) { alert("Please upload at least one file"); return; }
     if (!isEnabled) { alert("Printing service is currently unavailable"); return; }
 
     const settings = {
-      pages: effectivePages,
-      copies,
-      colorMode,
-      sides,
-      paperSize,
-      orientation,
-      paperType,
-      perPagePrice,
-      subtotal,
-      printRange: printRange || undefined,
-      fileUrls: files.map(f => f.url),
-      fileNames: files.map(f => f.name),
-      filePageCounts: files.map(f => f.pageCount),
+      perFile: files.map((f) => ({
+        fileUrl: f.url,
+        fileName: f.name,
+        pageCount: f.pageCount,
+        ...f.settings,
+      })),
+      totalPages: totalPagesEffective,
+      subtotal: totalPrice,
     };
 
     cartStore.addItem({
@@ -203,32 +288,32 @@ export default function PrintingPage() {
       menu_item_id: `print_${Date.now()}`,
       vendor_id: PRINTING_VENDOR_ID,
       vendor_name: "MIIAM Print Store",
-      name: `Print (${effectivePages}pg × ${copies}cp · ${colorMode})`,
+      name: `Print (${totalPagesEffective}pg · ${files.length} file${files.length > 1 ? "s" : ""})`,
       price: totalPrice,
       image_url: files[0].url,
       special_notes: JSON.stringify(settings),
     }, 1);
 
-    if (files.length > 0) {
-      let savedCount = 0;
-      files.forEach((f) => {
-        if (f.saveToLibrary) {
-          library.addFile({
-            name: f.name,
-            url: f.url,
-            size: f.size,
-            type: f.type,
-            id: `lib_${f.id}`,
-          });
-          library.incrementPrintCount(`lib_${f.id}`);
-          savedCount++;
-        }
-      });
-      if (savedCount > 0) {
-        toast.addToast(t.print.librarySavedToast, "success");
+    let savedCount = 0;
+    files.forEach((f) => {
+      if (f.saveToLibrary) {
+        library.addFile({
+          name: f.name,
+          url: f.url,
+          size: f.size,
+          type: f.type,
+          id: `lib_${f.id}`,
+        });
+        library.incrementPrintCount(`lib_${f.id}`);
+        savedCount++;
       }
+    });
+    if (savedCount > 0) {
+      toast.addToast(t.print.librarySavedToast, "success");
     }
-
+    if (draft) {
+      clearDraft();
+    }
     router.push("/app/cart");
   };
 
@@ -251,6 +336,33 @@ export default function PrintingPage() {
 
       <div className="p-6 -mt-4 space-y-4">
         <PrintFirstOrderCoupon />
+
+        {/* Draft prompt */}
+        {draft && files.length === 0 && !draftPromptShown && (
+          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-start gap-3">
+            <span className="material-symbols-outlined text-amber-600">history</span>
+            <div className="flex-1 min-w-0">
+              <p className="font-bold text-amber-900 text-sm">
+                {t.print.draftFound.replace("{when}", formatRelativeTime(draft.savedAt))}
+              </p>
+              <p className="text-xs text-amber-700 mt-0.5">
+                {draft.files.length} file{draft.files.length > 1 ? "s" : ""} · {draft.colorMode} · {draft.paperSize}
+              </p>
+            </div>
+            <button
+              onClick={handleResumeDraft}
+              className="px-3 py-1.5 bg-amber-500 text-white rounded-lg text-xs font-bold"
+            >
+              {t.print.draftResume}
+            </button>
+            <button
+              onClick={handleDiscardDraft}
+              className="px-3 py-1.5 bg-amber-100 text-amber-700 rounded-lg text-xs font-bold"
+            >
+              {t.print.draftDiscard}
+            </button>
+          </div>
+        )}
 
         <div className="flex items-center justify-between gap-2 bg-surface-container rounded-2xl p-3 shadow-sm border border-outline-variant/10">
           <div className="flex items-center justify-center gap-2 flex-1">
@@ -330,59 +442,63 @@ export default function PrintingPage() {
 
             {files.length > 0 && (
               <div className="space-y-3">
-                <div className="flex items-center justify-between text-xs">
-                  <p className="font-bold text-on-surface-variant">
-                    {files.length}/{PRINT_MAX_FILE_COUNT} files · {totalDetectedPages} pages detected
-                  </p>
-                  <button
-                    onClick={() => setFiles([])}
-                    className="text-red-500 font-bold hover:underline"
-                  >
-                    Clear all
-                  </button>
-                </div>
-                {files.map((f) => (
-                  <div key={f.id} className="flex items-center gap-3 p-3 bg-surface-container-high rounded-xl">
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <div>
+                    <p className="text-sm font-bold text-on-surface-variant">
+                      {files.length}/{PRINT_MAX_FILE_COUNT} files · {totalDetectedPages} pages
+                    </p>
+                    <p className="text-[11px] text-on-surface-variant/60 mt-0.5">
+                      {t.print.reorderFiles}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-1.5">
                     <button
-                      onClick={() => setPreviewFile({ name: f.name, url: f.url, type: f.type, size: f.size })}
-                      className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden hover:ring-2 hover:ring-primary"
-                      aria-label={t.print.filePreview}
+                      onClick={applyToAll}
+                      className="px-2.5 py-1.5 bg-indigo-100 text-indigo-700 rounded-lg text-xs font-bold"
                     >
-                      {f.type === "application/pdf" ? (
-                        <span className="material-symbols-outlined text-indigo-600 text-lg">description</span>
-                      ) : (
-                        <img src={f.url} alt={f.name} className="w-full h-full object-cover" />
-                      )}
-                    </button>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-bold text-on-surface truncate">{f.name}</p>
-                      <p className="text-xs text-on-surface-variant/60">
-                        {bytesToHumanReadable(f.size)} · {f.pageCount} {t.print.filePages}
-                      </p>
-                    </div>
-                    <button
-                      onClick={() => toggleSaveToLibrary(f.id)}
-                      className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
-                        f.saveToLibrary
-                          ? "bg-indigo-100 text-indigo-700"
-                          : "bg-surface-container text-on-surface-variant/60"
-                      }`}
-                      title={t.print.librarySaveToggle}
-                      aria-label={t.print.librarySaveToggle}
-                    >
-                      <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: f.saveToLibrary ? "'FILL' 1" : "'FILL' 0" }}>
-                        bookmark
-                      </span>
+                      {t.print.applyToAll}
                     </button>
                     <button
-                      onClick={() => removeFile(f.id)}
-                      className="w-8 h-8 bg-red-50 rounded-full flex items-center justify-center hover:bg-red-100"
-                      aria-label="Remove file"
+                      onClick={handleSaveAsDefault}
+                      className="px-2.5 py-1.5 bg-amber-100 text-amber-700 rounded-lg text-xs font-bold"
                     >
-                      <span className="material-symbols-outlined text-red-500 text-sm">close</span>
+                      {t.print.saveAsDefault}
+                    </button>
+                    <button
+                      onClick={handleSaveDraft}
+                      className="px-2.5 py-1.5 bg-surface-container-high text-on-surface rounded-lg text-xs font-bold"
+                    >
+                      {t.print.saveDraft}
+                    </button>
+                    <button
+                      onClick={() => setFiles([])}
+                      className="px-2.5 py-1.5 bg-red-50 text-red-600 rounded-lg text-xs font-bold"
+                    >
+                      Clear all
                     </button>
                   </div>
-                ))}
+                </div>
+
+                <div className="space-y-2">
+                  {files.map((f, idx) => (
+                    <FileSettingsRow
+                      key={f.id}
+                      file={f}
+                      index={idx}
+                      onUpdate={(next) => updateFile(f.id, next)}
+                      onRemove={() => removeFile(f.id)}
+                      onPreview={() => setPreviewFile({ name: f.name, url: f.url, type: f.type, size: f.size })}
+                      onDragStart={(_e, i) => setDragIndex(i)}
+                      onDragOver={(e, _i) => { e.preventDefault(); }}
+                      onDrop={(_e, i) => {
+                        if (dragIndex !== null) reorderFile(dragIndex, i);
+                        setDragIndex(null);
+                      }}
+                      onDragEnd={() => setDragIndex(null)}
+                      isDragging={dragIndex === idx}
+                    />
+                  ))}
+                </div>
 
                 <button
                   onClick={() => setStep(2)}
@@ -408,92 +524,30 @@ export default function PrintingPage() {
 
         {step === 2 && (
           <div className="bg-surface-container rounded-2xl p-6 shadow-sm border border-outline-variant/10 space-y-6">
-            <div className="space-y-4">
-              <div className="flex gap-3">
-                <div className="flex-1">
-                  <label className="text-xs font-bold text-on-surface-variant block mb-2">Copies</label>
-                  <input type="number" value={copies} onChange={(e) => setCopies(Math.max(1, parseInt(e.target.value) || 1))} className="w-full p-3 bg-surface-container-high rounded-xl border border-outline-variant text-center" />
+            <div className="text-sm text-on-surface-variant space-y-2">
+              <p className="font-bold text-on-surface">Per-file summary</p>
+              {files.map((f) => (
+                <div key={f.id} className="flex items-center justify-between p-2 bg-surface-container-high rounded-lg text-xs">
+                  <span className="truncate flex-1 font-bold text-on-surface">{f.name}</span>
+                  <span className="ml-2 text-on-surface-variant">
+                    {f.settings.copies}× {f.settings.colorMode === "bw" ? "B&W" : "Color"} · {f.settings.sides} · {f.settings.paperSize.toUpperCase()} · {f.settings.quality}
+                  </span>
                 </div>
-                <div className="flex-1">
-                  <label className="text-xs font-bold text-on-surface-variant block mb-2">
-                    {totalDetectedPages > 0 ? `Pages (${totalDetectedPages} detected)` : "Pages"}
-                  </label>
-                  <input
-                    type="number"
-                    value={pagesInput}
-                    onChange={(e) => setPagesInput(Math.max(1, parseInt(e.target.value) || 1))}
-                    className="w-full p-3 bg-surface-container-high rounded-xl border border-outline-variant text-center"
-                  />
-                </div>
-              </div>
-
-              {totalDetectedPages > 0 && (
-                <div>
-                  <label className="text-xs font-bold text-on-surface-variant block mb-2">
-                    {t.print.printRange}
-                    <span className="text-on-surface-variant/60 font-normal ml-1">
-                      ({parsedRange.length === totalDetectedPages ? t.print.printRangeAll : summarizeRange(parsedRange)})
-                    </span>
-                  </label>
-                  <input
-                    type="text"
-                    value={printRange}
-                    onChange={(e) => setPrintRange(e.target.value)}
-                    placeholder={t.print.printRangePlaceholder}
-                    className="w-full p-3 bg-surface-container-high rounded-xl border border-outline-variant font-mono text-sm"
-                  />
-                  <p className="text-[11px] text-on-surface-variant/70 mt-1">{t.print.printRangeHelp}</p>
-                </div>
-              )}
-
-              <div>
-                <label className="text-xs font-bold text-on-surface-variant block mb-2">Color Mode</label>
-                <div className="grid grid-cols-2 gap-2">
-                  <button onClick={() => setColorMode("bw")} className={`p-3 rounded-xl border-2 font-bold text-sm ${colorMode === "bw" ? "border-primary bg-primary/10 text-primary" : "border-outline-variant text-on-surface"}`}>B&W · ₹{pricePerBW}<span className="text-xs">/pg</span></button>
-                  <button onClick={() => setColorMode("color")} className={`p-3 rounded-xl border-2 font-bold text-sm ${colorMode === "color" ? "border-primary bg-primary/10 text-primary" : "border-outline-variant text-on-surface"}`}>Color · ₹{pricePerColor}<span className="text-xs">/pg</span></button>
-                </div>
-              </div>
-
-              <div>
-                <label className="text-xs font-bold text-on-surface-variant block mb-2">Print Sides</label>
-                <div className="grid grid-cols-2 gap-2">
-                  <button onClick={() => setSides("single")} className={`p-3 rounded-xl border-2 font-bold text-sm ${sides === "single" ? "border-primary bg-primary/10 text-primary" : "border-outline-variant text-on-surface"}`}>Single Sided</button>
-                  <button onClick={() => setSides("double")} className={`p-3 rounded-xl border-2 font-bold text-sm ${sides === "double" ? "border-primary bg-primary/10 text-primary" : "border-outline-variant text-on-surface"}`}>Double Sided</button>
-                </div>
-              </div>
-
-              <div>
-                <label className="text-xs font-bold text-on-surface-variant block mb-2">Paper Size</label>
-                <div className="grid grid-cols-2 gap-2">
-                  <button onClick={() => setPaperSize("a4")} className={`p-3 rounded-xl border-2 font-bold text-sm ${paperSize === "a4" ? "border-primary bg-primary/10 text-primary" : "border-outline-variant text-on-surface"}`}>A4</button>
-                  <button onClick={() => setPaperSize("a3")} className={`p-3 rounded-xl border-2 font-bold text-sm ${paperSize === "a3" ? "border-primary bg-primary/10 text-primary" : "border-outline-variant text-on-surface"}`}>A3 (+₹{a3Surcharge}/pg)</button>
-                </div>
-              </div>
-
-              <div>
-                <label className="text-xs font-bold text-on-surface-variant block mb-2">Orientation</label>
-                <div className="grid grid-cols-2 gap-2">
-                  <button onClick={() => setOrientation("portrait")} className={`p-3 rounded-xl border-2 font-bold text-sm ${orientation === "portrait" ? "border-primary bg-primary/10 text-primary" : "border-outline-variant text-on-surface"}`}>Portrait</button>
-                  <button onClick={() => setOrientation("landscape")} className={`p-3 rounded-xl border-2 font-bold text-sm ${orientation === "landscape" ? "border-primary bg-primary/10 text-primary" : "border-outline-variant text-on-surface"}`}>Landscape</button>
-                </div>
-              </div>
-
-              <div>
-                <label className="text-xs font-bold text-on-surface-variant block mb-2">Paper Type</label>
-                <div className="grid grid-cols-2 gap-2">
-                  <button onClick={() => setPaperType("standard")} className={`p-3 rounded-xl border-2 font-bold text-sm ${paperType === "standard" ? "border-primary bg-primary/10 text-primary" : "border-outline-variant text-on-surface"}`}>Standard</button>
-                  <button onClick={() => setPaperType("glossy")} className={`p-3 rounded-xl border-2 font-bold text-sm ${paperType === "glossy" ? "border-primary bg-primary/10 text-primary" : "border-outline-variant text-on-surface"}`}>Glossy (+₹{glossySurcharge}/pg)</button>
-                </div>
-              </div>
+              ))}
+              <button
+                onClick={() => setStep(1)}
+                className="text-primary text-xs font-bold"
+              >
+                ← Edit per-file settings
+              </button>
             </div>
 
             <div className="pt-4 border-t border-outline-variant/10 space-y-2 text-sm">
-              <div className="flex justify-between"><span className="text-on-surface-variant">Per page</span><span className="font-bold">₹{perPagePrice}</span></div>
-              <div className="flex justify-between"><span className="text-on-surface-variant">Pages × {effectivePages}</span><span className="font-bold">₹{subtotal}</span></div>
-              <div className="flex justify-between"><span className="text-on-surface-variant">Copies × {copies}</span><span className="font-bold">₹{totalPrice}</span></div>
+              <div className="flex justify-between"><span className="text-on-surface-variant">Effective pages</span><span className="font-bold">{totalPagesEffective}</span></div>
+              <div className="flex justify-between"><span className="text-on-surface-variant">Subtotal</span><span className="font-bold">₹{totalPrice.toFixed(2)}</span></div>
               <div className="pt-2 border-t border-outline-variant/10 flex justify-between text-base">
                 <span className="font-bold">Total</span>
-                <span className="text-xl font-black text-primary">₹{totalPrice}</span>
+                <span className="text-xl font-black text-primary">₹{totalPrice.toFixed(2)}</span>
               </div>
             </div>
 
@@ -509,20 +563,21 @@ export default function PrintingPage() {
             <h3 className="font-bold text-lg">Order Summary</h3>
             <div className="space-y-3 text-sm">
               <div className="flex justify-between"><span className="text-on-surface-variant">Files</span><span className="font-bold">{files.length}</span></div>
-              <div className="flex justify-between"><span className="text-on-surface-variant">Pages (effective)</span><span className="font-bold">{effectivePages}</span></div>
-              {printRange.trim() && (
-                <div className="flex justify-between"><span className="text-on-surface-variant">Range</span><span className="font-bold font-mono text-xs">{printRange}</span></div>
-              )}
-              <div className="flex justify-between"><span className="text-on-surface-variant">Copies</span><span className="font-bold">{copies}</span></div>
-              <div className="flex justify-between"><span className="text-on-surface-variant">Color</span><span className="font-bold capitalize">{colorMode === "bw" ? "Black & White" : "Color"}</span></div>
-              <div className="flex justify-between"><span className="text-on-surface-variant">Sides</span><span className="font-bold capitalize">{sides} sided</span></div>
-              <div className="flex justify-between"><span className="text-on-surface-variant">Paper</span><span className="font-bold uppercase">{paperSize} · {paperType === "glossy" ? "Glossy" : "Standard"}</span></div>
-              <div className="flex justify-between"><span className="text-on-surface-variant">Orientation</span><span className="font-bold capitalize">{orientation}</span></div>
+              <div className="flex justify-between"><span className="text-on-surface-variant">Effective pages</span><span className="font-bold">{totalPagesEffective}</span></div>
+              <div className="pt-2 space-y-1">
+                {files.map((f) => (
+                  <div key={f.id} className="flex items-center justify-between text-xs">
+                    <span className="truncate text-on-surface-variant flex-1">{f.name}</span>
+                    <span className="font-bold ml-2">
+                      {f.settings.copies}× {f.settings.colorMode === "bw" ? "B&W" : "Color"}
+                    </span>
+                  </div>
+                ))}
+              </div>
               <div className="pt-3 border-t border-outline-variant/10 space-y-1">
-                <div className="flex justify-between text-sm"><span className="text-on-surface-variant">₹{perPagePrice}/pg × {effectivePages} pg × {copies} copies</span><span className="font-bold">₹{totalPrice}</span></div>
                 <div className="flex justify-between text-lg pt-1">
                   <span className="font-black">Total</span>
-                  <span className="text-2xl font-black text-primary">₹{totalPrice}</span>
+                  <span className="text-2xl font-black text-primary">₹{totalPrice.toFixed(2)}</span>
                 </div>
               </div>
             </div>
