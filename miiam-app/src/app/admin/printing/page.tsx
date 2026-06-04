@@ -13,6 +13,7 @@ import {
   saveAddOnPricing,
   type AddOnPricing,
 } from "@/lib/printing-addons";
+import ServicesCatalogPanel from "@/components/admin/ServicesCatalogPanel";
 
 const supabase = createClient();
 
@@ -35,6 +36,7 @@ export default function AdminPrintingPage() {
   const [pricing, setPricing] = useState<PrintingPricing>(getPrintingPricing());
   const [showAddons, setShowAddons] = useState(false);
   const [addOnPricing, setAddOnPricing] = useState<AddOnPricing>(getAddOnPricing());
+  const [showServicesCatalog, setShowServicesCatalog] = useState(false);
 
   useEffect(() => {
     loadOrders();
@@ -266,6 +268,16 @@ export default function AdminPrintingPage() {
             </div>
           </div>
         )}
+      </div>
+
+      {/* Services Catalog */}
+      <div className="mb-4">
+        <button onClick={() => setShowServicesCatalog(!showServicesCatalog)} className="flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-slate-800">
+          <span className="material-symbols-outlined text-lg">dashboard_customize</span>
+          Services catalog
+          <span className="material-symbols-outlined text-sm">{showServicesCatalog ? "expand_less" : "expand_more"}</span>
+        </button>
+        <ServicesCatalogPanel open={showServicesCatalog} onClose={() => setShowServicesCatalog(false)} />
       </div>
 
       <div className="grid grid-cols-4 gap-4 mb-4">
