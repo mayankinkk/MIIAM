@@ -403,7 +403,7 @@ export default function PrintingPage() {
     <div className="min-h-screen bg-background text-on-background overflow-x-hidden">
       <PrintHero />
 
-      <div className="p-6 -mt-4 space-y-4">
+      <div className="px-3 sm:px-6 py-4 sm:py-6 -mt-4 space-y-4">
         {/* Draft prompt */}
         {draft && files.length === 0 && !draftPromptShown && (
           <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-start gap-3">
@@ -432,7 +432,7 @@ export default function PrintingPage() {
         )}
 
         <div className="flex flex-wrap items-center justify-between gap-2 bg-surface-container rounded-2xl p-3 shadow-sm border border-outline-variant/10">
-          <div className="flex flex-wrap items-center justify-center gap-2 flex-1 min-w-0">
+          <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 flex-1 min-w-0">
             {STEPS.map((label, i) => {
               const idx = i + 1;
               const isActive = step === idx;
@@ -479,15 +479,15 @@ export default function PrintingPage() {
             <PrintServiceGrid activePreset={activeService} onSelect={handleServiceSelect} />
 
             {activeService && (
-              <div className="flex items-center justify-between gap-2 bg-indigo-50 border border-indigo-200 rounded-xl px-3 py-2 text-xs text-indigo-800">
-                <span className="flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-base" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-                  {t.print.services.servicesActive.replace("{name}", t.print.services[`${activeService === "lamination_a4" ? "lamA4" : activeService === "lamination_id" ? "lamId" : activeService}Title` as keyof typeof t.print.services] as string)}
+              <div className="flex flex-wrap items-center justify-between gap-2 bg-indigo-50 border border-indigo-200 rounded-xl px-3 py-2 text-xs text-indigo-800">
+                <span className="flex items-center gap-1.5 min-w-0 flex-1">
+                  <span className="material-symbols-outlined text-base flex-shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                  <span className="break-words">{t.print.services.servicesActive.replace("{name}", t.print.services[`${activeService === "lamination_a4" ? "lamA4" : activeService === "lamination_id" ? "lamId" : activeService}Title` as keyof typeof t.print.services] as string)}</span>
                 </span>
                 <button
                   type="button"
                   onClick={() => setActiveService(null)}
-                  className="text-indigo-700 font-black hover:underline"
+                  className="text-indigo-700 font-black hover:underline flex-shrink-0"
                 >
                   {t.print.services.servicesChange}
                 </button>
@@ -504,7 +504,7 @@ export default function PrintingPage() {
               onDragLeave={() => setDragOver(false)}
               onDrop={(e) => { e.preventDefault(); setDragOver(false); handleFilesSelected(e.dataTransfer.files); }}
               onClick={() => fileInputRef.current?.click()}
-              className={`relative border-2 border-dashed rounded-2xl p-10 text-center cursor-pointer transition-all ${
+              className={`relative border-2 border-dashed rounded-2xl p-5 sm:p-10 text-center cursor-pointer transition-all ${
                 dragOver ? "border-primary bg-primary/5 scale-[1.02]" : "border-outline-variant hover:border-primary/50"
               }`}
             >
@@ -517,8 +517,8 @@ export default function PrintingPage() {
                 disabled={uploading}
                 onChange={(e) => { if (e.target.files) handleFilesSelected(e.target.files); e.target.value = ""; }}
               />
-              <div className="w-16 h-16 bg-indigo-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <span className="material-symbols-outlined text-3xl text-indigo-600">cloud_upload</span>
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-indigo-100 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                <span className="material-symbols-outlined text-2xl sm:text-3xl text-indigo-600">cloud_upload</span>
               </div>
               <p className="font-bold text-on-surface mb-1">Upload your files</p>
               <p className="text-sm text-on-surface-variant">Drag & drop or click to browse</p>
@@ -545,7 +545,7 @@ export default function PrintingPage() {
                       {t.print.reorderFiles}
                     </p>
                   </div>
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex flex-wrap items-center gap-1.5">
                     <button
                       onClick={applyToAll}
                       className="px-2.5 py-1.5 bg-indigo-100 text-indigo-700 rounded-lg text-xs font-bold"
@@ -670,8 +670,8 @@ export default function PrintingPage() {
             </div>
 
             <div className="flex gap-3">
-              <button onClick={() => setStep(1)} className="flex-1 py-4 bg-surface-container-high text-on-surface rounded-xl font-bold">Back</button>
-              <button onClick={() => setStep(3)} className="flex-1 py-4 bg-primary text-white rounded-xl font-bold">Review Order →</button>
+              <button onClick={() => setStep(1)} className="flex-1 min-w-0 py-4 bg-surface-container-high text-on-surface rounded-xl font-bold">Back</button>
+              <button onClick={() => setStep(3)} className="flex-1 min-w-0 py-4 bg-primary text-white rounded-xl font-bold">Review Order →</button>
             </div>
           </div>
         )}

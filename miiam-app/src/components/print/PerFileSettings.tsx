@@ -65,12 +65,12 @@ const PillGroup = <T extends string>({
   onChange: (v: T) => void;
   format?: (v: T) => string;
 }) => (
-  <div className="grid gap-1.5" style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}>
+  <div className="flex flex-wrap gap-1.5">
     {options.map((opt) => (
       <button
         key={opt.value}
         onClick={() => onChange(opt.value)}
-        className={`px-2 py-1.5 rounded-lg text-xs font-bold border-2 transition-colors ${
+        className={`min-w-[60px] sm:min-w-0 sm:flex-1 px-2 py-1.5 rounded-lg text-xs font-bold border-2 transition-colors whitespace-nowrap text-center ${
           value === opt.value
             ? "border-primary bg-primary/10 text-primary"
             : "border-outline-variant text-on-surface"
@@ -106,7 +106,7 @@ export default function PerFileSettings({
 
   return (
     <div className="space-y-3">
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Section label="Color">
           <PillGroup
             options={[
@@ -154,7 +154,7 @@ export default function PerFileSettings({
         </Section>
       )}
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Section label="Paper">
           <PillGroup
             options={[
@@ -177,7 +177,7 @@ export default function PerFileSettings({
         </Section>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Section label="Paper type">
           <PillGroup
             options={[

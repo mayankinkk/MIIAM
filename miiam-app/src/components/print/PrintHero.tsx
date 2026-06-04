@@ -30,10 +30,10 @@ export default function PrintHero({ showBackLink = true, backHref = "/app/home" 
   const isHigh = mounted && contrast === "high";
 
   const baseClasses = isHigh
-    ? "px-6 pt-8 pb-10 bg-indigo-700 text-white border-b-4 border-yellow-300"
+    ? "px-4 sm:px-6 pt-6 sm:pt-8 pb-8 sm:pb-10 bg-indigo-700 text-white border-b-4 border-yellow-300"
     : isDark
-    ? "px-6 pt-8 pb-10 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white"
-    : "px-6 pt-8 pb-10 bg-gradient-to-r from-indigo-600 to-purple-600 text-white";
+    ? "px-4 sm:px-6 pt-6 sm:pt-8 pb-8 sm:pb-10 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white"
+    : "px-4 sm:px-6 pt-6 sm:pt-8 pb-8 sm:pb-10 bg-gradient-to-r from-indigo-600 to-purple-600 text-white";
 
   return (
     <div className={baseClasses}>
@@ -47,12 +47,12 @@ export default function PrintHero({ showBackLink = true, backHref = "/app/home" 
       )}
 
       <div className="flex items-center gap-3 mb-2">
-        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${isHigh ? "bg-yellow-300 text-indigo-900" : "bg-white/20"}`}>
+        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 ${isHigh ? "bg-yellow-300 text-indigo-900" : "bg-white/20"}`}>
           <span className="material-symbols-outlined text-2xl" aria-hidden="true">print</span>
         </div>
-        <div>
-          <h1 className="text-2xl font-black">{t.print.heroTitle}</h1>
-          <p className="text-white/80 text-sm">{t.print.heroSubtitle}</p>
+        <div className="min-w-0 flex-1">
+          <h1 className="text-2xl font-black break-words">{t.print.heroTitle}</h1>
+          <p className="text-white/80 text-sm break-words">{t.print.heroSubtitle}</p>
         </div>
       </div>
 
