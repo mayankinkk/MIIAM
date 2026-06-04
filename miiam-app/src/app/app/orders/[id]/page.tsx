@@ -10,6 +10,7 @@ import BlurImage from "@/components/BlurImage";
 import OrderChatOverlay from "@/components/order/OrderChatOverlay";
 import PrintButton from "@/components/print/PrintButton";
 import RiderMap from "@/components/rider/RiderMap";
+import ShareLocationToggle from "@/components/rider/ShareLocationToggle";
 import { useUnreadMessages } from "@/lib/hooks/useUnreadMessages";
 import { PRINTING_VENDOR_ID } from "@/lib/constants";
 
@@ -449,6 +450,15 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                         <span className="material-symbols-outlined text-2xl">call</span>
                       </a>
                     </div>
+                    {currentUserId && ["on_the_way", "arrived", "picking_up"].includes(order.status) && (
+                      <div className="mt-3">
+                        <ShareLocationToggle
+                          orderId={id}
+                          userId={currentUserId}
+                          enabled
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

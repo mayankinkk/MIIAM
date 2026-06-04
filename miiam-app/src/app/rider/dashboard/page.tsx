@@ -13,6 +13,7 @@ import QuickStats from "@/components/rider/QuickStats";
 import MapControls from "@/components/rider/MapControls";
 import CallModal from "@/components/rider/CallModal";
 import OrderChatOverlay from "@/components/order/OrderChatOverlay";
+import CustomerLocationView from "@/components/rider/CustomerLocationView";
 
 export default function RiderDashboard() {
   const router = useRouter();
@@ -1412,11 +1413,18 @@ export default function RiderDashboard() {
                       <span>{currentStopIndex + 1}/{currentOrder.stops.length} Stops</span>
                     </div>
                     <div className="h-2 bg-white/20 rounded-full overflow-hidden">
-                      <div 
+                      <div
                         className="h-full bg-white transition-all"
                         style={{ width: `${((currentStopIndex + 1) / currentOrder.stops.length) * 100}%` }}
                       ></div>
                     </div>
+                  </div>
+                )}
+
+                {/* Customer Live Location (visible when on delivery leg) */}
+                {(deliveryStep === "delivering" || deliveryStep === "arrived") && currentOrder.orderDbId && (
+                  <div className="bg-white">
+                    <CustomerLocationView orderId={currentOrder.orderDbId} className="rounded-none border-0" height={170} />
                   </div>
                 )}
 
