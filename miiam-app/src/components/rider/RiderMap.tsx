@@ -136,12 +136,16 @@ export default function RiderMap({
   const riderMarkerRef = useRef<any>(null);
   const homeMarkerRef = useRef<any>(null);
   const vendorMarkerRef = useRef<any>(null);
+  const trailLayerRef = useRef<any | null>(null);
+  const trailPointsRef = useRef<[number, number][]>([]);
   const routeLayerRef = useRef<any[]>([]);
   const leafletRef = useRef<any>(null);
   const dropoffCoordRef = useRef<[number, number] | null>(null);
   const pickupCoordRef = useRef<[number, number] | null>(null);
   const lastBearingRef = useRef<number>(0);
+  const lastRiderPosRef = useRef<[number, number] | null>(null);
   const animFrameRef = useRef<number | null>(null);
+  const TRAIL_MAX = 30;
   const [resolvedDropoff, setResolvedDropoff] = useState<[number, number] | null>(null);
   const [resolvedPickup, setResolvedPickup] = useState<[number, number] | null>(null);
 
@@ -330,12 +334,15 @@ export default function RiderMap({
     if (!riderMarkerRef.current) {
       const riderIcon = L.divIcon({
         className: "rider-marker",
-        html: `<div id="rider-scooter" style="position:relative;width:46px;height:46px;transform-origin:center;transition:transform 1.2s linear;">
-          <div style="position:absolute;inset:0;background:rgba(255,215,9,0.25);border-radius:50%;animation:pulse-ring 1.4s ease-out infinite"></div>
-          <div style="position:absolute;inset:4px;background:#ffd709;border-radius:50%;border:3px solid white;box-shadow:0 3px 10px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:20px;">🛵</div>
+        html: `<div id="rider-anchor" style="position:relative;width:46px;height:46px;transform:translate(-23px,-23px);">
+          <div id="rider-pulse" style="position:absolute;inset:0;background:rgba(255,215,9,0.25);border-radius:50%;animation:pulse-ring 1.4s ease-out infinite"></div>
+          <div id="rider-orbit" style="position:absolute;inset:0;offset-path:path('M 23 8 A 15 15 0 1 1 22.99 8');offset-rotate:0deg;animation:orbit-dot 1.8s linear infinite;">
+            <span style="display:block;width:6px;height:6px;background:#ffd709;border:2px solid white;border-radius:50%;box-shadow:0 0 4px rgba(0,0,0,0.3);margin-left:20px;margin-top:-3px;"></span>
+          </div>
+          <div id="rider-scooter" style="position:absolute;inset:4px;background:#ffd709;border-radius:50%;border:3px solid white;box-shadow:0 3px 10px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:20px;transform-origin:center;transition:transform 1.2s linear;">🛵</div>
         </div>`,
-        iconSize: [46, 46],
-        iconAnchor: [23, 23],
+        iconSize: [0, 0],
+        iconAnchor: [0, 0],
       });
       riderMarkerRef.current = L.marker([riderLocation.lat, riderLocation.lng], {
         icon: riderIcon,
@@ -343,15 +350,17 @@ export default function RiderMap({
       })
         .bindPopup("Rider")
         .addTo(map);
+      lastRiderPosRef.current = [riderLocation.lat, riderLocation.lng];
     }
 
     const marker = riderMarkerRef.current;
     const currentLatLng = marker.getLatLng();
     const from: [number, number] = [currentLatLng.lat, currentLatLng.lng];
     const to: [number, number] = [riderLocation.lat, riderLocation.lng];
+    const distance = haversine(from, to);
 
     // Update bearing
-    if (showBearing) {
+    if (showBearing && distance > 0.005) {
       const b = bearing(from, to);
       // Avoid spinning
       let delta = b - lastBearingRef.current;
@@ -364,19 +373,38 @@ export default function RiderMap({
       }
     }
 
-    // Animate the marker to the new position (1.2s)
+    // Animate the marker to the new position over a distance-proportional
+    // duration (1.2s base, capped at 4s for very long hops).
+    const baseMs = 1200;
+    const dur = Math.min(4000, Math.max(600, baseMs + distance * 200));
     const start = performance.now();
-    const duration = 1200;
     if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
 
     const step = (now: number) => {
-      const t = Math.min(1, (now - start) / duration);
+      const t = Math.min(1, (now - start) / dur);
       const ease = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; // easeInOutQuad
       const lat = from[0] + (to[0] - from[0]) * ease;
       const lng = from[1] + (to[1] - from[1]) * ease;
       marker.setLatLng([lat, lng]);
+
+      // Append to trail every few frames
+      if (!trailPointsRef.current.length || haversine(trailPointsRef.current[trailPointsRef.current.length - 1], [lat, lng]) > 0.005) {
+        trailPointsRef.current.push([lat, lng]);
+        if (trailPointsRef.current.length > TRAIL_MAX) trailPointsRef.current.shift();
+        if (trailLayerRef.current) trailLayerRef.current.remove();
+        if (trailPointsRef.current.length >= 2) {
+          trailLayerRef.current = L.polyline(trailPointsRef.current, {
+            color: "#ffd709",
+            weight: 4,
+            opacity: 0.7,
+            lineCap: "round",
+          }).addTo(map);
+        }
+      }
       if (t < 1) {
         animFrameRef.current = requestAnimationFrame(step);
+      } else {
+        lastRiderPosRef.current = [lat, lng];
       }
     };
     animFrameRef.current = requestAnimationFrame(step);
@@ -387,6 +415,7 @@ export default function RiderMap({
       <style>{`
         @keyframes pulse-ring { 0%{transform:scale(0.8);opacity:0.8} 100%{transform:scale(1.8);opacity:0} }
         .rider-marker { background: transparent !important; border: 0 !important; }
+        @keyframes orbit-dot { 0% { offset-distance: 0%; opacity: 1; } 80% { opacity: 1; } 100% { offset-distance: 100%; opacity: 0; } }
       `}</style>
       <div className="absolute top-3 left-3 z-10 bg-red-600 text-white text-[10px] font-black px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
         <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
