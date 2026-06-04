@@ -21,7 +21,11 @@ export interface ChatRoom {
   unread_count: number;
 }
 
-export function useChat(orderId: string, currentUserId: string) {
+export function useChat(
+  orderId: string,
+  currentUserId: string,
+  options?: { participants?: Array<"user" | "rider" | "vendor" | "support"> }
+) {
   const supabaseRef = useRef(createClient());
   const supabase = supabaseRef.current;
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -32,13 +36,14 @@ export function useChat(orderId: string, currentUserId: string) {
   const userIdRef = useRef(currentUserId);
   userIdRef.current = currentUserId;
   const typingChannelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
+  const participants = options?.participants;
 
   useEffect(() => {
     loadMessages();
     if (!currentUserId) return;
 
     const channel = supabase
-      .channel(`chat-${orderId}`)
+      .channel(`chat-${orderId}${participants ? `-${participants.join("-")}` : ""}`)
       .on(
         "postgres_changes",
         {
@@ -49,6 +54,7 @@ export function useChat(orderId: string, currentUserId: string) {
         },
         (payload) => {
           const newMessage = payload.new as ChatMessage;
+          if (participants && !participants.includes(newMessage.sender_type)) return;
           setMessages((prev) => {
             if (prev.some((m) => m.id === newMessage.id)) return prev;
             return [...prev, newMessage];
@@ -69,6 +75,7 @@ export function useChat(orderId: string, currentUserId: string) {
         },
         (payload) => {
           const updatedMessage = payload.new as ChatMessage;
+          if (participants && !participants.includes(updatedMessage.sender_type)) return;
           setMessages((prev) =>
             prev.map((m) => (m.id === updatedMessage.id ? updatedMessage : m))
           );
@@ -83,15 +90,19 @@ export function useChat(orderId: string, currentUserId: string) {
         typingChannelRef.current = null;
       }
     };
-  }, [orderId, currentUserId]);
+  }, [orderId, currentUserId, participants?.join("|")]);
 
   async function loadMessages() {
     setLoading(true);
-    const { data, error } = await supabase
+    let query = supabase
       .from("chat_messages")
       .select("*")
       .eq("order_id", orderId)
       .order("created_at", { ascending: true });
+    if (participants && participants.length > 0) {
+      query = query.in("sender_type", participants);
+    }
+    const { data, error } = await query;
 
     if (!error && data) {
       setMessages(data);

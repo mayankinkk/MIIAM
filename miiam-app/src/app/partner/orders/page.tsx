@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { getVendorIdForUser, getVendorMenuItems } from "@/lib/vendor";
 import type { Order, OrderStatus } from "@/lib/types";
+import OrderChatOverlay from "@/components/order/OrderChatOverlay";
+import { useUnreadMessages } from "@/lib/hooks/useUnreadMessages";
 
 type FilterStatus = "all" | "active" | "delivered" | "cancelled";
 
@@ -16,12 +18,17 @@ export default function VendorOrders() {
   const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [menuItemNames, setMenuItemNames] = useState<Map<string, { name: string }>>(new Map());
+  const [chatOrder, setChatOrder] = useState<Order | null>(null);
+  const [vendorUserId, setVendorUserId] = useState<string>("");
+  const { unreadByOrder } = useUnreadMessages(vendorUserId);
 
   useEffect(() => {
     init();
   }, []);
 
   async function init() {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) setVendorUserId(user.id);
     const id = await getVendorIdForUser();
     if (id) {
       setVendorId(id);
@@ -177,6 +184,18 @@ export default function VendorOrders() {
                     <p className="text-xs text-slate-400">{order.payment_method}</p>
                   </div>
                   <button
+                    onClick={() => setChatOrder(order)}
+                    className="relative px-3 py-2 border border-slate-200 rounded-xl text-sm font-bold text-secondary hover:bg-secondary/5 transition-colors flex items-center gap-1"
+                    title="Chat with customer"
+                  >
+                    <span className="material-symbols-outlined text-base">chat_bubble</span>
+                    {(unreadByOrder[order.id] || 0) > 0 && (
+                      <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-500 text-white text-[10px] font-black rounded-full flex items-center justify-center shadow-md">
+                        {unreadByOrder[order.id] > 9 ? "9+" : unreadByOrder[order.id]}
+                      </span>
+                    )}
+                  </button>
+                  <button
                     onClick={() => setSelectedOrder(selectedOrder?.id === order.id ? null : order)}
                     className="px-4 py-2 border border-slate-200 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 transition-colors"
                   >
@@ -254,6 +273,17 @@ export default function VendorOrders() {
           ))
         )}
       </div>
+
+      {chatOrder && vendorUserId && (
+        <OrderChatOverlay
+          orderId={chatOrder.id}
+          currentUserId={vendorUserId}
+          senderType="vendor"
+          thread="user-vendor"
+          otherName={chatOrder.customer_name || `Customer ${chatOrder.user_id?.slice(0, 6) || ""}`}
+          onClose={() => setChatOrder(null)}
+        />
+      )}
     </div>
   );
 }

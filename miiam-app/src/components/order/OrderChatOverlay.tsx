@@ -8,16 +8,40 @@ interface OrderChatOverlayProps {
   currentUserId: string;
   senderType: "user" | "rider" | "vendor";
   otherName?: string;
+  otherAvatar?: string;
+  thread?: "user-vendor" | "user-rider" | "all";
   onClose: () => void;
 }
 
-const QUICK_REPLIES: Record<string, string[]> = {
-  user: ["Where are you?", "Please call me", "Coming soon?", "I'm outside"],
+const QUICK_REPLIES: Record<string, Record<string, string[]> | string[]> = {
+  user: {
+    "user-vendor": ["Is my order confirmed?", "Any extra items needed?", "How long will it take?", "Thank you!"],
+    "user-rider": ["Where are you?", "Please call me", "Coming soon?", "I'm outside"],
+    all: ["Where are you?", "Please call me", "Coming soon?", "I'm outside"],
+  },
   rider: ["I'm on my way", "I've arrived", "Traffic delay", "Almost there"],
+  vendor: ["Order accepted", "Will be ready in 10 min", "Item out of stock", "Ready for pickup"],
 };
 
-export default function OrderChatOverlay({ orderId, currentUserId, senderType, otherName, onClose }: OrderChatOverlayProps) {
-  const { messages, loading, isTyping, sendMessage, sendTypingIndicator } = useChat(orderId, currentUserId);
+export default function OrderChatOverlay({
+  orderId,
+  currentUserId,
+  senderType,
+  otherName,
+  otherAvatar,
+  thread = "all",
+  onClose,
+}: OrderChatOverlayProps) {
+  const participants =
+    thread === "user-vendor" ? (["user", "vendor"] as const) :
+    thread === "user-rider" ? (["user", "rider"] as const) :
+    undefined;
+
+  const { messages, loading, isTyping, sendMessage, sendTypingIndicator } = useChat(
+    orderId,
+    currentUserId,
+    { participants: participants ? Array.from(participants) as any : undefined }
+  );
   const [input, setInput] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -47,7 +71,9 @@ export default function OrderChatOverlay({ orderId, currentUserId, senderType, o
     sendMessage(msg, senderType);
   };
 
-  const replies = QUICK_REPLIES[senderType] || [];
+  const replies = senderType === "user"
+    ? ((QUICK_REPLIES.user as Record<string, string[]>)[thread] || (QUICK_REPLIES.user as Record<string, string[]>).all)
+    : ((QUICK_REPLIES[senderType] as string[]) || []);
 
   return (
     <div className="fixed inset-0 z-[100] bg-black/50 flex items-end animate-fade-in" onClick={onClose}>
@@ -61,14 +87,21 @@ export default function OrderChatOverlay({ orderId, currentUserId, senderType, o
             <button onClick={onClose} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container">
               <span className="material-symbols-outlined text-secondary">arrow_back</span>
             </button>
-            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white">
-              <span className="material-symbols-outlined">person</span>
+            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white overflow-hidden">
+              {otherAvatar ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={otherAvatar} alt={otherName || "avatar"} className="w-full h-full object-cover" />
+              ) : (
+                <span className="material-symbols-outlined">
+                  {thread === "user-vendor" ? "storefront" : "person"}
+                </span>
+              )}
             </div>
             <div>
-              <h1 className="font-bold text-on-surface">{otherName || (senderType === "rider" ? "Customer" : "Rider")}</h1>
+              <h1 className="font-bold text-on-surface">{otherName || (senderType === "rider" ? "Customer" : thread === "user-vendor" ? "Restaurant" : "Rider")}</h1>
               <p className="text-[10px] font-medium text-green-600 flex items-center gap-1">
                 <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
-                Online
+                {thread === "user-vendor" ? "Restaurant" : "Online"}
               </p>
             </div>
           </div>

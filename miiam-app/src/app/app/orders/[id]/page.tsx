@@ -48,7 +48,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
   const [cancelReason, setCancelReason] = useState("");
   const [cancelOtherReason, setCancelOtherReason] = useState("");
   const [currentUserId, setCurrentUserId] = useState<string>("");
-  const [showChat, setShowChat] = useState(false);
+  const [showChat, setShowChat] = useState<"rider" | "vendor" | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const statusRef = useRef(order?.status);
 
@@ -431,7 +431,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                     <p className="text-on-surface-variant font-medium">Your delivery hero is on the move</p>
                     <div className="flex gap-3 mt-4">
                       <button
-                        onClick={() => setShowChat(true)}
+                        onClick={() => setShowChat("rider")}
                         className="flex-1 bg-secondary text-white rounded-xl py-3 font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-all scale-95 active:scale-90 relative"
                       >
                         <span className="material-symbols-outlined text-lg">chat_bubble</span>
@@ -442,7 +442,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                           </span>
                         )}
                       </button>
-                      <a 
+                      <a
                         href={`tel:${riderInfo.phone || ''}`}
                         className="w-14 h-14 bg-surface-container text-secondary rounded-xl flex items-center justify-center hover:opacity-90 transition-all scale-95 active:scale-90"
                       >
@@ -573,7 +573,13 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                     <p className="text-xs font-bold text-primary uppercase tracking-widest">Order #{order.id.slice(0, 8).toUpperCase()}</p>
                   </div>
                 </div>
-                <Link href={`/app/orders/${id}`} className="text-secondary font-bold text-sm hover:underline">View Details</Link>
+                <button
+                  onClick={() => setShowChat("vendor")}
+                  className="text-secondary font-bold text-sm flex items-center gap-1 hover:underline"
+                >
+                  <span className="material-symbols-outlined text-base">chat_bubble</span>
+                  Chat
+                </button>
               </div>
               <div className="bg-white/50 rounded-xl p-4 space-y-3">
                 {order.items?.map((item: any, idx: number) => (
@@ -806,8 +812,10 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
             orderId={id}
             currentUserId={currentUserId}
             senderType="user"
-            otherName={riderInfo?.name || "Rider"}
-            onClose={() => setShowChat(false)}
+            thread={showChat === "vendor" ? "user-vendor" : "user-rider"}
+            otherName={showChat === "vendor" ? (order.vendor?.name || "Restaurant") : (riderInfo?.name || "Rider")}
+            otherAvatar={showChat === "vendor" ? order.vendor?.image_url || order.vendor?.logo_url || undefined : riderInfo?.image}
+            onClose={() => setShowChat(null)}
           />
         )}
       </main>
