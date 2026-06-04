@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   usePrintServiceStore,
-  selectAllServices,
   DEFAULT_SERVICES,
   type ServicePresetId,
 } from "@/lib/store/printServiceStore";
@@ -15,7 +14,11 @@ interface Props {
 }
 
 export default function ServicesCatalogPanel({ open, onClose }: Props) {
-  const services = usePrintServiceStore(selectAllServices);
+  const allServices = usePrintServiceStore((s) => s.services);
+  const services = useMemo(
+    () => [...allServices].sort((a, b) => a.order - b.order),
+    [allServices]
+  );
   const setService = usePrintServiceStore((s) => s.setService);
   const toggleEnabled = usePrintServiceStore((s) => s.toggleEnabled);
   const move = usePrintServiceStore((s) => s.move);

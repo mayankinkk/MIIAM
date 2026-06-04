@@ -1,13 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useLanguageStore } from "@/lib/store/languageStore";
 import { getTranslations } from "@/lib/i18n";
 import {
   usePrintServiceStore,
-  selectAllServices,
-  selectSortedEnabledServices,
   type ServicePresetId,
 } from "@/lib/store/printServiceStore";
 
@@ -51,7 +49,11 @@ export default function PrintServiceGrid({ activePreset, onSelect }: Props) {
   const { language } = useLanguageStore();
   const [mounted, setMounted] = useMounted();
   const t = mounted ? getTranslations(language).print.services : getTranslations("en").print.services;
-  const services = usePrintServiceStore(selectSortedEnabledServices);
+  const allServices = usePrintServiceStore((s) => s.services);
+  const services = useMemo(
+    () => allServices.filter((s) => s.enabled).sort((a, b) => a.order - b.order),
+    [allServices]
+  );
 
   return (
     <section className="space-y-3">
@@ -117,4 +119,4 @@ export default function PrintServiceGrid({ activePreset, onSelect }: Props) {
   );
 }
 
-export { SERVICE_META, selectAllServices };
+export { SERVICE_META };
