@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useServiceSettingsStore } from "@/lib/store/serviceSettingsStore";
 import { useToastStore } from "@/lib/store/toastStore";
-import { PRINTING_VENDOR_ID } from "@/lib/constants";
+import { PRINTING_VENDOR_ID, PRINT_MENU_ITEM_ID } from "@/lib/constants";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import {
   PASSPORT_PRESETS,
@@ -123,7 +123,7 @@ export default function PassportPage() {
 
     cartStore.addItem({
       id: `passport_${Date.now()}`,
-      menu_item_id: `passport_${Date.now()}`,
+      menu_item_id: PRINT_MENU_ITEM_ID,
       vendor_id: PRINTING_VENDOR_ID,
       vendor_name: "MIIAM Print Store",
       name: `Passport photo (${preset.country} ${documentTypeLabel(preset.documentType)} · ${set.count} pcs)`,

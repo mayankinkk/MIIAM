@@ -215,7 +215,7 @@ export default function CartPage() {
                 </div>
                 <div className="space-y-3 relative z-10">
                   {vendor.items.map((item) => (
-                    <div key={item.menu_item_id} className="flex items-center gap-2 sm:gap-3 bg-surface-container-lowest p-2.5 sm:p-3 rounded-xl shadow-sm">
+                    <div key={item.id} className="flex items-center gap-2 sm:gap-3 bg-surface-container-lowest p-2.5 sm:p-3 rounded-xl shadow-sm">
                       {/* Thumbnail */}
                       <div className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-surface-container">
                         {item.image_url ? (
@@ -242,7 +242,7 @@ export default function CartPage() {
                       <div className="flex flex-col items-end gap-1 shrink-0">
                         <div className="flex items-center bg-surface-container rounded-full">
                           <button
-                            onClick={() => updateQuantity(item.menu_item_id, item.quantity - 1)}
+                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
                             aria-label={`Decrease quantity of ${item.name}`}
                             className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-surface-container-lowest transition-colors"
                           >
@@ -250,7 +250,7 @@ export default function CartPage() {
                           </button>
                           <span className="px-2 font-bold text-sm" aria-live="polite" aria-atomic="true">{item.quantity}</span>
                           <button
-                            onClick={() => updateQuantity(item.menu_item_id, item.quantity + 1)}
+                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
                             aria-label={`Increase quantity of ${item.name}`}
                             className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-surface-container-lowest transition-colors"
                           >
@@ -258,7 +258,7 @@ export default function CartPage() {
                           </button>
                         </div>
                         <button
-                          onClick={() => removeItem(item.menu_item_id)}
+                          onClick={() => removeItem(item.id)}
                           className="text-[9px] font-bold text-on-surface-variant hover:text-primary transition-colors uppercase tracking-wider"
                         >
                           Remove

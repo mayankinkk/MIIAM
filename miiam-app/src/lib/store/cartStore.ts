@@ -20,8 +20,8 @@ export interface CartItem {
 interface CartStore {
   items: CartItem[];
   addItem: (item: Omit<CartItem, "quantity">, quantity?: number, suppressToast?: boolean) => void;
-  removeItem: (menu_item_id: string) => void;
-  updateQuantity: (menu_item_id: string, quantity: number) => void;
+  removeItem: (id: string) => void;
+  updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
   totalItems: () => number;
   totalPrice: () => number;
@@ -53,15 +53,11 @@ export const useCartStore = create<CartStore>()(
           set({ items: [{ ...item, quantity }] });
           return;
         }
-        const existing = currentItems.find(
-          (i) => i.menu_item_id === item.menu_item_id
-        );
+        const existing = currentItems.find((i) => i.id === item.id);
         if (existing) {
           set({
             items: currentItems.map((i) =>
-              i.menu_item_id === item.menu_item_id
-                ? { ...i, quantity: i.quantity + quantity }
-                : i
+              i.id === item.id ? { ...i, quantity: i.quantity + quantity } : i
             ),
           });
         } else {
@@ -73,19 +69,19 @@ export const useCartStore = create<CartStore>()(
         }
       },
 
-      removeItem: (menu_item_id) => {
+      removeItem: (id) => {
         const currentItems = get().items;
         if (!Array.isArray(currentItems)) return;
-        const item = currentItems.find(i => i.menu_item_id === menu_item_id);
-        set({ items: currentItems.filter((i) => i.menu_item_id !== menu_item_id) });
+        const item = currentItems.find((i) => i.id === id);
+        set({ items: currentItems.filter((i) => i.id !== id) });
         if (item) {
           useToastStore.getState().addToast(`Removed ${item.name}`, "info");
         }
       },
 
-      updateQuantity: (menu_item_id, quantity) => {
+      updateQuantity: (id, quantity) => {
         if (quantity <= 0) {
-          get().removeItem(menu_item_id);
+          get().removeItem(id);
           return;
         }
         const currentItems = get().items;
@@ -93,7 +89,7 @@ export const useCartStore = create<CartStore>()(
         const clamped = Math.min(quantity, 99);
         set({
           items: currentItems.map((i) =>
-            i.menu_item_id === menu_item_id ? { ...i, quantity: clamped } : i
+            i.id === id ? { ...i, quantity: clamped } : i
           ),
         });
       },

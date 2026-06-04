@@ -63,10 +63,10 @@ describe('cartStore multi-vendor', () => {
       id: '2', menu_item_id: 'm2', vendor_id: 'v2', vendor_name: 'Shop B',
       name: 'Bread', price: 30,
     }, 1, true);
-    store.updateQuantity('m1', 5);
+    store.updateQuantity('1', 5);
     const items = useCartStore.getState().items;
-    expect(items.find(i => i.menu_item_id === 'm1')?.quantity).toBe(5);
-    expect(items.find(i => i.menu_item_id === 'm2')?.quantity).toBe(1);
+    expect(items.find(i => i.id === '1')?.quantity).toBe(5);
+    expect(items.find(i => i.id === '2')?.quantity).toBe(1);
   });
 
   it('should remove item from specific vendor without affecting others', () => {
@@ -79,10 +79,10 @@ describe('cartStore multi-vendor', () => {
       id: '2', menu_item_id: 'm2', vendor_id: 'v2', vendor_name: 'Shop B',
       name: 'Bread', price: 30,
     }, 1, true);
-    store.removeItem('m1');
+    store.removeItem('1');
     const items = useCartStore.getState().items;
     expect(items).toHaveLength(1);
-    expect(items[0].menu_item_id).toBe('m2');
+    expect(items[0].id).toBe('2');
   });
 
   it('should clamp quantity to 99', () => {
@@ -91,7 +91,7 @@ describe('cartStore multi-vendor', () => {
       id: '1', menu_item_id: 'm1', vendor_id: 'v1', vendor_name: 'Shop A',
       name: 'Apple', price: 50,
     }, 1, true);
-    store.updateQuantity('m1', 150);
+    store.updateQuantity('1', 150);
     expect(useCartStore.getState().items[0].quantity).toBe(99);
   });
 

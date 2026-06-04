@@ -460,7 +460,7 @@ export default function CheckoutPage() {
                 </div>
                 <div className="space-y-4">
                   {items.filter(i => i.vendor_id === SERVICES_VENDOR_ID).map(item => (
-                    <div key={item.menu_item_id} className="p-4 rounded-lg border border-outline-variant/20 bg-slate-50 flex justify-between items-center">
+                    <div key={item.id} className="p-4 rounded-lg border border-outline-variant/20 bg-slate-50 flex justify-between items-center">
                       <div>
                         <h3 className="font-bold">{item.name.split(' (')[0]}</h3>
                         <p className="text-sm text-secondary flex items-center gap-1 font-semibold mt-1">
@@ -492,7 +492,7 @@ export default function CheckoutPage() {
                     let settings: Record<string, any> = {};
                     try { if (item.special_notes) settings = JSON.parse(item.special_notes); } catch {}
                     return (
-                      <div key={item.menu_item_id} className="p-3 sm:p-4 rounded-lg border border-outline-variant/20 bg-indigo-50/30">
+                      <div key={item.id} className="p-3 sm:p-4 rounded-lg border border-outline-variant/20 bg-indigo-50/30">
                         <div className="flex justify-between items-start mb-2 gap-2">
                           <h3 className="font-bold min-w-0 break-words">{item.name}</h3>
                           <div className="font-bold text-indigo-700 shrink-0">₹{item.price} x {item.quantity}</div>

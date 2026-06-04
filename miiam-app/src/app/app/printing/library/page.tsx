@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { usePrintLibraryStore, type PrintLibraryItem } from "@/lib/store/printLibraryStore";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useServiceSettingsStore } from "@/lib/store/serviceSettingsStore";
-import { PRINTING_VENDOR_ID } from "@/lib/constants";
+import { PRINTING_VENDOR_ID, PRINT_MENU_ITEM_ID } from "@/lib/constants";
 import { getPrintingPricing } from "@/lib/printing-pricing";
 import { bytesToHumanReadable } from "@/lib/printing-utils";
 import { useTranslation } from "@/lib/i18n/useTranslation";
@@ -53,7 +53,7 @@ export default function PrintLibraryPage() {
 
     cartStore.addItem({
       id: `print_lib_${Date.now()}`,
-      menu_item_id: `print_lib_${Date.now()}`,
+      menu_item_id: PRINT_MENU_ITEM_ID,
       vendor_id: PRINTING_VENDOR_ID,
       vendor_name: "MIIAM Print Store",
       name: `Re-print: ${item.name}`,

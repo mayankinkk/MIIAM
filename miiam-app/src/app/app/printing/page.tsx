@@ -11,7 +11,7 @@ import { usePrintSettingsStore, QUALITY_MULTIPLIER } from "@/lib/store/printSett
 import { usePrintDraftStore } from "@/lib/store/printDraftStore";
 import { usePrintAddonsStore } from "@/lib/store/printAddonsStore";
 import { useToastStore } from "@/lib/store/toastStore";
-import { PRINTING_VENDOR_ID } from "@/lib/constants";
+import { PRINTING_VENDOR_ID, PRINT_MENU_ITEM_ID } from "@/lib/constants";
 import { getPrintingPricing } from "@/lib/printing-pricing";
 import {
   ADDON_CATALOG,
@@ -353,7 +353,7 @@ export default function PrintingPage() {
 
     cartStore.addItem({
       id: `print_${Date.now()}`,
-      menu_item_id: `print_${Date.now()}`,
+      menu_item_id: PRINT_MENU_ITEM_ID,
       vendor_id: PRINTING_VENDOR_ID,
       vendor_name: "MIIAM Print Store",
       name: `Print (${totalPagesEffective}pg · ETA ${etaMinutes}m)`,

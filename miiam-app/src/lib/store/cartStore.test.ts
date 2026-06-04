@@ -51,7 +51,7 @@ describe('cartStore', () => {
       name: 'Burger',
       price: 100,
     });
-    store.removeItem('menu-1');
+    store.removeItem('1');
     expect(useCartStore.getState().items).toHaveLength(0);
   });
 
@@ -65,7 +65,7 @@ describe('cartStore', () => {
       name: 'Burger',
       price: 100,
     });
-    store.updateQuantity('menu-1', 5);
+    store.updateQuantity('1', 5);
     expect(useCartStore.getState().items[0].quantity).toBe(5);
   });
 
@@ -157,7 +157,7 @@ describe('cartStore', () => {
       name: 'Burger',
       price: 100,
     });
-    store.updateQuantity('menu-1', 0);
+    store.updateQuantity('1', 0);
     expect(useCartStore.getState().items).toHaveLength(0);
   });
 });
