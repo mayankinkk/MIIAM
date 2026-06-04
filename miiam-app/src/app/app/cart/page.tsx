@@ -162,11 +162,11 @@ export default function CartPage() {
 
       <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Cart' }]} />
 
-      <main className="pt-4 pb-40 px-4 max-w-2xl mx-auto">
+      <main className="pt-4 pb-40 px-3 sm:px-4 max-w-2xl mx-auto">
         <section className="mb-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-extrabold tracking-tight text-primary">Your Cart</h1>
+          <div className="flex items-center justify-between gap-2">
+            <div className="min-w-0">
+              <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-primary">Your Cart</h1>
               <p className="text-slate-600 text-xs mt-0.5">Review items from your favorite spots.</p>
             </div>
             <button
@@ -174,7 +174,7 @@ export default function CartPage() {
                 await fetchPastOrders();
                 setShowReorderModal(true);
               }}
-              className="text-xs font-bold text-primary bg-primary/5 px-3 py-2 rounded-lg hover:bg-primary/10 transition-colors"
+              className="shrink-0 text-xs font-bold text-primary bg-primary/5 px-3 py-2 rounded-lg hover:bg-primary/10 transition-colors"
             >
               Reorder
             </button>
@@ -198,7 +198,7 @@ export default function CartPage() {
         ) : (
           <div className="space-y-4">
             {vendors.map((vendor) => (
-              <div key={vendor.id} className="bg-surface-container-low rounded-xl p-4 relative overflow-hidden">
+              <div key={vendor.id} className="bg-surface-container-low rounded-xl p-3 sm:p-4 relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-2">
                   <span className="material-symbols-outlined text-primary/10 text-6xl absolute -top-2 -right-2">lunch_dining</span>
                 </div>
@@ -208,14 +208,14 @@ export default function CartPage() {
                       {vendor.id === PRINTING_VENDOR_ID ? "print" : "restaurant"}
                     </span>
                   </div>
-                  <div>
-                    <h2 className="text-base font-bold tracking-tight">{vendor.name}</h2>
+                  <div className="min-w-0">
+                    <h2 className="text-base font-bold tracking-tight truncate">{vendor.name}</h2>
                     <p className="text-[10px] font-medium text-primary uppercase tracking-widest">Priority Delivery</p>
                   </div>
                 </div>
                 <div className="space-y-3 relative z-10">
                   {vendor.items.map((item) => (
-                    <div key={item.menu_item_id} className="flex items-center gap-3 bg-surface-container-lowest p-3 rounded-xl shadow-sm">
+                    <div key={item.menu_item_id} className="flex items-center gap-2 sm:gap-3 bg-surface-container-lowest p-2.5 sm:p-3 rounded-xl shadow-sm">
                       {/* Thumbnail */}
                       <div className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-surface-container">
                         {item.image_url ? (
@@ -278,23 +278,23 @@ export default function CartPage() {
             <section className="bg-surface-container-lowest rounded-xl p-4 shadow-[0px_4px_20px_rgba(77,33,42,0.06)] border border-outline-variant/10">
               <h3 className="text-base font-bold mb-4">Payment Summary</h3>
               <div className="space-y-3 text-on-surface-variant text-sm">
-                <div className="flex justify-between">
+                <div className="flex justify-between gap-2">
                   <span>Items Subtotal</span>
-                  <span className="text-on-surface font-semibold">₹{total.toFixed(2)}</span>
+                  <span className="text-on-surface font-semibold truncate">₹{total.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Delivery Fee</span>
                   <span className="text-green-600 font-semibold">FREE</span>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex justify-between gap-2">
                   <span>Service Charge</span>
-                  <span className="text-on-surface font-semibold">₹{(vendorIds.length * serviceCharge).toFixed(2)}</span>
+                  <span className="text-on-surface font-semibold truncate">₹{(vendorIds.length * serviceCharge).toFixed(2)}</span>
                 </div>
 
-                <div className="pt-4 border-t border-outline-variant/20 flex justify-between items-center">
-                  <div>
+                <div className="pt-4 border-t border-outline-variant/20 flex justify-between items-center gap-2">
+                  <div className="min-w-0">
                     <p className="text-xs uppercase tracking-widest font-bold text-on-surface">Total Balance</p>
-                    <p className="text-3xl font-extrabold text-primary tracking-tighter">₹{grandTotal.toFixed(2)}</p>
+                    <p className="text-2xl sm:text-3xl font-extrabold text-primary tracking-tighter truncate">₹{grandTotal.toFixed(2)}</p>
                   </div>
                 </div>
               </div>
@@ -346,17 +346,17 @@ export default function CartPage() {
         <div className="fixed bottom-16 left-0 right-0 z-40 bg-surface/95 backdrop-blur-xl border-t border-outline-variant/20 shadow-[0px_-10px_30px_rgba(77,33,42,0.08)]"
           style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
         >
-          <div className="max-w-2xl mx-auto px-4 py-3 flex items-center gap-4">
-            <div className="flex-1">
+          <div className="max-w-2xl mx-auto px-3 sm:px-4 py-3 flex items-center gap-3 sm:gap-4">
+            <div className="flex-1 min-w-0">
               <p className="text-[10px] text-slate-600 font-semibold uppercase tracking-wider">Total</p>
-              <p className="text-2xl font-extrabold text-primary">₹{grandTotal.toFixed(2)}</p>
+              <p className="text-xl sm:text-2xl font-extrabold text-primary truncate">₹{grandTotal.toFixed(2)}</p>
             </div>
             <Link
               href="/app/checkout"
-              className="px-8 py-3.5 bg-gradient-to-r from-primary to-primary-container text-white rounded-xl font-bold text-base shadow-lg shadow-primary/20 hover:scale-[1.01] active:scale-95 transition-all flex items-center gap-2 whitespace-nowrap"
+              className="shrink-0 px-5 sm:px-8 py-3 sm:py-3.5 bg-gradient-to-r from-primary to-primary-container text-white rounded-xl font-bold text-sm sm:text-base shadow-lg shadow-primary/20 hover:scale-[1.01] active:scale-95 transition-all flex items-center gap-2 whitespace-nowrap"
             >
               Proceed
-              <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
+              <span className="material-symbols-outlined text-[18px] sm:text-[20px]">arrow_forward</span>
             </Link>
           </div>
         </div>
