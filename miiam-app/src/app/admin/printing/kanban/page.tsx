@@ -20,6 +20,7 @@ export default function AdminPrintingKanban() {
   const [loading, setLoading] = useState(true);
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const [dragOverCol, setDragOverCol] = useState<string | null>(null);
+  const [selectedOrder, setSelectedOrder] = useState<any>(null);
 
   useEffect(() => {
     loadOrders();
@@ -139,6 +140,7 @@ export default function AdminPrintingKanban() {
                       key={order.id}
                       draggable
                       onDragStart={(e) => handleDragStart(e, order.id)}
+                      onClick={() => setSelectedOrder(order)}
                       className={`bg-white rounded-xl p-3 shadow-sm border border-slate-100 cursor-move hover:shadow-md transition-shadow ${
                         draggingId === order.id ? "opacity-50" : ""
                       } ${order.priority > 0 ? "ring-2 ring-amber-300" : ""}`}
@@ -176,6 +178,72 @@ export default function AdminPrintingKanban() {
           ))}
         </div>
       )}
+
+      {selectedOrder && (() => {
+        const selItem = selectedOrder.order_items?.[0];
+        let selSettings: Record<string, any> = {};
+        try { if (selItem?.special_notes) selSettings = JSON.parse(selItem.special_notes); } catch {}
+        const selFileNames: string[] = selSettings.fileNames || [];
+        const selFileUrls: string[] = selSettings.fileUrls || [];
+        const selFileStatuses: boolean[] = selSettings.fileStatuses || [];
+        return (
+          <div className="fixed inset-0 z-50 bg-black/50 flex items-start justify-center p-4 pt-[5vh] overflow-y-auto" onClick={() => setSelectedOrder(null)}>
+            <div className="bg-white rounded-2xl w-full max-w-lg" onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center justify-between p-5 pb-0">
+                <div>
+                  <h3 className="font-bold text-lg">Order #{selectedOrder.id.slice(0, 8)}</h3>
+                  <p className="text-sm text-slate-500">{new Date(selectedOrder.placed_at).toLocaleString("en-IN")} · ₹{selectedOrder.total_amount}</p>
+                </div>
+                <button onClick={() => setSelectedOrder(null)} className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center shrink-0">
+                  <span className="material-symbols-outlined text-sm">close</span>
+                </button>
+              </div>
+              <div className="p-5 space-y-4">
+                <div className="flex flex-wrap gap-1.5">
+                  {selSettings.pages && <span className="px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-lg text-xs font-bold">{selSettings.pages} pages</span>}
+                  {selSettings.copies && <span className="px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-lg text-xs font-bold">{selSettings.copies} copies</span>}
+                  {selSettings.colorMode && <span className="px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-lg text-xs font-bold capitalize">{selSettings.colorMode === "bw" ? "B&W" : "Color"}</span>}
+                  {selSettings.paperSize && <span className="px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-lg text-xs font-bold uppercase">{selSettings.paperSize}</span>}
+                </div>
+
+                {selFileNames.length > 0 && (
+                  <div className="space-y-1.5">
+                    <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider">Files</h4>
+                    <div className="divide-y divide-slate-100 border border-slate-100 rounded-xl overflow-hidden">
+                      {selFileNames.map((name: string, fi: number) => {
+                        const url = selFileUrls[fi] || "";
+                        return (
+                          <div key={fi} className="flex items-center gap-2 p-2.5 bg-white">
+                            <span className="material-symbols-outlined text-indigo-500 text-base shrink-0">description</span>
+                            <span className="text-sm font-medium text-slate-700 truncate flex-1 min-w-0">{name}</span>
+                            {url && (
+                              <a href={url} target="_blank" rel="noopener noreferrer" className="shrink-0 w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center hover:bg-indigo-100">
+                                <span className="material-symbols-outlined text-sm">open_in_new</span>
+                              </a>
+                            )}
+                            {url && (
+                              <a href={url} download={name} className="shrink-0 w-7 h-7 rounded-lg bg-slate-50 text-slate-600 flex items-center justify-center hover:bg-slate-100">
+                                <span className="material-symbols-outlined text-sm">download</span>
+                              </a>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {selectedOrder.delivery_address && (
+                  <div className="bg-slate-50 rounded-xl p-3">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Delivery</p>
+                    <p className="text-sm text-slate-700">{selectedOrder.delivery_address}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }

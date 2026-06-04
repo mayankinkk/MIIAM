@@ -436,48 +436,157 @@ export default function AdminPrintingPage() {
         </div>
       )}
 
-      {selectedOrder && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl w-full max-w-lg p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-bold text-lg">Update Order Status</h3>
-              <button onClick={() => setSelectedOrder(null)} className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center">
-                <span className="material-symbols-outlined text-sm">close</span>
-              </button>
-            </div>
-            <p className="text-sm text-slate-500 mb-4">Order #{selectedOrder.id.slice(0, 8)} · ₹{selectedOrder.total_amount}</p>
-            <div className="flex flex-wrap gap-2">
-              {["pending", "processing", "ready_for_pickup", "on_the_way", "delivered", "cancelled"].map((status) => (
-                <button
-                  key={status}
-                  onClick={() => updateOrderStatus(selectedOrder.id, status as OrderStatus)}
-                  className={`px-4 py-2 rounded-lg text-sm font-bold capitalize ${
-                    selectedOrder.status === status
-                      ? "bg-indigo-600 text-white"
-                      : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-                  }`}
-                >
-                  {status.replace(/_/g, " ")}
-                </button>
-              ))}
-            </div>
-            {selectedOrder.status === "cancelled" && selectedOrder.payment_method !== "cod" && (
-              <div className="mt-4 pt-4 border-t border-slate-100">
-                <button
-                  onClick={async () => {
-                    await supabase.from("orders").update({ status: "refunded" }).eq("id", selectedOrder.id);
-                    loadOrders();
-                    setSelectedOrder(null);
-                  }}
-                  className="w-full py-3 bg-red-50 text-red-700 rounded-xl font-bold text-sm hover:bg-red-100"
-                >
-                  Process Refund (₹{selectedOrder.total_amount})
+      {selectedOrder && (() => {
+        const selItem = selectedOrder.order_items?.[0];
+        let selSettings: Record<string, any> = {};
+        try { if (selItem?.special_notes) selSettings = JSON.parse(selItem.special_notes); } catch {}
+        const selFileNames: string[] = selSettings.fileNames || [];
+        const selFileUrls: string[] = selSettings.fileUrls || [];
+        const selFileStatuses: boolean[] = selSettings.fileStatuses || [];
+        return (
+          <div className="fixed inset-0 z-50 bg-black/50 flex items-start justify-center p-4 pt-[5vh] overflow-y-auto">
+            <div className="bg-white rounded-2xl w-full max-w-2xl">
+              <div className="flex items-center justify-between p-6 pb-0">
+                <div>
+                  <h3 className="font-bold text-lg">Order Details</h3>
+                  <p className="text-sm text-slate-500">#{selectedOrder.id.slice(0, 8)} · {new Date(selectedOrder.placed_at).toLocaleString("en-IN")}</p>
+                </div>
+                <button onClick={() => setSelectedOrder(null)} className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center shrink-0">
+                  <span className="material-symbols-outlined text-sm">close</span>
                 </button>
               </div>
-            )}
+
+              <div className="p-6 space-y-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  <div className="bg-slate-50 rounded-xl p-3">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total</p>
+                    <p className="text-lg font-black text-slate-800">₹{selectedOrder.total_amount}</p>
+                  </div>
+                  <div className="bg-slate-50 rounded-xl p-3">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Payment</p>
+                    <p className="text-sm font-bold text-slate-800 uppercase">{selectedOrder.payment_method || "N/A"}</p>
+                  </div>
+                  <div className="bg-slate-50 rounded-xl p-3">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Address</p>
+                    <p className="text-sm font-medium text-slate-700 truncate">{selectedOrder.delivery_address || "N/A"}</p>
+                  </div>
+                </div>
+
+                <div className="bg-indigo-50 rounded-xl p-4 space-y-2">
+                  <h4 className="text-xs font-bold text-indigo-800 uppercase tracking-wider">Print Settings</h4>
+                  <div className="flex flex-wrap gap-1.5">
+                    {selSettings.pages && <span className="px-2.5 py-1 bg-white text-indigo-700 rounded-lg text-xs font-bold">{selSettings.pages} pages</span>}
+                    {selSettings.copies && <span className="px-2.5 py-1 bg-white text-indigo-700 rounded-lg text-xs font-bold">{selSettings.copies} copies</span>}
+                    {selSettings.colorMode && <span className="px-2.5 py-1 bg-white text-indigo-700 rounded-lg text-xs font-bold capitalize">{selSettings.colorMode === "bw" ? "B&W" : "Color"}</span>}
+                    {selSettings.paperSize && <span className="px-2.5 py-1 bg-white text-indigo-700 rounded-lg text-xs font-bold uppercase">{selSettings.paperSize}</span>}
+                    {selSettings.orientation && <span className="px-2.5 py-1 bg-white text-indigo-700 rounded-lg text-xs font-bold capitalize">{selSettings.orientation}</span>}
+                    {selSettings.sides && <span className="px-2.5 py-1 bg-white text-indigo-700 rounded-lg text-xs font-bold capitalize">{selSettings.sides} sided</span>}
+                    {selSettings.paperType && <span className="px-2.5 py-1 bg-white text-indigo-700 rounded-lg text-xs font-bold capitalize">{selSettings.paperType}</span>}
+                    {selSettings.rushTier && selSettings.rushTier !== "standard" && (
+                      <span className="px-2.5 py-1 bg-rose-100 text-rose-700 rounded-lg text-xs font-bold">⚡ {selSettings.rushLabel || selSettings.rushTier}</span>
+                    )}
+                  </div>
+                  {selSettings.addOns && selSettings.addOns.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {selSettings.addOns.map((a: any, ai: number) => (
+                        <span key={ai} className="px-2 py-0.5 bg-purple-100 text-purple-700 rounded text-[10px] font-bold">{a.name || a.id}</span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {selFileNames.length > 0 && (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider">Customer Files ({selFileNames.length})</h4>
+                      {selFileStatuses.length > 0 && (
+                        <span className="text-xs font-bold text-emerald-600">{selFileStatuses.filter(Boolean).length}/{selFileStatuses.length} printed</span>
+                      )}
+                    </div>
+                    <div className="divide-y divide-slate-100 border border-slate-100 rounded-xl overflow-hidden">
+                      {selFileNames.map((name: string, fi: number) => {
+                        const printed = selFileStatuses[fi];
+                        const url = selFileUrls[fi] || "";
+                        const isPdf = name.toLowerCase().endsWith(".pdf");
+                        const isImage = /\.(jpg|jpeg|png|webp)$/i.test(name);
+                        return (
+                          <div key={fi} className={`flex items-center gap-3 p-3 ${printed ? "bg-emerald-50/50" : "bg-white"}`}>
+                            <button
+                              onClick={() => toggleFilePrinted(selectedOrder.id, fi, selSettings)}
+                              className={`w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 ${printed ? "bg-emerald-500 border-emerald-500" : "border-slate-300 hover:border-indigo-400"}`}
+                            >
+                              {printed && <span className="material-symbols-outlined text-white text-xs" style={{ fontVariationSettings: "'FILL' 1" }}>check</span>}
+                            </button>
+                            <div className="min-w-0 flex-1">
+                              <p className={`text-sm font-bold truncate ${printed ? "text-emerald-700 line-through" : "text-slate-800"}`}>{name}</p>
+                              <p className="text-[10px] text-slate-400">{isPdf ? "PDF" : isImage ? "Image" : "File"}</p>
+                            </div>
+                            <div className="flex items-center gap-1 shrink-0">
+                              {url && (
+                                <a
+                                  href={url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center hover:bg-indigo-100 transition-colors"
+                                  title="Preview"
+                                >
+                                  <span className="material-symbols-outlined text-base">visibility</span>
+                                </a>
+                              )}
+                              {url && (
+                                <a
+                                  href={url}
+                                  download={name}
+                                  className="w-8 h-8 rounded-lg bg-slate-50 text-slate-600 flex items-center justify-center hover:bg-slate-100 transition-colors"
+                                  title="Download"
+                                >
+                                  <span className="material-symbols-outlined text-base">download</span>
+                                </a>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                <div className="pt-2">
+                  <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Update Status</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {["pending", "processing", "ready_for_pickup", "on_the_way", "delivered", "cancelled"].map((status) => (
+                      <button
+                        key={status}
+                        onClick={() => updateOrderStatus(selectedOrder.id, status as OrderStatus)}
+                        className={`px-4 py-2 rounded-lg text-sm font-bold capitalize ${
+                          selectedOrder.status === status
+                            ? "bg-indigo-600 text-white"
+                            : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                        }`}
+                      >
+                        {status.replace(/_/g, " ")}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {selectedOrder.status === "cancelled" && selectedOrder.payment_method !== "cod" && (
+                  <button
+                    onClick={async () => {
+                      await supabase.from("orders").update({ status: "refunded" }).eq("id", selectedOrder.id);
+                      loadOrders();
+                      setSelectedOrder(null);
+                    }}
+                    className="w-full py-3 bg-red-50 text-red-700 rounded-xl font-bold text-sm hover:bg-red-100"
+                  >
+                    Process Refund (₹{selectedOrder.total_amount})
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
     </div>
   );
 }
