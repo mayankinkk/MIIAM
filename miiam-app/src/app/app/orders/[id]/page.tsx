@@ -8,6 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import BlurImage from "@/components/BlurImage";
 import OrderChatOverlay from "@/components/order/OrderChatOverlay";
+import PrintButton from "@/components/print/PrintButton";
 import { useUnreadMessages } from "@/lib/hooks/useUnreadMessages";
 import { PRINTING_VENDOR_ID } from "@/lib/constants";
 
@@ -623,12 +624,27 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
               </button>
             )}
 
-            <button 
+            <button
               onClick={() => setShowHelp(true)}
               className="w-full bg-gradient-to-r from-primary to-primary-container text-white rounded-xl py-5 text-lg font-extrabold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all"
             >
               {canCancel ? "Cancel Order" : "Help with Order"}
             </button>
+
+            <PrintButton
+              variant="full"
+              order={{
+                id: order.id,
+                placedAt: order.placed_at,
+                totalAmount: order.total_amount,
+                paymentMethod: order.payment_method,
+                deliveryAddress: order.delivery_address,
+                deliveryInstructions: order.delivery_instructions,
+                status: order.status,
+                vendor: order.vendor,
+                items: order.items,
+              }}
+            />
 
             {/* Show cancelled state prominently */}
             {order.status === "cancelled" && (

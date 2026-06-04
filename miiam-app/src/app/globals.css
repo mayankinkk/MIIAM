@@ -896,3 +896,79 @@ textarea:focus-visible {
   animation: flip-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   transform-origin: top;
 }
+
+/* =========================================================================
+   PRINT STYLESHEET
+   - Hides app chrome (nav, buttons, breadcrumbs, modals)
+   - Makes .print-receipt, [data-print] visible
+   - Page sizes for receipt (80mm), KOT (80mm), label (100x150mm)
+   ========================================================================= */
+@media print {
+  @page {
+    size: auto;
+    margin: 6mm;
+  }
+
+  html, body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Hide everything that isn't a print surface */
+  body * {
+    visibility: hidden;
+  }
+
+  /* Show the printing surface */
+  .print-receipt,
+  .print-receipt *,
+  [data-print],
+  [data-print] *,
+  [data-print-target],
+  [data-print-target] * {
+    visibility: visible;
+  }
+
+  /* The actual print surface sits at 0,0 of the page */
+  .print-receipt,
+  [data-print] {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    box-shadow: none !important;
+    page-break-after: always;
+  }
+
+  /* In modal popups (window.open) we need to allow only the target to show */
+  body.printing-kot [data-print="kot"],
+  body.printing-label [data-print="label"],
+  body.printing-receipt [data-print="receipt"] {
+    display: block !important;
+  }
+
+  body.printing-kot [data-print="receipt"],
+  body.printing-kot [data-print="label"],
+  body.printing-label [data-print="receipt"],
+  body.printing-label [data-print="kot"],
+  body.printing-receipt [data-print="kot"],
+  body.printing-receipt [data-print="label"] {
+    display: none !important;
+  }
+
+  /* Always hide app chrome even when only target shows */
+  nav, header, footer, aside, [role="navigation"], [role="banner"], [role="contentinfo"] {
+    display: none !important;
+  }
+}
+
+/* Stand-alone (opened in new window) print mode */
+@media print and (orientation: portrait) {
+  .print-receipt,
+  [data-print] {
+    margin: 0 auto;
+  }
+}
+
