@@ -9,6 +9,8 @@ import { HomeSkeleton } from "@/components/Skeleton";
 import BlurImage from "@/components/BlurImage";
 import { NetworkError } from "@/components/ui/EmptyStates";
 import { withRetry } from "@/lib/retry";
+import PrintCostCalculator from "@/components/print/PrintCostCalculator";
+import PrintFirstOrderCoupon from "@/components/print/PrintFirstOrderCoupon";
 
 const categories = [
   { id: "food", label: "Food", icon: "restaurant", color: "bg-orange-100", iconColor: "text-orange-600", offer: "20% OFF" },
@@ -598,6 +600,21 @@ export default function HomePage() {
           </div>
         </div>
       )}
+
+      {/* Print Store Quick Entry + Calculator */}
+      <div className="px-4 pb-4">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <span className="material-symbols-outlined text-indigo-500" style={{ fontVariationSettings: "'FILL' 1" }}>print</span>
+            <h2 className="text-lg font-bold text-on-surface">Print Store</h2>
+          </div>
+          <Link href="/app/printing" className="text-xs font-bold text-primary">Open →</Link>
+        </div>
+        <PrintFirstOrderCoupon />
+        <div className="mt-3">
+          <PrintCostCalculator ctaHref="/app/printing" />
+        </div>
+      </div>
 
       {/* Nearby Popular Restaurants */}
       <div className="px-4 pb-4">

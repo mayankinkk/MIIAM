@@ -1,26 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { useServiceSettingsStore, ServiceCategory } from "@/lib/store/serviceSettingsStore";
-
-const defaultSettings = [
-  { id: "food", name: "Food Delivery", isEnabled: true, message: "Food delivery is currently under maintenance", icon: "restaurant" },
-  { id: "beauty", name: "Beauty & Wellness", isEnabled: true, message: "Beauty service is under maintenance", icon: "spa" },
-  { id: "grocery", name: "Grocery", isEnabled: true, message: "Grocery service is coming soon!", icon: "shopping_cart" },
-  { id: "printing", name: "Printing", isEnabled: true, message: "Printing service is under maintenance", icon: "print" },
-  { id: "ac", name: "AC Repair", isEnabled: true, message: "AC repair service is under maintenance", icon: "ac_unit" },
-  { id: "cleaning", name: "Home Cleaning", isEnabled: true, message: "Home cleaning service is coming soon!", icon: "cleaning_services" },
-  { id: "plumbing", name: "Plumbing", isEnabled: true, message: "Plumbing service is under maintenance", icon: "plumbing" },
-  { id: "electrical", name: "Electrical", isEnabled: true, message: "Electrical service is coming soon!", icon: "electrical_services" },
-  { id: "pest", name: "Pest Control", isEnabled: true, message: "Pest control service is under maintenance", icon: "pest_control" },
-  { id: "car", name: "Car Repair", isEnabled: true, message: "Car repair service is coming soon!", icon: "directions_car" },
-  { id: "appliance", name: "Appliance Repair", isEnabled: true, message: "Appliance repair is under maintenance", icon: "kitchen" },
-];
+import { useServiceSettingsStore, ServiceCategory, isServiceOpen } from "@/lib/store/serviceSettingsStore";
 
 export default function ServiceSettingsPage() {
-  const { settings, updateSetting } = useServiceSettingsStore();
+  const { settings, updateSetting, updateHours } = useServiceSettingsStore();
   const [editingId, setEditingId] = useState<ServiceCategory | null>(null);
   const [tempMessage, setTempMessage] = useState("");
+  const [editingHoursId, setEditingHoursId] = useState<ServiceCategory | null>(null);
+  const [tempOpen, setTempOpen] = useState("06:00");
+  const [tempClose, setTempClose] = useState("23:59");
+  const [tempIs247, setTempIs247] = useState(false);
 
   const handleReset = () => {
     if (confirm("Reset all settings to defaults? This will clear all custom messages.")) {
@@ -45,6 +35,20 @@ export default function ServiceSettingsPage() {
     setEditingId(null);
   };
 
+  const handleEditHours = (id: ServiceCategory) => {
+    const setting = settings.find((s) => s.id === id);
+    if (!setting) return;
+    setEditingHoursId(id);
+    setTempOpen(setting.hours.open);
+    setTempClose(setting.hours.close);
+    setTempIs247(setting.hours.is24x7);
+  };
+
+  const handleSaveHours = (id: ServiceCategory) => {
+    updateHours(id, { open: tempOpen, close: tempClose, is24x7: tempIs247 });
+    setEditingHoursId(null);
+  };
+
   return (
     <div className="px-8 py-6 space-y-6">
       <div>
@@ -62,8 +66,9 @@ export default function ServiceSettingsPage() {
         <div className="p-4 border-b border-slate-100 bg-slate-50">
           <div className="grid grid-cols-12 gap-4 text-xs font-bold text-slate-500 uppercase tracking-widest">
             <div className="col-span-3">Service</div>
-            <div className="col-span-2">Status</div>
-            <div className="col-span-5">Custom Message</div>
+            <div className="col-span-1">Status</div>
+            <div className="col-span-2">Hours</div>
+            <div className="col-span-4">Custom Message</div>
             <div className="col-span-2">Actions</div>
           </div>
         </div>
@@ -83,19 +88,19 @@ export default function ServiceSettingsPage() {
                 </div>
               </div>
 
-              <div className="col-span-2">
+              <div className="col-span-1">
                 <button
                   onClick={() => handleToggle(service.id)}
-                  className={`relative w-14 h-7 rounded-full transition-colors ${
+                  className={`relative w-12 h-6 rounded-full transition-colors ${
                     service.isEnabled ? "bg-green-500" : "bg-slate-300"
                   }`}
                 >
                   <span
-                    className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow transition-transform ${
-                      service.isEnabled ? "left-8" : "left-1"
+                    className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
+                      service.isEnabled ? "left-6" : "left-0.5"
                     }`}
                   />
-                  <span className={`absolute right-2 top-1.5 text-xs font-bold ${
+                  <span className={`absolute right-1.5 top-1 text-[10px] font-bold ${
                     service.isEnabled ? "text-white" : "text-slate-600"
                   }`}>
                     {service.isEnabled ? "ON" : "OFF"}
@@ -103,7 +108,79 @@ export default function ServiceSettingsPage() {
                 </button>
               </div>
 
-              <div className="col-span-5">
+              <div className="col-span-2">
+                {editingHoursId === service.id ? (
+                  <div className="flex flex-col gap-1">
+                    <label className="flex items-center gap-1 text-[11px] text-slate-500">
+                      <input
+                        type="checkbox"
+                        checked={tempIs247}
+                        onChange={(e) => setTempIs247(e.target.checked)}
+                        className="w-3 h-3"
+                      />
+                      24×7
+                    </label>
+                    <div className="flex items-center gap-1">
+                      <input
+                        type="time"
+                        value={tempOpen}
+                        onChange={(e) => setTempOpen(e.target.value)}
+                        disabled={tempIs247}
+                        className="px-1.5 py-1 border border-slate-200 rounded text-xs w-[72px] disabled:opacity-40"
+                      />
+                      <span className="text-xs text-slate-400">–</span>
+                      <input
+                        type="time"
+                        value={tempClose}
+                        onChange={(e) => setTempClose(e.target.value)}
+                        disabled={tempIs247}
+                        className="px-1.5 py-1 border border-slate-200 rounded text-xs w-[72px] disabled:opacity-40"
+                      />
+                    </div>
+                    <div className="flex gap-1">
+                      <button
+                        onClick={() => handleSaveHours(service.id)}
+                        className="px-2 py-1 bg-[#ba001c] text-white rounded text-[11px] font-bold"
+                      >
+                        Save
+                      </button>
+                      <button
+                        onClick={() => setEditingHoursId(null)}
+                        className="px-2 py-1 bg-slate-100 text-slate-600 rounded text-[11px] font-bold"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-bold ${
+                        isServiceOpen(service.hours)
+                          ? "bg-emerald-100 text-emerald-700"
+                          : "bg-amber-100 text-amber-700"
+                      }`}
+                    >
+                      <span
+                        className={`w-1.5 h-1.5 rounded-full ${
+                          isServiceOpen(service.hours) ? "bg-emerald-500 animate-pulse" : "bg-amber-500"
+                        }`}
+                      />
+                      {service.hours.is24x7
+                        ? "24×7"
+                        : `${service.hours.open} – ${service.hours.close}`}
+                    </span>
+                    <button
+                      onClick={() => handleEditHours(service.id)}
+                      className="text-[11px] text-[#ba001c] font-bold hover:underline"
+                    >
+                      Edit
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <div className="col-span-4">
                 {editingId === service.id ? (
                   <div className="flex gap-2">
                     <input
@@ -151,7 +228,7 @@ export default function ServiceSettingsPage() {
             <p className="font-bold text-amber-800">How it works</p>
             <p className="text-sm text-amber-700 mt-1">
               When a service is turned OFF, users visiting that section will see your custom message instead of the regular content.
-              This is useful for maintenance mode or launching new features.
+              Service hours are surfaced in the customer UI to show live availability (Open/Closed) and the time window.
             </p>
           </div>
         </div>

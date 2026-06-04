@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cartStore";
@@ -9,6 +8,11 @@ import { useLocationStore } from "@/lib/store/locationStore";
 import { useServiceSettingsStore } from "@/lib/store/serviceSettingsStore";
 import { PRINTING_VENDOR_ID } from "@/lib/constants";
 import { getPrintingPricing } from "@/lib/printing-pricing";
+import { useTranslation } from "@/lib/i18n/useTranslation";
+import PrintHero from "@/components/print/PrintHero";
+import PrintFirstOrderCoupon from "@/components/print/PrintFirstOrderCoupon";
+import WhyPrintWithMiiam from "@/components/print/WhyPrintWithMiiam";
+import PrintTestimonials from "@/components/print/PrintTestimonials";
 
 interface UploadedFile {
   id: string;
@@ -40,7 +44,8 @@ export default function PrintingPage() {
   const cartStore = useCartStore();
   const locationStore = useLocationStore();
   const serviceSettings = useServiceSettingsStore();
-  
+  const { t } = useTranslation();
+
   const isEnabled = serviceSettings.isServiceEnabled("printing");
 
   const uploadFile = async (file: File): Promise<string | null> => {
@@ -91,7 +96,7 @@ export default function PrintingPage() {
   const handleAddToCart = () => {
     if (files.length === 0) { alert("Please upload at least one file"); return; }
     if (!isEnabled) { alert("Printing service is currently unavailable"); return; }
-    
+
     const settings = {
       pages,
       copies,
@@ -105,7 +110,7 @@ export default function PrintingPage() {
       fileUrls: files.map(f => f.url),
       fileNames: files.map(f => f.name),
     };
-    
+
     cartStore.addItem({
       id: `print_${Date.now()}`,
       menu_item_id: `print_${Date.now()}`,
@@ -125,40 +130,20 @@ export default function PrintingPage() {
             <span className="material-symbols-outlined text-6xl text-amber-500">warning</span>
             <h1 className="text-2xl font-black mt-4">Service Unavailable</h1>
             <p className="text-on-surface-variant mt-2">Printing service is currently unavailable in your area or under maintenance.</p>
-            <Link href="/app/home" className="mt-6 text-primary font-bold">Go Home</Link>
+            <button onClick={() => router.push("/app/home")} className="mt-6 text-primary font-bold">Go Home</button>
         </div>
     )
   }
 
   return (
     <div className="min-h-screen bg-background text-on-background">
-      {/* Hero Banner Header */}
-      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 pt-8 pb-10">
-        <Link href="/app/home" className="text-white/80 font-bold mb-4 block hover:text-white">← Back</Link>
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center">
-            <span className="material-symbols-outlined text-white text-2xl">print</span>
-          </div>
-          <div>
-            <h1 className="text-2xl font-black text-white">Print Store</h1>
-            <p className="text-white/70 text-sm">Upload. Print. Delivered in minutes.</p>
-          </div>
-        </div>
-        <div className="flex gap-2 mt-3">
-          <span className="inline-flex items-center gap-1 bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full">
-            <span className="material-symbols-outlined text-sm">bolt</span>
-            Delivered in minutes
-          </span>
-          <span className="inline-flex items-center gap-1 bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full">
-            <span className="material-symbols-outlined text-sm">schedule</span>
-            6 AM - 12 AM
-          </span>
-        </div>
-      </div>
+      <PrintHero />
 
-      <div className="p-6 -mt-4">
+      <div className="p-6 -mt-4 space-y-4">
+        <PrintFirstOrderCoupon />
+
         {/* Steps Indicator */}
-        <div className="flex items-center justify-center gap-2 mb-6 bg-surface-container rounded-2xl p-3 shadow-sm border border-outline-variant/10">
+        <div className="flex items-center justify-center gap-2 bg-surface-container rounded-2xl p-3 shadow-sm border border-outline-variant/10">
           {STEPS.map((label, i) => {
             const idx = i + 1;
             const isActive = step === idx;
@@ -182,13 +167,13 @@ export default function PrintingPage() {
             );
           })}
         </div>
-        
+
         {step === 1 && (
           <div className="bg-surface-container rounded-2xl p-6 shadow-sm border border-outline-variant/10 space-y-6">
             {/* Privacy Banner */}
             <div className="flex items-start gap-3 p-3 bg-indigo-50 rounded-xl">
               <span className="material-symbols-outlined text-indigo-600 text-sm">lock</span>
-              <p className="text-xs text-indigo-700">Your documents are safe & secure. Files are automatically deleted after printing.</p>
+              <p className="text-xs text-indigo-700">{t.print.trustPrivacyDesc}</p>
             </div>
 
             {/* Drag & Drop Zone */}
@@ -247,16 +232,26 @@ export default function PrintingPage() {
                     </button>
                   </div>
                 ))}
+
+                <button
+                  onClick={() => setStep(2)}
+                  disabled={files.length === 0}
+                  className="w-full py-4 bg-primary text-white rounded-xl font-bold hover:bg-primary/90 transition-colors disabled:opacity-50"
+                >
+                  Continue to Customize →
+                </button>
               </div>
             )}
 
-            <button
-              onClick={() => setStep(2)}
-              disabled={files.length === 0}
-              className="w-full py-4 bg-primary text-white rounded-xl font-bold hover:bg-primary/90 transition-colors disabled:opacity-50"
-            >
-              Continue to Customize →
-            </button>
+            {files.length === 0 && (
+              <button
+                onClick={() => setStep(2)}
+                disabled
+                className="w-full py-4 bg-primary text-white rounded-xl font-bold hover:bg-primary/90 transition-colors disabled:opacity-50"
+              >
+                Continue to Customize →
+              </button>
+            )}
           </div>
         )}
 
@@ -281,7 +276,7 @@ export default function PrintingPage() {
                   <button onClick={() => setColorMode("color")} className={`p-3 rounded-xl border-2 font-bold text-sm ${colorMode === "color" ? "border-primary bg-primary/10 text-primary" : "border-outline-variant text-on-surface"}`}>Color · ₹{pricePerColor}<span className="text-xs">/pg</span></button>
                 </div>
               </div>
-              
+
               <div>
                 <label className="text-xs font-bold text-on-surface-variant block mb-2">Print Sides</label>
                 <div className="grid grid-cols-2 gap-2">
@@ -357,6 +352,14 @@ export default function PrintingPage() {
               <button onClick={handleAddToCart} className="flex-1 py-4 bg-primary text-white rounded-xl font-bold">Add to Cart</button>
             </div>
           </div>
+        )}
+
+        {/* Trust + Testimonials shown only on the upload step */}
+        {step === 1 && (
+          <>
+            <WhyPrintWithMiiam />
+            <PrintTestimonials />
+          </>
         )}
       </div>
     </div>
