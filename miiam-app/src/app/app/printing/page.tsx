@@ -370,7 +370,7 @@ export default function PrintingPage() {
   const totalDetectedPages = files.reduce((acc, f) => acc + f.pageCount, 0);
 
   return (
-    <div className="min-h-screen bg-background text-on-background">
+    <div className="min-h-screen bg-background text-on-background overflow-x-hidden">
       <PrintHero />
 
       <div className="p-6 -mt-4 space-y-4">
@@ -401,8 +401,8 @@ export default function PrintingPage() {
           </div>
         )}
 
-        <div className="flex items-center justify-between gap-2 bg-surface-container rounded-2xl p-3 shadow-sm border border-outline-variant/10">
-          <div className="flex items-center justify-center gap-2 flex-1">
+        <div className="flex flex-wrap items-center justify-between gap-2 bg-surface-container rounded-2xl p-3 shadow-sm border border-outline-variant/10">
+          <div className="flex flex-wrap items-center justify-center gap-2 flex-1 min-w-0">
             {STEPS.map((label, i) => {
               const idx = i + 1;
               const isActive = step === idx;
@@ -426,7 +426,7 @@ export default function PrintingPage() {
               );
             })}
           </div>
-          <div className="flex flex-col items-end gap-1">
+          <div className="flex flex-col items-end gap-1 shrink-0">
             <Link
               href="/app/printing/library"
               className="flex items-center gap-1 text-xs font-bold text-primary hover:underline"

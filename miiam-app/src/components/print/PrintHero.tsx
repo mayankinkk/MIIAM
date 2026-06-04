@@ -57,7 +57,7 @@ export default function PrintHero({ showBackLink = true, backHref = "/app/home" 
       </div>
 
       <div className="flex flex-wrap gap-2 mt-4">
-        <span className={`inline-flex items-center gap-1 ${isHigh ? "bg-yellow-300 text-indigo-900" : "bg-white/95 text-indigo-700"} text-xs font-black px-3 py-1.5 rounded-full shadow-sm`}>
+        <span className={`inline-flex items-center gap-1 min-w-0 max-w-full whitespace-nowrap ${isHigh ? "bg-yellow-300 text-indigo-900" : "bg-white/95 text-indigo-700"} text-xs font-black px-3 py-1.5 rounded-full shadow-sm`}>
           <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }} aria-hidden="true">payments</span>
           {t.print.pricingChip
             .replace("{bw}", String(pricing.bwPerPage))
@@ -65,13 +65,13 @@ export default function PrintHero({ showBackLink = true, backHref = "/app/home" 
           <span className={isHigh ? "text-indigo-900" : "text-indigo-500"}>{t.print.pricingChipPer}</span>
         </span>
 
-        <span className="inline-flex items-center gap-1 bg-white/20 text-white text-xs font-bold px-3 py-1.5 rounded-full">
+        <span className="inline-flex items-center gap-1 whitespace-nowrap bg-white/20 text-white text-xs font-bold px-3 py-1.5 rounded-full">
           <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }} aria-hidden="true">bolt</span>
           {hours === "24×7" ? t.print.serviceHours247 : t.print.serviceHoursLabel + " " + hours}
         </span>
 
         <span
-          className={`inline-flex items-center gap-1 ${
+          className={`inline-flex items-center gap-1 whitespace-nowrap ${
             isOpen ? "bg-emerald-400/30" : "bg-amber-300/30"
           } text-white text-xs font-bold px-3 py-1.5 rounded-full`}
           role="status"
@@ -85,7 +85,7 @@ export default function PrintHero({ showBackLink = true, backHref = "/app/home" 
           {isOpen ? t.print.serviceHoursOpen : t.print.serviceHoursClosed}
         </span>
 
-        <span className="inline-flex items-center gap-1 bg-white/20 text-white text-xs font-bold px-3 py-1.5 rounded-full">
+        <span className="inline-flex items-center gap-1 whitespace-nowrap bg-white/20 text-white text-xs font-bold px-3 py-1.5 rounded-full">
           <span className="material-symbols-outlined text-sm" aria-hidden="true">check_circle</span>
           {t.print.noMinimum}
         </span>
