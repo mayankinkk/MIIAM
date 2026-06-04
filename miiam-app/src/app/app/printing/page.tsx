@@ -29,6 +29,7 @@ import FilePreviewModal, { type PreviewFile } from "@/components/print/FilePrevi
 import FileSettingsRow, { type PrintFileItem, DEFAULT_FILE_SETTINGS } from "@/components/print/FileSettingsRow";
 import PrintAddOns from "@/components/print/PrintAddOns";
 import BulkOrderShortcuts from "@/components/print/BulkOrderShortcuts";
+import PrintServiceGrid, { type ServicePreset } from "@/components/print/PrintServiceGrid";
 import {
   PRINT_ALLOWED_TYPES,
   PRINT_MAX_FILE_SIZE,
@@ -54,6 +55,7 @@ function formatRelativeTime(timestamp: number): string {
 
 export default function PrintingPage() {
   const [step, setStep] = useState(1);
+  const [activeService, setActiveService] = useState<ServicePreset | null>(null);
   const [files, setFiles] = useState<PrintFileItem[]>([]);
   const [uploading, setUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
@@ -192,6 +194,34 @@ export default function PrintingPage() {
     if (files.length === 0) return;
     const first = files[0].settings;
     setFiles((prev) => prev.map((f) => ({ ...f, settings: { ...first } })));
+  };
+
+  const handleServiceSelect = (preset: ServicePreset) => {
+    setActiveService(preset);
+    const colorMode: "bw" | "color" = preset === "color" || preset === "photo" ? "color" : "bw";
+    const baseDefaults: Partial<typeof defaults> = { colorMode };
+
+    if (preset === "bulk") {
+      setDefaults({ ...baseDefaults, copies: 50, paperType: "standard" });
+    } else if (preset === "reports") {
+      setDefaults({ ...baseDefaults, paperType: "standard", quality: "high", sides: "double" });
+    } else if (preset === "photo") {
+      setDefaults({ ...baseDefaults, paperType: "glossy", quality: "high" });
+    } else if (preset === "spiral" || preset === "soft" || preset === "hard") {
+      const addOnId = preset === "spiral" ? "binding_spiral" : preset === "soft" ? "binding_soft" : "binding_hard";
+      setDefaults(baseDefaults);
+      if (!printAddons.selected.includes(addOnId)) {
+        printAddons.toggle(addOnId);
+      }
+    } else if (preset === "lamination_a4") {
+      setDefaults(baseDefaults);
+      if (!printAddons.selected.includes("lamination_a4")) printAddons.toggle("lamination_a4");
+    } else if (preset === "lamination_id") {
+      setDefaults(baseDefaults);
+      if (!printAddons.selected.includes("lamination_id")) printAddons.toggle("lamination_id");
+    } else {
+      setDefaults(baseDefaults);
+    }
   };
 
   const handleSaveAsDefault = () => {
@@ -446,6 +476,24 @@ export default function PrintingPage() {
 
         {step === 1 && (
           <div className="bg-surface-container rounded-2xl p-6 shadow-sm border border-outline-variant/10 space-y-6">
+            <PrintServiceGrid activePreset={activeService} onSelect={handleServiceSelect} />
+
+            {activeService && (
+              <div className="flex items-center justify-between gap-2 bg-indigo-50 border border-indigo-200 rounded-xl px-3 py-2 text-xs text-indigo-800">
+                <span className="flex items-center gap-1.5">
+                  <span className="material-symbols-outlined text-base" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                  {t.print.services.servicesActive.replace("{name}", t.print.services[`${activeService === "lamination_a4" ? "lamA4" : activeService === "lamination_id" ? "lamId" : activeService}Title` as keyof typeof t.print.services] as string)}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setActiveService(null)}
+                  className="text-indigo-700 font-black hover:underline"
+                >
+                  {t.print.services.servicesChange}
+                </button>
+              </div>
+            )}
+
             <div className="flex items-start gap-3 p-3 bg-indigo-50 rounded-xl">
               <span className="material-symbols-outlined text-indigo-600 text-sm">lock</span>
               <p className="text-xs text-indigo-700">{t.print.trustPrivacyDesc}</p>
