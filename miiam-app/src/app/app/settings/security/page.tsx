@@ -91,21 +91,19 @@ export default function SecurityPage() {
         </div>
 
         {/* Active Sessions */}
-        <div className="bg-surface-container border border-outline-variant/10 rounded-2xl p-5 shadow-sm">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 bg-surface-container-high rounded-xl flex items-center justify-center">
-              <span className="material-symbols-outlined text-on-surface-variant">devices</span>
-            </div>
-            <div>
-              <p className="font-bold text-on-surface">This Device</p>
-              <p className="text-xs text-on-surface-variant">Current session · Active now</p>
-            </div>
+        <Link
+          href="/app/settings/security/devices"
+          className="bg-surface-container border border-outline-variant/10 rounded-2xl p-5 shadow-sm flex items-center gap-3 hover:bg-surface-container-high transition-colors"
+        >
+          <div className="w-10 h-10 bg-surface-container-high rounded-xl flex items-center justify-center">
+            <span className="material-symbols-outlined text-on-surface-variant">devices</span>
           </div>
-          <div className="flex items-center gap-1 text-green-500">
-            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-            <span className="text-xs font-bold">Session is secure</span>
+          <div className="flex-1">
+            <p className="font-bold text-on-surface">Devices &amp; Login Activity</p>
+            <p className="text-xs text-on-surface-variant">Manage signed-in devices, see recent activity</p>
           </div>
-        </div>
+          <span className="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+        </Link>
       </main>
     </div>
   );
