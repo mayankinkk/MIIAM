@@ -133,6 +133,7 @@ export default function FileSettingsRow({
             onChange={handleSettingsChange}
             compact={false}
             pageCount={file.pageCount}
+            fileName={file.name}
           />
         </div>
       )}

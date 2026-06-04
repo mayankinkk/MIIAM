@@ -10,6 +10,7 @@ export type Orientation = "portrait" | "landscape";
 export type PaperType = "standard" | "glossy";
 export type FlipDirection = "long" | "short";
 export type PrintQuality = "draft" | "normal" | "high";
+export type WatermarkMode = "none" | "draft" | "confidential" | "do-not-copy" | "custom";
 
 export interface PrintDefaults {
   colorMode: ColorMode;
@@ -20,6 +21,10 @@ export interface PrintDefaults {
   paperType: PaperType;
   quality: PrintQuality;
   copies: number;
+  watermark: WatermarkMode;
+  watermarkOpacity: number;
+  watermarkCustomText: string;
+  ageVerified: boolean;
 }
 
 interface PrintSettingsStore {
@@ -38,6 +43,10 @@ const DEFAULT: PrintDefaults = {
   paperType: "standard",
   quality: "normal",
   copies: 1,
+  watermark: "none",
+  watermarkOpacity: 0.15,
+  watermarkCustomText: "",
+  ageVerified: false,
 };
 
 export const usePrintSettingsStore = create<PrintSettingsStore>()(

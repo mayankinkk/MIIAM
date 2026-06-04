@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { usePrintSettingsStore } from "@/lib/store/printSettingsStore";
+import { detectSensitiveContent } from "@/lib/printing-a11y";
 import type {
   ColorMode,
   FlipDirection,
@@ -10,6 +11,7 @@ import type {
   PaperType,
   PrintQuality,
   PrintSides,
+  WatermarkMode,
 } from "@/lib/store/printSettingsStore";
 
 export interface PerFileSettings {
@@ -23,6 +25,10 @@ export interface PerFileSettings {
   copies: number;
   range: string;
   note: string;
+  watermark: WatermarkMode;
+  watermarkOpacity: number;
+  watermarkCustomText: string;
+  ageConfirmed: boolean;
 }
 
 interface PerFileSettingsProps {
@@ -30,6 +36,7 @@ interface PerFileSettingsProps {
   onChange: (next: PerFileSettings) => void;
   compact?: boolean;
   pageCount: number;
+  fileName?: string;
 }
 
 const Section = ({
@@ -82,7 +89,9 @@ export default function PerFileSettings({
   onChange,
   compact = false,
   pageCount,
+  fileName,
 }: PerFileSettingsProps) {
+  const requiresAgeConfirmation = fileName ? detectSensitiveContent(fileName) : null;
   const setDefault = usePrintSettingsStore((s) => s.setDefault);
   const defaults = usePrintSettingsStore((s) => s.defaults);
   const [showAdvanced, setShowAdvanced] = useState(!compact);
@@ -214,6 +223,64 @@ export default function PerFileSettings({
               className="w-full p-2 bg-surface-container-high rounded-lg border border-outline-variant text-sm"
             />
           </Section>
+
+          <Section label="Watermark (printed on every page)">
+            <PillGroup
+              options={[
+                { value: "none", label: "None" },
+                { value: "draft", label: "DRAFT" },
+                { value: "confidential", label: "CONFIDENTIAL" },
+                { value: "do-not-copy", label: "DO NOT COPY" },
+                { value: "custom", label: "Custom" },
+              ]}
+              value={settings.watermark}
+              onChange={(v) => update("watermark", v)}
+            />
+          </Section>
+
+          {settings.watermark !== "none" && (
+            <div className="space-y-2">
+              {settings.watermark === "custom" && (
+                <input
+                  type="text"
+                  value={settings.watermarkCustomText}
+                  onChange={(e) => update("watermarkCustomText", e.target.value.slice(0, 24))}
+                  placeholder="Custom text (max 24 chars)"
+                  maxLength={24}
+                  className="w-full p-2 bg-surface-container-high rounded-lg border border-outline-variant text-sm"
+                />
+              )}
+              <div className="flex items-center gap-2">
+                <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Opacity</label>
+                <input
+                  type="range"
+                  min={5}
+                  max={50}
+                  step={5}
+                  value={Math.round(settings.watermarkOpacity * 100)}
+                  onChange={(e) => update("watermarkOpacity", parseInt(e.target.value) / 100)}
+                  className="flex-1"
+                  aria-label="Watermark opacity"
+                />
+                <span className="text-xs font-mono w-10 text-right">{Math.round(settings.watermarkOpacity * 100)}%</span>
+              </div>
+            </div>
+          )}
+
+          {requiresAgeConfirmation && (
+            <label className="flex items-start gap-2 bg-amber-50 border-2 border-amber-200 rounded-xl p-3 text-xs">
+              <input
+                type="checkbox"
+                checked={settings.ageConfirmed}
+                onChange={(e) => update("ageConfirmed", e.target.checked)}
+                className="mt-0.5 w-4 h-4 accent-amber-600"
+              />
+              <span className="text-amber-900 leading-snug">
+                <strong>Age-restricted content.</strong> The filename suggests this file may contain {requiresAgeConfirmation.type} material
+                (min age {requiresAgeConfirmation.minAge}). I confirm I am of legal age to print this content.
+              </span>
+            </label>
+          )}
         </>
       )}
 
@@ -240,4 +307,8 @@ export const DEFAULT_FILE_SETTINGS: PerFileSettings = {
   copies: 1,
   range: "",
   note: "",
+  watermark: "none",
+  watermarkOpacity: 0.15,
+  watermarkCustomText: "",
+  ageConfirmed: false,
 };
