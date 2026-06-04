@@ -116,7 +116,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
   };
 
   useEffect(() => {
-    let mounted = true;
+    const mounted = true;
     async function loadData() {
       try {
       setLoading(true);
@@ -337,8 +337,8 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
   const currentStepIndex = steps.findIndex((s) => s.key === order.status);
 
   return (
-    <div className="min-h-screen bg-surface">
-      <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-white/90 backdrop-blur-2xl shadow-[0px_10px_30px_rgba(77,33,42,0.04)]">
+    <div className="min-h-screen bg-surface overflow-x-hidden">
+      <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-3 sm:px-6 py-4 bg-white/90 backdrop-blur-2xl shadow-[0px_10px_30px_rgba(77,33,42,0.04)]">
         <div className="flex items-center gap-4">
           <Link href="/app/orders" className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container hover:bg-surface-container-high transition-all">
             <span className="material-symbols-outlined text-primary">arrow_back</span>
@@ -357,9 +357,9 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
       <div className="bg-gradient-to-b from-surface-container to-transparent h-2 mt-16" />
 
       <main className="pt-6 pb-12 min-h-screen">
-        <div className="max-w-7xl mx-auto px-6 lg:grid lg:grid-cols-12 lg:gap-10 items-start">
-          <div className="lg:col-span-7 space-y-6">
-            <div className="relative w-full h-[420px] rounded-xl overflow-hidden shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:grid lg:grid-cols-12 lg:gap-10 items-start">
+          <div className="lg:col-span-7 space-y-4 sm:space-y-6">
+            <div className="relative w-full h-[260px] sm:h-[420px] rounded-xl overflow-hidden shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
 
               {/* ETA Overlay */}
               {trackingInfo && (
@@ -419,10 +419,10 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
             )}
 
             {order.status !== "pending" && order.riders && (
-              <div className="relative bg-white rounded-xl p-6 shadow-[0px_20px_40px_rgba(77,33,42,0.04)] overflow-hidden">
+              <div className="relative bg-white rounded-xl p-4 sm:p-6 shadow-[0px_20px_40px_rgba(77,33,42,0.04)] overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-[#c4d0ff]/20 rounded-full -mr-16 -mt-16 blur-2xl" />
-                <div className="flex items-center gap-6 relative z-10">
-                  <div className="relative w-20 h-20">
+                <div className="flex items-center gap-3 sm:gap-6 relative z-10 min-w-0">
+                  <div className="relative w-16 h-16 sm:w-20 sm:h-20 shrink-0">
                     <BlurImage src={riderInfo.image} alt={riderInfo.name} fill className="w-full h-full rounded-full overflow-hidden border-4 border-surface-container" sizes="80px" />
                     <div className="absolute bottom-0 right-0 bg-[#ffd709] text-[#453900] px-2 py-0.5 rounded-full text-[10px] font-black flex items-center gap-1 shadow-sm">
                       <span className="material-symbols-outlined text-[12px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
@@ -468,10 +468,10 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
 
             {/* Waiting for processing/acceptance */}
             {order.status === "pending" && order.vendor_id !== PRINTING_VENDOR_ID && (
-              <div className="relative bg-white rounded-xl p-6 shadow-[0px_20px_40px_rgba(77,33,42,0.04)] overflow-hidden">
+              <div className="relative bg-white rounded-xl p-4 sm:p-6 shadow-[0px_20px_40px_rgba(77,33,42,0.04)] overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-[#c4d0ff]/20 rounded-full -mr-16 -mt-16 blur-2xl" />
-                <div className="flex items-center gap-6 relative z-10">
-                  <div className="w-20 h-20 rounded-full object-cover border-4 border-surface-container bg-surface-container flex items-center justify-center">
+                <div className="flex items-center gap-3 sm:gap-6 relative z-10 min-w-0">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 rounded-full object-cover border-4 border-surface-container bg-surface-container flex items-center justify-center">
                     <span className="material-symbols-outlined text-4xl text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>person_search</span>
                   </div>
                   <div className="flex-1">
@@ -488,10 +488,10 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
 
             {/* Printing order pending */}
             {order.status === "pending" && order.vendor_id === PRINTING_VENDOR_ID && (
-              <div className="relative bg-white rounded-xl p-6 shadow-[0px_20px_40px_rgba(77,33,42,0.04)] overflow-hidden">
+              <div className="relative bg-white rounded-xl p-4 sm:p-6 shadow-[0px_20px_40px_rgba(77,33,42,0.04)] overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-100/40 rounded-full -mr-16 -mt-16 blur-2xl" />
-                <div className="flex items-center gap-6 relative z-10">
-                  <div className="w-20 h-20 rounded-full object-cover border-4 border-surface-container bg-indigo-50 flex items-center justify-center">
+                <div className="flex items-center gap-3 sm:gap-6 relative z-10 min-w-0">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 rounded-full object-cover border-4 border-surface-container bg-indigo-50 flex items-center justify-center">
                     <span className="material-symbols-outlined text-4xl text-indigo-600" style={{ fontVariationSettings: "'FILL' 1" }}>print</span>
                   </div>
                   <div className="flex-1">
@@ -507,9 +507,9 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
             )}
           </div>
 
-          <div className="lg:col-span-5 space-y-6 mt-6 lg:mt-0">
-            <div className="bg-white rounded-xl p-8 shadow-[0px_20px_40px_rgba(77,33,42,0.04)]">
-              <h2 className="text-xl font-extrabold tracking-tight mb-8 text-on-surface">Order Journey</h2>
+          <div className="lg:col-span-5 space-y-4 sm:space-y-6 mt-6 lg:mt-0">
+            <div className="bg-white rounded-xl p-5 sm:p-8 shadow-[0px_20px_40px_rgba(77,33,42,0.04)]">
+              <h2 className="text-xl font-extrabold tracking-tight mb-6 sm:mb-8 text-on-surface">Order Journey</h2>
               <div className="space-y-0 relative">
                 <div className="absolute left-[19px] top-4 bottom-10 w-0.5 bg-gradient-to-b from-primary via-primary to-outline" />
 
@@ -519,8 +519,8 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                   const isPending = currentStepIndex < index;
                   
                   return (
-                    <div key={step.key} className={`relative flex items-start gap-6 pb-8 ${isPending ? "opacity-40" : ""}`}>
-                      <div className={`relative z-10 w-10 h-10 rounded-full flex items-center justify-center ${
+                    <div key={step.key} className={`relative flex items-start gap-3 sm:gap-6 pb-6 sm:pb-8 min-w-0 ${isPending ? "opacity-40" : ""}`}>
+                      <div className={`relative z-10 w-10 h-10 shrink-0 rounded-full flex items-center justify-center ${
                         isCurrent 
                           ? "bg-primary text-white shadow-lg shadow-primary/20 ring-4 ring-primary-container/30" 
                           : isCompleted 
@@ -531,7 +531,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                           {isCompleted && !isCurrent ? "check" : step.icon}
                         </span>
                       </div>
-                      <div>
+                      <div className="min-w-0 flex-1">
                         <h4 className={`text-md font-bold ${isCurrent ? "text-primary" : isCompleted ? "text-on-surface" : "text-outline"}`}>
                           {step.label}
                         </h4>
@@ -572,7 +572,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
               </div>
             </div>
 
-            <div className="bg-surface-container rounded-xl p-6 flex flex-col gap-4">
+            <div className="bg-surface-container rounded-xl p-4 sm:p-6 flex flex-col gap-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className={`w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm ${order.vendor_id === PRINTING_VENDOR_ID ? "text-indigo-600" : "text-primary"}`}>
@@ -618,7 +618,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
               const printedCount = fileStatuses.filter(Boolean).length;
 
               return (
-                <div key={idx} className="bg-surface-container rounded-xl p-6 space-y-3">
+                <div key={idx} className="bg-surface-container rounded-xl p-4 sm:p-6 space-y-3">
                   <h3 className="font-extrabold text-on-surface flex items-center gap-2">
                     <span className="material-symbols-outlined text-indigo-600">description</span>
                     Print Files
@@ -640,7 +640,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                     {(fileNames.length > 0 ? fileNames : fileUrls).map((name: string, fi: number) => {
                       const isPrinted = fileStatuses[fi] === true;
                       return (
-                        <div key={fi} className="flex items-center gap-3 bg-white/50 rounded-xl p-3">
+                        <div key={fi} className="flex items-center gap-3 bg-white/50 rounded-xl p-3 min-w-0">
                           <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                             isPrinted ? "bg-emerald-100" : "bg-indigo-100"
                           }`}>
@@ -652,7 +652,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                           </div>
                           <span className="text-sm text-on-surface truncate flex-1">{name}</span>
                           {fileStatuses.length > 0 && (
-                            <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${
+                            <span className={`text-[10px] font-black px-2 py-0.5 rounded-full shrink-0 ${
                               isPrinted ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"
                             }`}>
                               {isPrinted ? "PRINTED" : "IN QUEUE"}
@@ -705,7 +705,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                     addToast(added > 0 ? `Added ${added} file${added === 1 ? "" : "s"} to your library — one tap to re-print` : "Files already in your library", added > 0 ? "success" : "info");
                     router.push("/app/printing/library");
                   }}
-                  className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl py-5 text-lg font-extrabold shadow-lg shadow-indigo-600/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
+                  className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl py-4 sm:py-5 text-base sm:text-lg font-extrabold shadow-lg shadow-indigo-600/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
                 >
                   <span className="material-symbols-outlined">refresh</span>
                   Print Again
@@ -714,7 +714,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                   href={`/api/printing/invoice?orderId=${order.id}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="w-full bg-white border-2 border-indigo-200 text-indigo-700 rounded-xl py-5 text-lg font-extrabold hover:bg-indigo-50 active:scale-95 transition-all flex items-center justify-center gap-2"
+                  className="w-full bg-white border-2 border-indigo-200 text-indigo-700 rounded-xl py-4 sm:py-5 text-base sm:text-lg font-extrabold hover:bg-indigo-50 active:scale-95 transition-all flex items-center justify-center gap-2"
                 >
                   <span className="material-symbols-outlined">description</span>
                   GST Invoice (PDF)
@@ -724,7 +724,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
 
             <button
               onClick={() => setShowHelp(true)}
-              className="w-full bg-gradient-to-r from-primary to-primary-container text-white rounded-xl py-5 text-lg font-extrabold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all"
+              className="w-full bg-gradient-to-r from-primary to-primary-container text-white rounded-xl py-4 sm:py-5 text-base sm:text-lg font-extrabold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all"
             >
               {canCancel ? "Cancel Order" : "Help with Order"}
             </button>
@@ -827,7 +827,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
             {/* Cancel Reason Modal */}
             {showCancelReason && (
               <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
-                <div className="bg-white rounded-2xl w-full max-w-md p-6">
+                <div className="bg-white rounded-2xl w-full max-w-md p-4 sm:p-6">
                   <div className="flex items-center justify-between mb-4">
                     <h2 className="text-xl font-black text-slate-800">Cancel Order</h2>
                     <button onClick={() => setShowCancelReason(false)} className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center">
