@@ -23,17 +23,6 @@ export default function PrintTestimonials() {
                 {item.name.charAt(0)}
               </div>
               <p className="text-sm font-bold text-on-surface">{item.name}</p>
-              <div className="ml-auto flex items-center gap-0.5 text-amber-500">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <span
-                    key={i}
-                    className="material-symbols-outlined text-sm"
-                    style={{ fontVariationSettings: "'FILL' 1" }}
-                  >
-                    star
-                  </span>
-                ))}
-              </div>
             </div>
             <p className="text-sm text-on-surface-variant leading-snug">{item.text}</p>
           </div>

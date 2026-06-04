@@ -10,8 +10,6 @@ import BlurImage from "@/components/BlurImage";
 import { NetworkError } from "@/components/ui/EmptyStates";
 import { withRetry } from "@/lib/retry";
 import PrintCostCalculator from "@/components/print/PrintCostCalculator";
-import PrintFirstOrderCoupon from "@/components/print/PrintFirstOrderCoupon";
-
 const categories = [
   { id: "food", label: "Food", icon: "restaurant", color: "bg-orange-100", iconColor: "text-orange-600", offer: "20% OFF" },
   { id: "grocery", label: "Grocery", icon: "shopping_basket", color: "bg-green-100", iconColor: "text-green-600", offer: "FREE Delivery" },
@@ -610,7 +608,6 @@ export default function HomePage() {
           </div>
           <Link href="/app/printing" className="text-xs font-bold text-primary">Open →</Link>
         </div>
-        <PrintFirstOrderCoupon />
         <div className="mt-3">
           <PrintCostCalculator ctaHref="/app/printing" />
         </div>

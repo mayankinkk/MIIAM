@@ -23,13 +23,11 @@ import {
 } from "@/lib/printing-addons";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import PrintHero from "@/components/print/PrintHero";
-import PrintFirstOrderCoupon from "@/components/print/PrintFirstOrderCoupon";
 import WhyPrintWithMiiam from "@/components/print/WhyPrintWithMiiam";
 import PrintTestimonials from "@/components/print/PrintTestimonials";
 import FilePreviewModal, { type PreviewFile } from "@/components/print/FilePreviewModal";
 import FileSettingsRow, { type PrintFileItem, DEFAULT_FILE_SETTINGS } from "@/components/print/FileSettingsRow";
 import PrintAddOns from "@/components/print/PrintAddOns";
-import PrintReferral from "@/components/print/PrintReferral";
 import BulkOrderShortcuts from "@/components/print/BulkOrderShortcuts";
 import {
   PRINT_ALLOWED_TYPES,
@@ -376,8 +374,6 @@ export default function PrintingPage() {
       <PrintHero />
 
       <div className="p-6 -mt-4 space-y-4">
-        <PrintFirstOrderCoupon />
-
         {/* Draft prompt */}
         {draft && files.length === 0 && !draftPromptShown && (
           <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-start gap-3">
@@ -687,7 +683,6 @@ export default function PrintingPage() {
           <>
             <WhyPrintWithMiiam />
             <PrintTestimonials />
-            <PrintReferral />
           </>
         )}
       </div>
