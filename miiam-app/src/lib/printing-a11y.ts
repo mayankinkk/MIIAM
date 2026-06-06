@@ -1,4 +1,6 @@
-export type WatermarkMode = "none" | "draft" | "confidential" | "do-not-copy" | "custom";
+import type { WatermarkMode } from "./store/printSettingsStore";
+
+export type { WatermarkMode };
 export type ContrastMode = "normal" | "high";
 
 export interface WatermarkConfig {
