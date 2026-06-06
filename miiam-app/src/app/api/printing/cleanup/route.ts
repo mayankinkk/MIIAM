@@ -126,8 +126,11 @@ async function handleCleanup(supabase: Awaited<ReturnType<typeof createClient>>)
 async function requireCronAuth(request: NextRequest) {
   const authHeader = request.headers.get("authorization") || request.headers.get("x-cron-secret");
   const secret = process.env.CRON_SECRET;
-  if (secret && authHeader === `Bearer ${secret}`) return true;
-  if (!secret) return true;
+  if (!secret) {
+    console.error("[printing-cleanup] CRON_SECRET env var is not set — rejecting request");
+    return false;
+  }
+  if (authHeader === `Bearer ${secret}`) return true;
   return false;
 }
 
