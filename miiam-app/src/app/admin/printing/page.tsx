@@ -37,6 +37,9 @@ export default function AdminPrintingPage() {
   const [showAddons, setShowAddons] = useState(false);
   const [addOnPricing, setAddOnPricing] = useState<AddOnPricing>(getAddOnPricing());
   const [showServicesCatalog, setShowServicesCatalog] = useState(false);
+  const [previewFile, setPreviewFile] = useState<{ name: string; url: string; type: string } | null>(null);
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 20;
 
   useEffect(() => {
     loadOrders();
@@ -53,38 +56,64 @@ export default function AdminPrintingPage() {
   };
 
   async function loadOrders() {
-    const { data } = await supabase
-      .from("orders")
-      .select("*, order_items(*)")
-      .eq("vendor_id", PRINTING_VENDOR_ID)
-      .order("placed_at", { ascending: false });
-    if (data) setOrders(data);
+    try {
+      const { data, error } = await supabase
+        .from("orders")
+        .select("*, order_items(*)")
+        .eq("vendor_id", PRINTING_VENDOR_ID)
+        .order("placed_at", { ascending: false });
+      if (error) {
+        console.error("[admin-printing] Failed to load orders:", error);
+      } else if (data) {
+        setOrders(data);
+      }
+    } catch (e) {
+      console.error("[admin-printing] Unexpected error loading orders:", e);
+    }
     setLoading(false);
   }
 
   async function updateOrderStatus(orderId: string, status: OrderStatus) {
-    const { data: order } = await supabase.from("orders").select("user_id").eq("id", orderId).single();
-    await supabase.from("orders").update({ status }).eq("id", orderId);
-    if (order?.user_id) {
-      const notifMap: Record<string, { title: string; body: string }> = {
-        processing: { title: "Printing in Progress 🖨️", body: "Your print order is being processed and will be ready soon." },
-        ready_for_pickup: { title: "Print Order Ready 📦", body: "Your prints are ready! Waiting for rider pickup." },
-        on_the_way: { title: "Print Order On the Way 🛵", body: "Your prints are on their way!" },
-        delivered: { title: "Print Delivered ✅", body: "Your prints have been delivered. Enjoy!" },
-        cancelled: { title: "Print Order Cancelled ❌", body: "Your print order has been cancelled." },
-      };
-      const notif = notifMap[status];
-      if (notif) {
-        await fetch("/api/notify", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ user_id: order.user_id, ...notif, type: "order" }),
-        });
+    try {
+      const { data: order } = await supabase.from("orders").select("user_id").eq("id", orderId).single();
+      const { error } = await supabase.from("orders").update({ status }).eq("id", orderId);
+      if (error) {
+        console.error("[admin-printing] Failed to update order status:", error);
+        alert("Failed to update status. Please try again.");
+        return;
       }
-      try { await fetch("/api/emails/order-status", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ orderId, status }) }); } catch {}
+      if (order?.user_id) {
+        const notifMap: Record<string, { title: string; body: string }> = {
+          processing: { title: "Printing in Progress 🖨️", body: "Your print order is being processed and will be ready soon." },
+          ready_for_pickup: { title: "Print Order Ready 📦", body: "Your prints are ready! Waiting for rider pickup." },
+          on_the_way: { title: "Print Order On the Way 🛵", body: "Your prints are on their way!" },
+          delivered: { title: "Print Delivered ✅", body: "Your prints have been delivered. Enjoy!" },
+          cancelled: { title: "Print Order Cancelled ❌", body: "Your print order has been cancelled." },
+        };
+        const notif = notifMap[status];
+        if (notif) {
+          try {
+            await fetch("/api/notify", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ user_id: order.user_id, ...notif, type: "order" }),
+            });
+          } catch (e) {
+            console.warn("[admin-printing] Failed to send notification:", e);
+          }
+        }
+        try {
+          await fetch("/api/emails/order-status", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ orderId, status }) });
+        } catch (e) {
+          console.warn("[admin-printing] Failed to send email:", e);
+        }
+      }
+      loadOrders();
+      setSelectedOrder(null);
+    } catch (e) {
+      console.error("[admin-printing] Unexpected error updating status:", e);
+      alert("An unexpected error occurred. Please try again.");
     }
-    loadOrders();
-    setSelectedOrder(null);
   }
 
   async function toggleFilePrinted(orderId: string, fileIndex: number, currentSettings: any) {
@@ -103,6 +132,9 @@ export default function AdminPrintingPage() {
     const matchesStatus = statusFilter === "all" || order.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
+
+  const totalPages = Math.ceil(filteredOrders.length / PAGE_SIZE);
+  const paginatedOrders = filteredOrders.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   const todayStr = new Date().toDateString();
   const todayOrders = orders.filter(o => new Date(o.placed_at).toDateString() === todayStr);
@@ -354,6 +386,7 @@ export default function AdminPrintingPage() {
           <p className="mt-4 font-bold">No print orders yet</p>
         </div>
       ) : (
+        <>
         <div className="bg-white rounded-xl border border-slate-100 overflow-hidden">
           <table className="w-full">
             <thead className="bg-slate-50">
@@ -369,7 +402,7 @@ export default function AdminPrintingPage() {
               </tr>
             </thead>
             <tbody>
-              {filteredOrders.map((order) => {
+              {paginatedOrders.map((order) => {
                 const item = order.order_items?.[0];
                 let settings: Record<string, any> = {};
                 try { if (item?.special_notes) settings = JSON.parse(item.special_notes); } catch {}
@@ -434,6 +467,43 @@ export default function AdminPrintingPage() {
             </tbody>
           </table>
         </div>
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between mt-4 bg-white rounded-xl border border-slate-100 p-3">
+            <p className="text-xs text-slate-500">
+              Showing {((page - 1) * PAGE_SIZE) + 1}–{Math.min(page * PAGE_SIZE, filteredOrders.length)} of {filteredOrders.length}
+            </p>
+            <div className="flex gap-1">
+              <button
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page === 1}
+                className="px-3 py-1 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 disabled:opacity-40"
+              >
+                Prev
+              </button>
+              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                const pageNum = page <= 3 ? i + 1 : page + i - 2;
+                if (pageNum < 1 || pageNum > totalPages) return null;
+                return (
+                  <button
+                    key={pageNum}
+                    onClick={() => setPage(pageNum)}
+                    className={`w-8 h-8 text-xs font-bold rounded-lg ${pageNum === page ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-600"}`}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              })}
+              <button
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={page === totalPages}
+                className="px-3 py-1 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 disabled:opacity-40"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        )}
+        </>
       )}
 
       {selectedOrder && (() => {
@@ -540,15 +610,13 @@ export default function AdminPrintingPage() {
                             </div>
                             <div className="flex items-center gap-1 shrink-0">
                               {url && (
-                                <a
-                                  href={url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
+                                <button
+                                  onClick={() => setPreviewFile({ name, url, type: isPdf ? "application/pdf" : isImage ? "image/jpeg" : "application/octet-stream" })}
                                   className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center hover:bg-indigo-100 transition-colors"
                                   title="Preview"
                                 >
                                   <span className="material-symbols-outlined text-base">visibility</span>
-                                </a>
+                                </button>
                               )}
                               {url && (
                                 <a
@@ -585,7 +653,12 @@ export default function AdminPrintingPage() {
                     {["pending", "processing", "ready_for_pickup", "on_the_way", "delivered", "cancelled"].map((status) => (
                       <button
                         key={status}
-                        onClick={() => updateOrderStatus(selectedOrder.id, status as OrderStatus)}
+                        onClick={() => {
+                          if (status === "cancelled" || status === "delivered") {
+                            if (!confirm(`Are you sure you want to mark this order as ${status.replace(/_/g, " ")}?`)) return;
+                          }
+                          updateOrderStatus(selectedOrder.id, status as OrderStatus);
+                        }}
                         className={`px-4 py-2 rounded-lg text-sm font-bold capitalize ${
                           selectedOrder.status === status
                             ? "bg-indigo-600 text-white"
@@ -601,9 +674,15 @@ export default function AdminPrintingPage() {
                 {selectedOrder.status === "cancelled" && selectedOrder.payment_method !== "cod" && (
                   <button
                     onClick={async () => {
-                      await supabase.from("orders").update({ status: "refunded" }).eq("id", selectedOrder.id);
-                      loadOrders();
-                      setSelectedOrder(null);
+                      if (!confirm(`Process refund of ₹${selectedOrder.total_amount}? This will update the order status to refunded.`)) return;
+                      try {
+                        await supabase.from("orders").update({ status: "refunded" }).eq("id", selectedOrder.id);
+                        loadOrders();
+                        setSelectedOrder(null);
+                      } catch (e) {
+                        console.error("[admin-printing] Refund failed:", e);
+                        alert("Refund failed. Please try again.");
+                      }
                     }}
                     className="w-full py-3 bg-red-50 text-red-700 rounded-xl font-bold text-sm hover:bg-red-100"
                   >
@@ -615,6 +694,40 @@ export default function AdminPrintingPage() {
           </div>
         );
       })()}
+
+      {/* File Preview Modal */}
+      {previewFile && (
+        <div className="fixed inset-0 z-[70] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setPreviewFile(null)}>
+          <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between p-4 border-b border-slate-100">
+              <div className="flex-1 min-w-0 pr-2">
+                <h3 className="font-bold text-slate-800 truncate">{previewFile.name}</h3>
+                <p className="text-xs text-slate-500">{previewFile.type}</p>
+              </div>
+              <button onClick={() => setPreviewFile(null)} className="w-9 h-9 bg-slate-100 rounded-full flex items-center justify-center hover:bg-slate-200">
+                <span className="material-symbols-outlined text-slate-600">close</span>
+              </button>
+            </div>
+            <div className="flex-1 overflow-auto bg-slate-50 p-4 flex items-center justify-center min-h-[400px]">
+              {previewFile.type.startsWith("image/") ? (
+                <img src={previewFile.url} alt={previewFile.name} className="max-w-full max-h-[75vh] object-contain rounded-lg shadow-md" />
+              ) : previewFile.type === "application/pdf" || previewFile.name.toLowerCase().endsWith(".pdf") ? (
+                <iframe src={previewFile.url} title={previewFile.name} className="w-full h-[75vh] bg-white rounded-lg shadow-md border-0" />
+              ) : (
+                <div className="text-slate-500">Preview not available for this file type</div>
+              )}
+            </div>
+            <div className="flex gap-2 p-4 border-t border-slate-100">
+              <a href={previewFile.url} target="_blank" rel="noopener noreferrer" className="flex-1 py-2 bg-indigo-600 text-white rounded-lg text-sm font-bold text-center hover:bg-indigo-700">
+                Open in new tab
+              </a>
+              <a href={previewFile.url} download={previewFile.name} className="flex-1 py-2 bg-slate-100 text-slate-700 rounded-lg text-sm font-bold text-center hover:bg-slate-200">
+                Download
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

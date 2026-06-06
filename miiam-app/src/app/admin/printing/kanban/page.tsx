@@ -29,12 +29,20 @@ export default function AdminPrintingKanban() {
 
   async function loadOrders() {
     setLoading(true);
-    const { data } = await supabase
-      .from("orders")
-      .select("*, order_items(*)")
-      .eq("vendor_id", PRINTING_VENDOR_ID)
-      .order("placed_at", { ascending: false });
-    if (data) setOrders(data);
+    try {
+      const { data, error } = await supabase
+        .from("orders")
+        .select("*, order_items(*)")
+        .eq("vendor_id", PRINTING_VENDOR_ID)
+        .order("placed_at", { ascending: false });
+      if (error) {
+        console.error("[kanban] Failed to load orders:", error);
+      } else if (data) {
+        setOrders(data);
+      }
+    } catch (e) {
+      console.error("[kanban] Unexpected error loading orders:", e);
+    }
     setLoading(false);
   }
 
@@ -42,25 +50,43 @@ export default function AdminPrintingKanban() {
     const order = orders.find((o) => o.id === orderId);
     if (!order || order.status === newStatus) return;
 
-    await supabase.from("orders").update({ status: newStatus }).eq("id", orderId);
-    if (order.user_id) {
-      const eventMap: Record<string, string> = {
-        processing: "print_started",
-        ready_for_pickup: "print_ready",
-        on_the_way: "out_for_delivery",
-        delivered: "delivered",
-        cancelled: "print_failed",
-      };
-      const event = eventMap[newStatus];
-      if (event) {
-        await fetch("/api/printing/notify", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ user_id: order.user_id, event, order_id: orderId }),
-        });
-      }
-    }
+    // Optimistic update
     setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o)));
+
+    try {
+      const { error } = await supabase.from("orders").update({ status: newStatus }).eq("id", orderId);
+      if (error) {
+        console.error("[kanban] Failed to update status:", error);
+        // Rollback on failure
+        setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status: order.status } : o)));
+        return;
+      }
+      if (order.user_id) {
+        const eventMap: Record<string, string> = {
+          processing: "print_started",
+          ready_for_pickup: "print_ready",
+          on_the_way: "out_for_delivery",
+          delivered: "delivered",
+          cancelled: "print_failed",
+        };
+        const event = eventMap[newStatus];
+        if (event) {
+          try {
+            await fetch("/api/printing/notify", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ user_id: order.user_id, event, order_id: orderId }),
+            });
+          } catch (e) {
+            console.warn("[kanban] Failed to send notification:", e);
+          }
+        }
+      }
+    } catch (e) {
+      console.error("[kanban] Unexpected error updating status:", e);
+      // Rollback on failure
+      setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status: order.status } : o)));
+    }
   }
 
   const byColumn = useMemo(() => {
