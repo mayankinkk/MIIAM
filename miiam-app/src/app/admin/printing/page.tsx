@@ -39,6 +39,8 @@ export default function AdminPrintingPage() {
   const [showServicesCatalog, setShowServicesCatalog] = useState(false);
   const [previewFile, setPreviewFile] = useState<{ name: string; url: string; type: string } | null>(null);
   const [page, setPage] = useState(1);
+  const [signedUrls, setSignedUrls] = useState<Record<string, string>>({});
+  const [signingUrls, setSigningUrls] = useState(false);
   const PAGE_SIZE = 20;
 
   useEffect(() => {
@@ -54,6 +56,41 @@ export default function AdminPrintingPage() {
     saveAddOnPricing(addOnPricing);
     setShowAddons(false);
   };
+
+  async function fetchSignedUrls(urls: string[]) {
+    const uniqueUrls = [...new Set(urls.filter(Boolean))];
+    if (uniqueUrls.length === 0) return;
+    setSigningUrls(true);
+    try {
+      const res = await fetch("/api/printing/files", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ urls: uniqueUrls }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const map: Record<string, string> = {};
+        for (const item of data.urls) {
+          if (item.signed) map[item.original] = item.signed;
+        }
+        setSignedUrls((prev) => ({ ...prev, ...map }));
+      }
+    } catch (e) {
+      console.error("[admin-printing] Failed to fetch signed URLs:", e);
+    }
+    setSigningUrls(false);
+  }
+
+  function handleSelectOrder(order: any) {
+    setSelectedOrder(order);
+    const item = order.order_items?.[0];
+    let settings: Record<string, any> = {};
+    try { if (item?.special_notes) settings = JSON.parse(item.special_notes); } catch {}
+    const fileUrls: string[] = settings.fileUrls || [];
+    if (fileUrls.length > 0) {
+      fetchSignedUrls(fileUrls);
+    }
+  }
 
   async function loadOrders() {
     try {
@@ -437,9 +474,9 @@ export default function AdminPrintingPage() {
                                 <button onClick={() => toggleFilePrinted(order.id, fi, settings)} className={`w-3.5 h-3.5 rounded border flex items-center justify-center ${printed ? "bg-green-500 border-green-500" : "border-slate-300"}`}>
                                   {printed && <span className="material-symbols-outlined text-white text-[10px]" style={{ fontVariationSettings: "'FILL' 1" }}>check</span>}
                                 </button>
-                                <a href={settings.fileUrls[fi]} target="_blank" rel="noopener noreferrer" className={`text-xs truncate block max-w-[180px] ${printed ? "text-green-600 line-through" : "text-indigo-600 hover:underline"}`}>
+                                <span className={`text-xs truncate block max-w-[180px] ${printed ? "text-green-600 line-through" : "text-slate-600"}`}>
                                   {name}
-                                </a>
+                                </span>
                               </div>
                             );
                           })}
@@ -455,7 +492,7 @@ export default function AdminPrintingPage() {
                     <td className="p-4 text-slate-500 text-sm">{new Date(order.placed_at).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</td>
                     <td className="p-4">
                       <button
-                        onClick={() => setSelectedOrder(order)}
+                        onClick={() => handleSelectOrder(order)}
                         className="px-3 py-1.5 bg-indigo-50 text-indigo-700 rounded-lg text-xs font-bold hover:bg-indigo-100"
                       >
                         Manage
@@ -586,14 +623,18 @@ export default function AdminPrintingPage() {
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider">Customer Files ({selFileNames.length})</h4>
-                      {selFileStatuses.length > 0 && (
-                        <span className="text-xs font-bold text-emerald-600">{selFileStatuses.filter(Boolean).length}/{selFileStatuses.length} printed</span>
-                      )}
+                      <div className="flex items-center gap-2">
+                        {signingUrls && <span className="text-[10px] text-indigo-500 font-bold animate-pulse">Generating access links...</span>}
+                        {selFileStatuses.length > 0 && (
+                          <span className="text-xs font-bold text-emerald-600">{selFileStatuses.filter(Boolean).length}/{selFileStatuses.length} printed</span>
+                        )}
+                      </div>
                     </div>
                     <div className="divide-y divide-slate-100 border border-slate-100 rounded-xl overflow-hidden">
                       {selFileNames.map((name: string, fi: number) => {
                         const printed = selFileStatuses[fi];
-                        const url = selFileUrls[fi] || "";
+                        const originalUrl = selFileUrls[fi] || "";
+                        const accessibleUrl = signedUrls[originalUrl] || originalUrl;
                         const isPdf = name.toLowerCase().endsWith(".pdf");
                         const isImage = /\.(jpg|jpeg|png|webp)$/i.test(name);
                         return (
@@ -609,18 +650,18 @@ export default function AdminPrintingPage() {
                               <p className="text-[10px] text-slate-400">{isPdf ? "PDF" : isImage ? "Image" : "File"}</p>
                             </div>
                             <div className="flex items-center gap-1 shrink-0">
-                              {url && (
+                              {accessibleUrl && (
                                 <button
-                                  onClick={() => setPreviewFile({ name, url, type: isPdf ? "application/pdf" : isImage ? "image/jpeg" : "application/octet-stream" })}
+                                  onClick={() => setPreviewFile({ name, url: accessibleUrl, type: isPdf ? "application/pdf" : isImage ? "image/jpeg" : "application/octet-stream" })}
                                   className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center hover:bg-indigo-100 transition-colors"
                                   title="Preview"
                                 >
                                   <span className="material-symbols-outlined text-base">visibility</span>
                                 </button>
                               )}
-                              {url && (
+                              {accessibleUrl && (
                                 <a
-                                  href={url}
+                                  href={accessibleUrl}
                                   download={name}
                                   className="w-8 h-8 rounded-lg bg-slate-50 text-slate-600 flex items-center justify-center hover:bg-slate-100 transition-colors"
                                   title="Download"
