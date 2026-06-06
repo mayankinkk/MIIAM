@@ -78,7 +78,6 @@ const PillGroup = <T extends string>({
       >
         {opt.label}
         {opt.suffix ? <span className="text-[10px] opacity-70 ml-1">{opt.suffix}</span> : null}
-        {format && opt.value === value ? null : null}
       </button>
     ))}
   </div>

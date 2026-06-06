@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTranslation } from "@/lib/i18n/useTranslation";
-import { bytesToHumanReadable, getPdfPageCount } from "@/lib/printing-utils";
+import { bytesToHumanReadable } from "@/lib/printing-utils";
 
 export interface PreviewFile {
   name: string;

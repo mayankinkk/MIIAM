@@ -1,12 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   ADDON_CATALOG,
   calculateAddOnCost,
   getAddOnPricing,
   rushEtaMinutes,
-  rushLabel,
   rushMultiplier,
   type AddOnId,
   type AddOnPricing,
@@ -20,13 +19,6 @@ interface PrintAddOnsProps {
   copies: number;
   onTotalChange?: (total: number) => void;
 }
-
-const CATEGORIES = [
-  { id: "presentation", labelKey: "addonsTitle", icon: "auto_stories" },
-  { id: "finishing", labelKey: "addonsTitle", icon: "content_cut" },
-  { id: "binding", labelKey: "bindingSpiral", icon: "book" },
-  { id: "lamination", labelKey: "laminationA4", icon: "layers" },
-] as const;
 
 export default function PrintAddOns({ totalPages, copies, onTotalChange }: PrintAddOnsProps) {
   const { t } = useTranslation();
@@ -174,7 +166,6 @@ export default function PrintAddOns({ totalPages, copies, onTotalChange }: Print
   );
 }
 
-import { useEffect } from "react";
 function useEffectLikeTotal(onTotalChange: ((n: number) => void) | undefined, total: number) {
   useEffect(() => {
     onTotalChange?.(total);

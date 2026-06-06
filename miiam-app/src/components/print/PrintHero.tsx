@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useServiceSettingsStore, isServiceOpen } from "@/lib/store/serviceSettingsStore";
+import { useServiceSettingsStore } from "@/lib/store/serviceSettingsStore";
 import { useUiA11yStore } from "@/lib/store/uiA11yStore";
 import { getPrintingPricing } from "@/lib/printing-pricing";
 import { useTranslation } from "@/lib/i18n/useTranslation";

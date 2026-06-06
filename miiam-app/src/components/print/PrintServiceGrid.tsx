@@ -47,7 +47,7 @@ interface Props {
 
 export default function PrintServiceGrid({ activePreset, onSelect }: Props) {
   const { language } = useLanguageStore();
-  const [mounted, setMounted] = useMounted();
+  const [mounted] = useMounted();
   const t = mounted ? getTranslations(language).print.services : getTranslations("en").print.services;
   const allServices = usePrintServiceStore((s) => s.services);
   const services = useMemo(
