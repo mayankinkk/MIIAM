@@ -39,11 +39,21 @@ export const usePrintLibraryStore = create<PrintLibraryStore>()(
         const id = item.id || `lib_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
         const existing = get().files;
         const dedup = existing.filter((f) => f.url !== item.url);
-        const next: PrintLibraryItem[] = [
+
+        // Enforce MAX_BYTES: drop oldest files if adding this file would exceed limit
+        let withNew = [
           { ...item, id, addedAt: Date.now(), printCount: 0 },
           ...dedup,
-        ].slice(0, MAX_ITEMS);
-        set({ files: next });
+        ];
+        let totalSize = withNew.reduce((acc, f) => acc + f.size, 0);
+        while (totalSize > MAX_BYTES && withNew.length > 1) {
+          const removed = withNew.pop();
+          if (removed) totalSize -= removed.size;
+        }
+
+        // Also enforce MAX_ITEMS
+        withNew = withNew.slice(0, MAX_ITEMS);
+        set({ files: withNew });
       },
 
       removeFile: (id) => set({ files: get().files.filter((f) => f.id !== id) }),

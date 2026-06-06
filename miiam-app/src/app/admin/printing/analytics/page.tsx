@@ -34,11 +34,17 @@ export default function AdminPrintingAnalytics() {
 
   async function loadAnalytics() {
     setLoading(true);
-    const { data: orders } = await supabase
+    const { data: orders, error } = await supabase
       .from("orders")
       .select("*, order_items(*)")
       .eq("vendor_id", PRINTING_VENDOR_ID)
       .order("placed_at", { ascending: false });
+
+    if (error) {
+      console.error("[print-analytics] Failed to load orders:", error);
+      setLoading(false);
+      return;
+    }
 
     if (!orders) {
       setLoading(false);
@@ -84,16 +90,39 @@ export default function AdminPrintingAnalytics() {
         if (s.rushTier && s.rushTier !== "standard") {
           rushRevenue += (o.total_amount || 0) * 0.3;
         }
-      } catch {}
+      } catch (e) {
+        console.warn("[print-analytics] Failed to parse order special_notes:", e);
+      }
     }
 
     const customerMap = new Map<string, { total: number; orders: number; name: string }>();
     for (const o of inRange as any[]) {
       if (!o.user_id) continue;
-      const cur = customerMap.get(o.user_id) || { total: 0, orders: 0, name: o.user_id.slice(0, 8) };
+      const cur = customerMap.get(o.user_id) || { total: 0, orders: 0, name: "" };
       cur.total += o.total_amount || 0;
       cur.orders += 1;
       customerMap.set(o.user_id, cur);
+    }
+
+    // Resolve customer names from profiles table
+    const userIds = Array.from(customerMap.keys());
+    if (userIds.length > 0) {
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("id, full_name, email")
+        .in("id", userIds);
+      if (profiles) {
+        for (const p of profiles) {
+          const customer = customerMap.get(p.id);
+          if (customer) {
+            customer.name = p.full_name || p.email || p.id.slice(0, 8);
+          }
+        }
+      }
+      // Fill in any remaining unnamed customers
+      for (const [id, customer] of customerMap) {
+        if (!customer.name) customer.name = id.slice(0, 8);
+      }
     }
     const topCustomers = Array.from(customerMap.entries())
       .map(([id, v]) => ({ id, name: v.name, total: v.total, orders: v.orders }))

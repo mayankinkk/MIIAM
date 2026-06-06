@@ -13,6 +13,7 @@ const KANBAN_COLUMNS = [
   { id: "ready_for_pickup", label: "Ready", icon: "inventory_2", color: "bg-blue-100 border-blue-300" },
   { id: "on_the_way", label: "Out for delivery", icon: "delivery_dining", color: "bg-cyan-100 border-cyan-300" },
   { id: "delivered", label: "Delivered", icon: "check_circle", color: "bg-emerald-100 border-emerald-300" },
+  { id: "cancelled", label: "Cancelled", icon: "cancel", color: "bg-red-100 border-red-300" },
 ] as const;
 
 export default function AdminPrintingKanban() {
@@ -106,7 +107,7 @@ export default function AdminPrintingKanban() {
       {loading ? (
         <div className="text-center py-12 text-slate-500">Loading…</div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-3">
           {KANBAN_COLUMNS.map((col) => (
             <div
               key={col.id}

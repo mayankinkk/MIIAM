@@ -51,7 +51,13 @@ export const usePrintDraftStore = create<PrintDraftStore>()(
       isDraft: () => {
         const d = get().draft;
         if (!d) return false;
-        return Date.now() - d.savedAt < MAX_AGE_MS;
+        const isValid = Date.now() - d.savedAt < MAX_AGE_MS;
+        // Auto-clean expired drafts
+        if (!isValid) {
+          set({ draft: null });
+          return false;
+        }
+        return true;
       },
 
       draftAge: () => {
