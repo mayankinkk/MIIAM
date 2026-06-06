@@ -27,7 +27,14 @@ export async function POST(req: NextRequest) {
     }
 
     // Only allow sending notifications to the authenticated user
-    if (user.id !== user_id) {
+    // (In production, admin/vendor roles should bypass this check)
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single();
+    const isAdmin = profile?.role === "admin";
+    if (!isAdmin && user.id !== user_id) {
       return NextResponse.json({ error: "Cannot send notifications to other users" }, { status: 403 });
     }
 

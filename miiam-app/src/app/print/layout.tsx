@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://miiam.app";
+
 export const metadata: Metadata = {
   title: "Print & Deliver in 30 Minutes · MIIAM Print Store",
   description:
@@ -18,7 +20,7 @@ export const metadata: Metadata = {
     description:
       "Documents, passport photos, presentations. Upload, customize, deliver. From ₹2 per B&W page.",
     type: "website",
-    url: "https://miiam.app/print",
+    url: `${SITE_URL}/print`,
   },
   twitter: {
     card: "summary_large_image",
@@ -26,7 +28,7 @@ export const metadata: Metadata = {
     description: "From ₹2 per page · 30-minute delivery · No minimum",
   },
   alternates: {
-    canonical: "https://miiam.app/print",
+    canonical: `${SITE_URL}/print`,
   },
   robots: {
     index: true,
