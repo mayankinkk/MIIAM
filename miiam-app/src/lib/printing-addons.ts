@@ -58,13 +58,19 @@ export function getAddOnPricing(): AddOnPricing {
       const parsed = JSON.parse(stored);
       return { ...DEFAULT_ADDON_PRICING, ...parsed };
     }
-  } catch {}
+  } catch (e) {
+    console.warn("[printing-addons] Failed to parse stored addon pricing, using defaults:", e);
+  }
   return DEFAULT_ADDON_PRICING;
 }
 
 export function saveAddOnPricing(pricing: AddOnPricing): void {
   if (typeof window === "undefined") return;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(pricing));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(pricing));
+  } catch (e) {
+    console.error("[printing-addons] Failed to save addon pricing to localStorage:", e);
+  }
 }
 
 export interface AddOnDescriptor {

@@ -42,8 +42,8 @@ async function collectOrderFilePaths(
             if (lp) legacyPaths.push(lp);
           }
         }
-      } catch {
-        // ignore malformed special_notes
+      } catch (e) {
+        console.warn("[printing-cleanup] Malformed special_notes in order item:", e);
       }
     }
   }

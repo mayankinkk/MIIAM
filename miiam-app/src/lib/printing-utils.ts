@@ -49,7 +49,8 @@ export async function getPdfPageCount(file: File): Promise<number> {
     const extended = await readPdfFirstBytes(file, 65536);
     const pageRefs = (extended.match(/\/Type\s*\/Page(?!s)/g) || []).length;
     return pageRefs > 0 ? pageRefs : 1;
-  } catch {
+  } catch (e) {
+    console.warn("[printing-utils] Could not determine PDF page count, defaulting to 1:", e);
     return 1;
   }
 }
@@ -82,7 +83,8 @@ export async function validatePdfFile(file: File): Promise<PdfValidationResult> 
     const pageCount = extractPdfPageCountFromText(text);
     return { valid: true, pageCount: pageCount ?? undefined };
   } catch (e) {
-    return { valid: true };
+    console.error("[printing-utils] PDF validation error:", e);
+    return { valid: false, error: "Unable to read this PDF. It may be corrupted. Please try re-uploading." };
   }
 }
 
