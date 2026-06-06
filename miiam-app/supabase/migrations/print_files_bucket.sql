@@ -49,8 +49,8 @@ USING (
   bucket_id = 'print-files'
   AND EXISTS (
     SELECT 1 FROM vendors v
-    WHERE v.owner_id = auth.uid()
-      AND v.id = (SELECT value::uuid FROM app_config WHERE key = 'printing_vendor_id')
+    WHERE v.user_id = auth.uid()
+      AND v.id = 'f1111111-1111-4000-8000-000000000000'::uuid
   )
 );
 
@@ -62,4 +62,4 @@ ALTER TABLE orders
 -- Index for the cleanup cron
 CREATE INDEX IF NOT EXISTS idx_orders_print_status
   ON orders (vendor_id, status, print_files_cleaned_at)
-  WHERE vendor_id = (SELECT value::uuid FROM app_config WHERE key = 'printing_vendor_id');
+  WHERE vendor_id = 'f1111111-1111-4000-8000-000000000000'::uuid;
