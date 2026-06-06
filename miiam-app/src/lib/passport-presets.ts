@@ -182,8 +182,17 @@ export function checkCompliance(imageUrl: string): Promise<{
   estimatedFileType: string;
 }> {
   return new Promise((resolve, reject) => {
+    if (typeof window === "undefined" || typeof Image === "undefined") {
+      reject(new Error("checkCompliance requires a browser environment"));
+      return;
+    }
     const img = new Image();
+    const timeout = setTimeout(() => {
+      img.src = "";
+      reject(new Error("Image load timed out after 10 seconds"));
+    }, 10000);
     img.onload = () => {
+      clearTimeout(timeout);
       const w = img.naturalWidth;
       const h = img.naturalHeight;
       const aspect = w / h;
@@ -197,7 +206,10 @@ export function checkCompliance(imageUrl: string): Promise<{
         estimatedFileType: imageUrl.startsWith("data:image/png") ? "PNG" : "JPEG",
       });
     };
-    img.onerror = () => reject(new Error("Failed to load image"));
+    img.onerror = () => {
+      clearTimeout(timeout);
+      reject(new Error("Failed to load image"));
+    };
     img.src = imageUrl;
   });
 }

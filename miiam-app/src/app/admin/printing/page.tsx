@@ -579,62 +579,6 @@ export default function AdminPrintingPage() {
                   </div>
                 )}
 
-                {selFileNames.length > 0 && (
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider">Customer Files ({selFileNames.length})</h4>
-                      {selFileStatuses.length > 0 && (
-                        <span className="text-xs font-bold text-emerald-600">{selFileStatuses.filter(Boolean).length}/{selFileStatuses.length} printed</span>
-                      )}
-                    </div>
-                    <div className="divide-y divide-slate-100 border border-slate-100 rounded-xl overflow-hidden">
-                      {selFileNames.map((name: string, fi: number) => {
-                        const printed = selFileStatuses[fi];
-                        const url = selFileUrls[fi] || "";
-                        const isPdf = name.toLowerCase().endsWith(".pdf");
-                        const isImage = /\.(jpg|jpeg|png|webp)$/i.test(name);
-                        return (
-                          <div key={fi} className={`flex items-center gap-3 p-3 ${printed ? "bg-emerald-50/50" : "bg-white"}`}>
-                            <button
-                              onClick={() => toggleFilePrinted(selectedOrder.id, fi, selSettings)}
-                              className={`w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 ${printed ? "bg-emerald-500 border-emerald-500" : "border-slate-300 hover:border-indigo-400"}`}
-                            >
-                              {printed && <span className="material-symbols-outlined text-white text-xs" style={{ fontVariationSettings: "'FILL' 1" }}>check</span>}
-                            </button>
-                            <div className="min-w-0 flex-1">
-                              <p className={`text-sm font-bold truncate ${printed ? "text-emerald-700 line-through" : "text-slate-800"}`}>{name}</p>
-                              <p className="text-[10px] text-slate-400">{isPdf ? "PDF" : isImage ? "Image" : "File"}</p>
-                            </div>
-                            <div className="flex items-center gap-1 shrink-0">
-                              {url && (
-                                <a
-                                  href={url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center hover:bg-indigo-100 transition-colors"
-                                  title="Preview"
-                                >
-                                  <span className="material-symbols-outlined text-base">visibility</span>
-                                </a>
-                              )}
-                              {url && (
-                                <a
-                                  href={url}
-                                  download={name}
-                                  className="w-8 h-8 rounded-lg bg-slate-50 text-slate-600 flex items-center justify-center hover:bg-slate-100 transition-colors"
-                                  title="Download"
-                                >
-                                  <span className="material-symbols-outlined text-base">download</span>
-                                </a>
-                              )}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-
                 <div className="pt-2">
                   <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Update Status</h4>
                   <div className="flex flex-wrap gap-2">

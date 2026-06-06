@@ -1,3 +1,5 @@
+"use server";
+
 import { createClient } from "@/lib/supabase/server";
 
 export type PrintJobEvent =
@@ -34,21 +36,20 @@ export async function notifyPrintEvent(
   userId: string,
   event: PrintJobEvent,
   orderId: string
-) {
-  try {
-    const supabase = await createClient();
-    const copy = EVENT_COPY[event];
-    const { error } = await supabase.from("notifications").insert({
-      user_id: userId,
-      title: copy.title,
-      body: copy.body,
-      type: `print_${event}`,
-      action_url: `/app/orders/${orderId}`,
-      read: false,
-    });
-    if (error) console.error("[print-notify] insert error:", error);
-  } catch (err) {
-    console.error("[print-notify] unexpected error:", err);
+): Promise<void> {
+  const supabase = await createClient();
+  const copy = EVENT_COPY[event];
+  const { error } = await supabase.from("notifications").insert({
+    user_id: userId,
+    title: copy.title,
+    body: copy.body,
+    type: `print_${event}`,
+    action_url: `/app/orders/${orderId}`,
+    read: false,
+  });
+  if (error) {
+    console.error("[print-notify] insert error:", error);
+    throw new Error(`Failed to create notification: ${error.message}`);
   }
 }
 
