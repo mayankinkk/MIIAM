@@ -13,6 +13,12 @@
 -- this single menu_item row and just carry different settings in the
 -- special_notes payload.
 
+-- Add description column if it doesn't exist (needed for print service seed)
+DO $$ BEGIN
+  ALTER TABLE public.menu_items ADD COLUMN IF NOT EXISTS description text;
+EXCEPTION WHEN duplicate_column THEN NULL;
+END $$;
+
 INSERT INTO public.menu_items (id, vendor_id, name, description, price, category, is_veg)
 VALUES (
   'a1111111-1111-4000-8000-000000000001',
