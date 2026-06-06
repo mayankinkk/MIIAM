@@ -10,6 +10,7 @@ import { PRINTING_VENDOR_ID, PRINT_MENU_ITEM_ID } from "@/lib/constants";
 import { getPrintingPricing } from "@/lib/printing-pricing";
 import { bytesToHumanReadable } from "@/lib/printing-utils";
 import { useTranslation } from "@/lib/i18n/useTranslation";
+import { useToastStore } from "@/lib/store/toastStore";
 import PrintHero from "@/components/print/PrintHero";
 
 export default function PrintLibraryPage() {
@@ -18,6 +19,7 @@ export default function PrintLibraryPage() {
   const { files, removeFile, clearAll, incrementPrintCount, MAX_ITEMS, MAX_BYTES } = usePrintLibraryStore();
   const cartStore = useCartStore();
   const serviceSettings = useServiceSettingsStore();
+  const toast = useToastStore();
   const [reprinting, setReprinting] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
 
@@ -27,7 +29,7 @@ export default function PrintLibraryPage() {
 
   const handleReprint = (item: PrintLibraryItem) => {
     if (!serviceSettings.isServiceEnabled("printing")) {
-      alert("Printing service is currently unavailable");
+      toast.addToast("Printing service is currently unavailable", "error");
       return;
     }
 
@@ -62,6 +64,7 @@ export default function PrintLibraryPage() {
       special_notes: JSON.stringify(settings),
     }, 1);
     incrementPrintCount(item.id);
+    setReprinting(null);
     router.push("/app/cart");
   };
 

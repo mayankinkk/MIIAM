@@ -53,7 +53,18 @@ export default function PassportPage() {
     ? PASSPORT_PRESETS
     : PASSPORT_PRESETS.filter((p) => p.country === country);
 
+  const PASSPORT_MAX_SIZE = 10 * 1024 * 1024; // 10MB
+  const PASSPORT_ALLOWED_TYPES = ["image/jpeg", "image/png", "image/jpg"];
+
   const handleFile = (file: File) => {
+    if (!PASSPORT_ALLOWED_TYPES.includes(file.type)) {
+      toast.addToast("Only JPG and PNG images are allowed", "error");
+      return;
+    }
+    if (file.size > PASSPORT_MAX_SIZE) {
+      toast.addToast(`File too large (${(file.size / 1024 / 1024).toFixed(1)}MB). Max 10MB.`, "error");
+      return;
+    }
     const reader = new FileReader();
     reader.onload = (e) => {
       const dataUrl = e.target?.result as string;
@@ -87,7 +98,7 @@ export default function PassportPage() {
         .from("menu-images")
         .upload(fileName, blob, { contentType: "image/jpeg" });
       if (error) {
-        alert("Upload failed: " + error.message);
+        toast.addToast("Upload failed: " + error.message, "error");
         return null;
       }
       const { data: { publicUrl } } = supabase.storage
@@ -100,8 +111,8 @@ export default function PassportPage() {
   };
 
   const handleAddToCart = async () => {
-    if (!isEnabled) { alert("Printing service is currently unavailable"); return; }
-    if (!imageDataUrl) { alert("Please capture or upload a photo first"); return; }
+    if (!isEnabled) { toast.addToast("Printing service is currently unavailable", "error"); return; }
+    if (!imageDataUrl) { toast.addToast("Please capture or upload a photo first", "error"); return; }
 
     const uploadedUrl = await uploadToStorage(imageDataUrl);
     if (!uploadedUrl) return;

@@ -86,7 +86,7 @@ export default function PrintingPage() {
       .from("menu-images")
       .upload(fileName, file);
     if (uploadError) {
-      alert("Upload failed. Make sure the 'menu-images' bucket exists.");
+      toast.addToast("Upload failed. Make sure the 'menu-images' bucket exists.", "error");
       return null;
     }
     const { data: { publicUrl } } = supabase.storage
@@ -117,33 +117,34 @@ export default function PrintingPage() {
   const handleFilesSelected = async (newFiles: FileList | File[]) => {
     const remainingSlots = PRINT_MAX_FILE_COUNT - files.length;
     if (remainingSlots <= 0) {
-      alert(t.print.fileLimitReached.replace("{max}", String(PRINT_MAX_FILE_COUNT)));
+      toast.addToast(t.print.fileLimitReached.replace("{max}", String(PRINT_MAX_FILE_COUNT)), "error");
       return;
     }
     const candidates = Array.from(newFiles).slice(0, remainingSlots);
     if (newFiles.length > remainingSlots) {
-      alert(t.print.fileLimitReached.replace("{max}", String(PRINT_MAX_FILE_COUNT)));
+      toast.addToast(t.print.fileLimitReached.replace("{max}", String(PRINT_MAX_FILE_COUNT)), "error");
     }
 
     const validFiles: File[] = [];
     for (const f of candidates) {
       if (!PRINT_ALLOWED_TYPES.includes(f.type as (typeof PRINT_ALLOWED_TYPES)[number])) {
-        alert(t.print.fileTypeInvalid.replace("{name}", f.name));
+        toast.addToast(t.print.fileTypeInvalid.replace("{name}", f.name), "error");
         continue;
       }
       if (f.size > PRINT_MAX_FILE_SIZE) {
-        alert(
+        toast.addToast(
           t.print.fileTooLarge
             .replace("{name}", f.name)
             .replace("{size}", bytesToHumanReadable(f.size))
-            .replace("{max}", bytesToHumanReadable(PRINT_MAX_FILE_SIZE))
+            .replace("{max}", bytesToHumanReadable(PRINT_MAX_FILE_SIZE)),
+          "error"
         );
         continue;
       }
       if (f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf")) {
         const validation = await validatePdfFile(f);
         if (!validation.valid) {
-          alert(`${f.name}: ${validation.error || t.print.fileEncrypted}`);
+          toast.addToast(`${f.name}: ${validation.error || t.print.fileEncrypted}`, "error");
           continue;
         }
       }
@@ -328,8 +329,8 @@ export default function PrintingPage() {
   const etaMinutes = rushEtaMinutes(printAddons.rushTier);
 
   const handleAddToCart = () => {
-    if (files.length === 0) { alert("Please upload at least one file"); return; }
-    if (!isEnabled) { alert("Printing service is currently unavailable"); return; }
+    if (files.length === 0) { toast.addToast("Please upload at least one file", "error"); return; }
+    if (!isEnabled) { toast.addToast("Printing service is currently unavailable", "error"); return; }
 
     const settings = {
       perFile: files.map((f) => ({
