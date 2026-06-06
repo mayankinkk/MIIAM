@@ -333,6 +333,8 @@ export default function PrintingPage() {
     if (!isEnabled) { toast.addToast("Printing service is currently unavailable", "error"); return; }
 
     const settings = {
+      fileUrls: files.map((f) => f.url),
+      fileNames: files.map((f) => f.name),
       perFile: files.map((f) => ({
         fileUrl: f.url,
         fileName: f.name,
