@@ -5,29 +5,31 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useHapticStore } from "@/components/HapticFeedback";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
-
-const menuItems = [
-  { id: "orders", icon: "receipt_long", label: "My Orders", sub: "View all orders", color: "text-blue-500", bg: "bg-blue-50" },
-  { id: "bookings", icon: "calendar_month", label: "Bookings", sub: "Service appointments", color: "text-amber-500", bg: "bg-amber-50" },
-  { id: "subscriptions", icon: "repeat", label: "Recurring Orders", sub: "Scheduled subscriptions", color: "text-purple-500", bg: "bg-purple-50" },
-  { id: "addresses", icon: "location_on", label: "Saved Addresses", sub: "Manage delivery addresses", color: "text-green-500", bg: "bg-green-50" },
-  { id: "favorites", icon: "favorite", label: "Favorites", sub: "Your saved items", color: "text-red-500", bg: "bg-red-50" },
-  { id: "payment", icon: "payment", label: "Payment Methods", sub: "Cards, UPI, wallets", color: "text-purple-500", bg: "bg-purple-50" },
-  { id: "support", icon: "support_agent", label: "Help & Support", sub: "24/7 customer care", color: "text-indigo-500", bg: "bg-indigo-50" },
-  { id: "settings", icon: "settings", label: "Settings", sub: "App preferences", color: "text-slate-500", bg: "bg-slate-50" },
-  { id: "haptic", icon: "vibration", label: "Haptic Feedback", sub: "Vibration settings", color: "text-cyan-500", bg: "bg-cyan-50", special: true },
-];
 
 export default function EnhancedProfilePage() {
   const supabase = useMemo(() => createClient(), []);
   const router = useRouter();
+  const { t } = useTranslation();
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
   const [stats, setStats] = useState({ orders: 0, reviews: 0, saved: 0 });
   const [showHapticSettings, setShowHapticSettings] = useState(false);
   const { settings, updateSetting, triggerHaptic } = useHapticStore();
+
+  const menuItems = [
+    { id: "orders", icon: "receipt_long", label: t.profile.myOrders, sub: t.profile.viewAllOrders, color: "text-blue-500", bg: "bg-blue-50" },
+    { id: "bookings", icon: "calendar_month", label: t.profile.bookings, sub: t.profile.serviceAppointments, color: "text-amber-500", bg: "bg-amber-50" },
+    { id: "subscriptions", icon: "repeat", label: t.profile.recurringOrders, sub: t.profile.scheduledSubscriptions, color: "text-purple-500", bg: "bg-purple-50" },
+    { id: "addresses", icon: "location_on", label: t.profile.savedAddresses, sub: t.profile.manageDeliveryAddresses, color: "text-green-500", bg: "bg-green-50" },
+    { id: "favorites", icon: "favorite", label: t.profile.favorites, sub: t.profile.yourSavedItems, color: "text-red-500", bg: "bg-red-50" },
+    { id: "payment", icon: "payment", label: t.profile.paymentMethods, sub: t.profile.cardsUpiWallets, color: "text-purple-500", bg: "bg-purple-50" },
+    { id: "support", icon: "support_agent", label: t.profile.helpSupport, sub: t.profile.twentyFourSevenSupport, color: "text-indigo-500", bg: "bg-indigo-50" },
+    { id: "settings", icon: "settings", label: t.profile.settings, sub: t.profile.appPreferences, color: "text-slate-500", bg: "bg-slate-50" },
+    { id: "haptic", icon: "vibration", label: t.profile.hapticFeedback, sub: t.profile.vibrationSettings, color: "text-cyan-500", bg: "bg-cyan-50", special: true },
+  ];
 
   useEffect(() => {
     async function loadUserAndProfile() {
@@ -80,7 +82,7 @@ export default function EnhancedProfilePage() {
       {/* Header */}
       <header className="bg-gradient-to-br from-primary to-primary-container text-white p-6 pb-12 rounded-b-[3rem]">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-xl font-black">My Profile</h1>
+          <h1 className="text-xl font-black">{t.profile.title}</h1>
           <Link href="/app/profile/edit" className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors">
             <span className="material-symbols-outlined">edit</span>
           </Link>
@@ -107,20 +109,20 @@ export default function EnhancedProfilePage() {
         <div className="grid grid-cols-3 gap-4 mt-8">
           <div className="bg-white/10 rounded-xl p-3 text-center">
             <p className="text-2xl font-black">{stats.orders}</p>
-            <p className="text-[10px] text-white/70 uppercase tracking-wider">Orders</p>
+            <p className="text-[10px] text-white/70 uppercase tracking-wider">{t.profile.orders}</p>
           </div>
           <div className="bg-white/10 rounded-xl p-3 text-center">
             <p className="text-2xl font-black">{stats.reviews}</p>
-            <p className="text-[10px] text-white/70 uppercase tracking-wider">Reviews</p>
+            <p className="text-[10px] text-white/70 uppercase tracking-wider">{t.profile.reviews}</p>
           </div>
           <div className="bg-white/10 rounded-xl p-3 text-center">
             <p className="text-2xl font-black">{stats.saved}</p>
-            <p className="text-[10px] text-white/70 uppercase tracking-wider">Saved</p>
+            <p className="text-[10px] text-white/70 uppercase tracking-wider">{t.profile.saved}</p>
           </div>
         </div>
       </header>
 
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Profile' }]} />
+      <Breadcrumbs items={[{ label: t.profile.home, href: '/app/explore' }, { label: t.profile.profileLabel }]} />
 
       {/* Menu Items */}
       <main className="px-6 -mt-6 space-y-4">
@@ -197,7 +199,7 @@ export default function EnhancedProfilePage() {
           <div className="bg-white rounded-2xl p-4 space-y-2 animate-fade-in">
             <div className="flex items-center gap-3 mb-4 pb-3 border-b border-slate-100">
               <span className="material-symbols-outlined text-primary">vibration</span>
-              <p className="font-bold text-slate-800">Haptic Feedback Settings</p>
+              <p className="font-bold text-slate-800">{t.profile.hapticFeedbackSettings}</p>
             </div>
             
             <button
@@ -209,8 +211,8 @@ export default function EnhancedProfilePage() {
                   <span className="material-symbols-outlined text-cyan-500">power_settings_new</span>
                 </div>
                 <div className="text-left">
-                  <p className="font-semibold text-slate-800">Enable Haptics</p>
-                  <p className="text-xs text-slate-500">Master toggle for all vibrations</p>
+                  <p className="font-semibold text-slate-800">{t.profile.enableHaptics}</p>
+                  <p className="text-xs text-slate-500">{t.profile.masterToggle}</p>
                 </div>
               </div>
               <div className={`w-12 h-7 rounded-full relative transition-colors ${settings.enabled ? "bg-primary" : "bg-slate-300"}`}>
@@ -231,8 +233,8 @@ export default function EnhancedProfilePage() {
                   <span className="material-symbols-outlined text-green-500 text-lg">circle</span>
                 </div>
                 <div className="text-left">
-                  <p className="font-semibold text-slate-800">Light Tap</p>
-                  <p className="text-xs text-slate-500">Brief feedback (10ms)</p>
+                  <p className="font-semibold text-slate-800">{t.profile.lightTap}</p>
+                  <p className="text-xs text-slate-500">{t.profile.briefFeedback}</p>
                 </div>
               </div>
               <div className={`w-12 h-7 rounded-full relative transition-colors ${settings.light ? "bg-primary" : "bg-slate-300"}`}>
@@ -253,8 +255,8 @@ export default function EnhancedProfilePage() {
                   <span className="material-symbols-outlined text-amber-500 text-lg">radio_button_checked</span>
                 </div>
                 <div className="text-left">
-                  <p className="font-semibold text-slate-800">Medium Tap</p>
-                  <p className="text-xs text-slate-500">Standard feedback (25ms)</p>
+                  <p className="font-semibold text-slate-800">{t.profile.mediumTap}</p>
+                  <p className="text-xs text-slate-500">{t.profile.standardFeedback}</p>
                 </div>
               </div>
               <div className={`w-12 h-7 rounded-full relative transition-colors ${settings.medium ? "bg-primary" : "bg-slate-300"}`}>
@@ -275,8 +277,8 @@ export default function EnhancedProfilePage() {
                   <span className="material-symbols-outlined text-red-500 text-lg">lens</span>
                 </div>
                 <div className="text-left">
-                  <p className="font-semibold text-slate-800">Heavy Tap</p>
-                  <p className="text-xs text-slate-500">Strong feedback (150ms)</p>
+                  <p className="font-semibold text-slate-800">{t.profile.heavyTap}</p>
+                  <p className="text-xs text-slate-500">{t.profile.strongFeedback}</p>
                 </div>
               </div>
               <div className={`w-12 h-7 rounded-full relative transition-colors ${settings.heavy ? "bg-primary" : "bg-slate-300"}`}>
@@ -295,14 +297,14 @@ export default function EnhancedProfilePage() {
             <span className="material-symbols-outlined text-red-500">logout</span>
           </div>
           <div className="flex-1">
-            <p className="font-bold text-red-600">Log Out</p>
-            <p className="text-xs text-slate-500">Sign out of your account</p>
+            <p className="font-bold text-red-600">{t.profile.logOut}</p>
+            <p className="text-xs text-slate-500">{t.profile.signOutAccount}</p>
           </div>
         </button>
 
         {/* App Version */}
         <p className="text-center text-xs text-slate-400 py-6">
-          MIIAM v2.5.0 • Made with ❤️ in India
+          MIIAM v2.5.0 • {t.profile.madeWithLove}
         </p>
       </main>
     </div>
