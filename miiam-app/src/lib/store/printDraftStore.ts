@@ -11,6 +11,16 @@ export interface DraftFile {
   type: string;
   size: number;
   pageCount: number;
+  settings?: {
+    colorMode: ColorMode;
+    sides: PrintSides;
+    paperSize: PaperSize;
+    orientation: Orientation;
+    paperType: PaperType;
+    quality: PrintQuality;
+    copies: number;
+    range: string;
+  };
 }
 
 export interface PrintDraft {

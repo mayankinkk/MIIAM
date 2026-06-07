@@ -251,6 +251,7 @@ export default function PrintingPage() {
         type: f.type,
         size: f.size,
         pageCount: f.pageCount,
+        settings: { ...f.settings },
       })),
       colorMode: defaults.colorMode,
       sides: defaults.sides,
@@ -267,7 +268,14 @@ export default function PrintingPage() {
 
   const handleResumeDraft = () => {
     if (!draft) return;
-    setFiles(draft.files.map((f) => makeFileItem(f)));
+    const restoredFiles = draft.files.map((f) => {
+      const item = makeFileItem(f);
+      if (f.settings) {
+        item.settings = { ...item.settings, ...f.settings };
+      }
+      return item;
+    });
+    setFiles(restoredFiles);
     setDefaults({
       colorMode: draft.colorMode,
       sides: draft.sides,
