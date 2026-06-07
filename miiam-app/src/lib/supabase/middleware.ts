@@ -42,6 +42,8 @@ export async function updateSession(request: NextRequest) {
     const url = request.nextUrl.clone()
     if (request.nextUrl.pathname.startsWith('/rider')) {
       url.pathname = '/rider/login'
+    } else if (request.nextUrl.pathname.startsWith('/partner')) {
+      url.pathname = '/partner'
     } else {
       url.pathname = '/auth/login'
     }

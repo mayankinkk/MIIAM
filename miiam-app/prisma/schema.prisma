@@ -341,3 +341,20 @@ model UserPrescription {
 
   @@map("user_prescriptions")
 }
+
+model ServiceBooking {
+  id              String    @id @default(uuid())
+  userId          String?   @map("user_id")
+  serviceType     String    @map("service_type")
+  status          String?   @default("pending")
+  scheduledDate   DateTime? @map("scheduled_date")
+  scheduledTime   String?   @map("scheduled_time")
+  address         String?
+  notes           String?
+  amount          Decimal?  @default(0)
+  paymentMethod   String?   @map("payment_method")
+  createdAt       DateTime? @default(now()) @map("created_at")
+  updatedAt       DateTime? @default(now()) @map("updated_at")
+
+  @@map("service_bookings")
+}
