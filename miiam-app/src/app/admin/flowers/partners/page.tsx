@@ -6,12 +6,6 @@ import { createClient } from "@/lib/supabase/client";
 
 const supabase = createClient();
 
-const mockPartners = [
-  { id: "FL001", name: "Floral Studio", owner: "Priya S.", phone: "+91 98765 43210", orders: 89, rating: 4.8, status: "active", address: "MG Road, Delhi" },
-  { id: "FL002", name: "Bloom & Blossom", owner: "Raj M.", phone: "+91 87654 32109", orders: 67, rating: 4.6, status: "active", address: "Nehru Place, Delhi" },
-  { id: "FL003", name: "Flower Power", owner: "Anita K.", phone: "+91 76543 21098", orders: 45, rating: 4.9, status: "active", address: "Connaught Place, Delhi" },
-];
-
 interface FlowerPartner {
   id: string;
   shop_name: string;

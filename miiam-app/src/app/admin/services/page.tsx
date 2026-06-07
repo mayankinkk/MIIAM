@@ -22,13 +22,13 @@ interface ServiceBooking {
 }
 
 const serviceOptions = [
-  { id: "beauty", label: "Beauty & Wellness", icon: "spa", color: "text-pink-500", bg: "bg-pink-50", total: 85, revenue: 65000, orders: 245, rating: 4.8, growth: 28 },
-  { id: "ac", label: "AC Repair", icon: "ac_unit", color: "text-blue-500", bg: "bg-blue-50", total: 45, revenue: 45000, orders: 180, rating: 4.7, growth: 15 },
-  { id: "plumbing", label: "Plumbing", icon: "plumbing", color: "text-cyan-500", bg: "bg-cyan-50", total: 38, revenue: 28000, orders: 134, rating: 4.6, growth: 8 },
-  { id: "electrical", label: "Electrical", icon: "electrical_services", color: "text-amber-500", bg: "bg-amber-50", total: 32, revenue: 22000, orders: 98, rating: 4.8, growth: 12 },
-  { id: "cleaning", label: "Cleaning", icon: "cleaning_services", color: "text-green-500", bg: "bg-green-50", total: 52, revenue: 78000, orders: 156, rating: 4.9, growth: 22 },
-  { id: "appliance", label: "Appliance", icon: "kitchen", color: "text-purple-500", bg: "bg-purple-50", total: 18, revenue: 15000, orders: 67, rating: 4.5, growth: 5 },
-  { id: "pest", label: "Pest Control", icon: "bug_report", color: "text-red-500", bg: "bg-red-50", total: 12, revenue: 9000, orders: 45, rating: 4.7, growth: 3 },
+  { id: "beauty", label: "Beauty & Wellness", icon: "spa", color: "text-pink-500", bg: "bg-pink-50" },
+  { id: "ac", label: "AC Repair", icon: "ac_unit", color: "text-blue-500", bg: "bg-blue-50" },
+  { id: "plumbing", label: "Plumbing", icon: "plumbing", color: "text-cyan-500", bg: "bg-cyan-50" },
+  { id: "electrical", label: "Electrical", icon: "electrical_services", color: "text-amber-500", bg: "bg-amber-50" },
+  { id: "cleaning", label: "Cleaning", icon: "cleaning_services", color: "text-green-500", bg: "bg-green-50" },
+  { id: "appliance", label: "Appliance", icon: "kitchen", color: "text-purple-500", bg: "bg-purple-50" },
+  { id: "pest", label: "Pest Control", icon: "bug_report", color: "text-red-500", bg: "bg-red-50" },
 ];
 
 export default function EnhancedServicesDashboard() {
@@ -67,17 +67,21 @@ export default function EnhancedServicesDashboard() {
       .from("service_bookings")
       .update({ status: newStatus })
       .eq("id", bookingId);
-    
-    setBookings(prev => prev.map(b => 
+
+    setBookings(prev => prev.map(b =>
       b.id === bookingId ? { ...b, status: newStatus } : b
     ));
   }
 
+  const totalRevenue = bookings
+    .filter(b => b.status === "completed")
+    .reduce((s, b) => s + (b.amount || 0), 0);
+
   const stats = {
-    totalGMV: serviceOptions.reduce((s, o) => s + o.revenue, 0),
+    totalGMV: totalRevenue,
     activeBookings: bookings.filter(b => ["pending", "confirmed", "in_progress"].includes(b.status)).length,
-    providers: 48,
-    satisfaction: 4.9,
+    totalBookings: bookings.length,
+    completedBookings: bookings.filter(b => b.status === "completed").length,
   };
 
   const statusCounts = {
@@ -86,6 +90,14 @@ export default function EnhancedServicesDashboard() {
     completed: bookings.filter(b => b.status === "completed").length,
     cancelled: bookings.filter(b => b.status === "cancelled").length,
   };
+
+  const serviceStats = serviceOptions.map(s => {
+    const typeBookings = bookings.filter(b => b.service_type === s.id);
+    const typeRevenue = typeBookings
+      .filter(b => b.status === "completed")
+      .reduce((sum, b) => sum + (b.amount || 0), 0);
+    return { ...s, orders: typeBookings.length, revenue: typeRevenue };
+  });
 
   return (
     <div className="px-8 space-y-8">
@@ -128,10 +140,10 @@ export default function EnhancedServicesDashboard() {
             <div className="bg-gradient-to-br from-green-500 to-green-600 p-6 rounded-3xl text-white shadow-lg">
               <div className="flex items-center gap-2 mb-2">
                 <span className="material-symbols-outlined">payments</span>
-                <span className="text-xs font-bold uppercase tracking-widest opacity-80">Total GMV</span>
+                <span className="text-xs font-bold uppercase tracking-widest opacity-80">Total Revenue</span>
               </div>
               <p className="text-4xl font-black">₹{stats.totalGMV.toLocaleString()}</p>
-              <p className="text-xs text-white/60 mt-2">+8.2% from last month</p>
+              <p className="text-xs text-white/60 mt-2">from {stats.completedBookings} completed bookings</p>
             </div>
             <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
               <div className="flex items-center gap-2 mb-2">
@@ -143,19 +155,19 @@ export default function EnhancedServicesDashboard() {
             </div>
             <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
               <div className="flex items-center gap-2 mb-2">
-                <span className="material-symbols-outlined text-purple-500">people</span>
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Providers</span>
+                <span className="material-symbols-outlined text-purple-500">receipt_long</span>
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Total Bookings</span>
               </div>
-              <p className="text-3xl font-black text-slate-800">{stats.providers}</p>
-              <p className="text-xs text-green-500 mt-2">+3 this week</p>
+              <p className="text-3xl font-black text-slate-800">{stats.totalBookings}</p>
+              <p className="text-xs text-slate-400 mt-2">All time</p>
             </div>
             <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
               <div className="flex items-center gap-2 mb-2">
-                <span className="material-symbols-outlined text-amber-500">thumb_up</span>
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Satisfaction</span>
+                <span className="material-symbols-outlined text-amber-500">check_circle</span>
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Completed</span>
               </div>
-              <p className="text-3xl font-black text-slate-800">{stats.satisfaction}/5</p>
-              <p className="text-xs text-green-500 mt-2">+0.2 this month</p>
+              <p className="text-3xl font-black text-green-600">{stats.completedBookings}</p>
+              <p className="text-xs text-slate-400 mt-2">Successfully delivered</p>
             </div>
           </div>
 
@@ -166,7 +178,7 @@ export default function EnhancedServicesDashboard() {
                   <h2 className="font-black text-slate-800 uppercase tracking-widest text-sm">Service Overview</h2>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-6">
-                  {serviceOptions.map((service) => (
+                  {serviceStats.map((service) => (
                     <Link
                       key={service.id}
                       href={`/admin/services/${service.id}`}
@@ -183,15 +195,7 @@ export default function EnhancedServicesDashboard() {
                         </div>
                         <div className="flex justify-between text-xs">
                           <span className="text-slate-500">Revenue</span>
-                          <span className="font-bold text-green-600">₹{(service.revenue / 1000).toFixed(1)}k</span>
-                        </div>
-                        <div className="flex justify-between text-xs">
-                          <span className="text-slate-500">Rating</span>
-                          <span className="font-bold text-amber-600">⭐ {service.rating}</span>
-                        </div>
-                        <div className="flex justify-between text-xs">
-                          <span className="text-slate-500">Growth</span>
-                          <span className="font-bold text-green-600">↑{service.growth}%</span>
+                          <span className="font-bold text-green-600">₹{service.revenue.toLocaleString()}</span>
                         </div>
                       </div>
                     </Link>
@@ -216,61 +220,6 @@ export default function EnhancedServicesDashboard() {
                 </div>
               </div>
 
-              {/* Today's Schedule */}
-              <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
-                <h3 className="font-black text-slate-800 text-sm mb-4 flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[#ba001c]">today</span>
-                  Today's Schedule
-                </h3>
-                <div className="space-y-3">
-                  {[
-                    { time: "09:00 AM", service: "AC Repair", address: "Andheri West", status: "upcoming" },
-                    { time: "11:30 AM", service: "Haircut & Styling", address: "Bandra", status: "upcoming" },
-                    { time: "02:00 PM", service: "Plumbing", address: "Juhu", status: "upcoming" },
-                    { time: "04:30 PM", service: "Full Body Waxing", address: "Powai", status: "upcoming" },
-                  ].map((item, i) => (
-                    <div key={i} className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl">
-                      <div className="text-xs font-bold text-slate-500 w-20">{item.time}</div>
-                      <div className="flex-1">
-                        <p className="font-bold text-slate-800 text-sm">{item.service}</p>
-                        <p className="text-xs text-slate-500">{item.address}</p>
-                      </div>
-                      <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-full">Upcoming</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Top Providers */}
-              <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
-                <h3 className="font-black text-slate-800 text-sm mb-4 flex items-center gap-2">
-                  <span className="material-symbols-outlined text-green-600">workspace_premium</span>
-                  Top Providers
-                </h3>
-                <div className="space-y-3">
-                  {[
-                    { name: "Arti Singh", service: "Beauty", jobs: 156, rating: 4.9 },
-                    { name: "Sunita Devi", service: "Spa", jobs: 142, rating: 4.8 },
-                    { name: "Ramesh Kumar", service: "AC Repair", jobs: 128, rating: 4.7 },
-                    { name: "Priya Sharma", service: "Cleaning", jobs: 115, rating: 4.9 },
-                  ].map((provider, i) => (
-                    <div key={i} className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl">
-                      <div className="w-8 h-8 bg-[#ba001c] rounded-full flex items-center justify-center text-white font-bold text-xs">
-                        {i + 1}
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-bold text-slate-800 text-sm">{provider.name}</p>
-                        <p className="text-xs text-slate-500">{provider.service}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-bold text-slate-800 text-sm">{provider.jobs} jobs</p>
-                        <p className="text-xs text-amber-600">⭐ {provider.rating}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
               <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
                 <h3 className="font-black text-slate-800 uppercase tracking-widest text-xs mb-4">Bookings by Status</h3>
                 <div className="space-y-3">
@@ -288,7 +237,7 @@ export default function EnhancedServicesDashboard() {
           <div className="bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
             <div className="p-6 border-b border-slate-50 flex justify-between items-center">
               <h2 className="font-black text-slate-800 uppercase tracking-widest text-sm">Recent Bookings</h2>
-              <button 
+              <button
                 onClick={() => setActiveTab("bookings")}
                 className="text-sm font-bold text-[#ba001c] hover:underline"
               >
@@ -359,7 +308,7 @@ export default function EnhancedServicesDashboard() {
                 </button>
               ))}
             </div>
-            <select 
+            <select
               value={serviceFilter}
               onChange={(e) => setServiceFilter(e.target.value)}
               className="ml-auto px-4 py-2 bg-slate-50 rounded-lg text-sm font-bold"
@@ -449,35 +398,10 @@ export default function EnhancedServicesDashboard() {
               Add Provider
             </button>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[
-              { name: "Rahul Sharma", service: "AC Repair", rating: 4.9, jobs: 156, status: "online" },
-              { name: "Amit Kumar", service: "Plumbing", rating: 4.7, jobs: 89, status: "online" },
-              { name: "Suresh Patel", service: "Electrical", rating: 4.8, jobs: 124, status: "offline" },
-              { name: "Vijay Singh", service: "Cleaning", rating: 4.6, jobs: 67, status: "online" },
-              { name: "Raj Malhotra", service: "Pest Control", rating: 4.9, jobs: 45, status: "online" },
-              { name: "Kiran Gupta", service: "Appliance", rating: 4.5, jobs: 34, status: "offline" },
-            ].map((provider, i) => (
-              <div key={i} className="p-4 border border-slate-100 rounded-xl hover:shadow-md transition-shadow">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-12 h-12 rounded-full bg-[#ba001c]/10 flex items-center justify-center">
-                    <span className="material-symbols-outlined text-[#ba001c]">person</span>
-                  </div>
-                  <div className="flex-1">
-                    <p className="font-bold text-slate-800">{provider.name}</p>
-                    <p className="text-xs text-slate-500">{provider.service}</p>
-                  </div>
-                  <span className={`w-2 h-2 rounded-full ${provider.status === "online" ? "bg-green-500" : "bg-slate-400"}`} />
-                </div>
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-1">
-                    <span className="material-symbols-outlined text-amber-500 text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                    <span className="font-bold text-slate-700">{provider.rating}</span>
-                  </div>
-                  <span className="text-xs text-slate-500">{provider.jobs} jobs completed</span>
-                </div>
-              </div>
-            ))}
+          <div className="text-center py-12 text-slate-400">
+            <span className="material-symbols-outlined text-5xl text-slate-300">people</span>
+            <p className="mt-4 font-bold">No providers yet</p>
+            <p className="text-sm mt-1">Add service providers to get started</p>
           </div>
         </div>
       )}
