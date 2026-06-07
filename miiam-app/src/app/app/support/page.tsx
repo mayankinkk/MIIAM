@@ -129,7 +129,7 @@ export default function SupportPage() {
   };
 
   return (
-    <div className="h-[100dvh] bg-[#f8f8f8] flex flex-col pb-24 md:pb-0 overflow-hidden">
+    <div className="h-[100dvh] bg-[#f8f8f8] flex flex-col pb-24 md:pb-0">
       {/* Header */}
       <header className="bg-primary text-white px-4 py-6 shrink-0">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
