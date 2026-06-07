@@ -43,11 +43,11 @@ export default function RiderSupportPage() {
               <span className="flex-1 text-left font-bold">Call Support</span>
               <span className="material-symbols-outlined text-slate-400">chevron_right</span>
             </a>
-            <Link href="/rider/chat?support=true" className="w-full flex items-center gap-3 p-4 bg-slate-50 rounded-xl">
+            <a href="mailto:support@miiam.in" className="w-full flex items-center gap-3 p-4 bg-slate-50 rounded-xl">
               <span className="material-symbols-outlined text-[#0b50d5]">chat</span>
               <span className="flex-1 text-left font-bold">Chat with Us</span>
               <span className="material-symbols-outlined text-slate-400">chevron_right</span>
-            </Link>
+            </a>
             <a href="mailto:support@miiam.in" className="w-full flex items-center gap-3 p-4 bg-slate-50 rounded-xl">
               <span className="material-symbols-outlined text-[#0b50d5]">email</span>
               <span className="flex-1 text-left font-bold">Email Support</span>

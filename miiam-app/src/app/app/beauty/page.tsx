@@ -159,9 +159,9 @@ export default function BeautyPage() {
       <header className="bg-gradient-to-br from-pink-500 to-rose-500 text-white p-4 pb-10">
         <div className="flex items-center justify-between mb-2">
           <h1 className="text-xl font-black">Beauty & Wellness</h1>
-          <button className="p-2 bg-surface-container-lowest/20 rounded-full">
+          <Link href="/app/notifications" className="p-2 bg-surface-container-lowest/20 rounded-full">
             <span className="material-symbols-outlined text-lg">notifications</span>
-          </button>
+          </Link>
         </div>
         <p className="text-white/90 text-sm mb-3">Professional beauty services at your home</p>
         

@@ -81,12 +81,17 @@ export function PaymentOptions({ total, selected, onSelect, walletBalance = 0 }:
               {upiApps.map((app) => (
                 <button
                   key={app.id}
+                  onClick={() => {
+                    navigator.clipboard.writeText("miiam@upi");
+                    import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast(`${app.name}: UPI ID copied to clipboard`, "success"));
+                  }}
                   className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg w-full hover:bg-slate-100"
                 >
                   <div className="w-8 h-8 bg-[#ba001c] text-white rounded-lg flex items-center justify-center font-bold text-sm">
                     {app.icon}
                   </div>
                   <span className="text-sm font-medium">{app.name}</span>
+                  <span className="text-xs text-slate-400 ml-auto">Tap to copy UPI ID</span>
                 </button>
               ))}
               <button
@@ -98,7 +103,10 @@ export function PaymentOptions({ total, selected, onSelect, walletBalance = 0 }:
             </>
           ) : (
             <button
-              onClick={() => setShowAllUPI(true)}
+              onClick={() => {
+                navigator.clipboard.writeText("miiam@upi");
+                import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("UPI ID copied to clipboard", "success"));
+              }}
               className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg w-full hover:bg-slate-100"
             >
               <div className="w-8 h-8 bg-[#ba001c] text-white rounded-lg flex items-center justify-center font-bold text-sm">
@@ -113,9 +121,12 @@ export function PaymentOptions({ total, selected, onSelect, walletBalance = 0 }:
 
       {selected === "card" && (
         <div className="ml-14 p-4 bg-slate-50 rounded-xl">
-          <p className="text-sm text-slate-500 text-center py-4">
-            Contact support to enable card payments via Razorpay/Stripe.
-          </p>
+          <div className="flex items-center gap-3 py-3">
+            <span className="material-symbols-outlined text-slate-400">credit_card</span>
+            <p className="text-sm text-slate-500">
+              Card payments coming soon. Use UPI or Cash on Delivery for now.
+            </p>
+          </div>
         </div>
       )}
     </div>

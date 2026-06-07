@@ -100,10 +100,16 @@ export default function WalletPage() {
             </div>
 
             <div className="w-full flex gap-3 mt-2">
-              <button className="flex-1 bg-white text-primary py-3 rounded-xl font-bold text-sm shadow-lg hover:scale-[1.02] active:scale-95 transition-all">
+              <button
+                onClick={() => import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Add Money feature coming soon", "info"))}
+                className="flex-1 bg-white text-primary py-3 rounded-xl font-bold text-sm shadow-lg hover:scale-[1.02] active:scale-95 transition-all"
+              >
                 Add Money
               </button>
-              <button className="flex-1 border border-white/30 text-white py-3 rounded-xl font-bold text-sm hover:bg-white/10 transition-all">
+              <button
+                onClick={() => import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Withdraw feature coming soon", "info"))}
+                className="flex-1 border border-white/30 text-white py-3 rounded-xl font-bold text-sm hover:bg-white/10 transition-all"
+              >
                 Withdraw
               </button>
             </div>

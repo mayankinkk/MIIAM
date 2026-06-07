@@ -45,6 +45,7 @@ export default function HomePage() {
   const [manualPincode, setManualPincode] = useState("");
   const [pincodeError, setPincodeError] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
+  const [notifTab, setNotifTab] = useState<"all" | "orders" | "offers">("all");
   const [notifications, setNotifications] = useState<any[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [nearbyRestaurants, setNearbyRestaurants] = useState<any[]>([]);
@@ -826,20 +827,22 @@ export default function HomePage() {
 
             {/* Tabs */}
             <div className="flex border-b border-outline-variant/10" role="tablist" aria-label="Notification categories">
-              <button role="tab" aria-selected="true" className="flex-1 py-3 text-sm font-bold text-primary border-b-2 border-primary">
+              <button role="tab" aria-selected={notifTab === "all"} onClick={() => setNotifTab("all")} className={`flex-1 py-3 text-sm font-bold border-b-2 ${notifTab === "all" ? "text-primary border-primary" : "text-gray-400 border-transparent"}`}>
                 {t.home.all}
               </button>
-              <button role="tab" aria-selected="false" className="flex-1 py-3 text-sm font-bold text-gray-400">
+              <button role="tab" aria-selected={notifTab === "orders"} onClick={() => setNotifTab("orders")} className={`flex-1 py-3 text-sm font-bold border-b-2 ${notifTab === "orders" ? "text-primary border-primary" : "text-gray-400 border-transparent"}`}>
                 {t.home.ordersTab}
               </button>
-              <button role="tab" aria-selected="false" className="flex-1 py-3 text-sm font-bold text-gray-400">
+              <button role="tab" aria-selected={notifTab === "offers"} onClick={() => setNotifTab("offers")} className={`flex-1 py-3 text-sm font-bold border-b-2 ${notifTab === "offers" ? "text-primary border-primary" : "text-gray-400 border-transparent"}`}>
                 {t.home.offersTab}
               </button>
             </div>
 
             {/* Notifications List */}
             <div className="overflow-y-auto h-[calc(100vh-140px)]">
-              {notifications.map((notif) => (
+              {notifications
+                .filter(n => notifTab === "all" || (notifTab === "orders" && (n.type === "order" || n.type === "info")) || (notifTab === "offers" && (n.type === "promo" || n.type === "offer")))
+                .map((notif) => (
                 <div key={notif.id} className={`p-4 border-b border-outline-variant/10 transition-colors ${!notif.read ? 'bg-primary/10' : 'hover:bg-surface-container-high/50'}`}>
                   <div className="flex gap-3">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
@@ -860,7 +863,16 @@ export default function HomePage() {
                       </div>
                       <p className="text-xs text-on-surface-variant mt-1">{notif.body || notif.message}</p>
                       {notif.type === "offer" && (
-                        <button className="mt-2 text-xs font-bold text-primary" aria-label={`Apply offer: ${notif.title}`}>
+                        <button
+                          onClick={() => {
+                            if (notif.body) {
+                              navigator.clipboard.writeText(notif.body);
+                              import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Coupon code copied!", "success"));
+                            }
+                          }}
+                          className="mt-2 text-xs font-bold text-primary"
+                          aria-label={`Apply offer: ${notif.title}`}
+                        >
                           {t.home.applyNow}
                         </button>
                       )}

@@ -59,6 +59,7 @@ export default function SupportPage() {
   const [ordersLoading, setOrdersLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
   const [faqSearch, setFaqSearch] = useState("");
+  const [faqCategory, setFaqCategory] = useState<string>("All");
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -286,11 +287,15 @@ export default function SupportPage() {
             <section>
               <h2 className="text-lg font-bold text-slate-800 mb-4">Follow Us</h2>
               <div className="flex gap-3">
-                {["Twitter", "Instagram", "Facebook"].map((social) => (
-                  <button key={social} className="flex-1 bg-white border border-slate-200 py-3 rounded-xl text-sm font-bold text-slate-600 hover:border-primary hover:text-primary transition-all">
-                    {social}
-                  </button>
-                ))}
+                <a href="https://twitter.com/miiam_in" target="_blank" rel="noopener noreferrer" className="flex-1 bg-white border border-slate-200 py-3 rounded-xl text-sm font-bold text-slate-600 hover:border-primary hover:text-primary transition-all text-center">
+                  Twitter
+                </a>
+                <a href="https://instagram.com/miiam_in" target="_blank" rel="noopener noreferrer" className="flex-1 bg-white border border-slate-200 py-3 rounded-xl text-sm font-bold text-slate-600 hover:border-primary hover:text-primary transition-all text-center">
+                  Instagram
+                </a>
+                <a href="https://facebook.com/miiam.in" target="_blank" rel="noopener noreferrer" className="flex-1 bg-white border border-slate-200 py-3 rounded-xl text-sm font-bold text-slate-600 hover:border-primary hover:text-primary transition-all text-center">
+                  Facebook
+                </a>
               </div>
             </section>
           </div>
@@ -415,17 +420,18 @@ export default function SupportPage() {
 
             {/* Category Pills */}
             <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
-              <button className="px-4 py-2 bg-primary text-white rounded-full text-sm font-bold whitespace-nowrap">
+              <button onClick={() => setFaqCategory("All")} className={`px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap ${faqCategory === "All" ? "bg-primary text-white" : "bg-white border border-slate-200"}`}>
                 All
               </button>
               {faqs.map((section) => (
-                <button key={section.category} className="px-4 py-2 bg-white border border-slate-200 rounded-full text-sm font-bold whitespace-nowrap">
+                <button key={section.category} onClick={() => setFaqCategory(section.category)} className={`px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap ${faqCategory === section.category ? "bg-primary text-white" : "bg-white border border-slate-200"}`}>
                   {section.category}
                 </button>
               ))}
             </div>
 
             {faqs.map((section) => {
+              if (faqCategory !== "All" && section.category !== faqCategory) return null;
               const filteredQuestions = faqSearch 
                 ? section.questions.filter(faq => 
                     faq.q.toLowerCase().includes(faqSearch.toLowerCase()) || 

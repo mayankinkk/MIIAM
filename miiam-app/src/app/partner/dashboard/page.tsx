@@ -202,7 +202,7 @@ export default function VendorDashboard() {
                   <div className="flex items-center justify-between pt-3 border-t border-slate-100">
                     <p className="font-extrabold text-lg text-[#ba001c]">₹{order.total_amount.toFixed(2)}</p>
                     <Link
-                      href="/partner"
+                      href="/partner/pos"
                       className="text-sm font-bold text-[#ba001c] hover:underline"
                     >
                       Process in POS →

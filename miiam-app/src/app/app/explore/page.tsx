@@ -451,9 +451,9 @@ export default function ExplorePage() {
             </div>
           </div>
           <p className="text-sm text-white/80 mb-4">Join 10,000+ restaurants and service providers earning with MIIAM.</p>
-          <button className="w-full py-3 bg-white text-slate-900 font-bold rounded-xl hover:bg-slate-100 transition-colors">
+          <a href="https://partner.miiam.in" target="_blank" rel="noopener noreferrer" className="block w-full py-3 bg-white text-slate-900 font-bold rounded-xl hover:bg-slate-100 transition-colors text-center">
             Register Your Business
-          </button>
+          </a>
         </div>
         </FadeIn>
 
@@ -463,14 +463,14 @@ export default function ExplorePage() {
           <h3 className="font-black text-2xl mb-2">Download MIIAM App</h3>
           <p className="text-sm text-white/80 mb-4">Get exclusive deals and faster ordering</p>
           <div className="flex gap-3 justify-center">
-            <button className="flex items-center gap-2 bg-white/20 px-4 py-2 rounded-xl hover:bg-white/30 transition-colors">
+            <a href="https://apps.apple.com/app/miiam" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-white/20 px-4 py-2 rounded-xl hover:bg-white/30 transition-colors">
               <span className="text-2xl">🍎</span>
               <span className="font-bold text-sm">App Store</span>
-            </button>
-            <button className="flex items-center gap-2 bg-white/20 px-4 py-2 rounded-xl hover:bg-white/30 transition-colors">
+            </a>
+            <a href="https://play.google.com/store/apps/details?id=in.miiam.app" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-white/20 px-4 py-2 rounded-xl hover:bg-white/30 transition-colors">
               <span className="text-2xl">🤖</span>
               <span className="font-bold text-sm">Play Store</span>
-            </button>
+            </a>
           </div>
         </div>
         </FadeIn>

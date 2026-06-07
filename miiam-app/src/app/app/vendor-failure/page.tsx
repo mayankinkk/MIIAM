@@ -155,9 +155,9 @@ function VendorFailureContent() {
               <p className="text-sm text-on-surface-variant">Contact our 24/7 support team</p>
             </div>
           </div>
-          <button className="mt-3 w-full bg-secondary text-white py-3 rounded-lg font-bold text-sm">
+          <Link href="/app/support" className="mt-3 w-full bg-secondary text-white py-3 rounded-lg font-bold text-sm text-center block">
             Chat with Support
-          </button>
+          </Link>
         </div>
       </main>
     </div>
