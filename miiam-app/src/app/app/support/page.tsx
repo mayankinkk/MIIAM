@@ -129,7 +129,7 @@ export default function SupportPage() {
   };
 
   return (
-    <div className="h-[100dvh] bg-[#f8f8f8] flex flex-col pb-24 md:pb-0">
+    <div className="h-[100dvh] bg-background flex flex-col pb-24 md:pb-0">
       {/* Header */}
       <header className="bg-primary text-white px-4 py-6 shrink-0">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
@@ -143,14 +143,14 @@ export default function SupportPage() {
       <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Help & Support' }]} />
 
       {/* Tabs */}
-      <div className="bg-white border-b border-slate-100 px-4 shrink-0">
+      <div className="bg-surface-container-lowest border-b border-slate-100 px-4 shrink-0">
         <div className="max-w-2xl mx-auto flex">
           {(["home", "chat", "tickets", "faqs"] as const).map((t) => (
             <button
               key={t}
               onClick={() => setTab(t as any)}
               className={`flex-1 py-4 text-sm font-bold border-b-2 transition-all ${
-                tab === t ? "border-primary text-primary" : "border-transparent text-slate-500"
+                tab === t ? "border-primary text-primary" : "border-transparent text-on-surface-variant"
               }`}
             >
               {t === "home" ? "Home" : t === "chat" ? "💬 Chat" : t === "tickets" ? "🎫 Tickets" : "❓ FAQs"}
@@ -165,7 +165,7 @@ export default function SupportPage() {
           <div className="space-y-6">
             {/* Quick Actions */}
             <section>
-              <h2 className="text-lg font-bold text-slate-800 mb-4">Quick Actions</h2>
+              <h2 className="text-lg font-bold text-on-surface mb-4">Quick Actions</h2>
               <div className="grid grid-cols-3 gap-3">
                 {quickActions.map((action) => (
                   <button
@@ -183,7 +183,7 @@ export default function SupportPage() {
             {/* Select Order */}
             {ordersLoading ? (
               <section>
-                <h2 className="text-lg font-bold text-slate-800 mb-4">Select Order (Optional)</h2>
+                <h2 className="text-lg font-bold text-on-surface mb-4">Select Order (Optional)</h2>
                 <div className="space-y-2">
                   <div className="h-14 w-full bg-slate-100 rounded-xl animate-pulse" />
                   <div className="h-16 w-full bg-slate-100 rounded-xl animate-pulse" />
@@ -192,25 +192,25 @@ export default function SupportPage() {
               </section>
             ) : userOrders.length > 0 && (
               <section>
-                <h2 className="text-lg font-bold text-slate-800 mb-4">Select Order (Optional)</h2>
+                <h2 className="text-lg font-bold text-on-surface mb-4">Select Order (Optional)</h2>
                 <div className="space-y-2">
                   <button
                     onClick={() => { setSelectedOrder(null); setTab("chat"); }}
-                    className={`w-full text-left p-4 rounded-xl border-2 transition-all ${!selectedOrder ? "border-primary bg-surface-container" : "border-slate-200 hover:border-primary"}`}
+                    className={`w-full text-left p-4 rounded-xl border-2 transition-all ${!selectedOrder ? "border-primary bg-surface-container" : "border-outline-variant/20 hover:border-primary"}`}
                   >
                     <p className="font-semibold text-slate-700">General Query</p>
-                    <p className="text-xs text-slate-500">Not related to a specific order</p>
+                    <p className="text-xs text-on-surface-variant">Not related to a specific order</p>
                   </button>
                   {userOrders.map((order) => (
                     <button
                       key={order.id}
                       onClick={() => { setSelectedOrder(order); setTab("chat"); }}
-                      className={`w-full text-left p-4 rounded-xl border-2 transition-all ${selectedOrder?.id === order.id ? "border-primary bg-surface-container" : "border-slate-200 hover:border-primary"}`}
+                      className={`w-full text-left p-4 rounded-xl border-2 transition-all ${selectedOrder?.id === order.id ? "border-primary bg-surface-container" : "border-outline-variant/20 hover:border-primary"}`}
                     >
                       <div className="flex justify-between items-start">
                         <div>
                           <p className="font-semibold text-slate-700">{order.vendor?.name || "Order"}</p>
-                          <p className="text-xs text-slate-500">#{order.id.slice(0, 8).toUpperCase()}</p>
+                          <p className="text-xs text-on-surface-variant">#{order.id.slice(0, 8).toUpperCase()}</p>
                         </div>
                         <div className="text-right">
                           <p className="font-bold text-primary">₹{order.total_amount}</p>
@@ -225,7 +225,7 @@ export default function SupportPage() {
 
             {/* Contact Options */}
             <section>
-              <h2 className="text-lg font-bold text-slate-800 mb-4">Contact Us</h2>
+              <h2 className="text-lg font-bold text-on-surface mb-4">Contact Us</h2>
               <div className="space-y-3">
                 <button
                   onClick={() => setTab("chat")}
@@ -241,24 +241,24 @@ export default function SupportPage() {
 
                 <a
                   href={`tel:${support.support_phone}`}
-                  className="w-full bg-white border border-slate-200 text-slate-800 rounded-2xl p-5 flex items-center gap-4 hover:border-primary transition-all"
+                  className="w-full bg-surface-container-lowest border border-outline-variant/20 text-on-surface rounded-2xl p-5 flex items-center gap-4 hover:border-primary transition-all"
                 >
                   <span className="material-symbols-outlined text-3xl text-primary">call</span>
                   <div className="text-left flex-1">
                     <p className="font-bold text-lg">Call us</p>
-                    <p className="text-slate-500 text-sm">{support.support_phone_label}</p>
+                    <p className="text-on-surface-variant text-sm">{support.support_phone_label}</p>
                   </div>
                   <span className="material-symbols-outlined">chevron_right</span>
                 </a>
 
                 <a
                   href={`mailto:${support.support_email}`}
-                  className="w-full bg-white border border-slate-200 text-slate-800 rounded-2xl p-5 flex items-center gap-4 hover:border-primary transition-all"
+                  className="w-full bg-surface-container-lowest border border-outline-variant/20 text-on-surface rounded-2xl p-5 flex items-center gap-4 hover:border-primary transition-all"
                 >
                   <span className="material-symbols-outlined text-3xl text-primary">email</span>
                   <div className="text-left flex-1">
                     <p className="font-bold text-lg">Email us</p>
-                    <p className="text-slate-500 text-sm">Response within {support.support_email_response_time}</p>
+                    <p className="text-on-surface-variant text-sm">Response within {support.support_email_response_time}</p>
                   </div>
                   <span className="material-symbols-outlined">chevron_right</span>
                 </a>
@@ -283,20 +283,20 @@ export default function SupportPage() {
 
             {/* Social */}
             <section>
-              <h2 className="text-lg font-bold text-slate-800 mb-4">Follow Us</h2>
+              <h2 className="text-lg font-bold text-on-surface mb-4">Follow Us</h2>
               <div className="flex gap-3">
                 {support.support_twitter && (
-                  <a href={support.support_twitter} target="_blank" rel="noopener noreferrer" className="flex-1 bg-white border border-slate-200 py-3 rounded-xl text-sm font-bold text-slate-600 hover:border-primary hover:text-primary transition-all text-center">
+                  <a href={support.support_twitter} target="_blank" rel="noopener noreferrer" className="flex-1 bg-surface-container-lowest border border-outline-variant/20 py-3 rounded-xl text-sm font-bold text-on-surface-variant hover:border-primary hover:text-primary transition-all text-center">
                     Twitter
                   </a>
                 )}
                 {support.support_instagram && (
-                  <a href={support.support_instagram} target="_blank" rel="noopener noreferrer" className="flex-1 bg-white border border-slate-200 py-3 rounded-xl text-sm font-bold text-slate-600 hover:border-primary hover:text-primary transition-all text-center">
+                  <a href={support.support_instagram} target="_blank" rel="noopener noreferrer" className="flex-1 bg-surface-container-lowest border border-outline-variant/20 py-3 rounded-xl text-sm font-bold text-on-surface-variant hover:border-primary hover:text-primary transition-all text-center">
                     Instagram
                   </a>
                 )}
                 {support.support_facebook && (
-                  <a href={support.support_facebook} target="_blank" rel="noopener noreferrer" className="flex-1 bg-white border border-slate-200 py-3 rounded-xl text-sm font-bold text-slate-600 hover:border-primary hover:text-primary transition-all text-center">
+                  <a href={support.support_facebook} target="_blank" rel="noopener noreferrer" className="flex-1 bg-surface-container-lowest border border-outline-variant/20 py-3 rounded-xl text-sm font-bold text-on-surface-variant hover:border-primary hover:text-primary transition-all text-center">
                     Facebook
                   </a>
                 )}
@@ -314,7 +314,7 @@ export default function SupportPage() {
                   <div className={`max-w-[85%] rounded-2xl px-5 py-3 ${
                     msg.from === "user"
                       ? "bg-primary text-white rounded-br-md"
-                      : "bg-white text-slate-800 shadow-sm rounded-bl-md"
+                      : "bg-surface-container-lowest text-on-surface shadow-sm rounded-bl-md"
                   }`}>
                     <p className="text-sm leading-relaxed">{msg.text}</p>
                     <p className={`text-xs mt-2 ${msg.from === "user" ? "text-white/50" : "text-slate-400"}`}>{msg.time}</p>
@@ -331,7 +331,7 @@ export default function SupportPage() {
                   <button
                     key={reply}
                     onClick={() => handleQuickAction(reply.toLowerCase().replace(" ", ""))}
-                    className="bg-white border border-primary text-primary px-4 py-2 rounded-full text-sm font-semibold hover:bg-surface transition-all"
+                    className="bg-surface-container-lowest border border-primary text-primary px-4 py-2 rounded-full text-sm font-semibold hover:bg-surface transition-all"
                   >
                     {reply}
                   </button>
@@ -340,7 +340,7 @@ export default function SupportPage() {
             )}
 
             {/* Input */}
-            <div className="bg-white rounded-2xl border border-slate-200 flex items-center gap-3 p-3">
+            <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/20 flex items-center gap-3 p-3">
               <input
                 type="text"
                 value={newMessage}
@@ -367,7 +367,7 @@ export default function SupportPage() {
               <p className="text-white/70 text-sm">Track and manage your support requests</p>
             </div>
             
-            <div className="text-center py-12 text-slate-500">
+            <div className="text-center py-12 text-on-surface-variant">
               <span className="material-symbols-outlined text-5xl mb-4">confirmation_number</span>
               <p>No tickets yet</p>
               <p className="text-sm mt-2">Start a chat to create a ticket</p>
@@ -379,28 +379,28 @@ export default function SupportPage() {
               </button>
             </div>
 
-            <div className="bg-white rounded-2xl p-6">
-              <h3 className="font-bold text-slate-800 mb-4">How Tickets Work</h3>
+            <div className="bg-surface-container-lowest rounded-2xl p-6">
+              <h3 className="font-bold text-on-surface mb-4">How Tickets Work</h3>
               <div className="space-y-4">
                 <div className="flex items-start gap-4">
                   <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">1</div>
                   <div>
-                    <p className="font-semibold text-slate-800">Start a Chat</p>
-                    <p className="text-sm text-slate-500">Describe your issue in the chat</p>
+                    <p className="font-semibold text-on-surface">Start a Chat</p>
+                    <p className="text-sm text-on-surface-variant">Describe your issue in the chat</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
                   <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">2</div>
                   <div>
-                    <p className="font-semibold text-slate-800">We Create a Ticket</p>
-                    <p className="text-sm text-slate-500">Our team will create a support ticket for you</p>
+                    <p className="font-semibold text-on-surface">We Create a Ticket</p>
+                    <p className="text-sm text-on-surface-variant">Our team will create a support ticket for you</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
                   <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">3</div>
                   <div>
-                    <p className="font-semibold text-slate-800">Track Here</p>
-                    <p className="text-sm text-slate-500">View ticket status and updates</p>
+                    <p className="font-semibold text-on-surface">Track Here</p>
+                    <p className="text-sm text-on-surface-variant">View ticket status and updates</p>
                   </div>
                 </div>
               </div>
@@ -418,17 +418,17 @@ export default function SupportPage() {
                 value={faqSearch}
                 onChange={(e) => setFaqSearch(e.target.value)}
                 placeholder="Search FAQs..."
-                className="w-full pl-12 pr-4 py-4 bg-white rounded-2xl border border-slate-200 focus:border-primary outline-none"
+                className="w-full pl-12 pr-4 py-4 bg-surface-container-lowest rounded-2xl border border-outline-variant/20 focus:border-primary outline-none"
               />
             </div>
 
             {/* Category Pills */}
             <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
-              <button onClick={() => setFaqCategory("All")} className={`px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap ${faqCategory === "All" ? "bg-primary text-white" : "bg-white border border-slate-200"}`}>
+              <button onClick={() => setFaqCategory("All")} className={`px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap ${faqCategory === "All" ? "bg-primary text-white" : "bg-surface-container-lowest border border-outline-variant/20"}`}>
                 All
               </button>
               {faqs.map((section) => (
-                <button key={section.category} onClick={() => setFaqCategory(section.category)} className={`px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap ${faqCategory === section.category ? "bg-primary text-white" : "bg-white border border-slate-200"}`}>
+                <button key={section.category} onClick={() => setFaqCategory(section.category)} className={`px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap ${faqCategory === section.category ? "bg-primary text-white" : "bg-surface-container-lowest border border-outline-variant/20"}`}>
                   {section.category}
                 </button>
               ))}
@@ -453,16 +453,16 @@ export default function SupportPage() {
                        section.category === "Payments & Refunds" ? "payments" :
                        section.category === "Account & Profile" ? "person" : "help"}
                     </span>
-                    <h2 className="text-lg font-bold text-slate-800">{section.category}</h2>
+                    <h2 className="text-lg font-bold text-on-surface">{section.category}</h2>
                   </div>
                   <div className="space-y-3">
                     {filteredQuestions.map((faq, i) => (
-                      <details key={i} className="bg-white rounded-2xl overflow-hidden shadow-sm group">
-                        <summary className="flex items-center justify-between px-5 py-4 cursor-pointer hover:bg-slate-50 transition-colors list-none">
-                          <span className="font-semibold text-slate-800 pr-4">{faq.q}</span>
+                      <details key={i} className="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm group">
+                        <summary className="flex items-center justify-between px-5 py-4 cursor-pointer hover:bg-surface-container transition-colors list-none">
+                          <span className="font-semibold text-on-surface pr-4">{faq.q}</span>
                           <span className="material-symbols-outlined text-slate-400 group-open:rotate-180 transition-transform">expand_more</span>
                         </summary>
-                        <div className="px-5 pb-4 text-slate-600 text-sm leading-relaxed border-t border-slate-100 pt-4">
+                        <div className="px-5 pb-4 text-on-surface-variant text-sm leading-relaxed border-t border-slate-100 pt-4">
                           {faq.a}
                         </div>
                       </details>
@@ -473,7 +473,7 @@ export default function SupportPage() {
             })}
 
             {faqSearch && (
-              <div className="text-center py-8 text-slate-500">
+              <div className="text-center py-8 text-on-surface-variant">
                 <span className="material-symbols-outlined text-4xl mb-2">search_off</span>
                 <p>No FAQs found for "{faqSearch}"</p>
               </div>

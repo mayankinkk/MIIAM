@@ -181,7 +181,7 @@ function SearchContent() {
 
       <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Search' }]} />
 
-      <main className="pt-24 pb-32 px-6 max-w-4xl mx-auto">
+      <main className="pt-24 pb-24 px-6 max-w-4xl mx-auto">
         {query && (
           <div className="flex flex-wrap gap-2 mb-6">
             <div className="flex gap-2">
@@ -201,7 +201,7 @@ function SearchContent() {
             </div>
             {activeTab !== "vendors" && (
               <div className="flex gap-2">
-                <button onClick={() => setVegFilter("all")} className={`px-3 py-2 rounded-full text-xs font-bold ${vegFilter === "all" ? "bg-slate-800 text-white" : "bg-slate-100 text-slate-600"}`}>
+                <button onClick={() => setVegFilter("all")} className={`px-3 py-2 rounded-full text-xs font-bold ${vegFilter === "all" ? "bg-on-surface text-white" : "bg-surface-container-high text-on-surface-variant"}`}>
                   All
                 </button>
                 <button onClick={() => setVegFilter("veg")} className={`px-3 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 ${vegFilter === "veg" ? "bg-green-600 text-white" : "bg-green-100 text-green-700"}`}>
@@ -282,7 +282,7 @@ function SearchContent() {
                     <Link
                       key={vendor.id}
                       href={`/app/vendor/${vendor.id}`}
-                      className="bg-white rounded-2xl overflow-hidden border border-slate-100 hover:shadow-lg transition-all"
+                      className="bg-surface-container-lowest rounded-2xl overflow-hidden border border-outline-variant/20 hover:shadow-lg transition-all"
                     >
                       <div className="h-32 bg-surface-container relative">
                         {vendor.cover_image_url || vendor.image_url ? (
@@ -318,7 +318,7 @@ function SearchContent() {
                   {filteredResults.menuItems.map((item) => (
                     <div
                       key={item.id}
-                      className="flex items-center gap-4 p-4 bg-white rounded-xl border border-slate-100"
+                      className="flex items-center gap-4 p-4 bg-surface-container-lowest rounded-2xl border border-outline-variant/20"
                     >
                       <div className="w-20 h-20 bg-surface-container rounded-lg overflow-hidden flex-shrink-0">
                         {item.image_url ? (

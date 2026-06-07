@@ -67,7 +67,7 @@ export default function NotificationsPage() {
       <header className="fixed top-0 w-full z-50 bg-white shadow-sm">
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-4">
-            <Link href="/app/explore" className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
+            <Link href="/app/explore" className="w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center">
               <span className="material-symbols-outlined text-primary">arrow_back</span>
             </Link>
             <span className="text-2xl font-extrabold text-primary">MIIAM</span>
@@ -89,7 +89,7 @@ export default function NotificationsPage() {
         </section>
 
         {/* Push Notification Settings */}
-        <section className="bg-white rounded-2xl p-6 shadow-sm mb-8">
+        <section className="bg-surface-container-lowest rounded-2xl p-6 shadow-sm mb-8">
           <h2 className="text-lg font-bold text-on-surface mb-4">Push Notifications</h2>
           
           {permission === "denied" ? (
@@ -155,14 +155,14 @@ export default function NotificationsPage() {
           {loading ? (
             <div className="space-y-4">
               {[1, 2, 3].map(i => (
-                <div key={i} className="bg-white rounded-xl p-4 animate-pulse">
-                  <div className="h-4 bg-slate-200 rounded w-3/4 mb-2"></div>
-                  <div className="h-3 bg-slate-100 rounded w-1/2"></div>
+                <div key={i} className="bg-surface-container-lowest rounded-2xl p-4 animate-pulse">
+                  <div className="h-4 bg-surface-container-high rounded w-3/4 mb-2"></div>
+                  <div className="h-3 bg-surface-container-high rounded w-1/2"></div>
                 </div>
               ))}
             </div>
           ) : notifications.length === 0 ? (
-            <div className="text-center py-12 bg-white rounded-xl">
+            <div className="text-center py-12 bg-surface-container-lowest rounded-2xl">
               <span className="text-5xl">🔔</span>
               <p className="text-on-surface-variant mt-4">No notifications yet</p>
             </div>
@@ -182,12 +182,12 @@ export default function NotificationsPage() {
                   }}
                 >
                   <div
-                    className={`bg-white rounded-xl p-4 ${notification.read ? "opacity-70" : "border-l-4 border-primary"}`}
+                    className={`bg-surface-container-lowest rounded-2xl p-4 ${notification.read ? "opacity-70" : "border-l-4 border-primary"}`}
                   >
                     <div className="flex items-start gap-3">
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
                         notification.type === "order" ? "bg-surface-container" :
-                        notification.type === "promo" ? "bg-amber-100" : "bg-slate-100"
+                        notification.type === "promo" ? "bg-amber-100" : "bg-surface-container-high"
                       }`}>
                         <span className="material-symbols-outlined text-lg text-primary">
                           {notification.type === "order" ? "restaurant" :

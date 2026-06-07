@@ -81,7 +81,7 @@ export default function FavoritesPage() {
 
   return (
     <PullToRefresh onRefresh={loadFavorites}>
-      <header className="fixed top-0 w-full z-50 flex items-center gap-4 px-6 py-4 bg-surface/80 backdrop-blur-2xl shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
+      <header className="fixed top-0 w-full z-50 flex items-center gap-4 px-6 py-4 bg-surface/80 backdrop-blur-2xl shadow-sm">
         <Link href="/app/explore" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-all">
           <span className="material-symbols-outlined text-primary">arrow_back</span>
         </Link>
@@ -91,9 +91,9 @@ export default function FavoritesPage() {
 
       <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'My Favorites' }]} />
 
-      <main className="pt-24 pb-32 px-6 max-w-4xl mx-auto">
+      <main className="pt-24 pb-24 px-6 max-w-4xl mx-auto">
         <section className="mb-10">
-          <h1 className="text-[3.5rem] font-extrabold tracking-tight leading-none mb-2 text-primary">Your Faves</h1>
+          <h1 className="text-3xl font-extrabold tracking-tight leading-none mb-2 text-primary">Your Faves</h1>
           <p className="text-on-surface-variant text-lg">Places you&apos;ve saved for later.</p>
         </section>
 
@@ -118,7 +118,7 @@ export default function FavoritesPage() {
               <div key={vendor.id} className="relative group">
                 <Link
                   href={`/vendor/${vendor.id}`}
-                  className="block bg-white rounded-lg overflow-hidden shadow-[0px_10px_30px_rgba(77,33,42,0.04)] hover:shadow-[0px_20px_40px_rgba(77,33,42,0.1)] transition-all"
+                  className="block bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all"
                 >
                   <div className="h-48 bg-surface-container overflow-hidden">
                     <BlurImage src={vendor.cover_image_url || vendor.image_url} alt={vendor.name} fill className="w-full h-full group-hover:scale-105 transition-transform duration-700" sizes="(max-width: 768px) 100vw, 50vw" />

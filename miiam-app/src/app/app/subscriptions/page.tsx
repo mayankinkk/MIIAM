@@ -148,7 +148,7 @@ export default function SubscriptionsPage() {
               return (
                 <div
                   key={schedule.id}
-                  className={`bg-white rounded-2xl p-5 shadow-sm border-l-4 ${
+                  className={`bg-surface-container-lowest rounded-2xl p-5 shadow-sm border-l-4 ${
                     schedule.status === "active"
                       ? "border-green-500"
                       : schedule.status === "paused"
@@ -169,7 +169,7 @@ export default function SubscriptionsPage() {
                           ? "bg-green-100 text-green-700"
                           : schedule.status === "paused"
                           ? "bg-amber-100 text-amber-700"
-                          : "bg-slate-100 text-slate-500"
+                          : "bg-surface-container-high text-on-surface-variant"
                       }`}
                     >
                       {schedule.status}

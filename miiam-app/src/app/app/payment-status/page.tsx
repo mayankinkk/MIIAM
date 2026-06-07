@@ -138,7 +138,7 @@ function PaymentStatusContent() {
       <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Cart', href: '/app/cart' }, { label: `Payment ${status.charAt(0).toUpperCase() + status.slice(1)}` }]} />
       <div className="min-h-screen bg-surface flex items-center justify-center p-6">
         <div className="w-full max-w-md">
-        <div className="bg-white rounded-3xl p-8 shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
+        <div className="bg-surface-container-lowest rounded-2xl p-8 shadow-sm">
           <div className="text-center mb-8">
             <div className={`w-24 h-24 mx-auto rounded-full ${config.bgColor} flex items-center justify-center mb-6`}>
               <span className={`material-symbols-outlined text-6xl ${config.color}`} style={{ fontVariationSettings: "'FILL' 1" }}>
@@ -151,13 +151,13 @@ function PaymentStatusContent() {
 
           {status === "processing" && (
             <div className="mb-8">
-              <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
+              <div className="h-3 bg-surface-container-high rounded-full overflow-hidden">
                 <div 
                   className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transition-all duration-300"
                   style={{ width: `${progress}%` }}
                 />
               </div>
-              <p className="text-center text-sm text-slate-500 mt-2">{progress}% complete</p>
+              <p className="text-center text-sm text-on-surface-variant mt-2">{progress}% complete</p>
             </div>
           )}
 
@@ -231,7 +231,7 @@ function PaymentStatusContent() {
           {/* Confetti */}
           {showConfetti && <Confetti />}
 
-          <div className="flex justify-center gap-4 pt-6 border-t border-slate-100">
+          <div className="flex justify-center gap-4 pt-6 border-t border-outline-variant/20">
             <Link href="/app/home" className="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors">
               <span className="material-symbols-outlined">home</span>
               <span className="font-bold text-sm">Home</span>
@@ -254,9 +254,9 @@ function PaymentStatusContent() {
 
 function Loading() {
   return (
-    <div className="min-h-screen bg-surface flex items-center justify-center p-6">
-      <div className="w-full max-w-md">
-        <div className="bg-white rounded-3xl p-8 shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
+      <div className="min-h-screen bg-surface flex items-center justify-center p-6">
+        <div className="w-full max-w-md">
+        <div className="bg-surface-container-lowest rounded-2xl p-8 shadow-sm">
           <div className="animate-pulse">
             <div className="w-24 h-24 mx-auto rounded-full bg-slate-200 mb-6"></div>
             <div className="h-6 bg-slate-200 rounded w-48 mx-auto mb-2"></div>

@@ -166,16 +166,16 @@ export default function OrdersPage() {
 
   return (
     <>
-      <header className="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-surface/80 backdrop-blur-2xl shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
+      <header className="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-surface/80 backdrop-blur-2xl shadow-sm">
         <span className="text-2xl font-extrabold tracking-tighter text-primary">MIIAM</span>
       </header>
       <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'My Orders' }]} />
       <PullToRefresh onRefresh={async () => {
         await fetchOrders();
       }}>
-      <main className="pt-24 pb-32 px-6 max-w-4xl mx-auto">
+      <main className="pt-24 pb-24 px-6 max-w-4xl mx-auto bg-background text-on-background">
         <section className="mb-10">
-          <h1 className="text-[3.5rem] font-extrabold tracking-tight leading-none mb-2 text-on-surface">My Orders</h1>
+          <h1 className="text-3xl font-extrabold tracking-tight leading-none mb-2 text-on-surface">My Orders</h1>
           <p className="text-on-surface-variant text-lg">Track and manage your orders.</p>
         </section>
 
@@ -208,7 +208,7 @@ export default function OrdersPage() {
         ) : (
           <div className="space-y-6">
             {orders.map((order) => (
-              <div key={order.id} className="bg-white rounded-lg shadow-[0px_10px_30px_rgba(77,33,42,0.04)] overflow-hidden">
+              <div key={order.id} className="bg-surface-container-lowest rounded-2xl shadow-sm overflow-hidden">
                 <Link href={`/app/orders/${order.id}`} className="block p-6 hover:bg-surface-container-low/30 transition-all">
                   <div className="flex items-center gap-4">
                     <div className={`w-16 h-16 rounded-xl overflow-hidden flex items-center justify-center flex-shrink-0 ${order.vendor_id === PRINTING_VENDOR_ID ? "bg-indigo-100" : "bg-surface-container"}`}>

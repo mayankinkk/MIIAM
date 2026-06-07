@@ -383,7 +383,7 @@ export default function CheckoutPage() {
 
   return (
     <>
-      <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-4 sm:px-6 py-3 sm:py-4 bg-surface/80 backdrop-blur-2xl shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
+      <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-4 sm:px-6 py-3 sm:py-4 bg-surface/80 backdrop-blur-2xl shadow-sm">
         <div className="flex items-center gap-3 sm:gap-4">
           <Link href="/app/cart" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-all">
             <span className="material-symbols-outlined text-primary">arrow_back</span>
@@ -395,7 +395,7 @@ export default function CheckoutPage() {
 
       <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Cart', href: '/app/cart' }, { label: 'Checkout' }]} />
 
-      <main className="pt-20 sm:pt-24 pb-24 sm:pb-32 px-3 sm:px-6 max-w-7xl mx-auto">
+      <main className="pt-20 sm:pt-24 pb-24 px-3 sm:px-6 max-w-7xl mx-auto bg-background text-on-background">
         <header className="mb-6 sm:mb-12">
           <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-on-surface mb-2 break-words">Secure Checkout</h1>
           <p className="text-sm sm:text-base text-on-surface-variant">Complete your order with peace of mind.</p>
@@ -405,7 +405,7 @@ export default function CheckoutPage() {
           {/* Left */}
           <div className="lg:col-span-8 space-y-5 sm:space-y-8">
             {/* Delivery Address */}
-            <section className="bg-white p-4 sm:p-6 rounded-2xl shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
+            <section className="bg-surface-container-lowest p-4 sm:p-6 rounded-2xl shadow-sm">
               <div className="flex items-center gap-3 mb-4 sm:mb-5">
                 <div className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
                   <span className="material-symbols-outlined text-primary">location_on</span>
@@ -473,7 +473,7 @@ export default function CheckoutPage() {
 
             {/* Scheduled Services */}
             {items.some(i => i.vendor_id === SERVICES_VENDOR_ID) && (
-              <section className="bg-white p-5 sm:p-8 rounded-lg shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
+              <section className="bg-surface-container-lowest p-5 sm:p-8 rounded-2xl shadow-sm">
                 <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
                   <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-green-50 flex items-center justify-center text-green-700 shrink-0">
                     <span className="material-symbols-outlined">event_available</span>
@@ -499,7 +499,7 @@ export default function CheckoutPage() {
 
             {/* Print Order Summary */}
             {items.some(i => i.vendor_id === PRINTING_VENDOR_ID) && (
-              <section className="bg-white p-5 sm:p-8 rounded-lg shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
+              <section className="bg-surface-container-lowest p-5 sm:p-8 rounded-2xl shadow-sm">
                 <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
                   <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-700 shrink-0">
                     <span className="material-symbols-outlined">print</span>
@@ -542,7 +542,7 @@ export default function CheckoutPage() {
 
             {/* Scheduled Delivery */}
             {!items.some(i => i.vendor_id === SERVICES_VENDOR_ID) && (
-              <section className="bg-white p-5 sm:p-8 rounded-lg shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
+              <section className="bg-surface-container-lowest p-5 sm:p-8 rounded-2xl shadow-sm">
                 <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
                   <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-amber-50 flex items-center justify-center text-amber-700 shrink-0">
                     <span className="material-symbols-outlined">schedule</span>
@@ -713,7 +713,7 @@ export default function CheckoutPage() {
             )}
 
             {/* Payment Method */}
-            <section className="bg-white p-5 sm:p-8 rounded-lg shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
+            <section className="bg-surface-container-lowest p-5 sm:p-8 rounded-2xl shadow-sm">
               <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#c4d0ff] flex items-center justify-center text-[#003dac] shrink-0">
                   <span className="material-symbols-outlined">payments</span>
@@ -755,7 +755,7 @@ export default function CheckoutPage() {
 
           {/* Right: Order Summary */}
           <div className="lg:col-span-4 lg:sticky lg:top-24">
-            <aside className="bg-surface-container-low p-5 sm:p-8 rounded-lg shadow-[0px_20px_40px_rgba(77,33,42,0.06)] relative overflow-hidden">
+            <aside className="bg-surface-container-low p-5 sm:p-8 rounded-2xl shadow-sm relative overflow-hidden">
               <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary-container/20 rounded-full blur-3xl" />
               <h2 className="text-xl sm:text-2xl font-extrabold mb-6 sm:mb-8 tracking-tight">Order Summary</h2>
               <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">

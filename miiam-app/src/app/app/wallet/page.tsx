@@ -67,15 +67,15 @@ export default function WalletPage() {
 
   return (
     <PullToRefresh onRefresh={loadWalletData}>
-    <div className="min-h-screen bg-surface pb-32">
-      <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-surface/80 backdrop-blur-2xl shadow-[0px_10px_30px_rgba(77,33,42,0.04)]">
+    <div className="min-h-screen bg-surface pb-24">
+      <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-surface/80 backdrop-blur-2xl shadow-sm">
         <div className="flex items-center gap-4">
           <Link href="/app/profile" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-all">
             <span className="material-symbols-outlined text-primary">arrow_back</span>
           </Link>
           <span className="text-2xl font-extrabold tracking-tighter text-primary">MIIAM</span>
         </div>
-        <span className="text-slate-800 font-bold hidden md:block">Wallet</span>
+        <span className="text-on-surface font-bold hidden md:block">Wallet</span>
       </nav>
 
       <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Profile', href: '/app/profile' }, { label: 'Wallet' }]} />
@@ -118,38 +118,38 @@ export default function WalletPage() {
 
         {/* Transactions */}
         <div>
-          <h2 className="text-lg font-black text-slate-800 mb-4">Transaction History</h2>
+          <h2 className="text-lg font-black text-on-surface mb-4">Transaction History</h2>
           
           {loading ? (
             <div className="space-y-3">
               {[1, 2, 3].map(i => (
-                <div key={i} className="bg-white rounded-xl p-4 animate-pulse">
+                <div key={i} className="bg-surface-container-lowest rounded-2xl p-4 animate-pulse">
                   <div className="h-4 bg-slate-200 rounded w-48 mb-2" />
                   <div className="h-3 bg-slate-200 rounded w-24" />
                 </div>
               ))}
             </div>
           ) : transactions.length === 0 ? (
-            <div className="bg-white rounded-xl p-8 text-center">
+            <div className="bg-surface-container-lowest rounded-2xl p-8 text-center">
               <span className="material-symbols-outlined text-4xl text-slate-300">receipt_long</span>
-              <p className="text-sm text-slate-500 mt-2">No transactions yet</p>
+              <p className="text-sm text-on-surface-variant mt-2">No transactions yet</p>
             </div>
           ) : (
             <div className="space-y-3">
               {transactions.map((txn) => (
-                <div key={txn.id} className="bg-white rounded-xl p-4 flex items-center justify-between shadow-sm">
+                <div key={txn.id} className="bg-surface-container-lowest rounded-2xl p-4 flex items-center justify-between shadow-sm">
                   <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${txn.sign === "+" ? "bg-green-100" : "bg-slate-100"}`}>
-                      <span className={`material-symbols-outlined text-lg ${txn.sign === "+" ? "text-green-600" : "text-slate-600"}`}>
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${txn.sign === "+" ? "bg-green-100" : "bg-surface-container-high"}`}>
+                      <span className={`material-symbols-outlined text-lg ${txn.sign === "+" ? "text-green-600" : "text-on-surface-variant"}`}>
                         {txn.sign === "+" ? "call_received" : "call_made"}
                       </span>
                     </div>
                     <div>
-                      <p className="font-bold text-slate-800 text-sm">{txn.title}</p>
+                      <p className="font-bold text-on-surface text-sm">{txn.title}</p>
                       <p className="text-xs text-slate-400">{txn.date}</p>
                     </div>
                   </div>
-                  <p className={`font-black text-base ${txn.sign === "+" ? "text-green-600" : "text-slate-800"}`}>
+                  <p className={`font-black text-base ${txn.sign === "+" ? "text-green-600" : "text-on-surface"}`}>
                     {txn.sign}₹{txn.amount}
                   </p>
                 </div>

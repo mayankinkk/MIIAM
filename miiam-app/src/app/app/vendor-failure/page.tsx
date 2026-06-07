@@ -40,7 +40,7 @@ function VendorFailureContent() {
 
   return (
     <div className="min-h-screen bg-surface">
-      <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-white/90 backdrop-blur-2xl shadow-sm">
+      <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-surface-container-lowest/90 backdrop-blur-2xl shadow-sm">
         <Link href="/app/orders" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-all">
           <span className="material-symbols-outlined text-primary">close</span>
         </Link>
@@ -74,7 +74,7 @@ function VendorFailureContent() {
         </div>
 
         {orderId && (
-          <div className="bg-white rounded-xl p-4 mb-6 shadow-sm">
+          <div className="bg-surface-container-lowest rounded-xl p-4 mb-6 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Order ID</p>
@@ -96,7 +96,7 @@ function VendorFailureContent() {
               className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
                 selectedOption === option.id
                   ? "border-primary bg-surface-container-low"
-                  : "border-slate-100 bg-white hover:border-slate-200"
+                  : "border-outline-variant/20 bg-surface-container-lowest hover:border-outline-variant/20"
               }`}
             >
               <div className="flex items-center gap-4">
@@ -104,7 +104,7 @@ function VendorFailureContent() {
                   selectedOption === option.id ? "bg-primary" : "bg-slate-100"
                 }`}>
                   <span className={`material-symbols-outlined ${
-                    selectedOption === option.id ? "text-white" : "text-slate-600"
+                    selectedOption === option.id ? "text-white" : "text-on-surface-variant"
                   }`}>
                     {option.icon}
                   </span>
@@ -143,20 +143,20 @@ function VendorFailureContent() {
           <div className="flex gap-3">
             <Link 
               href="/app/orders"
-              className="flex-1 text-center py-4 border-2 border-slate-200 rounded-xl font-bold text-on-surface hover:border-primary transition-colors"
+              className="flex-1 text-center py-4 border-2 border-outline-variant/20 rounded-xl font-bold text-on-surface hover:border-primary transition-colors"
             >
               View All Orders
             </Link>
             <Link 
               href="/app/support"
-              className="flex-1 text-center py-4 border-2 border-slate-200 rounded-xl font-bold text-on-surface hover:border-primary transition-colors"
+              className="flex-1 text-center py-4 border-2 border-outline-variant/20 rounded-xl font-bold text-on-surface hover:border-primary transition-colors"
             >
               Get Help
             </Link>
           </div>
         </div>
 
-        <div className="mt-8 p-4 bg-slate-50 rounded-xl">
+        <div className="mt-8 p-4 bg-surface-container rounded-xl">
           <div className="flex items-center gap-3">
             <span className="material-symbols-outlined text-secondary">support_agent</span>
             <div>

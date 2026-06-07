@@ -8,22 +8,22 @@ export default function BookingsPage() {
   const { bookings, cancelBooking } = useDiningStore();
 
   return (
-    <div className="min-h-screen bg-surface pb-32">
-      <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-surface/80 backdrop-blur-2xl shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
+    <div className="min-h-screen bg-surface pb-24">
+      <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-surface/80 backdrop-blur-2xl shadow-sm">
         <div className="flex items-center gap-4">
           <Link href="/app/profile" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-all">
             <span className="material-symbols-outlined text-primary">arrow_back</span>
           </Link>
           <span className="text-2xl font-extrabold tracking-tighter text-primary">MIIAM</span>
         </div>
-        <span className="text-slate-800 font-bold hidden md:block">Table Bookings</span>
+        <span className="text-on-surface font-bold hidden md:block">Table Bookings</span>
       </nav>
 
       <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'My Bookings' }]} />
 
       <main className="pt-24 max-w-4xl mx-auto px-6">
         <section className="mb-10">
-          <h1 className="text-[3.5rem] font-extrabold tracking-tight leading-none mb-2 text-on-surface">Table Bookings</h1>
+          <h1 className="text-3xl font-extrabold tracking-tight leading-none mb-2 text-on-surface">Table Bookings</h1>
           <p className="text-on-surface-variant text-lg">Manage your upcoming dining experiences.</p>
         </section>
 
@@ -43,7 +43,7 @@ export default function BookingsPage() {
               const isPast = booking.status === 'confirmed' && d < new Date() && booking.time < new Date().toTimeString().substring(0, 5); // simplified check
 
               return (
-                <div key={booking.id} className="bg-white rounded-2xl p-6 shadow-sm border border-outline-variant/10 relative overflow-hidden">
+                <div key={booking.id} className="bg-surface-container-lowest rounded-2xl p-6 shadow-sm border border-outline-variant/10 relative overflow-hidden">
                   {booking.status === 'cancelled' && (
                     <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full" />
                   )}
