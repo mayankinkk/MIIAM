@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 
 const faqs = [
   { q: "How do I accept an order?", a: "Go to the Orders tab and tap 'Start Shopping' on any available order." },
@@ -12,6 +14,14 @@ const faqs = [
 
 export default function RiderSupportPage() {
   const [expanded, setExpanded] = useState<number | null>(null);
+  const router = useRouter();
+  const supabase = createClient();
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) router.push("/rider/login");
+    });
+  }, [supabase, router]);
 
   return (
     <div className="min-h-screen bg-[#fff4f4]">
@@ -28,21 +38,21 @@ export default function RiderSupportPage() {
         <div className="bg-white rounded-2xl p-6 shadow-lg">
           <h2 className="font-bold text-[#4d212a] mb-4">Contact Us</h2>
           <div className="space-y-3">
-            <button className="w-full flex items-center gap-3 p-4 bg-slate-50 rounded-xl">
+            <a href="tel:+9118001234567" className="w-full flex items-center gap-3 p-4 bg-slate-50 rounded-xl">
               <span className="material-symbols-outlined text-[#0b50d5]">call</span>
               <span className="flex-1 text-left font-bold">Call Support</span>
               <span className="material-symbols-outlined text-slate-400">chevron_right</span>
-            </button>
-            <button className="w-full flex items-center gap-3 p-4 bg-slate-50 rounded-xl">
+            </a>
+            <Link href="/rider/chat?support=true" className="w-full flex items-center gap-3 p-4 bg-slate-50 rounded-xl">
               <span className="material-symbols-outlined text-[#0b50d5]">chat</span>
               <span className="flex-1 text-left font-bold">Chat with Us</span>
               <span className="material-symbols-outlined text-slate-400">chevron_right</span>
-            </button>
-            <button className="w-full flex items-center gap-3 p-4 bg-slate-50 rounded-xl">
+            </Link>
+            <a href="mailto:support@miiam.in" className="w-full flex items-center gap-3 p-4 bg-slate-50 rounded-xl">
               <span className="material-symbols-outlined text-[#0b50d5]">email</span>
               <span className="flex-1 text-left font-bold">Email Support</span>
               <span className="material-symbols-outlined text-slate-400">chevron_right</span>
-            </button>
+            </a>
           </div>
         </div>
 

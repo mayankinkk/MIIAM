@@ -275,7 +275,7 @@ export default function RiderOrdersPage() {
         }
       }
 
-      setOrders(orders.map(o => o.id === orderId ? { ...o, rider_id: riderProfile.id } : o));
+      setOrders(prev => prev.map(o => o.id === orderId ? { ...o, rider_id: riderProfile.id } : o));
     } catch (err: any) {
       console.error("Error accepting order:", err);
       alert("Failed to accept order: " + (err?.message || "Unknown error"));
@@ -334,7 +334,7 @@ export default function RiderOrdersPage() {
       }
       
       const successCount = selectedOrders.length - failedCount;
-      setOrders(orders.map(o => selectedOrders.includes(o.id) ? { ...o, rider_id: riderProfile.id } : o));
+      setOrders(prev => prev.map(o => selectedOrders.includes(o.id) ? { ...o, rider_id: riderProfile.id } : o));
       alert(`${successCount} order(s) accepted!${failedCount > 0 ? ` ${failedCount} order(s) already taken.` : ''}`);
       setSelectedOrders([]);
     } catch (err) {
@@ -371,7 +371,7 @@ export default function RiderOrdersPage() {
     }
     
     // Update local state
-    setOrders(orders.map(o => {
+    setOrders(prev => prev.map(o => {
       if (o.id === orderId) {
         return {
           ...o,
@@ -509,7 +509,7 @@ export default function RiderOrdersPage() {
         }
       }
 
-      setOrders(orders.map(o => o.id === currentOrderId ? { ...o, status: "delivered", delivered_at: new Date().toISOString(), customer_collected: cashToCollect } : o));
+      setOrders(prev => prev.map(o => o.id === currentOrderId ? { ...o, status: "delivered", delivered_at: new Date().toISOString(), customer_collected: cashToCollect } : o));
       setShowCashCollectModal(false);
       alert(`Delivery complete! ₹${cashToCollect} collected. You earned ₹${riderEarning}!`);
     } catch (err) {
@@ -566,7 +566,7 @@ export default function RiderOrdersPage() {
         });
       }
 
-      setOrders(orders.map(o => o.id === orderId ? { ...o, status: "on_the_way" } : o));
+      setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: "on_the_way" } : o));
     } catch (err) {
       console.error("Error starting delivery:", err);
     }
@@ -833,8 +833,8 @@ export default function RiderOrdersPage() {
                   <p className="text-xs text-slate-400">Total Orders</p>
                 </div>
                 <div className="text-center p-3 bg-slate-50 rounded-xl">
-                  <p className="text-2xl font-black text-green-600">₹{(todayEarnings * 7).toFixed(0)}</p>
-                  <p className="text-xs text-slate-400">Weekly Earnings</p>
+                  <p className="text-2xl font-black text-green-600">₹{todayEarnings}</p>
+                  <p className="text-xs text-slate-400">Today&apos;s Earnings</p>
                 </div>
               </div>
             </div>

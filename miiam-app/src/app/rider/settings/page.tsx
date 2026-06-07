@@ -294,18 +294,18 @@ export default function RiderSettingsPage() {
         <div className="bg-white rounded-2xl p-5 shadow-lg">
           <h3 className="font-bold text-[#4d212a] mb-4">Privacy & Legal</h3>
           <div className="space-y-3">
-            <button className="flex items-center justify-between p-3 bg-slate-50 rounded-xl w-full">
+            <Link href="/privacy" className="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
               <span className="font-bold">Privacy Policy</span>
               <span className="material-symbols-outlined text-slate-400">chevron_right</span>
-            </button>
-            <button className="flex items-center justify-between p-3 bg-slate-50 rounded-xl w-full">
+            </Link>
+            <Link href="/terms" className="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
               <span className="font-bold">Terms of Service</span>
               <span className="material-symbols-outlined text-slate-400">chevron_right</span>
-            </button>
-            <button className="flex items-center justify-between p-3 bg-slate-50 rounded-xl w-full">
+            </Link>
+            <Link href="/privacy" className="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
               <span className="font-bold">Data & Privacy</span>
               <span className="material-symbols-outlined text-slate-400">chevron_right</span>
-            </button>
+            </Link>
           </div>
         </div>
 

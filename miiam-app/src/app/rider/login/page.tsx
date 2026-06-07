@@ -160,13 +160,13 @@ function RiderLoginContent() {
             <span className="material-symbols-outlined text-[#ffd709]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
           </div>
           <p className="text-white text-xl font-medium leading-relaxed mb-6">
-            "Switching to MIIAM was the best decision. The flexible hours and transparent earnings let me ride on my own terms. Plus, the app is incredibly easy to use."
+            &quot;Switching to MIIAM was the best decision. The flexible hours and transparent earnings let me ride on my own terms. Plus, the app is incredibly easy to use.&quot;
           </p>
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center font-bold text-white text-xl border border-white/40">D</div>
+            <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center font-bold text-white text-xl border border-white/40">R</div>
             <div>
-              <p className="text-white font-bold">David S.</p>
-              <p className="text-white/70 text-sm">Elite Rider • 1.2k+ deliveries</p>
+              <p className="text-white font-bold">Rahul K.</p>
+              <p className="text-white/70 text-sm">Top Rider &bull; 800+ deliveries</p>
             </div>
           </div>
         </div>

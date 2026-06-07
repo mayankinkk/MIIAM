@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -20,6 +20,14 @@ function RateCustomerContent() {
   });
   const [additionalComment, setAdditionalComment] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) router.push("/rider/login");
+      else setAuthChecked(true);
+    });
+  }, [supabase, router]);
 
   const handleSubmit = async () => {
     if (selectedRating === null) {
@@ -53,6 +61,14 @@ function RateCustomerContent() {
       router.push("/rider/dashboard");
     }, 1500);
   };
+
+  if (!authChecked) {
+    return (
+      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-[#0b50d5] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   if (submitted) {
     return (

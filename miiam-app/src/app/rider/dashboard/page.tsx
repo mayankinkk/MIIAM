@@ -300,36 +300,32 @@ export default function RiderDashboard() {
             const itemsCount = items.reduce((sum: number, it: any) => sum + it.quantity, 0);
             const itemsList = items.map((it: any) => `${it.quantity}x ${it.name || "Item"}`);
 
-            const seed = parseInt(dbOrder.id.substring(0, 2), 16) || 1;
-            const d1 = Number((1 + (seed % 20) / 10).toFixed(1));
-            const d2 = Number((1 + ((seed * 3) % 40) / 10).toFixed(1));
-
             const activeOrder: OrderWithTiming = {
               id: dbOrder.id,
               orderDbId: dbOrder.id,
               vendor: vendorData?.shop_name || vendorData?.name || "Restaurant",
               vendorAddress: vendorData?.address || "Restaurant Address",
               vendorPhone: vendorData?.phone || "+91 99999 99999",
-              vendorLat: vendorData?.lat || undefined,
-              vendorLng: vendorData?.lng || undefined,
+              vendorLat: vendorData?.latitude || vendorData?.lat || undefined,
+              vendorLng: vendorData?.longitude || vendorData?.lng || undefined,
               customer: customerName,
               customerPhone: customerPhone,
               customerAddress: dbOrder.delivery_address || "Customer Delivery Location",
               landmark: dbOrder.special_instructions || "N/A",
-              distance: d1,
-              distance2: d2,
-              totalDistance: Number((d1 + d2).toFixed(1)),
-              earnings: calculateEarnings(Number((d1 + d2).toFixed(1))),
+              distance: 0,
+              distance2: 0,
+              totalDistance: 0,
+              earnings: calculateEarnings(0),
               orderTotal: Math.round(dbOrder.total_amount || 0),
               items: itemsCount || 1,
               itemsList: itemsList.length > 0 ? itemsList : ["Items hidden"],
-              time: `${Math.round(d1 * 4)} mins`,
-              time2: `${Math.round(d2 * 5)} mins`,
-              estCompletion: Math.round((d1 + d2) * 5),
+              time: "Calculating...",
+              time2: "Calculating...",
+              estCompletion: 0,
               priority: (dbOrder.total_amount > 500) ? "high" as const : "normal" as const,
               peakMultiplier: 1.0,
               specialInstructions: dbOrder.special_instructions || "",
-              otp: Math.floor(1000 + (seed * 7) % 9000).toString(),
+              otp: dbOrder.otp || "",
               type: vendorData?.type || "food",
             };
             setCurrentOrder(activeOrder);
@@ -470,12 +466,8 @@ export default function RiderDashboard() {
           }
         }
         
-        const seed = parseInt(dbOrder.id.substring(0, 2), 16) || 1;
-        const d1 = Number((1 + (seed % 20) / 10).toFixed(1));
-        const d2 = Number((1 + ((seed * 3) % 40) / 10).toFixed(1));
-
         return {
-          id: dbOrder.id, // Full UUID for proper identification
+          id: dbOrder.id,
           orderDbId: dbOrder.id,
           vendor: vendorRes.data?.shop_name || vendorRes.data?.name || "Restaurant",
           vendorAddress: vendorRes.data?.address || "Restaurant Address",
@@ -486,20 +478,20 @@ export default function RiderDashboard() {
           customerPhone: profileRes.data?.phone || dbOrder.customer_phone || "+91 88888 88888",
           customerAddress: dbOrder.delivery_address || "Customer Delivery Location",
           landmark: dbOrder.special_instructions || "N/A",
-          distance: d1,
-          distance2: d2,
-          totalDistance: Number((d1 + d2).toFixed(1)),
-          earnings: calculateEarnings(Number((d1 + d2).toFixed(1))), // rider's cut (base + distance)
-          orderTotal: Math.round(dbOrder.total_amount || 0), // what customer paid
+          distance: 0,
+          distance2: 0,
+          totalDistance: 0,
+          earnings: calculateEarnings(0),
+          orderTotal: Math.round(dbOrder.total_amount || 0),
           items: itemsCount || 1,
           itemsList: itemsList.length > 0 ? itemsList : ["Items hidden"],
-          time: `${Math.round(d1 * 4)} mins`,
-          time2: `${Math.round(d2 * 5)} mins`,
-          estCompletion: Math.round((d1 + d2) * 5),
+          time: "Calculating...",
+          time2: "Calculating...",
+          estCompletion: 0,
           priority: (dbOrder.total_amount > 500) ? "high" : "normal",
           peakMultiplier: 1.0,
           specialInstructions: dbOrder.special_instructions || "",
-          otp: Math.floor(1000 + (seed * 7) % 9000).toString(),
+          otp: dbOrder.otp || "",
           type: vendorRes.data?.type || "food",
           expiresAt: expirationTime,
           isSnoozed: false,
@@ -592,15 +584,7 @@ export default function RiderDashboard() {
     }
   }, []);
 
-  // Live earnings counter when delivering
-  useEffect(() => {
-    if (currentOrder && (deliveryStep === "delivering" || deliveryStep === "picking_up")) {
-      const interval = setInterval(() => {
-        setLiveEarnings(prev => prev + 1);
-      }, 30000); // Add ₹1 every 30 seconds while on delivery
-      return () => clearInterval(interval);
-    }
-  }, [currentOrder, deliveryStep]);
+  // Live earnings are derived from actual order earnings, not a timer
 
   // Initialize Leaflet map
   useEffect(() => {
@@ -803,7 +787,7 @@ export default function RiderDashboard() {
       }
     }
     
-    setPendingOrders(pendingOrders.filter(o => o.id !== order.id));
+    setPendingOrders(prev => prev.filter(o => o.id !== order.id));
     setActiveOrders(prev => [...prev, order]);
     if (!currentOrder) {
       setCurrentOrder(order);
@@ -819,7 +803,7 @@ export default function RiderDashboard() {
   };
 
   const handleDecline = async (orderId: string, reason?: string) => {
-    setPendingOrders(pendingOrders.filter(o => o.id !== orderId));
+    setPendingOrders(prev => prev.filter(o => o.id !== orderId));
     setSelectedOrder(null);
     setShowSkipModal(false);
     setCountdown(300);
@@ -967,8 +951,7 @@ export default function RiderDashboard() {
                 type: "order",
                 read: false,
                 created_at: new Date().toISOString(),
-              })
-              .maybeSingle();
+              });
             try {
               await fetch("/api/emails/order-status", {
                 method: "POST",
@@ -1001,11 +984,15 @@ export default function RiderDashboard() {
   const handlePickedUp = async () => {
     setDeliveryStep("delivering");
     if (currentOrder?.orderDbId && riderId) {
-      await supabase.from("orders").update({
-        status: "on_the_way",
-        picked_at: new Date().toISOString(),
-      }).eq("id", currentOrder.orderDbId);
-      startLocationTracking(riderId, currentOrder.orderDbId);
+      try {
+        await supabase.from("orders").update({
+          status: "on_the_way",
+          picked_at: new Date().toISOString(),
+        }).eq("id", currentOrder.orderDbId);
+        startLocationTracking(riderId, currentOrder.orderDbId);
+      } catch (err) {
+        console.error("Failed to update order status:", err);
+      }
     }
   };
 
@@ -1013,17 +1000,25 @@ export default function RiderDashboard() {
     if (currentOrder?.type === "multi_stop" && currentOrder.stops && currentStopIndex < currentOrder.stops.length - 1) {
       setCurrentStopIndex(currentStopIndex + 1);
       if (currentOrder.orderDbId) {
-        await supabase.from("orders").update({
-          delivery_notes: `Stop ${currentStopIndex + 2}/${currentOrder.stops.length} - ${currentOrder.stops[currentStopIndex + 1]?.name}`,
-        }).eq("id", currentOrder.orderDbId);
+        try {
+          await supabase.from("orders").update({
+            delivery_notes: `Stop ${currentStopIndex + 2}/${currentOrder.stops.length} - ${currentOrder.stops[currentStopIndex + 1]?.name}`,
+          }).eq("id", currentOrder.orderDbId);
+        } catch (err) {
+          console.error("Failed to update stop progress:", err);
+        }
       }
       alert(`Stop ${currentStopIndex + 1} delivered! Moving to stop ${currentStopIndex + 2}...`);
     } else {
       if (currentOrder?.orderDbId) {
-        await supabase.from("orders").update({
-          status: "arrived",
-          arrived_at: new Date().toISOString(),
-        }).eq("id", currentOrder.orderDbId);
+        try {
+          await supabase.from("orders").update({
+            status: "arrived",
+            arrived_at: new Date().toISOString(),
+          }).eq("id", currentOrder.orderDbId);
+        } catch (err) {
+          console.error("Failed to update arrived status:", err);
+        }
       }
       setDeliveryStep("arrived");
     }
@@ -1031,9 +1026,13 @@ export default function RiderDashboard() {
 
   const handleItemsCollected = async () => {
     if (currentOrder?.orderDbId) {
-      await supabase.from("orders").update({
-        status: "picking_up",
-      }).eq("id", currentOrder.orderDbId);
+      try {
+        await supabase.from("orders").update({
+          status: "picking_up",
+        }).eq("id", currentOrder.orderDbId);
+      } catch (err) {
+        console.error("Failed to update items collected status:", err);
+      }
     }
     setDeliveryStep("picking_up");
   };

@@ -235,51 +235,31 @@ export default function RiderVehiclePage() {
 
         {activeTab === "maintenance" && (
           <>
-            <div className="bg-white rounded-2xl p-4 shadow-sm">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-bold text-[#4d212a]">Upcoming Service</h3>
-                <button onClick={() => setShowServiceAlert(true)} className="text-xs text-[#0b50d5] font-bold">
-                  Book Now
-                </button>
-              </div>
-              <div className="space-y-3">
-                {[
-                  { service: "General Service", due: "5000 km", status: "Due Soon" },
-                  { service: "Oil Change", due: "5500 km", status: "Recommended" },
-                  { service: "Tire Rotation", due: "6000 km", status: "OK" },
-                ].map((item, i) => (
-                  <div key={i} className="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
-                    <div>
-                      <p className="font-bold text-sm">{item.service}</p>
-                      <p className="text-xs text-slate-400">Due at {item.due}</p>
+            {maintenanceRecords.length > 0 && (
+              <div className="bg-white rounded-2xl p-4 shadow-sm">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-bold text-[#4d212a]">Service History</h3>
+                </div>
+                <div className="space-y-3">
+                  {maintenanceRecords.map((record, i) => (
+                    <div key={i} className="flex items-center justify-between p-3 border-b border-slate-100">
+                      <div>
+                        <p className="font-bold text-sm">{record.type}</p>
+                        <p className="text-xs text-slate-400">{record.date} • {record.odometer} km</p>
+                      </div>
+                      <p className="font-bold">₹{record.cost}</p>
                     </div>
-                    <span className={`text-xs font-bold px-2 py-1 rounded-full ${
-                      item.status === "Due Soon" ? "bg-red-100 text-red-600" :
-                      item.status === "Recommended" ? "bg-amber-100 text-amber-600" :
-                      "bg-green-100 text-green-600"
-                    }`}>
-                      {item.status}
-                    </span>
-                  </div>
-                ))}
+                  ))}
+                </div>
+                <p className="text-center text-xs text-slate-400 mt-4">Total: ₹{maintenanceRecords.reduce((s, r) => s + r.cost, 0)}</p>
               </div>
-            </div>
-
-            <div className="bg-white rounded-2xl p-4 shadow-sm">
-              <h3 className="font-bold text-[#4d212a] mb-4">Service History</h3>
-              <div className="space-y-3">
-                {maintenanceRecords.map((record, i) => (
-                  <div key={i} className="flex items-center justify-between p-3 border-b border-slate-100">
-                    <div>
-                      <p className="font-bold text-sm">{record.type}</p>
-                      <p className="text-xs text-slate-400">{record.date} • {record.odometer} km</p>
-                    </div>
-                    <p className="font-bold">₹{record.cost}</p>
-                  </div>
-                ))}
+            )}
+            {maintenanceRecords.length === 0 && (
+              <div className="bg-white rounded-2xl p-4 shadow-sm text-center py-8 text-slate-400">
+                <span className="material-symbols-outlined text-4xl">build</span>
+                <p className="mt-2 font-medium">No service records yet</p>
               </div>
-              <p className="text-center text-xs text-slate-400 mt-4">Total: ₹850</p>
-            </div>
+            )}
           </>
         )}
 
@@ -289,11 +269,11 @@ export default function RiderVehiclePage() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="text-center">
                   <p className="text-xs text-green-600">Total Spent</p>
-                  <p className="text-2xl font-black text-green-700">₹856</p>
+                  <p className="text-2xl font-black text-green-700">₹{fuelLog.reduce((s, f) => s + f.cost, 0)}</p>
                 </div>
                 <div className="text-center">
                   <p className="text-xs text-green-600">Liters Used</p>
-                  <p className="text-2xl font-black text-green-700">10.7L</p>
+                  <p className="text-2xl font-black text-green-700">{fuelLog.reduce((s, f) => s + f.liters, 0).toFixed(1)}L</p>
                 </div>
               </div>
             </div>
