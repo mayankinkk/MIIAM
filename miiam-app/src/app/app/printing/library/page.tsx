@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { usePrintLibraryStore, type PrintLibraryItem } from "@/lib/store/printLibraryStore";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useServiceSettingsStore } from "@/lib/store/serviceSettingsStore";
+import { usePrintSettingsStore } from "@/lib/store/printSettingsStore";
 import { PRINTING_VENDOR_ID, PRINT_MENU_ITEM_ID } from "@/lib/constants";
 import { getPrintingPricing } from "@/lib/printing-pricing";
 import { bytesToHumanReadable } from "@/lib/printing-utils";
@@ -19,6 +20,7 @@ export default function PrintLibraryPage() {
   const { files, removeFile, clearAll, incrementPrintCount, MAX_ITEMS, MAX_BYTES } = usePrintLibraryStore();
   const cartStore = useCartStore();
   const serviceSettings = useServiceSettingsStore();
+  const userDefaults = usePrintSettingsStore((s) => s.defaults);
   const toast = useToastStore();
   const [reprinting, setReprinting] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
@@ -35,18 +37,22 @@ export default function PrintLibraryPage() {
 
     setReprinting(item.id);
     const pricing = getPrintingPricing();
-    const copies = 1;
+    const copies = userDefaults.copies || 1;
     const pages = 1;
-    const subtotal = pricing.bwPerPage * pages;
+    const base = userDefaults.colorMode === "bw" ? pricing.bwPerPage : pricing.colorPerPage;
+    const glossy = userDefaults.paperType === "glossy" ? pricing.glossySurcharge : 0;
+    const a3 = userDefaults.paperSize === "a3" ? pricing.a3Surcharge : 0;
+    const subtotal = (base + glossy + a3) * pages * copies;
     const settings = {
       pages,
       copies,
-      colorMode: "bw",
-      sides: "single",
-      paperSize: "a4",
-      orientation: "portrait",
-      paperType: "standard",
-      perPagePrice: pricing.bwPerPage,
+      colorMode: userDefaults.colorMode,
+      sides: userDefaults.sides,
+      paperSize: userDefaults.paperSize,
+      orientation: userDefaults.orientation,
+      paperType: userDefaults.paperType,
+      quality: userDefaults.quality,
+      perPagePrice: base + glossy + a3,
       subtotal,
       fileUrls: [item.url],
       fileNames: [item.name],
