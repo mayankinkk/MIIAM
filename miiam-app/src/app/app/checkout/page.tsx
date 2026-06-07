@@ -151,8 +151,8 @@ export default function CheckoutPage() {
       return;
     }
     if (promo.vendor_id) {
-      const cartVendor = items[0]?.vendor_id;
-      if (cartVendor && cartVendor !== promo.vendor_id) {
+      const hasMatchingVendor = items.some((i) => i.vendor_id === promo.vendor_id);
+      if (!hasMatchingVendor) {
         setPromoError("This promo code is not applicable to items in your cart");
         return;
       }
