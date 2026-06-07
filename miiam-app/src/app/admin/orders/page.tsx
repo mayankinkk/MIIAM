@@ -162,9 +162,31 @@ export default function OrderManagement() {
   }
 
   async function bulkUpdateStatus(status: OrderStatus) {
+    const notifMap: Record<string, { title: string; body: string }> = {
+      accepted: { title: "Order Accepted! 🎉", body: "Your order has been accepted and is being prepared." },
+      preparing: { title: "Order Being Prepared 🍳", body: "Your order is being prepared right now!" },
+      on_the_way: { title: "Your Order is On the Way! 🚀", body: "Sit tight — your order is heading to you." },
+      delivered: { title: "Order Delivered! ✅", body: "Your order has been delivered. Enjoy! Rate your experience in the app." },
+      cancelled: { title: "Order Cancelled ❌", body: "Your order has been cancelled. Contact support if you need help." },
+      refunded: { title: "Refund Processed 💰", body: "Your refund has been processed and will reflect shortly." },
+    };
+    const notif = notifMap[status];
+
     await Promise.all(
       Array.from(selectedIds).map(async (id) => {
+        const { data: order } = await supabase.from("orders").select("user_id").eq("id", id).single();
         await supabase.from("orders").update({ status }).eq("id", id);
+        if (order?.user_id && notif) {
+          try {
+            await fetch("/api/notify", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ user_id: order.user_id, ...notif, type: "order" }),
+            });
+          } catch (e) {
+            console.warn("[admin-orders] Failed to send bulk notification:", e);
+          }
+        }
       })
     );
     setSelectedIds(new Set());
