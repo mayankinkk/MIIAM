@@ -160,8 +160,12 @@ export default function LiveChatSupport() {
                     <span className="text-xs text-slate-400">Online</span>
                   </div>
                 </div>
-                <button className="p-2 text-slate-400 hover:text-slate-600">
-                  <span className="material-symbols-outlined">more_vert</span>
+                <button
+                  onClick={() => setSelectedChat(null)}
+                  className="p-2 text-slate-400 hover:text-slate-600"
+                  title="Close chat"
+                >
+                  <span className="material-symbols-outlined">close</span>
                 </button>
               </div>
               <div className="flex-1 p-4 overflow-y-auto space-y-4">

@@ -14,10 +14,19 @@ export default function UserRegistry() {
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     loadProfiles();
   }, [page]);
+
+  const filteredProfiles = searchQuery
+    ? profiles.filter(p =>
+        p.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.id?.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : profiles;
 
   const toggleMenu = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -96,11 +105,20 @@ export default function UserRegistry() {
         <div className="p-6 border-b border-slate-50 flex items-center gap-4">
            <div className="bg-slate-50 border border-slate-100 rounded-xl px-4 py-2 flex items-center gap-2 flex-1 max-w-sm">
              <span className="material-symbols-outlined text-slate-400 text-sm">search</span>
-             <input type="text" placeholder="Search by name, email or ID..." className="bg-transparent border-none focus:outline-none text-sm w-full" />
+             <input
+               type="text"
+               value={searchQuery}
+               onChange={e => setSearchQuery(e.target.value)}
+               placeholder="Search by name, email or ID..."
+               className="bg-transparent border-none focus:outline-none text-sm w-full"
+             />
            </div>
-           <button className="p-3 bg-slate-50 text-slate-400 rounded-xl hover:text-slate-600 transition-colors">
-             <span className="material-symbols-outlined">filter_list</span>
-           </button>
+            <button
+              onClick={() => { setSearchQuery(""); setPage(1); }}
+              className={`p-3 rounded-xl transition-colors ${searchQuery ? "bg-[#ba001c] text-white" : "bg-slate-50 text-slate-400 hover:text-slate-600"}`}
+            >
+              <span className="material-symbols-outlined">filter_list</span>
+            </button>
         </div>
         
         <div className="overflow-x-auto" onClick={() => setOpenMenuId(null)}>
@@ -115,7 +133,7 @@ export default function UserRegistry() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {profiles.map((profile) => (
+              {filteredProfiles.map((profile) => (
                 <tr key={profile.id} className="hover:bg-slate-50/50 transition-colors">
                   <td className="p-6">
                     <div className="flex items-center gap-4">

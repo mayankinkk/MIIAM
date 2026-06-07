@@ -386,7 +386,20 @@ export default function AdvancedAnalytics() {
           <div className="bg-white rounded-2xl p-6 shadow-lg">
             <h3 className="text-lg font-black text-slate-800 mb-6">Export Reports</h3>
             <div className="grid md:grid-cols-3 gap-4">
-              <button className="p-4 border-2 border-slate-200 rounded-xl hover:border-[#ba001c] hover:bg-pink-50 transition-all flex items-center gap-4">
+              <button
+                onClick={() => {
+                  const rows = [["Date", "Revenue", "Orders"]];
+                  orders.filter(o => o.status === "delivered").forEach(o => {
+                    rows.push([new Date(o.placed_at).toLocaleDateString(), String(o.total_amount), "1"]);
+                  });
+                  const csv = rows.map(r => r.join(",")).join("\n");
+                  const blob = new Blob([csv], { type: "text/csv" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a"); a.href = url; a.download = "revenue-report.csv"; a.click();
+                  URL.revokeObjectURL(url);
+                }}
+                className="p-4 border-2 border-slate-200 rounded-xl hover:border-[#ba001c] hover:bg-pink-50 transition-all flex items-center gap-4"
+              >
                 <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
                   <span className="material-symbols-outlined text-green-600">description</span>
                 </div>
@@ -395,7 +408,20 @@ export default function AdvancedAnalytics() {
                   <p className="text-xs text-slate-500">Last 30 days</p>
                 </div>
               </button>
-              <button className="p-4 border-2 border-slate-200 rounded-xl hover:border-[#ba001c] hover:bg-pink-50 transition-all flex items-center gap-4">
+              <button
+                onClick={() => {
+                  const rows = [["Join Date", "User ID"]];
+                  users.forEach(u => {
+                    rows.push([new Date(u.created_at).toLocaleDateString(), u.id]);
+                  });
+                  const csv = rows.map(r => r.join(",")).join("\n");
+                  const blob = new Blob([csv], { type: "text/csv" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a"); a.href = url; a.download = "user-analytics.csv"; a.click();
+                  URL.revokeObjectURL(url);
+                }}
+                className="p-4 border-2 border-slate-200 rounded-xl hover:border-[#ba001c] hover:bg-pink-50 transition-all flex items-center gap-4"
+              >
                 <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
                   <span className="material-symbols-outlined text-blue-600">group</span>
                 </div>
@@ -404,7 +430,22 @@ export default function AdvancedAnalytics() {
                   <p className="text-xs text-slate-500">Growth metrics</p>
                 </div>
               </button>
-              <button className="p-4 border-2 border-slate-200 rounded-xl hover:border-[#ba001c] hover:bg-pink-50 transition-all flex items-center gap-4">
+              <button
+                onClick={() => {
+                  const rows = [["Metric", "Value"]];
+                  rows.push(["Total Revenue", `₹${totalRevenue}`]);
+                  rows.push(["Total Orders", String(orderCount)]);
+                  rows.push(["Active Vendors", String(activeVendors)]);
+                  rows.push(["Online Riders", String(onlineRiders)]);
+                  rows.push(["Avg Order Value", orderCount > 0 ? `₹${Math.round(totalRevenue / orderCount)}` : "₹0"]);
+                  const csv = rows.map(r => r.join(",")).join("\n");
+                  const blob = new Blob([csv], { type: "text/csv" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a"); a.href = url; a.download = "performance-report.csv"; a.click();
+                  URL.revokeObjectURL(url);
+                }}
+                className="p-4 border-2 border-slate-200 rounded-xl hover:border-[#ba001c] hover:bg-pink-50 transition-all flex items-center gap-4"
+              >
                 <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
                   <span className="material-symbols-outlined text-purple-600">trending_up</span>
                 </div>
@@ -586,7 +627,20 @@ export default function AdvancedAnalytics() {
         <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-lg font-black text-slate-800">Orders Report</h2>
-            <button className="px-4 py-2 bg-[#ba001c] text-white rounded-lg text-sm font-bold flex items-center gap-2">
+            <button
+              onClick={() => {
+                const rows = [["Order ID", "Amount", "Status", "Date"]];
+                orders.forEach(o => {
+                  rows.push([o.id.slice(0, 8).toUpperCase(), String(o.total_amount), o.status, new Date(o.placed_at).toLocaleDateString()]);
+                });
+                const csv = rows.map(r => r.join(",")).join("\n");
+                const blob = new Blob([csv], { type: "text/csv" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a"); a.href = url; a.download = "orders-report.csv"; a.click();
+                URL.revokeObjectURL(url);
+              }}
+              className="px-4 py-2 bg-[#ba001c] text-white rounded-lg text-sm font-bold flex items-center gap-2"
+            >
               <span className="material-symbols-outlined text-sm">download</span>
               Export CSV
             </button>

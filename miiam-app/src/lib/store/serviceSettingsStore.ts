@@ -2,6 +2,7 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { createClient } from "@/lib/supabase/client";
 
 export type ServiceCategory =
   | "food" | "grocery" | "printing" | "pharmacy" | "flowers" | "beauty"
@@ -24,12 +25,14 @@ export interface ServiceSetting {
 
 interface ServiceSettingsStore {
   settings: ServiceSetting[];
+  _synced: boolean;
   updateSetting: (id: ServiceCategory, updates: Partial<ServiceSetting>) => void;
   updateHours: (id: ServiceCategory, hours: Partial<ServiceHours>) => void;
   getSetting: (id: ServiceCategory) => ServiceSetting | undefined;
   isServiceEnabled: (id: ServiceCategory) => boolean;
   isServiceOpenNow: (id: ServiceCategory, now?: Date) => boolean;
   formatServiceHours: (id: ServiceCategory) => string;
+  syncFromSupabase: () => Promise<void>;
 }
 
 const defaultHours: ServiceHours = {
@@ -78,10 +81,34 @@ export function isServiceOpen(hours: ServiceHours, now: Date = new Date()): bool
   return nowMin >= openMin || nowMin < closeMin;
 }
 
+let syncTimeout: ReturnType<typeof setTimeout> | null = null;
+
+function scheduleSyncToSupabase(id: ServiceCategory, updates: Partial<ServiceSetting> | Partial<ServiceHours>) {
+  if (syncTimeout) clearTimeout(syncTimeout);
+  syncTimeout = setTimeout(async () => {
+    try {
+      const supabase = createClient();
+      const payload: Record<string, unknown> = { updated_at: new Date().toISOString() };
+      if ("isEnabled" in updates) payload.is_enabled = (updates as Partial<ServiceSetting>).isEnabled;
+      if ("message" in updates) payload.message = (updates as Partial<ServiceSetting>).message;
+      if ("hours" in updates) {
+        const h = (updates as Partial<ServiceHours>);
+        if (h.open !== undefined) payload.hours_open = h.open;
+        if (h.close !== undefined) payload.hours_close = h.close;
+        if (h.is24x7 !== undefined) payload.hours_is_24x7 = h.is24x7;
+      }
+      await supabase.from("service_settings").upsert({ id, ...payload }, { onConflict: "id" });
+    } catch (e) {
+      console.error("[serviceSettings] Failed to sync to Supabase:", e);
+    }
+  }, 300);
+}
+
 export const useServiceSettingsStore = create<ServiceSettingsStore>()(
   persist(
     (set, get) => ({
       settings: defaultSettings,
+      _synced: false,
 
       updateSetting: (id, updates) => {
         set((state) => ({
@@ -89,6 +116,7 @@ export const useServiceSettingsStore = create<ServiceSettingsStore>()(
             s.id === id ? { ...s, ...updates } : s
           ),
         }));
+        scheduleSyncToSupabase(id, updates);
       },
 
       updateHours: (id, hours) => {
@@ -99,6 +127,7 @@ export const useServiceSettingsStore = create<ServiceSettingsStore>()(
               : s
           ),
         }));
+        scheduleSyncToSupabase(id, hours);
       },
 
       getSetting: (id) => {
@@ -121,6 +150,32 @@ export const useServiceSettingsStore = create<ServiceSettingsStore>()(
         if (!setting) return "";
         if (setting.hours.is24x7) return "24×7";
         return `${formatTime12h(setting.hours.open)} - ${formatTime12h(setting.hours.close)}`;
+      },
+
+      syncFromSupabase: async () => {
+        try {
+          const supabase = createClient();
+          const { data } = await supabase
+            .from("service_settings")
+            .select("id, name, is_enabled, message, icon, hours_open, hours_close, hours_is_24x7");
+          if (data && data.length > 0) {
+            const synced: ServiceSetting[] = data.map((row: any) => ({
+              id: row.id as ServiceCategory,
+              name: row.name,
+              isEnabled: row.is_enabled,
+              message: row.message,
+              icon: row.icon,
+              hours: {
+                open: row.hours_open,
+                close: row.hours_close,
+                is24x7: row.hours_is_24x7,
+              },
+            }));
+            set({ settings: synced, _synced: true });
+          }
+        } catch (e) {
+          console.error("[serviceSettings] Failed to sync from Supabase:", e);
+        }
       },
     }),
     { name: "miiam-service-settings" }

@@ -19,16 +19,113 @@ export default function SponsoredListingsPage() {
   const supabase = createClient();
   const [items, setItems] = useState<SponsoredItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [editingItem, setEditingItem] = useState<SponsoredItem | null>(null);
+  const [vendors, setVendors] = useState<{ id: string; shop_name: string }[]>([]);
+  const [form, setForm] = useState({
+    vendor_id: "",
+    vendor_name: "",
+    start_date: "",
+    end_date: "",
+    budget: 0,
+  });
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     load();
+    loadVendors();
   }, []);
 
   async function load() {
+    setLoading(true);
     const { data } = await supabase.from("sponsored_listings").select("*").order("created_at", { ascending: false });
     if (data) setItems(data as any);
     setLoading(false);
   }
+
+  async function loadVendors() {
+    const { data } = await supabase.from("vendors").select("id, shop_name").order("shop_name");
+    if (data) setVendors(data);
+  }
+
+  const handleSave = async () => {
+    if (!form.vendor_id || !form.start_date || !form.end_date || !form.budget) {
+      alert("Please fill all required fields");
+      return;
+    }
+    setSaving(true);
+    try {
+      if (editingItem) {
+        const { error } = await supabase
+          .from("sponsored_listings")
+          .update({
+            vendor_id: form.vendor_id,
+            vendor_name: form.vendor_name,
+            start_date: form.start_date,
+            end_date: form.end_date,
+            budget: form.budget,
+          })
+          .eq("id", editingItem.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("sponsored_listings").insert({
+          vendor_id: form.vendor_id,
+          vendor_name: form.vendor_name,
+          start_date: form.start_date,
+          end_date: form.end_date,
+          budget: form.budget,
+          status: "active",
+          impressions: 0,
+          clicks: 0,
+        });
+        if (error) throw error;
+      }
+      setShowCreateModal(false);
+      setEditingItem(null);
+      load();
+    } catch (err: any) {
+      alert(`Failed: ${err.message}`);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleStatusChange = async (id: string, newStatus: string) => {
+    try {
+      await supabase.from("sponsored_listings").update({ status: newStatus }).eq("id", id);
+      setItems(prev => prev.map(item => item.id === id ? { ...item, status: newStatus as any } : item));
+    } catch (err: any) {
+      alert(`Failed: ${err.message}`);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Delete this sponsored listing?")) return;
+    try {
+      await supabase.from("sponsored_listings").delete().eq("id", id);
+      setItems(prev => prev.filter(item => item.id !== id));
+    } catch (err: any) {
+      alert(`Failed: ${err.message}`);
+    }
+  };
+
+  const openEditModal = (item: SponsoredItem) => {
+    setEditingItem(item);
+    setForm({
+      vendor_id: item.vendor_id,
+      vendor_name: item.vendor_name,
+      start_date: item.start_date,
+      end_date: item.end_date,
+      budget: item.budget,
+    });
+    setShowCreateModal(true);
+  };
+
+  const openCreateModal = () => {
+    setEditingItem(null);
+    setForm({ vendor_id: "", vendor_name: "", start_date: "", end_date: "", budget: 0 });
+    setShowCreateModal(true);
+  };
 
   return (
     <div className="p-6 space-y-6">
@@ -37,6 +134,13 @@ export default function SponsoredListingsPage() {
           <h1 className="text-2xl font-extrabold text-slate-900">Sponsored Listings</h1>
           <p className="text-slate-500 text-sm mt-1">Manage vendor sponsored placements</p>
         </div>
+        <button
+          onClick={openCreateModal}
+          className="bg-[#ba001c] text-white px-6 py-3 rounded-xl font-bold text-sm flex items-center gap-2"
+        >
+          <span className="material-symbols-outlined text-sm">add</span>
+          New Listing
+        </button>
       </div>
 
       {loading ? (
@@ -45,7 +149,9 @@ export default function SponsoredListingsPage() {
         <div className="bg-white rounded-2xl p-12 text-center border border-slate-200">
           <span className="material-symbols-outlined text-5xl text-slate-300">campaign</span>
           <p className="text-slate-400 font-medium mt-3">No sponsored listings yet</p>
-          <p className="text-xs text-slate-300 mt-1">Vendors can purchase sponsored placements from their dashboard</p>
+          <button onClick={openCreateModal} className="mt-4 text-[#ba001c] font-bold text-sm hover:underline">
+            Create your first listing
+          </button>
         </div>
       ) : (
         <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
@@ -62,7 +168,7 @@ export default function SponsoredListingsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {items.map((item) => (
+              {items.map(item => (
                 <tr key={item.id} className="hover:bg-slate-50">
                   <td className="p-4 font-bold text-slate-800 text-sm">{item.vendor_name}</td>
                   <td className="p-4 font-bold text-slate-800">₹{item.budget}</td>
@@ -72,18 +178,92 @@ export default function SponsoredListingsPage() {
                   <td className="p-4 text-sm font-bold">{item.impressions.toLocaleString()}</td>
                   <td className="p-4 text-sm font-bold">{item.clicks.toLocaleString()}</td>
                   <td className="p-4">
-                    <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase ${
-                      item.status === "active" ? "bg-green-100 text-green-700" :
-                      item.status === "paused" ? "bg-amber-100 text-amber-700" : "bg-slate-100 text-slate-500"
-                    }`}>{item.status}</span>
+                    <select
+                      value={item.status}
+                      onChange={e => handleStatusChange(item.id, e.target.value)}
+                      className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase border-0 ${
+                        item.status === "active" ? "bg-green-100 text-green-700" :
+                        item.status === "paused" ? "bg-amber-100 text-amber-700" :
+                        "bg-slate-100 text-slate-500"
+                      }`}
+                    >
+                      <option value="active">Active</option>
+                      <option value="paused">Paused</option>
+                      <option value="ended">Ended</option>
+                    </select>
                   </td>
                   <td className="p-4">
-                    <button className="text-xs font-bold text-[#ba001c] hover:underline">Manage</button>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => openEditModal(item)}
+                        className="text-xs font-bold text-[#ba001c] hover:underline"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(item.id)}
+                        className="text-xs font-bold text-red-500 hover:underline"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {showCreateModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-2xl w-full max-w-md p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="font-black text-lg">{editingItem ? "Edit Listing" : "New Sponsored Listing"}</h2>
+              <button onClick={() => { setShowCreateModal(false); setEditingItem(null); }} className="text-slate-400">
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs font-bold text-slate-600 block mb-1">Vendor *</label>
+                <select
+                  value={form.vendor_id}
+                  onChange={e => {
+                    const v = vendors.find(v => v.id === e.target.value);
+                    setForm({ ...form, vendor_id: e.target.value, vendor_name: v?.shop_name || "" });
+                  }}
+                  className="w-full p-3 border border-slate-200 rounded-xl text-sm"
+                >
+                  <option value="">Select vendor...</option>
+                  {vendors.map(v => (
+                    <option key={v.id} value={v.id}>{v.shop_name}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-bold text-slate-600 block mb-1">Start Date *</label>
+                  <input type="date" value={form.start_date} onChange={e => setForm({ ...form, start_date: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm" />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-slate-600 block mb-1">End Date *</label>
+                  <input type="date" value={form.end_date} onChange={e => setForm({ ...form, end_date: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm" />
+                </div>
+              </div>
+              <div>
+                <label className="text-xs font-bold text-slate-600 block mb-1">Budget (₹) *</label>
+                <input type="number" value={form.budget || ""} onChange={e => setForm({ ...form, budget: Number(e.target.value) })} className="w-full p-3 border border-slate-200 rounded-xl text-sm" placeholder="5000" />
+              </div>
+              <button
+                onClick={handleSave}
+                disabled={saving}
+                className="w-full py-3 bg-[#ba001c] text-white rounded-xl font-bold disabled:opacity-50"
+              >
+                {saving ? "Saving..." : editingItem ? "Update Listing" : "Create Listing"}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

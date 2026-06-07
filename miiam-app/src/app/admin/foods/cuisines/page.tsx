@@ -12,18 +12,7 @@ interface Cuisine {
   active: boolean;
 }
 
-const defaultCuisines = [
-  { id: "1", name: "North Indian", image_url: "", item_count: 156, vendor_count: 24, active: true },
-  { id: "2", name: "South Indian", image_url: "", item_count: 89, vendor_count: 12, active: true },
-  { id: "3", name: "Chinese", image_url: "", item_count: 134, vendor_count: 18, active: true },
-  { id: "4", name: "Italian", image_url: "", item_count: 78, vendor_count: 14, active: true },
-  { id: "5", name: "Biryani", image_url: "", item_count: 67, vendor_count: 22, active: true },
-  { id: "6", name: "Fast Food", image_url: "", item_count: 198, vendor_count: 31, active: true },
-  { id: "7", name: "Desserts", image_url: "", item_count: 45, vendor_count: 16, active: true },
-  { id: "8", name: "Beverages", image_url: "", item_count: 112, vendor_count: 28, active: true },
-  { id: "9", name: "Street Food", image_url: "", item_count: 87, vendor_count: 19, active: true },
-  { id: "10", name: "Continental", image_url: "", item_count: 56, vendor_count: 8, active: true },
-];
+const defaultCuisines: Cuisine[] = [];
 
 export default function AdminCuisinesPage() {
   const supabase = createClient();
@@ -102,10 +91,19 @@ export default function AdminCuisinesPage() {
     }
   };
 
-  const toggleActive = (cuisine: Cuisine) => {
+  const toggleActive = async (cuisine: Cuisine) => {
+    const newActive = !cuisine.active;
     setCuisines(cuisines.map(c => 
-      c.id === cuisine.id ? { ...c, active: !c.active } : c
+      c.id === cuisine.id ? { ...c, active: newActive } : c
     ));
+    try {
+      await supabase.from("cuisines").update({ active: newActive }).eq("id", cuisine.id);
+    } catch (err: any) {
+      alert(`Failed: ${err.message}`);
+      setCuisines(cuisines.map(c => 
+        c.id === cuisine.id ? { ...c, active: !newActive } : c
+      ));
+    }
   };
 
   const filteredCuisines = cuisines.filter(c => 

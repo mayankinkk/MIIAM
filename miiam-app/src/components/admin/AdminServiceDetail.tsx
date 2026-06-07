@@ -43,6 +43,7 @@ const TEXT_COLOR: Record<string, string> = {
 export default function AdminServiceDetail({ serviceKey }: { serviceKey: string }) {
   const [loading, setLoading] = useState(true);
   const [bookings, setBookings] = useState<any[]>([]);
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
   const service = SERVICE_DETAILS[serviceKey] || SERVICE_DETAILS.plumbing;
 
   useEffect(() => { loadBookings(); }, []);
@@ -56,6 +57,39 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
       .limit(20);
     if (data) setBookings(data);
     setLoading(false);
+  }
+
+  async function handleStatusChange(bookingId: string, newStatus: string) {
+    setUpdatingId(bookingId);
+    const prev = bookings;
+    setBookings(prev => prev.map(b => b.id === bookingId ? { ...b, status: newStatus } : b));
+    try {
+      const { error } = await supabase
+        .from("service_bookings")
+        .update({ status: newStatus })
+        .eq("id", bookingId);
+      if (error) throw error;
+    } catch (e) {
+      console.error("[AdminServiceDetail] Failed to update status:", e);
+      setBookings(prev);
+    }
+    setUpdatingId(null);
+  }
+
+  async function handleDelete(bookingId: string) {
+    if (!confirm("Delete this booking? This cannot be undone.")) return;
+    const prev = bookings;
+    setBookings(prev => prev.filter(b => b.id !== bookingId));
+    try {
+      const { error } = await supabase
+        .from("service_bookings")
+        .delete()
+        .eq("id", bookingId);
+      if (error) throw error;
+    } catch (e) {
+      console.error("[AdminServiceDetail] Failed to delete booking:", e);
+      setBookings(prev);
+    }
   }
 
   const totalBookings = bookings.length;
@@ -122,6 +156,7 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
                 <th className="p-4 text-xs font-black text-slate-400 uppercase">Amount</th>
                 <th className="p-4 text-xs font-black text-slate-400 uppercase">Status</th>
                 <th className="p-4 text-xs font-black text-slate-400 uppercase">Date</th>
+                <th className="p-4 text-xs font-black text-slate-400 uppercase text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
@@ -131,11 +166,29 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
                   <td className="p-4 text-sm text-slate-600 truncate max-w-[200px]">{b.address || "—"}</td>
                   <td className="p-4 font-bold text-slate-800">₹{(b.total_amount || 0).toLocaleString("en-IN")}</td>
                   <td className="p-4">
-                    <span className={`text-xs font-bold px-3 py-1 rounded-full ${statusColors[b.status] || "bg-slate-100 text-slate-700"}`}>
-                      {b.status?.replace(/_/g, " ") || "—"}
-                    </span>
+                    <select
+                      value={b.status || "pending"}
+                      disabled={updatingId === b.id}
+                      onChange={(e) => handleStatusChange(b.id, e.target.value)}
+                      className={`text-xs font-bold px-3 py-1.5 rounded-full border-0 cursor-pointer disabled:opacity-50 ${statusColors[b.status] || "bg-slate-100 text-slate-700"}`}
+                    >
+                      <option value="pending">Pending</option>
+                      <option value="confirmed">Confirmed</option>
+                      <option value="in_progress">In Progress</option>
+                      <option value="completed">Completed</option>
+                      <option value="cancelled">Cancelled</option>
+                    </select>
                   </td>
                   <td className="p-4 text-sm text-slate-600">{b.created_at ? new Date(b.created_at).toLocaleDateString("en-IN") : "—"}</td>
+                  <td className="p-4 text-right">
+                    <button
+                      onClick={() => handleDelete(b.id)}
+                      className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      title="Delete booking"
+                    >
+                      <span className="material-symbols-outlined text-sm">delete</span>
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
