@@ -43,7 +43,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html suppressHydrationWarning>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover" />
         <meta name="theme-color" content="#ba001c" />
@@ -57,7 +57,10 @@ export default function RootLayout({
               if (s === "dark" || (s === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
                 document.documentElement.classList.add("dark");
               }
-            } catch(e) {}
+              var l = localStorage.getItem("miiam-language");
+              var lang = l ? JSON.parse(l).state?.language : "en";
+              document.documentElement.lang = lang;
+            } catch(e) { document.documentElement.lang = "en"; }
           `
         }} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />

@@ -13,7 +13,7 @@ export function BounceButton({ children, onClick, className = "", scale = 1.05 }
   return (
     <button
       onClick={onClick}
-      className={`active:scale-95 transition-transform duration-150 hover:scale-${scale} ${className}`}
+      className={`active:scale-95 transition-transform duration-150 ${className}`}
       style={{ ["--tw-scale-x" as any]: scale, ["--tw-scale-y" as any]: scale } as any}
     >
       {children}

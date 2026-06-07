@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useToastStore } from "@/lib/store/toastStore";
 
 interface ImageUploadProps {
   value: string;
@@ -23,6 +24,7 @@ export default function ImageUpload({
   accept = "image/*",
 }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
+  const addToast = useToastStore((s) => s.addToast);
   const [useUrl, setUseUrl] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const supabase = createClient();
@@ -36,7 +38,7 @@ export default function ImageUpload({
         .from(bucket)
         .upload(fileName, file);
       if (uploadError) {
-        alert(`Upload failed. Make sure the '${bucket}' bucket exists in Supabase Storage with public read access.`);
+        addToast(`Upload failed. Make sure the '${bucket}' bucket exists in Supabase Storage with public read access.`, "error");
         return;
       }
       const { data: { publicUrl } } = supabase.storage

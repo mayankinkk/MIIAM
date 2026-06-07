@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import { CardSkeleton, VendorCardSkeleton, OrderSkeleton } from "./Skeletons";
+import { CardSkeleton, VendorCardSkeleton, OrderSkeleton } from "./Skeleton";
 
 describe("Skeleton components", () => {
   it("CardSkeleton renders without crashing", () => {

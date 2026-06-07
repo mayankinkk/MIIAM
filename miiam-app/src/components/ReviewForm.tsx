@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useToastStore } from "@/lib/store/toastStore";
 
 interface ReviewFormProps {
   vendorId: string;
@@ -11,6 +12,7 @@ interface ReviewFormProps {
 
 export default function ReviewForm({ vendorId, orderId, onSuccess }: ReviewFormProps) {
   const supabase = createClient();
+  const addToast = useToastStore((s) => s.addToast);
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [comment, setComment] = useState("");
@@ -25,7 +27,8 @@ export default function ReviewForm({ vendorId, orderId, onSuccess }: ReviewFormP
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        alert("Please login to submit review");
+        addToast("Please login to submit review", "warning");
+        setLoading(false);
         return;
       }
 
@@ -42,7 +45,7 @@ export default function ReviewForm({ vendorId, orderId, onSuccess }: ReviewFormP
       onSuccess?.();
     } catch (error: any) {
       console.error("Error submitting review:", error);
-      alert("Failed to submit review");
+      addToast("Failed to submit review", "error");
     } finally {
       setLoading(false);
     }
