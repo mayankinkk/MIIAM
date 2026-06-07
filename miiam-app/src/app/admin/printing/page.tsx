@@ -17,6 +17,15 @@ import ServicesCatalogPanel from "@/components/admin/ServicesCatalogPanel";
 
 const supabase = createClient();
 
+const VALID_TRANSITIONS: Record<string, string[]> = {
+  pending: ["processing", "cancelled"],
+  processing: ["ready_for_pickup", "cancelled"],
+  ready_for_pickup: ["on_the_way", "cancelled"],
+  on_the_way: ["delivered", "cancelled"],
+  delivered: ["refunded"],
+  cancelled: ["refunded"],
+};
+
 const statusColors: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-700",
   processing: "bg-indigo-100 text-indigo-700",
@@ -112,6 +121,11 @@ export default function AdminPrintingPage() {
 
   async function updateOrderStatus(orderId: string, status: OrderStatus) {
     try {
+      const currentOrder = orders.find(o => o.id === orderId);
+      if (currentOrder && VALID_TRANSITIONS[currentOrder.status] && !VALID_TRANSITIONS[currentOrder.status].includes(status)) {
+        alert(`Cannot change status from "${currentOrder.status.replace(/_/g, " ")}" to "${status.replace(/_/g, " ")}".`);
+        return;
+      }
       const { data: order } = await supabase.from("orders").select("user_id").eq("id", orderId).single();
       const { error } = await supabase.from("orders").update({ status }).eq("id", orderId);
       if (error) {
