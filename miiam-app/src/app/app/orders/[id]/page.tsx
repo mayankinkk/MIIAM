@@ -349,7 +349,9 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
           <button onClick={() => refreshOrder()} className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 transition-all" title="Refresh Order">
             <span className={`material-symbols-outlined text-on-surface ${isRefreshing ? "animate-spin" : ""}`}>refresh</span>
           </button>
-          <span className="material-symbols-outlined text-on-surface cursor-pointer hover:opacity-80 transition-opacity">notifications</span>
+          <Link href="/app/notifications" className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 transition-all">
+            <span className="material-symbols-outlined text-on-surface">notifications</span>
+          </Link>
           <span className="material-symbols-outlined text-on-surface cursor-pointer hover:opacity-80 transition-opacity">account_circle</span>
         </div>
       </nav>

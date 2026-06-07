@@ -319,14 +319,7 @@ export default function PrintingPage() {
     0
   );
 
-  const addOnPricing =
-    typeof window === "undefined"
-      ? {
-          coverPage: 10, collatePerPage: 0.5, holePunch2: 8, holePunch3: 10, holePunch4: 12,
-          foldBi: 5, foldTri: 8, bindingSpiral: 35, bindingSoft: 80, bindingHard: 150,
-          laminationA4: 25, laminationId: 15, rush30Multiplier: 1.4, rush15Multiplier: 1.85,
-        }
-      : getAddOnPricing();
+  const addOnPricing = getAddOnPricing();
   const addOnsTotal = printAddons.selected.reduce(
     (acc, id) => acc + calculateAddOnCost(id, addOnPricing, { totalPages: totalPagesEffective, copies: totalCopies }),
     0
@@ -339,6 +332,8 @@ export default function PrintingPage() {
   const handleAddToCart = () => {
     if (files.length === 0) { toast.addToast("Please upload at least one file", "error"); return; }
     if (!isEnabled) { toast.addToast("Printing service is currently unavailable", "error"); return; }
+    const unconfirmedAge = files.find(f => !f.settings.ageConfirmed && /(18\+?|nsfw|adult|nude|poker|casino|wine|beer|vodka|whiskey|cigarette|tobacco|pistol|gun|weapon)/i.test(f.name));
+    if (unconfirmedAge) { toast.addToast(`Please confirm age verification for "${unconfirmedAge.name}"`, "error"); return; }
 
     const firstFile = files[0];
     const settings = {

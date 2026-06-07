@@ -20,15 +20,17 @@ export default function FilePreviewModal({ file, onClose }: FilePreviewModalProp
   const { t } = useTranslation();
   const [pageCount, setPageCount] = useState<number | null>(null);
   const [imageDimensions, setImageDimensions] = useState<{ w: number; h: number } | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!file) return;
     setPageCount(null);
     setImageDimensions(null);
+    setLoading(true);
 
     if (file.type.startsWith("image/")) {
       const img = new Image();
-      img.onload = () => setImageDimensions({ w: img.naturalWidth, h: img.naturalHeight });
+      img.onload = () => { setImageDimensions({ w: img.naturalWidth, h: img.naturalHeight }); setLoading(false); };
       img.src = file.url;
       setPageCount(1);
     } else if (file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf")) {
@@ -84,17 +86,23 @@ export default function FilePreviewModal({ file, onClose }: FilePreviewModalProp
         </div>
 
         <div className="flex-1 overflow-auto bg-surface-container-low p-4 flex items-center justify-center min-h-[300px]">
+          {loading && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+            </div>
+          )}
           {file.type.startsWith("image/") ? (
             <img
               src={file.url}
               alt={file.name}
-              className="max-w-full max-h-[70vh] object-contain rounded-lg shadow-md"
+              className={`max-w-full max-h-[70vh] object-contain rounded-lg shadow-md transition-opacity ${loading ? "opacity-0" : "opacity-100"}`}
             />
           ) : file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf") ? (
             <iframe
               src={file.url}
               title={file.name}
               className="w-full h-[70vh] bg-white rounded-lg shadow-md border-0"
+              onLoad={() => setLoading(false)}
             />
           ) : (
             <div className="text-on-surface-variant">—</div>

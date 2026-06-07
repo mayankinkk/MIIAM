@@ -34,10 +34,12 @@ export default function AdminPrintingAnalytics() {
 
   async function loadAnalytics() {
     setLoading(true);
+    const startRange = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
     const { data: orders, error } = await supabase
       .from("orders")
       .select("*, order_items(*)")
       .eq("vendor_id", PRINTING_VENDOR_ID)
+      .gte("placed_at", startRange.toISOString())
       .order("placed_at", { ascending: false });
 
     if (error) {
@@ -54,9 +56,9 @@ export default function AdminPrintingAnalytics() {
     const now = Date.now();
     const dayMs = 24 * 60 * 60 * 1000;
     const weekAgo = now - 7 * dayMs;
-    const startRange = now - days * dayMs;
+    const startRangeMs = startRange.getTime();
 
-    const inRange = orders.filter((o: any) => new Date(o.placed_at).getTime() >= startRange);
+    const inRange = orders.filter((o: any) => new Date(o.placed_at).getTime() >= startRangeMs);
     const inWeek = orders.filter((o: any) => new Date(o.placed_at).getTime() >= weekAgo);
     const today = orders.filter((o: any) => {
       const d = new Date(o.placed_at);

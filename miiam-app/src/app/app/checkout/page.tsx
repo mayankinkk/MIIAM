@@ -642,17 +642,18 @@ export default function CheckoutPage() {
                 {/* Recurring Order Toggle */}
                 {scheduledDate && scheduledTime && (
                   <div className="mt-6 p-4 rounded-xl border-2 border-purple-200 bg-purple-50">
-                    <label className="flex items-center justify-between cursor-pointer gap-3">
+                    <label className={`flex items-center justify-between gap-3 ${vendorIds.length > 1 ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}>
                       <div className="flex items-center gap-3 min-w-0">
                         <span className="material-symbols-outlined text-purple-600 shrink-0">repeat</span>
                         <div className="min-w-0">
                           <p className="font-bold text-purple-800 text-sm">Make this a recurring order</p>
-                          <p className="text-xs text-purple-600">Auto-reorder on schedule</p>
+                          <p className="text-xs text-purple-600">{vendorIds.length > 1 ? "Not available for multi-vendor carts" : "Auto-reorder on schedule"}</p>
                         </div>
                       </div>
                       <input
                         type="checkbox"
                         checked={isRecurring}
+                        disabled={vendorIds.length > 1}
                         onChange={(e) => setIsRecurring(e.target.checked)}
                         className="w-5 h-5 text-purple-600 rounded shrink-0"
                       />

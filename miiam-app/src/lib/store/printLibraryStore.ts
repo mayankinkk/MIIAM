@@ -2,6 +2,7 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { useToastStore } from "./toastStore";
 
 export interface PrintLibraryItem {
   id: string;
@@ -46,13 +47,19 @@ export const usePrintLibraryStore = create<PrintLibraryStore>()(
           ...dedup,
         ];
         let totalSize = withNew.reduce((acc, f) => acc + f.size, 0);
+        const removedNames: string[] = [];
         while (totalSize > MAX_BYTES && withNew.length > 1) {
           const removed = withNew.pop();
-          if (removed) totalSize -= removed.size;
+          if (removed) { totalSize -= removed.size; removedNames.push(removed.name); }
         }
 
         // Also enforce MAX_ITEMS
-        withNew = withNew.slice(0, MAX_ITEMS);
+        const excessItems = withNew.length > MAX_ITEMS ? withNew.splice(MAX_ITEMS) : [];
+        excessItems.forEach(f => removedNames.push(f.name));
+
+        if (removedNames.length > 0) {
+          useToastStore.getState().addToast(`Removed ${removedNames.length} file(s) to stay within storage limit: ${removedNames.join(", ")}`, "info");
+        }
         set({ files: withNew });
       },
 

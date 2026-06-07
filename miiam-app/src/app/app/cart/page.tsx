@@ -222,7 +222,7 @@ export default function CartPage() {
                           <BlurImage src={item.image_url} alt={item.name} fill className="w-full h-full" sizes="(max-width: 768px) 50vw, 25vw" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center">
-                            <span className="material-symbols-outlined text-outline-variant text-2xl">fastfood</span>
+                            <span className="material-symbols-outlined text-outline-variant text-2xl">{item.vendor_id === PRINTING_VENDOR_ID ? "print" : "fastfood"}</span>
                           </div>
                         )}
                       </div>

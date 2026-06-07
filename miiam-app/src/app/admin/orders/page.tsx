@@ -138,7 +138,11 @@ export default function OrderManagement() {
       o.payment_method,
       new Date(o.placed_at).toLocaleString()
     ]);
-    const csv = [headers, ...rows].map(r => r.join(",")).join("\n");
+    const escapeCsv = (val: any) => {
+      const str = String(val ?? "");
+      return str.includes(",") || str.includes('"') || str.includes("\n") ? `"${str.replace(/"/g, '""')}"` : str;
+    };
+    const csv = [headers, ...rows].map(r => r.map(escapeCsv).join(",")).join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -405,7 +409,7 @@ export default function OrderManagement() {
                 </div>
               </div>
               <div className="flex gap-2">
-                {selectedOrder.status !== "refunded" && selectedOrder.status !== "cancelled" && (
+                {selectedOrder.status === "cancelled" && (
                   <button
                     onClick={() => refundOrder(selectedOrder.id)}
                     className="flex-1 py-3 bg-red-50 text-red-600 rounded-xl font-bold text-sm hover:bg-red-100"
