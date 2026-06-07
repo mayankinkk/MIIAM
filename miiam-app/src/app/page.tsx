@@ -310,6 +310,9 @@ export default function LandingPage() {
             <Link href="/refunds" className="text-slate-500 text-xs uppercase tracking-widest font-semibold hover:text-white transition-colors duration-200">
               Refunds
             </Link>
+            <Link href="/app/support" className="text-slate-500 text-xs uppercase tracking-widest font-semibold hover:text-white transition-colors duration-200">
+              Contact Us
+            </Link>
           </div>
           <div className="text-slate-600 text-xs font-medium">
             {t.footerRights}
