@@ -127,9 +127,10 @@ export default function CheckoutPage() {
       : promoApplied.discount
     : 0;
   const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean)));
+  const serviceVendorIds = vendorIds.filter((id) => id !== PRINTING_VENDOR_ID && id !== SERVICES_VENDOR_ID);
   const totalDeliveryFee = 0; // Delivery is now FREE
   const serviceCharge = 8;
-  const grand = Math.max(0, +(subtotal - discount + totalDeliveryFee + (vendorIds.length * serviceCharge) + tipAmount).toFixed(2));
+  const grand = Math.max(0, +(subtotal - discount + totalDeliveryFee + (serviceVendorIds.length * serviceCharge) + tipAmount).toFixed(2));
 
   const handleApplyPromo = () => {
     const code = promoCode.toUpperCase().trim();
