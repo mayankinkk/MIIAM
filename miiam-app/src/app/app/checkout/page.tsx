@@ -897,7 +897,7 @@ export default function CheckoutPage() {
             setDeliveryAddress(addr);
             localStorage.setItem('miiam_selected_address', JSON.stringify(addr));
             // Save to address book if new
-            const existing = savedAddresses.find(a => a.street === addr.street);
+            const existing = savedAddresses.find(a => a.street === addr.street && a.city === addr.city && a.postal_code === addr.postal_code);
             if (!existing) {
               const updated = [...savedAddresses, addr];
               setSavedAddresses(updated);
