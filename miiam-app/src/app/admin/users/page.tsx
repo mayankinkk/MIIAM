@@ -15,6 +15,10 @@ export default function UserRegistry() {
   const [totalCount, setTotalCount] = useState(0);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedProfile, setSelectedProfile] = useState<Profile | null>(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [showRoleModal, setShowRoleModal] = useState(false);
+  const [newRole, setNewRole] = useState("");
 
   useEffect(() => {
     loadProfiles();
@@ -36,13 +40,11 @@ export default function UserRegistry() {
   const handleAction = async (action: string, profile: Profile) => {
     setOpenMenuId(null);
     if (action === "view") {
-      alert(`View user: ${profile.full_name}\nEmail: ${profile.email}\nRole: ${profile.role}`);
+      setSelectedProfile(profile);
+      setShowDetailModal(true);
     } else if (action === "edit") {
-      const newRole = prompt("Enter new role (customer/admin/rider):", profile.role);
-      if (newRole && ["customer", "admin", "rider"].includes(newRole)) {
-        await supabase.from("profiles").update({ role: newRole }).eq("id", profile.id);
-        loadProfiles();
-      }
+      setSelectedProfile(profile);
+      setShowRoleModal(true);
     } else if (action === "delete") {
       if (confirm(`Are you sure you want to delete ${profile.full_name}?`)) {
         await supabase.from("profiles").delete().eq("id", profile.id);
@@ -227,6 +229,64 @@ export default function UserRegistry() {
           </div>
         </div>
       </div>
+
+      {/* User Detail Modal */}
+      {showDetailModal && selectedProfile && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-md mx-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-black text-slate-800">User Details</h3>
+              <button onClick={() => setShowDetailModal(false)} className="p-1 hover:bg-slate-100 rounded-full">
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
+            <div className="space-y-3">
+              <div className="flex justify-between"><span className="text-slate-500">Name</span><span className="font-bold">{selectedProfile.full_name || "—"}</span></div>
+              <div className="flex justify-between"><span className="text-slate-500">Email</span><span className="font-bold">{selectedProfile.email || "—"}</span></div>
+              <div className="flex justify-between"><span className="text-slate-500">Role</span><span className="font-bold capitalize">{selectedProfile.role}</span></div>
+              <div className="flex justify-between"><span className="text-slate-500">Joined</span><span className="font-bold">{selectedProfile.created_at ? new Date(selectedProfile.created_at).toLocaleDateString("en-IN") : "—"}</span></div>
+              <div className="flex justify-between"><span className="text-slate-500">ID</span><span className="font-bold text-xs">{selectedProfile.id}</span></div>
+            </div>
+            <button onClick={() => setShowDetailModal(false)} className="w-full mt-6 py-3 bg-[#ba001c] text-white font-bold rounded-xl">Close</button>
+          </div>
+        </div>
+      )}
+
+      {/* Role Change Modal */}
+      {showRoleModal && selectedProfile && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-sm mx-4">
+            <h3 className="text-lg font-black text-slate-800 mb-4">Change Role — {selectedProfile.full_name}</h3>
+            <div className="space-y-2">
+              {["customer", "admin", "rider"].map(role => (
+                <button
+                  key={role}
+                  onClick={() => setNewRole(role)}
+                  className={`w-full p-3 rounded-xl text-left font-bold capitalize transition-colors ${newRole === role ? "bg-[#ba001c] text-white" : "bg-slate-50 hover:bg-slate-100"}`}
+                >
+                  {role}
+                </button>
+              ))}
+            </div>
+            <div className="flex gap-3 mt-6">
+              <button onClick={() => setShowRoleModal(false)} className="flex-1 py-3 border border-slate-200 font-bold rounded-xl">Cancel</button>
+              <button
+                onClick={async () => {
+                  if (newRole && newRole !== selectedProfile.role) {
+                    await supabase.from("profiles").update({ role: newRole }).eq("id", selectedProfile.id);
+                    loadProfiles();
+                  }
+                  setShowRoleModal(false);
+                }}
+                disabled={!newRole || newRole === selectedProfile.role}
+                className="flex-1 py-3 bg-[#ba001c] text-white font-bold rounded-xl disabled:opacity-50"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

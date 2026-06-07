@@ -457,7 +457,10 @@ export default function EnhancedServicesDashboard() {
                 </div>
               ))}
             </div>
-            <button className="w-full mt-4 py-3 border-2 border-dashed border-slate-200 rounded-xl text-slate-500 font-bold text-sm hover:border-[#ba001c] hover:text-[#ba001c] transition-colors">
+            <button
+              onClick={() => alert("Category creation coming soon")}
+              className="w-full mt-4 py-3 border-2 border-dashed border-slate-200 rounded-xl text-slate-500 font-bold text-sm hover:border-[#ba001c] hover:text-[#ba001c] transition-colors"
+            >
               + Add New Category
             </button>
           </div>

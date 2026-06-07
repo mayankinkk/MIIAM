@@ -296,7 +296,12 @@ export default function BeautyServicesAdmin() {
                           </td>
                           <td className="p-4 text-slate-600">{pro.phone || "—"}</td>
                           <td className="p-4">
-                            <button className="text-pink-600 font-bold text-sm hover:underline">View</button>
+                            <button
+                              onClick={() => alert(`Provider: ${pro.name}\nPhone: ${pro.phone || "—"}\nStatus: ${pro.status || "active"}\nSpecialties: ${pro.specialties?.join(", ") || "—"}`)}
+                              className="text-pink-600 font-bold text-sm hover:underline"
+                            >
+                              View
+                            </button>
                           </td>
                         </tr>
                       ))}

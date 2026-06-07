@@ -79,7 +79,6 @@ export default function VendorWalletPage() {
       alert("Insufficient balance");
       return;
     }
-    // In a real app, you'd create a payout record
     setWallet({
       ...wallet,
       balance: wallet.balance - amount,

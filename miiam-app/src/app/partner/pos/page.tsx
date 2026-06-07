@@ -757,13 +757,12 @@ export default function PartnerPOS() {
                   For production, configure Twilio proxy in your dashboard settings
                 </p>
               </div>
-              <a
-                href="#"
-                onClick={(e) => { e.preventDefault(); setCallMaskModal(null); }}
+              <button
+                onClick={() => setCallMaskModal(null)}
                 className="block w-full py-3 bg-[#ba001c] text-white font-bold rounded-xl hover:bg-[#a40017] transition-colors"
               >
                 Done
-              </a>
+              </button>
             </div>
           </div>
         </div>
