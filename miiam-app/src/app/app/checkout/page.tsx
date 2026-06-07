@@ -240,7 +240,14 @@ export default function CheckoutPage() {
         const vendorTotal = vendorItems.reduce((s, i) => s + i.price * i.quantity, 0);
 
         const scheduledIso = scheduledDate && scheduledTime 
-          ? new Date(`${scheduledDate}T${scheduledTime.split(" - ")[0].trim()}`).toISOString()
+          ? (() => {
+              const timePart = scheduledTime.split(" - ")[0].trim();
+              const [time, period] = timePart.split(/\s+/);
+              let [hours, minutes] = time.split(":").map(Number);
+              if (period?.toUpperCase() === "PM" && hours < 12) hours += 12;
+              if (period?.toUpperCase() === "AM" && hours === 12) hours = 0;
+              return new Date(`${scheduledDate}T${String(hours).padStart(2, "0")}:${String(minutes || 0).padStart(2, "0")}:00`).toISOString();
+            })()
           : null;
         
           const { data: order, error: orderError } = await supabase
