@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { createClient } from "@/lib/supabase/client";
+import { useSupportSettings } from "@/lib/hooks/useSupportSettings";
 
 const quickActions = [
   { id: "track", icon: "local_shipping", label: "Track my order", color: "bg-blue-100 text-blue-700" },
@@ -48,6 +49,7 @@ const chatMessages = [
 
 export default function SupportPage() {
   const supabase = createClient();
+  const support = useSupportSettings();
   const [tab, setTab] = useState<"home" | "chat" | "faqs" | "tickets">("home");
   const [messages, setMessages] = useState(chatMessages);
   const [newMessage, setNewMessage] = useState("");
@@ -236,37 +238,37 @@ export default function SupportPage() {
                   <span className="material-symbols-outlined text-3xl">chat</span>
                   <div className="text-left flex-1">
                     <p className="font-bold text-lg">Chat with us</p>
-                    <p className="text-white/70 text-sm">Average response: 2 mins</p>
+                    <p className="text-white/70 text-sm">Average response: {support.support_response_time}</p>
                   </div>
                   <span className="material-symbols-outlined">chevron_right</span>
                 </button>
 
                 <a
-                  href="tel:18001234567"
+                  href={`tel:${support.support_phone}`}
                   className="w-full bg-white border border-slate-200 text-slate-800 rounded-2xl p-5 flex items-center gap-4 hover:border-primary transition-all"
                 >
                   <span className="material-symbols-outlined text-3xl text-primary">call</span>
                   <div className="text-left flex-1">
                     <p className="font-bold text-lg">Call us</p>
-                    <p className="text-slate-500 text-sm">1800-123-4567 (Toll free)</p>
+                    <p className="text-slate-500 text-sm">{support.support_phone_label}</p>
                   </div>
                   <span className="material-symbols-outlined">chevron_right</span>
                 </a>
 
                 <a
-                  href="mailto:support@miiam.com"
+                  href={`mailto:${support.support_email}`}
                   className="w-full bg-white border border-slate-200 text-slate-800 rounded-2xl p-5 flex items-center gap-4 hover:border-primary transition-all"
                 >
                   <span className="material-symbols-outlined text-3xl text-primary">email</span>
                   <div className="text-left flex-1">
                     <p className="font-bold text-lg">Email us</p>
-                    <p className="text-slate-500 text-sm">Response within 24 hours</p>
+                    <p className="text-slate-500 text-sm">Response within {support.support_email_response_time}</p>
                   </div>
                   <span className="material-symbols-outlined">chevron_right</span>
                 </a>
 
                 <a
-                  href="https://wa.me/9118001234567"
+                  href={`https://wa.me/${support.support_whatsapp.replace(/[^0-9]/g, "")}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full bg-[#25D366] text-white rounded-2xl p-5 flex items-center gap-4 hover:opacity-90 transition-all"
@@ -287,15 +289,21 @@ export default function SupportPage() {
             <section>
               <h2 className="text-lg font-bold text-slate-800 mb-4">Follow Us</h2>
               <div className="flex gap-3">
-                <a href="https://twitter.com/miiam_in" target="_blank" rel="noopener noreferrer" className="flex-1 bg-white border border-slate-200 py-3 rounded-xl text-sm font-bold text-slate-600 hover:border-primary hover:text-primary transition-all text-center">
-                  Twitter
-                </a>
-                <a href="https://instagram.com/miiam_in" target="_blank" rel="noopener noreferrer" className="flex-1 bg-white border border-slate-200 py-3 rounded-xl text-sm font-bold text-slate-600 hover:border-primary hover:text-primary transition-all text-center">
-                  Instagram
-                </a>
-                <a href="https://facebook.com/miiam.in" target="_blank" rel="noopener noreferrer" className="flex-1 bg-white border border-slate-200 py-3 rounded-xl text-sm font-bold text-slate-600 hover:border-primary hover:text-primary transition-all text-center">
-                  Facebook
-                </a>
+                {support.support_twitter && (
+                  <a href={support.support_twitter} target="_blank" rel="noopener noreferrer" className="flex-1 bg-white border border-slate-200 py-3 rounded-xl text-sm font-bold text-slate-600 hover:border-primary hover:text-primary transition-all text-center">
+                    Twitter
+                  </a>
+                )}
+                {support.support_instagram && (
+                  <a href={support.support_instagram} target="_blank" rel="noopener noreferrer" className="flex-1 bg-white border border-slate-200 py-3 rounded-xl text-sm font-bold text-slate-600 hover:border-primary hover:text-primary transition-all text-center">
+                    Instagram
+                  </a>
+                )}
+                {support.support_facebook && (
+                  <a href={support.support_facebook} target="_blank" rel="noopener noreferrer" className="flex-1 bg-white border border-slate-200 py-3 rounded-xl text-sm font-bold text-slate-600 hover:border-primary hover:text-primary transition-all text-center">
+                    Facebook
+                  </a>
+                )}
               </div>
             </section>
           </div>

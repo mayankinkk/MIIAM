@@ -102,7 +102,7 @@ export default function SettingsPage() {
       </div>
 
       <div className="flex gap-4">
-        {["general", "delivery", "payments", "notifications", "legal"].map((tab) => (
+        {["general", "delivery", "payments", "notifications", "support", "legal"].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -355,6 +355,145 @@ export default function SettingsPage() {
               >
                 <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${isOn("notif_sms") ? "right-1" : "left-1"}`} />
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === "support" && (
+        <div className="space-y-6">
+          <div className="bg-white rounded-3xl border border-slate-100 p-8 shadow-sm">
+            <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm mb-6">Contact Information</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Support Phone Number</label>
+                <input
+                  type="tel"
+                  value={settings.support_phone || ""}
+                  onChange={(e) => handleChange("support_phone", e.target.value)}
+                  placeholder="+9118001234567"
+                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Phone Display Label</label>
+                <input
+                  type="text"
+                  value={settings.support_phone_label || ""}
+                  onChange={(e) => handleChange("support_phone_label", e.target.value)}
+                  placeholder="1800-123-4567 (Toll free)"
+                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Support Email</label>
+                <input
+                  type="email"
+                  value={settings.support_email || ""}
+                  onChange={(e) => handleChange("support_email", e.target.value)}
+                  placeholder="support@miiam.in"
+                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-400 uppercase mb-2">WhatsApp Number</label>
+                <input
+                  type="tel"
+                  value={settings.support_whatsapp || ""}
+                  onChange={(e) => handleChange("support_whatsapp", e.target.value)}
+                  placeholder="+9118001234567"
+                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Chat Response Time</label>
+                <input
+                  type="text"
+                  value={settings.support_response_time || ""}
+                  onChange={(e) => handleChange("support_response_time", e.target.value)}
+                  placeholder="2 mins"
+                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Email Response Time</label>
+                <input
+                  type="text"
+                  value={settings.support_email_response_time || ""}
+                  onChange={(e) => handleChange("support_email_response_time", e.target.value)}
+                  placeholder="24 hours"
+                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-3xl border border-slate-100 p-8 shadow-sm">
+            <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm mb-6">Social Media Links</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Twitter / X</label>
+                <input
+                  type="url"
+                  value={settings.support_twitter || ""}
+                  onChange={(e) => handleChange("support_twitter", e.target.value)}
+                  placeholder="https://twitter.com/miiam_in"
+                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Instagram</label>
+                <input
+                  type="url"
+                  value={settings.support_instagram || ""}
+                  onChange={(e) => handleChange("support_instagram", e.target.value)}
+                  placeholder="https://instagram.com/miiam_in"
+                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Facebook</label>
+                <input
+                  type="url"
+                  value={settings.support_facebook || ""}
+                  onChange={(e) => handleChange("support_facebook", e.target.value)}
+                  placeholder="https://facebook.com/miiam.in"
+                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-400 uppercase mb-2">LinkedIn</label>
+                <input
+                  type="url"
+                  value={settings.support_linkedin || ""}
+                  onChange={(e) => handleChange("support_linkedin", e.target.value)}
+                  placeholder="https://linkedin.com/company/miiam"
+                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-400 uppercase mb-2">YouTube</label>
+                <input
+                  type="url"
+                  value={settings.support_youtube || ""}
+                  onChange={(e) => handleChange("support_youtube", e.target.value)}
+                  placeholder="https://youtube.com/@miiam"
+                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+            <div className="flex items-start gap-3">
+              <span className="material-symbols-outlined text-amber-600">info</span>
+              <div>
+                <p className="font-bold text-amber-800">How it works</p>
+                <p className="text-sm text-amber-700 mt-1">
+                  These values are stored in the database and used by the Customer App and Rider App support pages.
+                  Changes here will reflect immediately in both apps.
+                </p>
+              </div>
             </div>
           </div>
         </div>
