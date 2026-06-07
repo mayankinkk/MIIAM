@@ -8,6 +8,8 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 const LANGUAGES = [
   { code: "en" as const, label: "English", native: "English", flag: "🇺🇸" },
   { code: "hi" as const, label: "Hindi", native: "हिन्दी", flag: "🇮🇳" },
+  { code: "bn" as const, label: "Bengali", native: "বাংলা", flag: "🇧🇩" },
+  { code: "as" as const, label: "Assamese", native: "অসমীয়া", flag: "🇮🇳" },
 ];
 
 export default function LanguagePage() {

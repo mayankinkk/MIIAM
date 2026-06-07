@@ -12,6 +12,7 @@ export default function LanguageSwitcher() {
     { code: 'en', label: 'English (Default)' },
     { code: 'hi', label: 'Hindi' },
     { code: 'as', label: 'Assamese' },
+    { code: 'bn', label: 'Bengali' },
   ];
 
   // Close dropdown when clicking outside

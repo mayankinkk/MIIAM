@@ -3,7 +3,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export type Language = 'en' | 'hi' | 'as';
+export type Language = 'en' | 'hi' | 'as' | 'bn';
 
 interface LanguageState {
   language: Language;
