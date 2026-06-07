@@ -4,13 +4,34 @@ import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 interface Settings {
+  [key: string]: string | undefined;
+  // General
+  platform_name?: string;
   support_email?: string;
   support_phone?: string;
+  platform_url?: string;
+  maintenance_mode?: string;
+  new_user_registration?: string;
+  partner_onboarding?: string;
+  // Delivery
+  default_delivery_fee?: string;
+  free_delivery_above?: string;
+  max_delivery_radius?: string;
+  max_order_value?: string;
+  cancellation_grace_period?: string;
+  auto_accept_orders?: string;
+  // Payments
+  platform_commission?: string;
+  payment_gateway_fee?: string;
+  payout_frequency?: string;
+  min_payout_amount?: string;
+  // Legal / Contact
   grievance_email?: string;
   business_address?: string;
   city?: string;
   state?: string;
   pincode?: string;
+  // Legal content
   terms_content?: string;
   privacy_content?: string;
   refund_content?: string;
@@ -21,15 +42,7 @@ export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState("general");
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [settings, setSettings] = useState<Settings>({
-    support_email: "support@miiam.in",
-    support_phone: "+91 98765 43210",
-    grievance_email: "grievance@miiam.in",
-    business_address: "Guwahati, Assam",
-    city: "Guwahati",
-    state: "Assam",
-    pincode: "781001",
-  });
+  const [settings, setSettings] = useState<Settings>({});
 
   useEffect(() => {
     loadSettings();
@@ -37,10 +50,14 @@ export default function SettingsPage() {
 
   async function loadSettings() {
     setLoading(true);
-    const res = await fetch("/api/settings");
-    const data = await res.json();
-    if (data.settings) {
-      setSettings((prev: any) => ({ ...prev, ...data.settings }));
+    try {
+      const res = await fetch("/api/settings");
+      const data = await res.json();
+      if (data.settings) {
+        setSettings(data.settings);
+      }
+    } catch (e) {
+      console.error("Failed to load settings:", e);
     }
     setLoading(false);
   }
@@ -48,21 +65,34 @@ export default function SettingsPage() {
   async function saveSettings() {
     setLoading(true);
     setSaved(false);
-    const res = await fetch("/api/settings", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ settings }),
-    });
-    if (res.ok) {
-      setSaved(true);
-      setTimeout(() => setSaved(false), 3000);
+    try {
+      const res = await fetch("/api/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ settings }),
+      });
+      if (res.ok) {
+        setSaved(true);
+        setTimeout(() => setSaved(false), 3000);
+      }
+    } catch (e) {
+      console.error("Failed to save settings:", e);
     }
     setLoading(false);
   }
 
   function handleChange(key: string, value: string) {
-    setSettings((prev: any) => ({ ...prev, [key]: value }));
+    setSettings((prev) => ({ ...prev, [key]: value }));
   }
+
+  function toggleKey(key: string) {
+    setSettings((prev) => ({
+      ...prev,
+      [key]: prev[key] === "true" ? "false" : "true",
+    }));
+  }
+
+  const isOn = (key: string) => settings[key] === "true";
 
   return (
     <div className="px-8 space-y-8">
@@ -94,19 +124,39 @@ export default function SettingsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Platform Name</label>
-                <input type="text" defaultValue="MIIAM" className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20" />
+                <input
+                  type="text"
+                  value={settings.platform_name || ""}
+                  onChange={(e) => handleChange("platform_name", e.target.value)}
+                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                />
               </div>
               <div>
                 <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Support Email</label>
-                <input type="email" defaultValue="support@miiam.com" className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20" />
+                <input
+                  type="email"
+                  value={settings.support_email || ""}
+                  onChange={(e) => handleChange("support_email", e.target.value)}
+                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                />
               </div>
               <div>
                 <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Support Phone</label>
-                <input type="tel" defaultValue="+91 1800 123 4567" className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20" />
+                <input
+                  type="tel"
+                  value={settings.support_phone || ""}
+                  onChange={(e) => handleChange("support_phone", e.target.value)}
+                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                />
               </div>
               <div>
                 <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Platform URL</label>
-                <input type="url" defaultValue="https://miiam.com" className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20" />
+                <input
+                  type="url"
+                  value={settings.platform_url || ""}
+                  onChange={(e) => handleChange("platform_url", e.target.value)}
+                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                />
               </div>
             </div>
           </div>
@@ -119,8 +169,11 @@ export default function SettingsPage() {
                   <p className="font-bold text-slate-800">Maintenance Mode</p>
                   <p className="text-xs text-slate-400">Disable platform for maintenance</p>
                 </div>
-                <button className="w-12 h-6 bg-slate-200 rounded-full relative">
-                  <span className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full" />
+                <button
+                  onClick={() => toggleKey("maintenance_mode")}
+                  className={`w-12 h-6 rounded-full relative transition-colors ${isOn("maintenance_mode") ? "bg-red-500" : "bg-slate-200"}`}
+                >
+                  <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${isOn("maintenance_mode") ? "right-1" : "left-1"}`} />
                 </button>
               </div>
               <div className="flex items-center justify-between p-4 border border-slate-100 rounded-xl">
@@ -128,8 +181,11 @@ export default function SettingsPage() {
                   <p className="font-bold text-slate-800">New User Registration</p>
                   <p className="text-xs text-slate-400">Allow new users to sign up</p>
                 </div>
-                <button className="w-12 h-6 bg-green-500 rounded-full relative">
-                  <span className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full" />
+                <button
+                  onClick={() => toggleKey("new_user_registration")}
+                  className={`w-12 h-6 rounded-full relative transition-colors ${isOn("new_user_registration") ? "bg-green-500" : "bg-slate-200"}`}
+                >
+                  <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${isOn("new_user_registration") ? "right-1" : "left-1"}`} />
                 </button>
               </div>
               <div className="flex items-center justify-between p-4 border border-slate-100 rounded-xl">
@@ -137,8 +193,11 @@ export default function SettingsPage() {
                   <p className="font-bold text-slate-800">Partner Onboarding</p>
                   <p className="text-xs text-slate-400">Allow new vendors to apply</p>
                 </div>
-                <button className="w-12 h-6 bg-green-500 rounded-full relative">
-                  <span className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full" />
+                <button
+                  onClick={() => toggleKey("partner_onboarding")}
+                  className={`w-12 h-6 rounded-full relative transition-colors ${isOn("partner_onboarding") ? "bg-green-500" : "bg-slate-200"}`}
+                >
+                  <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${isOn("partner_onboarding") ? "right-1" : "left-1"}`} />
                 </button>
               </div>
             </div>
@@ -152,27 +211,56 @@ export default function SettingsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Default Delivery Fee (₹)</label>
-              <input type="number" defaultValue="39" className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20" />
+              <input
+                type="number"
+                value={settings.default_delivery_fee || ""}
+                onChange={(e) => handleChange("default_delivery_fee", e.target.value)}
+                className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+              />
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Free Delivery Above (₹)</label>
-              <input type="number" defaultValue="299" className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20" />
+              <input
+                type="number"
+                value={settings.free_delivery_above || ""}
+                onChange={(e) => handleChange("free_delivery_above", e.target.value)}
+                className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+              />
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Max Delivery Radius (km)</label>
-              <input type="number" defaultValue="10" className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20" />
+              <input
+                type="number"
+                value={settings.max_delivery_radius || ""}
+                onChange={(e) => handleChange("max_delivery_radius", e.target.value)}
+                className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+              />
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Max Order Value (₹)</label>
-              <input type="number" defaultValue="5000" className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20" />
+              <input
+                type="number"
+                value={settings.max_order_value || ""}
+                onChange={(e) => handleChange("max_order_value", e.target.value)}
+                className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+              />
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Cancellation Grace Period (seconds)</label>
-              <input type="number" defaultValue="60" className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20" />
+              <input
+                type="number"
+                value={settings.cancellation_grace_period || ""}
+                onChange={(e) => handleChange("cancellation_grace_period", e.target.value)}
+                className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+              />
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Auto-Accept Orders</label>
-              <select className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none">
+              <select
+                value={settings.auto_accept_orders || "true"}
+                onChange={(e) => handleChange("auto_accept_orders", e.target.value)}
+                className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+              >
                 <option value="true">Enabled</option>
                 <option value="false">Disabled</option>
               </select>
@@ -187,15 +275,29 @@ export default function SettingsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Platform Commission (%)</label>
-              <input type="number" defaultValue="15" className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20" />
+              <input
+                type="number"
+                value={settings.platform_commission || ""}
+                onChange={(e) => handleChange("platform_commission", e.target.value)}
+                className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+              />
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Payment Gateway Fee (%)</label>
-              <input type="number" defaultValue="2" className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20" />
+              <input
+                type="number"
+                value={settings.payment_gateway_fee || ""}
+                onChange={(e) => handleChange("payment_gateway_fee", e.target.value)}
+                className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+              />
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Payout Frequency</label>
-              <select className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none">
+              <select
+                value={settings.payout_frequency || "daily"}
+                onChange={(e) => handleChange("payout_frequency", e.target.value)}
+                className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+              >
                 <option value="daily">Daily</option>
                 <option value="weekly">Weekly</option>
                 <option value="biweekly">Bi-Weekly</option>
@@ -203,7 +305,56 @@ export default function SettingsPage() {
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Min Payout Amount (₹)</label>
-              <input type="number" defaultValue="500" className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20" />
+              <input
+                type="number"
+                value={settings.min_payout_amount || ""}
+                onChange={(e) => handleChange("min_payout_amount", e.target.value)}
+                className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === "notifications" && (
+        <div className="bg-white rounded-3xl border border-slate-100 p-8 shadow-sm">
+          <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm mb-6">Notification Settings</h3>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between p-4 border border-slate-100 rounded-xl">
+              <div>
+                <p className="font-bold text-slate-800">Order Updates</p>
+                <p className="text-xs text-slate-400">Send push notifications for order status changes</p>
+              </div>
+              <button
+                onClick={() => toggleKey("notif_order_updates")}
+                className={`w-12 h-6 rounded-full relative transition-colors ${isOn("notif_order_updates") ? "bg-green-500" : "bg-slate-200"}`}
+              >
+                <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${isOn("notif_order_updates") ? "right-1" : "left-1"}`} />
+              </button>
+            </div>
+            <div className="flex items-center justify-between p-4 border border-slate-100 rounded-xl">
+              <div>
+                <p className="font-bold text-slate-800">Promotional Notifications</p>
+                <p className="text-xs text-slate-400">Send offers and deals to users</p>
+              </div>
+              <button
+                onClick={() => toggleKey("notif_promotions")}
+                className={`w-12 h-6 rounded-full relative transition-colors ${isOn("notif_promotions") ? "bg-green-500" : "bg-slate-200"}`}
+              >
+                <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${isOn("notif_promotions") ? "right-1" : "left-1"}`} />
+              </button>
+            </div>
+            <div className="flex items-center justify-between p-4 border border-slate-100 rounded-xl">
+              <div>
+                <p className="font-bold text-slate-800">SMS Notifications</p>
+                <p className="text-xs text-slate-400">Send SMS for critical updates</p>
+              </div>
+              <button
+                onClick={() => toggleKey("notif_sms")}
+                className={`w-12 h-6 rounded-full relative transition-colors ${isOn("notif_sms") ? "bg-green-500" : "bg-slate-200"}`}
+              >
+                <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${isOn("notif_sms") ? "right-1" : "left-1"}`} />
+              </button>
             </div>
           </div>
         </div>
@@ -216,65 +367,65 @@ export default function SettingsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Support Email</label>
-                <input 
-                  type="email" 
+                <input
+                  type="email"
                   value={settings.support_email || ""}
                   onChange={(e) => handleChange("support_email", e.target.value)}
-                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20" 
+                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
                 />
               </div>
               <div>
                 <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Support Phone</label>
-                <input 
-                  type="tel" 
+                <input
+                  type="tel"
                   value={settings.support_phone || ""}
                   onChange={(e) => handleChange("support_phone", e.target.value)}
-                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20" 
+                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
                 />
               </div>
               <div>
                 <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Grievance Email</label>
-                <input 
-                  type="email" 
+                <input
+                  type="email"
                   value={settings.grievance_email || ""}
                   onChange={(e) => handleChange("grievance_email", e.target.value)}
-                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20" 
+                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
                 />
               </div>
               <div>
                 <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Business Address</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={settings.business_address || ""}
                   onChange={(e) => handleChange("business_address", e.target.value)}
-                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20" 
+                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
                 />
               </div>
               <div>
                 <label className="block text-xs font-bold text-slate-400 uppercase mb-2">City</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={settings.city || ""}
                   onChange={(e) => handleChange("city", e.target.value)}
-                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20" 
+                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
                 />
               </div>
               <div>
                 <label className="block text-xs font-bold text-slate-400 uppercase mb-2">State</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={settings.state || ""}
                   onChange={(e) => handleChange("state", e.target.value)}
-                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20" 
+                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
                 />
               </div>
               <div>
                 <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Pincode</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={settings.pincode || ""}
                   onChange={(e) => handleChange("pincode", e.target.value)}
-                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20" 
+                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
                 />
               </div>
             </div>
@@ -313,7 +464,7 @@ export default function SettingsPage() {
           </div>
         )}
         <div />
-        <button 
+        <button
           onClick={saveSettings}
           disabled={loading}
           className="px-8 py-4 bg-[#ba001c] text-white rounded-xl font-bold hover:opacity-90 disabled:opacity-50"
