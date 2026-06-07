@@ -89,6 +89,11 @@ CREATE POLICY "Admin can update bookings" ON service_bookings
     EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
   );
 
+CREATE POLICY "Admin can delete bookings" ON service_bookings
+  FOR DELETE USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+  );
+
 -- Service Providers Policies
 CREATE POLICY "Public can view available providers" ON service_providers
   FOR SELECT USING (is_available = true);

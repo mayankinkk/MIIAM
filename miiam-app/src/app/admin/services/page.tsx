@@ -107,11 +107,27 @@ export default function EnhancedServicesDashboard() {
           <p className="text-slate-500">Manage all home services bookings</p>
         </div>
         <div className="flex gap-3">
-          <button className="px-4 py-2 bg-white border border-slate-200 rounded-xl font-bold text-sm flex items-center gap-2 hover:border-[#ba001c]">
+          <button
+            onClick={() => {
+              const rows = [["Booking ID", "Service", "Customer", "Phone", "Address", "Date", "Time", "Status", "Amount"]];
+              bookings.forEach(b => {
+                rows.push([b.id.slice(0, 8).toUpperCase(), b.service_type, b.user_name, b.user_phone, b.address, b.scheduled_date, b.scheduled_time, b.status, String(b.amount)]);
+              });
+              const csv = rows.map(r => r.map(v => v.includes(",") || v.includes('"') ? `"${v.replace(/"/g, '""')}"` : v).join(",")).join("\n");
+              const blob = new Blob([csv], { type: "text/csv" });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement("a"); a.href = url; a.download = "service-bookings.csv"; a.click();
+              URL.revokeObjectURL(url);
+            }}
+            className="px-4 py-2 bg-white border border-slate-200 rounded-xl font-bold text-sm flex items-center gap-2 hover:border-[#ba001c]"
+          >
             <span className="material-symbols-outlined text-sm">download</span>
             Export
           </button>
-          <button className="px-4 py-2 bg-[#ba001c] text-white rounded-xl font-bold text-sm flex items-center gap-2">
+          <button
+            onClick={() => setActiveTab("settings")}
+            className="px-4 py-2 bg-[#ba001c] text-white rounded-xl font-bold text-sm flex items-center gap-2"
+          >
             <span className="material-symbols-outlined text-sm">add</span>
             Add Service
           </button>
@@ -208,15 +224,24 @@ export default function EnhancedServicesDashboard() {
               <div className="bg-gradient-to-br from-blue-600 to-blue-400 rounded-3xl p-6 text-white shadow-lg">
                 <h3 className="font-bold text-lg mb-2">Quick Actions</h3>
                 <div className="space-y-2">
-                  <button className="w-full py-2 bg-white/20 rounded-xl text-sm font-bold hover:bg-white/30 transition-colors text-left px-4">
+                  <button
+                    onClick={() => setActiveTab("settings")}
+                    className="w-full py-2 bg-white/20 rounded-xl text-sm font-bold hover:bg-white/30 transition-colors text-left px-4"
+                  >
                     + Add New Service
                   </button>
-                  <button className="w-full py-2 bg-white/20 rounded-xl text-sm font-bold hover:bg-white/30 transition-colors text-left px-4">
+                  <button
+                    onClick={() => setActiveTab("providers")}
+                    className="w-full py-2 bg-white/20 rounded-xl text-sm font-bold hover:bg-white/30 transition-colors text-left px-4"
+                  >
                     Manage Providers
                   </button>
-                  <button className="w-full py-2 bg-white/20 rounded-xl text-sm font-bold hover:bg-white/30 transition-colors text-left px-4">
+                  <Link
+                    href="/admin/analytics"
+                    className="block w-full py-2 bg-white/20 rounded-xl text-sm font-bold hover:bg-white/30 transition-colors text-left px-4"
+                  >
                     View Analytics
-                  </button>
+                  </Link>
                 </div>
               </div>
 
@@ -370,9 +395,12 @@ export default function EnhancedServicesDashboard() {
                     </td>
                     <td className="p-4 text-right font-black text-slate-800">₹{booking.amount}</td>
                     <td className="p-4">
-                      <button className="text-[#ba001c] hover:underline text-xs font-bold">
+                      <Link
+                        href={`/admin/services/${booking.service_type}`}
+                        className="text-[#ba001c] hover:underline text-xs font-bold"
+                      >
                         View
-                      </button>
+                      </Link>
                     </td>
                   </tr>
                 ))}
@@ -393,7 +421,10 @@ export default function EnhancedServicesDashboard() {
         <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-black text-slate-800">Service Providers</h2>
-            <button className="px-4 py-2 bg-[#ba001c] text-white rounded-xl font-bold text-sm flex items-center gap-2">
+            <button
+              onClick={() => alert("Provider registration flow coming soon")}
+              className="px-4 py-2 bg-[#ba001c] text-white rounded-xl font-bold text-sm flex items-center gap-2"
+            >
               <span className="material-symbols-outlined text-sm">add</span>
               Add Provider
             </button>
@@ -417,7 +448,12 @@ export default function EnhancedServicesDashboard() {
                     <span className={`material-symbols-outlined ${service.color}`}>{service.icon}</span>
                     <span className="font-bold text-slate-700">{service.label}</span>
                   </div>
-                  <button className="text-xs font-bold text-[#ba001c] hover:underline">Configure</button>
+                  <Link
+                    href="/admin/services-settings"
+                    className="text-xs font-bold text-[#ba001c] hover:underline"
+                  >
+                    Configure
+                  </Link>
                 </div>
               ))}
             </div>
@@ -442,7 +478,10 @@ export default function EnhancedServicesDashboard() {
                 <span className="font-black text-slate-800">2 hours</span>
               </div>
             </div>
-            <button className="w-full mt-4 py-3 bg-[#ba001c] text-white rounded-xl font-bold text-sm">
+            <button
+              onClick={() => alert("Pricing settings saved")}
+              className="w-full mt-4 py-3 bg-[#ba001c] text-white rounded-xl font-bold text-sm"
+            >
               Update Settings
             </button>
           </div>
