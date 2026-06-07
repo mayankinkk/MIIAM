@@ -50,6 +50,10 @@ export default function AdminPrintingKanban() {
     const order = orders.find((o) => o.id === orderId);
     if (!order || order.status === newStatus) return;
 
+    if (newStatus === "delivered" || newStatus === "cancelled") {
+      if (!confirm(`Are you sure you want to mark this order as ${newStatus.replace(/_/g, " ")}?`)) return;
+    }
+
     // Optimistic update
     setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o)));
 
