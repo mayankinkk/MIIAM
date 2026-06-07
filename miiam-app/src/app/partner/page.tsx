@@ -1,8 +1,12 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
 
 const benefits = [
   { icon: "trending_up", title: "More Customers", desc: "Reach thousands of hungry customers in your area looking for your cuisine." },
-  { icon: "payments", title: "Zero Commission", desc: "No listing fees. Pay only 5% per order — the lowest in the industry." },
+  { icon: "payments", title: "Low Commission", desc: "Pay only 15% per order — competitive rates with transparent settlement." },
   { icon: "speed", title: "Real-time Dashboard", desc: "Manage orders, menu, analytics, and payouts from one place." },
   { icon: "support_agent", title: "24/7 Support", desc: "Dedicated partner support team to help you grow your business." },
   { icon: "campaign", title: "Marketing Boost", desc: "Get featured in promotions, discounts, and seasonal campaigns." },
@@ -25,6 +29,14 @@ const faqs = [
 ];
 
 export default function PartnerLanding() {
+  const [vendorCount, setVendorCount] = useState(0);
+
+  useEffect(() => {
+    createClient().from("vendors").select("*", { count: "exact", head: true }).then(({ count }) => {
+      if (count) setVendorCount(count);
+    });
+  }, []);
+
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
@@ -49,7 +61,7 @@ export default function PartnerLanding() {
           <div className="flex-1 text-center md:text-left">
             <div className="inline-flex items-center gap-2 bg-[#ffe1e4] text-[#ba001c] px-4 py-2 rounded-full text-sm font-bold mb-6">
               <span className="material-symbols-outlined text-[18px]">storefront</span>
-              Join 5,000+ Partners
+              Join {vendorCount > 0 ? `${vendorCount}+` : "Our"} Partners
             </div>
             <h1 className="text-4xl md:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight mb-6">
               Partner with <span className="text-[#ba001c]">MIIAM</span>
@@ -76,7 +88,7 @@ export default function PartnerLanding() {
           </div>
           <div className="flex-1 bg-gradient-to-br from-[#ba001c]/10 to-[#ba001c]/5 rounded-3xl p-8 md:p-12 text-center">
             <span className="material-symbols-outlined text-8xl text-[#ba001c] mb-4" style={{ fontVariationSettings: "'FILL' 1" }}>storefront</span>
-            <p className="text-2xl font-extrabold text-slate-900">5,000+</p>
+            <p className="text-2xl font-extrabold text-slate-900">{vendorCount > 0 ? `${vendorCount}+` : "Growing"}</p>
             <p className="text-slate-500">Active Restaurant Partners</p>
             <div className="grid grid-cols-3 gap-4 mt-8">
               <div>
@@ -84,7 +96,7 @@ export default function PartnerLanding() {
                 <p className="text-xs text-slate-500">Cities</p>
               </div>
               <div>
-                <p className="text-xl font-black text-[#ba001c]">5%</p>
+                <p className="text-xl font-black text-[#ba001c]">15%</p>
                 <p className="text-xs text-slate-500">Commission</p>
               </div>
               <div>

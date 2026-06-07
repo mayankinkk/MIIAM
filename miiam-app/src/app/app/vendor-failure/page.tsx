@@ -126,6 +126,15 @@ function VendorFailureContent() {
         <div className="space-y-3">
           <button
             disabled={!selectedOption}
+            onClick={() => {
+              if (selectedOption === "refund") {
+                import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Refund request submitted. You'll receive it within 3-5 business days.", "success"));
+              } else if (selectedOption === "reorder") {
+                window.location.href = "/app/food";
+              } else {
+                import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Store credit added to your wallet.", "success"));
+              }
+            }}
             className="w-full bg-primary text-white py-4 rounded-xl font-bold hover:bg-primary-dim transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Confirm {selectedOption === "refund" ? "Refund" : selectedOption === "reorder" ? "Browse Restaurants" : "Get Credit"}

@@ -90,9 +90,9 @@ export default async function RiderDashboardPage() {
                 </div>
               </div>
               <div className="flex gap-3 relative z-10">
-                <button className="flex-1 bg-[#ffecee] text-[#ba001c] py-3 rounded-xl font-bold hover:bg-[#ba001c] hover:text-white transition-colors">
+                <span className="flex-1 bg-[#ffecee] text-[#ba001c] py-3 rounded-xl font-bold text-center hover:bg-[#ba001c] hover:text-white transition-colors cursor-pointer">
                   View & Accept
-                </button>
+                </span>
               </div>
             </Link>
           )) : (
