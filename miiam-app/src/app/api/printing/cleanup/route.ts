@@ -69,14 +69,18 @@ async function cleanPrintedFiles(supabase: Awaited<ReturnType<typeof createClien
   const orderIds = orders?.map(o => o.id) || [];
 
   const buckets = await collectOrderFilePaths(supabase, orderIds);
+  const allRemovedPaths: string[] = [];
   for (const b of buckets) {
     const { error: removeError } = await supabase.storage
       .from(b.bucket)
       .remove(b.paths);
-    if (!removeError) cleanedCount += b.paths.length;
+    if (!removeError) {
+      cleanedCount += b.paths.length;
+      allRemovedPaths.push(...b.paths);
+    }
   }
 
-  if (orderIds.length > 0) {
+  if (orderIds.length > 0 && cleanedCount > 0) {
     await supabase
       .from("orders")
       .update({ print_files_cleaned_at: new Date().toISOString() })
