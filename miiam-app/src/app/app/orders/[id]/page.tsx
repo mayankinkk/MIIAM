@@ -359,6 +359,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
       <main className="pt-6 pb-12 min-h-screen">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:grid lg:grid-cols-12 lg:gap-10 items-start">
           <div className="lg:col-span-7 space-y-4 sm:space-y-6">
+            {order?.vendor_id !== PRINTING_VENDOR_ID && (
             <div className="relative w-full h-[260px] sm:h-[420px] rounded-xl overflow-hidden shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
 
               {/* ETA Overlay */}
@@ -387,6 +388,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                 onRouteUpdate={setTrackingInfo}
               />
             </div>
+            )}
 
             {order?.delay_minutes && order.delay_minutes > 0 && (
               <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-start gap-3">
