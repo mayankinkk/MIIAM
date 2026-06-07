@@ -5,31 +5,35 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useLocationStore } from "@/lib/store/locationStore";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 import { HomeSkeleton } from "@/components/Skeleton";
 import BlurImage from "@/components/BlurImage";
 import { NetworkError } from "@/components/ui/EmptyStates";
 import { withRetry } from "@/lib/retry";
 import PrintCostCalculator from "@/components/print/PrintCostCalculator";
-const categories = [
-  { id: "food", label: "Food", icon: "restaurant", color: "bg-orange-100", iconColor: "text-orange-600", offer: "20% OFF" },
-  { id: "grocery", label: "Grocery", icon: "shopping_basket", color: "bg-green-100", iconColor: "text-green-600", offer: "FREE Delivery" },
-  { id: "beauty", label: "Beauty", icon: "spa", color: "bg-pink-100", iconColor: "text-pink-600", offer: "₹100 OFF" },
-  { id: "services", label: "Services", icon: "handyman", color: "bg-blue-100", iconColor: "text-blue-600", offer: "Flat ₹200 OFF" },
-  { id: "printing", label: "Printing", icon: "print", color: "bg-indigo-100", iconColor: "text-indigo-600", offer: null },
-];
-
-const offers = [
-  { id: "o1", title: "First Order Discount", subtitle: "Get 50% OFF on first order", color: "from-orange-500 to-red-500", badge: "NEW USER" },
-  { id: "o2", title: "Free Delivery", subtitle: "On orders above ₹199", color: "from-green-500 to-emerald-500", badge: "FREE DELIVERY" },
-  { id: "o3", title: "Flat ₹100 OFF", subtitle: "On orders above ₹300", color: "from-blue-500 to-indigo-500", badge: "FLAT OFF" },
-];
 
 
 
 export default function HomePage() {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
+
+  const categories = [
+    { id: "food", label: t.nav.food, icon: "restaurant", color: "bg-orange-100", iconColor: "text-orange-600", offer: "20% OFF" },
+    { id: "grocery", label: t.nav.groceries, icon: "shopping_basket", color: "bg-green-100", iconColor: "text-green-600", offer: t.home.offerFreeDeliveryBadge },
+    { id: "beauty", label: t.nav.beauty, icon: "spa", color: "bg-pink-100", iconColor: "text-pink-600", offer: "₹100 OFF" },
+    { id: "services", label: t.nav.services, icon: "handyman", color: "bg-blue-100", iconColor: "text-blue-600", offer: "Flat ₹200 OFF" },
+    { id: "printing", label: t.nav.printing, icon: "print", color: "bg-indigo-100", iconColor: "text-indigo-600", offer: null },
+  ];
+
+  const offers = [
+    { id: "o1", title: t.home.offerFirstOrder, subtitle: t.home.offerFirstOrderDesc, color: "from-orange-500 to-red-500", badge: t.home.offerNewUser },
+    { id: "o2", title: t.home.offerFreeDelivery, subtitle: t.home.offerFreeDeliveryDesc, color: "from-green-500 to-emerald-500", badge: t.home.offerFreeDeliveryBadge },
+    { id: "o3", title: t.home.offerFlat100, subtitle: t.home.offerFlat100Desc, color: "from-blue-500 to-indigo-500", badge: t.home.offerFlatOff },
+  ];
+
   const [user, setUser] = useState<any>(null);
   const [currentOffer, setCurrentOffer] = useState(0);
   const locationStore = useLocationStore();
@@ -194,10 +198,10 @@ export default function HomePage() {
 
   useEffect(() => {
     const hour = new Date().getHours();
-    if (hour < 12) { setGreeting("Good morning"); setTimeIcon("☀️"); }
-    else if (hour < 18) { setGreeting("Good afternoon"); setTimeIcon("🌤️"); }
-    else { setGreeting("Good evening"); setTimeIcon("🌙"); }
-  }, []);
+    if (hour < 12) { setGreeting(t.home.goodMorning); setTimeIcon("☀️"); }
+    else if (hour < 18) { setGreeting(t.home.goodAfternoon); setTimeIcon("🌤️"); }
+    else { setGreeting(t.home.goodEvening); setTimeIcon("🌙"); }
+  }, [t]);
 
   const resolvePincodeToArea = async (pin: string): Promise<{ area: string; city: string; state: string }> => {
     try {
