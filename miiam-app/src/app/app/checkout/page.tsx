@@ -302,7 +302,7 @@ export default function CheckoutPage() {
       }
 
       // Create recurring schedule if opted in
-      if (isRecurring && vendorIds.length === 1) {
+      if (isRecurring && vendorIds.length === 1 && scheduledDate && scheduledTime) {
         try {
           const { error: scheduleError } = await supabase
             .from("recurring_schedules")
@@ -323,7 +323,14 @@ export default function CheckoutPage() {
                 image_url: i.image_url || null,
               })),
               start_date: new Date().toISOString(),
-              next_delivery_date: new Date(`${scheduledDate}T${(scheduledTime || "09:00 AM").split(" - ")[0].trim()}`).toISOString(),
+              next_delivery_date: (() => {
+                const timePart = (scheduledTime || "09:00 AM").split(" - ")[0].trim();
+                const [time, period] = timePart.split(/\s+/);
+                let [hours, minutes] = time.split(":").map(Number);
+                if (period?.toUpperCase() === "PM" && hours < 12) hours += 12;
+                if (period?.toUpperCase() === "AM" && hours === 12) hours = 0;
+                return new Date(`${scheduledDate}T${String(hours).padStart(2, "0")}:${String(minutes || 0).padStart(2, "0")}:00`).toISOString();
+              })(),
             });
           if (scheduleError) console.warn("Failed to create recurring schedule:", scheduleError);
         } catch (scheduleErr) {
