@@ -74,7 +74,9 @@ export default function CheckoutPage() {
   const userPincode = locationStore.pincode;
 
   useEffect(() => {
-    if (items.some(i => i.vendor_id === PRINTING_VENDOR_ID)) {
+    const hasPrint = items.some(i => i.vendor_id === PRINTING_VENDOR_ID);
+    const hasFood = items.some(i => i.vendor_id !== PRINTING_VENDOR_ID && i.vendor_id !== SERVICES_VENDOR_ID);
+    if (hasPrint && !hasFood) {
       setPaymentMethod("cod");
     }
     const saved = localStorage.getItem('miiam_selected_address');
