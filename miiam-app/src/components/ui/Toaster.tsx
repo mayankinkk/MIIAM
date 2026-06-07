@@ -28,13 +28,16 @@ export default function Toaster() {
       {toasts.map((toast) => (
         <div
           key={toast.id}
-          className={`pointer-events-auto bg-surface-container-lowest shadow-xl rounded-xl px-4 py-3 flex items-center gap-3 border-l-4 animate-slide-in ${
+          className={`pointer-events-auto bg-surface-container-lowest shadow-xl rounded-xl px-4 py-3 flex items-center gap-3 border-l-4 animate-slide-in cursor-pointer hover:opacity-80 transition-opacity ${
             toast.type === "success" ? "border-green-500" :
             toast.type === "error" ? "border-red-500" :
             toast.type === "warning" ? "border-amber-500" :
             "border-primary"
           }`}
           onClick={() => removeToast(toast.id)}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") removeToast(toast.id); }}
         >
           <span className={`material-symbols-outlined ${
             toast.type === "success" ? "text-green-500" :
@@ -48,6 +51,13 @@ export default function Toaster() {
              "info"}
           </span>
           <span className="text-sm font-medium text-on-surface">{toast.message}</span>
+          <button
+            onClick={(e) => { e.stopPropagation(); removeToast(toast.id); }}
+            className="ml-auto p-1 rounded-full hover:bg-surface-container-high transition-colors"
+            aria-label="Dismiss notification"
+          >
+            <span className="material-symbols-outlined text-sm text-on-surface-variant">close</span>
+          </button>
         </div>
       ))}
     </div>

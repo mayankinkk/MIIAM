@@ -2,11 +2,19 @@
 
 import { motion } from "framer-motion";
 import { ReactNode, useState, useEffect } from "react";
+import { useUiA11yStore } from "@/lib/store/uiA11yStore";
 
 function useMounted() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => { setMounted(true); }, []);
   return mounted;
+}
+
+function useReducedMotion() {
+  const [mounted, setMounted] = useState(false);
+  const reducedMotion = useUiA11yStore((s) => s.reducedMotion);
+  useEffect(() => { setMounted(true); }, []);
+  return mounted ? reducedMotion : false;
 }
 
 interface Props {
@@ -17,7 +25,9 @@ interface Props {
 
 export function FadeIn({ children, className = "", delay = 0 }: Props) {
   const mounted = useMounted();
+  const reduced = useReducedMotion();
   if (!mounted) return <div className={className}>{children}</div>;
+  if (reduced) return <div className={className}>{children}</div>;
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -33,7 +43,9 @@ export function FadeIn({ children, className = "", delay = 0 }: Props) {
 
 export function ScaleIn({ children, className = "", delay = 0 }: Props) {
   const mounted = useMounted();
+  const reduced = useReducedMotion();
   if (!mounted) return <div className={className}>{children}</div>;
+  if (reduced) return <div className={className}>{children}</div>;
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
@@ -49,7 +61,9 @@ export function ScaleIn({ children, className = "", delay = 0 }: Props) {
 
 export function SlideInLeft({ children, className = "", delay = 0 }: Props) {
   const mounted = useMounted();
+  const reduced = useReducedMotion();
   if (!mounted) return <div className={className}>{children}</div>;
+  if (reduced) return <div className={className}>{children}</div>;
   return (
     <motion.div
       initial={{ opacity: 0, x: -24 }}
@@ -65,7 +79,9 @@ export function SlideInLeft({ children, className = "", delay = 0 }: Props) {
 
 export function SlideInRight({ children, className = "", delay = 0 }: Props) {
   const mounted = useMounted();
+  const reduced = useReducedMotion();
   if (!mounted) return <div className={className}>{children}</div>;
+  if (reduced) return <div className={className}>{children}</div>;
   return (
     <motion.div
       initial={{ opacity: 0, x: 24 }}
@@ -127,7 +143,8 @@ export function StaggerItem({ children, className = "" }: Props) {
 
 export function PressScale({ children, onClick, className = "" }: { children: ReactNode; onClick?: () => void; className?: string }) {
   const mounted = useMounted();
-  if (!mounted) return <div className={`cursor-pointer ${className}`} onClick={onClick}>{children}</div>;
+  const reduced = useReducedMotion();
+  if (!mounted || reduced) return <div className={`cursor-pointer ${className}`} onClick={onClick}>{children}</div>;
   return (
     <motion.div
       whileHover={{ scale: 1.02 }}
@@ -142,7 +159,8 @@ export function PressScale({ children, onClick, className = "" }: { children: Re
 
 export function CartBounce({ children, isBouncing, className = "" }: { children: ReactNode; isBouncing: boolean; className?: string }) {
   const mounted = useMounted();
-  if (!mounted) return <div className={className}>{children}</div>;
+  const reduced = useReducedMotion();
+  if (!mounted || reduced) return <div className={className}>{children}</div>;
   return (
     <motion.div
       animate={isBouncing ? { scale: [1, 1.2, 0.95, 1.05, 1] } : { scale: 1 }}

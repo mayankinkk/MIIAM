@@ -4,19 +4,21 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCartStore } from "@/lib/store/cartStore";
-
-const navItems = [
-  { href: "/app/home", icon: "home", label: "Home" },
-  { href: "/app/food", icon: "restaurant", label: "Food" },
-  { href: "/app/services", icon: "handyman", label: "Services" },
-  { href: "/app/cart", icon: "shopping_cart", label: "Cart" },
-  { href: "/app/profile", icon: "person", label: "Profile" },
-];
+import { useTranslation } from "@/lib/i18n/useTranslation";
 
 export default function BottomNavBar() {
   const pathname = usePathname();
   const totalItems = useCartStore((s) => s.totalItems());
   const [isMounted, setIsMounted] = useState(false);
+  const { t } = useTranslation();
+
+  const navItems = [
+    { href: "/app/home", icon: "home", label: t.common.home },
+    { href: "/app/food", icon: "restaurant", label: t.nav.food },
+    { href: "/app/services", icon: "handyman", label: t.nav.services },
+    { href: "/app/cart", icon: "shopping_cart", label: t.nav.cart },
+    { href: "/app/profile", icon: "person", label: t.nav.profile },
+  ];
 
   useEffect(() => {
     setIsMounted(true);
@@ -36,6 +38,7 @@ export default function BottomNavBar() {
             <Link
               key={item.href}
               href={item.href}
+              aria-current={isActive ? "page" : undefined}
               className={`relative flex flex-col items-center gap-0.5 px-4 py-1.5 rounded-xl transition-all duration-300 ${
                 isActive
                   ? "text-primary"

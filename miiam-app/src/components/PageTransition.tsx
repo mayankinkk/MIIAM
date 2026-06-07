@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 
 import { useState, useEffect } from "react";
+import { useUiA11yStore } from "@/lib/store/uiA11yStore";
 
 const routeVariants = {
   forward: {
@@ -26,6 +27,7 @@ const routeVariants = {
 export default function PageTransition({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
+  const reducedMotion = useUiA11yStore((s) => s.reducedMotion);
 
   useEffect(() => {
     setMounted(true);
@@ -39,7 +41,7 @@ export default function PageTransition({ children }: { children: React.ReactNode
   const variantKey = isModalRoute ? "fade" : "forward";
   const variant = routeVariants[variantKey];
 
-  if (!mounted) {
+  if (!mounted || reducedMotion) {
     return <div key={pathname}>{children}</div>;
   }
 
