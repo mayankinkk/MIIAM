@@ -56,7 +56,7 @@ export default function SupportPage() {
   const [issueType, setIssueType] = useState("");
   const [orderIssue, setOrderIssue] = useState("");
   const [showQuickActions, setShowQuickActions] = useState(true);
-  const [onlineAgents, setOnlineAgents] = useState(3);
+
   const [userOrders, setUserOrders] = useState<any[]>([]);
   const [ordersLoading, setOrdersLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
@@ -136,10 +136,6 @@ export default function SupportPage() {
           <div>
             <h1 className="text-2xl font-extrabold">Help & Support</h1>
             <p className="text-white/70 text-sm mt-1">We&apos;re here to help 24/7</p>
-          </div>
-          <div className="flex items-center gap-2 bg-white/20 px-3 py-2 rounded-full">
-            <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-            <span className="text-xs font-semibold">{onlineAgents} agents online</span>
           </div>
         </div>
       </header>
