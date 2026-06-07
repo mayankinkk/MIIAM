@@ -75,6 +75,7 @@ export default function PrintingPage() {
   const saveDraft = usePrintDraftStore((s) => s.saveDraft);
   const clearDraft = usePrintDraftStore((s) => s.clearDraft);
   const toast = useToastStore();
+  const printAddons = usePrintAddonsStore();
   const { t } = useTranslation();
 
   const isEnabled = serviceSettings.isServiceEnabled("printing");
@@ -298,7 +299,6 @@ export default function PrintingPage() {
       : f.pageCount;
     return perPage * pagesInRange * f.settings.copies;
   });
-  const printAddons = usePrintAddonsStore();
   const totalCopies = files.reduce((acc, f) => acc + f.settings.copies, 0);
   const totalPrice = fileSubtotals.reduce((acc, n) => acc + n, 0);
   const totalPagesEffective = files.reduce(
