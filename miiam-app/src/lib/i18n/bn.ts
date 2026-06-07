@@ -168,6 +168,12 @@ const bn: Translations = {
     estimatedDelivery: "আনুমানিক ডেলিভারি",
     trackOrder: "অর্ডার ট্র্যাক করুন →",
     topRated: "শীর্ষ রেটেড",
+    selectLocation: "স্থান নির্বাচন করুন",
+    applyNow: "এখনই প্রয়োগ করুন →",
+    ordersTab: "অর্ডার",
+    offersTab: "অফার",
+    various: "বিভিন্ন",
+    or: "অথবা",
   },
   food: {
     title: "খাবার ডেলিভারি",

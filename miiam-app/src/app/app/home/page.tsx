@@ -37,7 +37,7 @@ export default function HomePage() {
   const [user, setUser] = useState<any>(null);
   const [currentOffer, setCurrentOffer] = useState(0);
   const locationStore = useLocationStore();
-  const [location, setLocation] = useState(locationStore.displayAddress || "Select Location");
+  const [location, setLocation] = useState(locationStore.displayAddress || t.home.selectLocation);
   const [activeOrder, setActiveOrder] = useState<any>(null);
   const [orderBubbleExpanded, setOrderBubbleExpanded] = useState(false);
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
@@ -154,11 +154,11 @@ export default function HomePage() {
             setActiveOrder({
               id: active.id,
               vendor: (active.vendors as any)?.shop_name || (active.vendors as any)?.[0]?.shop_name || "Restaurant",
-              items: "Order in progress",
+              items: t.home.orderInProgress,
               steps: [
-                { id: 1, label: "Order Placed", completed: true, time: new Date(active.placed_at).toLocaleTimeString() },
-                { id: 2, label: "Accepted", completed: ["accepted", "preparing", "ready_for_pickup", "picking_up", "on_the_way"].includes(active.status), time: "" },
-                { id: 3, label: "On the Way", completed: ["on_the_way"].includes(active.status), time: "" },
+                { id: 1, label: t.home.orderPlaced, completed: true, time: new Date(active.placed_at).toLocaleTimeString() },
+                { id: 2, label: t.home.accepted, completed: ["accepted", "preparing", "ready_for_pickup", "picking_up", "on_the_way"].includes(active.status), time: "" },
+                { id: 3, label: t.home.onTheWay, completed: ["on_the_way"].includes(active.status), time: "" },
               ],
               eta: active.status === "on_the_way" ? "5-10 min" : "20-30 min",
             });
@@ -193,14 +193,20 @@ export default function HomePage() {
     };
   }, [locationStore.pincode, locationStore.city]);
 
-  const [greeting, setGreeting] = useState("Hello");
-  const [timeIcon, setTimeIcon] = useState("☀️");
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return { text: t.home.goodMorning, icon: "☀️" };
+    if (hour < 18) return { text: t.home.goodAfternoon, icon: "🌤️" };
+    return { text: t.home.goodEvening, icon: "🌙" };
+  };
+
+  const [greeting, setGreeting] = useState(() => getGreeting().text);
+  const [timeIcon, setTimeIcon] = useState(() => getGreeting().icon);
 
   useEffect(() => {
-    const hour = new Date().getHours();
-    if (hour < 12) { setGreeting(t.home.goodMorning); setTimeIcon("☀️"); }
-    else if (hour < 18) { setGreeting(t.home.goodAfternoon); setTimeIcon("🌤️"); }
-    else { setGreeting(t.home.goodEvening); setTimeIcon("🌙"); }
+    const { text, icon } = getGreeting();
+    setGreeting(text);
+    setTimeIcon(icon);
   }, [t]);
 
   const resolvePincodeToArea = async (pin: string): Promise<{ area: string; city: string; state: string }> => {
@@ -221,7 +227,7 @@ export default function HomePage() {
   const handleManualLocation = async () => {
     const pin = manualPincode.trim();
     if (pin.length !== 6 || !/^\d{6}$/.test(pin)) {
-      setPincodeError("Please enter a valid 6-digit PIN code");
+      setPincodeError(t.home.invalidPincode);
       return;
     }
     setPincodeError("");
@@ -246,7 +252,7 @@ export default function HomePage() {
 
   const getCurrentLocation = () => {
     if (!navigator.geolocation) {
-      setPincodeError("Location not supported by your browser");
+      setPincodeError(t.home.locationNotSupported);
       return;
     }
 
@@ -303,9 +309,9 @@ export default function HomePage() {
       (error) => {
         setIsLoadingLocation(false);
         if (error.code === error.PERMISSION_DENIED) {
-          setPincodeError("Location permission denied. Please enter PIN manually.");
+          setPincodeError(t.home.locationDenied);
         } else {
-          setPincodeError("Unable to detect location. Please enter PIN manually.");
+          setPincodeError(t.home.unableToDetect);
         }
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
@@ -371,7 +377,7 @@ export default function HomePage() {
           >
             <span className="material-symbols-outlined text-primary">location_on</span>
             <div className="flex-1 text-left">
-              <p className="text-xs text-on-surface-variant">Delivering to</p>
+              <p className="text-xs text-on-surface-variant">{t.home.deliveringTo}</p>
               <p className="font-bold text-on-surface text-sm">{location}</p>
             </div>
             <span className="material-symbols-outlined text-on-surface-variant">expand_more</span>
@@ -382,7 +388,7 @@ export default function HomePage() {
         <div className="px-4 pb-4">
           <Link href="/app/search" className="flex items-center w-full bg-surface-container-high rounded-xl px-4 py-3 hover:bg-surface-container-highest transition-colors">
             <span className="material-symbols-outlined text-on-surface-variant/60">search</span>
-            <span className="ml-3 text-on-surface-variant/60 text-sm">Search for food, restaurants...</span>
+            <span className="ml-3 text-on-surface-variant/60 text-sm">{t.home.searchPlaceholder}</span>
           </Link>
         </div>
       </header>
@@ -463,11 +469,11 @@ export default function HomePage() {
               {/* ETA */}
               <div className="mt-4 p-3 bg-orange-50 rounded-xl flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-on-surface-variant">Estimated Delivery</p>
+                  <p className="text-xs text-on-surface-variant">{t.home.estimatedDelivery}</p>
                   <p className="font-bold text-orange-600">{activeOrder.eta}</p>
                 </div>
                 <Link href={`/app/orders/${activeOrder.id}`} className="text-primary font-bold text-sm">
-                  Track Order →
+                  {t.home.trackOrder}
                 </Link>
               </div>
             </div>
@@ -495,9 +501,9 @@ export default function HomePage() {
           <div className="flex items-center gap-2">
             <span className={`material-symbols-outlined text-sm ${localServiceable ? "text-green-600 animate-pulse" : "text-amber-600"}`}>location_on</span>
             <p className={`text-[11px] font-bold ${localServiceable ? "text-green-600 dark:text-green-400" : "text-amber-600 dark:text-amber-400"}`}>
-              {checkingPincode ? "Checking availability..." : localServiceable
-                ? `Showing nearby vendors for ${locationStore.displayAddress}`
-                : `No exact match for ${locationStore.pincode}. Showing nearby by city.`
+              {checkingPincode ? t.home.checkingAvailability : localServiceable
+                ? `${t.home.showingNearby} ${locationStore.displayAddress}`
+                : `${t.home.noExactMatch} ${locationStore.pincode}. ${t.home.showingByCity}`
               }
             </p>
           </div>
@@ -506,7 +512,7 @@ export default function HomePage() {
 
       {/* Categories with Offers */}
       <div className="px-4 pb-4">
-        <h2 className="text-lg font-bold text-on-surface mb-3">Categories</h2>
+        <h2 className="text-lg font-bold text-on-surface mb-3">{t.home.categories}</h2>
         <div className="grid grid-cols-3 gap-3">
           {categories.map((cat) => (
             <Link key={cat.id} href={`/app/${cat.id}`} className="relative">
@@ -531,7 +537,7 @@ export default function HomePage() {
         <div className="px-4 pb-4">
           <div className="flex items-center gap-2 mb-3">
             <span className="material-symbols-outlined text-amber-500" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-            <h2 className="text-lg font-bold text-on-surface">Featured Today</h2>
+            <h2 className="text-lg font-bold text-on-surface">{t.home.featuredToday}</h2>
           </div>
           <Link href={`/app/vendor/${spotlightRestaurant.id}`} className="block relative bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl p-5 text-white overflow-hidden">
             <div className="absolute -right-6 -bottom-6 w-40 h-40 bg-white/10 rounded-full blur-2xl" />
@@ -545,15 +551,15 @@ export default function HomePage() {
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="bg-white/30 text-xs font-bold px-2 py-0.5 rounded-full">⭐ Featured</span>
+                  <span className="bg-white/30 text-xs font-bold px-2 py-0.5 rounded-full">⭐ {t.home.featured}</span>
                 </div>
                 <h3 className="text-xl font-black">{spotlightRestaurant.name || spotlightRestaurant.shop_name}</h3>
-                <p className="text-sm text-white/80">{spotlightRestaurant.cuisine || "Various cuisines"}</p>
+                <p className="text-sm text-white/80">{spotlightRestaurant.cuisine || t.home.variousCuisines}</p>
                 <div className="flex items-center gap-2 mt-2">
                   <span className="flex items-center gap-1 bg-white/20 px-2 py-1 rounded-full text-xs font-bold">
                     ★ {spotlightRestaurant.rating || 4.0}
                   </span>
-                  <span className="text-xs text-white/80">25-35 min</span>
+                  <span className="text-xs text-white/80">{t.home.minDelivery}</span>
                 </div>
               </div>
             </div>
@@ -567,7 +573,7 @@ export default function HomePage() {
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined text-purple-500" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
-              <h2 className="text-lg font-bold text-on-surface">Promoted Partners</h2>
+              <h2 className="text-lg font-bold text-on-surface">{t.home.promotedPartners}</h2>
             </div>
           </div>
           <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
@@ -581,12 +587,12 @@ export default function HomePage() {
                   )}
                   {restaurant.is_promoted && (
                     <div className="absolute top-2 left-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-                      PROMOTED
+                      {t.home.promoted}
                     </div>
                   )}
                   {restaurant.is_new && (
                     <div className="absolute top-2 right-2 bg-green-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-                      NEW
+                      {t.home.new}
                     </div>
                   )}
                 </div>
@@ -594,7 +600,7 @@ export default function HomePage() {
                   <h4 className="font-bold text-sm text-on-surface truncate">{restaurant.name || restaurant.shop_name}</h4>
                   <div className="flex items-center gap-1 mt-1">
                     <span className="text-xs font-bold text-green-700 dark:text-green-400">★ {restaurant.rating || 4.0}</span>
-                    <span className="text-xs text-on-surface-variant/70">• {restaurant.cuisine?.split(",")[0] || "Food"}</span>
+                    <span className="text-xs text-on-surface-variant/70">• {restaurant.cuisine?.split(",")[0] || t.home.various}</span>
                   </div>
                 </div>
               </Link>
@@ -608,9 +614,9 @@ export default function HomePage() {
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-indigo-500" style={{ fontVariationSettings: "'FILL' 1" }}>print</span>
-            <h2 className="text-lg font-bold text-on-surface">Print Store</h2>
+            <h2 className="text-lg font-bold text-on-surface">{t.home.printStore}</h2>
           </div>
-          <Link href="/app/printing" className="text-xs font-bold text-primary">Open →</Link>
+          <Link href="/app/printing" className="text-xs font-bold text-primary">{t.home.open}</Link>
         </div>
         <div className="mt-3">
           <PrintCostCalculator ctaHref="/app/printing" />
@@ -620,8 +626,8 @@ export default function HomePage() {
       {/* Nearby Popular Restaurants */}
       <div className="px-4 pb-4">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-lg font-bold text-on-surface">Nearby Popular 🔥</h2>
-          <Link href="/app/food" className="text-xs font-bold text-primary">See All</Link>
+          <h2 className="text-lg font-bold text-on-surface">{t.home.nearbyPopular} 🔥</h2>
+          <Link href="/app/food" className="text-xs font-bold text-primary">{t.home.seeAll}</Link>
         </div>
         {nearbyRestaurants.filter(r => r.type === 'food' || r.type === 'restaurant').length > 0 ? (
           <div className="space-y-3">
@@ -637,17 +643,17 @@ export default function HomePage() {
                     {restaurant.is_featured && (
                       <div className="absolute top-1 left-1 bg-amber-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
                         <span className="material-symbols-outlined text-xs" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                        Featured
+                        {t.home.featured}
                       </div>
                     )}
                     {restaurant.is_promoted && (
                       <div className="absolute top-1 right-1 bg-purple-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">
-                        Promoted
+                        {t.home.promoted}
                       </div>
                     )}
                     {restaurant.is_new && (
                       <div className="absolute bottom-1 left-1 bg-green-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">
-                        New
+                        {t.home.new}
                       </div>
                     )}
                   </div>
@@ -659,16 +665,16 @@ export default function HomePage() {
                         <span className="text-green-600 dark:text-green-400 text-xs">★</span>
                       </div>
                     </div>
-                    <p className="text-xs text-on-surface-variant mt-1">{restaurant.cuisine || "Various"}</p>
+                    <p className="text-xs text-on-surface-variant mt-1">{restaurant.cuisine || t.home.various}</p>
                     <div className="flex items-center gap-2 mt-2 text-xs text-on-surface-variant">
                       <span className="flex items-center gap-0.5">
                         <span className="material-symbols-outlined text-sm">schedule</span>
-                        25-35 min
+                        {t.home.minDelivery}
                       </span>
                       {restaurant.is_featured && (
                         <span className="flex items-center gap-0.5 text-amber-600">
                           <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                          Top Rated
+                          {t.home.topRated}
                         </span>
                       )}
                     </div>
@@ -682,15 +688,15 @@ export default function HomePage() {
             <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 animate-glow-pulse">
               <span className="material-symbols-outlined text-4xl text-primary">location_on</span>
             </div>
-            <h3 className="text-lg font-black text-on-surface mb-1">Location Required</h3>
+            <h3 className="text-lg font-black text-on-surface mb-1">{t.home.locationRequired}</h3>
             <p className="text-sm text-on-surface-variant mb-5">
-              Please select your delivery location to view matching restaurants and vendors near you.
+              {t.home.locationRequiredDesc}
             </p>
             <button
               onClick={() => setShowLocationModal(true)}
               className="px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-[#a00018] active:scale-95 transition-all shadow-md"
             >
-              Select Delivery PIN Code
+              {t.home.selectPincode}
             </button>
           </div>
         ) : locationStore.pincode ? (
@@ -698,27 +704,27 @@ export default function HomePage() {
             <div className="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="material-symbols-outlined text-4xl text-amber-500">location_off</span>
             </div>
-            <h3 className="text-lg font-black text-on-surface mb-1">Not Available in Your Area</h3>
+            <h3 className="text-lg font-black text-on-surface mb-1">{t.home.notAvailable}</h3>
             <p className="text-sm text-on-surface-variant mb-1">
-              We couldn't find any vendors near
+              {t.home.notAvailableDesc}
             </p>
             <p className="text-sm font-bold text-primary mb-4">
               {locationStore.displayAddress} ({locationStore.pincode})
             </p>
             <p className="text-xs text-slate-400 mb-5">
-              We're expanding every day! Try a nearby pincode or check back soon.
+              {t.home.expanding}
             </p>
             <button
               onClick={() => setShowLocationModal(true)}
               className="px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm"
             >
-              Change Location
+              {t.home.changeLocation}
             </button>
           </div>
         ) : (
           <div className="text-center py-8 text-on-surface-variant/70">
             <span className="material-symbols-outlined text-4xl mb-2">restaurant</span>
-            <p>No restaurants available nearby</p>
+            <p>{t.home.noRestaurantsNearby}</p>
           </div>
         )}
       </div>
@@ -728,17 +734,17 @@ export default function HomePage() {
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end md:items-center justify-center animate-fade-in" role="dialog" aria-modal="true" aria-labelledby="location-modal-title">
           <div className="bg-surface-container w-full md:w-96 rounded-t-3xl md:rounded-3xl p-6 border-t border-x border-outline-variant/10 md:border animate-in slide-in-from-bottom duration-300">
             <div className="flex items-center justify-between mb-4">
-              <h2 id="location-modal-title" className="text-xl font-black text-on-surface">Enter Delivery PIN Code</h2>
+              <h2 id="location-modal-title" className="text-xl font-black text-on-surface">{t.home.enterPincode}</h2>
               <button onClick={() => setShowLocationModal(false)} aria-label="Close location modal" className="w-8 h-8 bg-surface-container-high rounded-full flex items-center justify-center">
                 <span className="material-symbols-outlined text-on-surface-variant" aria-hidden="true">close</span>
               </button>
             </div>
 
-            <p className="text-sm text-on-surface-variant mb-4">Enter your 6-digit PIN code to check delivery availability in your area.</p>
+            <p className="text-sm text-on-surface-variant mb-4">{t.home.enterPincodeDesc}</p>
 
             {/* Pincode Entry */}
             <div className="mb-4">
-              <label className="text-xs font-bold text-slate-500 mb-1 block">PIN Code</label>
+              <label className="text-xs font-bold text-slate-500 mb-1 block">{t.home.pincode}</label>
               <input
                 type="tel"
                 inputMode="numeric"
@@ -748,7 +754,7 @@ export default function HomePage() {
                   setManualPincode(e.target.value.replace(/\D/g, ""));
                   setPincodeError("");
                 }}
-                placeholder="Enter 6-digit PIN Code"
+                placeholder={t.home.enter6Digit}
                 className="w-full px-4 py-4 bg-surface-container-high rounded-xl border-2 border-transparent focus:border-primary outline-none text-2xl font-black tracking-[0.5em] text-center text-on-surface"
                 autoFocus
               />
@@ -763,16 +769,16 @@ export default function HomePage() {
               {isLoadingLocation ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  Detecting Area...
+                  {t.home.detectingArea}
                 </>
               ) : (
-                "Check Availability"
+                t.home.checkAvailability
               )}
             </button>
 
             <div className="flex items-center gap-3 mb-2">
               <div className="flex-1 h-px bg-outline-variant/20" />
-              <span className="text-xs text-gray-400 font-bold">OR</span>
+              <span className="text-xs text-gray-400 font-bold">{t.home.or}</span>
               <div className="flex-1 h-px bg-outline-variant/20" />
             </div>
 
@@ -790,8 +796,8 @@ export default function HomePage() {
                 )}
               </div>
               <div className="text-left">
-                <p className="font-bold text-on-surface text-sm">Detect My Location</p>
-                <p className="text-[10px] text-on-surface-variant">Use GPS to auto-fill PIN code</p>
+                <p className="font-bold text-on-surface text-sm">{t.home.detectMyLocation}</p>
+                <p className="text-[10px] text-on-surface-variant">{t.home.useGps}</p>
               </div>
             </button>
           </div>
@@ -808,7 +814,7 @@ export default function HomePage() {
           >
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-outline-variant/10">
-              <h2 id="notifications-title" className="text-xl font-black text-on-surface">Notifications</h2>
+              <h2 id="notifications-title" className="text-xl font-black text-on-surface">{t.home.notifications}</h2>
               <button 
                 onClick={() => setShowNotifications(false)}
                 aria-label="Close notifications"
@@ -821,13 +827,13 @@ export default function HomePage() {
             {/* Tabs */}
             <div className="flex border-b border-outline-variant/10" role="tablist" aria-label="Notification categories">
               <button role="tab" aria-selected="true" className="flex-1 py-3 text-sm font-bold text-primary border-b-2 border-primary">
-                All
+                {t.home.all}
               </button>
               <button role="tab" aria-selected="false" className="flex-1 py-3 text-sm font-bold text-gray-400">
-                Orders
+                {t.home.ordersTab}
               </button>
               <button role="tab" aria-selected="false" className="flex-1 py-3 text-sm font-bold text-gray-400">
-                Offers
+                {t.home.offersTab}
               </button>
             </div>
 
@@ -855,7 +861,7 @@ export default function HomePage() {
                       <p className="text-xs text-on-surface-variant mt-1">{notif.body || notif.message}</p>
                       {notif.type === "offer" && (
                         <button className="mt-2 text-xs font-bold text-primary" aria-label={`Apply offer: ${notif.title}`}>
-                          Apply Now →
+                          {t.home.applyNow}
                         </button>
                       )}
                     </div>
@@ -867,7 +873,7 @@ export default function HomePage() {
               {notifications.length === 0 && (
                 <div className="p-8 text-center">
                   <span className="material-symbols-outlined text-4xl text-gray-300">notifications_off</span>
-                  <p className="text-gray-500 mt-2">No notifications yet</p>
+                  <p className="text-gray-500 mt-2">{t.home.noNotifications}</p>
                 </div>
               )}
             </div>

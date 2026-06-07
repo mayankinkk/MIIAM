@@ -168,6 +168,12 @@ const hi: Translations = {
     estimatedDelivery: "अनुमानित डिलीवरी",
     trackOrder: "ऑर्डर ट्रैक करें →",
     topRated: "शीर्ष रेटेड",
+    selectLocation: "स्थान चुनें",
+    applyNow: "अभी लागू करें →",
+    ordersTab: "ऑर्डर",
+    offersTab: "ऑफर",
+    various: "विभिन्न",
+    or: "या",
   },
   food: {
     title: "खाना डिलीवरी",

@@ -168,6 +168,12 @@ const as: Translations = {
     estimatedDelivery: "আনুমানিক ডেলিভাৰী",
     trackOrder: "অৰ্ডাৰ ট্ৰেক কৰক →",
     topRated: "শীৰ্ষ মূল্যাঙ্কিত",
+    selectLocation: "স্থান নিৰ্বাচন কৰক",
+    applyNow: "এতিয়াই প্ৰয়োগ কৰক →",
+    ordersTab: "অৰ্ডাৰ",
+    offersTab: "অফাৰ",
+    various: "বিভিন্ন",
+    or: "অথবা",
   },
   food: {
     title: "খাদ্য ডেলিভাৰী",

@@ -166,6 +166,12 @@ const en = {
     estimatedDelivery: "Estimated Delivery",
     trackOrder: "Track Order →",
     topRated: "Top Rated",
+    selectLocation: "Select Location",
+    applyNow: "Apply Now →",
+    ordersTab: "Orders",
+    offersTab: "Offers",
+    various: "Various",
+    or: "OR",
   },
   food: {
     title: "Food Delivery",
