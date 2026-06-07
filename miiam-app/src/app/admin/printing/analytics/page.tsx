@@ -83,12 +83,11 @@ export default function AdminPrintingAnalytics() {
         totalPages += pages;
         if (s.colorMode === "bw") bwCount++;
         else if (s.colorMode === "color") colorCount++;
-        if (s.addOns && Array.isArray(s.addOns)) {
-          // Approximate add-on revenue as 15% of order subtotal if add-ons present
-          addOnsRevenue += (o.total_amount || 0) * 0.15;
+        if (s.addOns && Array.isArray(s.addOns) && s.addOns.length > 0) {
+          addOnsRevenue += s.addOnsTotal || 0;
         }
-        if (s.rushTier && s.rushTier !== "standard") {
-          rushRevenue += (o.total_amount || 0) * 0.3;
+        if (s.rushTier && s.rushTier !== "standard" && s.rushMultiplier > 1) {
+          rushRevenue += (s.subtotal || 0) - (s.baseSubtotal || 0);
         }
       } catch (e) {
         console.warn("[print-analytics] Failed to parse order special_notes:", e);

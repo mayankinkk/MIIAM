@@ -361,6 +361,7 @@ export default function PrintingPage() {
       totalPages: totalPagesEffective,
       subtotal: grandTotal,
       baseSubtotal,
+      addOnsTotal,
     };
 
     cartStore.addItem({
