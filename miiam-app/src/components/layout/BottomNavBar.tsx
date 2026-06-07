@@ -12,6 +12,9 @@ export default function BottomNavBar() {
   const [isMounted, setIsMounted] = useState(false);
   const { t } = useTranslation();
 
+  const hideOnRoutes = ["/app/checkout", "/app/payment", "/app/vendor-failure", "/app/support/chat"];
+  if (hideOnRoutes.some((r) => pathname.startsWith(r))) return null;
+
   const navItems = [
     { href: "/app/home", icon: "home", label: t.common.home },
     { href: "/app/food", icon: "restaurant", label: t.nav.food },
