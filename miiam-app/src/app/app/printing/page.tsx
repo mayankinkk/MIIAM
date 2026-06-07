@@ -332,7 +332,16 @@ export default function PrintingPage() {
     if (files.length === 0) { toast.addToast("Please upload at least one file", "error"); return; }
     if (!isEnabled) { toast.addToast("Printing service is currently unavailable", "error"); return; }
 
+    const firstFile = files[0];
     const settings = {
+      pages: totalPagesEffective,
+      copies: firstFile.settings.copies,
+      colorMode: firstFile.settings.colorMode,
+      paperSize: firstFile.settings.paperSize,
+      orientation: firstFile.settings.orientation,
+      sides: firstFile.settings.sides,
+      paperType: firstFile.settings.paperType,
+      quality: firstFile.settings.quality,
       fileUrls: files.map((f) => f.url),
       fileNames: files.map((f) => f.name),
       perFile: files.map((f) => ({
