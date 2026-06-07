@@ -102,10 +102,18 @@ export default function ChatModal({
             ))}
           </div>
           <div className="flex gap-2 items-center">
-            <button className="p-2 text-slate-400 hover:text-[#0b50d5] hover:bg-slate-100 rounded-full" title="Attach file">
+            <button
+              onClick={() => import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("File attachment coming soon", "info"))}
+              className="p-2 text-slate-400 hover:text-[#0b50d5] hover:bg-slate-100 rounded-full"
+              title="Attach file"
+            >
               <span className="material-symbols-outlined">attach_file</span>
             </button>
-            <button className="p-2 text-slate-400 hover:text-[#0b50d5] hover:bg-slate-100 rounded-full" title="Voice message">
+            <button
+              onClick={() => import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Voice messages coming soon", "info"))}
+              className="p-2 text-slate-400 hover:text-[#0b50d5] hover:bg-slate-100 rounded-full"
+              title="Voice message"
+            >
               <span className="material-symbols-outlined">mic</span>
             </button>
             <input

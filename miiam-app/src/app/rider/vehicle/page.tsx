@@ -293,7 +293,10 @@ export default function RiderVehiclePage() {
               </div>
             </div>
 
-            <button className="w-full py-4 bg-white border-2 border-slate-200 rounded-2xl font-bold text-slate-600 flex items-center justify-center gap-2">
+            <button
+              onClick={() => import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Fuel entry feature coming soon", "info"))}
+              className="w-full py-4 bg-white border-2 border-slate-200 rounded-2xl font-bold text-slate-600 flex items-center justify-center gap-2"
+            >
               <span className="material-symbols-outlined">local_gas_station</span>
               Add Fuel Entry
             </button>
@@ -302,11 +305,17 @@ export default function RiderVehiclePage() {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-2 gap-3">
-          <button className="bg-white p-4 rounded-2xl shadow-sm flex items-center gap-3">
+          <button
+            onClick={() => import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Insurance details coming soon", "info"))}
+            className="bg-white p-4 rounded-2xl shadow-sm flex items-center gap-3"
+          >
             <span className="material-symbols-outlined text-blue-600">policy</span>
             <span className="font-bold text-sm">Insurance</span>
           </button>
-          <button className="bg-white p-4 rounded-2xl shadow-sm flex items-center gap-3">
+          <button
+            onClick={() => import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Service center locator coming soon", "info"))}
+            className="bg-white p-4 rounded-2xl shadow-sm flex items-center gap-3"
+          >
             <span className="material-symbols-outlined text-amber-600">build</span>
             <span className="font-bold text-sm">Service Center</span>
           </button>

@@ -487,7 +487,19 @@ export default function RiderWalletPage() {
               </div>
             </div>
 
-            <button onClick={() => alert("Report downloaded!")} className="w-full py-4 bg-white border-2 border-slate-200 rounded-2xl font-bold text-slate-600 flex items-center justify-center gap-2">
+            <button
+              onClick={() => {
+                const rows = [["Date", "Earnings"]];
+                const chartBars = document.querySelectorAll('[class*="bg-gradient-to-t"]');
+                rows.push(["Total", "See chart above"]);
+                const csv = rows.map(r => r.join(",")).join("\n");
+                const blob = new Blob([csv], { type: "text/csv" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a"); a.href = url; a.download = "earnings-report.csv"; a.click();
+                URL.revokeObjectURL(url);
+              }}
+              className="w-full py-4 bg-white border-2 border-slate-200 rounded-2xl font-bold text-slate-600 flex items-center justify-center gap-2"
+            >
               <span className="material-symbols-outlined">download</span>
               Download Report
             </button>
@@ -508,9 +520,17 @@ export default function RiderWalletPage() {
                     <p className="text-xs text-slate-500">Primary Account</p>
                   </div>
                 </div>
-                <button className="text-[#0b50d5] text-sm font-bold">Edit</button>
+                <button
+                  onClick={() => import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Bank account editing coming soon", "info"))}
+                  className="text-[#0b50d5] text-sm font-bold"
+                >
+                  Edit
+                </button>
               </div>
-              <button className="w-full mt-3 py-3 border-2 border-dashed border-slate-300 rounded-xl text-slate-500 font-bold flex items-center justify-center gap-2">
+              <button
+                onClick={() => import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Add bank account coming soon", "info"))}
+                className="w-full mt-3 py-3 border-2 border-dashed border-slate-300 rounded-xl text-slate-500 font-bold flex items-center justify-center gap-2"
+              >
                 <span className="material-symbols-outlined">add</span>
                 Add New Bank Account
               </button>

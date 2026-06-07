@@ -182,9 +182,9 @@ export default function RiderAccountPage() {
                 <span className="text-slate-400 text-sm">• {displayRider.totalDeliveries} deliveries</span>
               </div>
             </div>
-            <button className="p-2 bg-slate-100 rounded-full">
+            <Link href="/rider/account" className="p-2 bg-slate-100 rounded-full">
               <span className="material-symbols-outlined text-slate-600">edit</span>
-            </button>
+            </Link>
           </div>
         </div>
 

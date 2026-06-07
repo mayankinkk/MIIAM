@@ -140,10 +140,9 @@ export default function RiderAchievementsPage() {
           <button 
             onClick={() => {
               if (totalPoints < 100) {
-                alert("You need at least 100 points to redeem. Keep unlocking achievements!");
+                import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("You need at least 100 points to redeem. Keep unlocking achievements!", "info"));
               } else {
-                const redeemed = Math.floor(totalPoints / 100) * 100;
-                alert(`You can redeem ${redeemed} points! This feature will connect to the rewards catalog. You have ${totalPoints} points available.`);
+                import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast(`Redeeming ${Math.floor(totalPoints / 100) * 100} points! Rewards catalog coming soon.`, "success"));
               }
             }}
             className="px-4 py-2 bg-amber-500 text-white rounded-lg font-bold text-sm"

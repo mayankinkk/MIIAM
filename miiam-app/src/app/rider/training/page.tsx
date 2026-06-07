@@ -205,7 +205,13 @@ export default function RiderTrainingPage() {
           <div className="text-4xl mb-2">🏆</div>
           <h3 className="font-bold text-purple-800">Complete All Training</h3>
           <p className="text-xs text-purple-600 mb-3">Get your official MIIAM rider certificate</p>
-          <button onClick={() => alert(watchedCount === videos.length ? "Congratulations! You've completed all training. Certificate available." : `Complete all ${videos.length} videos to unlock your certificate (${watchedCount}/${videos.length})`)} className="px-6 py-2 bg-purple-500 text-white font-bold rounded-full text-sm">
+          <button onClick={() => {
+            if (watchedCount === videos.length) {
+              import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Congratulations! Certificate download coming soon.", "success"));
+            } else {
+              import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast(`Complete all ${videos.length} videos to unlock your certificate (${watchedCount}/${videos.length})`, "info"));
+            }
+          }} className="px-6 py-2 bg-purple-500 text-white font-bold rounded-full text-sm">
             {watchedCount === videos.length ? "View Certificate 🎉" : `${watchedCount}/${videos.length} Videos`}
           </button>
         </div>

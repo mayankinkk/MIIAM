@@ -125,6 +125,7 @@ export default function RiderDashboard() {
     "Order unavailable",
     "Other"
   ]);
+  const [pickedItems, setPickedItems] = useState<Set<number>>(new Set());
 
   // Low Battery
   const [batteryLevel, setBatteryLevel] = useState(85);
@@ -1101,7 +1102,7 @@ export default function RiderDashboard() {
         </div>
         <div className="flex items-center gap-2">
           <button 
-            onClick={() => alert("Emergency: Calling MIIAM Support...")}
+            onClick={() => window.open("tel:+9118001234567", "_self")}
             className="p-2 bg-red-50 rounded-full animate-pulse" 
             title="Emergency SOS"
           >
@@ -1484,8 +1485,15 @@ export default function RiderDashboard() {
                         {currentOrder.itemsList.map((item, i) => (
                           <div key={i} className="flex items-center justify-between p-2 bg-white rounded-lg">
                             <span className="text-sm font-medium text-slate-700">• {item}</span>
-                            <button className="text-[10px] px-2 py-1 bg-green-100 text-green-700 rounded-full font-bold">
-                              ✓ PICKED
+                            <button
+                              onClick={() => setPickedItems(prev => {
+                                const next = new Set(prev);
+                                if (next.has(i)) next.delete(i); else next.add(i);
+                                return next;
+                              })}
+                              className={`text-[10px] px-2 py-1 rounded-full font-bold ${pickedItems.has(i) ? "bg-green-500 text-white" : "bg-green-100 text-green-700"}`}
+                            >
+                              {pickedItems.has(i) ? "✓ PICKED" : "PICK"}
                             </button>
                           </div>
                         ))}
@@ -1649,7 +1657,18 @@ export default function RiderDashboard() {
                       </button>
                     </div>
                     <button 
-                      onClick={() => alert("Location shared with customer!")}
+                      onClick={() => {
+                        if (navigator.geolocation) {
+                          navigator.geolocation.getCurrentPosition(
+                            (pos) => {
+                              const url = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
+                              navigator.clipboard.writeText(url);
+                              import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Location link copied!", "success"));
+                            },
+                            () => import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Could not get location", "error"))
+                          );
+                        }
+                      }}
                       className="w-full mt-3 py-2 bg-green-100 text-green-700 font-bold rounded-xl flex items-center justify-center gap-2"
                     >
                       <span className="material-symbols-outlined">share_location</span>
@@ -1700,7 +1719,18 @@ export default function RiderDashboard() {
                       </button>
                     </div>
                     <button 
-                      onClick={() => alert("Location shared with customer!")}
+                      onClick={() => {
+                        if (navigator.geolocation) {
+                          navigator.geolocation.getCurrentPosition(
+                            (pos) => {
+                              const url = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
+                              navigator.clipboard.writeText(url);
+                              import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Location link copied!", "success"));
+                            },
+                            () => import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Could not get location", "error"))
+                          );
+                        }
+                      }}
                       className="w-full mt-3 py-2 bg-green-100 text-green-700 font-bold rounded-xl flex items-center justify-center gap-2"
                     >
                       <span className="material-symbols-outlined">share_location</span>
