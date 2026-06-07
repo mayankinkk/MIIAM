@@ -591,9 +591,7 @@ export default function PrintingPage() {
                       copies={files[0]?.settings.copies || 1}
                       onChange={(n) => {
                         if (files.length === 0) return;
-                        const updated = { ...files[0], settings: { ...files[0].settings, copies: n } };
                         setFiles((prev) => prev.map((f) => ({ ...f, settings: { ...f.settings, copies: n } })));
-                        updateFile(files[0].id, updated);
                       }}
                     />
                   )}
