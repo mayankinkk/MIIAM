@@ -31,16 +31,16 @@ export default function NotFound() {
         <div className="mt-8 pt-6 border-t border-slate-200">
           <p className="text-sm text-slate-500 mb-3">Quick Links</p>
           <div className="flex flex-wrap justify-center gap-2">
-            <Link href="/food" className="text-xs px-3 py-1 bg-slate-100 rounded-full text-slate-600 hover:bg-slate-200">
+            <Link href="/app/food" className="text-xs px-3 py-1 bg-slate-100 rounded-full text-slate-600 hover:bg-slate-200">
               Food
             </Link>
-            <Link href="/grocery" className="text-xs px-3 py-1 bg-slate-100 rounded-full text-slate-600 hover:bg-slate-200">
+            <Link href="/app/grocery" className="text-xs px-3 py-1 bg-slate-100 rounded-full text-slate-600 hover:bg-slate-200">
               Grocery
             </Link>
-            <Link href="/pharmacy" className="text-xs px-3 py-1 bg-slate-100 rounded-full text-slate-600 hover:bg-slate-200">
+            <Link href="/app/pharmacy" className="text-xs px-3 py-1 bg-slate-100 rounded-full text-slate-600 hover:bg-slate-200">
               Pharmacy
             </Link>
-            <Link href="/services" className="text-xs px-3 py-1 bg-slate-100 rounded-full text-slate-600 hover:bg-slate-200">
+            <Link href="/app/services" className="text-xs px-3 py-1 bg-slate-100 rounded-full text-slate-600 hover:bg-slate-200">
               Services
             </Link>
             <Link href="/partner" className="text-xs px-3 py-1 bg-slate-100 rounded-full text-slate-600 hover:bg-slate-200">
