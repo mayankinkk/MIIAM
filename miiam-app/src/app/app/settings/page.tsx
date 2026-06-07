@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -14,7 +14,7 @@ export default function SettingsPage() {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
 
-  const settingsSections = [
+  const settingsSections = useMemo(() => [
     {
       title: t.settings.account,
       items: [
@@ -39,7 +39,7 @@ export default function SettingsPage() {
         { id: "legal", icon: "description", label: t.settings.legal, sub: t.settings.legalSub, href: "/app/settings/legal" },
       ]
     },
-  ];
+  ], [t]);
 
   const handleSignOut = async () => {
     setLoading(true);
