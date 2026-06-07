@@ -85,7 +85,7 @@ export default function SecurityPage() {
           </div>
           {twoFAEnabled && (
             <div className="mt-3 bg-surface-container-low border border-outline-variant/20 rounded-xl p-3 text-on-surface-variant">
-              <p className="text-xs font-bold">2FA setup via authenticator app coming soon.</p>
+              <p className="text-xs font-bold">Contact support to enable 2FA via authenticator app.</p>
             </div>
           )}
         </div>

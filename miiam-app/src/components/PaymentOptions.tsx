@@ -114,7 +114,7 @@ export function PaymentOptions({ total, selected, onSelect, walletBalance = 0 }:
       {selected === "card" && (
         <div className="ml-14 p-4 bg-slate-50 rounded-xl">
           <p className="text-sm text-slate-500 text-center py-4">
-            Card payments will be processed securely via Razorpay/Stripe — coming soon.
+            Contact support to enable card payments via Razorpay/Stripe.
           </p>
         </div>
       )}

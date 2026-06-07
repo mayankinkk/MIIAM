@@ -327,7 +327,7 @@ export default function PharmacyPartnersPage() {
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <label className="text-xs font-bold text-slate-600 mb-1 block">Phone *</label>
-                      <input type="tel" value={newPartner.phone} onChange={(e) => setNewPartner({ ...newPartner, phone: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="+91 XXXXX XXXXX" />
+                      <input type="tel" value={newPartner.phone} onChange={(e) => setNewPartner({ ...newPartner, phone: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="1800-123-4567" />
                     </div>
                     <div>
                       <label className="text-xs font-bold text-slate-600 mb-1 block">Email</label>

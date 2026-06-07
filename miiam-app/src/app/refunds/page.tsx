@@ -195,7 +195,7 @@ export default function RefundsPage() {
                     <li>Go to My Orders in the app → select the order → tap Report an Issue</li>
                     <li>Chat with us via the Help section in the app</li>
                     <li>Email us at support@miiam.in with your order ID and issue description</li>
-                    <li>WhatsApp us at +91-XXXXXXXXXX</li>
+                    <li>WhatsApp us at 1800-123-4567</li>
                   </ul>
                   <p className="mt-4 text-slate-500 text-sm">
                     All refund requests for food orders must be raised within 24 hours of delivery. For home services, raise the issue within 48 hours of service completion.

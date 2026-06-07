@@ -180,7 +180,7 @@ export default function BeautyPage() {
           <span className="material-symbols-outlined text-amber-600 text-xl animate-bounce">warning</span>
           <div className="flex-1">
             <p className="text-xs font-bold text-amber-800">Not serviceable at {userPincode ? `Pincode ${userPincode}` : userCity}</p>
-            <p className="text-[10px] text-amber-600 font-medium">Beauty & Spa services are coming soon to your area. You can still browse our services!</p>
+            <p className="text-[10px] text-amber-600 font-medium">Beauty & Spa services are not yet available in your area. You can still browse our services!</p>
           </div>
         </div>
       )}

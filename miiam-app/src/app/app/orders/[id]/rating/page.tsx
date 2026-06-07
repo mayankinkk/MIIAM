@@ -324,7 +324,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
                   fill
                   className="w-full h-full"
                   sizes="80px"
-                  src={order?.rider?.profile_image || "https://via.placeholder.com/80"} 
+                  src={order?.rider?.profile_image || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Crect width='80' height='80' fill='%23e0e0e0'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='32' fill='%239e9e9e'%3E%F0%9F%9A%B5%3C/text%3E%3C/svg%3E"} 
                 />
               </div>
               <div className="absolute -bottom-2 -right-2 bg-secondary text-white rounded-full p-1.5 shadow-md">

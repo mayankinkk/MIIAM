@@ -8,7 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 const supabase = createClient();
 
 const BOT_RESPONSES: Record<string, string> = {
-  default: "Thanks for reaching out! A support agent will respond shortly. For urgent issues, call us at 1800-XXX-XXXX.",
+  default: "Thanks for reaching out! A support agent will respond shortly. For urgent issues, call us at 1800-123-4567.",
   order: "I can see you have a question about an order. Please share your order ID and we'll look into it right away!",
   refund: "Refunds are processed within 5-7 business days to your original payment method. Can you share your order ID?",
   delivery: "If your delivery is delayed, please wait 10 extra minutes. If still not arrived, share your order ID and we'll coordinate with the rider.",

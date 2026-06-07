@@ -335,7 +335,7 @@ export default function ServiceProductGrid({
               {userPincode ? `Pincode ${userPincode}` : userCity}
             </p>
             <p className="text-[10px] text-amber-600 font-medium">
-              {deliveryNoun} delivery is coming soon to your area. You can still
+              {deliveryNoun} delivery is not yet available in your area. You can still
               browse our catalog!
             </p>
           </div>
@@ -506,7 +506,7 @@ export default function ServiceProductGrid({
               <span className="material-symbols-outlined text-4xl text-amber-500">location_off</span>
             </div>
             <h3 className="text-lg font-black text-on-surface">Not Serviceable</h3>
-            <p className="text-on-surface-variant text-sm mt-2 max-w-[240px] mx-auto">{serviceName} delivery is coming soon to your area. Try a nearby pincode!</p>
+            <p className="text-on-surface-variant text-sm mt-2 max-w-[240px] mx-auto">{serviceName} delivery is not yet available in your area. Try a nearby pincode!</p>
             <button 
               onClick={() => { router.push("/app/home?selectLocation=true"); }}
               className="mt-6 px-6 py-2.5 bg-amber-600 text-white rounded-full font-bold text-sm hover:bg-amber-700 active:scale-95 transition-all shadow-md"
