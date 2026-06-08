@@ -2,8 +2,11 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import dynamic from "next/dynamic";
 import { createClient } from "@/lib/supabase/client";
 import type { Rider } from "@/lib/types";
+
+const AdminRiderMap = dynamic(() => import("@/components/admin/AdminRiderMap"), { ssr: false });
 
 function RidersPage() {
   const supabase = createClient();
@@ -142,11 +145,8 @@ function RidersPage() {
             <h2 className="font-black text-slate-800 uppercase text-sm">Live Map</h2>
             <div className="flex items-center gap-2"><span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span><span className="text-xs font-bold text-slate-400">Live</span></div>
           </div>
-          <div className="h-[400px] bg-slate-100 flex items-center justify-center relative">
-            {riders.filter(r => r.is_online).map((rider, i) => (
-              <div key={rider.id} className="absolute w-4 h-4 bg-[#ba001c] rounded-full border-2 border-white shadow-lg animate-pulse" style={{ left: `${30 + (i * 10) % 60}%`, top: `${20 + (i * 15) % 60}%` }} onClick={() => setSelectedRider(rider)} />
-            ))}
-            <div className="absolute bottom-4 left-4 bg-white px-3 py-2 rounded-xl shadow-lg text-xs"><p className="font-bold text-slate-600">{onlineCount} riders online</p></div>
+          <div className="h-[400px] bg-slate-100 relative">
+            <AdminRiderMap riders={riders} onRiderClick={setSelectedRider} />
           </div>
         </div>
 

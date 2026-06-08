@@ -200,6 +200,12 @@ CREATE POLICY "Vendors can view rider locations for their orders" ON public.ride
       WHERE orders.id = rider_locations.order_id AND vendors.user_id = auth.uid())
   );
 
+DROP POLICY IF EXISTS "Admins can view all rider locations" ON public.rider_locations;
+CREATE POLICY "Admins can view all rider locations" ON public.rider_locations
+  FOR SELECT USING (
+    EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')
+  );
+
 -- ============================================================
 -- ORDER ITEMS
 -- ============================================================
