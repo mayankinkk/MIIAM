@@ -55,7 +55,6 @@ export default function AdminRiderMap({ riders, onRiderClick }: Props) {
     async function init() {
       const L = await import("leaflet");
       leafletRef.current = L;
-      await import("leaflet/dist/leaflet.css");
 
       if (!isMounted || !mapRef.current) return;
 
@@ -72,7 +71,11 @@ export default function AdminRiderMap({ riders, onRiderClick }: Props) {
       }).addTo(map);
 
       mapInstanceRef.current = map;
-      setTimeout(() => map.invalidateSize(), 100);
+
+      // Multiple invalidateSize calls to handle dynamic container rendering
+      requestAnimationFrame(() => map.invalidateSize());
+      setTimeout(() => map.invalidateSize(), 300);
+      setTimeout(() => map.invalidateSize(), 1000);
     }
 
     init();
@@ -197,8 +200,16 @@ export default function AdminRiderMap({ riders, onRiderClick }: Props) {
       <style>{`
         @keyframes pulse-ring { 0%{transform:scale(0.8);opacity:0.8} 100%{transform:scale(1.8);opacity:0} }
         .rider-marker { background: transparent !important; border: 0 !important; }
+        .leaflet-container { width: 100%; height: 100%; margin: 0; padding: 0; }
+        .leaflet-pane { z-index: 1; }
+        .leaflet-tile-pane { z-index: 0; }
+        .leaflet-overlay-pane { z-index: 2; }
+        .leaflet-marker-pane { z-index: 3; }
+        .leaflet-popup-pane { z-index: 4; }
+        .leaflet-tile { position: absolute; left: 0; bottom: -1px; }
+        .leaflet-container .leaflet-control-attribution { font-size: 9px; }
       `}</style>
-      <div ref={mapRef} className="w-full h-full" />
+      <div ref={mapRef} className="w-full h-full" style={{ position: "absolute", inset: 0 }} />
       {locations.length === 0 && (
         <div className="absolute inset-0 flex items-center justify-center bg-slate-50/80 pointer-events-none">
           <div className="text-center">

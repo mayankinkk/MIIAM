@@ -128,7 +128,6 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
     let mounted = true;
     (async () => {
       const L = await import("leaflet");
-      await import("leaflet/dist/leaflet.css");
       if (!mounted || !mapRef.current) return;
 
       const initialLoc = pickedLocation || { lat: 28.6139, lng: 77.2090 };
@@ -148,6 +147,8 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
       const marker = L.marker([initialLoc.lat, initialLoc.lng], { icon, draggable: true }).addTo(map);
       markerRef.current = marker;
       mapInstanceRef.current = map;
+      requestAnimationFrame(() => map.invalidateSize());
+      setTimeout(() => map.invalidateSize(), 300);
 
       marker.on("dragend", async (e: any) => {
         const { lat, lng } = e.target.getLatLng();
@@ -433,7 +434,7 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
               {pickedLocation && (
                 <div className="space-y-3">
                   <div className="rounded-2xl overflow-hidden border-2 border-[#ba001c]/20" style={{ height: 200 }}>
-                    <div ref={mapRef} className="w-full h-full" />
+                    <div ref={mapRef} className="w-full h-full" style={{ position: "relative" }} />
                   </div>
                   <p className="text-xs text-slate-500 text-center">Drag the pin to fine-tune the location</p>
 

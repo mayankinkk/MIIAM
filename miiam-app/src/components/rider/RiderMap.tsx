@@ -157,7 +157,6 @@ export default function RiderMap({
     async function init() {
       const L = await import("leaflet");
       leafletRef.current = L;
-      await import("leaflet/dist/leaflet.css");
 
       if (!isMounted || !mapRef.current) return;
 
@@ -174,7 +173,9 @@ export default function RiderMap({
       }).addTo(map);
 
       mapInstanceRef.current = map;
-      map.invalidateSize();
+      requestAnimationFrame(() => map.invalidateSize());
+      setTimeout(() => map.invalidateSize(), 300);
+      setTimeout(() => map.invalidateSize(), 1000);
     }
 
     init();
@@ -416,12 +417,19 @@ export default function RiderMap({
         @keyframes pulse-ring { 0%{transform:scale(0.8);opacity:0.8} 100%{transform:scale(1.8);opacity:0} }
         .rider-marker { background: transparent !important; border: 0 !important; }
         @keyframes orbit-dot { 0% { offset-distance: 0%; opacity: 1; } 80% { opacity: 1; } 100% { offset-distance: 100%; opacity: 0; } }
+        .leaflet-container { width: 100%; height: 100%; margin: 0; padding: 0; }
+        .leaflet-pane { z-index: 1; }
+        .leaflet-tile-pane { z-index: 0; }
+        .leaflet-overlay-pane { z-index: 2; }
+        .leaflet-marker-pane { z-index: 3; }
+        .leaflet-popup-pane { z-index: 4; }
+        .leaflet-tile { position: absolute; left: 0; bottom: -1px; }
       `}</style>
       <div className="absolute top-3 left-3 z-10 bg-red-600 text-white text-[10px] font-black px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
         <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
         LIVE
       </div>
-      <div ref={mapRef} className="w-full h-full" />
+      <div ref={mapRef} className="w-full h-full" style={{ position: "absolute", inset: 0 }} />
     </div>
   );
 }

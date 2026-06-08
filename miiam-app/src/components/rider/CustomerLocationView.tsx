@@ -25,7 +25,6 @@ export default function CustomerLocationView({ orderId, className = "", height =
     async function init() {
       const L = await import("leaflet");
       leafletRef.current = L;
-      await import("leaflet/dist/leaflet.css");
       if (!isMounted || !mapRef.current) return;
 
       const map = L.map(mapRef.current, {
@@ -40,6 +39,8 @@ export default function CustomerLocationView({ orderId, className = "", height =
         maxZoom: 19,
       }).addTo(map);
       mapInstanceRef.current = map;
+      requestAnimationFrame(() => map.invalidateSize());
+      setTimeout(() => map.invalidateSize(), 300);
     }
     init();
     return () => {
@@ -111,7 +112,12 @@ export default function CustomerLocationView({ orderId, className = "", height =
         )}
       </div>
       <div className="relative" style={{ height }}>
-        <style>{`@keyframes pulse-ring { 0%{transform:scale(0.8);opacity:0.8} 100%{transform:scale(1.8);opacity:0} } .customer-live-pin{background:transparent!important;border:0!important;}`}</style>
+        <style>{`
+          @keyframes pulse-ring { 0%{transform:scale(0.8);opacity:0.8} 100%{transform:scale(1.8);opacity:0} }
+          .customer-live-pin{background:transparent!important;border:0!important;}
+          .leaflet-container { width: 100%; height: 100%; margin: 0; padding: 0; }
+          .leaflet-tile { position: absolute; left: 0; bottom: -1px; }
+        `}</style>
         {loading && !location && (
           <div className="absolute inset-0 z-10 flex items-center justify-center bg-surface-container text-on-surface-variant text-xs">
             Waiting for customer to share...
@@ -124,7 +130,7 @@ export default function CustomerLocationView({ orderId, className = "", height =
             <p className="text-[10px] text-outline">You can ask the customer to share it via chat</p>
           </div>
         )}
-        <div ref={mapRef} className="w-full h-full" />
+        <div ref={mapRef} className="w-full h-full" style={{ position: "absolute", inset: 0 }} />
       </div>
     </div>
   );
