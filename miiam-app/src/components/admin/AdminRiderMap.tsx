@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { Rider } from "@/lib/types";
 
@@ -25,10 +25,10 @@ export default function AdminRiderMap({ riders, onRiderClick }: Props) {
   const leafletRef = useRef<any>(null);
   const [locations, setLocations] = useState<RiderLocation[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const mapReadyRef = useRef(false);
 
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
 
-  // Load rider locations
   async function loadLocations() {
     const { data } = await supabase
       .from("rider_locations")
@@ -36,7 +36,6 @@ export default function AdminRiderMap({ riders, onRiderClick }: Props) {
       .order("created_at", { ascending: false });
 
     if (data) {
-      // Keep only the most recent location per rider
       const latest = new Map<string, RiderLocation>();
       for (const loc of data) {
         if (!latest.has(loc.rider_id) || new Date(loc.created_at) > new Date(latest.get(loc.rider_id)!.created_at)) {
@@ -47,7 +46,7 @@ export default function AdminRiderMap({ riders, onRiderClick }: Props) {
     }
   }
 
-  // Initialize map
+  // Initialize map, then load locations AFTER map is ready
   useEffect(() => {
     if (!mapRef.current) return;
     let isMounted = true;
@@ -71,18 +70,21 @@ export default function AdminRiderMap({ riders, onRiderClick }: Props) {
       }).addTo(map);
 
       mapInstanceRef.current = map;
+      mapReadyRef.current = true;
 
-      // Multiple invalidateSize calls to handle dynamic container rendering
       requestAnimationFrame(() => map.invalidateSize());
       setTimeout(() => map.invalidateSize(), 300);
       setTimeout(() => map.invalidateSize(), 1000);
+
+      // Now that map is ready, load locations
+      if (isMounted) loadLocations();
     }
 
     init();
-    loadLocations();
 
     return () => {
       isMounted = false;
+      mapReadyRef.current = false;
       mapInstanceRef.current?.remove();
       mapInstanceRef.current = null;
     };
@@ -109,13 +111,13 @@ export default function AdminRiderMap({ riders, onRiderClick }: Props) {
       .subscribe();
 
     return () => { supabase.removeChannel(channel); };
-  }, []);
+  }, [supabase]);
 
   // Update markers when locations change
   useEffect(() => {
     const L = leafletRef.current;
     const map = mapInstanceRef.current;
-    if (!L || !map) return;
+    if (!L || !map || !mapReadyRef.current) return;
 
     const riderIconHtml = (name: string, online: boolean) => `
       <div style="position:relative;width:40px;height:40px;transform:translate(-20px,-40px)">
@@ -123,7 +125,6 @@ export default function AdminRiderMap({ riders, onRiderClick }: Props) {
         <div style="position:absolute;inset:3px;background:${online ? "#22c55e" : "#94a3b8"};border-radius:50%;border:3px solid white;box-shadow:0 3px 10px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;color:white;font-size:11px;font-weight:900;">${(name || "R")[0].toUpperCase()}</div>
       </div>`;
 
-    // Update or create markers
     const currentIds = new Set(locations.map((l) => l.rider_id));
 
     // Remove stale markers
@@ -141,7 +142,6 @@ export default function AdminRiderMap({ riders, onRiderClick }: Props) {
       const pos: [number, number] = [loc.lat, loc.lng];
 
       if (markersRef.current.has(loc.rider_id)) {
-        // Animate to new position
         const marker = markersRef.current.get(loc.rider_id);
         const from = marker.getLatLng();
         const to = L.latLng(pos);
@@ -158,13 +158,12 @@ export default function AdminRiderMap({ riders, onRiderClick }: Props) {
         };
         requestAnimationFrame(animate);
       } else {
-        // Create new marker
         const marker = L.marker(pos, {
           icon: L.divIcon({
             className: "rider-marker",
             html: riderIconHtml(loc.rider_name, online),
-            iconSize: [0, 0],
-            iconAnchor: [0, 0],
+            iconSize: [40, 40],
+            iconAnchor: [20, 40],
           }),
           zIndexOffset: online ? 1000 : 500,
         })
@@ -190,10 +189,13 @@ export default function AdminRiderMap({ riders, onRiderClick }: Props) {
 
     // Fit bounds if we have locations
     if (locations.length > 0) {
-      const bounds = L.latLngBounds(locations.map((l) => [l.lat, l.lng] as [number, number]));
-      map.fitBounds(bounds, { padding: [60, 60], maxZoom: 15 });
+      const validLocations = locations.filter((l) => l.lat && l.lng && !isNaN(l.lat) && !isNaN(l.lng));
+      if (validLocations.length > 0) {
+        const bounds = L.latLngBounds(validLocations.map((l) => [l.lat, l.lng] as [number, number]));
+        map.fitBounds(bounds, { padding: [60, 60], maxZoom: 15 });
+      }
     }
-  }, [locations, riders]);
+  }, [locations, riders, onRiderClick]);
 
   return (
     <div className="relative w-full h-full">
