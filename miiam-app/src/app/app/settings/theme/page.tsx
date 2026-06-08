@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { useThemeStore } from "@/lib/store/themeStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 
 const themes = [
   { value: "light" as const, icon: "light_mode", label: "Light", sub: "Always use light theme" },
@@ -13,6 +14,7 @@ const themes = [
 
 export default function ThemePage() {
   const { theme, setTheme } = useThemeStore();
+  const { t } = useTranslation();
 
   useEffect(() => {
     // Apply theme on mount
@@ -26,14 +28,14 @@ export default function ThemePage() {
           <Link href="/app/settings" className="w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center hover:bg-surface-container-highest transition-colors">
             <span className="material-symbols-outlined text-on-background">arrow_back</span>
           </Link>
-          <h1 className="text-xl font-black text-on-background">Appearance</h1>
+          <h1 className="text-xl font-black text-on-background">{t.settings.theme}</h1>
         </div>
       </header>
 
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Settings', href: '/app/settings' }, { label: 'Theme' }]} />
+      <Breadcrumbs items={[{ label: t.common.home, href: '/app/explore' }, { label: t.settings.title, href: '/app/settings' }, { label: t.settings.theme }]} />
 
       <main className="p-6 space-y-4">
-        <p className="text-sm text-on-surface-variant mb-6">Choose how MIIAM looks on this device.</p>
+        <p className="text-sm text-on-surface-variant mb-6">{t.settings.themeSub}</p>
         {themes.map((t) => (
           <button
             key={t.value}

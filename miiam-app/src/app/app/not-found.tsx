@@ -1,6 +1,10 @@
+"use client";
+
 import Link from "next/link";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 
 export default function AppNotFound() {
+  const { t } = useTranslation();
   return (
     <div className="min-h-screen bg-surface flex flex-col items-center justify-center p-6">
       <div className="max-w-md w-full text-center">
@@ -8,7 +12,7 @@ export default function AppNotFound() {
           <span className="material-symbols-outlined text-5xl text-primary">search_off</span>
         </div>
         <h1 className="text-3xl font-black text-on-surface mb-2">404</h1>
-        <h2 className="text-xl font-bold text-on-surface mb-2">Page Not Found</h2>
+        <h2 className="text-xl font-bold text-on-surface mb-2">{t.common.error}</h2>
         <p className="text-on-surface-variant mb-8">
           This page doesn&apos;t exist or has been moved.
         </p>
@@ -18,13 +22,13 @@ export default function AppNotFound() {
             href="/app/explore"
             className="block w-full px-6 py-3 bg-primary text-on-primary rounded-xl font-bold hover:opacity-90 transition-opacity"
           >
-            Browse Services
+            {t.nav.services}
           </Link>
           <Link
             href="/app/home"
             className="block w-full px-6 py-3 bg-surface-container-lowest border-2 border-outline text-on-surface rounded-xl font-bold hover:border-primary transition-colors"
           >
-            Go Home
+            {t.common.home}
           </Link>
         </div>
 

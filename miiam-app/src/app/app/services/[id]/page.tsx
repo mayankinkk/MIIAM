@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCartStore } from "@/lib/store/cartStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -101,6 +102,7 @@ const timeSlots = [
 ];
 
 function ServiceDetailContent() {
+  const { t } = useTranslation();
   const router = useRouter();
   const searchParams = useSearchParams();
   const serviceId = searchParams.get("id") || "s1";
@@ -178,7 +180,7 @@ function ServiceDetailContent() {
         <p className="text-gray-600 mb-6">{service.description}</p>
 
         <div className="bg-gray-50 rounded-xl p-4 mb-6">
-          <h3 className="font-bold text-gray-800 mb-3">What's Included</h3>
+          <h3 className="font-bold text-gray-800 mb-3">{t.services.whatIncluded}</h3>
           <div className="space-y-2">
             {service.included?.map((item: string, i: number) => (
               <div key={i} className="flex items-center gap-2">
@@ -194,7 +196,7 @@ function ServiceDetailContent() {
         </div>
 
         <div className="mb-6">
-          <h3 className="font-bold text-gray-800 mb-3">Select Schedule</h3>
+          <h3 className="font-bold text-gray-800 mb-3">{t.services.selectDate}</h3>
           
           <div className="mb-3">
             <button 
@@ -266,7 +268,7 @@ function ServiceDetailContent() {
               <span className="text-sm text-gray-400 line-through ml-2">₹{service.originalPrice}</span>
             )}
           </div>
-          <span className="text-xs text-gray-500">Inclusive of all taxes</span>
+          <span className="text-xs text-gray-500">{t.checkout.incTaxes}</span>
         </div>
 
         <button
@@ -275,7 +277,7 @@ function ServiceDetailContent() {
           className="fixed bottom-6 left-4 right-4 bg-[#5b31fc] text-white py-4 rounded-xl font-bold text-lg shadow-lg active:scale-95 transition-transform z-50"
           style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}
         >
-          {adding ? "Adding..." : "Book Now"}
+          {adding ? t.common.loading : t.services.bookNow}
         </button>
       </div>
     </div>

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 
 interface RecurringSchedule {
   id: string;
@@ -23,17 +24,19 @@ interface RecurringSchedule {
   created_at: string;
 }
 
-const frequencyLabels: Record<string, string> = {
-  daily: "Daily",
-  weekly: "Weekly",
-  biweekly: "Every 2 weeks",
-  monthly: "Monthly",
-};
+
 
 const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 export default function SubscriptionsPage() {
   const [schedules, setSchedules] = useState<RecurringSchedule[]>([]);
+  const { t } = useTranslation();
+  const frequencyLabels: Record<string, string> = {
+    daily: t.checkout.daily,
+    weekly: t.checkout.weekly,
+    biweekly: "Every 2 weeks",
+    monthly: "Monthly",
+  };
   const [vendorNames, setVendorNames] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const supabase = createClient();
@@ -122,7 +125,7 @@ export default function SubscriptionsPage() {
             <span className="material-symbols-outlined text-on-surface">arrow_back</span>
           </Link>
           <div>
-            <h1 className="text-xl font-black text-on-surface">Recurring Orders</h1>
+            <h1 className="text-xl font-black text-on-surface">{t.profile.recurringOrders}</h1>
             <p className="text-xs text-on-surface-variant">Manage your scheduled subscriptions</p>
           </div>
         </div>
@@ -132,13 +135,13 @@ export default function SubscriptionsPage() {
         {schedules.length === 0 ? (
           <div className="text-center py-20">
             <span className="material-symbols-outlined text-6xl text-on-surface-variant/30">repeat</span>
-            <p className="text-on-surface-variant font-semibold mt-4">No recurring orders yet</p>
+            <p className="text-on-surface-variant font-semibold mt-4">{t.profile.scheduledSubscriptions}</p>
             <p className="text-xs text-on-surface-variant/60 mt-1">Set up a recurring order during checkout</p>
             <Link
               href="/app/grocery"
               className="inline-block mt-6 px-6 py-3 bg-primary text-white font-bold rounded-xl hover:opacity-90 transition-all"
             >
-              Start Shopping
+              {t.common.seeAll}
             </Link>
           </div>
         ) : (
@@ -184,7 +187,7 @@ export default function SubscriptionsPage() {
                       </div>
                     ))}
                     <div className="border-t border-outline-variant/20 pt-2 flex justify-between text-sm font-extrabold text-primary">
-                      <span>Total</span>
+                      <span>{t.cart.total}</span>
                       <span>₹{total.toFixed(2)}</span>
                     </div>
                   </div>
@@ -214,14 +217,14 @@ export default function SubscriptionsPage() {
                             : "bg-green-50 text-green-700 border border-green-300 hover:bg-green-100"
                         }`}
                       >
-                        {schedule.status === "active" ? "Pause" : "Resume"}
+                        {schedule.status === "active" ? t.common.cancel : t.common.done}
                       </button>
                     )}
                     <button
                       onClick={() => cancelSchedule(schedule.id)}
                       className="flex-1 py-2.5 rounded-xl text-sm font-bold bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 transition-all"
                     >
-                      Cancel
+{t.common.cancel}
                     </button>
                   </div>
                 </div>

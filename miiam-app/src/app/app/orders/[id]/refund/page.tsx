@@ -5,10 +5,12 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 
 type RefundStatus = "requested" | "processing" | "approved" | "completed" | "rejected";
 
 export default function OrderRefundPage({ params }: { params: Promise<{ id: string }> }) {
+  const { t } = useTranslation();
   const { id } = use(params);
   const supabase = useMemo(() => createClient(), []);
   const [order, setOrder] = useState<any>(null);
@@ -151,7 +153,7 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
             </span>
           </div>
           <h1 className="text-2xl font-extrabold text-on-surface mb-2">
-            {order.status === "refunded" ? "Refund Complete" : "Request Cancellation & Refund"}
+            {order.status === "refunded" ? t.refund.titleComplete : t.refund.title}
           </h1>
           <p className="text-on-surface-variant">
             {order.status === "refunded" 
@@ -163,7 +165,7 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
 
         <div className="bg-white rounded-xl p-6 shadow-sm mb-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-bold text-on-surface">Order Details</h2>
+            <h2 className="font-bold text-on-surface">{t.refund.orderDetails}</h2>
             <span className="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded-full font-bold">
               #{id.slice(0, 8).toUpperCase()}
             </span>
@@ -171,15 +173,15 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
           
           <div className="space-y-3 pb-4 border-b border-slate-100">
             <div className="flex justify-between">
-              <span className="text-on-surface-variant">Restaurant</span>
+              <span className="text-on-surface-variant">{t.refund.restaurant}</span>
               <span className="font-bold text-on-surface">{order.vendor?.name || "Unknown"}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-on-surface-variant">Order Total</span>
+              <span className="text-on-surface-variant">{t.refund.orderTotal}</span>
               <span className="font-bold text-primary">₹{order.total_amount?.toFixed(2)}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-on-surface-variant">Payment Method</span>
+              <span className="text-on-surface-variant">{t.refund.paymentMethod}</span>
               <span className="font-bold text-on-surface capitalize">{order.payment_method || "Card"}</span>
             </div>
           </div>
@@ -190,21 +192,21 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
             onClick={() => setShowCancelForm(true)}
             className="w-full bg-primary text-white py-4 rounded-xl font-bold hover:bg-primary-dim transition-colors mb-4"
           >
-            Request Cancellation
+            {t.refund.requestCancellation}
           </button>
         )}
 
         {showCancelForm && (
           <div className="bg-white rounded-xl p-6 shadow-sm mb-6">
-            <h3 className="font-bold text-on-surface mb-4">Why are you cancelling?</h3>
+            <h3 className="font-bold text-on-surface mb-4">{t.refund.whyCancelling}</h3>
             <div className="space-y-3">
               {[
-                "Order taking too long",
-                "Changed my mind",
-                "Ordered from wrong restaurant",
-                "Found a better deal elsewhere",
-                "Accidental order",
-                "Other",
+                t.refund.reasonTooLong,
+                t.refund.reasonChangedMind,
+                t.refund.reasonWrongRestaurant,
+                t.refund.reasonBetterDeal,
+                t.refund.reasonAccidental,
+                t.refund.reasonOther,
               ].map((reason) => (
                 <label
                   key={reason}
@@ -231,7 +233,7 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
                 onClick={() => setShowCancelForm(false)}
                 className="flex-1 py-3 border-2 border-slate-200 rounded-xl font-bold text-on-surface"
               >
-                Go Back
+                {t.refund.goBack}
               </button>
               <button
                 onClick={handleCancelOrder}
@@ -241,16 +243,16 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
                 {cancelling ? (
                   <>
                     <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    Submitting...
+                    {t.refund.submitting}
                   </>
-                ) : "Submit Request"}
+                ) : t.refund.submitRequest}
               </button>
             </div>
           </div>
         )}
 
         <div className="bg-white rounded-xl p-6 shadow-sm">
-          <h3 className="font-bold text-on-surface mb-4">Refund Status</h3>
+          <h3 className="font-bold text-on-surface mb-4">{t.refund.refundStatus}</h3>
           <div className="space-y-4 relative">
             <div className="absolute left-[19px] top-4 bottom-4 w-0.5 bg-slate-100" />
             
@@ -282,9 +284,9 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
           <div className="flex items-start gap-3">
             <span className="material-symbols-outlined text-blue-600">info</span>
             <div>
-              <p className="font-bold text-blue-700">Refund Timeline</p>
+              <p className="font-bold text-blue-700">{t.refund.refundTimeline}</p>
               <p className="text-sm text-blue-600">
-                Refunds typically take 2-5 business days to process, depending on your bank.
+                {t.refund.refundTimelineDesc}
               </p>
             </div>
           </div>
@@ -295,13 +297,13 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
             href="/app/orders"
             className="flex-1 text-center py-4 border-2 border-slate-200 rounded-xl font-bold text-on-surface hover:border-primary transition-colors"
           >
-            View All Orders
+            {t.orders.viewAllOrders}
           </Link>
           <Link 
             href="/app/support"
             className="flex-1 text-center py-4 border-2 border-slate-200 rounded-xl font-bold text-on-surface hover:border-primary transition-colors"
           >
-            Contact Support
+            {t.refund.contactSupport}
           </Link>
         </div>
       </main>

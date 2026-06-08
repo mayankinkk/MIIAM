@@ -11,9 +11,11 @@ import { useToastStore } from "@/lib/store/toastStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
 import { PRINTING_VENDOR_ID } from "@/lib/constants";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 
 
 export default function CartPage() {
+  const { t } = useTranslation();
   const supabase = useMemo(() => createClient(), []);
   const { items, updateQuantity, removeItem, totalPrice, subtotalByVendor, clearCart, addItem } = useCartStore();
   const [pastOrders, setPastOrders] = useState<any[]>([]);
@@ -166,8 +168,8 @@ export default function CartPage() {
         <section className="mb-6">
           <div className="flex items-center justify-between gap-2">
             <div className="min-w-0">
-              <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-primary">Your Cart</h1>
-              <p className="text-slate-600 text-xs mt-0.5">Review items from your favorite spots.</p>
+              <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-primary">{t.cart.title}</h1>
+              <p className="text-slate-600 text-xs mt-0.5">{t.cart.subtitle}</p>
             </div>
             <button
               onClick={async () => {
@@ -176,7 +178,7 @@ export default function CartPage() {
               }}
               className="shrink-0 text-xs font-bold text-primary bg-primary/5 px-3 py-2 rounded-lg hover:bg-primary/10 transition-colors"
             >
-              Reorder
+              {t.cart.reorder}
             </button>
           </div>
         </section>
@@ -186,8 +188,8 @@ export default function CartPage() {
             <div className="flex items-start gap-2">
               <span className="material-symbols-outlined text-amber-600 text-[18px] mt-0.5">warning</span>
               <div className="flex-1">
-                <p className="font-bold text-amber-800 text-sm">Items from multiple restaurants</p>
-                <p className="text-xs text-amber-700 mt-0.5">These will be delivered as separate orders.</p>
+                <p className="font-bold text-amber-800 text-sm">{t.cart.multiVendor}</p>
+                <p className="text-xs text-amber-700 mt-0.5">{t.cart.multiVendorDesc}</p>
               </div>
             </div>
           </div>
@@ -276,14 +278,14 @@ export default function CartPage() {
 
             {/* Order Summary */}
             <section className="bg-surface-container-lowest rounded-xl p-4 shadow-[0px_4px_20px_rgba(77,33,42,0.06)] border border-outline-variant/10">
-              <h3 className="text-base font-bold mb-4">Payment Summary</h3>
+              <h3 className="text-base font-bold mb-4">{t.cart.paymentSummary}</h3>
               <div className="space-y-3 text-on-surface-variant text-sm">
                 <div className="flex justify-between gap-2">
-                  <span>Items Subtotal</span>
+                  <span>{t.cart.itemsSubtotal}</span>
                   <span className="text-on-surface font-semibold truncate">₹{total.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Delivery Fee</span>
+                  <span>{t.cart.deliveryFee}</span>
                   <span className="text-green-600 font-semibold">FREE</span>
                 </div>
                 <div className="flex justify-between gap-2">
@@ -293,7 +295,7 @@ export default function CartPage() {
 
                 <div className="pt-4 border-t border-outline-variant/20 flex justify-between items-center gap-2">
                   <div className="min-w-0">
-                    <p className="text-xs uppercase tracking-widest font-bold text-on-surface">Total Balance</p>
+                    <p className="text-xs uppercase tracking-widest font-bold text-on-surface">{t.cart.totalBalance}</p>
                     <p className="text-2xl sm:text-3xl font-extrabold text-primary tracking-tighter truncate">₹{grandTotal.toFixed(2)}</p>
                   </div>
                 </div>
@@ -306,7 +308,7 @@ export default function CartPage() {
           <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end justify-center animate-fade-in">
             <div className="bg-surface-container-lowest rounded-t-2xl w-full max-h-[80vh] overflow-hidden">
               <div className="p-4 border-b border-outline-variant flex items-center justify-between">
-                <h3 className="text-base font-bold text-on-surface">Reorder from Past</h3>
+                <h3 className="text-base font-bold text-on-surface">{t.cart.reorderFromPast}</h3>
                 <button onClick={() => setShowReorderModal(false)} className="w-8 h-8 bg-surface-container rounded-full flex items-center justify-center">
                   <span className="material-symbols-outlined text-[18px]">close</span>
                 </button>
@@ -317,7 +319,7 @@ export default function CartPage() {
                     <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
                   </div>
                 ) : pastOrders.length === 0 ? (
-                  <div className="text-center py-8 text-on-surface-variant text-sm">No past orders found</div>
+                  <div className="text-center py-8 text-on-surface-variant text-sm">{t.cart.noPastOrders}</div>
                 ) : (
                   <div className="space-y-3">
                     {pastOrders.map((order) => (
@@ -330,7 +332,7 @@ export default function CartPage() {
                           <p className="font-bold text-primary text-sm">₹{order.total_amount?.toFixed(2)}</p>
                         </div>
                         <button onClick={() => handleReorder(order.id)} disabled={reordering} className="w-full mt-1 py-2 bg-primary text-white text-xs font-bold rounded-lg hover:opacity-90 disabled:opacity-60">
-                          {reordering ? "Adding..." : "Add to Cart"}
+                          {reordering ? t.cart.adding : t.cart.addToCart}
                         </button>
                       </div>
                     ))}
@@ -348,14 +350,14 @@ export default function CartPage() {
         >
           <div className="max-w-2xl mx-auto px-3 sm:px-4 py-3 flex items-center gap-3 sm:gap-4">
             <div className="flex-1 min-w-0">
-              <p className="text-[10px] text-slate-600 font-semibold uppercase tracking-wider">Total</p>
+              <p className="text-[10px] text-slate-600 font-semibold uppercase tracking-wider">{t.cart.total}</p>
               <p className="text-xl sm:text-2xl font-extrabold text-primary truncate">₹{grandTotal.toFixed(2)}</p>
             </div>
             <Link
               href="/app/checkout"
               className="shrink-0 px-5 sm:px-8 py-3 sm:py-3.5 bg-gradient-to-r from-primary to-primary-container text-white rounded-xl font-bold text-sm sm:text-base shadow-lg shadow-primary/20 hover:scale-[1.01] active:scale-95 transition-all flex items-center gap-2 whitespace-nowrap"
             >
-              Proceed
+              {t.cart.proceed}
               <span className="material-symbols-outlined text-[18px] sm:text-[20px]">arrow_forward</span>
             </Link>
           </div>

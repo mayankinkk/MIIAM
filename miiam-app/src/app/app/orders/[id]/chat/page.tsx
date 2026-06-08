@@ -6,8 +6,10 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useChat } from "@/lib/hooks/useChat";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 
 export default function ChatPage() {
+  const { t } = useTranslation();
   const params = useParams();
   const orderId = useMemo(() => params?.id as string, [params?.id]);
   const supabase = useMemo(() => createClient(), []);
@@ -179,7 +181,7 @@ export default function ChatPage() {
             value={newMessage}
             onChange={handleTyping}
             onKeyDown={(e) => e.key === "Enter" && handleSend()}
-            placeholder="Type a message..."
+            placeholder={t.orders.typeMessage}
             className="flex-1 bg-surface-container-lowest rounded-full h-12 px-4 border border-outline-variant/10 focus:ring-2 focus:ring-secondary/20 transition-all"
           />
           <button

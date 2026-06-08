@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useServiceSettingsStore, ServiceCategory } from "@/lib/store/serviceSettingsStore";
@@ -38,6 +39,7 @@ const timeSlots = [
 ];
 
 function BookingModal({ service, onClose }: { service: Service; onClose: () => void }) {
+  const { t } = useTranslation();
   const { addToast } = useToastStore();
   const [step, setStep] = useState<"pick" | "confirm" | "done">("pick");
   const [booking, setBooking] = useState(false);
@@ -83,7 +85,7 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
               </div>
             </div>
 
-            <p className="font-bold text-on-surface mb-3">Select Date</p>
+            <p className="font-bold text-on-surface mb-3">{t.services.selectDate}</p>
             <div className="flex gap-2 flex-wrap mb-5">
               {dateOptions.map((d) => (
                 <button
@@ -100,7 +102,7 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
               ))}
             </div>
 
-            <p className="font-bold text-on-surface mb-3">Select Time Slot</p>
+            <p className="font-bold text-on-surface mb-3">{t.services.selectTimeSlot}</p>
             <div className="grid grid-cols-2 gap-2 mb-5">
               {timeSlots.map((slot) => (
                 <button
@@ -117,11 +119,11 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
               ))}
             </div>
 
-            <p className="font-bold text-on-surface mb-2">Service Address</p>
+            <p className="font-bold text-on-surface mb-2">{t.services.serviceAddress}</p>
             <textarea
               className="w-full border-2 border-outline rounded-xl p-3 text-sm focus:border-primary focus:outline-none resize-none mb-5"
               rows={2}
-              placeholder="Enter your full address..."
+              placeholder={t.services.addressPlaceholder}
               value={address}
               onChange={(e) => setAddress(e.target.value)}
             />
@@ -129,14 +131,14 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
             <button
               disabled={!canProceed}
               onClick={() => {
-                if (!selectedDate) { addToast("Please select a date", "error"); return; }
-                if (!selectedSlot) { addToast("Please select a time slot", "error"); return; }
-                if (!address.trim()) { addToast("Please enter your service address", "error"); return; }
+                if (!selectedDate) { addToast(t.services.pleaseSelectDate, "error"); return; }
+                if (!selectedSlot) { addToast(t.services.pleaseSelectTime, "error"); return; }
+                if (!address.trim()) { addToast(t.services.pleaseEnterAddress, "error"); return; }
                 setStep("confirm"); if (navigator.vibrate) navigator.vibrate([20, 10, 20]);
               }}
               className="w-full bg-primary text-white py-4 rounded-2xl font-bold text-base disabled:opacity-40 hover:bg-primary-dim transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
-              Review Booking
+              {t.services.reviewBooking}
             </button>
             <button onClick={() => { onClose(); if (navigator.vibrate) navigator.vibrate(10); }} className="w-full mt-3 py-3 text-on-surface-variant font-semibold text-sm hover:text-on-surface transition-colors">
               Cancel
@@ -146,36 +148,36 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
 
         {step === "confirm" && (
           <>
-            <h2 className="font-black text-xl text-on-surface mb-6">Confirm Booking</h2>
+            <h2 className="font-black text-xl text-on-surface mb-6">{t.services.confirmBooking}</h2>
             <div className="bg-surface-container-low rounded-2xl p-4 space-y-3 mb-6">
               <div className="flex justify-between">
-                <span className="text-on-surface-variant text-sm">Service</span>
+                <span className="text-on-surface-variant text-sm">{t.services.service}</span>
                 <span className="font-bold text-on-surface text-sm text-right">{service.name}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-on-surface-variant text-sm">Date</span>
+                <span className="text-on-surface-variant text-sm">{t.services.date}</span>
                 <span className="font-bold text-on-surface text-sm">
                   {new Date(selectedDate).toLocaleDateString("en-IN", { weekday: "long", month: "long", day: "numeric" })}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-on-surface-variant text-sm">Time</span>
+                <span className="text-on-surface-variant text-sm">{t.services.time}</span>
                 <span className="font-bold text-on-surface text-sm">{selectedSlot}</span>
               </div>
               {address && (
                 <div className="flex justify-between">
-                  <span className="text-on-surface-variant text-sm">Address</span>
+                  <span className="text-on-surface-variant text-sm">{t.services.address}</span>
                   <span className="font-bold text-on-surface text-sm text-right max-w-[60%]">{address}</span>
                 </div>
               )}
               <div className="border-t border-outline pt-3 flex justify-between">
-                <span className="font-bold text-on-surface">Total</span>
+                <span className="font-bold text-on-surface">{t.services.total}</span>
                 <span className="font-black text-primary text-lg">₹{service.price}</span>
               </div>
             </div>
             <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 flex gap-2 mb-5">
               <span className="material-symbols-outlined text-blue-600 text-sm mt-0.5">info</span>
-              <p className="text-xs text-blue-700">A professional will arrive at your location. Payment can be done after service completion.</p>
+              <p className="text-xs text-blue-700">{t.services.paymentAfterService}</p>
             </div>
             <button
               onClick={async () => {
@@ -193,12 +195,12 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
               {booking ? (
                 <>
                   <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  Booking...
+                  {t.services.booking}
                 </>
-              ) : "Confirm &amp; Book"}
+              ) : t.services.confirmAndBook}
             </button>
             <button onClick={() => { setStep("pick"); if (navigator.vibrate) navigator.vibrate(10); }} className="w-full mt-3 py-3 text-on-surface-variant font-semibold text-sm hover:text-on-surface transition-colors">
-              Go Back
+              {t.services.goBack}
             </button>
           </>
         )}
@@ -208,13 +210,13 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
             <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
               <span className="material-symbols-outlined text-green-600 text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
             </div>
-            <h2 className="font-black text-2xl text-on-surface mb-2">Booking Confirmed!</h2>
+            <h2 className="font-black text-2xl text-on-surface mb-2">{t.services.bookingConfirmed}</h2>
             <p className="text-on-surface-variant mb-1">{service.name}</p>
             <p className="font-bold text-primary mb-1">
               {new Date(selectedDate).toLocaleDateString("en-IN", { weekday: "long", month: "long", day: "numeric" })}
             </p>
             <p className="text-on-surface-variant font-semibold mb-6">{selectedSlot}</p>
-            <p className="text-sm text-on-surface-variant mb-8">You will receive a confirmation shortly. Our professional will arrive on time.</p>
+            <p className="text-sm text-on-surface-variant mb-8">{t.services.bookingConfirmedDesc}</p>
             <button
               onClick={() => { onClose(); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }}
               className="w-full bg-primary text-white py-4 rounded-2xl font-bold text-base hover:bg-primary-dim transition-all hover:scale-[1.02] active:scale-[0.98]"
@@ -614,6 +616,7 @@ const categoryIdMap: Record<string, string> = {
 };
 
 function ServicesContent() {
+  const { t } = useTranslation();
   const router = useRouter();
   const searchParams = useSearchParams();
   const { getSetting } = useServiceSettingsStore();
@@ -680,9 +683,9 @@ function ServicesContent() {
           <Link href="/app/explore" className="w-8 h-8 bg-surface-container-high rounded-full flex items-center justify-center hover:bg-surface-container-highest transition-colors">
             <span className="material-symbols-outlined text-on-surface-variant text-sm">arrow_back</span>
           </Link>
-          <h1 className="text-xl font-black text-on-surface">Home Services</h1>
+          <h1 className="text-xl font-black text-on-surface">{t.services.title}</h1>
         </div>
-        <p className="text-sm text-on-surface-variant mt-1">Professional services at your doorstep</p>
+        <p className="text-sm text-on-surface-variant mt-1">{t.services.subtitle}</p>
       </header>
 
       <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Home Services' }]} />
@@ -713,8 +716,8 @@ function ServicesContent() {
         <div className="rounded-2xl overflow-hidden relative h-40 shadow-sm">
           <BlurImage src="/images/services_hero.png" alt="Professional Services" fill className="w-full h-full" sizes="100vw" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-4">
-            <h2 className="text-white text-xl font-black">Expert Professionals</h2>
-            <p className="text-white/90 text-sm">High-quality services for your home</p>
+            <h2 className="text-white text-xl font-black">{t.services.expertProfessionals}</h2>
+            <p className="text-white/90 text-sm">{t.services.expertDesc}</p>
           </div>
         </div>
       </div>
@@ -728,7 +731,7 @@ function ServicesContent() {
               selectedCategory === "all" ? "bg-primary text-white" : "bg-surface-container-lowest text-on-surface-variant border border-outline-variant/20 hover:bg-surface-container-low"
             }`}
           >
-            All
+            {t.services.all}
           </button>
           {serviceCategories.map((cat, i) => (
             <button
@@ -781,11 +784,11 @@ function ServicesContent() {
                   <span className="text-green-600 dark:text-green-400 text-xs font-black">★ {service.rating}</span>
                 </div>
               </div>
-              <p className="text-xs text-on-surface-variant/70 mt-0.5">{service.reviews.toLocaleString()} reviews</p>
+              <p className="text-xs text-on-surface-variant/70 mt-0.5">{service.reviews.toLocaleString()} {t.services.reviews}</p>
 
               {/* What's Included */}
               <div className="mt-3 bg-surface-container-low rounded-xl p-3">
-                <p className="text-[10px] font-black text-on-surface-variant/60 uppercase tracking-widest mb-2">What&apos;s Included</p>
+                <p className="text-[10px] font-black text-on-surface-variant/60 uppercase tracking-widest mb-2">{t.services.whatIncluded}</p>
                 <div className="grid grid-cols-2 gap-x-3 gap-y-1.5">
                   {service.included.map((item: string, idx: number) => (
                     <div key={idx} className="flex items-center gap-1.5">
@@ -817,7 +820,7 @@ function ServicesContent() {
                     isServiceable ? "bg-primary text-white hover:bg-primary-dim shadow-primary/20 hover:scale-[1.02]" : "bg-outline text-white cursor-not-allowed shadow-none"
                   }`}
                 >
-                  {isServiceable ? "Book Now" : "Unavailable"}
+                  {isServiceable ? t.services.bookNow : t.services.unavailable}
                 </button>
               </div>
             </div>
@@ -835,8 +838,9 @@ function ServicesContent() {
 }
 
 export default function ServicesPage() {
+  const { t } = useTranslation();
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><span className="text-gray-500">Loading services...</span></div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><span className="text-gray-500">{t.services.loadingServices}</span></div>}>
       <ServicesContent />
     </Suspense>
   );

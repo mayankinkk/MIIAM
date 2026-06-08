@@ -5,6 +5,7 @@ import { useState, useEffect, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import PullToRefresh from "@/components/PullToRefresh";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 
 interface WalletTransaction {
   id: string;
@@ -17,6 +18,7 @@ interface WalletTransaction {
 
 export default function WalletPage() {
   const supabase = useMemo(() => createClient(), []);
+  const { t } = useTranslation();
   const [balance, setBalance] = useState(0);
   const [transactions, setTransactions] = useState<WalletTransaction[]>([]);
   const [loading, setLoading] = useState(true);
@@ -95,7 +97,7 @@ export default function WalletPage() {
             </div>
             
             <div>
-              <p className="text-white/80 font-medium text-sm mb-1">Available Balance</p>
+              <p className="text-white/80 font-medium text-sm mb-1">{t.cart.totalBalance}</p>
               <h1 className="text-5xl font-extrabold tracking-tighter">₹{balance.toFixed(2)}</h1>
             </div>
 
@@ -118,7 +120,7 @@ export default function WalletPage() {
 
         {/* Transactions */}
         <div>
-          <h2 className="text-lg font-black text-on-surface mb-4">Transaction History</h2>
+          <h2 className="text-lg font-black text-on-surface mb-4">{t.orders.title}</h2>
           
           {loading ? (
             <div className="space-y-3">
@@ -132,7 +134,7 @@ export default function WalletPage() {
           ) : transactions.length === 0 ? (
             <div className="bg-surface-container-lowest rounded-2xl p-8 text-center">
               <span className="material-symbols-outlined text-4xl text-slate-300">receipt_long</span>
-              <p className="text-sm text-on-surface-variant mt-2">No transactions yet</p>
+              <p className="text-sm text-on-surface-variant mt-2">{t.home.noNotifications}</p>
             </div>
           ) : (
             <div className="space-y-3">

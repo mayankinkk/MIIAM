@@ -3,6 +3,7 @@
 import { useSearchParams, useRouter } from "next/navigation";
 import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
 type PaymentStatus = "processing" | "success" | "failed" | "pending";
@@ -61,6 +62,7 @@ function Confetti() {
 }
 
 function PaymentStatusContent() {
+  const { t } = useTranslation();
   const searchParams = useSearchParams();
   const router = useRouter();
   const orderId = searchParams.get("orderId");
@@ -99,7 +101,7 @@ function PaymentStatusContent() {
   const statusConfig = {
     processing: {
       icon: "sync",
-      title: "Processing Payment",
+      title: t.checkout.placingOrder,
       message: "Please wait while we process your payment...",
       color: "text-blue-600",
       bgColor: "bg-blue-50",
@@ -190,7 +192,7 @@ function PaymentStatusContent() {
                 href="/app/support"
                 className="block w-full text-center text-primary font-bold py-3"
               >
-                Contact Support
+                {t.refund.contactSupport}
               </Link>
             </div>
           )}
@@ -217,13 +219,13 @@ function PaymentStatusContent() {
                 className="block w-full bg-primary text-white py-4 rounded-xl font-bold text-center hover:bg-primary-dim transition-colors flex items-center justify-center gap-2"
               >
                 <span className="material-symbols-outlined">order_play</span>
-                Track Order
+                {t.home.trackOrder}
               </Link>
               <Link 
                 href="/app/food"
                 className="block w-full text-center text-primary font-bold py-3"
               >
-                Order More
+                {t.common.seeAll}
               </Link>
             </div>
           )}
@@ -234,11 +236,11 @@ function PaymentStatusContent() {
           <div className="flex justify-center gap-4 pt-6 border-t border-outline-variant/20">
             <Link href="/app/home" className="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors">
               <span className="material-symbols-outlined">home</span>
-              <span className="font-bold text-sm">Home</span>
+              <span className="font-bold text-sm">{t.common.home}</span>
             </Link>
             <Link href="/app/orders" className="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors">
               <span className="material-symbols-outlined">receipt_long</span>
-              <span className="font-bold text-sm">Orders</span>
+              <span className="font-bold text-sm">{t.nav.orders}</span>
             </Link>
           </div>
         </div>

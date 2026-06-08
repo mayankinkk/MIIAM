@@ -5,10 +5,12 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
 
 export default function EditProfilePage() {
+  const { t } = useTranslation();
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
   const { addToast } = useToastStore();
@@ -147,7 +149,7 @@ export default function EditProfilePage() {
         <Link href="/app/profile" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-all mr-4">
           <span className="material-symbols-outlined text-primary">arrow_back</span>
         </Link>
-        <span className="text-xl font-extrabold tracking-tight text-on-surface">Edit Profile</span>
+        <span className="text-xl font-extrabold tracking-tight text-on-surface">{t.settings.editProfile}</span>
       </header>
 
       <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Profile', href: '/app/profile' }, { label: 'Edit Profile' }]} />
@@ -233,7 +235,7 @@ export default function EditProfilePage() {
                 <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                 Saving...
               </>
-            ) : "Save Changes"}
+            ) : t.common.save}
           </button>
         </form>
       </main>

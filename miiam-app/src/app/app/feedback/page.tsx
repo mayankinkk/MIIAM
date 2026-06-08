@@ -6,6 +6,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 
 type FeedbackData = {
   orderId: string;
@@ -15,6 +16,7 @@ type FeedbackData = {
 };
 
 function FeedbackContent() {
+  const { t } = useTranslation();
   const searchParams = useSearchParams();
   const supabase = createClient();
   
@@ -90,7 +92,7 @@ function FeedbackContent() {
               check_circle
             </span>
           </div>
-          <h1 className="text-2xl font-black text-on-surface mb-2">Thank You!</h1>
+          <h1 className="text-2xl font-black text-on-surface mb-2">{t.rating.thanksForRating}</h1>
           <p className="text-slate-600 mb-8">
             Your feedback helps us improve our service.
           </p>
@@ -99,7 +101,7 @@ function FeedbackContent() {
               href="/app/home"
               className="block w-full py-4 bg-primary text-white rounded-xl font-bold hover:bg-primary-dim transition-all"
             >
-              Back to Home
+              {t.common.home}
             </Link>
             <Link
               href="/app/services"
@@ -139,7 +141,7 @@ function FeedbackContent() {
         {/* Rating */}
         <div className="bg-white rounded-2xl p-6 shadow-lg mb-6">
           <h3 className="text-lg font-bold text-on-surface mb-4 text-center">
-            How was your experience?
+            {t.rating.subtitle}
           </h3>
           <div className="flex justify-center gap-2 mb-4">
             {[1, 2, 3, 4, 5].map((star) => (
@@ -164,11 +166,11 @@ function FeedbackContent() {
           </div>
           <p className="text-center text-slate-500">
             {rating === 0 && "Tap to rate"}
-            {rating === 1 && "Poor"}
-            {rating === 2 && "Fair"}
-            {rating === 3 && "Good"}
-            {rating === 4 && "Very Good"}
-            {rating === 5 && "Excellent!"}
+            {rating === 1 && t.rating.okay}
+            {rating === 2 && t.rating.good}
+            {rating === 3 && t.rating.good}
+            {rating === 4 && t.rating.great}
+            {rating === 5 && t.rating.excellent}
           </p>
         </div>
 
@@ -198,7 +200,7 @@ function FeedbackContent() {
         {rating > 0 && (
           <div className="bg-white rounded-2xl p-6 shadow-lg mb-6 animate-fade-in">
             <h3 className="text-lg font-bold text-on-surface mb-4">
-              Share your experience (optional)
+              {t.rating.shareExperience}
             </h3>
             <textarea
               value={review}

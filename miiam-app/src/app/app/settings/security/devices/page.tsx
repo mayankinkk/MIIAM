@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import { deviceIcon, deviceLabel, parseUserAgent, DeviceInfo } from "@/lib/device";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 
 interface SessionRow {
   id: string;
@@ -66,6 +67,7 @@ function eventLabel(ev: LoginEvent): { label: string; icon: string; tone: "ok" |
 
 export default function DevicesPage() {
   const supabase = createClient();
+  const { t } = useTranslation();
   const router = useRouter();
   const { addToast } = useToastStore();
   const [sessions, setSessions] = useState<SessionRow[]>([]);
@@ -174,23 +176,23 @@ export default function DevicesPage() {
             <span className="material-symbols-outlined">arrow_back</span>
           </Link>
           <div className="flex-1">
-            <h1 className="text-xl font-black text-on-background">Devices &amp; Login Activity</h1>
+            <h1 className="text-xl font-black text-on-background">{t.settings.security}</h1>
             <p className="text-xs text-on-surface-variant">Where you&apos;re signed in and recent sign-in attempts</p>
           </div>
         </div>
       </header>
 
       <Breadcrumbs items={[
-        { label: "Home", href: "/app/explore" },
-        { label: "Settings", href: "/app/settings" },
-        { label: "Security", href: "/app/settings/security" },
+        { label: t.common.home, href: "/app/explore" },
+        { label: t.settings.title, href: "/app/settings" },
+        { label: t.settings.security, href: "/app/settings/security" },
         { label: "Devices" },
       ]} />
 
       <main className="p-6 space-y-6 max-w-3xl mx-auto">
         <section>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Active devices</h2>
+            <h2 className="text-sm font-black uppercase tracking-widest text-on-surface-variant">{t.settings.securitySub}</h2>
             {sessions.length > 1 && (
               <button
                 onClick={revokeAllOthers}
@@ -263,7 +265,7 @@ export default function DevicesPage() {
         </section>
 
         <section>
-          <h2 className="text-sm font-black uppercase tracking-widest text-on-surface-variant mb-3">Recent activity</h2>
+          <h2 className="text-sm font-black uppercase tracking-widest text-on-surface-variant mb-3">{t.settings.securitySub}</h2>
           {loading ? (
             <div className="space-y-2">
               {[0, 1, 2].map((i) => (

@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useMemo } from "react";
 import Link from "next/link";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 import PullToRefresh from "@/components/PullToRefresh";
 import QuickActionsFAB from "@/components/QuickActionsFAB";
 import BlurImage from "@/components/BlurImage";
@@ -47,6 +48,7 @@ const servicesData = [
 ];
 
 export default function ExplorePage() {
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
   const [showFilters, setShowFilters] = useState(false);
@@ -168,14 +170,14 @@ export default function ExplorePage() {
         <div className="bg-amber-50 border border-amber-200 px-4 py-3 flex items-center gap-3">
           <span className="material-symbols-outlined text-amber-600">location_on</span>
           <div className="flex-1">
-            <p className="text-sm font-bold text-amber-800">Set your location</p>
-            <p className="text-xs text-amber-700">Discover services near you</p>
+            <p className="text-sm font-bold text-amber-800">{t.home.selectLocation}</p>
+            <p className="text-xs text-amber-700">{t.home.notAvailableDesc}</p>
           </div>
           <Link
             href="/auth/profile-setup?redirect=/app/explore"
             className="text-xs font-bold bg-amber-500 text-white px-3 py-1.5 rounded-lg hover:bg-amber-600 transition-colors"
           >
-            Set Location
+            {t.home.changeLocation}
           </Link>
           <button
             onClick={() => { setShowLocationBanner(false); setDismissedLocationBanner(true); }}
@@ -229,7 +231,7 @@ export default function ExplorePage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search dishes, cuisines, services..."
+              placeholder={t.home.searchPlaceholder}
               className="w-full pl-12 pr-4 py-4 bg-surface-container-high rounded-2xl text-on-surface placeholder-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
           </div>
@@ -364,12 +366,12 @@ export default function ExplorePage() {
         {/* Services Grid */}
         <section className="px-6">
           <h2 className="text-lg font-black text-on-surface mb-4">
-            {activeCategory === "all" ? "All Services" : categories.find(c => c.id === activeCategory)?.label}
+            {activeCategory === "all" ? t.nav.services : categories.find(c => c.id === activeCategory)?.label}
           </h2>
           {filteredServices.length === 0 ? (
             <div className="text-center py-12">
               <span className="material-symbols-outlined text-5xl text-slate-300">search_off</span>
-              <p className="text-on-surface-variant/70 mt-4">No services found</p>
+              <p className="text-on-surface-variant/70 mt-4">{t.common.noResults}</p>
               <button 
                 onClick={() => { setSearchQuery(""); setActiveCategory("all"); setPriceFilter("all"); setRatingFilter("all"); }}
                 className="text-primary font-bold text-sm mt-2"

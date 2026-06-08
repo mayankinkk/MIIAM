@@ -1,6 +1,7 @@
 "use client";
 
 import ServiceProductGrid from "@/components/ServiceProductGrid";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 
 const groceryCategories = [
   { id: "fruits", name: "Fruits", icon: "\uD83C\uDF4E", color: "bg-red-100" },
@@ -14,26 +15,27 @@ const groceryCategories = [
 ];
 
 export default function GroceryPage() {
+  const { t } = useTranslation();
   return (
     <ServiceProductGrid
       serviceName="Grocery"
       supabaseTable="grocery_products"
       vendorType="grocery"
-      title="Grocery"
+      title={t.grocery.title}
       heroImage="/images/grocery_hero.png"
-      heroTitle="Fresh Organic Selection"
-      heroSubtitle="Handpicked quality for you"
+      heroTitle={t.grocery.heroTitle}
+      heroSubtitle={t.grocery.heroSubtitle}
       categories={groceryCategories}
       emptyIcon="search_off"
-      emptyTitle="No products found"
-      emptyDescription="Try checking back later or select a different category."
-      emptyActionLabel="Browse All Categories"
+      emptyTitle={t.grocery.noProducts}
+      emptyDescription={t.grocery.noProductsDesc}
+      emptyActionLabel={t.grocery.browseAll}
       serviceUnavailableIcon="shopping_cart"
       serviceSettingKey="grocery"
-      serviceablePrefix="Delivering fresh groceries to"
+      serviceablePrefix={t.grocery.deliveringTo}
       deliveryNoun="Grocery"
       vendorNameDefault="Grocery"
-      checkoutUnserviceableMsg="Cannot checkout: Grocery is not serviceable at your selected location!"
+      checkoutUnserviceableMsg={t.grocery.notServiceable}
       showVendorBreadcrumb
     />
   );

@@ -5,6 +5,7 @@ import Link from "next/link";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { createClient } from "@/lib/supabase/client";
 import { useSupportSettings } from "@/lib/hooks/useSupportSettings";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 
 const quickActions = [
   { id: "track", icon: "local_shipping", label: "Track my order", color: "bg-blue-100 text-blue-700" },
@@ -48,6 +49,7 @@ const chatMessages = [
 ];
 
 export default function SupportPage() {
+  const { t } = useTranslation();
   const supabase = createClient();
   const support = useSupportSettings();
   const [tab, setTab] = useState<"home" | "chat" | "faqs" | "tickets">("home");
@@ -134,26 +136,26 @@ export default function SupportPage() {
       <header className="bg-primary text-white px-4 py-6 shrink-0">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-extrabold">Help & Support</h1>
-            <p className="text-white/70 text-sm mt-1">We&apos;re here to help 24/7</p>
+            <h1 className="text-2xl font-extrabold">{t.settings.helpCenter}</h1>
+            <p className="text-white/70 text-sm mt-1">{t.settings.helpCenterSub}</p>
           </div>
         </div>
       </header>
 
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Help & Support' }]} />
+      <Breadcrumbs items={[{ label: t.common.home, href: '/app/explore' }, { label: t.settings.helpCenter }]} />
 
       {/* Tabs */}
       <div className="bg-surface-container-lowest border-b border-slate-100 px-4 shrink-0">
         <div className="max-w-2xl mx-auto flex">
-          {(["home", "chat", "tickets", "faqs"] as const).map((t) => (
+          {(["home", "chat", "tickets", "faqs"] as const).map((tabKey) => (
             <button
-              key={t}
-              onClick={() => setTab(t as any)}
+              key={tabKey}
+              onClick={() => setTab(tabKey as any)}
               className={`flex-1 py-4 text-sm font-bold border-b-2 transition-all ${
-                tab === t ? "border-primary text-primary" : "border-transparent text-on-surface-variant"
+                tab === tabKey ? "border-primary text-primary" : "border-transparent text-on-surface-variant"
               }`}
             >
-              {t === "home" ? "Home" : t === "chat" ? "💬 Chat" : t === "tickets" ? "🎫 Tickets" : "❓ FAQs"}
+              {tabKey === "home" ? t.common.home : tabKey === "chat" ? `💬 ${t.settings.chatWithUs}` : tabKey === "tickets" ? `🎫 ${t.settings.support}` : `❓ ${t.settings.helpCenter}`}
             </button>
           ))}
         </div>
@@ -165,7 +167,7 @@ export default function SupportPage() {
           <div className="space-y-6">
             {/* Quick Actions */}
             <section>
-              <h2 className="text-lg font-bold text-on-surface mb-4">Quick Actions</h2>
+              <h2 className="text-lg font-bold text-on-surface mb-4">{t.home.categories}</h2>
               <div className="grid grid-cols-3 gap-3">
                 {quickActions.map((action) => (
                   <button
@@ -225,7 +227,7 @@ export default function SupportPage() {
 
             {/* Contact Options */}
             <section>
-              <h2 className="text-lg font-bold text-on-surface mb-4">Contact Us</h2>
+              <h2 className="text-lg font-bold text-on-surface mb-4">{t.settings.chatWithUs}</h2>
               <div className="space-y-3">
                 <button
                   onClick={() => setTab("chat")}
@@ -233,8 +235,8 @@ export default function SupportPage() {
                 >
                   <span className="material-symbols-outlined text-3xl">chat</span>
                   <div className="text-left flex-1">
-                    <p className="font-bold text-lg">Chat with us</p>
-                    <p className="text-white/70 text-sm">Average response: {support.support_response_time}</p>
+                    <p className="font-bold text-lg">{t.settings.chatWithUs}</p>
+                    <p className="text-white/70 text-sm">{t.settings.chatWithUsSub}</p>
                   </div>
                   <span className="material-symbols-outlined">chevron_right</span>
                 </button>
@@ -245,7 +247,7 @@ export default function SupportPage() {
                 >
                   <span className="material-symbols-outlined text-3xl text-primary">call</span>
                   <div className="text-left flex-1">
-                    <p className="font-bold text-lg">Call us</p>
+                    <p className="font-bold text-lg">{t.settings.support}</p>
                     <p className="text-on-surface-variant text-sm">{support.support_phone_label}</p>
                   </div>
                   <span className="material-symbols-outlined">chevron_right</span>
@@ -257,7 +259,7 @@ export default function SupportPage() {
                 >
                   <span className="material-symbols-outlined text-3xl text-primary">email</span>
                   <div className="text-left flex-1">
-                    <p className="font-bold text-lg">Email us</p>
+                    <p className="font-bold text-lg">{t.settings.helpCenter}</p>
                     <p className="text-on-surface-variant text-sm">Response within {support.support_email_response_time}</p>
                   </div>
                   <span className="material-symbols-outlined">chevron_right</span>
@@ -346,7 +348,7 @@ export default function SupportPage() {
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                placeholder="Type your message..."
+                placeholder={t.orders.typeMessage}
                 className="flex-1 bg-transparent text-sm focus:outline-none"
               />
               <button
@@ -363,13 +365,13 @@ export default function SupportPage() {
         {tab === "tickets" && (
           <div className="space-y-6">
             <div className="bg-primary text-white rounded-2xl p-6">
-              <h2 className="text-xl font-bold mb-2">Support Tickets</h2>
+              <h2 className="text-xl font-bold mb-2">{t.settings.support}</h2>
               <p className="text-white/70 text-sm">Track and manage your support requests</p>
             </div>
             
             <div className="text-center py-12 text-on-surface-variant">
               <span className="material-symbols-outlined text-5xl mb-4">confirmation_number</span>
-              <p>No tickets yet</p>
+              <p>{t.home.noNotifications}</p>
               <p className="text-sm mt-2">Start a chat to create a ticket</p>
               <button 
                 onClick={() => setTab("chat")}

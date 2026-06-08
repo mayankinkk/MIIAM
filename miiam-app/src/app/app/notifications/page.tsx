@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 import Link from "next/link";
 import { useNotificationStore } from "@/lib/store/notificationStore";
 import Breadcrumbs from "@/components/Breadcrumbs";

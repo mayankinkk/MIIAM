@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { useToastStore } from "@/lib/store/toastStore";
 
@@ -20,6 +21,7 @@ interface SearchResult {
 }
 
 export default function AddressPickerPage() {
+  const { t } = useTranslation();
   const router = useRouter();
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
@@ -501,7 +503,7 @@ export default function AddressPickerPage() {
                   ) : (
                     <span className="material-symbols-outlined text-sm">my_location</span>
                   )}
-                  Auto Detect
+                  {t.home.detectMyLocation}
                 </button>
                 <button
                   onClick={handleSave}

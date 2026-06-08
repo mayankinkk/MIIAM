@@ -10,6 +10,7 @@ import { useToastStore } from "@/lib/store/toastStore";
 import { createClient } from "@/lib/supabase/client";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 
 const categories = [
   { id: "salon", label: "Salon at Home", icon: "content_cut", color: "from-pink-500 to-pink-400", emoji: "💇‍♀️" },
@@ -83,6 +84,7 @@ const trending = ["Hair rebonding", "Keratin treatment", "Bridal makeup", "Hot o
 const timeSlots = ["09:00 AM", "11:00 AM", "01:00 PM", "03:00 PM", "05:00 PM", "07:00 PM"];
 
 export default function BeautyPage() {
+  const { t } = useTranslation();
   const { getSetting } = useServiceSettingsStore();
   const [activeCategory, setActiveCategory] = useState("salon");
   const [isServiceable, setIsServiceable] = useState(true);
@@ -298,7 +300,7 @@ export default function BeautyPage() {
                             isServiceable ? "bg-primary text-white hover:scale-[1.02] active:scale-[0.98] animate-glow-pulse" : "bg-outline text-white cursor-not-allowed"
                           }`}
                         >
-                          {isServiceable ? "Book Now" : "Unavailable"}
+                          {isServiceable ? t.services.bookNow : t.services.unavailable}
                         </button>
                       ) : (
                         <div className="flex items-center justify-between">

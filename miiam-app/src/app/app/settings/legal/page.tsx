@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 
 const legalLinks = [
   { icon: "description", title: "Terms of Service", sub: "Rules and conditions of use", href: "/terms" },
@@ -12,6 +13,7 @@ const legalLinks = [
 ];
 
 export default function LegalPage() {
+  const { t } = useTranslation();
   return (
     <div className="min-h-screen bg-background text-on-background pb-24">
       <header className="bg-surface-container px-6 py-4 sticky top-0 z-10 shadow-sm border-b border-outline-variant/10">
@@ -19,11 +21,11 @@ export default function LegalPage() {
           <Link href="/app/settings" className="w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center hover:bg-surface-container-highest transition-colors">
             <span className="material-symbols-outlined text-on-background">arrow_back</span>
           </Link>
-          <h1 className="text-xl font-black text-on-background">Legal</h1>
+          <h1 className="text-xl font-black text-on-background">{t.settings.legal}</h1>
         </div>
       </header>
 
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Settings', href: '/app/settings' }, { label: 'Legal' }]} />
+      <Breadcrumbs items={[{ label: t.common.home, href: '/app/explore' }, { label: t.settings.title, href: '/app/settings' }, { label: t.settings.legal }]} />
 
       <main className="p-6">
         <div className="bg-surface-container border border-outline-variant/10 rounded-2xl overflow-hidden shadow-sm">

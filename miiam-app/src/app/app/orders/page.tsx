@@ -14,6 +14,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
 import PullToRefresh from "@/components/PullToRefresh";
 import { PRINTING_VENDOR_ID } from "@/lib/constants";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 
 const statusColors: Record<string, string> = {
   pending: "bg-[#ffd709]/20 text-[#453900]",
@@ -27,6 +28,7 @@ const statusColors: Record<string, string> = {
 };
 
 export default function OrdersPage() {
+  const { t } = useTranslation();
   const [reordering, setReordering] = useState<string | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
@@ -175,8 +177,8 @@ export default function OrdersPage() {
       }}>
       <main className="pt-24 pb-24 px-6 max-w-4xl mx-auto bg-background text-on-background">
         <section className="mb-10">
-          <h1 className="text-3xl font-extrabold tracking-tight leading-none mb-2 text-on-surface">My Orders</h1>
-          <p className="text-on-surface-variant text-lg">Track and manage your orders.</p>
+          <h1 className="text-3xl font-extrabold tracking-tight leading-none mb-2 text-on-surface">{t.orders.title}</h1>
+          <p className="text-on-surface-variant text-lg">{t.orders.subtitle}</p>
         </section>
 
         {loading ? (
@@ -189,9 +191,9 @@ export default function OrdersPage() {
           <div className="py-12">
             <EmptyState 
               icon="person_off" 
-              title="Please log in" 
-              description="You need to be logged in to view your orders." 
-              actionLabel="Go to Login" 
+              title={t.orders.loginRequired}
+              description={t.orders.loginRequiredDesc}
+              actionLabel={t.orders.goToLogin} 
               actionHref="/auth/login" 
             />
           </div>
@@ -199,9 +201,9 @@ export default function OrdersPage() {
           <div className="py-12">
             <EmptyState 
               icon="local_shipping" 
-              title="No orders yet" 
-              description="Your order history will appear here once you place an order." 
-              actionLabel="Start Ordering" 
+              title={t.orders.noOrders}
+              description={t.orders.noOrdersDesc}
+              actionLabel={t.orders.startOrdering} 
               actionHref="/app/explore" 
             />
           </div>
@@ -247,14 +249,14 @@ export default function OrdersPage() {
                       className="flex-1 bg-primary text-white py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:opacity-90 disabled:opacity-60"
                     >
                       <span className="material-symbols-outlined text-sm">refresh</span>
-                      {reordering === order.id ? "Adding..." : "Reorder"}
+                      {reordering === order.id ? t.orders.adding : t.cart.reorder}
                     </button>
                     <Link
                       href={`/app/orders/${order.id}/rating`}
                       className="flex-1 bg-white border border-outline-variant/30 text-on-surface py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:border-primary"
                     >
                       <span className="material-symbols-outlined text-sm">star</span>
-                      Rate
+                      {t.orders.rate}
                     </Link>
                   </div>
                 )}

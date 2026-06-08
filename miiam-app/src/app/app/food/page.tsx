@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCartStore } from "@/lib/store/cartStore";
@@ -331,6 +332,7 @@ function CartFloater() {
 }
 
 export default function FoodPage() {
+  const { t } = useTranslation();
   const { getSetting } = useServiceSettingsStore();
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [vegFilter, setVegFilter] = useState<"all" | "veg" | "non_veg">("all");
@@ -484,7 +486,7 @@ export default function FoodPage() {
           <Link href="/app/explore" aria-label="Back to explore" className="w-10 h-10 bg-surface-container rounded-full flex items-center justify-center">
             <span className="material-symbols-outlined" aria-hidden="true">arrow_back</span>
           </Link>
-          <h1 className="text-xl font-black text-on-surface">Food Delivery</h1>
+          <h1 className="text-xl font-black text-on-surface">{t.food.title}</h1>
           <Link href="/app/cart" aria-label="View cart" className="w-10 h-10 bg-surface-container rounded-full flex items-center justify-center relative">
             <span className="material-symbols-outlined" aria-hidden="true">shopping_cart</span>
           </Link>
@@ -508,7 +510,7 @@ export default function FoodPage() {
       <div className="bg-surface-container-lowest px-6 py-4 mt-4">
         <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
           <button onClick={() => { setSelectedCategory("all"); if (navigator.vibrate) navigator.vibrate(10); }} className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap ${selectedCategory === "all" ? "bg-primary text-white" : "bg-surface-container text-on-surface-variant"} active:scale-95 transition-all`}>
-            🍽 All
+            🍽 {t.food.all}
           </button>
           {foodCategories.map((cat) => (
             <button key={cat.id} onClick={() => { setSelectedCategory(cat.id); if (navigator.vibrate) navigator.vibrate(10); }} className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap flex items-center gap-2 ${selectedCategory === cat.id ? "bg-primary text-white" : "bg-surface-container text-on-surface-variant"} active:scale-95 transition-all`}>
@@ -518,13 +520,13 @@ export default function FoodPage() {
         </div>
         <div className="flex flex-wrap gap-2 mt-3">
           <button onClick={() => setVegFilter("all")} className={`px-3 py-1.5 rounded-full text-xs font-bold ${vegFilter === "all" ? "bg-inverse-surface text-white" : "bg-surface-container text-on-surface-variant"}`}>
-            All
+            {t.food.all}
           </button>
           <button onClick={() => setVegFilter("veg")} className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 ${vegFilter === "veg" ? "bg-green-600 text-white" : "bg-green-100 text-green-700"}`}>
-            <span className="w-3 h-3 border-2 border-green-600 rounded-sm flex items-center justify-center"><span className="w-1.5 h-1.5 bg-green-600 rounded-full"></span></span> Veg
+            <span className="w-3 h-3 border-2 border-green-600 rounded-sm flex items-center justify-center"><span className="w-1.5 h-1.5 bg-green-600 rounded-full"></span></span> {t.food.veg}
           </button>
           <button onClick={() => setVegFilter("non_veg")} className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 ${vegFilter === "non_veg" ? "bg-red-600 text-white" : "bg-red-100 text-red-700"}`}>
-            <span className="w-3 h-3 border-2 border-red-600 rounded-sm flex items-center justify-center"><span className="w-1.5 h-1.5 bg-red-600 rounded-full"></span></span> Non-Veg
+            <span className="w-3 h-3 border-2 border-red-600 rounded-sm flex items-center justify-center"><span className="w-1.5 h-1.5 bg-red-600 rounded-full"></span></span> {t.food.nonVeg}
           </button>
           <SortDropdown sort={sortBy} setSort={setSortBy} />
           <PriceRangeFilter onApply={(min, max) => { setPriceMin(min); setPriceMax(max); }} />
@@ -550,13 +552,13 @@ export default function FoodPage() {
             <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 animate-glow-pulse">
               <span className="material-symbols-outlined text-4xl text-primary">location_on</span>
             </div>
-            <h3 className="text-lg font-black text-on-surface mb-1">Location Required</h3>
-            <p className="text-sm text-on-surface-variant mb-5">Please set your delivery location to find restaurants serving your area.</p>
+            <h3 className="text-lg font-black text-on-surface mb-1">{t.food.locationRequired}</h3>
+            <p className="text-sm text-on-surface-variant mb-5">{t.food.locationRequiredDesc}</p>
             <button
               onClick={() => { window.location.href = "/app/home?selectLocation=true"; }}
               className="px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-[#a00018] active:scale-95 transition-all shadow-md"
             >
-              Set Delivery Location
+              {t.food.setLocation}
             </button>
           </div>
         ) : noLocalVendors ? (
@@ -564,19 +566,19 @@ export default function FoodPage() {
             <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="material-symbols-outlined text-4xl text-red-400">location_off</span>
             </div>
-            <h3 className="text-lg font-black text-on-surface mb-1">Not Available in Your Area</h3>
-            <p className="text-sm text-on-surface-variant mb-1">We couldn't find any restaurants near</p>
+            <h3 className="text-lg font-black text-on-surface mb-1">{t.home.notAvailable}</h3>
+            <p className="text-sm text-on-surface-variant mb-1">{t.home.notAvailableDesc}</p>
             <p className="text-sm font-bold text-primary mb-4">{locationStore.displayAddress}</p>
             <p className="text-xs text-outline mb-5">We're expanding every day! Try a nearby pincode or check back soon.</p>
             <button
               onClick={() => { window.location.href = "/app/home?selectLocation=true"; }}
               className="px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm"
             >
-              Change Location
+              {t.home.changeLocation}
             </button>
           </div>
         ) : filteredRestaurants.length === 0 ? (
-          <EmptyState icon="🍽️" title="No restaurants found" description="Try adjusting your filters or search query." actionLabel="Show All" onAction={() => setVegFilter("all")} />
+          <EmptyState icon="🍽️" title={t.food.noRestaurants} description={t.food.noRestaurantsDesc} actionLabel={t.food.showAll} onAction={() => setVegFilter("all")} />
         ) : (
           <StaggerContainer className="space-y-4">
           {filteredRestaurants.map((restaurant, index) => (
@@ -619,9 +621,9 @@ export default function FoodPage() {
                     <span className="text-xs text-outline">•</span>
                     <span className="text-xs text-on-surface-variant">{restaurant.delivery_time_min ? `${restaurant.delivery_time_min}–${restaurant.delivery_time_max || restaurant.delivery_time_min + 15} min` : restaurant.delivery_time_minutes ? `${restaurant.delivery_time_minutes - 5}–${restaurant.delivery_time_minutes + 5} min` : restaurant.delivery_time || "30-40 min"}</span>
                   </div>
-                  <p className="text-xs text-on-surface-variant mt-1">Delivery: {restaurant.delivery_charge ? `₹${restaurant.delivery_charge}` : "₹49"}</p>
+                  <p className="text-xs text-on-surface-variant mt-1">{t.food.deliveryCharge} {restaurant.delivery_charge ? `₹${restaurant.delivery_charge}` : "₹49"}</p>
                   <div className="mt-2 flex items-center gap-1 text-primary font-bold text-xs">
-                    <span>View Menu</span>
+                    <span>{t.food.viewMenu}</span>
                     <span className="material-symbols-outlined text-sm">chevron_right</span>
                   </div>
                 </div>

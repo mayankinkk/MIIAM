@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
@@ -138,6 +139,7 @@ function AddToCartButton({ item, vendor }: { item: MenuItem; vendor: Vendor }) {
 }
 
 function ReviewModal({ vendorId, onClose, onSubmitted }: { vendorId: string; onClose: () => void; onSubmitted: () => void }) {
+  const { t } = useTranslation();
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [comment, setComment] = useState("");
@@ -147,7 +149,7 @@ function ReviewModal({ vendorId, onClose, onSubmitted }: { vendorId: string; onC
 
   const handleSubmit = async () => {
     if (!rating || !comment.trim() || !name.trim()) {
-      setError("Please fill in all fields and select a rating.");
+      setError(t.food.fillAllFields);
       return;
     }
     setSubmitting(true);
@@ -163,7 +165,7 @@ function ReviewModal({ vendorId, onClose, onSubmitted }: { vendorId: string; onC
     });
 
     if (insertError) {
-      setError("Failed to submit review. Please try again.");
+      setError(t.food.reviewFailed);
       setSubmitting(false);
       return;
     }
@@ -182,14 +184,14 @@ function ReviewModal({ vendorId, onClose, onSubmitted }: { vendorId: string; onC
     <div className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center animate-fade-in">
       <div className="bg-surface-container-lowest w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl p-6 animate-slide-up">
         <div className="flex justify-between items-center mb-5">
-          <h3 className="text-xl font-black text-on-surface">Write a Review</h3>
+          <h3 className="text-xl font-black text-on-surface">{t.food.writeReview}</h3>
           <button onClick={onClose} className="w-8 h-8 bg-surface-container rounded-full flex items-center justify-center">
             <span className="material-symbols-outlined text-sm">close</span>
           </button>
         </div>
 
         {/* Star selector */}
-        <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2">Your Rating</p>
+        <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2">{t.food.yourRating}</p>
         <div className="flex gap-2 mb-5">
           {[1, 2, 3, 4, 5].map((star) => (
             <button
@@ -206,22 +208,22 @@ function ReviewModal({ vendorId, onClose, onSubmitted }: { vendorId: string; onC
 
         <div className="space-y-3 mb-5">
           <div>
-            <label className="text-xs font-bold text-on-surface-variant uppercase tracking-widest block mb-1">Your Name</label>
+            <label className="text-xs font-bold text-on-surface-variant uppercase tracking-widest block mb-1">{t.food.yourName}</label>
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="w-full px-4 py-3 bg-surface-container-low rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
-              placeholder="Enter your name"
+              placeholder={t.food.namePlaceholder}
             />
           </div>
           <div>
-            <label className="text-xs font-bold text-on-surface-variant uppercase tracking-widest block mb-1">Your Review</label>
+            <label className="text-xs font-bold text-on-surface-variant uppercase tracking-widest block mb-1">{t.food.yourReview}</label>
             <textarea
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               rows={3}
               className="w-full px-4 py-3 bg-surface-container-low rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 resize-none"
-              placeholder="Tell others what you think..."
+              placeholder={t.food.reviewPlaceholder}
             />
           </div>
         </div>
@@ -233,7 +235,7 @@ function ReviewModal({ vendorId, onClose, onSubmitted }: { vendorId: string; onC
           disabled={submitting}
           className="w-full bg-gradient-to-r from-primary to-primary-container text-white py-4 rounded-xl font-extrabold disabled:opacity-50 hover:scale-[1.02] active:scale-[0.98] transition-all"
         >
-          {submitting ? "Submitting..." : "Submit Review"}
+          {submitting ? t.food.submitting : t.food.submitReview}
         </button>
       </div>
     </div>
@@ -265,6 +267,7 @@ function CartFloater() {
 }
 
 export default function RestaurantProfilePage() {
+  const { t } = useTranslation();
   const params = useParams();
   const router = useRouter();
   const vendorId = params.id as string;
@@ -336,11 +339,11 @@ export default function RestaurantProfilePage() {
         <div className="w-20 h-20 bg-surface-container rounded-full flex items-center justify-center mb-4">
           <span className="material-symbols-outlined text-4xl text-primary">wifi_off</span>
         </div>
-        <p className="text-xl font-black text-on-surface mb-2">Something went wrong</p>
+        <p className="text-xl font-black text-on-surface mb-2">{t.common.error}</p>
         <p className="text-on-surface-variant text-sm mb-6 text-center">{error}</p>
         <div className="flex gap-3">
           <button onClick={fetchData} className="px-6 py-3 bg-primary text-white rounded-xl font-bold hover:opacity-90 transition-opacity">
-            Try Again
+            {t.common.retry}
           </button>
           <Link href="/app/food" className="px-6 py-3 bg-surface-container text-primary rounded-xl font-bold hover:opacity-90 transition-opacity">
             ← Back
@@ -354,8 +357,8 @@ export default function RestaurantProfilePage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-surface">
         <div className="text-center">
-          <p className="text-2xl font-black text-on-surface mb-2">Restaurant not found</p>
-          <Link href="/app/food" className="text-primary font-bold">← Back to Food</Link>
+          <p className="text-2xl font-black text-on-surface mb-2">{t.food.restaurantNotFound}</p>
+          <Link href="/app/food" className="text-primary font-bold">{t.food.backToFood}</Link>
         </div>
       </div>
     );
@@ -485,7 +488,7 @@ export default function RestaurantProfilePage() {
         <section className="mt-5 px-4">
           <div className="flex items-center gap-2 mb-3">
             <span className="text-xl">⭐</span>
-            <h2 className="text-lg font-black text-on-surface">Chef's Specials</h2>
+            <h2 className="text-lg font-black text-on-surface">{t.food.chefSpecials}</h2>
           </div>
           <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2">
             {specials.map((item) => (
@@ -519,7 +522,7 @@ export default function RestaurantProfilePage() {
       {/* Menu Tabs */}
       <section className="mt-5">
         <div className="px-4 mb-3 flex items-center justify-between gap-3">
-          <h2 className="text-lg font-black text-on-surface">Full Menu</h2>
+          <h2 className="text-lg font-black text-on-surface">{t.food.fullMenu}</h2>
           <label className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full cursor-pointer text-xs font-bold transition-all ${
             vegOnly ? "bg-green-600 text-white" : "bg-surface-container-low text-green-700 border border-green-200"
           }`}>
@@ -527,7 +530,7 @@ export default function RestaurantProfilePage() {
             <span className="w-3 h-3 border-2 border-current rounded-sm flex items-center justify-center flex-shrink-0">
               <span className="w-1.5 h-1.5 bg-current rounded-full" />
             </span>
-            Veg Only
+            {t.food.vegOnly}
           </label>
         </div>
 
@@ -539,7 +542,7 @@ export default function RestaurantProfilePage() {
               type="text"
               value={menuSearch}
               onChange={(e) => setMenuSearch(e.target.value)}
-              placeholder="Search menu items..."
+              placeholder={t.food.searchMenu}
               className="w-full pl-9 pr-4 py-2.5 bg-surface-container-lowest border border-outline rounded-xl text-sm focus:outline-none focus:border-primary shadow-sm"
             />
             {menuSearch && (
@@ -571,7 +574,7 @@ export default function RestaurantProfilePage() {
         <div className="px-4 mt-3 space-y-3">
           {filteredMenu.length === 0 ? (
             <div className="bg-surface-container-lowest rounded-2xl p-8 text-center text-outline shadow-sm">
-              {menuSearch ? `No results for "${menuSearch}"` : "No items in this category"}
+              {menuSearch ? `${t.food.noResults} "${menuSearch}"` : t.food.noItemsInCategory}
             </div>
           ) : (
             filteredMenu.map((item) => (
@@ -585,7 +588,7 @@ export default function RestaurantProfilePage() {
                   />
                   {item.is_featured && (
                     <span className="absolute bottom-0 left-0 right-0 bg-black/50 backdrop-blur-sm text-white text-[9px] font-black text-center py-0.5 tracking-wider">
-                      ⭐ CHEF'S SPECIAL
+                      ⭐ {t.food.chefsSpecial}
                     </span>
                   )}
                 </div>
@@ -616,12 +619,12 @@ export default function RestaurantProfilePage() {
       {/* Reviews */}
       <section className="mt-6 px-4">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-black text-on-surface">Reviews & Ratings</h2>
+          <h2 className="text-lg font-black text-on-surface">{t.food.reviews}</h2>
           <button
             onClick={() => setShowReviewModal(true)}
             className="text-sm font-bold text-primary bg-surface px-3 py-1.5 rounded-lg hover:bg-[#ffe4e7] transition-colors active:scale-95"
           >
-            + Write a Review
+            + {t.food.writeReview}
           </button>
         </div>
 
@@ -633,7 +636,7 @@ export default function RestaurantProfilePage() {
                 <div className="text-center">
                   <p className="text-5xl font-black text-on-surface">{avgRating}</p>
                   <StarRating rating={parseFloat(avgRating)} size="sm" />
-                  <p className="text-xs text-on-surface-variant mt-1">{reviews.length} reviews</p>
+                  <p className="text-xs text-on-surface-variant mt-1">{reviews.length} {t.food.reviewsCount}</p>
                 </div>
                 <div className="flex-1 space-y-1.5">
                   {ratingBreakdown.map(({ star, count, pct }) => (
@@ -681,13 +684,13 @@ export default function RestaurantProfilePage() {
         ) : (
           <div className="bg-surface-container-lowest rounded-2xl p-8 shadow-sm text-center">
             <p className="text-3xl mb-2">💬</p>
-            <p className="font-bold text-on-surface mb-1">No reviews yet</p>
-            <p className="text-sm text-outline mb-4">Be the first to review this restaurant!</p>
+            <p className="font-bold text-on-surface mb-1">{t.food.noReviews}</p>
+            <p className="text-sm text-outline mb-4">{t.food.beFirst}</p>
             <button
               onClick={() => setShowReviewModal(true)}
               className="px-6 py-2.5 bg-gradient-to-r from-primary to-primary-container text-white font-bold rounded-xl text-sm hover:scale-[1.02] active:scale-[0.98] transition-all"
             >
-              Write a Review
+              {t.food.writeReview}
             </button>
           </div>
         )}

@@ -1,6 +1,7 @@
 "use client";
 
 import ServiceProductGrid from "@/components/ServiceProductGrid";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 
 const flowerCategories = [
   { id: "bouquets", name: "Bouquets", icon: "\uD83D\uDC90", color: "bg-pink-100" },
@@ -11,6 +12,7 @@ const flowerCategories = [
 ];
 
 export default function FlowersPage() {
+  const { t } = useTranslation();
   return (
     <ServiceProductGrid
       serviceName="Flowers"

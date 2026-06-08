@@ -14,6 +14,7 @@ import RiderMap from "@/components/rider/RiderMap";
 import ShareLocationToggle from "@/components/rider/ShareLocationToggle";
 import { useUnreadMessages } from "@/lib/hooks/useUnreadMessages";
 import { PRINTING_VENDOR_ID } from "@/lib/constants";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 
 const foodSteps = [
   { key: "pending", label: "Order Placed", icon: "receipt_long", time: "" },
@@ -37,6 +38,7 @@ const printSteps = [
 ];
 
 export default function OrderTrackingPage({ params }: { params: Promise<{ id: string }> }) {
+  const { t } = useTranslation();
   const { id } = use(params);
   const router = useRouter();
   const supabase = createClient();
@@ -325,10 +327,10 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
       <h2 className="text-xl font-bold mb-2">Order not found</h2>
       <p className="text-on-surface-variant text-center mb-6">We couldn't find this order. It may have been removed or you may not have permission to view it.</p>
       <Link href="/app/orders" className="bg-primary text-white px-6 py-3 rounded-xl font-bold">
-        View All Orders
+        {t.orders.viewAllOrders}
       </Link>
       <button onClick={() => window.location.reload()} className="mt-4 text-sm text-on-surface-variant">
-        Reload page
+        {t.orders.reloadPage}
       </button>
     </div>
   );
@@ -410,7 +412,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
               <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
                 <span className="material-symbols-outlined text-amber-500 text-2xl mt-0.5">timer</span>
                 <div>
-                  <p className="font-bold text-amber-800">Preparing Your Order</p>
+                  <p className="font-bold text-amber-800">{t.orders.preparingOrder}</p>
                   <p className="text-sm text-amber-600">
                     Estimated ready by{" "}
                     {(() => {
@@ -479,8 +481,8 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                     <span className="material-symbols-outlined text-4xl text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>person_search</span>
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-xl font-bold tracking-tight text-on-surface">Finding a Rider</h3>
-                    <p className="text-on-surface-variant font-medium">A rider will accept your order soon</p>
+                    <h3 className="text-xl font-bold tracking-tight text-on-surface">{t.orders.findingRider}</h3>
+                    <p className="text-on-surface-variant font-medium">{t.orders.riderWillAccept}</p>
                     <p className="text-xs text-primary font-bold mt-2 flex items-center gap-1">
                       <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
                       Waiting for rider acceptance...
@@ -513,7 +515,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
 
           <div className="lg:col-span-5 space-y-4 sm:space-y-6 mt-6 lg:mt-0">
             <div className="bg-surface-container-lowest rounded-2xl p-5 sm:p-8 shadow-sm">
-              <h2 className="text-xl font-extrabold tracking-tight mb-6 sm:mb-8 text-on-surface">Order Journey</h2>
+                    <h2 className="text-xl font-extrabold tracking-tight mb-6 sm:mb-8 text-on-surface">{t.orders.orderJourney}</h2>
               <div className="space-y-0 relative">
                 <div className="absolute left-[19px] top-4 bottom-10 w-0.5 bg-gradient-to-b from-primary via-primary to-outline" />
 
@@ -605,7 +607,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                   </div>
                 ))}
                 <div className="pt-3 border-t border-outline-variant/20 flex justify-between items-center">
-                  <span className="text-on-surface font-bold">Total (incl. Delivery)</span>
+                  <span className="text-on-surface font-bold">{t.orders.totalInclDelivery}</span>
                   <span className="text-lg font-black text-primary">₹{order.total_amount?.toFixed(2) || "0.00"}</span>
                 </div>
               </div>
@@ -712,7 +714,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                   className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl py-4 sm:py-5 text-base sm:text-lg font-extrabold shadow-lg shadow-indigo-600/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
                 >
                   <span className="material-symbols-outlined">refresh</span>
-                  Print Again
+                  {t.orders.printAgain}
                 </button>
                 <a
                   href={`/api/printing/invoice?orderId=${order.id}`}
@@ -721,17 +723,17 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                   className="w-full bg-white border-2 border-indigo-200 text-indigo-700 rounded-xl py-4 sm:py-5 text-base sm:text-lg font-extrabold hover:bg-indigo-50 active:scale-95 transition-all flex items-center justify-center gap-2"
                 >
                   <span className="material-symbols-outlined">description</span>
-                  GST Invoice (PDF)
+                  {t.orders.gstInvoice}
                 </a>
               </div>
             )}
 
-            <button
-              onClick={() => setShowHelp(true)}
-              className="w-full bg-gradient-to-r from-primary to-primary-container text-white rounded-xl py-4 sm:py-5 text-base sm:text-lg font-extrabold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all"
-            >
-              {canCancel ? "Cancel Order" : "Help with Order"}
-            </button>
+                <button
+                  onClick={() => setShowHelp(true)}
+                  className="w-full bg-gradient-to-r from-primary to-primary-container text-white rounded-xl py-4 sm:py-5 text-base sm:text-lg font-extrabold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all"
+                >
+                  {canCancel ? t.orders.cancelOrder : t.orders.helpWithOrder}
+                </button>
 
             <PrintButton
               variant="full"
@@ -752,8 +754,8 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
             {order.status === "cancelled" && (
               <div className="w-full bg-red-50 border border-red-200 rounded-xl py-4 text-center">
                 <span className="material-symbols-outlined text-red-500 text-3xl block mb-1">cancel</span>
-                <p className="text-red-600 font-bold">Order Cancelled</p>
-                <p className="text-sm text-red-400 mt-1">This order has been cancelled</p>
+                <p className="text-red-600 font-bold">{t.orders.orderCancelled}</p>
+                <p className="text-sm text-red-400 mt-1">{t.orders.orderCancelledDesc}</p>
               </div>
             )}
 
@@ -781,7 +783,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
               <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
                 <div className="bg-surface-container-lowest rounded-2xl w-full max-w-md p-6">
                   <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl font-black text-on-surface">Need Help?</h2>
+                    <h2 className="text-xl font-black text-on-surface">{t.orders.needHelp}</h2>
                     <button onClick={() => setShowHelp(false)} className="w-8 h-8 bg-surface-container-high rounded-full flex items-center justify-center">
                       <span className="material-symbols-outlined">close</span>
                     </button>
@@ -793,7 +795,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                       className="w-full p-4 bg-blue-50 text-blue-600 rounded-xl font-bold flex items-center justify-center gap-2"
                     >
                       <span className="material-symbols-outlined">chat</span>
-                      Chat with Rider
+                      {t.orders.chatWithRider}
                     </button>
                     
                     {order?.riders?.phone ? (
@@ -802,7 +804,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                         className="w-full p-4 bg-green-50 text-green-600 rounded-xl font-bold flex items-center justify-center gap-2"
                       >
                         <span className="material-symbols-outlined">call</span>
-                        Call Rider
+                        {t.orders.callRider}
                       </a>
                     ) : (
                       <a 
@@ -810,7 +812,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                         className="w-full p-4 bg-green-50 text-green-600 rounded-xl font-bold flex items-center justify-center gap-2"
                       >
                         <span className="material-symbols-outlined">call</span>
-                        Call Support
+                        {t.orders.callSupport}
                       </a>
                     )}
                     
@@ -820,7 +822,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                         className="w-full p-4 bg-red-50 text-red-600 rounded-xl font-bold flex items-center justify-center gap-2"
                       >
                         <span className="material-symbols-outlined">cancel</span>
-                        Cancel Order
+                        {t.orders.cancelOrder}
                       </button>
                     )}
                   </div>
@@ -833,7 +835,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
               <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
                 <div className="bg-surface-container-lowest rounded-2xl w-full max-w-md p-4 sm:p-6">
                   <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl font-black text-on-surface">Cancel Order</h2>
+                    <h2 className="text-xl font-black text-on-surface">{t.orders.cancelOrder}</h2>
                     <button onClick={() => setShowCancelReason(false)} className="w-8 h-8 bg-surface-container-high rounded-full flex items-center justify-center">
                       <span className="material-symbols-outlined">close</span>
                     </button>
@@ -884,7 +886,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                     onClick={() => setShowCancelReason(false)}
                     className="w-full mt-4 py-3 text-on-surface-variant font-bold text-sm"
                   >
-                    Keep Order
+                    {t.orders.keepOrder}
                   </button>
                 </div>
               </div>

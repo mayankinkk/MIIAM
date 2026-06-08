@@ -3,9 +3,11 @@
 import Link from "next/link";
 import { useDiningStore } from "@/lib/store/diningStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 
 export default function BookingsPage() {
   const { bookings, cancelBooking } = useDiningStore();
+  const { t } = useTranslation();
 
   return (
     <div className="min-h-screen bg-surface pb-24">
@@ -16,24 +18,24 @@ export default function BookingsPage() {
           </Link>
           <span className="text-2xl font-extrabold tracking-tighter text-primary">MIIAM</span>
         </div>
-        <span className="text-on-surface font-bold hidden md:block">Table Bookings</span>
+        <span className="text-on-surface font-bold hidden md:block">{t.profile.bookings}</span>
       </nav>
 
       <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'My Bookings' }]} />
 
       <main className="pt-24 max-w-4xl mx-auto px-6">
         <section className="mb-10">
-          <h1 className="text-3xl font-extrabold tracking-tight leading-none mb-2 text-on-surface">Table Bookings</h1>
+          <h1 className="text-3xl font-extrabold tracking-tight leading-none mb-2 text-on-surface">{t.profile.bookings}</h1>
           <p className="text-on-surface-variant text-lg">Manage your upcoming dining experiences.</p>
         </section>
 
         {bookings.length === 0 ? (
           <div className="text-center py-24">
             <div className="text-8xl mb-6">🍽️</div>
-            <h2 className="text-2xl font-bold text-on-surface mb-3">No table bookings yet</h2>
-            <p className="text-on-surface-variant mb-8">Reserve a table at your favourite restaurants.</p>
+            <h2 className="text-2xl font-bold text-on-surface mb-3">{t.shared.noBookings}</h2>
+            <p className="text-on-surface-variant mb-8">{t.shared.noBookingsDesc}</p>
             <Link href="/app/explore" className="bg-secondary text-white px-10 py-4 rounded-xl font-bold inline-block hover:bg-on-secondary-container transition-colors shadow-lg shadow-secondary/30">
-              Explore Restaurants
+              {t.shared.discoverRestaurants}
             </Link>
           </div>
         ) : (
@@ -64,11 +66,11 @@ export default function BookingsPage() {
                     <div className="text-right">
                       {booking.status === 'cancelled' ? (
                         <span className="bg-error-container/10 text-error text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-widest">
-                          Cancelled
+                          {t.orders.statusCancelled}
                         </span>
                       ) : (
                         <span className="bg-[#cce4ff] text-[#003dac] text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-widest">
-                          Confirmed
+                          {t.orders.statusAccepted}
                         </span>
                       )}
                     </div>
@@ -107,7 +109,7 @@ export default function BookingsPage() {
                           }}
                           className="text-primary hover:bg-primary/10 px-4 py-2 rounded-lg font-bold text-sm transition-colors"
                         >
-                          Cancel Booking
+                          {t.orders.cancelOrder}
                         </button>
                       </div>
                     )}

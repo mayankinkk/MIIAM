@@ -11,6 +11,7 @@ import AddressPickerSheet, { type SelectedAddress } from "@/components/AddressPi
 import { RiderTipSelector, TipThankYou } from "@/components/RiderTip";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { SERVICES_VENDOR_ID, PRINTING_VENDOR_ID, PRINT_MENU_ITEM_ID } from "@/lib/constants";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 function safeMenuItemId(id: string) {
@@ -33,6 +34,7 @@ interface PromoCode {
 
 
 export default function CheckoutPage() {
+  const { t } = useTranslation();
   const [promoCodes, setPromoCodes] = useState<PromoCode[]>([]);
   const [vendorDeliveryCharges, setVendorDeliveryCharges] = useState<Record<string, number>>({});
   const [paymentMethod, setPaymentMethod] = useState("upi");
@@ -397,8 +399,8 @@ export default function CheckoutPage() {
 
       <main className="pt-20 sm:pt-24 pb-24 px-3 sm:px-6 max-w-7xl mx-auto bg-background text-on-background">
         <header className="mb-6 sm:mb-12">
-          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-on-surface mb-2 break-words">Secure Checkout</h1>
-          <p className="text-sm sm:text-base text-on-surface-variant">Complete your order with peace of mind.</p>
+          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-on-surface mb-2 break-words">{t.checkout.title}</h1>
+          <p className="text-sm sm:text-base text-on-surface-variant">{t.checkout.subtitle}</p>
         </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-8 items-start">
@@ -411,8 +413,8 @@ export default function CheckoutPage() {
                   <span className="material-symbols-outlined text-primary">location_on</span>
                 </div>
                 <div className="flex-1">
-                  <h2 className="text-lg font-extrabold text-on-surface">Delivery Address</h2>
-                  <p className="text-xs text-on-surface-variant">Where should we deliver?</p>
+                  <h2 className="text-lg font-extrabold text-on-surface">{t.checkout.deliveryAddress}</h2>
+                  <p className="text-xs text-on-surface-variant">{t.checkout.whereToDeliver}</p>
                 </div>
                 <button
                   onClick={() => setShowAddressPicker(true)}
@@ -455,8 +457,8 @@ export default function CheckoutPage() {
                   className="w-full p-4 sm:p-5 rounded-xl border-2 border-dashed border-outline-variant/50 flex flex-col items-center gap-2 text-on-surface-variant hover:border-primary hover:text-primary hover:bg-surface transition-all"
                 >
                   <span className="material-symbols-outlined text-3xl">add_location</span>
-                  <span className="font-bold text-sm sm:text-base">Add Delivery Address</span>
-                  <span className="text-xs">GPS auto-detect or enter manually</span>
+                    <span className="font-bold text-sm sm:text-base">{t.checkout.addAddress}</span>
+                    <span className="text-xs">{t.checkout.gpsAutoDetect}</span>
                 </button>
               )}
 
@@ -466,7 +468,7 @@ export default function CheckoutPage() {
                   className="mt-3 w-full py-3 rounded-xl border-2 border-dashed border-outline-variant/40 text-xs sm:text-sm font-bold text-on-surface-variant hover:border-primary hover:text-primary flex items-center justify-center gap-2 transition-all"
                 >
                   <span className="material-symbols-outlined text-sm">add</span>
-                  Use a Different Address
+                  {t.checkout.useDifferentAddress}
                 </button>
               )}
             </section>
@@ -718,7 +720,7 @@ export default function CheckoutPage() {
                 <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#c4d0ff] flex items-center justify-center text-[#003dac] shrink-0">
                   <span className="material-symbols-outlined">payments</span>
                 </div>
-                <h2 className="text-xl sm:text-2xl font-bold">Payment Method</h2>
+                <h2 className="text-xl sm:text-2xl font-bold">{t.checkout.paymentMethod}</h2>
               </div>
               <div className="space-y-3 sm:space-y-4">
                 {[
@@ -757,7 +759,7 @@ export default function CheckoutPage() {
           <div className="lg:col-span-4 lg:sticky lg:top-24">
             <aside className="bg-surface-container-low p-5 sm:p-8 rounded-2xl shadow-sm relative overflow-hidden">
               <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary-container/20 rounded-full blur-3xl" />
-              <h2 className="text-xl sm:text-2xl font-extrabold mb-6 sm:mb-8 tracking-tight">Order Summary</h2>
+              <h2 className="text-xl sm:text-2xl font-extrabold mb-6 sm:mb-8 tracking-tight">{t.checkout.orderSummary}</h2>
               <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
                 <div className="flex justify-between text-on-surface-variant">
                   <span>Subtotal ({items.length} items)</span>
@@ -765,7 +767,7 @@ export default function CheckoutPage() {
                 </div>
                 {discount > 0 && (
                   <div className="flex justify-between text-green-600">
-                    <span>Discount</span>
+                    <span>{t.checkout.discount}</span>
                     <span className="font-semibold">-₹{discount.toFixed(2)}</span>
                   </div>
                 )}
@@ -825,10 +827,10 @@ export default function CheckoutPage() {
                 </div>
                 
                 <div className="pt-4 border-t border-outline-variant/30 flex justify-between items-end gap-2">
-                  <span className="text-base sm:text-lg font-bold">Total Amount</span>
+                  <span className="text-base sm:text-lg font-bold">{t.checkout.totalAmount}</span>
                   <div className="text-right min-w-0">
                     <p className="text-2xl sm:text-3xl font-extrabold text-primary tracking-tighter truncate">₹{grand}</p>
-                    <p className="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">Inc. all taxes</p>
+                    <p className="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">{t.checkout.incTaxes}</p>
                   </div>
                 </div>
               </div>

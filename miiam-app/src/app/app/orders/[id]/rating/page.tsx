@@ -7,19 +7,22 @@ import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 
 function AnimatedStarRating({ 
   rating, 
   hover, 
   setHover, 
   setRating, 
-  label 
+  label,
+  t 
 }: { 
   rating: number; 
   hover: number; 
   setHover: (v: number) => void; 
   setRating: (v: number) => void;
   label: string;
+  t: any;
 }) {
   return (
     <div className="flex flex-col items-center gap-4">
@@ -61,7 +64,7 @@ function AnimatedStarRating({
       </div>
       {rating > 0 && (
         <p className="text-sm text-primary font-bold animate-fade-in">
-          {rating === 5 ? "🌟 Excellent!" : rating >= 4 ? "⭐ Great!" : rating >= 3 ? "👍 Good" : "💫 Okay"}
+          {rating === 5 ? t.rating.excellent : rating >= 4 ? t.rating.great : rating >= 3 ? t.rating.good : t.rating.okay}
         </p>
       )}
     </div>
@@ -117,6 +120,7 @@ const feedbackTags = [
 ];
 
 export default function RatingReviewPage({ params }: { params: Promise<{ id: string }> }) {
+  const { t } = useTranslation();
   const { id } = use(params);
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
@@ -237,8 +241,8 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
             <div className="w-32 h-32 bg-gradient-to-br from-primary to-primary-container rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-primary/30">
               <span className="material-symbols-outlined text-white text-6xl" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
             </div>
-            <h2 className="text-3xl font-extrabold text-on-surface mb-2">Thanks for rating! 💖</h2>
-            <p className="text-on-surface-variant font-medium">Your feedback helps us serve you better</p>
+            <h2 className="text-3xl font-extrabold text-on-surface mb-2">{t.rating.thanksForRating}</h2>
+            <p className="text-on-surface-variant font-medium">{t.rating.feedbackHelps}</p>
             <div className="mt-8 flex justify-center gap-4">
               {[1, 2, 3, 4, 5].map((i) => (
                 <span key={i} className="text-2xl animate-bounce-in" style={{ animationDelay: `${i * 0.1}s` }}>⭐</span>
@@ -268,8 +272,8 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
           <div className="inline-flex items-center justify-center w-20 h-20 bg-surface-container-highest rounded-full mb-4">
             <span className="material-symbols-outlined text-primary text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
           </div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-on-surface">Delivered!</h1>
-          <p className="text-on-surface-variant font-medium">How was your experience today?</p>
+          <h1 className="text-3xl font-extrabold tracking-tight text-on-surface">{t.rating.title}</h1>
+          <p className="text-on-surface-variant font-medium">{t.rating.subtitle}</p>
         </section>
 
         <section className="bg-white rounded-xl p-8 shadow-[0px_20px_40px_rgba(77,33,42,0.04)] space-y-6">
@@ -279,16 +283,17 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
             setHover={setHoverFood}
             setRating={setFoodRating}
             label={order?.vendor?.name || "Restaurant"}
+            t={t}
           />
         </section>
 
         <section className="bg-white rounded-xl p-6 shadow-[0px_20px_40px_rgba(77,33,42,0.04)] space-y-4">
-          <h3 className="text-sm font-bold text-on-surface-variant text-center uppercase tracking-wider">Rate in Detail</h3>
+          <h3 className="text-sm font-bold text-on-surface-variant text-center uppercase tracking-wider">{t.rating.rateInDetail}</h3>
           <div className="space-y-3">
             {[
-              { label: "Taste & Quality", state: dimTaste, setter: setDimTaste },
-              { label: "Packaging", state: dimPackaging, setter: setDimPackaging },
-              { label: "Delivery Time", state: dimDelivery, setter: setDimDelivery },
+              { label: t.rating.tasteQuality, state: dimTaste, setter: setDimTaste },
+              { label: t.rating.packaging, state: dimPackaging, setter: setDimPackaging },
+              { label: t.rating.deliveryTime, state: dimDelivery, setter: setDimDelivery },
             ].map((dim) => (
               <div key={dim.label} className="flex items-center justify-between">
                 <span className="text-sm font-medium text-on-surface">{dim.label}</span>
@@ -331,7 +336,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
                 <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>electric_moped</span>
               </div>
             </div>
-            <p className="text-sm text-on-surface-variant">Rate Delivery Service</p>
+            <p className="text-sm text-on-surface-variant">{t.rating.rateDelivery}</p>
           </div>
           <AnimatedStarRating
             rating={riderRating}
@@ -339,11 +344,12 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
             setHover={setHoverRider}
             setRating={setRiderRating}
             label={order?.rider?.full_name || "Rider"}
+            t={t}
           />
         </section>
 
         <section className="space-y-4">
-          <label className="block text-lg font-semibold px-2">Tell us more...</label>
+          <label className="block text-lg font-semibold px-2">{t.rating.tellUsMore}</label>
           <textarea
             value={feedback}
             onChange={(e) => setFeedback(e.target.value)}
@@ -373,11 +379,11 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
           disabled={foodRating === 0 || riderRating === 0}
           className="w-full bg-gradient-to-r from-primary to-[#a40017] text-white rounded-xl py-5 text-lg font-bold shadow-[0px_15px_30px_rgba(186,0,28,0.2)] active:scale-[0.98] transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Submit Review
+          {t.rating.submitReview}
         </button>
 
         <p className="text-center text-on-surface-variant text-xs px-8 leading-relaxed">
-          Your feedback helps us improve our service and rewards our best performing vendors and riders.
+          {t.rating.feedbackImprove}
         </p>
       </main>
     </>

@@ -4,9 +4,11 @@ import { useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 
 export default function SecurityPage() {
   const supabase = createClient();
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [twoFAEnabled, setTwoFAEnabled] = useState(false);
@@ -30,11 +32,11 @@ export default function SecurityPage() {
           <Link href="/app/settings" className="w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center hover:bg-surface-container-highest transition-colors">
             <span className="material-symbols-outlined text-on-background">arrow_back</span>
           </Link>
-          <h1 className="text-xl font-black text-on-background">Security</h1>
+          <h1 className="text-xl font-black text-on-background">{t.settings.security}</h1>
         </div>
       </header>
 
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Settings', href: '/app/settings' }, { label: 'Security' }]} />
+      <Breadcrumbs items={[{ label: t.common.home, href: '/app/explore' }, { label: t.settings.title, href: '/app/settings' }, { label: t.settings.security }]} />
 
       <main className="p-6 space-y-4">
         {/* Change Password */}
@@ -44,7 +46,7 @@ export default function SecurityPage() {
               <span className="material-symbols-outlined text-blue-500">lock_reset</span>
             </div>
             <div>
-              <p className="font-bold text-on-surface">Change Password</p>
+              <p className="font-bold text-on-surface">{t.settings.securitySub}</p>
               <p className="text-xs text-on-surface-variant">A reset link will be sent to your email</p>
             </div>
           </div>
@@ -72,7 +74,7 @@ export default function SecurityPage() {
                 <span className="material-symbols-outlined text-purple-500">phone_android</span>
               </div>
               <div>
-                <p className="font-bold text-on-surface">Two-Factor Auth</p>
+                <p className="font-bold text-on-surface">{t.settings.securitySub}</p>
                 <p className="text-xs text-on-surface-variant">Extra security for your account</p>
               </div>
             </div>

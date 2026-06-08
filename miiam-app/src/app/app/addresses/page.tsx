@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
 interface AddressCardProps {
@@ -15,6 +16,7 @@ interface AddressCardProps {
 }
 
 function AddressCard({ address, onSelect, onEdit, onDelete, onSetDefault }: AddressCardProps) {
+  const { t } = useTranslation();
   const labelColors = {
     Home: { bg: "bg-blue-100", text: "text-blue-700", accent: "from-blue-500 to-blue-600" },
     Office: { bg: "bg-purple-100", text: "text-purple-700", accent: "from-purple-500 to-purple-600" },
@@ -122,9 +124,11 @@ function AddressCard({ address, onSelect, onEdit, onDelete, onSetDefault }: Addr
         )}
         <button onClick={onEdit} className="py-3 px-4 text-slate-600 hover:bg-slate-50 transition-colors">
           <span className="material-symbols-outlined">edit</span>
+          {t.common.change}
         </button>
         <button onClick={onDelete} className="py-3 px-4 text-red-500 hover:bg-red-50 transition-colors">
           <span className="material-symbols-outlined">delete</span>
+          {t.common.remove}
         </button>
       </div>
     </div>
@@ -167,6 +171,7 @@ const defaultAddresses = [
 ];
 
 export default function AddressBookPage() {
+  const { t } = useTranslation();
   const supabase = useMemo(() => createClient(), []);
   const router = useRouter();
   const [addresses, setAddresses] = useState<any[]>([]);

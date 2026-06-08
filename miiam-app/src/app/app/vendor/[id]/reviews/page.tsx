@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
@@ -8,6 +9,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import EmptyState from "@/components/EmptyState";
 
 export default function VendorReviewsPage() {
+  const { t } = useTranslation();
   const params = useParams();
   const router = useRouter();
   const vendorId = params.id as string;
@@ -66,7 +68,7 @@ export default function VendorReviewsPage() {
           </button>
           <div>
             <h1 className="text-xl font-black text-slate-800">{vendor?.shop_name}</h1>
-            <p className="text-sm text-slate-500">All Reviews</p>
+            <p className="text-sm text-slate-500">{t.food.all} {t.food.reviews}</p>
           </div>
         </div>
       </header>
@@ -104,7 +106,7 @@ export default function VendorReviewsPage() {
                 filter === f ? "bg-primary text-white" : "bg-slate-100 text-slate-600"
               }`}
             >
-              {f === "all" ? "All" : `${f} ★`}
+              {f === "all" ? t.food.all : `${f} ★`}
             </button>
           ))}
         </div>
@@ -113,7 +115,7 @@ export default function VendorReviewsPage() {
       {/* Reviews List */}
       <div className="p-4 space-y-3">
         {filteredReviews.length === 0 ? (
-          <EmptyState icon="⭐" title="No reviews yet" description="Be the first to leave a review!" />
+          <EmptyState icon="⭐" title={t.food.noReviews} description={t.food.beFirst} />
         ) : (
           filteredReviews.map((review: any) => (
             <div key={review.id} className="bg-white rounded-xl p-4 shadow-sm">

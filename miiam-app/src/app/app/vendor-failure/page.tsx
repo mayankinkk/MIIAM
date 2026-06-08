@@ -3,9 +3,11 @@
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useState, Suspense } from "react";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
 function VendorFailureContent() {
+  const { t } = useTranslation();
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
   const vendorName = searchParams.get("vendor") || "the restaurant";
@@ -137,7 +139,7 @@ function VendorFailureContent() {
             }}
             className="w-full bg-primary text-white py-4 rounded-xl font-bold hover:bg-primary-dim transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Confirm {selectedOption === "refund" ? "Refund" : selectedOption === "reorder" ? "Browse Restaurants" : "Get Credit"}
+            {t.common.confirm} {selectedOption === "refund" ? "Refund" : selectedOption === "reorder" ? "Browse Restaurants" : "Get Credit"}
           </button>
           
           <div className="flex gap-3">

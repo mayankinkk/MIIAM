@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import ServiceProductGrid from "@/components/ServiceProductGrid";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 
 const pharmacyCategories = [
   { id: "pain", name: "Pain Relief", icon: "\uD83D\uDC8A", color: "bg-red-100" },
@@ -15,6 +16,7 @@ const pharmacyCategories = [
 ];
 
 export default function PharmacyPage() {
+  const { t } = useTranslation();
   const supabase = createClient();
   const [showPrescriptionModal, setShowPrescriptionModal] = useState(false);
   const [prescriptionFile, setPrescriptionFile] = useState<File | null>(null);
@@ -47,7 +49,7 @@ export default function PharmacyPage() {
           status: "pending",
         });
       if (insertError) throw insertError;
-      addToast("Prescription uploaded successfully! We'll review and contact you.", "success");
+      addToast(t.pharmacy.prescriptionUploaded, "success");
       setShowPrescriptionModal(false);
       setPrescriptionFile(null);
       setPrescriptionNotes("");
@@ -72,22 +74,22 @@ export default function PharmacyPage() {
         serviceName="Pharmacy"
         supabaseTable="pharmacy_medicines"
         vendorType="pharmacy"
-        title="Pharmacy"
+        title={t.pharmacy.title}
         heroImage="/images/pharmacy_hero.png"
-        heroTitle="Trusted Health Care"
-        heroSubtitle="Genuine medicines delivered fast"
+        heroTitle={t.pharmacy.heroTitle}
+        heroSubtitle={t.pharmacy.heroSubtitle}
         categories={pharmacyCategories}
         emptyIcon="\uD83D\uDC8A"
-        emptyTitle="No medicines found"
-        emptyDescription="Try a different category or check back later!"
+        emptyTitle={t.pharmacy.noProducts}
+        emptyDescription={t.pharmacy.noProductsDesc}
         serviceUnavailableIcon="medication"
         serviceSettingKey="pharmacy"
         filterTransform={(v) => v.replace(" ", "")}
         productImageFallback="/images/pharmacy_hero.png"
-        serviceablePrefix="Delivering genuine medicines to"
+        serviceablePrefix={t.pharmacy.deliveringTo}
         deliveryNoun="Pharmacy"
         vendorNameDefault="Pharmacy"
-        checkoutUnserviceableMsg="Cannot checkout: Pharmacy is not serviceable at your selected location!"
+        checkoutUnserviceableMsg={t.pharmacy.notServiceable}
       />
       <input
         type="file"
