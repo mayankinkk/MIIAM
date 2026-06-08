@@ -5,11 +5,12 @@ import { createClient } from "@/lib/supabase/client";
 import type { Rider } from "@/lib/types";
 
 interface RiderLocation {
+  id?: string;
   rider_id: string;
   rider_name: string;
   lat: number;
   lng: number;
-  created_at: string;
+  created_at?: string;
   order_id?: string;
 }
 
@@ -32,26 +33,27 @@ export default function AdminRiderMap({ riders, onRiderClick }: Props) {
   async function loadLocations() {
     const { data, error } = await supabase
       .from("rider_locations")
-      .select("rider_id, rider_name, lat, lng, created_at, order_id")
-      .order("created_at", { ascending: false });
+      .select("*");
 
     if (error) {
       console.error("[AdminRiderMap] loadLocations error:", error);
       return;
     }
 
-    if (data) {
+    if (data && data.length > 0) {
+      // Keep only the most recent location per rider
       const latest = new Map<string, RiderLocation>();
       for (const loc of data) {
-        if (!latest.has(loc.rider_id) || new Date(loc.created_at) > new Date(latest.get(loc.rider_id)!.created_at)) {
-          latest.set(loc.rider_id, loc);
+        const existing = latest.get(loc.rider_id);
+        if (!existing || (loc.id && (!existing.id || loc.id > existing.id))) {
+          latest.set(loc.rider_id, loc as RiderLocation);
         }
       }
       const result = Array.from(latest.values());
       console.log("[AdminRiderMap] loaded locations:", result.map(l => `${l.rider_name}(${l.lat},${l.lng})`));
       setLocations(result);
     } else {
-      console.log("[AdminRiderMap] no data returned from query");
+      console.log("[AdminRiderMap] no locations found in rider_locations table");
     }
   }
 
@@ -158,7 +160,7 @@ export default function AdminRiderMap({ riders, onRiderClick }: Props) {
           <div style="min-width:140px;text-align:center;padding:4px 0">
             <p style="font-weight:900;margin:0 0 4px">${loc.rider_name || "Rider"}</p>
             <p style="font-size:11px;color:#666;margin:0 0 4px">${online ? "Online" : "Offline"}</p>
-            <p style="font-size:10px;color:#999;margin:0">${new Date(loc.created_at).toLocaleTimeString()}</p>
+            <p style="font-size:10px;color:#999;margin:0">${loc.created_at ? new Date(loc.created_at).toLocaleTimeString() : ""}</p>
           </div>
         `);
       } else {
@@ -175,7 +177,7 @@ export default function AdminRiderMap({ riders, onRiderClick }: Props) {
             <div style="min-width:140px;text-align:center;padding:4px 0">
               <p style="font-weight:900;margin:0 0 4px">${loc.rider_name || "Rider"}</p>
               <p style="font-size:11px;color:#666;margin:0 0 4px">${online ? "Online" : "Offline"}</p>
-              <p style="font-size:10px;color:#999;margin:0">${new Date(loc.created_at).toLocaleTimeString()}</p>
+              <p style="font-size:10px;color:#999;margin:0">${loc.created_at ? new Date(loc.created_at).toLocaleTimeString() : ""}</p>
             </div>
           `)
           .addTo(map);
