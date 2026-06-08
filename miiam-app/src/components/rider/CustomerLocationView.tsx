@@ -116,7 +116,7 @@ export default function CustomerLocationView({ orderId, className = "", height =
           @keyframes pulse-ring { 0%{transform:scale(0.8);opacity:0.8} 100%{transform:scale(1.8);opacity:0} }
           .customer-live-pin{background:transparent!important;border:0!important;}
           .leaflet-container { width: 100%; height: 100%; margin: 0; padding: 0; }
-          .leaflet-tile { position: absolute; left: 0; bottom: -1px; }
+          .leaflet-container .leaflet-pane > img.leaflet-tile { position: absolute; left: 0; bottom: -1px; }
         `}</style>
         {loading && !location && (
           <div className="absolute inset-0 z-10 flex items-center justify-center bg-surface-container text-on-surface-variant text-xs">

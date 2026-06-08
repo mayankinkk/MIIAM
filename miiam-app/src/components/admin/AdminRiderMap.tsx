@@ -46,7 +46,7 @@ export default function AdminRiderMap({ riders, onRiderClick }: Props) {
     }
   }
 
-  // Initialize map, then load locations AFTER map is ready
+  // Initialize map
   useEffect(() => {
     if (!mapRef.current) return;
     let isMounted = true;
@@ -76,7 +76,6 @@ export default function AdminRiderMap({ riders, onRiderClick }: Props) {
       setTimeout(() => map.invalidateSize(), 300);
       setTimeout(() => map.invalidateSize(), 1000);
 
-      // Now that map is ready, load locations
       if (isMounted) loadLocations();
     }
 
@@ -162,8 +161,8 @@ export default function AdminRiderMap({ riders, onRiderClick }: Props) {
           icon: L.divIcon({
             className: "rider-marker",
             html: riderIconHtml(loc.rider_name, online),
-            iconSize: [40, 40],
-            iconAnchor: [20, 40],
+            iconSize: [0, 0],
+            iconAnchor: [0, 0],
           }),
           zIndexOffset: online ? 1000 : 500,
         })
@@ -203,12 +202,7 @@ export default function AdminRiderMap({ riders, onRiderClick }: Props) {
         @keyframes pulse-ring { 0%{transform:scale(0.8);opacity:0.8} 100%{transform:scale(1.8);opacity:0} }
         .rider-marker { background: transparent !important; border: 0 !important; }
         .leaflet-container { width: 100%; height: 100%; margin: 0; padding: 0; }
-        .leaflet-pane { z-index: 1; }
-        .leaflet-tile-pane { z-index: 0; }
-        .leaflet-overlay-pane { z-index: 2; }
-        .leaflet-marker-pane { z-index: 3; }
-        .leaflet-popup-pane { z-index: 4; }
-        .leaflet-tile { position: absolute; left: 0; bottom: -1px; }
+        .leaflet-container .leaflet-pane > img.leaflet-tile { position: absolute; left: 0; bottom: -1px; }
         .leaflet-container .leaflet-control-attribution { font-size: 9px; }
       `}</style>
       <div ref={mapRef} className="w-full h-full" style={{ position: "absolute", inset: 0 }} />
