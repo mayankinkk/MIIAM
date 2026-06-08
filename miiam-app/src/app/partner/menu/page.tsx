@@ -830,14 +830,14 @@ export default function PartnerMenuPage() {
                           <>
                             <button
                               onClick={() => handleStockChange(item, -1)}
-                              className="w-6 h-6 bg-slate-100 rounded flex items-center justify-center hover:bg-slate-200 text-sm font-bold"
+                              className="w-11 h-11 bg-slate-100 rounded-lg flex items-center justify-center hover:bg-slate-200 text-sm font-bold"
                             >−</button>
                             <span className={`text-sm font-bold min-w-[2ch] text-center ${(item as any).stock === 0 ? 'text-red-600' : (item as any).stock < 10 ? 'text-amber-600' : 'text-slate-800'}`}>
                               {(item as any).stock}
                             </span>
                             <button
                               onClick={() => handleStockChange(item, 1)}
-                              className="w-6 h-6 bg-slate-100 rounded flex items-center justify-center hover:bg-slate-200 text-sm font-bold"
+                              className="w-11 h-11 bg-slate-100 rounded-lg flex items-center justify-center hover:bg-slate-200 text-sm font-bold"
                             >+</button>
                           </>
                         )}

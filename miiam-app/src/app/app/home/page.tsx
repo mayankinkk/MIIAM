@@ -437,7 +437,7 @@ export default function HomePage() {
                     <p className="text-xs text-on-surface-variant">{activeOrder.items}</p>
                   </div>
                 </div>
-                <button onClick={() => setOrderBubbleExpanded(false)} aria-label="Close order details" className="text-gray-400">
+                <button onClick={() => setOrderBubbleExpanded(false)} aria-label="Close order details" className="text-gray-400 w-11 h-11 flex items-center justify-center rounded-full">
                   <span className="material-symbols-outlined" aria-hidden="true">close</span>
                 </button>
               </div>

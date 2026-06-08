@@ -348,10 +348,10 @@ const sortedItems = [...filteredItems].sort((a, b) => (((b as any).is_featured |
                         Add +
                       </button>
                     ) : (
-                      <div className="flex items-center gap-2 bg-primary rounded-full px-2 py-1">
-                        <button onClick={() => handleUpdateQty(item.id, -1)} className="text-white font-bold w-6">-</button>
-                        <span className="text-white font-bold text-sm">{qty}</span>
-                        <button onClick={() => handleUpdateQty(item.id, 1)} className="text-white font-bold w-6">+</button>
+                      <div className="flex items-center gap-1 bg-primary rounded-full px-1 py-0.5">
+                        <button onClick={() => handleUpdateQty(item.id, -1)} className="text-white font-bold w-11 h-11 flex items-center justify-center rounded-full">-</button>
+                        <span className="text-white font-bold text-sm min-w-[2ch] text-center">{qty}</span>
+                        <button onClick={() => handleUpdateQty(item.id, 1)} className="text-white font-bold w-11 h-11 flex items-center justify-center rounded-full">+</button>
                       </div>
                     )}
                   </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { Order, OrderStatus } from "@/lib/types";
 import { PRINTING_VENDOR_ID } from "@/lib/constants";
@@ -25,7 +25,7 @@ const STATUS_COLORS: Record<OrderStatus, string> = {
 };
 
 export default function OrderManagement() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<OrderStatus | "all">("all");

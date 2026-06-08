@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -52,7 +52,7 @@ interface Order {
 }
 
 export default function RiderOrdersPage() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const router = useRouter();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(false);
@@ -972,7 +972,7 @@ function OrderCard({ order, onAccept, isSelected, onToggleSelect }: { order: Ord
 }
 
 function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onReportIssue, onStartDelivery, onShareLocation }: { order: Order; riderId: string; onUpdateItemStatus: (itemId: string, status: string, price?: number) => void; onMarkDelivered: () => void; onReportIssue: () => void; onStartDelivery?: () => void; onShareLocation?: () => void }) {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const items = order.items || [];
   const pickedCount = items.filter((i: any) => i.status === "available").length;
   const totalSpent = items.reduce((s: number, i: any) => s + ((i.actual_price || 0) * i.quantity), 0);

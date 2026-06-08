@@ -199,7 +199,7 @@ function ReviewModal({ vendorId, onClose, onSubmitted }: { vendorId: string; onC
               onMouseEnter={() => setHoverRating(star)}
               onMouseLeave={() => setHoverRating(0)}
               onClick={() => setRating(star)}
-              className="text-3xl transition-transform hover:scale-125 active:scale-90"
+              className="w-11 h-11 flex items-center justify-center text-3xl transition-transform hover:scale-125 active:scale-90"
             >
               <span className={star <= (hoverRating || rating) ? "text-amber-400" : "text-slate-200"}>★</span>
             </button>

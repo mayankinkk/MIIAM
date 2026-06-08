@@ -111,7 +111,7 @@ export default function OnboardingTour({ onComplete }: OnboardingTourProps) {
           <div className="flex items-center justify-between">
             <button
               onClick={dismiss}
-              className="text-xs font-bold text-slate-400 hover:text-slate-600 transition-colors"
+              className="text-xs font-bold text-slate-400 hover:text-slate-600 transition-colors min-h-11 px-3 py-2"
             >
               Skip all
             </button>
