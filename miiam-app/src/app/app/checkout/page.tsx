@@ -8,7 +8,13 @@ import { useCartStore } from "@/lib/store/cartStore";
 import { useToastStore } from "@/lib/store/toastStore";
 import { useLocationStore } from "@/lib/store/locationStore";
 import AddressPickerSheet, { type SelectedAddress } from "@/components/AddressPickerSheet";
-import { RiderTipSelector, TipThankYou } from "@/components/RiderTip";
+import CheckoutDeliveryAddress from "@/components/checkout/CheckoutDeliveryAddress";
+import CheckoutScheduledServices from "@/components/checkout/CheckoutScheduledServices";
+import CheckoutPrintOrderSummary from "@/components/checkout/CheckoutPrintOrderSummary";
+import CheckoutScheduledDelivery from "@/components/checkout/CheckoutScheduledDelivery";
+import CheckoutPaymentMethods from "@/components/checkout/CheckoutPaymentMethods";
+import CheckoutOrderSummary from "@/components/checkout/CheckoutOrderSummary";
+import CheckoutPromoCode from "@/components/checkout/CheckoutPromoCode";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { SERVICES_VENDOR_ID, PRINTING_VENDOR_ID, PRINT_MENU_ITEM_ID } from "@/lib/constants";
 import { useTranslation } from "@/lib/i18n/useTranslation";
@@ -42,20 +48,7 @@ export default function CheckoutPage() {
   const [promoApplied, setPromoApplied] = useState<{ code: string; discount: number; type: "percent" | "flat" } | null>(null);
   const [promoError, setPromoError] = useState("");
   const [scheduledDate, setScheduledDate] = useState<string>("");
-  const [dateOptions, setDateOptions] = useState<{ label: string; value: string }[]>([]);
   const [specialInstructions, setSpecialInstructions] = useState("");
-
-  useEffect(() => {
-    const options = [0, 1, 2, 3].map((days) => {
-      const date = new Date();
-      date.setDate(date.getDate() + days);
-      return {
-        value: date.toISOString().split('T')[0],
-        label: days === 0 ? "Today" : days === 1 ? "Tomorrow" : date.toLocaleDateString('en-IN', { weekday: 'short', month: 'short', day: 'numeric' }),
-      };
-    });
-    setDateOptions(options);
-  }, []);
   const [scheduledTime, setScheduledTime] = useState<string>("");
   const [placing, setPlacing] = useState(false);
   const [tipAmount, setTipAmount] = useState(0);
@@ -180,15 +173,6 @@ export default function CheckoutPage() {
     setPromoApplied(null);
     setPromoCode("");
   };
-
-  const timeSlots = [
-    "09:00 AM - 11:00 AM",
-    "11:00 AM - 01:00 PM",
-    "01:00 PM - 03:00 PM",
-    "03:00 PM - 05:00 PM",
-    "05:00 PM - 07:00 PM",
-    "07:00 PM - 09:00 PM",
-  ];
 
   const validateCheckout = (): boolean => {
     if (items.length === 0) {
@@ -406,468 +390,69 @@ export default function CheckoutPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-8 items-start">
           {/* Left */}
           <div className="lg:col-span-8 space-y-5 sm:space-y-8">
-            {/* Delivery Address */}
-            <section className="bg-surface-container-lowest p-4 sm:p-6 rounded-2xl shadow-sm">
-              <div className="flex items-center gap-3 mb-4 sm:mb-5">
-                <div className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
-                  <span className="material-symbols-outlined text-primary">location_on</span>
-                </div>
-                <div className="flex-1">
-                  <h2 className="text-lg font-extrabold text-on-surface">{t.checkout.deliveryAddress}</h2>
-                  <p className="text-xs text-on-surface-variant">{t.checkout.whereToDeliver}</p>
-                </div>
-                <button
-                  onClick={() => setShowAddressPicker(true)}
-                  className="text-primary font-bold text-sm bg-surface px-3 py-1.5 rounded-lg hover:bg-surface-container transition-colors"
-                >
-                  Change
-                </button>
-              </div>
+            <CheckoutDeliveryAddress
+              deliveryAddress={deliveryAddress}
+              onChangeAddress={() => setShowAddressPicker(true)}
+            />
 
-              {deliveryAddress ? (
-                <div className="p-3 sm:p-4 rounded-xl border-2 border-primary bg-[#fff8f8] flex items-start gap-3 sm:gap-4">
-                  <div className="w-11 h-11 rounded-xl bg-surface-container flex items-center justify-center flex-shrink-0">
-                    <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>
-                      {deliveryAddress.type === "office" ? "business" : deliveryAddress.type === "other" ? "place" : "home"}
-                    </span>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-bold text-on-surface flex items-center gap-2 flex-wrap">
-                      <span className="truncate">{deliveryAddress.label || "Home"}</span>
-                      {deliveryAddress.lat && (
-                        <span className="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-semibold flex items-center gap-1 shrink-0">
-                          <span className="material-symbols-outlined text-[10px]">gps_fixed</span>GPS
-                        </span>
-                      )}
-                    </p>
-                    <p className="text-sm text-on-surface-variant mt-1 leading-relaxed break-words">
-                      {[deliveryAddress.flat, deliveryAddress.street, deliveryAddress.city, deliveryAddress.state].filter(Boolean).join(", ")}
-                    </p>
-                    {deliveryAddress.landmark && (
-                      <p className="text-xs text-slate-400 mt-1 break-words">📍 Near {deliveryAddress.landmark}</p>
-                    )}
-                  </div>
-                  <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="material-symbols-outlined text-white text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>check</span>
-                  </div>
-                </div>
-              ) : (
-                <button
-                  onClick={() => setShowAddressPicker(true)}
-                  className="w-full p-4 sm:p-5 rounded-xl border-2 border-dashed border-outline-variant/50 flex flex-col items-center gap-2 text-on-surface-variant hover:border-primary hover:text-primary hover:bg-surface transition-all"
-                >
-                  <span className="material-symbols-outlined text-3xl">add_location</span>
-                    <span className="font-bold text-sm sm:text-base">{t.checkout.addAddress}</span>
-                    <span className="text-xs">{t.checkout.gpsAutoDetect}</span>
-                </button>
-              )}
+            <CheckoutScheduledServices items={items} />
 
-              {deliveryAddress && (
-                <button
-                  onClick={() => setShowAddressPicker(true)}
-                  className="mt-3 w-full py-3 rounded-xl border-2 border-dashed border-outline-variant/40 text-xs sm:text-sm font-bold text-on-surface-variant hover:border-primary hover:text-primary flex items-center justify-center gap-2 transition-all"
-                >
-                  <span className="material-symbols-outlined text-sm">add</span>
-                  {t.checkout.useDifferentAddress}
-                </button>
-              )}
-            </section>
+            <CheckoutPrintOrderSummary items={items} />
 
-            {/* Scheduled Services */}
-            {items.some(i => i.vendor_id === SERVICES_VENDOR_ID) && (
-              <section className="bg-surface-container-lowest p-5 sm:p-8 rounded-2xl shadow-sm">
-                <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-green-50 flex items-center justify-center text-green-700 shrink-0">
-                    <span className="material-symbols-outlined">event_available</span>
-                  </div>
-                  <h2 className="text-xl sm:text-2xl font-bold">Scheduled Services</h2>
-                </div>
-                <div className="space-y-4">
-                  {items.filter(i => i.vendor_id === SERVICES_VENDOR_ID).map(item => (
-                    <div key={item.id} className="p-4 rounded-lg border border-outline-variant/20 bg-slate-50 flex justify-between items-center">
-                      <div>
-                        <h3 className="font-bold">{item.name.split(' (')[0]}</h3>
-                        <p className="text-sm text-secondary flex items-center gap-1 font-semibold mt-1">
-                          <span className="material-symbols-outlined text-[14px]">schedule</span>
-                          {item.name.includes('(') ? item.name.substring(item.name.indexOf('(') + 1, item.name.lastIndexOf(')')) : "Scheduled"}
-                        </p>
-                      </div>
-                      <div className="font-bold text-primary">₹{item.price} x {item.quantity}</div>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {/* Print Order Summary */}
-            {items.some(i => i.vendor_id === PRINTING_VENDOR_ID) && (
-              <section className="bg-surface-container-lowest p-5 sm:p-8 rounded-2xl shadow-sm">
-                <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-700 shrink-0">
-                    <span className="material-symbols-outlined">print</span>
-                  </div>
-                  <div className="min-w-0">
-                    <h2 className="text-xl sm:text-2xl font-bold">Print Order</h2>
-                    <p className="text-xs sm:text-sm text-on-surface-variant">We'll print & deliver in minutes</p>
-                  </div>
-                </div>
-                <div className="space-y-3">
-                  {items.filter(i => i.vendor_id === PRINTING_VENDOR_ID).map(item => {
-                    let settings: Record<string, any> = {};
-                    try { if (item.special_notes) settings = JSON.parse(item.special_notes); } catch {}
-                    return (
-                      <div key={item.id} className="p-3 sm:p-4 rounded-lg border border-outline-variant/20 bg-indigo-50/30">
-                        <div className="flex justify-between items-start mb-2 gap-2">
-                          <h3 className="font-bold min-w-0 break-words">{item.name}</h3>
-                          <div className="font-bold text-indigo-700 shrink-0">₹{item.price} x {item.quantity}</div>
-                        </div>
-                        <div className="flex flex-wrap gap-2 text-xs">
-                          {settings.pages && <span className="px-2 py-1 bg-white rounded-lg font-semibold">{settings.pages} pg</span>}
-                          {settings.copies && <span className="px-2 py-1 bg-white rounded-lg font-semibold">{settings.copies} cp</span>}
-                          {settings.colorMode && <span className="px-2 py-1 bg-white rounded-lg font-semibold capitalize">{settings.colorMode === "bw" ? "B&W" : "Color"}</span>}
-                          {settings.paperSize && <span className="px-2 py-1 bg-white rounded-lg font-semibold uppercase">{settings.paperSize}</span>}
-                          {settings.orientation && <span className="px-2 py-1 bg-white rounded-lg font-semibold capitalize">{settings.orientation}</span>}
-                          {settings.paperType && <span className="px-2 py-1 bg-white rounded-lg font-semibold capitalize">{settings.paperType}</span>}
-                          {settings.sides && <span className="px-2 py-1 bg-white rounded-lg font-semibold capitalize">{settings.sides} sided</span>}
-                        </div>
-                        {settings.fileNames && (
-                          <div className="mt-2 text-xs text-on-surface-variant break-words">
-                            Files: {settings.fileNames.join(", ")}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </section>
-            )}
-
-            {/* Scheduled Delivery */}
             {!items.some(i => i.vendor_id === SERVICES_VENDOR_ID) && (
-              <section className="bg-surface-container-lowest p-5 sm:p-8 rounded-2xl shadow-sm">
-                <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-amber-50 flex items-center justify-center text-amber-700 shrink-0">
-                    <span className="material-symbols-outlined">schedule</span>
-                  </div>
-                  <div className="min-w-0">
-                    <h2 className="text-xl sm:text-2xl font-bold">Schedule Delivery</h2>
-                    <p className="text-xs sm:text-sm text-on-surface-variant">Select date & time for delivery</p>
-                  </div>
-                </div>
-                
-                {/* Date Picker */}
-                <button
-                  onClick={() => setShowDatePicker(!showDatePicker)}
-                  className="w-full p-4 rounded-lg border-2 border-outline-variant/30 flex items-center justify-between hover:border-primary transition-all mb-4"
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-primary">calendar_month</span>
-                    <span className={scheduledDate ? "font-bold text-on-surface" : "text-on-surface-variant"}>
-                      {scheduledDate || "Select a date"}
-                    </span>
-                  </div>
-                  <span className="material-symbols-outlined text-primary">
-                    {showDatePicker ? "expand_less" : "expand_more"}
-                  </span>
-                </button>
-                
-                {showDatePicker && (
-                  <div className="mb-4">
-                    <input
-                      type="date"
-                      min={new Date().toISOString().split('T')[0]}
-                      value={scheduledDate}
-                      onChange={(e) => setScheduledDate(e.target.value)}
-                      className="w-full p-4 rounded-lg border-2 border-outline-variant/30 focus:border-primary focus:outline-none"
-                    />
-                    <div className="flex gap-2 mt-3 flex-wrap">
-                      {dateOptions.map((d) => (
-                        <button
-                          key={d.value}
-                          onClick={() => setScheduledDate(d.value)}
-                          className={`px-3 sm:px-4 py-2 rounded-lg text-xs font-semibold border transition-all ${
-                            scheduledDate === d.value
-                              ? "bg-primary text-white border-primary"
-                              : "border-outline-variant/30 hover:border-primary"
-                          }`}
-                        >
-                          {d.label}
-                          </button>
-                        ))}
-                    </div>
-                  </div>
-                )}
-                
-                {/* Time Picker */}
-                <button
-                  onClick={() => setShowTimePicker(!showTimePicker)}
-                  className="w-full p-4 rounded-lg border-2 border-outline-variant/30 flex items-center justify-between hover:border-primary transition-all"
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-primary">access_time</span>
-                    <span className={scheduledTime ? "font-bold text-on-surface" : "text-on-surface-variant"}>
-                      {scheduledTime || "Select a time slot"}
-                    </span>
-                  </div>
-                  <span className="material-symbols-outlined text-primary">
-                    {showTimePicker ? "expand_less" : "expand_more"}
-                  </span>
-                </button>
-                {showTimePicker && (
-                  <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {timeSlots.map((slot) => (
-                      <button
-                        key={slot}
-                        onClick={() => { setScheduledTime(slot); setShowTimePicker(false); }}
-                        className={`p-3 rounded-lg text-xs sm:text-sm font-semibold border transition-all text-left ${
-                          scheduledTime === slot
-                            ? "bg-primary text-white border-primary"
-                            : "border-outline-variant/30 hover:border-primary"
-                        }`}
-                      >
-                        {slot}
-                      </button>
-                    ))}
-                  </div>
-                )}
-                
-                {/* Clear Schedule */}
-                {(scheduledDate || scheduledTime) && (
-                  <button
-                    onClick={() => { setScheduledDate(""); setScheduledTime(""); setIsRecurring(false); }}
-                    className="mt-4 w-full p-3 rounded-lg text-sm font-semibold border border-red-300 text-red-600 hover:bg-red-50"
-                  >
-                    Clear Schedule
-                  </button>
-                )}
-
-                {/* Recurring Order Toggle */}
-                {scheduledDate && scheduledTime && (
-                  <div className="mt-6 p-4 rounded-xl border-2 border-purple-200 bg-purple-50">
-                    <label className={`flex items-center justify-between gap-3 ${vendorIds.length > 1 ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}>
-                      <div className="flex items-center gap-3 min-w-0">
-                        <span className="material-symbols-outlined text-purple-600 shrink-0">repeat</span>
-                        <div className="min-w-0">
-                          <p className="font-bold text-purple-800 text-sm">Make this a recurring order</p>
-                          <p className="text-xs text-purple-600">{vendorIds.length > 1 ? "Not available for multi-vendor carts" : "Auto-reorder on schedule"}</p>
-                        </div>
-                      </div>
-                      <input
-                        type="checkbox"
-                        checked={isRecurring}
-                        disabled={vendorIds.length > 1}
-                        onChange={(e) => setIsRecurring(e.target.checked)}
-                        className="w-5 h-5 text-purple-600 rounded shrink-0"
-                      />
-                    </label>
-
-                    {isRecurring && (
-                      <div className="mt-4 space-y-3">
-                        <div>
-                          <label className="text-xs font-bold text-purple-700 block mb-1">Repeat every</label>
-                          <select
-                            value={recurringFrequency}
-                            onChange={(e) => setRecurringFrequency(e.target.value)}
-                            className="w-full p-3 rounded-lg border-2 border-purple-200 text-sm font-semibold focus:outline-none focus:border-purple-400"
-                          >
-                            <option value="daily">Daily</option>
-                            <option value="weekly">Weekly</option>
-                            <option value="biweekly">Every 2 weeks</option>
-                            <option value="monthly">Monthly</option>
-                          </select>
-                        </div>
-                        {(recurringFrequency === "weekly" || recurringFrequency === "biweekly") && (
-                          <div>
-                            <label className="text-xs font-bold text-purple-700 block mb-1">On day</label>
-                            <select
-                              value={recurringDayOfWeek}
-                              onChange={(e) => setRecurringDayOfWeek(Number(e.target.value))}
-                              className="w-full p-3 rounded-lg border-2 border-purple-200 text-sm font-semibold focus:outline-none focus:border-purple-400"
-                            >
-                              {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((day, i) => (
-                                <option key={day} value={i}>{day}</option>
-                              ))}
-                            </select>
-                          </div>
-                        )}
-                        <p className="text-xs text-purple-500 flex items-center gap-1">
-                          <span className="material-symbols-outlined text-[14px]">info</span>
-                          Orders will be created automatically on your chosen schedule
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                )}
-                
-                {/* Scheduled Order Info */}
-                {scheduledDate && scheduledTime && (
-                  <div className="mt-4 p-4 bg-green-50 rounded-lg border border-green-200 flex items-start gap-3">
-                    <span className="material-symbols-outlined text-green-600 shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-                    <div className="min-w-0">
-                      <p className="font-bold text-green-700">Scheduled for delivery</p>
-                      <p className="text-sm text-green-600 break-words">
-                        {new Date(scheduledDate).toLocaleDateString('en-IN', { weekday: 'long', month: 'long', day: 'numeric' })} at {scheduledTime}
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </section>
+              <CheckoutScheduledDelivery
+                scheduledDate={scheduledDate}
+                onScheduledDateChange={setScheduledDate}
+                scheduledTime={scheduledTime}
+                onScheduledTimeChange={setScheduledTime}
+                showDatePicker={showDatePicker}
+                onShowDatePickerChange={setShowDatePicker}
+                showTimePicker={showTimePicker}
+                onShowTimePickerChange={setShowTimePicker}
+                isRecurring={isRecurring}
+                onIsRecurringChange={setIsRecurring}
+                recurringFrequency={recurringFrequency}
+                onRecurringFrequencyChange={setRecurringFrequency}
+                recurringDayOfWeek={recurringDayOfWeek}
+                onRecurringDayOfWeekChange={setRecurringDayOfWeek}
+                vendorIds={vendorIds}
+                onClearSchedule={() => { setScheduledDate(""); setScheduledTime(""); setIsRecurring(false); }}
+              />
             )}
 
-            {/* Payment Method */}
-            <section className="bg-surface-container-lowest p-5 sm:p-8 rounded-2xl shadow-sm">
-              <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#c4d0ff] flex items-center justify-center text-[#003dac] shrink-0">
-                  <span className="material-symbols-outlined">payments</span>
-                </div>
-                <h2 className="text-xl sm:text-2xl font-bold">{t.checkout.paymentMethod}</h2>
-              </div>
-              <div className="space-y-3 sm:space-y-4">
-                {[
-                  { id: "upi", label: "UPI Payment", sub: "Google Pay, PhonePe, Paytm", icon: "qr_code_scanner" },
-                  { id: "cod", label: "Cash on Delivery", sub: "Pay when you receive the order", icon: "payments" },
-                ].map((pm) => (
-                  <label
-                    key={pm.id}
-                    className={`flex items-center justify-between p-4 sm:p-6 rounded-lg cursor-pointer transition-all ${
-                      paymentMethod === pm.id
-                        ? "bg-surface-container-low border-2 border-primary"
-                        : "hover:bg-surface-container-low border-2 border-transparent"
-                    }`}
-                  >
-                    <div className="flex items-center gap-3 sm:gap-4 min-w-0">
-                      <input
-                        type="radio"
-                        name="payment"
-                        checked={paymentMethod === pm.id}
-                        onChange={() => setPaymentMethod(pm.id)}
-                        className="w-5 h-5 text-primary shrink-0"
-                      />
-                      <span className="material-symbols-outlined text-secondary shrink-0">{pm.icon}</span>
-                      <div className="min-w-0">
-                        <p className="font-bold text-sm sm:text-base truncate">{pm.label}</p>
-                        <p className="text-xs text-on-surface-variant truncate">{pm.sub}</p>
-                      </div>
-                    </div>
-                  </label>
-                ))}
-              </div>
-            </section>
+            <CheckoutPaymentMethods
+              paymentMethod={paymentMethod}
+              onChange={setPaymentMethod}
+            />
           </div>
 
           {/* Right: Order Summary */}
           <div className="lg:col-span-4 lg:sticky lg:top-24">
             <aside className="bg-surface-container-low p-5 sm:p-8 rounded-2xl shadow-sm relative overflow-hidden">
-              <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary-container/20 rounded-full blur-3xl" />
-              <h2 className="text-xl sm:text-2xl font-extrabold mb-6 sm:mb-8 tracking-tight">{t.checkout.orderSummary}</h2>
-              <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
-                <div className="flex justify-between text-on-surface-variant">
-                  <span>Subtotal ({items.length} items)</span>
-                  <span className="font-semibold text-on-surface">₹{subtotal.toFixed(2)}</span>
-                </div>
-                {discount > 0 && (
-                  <div className="flex justify-between text-green-600">
-                    <span>{t.checkout.discount}</span>
-                    <span className="font-semibold">-₹{discount.toFixed(2)}</span>
-                  </div>
-                )}
-                <div className="flex justify-between text-on-surface-variant">
-                  <span>Delivery Fee</span>
-                    <span className="font-semibold text-green-600">FREE</span>
-                </div>
-                <div className="flex justify-between text-on-surface-variant">
-                  <span>Service Charge</span>
-                    <span className="font-semibold text-on-surface">₹{(vendorIds.length * serviceCharge).toFixed(2)}</span>
-                </div>
-                
-                {/* Print Settings Summary */}
-                {items.filter(i => i.vendor_id === PRINTING_VENDOR_ID).map(item => {
-                  let s: Record<string, any> = {};
-                  try { if (item.special_notes) s = JSON.parse(item.special_notes); } catch {}
-                  if (!s.pages) return null;
-                  return (
-                    <div key={item.menu_item_id} className="py-3 border-t border-dashed border-outline-variant/30">
-                      <p className="text-xs font-bold text-indigo-600 mb-2 flex items-center gap-1">
-                        <span className="material-symbols-outlined text-sm">print</span>
-                        Print Settings
-                      </p>
-                      <div className="flex flex-wrap gap-1">
-                        {s.pages && <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded text-[10px] font-semibold">{s.pages}pg</span>}
-                        {s.copies && <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded text-[10px] font-semibold">{s.copies}cp</span>}
-                        {s.colorMode && <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded text-[10px] font-semibold">{s.colorMode === "bw" ? "B&W" : "Color"}</span>}
-                        {s.paperSize && <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded text-[10px] font-semibold uppercase">{s.paperSize}</span>}
-                        {s.orientation && <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded text-[10px] font-semibold capitalize">{s.orientation}</span>}
-                        {s.paperType && <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded text-[10px] font-semibold">{s.paperType}</span>}
-                        {s.sides && <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded text-[10px] font-semibold">{s.sides} sided</span>}
-                      </div>
-                    </div>
-                  );
-                })}
-
-                {/* Rider Tip */}
-                <div className="py-3 border-t border-dashed border-outline-variant/30">
-                  {showTipSelector ? (
-                    <RiderTipSelector 
-                      orderAmount={subtotal} 
-                      onTipSelect={(amount) => { setTipAmount(amount); setShowTipSelector(false); }} 
-                      onSkip={() => { setTipAmount(0); setShowTipSelector(false); }} 
-                    />
-                  ) : (
-                    <div className="space-y-2">
-                      <div className="flex justify-between items-center text-sm">
-                        <span className="font-bold text-on-surface">Rider Tip</span>
-                        <div className="flex items-center gap-2">
-                          <span className="font-semibold text-primary">₹{tipAmount}</span>
-                          <button onClick={() => setShowTipSelector(true)} className="text-xs text-blue-600 underline">Edit</button>
-                        </div>
-                      </div>
-                      {tipAmount > 0 && <TipThankYou amount={tipAmount} />}
-                    </div>
-                  )}
-                </div>
-                
-                <div className="pt-4 border-t border-outline-variant/30 flex justify-between items-end gap-2">
-                  <span className="text-base sm:text-lg font-bold">{t.checkout.totalAmount}</span>
-                  <div className="text-right min-w-0">
-                    <p className="text-2xl sm:text-3xl font-extrabold text-primary tracking-tighter truncate">₹{grand}</p>
-                    <p className="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">{t.checkout.incTaxes}</p>
-                  </div>
-                </div>
-              </div>
+              <CheckoutOrderSummary
+                items={items}
+                subtotal={subtotal}
+                discount={discount}
+                vendorIds={vendorIds}
+                serviceCharge={serviceCharge}
+                grand={grand}
+                showTipSelector={showTipSelector}
+                tipAmount={tipAmount}
+                onTipSelect={(amount) => { setTipAmount(amount); setShowTipSelector(false); }}
+                onSkipTip={() => { setTipAmount(0); setShowTipSelector(false); }}
+                onEditTip={() => setShowTipSelector(true)}
+              />
 
 
-              {/* Promo Code */}
               <div className="mb-6 sm:mb-8">
-                {promoApplied ? (
-                  <div className="flex items-center justify-between bg-green-50 border border-green-200 p-3 sm:p-4 rounded-xl gap-2">
-                    <div className="flex items-center gap-2 min-w-0">
-                      <span className="material-symbols-outlined text-green-600 shrink-0">local_offer</span>
-                      <div className="min-w-0">
-                        <p className="font-bold text-green-700 truncate">{promoApplied.code}</p>
-                        <p className="text-xs text-green-600">-{promoApplied.type === "percent" ? `${promoApplied.discount}%` : `₹${promoApplied.discount}`}</p>
-                      </div>
-                    </div>
-                    <button onClick={removePromo} className="text-green-700 text-sm font-bold shrink-0">Remove</button>
-                  </div>
-                ) : (
-                  <div className="relative">
-                    <input
-                      className="w-full bg-white border-none rounded-xl py-3.5 sm:py-4 pl-3 sm:pl-4 pr-24 sm:pr-32 focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm sm:text-base"
-                      placeholder="Promo Code"
-                      value={promoCode}
-                      onChange={(e) => { setPromoCode(e.target.value); setPromoError(""); }}
-                      type="text"
-                    />
-                    <button
-                      onClick={handleApplyPromo}
-                      className="absolute right-1.5 sm:right-2 top-1.5 sm:top-2 bottom-1.5 sm:bottom-2 px-3 sm:px-4 bg-on-surface text-white rounded-lg font-bold text-xs hover:bg-black transition-colors"
-                    >
-                      APPLY
-                    </button>
-                  </div>
-                )}
-                {promoError && <p className="text-red-500 text-xs mt-2">{promoError}</p>}
-                <p className="text-xs text-on-surface-variant mt-2">Try: FIRST50, MIIAM20, SAVE50</p>
+                <CheckoutPromoCode
+                  promoApplied={promoApplied}
+                  promoCode={promoCode}
+                  onPromoCodeChange={(code) => { setPromoCode(code); setPromoError(""); }}
+                  onApplyPromo={handleApplyPromo}
+                  onRemovePromo={removePromo}
+                  promoError={promoError}
+                />
               </div>
 
               <button
