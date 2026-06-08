@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState, useEffect, useRef } from "react";
+import { use, useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { useRouter } from "next/navigation";
@@ -41,7 +41,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
   const { t } = useTranslation();
   const { id } = use(params);
   const router = useRouter();
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const { addToast } = useToastStore();
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -784,7 +784,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                 <div className="bg-surface-container-lowest rounded-2xl w-full max-w-md p-6">
                   <div className="flex items-center justify-between mb-4">
                     <h2 className="text-xl font-black text-on-surface">{t.orders.needHelp}</h2>
-                    <button onClick={() => setShowHelp(false)} className="w-8 h-8 bg-surface-container-high rounded-full flex items-center justify-center">
+                    <button onClick={() => setShowHelp(false)} className="w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center">
                       <span className="material-symbols-outlined">close</span>
                     </button>
                   </div>
@@ -836,7 +836,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                 <div className="bg-surface-container-lowest rounded-2xl w-full max-w-md p-4 sm:p-6">
                   <div className="flex items-center justify-between mb-4">
                     <h2 className="text-xl font-black text-on-surface">{t.orders.cancelOrder}</h2>
-                    <button onClick={() => setShowCancelReason(false)} className="w-8 h-8 bg-surface-container-high rounded-full flex items-center justify-center">
+                    <button onClick={() => setShowCancelReason(false)} className="w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center">
                       <span className="material-symbols-outlined">close</span>
                     </button>
                   </div>

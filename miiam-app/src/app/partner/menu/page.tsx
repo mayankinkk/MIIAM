@@ -900,13 +900,13 @@ export default function PartnerMenuPage() {
                     <div className="flex items-center justify-end gap-2">
                       <button
                         onClick={() => setEditingItem(item)}
-                        className="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center hover:bg-slate-200 transition-colors"
+                        className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center hover:bg-slate-200 transition-colors"
                       >
                         <span className="material-symbols-outlined text-slate-600 text-sm">edit</span>
                       </button>
                       <button
                         onClick={() => handleDeleteItem(item.id)}
-                        className="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center hover:bg-red-100 transition-colors"
+                        className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center hover:bg-red-100 transition-colors"
                       >
                         <span className="material-symbols-outlined text-red-500 text-sm">delete</span>
                       </button>

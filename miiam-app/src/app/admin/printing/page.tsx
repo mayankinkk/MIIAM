@@ -464,7 +464,7 @@ export default function AdminPrintingPage() {
                         const newPriority = order.priority > 0 ? 0 : 1;
                         await supabase.from("orders").update({ priority: newPriority }).eq("id", order.id);
                         loadOrders();
-                      }} className={`w-7 h-7 rounded-full flex items-center justify-center ${order.priority > 0 ? "bg-amber-200 text-amber-700" : "bg-slate-100 text-slate-400 hover:bg-amber-100"}`}>
+                      }} className={`w-10 h-10 rounded-full flex items-center justify-center ${order.priority > 0 ? "bg-amber-200 text-amber-700" : "bg-slate-100 text-slate-400 hover:bg-amber-100"}`}>
                         <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
                       </button>
                     </td>
@@ -538,7 +538,7 @@ export default function AdminPrintingPage() {
                   <button
                     key={pageNum}
                     onClick={() => setPage(pageNum)}
-                    className={`w-8 h-8 text-xs font-bold rounded-lg ${pageNum === page ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-600"}`}
+                    className={`w-10 h-10 text-xs font-bold rounded-lg ${pageNum === page ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-600"}`}
                   >
                     {pageNum}
                   </button>
@@ -579,7 +579,7 @@ export default function AdminPrintingPage() {
                   <h3 className="font-bold text-lg">Order Details</h3>
                   <p className="text-sm text-slate-500">#{selectedOrder.id.slice(0, 8)} · {new Date(selectedOrder.placed_at).toLocaleString("en-IN")}</p>
                 </div>
-                <button onClick={() => setSelectedOrder(null)} className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center shrink-0">
+                <button onClick={() => setSelectedOrder(null)} className="w-11 h-11 bg-slate-100 rounded-full flex items-center justify-center shrink-0">
                   <span className="material-symbols-outlined text-sm">close</span>
                 </button>
               </div>
@@ -667,7 +667,7 @@ export default function AdminPrintingPage() {
                               {accessibleUrl && (
                                 <button
                                   onClick={() => setPreviewFile({ name, url: accessibleUrl, type: isPdf ? "application/pdf" : isImage ? "image/jpeg" : "application/octet-stream" })}
-                                  className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center hover:bg-indigo-100 transition-colors"
+                                  className="w-10 h-10 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center hover:bg-indigo-100 transition-colors"
                                   title="Preview"
                                 >
                                   <span className="material-symbols-outlined text-base">visibility</span>
@@ -677,7 +677,7 @@ export default function AdminPrintingPage() {
                                 <a
                                   href={accessibleUrl}
                                   download={name}
-                                  className="w-8 h-8 rounded-lg bg-slate-50 text-slate-600 flex items-center justify-center hover:bg-slate-100 transition-colors"
+                                  className="w-10 h-10 rounded-lg bg-slate-50 text-slate-600 flex items-center justify-center hover:bg-slate-100 transition-colors"
                                   title="Download"
                                 >
                                   <span className="material-symbols-outlined text-base">download</span>
@@ -759,7 +759,7 @@ export default function AdminPrintingPage() {
                 <h3 className="font-bold text-slate-800 truncate">{previewFile.name}</h3>
                 <p className="text-xs text-slate-500">{previewFile.type}</p>
               </div>
-              <button onClick={() => setPreviewFile(null)} className="w-9 h-9 bg-slate-100 rounded-full flex items-center justify-center hover:bg-slate-200">
+              <button onClick={() => setPreviewFile(null)} className="w-11 h-11 bg-slate-100 rounded-full flex items-center justify-center hover:bg-slate-200">
                 <span className="material-symbols-outlined text-slate-600">close</span>
               </button>
             </div>

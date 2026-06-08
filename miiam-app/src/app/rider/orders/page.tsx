@@ -711,9 +711,9 @@ export default function RiderOrdersPage() {
               <p className="text-xs text-slate-500">Decline after {autoSkipTime} seconds</p>
             </div>
             <div className="flex items-center gap-2">
-              <button onClick={() => setAutoSkipTime(Math.max(10, autoSkipTime - 5))} className="w-8 h-8 bg-slate-100 rounded-full font-bold">-</button>
+              <button onClick={() => setAutoSkipTime(Math.max(10, autoSkipTime - 5))} className="w-10 h-10 bg-slate-100 rounded-full font-bold">-</button>
               <span className="font-bold w-8 text-center">{autoSkipTime}s</span>
-              <button onClick={() => setAutoSkipTime(Math.min(60, autoSkipTime + 5))} className="w-8 h-8 bg-slate-100 rounded-full font-bold">+</button>
+              <button onClick={() => setAutoSkipTime(Math.min(60, autoSkipTime + 5))} className="w-10 h-10 bg-slate-100 rounded-full font-bold">+</button>
             </div>
           </div>
           <div className="flex items-center gap-2 mt-2">
@@ -760,7 +760,7 @@ export default function RiderOrdersPage() {
           <div className="fixed bottom-24 left-4 right-4 bg-green-500 text-white p-3 rounded-xl flex items-center justify-between shadow-lg z-40"
             style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}>
             <span className="font-bold">{selectedOrders.length} orders selected</span>
-            <button onClick={batchAccept} className="bg-white text-green-600 px-4 py-1 rounded-lg font-bold">
+            <button onClick={batchAccept} className="bg-white text-green-600 px-4 py-2.5 rounded-lg font-bold">
               Accept All
             </button>
           </div>
@@ -927,7 +927,7 @@ function OrderCard({ order, onAccept, isSelected, onToggleSelect }: { order: Ord
     <div className="bg-white rounded-2xl p-4 shadow-lg border-2 border-transparent hover:border-[#0b50d5]/30">
       <div className="flex justify-between items-start mb-2">
         <div className="flex items-start gap-3">
-          <button onClick={onToggleSelect} className={`mt-1 w-6 h-6 rounded-full border-2 flex items-center justify-center ${isSelected ? "bg-[#0b50d5] border-[#0b50d5]" : "border-slate-300"}`}>
+          <button onClick={onToggleSelect} className={`mt-1 w-10 h-10 rounded-full border-2 flex items-center justify-center ${isSelected ? "bg-[#0b50d5] border-[#0b50d5]" : "border-slate-300"}`}>
             {isSelected && <span className="material-symbols-outlined text-white text-sm">check</span>}
           </button>
           <div>
@@ -1219,11 +1219,11 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
             </div>
           )}
           <div className="px-4 pt-2 pb-1 flex gap-2">
-            <button onClick={() => setShowMap(!showMap)} className="text-[10px] font-bold text-[#0b50d5] bg-blue-50 px-3 py-1.5 rounded-lg flex items-center gap-1">
+            <button onClick={() => setShowMap(!showMap)} className="text-[10px] font-bold text-[#0b50d5] bg-blue-50 px-4 py-2.5 rounded-lg flex items-center gap-1">
               <span className="material-symbols-outlined text-sm">{showMap ? "visibility_off" : "map"}</span>
               {showMap ? "Hide Map" : "Show Map"}
             </button>
-            <a href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(phase === "pickup" ? vendorAddress : deliveryAddress)}&travelmode=driving`} target="_blank" rel="noreferrer" className="text-[10px] font-bold text-white bg-[#0b50d5] px-3 py-1.5 rounded-lg flex items-center gap-1">
+            <a href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(phase === "pickup" ? vendorAddress : deliveryAddress)}&travelmode=driving`} target="_blank" rel="noreferrer" className="text-[10px] font-bold text-white bg-[#0b50d5] px-4 py-2.5 rounded-lg flex items-center gap-1">
               <span className="material-symbols-outlined text-sm">navigation</span>
               Google Maps
             </a>

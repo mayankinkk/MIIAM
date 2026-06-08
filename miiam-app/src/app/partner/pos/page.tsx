@@ -705,7 +705,7 @@ export default function PartnerPOS() {
           <div className="bg-white rounded-3xl p-6 max-w-lg w-full shadow-2xl max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-extrabold text-slate-900">Customer Order History</h3>
-              <button onClick={() => setCustHistoryModal(null)} className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center">
+              <button onClick={() => setCustHistoryModal(null)} className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
                 <span className="material-symbols-outlined text-sm">close</span>
               </button>
             </div>
@@ -738,7 +738,7 @@ export default function PartnerPOS() {
           <div className="bg-white w-full max-w-sm rounded-3xl p-6" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
               <h3 className="font-extrabold text-slate-900">Connect Call</h3>
-              <button onClick={() => setCallMaskModal(null)} className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center">
+              <button onClick={() => setCallMaskModal(null)} className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
                 <span className="material-symbols-outlined text-sm">close</span>
               </button>
             </div>

@@ -258,7 +258,7 @@ function AddToCartButton({
       <motion.button
         onClick={() => updateQuantity(item.id, qty - 1)}
         whileTap={{ scale: 0.75 }}
-        className="text-white font-bold w-5 h-5 flex items-center justify-center"
+        className="text-white font-bold w-10 h-10 flex items-center justify-center"
       >
         −
       </motion.button>
@@ -266,7 +266,7 @@ function AddToCartButton({
       <motion.button
         onClick={handleAdd}
         whileTap={{ scale: 1.25 }}
-        className="text-white font-bold w-5 h-5 flex items-center justify-center"
+        className="text-white font-bold w-10 h-10 flex items-center justify-center"
       >
         +
       </motion.button>
@@ -519,13 +519,13 @@ export default function FoodPage() {
           ))}
         </div>
         <div className="flex flex-wrap gap-2 mt-3">
-          <button onClick={() => setVegFilter("all")} className={`px-3 py-1.5 rounded-full text-xs font-bold ${vegFilter === "all" ? "bg-inverse-surface text-white" : "bg-surface-container text-on-surface-variant"}`}>
+          <button onClick={() => setVegFilter("all")} className={`px-4 py-2.5 rounded-full text-xs font-bold ${vegFilter === "all" ? "bg-inverse-surface text-white" : "bg-surface-container text-on-surface-variant"}`}>
             {t.food.all}
           </button>
-          <button onClick={() => setVegFilter("veg")} className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 ${vegFilter === "veg" ? "bg-green-600 text-white" : "bg-green-100 text-green-700"}`}>
+          <button onClick={() => setVegFilter("veg")} className={`px-4 py-2.5 rounded-full text-xs font-bold flex items-center gap-1.5 ${vegFilter === "veg" ? "bg-green-600 text-white" : "bg-green-100 text-green-700"}`}>
             <span className="w-3 h-3 border-2 border-green-600 rounded-sm flex items-center justify-center"><span className="w-1.5 h-1.5 bg-green-600 rounded-full"></span></span> {t.food.veg}
           </button>
-          <button onClick={() => setVegFilter("non_veg")} className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 ${vegFilter === "non_veg" ? "bg-red-600 text-white" : "bg-red-100 text-red-700"}`}>
+          <button onClick={() => setVegFilter("non_veg")} className={`px-4 py-2.5 rounded-full text-xs font-bold flex items-center gap-1.5 ${vegFilter === "non_veg" ? "bg-red-600 text-white" : "bg-red-100 text-red-700"}`}>
             <span className="w-3 h-3 border-2 border-red-600 rounded-sm flex items-center justify-center"><span className="w-1.5 h-1.5 bg-red-600 rounded-full"></span></span> {t.food.nonVeg}
           </button>
           <SortDropdown sort={sortBy} setSort={setSortBy} />
@@ -592,7 +592,7 @@ export default function FoodPage() {
                   <BlurImage src={restaurant.cover_image_url || restaurant.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"} alt={restaurant.shop_name} fill className="w-full h-full" sizes="(max-width: 768px) 50vw, 128px" fallbackSrc="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80" />
                   <button
                     onClick={(e) => { e.preventDefault(); toggleFavorite(restaurant.id); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }}
-                    className="absolute top-2 right-2 w-8 h-8 bg-white/90 rounded-full flex items-center justify-center shadow hover:scale-110 transition-transform"
+                    className="absolute top-2 right-2 w-11 h-11 bg-white/90 rounded-full flex items-center justify-center shadow hover:scale-110 transition-transform"
                   >
                     <span className={`material-symbols-outlined text-lg ${favorites.has(restaurant.id) ? "text-red-500" : "text-outline"}`}>favorite</span>
                   </button>

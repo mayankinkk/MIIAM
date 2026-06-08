@@ -151,10 +151,10 @@ export default function PromotionsPage() {
                     </span>
                   </td>
                   <td className="p-4 flex gap-1">
-                    <button onClick={() => togglePromo(p.id, p.active)} className="px-2 py-1 bg-slate-100 rounded text-xs font-bold text-slate-600 hover:bg-slate-200">
+                    <button onClick={() => togglePromo(p.id, p.active)} className="px-3 py-2 bg-slate-100 rounded text-xs font-bold text-slate-600 hover:bg-slate-200">
                       {p.active ? "Disable" : "Enable"}
                     </button>
-                    <button onClick={() => deletePromo(p.id)} className="px-2 py-1 bg-red-50 rounded text-xs font-bold text-red-600 hover:bg-red-100">
+                    <button onClick={() => deletePromo(p.id)} className="px-3 py-2 bg-red-50 rounded text-xs font-bold text-red-600 hover:bg-red-100">
                       Delete
                     </button>
                   </td>

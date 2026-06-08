@@ -158,7 +158,7 @@ export default function PrintLibraryPage() {
                     <button
                       onClick={() => removeFile(item.id)}
                       aria-label={t.print.libraryRemove}
-                      className="w-8 h-8 bg-red-50 rounded-full flex items-center justify-center hover:bg-red-100"
+                      className="w-10 h-10 bg-red-50 rounded-full flex items-center justify-center hover:bg-red-100"
                     >
                       <span className="material-symbols-outlined text-red-500 text-sm">delete</span>
                     </button>

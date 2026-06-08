@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, Suspense, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
@@ -18,7 +18,7 @@ type FeedbackData = {
 function FeedbackContent() {
   const { t } = useTranslation();
   const searchParams = useSearchParams();
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   
   const orderId = searchParams.get("orderId") || "";
   const serviceName = searchParams.get("service") || "Service";

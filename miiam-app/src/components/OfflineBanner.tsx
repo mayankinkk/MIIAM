@@ -45,7 +45,7 @@ export default function OfflineBanner() {
           </span>
           <button
             onClick={() => setDismissed(true)}
-            className="ml-4 flex h-6 w-6 items-center justify-center rounded-full bg-white/20 transition-colors hover:bg-white/30"
+            className="ml-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/20 transition-colors hover:bg-white/30"
             aria-label="Dismiss offline banner"
           >
             <span className="material-symbols-outlined text-base">close</span>

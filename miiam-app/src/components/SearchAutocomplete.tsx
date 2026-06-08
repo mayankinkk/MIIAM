@@ -158,7 +158,7 @@ export function SearchAutocomplete({ onSelect, className = "" }: SearchAutocompl
         {query && (
           <button
             onClick={() => setQuery("")}
-            className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 bg-slate-300 rounded-full flex items-center justify-center hover:bg-slate-400 transition-colors"
+            className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-slate-300 rounded-full flex items-center justify-center hover:bg-slate-400 transition-colors"
           >
             <span className="material-symbols-outlined text-sm">close</span>
           </button>
@@ -229,7 +229,7 @@ export function SearchAutocomplete({ onSelect, className = "" }: SearchAutocompl
                   <button
                     key={term}
                     onClick={() => handleSearch(term)}
-                    className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-full text-sm text-slate-600 transition-colors"
+                    className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 rounded-full text-sm text-slate-600 transition-colors"
                   >
                     {term}
                   </button>

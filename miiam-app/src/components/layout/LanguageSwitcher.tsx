@@ -30,7 +30,7 @@ export default function LanguageSwitcher() {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1 text-slate-800 font-bold hover:text-[#ba001c] transition-colors py-2 px-3 rounded-lg hover:bg-slate-100"
+        className="flex items-center gap-1 text-slate-800 font-bold hover:text-[#ba001c] transition-colors py-2.5 px-4 rounded-lg hover:bg-slate-100 min-h-[44px]"
       >
         <span className="material-symbols-outlined text-[20px]">language</span>
         <span className="uppercase text-sm">{language}</span>

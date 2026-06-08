@@ -105,7 +105,7 @@ export default function ServicesCatalogPanel({ open, onClose }: Props) {
                   <button
                     onClick={() => move(svc.id, "up")}
                     disabled={isFirst}
-                    className="w-6 h-6 flex items-center justify-center text-slate-400 hover:text-slate-700 disabled:opacity-30"
+                    className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-700 disabled:opacity-30"
                     aria-label="Move up"
                   >
                     <span className="material-symbols-outlined text-sm">arrow_drop_up</span>
@@ -113,7 +113,7 @@ export default function ServicesCatalogPanel({ open, onClose }: Props) {
                   <button
                     onClick={() => move(svc.id, "down")}
                     disabled={isLast}
-                    className="w-6 h-6 flex items-center justify-center text-slate-400 hover:text-slate-700 disabled:opacity-30"
+                    className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-700 disabled:opacity-30"
                     aria-label="Move down"
                   >
                     <span className="material-symbols-outlined text-sm">arrow_drop_down</span>

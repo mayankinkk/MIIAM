@@ -60,7 +60,7 @@ export default function ImageUpload({
             <button
               type="button"
               onClick={() => onChange("")}
-              className="absolute top-2 right-2 w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute top-2 right-2 w-11 h-11 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
             >
               <span className="material-symbols-outlined text-sm">close</span>
             </button>

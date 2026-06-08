@@ -88,7 +88,7 @@ export default function RiderNotificationsPage() {
           </Link>
           <h1 className="text-2xl font-black tracking-tighter">Notifications</h1>
           {unreadCount > 0 && (
-            <button onClick={markAllRead} className="text-sm font-bold bg-white/20 px-3 py-1 rounded-full">
+            <button onClick={markAllRead} className="text-sm font-bold bg-white/20 px-4 py-2.5 rounded-full">
               Clear All
             </button>
           )}

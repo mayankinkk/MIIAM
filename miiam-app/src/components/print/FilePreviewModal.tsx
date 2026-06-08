@@ -79,7 +79,7 @@ export default function FilePreviewModal({ file, onClose }: FilePreviewModalProp
           <button
             onClick={onClose}
             aria-label={t.print.filePreviewClose}
-            className="w-9 h-9 bg-surface-container-high rounded-full flex items-center justify-center hover:bg-surface-container-highest"
+            className="w-11 h-11 bg-surface-container-high rounded-full flex items-center justify-center hover:bg-surface-container-highest"
           >
             <span className="material-symbols-outlined text-on-surface-variant">close</span>
           </button>

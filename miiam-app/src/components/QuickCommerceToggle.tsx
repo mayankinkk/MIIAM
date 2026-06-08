@@ -65,7 +65,7 @@ export function QuickCommerceBadge() {
       <span>10-min delivery</span>
       <button 
         onClick={() => useQuickCommerceStore.getState().setQuickMode(false)}
-        className="ml-2 w-5 h-5 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30"
+        className="ml-2 w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30"
       >
         <span className="material-symbols-outlined text-sm">close</span>
       </button>

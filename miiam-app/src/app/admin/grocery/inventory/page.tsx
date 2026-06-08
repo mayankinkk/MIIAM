@@ -296,14 +296,14 @@ export default function GroceryInventoryPage() {
                 <div className="flex items-center gap-2 mt-3">
                   <button
                     onClick={() => updateProductStock(product.id, Math.max(0, product.stock - 1))}
-                    className="w-8 h-8 bg-slate-100 text-slate-600 rounded-lg font-bold hover:bg-slate-200"
+                    className="w-10 h-10 bg-slate-100 text-slate-600 rounded-lg font-bold hover:bg-slate-200"
                   >
                     -
                   </button>
                   <span className="flex-1 text-center font-bold text-slate-800">{product.stock}</span>
                   <button
                     onClick={() => updateProductStock(product.id, product.stock + 1)}
-                    className="w-8 h-8 bg-slate-100 text-slate-600 rounded-lg font-bold hover:bg-slate-200"
+                    className="w-10 h-10 bg-slate-100 text-slate-600 rounded-lg font-bold hover:bg-slate-200"
                   >
                     +
                   </button>

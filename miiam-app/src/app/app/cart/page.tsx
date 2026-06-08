@@ -246,7 +246,7 @@ export default function CartPage() {
                           <button
                             onClick={() => updateQuantity(item.id, item.quantity - 1)}
                             aria-label={`Decrease quantity of ${item.name}`}
-                            className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-surface-container-lowest transition-colors"
+                            className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-lowest transition-colors"
                           >
                             <span className="material-symbols-outlined text-sm" aria-hidden="true">remove</span>
                           </button>
@@ -254,7 +254,7 @@ export default function CartPage() {
                           <button
                             onClick={() => updateQuantity(item.id, item.quantity + 1)}
                             aria-label={`Increase quantity of ${item.name}`}
-                            className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-surface-container-lowest transition-colors"
+                            className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-lowest transition-colors"
                           >
                             <span className="material-symbols-outlined text-sm" aria-hidden="true">add</span>
                           </button>
@@ -309,7 +309,7 @@ export default function CartPage() {
             <div className="bg-surface-container-lowest rounded-t-2xl w-full max-h-[80vh] overflow-hidden">
               <div className="p-4 border-b border-outline-variant flex items-center justify-between">
                 <h3 className="text-base font-bold text-on-surface">{t.cart.reorderFromPast}</h3>
-                <button onClick={() => setShowReorderModal(false)} className="w-8 h-8 bg-surface-container rounded-full flex items-center justify-center">
+                <button onClick={() => setShowReorderModal(false)} className="w-11 h-11 bg-surface-container rounded-full flex items-center justify-center">
                   <span className="material-symbols-outlined text-[18px]">close</span>
                 </button>
               </div>

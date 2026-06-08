@@ -305,11 +305,11 @@ export default function BeautyPage() {
                       ) : (
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2 bg-primary rounded-xl px-2 animate-cart-pop">
-                            <button onClick={() => { updateQuantity(service.id, qty - 1); if (navigator.vibrate) navigator.vibrate(10); }} className="w-6 h-6 flex items-center justify-center text-white hover:scale-110 active:scale-90 transition-transform">
+                            <button onClick={() => { updateQuantity(service.id, qty - 1); if (navigator.vibrate) navigator.vibrate(10); }} className="w-10 h-10 flex items-center justify-center text-white hover:scale-110 active:scale-90 transition-transform">
                               <span className="material-symbols-outlined text-sm">remove</span>
                             </button>
                             <span className="font-bold text-white">{qty}</span>
-                            <button onClick={() => { addItem({ id: service.id + Date.now(), menu_item_id: service.id, vendor_id: BEAUTY_VENDOR_ID, vendor_name: "MIIAM Beauty", name: service.name, price: service.price, image_url: service.image }); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }} className="w-6 h-6 flex items-center justify-center text-white hover:scale-110 active:scale-90 transition-transform">
+                            <button onClick={() => { addItem({ id: service.id + Date.now(), menu_item_id: service.id, vendor_id: BEAUTY_VENDOR_ID, vendor_name: "MIIAM Beauty", name: service.name, price: service.price, image_url: service.image }); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }} className="w-10 h-10 flex items-center justify-center text-white hover:scale-110 active:scale-90 transition-transform">
                               <span className="material-symbols-outlined text-sm">add</span>
                             </button>
                           </div>
@@ -374,7 +374,7 @@ export default function BeautyPage() {
           <div className="bg-surface-container-lowest w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl p-4 sm:p-6 max-h-[85vh] sm:max-h-[90vh] overflow-y-auto animate-slide-up">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-xl font-black text-on-surface">Book {bookingService.name}</h3>
-              <button onClick={() => { setBookingService(null); if (navigator.vibrate) navigator.vibrate(10); }} className="w-8 h-8 bg-surface-container rounded-full flex items-center justify-center hover:scale-110 active:scale-90 transition-transform">
+              <button onClick={() => { setBookingService(null); if (navigator.vibrate) navigator.vibrate(10); }} className="w-11 h-11 bg-surface-container rounded-full flex items-center justify-center hover:scale-110 active:scale-90 transition-transform">
                 <span className="material-symbols-outlined text-sm">close</span>
               </button>
             </div>

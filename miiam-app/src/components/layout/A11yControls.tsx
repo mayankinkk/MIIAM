@@ -35,7 +35,7 @@ export default function A11yControls() {
               type="button"
               onClick={() => setTheme(t)}
               aria-pressed={theme === t}
-              className={`py-1.5 text-xs font-bold rounded-lg border ${
+              className={`py-2.5 text-xs font-bold rounded-lg border ${
                 theme === t ? "bg-indigo-600 text-white border-indigo-600" : "border-slate-200 text-slate-700 hover:bg-slate-50"
               }`}
             >
@@ -54,7 +54,7 @@ export default function A11yControls() {
               type="button"
               onClick={() => setContrast(c)}
               aria-pressed={contrast === c}
-              className={`py-1.5 text-xs font-bold rounded-lg border ${
+              className={`py-2.5 text-xs font-bold rounded-lg border ${
                 contrast === c ? "bg-indigo-600 text-white border-indigo-600" : "border-slate-200 text-slate-700 hover:bg-slate-50"
               }`}
             >
@@ -69,7 +69,7 @@ export default function A11yControls() {
           type="checkbox"
           checked={reducedMotion}
           onChange={(e) => setReducedMotion(e.target.checked)}
-          className="w-4 h-4 accent-indigo-600"
+          className="w-5 h-5 accent-indigo-600"
         />
         Reduce motion (less animation)
       </label>

@@ -230,7 +230,7 @@ export default function AdminPrintingKanban() {
                   <h3 className="font-bold text-lg">Order #{selectedOrder.id.slice(0, 8)}</h3>
                   <p className="text-sm text-slate-500">{new Date(selectedOrder.placed_at).toLocaleString("en-IN")} · ₹{selectedOrder.total_amount}</p>
                 </div>
-                <button onClick={() => setSelectedOrder(null)} className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center shrink-0">
+                <button onClick={() => setSelectedOrder(null)} className="w-11 h-11 bg-slate-100 rounded-full flex items-center justify-center shrink-0">
                   <span className="material-symbols-outlined text-sm">close</span>
                 </button>
               </div>
@@ -256,12 +256,12 @@ export default function AdminPrintingKanban() {
                             <span className="material-symbols-outlined text-indigo-500 text-base shrink-0">description</span>
                             <span className="text-sm font-medium text-slate-700 truncate flex-1 min-w-0">{name}</span>
                             {url && (
-                              <a href={url} target="_blank" rel="noopener noreferrer" className="shrink-0 w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center hover:bg-indigo-100">
+                              <a href={url} target="_blank" rel="noopener noreferrer" className="shrink-0 w-10 h-10 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center hover:bg-indigo-100">
                                 <span className="material-symbols-outlined text-sm">open_in_new</span>
                               </a>
                             )}
                             {url && (
-                              <a href={url} download={name} className="shrink-0 w-7 h-7 rounded-lg bg-slate-50 text-slate-600 flex items-center justify-center hover:bg-slate-100">
+                              <a href={url} download={name} className="shrink-0 w-10 h-10 rounded-lg bg-slate-50 text-slate-600 flex items-center justify-center hover:bg-slate-100">
                                 <span className="material-symbols-outlined text-sm">download</span>
                               </a>
                             )}

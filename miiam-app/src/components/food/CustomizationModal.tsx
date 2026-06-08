@@ -128,7 +128,7 @@ export default function CustomizationModal({ item, vendor_id, vendor_name, onClo
             <h2 className="text-lg font-extrabold text-slate-900">Add to Cart</h2>
             <p className="text-sm text-slate-500">{item.name}</p>
           </div>
-          <button onClick={onClose} aria-label="Close" className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center">
+          <button onClick={onClose} aria-label="Close" className="w-11 h-11 rounded-full bg-slate-100 flex items-center justify-center">
             <span className="material-symbols-outlined text-slate-600 text-[18px]">close</span>
           </button>
         </div>

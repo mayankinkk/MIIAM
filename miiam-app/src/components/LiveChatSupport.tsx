@@ -87,7 +87,7 @@ export function LiveChatSupport({ orderId, onClose }: LiveChatProps) {
               <p className="text-xs text-white/80">Typically replies in minutes</p>
             </div>
           </div>
-          <button onClick={onClose} aria-label="Close" className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+          <button onClick={onClose} aria-label="Close" className="w-11 h-11 bg-white/20 rounded-full flex items-center justify-center">
             <span className="material-symbols-outlined">close</span>
           </button>
         </div>
@@ -138,7 +138,7 @@ export function LiveChatSupport({ orderId, onClose }: LiveChatProps) {
               <button
                 key={reply}
                 onClick={() => sendMessage(reply)}
-                className="text-xs bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-full text-slate-600 transition-colors"
+                className="text-xs bg-slate-100 hover:bg-slate-200 px-3 py-2 rounded-full text-slate-600 transition-colors"
               >
                 {reply}
               </button>

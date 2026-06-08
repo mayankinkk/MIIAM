@@ -73,7 +73,7 @@ export default function ReviewForm({ vendorId, orderId, onSuccess }: ReviewFormP
             onClick={() => setRating(star)}
             onMouseEnter={() => setHoverRating(star)}
             onMouseLeave={() => setHoverRating(0)}
-            className="p-1"
+            className="p-3"
           >
             <span 
               className="material-symbols-outlined text-4xl transition-all"

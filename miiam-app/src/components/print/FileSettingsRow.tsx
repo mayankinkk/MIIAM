@@ -93,7 +93,7 @@ export default function FileSettingsRow({
         </button>
         <button
           onClick={toggleSaveToLibrary}
-          className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-colors ${
+          className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-colors ${
             file.saveToLibrary
               ? "bg-indigo-100 text-indigo-700"
               : "bg-surface-container text-on-surface-variant/60"
@@ -111,7 +111,7 @@ export default function FileSettingsRow({
         <button
           onClick={() => setExpanded((s) => !s)}
           aria-label={expanded ? "Collapse settings" : "Expand settings"}
-          className="w-8 h-8 bg-surface-container rounded-full flex items-center justify-center flex-shrink-0"
+          className="w-10 h-10 bg-surface-container rounded-full flex items-center justify-center flex-shrink-0"
         >
           <span className="material-symbols-outlined text-on-surface-variant text-sm">
             {expanded ? "expand_less" : "expand_more"}
@@ -120,7 +120,7 @@ export default function FileSettingsRow({
         <button
           onClick={onRemove}
           aria-label="Remove file"
-          className="w-8 h-8 bg-red-50 rounded-full flex items-center justify-center flex-shrink-0 hover:bg-red-100"
+          className="w-10 h-10 bg-red-50 rounded-full flex items-center justify-center flex-shrink-0 hover:bg-red-100"
         >
           <span className="material-symbols-outlined text-red-500 text-sm">close</span>
         </button>

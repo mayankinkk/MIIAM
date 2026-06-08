@@ -250,7 +250,7 @@ export default function BlogAdminPage() {
                   <div className="absolute top-3 right-3">
                     <button
                       onClick={() => togglePublish(post)}
-                      className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                      className={`w-10 h-10 rounded-full flex items-center justify-center ${
                         post.published ? "bg-green-500 text-white" : "bg-slate-200 text-slate-500"
                       }`}
                     >
@@ -307,7 +307,7 @@ export default function BlogAdminPage() {
                 </h2>
                 <button
                   onClick={() => setShowModal(false)}
-                  className="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center"
+                  className="w-10 h-10 rounded-full hover:bg-slate-100 flex items-center justify-center"
                 >
                   <span className="material-symbols-outlined text-slate-400">close</span>
                 </button>

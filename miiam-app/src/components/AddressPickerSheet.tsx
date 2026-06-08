@@ -224,7 +224,7 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
           <div className="w-10 h-1 bg-slate-300 rounded-full mx-auto mb-4" />
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-extrabold text-slate-900">Choose Delivery Location</h2>
-            <button onClick={onClose} aria-label="Close" className="w-9 h-9 bg-slate-100 rounded-full flex items-center justify-center">
+            <button onClick={onClose} aria-label="Close" className="w-11 h-11 bg-slate-100 rounded-full flex items-center justify-center">
               <span className="material-symbols-outlined text-slate-600">close</span>
             </button>
           </div>

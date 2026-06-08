@@ -5,7 +5,7 @@ import { getVendorMenuTable } from "@/lib/vendor";
 import type { Order } from "@/lib/types";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useToastStore } from "@/lib/store/toastStore";
 import { OrderSkeleton } from "@/components/Skeleton";
@@ -35,7 +35,7 @@ export default function OrdersPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(true); // assume true until proven otherwise
   const router = useRouter();
   const { addItem } = useCartStore();
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
 
   const [userId, setUserId] = useState<string | null>(null);
   const { addToast } = useToastStore();

@@ -123,14 +123,14 @@ function AddToCartButton({ item, vendor }: { item: MenuItem; vendor: Vendor }) {
     <div className="flex items-center gap-1.5 bg-primary rounded-full px-2 py-1">
       <button
         onClick={() => { updateQuantity(item.id, qty - 1); if (navigator.vibrate) navigator.vibrate(10); }}
-        className="text-white font-bold w-5 h-5 flex items-center justify-center active:scale-75 transition-transform"
+        className="text-white font-bold w-10 h-10 flex items-center justify-center active:scale-75 transition-transform"
       >
         −
       </button>
       <span className="text-white font-bold text-xs min-w-[16px] text-center">{qty}</span>
       <button
         onClick={handleAdd}
-        className="text-white font-bold w-5 h-5 flex items-center justify-center active:scale-125 transition-transform"
+        className="text-white font-bold w-10 h-10 flex items-center justify-center active:scale-125 transition-transform"
       >
         +
       </button>
@@ -185,7 +185,7 @@ function ReviewModal({ vendorId, onClose, onSubmitted }: { vendorId: string; onC
       <div className="bg-surface-container-lowest w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl p-6 animate-slide-up">
         <div className="flex justify-between items-center mb-5">
           <h3 className="text-xl font-black text-on-surface">{t.food.writeReview}</h3>
-          <button onClick={onClose} className="w-8 h-8 bg-surface-container rounded-full flex items-center justify-center">
+          <button onClick={onClose} className="w-11 h-11 bg-surface-container rounded-full flex items-center justify-center">
             <span className="material-symbols-outlined text-sm">close</span>
           </button>
         </div>

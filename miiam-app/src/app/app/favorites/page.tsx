@@ -142,7 +142,7 @@ export default function FavoritesPage() {
                 </Link>
                 <button
                   onClick={(e) => { e.preventDefault(); handleToggle(vendor.id); }}
-                  className="absolute top-3 right-3 w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center shadow-lg transition-all active:scale-90 hover:bg-primary-dim"
+                  className="absolute top-3 right-3 w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center shadow-lg transition-all active:scale-90 hover:bg-primary-dim"
                   aria-label="Remove from favourites"
                 >
                   <span className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>

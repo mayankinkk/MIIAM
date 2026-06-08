@@ -173,14 +173,14 @@ export default function BookingCalendar({
       <div className="flex items-center justify-between mb-4">
         <button 
           onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1))}
-          className="p-2 hover:bg-slate-100 rounded-lg"
+          className="p-3 hover:bg-slate-100 rounded-lg"
         >
           <span className="material-symbols-outlined">chevron_left</span>
         </button>
         <span className="font-bold text-slate-800">{monthName}</span>
         <button 
           onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1))}
-          className="p-2 hover:bg-slate-100 rounded-lg"
+          className="p-3 hover:bg-slate-100 rounded-lg"
         >
           <span className="material-symbols-outlined">chevron_right</span>
         </button>
@@ -205,7 +205,7 @@ export default function BookingCalendar({
               onClick={() => handleDateSelect(day.date)}
               disabled={!selectable}
               className={`
-                p-2 text-sm font-bold rounded-lg transition-colors
+                p-3 text-sm font-bold rounded-lg transition-colors min-w-[44px]
                 ${!day.isCurrentMonth ? "text-slate-300" : ""}
                 ${isPast ? "text-slate-300 cursor-not-allowed" : ""}
                 ${selected ? "bg-[#ba001c] text-white" : ""}

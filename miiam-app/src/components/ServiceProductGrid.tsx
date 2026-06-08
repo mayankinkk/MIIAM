@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -90,7 +90,7 @@ export default function ServiceProductGrid({
   const [sortBy, setSortBy] = useState<string>("default");
   const [inStockOnly, setInStockOnly] = useState(false);
   const [showSort, setShowSort] = useState(false);
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const router = useRouter();
   const { items, addItem, updateQuantity, totalItems } = useCartStore();
   const { addToast } = useToastStore();
@@ -254,7 +254,7 @@ export default function ServiceProductGrid({
             addToCart(product);
             if (navigator.vibrate) navigator.vibrate([20, 10, 20]);
           }}
-          className="w-8 h-8 bg-[#ba001c] text-white rounded-full flex items-center justify-center hover:scale-110 active:scale-90 transition-all animate-glow-pulse"
+          className="w-11 h-11 bg-[#ba001c] text-white rounded-full flex items-center justify-center hover:scale-110 active:scale-90 transition-all animate-glow-pulse"
         >
           <span className="material-symbols-outlined text-lg">add</span>
         </button>
@@ -267,7 +267,7 @@ export default function ServiceProductGrid({
             updateQuantity(product.id, quantity - 1);
             if (navigator.vibrate) navigator.vibrate(10);
           }}
-          className="w-6 h-6 text-white flex items-center justify-center hover:scale-110 active:scale-90 transition-transform"
+          className="w-10 h-10 text-white flex items-center justify-center hover:scale-110 active:scale-90 transition-transform"
         >
           <span className="material-symbols-outlined text-lg">remove</span>
         </button>
@@ -279,7 +279,7 @@ export default function ServiceProductGrid({
             addToCart(product);
             if (navigator.vibrate) navigator.vibrate([20, 10, 20]);
           }}
-          className="w-6 h-6 text-white flex items-center justify-center hover:scale-110 active:scale-90 transition-transform"
+          className="w-10 h-10 text-white flex items-center justify-center hover:scale-110 active:scale-90 transition-transform"
         >
           <span className="material-symbols-outlined text-lg">add</span>
         </button>

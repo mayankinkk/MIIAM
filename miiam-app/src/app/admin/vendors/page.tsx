@@ -1315,7 +1315,7 @@ export default function AdminVendorsPage() {
               <button
                 type="button"
                 onClick={() => setEditingMenuItem(null)}
-                className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-600"
+                className="w-11 h-11 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-600"
               >
                 <span className="material-symbols-outlined text-sm">close</span>
               </button>

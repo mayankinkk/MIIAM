@@ -736,7 +736,7 @@ export default function HomePage() {
           <div className="bg-surface-container w-full md:w-96 rounded-t-3xl md:rounded-3xl p-6 border-t border-x border-outline-variant/10 md:border animate-in slide-in-from-bottom duration-300">
             <div className="flex items-center justify-between mb-4">
               <h2 id="location-modal-title" className="text-xl font-black text-on-surface">{t.home.enterPincode}</h2>
-              <button onClick={() => setShowLocationModal(false)} aria-label="Close location modal" className="w-8 h-8 bg-surface-container-high rounded-full flex items-center justify-center">
+              <button onClick={() => setShowLocationModal(false)} aria-label="Close location modal" className="w-11 h-11 bg-surface-container-high rounded-full flex items-center justify-center">
                 <span className="material-symbols-outlined text-on-surface-variant" aria-hidden="true">close</span>
               </button>
             </div>
@@ -819,7 +819,7 @@ export default function HomePage() {
               <button 
                 onClick={() => setShowNotifications(false)}
                 aria-label="Close notifications"
-                className="w-8 h-8 bg-surface-container-high rounded-full flex items-center justify-center"
+                className="w-11 h-11 bg-surface-container-high rounded-full flex items-center justify-center"
               >
                 <span className="material-symbols-outlined text-on-surface-variant" aria-hidden="true">close</span>
               </button>

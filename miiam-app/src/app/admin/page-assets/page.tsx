@@ -261,7 +261,7 @@ export default function PageAssetsPage() {
                 </h2>
                 <p className="text-xs text-slate-400 font-mono mt-0.5">{editingAsset.section}</p>
               </div>
-              <button onClick={() => setEditingAsset(null)} className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center">
+              <button onClick={() => setEditingAsset(null)} className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
                 <span className="material-symbols-outlined text-sm">close</span>
               </button>
             </div>
@@ -347,7 +347,7 @@ export default function PageAssetsPage() {
           <div className="bg-white rounded-3xl max-w-lg w-full shadow-2xl">
             <div className="p-6 border-b border-slate-100 flex justify-between items-center">
               <h2 className="text-xl font-black text-slate-800">Add Page Section</h2>
-              <button onClick={() => setShowAddModal(false)} className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center">
+              <button onClick={() => setShowAddModal(false)} className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
                 <span className="material-symbols-outlined text-sm">close</span>
               </button>
             </div>

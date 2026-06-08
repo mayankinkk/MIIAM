@@ -53,7 +53,7 @@ export default function Toaster() {
           <span className="text-sm font-medium text-on-surface">{toast.message}</span>
           <button
             onClick={(e) => { e.stopPropagation(); removeToast(toast.id); }}
-            className="ml-auto p-1 rounded-full hover:bg-surface-container-high transition-colors"
+            className="ml-auto p-2 rounded-full hover:bg-surface-container-high transition-colors"
             aria-label="Dismiss notification"
           >
             <span className="material-symbols-outlined text-sm text-on-surface-variant">close</span>
