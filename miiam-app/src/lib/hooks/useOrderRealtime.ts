@@ -31,7 +31,7 @@ export function useOrderRealtime(supabase: SupabaseClient, orderId: string) {
       orderData.vendor_id ? supabase.from("vendors").select("*").eq("id", orderData.vendor_id).single() : Promise.resolve({ data: null }),
       orderData.rider_id ? supabase.from("riders").select("*").eq("id", orderData.rider_id).single() : Promise.resolve({ data: null }),
       supabase.from("order_items").select("*").eq("order_id", id),
-      supabase.from("rider_locations").select("lat, lng").eq("order_id", id).order("created_at", { ascending: false }).limit(1).maybeSingle(),
+      supabase.from("rider_locations").select("lat, lng").eq("order_id", id).limit(1).maybeSingle(),
     ]);
 
     const items = itemsRes.data || [];
