@@ -19,8 +19,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const supabase = await createClient();
-
     // Get user's push token from database
     const { data: userToken } = await supabase
       .from("user_push_tokens")
@@ -88,8 +86,6 @@ export async function GET(request: NextRequest) {
   if (!userId || userId !== user.id) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
-
-  const supabase = await createClient();
 
   // Get notification history
   const { data: notifications } = await supabase
