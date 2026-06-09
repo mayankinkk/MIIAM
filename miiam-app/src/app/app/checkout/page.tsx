@@ -150,6 +150,15 @@ export default function CheckoutPage() {
           <p className="text-sm sm:text-base text-on-surface-variant">{t.checkout.subtitle}</p>
         </header>
 
+        {items.length === 0 ? (
+          <div className="text-center py-20">
+            <span className="material-symbols-outlined text-6xl text-slate-300">shopping_cart</span>
+            <h2 className="text-xl font-black text-slate-600 mt-4">Your cart is empty</h2>
+            <p className="text-sm text-slate-400 mt-2">Add some items to your cart before checking out.</p>
+            <a href="/app/home" className="inline-block mt-6 px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm">Browse Menu</a>
+          </div>
+        ) : (
+
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-8 items-start">
           <div className="lg:col-span-8 space-y-5 sm:space-y-8">
             <CheckoutDeliveryAddress
@@ -246,6 +255,8 @@ export default function CheckoutPage() {
             </aside>
           </div>
         </div>
+        )}
+
       </main>
 
       {showAddressPicker && (
