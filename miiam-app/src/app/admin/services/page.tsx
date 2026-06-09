@@ -470,19 +470,63 @@ export default function EnhancedServicesDashboard() {
             <div className="space-y-4">
               <div className="flex justify-between items-center p-3 bg-slate-50 rounded-xl">
                 <span className="font-bold text-slate-700">Platform Commission</span>
-                <span className="font-black text-slate-800">15%</span>
+                <div className="flex items-center gap-1">
+                  <input
+                    type="number"
+                    min={0}
+                    max={100}
+                    defaultValue={15}
+                    id="svc_commission"
+                    className="w-16 text-right font-black text-slate-800 bg-transparent border-b-2 border-transparent focus:border-[#ba001c] outline-none"
+                  />
+                  <span className="font-bold text-slate-500">%</span>
+                </div>
               </div>
               <div className="flex justify-between items-center p-3 bg-slate-50 rounded-xl">
                 <span className="font-bold text-slate-700">Minimum Order Value</span>
-                <span className="font-black text-slate-800">₹199</span>
+                <div className="flex items-center gap-1">
+                  <span className="font-bold text-slate-500">₹</span>
+                  <input
+                    type="number"
+                    min={0}
+                    defaultValue={199}
+                    id="svc_min_order"
+                    className="w-20 text-right font-black text-slate-800 bg-transparent border-b-2 border-transparent focus:border-[#ba001c] outline-none"
+                  />
+                </div>
               </div>
               <div className="flex justify-between items-center p-3 bg-slate-50 rounded-xl">
                 <span className="font-bold text-slate-700">Cancellation Window</span>
-                <span className="font-black text-slate-800">2 hours</span>
+                <div className="flex items-center gap-1">
+                  <input
+                    type="number"
+                    min={0}
+                    defaultValue={2}
+                    id="svc_cancel_window"
+                    className="w-16 text-right font-black text-slate-800 bg-transparent border-b-2 border-transparent focus:border-[#ba001c] outline-none"
+                  />
+                  <span className="font-bold text-slate-500">hrs</span>
+                </div>
               </div>
             </div>
             <button
-              onClick={() => alert("Pricing settings saved")}
+              onClick={async () => {
+                const commission = (document.getElementById("svc_commission") as HTMLInputElement)?.value;
+                const minOrder = (document.getElementById("svc_min_order") as HTMLInputElement)?.value;
+                const cancelWindow = (document.getElementById("svc_cancel_window") as HTMLInputElement)?.value;
+                await fetch("/api/settings", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    settings: {
+                      service_commission: commission,
+                      service_min_order: minOrder,
+                      service_cancel_window: cancelWindow,
+                    },
+                  }),
+                });
+                alert("Pricing settings saved");
+              }}
               className="w-full mt-4 py-3 bg-[#ba001c] text-white rounded-xl font-bold text-sm"
             >
               Update Settings
