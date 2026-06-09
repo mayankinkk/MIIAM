@@ -35,6 +35,16 @@ export default function CartPage() {
   }, []);
 
   useEffect(() => {
+    async function loadServiceCharge() {
+      try {
+        const { data } = await supabase.from("site_settings").select("value").eq("key", "service_charge").maybeSingle();
+        if (data?.value) setServiceCharge(Number(data.value));
+      } catch { /* use default */ }
+    }
+    loadServiceCharge();
+  }, [supabase]);
+
+  useEffect(() => {
     async function loadVendorDetails() {
       const safeItems = Array.isArray(items) ? items : [];
       const vendorIds = Array.from(new Set(safeItems.map((i) => i.vendor_id).filter(Boolean)));
@@ -79,7 +89,7 @@ export default function CartPage() {
 
   const vendorIds = Array.from(new Set(safeItems.map((i) => i.vendor_id).filter(Boolean)));
   const totalDeliveryFee = 0;
-  const serviceCharge = 8;
+  const [serviceCharge, setServiceCharge] = useState(8);
   const grandTotal = Math.max(0, total + totalDeliveryFee + (vendorIds.length * serviceCharge));
 
 

@@ -37,6 +37,7 @@ export default function CheckoutPage() {
   const [deliveryAddress, setDeliveryAddress] = useState<SelectedAddress | null>(null);
   const [savedAddresses, setSavedAddresses] = useState<SelectedAddress[]>([]);
   const [showAddressPicker, setShowAddressPicker] = useState(false);
+  const [serviceCharge, setServiceCharge] = useState(8);
   const { items, totalPrice } = useCartStore();
   const supabase = useMemo(() => createClient(), []);
 
@@ -67,6 +68,14 @@ export default function CheckoutPage() {
     }
     loadPromoCodes();
 
+    async function loadServiceCharge() {
+      try {
+        const { data } = await supabase.from("site_settings").select("value").eq("key", "service_charge").maybeSingle();
+        if (data?.value) setServiceCharge(Number(data.value));
+      } catch { /* use default */ }
+    }
+    loadServiceCharge();
+
     async function loadVendorDetails() {
       try {
         const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean)));
@@ -93,7 +102,6 @@ export default function CheckoutPage() {
   const subtotal = totalPrice();
   const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean)));
   const serviceVendorIds = vendorIds.filter((id) => id !== PRINTING_VENDOR_ID && id !== SERVICES_VENDOR_ID);
-  const serviceCharge = 8;
 
   const {
     promoCode,
