@@ -1,7 +1,19 @@
 import { NextResponse } from "next/server";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 
+async function requireAdmin() {
+  const supabase = await createClient();
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  if (authError || !user) return { error: "Unauthorized" };
+  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
+  if (!profile || profile.role !== "admin") return { error: "Forbidden" };
+  return null;
+}
+
 export async function POST(request: Request) {
+  const authErr = await requireAdmin();
+  if (authErr) return NextResponse.json(authErr, { status: authErr.error === "Unauthorized" ? 401 : 403 });
+
   if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
     return NextResponse.json({ error: "Service role key not configured" }, { status: 500 });
   }
@@ -136,6 +148,9 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  const authErr = await requireAdmin();
+  if (authErr) return NextResponse.json(authErr, { status: authErr.error === "Unauthorized" ? 401 : 403 });
+
   const { searchParams } = new URL(request.url);
   const riderId = searchParams.get("id");
   
