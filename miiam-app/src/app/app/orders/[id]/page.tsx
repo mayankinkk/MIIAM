@@ -141,8 +141,8 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                   </div>
                 )}
                 <RiderMap
-                  dropoff={{ lat: 0, lng: 0, label: order?.delivery_address || "", kind: "home" }}
-                  pickup={order?.vendor?.address ? { lat: 0, lng: 0, label: order.vendor.address, kind: "vendor" } : null}
+                  dropoff={{ lat: order?.delivery_lat || 0, lng: order?.delivery_lng || 0, label: order?.delivery_address || "", kind: "home" }}
+                  pickup={order?.vendor?.address ? { lat: order?.vendor_lat || 0, lng: order?.vendor_lng || 0, label: order.vendor.address, kind: "vendor" } : null}
                   riderLocation={riderLocation}
                   onRouteUpdate={setTrackingInfo}
                 />
