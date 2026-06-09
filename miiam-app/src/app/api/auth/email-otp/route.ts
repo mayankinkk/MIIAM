@@ -72,6 +72,17 @@ const cleanEmail = email.toLowerCase().trim();
       return NextResponse.json({ error: "Invalid email format" }, { status: 400 });
     }
 
+    // DB-based rate limit: max 5 OTPs per email per 10 minutes
+    const tenMinAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+    const { count } = await supabase
+      .from("email_otps")
+      .select("*", { count: "exact", head: true })
+      .eq("email", cleanEmail)
+      .gte("created_at", tenMinAgo);
+    if (count && count >= 5) {
+      return NextResponse.json({ error: "Too many requests. Please try again after 10 minutes." }, { status: 429 });
+    }
+
     // For password_reset, check if user exists
     if (purpose === "password_reset") {
       try {
