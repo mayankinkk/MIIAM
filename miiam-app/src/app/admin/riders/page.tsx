@@ -84,11 +84,6 @@ function RidersPage() {
   async function addRider(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
-    const formData = new FormData();
-    formData.append("email", newRider.email);
-    formData.append("phone", newRider.phone);
-    formData.append("full_name", newRider.full_name);
-    formData.append("vehicle_type", newRider.vehicle_type);
     
     try {
       const formData = new FormData();
