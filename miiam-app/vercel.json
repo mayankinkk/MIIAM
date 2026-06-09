@@ -3,6 +3,14 @@
     {
       "path": "/api/printing/cleanup",
       "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/orders/activate-scheduled",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/orders/check-expired",
+      "schedule": "*/10 * * * *"
     }
   ]
 }
