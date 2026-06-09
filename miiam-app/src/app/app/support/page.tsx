@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import Link from "next/link";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { createClient } from "@/lib/supabase/client";
@@ -50,7 +50,7 @@ const chatMessages = [
 
 export default function SupportPage() {
   const { t } = useTranslation();
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const support = useSupportSettings();
   const [tab, setTab] = useState<"home" | "chat" | "faqs" | "tickets">("home");
   const [messages, setMessages] = useState(chatMessages);

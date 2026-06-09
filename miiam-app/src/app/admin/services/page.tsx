@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
@@ -32,7 +32,7 @@ const serviceOptions = [
 ];
 
 export default function EnhancedServicesDashboard() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [bookings, setBookings] = useState<ServiceBooking[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"dashboard" | "bookings" | "providers" | "settings">("dashboard");

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { getVendorForUser } from "@/lib/vendor";
 
@@ -69,7 +69,7 @@ function getVendorKey(type?: string): string {
 }
 
 export default function PartnerMenuPage() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [selectedVendorId, setSelectedVendorId] = useState("");
   const [items, setItems] = useState<AnyItem[]>([]);
