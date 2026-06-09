@@ -207,12 +207,21 @@ export default function RiderTrainingPage() {
           <p className="text-xs text-purple-600 mb-3">Get your official MIIAM rider certificate</p>
           <button onClick={() => {
             if (watchedCount === videos.length) {
-              import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Congratulations! Certificate download coming soon.", "success"));
+              // Generate certificate as downloadable HTML
+              const certHtml = `<!DOCTYPE html><html><head><style>body{font-family:Arial,sans-serif;text-align:center;padding:60px;background:#fff}h1{color:#ba001c;font-size:36px}h2{color:#333;margin-top:30px}p{color:#666;font-size:16px}.border{border:4px solid #ba001c;padding:40px;margin:20px}.date{margin-top:20px;color:#999}</style></head><body><div class="border"><h1>MIIAM</h1><p style="font-size:14px;letter-spacing:3px;text-transform:uppercase;color:#ba001c">Certificate of Completion</p><h2>Rider Training Program</h2><p>Congratulations! You have successfully completed all ${videos.length} training modules.</p><p class="date">Issued on ${new Date().toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}</p></div></body></html>`;
+              const blob = new Blob([certHtml], { type: "text/html" });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = "MIIAM_Rider_Certificate.html";
+              a.click();
+              URL.revokeObjectURL(url);
+              import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Certificate downloaded!", "success"));
             } else {
               import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast(`Complete all ${videos.length} videos to unlock your certificate (${watchedCount}/${videos.length})`, "info"));
             }
           }} className="px-6 py-2 bg-purple-500 text-white font-bold rounded-full text-sm">
-            {watchedCount === videos.length ? "View Certificate 🎉" : `${watchedCount}/${videos.length} Videos`}
+            {watchedCount === videos.length ? "Download Certificate 🎉" : `${watchedCount}/${videos.length} Videos`}
           </button>
         </div>
       </main>

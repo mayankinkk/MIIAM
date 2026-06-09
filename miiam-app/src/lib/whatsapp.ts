@@ -2,15 +2,17 @@
 
 import { createClient } from "@/lib/supabase/client";
 
-const WHATSAPP_API_URL = "https://api.whatsapp.com/v3/messages";
-const WHATSAPP_BUSINESS_ID = process.env.NEXT_PUBLIC_WHATSAPP_BUSINESS_ID;
+const WHATSAPP_CLOUD_API_URL = "https://graph.facebook.com/v18.0";
+const WHATSAPP_PHONE_NUMBER_ID = process.env.NEXT_PUBLIC_WHATSAPP_PHONE_NUMBER_ID;
+const WHATSAPP_ACCESS_TOKEN = process.env.NEXT_PUBLIC_WHATSAPP_ACCESS_TOKEN;
 
 interface WhatsAppMessage {
+  messaging_product: string;
   to: string;
   type: string;
   template?: {
     name: string;
-    language: string;
+    language: { code: string };
     components?: any[];
   };
   text?: {
@@ -26,9 +28,9 @@ const messageTemplates = {
       {
         type: "body",
         parameters: [
-          { type: "text", parameter_name: "order_id" },
-          { type: "text", parameter_name: "service_name" },
-          { type: "text", parameter_name: "amount" },
+          { type: "text", text: "" },
+          { type: "text", text: "" },
+          { type: "text", text: "" },
         ],
       },
     ],
@@ -40,9 +42,9 @@ const messageTemplates = {
       {
         type: "body",
         parameters: [
-          { type: "text", parameter_name: "service_name" },
-          { type: "text", parameter_name: "date" },
-          { type: "text", parameter_name: "time" },
+          { type: "text", text: "" },
+          { type: "text", text: "" },
+          { type: "text", text: "" },
         ],
       },
     ],
@@ -54,8 +56,8 @@ const messageTemplates = {
       {
         type: "body",
         parameters: [
-          { type: "text", parameter_name: "service_name" },
-          { type: "text", parameter_name: "rating_url" },
+          { type: "text", text: "" },
+          { type: "text", text: "" },
         ],
       },
     ],
@@ -67,9 +69,9 @@ const messageTemplates = {
       {
         type: "body",
         parameters: [
-          { type: "text", parameter_name: "offer_name" },
-          { type: "text", parameter_name: "discount" },
-          { type: "text", parameter_name: "validity" },
+          { type: "text", text: "" },
+          { type: "text", text: "" },
+          { type: "text", text: "" },
         ],
       },
     ],
@@ -81,7 +83,7 @@ const messageTemplates = {
       {
         type: "body",
         parameters: [
-          { type: "text", parameter_name: "rx_id" },
+          { type: "text", text: "" },
         ],
       },
     ],
@@ -93,8 +95,8 @@ const messageTemplates = {
       {
         type: "body",
         parameters: [
-          { type: "text", parameter_name: "rx_id" },
-          { type: "text", parameter_name: "reason" },
+          { type: "text", text: "" },
+          { type: "text", text: "" },
         ],
       },
     ],
@@ -108,54 +110,92 @@ export async function sendWhatsAppMessage(
 ): Promise<{ success: boolean; messageId?: string; error?: string }> {
   try {
     const template = messageTemplates[templateName];
-    
-    // Replace template parameters
-    const components = template.components?.map((component) => ({
+    const paramValues = Object.values(parameters);
+
+    const components = template.components?.map((component, ci) => ({
       ...component,
-      parameters: component.parameters?.map((param: any) => ({
-        ...param,
-        text: parameters[param.parameter_name] || "",
+      parameters: component.parameters?.map((_: any, pi: number) => ({
+        type: "text" as const,
+        text: paramValues[pi] || "",
       })),
     }));
 
+    const cleanPhone = phoneNumber.replace(/[^0-9+]/g, "");
+    const toPhone = cleanPhone.startsWith("+") ? cleanPhone.slice(1) : cleanPhone;
+
     const message: WhatsAppMessage = {
-      to: phoneNumber.startsWith("+") ? phoneNumber : `+${phoneNumber}`,
+      messaging_product: "whatsapp",
+      to: toPhone,
       type: "template",
       template: {
         name: template.name,
-        language: template.language,
+        language: { code: template.language },
         components,
       },
     };
 
-    // In production, call WhatsApp API
-    // For now, we'll log and simulate
-    console.log("[WhatsApp] Sending message:", JSON.stringify(message, null, 2));
+    // Call WhatsApp Cloud API if configured
+    if (WHATSAPP_PHONE_NUMBER_ID && WHATSAPP_ACCESS_TOKEN) {
+      const response = await fetch(
+        `${WHATSAPP_CLOUD_API_URL}/${WHATSAPP_PHONE_NUMBER_ID}/messages`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${WHATSAPP_ACCESS_TOKEN}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(message),
+        }
+      );
 
-    // Simulate API call
-    // const response = await fetch(`${WHATSAPP_API_URL}`, {
-    //   method: "POST",
-    //   headers: {
-    //     "Authorization": `Bearer ${process.env.WHATSAPP_ACCESS_TOKEN}`,
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(message),
-    // });
+      const data = await response.json();
 
-    // Store message in database for history
+      if (!response.ok) {
+        console.error("[WhatsApp] API error:", data);
+        // Still store in DB but mark as failed
+        const supabase = createClient();
+        await supabase.from("whatsapp_messages").insert({
+          phone_number: toPhone,
+          template_name: templateName,
+          parameters,
+          status: "failed",
+          error_message: data.error?.message || "API error",
+          sent_at: new Date().toISOString(),
+        });
+        return {
+          success: false,
+          error: data.error?.message || "WhatsApp API error",
+        };
+      }
+
+      const messageId = data.messages?.[0]?.id;
+
+      // Store successful message in database
+      const supabase = createClient();
+      await supabase.from("whatsapp_messages").insert({
+        phone_number: toPhone,
+        template_name: templateName,
+        parameters,
+        status: "sent",
+        whatsapp_message_id: messageId,
+        sent_at: new Date().toISOString(),
+      });
+
+      return { success: true, messageId };
+    }
+
+    // Fallback: log and store when not configured
+    console.log("[WhatsApp] Not configured — message logged:", templateName, toPhone);
     const supabase = createClient();
     await supabase.from("whatsapp_messages").insert({
-      phone_number: phoneNumber,
+      phone_number: toPhone,
       template_name: templateName,
       parameters,
       status: "sent",
       sent_at: new Date().toISOString(),
     });
 
-    return {
-      success: true,
-      messageId: `wa_${Date.now()}`,
-    };
+    return { success: true, messageId: `wa_${Date.now()}` };
   } catch (error) {
     console.error("[WhatsApp] Error sending message:", error);
     return {
@@ -165,7 +205,6 @@ export async function sendWhatsAppMessage(
   }
 }
 
-// Helper to send order confirmation
 export async function sendOrderConfirmation(
   phoneNumber: string,
   orderId: string,
@@ -179,7 +218,6 @@ export async function sendOrderConfirmation(
   });
 }
 
-// Helper to send booking reminder
 export async function sendBookingReminder(
   phoneNumber: string,
   serviceName: string,
@@ -193,20 +231,18 @@ export async function sendBookingReminder(
   });
 }
 
-// Helper to send service completion
 export async function sendServiceCompletion(
   phoneNumber: string,
   serviceName: string,
   orderId: string
 ) {
-  const ratingUrl = `https://miiam.app/feedback/${orderId}`;
+  const ratingUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://miiam.app"}/feedback/${orderId}`;
   return sendWhatsAppMessage(phoneNumber, "service_completed", {
     service_name: serviceName,
     rating_url: ratingUrl,
   });
 }
 
-// Helper to send prescription approved
 export async function sendPrescriptionApproval(
   phoneNumber: string,
   rxId: string
@@ -216,7 +252,6 @@ export async function sendPrescriptionApproval(
   });
 }
 
-// Helper to send prescription rejected
 export async function sendPrescriptionRejection(
   phoneNumber: string,
   rxId: string,

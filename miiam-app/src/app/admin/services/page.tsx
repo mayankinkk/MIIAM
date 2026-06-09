@@ -38,6 +38,10 @@ export default function EnhancedServicesDashboard() {
   const [activeTab, setActiveTab] = useState<"dashboard" | "bookings" | "providers" | "settings">("dashboard");
   const [statusFilter, setStatusFilter] = useState<ServiceStatus | "all">("all");
   const [serviceFilter, setServiceFilter] = useState<string>("all");
+  const [showProviderModal, setShowProviderModal] = useState(false);
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [providerForm, setProviderForm] = useState({ name: "", phone: "", email: "", service_type: "beauty", experience: "" });
+  const [categoryForm, setCategoryForm] = useState({ name: "", icon: "home_repair_service", description: "" });
 
   useEffect(() => {
     loadBookings();
@@ -422,7 +426,7 @@ export default function EnhancedServicesDashboard() {
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-black text-slate-800">Service Providers</h2>
             <button
-              onClick={() => alert("Provider registration flow coming soon")}
+              onClick={() => setShowProviderModal(true)}
               className="px-4 py-2 bg-[#ba001c] text-white rounded-xl font-bold text-sm flex items-center gap-2"
             >
               <span className="material-symbols-outlined text-sm">add</span>
@@ -458,7 +462,7 @@ export default function EnhancedServicesDashboard() {
               ))}
             </div>
             <button
-              onClick={() => alert("Category creation coming soon")}
+              onClick={() => setShowCategoryModal(true)}
               className="w-full mt-4 py-3 border-2 border-dashed border-slate-200 rounded-xl text-slate-500 font-bold text-sm hover:border-[#ba001c] hover:text-[#ba001c] transition-colors"
             >
               + Add New Category
@@ -531,6 +535,75 @@ export default function EnhancedServicesDashboard() {
             >
               Update Settings
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Provider Registration Modal */}
+      {showProviderModal && (
+        <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl w-full max-w-md p-6">
+            <h3 className="font-bold text-lg mb-4">Register Service Provider</h3>
+            <div className="space-y-3">
+              <input type="text" placeholder="Full Name" value={providerForm.name} onChange={(e) => setProviderForm({ ...providerForm, name: e.target.value })} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm" />
+              <input type="tel" placeholder="Phone Number" value={providerForm.phone} onChange={(e) => setProviderForm({ ...providerForm, phone: e.target.value })} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm" />
+              <input type="email" placeholder="Email" value={providerForm.email} onChange={(e) => setProviderForm({ ...providerForm, email: e.target.value })} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm" />
+              <select value={providerForm.service_type} onChange={(e) => setProviderForm({ ...providerForm, service_type: e.target.value })} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm">
+                {serviceOptions.map(s => <option key={s.id} value={s.id}>{s.label}</option>)}
+              </select>
+              <input type="text" placeholder="Years of experience" value={providerForm.experience} onChange={(e) => setProviderForm({ ...providerForm, experience: e.target.value })} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm" />
+            </div>
+            <div className="flex gap-3 mt-6">
+              <button onClick={() => setShowProviderModal(false)} className="flex-1 py-3 border border-slate-200 rounded-xl font-bold text-sm">Cancel</button>
+              <button
+                onClick={async () => {
+                  if (!providerForm.name || !providerForm.phone) { alert("Name and phone are required"); return; }
+                  const { error } = await supabase.from("service_providers").insert({
+                    name: providerForm.name, phone: providerForm.phone, email: providerForm.email,
+                    service_type: providerForm.service_type, experience: providerForm.experience, status: "pending",
+                  });
+                  if (error) { alert("Error: " + error.message); return; }
+                  alert("Provider registered successfully!");
+                  setShowProviderModal(false);
+                  setProviderForm({ name: "", phone: "", email: "", service_type: "beauty", experience: "" });
+                }}
+                className="flex-1 py-3 bg-[#ba001c] text-white rounded-xl font-bold text-sm"
+              >
+                Register
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Category Creation Modal */}
+      {showCategoryModal && (
+        <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl w-full max-w-md p-6">
+            <h3 className="font-bold text-lg mb-4">Add Service Category</h3>
+            <div className="space-y-3">
+              <input type="text" placeholder="Category Name" value={categoryForm.name} onChange={(e) => setCategoryForm({ ...categoryForm, name: e.target.value })} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm" />
+              <input type="text" placeholder="Icon name (e.g., construction, clean_hands)" value={categoryForm.icon} onChange={(e) => setCategoryForm({ ...categoryForm, icon: e.target.value })} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm" />
+              <textarea placeholder="Description (optional)" value={categoryForm.description} onChange={(e) => setCategoryForm({ ...categoryForm, description: e.target.value })} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm h-20 resize-none" />
+            </div>
+            <div className="flex gap-3 mt-6">
+              <button onClick={() => setShowCategoryModal(false)} className="flex-1 py-3 border border-slate-200 rounded-xl font-bold text-sm">Cancel</button>
+              <button
+                onClick={async () => {
+                  if (!categoryForm.name) { alert("Category name is required"); return; }
+                  const { error } = await supabase.from("service_categories").insert({
+                    name: categoryForm.name, icon: categoryForm.icon, description: categoryForm.description, is_active: true,
+                  });
+                  if (error) { alert("Error: " + error.message); return; }
+                  alert("Category created!");
+                  setShowCategoryModal(false);
+                  setCategoryForm({ name: "", icon: "home_repair_service", description: "" });
+                }}
+                className="flex-1 py-3 bg-[#ba001c] text-white rounded-xl font-bold text-sm"
+              >
+                Create
+              </button>
+            </div>
           </div>
         </div>
       )}

@@ -39,6 +39,8 @@ export default function RiderWalletPage() {
   const [todayDeliveries, setTodayDeliveries] = useState(0);
   const [payoutHistory, setPayoutHistory] = useState<{ date: string; amount: number; status: string; method: string }[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [showBankModal, setShowBankModal] = useState(false);
+  const [bankForm, setBankForm] = useState({ account_number: "", ifsc_code: "", bank_name: "", account_holder: "" });
 
   async function loadWalletData() {
     setLoading(true);
@@ -508,7 +510,7 @@ export default function RiderWalletPage() {
 
         {activeTab === "payouts" && (
           <>
-            <div className="bg-white rounded-2xl p-6 shadow-sm">
+              <div className="bg-white rounded-2xl p-6 shadow-sm">
               <h3 className="font-bold text-slate-800 mb-4">Bank Details</h3>
               <div className="bg-slate-50 p-4 rounded-xl flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -521,14 +523,14 @@ export default function RiderWalletPage() {
                   </div>
                 </div>
                 <button
-                  onClick={() => import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Bank account editing coming soon", "info"))}
+                  onClick={() => setShowBankModal(true)}
                   className="text-[#0b50d5] text-sm font-bold"
                 >
                   Edit
                 </button>
               </div>
               <button
-                onClick={() => import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Add bank account coming soon", "info"))}
+                onClick={() => setShowBankModal(true)}
                 className="w-full mt-3 py-3 border-2 border-dashed border-slate-300 rounded-xl text-slate-500 font-bold flex items-center justify-center gap-2"
               >
                 <span className="material-symbols-outlined">add</span>
@@ -652,6 +654,75 @@ export default function RiderWalletPage() {
 
     </div>
     </PullToRefresh>
+
+    {/* Bank Account Modal */}
+    {showBankModal && (
+      <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl w-full max-w-md p-6">
+          <h3 className="font-bold text-lg mb-4">Bank Account Details</h3>
+          <div className="space-y-3">
+            <input
+              type="text"
+              placeholder="Account Holder Name"
+              value={bankForm.account_holder}
+              onChange={(e) => setBankForm({ ...bankForm, account_holder: e.target.value })}
+              className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm"
+            />
+            <input
+              type="text"
+              placeholder="Account Number"
+              value={bankForm.account_number}
+              onChange={(e) => setBankForm({ ...bankForm, account_number: e.target.value })}
+              className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm"
+            />
+            <input
+              type="text"
+              placeholder="IFSC Code"
+              value={bankForm.ifsc_code}
+              onChange={(e) => setBankForm({ ...bankForm, ifsc_code: e.target.value.toUpperCase() })}
+              className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm"
+            />
+            <input
+              type="text"
+              placeholder="Bank Name"
+              value={bankForm.bank_name}
+              onChange={(e) => setBankForm({ ...bankForm, bank_name: e.target.value })}
+              className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm"
+            />
+          </div>
+          <div className="flex gap-3 mt-6">
+            <button
+              onClick={() => setShowBankModal(false)}
+              className="flex-1 py-3 border border-slate-200 rounded-xl font-bold text-sm"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={async () => {
+                if (!bankForm.account_number || !bankForm.ifsc_code || !bankForm.account_holder) {
+                  import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Please fill all required fields", "error"));
+                  return;
+                }
+                if (riderId) {
+                  await supabase.from("rider_wallets").update({
+                    bank_account_number: bankForm.account_number,
+                    bank_ifsc: bankForm.ifsc_code,
+                    bank_name: bankForm.bank_name,
+                    bank_holder_name: bankForm.account_holder,
+                  }).eq("rider_id", riderId);
+                }
+                import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Bank details saved!", "success"));
+                setShowBankModal(false);
+                setBankForm({ account_number: "", ifsc_code: "", bank_name: "", account_holder: "" });
+              }}
+              className="flex-1 py-3 bg-[#0b50d5] text-white rounded-xl font-bold text-sm"
+            >
+              Save
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
 
     </>
   );

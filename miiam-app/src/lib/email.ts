@@ -321,3 +321,62 @@ export async function sendWelcomeEmail(name: string, email: string): Promise<{ s
     return { success: false, error: "Failed to send email" };
   }
 }
+
+export type BookingEmailData = {
+  customerName: string;
+  customerEmail: string;
+  serviceName: string;
+  date: string;
+  time: string;
+  address: string;
+  total: number;
+  bookingId: string;
+};
+
+export async function sendBookingConfirmationEmail(data: BookingEmailData): Promise<{ success: boolean; error?: string }> {
+  if (!resend) {
+    console.log("[DEV EMAIL] Booking confirmation:", { to: data.customerEmail, service: data.serviceName });
+    return { success: true };
+  }
+
+  try {
+    const { error } = await resend.emails.send({
+      from: FROM_ADDRESS,
+      to: data.customerEmail,
+      subject: `Booking Confirmed — ${data.serviceName}`,
+      html: `
+        <div style="${baseStyles}">
+          <div style="${headerStyles}">
+            <h1 style="color: white; margin: 0;">MIIAM</h1>
+            <p style="color: rgba(255,255,255,0.8); margin: 10px 0 0 0;">Booking Confirmed</p>
+          </div>
+          <div style="${contentStyles}">
+            <h2 style="color: #4d212a; margin-bottom: 20px;">Hi ${data.customerName}!</h2>
+            <p style="color: #666; margin-bottom: 25px;">Your booking has been confirmed. Here are the details:</p>
+            
+            <div style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+              <p style="margin: 8px 0;"><strong>Service:</strong> ${data.serviceName}</p>
+              <p style="margin: 8px 0;"><strong>Date:</strong> ${data.date}</p>
+              <p style="margin: 8px 0;"><strong>Time:</strong> ${data.time}</p>
+              ${data.address ? `<p style="margin: 8px 0;"><strong>Address:</strong> ${data.address}</p>` : ""}
+              <p style="margin: 8px 0;"><strong>Total:</strong> ₹${data.total.toFixed(2)}</p>
+              <p style="margin: 8px 0;"><strong>Booking ID:</strong> ${data.bookingId.slice(0, 8).toUpperCase()}</p>
+            </div>
+            
+            <p style="color: #999; font-size: 12px;">We'll send you a reminder before your appointment.</p>
+          </div>
+        </div>
+      `,
+    });
+
+    if (error) {
+      console.error("Resend error:", error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true };
+  } catch (err) {
+    console.error("Email send error:", err);
+    return { success: false, error: "Failed to send email" };
+  }
+}

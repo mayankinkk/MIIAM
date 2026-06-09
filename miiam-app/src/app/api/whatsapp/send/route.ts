@@ -91,9 +91,16 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  // Return WhatsApp message history
+  // Return WhatsApp message history from database
+  const { data: messages } = await supabase
+    .from("whatsapp_messages")
+    .select("*")
+    .eq("phone_number", phoneNumber.replace(/[^0-9+]/g, ""))
+    .order("sent_at", { ascending: false })
+    .limit(50);
+
   return NextResponse.json({
     success: true,
-    messages: [],
+    messages: messages || [],
   });
 }

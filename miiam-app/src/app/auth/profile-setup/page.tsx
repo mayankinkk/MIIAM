@@ -126,6 +126,18 @@ function ProfileSetupContent() {
         });
 
         if (profileError) console.error("Profile error:", profileError);
+
+        // Send welcome email
+        try {
+          await fetch("/api/emails/welcome", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: user.email,
+              name: formData.full_name || user.email?.split("@")[0] || "there",
+            }),
+          });
+        } catch { /* non-critical */ }
       } else {
         console.log("[profile-setup] No session found, saving via admin API");
         const res = await fetch("/api/auth/save-profile", {

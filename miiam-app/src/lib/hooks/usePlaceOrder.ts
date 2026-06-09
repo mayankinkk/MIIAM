@@ -9,6 +9,11 @@ import { safeMenuItemId } from "@/lib/checkout-utils";
 import { PRINTING_VENDOR_ID, SERVICES_VENDOR_ID } from "@/lib/constants";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
+interface PaymentDetails {
+  paymentId: string;
+  razorpayOrderId: string;
+}
+
 export function usePlaceOrder(supabase: SupabaseClient) {
   const router = useRouter();
   const { items, totalPrice, clearCart } = useCartStore();
@@ -48,6 +53,7 @@ export function usePlaceOrder(supabase: SupabaseClient) {
     isRecurring,
     recurringFrequency,
     recurringDayOfWeek,
+    paymentDetails,
   }: {
     deliveryAddress: any;
     paymentMethod: string;
@@ -60,6 +66,7 @@ export function usePlaceOrder(supabase: SupabaseClient) {
     isRecurring: boolean;
     recurringFrequency: string;
     recurringDayOfWeek: number;
+    paymentDetails?: PaymentDetails;
   }) => {
     if (!validateCheckout(deliveryAddress)) return false;
 
@@ -104,21 +111,32 @@ export function usePlaceOrder(supabase: SupabaseClient) {
             })()
           : null;
 
+        const orderData: any = {
+          user_id: user.id,
+          vendor_id: vendorId,
+          status: scheduledIso ? "scheduled" : "pending",
+          total_amount: vendorTotal,
+          delivery_fee: 0,
+          discount_amount: subtotal > 0 ? +(discount * (vendorTotal / subtotal)).toFixed(2) : 0,
+          payment_method: paymentMethod,
+          delivery_address: finalAddress,
+          scheduled_delivery: scheduledIso,
+          special_instructions: specialInstructions || null,
+          placed_at: new Date().toISOString(),
+        };
+
+        // Attach payment details for online payments
+        if (paymentDetails) {
+          orderData.payment_id = paymentDetails.paymentId;
+          orderData.payment_status = "paid";
+          orderData.payment_razorpay_order_id = paymentDetails.razorpayOrderId;
+        } else if (paymentMethod === "cod") {
+          orderData.payment_status = "pending";
+        }
+
         const { data: order, error: orderError } = await supabase
           .from("orders")
-          .insert({
-            user_id: user.id,
-            vendor_id: vendorId,
-            status: scheduledIso ? "scheduled" : "pending",
-            total_amount: vendorTotal,
-            delivery_fee: 0,
-            discount_amount: subtotal > 0 ? +(discount * (vendorTotal / subtotal)).toFixed(2) : 0,
-            payment_method: paymentMethod,
-            delivery_address: finalAddress,
-            scheduled_delivery: scheduledIso,
-            special_instructions: specialInstructions || null,
-            placed_at: new Date().toISOString(),
-          })
+          .insert(orderData)
           .select()
           .single();
 

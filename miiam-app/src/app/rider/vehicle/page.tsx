@@ -39,6 +39,8 @@ export default function RiderVehiclePage() {
   const [fuelLog, setFuelLog] = useState<FuelEntry[]>([]);
   const [showAddVehicle, setShowAddVehicle] = useState(false);
   const [showServiceAlert, setShowServiceAlert] = useState(false);
+  const [showAddFuelModal, setShowAddFuelModal] = useState(false);
+  const [fuelForm, setFuelForm] = useState({ liters: "", cost: "", odometer: "", date: new Date().toISOString().split("T")[0] });
   const [activeTab, setActiveTab] = useState<"vehicles" | "maintenance" | "fuel">("vehicles");
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
   const [loading, setLoading] = useState(true);
@@ -294,7 +296,7 @@ export default function RiderVehiclePage() {
             </div>
 
             <button
-              onClick={() => import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Fuel entry feature coming soon", "info"))}
+              onClick={() => setShowAddFuelModal(true)}
               className="w-full py-4 bg-white border-2 border-slate-200 rounded-2xl font-bold text-slate-600 flex items-center justify-center gap-2"
             >
               <span className="material-symbols-outlined">local_gas_station</span>
@@ -306,14 +308,25 @@ export default function RiderVehiclePage() {
         {/* Quick Actions */}
         <div className="grid grid-cols-2 gap-3">
           <button
-            onClick={() => import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Insurance details coming soon", "info"))}
+            onClick={() => {
+              const vehicle = vehicles.find(v => v.isDefault) || vehicles[0];
+              if (vehicle?.insuranceExpiry) {
+                const daysUntil = Math.ceil((new Date(vehicle.insuranceExpiry).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+                import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast(
+                  daysUntil > 0 ? `Insurance expires in ${daysUntil} days (${vehicle.insuranceExpiry})` : `Insurance expired on ${vehicle.insuranceExpiry}!`,
+                  daysUntil > 30 ? "success" : "error"
+                ));
+              } else {
+                import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Add a vehicle first to view insurance details", "info"));
+              }
+            }}
             className="bg-white p-4 rounded-2xl shadow-sm flex items-center gap-3"
           >
             <span className="material-symbols-outlined text-blue-600">policy</span>
             <span className="font-bold text-sm">Insurance</span>
           </button>
           <button
-            onClick={() => import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Service center locator coming soon", "info"))}
+            onClick={() => window.open("https://www.google.com/maps/search/service+center+near+me", "_blank")}
             className="bg-white p-4 rounded-2xl shadow-sm flex items-center gap-3"
           >
             <span className="material-symbols-outlined text-amber-600">build</span>
@@ -349,6 +362,46 @@ export default function RiderVehiclePage() {
             }
           }}
         />
+      )}
+
+      {/* Add Fuel Entry Modal */}
+      {showAddFuelModal && (
+        <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl w-full max-w-md p-6">
+            <h3 className="font-bold text-lg mb-4">Add Fuel Entry</h3>
+            <div className="space-y-3">
+              <input type="date" value={fuelForm.date} onChange={(e) => setFuelForm({ ...fuelForm, date: e.target.value })} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm" />
+              <input type="number" placeholder="Liters" value={fuelForm.liters} onChange={(e) => setFuelForm({ ...fuelForm, liters: e.target.value })} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm" />
+              <input type="number" placeholder="Cost (₹)" value={fuelForm.cost} onChange={(e) => setFuelForm({ ...fuelForm, cost: e.target.value })} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm" />
+              <input type="number" placeholder="Odometer (km)" value={fuelForm.odometer} onChange={(e) => setFuelForm({ ...fuelForm, odometer: e.target.value })} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm" />
+            </div>
+            <div className="flex gap-3 mt-6">
+              <button onClick={() => setShowAddFuelModal(false)} className="flex-1 py-3 border border-slate-200 rounded-xl font-bold text-sm">Cancel</button>
+              <button
+                onClick={async () => {
+                  if (!fuelForm.liters || !fuelForm.cost || !riderId) {
+                    import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Please fill liters and cost", "error"));
+                    return;
+                  }
+                  await supabase.from("rider_fuel_entries").insert({
+                    rider_id: riderId,
+                    date: fuelForm.date,
+                    liters: Number(fuelForm.liters),
+                    cost: Number(fuelForm.cost),
+                    odometer: Number(fuelForm.odometer) || 0,
+                  });
+                  setFuelLog(prev => [{ id: `new_${Date.now()}`, date: fuelForm.date, liters: Number(fuelForm.liters), cost: Number(fuelForm.cost), odometer: Number(fuelForm.odometer) || 0 }, ...prev]);
+                  import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Fuel entry added!", "success"));
+                  setShowAddFuelModal(false);
+                  setFuelForm({ liters: "", cost: "", odometer: "", date: new Date().toISOString().split("T")[0] });
+                }}
+                className="flex-1 py-3 bg-[#0b50d5] text-white rounded-xl font-bold text-sm"
+              >
+                Save Entry
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

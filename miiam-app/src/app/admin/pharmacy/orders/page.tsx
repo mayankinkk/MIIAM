@@ -6,35 +6,64 @@ import { createClient } from "@/lib/supabase/client";
 
 const supabase = createClient();
 
-const mockOrders = [
-  { id: "MED001", customer: "Rahul S.", items: "Dolo 650, Crosin, Vitamins", total: 185, status: "delivered", date: "Today, 9:00 AM", prescription: false },
-  { id: "MED002", customer: "Priya K.", items: "Diabetes medicines (Rx)", total: 890, status: "preparing", date: "Today, 10:45 AM", prescription: true },
-  { id: "MED003", customer: "Vikram M.", items: "Pain relief, muscle relaxant", total: 145, status: "delivered", date: "Yesterday", prescription: false },
-  { id: "MED004", customer: "Anita R.", items: "Baby care medicines", total: 320, status: "shipped", date: "Yesterday", prescription: false },
-  { id: "MED005", customer: "Suresh P.", items: "Chronic medicines (Rx)", total: 1250, status: "delivered", date: "2 days ago", prescription: true },
-];
-
 const statusColors: Record<string, string> = {
   delivered: "bg-green-100 text-green-700",
   preparing: "bg-blue-100 text-blue-700",
   shipped: "bg-purple-100 text-purple-700",
   cancelled: "bg-red-100 text-red-700",
+  pending: "bg-yellow-100 text-yellow-700",
 };
 
+interface PharmacyOrder {
+  id: string;
+  customer: string;
+  items: string;
+  total: number;
+  status: string;
+  date: string;
+  prescription: boolean;
+}
+
 export default function PharmacyOrdersPage() {
-  const [orders, setOrders] = useState(mockOrders);
+  const [orders, setOrders] = useState<PharmacyOrder[]>([]);
   const [stats, setStats] = useState({ total: 0, pending: 0, delivered: 0, prescription: 0 });
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setStats({
-      total: mockOrders.length,
-      pending: mockOrders.filter(o => o.status === "preparing" || o.status === "shipped").length,
-      delivered: mockOrders.filter(o => o.status === "delivered").length,
-      prescription: mockOrders.filter(o => o.prescription).length,
-    });
+    loadOrders();
   }, []);
+
+  async function loadOrders() {
+    setLoading(true);
+    const { data } = await supabase
+      .from("orders")
+      .select("id, total_amount, status, placed_at, delivery_address, special_instructions, order_items(name, quantity)")
+      .eq("vendor_type", "pharmacy")
+      .order("placed_at", { ascending: false })
+      .limit(50);
+
+    if (data) {
+      const mapped: PharmacyOrder[] = data.map((o: any) => ({
+        id: o.id,
+        customer: o.delivery_address?.split(",")[0] || "Customer",
+        items: o.order_items?.map((i: any) => `${i.name} (x${i.quantity})`).join(", ") || "N/A",
+        total: o.total_amount || 0,
+        status: o.status || "pending",
+        date: o.placed_at ? new Date(o.placed_at).toLocaleDateString("en-IN", { month: "short", day: "numeric" }) : "",
+        prescription: o.special_instructions?.toLowerCase().includes("prescription") || false,
+      }));
+      setOrders(mapped);
+      setStats({
+        total: mapped.length,
+        pending: mapped.filter(o => o.status === "preparing" || o.status === "shipped" || o.status === "pending").length,
+        delivered: mapped.filter(o => o.status === "delivered").length,
+        prescription: mapped.filter(o => o.prescription).length,
+      });
+    }
+    setLoading(false);
+  }
 
   const filteredOrders = orders.filter(order => {
     const matchesSearch = searchTerm === "" ||

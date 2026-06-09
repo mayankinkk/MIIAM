@@ -6,19 +6,12 @@ import { createClient } from "@/lib/supabase/client";
 
 const supabase = createClient();
 
-const mockOrders = [
-  { id: "FLW001", customer: "Deepak J.", items: "Rose Bouquet (12 roses)", total: 450, status: "delivered", date: "Today, 2:00 PM", type: "bouquet" },
-  { id: "FLW002", customer: "Meera S.", items: "Mixed Flower Arrangement", total: 680, status: "preparing", date: "Today, 3:30 PM", type: "arrangement" },
-  { id: "FLW003", customer: "Raj K.", items: "Birthday Combo (Flowers + Cake)", total: 890, status: "delivered", date: "Yesterday", type: "combo" },
-  { id: "FLW004", customer: "Pooja M.", items: "Gift Hamper (Flowers + Chocolates)", total: 1200, status: "shipped", date: "Yesterday", type: "hamper" },
-  { id: "FLW005", customer: "Vijay P.", items: "Sympathy Lilies", total: 550, status: "delivered", date: "2 days ago", type: "bouquet" },
-];
-
 const statusColors: Record<string, string> = {
   delivered: "bg-green-100 text-green-700",
   preparing: "bg-blue-100 text-blue-700",
   shipped: "bg-purple-100 text-purple-700",
   cancelled: "bg-red-100 text-red-700",
+  pending: "bg-yellow-100 text-yellow-700",
 };
 
 const typeColors: Record<string, string> = {
@@ -28,20 +21,56 @@ const typeColors: Record<string, string> = {
   hamper: "bg-amber-100 text-amber-700",
 };
 
+interface FlowerOrder {
+  id: string;
+  customer: string;
+  items: string;
+  total: number;
+  status: string;
+  date: string;
+  type: string;
+}
+
 export default function FlowersOrdersPage() {
-  const [orders, setOrders] = useState(mockOrders);
+  const [orders, setOrders] = useState<FlowerOrder[]>([]);
   const [stats, setStats] = useState({ total: 0, pending: 0, delivered: 0, cancelled: 0 });
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setStats({
-      total: mockOrders.length,
-      pending: mockOrders.filter(o => o.status === "preparing" || o.status === "shipped").length,
-      delivered: mockOrders.filter(o => o.status === "delivered").length,
-      cancelled: mockOrders.filter(o => o.status === "cancelled").length,
-    });
+    loadOrders();
   }, []);
+
+  async function loadOrders() {
+    setLoading(true);
+    const { data } = await supabase
+      .from("orders")
+      .select("id, total_amount, status, placed_at, delivery_address, order_items(name, quantity)")
+      .eq("vendor_type", "flowers")
+      .order("placed_at", { ascending: false })
+      .limit(50);
+
+    if (data) {
+      const mapped: FlowerOrder[] = data.map((o: any) => ({
+        id: o.id,
+        customer: o.delivery_address?.split(",")[0] || "Customer",
+        items: o.order_items?.map((i: any) => `${i.name} (x${i.quantity})`).join(", ") || "N/A",
+        total: o.total_amount || 0,
+        status: o.status || "pending",
+        date: o.placed_at ? new Date(o.placed_at).toLocaleDateString("en-IN", { month: "short", day: "numeric" }) : "",
+        type: "bouquet",
+      }));
+      setOrders(mapped);
+      setStats({
+        total: mapped.length,
+        pending: mapped.filter(o => o.status === "preparing" || o.status === "shipped" || o.status === "pending").length,
+        delivered: mapped.filter(o => o.status === "delivered").length,
+        cancelled: mapped.filter(o => o.status === "cancelled").length,
+      });
+    }
+    setLoading(false);
+  }
 
   const filteredOrders = orders.filter(order => {
     const matchesSearch = searchTerm === "" ||

@@ -8,7 +8,7 @@ import ImageUpload from "@/components/ImageUpload";
 
 const supabase = createClient();
 
-const mockCategories = ["Bouquets", "Arrangements", "Combos", "Hampers", "Sympathy", "Corporate"];
+const defaultCategories = ["Bouquets", "Arrangements", "Combos", "Hampers", "Sympathy", "Corporate"];
 
 interface FlowerItem {
   id: string;
@@ -32,6 +32,7 @@ export default function FlowersItemsPage() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingItem, setEditingItem] = useState<FlowerItem | null>(null);
   const [saving, setSaving] = useState(false);
+  const [categories, setCategories] = useState(defaultCategories);
 
   const [newItem, setNewItem] = useState({
     name: "",
@@ -201,7 +202,7 @@ export default function FlowersItemsPage() {
         </div>
         <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} className="px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-[#ba001c]">
           <option value="all">All Categories</option>
-          {mockCategories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+          {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
         </select>
         <select value={vendorFilter} onChange={(e) => setVendorFilter(e.target.value)} className="px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-[#ba001c]">
           <option value="all">All Vendors</option>
@@ -273,7 +274,7 @@ export default function FlowersItemsPage() {
               <div>
                 <label className="text-xs font-bold text-slate-600 mb-1 block">Category *</label>
                 <select value={newItem.category} onChange={(e) => setNewItem({ ...newItem, category: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none">
-                  {mockCategories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                  {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
                 </select>
               </div>
               <div>

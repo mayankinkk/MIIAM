@@ -53,6 +53,7 @@ export default function RiderAchievementsPage() {
   const [totalPoints, setTotalPoints] = useState(0);
   const [loading, setLoading] = useState(true);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [showRewards, setShowRewards] = useState(false);
   const confettiKey = useRef(0);
 
   useEffect(() => {
@@ -142,7 +143,8 @@ export default function RiderAchievementsPage() {
               if (totalPoints < 100) {
                 import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("You need at least 100 points to redeem. Keep unlocking achievements!", "info"));
               } else {
-                import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast(`Redeeming ${Math.floor(totalPoints / 100) * 100} points! Rewards catalog coming soon.`, "success"));
+                // Show rewards catalog
+                setShowRewards(true);
               }
             }}
             className="px-4 py-2 bg-amber-500 text-white rounded-lg font-bold text-sm"
@@ -298,6 +300,54 @@ export default function RiderAchievementsPage() {
             <button onClick={() => setShowRewardModal(false)} className="w-full py-3 bg-[#0b50d5] text-white font-bold rounded-xl">
               Keep Going! 💪
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Rewards Catalog Modal */}
+      {showRewards && (
+        <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl w-full max-w-md max-h-[80vh] overflow-y-auto p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-bold text-lg">Rewards Catalog</h3>
+              <button onClick={() => setShowRewards(false)}>
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
+            <p className="text-sm text-slate-500 mb-4">Your points: <span className="font-bold text-amber-600">{totalPoints}</span></p>
+            <div className="space-y-3">
+              {[
+                { name: "₹50 Wallet Credit", points: 100, icon: "💰" },
+                { name: "₹100 Wallet Credit", points: 200, icon: "💵" },
+                { name: "Free Delivery Pass (1 week)", points: 300, icon: "🚀" },
+                { name: "₹200 Wallet Credit", points: 400, icon: "💎" },
+                { name: "MIIAM Premium T-Shirt", points: 500, icon: "👕" },
+                { name: "₹500 Wallet Credit", points: 800, icon: "🏆" },
+              ].map((reward) => (
+                <div key={reward.name} className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl">{reward.icon}</span>
+                    <div>
+                      <p className="font-bold text-sm">{reward.name}</p>
+                      <p className="text-xs text-slate-400">{reward.points} points</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      if (totalPoints >= reward.points) {
+                        import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast(`${reward.name} redeemed! (This is a demo)`, "success"));
+                      } else {
+                        import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast(`Need ${reward.points - totalPoints} more points`, "error"));
+                      }
+                    }}
+                    disabled={totalPoints < reward.points}
+                    className="px-3 py-1.5 bg-amber-500 text-white rounded-lg font-bold text-xs disabled:opacity-50 disabled:bg-slate-300"
+                  >
+                    Redeem
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}

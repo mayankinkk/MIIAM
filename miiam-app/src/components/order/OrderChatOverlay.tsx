@@ -16,8 +16,8 @@ interface OrderChatOverlayProps {
 const QUICK_REPLIES: Record<string, Record<string, string[]> | string[]> = {
   user: {
     "user-vendor": ["Is my order confirmed?", "Any extra items needed?", "How long will it take?", "Thank you!"],
-    "user-rider": ["Where are you?", "Please call me", "Coming soon?", "I'm outside"],
-    all: ["Where are you?", "Please call me", "Coming soon?", "I'm outside"],
+    "user-rider": ["Where are you?", "Please call me", "Almost there?", "I'm outside"],
+    all: ["Where are you?", "Please call me", "Almost there?", "I'm outside"],
   },
   rider: ["I'm on my way", "I've arrived", "Traffic delay", "Almost there"],
   vendor: ["Order accepted", "Will be ready in 10 min", "Item out of stock", "Ready for pickup"],

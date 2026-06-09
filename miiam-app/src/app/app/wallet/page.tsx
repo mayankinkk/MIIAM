@@ -22,6 +22,10 @@ export default function WalletPage() {
   const [balance, setBalance] = useState(0);
   const [transactions, setTransactions] = useState<WalletTransaction[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showAddMoney, setShowAddMoney] = useState(false);
+  const [showWithdraw, setShowWithdraw] = useState(false);
+  const [addAmount, setAddAmount] = useState("");
+  const [withdrawAmount, setWithdrawAmount] = useState("");
 
   useEffect(() => {
     loadWalletData();
@@ -103,13 +107,13 @@ export default function WalletPage() {
 
             <div className="w-full flex gap-3 mt-2">
               <button
-                onClick={() => import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Add Money feature coming soon", "info"))}
+                onClick={() => setShowAddMoney(true)}
                 className="flex-1 bg-white text-primary py-3 rounded-xl font-bold text-sm shadow-lg hover:scale-[1.02] active:scale-95 transition-all"
               >
                 Add Money
               </button>
               <button
-                onClick={() => import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Withdraw feature coming soon", "info"))}
+                onClick={() => setShowWithdraw(true)}
                 className="flex-1 border border-white/30 text-white py-3 rounded-xl font-bold text-sm hover:bg-white/10 transition-all"
               >
                 Withdraw
@@ -160,6 +164,97 @@ export default function WalletPage() {
           )}
         </div>
       </main>
+
+    {/* Add Money Modal */}
+    {showAddMoney && (
+      <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl w-full max-w-md p-6">
+          <h3 className="font-bold text-lg mb-4">Add Money to Wallet</h3>
+          <div className="space-y-3">
+            <div className="flex gap-2">
+              {[100, 200, 500, 1000].map((amt) => (
+                <button key={amt} onClick={() => setAddAmount(String(amt))} className="flex-1 py-2 border border-slate-200 rounded-lg font-bold text-sm hover:border-primary">
+                  ₹{amt}
+                </button>
+              ))}
+            </div>
+            <input type="number" placeholder="Enter amount" value={addAmount} onChange={(e) => setAddAmount(e.target.value)} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm" />
+          </div>
+          <div className="flex gap-3 mt-6">
+            <button onClick={() => { setShowAddMoney(false); setAddAmount(""); }} className="flex-1 py-3 border border-slate-200 rounded-xl font-bold text-sm">Cancel</button>
+            <button
+              onClick={() => {
+                const amt = Number(addAmount);
+                if (amt <= 0) { import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Enter a valid amount", "error")); return; }
+                // Use Razorpay to add money
+                const script = document.createElement("script");
+                script.src = "https://checkout.razorpay.com/v1/checkout.js";
+                script.onload = async () => {
+                  const res = await fetch("/api/payment/create-order", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ amount: amt, receipt: `wallet_${Date.now()}` }) });
+                  const data = await res.json();
+                  if (!res.ok) { import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast(data.error || "Failed", "error")); return; }
+                  const rzp = new (window as any).Razorpay({
+                    key: data.keyId, amount: data.amount, currency: data.currency, name: "MIIAM Wallet",
+                    description: "Add Money to Wallet", order_id: data.orderId,
+                    handler: async (response: any) => {
+                      await supabase.rpc("increment_wallet_balance", { p_user_id: (await supabase.auth.getUser()).data.user?.id, p_amount: amt });
+                      setBalance(prev => prev + amt);
+                      import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast(`₹${amt} added to wallet!`, "success"));
+                      setShowAddMoney(false); setAddAmount("");
+                    },
+                    theme: { color: "#ba001c" },
+                  });
+                  rzp.open();
+                };
+                document.body.appendChild(script);
+              }}
+              className="flex-1 py-3 bg-primary text-white rounded-xl font-bold text-sm"
+            >
+              Add Money
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+
+    {/* Withdraw Modal */}
+    {showWithdraw && (
+      <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl w-full max-w-md p-6">
+          <h3 className="font-bold text-lg mb-4">Withdraw to Bank</h3>
+          <p className="text-sm text-slate-500 mb-4">Available: <span className="font-bold text-primary">₹{balance.toFixed(2)}</span></p>
+          <div className="space-y-3">
+            {[100, 200, 500].filter(a => a <= balance).map((amt) => (
+              <button key={amt} onClick={() => setWithdrawAmount(String(amt))} className="w-full py-3 border border-slate-200 rounded-xl font-bold text-sm hover:border-primary text-left px-4">
+                ₹{amt}
+              </button>
+            ))}
+            <input type="number" placeholder="Enter amount" value={withdrawAmount} onChange={(e) => setWithdrawAmount(e.target.value)} max={balance} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm" />
+          </div>
+          <div className="flex gap-3 mt-6">
+            <button onClick={() => { setShowWithdraw(false); setWithdrawAmount(""); }} className="flex-1 py-3 border border-slate-200 rounded-xl font-bold text-sm">Cancel</button>
+            <button
+              onClick={async () => {
+                const amt = Number(withdrawAmount);
+                if (amt <= 0 || amt > balance) { import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Invalid amount", "error")); return; }
+                const { data: { user } } = await supabase.auth.getUser();
+                if (user) {
+                  await supabase.from("wallet_transactions").insert({ user_id: user.id, amount: amt, type: "withdrawal", status: "pending" });
+                  await supabase.rpc("decrement_wallet_balance", { p_user_id: user.id, p_amount: amt });
+                  setBalance(prev => prev - amt);
+                  import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast(`₹${amt} withdrawal initiated. Processing in 24-48 hours.`, "success"));
+                }
+                setShowWithdraw(false); setWithdrawAmount("");
+              }}
+              className="flex-1 py-3 bg-primary text-white rounded-xl font-bold text-sm"
+            >
+              Withdraw
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+
     </div>
     </PullToRefresh>
   );

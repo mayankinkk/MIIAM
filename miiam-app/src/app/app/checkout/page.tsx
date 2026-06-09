@@ -18,6 +18,7 @@ import { useTranslation } from "@/lib/i18n/useTranslation";
 import { calculateOrderTotals } from "@/lib/checkout-utils";
 import { useCheckoutPromo } from "@/lib/hooks/useCheckoutPromo";
 import { usePlaceOrder } from "@/lib/hooks/usePlaceOrder";
+import { useRazorpay } from "@/lib/hooks/useRazorpay";
 
 export default function CheckoutPage() {
   const { t } = useTranslation();
@@ -122,6 +123,7 @@ export default function CheckoutPage() {
   });
 
   const { placeOrder } = usePlaceOrder(supabase);
+  const { pay, loading: razorpayLoading } = useRazorpay();
 
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => {
@@ -231,7 +233,8 @@ export default function CheckoutPage() {
               <button
                 onClick={() => {
                   setPlacing(true);
-                  placeOrder({
+
+                  const orderArgs = {
                     deliveryAddress,
                     paymentMethod,
                     discount,
@@ -243,12 +246,26 @@ export default function CheckoutPage() {
                     isRecurring,
                     recurringFrequency,
                     recurringDayOfWeek,
-                  }).finally(() => setPlacing(false));
+                  };
+
+                  if (paymentMethod === "upi" || paymentMethod === "card") {
+                    pay({
+                      amount: grand + tipAmount,
+                      description: `${items.length} item(s) from MIIAM`,
+                      onSuccess: (paymentId, razorpayOrderId) => {
+                        placeOrder({ ...orderArgs, paymentDetails: { paymentId, razorpayOrderId } })
+                          .finally(() => setPlacing(false));
+                      },
+                      onFailure: () => setPlacing(false),
+                    });
+                  } else {
+                    placeOrder(orderArgs).finally(() => setPlacing(false));
+                  }
                 }}
-                disabled={placing || items.length === 0 || !deliveryAddress}
+                disabled={placing || razorpayLoading || items.length === 0 || !deliveryAddress}
                 className="w-full bg-gradient-to-r from-primary to-primary-container text-white py-4 sm:py-5 rounded-xl text-base sm:text-lg font-extrabold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 sm:gap-3 disabled:opacity-60"
               >
-                {placing ? (
+                {(placing || razorpayLoading) ? (
                   <>
                     <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                     Placing Order...

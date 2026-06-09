@@ -5,6 +5,7 @@ import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import { createClient } from "@/lib/supabase/client";
 
 type PaymentStatus = "processing" | "success" | "failed" | "pending";
 
@@ -66,31 +67,82 @@ function PaymentStatusContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const orderId = searchParams.get("orderId");
-  const statusParam = searchParams.get("status") as PaymentStatus;
+  const paymentMethod = searchParams.get("method") || "upi";
   
-  const [status, setStatus] = useState<PaymentStatus>(statusParam || "processing");
+  const [status, setStatus] = useState<PaymentStatus>("processing");
   const [progress, setProgress] = useState(0);
   const [showConfetti, setShowConfetti] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
 
+  // Poll order payment status for online payments
   useEffect(() => {
-    if (status === "processing") {
-      const interval = setInterval(() => {
-        setProgress((p) => {
-          if (p >= 100) {
-            clearInterval(interval);
-            setStatus("success");
-            return 100;
-          }
-          return p + 10;
-        });
-      }, 500);
-      return () => clearInterval(interval);
+    if (!orderId || paymentMethod === "cod") {
+      // For COD, skip straight to success
+      if (paymentMethod === "cod") {
+        setStatus("success");
+      }
+      return;
     }
-  }, [status]);
+
+    const supabase = createClient();
+    let attempts = 0;
+    const maxAttempts = 30; // 30 seconds max
+
+    const checkPayment = async () => {
+      attempts++;
+      setProgress(Math.min(90, (attempts / maxAttempts) * 90));
+
+      try {
+        const { data: order } = await supabase
+          .from("orders")
+          .select("payment_status")
+          .eq("id", orderId)
+          .single();
+
+        if (order?.payment_status === "paid") {
+          setProgress(100);
+          setStatus("success");
+          return true;
+        }
+      } catch {
+        // ignore, keep polling
+      }
+
+      if (attempts >= maxAttempts) {
+        // After timeout, check one more time then show pending
+        try {
+          const { data: order } = await supabase
+            .from("orders")
+            .select("payment_status")
+            .eq("id", orderId)
+            .single();
+          if (order?.payment_status === "paid") {
+            setProgress(100);
+            setStatus("success");
+            return;
+          }
+        } catch { /* ignore */ }
+        setStatus("pending");
+        return;
+      }
+
+      return false;
+    };
+
+    const interval = setInterval(async () => {
+      const done = await checkPayment();
+      if (done) clearInterval(interval);
+    }, 1000);
+
+    // Also do an initial check
+    checkPayment();
+
+    return () => clearInterval(interval);
+  }, [orderId, paymentMethod]);
 
   useEffect(() => {
     if (status === "success") {
+      setProgress(100);
       setShowCelebration(true);
       setShowConfetti(true);
       const timer = setTimeout(() => setShowConfetti(false), 4000);
@@ -102,7 +154,9 @@ function PaymentStatusContent() {
     processing: {
       icon: "sync",
       title: t.checkout.placingOrder,
-      message: "Please wait while we process your payment...",
+      message: paymentMethod === "cod"
+        ? "Confirming your order..."
+        : "Verifying your payment...",
       color: "text-blue-600",
       bgColor: "bg-blue-50",
       borderColor: "border-blue-200",
@@ -126,7 +180,7 @@ function PaymentStatusContent() {
     pending: {
       icon: "hourglass_empty",
       title: "Payment Pending",
-      message: "Your payment is pending. We'll notify you once it's confirmed.",
+      message: "Your payment is being verified. We'll update you shortly.",
       color: "text-amber-600",
       bgColor: "bg-amber-50",
       borderColor: "border-amber-200",
@@ -159,7 +213,7 @@ function PaymentStatusContent() {
                   style={{ width: `${progress}%` }}
                 />
               </div>
-              <p className="text-center text-sm text-on-surface-variant mt-2">{progress}% complete</p>
+              <p className="text-center text-sm text-on-surface-variant mt-2">{Math.round(progress)}% complete</p>
             </div>
           )}
 
@@ -205,7 +259,7 @@ function PaymentStatusContent() {
                     <span className="text-3xl">🎉</span>
                     <div>
                       <p className="font-bold text-green-700">Order Placed!</p>
-                      <p className="text-xs text-green-600">Your delicious food is being prepared</p>
+                      <p className="text-xs text-green-600">Your order is being prepared</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2 text-xs text-green-600">
@@ -230,6 +284,24 @@ function PaymentStatusContent() {
             </div>
           )}
 
+          {status === "pending" && (
+            <div className="space-y-3 mb-6">
+              <Link 
+                href={`/app/orders/${orderId}`}
+                className="block w-full bg-primary text-white py-4 rounded-xl font-bold text-center hover:bg-primary-dim transition-colors flex items-center justify-center gap-2"
+              >
+                <span className="material-symbols-outlined">order_play</span>
+                {t.home.trackOrder}
+              </Link>
+              <Link 
+                href="/app/support"
+                className="block w-full text-center text-primary font-bold py-3"
+              >
+                {t.refund.contactSupport}
+              </Link>
+            </div>
+          )}
+
           {/* Confetti */}
           {showConfetti && <Confetti />}
 
@@ -246,7 +318,7 @@ function PaymentStatusContent() {
         </div>
 
         <p className="text-center mt-6 text-xs text-on-surface-variant">
-          Payment powered by MIIAM Secure
+          Payment powered by Razorpay
         </p>
       </div>
     </div>

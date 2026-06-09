@@ -61,6 +61,27 @@ export async function POST(request: NextRequest) {
 
     if (error) throw error;
 
+    // Send booking confirmation email
+    try {
+      const { data: profile } = await supabase.from("profiles").select("email, full_name").eq("id", user_id).single();
+      const { data: service } = await supabase.from("services").select("name").eq("id", service_id).single();
+      if (profile?.email) {
+        const { sendBookingConfirmationEmail } = await import("@/lib/email");
+        await sendBookingConfirmationEmail({
+          customerName: profile.full_name || "there",
+          customerEmail: profile.email,
+          serviceName: service?.name || "Service",
+          date: scheduled_date,
+          time: scheduled_time,
+          address: address || "",
+          total: total_amount || 0,
+          bookingId: booking.id,
+        });
+      }
+    } catch (emailErr) {
+      console.warn("Failed to send booking confirmation email:", emailErr);
+    }
+
     return NextResponse.json({ success: true, booking });
   } catch (error) {
     console.error("Booking error:", error);

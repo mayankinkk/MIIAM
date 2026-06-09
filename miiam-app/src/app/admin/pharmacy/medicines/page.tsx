@@ -8,7 +8,7 @@ import ImageUpload from "@/components/ImageUpload";
 
 const supabase = createClient();
 
-const mockCategories = ["Pain Relief", "Antibiotics", "Vitamins", "Diabetes", "Blood Pressure", "Heart Care", "Cold & Flu", "Skin Care", "Baby Care"];
+const defaultCategories = ["Pain Relief", "Antibiotics", "Vitamins", "Diabetes", "Blood Pressure", "Heart Care", "Cold & Flu", "Skin Care", "Baby Care"];
 
 interface Medicine {
   id: string;
@@ -28,6 +28,7 @@ export default function PharmacyMedicinesPage() {
   const [stats, setStats] = useState({ total: 0, lowStock: 0, outOfStock: 0, prescription: 0 });
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
+  const [categories, setCategories] = useState<string[]>(defaultCategories);
   const [vendorFilter, setVendorFilter] = useState("all");
   const [vendors, setVendors] = useState<any[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -65,6 +66,12 @@ export default function PharmacyMedicinesPage() {
 
       if (error) throw error;
       setMedicines(data || []);
+
+      // Extract unique categories from medicines
+      const uniqueCategories = [...new Set(data?.map((m: Medicine) => m.category).filter(Boolean))];
+      if (uniqueCategories.length > 0) {
+        setCategories([...new Set([...defaultCategories, ...uniqueCategories])]);
+      }
 
       const lowStock = data?.filter((m: Medicine) => m.stock > 0 && m.stock < 10).length || 0;
       const outOfStock = data?.filter((m: Medicine) => m.stock === 0).length || 0;
@@ -222,7 +229,7 @@ export default function PharmacyMedicinesPage() {
         </div>
         <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} className="px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-[#ba001c]">
           <option value="all">All Categories</option>
-          {mockCategories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+          {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
         </select>
         <select value={vendorFilter} onChange={(e) => setVendorFilter(e.target.value)} className="px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-[#ba001c]">
           <option value="all">All Vendors</option>
@@ -310,7 +317,7 @@ export default function PharmacyMedicinesPage() {
               <div>
                 <label className="text-xs font-bold text-slate-600 mb-1 block">Category *</label>
                 <select value={newMedicine.category} onChange={(e) => setNewMedicine({ ...newMedicine, category: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none">
-                  {mockCategories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                  {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
                 </select>
               </div>
               <div className="grid grid-cols-2 gap-4">
