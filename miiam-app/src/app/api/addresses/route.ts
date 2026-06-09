@@ -143,7 +143,8 @@ export async function DELETE(request: NextRequest) {
   const { error } = await supabase
     .from("user_addresses")
     .delete()
-    .eq("id", id);
+    .eq("id", id)
+    .eq("user_id", user.id);
 
   if (error) {
     console.error("Address delete error:", error);

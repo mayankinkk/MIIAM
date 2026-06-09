@@ -90,6 +90,9 @@ export async function GET(request: NextRequest) {
   }
 
   if (user_id) {
+    if (user_id !== user.id) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
     const { data: bookings, error } = await supabase
       .from("service_bookings")
       .select("*, service:services(name, category)")
