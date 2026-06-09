@@ -96,7 +96,7 @@ function RidersPage() {
       if (!res.ok) { alert(data.error || "Failed"); setSaving(false); return; }
       setShowAddModal(false);
       setNewRider({ email: "", phone: "", full_name: "", profile_photo: null, id_proof_type: "", id_proof_image: null, vehicle_type: "motorcycle", vehicle_number: "" });
-      setTimeout(() => window.location.reload(), 1000);
+      loadRiders();
     } catch (err) { console.error(err); setSaving(false); }
   }
 
