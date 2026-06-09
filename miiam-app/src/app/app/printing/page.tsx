@@ -126,7 +126,7 @@ export default function PrintingPage() {
       toast.addToast(t.print.fileLimitReached.replace("{max}", String(PRINT_MAX_FILE_COUNT)), "error");
     }
 
-    const validFiles: File[] = [];
+    const validFiles: { file: File; pageCount: number }[] = [];
     for (const f of candidates) {
       if (!PRINT_ALLOWED_TYPES.includes(f.type as (typeof PRINT_ALLOWED_TYPES)[number])) {
         toast.addToast(t.print.fileTypeInvalid.replace("{name}", f.name), "error");
@@ -142,26 +142,23 @@ export default function PrintingPage() {
         );
         continue;
       }
+      let pageCount = 1;
       if (f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf")) {
         const validation = await validatePdfFile(f);
         if (!validation.valid) {
           toast.addToast(`${f.name}: ${validation.error || t.print.fileEncrypted}`, "error");
           continue;
         }
+        pageCount = validation.pageCount ?? await getPdfPageCount(f);
       }
-      validFiles.push(f);
+      validFiles.push({ file: f, pageCount });
     }
     if (validFiles.length === 0) return;
 
     setUploading(true);
-    for (const f of validFiles) {
+    for (const { file: f, pageCount } of validFiles) {
       const url = await uploadFile(f);
       if (!url) continue;
-
-      let pageCount = 1;
-      if (f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf")) {
-        pageCount = await getPdfPageCount(f);
-      }
 
       setFiles((prev) => [...prev, makeFileItem({
         name: f.name,
