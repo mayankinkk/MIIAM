@@ -162,7 +162,7 @@ export default function AdminPrintingKanban() {
                 {byColumn[col.id].map((order) => {
                   const item = order.order_items?.[0];
                   let settings: Record<string, any> = {};
-                  try { if (item?.special_notes) settings = JSON.parse(item.special_notes); } catch {}
+                  try { if (item?.special_notes) settings = JSON.parse(item.special_notes); } catch { /* corrupted data, ignore */ }
                   const pageCount = settings.totalPages || settings.pages || 1;
                   const fileCount = settings.perFile?.length || settings.fileUrls?.length || settings.fileNames?.length || 1;
 
@@ -213,7 +213,7 @@ export default function AdminPrintingKanban() {
       {selectedOrder && (() => {
         const selItem = selectedOrder.order_items?.[0];
         let selSettings: Record<string, any> = {};
-        try { if (selItem?.special_notes) selSettings = JSON.parse(selItem.special_notes); } catch {}
+        try { if (selItem?.special_notes) selSettings = JSON.parse(selItem.special_notes); } catch { /* corrupted data, ignore */ }
         const selFileNames: string[] = selSettings.fileNames || [];
         const selFileUrls: string[] = selSettings.fileUrls || [];
         const selFileStatuses: boolean[] = selSettings.fileStatuses || [];

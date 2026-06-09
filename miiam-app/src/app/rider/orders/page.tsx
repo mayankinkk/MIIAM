@@ -329,7 +329,7 @@ export default function RiderOrdersPage() {
               type: "order",
               read: false,
             });
-          } catch {}
+          } catch (e) { console.warn("Failed to insert notification:", e); }
         }
       }
       
@@ -1092,7 +1092,7 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
             if (isMounted) setTrackingInfo({ eta, distance: dist });
             map.fitBounds([[rLat, rLng], [dLat, dLng]], { padding: [40, 40] });
           }
-        } catch (_) {}
+        } catch (e) { console.warn("Map routing error:", e); }
       }
 
       // Geocode destination address
@@ -1115,7 +1115,7 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
             await drawRoute(riderLat, riderLng, dLat, dLng);
             geoSuccess = true;
           }
-        } catch (_) {}
+        } catch (e) { console.warn("Map routing error:", e); }
       }
 
       if (!geoSuccess && isMounted) {

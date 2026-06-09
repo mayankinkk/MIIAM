@@ -57,7 +57,7 @@ export default function OrderItemsList({ order, onChatVendor }: OrderItemsListPr
       {/* Print File Details */}
       {order.vendor_id === PRINTING_VENDOR_ID && order.items?.map((item: any, idx: number) => {
         let settings: Record<string, any> = {};
-        try { if (item.special_notes) settings = JSON.parse(item.special_notes); } catch {}
+        try { if (item.special_notes) settings = JSON.parse(item.special_notes); } catch { /* corrupted data, ignore */ }
         const fileUrls: string[] = settings.fileUrls || [];
         const fileNames: string[] = settings.fileNames || [];
         if (fileUrls.length === 0 && fileNames.length === 0) return null;
@@ -140,7 +140,7 @@ export default function OrderItemsList({ order, onChatVendor }: OrderItemsListPr
               let added = 0;
               order.items?.forEach((item: any) => {
                 let settings: Record<string, any> = {};
-                try { if (item.special_notes) settings = JSON.parse(item.special_notes); } catch {}
+                try { if (item.special_notes) settings = JSON.parse(item.special_notes); } catch { /* corrupted data, ignore */ }
                 const fileUrls: string[] = settings.fileUrls || [];
                 const fileNames: string[] = settings.fileNames || [];
                 const before = library.files.length;

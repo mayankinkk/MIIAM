@@ -45,25 +45,17 @@ function RidersPage() {
 
   async function loadRiders() {
     setLoading(true);
-    console.log("DEBUG: Fetching riders...");
     
-    // 1. Try a simple fetch first to see if riders exist at all
     const { data: rawRiders, error: rawError } = await supabase.from("riders").select("*");
-    console.log("DEBUG: Raw Riders Data:", rawRiders);
-    if (rawError) console.error("DEBUG: Raw Fetch Error:", rawError);
 
-    // 2. Try the joined fetch
     const { data, error } = await supabase
       .from("riders")
       .select("*, profile:profiles(*)")
       .order("created_at", { ascending: false });
 
     if (error) {
-      console.error("DEBUG: Join Fetch Error:", error);
-      // Fallback to raw riders if join fails
       setRiders(rawRiders || []);
     } else {
-      console.log("DEBUG: Final Riders with Profiles:", data);
       setRiders(data || []);
     }
     setLoading(false);

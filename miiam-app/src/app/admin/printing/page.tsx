@@ -94,7 +94,7 @@ export default function AdminPrintingPage() {
     setSelectedOrder(order);
     const item = order.order_items?.[0];
     let settings: Record<string, any> = {};
-    try { if (item?.special_notes) settings = JSON.parse(item.special_notes); } catch {}
+                try { if (item?.special_notes) settings = JSON.parse(item.special_notes); } catch { /* corrupted data, ignore */ }
     const fileUrls: string[] = settings.fileUrls || [];
     if (fileUrls.length > 0) {
       fetchSignedUrls(fileUrls);
@@ -456,7 +456,7 @@ export default function AdminPrintingPage() {
               {paginatedOrders.map((order) => {
                 const item = order.order_items?.[0];
                 let settings: Record<string, any> = {};
-                try { if (item?.special_notes) settings = JSON.parse(item.special_notes); } catch {}
+    try { if (item?.special_notes) settings = JSON.parse(item.special_notes); } catch { /* corrupted data, ignore */ }
                 return (
                   <tr key={order.id} className={`border-t border-slate-100 hover:bg-slate-50 ${order.priority > 0 ? "bg-amber-50/50" : ""}`}>
                     <td className="p-4">
@@ -560,7 +560,7 @@ export default function AdminPrintingPage() {
       {selectedOrder && (() => {
         const selItem = selectedOrder.order_items?.[0];
         let selSettings: Record<string, any> = {};
-        try { if (selItem?.special_notes) selSettings = JSON.parse(selItem.special_notes); } catch {}
+        try { if (selItem?.special_notes) selSettings = JSON.parse(selItem.special_notes); } catch { /* corrupted data, ignore */ }
         const selFileNames: string[] = selSettings.fileNames || [];
         const selFileUrls: string[] = selSettings.fileUrls || [];
         const selFileStatuses: boolean[] = selSettings.fileStatuses || [];

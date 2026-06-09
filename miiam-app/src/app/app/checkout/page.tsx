@@ -47,11 +47,11 @@ export default function CheckoutPage() {
 
     const saved = localStorage.getItem("miiam_selected_address");
     if (saved) {
-      try { setDeliveryAddress(JSON.parse(saved)); } catch {}
+      try { setDeliveryAddress(JSON.parse(saved)); } catch { /* corrupted data, ignore */ }
     }
     const allSaved = localStorage.getItem("miiam_addresses");
     if (allSaved) {
-      try { setSavedAddresses(JSON.parse(allSaved)); } catch {}
+      try { setSavedAddresses(JSON.parse(allSaved)); } catch { /* corrupted data, ignore */ }
     }
 
     async function loadPromoCodes() {

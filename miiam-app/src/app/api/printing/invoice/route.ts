@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
       const unit = (it.price || 0) / qty;
       let desc = it.name || "Print job";
       let settings: Record<string, any> = {};
-      try { if (it.special_notes) settings = JSON.parse(it.special_notes); } catch {}
+      try { if (it.special_notes) settings = JSON.parse(it.special_notes); } catch { /* corrupted data, ignore */ }
       const meta: string[] = [];
       if (settings.colorMode) meta.push(settings.colorMode === "bw" ? "B&W" : "Color");
       if (settings.paperSize) meta.push(String(settings.paperSize).toUpperCase());

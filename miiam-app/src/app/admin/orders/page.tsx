@@ -71,7 +71,7 @@ export default function OrderManagement() {
             await supabase.storage.from("menu-images").remove([path]);
           }
         }
-      } catch {}
+      } catch (e) { console.warn("Failed to delete image:", e); }
     }
   }
 

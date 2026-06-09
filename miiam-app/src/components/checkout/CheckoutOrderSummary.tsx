@@ -53,7 +53,7 @@ export default function CheckoutOrderSummary({
         {/* Print Settings Summary */}
         {items.filter(i => i.vendor_id === PRINTING_VENDOR_ID).map(item => {
           let s: Record<string, any> = {};
-          try { if (item.special_notes) s = JSON.parse(item.special_notes); } catch {}
+          try { if (item.special_notes) s = JSON.parse(item.special_notes); } catch { /* corrupted data, ignore */ }
           if (!s.pages) return null;
           return (
             <div key={item.menu_item_id} className="py-3 border-t border-dashed border-outline-variant/30">

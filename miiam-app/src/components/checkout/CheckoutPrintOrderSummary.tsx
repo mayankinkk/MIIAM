@@ -25,7 +25,7 @@ export default function CheckoutPrintOrderSummary({ items }: CheckoutPrintOrderS
       <div className="space-y-3">
         {printItems.map(item => {
           let settings: Record<string, any> = {};
-          try { if (item.special_notes) settings = JSON.parse(item.special_notes); } catch {}
+          try { if (item.special_notes) settings = JSON.parse(item.special_notes); } catch { /* corrupted data, ignore */ }
           return (
             <div key={item.id} className="p-3 sm:p-4 rounded-lg border border-outline-variant/20 bg-indigo-50/30">
               <div className="flex justify-between items-start mb-2 gap-2">
