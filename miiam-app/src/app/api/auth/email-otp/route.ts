@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/server";
 import { Resend } from "resend";
+import { randomInt } from "crypto";
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 function generateOTP(): string {
-  return Math.floor(100000 + Math.random() * 900000).toString();
+  return randomInt(100000, 999999).toString();
 }
 
 function isValidEmail(email: string): boolean {
@@ -14,9 +15,7 @@ function isValidEmail(email: string): boolean {
 
 async function sendEmail(email: string, otp: string, purpose?: string): Promise<{ success: boolean; error?: string }> {
   if (!resend) {
-    console.warn("RESEND_API_KEY not configured - OTP will be logged to console");
-    console.log(`[DEV OTP] Email: ${email}, OTP: ${otp}, Purpose: ${purpose || "verification"}`);
-    return { success: true };
+    return { success: false, error: "Email service not configured. Please contact support." };
   }
   
   const subject = purpose === "password_reset" 

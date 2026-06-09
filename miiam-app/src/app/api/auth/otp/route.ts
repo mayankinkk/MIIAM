@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/server";
+import { randomInt } from "crypto";
 
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 const RATE_LIMIT_MAX = 5;
@@ -23,7 +24,7 @@ function checkRateLimit(phone: string): boolean {
 }
 
 function generateOTP(): string {
-  return Math.floor(100000 + Math.random() * 900000).toString();
+  return randomInt(100000, 999999).toString();
 }
 
 function isValidPhoneNumber(phone: string): boolean {
@@ -35,39 +36,37 @@ async function sendSMS(phoneNumber: string, message: string): Promise<{ success:
   const apiKey = process.env.SMS_API_KEY;
   const apiUrl = process.env.SMS_API_URL;
 
-  // If no API configured, simulate success for testing
   if (!apiKey || apiKey === "demo_key_placeholder" || !apiUrl) {
-    console.log(`[SMS SIMULATED] To: ${phoneNumber} | Message: ${message}`);
-    return { success: true };
+    return { success: false, error: "SMS service not configured. Please contact support." };
   }
 
   try {
-      if (apiUrl.includes("fast2sms")) {
-        const response = await fetch(apiUrl, {
-          method: "POST",
-          headers: {
-            "authorization": apiKey,
-            "Content-Type": "application/x-www-form-urlencoded"
-          },
-          body: new URLSearchParams({
-            sender_id: "FSTSMS",
-            message: message,
-            language: "english",
-            route: "p",
-            numbers: phoneNumber,
-          })
-        });
-      
+    if (apiUrl.includes("fast2sms")) {
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "authorization": apiKey,
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: new URLSearchParams({
+          sender_id: "FSTSMS",
+          message: message,
+          language: "english",
+          route: "p",
+          numbers: phoneNumber,
+        })
+      });
+
       const data = await response.json();
-      
+
       if (data.return === true) {
         return { success: true };
       } else {
         return { success: false, error: data.message || "SMS failed" };
       }
     }
-    
-    return { success: true };
+
+    return { success: false, error: "Unsupported SMS provider" };
   } catch (error) {
     console.error("SMS Error:", error);
     return { success: false, error: "SMS service unavailable" };
