@@ -1,8 +1,17 @@
 "use client";
 
 import { useEffect, useRef, useState, useMemo } from "react";
-import { createClient } from "@/lib/supabase/client";
 import type { Rider } from "@/lib/types";
+
+interface RiderLocation {
+  order_id: string;
+  rider_id: string;
+  rider_name: string;
+  rider_phone: string;
+  lat: number;
+  lng: number;
+  created_at: string;
+}
 
 interface Props {
   riders: Rider[];
@@ -15,14 +24,59 @@ export default function AdminRiderMap({ riders, onRiderClick }: Props) {
   const markersRef = useRef<Map<string, any>>(new Map());
   const leafletRef = useRef<any>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [riderLocations, setRiderLocations] = useState<RiderLocation[]>([]);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
-  const supabase = useMemo(() => createClient(), []);
+  // Build a lookup of latest location per rider_id
+  const locationMap = useMemo(() => {
+    const map = new Map<string, RiderLocation>();
+    for (const loc of riderLocations) {
+      const existing = map.get(loc.rider_id);
+      if (!existing || new Date(loc.created_at) > new Date(existing.created_at)) {
+        map.set(loc.rider_id, loc);
+      }
+    }
+    return map;
+  }, [riderLocations]);
 
-  // Riders that have valid coordinates
-  const locatedRiders = useMemo(
-    () => riders.filter((r) => r.current_lat && r.current_lng && r.current_lat !== 0 && r.current_lng !== 0),
-    [riders]
-  );
+  // Riders that have valid coordinates from rider_locations table
+  const locatedRiders = useMemo(() => {
+    return riders.filter((r) => {
+      const loc = locationMap.get(r.id);
+      return loc && loc.lat && loc.lng && loc.lat !== 0 && loc.lng !== 0;
+    });
+  }, [riders, locationMap]);
+
+  // Merge rider info with location
+  const ridersWithCoords = useMemo(() => {
+    return locatedRiders.map((r) => {
+      const loc = locationMap.get(r.id)!;
+      return { ...r, _lat: loc.lat, _lng: loc.lng, _phone: loc.rider_phone };
+    });
+  }, [locatedRiders, locationMap]);
+
+  // Fetch rider locations from API route (bypasses RLS)
+  useEffect(() => {
+    async function fetchLocations() {
+      try {
+        const res = await fetch("/api/admin/riders/locations");
+        if (!res.ok) {
+          const body = await res.json().catch(() => ({}));
+          setFetchError(`HTTP ${res.status}: ${body.error || res.statusText}`);
+          return;
+        }
+        const data = await res.json();
+        setRiderLocations(data);
+      } catch (e: any) {
+        setFetchError(e.message);
+      }
+    }
+    fetchLocations();
+
+    // Poll every 5 seconds
+    const interval = setInterval(fetchLocations, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Initialize map
   useEffect(() => {
@@ -69,7 +123,7 @@ export default function AdminRiderMap({ riders, onRiderClick }: Props) {
     const map = mapInstanceRef.current;
     if (!L || !map) return;
 
-    const currentIds = new Set(locatedRiders.map((r) => r.id));
+    const currentIds = new Set(ridersWithCoords.map((r) => r.id));
 
     // Remove stale markers
     markersRef.current.forEach((marker, id) => {
@@ -80,8 +134,8 @@ export default function AdminRiderMap({ riders, onRiderClick }: Props) {
     });
 
     // Add/update markers
-    for (const rider of locatedRiders) {
-      const pos: [number, number] = [rider.current_lat!, rider.current_lng!];
+    for (const rider of ridersWithCoords) {
+      const pos: [number, number] = [rider._lat, rider._lng];
 
       if (markersRef.current.has(rider.id)) {
         const marker = markersRef.current.get(rider.id);
@@ -130,23 +184,37 @@ export default function AdminRiderMap({ riders, onRiderClick }: Props) {
     }
 
     // Fit bounds to show all riders
-    if (locatedRiders.length > 0) {
+    if (ridersWithCoords.length > 0) {
       const bounds = L.latLngBounds(
-        locatedRiders.map((r) => [r.current_lat!, r.current_lng!] as [number, number])
+        ridersWithCoords.map((r) => [r._lat, r._lng] as [number, number])
       );
       map.fitBounds(bounds, { padding: [80, 80], maxZoom: 15 });
     }
-  }, [locatedRiders, onRiderClick]);
+  }, [ridersWithCoords, onRiderClick]);
 
   return (
     <div className="relative w-full h-full">
       <div ref={mapRef} className="w-full h-full" style={{ position: "absolute", inset: 0 }} />
-      {locatedRiders.length === 0 && (
+      {fetchError && (
+        <div className="absolute top-2 left-2 right-2 z-[999] bg-red-50 border border-red-200 rounded-lg p-2 text-xs text-red-600">
+          Location fetch error: {fetchError}
+        </div>
+      )}
+      {locatedRiders.length === 0 && !fetchError && (
         <div className="absolute inset-0 flex items-center justify-center bg-slate-50/80 pointer-events-none z-[999]">
           <div className="text-center">
             <span className="material-symbols-outlined text-4xl text-slate-300 mb-2">location_off</span>
             <p className="text-sm font-bold text-slate-400">No rider locations yet</p>
             <p className="text-xs text-slate-300">Riders will appear here when they start delivering</p>
+          </div>
+        </div>
+      )}
+      {fetchError && (
+        <div className="absolute inset-0 flex items-center justify-center bg-slate-50/80 pointer-events-none z-[998]">
+          <div className="text-center">
+            <span className="material-symbols-outlined text-4xl text-red-300 mb-2">error</span>
+            <p className="text-sm font-bold text-red-400">Failed to load rider locations</p>
+            <p className="text-xs text-red-300">Check Supabase table permissions</p>
           </div>
         </div>
       )}
