@@ -89,7 +89,7 @@ export default function OrderChatOverlay({
             </button>
             <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white overflow-hidden">
               {otherAvatar ? (
-                // eslint-disable-next-line @next/next/no-img-element
+                 
                 <img src={otherAvatar} alt={otherName || "avatar"} className="w-full h-full object-cover" />
               ) : (
                 <span className="material-symbols-outlined">

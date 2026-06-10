@@ -398,9 +398,9 @@ export default function FoodPage() {
       }
 
       query = query.order("created_at", { ascending: false });
-      let vendorsRes = await query;
+      const vendorsRes = await query;
 
-      let filteredVendors = vendorsRes.data || [];
+      const filteredVendors = vendorsRes.data || [];
 
       if (filteredVendors.length === 0) {
         setNoLocalVendors(true);

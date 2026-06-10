@@ -15,7 +15,7 @@ const h = vi.hoisted(() => {
       single: vi.fn(() =>
         Promise.resolve({ data: data[0] || null, error: null }),
       ),
-      then(resolve: Function) {
+      then(resolve: (value: unknown) => void) {
         resolve({ data, error: null });
       },
     };

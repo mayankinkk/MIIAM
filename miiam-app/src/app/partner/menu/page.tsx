@@ -163,7 +163,7 @@ export default function PartnerMenuPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    let { data, error } = await supabase
+    const { data, error } = await supabase
       .from("vendors")
       .select("id, shop_name, type")
       .eq("user_id", user.id)
@@ -188,7 +188,7 @@ export default function PartnerMenuPage() {
 
   async function loadItems() {
     setLoading(true);
-    let query = supabase.from(table).select("*").eq("vendor_id", selectedVendorId).order("name");
+    const query = supabase.from(table).select("*").eq("vendor_id", selectedVendorId).order("name");
     const { data } = await query;
     if (data) setItems(data);
     setLoading(false);

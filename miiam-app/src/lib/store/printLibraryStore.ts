@@ -42,7 +42,7 @@ export const usePrintLibraryStore = create<PrintLibraryStore>()(
         const dedup = existing.filter((f) => f.url !== item.url);
 
         // Enforce MAX_BYTES: drop oldest files if adding this file would exceed limit
-        let withNew = [
+        const withNew = [
           { ...item, id, addedAt: Date.now(), printCount: 0 },
           ...dedup,
         ];

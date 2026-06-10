@@ -1,4 +1,4 @@
-const fs = require('fs');
+import fs from 'fs';
 
 const envContent = fs.readFileSync('/home/mayank/Downloads/MIIAM Final UI/miiam-app/.env.local', 'utf8');
 const env = {};
@@ -17,23 +17,17 @@ const supabaseKey = env.SUPABASE_SERVICE_ROLE_KEY;
 
 async function run() {
   try {
-    const res = await fetch(`${supabaseUrl}/rest/v1/vendors?select=*`, {
+    const res = await fetch(`${supabaseUrl}/rest/v1/vendors?select=id,shop_name,email,user_id`, {
       headers: {
         'apikey': supabaseKey,
         'Authorization': `Bearer ${supabaseKey}`
       }
     });
-    if (!res.ok) {
-      console.error('Fetch failed:', res.statusText, await res.text());
-      return;
-    }
     const vendors = await res.json();
-    console.log('Vendors list:');
-    vendors.forEach(v => {
-      console.log(`- ID: ${v.id}, Name: ${v.shop_name}, Owner: ${v.owner_name}, User ID: ${v.user_id}, Type: ${v.type}, Status: ${v.status}`);
-    });
+    console.log('--- VENDORS IN DB ---');
+    console.log(vendors);
   } catch (err) {
-    console.error('Error:', err);
+    console.error('Error fetching vendors:', err);
   }
 }
 

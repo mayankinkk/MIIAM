@@ -1,4 +1,4 @@
-const fs = require('fs');
+import fs from 'fs';
 
 const envContent = fs.readFileSync('/home/mayank/Downloads/MIIAM Final UI/miiam-app/.env.local', 'utf8');
 const env = {};
