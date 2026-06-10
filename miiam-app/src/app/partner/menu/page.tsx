@@ -163,7 +163,7 @@ export default function PartnerMenuPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    const { data, error } = await supabase
+    let { data } = await supabase
       .from("vendors")
       .select("id, shop_name, type")
       .eq("user_id", user.id)
