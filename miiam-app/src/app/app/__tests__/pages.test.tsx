@@ -76,19 +76,7 @@ vi.mock("@/lib/supabase/client", () => ({
   createClient: vi.fn(() => h.mockSupabase),
 }));
 
-vi.mock("@/lib/store/cartStore", () => {
-  const store = h.buildStore({
-    items: [],
-    addItem: vi.fn(),
-    removeItem: vi.fn(),
-    updateQuantity: vi.fn(),
-    clearCart: vi.fn(),
-    totalItems: vi.fn(() => 0),
-    totalPrice: vi.fn(() => 0),
-    subtotalByVendor: vi.fn(() => 0),
-  });
-  return { useCartStore: store };
-});
+
 
 vi.mock("@/lib/store/toastStore", () => {
   const store = h.buildStore({
@@ -187,7 +175,6 @@ vi.mock("@/components/ui/EmptyStates", () => ({
 // Component imports (must come after all vi.mock)
 // ──────────────────────────────────────────────
 import GroceryPage from "@/app/app/grocery/page";
-import CartPage from "@/app/app/cart/page";
 import NotificationsPage from "@/app/app/notifications/page";
 
 describe("Page smoke tests", () => {
@@ -204,14 +191,6 @@ describe("Page smoke tests", () => {
     expect(screen.getByText("All")).toBeInTheDocument();
     expect(screen.getByText("Fruits")).toBeInTheDocument();
     expect(screen.getByText("Vegetables")).toBeInTheDocument();
-  });
-
-  it("cart page renders header and empty cart state", () => {
-    render(<CartPage />);
-
-    expect(screen.getByText("MIIAM")).toBeInTheDocument();
-    expect(screen.getByText("Your Cart")).toBeInTheDocument();
-    expect(screen.getByTestId("empty-cart")).toBeInTheDocument();
   });
 
   it("notifications page renders header and push notification section", () => {

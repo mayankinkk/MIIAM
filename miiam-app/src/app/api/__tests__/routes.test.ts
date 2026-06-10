@@ -66,7 +66,32 @@ describe("Addresses API", () => {
 });
 
 describe("Settings API", () => {
-  it("GET /api/settings returns valid response", async () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("GET /api/settings returns 401 when not admin", async () => {
+    const { GET } = await import("../settings/route");
+    const res = await GET();
+    expect(res.status).toBe(401);
+  });
+
+  it("GET /api/settings returns valid response when admin", async () => {
+    const { createClient } = await import("@/lib/supabase/server");
+    const queryMock = {
+      select: vi.fn(() => queryMock),
+      eq: vi.fn(() => queryMock),
+      single: vi.fn(() => Promise.resolve({ data: { role: "admin" }, error: null })),
+      order: vi.fn(() => Promise.resolve({ data: [], error: null })),
+    };
+    const mockSupabase = {
+      from: vi.fn(() => queryMock),
+      auth: {
+        getUser: vi.fn(() => Promise.resolve({ data: { user: { id: "admin-user" } }, error: null })),
+      },
+    };
+    (createClient as vi.Mock).mockResolvedValue(mockSupabase);
+
     const { GET } = await import("../settings/route");
     const res = await GET();
     expect(res.status).toBe(200);
