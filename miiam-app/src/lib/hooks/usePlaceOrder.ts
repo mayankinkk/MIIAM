@@ -105,9 +105,10 @@ export function usePlaceOrder(supabase: SupabaseClient) {
               const timePart = scheduledTime.split(" - ")[0].trim();
               const [time, period] = timePart.split(/\s+/);
               const [hours, minutes] = time.split(":").map(Number);
-              if (period?.toUpperCase() === "PM" && hours < 12) hours += 12;
-              if (period?.toUpperCase() === "AM" && hours === 12) hours = 0;
-              return new Date(`${scheduledDate}T${String(hours).padStart(2, "0")}:${String(minutes || 0).padStart(2, "0")}:00`).toISOString();
+              let h = hours;
+              if (period?.toUpperCase() === "PM" && h < 12) h += 12;
+              if (period?.toUpperCase() === "AM" && h === 12) h = 0;
+              return new Date(`${scheduledDate}T${String(h).padStart(2, "0")}:${String(minutes || 0).padStart(2, "0")}:00`).toISOString();
             })()
           : null;
 
@@ -198,9 +199,10 @@ export function usePlaceOrder(supabase: SupabaseClient) {
                 const timePart = (scheduledTime || "09:00 AM").split(" - ")[0].trim();
                 const [time, period] = timePart.split(/\s+/);
                 const [hours, minutes] = time.split(":").map(Number);
-                if (period?.toUpperCase() === "PM" && hours < 12) hours += 12;
-                if (period?.toUpperCase() === "AM" && hours === 12) hours = 0;
-                return new Date(`${scheduledDate}T${String(hours).padStart(2, "0")}:${String(minutes || 0).padStart(2, "0")}:00`).toISOString();
+                let h = hours;
+                if (period?.toUpperCase() === "PM" && h < 12) h += 12;
+                if (period?.toUpperCase() === "AM" && h === 12) h = 0;
+                return new Date(`${scheduledDate}T${String(h).padStart(2, "0")}:${String(minutes || 0).padStart(2, "0")}:00`).toISOString();
               })(),
             });
           if (scheduleError) console.warn("Failed to create recurring schedule:", scheduleError);
