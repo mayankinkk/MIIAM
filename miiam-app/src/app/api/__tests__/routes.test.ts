@@ -1,4 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+/// <reference types="vitest/globals" />
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { NextRequest } from "next/server";
 
 const mockFrom = vi.fn(() => ({
@@ -90,7 +91,7 @@ describe("Settings API", () => {
         getUser: vi.fn(() => Promise.resolve({ data: { user: { id: "admin-user" } }, error: null })),
       },
     };
-    (createClient as vi.Mock).mockResolvedValue(mockSupabase);
+    (createClient as any).mockResolvedValue(mockSupabase);
 
     const { GET } = await import("../settings/route");
     const res = await GET();
