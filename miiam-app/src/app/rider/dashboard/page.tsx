@@ -788,11 +788,10 @@ export default function RiderDashboard() {
       }
     }
     
+    // Use functional updates to avoid stale closure
     setPendingOrders(prev => prev.filter(o => o.id !== order.id));
     setActiveOrders(prev => [...prev, order]);
-    if (!currentOrder) {
-      setCurrentOrder(order);
-    }
+    setCurrentOrder(prev => prev || order);
     setSelectedOrder(null);
     setCountdown(300);
     
@@ -804,18 +803,31 @@ export default function RiderDashboard() {
   };
 
   const handleDecline = async (orderId: string, reason?: string) => {
+    // Use functional update to avoid stale closure
     setPendingOrders(prev => prev.filter(o => o.id !== orderId));
     setSelectedOrder(null);
     setShowSkipModal(false);
     setCountdown(300);
-    const order = pendingOrders.find(o => o.id === orderId);
-    if (order?.orderDbId && riderId && reason) {
+    
+    // Get the order from current state using a functional approach
+    // We need to fetch the order details for the API call
+    if (riderId && reason) {
       try {
-        await fetch("/api/rider/cancel-order", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ order_id: order.orderDbId, rider_id: riderId, reason }),
-        });
+        // Find the order in the current pending orders before it gets filtered out
+        // We'll use a ref or fetch from the database
+        const { data: orderData } = await supabase
+          .from("orders")
+          .select("id")
+          .eq("id", orderId)
+          .maybeSingle();
+        
+        if (orderData) {
+          await fetch("/api/rider/cancel-order", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ order_id: orderData.id, rider_id: riderId, reason }),
+          });
+        }
       } catch { /* silent */ }
     }
   };
