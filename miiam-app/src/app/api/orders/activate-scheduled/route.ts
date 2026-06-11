@@ -57,9 +57,8 @@ async function activateScheduledOrders() {
 async function requireCronAuth(request: NextRequest) {
   const authHeader = request.headers.get("authorization") || request.headers.get("x-cron-secret");
   const secret = process.env.CRON_SECRET;
-  if (secret && authHeader === `Bearer ${secret}`) return true;
-  if (!secret) return true;
-  return false;
+  if (!secret) return false;
+  return authHeader === `Bearer ${secret}`;
 }
 
 export async function POST(request: NextRequest) {

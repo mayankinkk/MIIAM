@@ -4,6 +4,11 @@ import { createClient } from "@/lib/supabase/server";
 export async function POST(request: NextRequest) {
   try {
     const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const body = await request.json();
     const { user_id, title, body: message, data, type = "general" } = body;
 
@@ -12,6 +17,18 @@ export async function POST(request: NextRequest) {
         { error: "Missing required fields" },
         { status: 400 }
       );
+    }
+
+    // Only allow creating notifications for self or admin
+    if (user_id !== user.id) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .maybeSingle();
+      if (!profile || profile.role !== "admin") {
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      }
     }
 
     const { data: notification, error } = await supabase
@@ -48,20 +65,32 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get("user_id");
 
-    if (!userId) {
-      return NextResponse.json(
-        { error: "User ID required" },
-        { status: 400 }
-      );
+    // Users can only read their own notifications; admins can read any
+    if (userId && userId !== user.id) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .maybeSingle();
+      if (!profile || profile.role !== "admin") {
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      }
     }
+
+    const targetUserId = userId || user.id;
 
     const { data: notifications, error } = await supabase
       .from("notifications")
       .select("*")
-      .eq("user_id", userId)
+      .eq("user_id", targetUserId)
       .order("created_at", { ascending: false })
       .limit(50);
 

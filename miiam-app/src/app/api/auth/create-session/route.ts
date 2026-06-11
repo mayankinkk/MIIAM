@@ -1,8 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createAdminClient } from "@/lib/supabase/server";
+import { createAdminClient, createClient } from "@/lib/supabase/server";
 
 export async function POST(request: NextRequest) {
   try {
+    // Require authenticated admin
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .maybeSingle();
+    if (!profile || profile.role !== "admin") {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     const supabaseAdmin = createAdminClient();
     const { email, fullName } = await request.json();
 
@@ -10,17 +25,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Email required" }, { status: 400 });
     }
 
-    // Check if user exists
     const { data: { users }, error: listError } = await supabaseAdmin.auth.admin.listUsers();
     
     if (listError) {
       console.error("List users error:", listError);
     }
 
-    let user = users?.find(u => u.email?.toLowerCase() === email.toLowerCase());
+    let userRecord = users?.find(u => u.email?.toLowerCase() === email.toLowerCase());
 
-    if (!user) {
-      // Create new user
+    if (!userRecord) {
       const { data: newUser, error: createError } = await supabaseAdmin.auth.admin.createUser({
         email: email.toLowerCase(),
         email_confirm: true,
@@ -31,31 +44,30 @@ export async function POST(request: NextRequest) {
         console.error("Create user error:", createError);
         return NextResponse.json({ error: "Failed to create user" }, { status: 500 });
       }
-      user = newUser?.user;
+      userRecord = newUser?.user;
     }
 
-    if (!user) {
+    if (!userRecord) {
       return NextResponse.json({ error: "Failed to get user" }, { status: 500 });
     }
 
-    // Create session
     const { data: sessionData, error: sessionError } = await (supabaseAdmin.auth.admin as any).createSession({
-      userId: user.id,
+      userId: userRecord.id,
     });
 
     if (sessionError) {
       console.error("Create session error:", sessionError);
       return NextResponse.json({ 
         success: true, 
-        userId: user.id,
-        email: user.email 
+        userId: userRecord.id,
+        email: userRecord.email 
       });
     }
 
     return NextResponse.json({
       success: true,
-      userId: user.id,
-      email: user.email,
+      userId: userRecord.id,
+      email: userRecord.email,
       session: {
         access_token: sessionData.session.access_token,
         refresh_token: sessionData.session.refresh_token,

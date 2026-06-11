@@ -109,6 +109,24 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "rider_id required" }, { status: 400 });
   }
 
+  // Verify the rider_id belongs to the authenticated user or user is admin
+  const { data: rider } = await supabase
+    .from("riders")
+    .select("id")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  
+  if (!rider || rider.id !== rider_id) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .maybeSingle();
+    if (!profile || profile.role !== "admin") {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+  }
+
   const { data: documents } = await supabaseAdmin
     .from("rider_documents")
     .select("*")

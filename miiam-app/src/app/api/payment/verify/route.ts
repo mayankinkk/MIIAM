@@ -1,19 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import Razorpay from "razorpay";
-import { createClient } from "@supabase/supabase-js";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID || "",
   key_secret: process.env.RAZORPAY_KEY_SECRET || "",
 });
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL || "",
-  process.env.SUPABASE_SERVICE_ROLE_KEY || ""
-);
-
 export async function POST(req: NextRequest) {
   try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature, orderId } = await req.json();
 
     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
@@ -40,7 +41,20 @@ export async function POST(req: NextRequest) {
 
     // Update order in database if orderId provided
     if (orderId) {
-      const { error: updateError } = await supabase
+      // Verify the order belongs to the authenticated user
+      const { data: order, error: fetchError } = await supabase
+        .from("orders")
+        .select("user_id")
+        .eq("id", orderId)
+        .maybeSingle();
+      if (fetchError || !order) {
+        return NextResponse.json({ error: "Order not found" }, { status: 404 });
+      }
+      if (order.user_id !== user.id) {
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      }
+      const supabaseAdmin = createAdminClient();
+      const { error: updateError } = await supabaseAdmin
         .from("orders")
         .update({
           payment_id: razorpay_payment_id,

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import Razorpay from "razorpay";
+import { createClient } from "@/lib/supabase/server";
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID || "",
@@ -8,6 +9,12 @@ const razorpay = new Razorpay({
 
 export async function POST(req: NextRequest) {
   try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
       return NextResponse.json(
         { error: "Payment gateway not configured. Set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in .env.local" },

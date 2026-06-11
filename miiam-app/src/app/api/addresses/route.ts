@@ -87,7 +87,16 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: "Address ID required" }, { status: 400 });
     }
 
-    if (user_id && user_id !== user.id) {
+    // Verify the address belongs to the authenticated user
+    const { data: existingAddress } = await supabase
+      .from("user_addresses")
+      .select("user_id")
+      .eq("id", id)
+      .maybeSingle();
+    if (!existingAddress) {
+      return NextResponse.json({ error: "Address not found" }, { status: 404 });
+    }
+    if (existingAddress.user_id !== user.id) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 

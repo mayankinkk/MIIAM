@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/server";
+import { cookies } from "next/headers";
+import crypto from "crypto";
 
 export async function POST(request: NextRequest) {
   const supabaseAdmin = createAdminClient();
@@ -12,9 +14,28 @@ export async function POST(request: NextRequest) {
     }
 
     const cleanEmail = email.toLowerCase().trim();
-    console.log("[create-user] email:", cleanEmail);
 
-    let userId = null;
+    // Verify the password reset cookie exists and matches this email
+    const cookieStore = await cookies();
+    const verifiedToken = cookieStore.get("password_reset_verified")?.value;
+    if (!verifiedToken) {
+      return NextResponse.json({ error: "Password reset not verified" }, { status: 403 });
+    }
+
+    const secret = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!secret) {
+      return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
+    }
+
+    // Verify HMAC signature to prevent forgery
+    const [randomToken, hmac] = verifiedToken.split(".");
+    if (!randomToken || !hmac) {
+      return NextResponse.json({ error: "Invalid verification token" }, { status: 403 });
+    }
+    const expectedHmac = crypto.createHmac("sha256", secret).update(`${cleanEmail}:${randomToken}`).digest("hex");
+    if (hmac !== expectedHmac) {
+      return NextResponse.json({ error: "Verification token does not match email" }, { status: 403 });
+    }
 
     // Find existing user using listUsers (getUserByEmail does NOT exist in supabase-js)
     const { data: { users }, error: listError } = await supabaseAdmin.auth.admin.listUsers({
@@ -29,9 +50,9 @@ export async function POST(request: NextRequest) {
 
     const existingUser = users?.find(u => u.email?.toLowerCase() === cleanEmail);
 
+    let userId = null;
+
     if (existingUser) {
-      // User exists - update password and confirm email
-      console.log("[create-user] Found existing user:", existingUser.id);
       const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(existingUser.id, {
         email: cleanEmail,
         password,
@@ -44,9 +65,7 @@ export async function POST(request: NextRequest) {
       }
 
       userId = existingUser.id;
-      console.log("[create-user] Updated existing user:", userId);
     } else {
-      // User doesn't exist - create new with confirmed email
       const { data: newUser, error: createError } = await supabaseAdmin.auth.admin.createUser({
         email: cleanEmail,
         password,
@@ -60,12 +79,14 @@ export async function POST(request: NextRequest) {
       }
 
       userId = newUser.user.id;
-      console.log("[create-user] Created new user:", userId);
     }
 
     if (!userId) {
       return NextResponse.json({ error: "Failed to create or find user" }, { status: 500 });
     }
+
+    // Clear the verification cookie
+    cookieStore.delete("password_reset_verified");
 
     return NextResponse.json({
       success: true,

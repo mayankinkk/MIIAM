@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createAdminClient } from "@/lib/supabase/server";
+import { createAdminClient, createClient } from "@/lib/supabase/server";
 
 export async function POST(request: NextRequest) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const supabaseAdmin = createAdminClient();
 
   try {
@@ -13,16 +19,9 @@ export async function POST(request: NextRequest) {
 
     const cleanEmail = email.toLowerCase().trim();
 
-    // Find user by email
-    const { data: { users } } = await supabaseAdmin.auth.admin.listUsers({
-      page: 1,
-      perPage: 1000,
-    });
-
-    const user = users?.find(u => u.email?.toLowerCase() === cleanEmail);
-
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    // Only allow updating own profile
+    if (cleanEmail !== user.email?.toLowerCase()) {
+      return NextResponse.json({ error: "Cannot update another user's profile" }, { status: 403 });
     }
 
     const profileData: Record<string, any> = {
@@ -37,7 +36,6 @@ export async function POST(request: NextRequest) {
     if (city) profileData.city = city;
     if (state) profileData.state = state;
 
-    // Update profile using admin client (bypasses RLS)
     const { error: profileError } = await supabaseAdmin.from("profiles").upsert(profileData);
 
     if (profileError) {

@@ -51,6 +51,15 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
+  // Validate redirect param on login redirects to prevent open redirect
+  const redirectTo = request.nextUrl.searchParams.get('redirect');
+  if (redirectTo && (!redirectTo.startsWith('/') || redirectTo.startsWith('//'))) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/'
+    url.searchParams.delete('redirect')
+    return NextResponse.redirect(url)
+  }
+
   // Admin-only check
   if (user && request.nextUrl.pathname.startsWith('/admin')) {
     const { data: profile } = await supabase

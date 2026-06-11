@@ -127,6 +127,16 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ bookings });
   }
 
+  // Only admins can list all bookings without a filter
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .maybeSingle();
+  if (!profile || profile.role !== "admin") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
   const { data: allBookings } = await supabase
     .from("service_bookings")
     .select("*")

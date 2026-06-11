@@ -35,6 +35,23 @@ export async function POST(request: Request) {
   let userId = currentUser?.id || "";
   
   if (!userId) {
+    // Unauthenticated users must have verified their email via OTP before applying
+    const supabaseAdmin2 = createAdminClient();
+    const { data: recentVerification } = await supabaseAdmin2
+      .from("email_otps")
+      .select("id")
+      .eq("email", email.toLowerCase().trim())
+      .eq("verified", true)
+      .gte("updated_at", new Date(Date.now() - 10 * 60 * 1000).toISOString())
+      .maybeSingle();
+
+    if (!recentVerification) {
+      return NextResponse.json(
+        { error: "Please verify your email before applying" },
+        { status: 403 }
+      );
+    }
+
     const { data: authData, error: authError } = await adminClient.auth.admin.createUser({
       email,
       phone,

@@ -2,25 +2,23 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/server";
 import { randomInt } from "crypto";
 
-const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 const RATE_LIMIT_MAX = 5;
 const RATE_LIMIT_WINDOW = 10 * 60 * 1000;
 
-function checkRateLimit(phone: string): boolean {
-  const now = Date.now();
-  const entry = rateLimitMap.get(phone);
+async function checkRateLimit(supabase: ReturnType<typeof createAdminClient>, phone: string): Promise<boolean> {
+  const windowStart = new Date(Date.now() - RATE_LIMIT_WINDOW).toISOString();
+  const { count, error } = await supabase
+    .from("phone_otp_verification")
+    .select("id", { count: "exact", head: true })
+    .eq("phone_number", phone)
+    .gte("created_at", windowStart);
 
-  if (!entry || now > entry.resetTime) {
-    rateLimitMap.set(phone, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
-    return true;
+  if (error) {
+    console.error("Rate limit check error:", error);
+    return true; // fail open if DB error
   }
 
-  if (entry.count >= RATE_LIMIT_MAX) {
-    return false;
-  }
-
-  entry.count++;
-  return true;
+  return (count || 0) < RATE_LIMIT_MAX;
 }
 
 function generateOTP(): string {
@@ -89,7 +87,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid phone number. Use 10 digits starting with 6-9" }, { status: 400 });
     }
 
-    if (!checkRateLimit(cleanPhone)) {
+    if (!(await checkRateLimit(supabase, cleanPhone))) {
       return NextResponse.json({ error: "Too many requests. Please try again after 10 minutes." }, { status: 429 });
     }
 

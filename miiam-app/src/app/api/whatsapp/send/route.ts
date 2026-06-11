@@ -1,106 +1,161 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { sendWhatsAppMessage, sendOrderConfirmation, sendBookingReminder, sendServiceCompletion } from "@/lib/whatsapp";
+
+const WHATSAPP_CLOUD_API_URL = "https://graph.facebook.com/v18.0";
+
+interface WhatsAppMessage {
+  messaging_product: string;
+  to: string;
+  type: string;
+  template?: {
+    name: string;
+    language: { code: string };
+    components?: any[];
+  };
+  text?: {
+    body: string;
+  };
+}
+
+const messageTemplates: Record<string, { name: string; language: string; components: any[] }> = {
+  order_confirmed: {
+    name: "order_confirmed",
+    language: "en_US",
+    components: [
+      { type: "body", parameters: [{ type: "text", text: "" }, { type: "text", text: "" }, { type: "text", text: "" }] },
+    ],
+  },
+  booking_reminder: {
+    name: "booking_reminder",
+    language: "en_US",
+    components: [
+      { type: "body", parameters: [{ type: "text", text: "" }, { type: "text", text: "" }, { type: "text", text: "" }] },
+    ],
+  },
+  service_completed: {
+    name: "service_completed",
+    language: "en_US",
+    components: [
+      { type: "body", parameters: [{ type: "text", text: "" }, { type: "text", text: "" }] },
+    ],
+  },
+  promo_offer: {
+    name: "promo_offer",
+    language: "en_US",
+    components: [
+      { type: "body", parameters: [{ type: "text", text: "" }, { type: "text", text: "" }, { type: "text", text: "" }] },
+    ],
+  },
+  prescription_approved: {
+    name: "prescription_approved",
+    language: "en_US",
+    components: [
+      { type: "body", parameters: [{ type: "text", text: "" }] },
+    ],
+  },
+  prescription_rejected: {
+    name: "prescription_rejected",
+    language: "en_US",
+    components: [
+      { type: "body", parameters: [{ type: "text", text: "" }, { type: "text", text: "" }] },
+    ],
+  },
+};
 
 export async function POST(request: NextRequest) {
   try {
     const supabase = await createClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const body = await request.json();
-    const { action, phoneNumber, ...data } = body;
+    const WHATSAPP_PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID;
+    const WHATSAPP_ACCESS_TOKEN = process.env.WHATSAPP_ACCESS_TOKEN;
 
-    if (!phoneNumber) {
-      return NextResponse.json(
-        { error: "Phone number required" },
-        { status: 400 }
-      );
+    if (!WHATSAPP_PHONE_NUMBER_ID || !WHATSAPP_ACCESS_TOKEN) {
+      return NextResponse.json({ error: "WhatsApp not configured" }, { status: 503 });
     }
 
-    let result;
+    const { phoneNumber, templateName, parameters } = await request.json();
 
-    switch (action) {
-      case "send_custom":
-        result = await sendWhatsAppMessage(
-          phoneNumber,
-          data.template as any,
-          data.parameters
-        );
-        break;
-
-      case "order_confirmed":
-        result = await sendOrderConfirmation(
-          phoneNumber,
-          data.orderId,
-          data.serviceName,
-          data.amount
-        );
-        break;
-
-      case "booking_reminder":
-        result = await sendBookingReminder(
-          phoneNumber,
-          data.serviceName,
-          data.date,
-          data.time
-        );
-        break;
-
-      case "service_completed":
-        result = await sendServiceCompletion(
-          phoneNumber,
-          data.serviceName,
-          data.orderId
-        );
-        break;
-
-      default:
-        return NextResponse.json(
-          { error: "Invalid action" },
-          { status: 400 }
-        );
+    if (!phoneNumber || !templateName || !parameters) {
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    return NextResponse.json(result);
+    const template = messageTemplates[templateName];
+    if (!template) {
+      return NextResponse.json({ error: "Invalid template" }, { status: 400 });
+    }
+
+    const paramValues = Object.values(parameters);
+    const components = template.components.map((component) => ({
+      ...component,
+      parameters: component.parameters.map((_: any, pi: number) => ({
+        type: "text" as const,
+        text: paramValues[pi] || "",
+      })),
+    }));
+
+    const cleanPhone = phoneNumber.replace(/[^0-9+]/g, "");
+    const toPhone = cleanPhone.startsWith("+") ? cleanPhone.slice(1) : cleanPhone;
+
+    const message: WhatsAppMessage = {
+      messaging_product: "whatsapp",
+      to: toPhone,
+      type: "template",
+      template: {
+        name: template.name,
+        language: { code: template.language },
+        components,
+      },
+    };
+
+    const response = await fetch(
+      `${WHATSAPP_CLOUD_API_URL}/${WHATSAPP_PHONE_NUMBER_ID}/messages`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${WHATSAPP_ACCESS_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(message),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error("[WhatsApp] API error:", data);
+      const supabaseAdmin = (await import("@/lib/supabase/server")).createAdminClient();
+      await supabaseAdmin.from("whatsapp_messages").insert({
+        phone_number: toPhone,
+        template_name: templateName,
+        parameters,
+        status: "failed",
+        error_message: data.error?.message || "API error",
+        sent_at: new Date().toISOString(),
+      });
+      return NextResponse.json({ success: false, error: data.error?.message || "WhatsApp API error" }, { status: 502 });
+    }
+
+    const messageId = data.messages?.[0]?.id;
+    const supabaseAdmin = (await import("@/lib/supabase/server")).createAdminClient();
+    await supabaseAdmin.from("whatsapp_messages").insert({
+      phone_number: toPhone,
+      template_name: templateName,
+      parameters,
+      status: "sent",
+      whatsapp_message_id: messageId,
+      sent_at: new Date().toISOString(),
+    });
+
+    return NextResponse.json({ success: true, messageId });
   } catch (error) {
-    console.error("WhatsApp API error:", error);
+    console.error("[WhatsApp] Error:", error);
     return NextResponse.json(
-      { error: "Failed to send WhatsApp message" },
+      { error: error instanceof Error ? error.message : "Unknown error" },
       { status: 500 }
     );
   }
-}
-
-export async function GET(request: NextRequest) {
-  const supabase = await createClient();
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
-  if (authError || !user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const searchParams = request.nextUrl.searchParams;
-  const phoneNumber = searchParams.get("phoneNumber");
-
-  if (!phoneNumber) {
-    return NextResponse.json(
-      { error: "Phone number required" },
-      { status: 400 }
-    );
-  }
-
-  // Return WhatsApp message history from database
-  const { data: messages } = await supabase
-    .from("whatsapp_messages")
-    .select("*")
-    .eq("phone_number", phoneNumber.replace(/[^0-9+]/g, ""))
-    .order("sent_at", { ascending: false })
-    .limit(50);
-
-  return NextResponse.json({
-    success: true,
-    messages: messages || [],
-  });
 }

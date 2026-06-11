@@ -197,7 +197,21 @@ export default function WalletPage() {
                     key: data.keyId, amount: data.amount, currency: data.currency, name: "MIIAM Wallet",
                     description: "Add Money to Wallet", order_id: data.orderId,
                     handler: async (response: any) => {
-                      await supabase.rpc("increment_wallet_balance", { p_user_id: (await supabase.auth.getUser()).data.user?.id, p_amount: amt });
+                      const verifyRes = await fetch("/api/wallet/add-money", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          razorpay_order_id: response.razorpay_order_id,
+                          razorpay_payment_id: response.razorpay_payment_id,
+                          razorpay_signature: response.razorpay_signature,
+                          amount: amt,
+                        }),
+                      });
+                      if (!verifyRes.ok) {
+                        const errData = await verifyRes.json();
+                        import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast(errData.error || "Payment verification failed", "error"));
+                        return;
+                      }
                       setBalance(prev => prev + amt);
                       import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast(`₹${amt} added to wallet!`, "success"));
                       setShowAddMoney(false); setAddAmount("");
