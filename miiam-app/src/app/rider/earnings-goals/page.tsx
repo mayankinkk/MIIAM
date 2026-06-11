@@ -4,6 +4,14 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
+interface DeliveryRecord {
+  id: string;
+  order_id: string;
+  amount: number;
+  time: string;
+  status: string;
+}
+
 export default function RiderEarningsGoalsPage() {
   const supabase = createClient();
   const [dailyTarget, setDailyTarget] = useState(1500);
@@ -11,6 +19,7 @@ export default function RiderEarningsGoalsPage() {
   const [showSetGoal, setShowSetGoal] = useState(false);
   const [goalType, setGoalType] = useState<"daily" | "weekly">("daily");
   const [loading, setLoading] = useState(true);
+  const [savingGoal, setSavingGoal] = useState(false);
 
   const today = new Date();
   const startOfWeek = new Date(today);
@@ -22,6 +31,8 @@ export default function RiderEarningsGoalsPage() {
   const [weeklyEarnings, setWeeklyEarnings] = useState(0);
   const [weeklyDeliveries, setWeeklyDeliveries] = useState(0);
   const [dailyData, setDailyData] = useState<number[]>([]);
+  const [recentDeliveries, setRecentDeliveries] = useState<DeliveryRecord[]>([]);
+  const [totalEarnings, setTotalEarnings] = useState(0);
 
   useEffect(() => {
     async function loadStats() {
@@ -31,33 +42,58 @@ export default function RiderEarningsGoalsPage() {
       const { data: myRider } = await supabase.from("riders").select("id").eq("user_id", user.id).single();
       if (!myRider) { setLoading(false); return; }
 
+      // Load saved goals
+      const { data: goals } = await supabase
+        .from("rider_settings")
+        .select("daily_goal, weekly_goal")
+        .eq("rider_id", myRider.id)
+        .maybeSingle();
+      if (goals) {
+        if (goals.daily_goal) setDailyTarget(goals.daily_goal);
+        if (goals.weekly_goal) setWeeklyTarget(goals.weekly_goal);
+      }
+
       const todayStart = new Date();
       todayStart.setHours(0, 0, 0, 0);
 
       const { data: orders } = await supabase
         .from("orders")
-        .select("rider_earning, placed_at, status")
+        .select("id, rider_earning, placed_at, status")
         .eq("rider_id", myRider.id)
-        .in("status", ["delivered", "completed"]);
+        .in("status", ["delivered", "completed"])
+        .order("placed_at", { ascending: false });
 
       if (orders) {
-        let dayE = 0, dayD = 0, weekE = 0, weekD = 0;
+        let dayE = 0, dayD = 0, weekE = 0, weekD = 0, totalE = 0;
         const dayMap: Record<string, number> = {};
         const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        const recent: DeliveryRecord[] = [];
 
         orders.forEach(o => {
           const d = new Date(o.placed_at);
-          const dayKey = dayNames[d.getDay()];
           const earn = o.rider_earning || 0;
+          totalE += earn;
           if (d >= todayStart) { dayE += earn; dayD++; }
           if (d >= startOfWeek) { weekE += earn; weekD++; }
+          const dayKey = dayNames[d.getDay()];
           dayMap[dayKey] = (dayMap[dayKey] || 0) + earn;
+          if (recent.length < 10) {
+            recent.push({
+              id: o.id,
+              order_id: o.id,
+              amount: earn,
+              time: o.placed_at,
+              status: o.status,
+            });
+          }
         });
 
         setTodayEarnings(dayE);
         setTodayDeliveries(dayD);
         setWeeklyEarnings(weekE);
         setWeeklyDeliveries(weekD);
+        setTotalEarnings(totalE);
+        setRecentDeliveries(recent);
 
         const last7 = [];
         for (let i = 6; i >= 0; i--) {
@@ -74,9 +110,28 @@ export default function RiderEarningsGoalsPage() {
 
   const dailyProgress = Math.min((todayEarnings / dailyTarget) * 100, 100);
   const weeklyProgress = Math.min((weeklyEarnings / weeklyTarget) * 100, 100);
-
-  const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   const chartMax = Math.max(...dailyData, dailyTarget, 1);
+
+  const handleSaveGoal = async () => {
+    setSavingGoal(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data: myRider } = await supabase.from("riders").select("id").eq("user_id", user.id).single();
+      if (!myRider) return;
+
+      await supabase.from("rider_settings").upsert({
+        rider_id: myRider.id,
+        daily_goal: dailyTarget,
+        weekly_goal: weeklyTarget,
+      }, { onConflict: "rider_id" });
+    } catch (err) {
+      console.error("Failed to save goals:", err);
+    } finally {
+      setSavingGoal(false);
+      setShowSetGoal(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#fff4f4]">
@@ -90,6 +145,12 @@ export default function RiderEarningsGoalsPage() {
       </header>
 
       <main className="px-4 -mt-8 space-y-4 pb-24">
+        {/* Total Earnings */}
+        <div className="bg-gradient-to-br from-[#0b50d5] to-[#0044bf] text-white rounded-2xl p-5 shadow-lg">
+          <p className="text-xs font-bold opacity-80 uppercase">Total Earnings (All Time)</p>
+          <p className="text-4xl font-black mt-2">₹{totalEarnings.toLocaleString()}</p>
+        </div>
+
         {/* Daily Goal */}
         <div className="bg-white rounded-2xl p-5 shadow-sm">
           <div className="flex justify-between items-center mb-3">
@@ -124,6 +185,27 @@ export default function RiderEarningsGoalsPage() {
           </div>
         </div>
 
+        {/* Earnings Breakdown */}
+        <div className="bg-white rounded-2xl p-5 shadow-sm">
+          <h3 className="font-bold text-slate-800 mb-3">Earnings Breakdown</h3>
+          <div className="grid grid-cols-3 gap-3">
+            <div className="bg-slate-50 p-3 rounded-xl text-center">
+              <p className="text-2xl font-black text-[#0b50d5]">{todayDeliveries}</p>
+              <p className="text-xs text-slate-400">Today</p>
+            </div>
+            <div className="bg-slate-50 p-3 rounded-xl text-center">
+              <p className="text-2xl font-black text-green-600">{weeklyDeliveries}</p>
+              <p className="text-xs text-slate-400">This Week</p>
+            </div>
+            <div className="bg-slate-50 p-3 rounded-xl text-center">
+              <p className="text-2xl font-black text-amber-600">
+                {todayDeliveries > 0 ? `₹${Math.round(todayEarnings / todayDeliveries)}` : "₹0"}
+              </p>
+              <p className="text-xs text-slate-400">Avg/Delivery</p>
+            </div>
+          </div>
+        </div>
+
         {/* Last 7 Days Chart */}
         <div className="bg-white rounded-2xl p-5 shadow-sm">
           <h3 className="font-bold text-slate-800 mb-4">Last 7 Days</h3>
@@ -138,7 +220,7 @@ export default function RiderEarningsGoalsPage() {
                 {dailyData.map((amt, i) => (
                   <div key={i} className="flex-1 flex flex-col items-center gap-1">
                     <div className="w-full bg-[#0b50d5]/20 rounded-t-md relative" style={{ height: "100%" }}>
-                      <div 
+                      <div
                         className="absolute bottom-0 w-full bg-gradient-to-t from-[#0b50d5] to-[#4489ff] rounded-t-md transition-all"
                         style={{ height: `${Math.max((amt / chartMax) * 100, 4)}%` }}
                       />
@@ -155,19 +237,24 @@ export default function RiderEarningsGoalsPage() {
           )}
         </div>
 
-        {/* Today's Stats */}
+        {/* Recent Deliveries */}
         <div className="bg-white rounded-2xl p-5 shadow-sm">
-          <h3 className="font-bold text-slate-800 mb-3">Today</h3>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="bg-slate-50 p-3 rounded-xl text-center">
-              <p className="text-2xl font-black text-[#0b50d5]">{todayDeliveries}</p>
-              <p className="text-xs text-slate-400">Deliveries</p>
+          <h3 className="font-bold text-slate-800 mb-4">Recent Deliveries</h3>
+          {recentDeliveries.length === 0 ? (
+            <p className="text-sm text-slate-400 text-center py-4">No deliveries yet</p>
+          ) : (
+            <div className="space-y-3">
+              {recentDeliveries.map((d) => (
+                <div key={d.id} className="flex items-center justify-between py-2 border-b border-slate-50 last:border-0">
+                  <div>
+                    <p className="text-sm font-bold text-slate-700">#{d.order_id.slice(0, 6).toUpperCase()}</p>
+                    <p className="text-xs text-slate-400">{new Date(d.time).toLocaleDateString()} {new Date(d.time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</p>
+                  </div>
+                  <p className="text-sm font-bold text-green-600">+₹{d.amount}</p>
+                </div>
+              ))}
             </div>
-            <div className="bg-slate-50 p-3 rounded-xl text-center">
-              <p className="text-2xl font-black text-green-600">₹{todayEarnings}</p>
-              <p className="text-xs text-slate-400">Earned</p>
-            </div>
-          </div>
+          )}
         </div>
       </main>
 
@@ -181,7 +268,7 @@ export default function RiderEarningsGoalsPage() {
                 [500, 1000, 1500, 2000, 2500].map(amount => (
                   <button
                     key={amount}
-                    onClick={() => { setDailyTarget(amount); setShowSetGoal(false); }}
+                    onClick={() => setDailyTarget(amount)}
                     className={`w-full py-3 rounded-xl font-bold text-sm ${
                       dailyTarget === amount ? "bg-[#0b50d5] text-white" : "bg-slate-100 text-slate-700"
                     }`}
@@ -193,7 +280,7 @@ export default function RiderEarningsGoalsPage() {
                 [5000, 10000, 15000, 20000, 25000].map(amount => (
                   <button
                     key={amount}
-                    onClick={() => { setWeeklyTarget(amount); setShowSetGoal(false); }}
+                    onClick={() => setWeeklyTarget(amount)}
                     className={`w-full py-3 rounded-xl font-bold text-sm ${
                       weeklyTarget === amount ? "bg-[#0b50d5] text-white" : "bg-slate-100 text-slate-700"
                     }`}
@@ -203,14 +290,19 @@ export default function RiderEarningsGoalsPage() {
                 ))
               )}
             </div>
-            <button onClick={() => setShowSetGoal(false)} className="w-full mt-3 py-3 text-slate-500 font-bold text-sm rounded-xl">
+            <button
+              onClick={handleSaveGoal}
+              disabled={savingGoal}
+              className="w-full mt-3 py-3 bg-[#0b50d5] text-white font-bold rounded-xl disabled:opacity-50"
+            >
+              {savingGoal ? "Saving..." : "Save Goal"}
+            </button>
+            <button onClick={() => setShowSetGoal(false)} className="w-full mt-2 py-3 text-slate-500 font-bold text-sm rounded-xl">
               Cancel
             </button>
           </div>
         </div>
       )}
-
-
     </div>
   );
 }
