@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { getVendorForUser, getVendorMenuItems } from "@/lib/vendor";
@@ -13,17 +13,56 @@ export default function VendorDashboard() {
   const [isOpen, setIsOpen] = useState(true);
   const [loading, setLoading] = useState(true);
   const [menuItemNames, setMenuItemNames] = useState<Map<string, { name: string }>>(new Map());
+  const [weeklyRevenue, setWeeklyRevenue] = useState(0);
+  const [weeklyOrders, setWeeklyOrders] = useState(0);
+  const [newOrderAlert, setNewOrderAlert] = useState(false);
+  const [processingOrder, setProcessingOrder] = useState<string | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     init();
   }, []);
+
+  useEffect(() => {
+    if (!vendor?.id) return;
+
+    const channel = supabase
+      .channel(`vendor-orders-${vendor.id}`)
+      .on("postgres_changes", {
+        event: "INSERT",
+        schema: "public",
+        table: "orders",
+        filter: `vendor_id=eq.${vendor.id}`,
+      }, (payload) => {
+        const newOrder = payload.new as Order;
+        setOrders((prev) => [newOrder, ...prev]);
+        setNewOrderAlert(true);
+        playNewOrderSound();
+        setTimeout(() => setNewOrderAlert(false), 5000);
+      })
+      .on("postgres_changes", {
+        event: "UPDATE",
+        schema: "public",
+        table: "orders",
+        filter: `vendor_id=eq.${vendor.id}`,
+      }, (payload) => {
+        const updated = payload.new as Order;
+        setOrders((prev) => prev.map((o) => (o.id === updated.id ? { ...o, ...updated } : o)));
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [vendor?.id]);
 
   async function init() {
     const v = await getVendorForUser();
     if (v) {
       setVendor({ id: v.id, shop_name: v.shop_name, status: v.status, rating: v.rating || 0, review_count: v.review_count || 0, type: v.type });
       setIsOpen(v.status === "active");
-      loadOrders(v.id);
+      await loadOrders(v.id);
+      await loadWeeklyStats(v.id);
     }
     setLoading(false);
   }
@@ -41,11 +80,88 @@ export default function VendorDashboard() {
     }
   }
 
+  async function loadWeeklyStats(vendorId: string) {
+    const weekAgo = new Date();
+    weekAgo.setDate(weekAgo.getDate() - 7);
+    const { data } = await supabase
+      .from("orders")
+      .select("total_amount, status")
+      .eq("vendor_id", vendorId)
+      .gte("placed_at", weekAgo.toISOString())
+      .in("status", ["delivered"]);
+    if (data) {
+      setWeeklyRevenue(data.reduce((s, o) => s + (o.total_amount || 0), 0));
+      setWeeklyOrders(data.length);
+    }
+  }
+
+  function playNewOrderSound() {
+    try {
+      const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = 880;
+      osc.type = "sine";
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.5);
+    } catch (_) {}
+  }
+
   const toggleOpen = async () => {
     if (!vendor) return;
     const newStatus = isOpen ? "inactive" : "active";
     await supabase.from("vendors").update({ status: newStatus }).eq("id", vendor.id);
     setIsOpen(!isOpen);
+  };
+
+  const handleAcceptOrder = async (orderId: string) => {
+    setProcessingOrder(orderId);
+    try {
+      await supabase
+        .from("orders")
+        .update({ status: "accepted", accepted_at: new Date().toISOString() })
+        .eq("id", orderId);
+      setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status: "accepted" } : o)));
+    } catch (err) {
+      console.error("Failed to accept order:", err);
+    } finally {
+      setProcessingOrder(null);
+    }
+  };
+
+  const handleMarkReady = async (orderId: string) => {
+    setProcessingOrder(orderId);
+    try {
+      await supabase
+        .from("orders")
+        .update({ status: "ready_for_pickup", ready_at: new Date().toISOString() })
+        .eq("id", orderId);
+      setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status: "ready_for_pickup" } : o)));
+    } catch (err) {
+      console.error("Failed to mark ready:", err);
+    } finally {
+      setProcessingOrder(null);
+    }
+  };
+
+  const handleCancelOrder = async (orderId: string) => {
+    if (!confirm("Are you sure you want to cancel this order?")) return;
+    setProcessingOrder(orderId);
+    try {
+      await supabase
+        .from("orders")
+        .update({ status: "cancelled", cancellation_reason: "Cancelled by vendor" })
+        .eq("id", orderId);
+      setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status: "cancelled" } : o)));
+    } catch (err) {
+      console.error("Failed to cancel order:", err);
+    } finally {
+      setProcessingOrder(null);
+    }
   };
 
   const todayOrders = orders.filter((o) => {
@@ -63,6 +179,7 @@ export default function VendorDashboard() {
     .reduce((sum, o) => sum + (o.items?.reduce((s, i) => s + i.quantity, 0) || 0), 0);
 
   const pendingOrders = orders.filter((o) => o.status === "pending");
+  const activeOrders = orders.filter((o) => ["accepted", "preparing"].includes(o.status));
   const recentOrders = orders.slice(0, 5);
 
   if (loading) {
@@ -78,7 +195,7 @@ export default function VendorDashboard() {
       <div className="p-8 flex flex-col items-center justify-center min-h-[60vh] text-center">
         <span className="material-symbols-outlined text-6xl text-slate-300 mb-4">storefront</span>
         <h2 className="text-2xl font-extrabold text-slate-800 mb-2">No Vendor Found</h2>
-        <p className="text-slate-500 mb-6">You don't have a vendor account yet. Register to start selling.</p>
+        <p className="text-slate-500 mb-6">You don&apos;t have a vendor account yet. Register to start selling.</p>
         <Link
           href="/partner/register"
           className="bg-[#ba001c] text-white px-8 py-4 rounded-2xl font-bold hover:bg-[#a40017] transition-colors"
@@ -91,6 +208,26 @@ export default function VendorDashboard() {
 
   return (
     <div className="p-4 md:p-8 space-y-8">
+      <audio ref={audioRef} preload="auto" />
+
+      {/* New Order Alert Banner */}
+      {newOrderAlert && (
+        <div className="fixed top-4 left-4 right-4 z-50 bg-gradient-to-r from-[#ba001c] to-[#ff4444] text-white p-4 rounded-2xl shadow-2xl animate-bounce">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="material-symbols-outlined animate-bounce">notification_important</span>
+              <div>
+                <p className="font-bold text-lg">New Order Received!</p>
+                <p className="text-sm opacity-90">Tap to view details</p>
+              </div>
+            </div>
+            <button onClick={() => setNewOrderAlert(false)} className="p-2">
+              <span className="material-symbols-outlined">close</span>
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -113,7 +250,7 @@ export default function VendorDashboard() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
           <div className="flex items-center justify-between mb-3">
             <span className="material-symbols-outlined text-slate-400">receipt_long</span>
@@ -122,7 +259,7 @@ export default function VendorDashboard() {
             </span>
           </div>
           <p className="text-3xl font-black text-slate-900">{todayOrders.length}</p>
-          <p className="text-sm text-slate-500 font-medium mt-1">Today's Orders</p>
+          <p className="text-sm text-slate-500 font-medium mt-1">Today&apos;s Orders</p>
         </div>
 
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
@@ -130,7 +267,7 @@ export default function VendorDashboard() {
             <span className="material-symbols-outlined text-slate-400">paid</span>
           </div>
           <p className="text-3xl font-black text-slate-900">₹{todayRevenue.toFixed(0)}</p>
-          <p className="text-sm text-slate-500 font-medium mt-1">Today's Revenue</p>
+          <p className="text-sm text-slate-500 font-medium mt-1">Today&apos;s Revenue</p>
         </div>
 
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
@@ -149,10 +286,19 @@ export default function VendorDashboard() {
           <p className="text-3xl font-black text-slate-900">{todayItemsSold}</p>
           <p className="text-sm text-slate-500 font-medium mt-1">Items Sold Today</p>
         </div>
+
+        <div className="bg-gradient-to-br from-[#ba001c] to-[#ff4444] p-6 rounded-2xl shadow-sm text-white">
+          <div className="flex items-center justify-between mb-3">
+            <span className="material-symbols-outlined text-white/80">trending_up</span>
+            <span className="text-xs text-white/70 font-medium">7 days</span>
+          </div>
+          <p className="text-3xl font-black">₹{weeklyRevenue.toFixed(0)}</p>
+          <p className="text-sm text-white/80 font-medium mt-1">Weekly Revenue ({weeklyOrders} orders)</p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Pending Orders */}
+        {/* Pending Orders with Quick Actions */}
         <div className="lg:col-span-2 space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
@@ -176,12 +322,12 @@ export default function VendorDashboard() {
           ) : (
             <div className="space-y-4">
               {pendingOrders.slice(0, 5).map((order) => (
-                <div key={order.id} className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+                <div key={order.id} className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 border-l-4 border-l-[#ba001c]">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                       <span className="font-extrabold text-slate-900">#{order.id.slice(0, 8).toUpperCase()}</span>
-                      <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-amber-100 text-amber-700 uppercase">
-                        {order.status}
+                      <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-amber-100 text-amber-700 uppercase animate-pulse">
+                        NEW
                       </span>
                     </div>
                     <span className="text-sm text-slate-400 font-medium">
@@ -201,15 +347,70 @@ export default function VendorDashboard() {
                   </div>
                   <div className="flex items-center justify-between pt-3 border-t border-slate-100">
                     <p className="font-extrabold text-lg text-[#ba001c]">₹{order.total_amount.toFixed(2)}</p>
-                    <Link
-                      href="/partner/pos"
-                      className="text-sm font-bold text-[#ba001c] hover:underline"
-                    >
-                      Process in POS →
-                    </Link>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleCancelOrder(order.id)}
+                        disabled={processingOrder === order.id}
+                        className="px-3 py-1.5 text-xs font-bold bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 disabled:opacity-50 transition-all"
+                      >
+                        Decline
+                      </button>
+                      <button
+                        onClick={() => handleAcceptOrder(order.id)}
+                        disabled={processingOrder === order.id}
+                        className="px-4 py-1.5 text-xs font-bold bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:opacity-50 transition-all"
+                      >
+                        {processingOrder === order.id ? "..." : "Accept"}
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
+            </div>
+          )}
+
+          {/* Active Orders */}
+          {activeOrders.length > 0 && (
+            <div className="mt-6">
+              <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2 mb-4">
+                <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
+                Preparing ({activeOrders.length})
+              </h2>
+              <div className="space-y-4">
+                {activeOrders.map((order) => (
+                  <div key={order.id} className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 border-l-4 border-l-blue-500">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <span className="font-extrabold text-slate-900">#{order.id.slice(0, 8).toUpperCase()}</span>
+                        <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-blue-100 text-blue-700 uppercase">
+                          {order.status}
+                        </span>
+                      </div>
+                      <span className="text-sm text-slate-400 font-medium">
+                        {new Date(order.placed_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                      </span>
+                    </div>
+                    <div className="space-y-1 mb-3">
+                      {order.items?.slice(0, 2).map((item, i) => (
+                        <p key={i} className="text-sm text-slate-600">
+                          <span className="font-bold text-slate-400 mr-1">{item.quantity}x</span>
+                          {menuItemNames.get(item.menu_item_id)?.name || "Item"}
+                        </p>
+                      ))}
+                    </div>
+                    <div className="flex items-center justify-between pt-3 border-t border-slate-100">
+                      <p className="font-extrabold text-lg text-blue-600">₹{order.total_amount.toFixed(2)}</p>
+                      <button
+                        onClick={() => handleMarkReady(order.id)}
+                        disabled={processingOrder === order.id}
+                        className="px-4 py-2 text-xs font-bold bg-[#0b50d5] text-white rounded-lg hover:bg-[#0044bf] disabled:opacity-50 transition-all"
+                      >
+                        {processingOrder === order.id ? "..." : "Mark Ready for Pickup"}
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>
