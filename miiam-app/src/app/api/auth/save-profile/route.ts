@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient, createClient } from "@/lib/supabase/server";
+import { getClientIp, checkIpRateLimit } from "@/lib/security";
 
 export async function POST(request: NextRequest) {
+  const ip = getClientIp(request);
+  if (!checkIpRateLimit(ip, 20, 60_000)) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {

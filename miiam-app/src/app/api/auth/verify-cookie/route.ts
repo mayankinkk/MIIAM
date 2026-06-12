@@ -2,9 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createAdminClient } from "@/lib/supabase/server";
 import crypto from "crypto";
-import { signHmac } from "@/lib/security";
+import { signHmac, getClientIp, checkIpRateLimit } from "@/lib/security";
 
 export async function POST(request: NextRequest) {
+  const ip = getClientIp(request);
+  if (!checkIpRateLimit(ip, 20, 60_000)) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
   try {
     const { email, purpose } = await request.json();
 

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import Razorpay from "razorpay";
-import { checkCsrf } from "@/lib/security";
+import { checkCsrf, getClientIp, checkIpRateLimit } from "@/lib/security";
 import { createRouteLogger } from "@/lib/logger";
 
 const razorpay = new Razorpay({
@@ -10,6 +10,11 @@ const razorpay = new Razorpay({
 });
 
 export async function POST(req: NextRequest) {
+  const ip = getClientIp(req);
+  if (!checkIpRateLimit(ip, 10, 60_000)) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
   const logger = createRouteLogger("wallet/add-money");
   try {
     const supabase = await createClient();
