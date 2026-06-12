@@ -90,7 +90,7 @@ export default function OrdersPage() {
 
       if (ordersError) {
         console.error("Fetch orders error:", ordersError.message);
-        addToast("Failed to load orders. Please try again.", "error");
+        addToast(t.orders.loadFailed, "error");
         throw ordersError;
       }
       
@@ -113,7 +113,7 @@ export default function OrdersPage() {
       }
     } catch (error: any) {
       console.error("Error fetching orders:", error?.message || error);
-      addToast("Failed to load orders. Please try again.", "error");
+      addToast(t.orders.loadFailed, "error");
     } finally {
       setLoading(false);
     }

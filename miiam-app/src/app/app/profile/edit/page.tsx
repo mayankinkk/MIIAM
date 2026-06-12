@@ -67,7 +67,7 @@ export default function EditProfilePage() {
       setUploading(true);
       
       if (!event.target.files || event.target.files.length === 0) {
-        throw new Error("You must select an image to upload.");
+        throw new Error(t.profile.selectImage);
       }
 
       const file = event.target.files[0];
@@ -98,16 +98,16 @@ export default function EditProfilePage() {
     setError(null);
 
     if (!formData.fullName.trim()) {
-      addToast("Please enter your full name", "error");
+      addToast(t.profile.enterFullName, "error");
       return;
     }
     const phoneDigits = formData.phone.replace(/\D/g, '');
     if (phoneDigits.length !== 10) {
-      addToast("Please enter a valid 10-digit phone number", "error");
+      addToast(t.profile.invalidPhone, "error");
       return;
     }
     if (!formData.email.includes('@') || !formData.email.includes('.')) {
-      addToast("Please enter a valid email address", "error");
+      addToast(t.profile.invalidEmail, "error");
       return;
     }
 
@@ -186,12 +186,12 @@ export default function EditProfilePage() {
                 className="hidden"
               />
               <button type="button" onClick={() => fileInputRef.current?.click()} disabled={uploading} className="text-secondary text-sm font-bold hover:underline disabled:opacity-50">
-                {uploading ? "Uploading..." : "Change Photo"}
+                {uploading ? t.profile.uploading : t.profile.changePhoto}
               </button>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2 px-1">Full Name</label>
+              <label className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2 px-1">{t.profile.fullName}</label>
               <input
                 type="text"
                 required
@@ -203,18 +203,18 @@ export default function EditProfilePage() {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2 px-1">Email Address</label>
+              <label className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2 px-1">{t.profile.emailAddress}</label>
               <input
                 type="email"
                 disabled
                 value={formData.email}
                 className="w-full bg-[#f8f9fa] border-none rounded-xl px-5 py-4 text-on-surface-variant cursor-not-allowed opacity-70 font-medium"
               />
-              <p className="text-[10px] text-on-surface-variant mt-2 px-1 font-medium">Email address cannot be changed from this screen.</p>
+              <p className="text-[10px] text-on-surface-variant mt-2 px-1 font-medium">{t.profile.emailCannotChange}</p>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2 px-1">Phone Number</label>
+              <label className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2 px-1">{t.profile.phoneNumber}</label>
               <input
                 type="tel"
                 value={formData.phone}
@@ -230,12 +230,12 @@ export default function EditProfilePage() {
             disabled={saving || uploading}
             className="w-full bento-gradient-red text-white py-5 rounded-xl font-extrabold text-lg shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-70 flex justify-center items-center gap-2"
           >
-            {saving ? (
-              <>
-                <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                Saving...
-              </>
-            ) : t.common.save}
+                {saving ? (
+                  <>
+                    <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    {t.profile.saving}
+                  </>
+                ) : t.common.save}
           </button>
         </form>
       </main>

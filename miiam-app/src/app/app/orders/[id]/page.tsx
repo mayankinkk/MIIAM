@@ -19,26 +19,30 @@ import PendingOrderCard from "@/components/order/PendingOrderCard";
 import { useOrderRealtime } from "@/lib/hooks/useOrderRealtime";
 import { useUnreadMessages } from "@/lib/hooks/useUnreadMessages";
 
-const foodSteps = [
-  { key: "pending", label: "Order Placed", icon: "receipt_long", time: "" },
-  { key: "accepted", label: "Order Accepted", icon: "check_circle", time: "" },
-  { key: "preparing", label: "Preparing", icon: "skillet", time: "" },
-  { key: "ready_for_pickup", label: "Ready for Pickup", icon: "inventory_2", time: "" },
-  { key: "shopping", label: "Shopping", icon: "shopping_cart", time: "" },
-  { key: "picking_up", label: "Picking Up", icon: "storefront", time: "" },
-  { key: "on_the_way", label: "On the Way", icon: "directions_bike", time: "" },
-  { key: "arrived", label: "Arrived", icon: "location_on", time: "" },
-  { key: "delivered", label: "Delivered", icon: "home_pin", time: "" },
-];
+function getFoodSteps(t: any) {
+  return [
+    { key: "pending", label: t.orders.orderPlaced, icon: "receipt_long", time: "" },
+    { key: "accepted", label: t.orders.orderAccepted, icon: "check_circle", time: "" },
+    { key: "preparing", label: t.orders.preparing, icon: "skillet", time: "" },
+    { key: "ready_for_pickup", label: t.orders.readyForPickup, icon: "inventory_2", time: "" },
+    { key: "shopping", label: t.orders.shopping, icon: "shopping_cart", time: "" },
+    { key: "picking_up", label: t.orders.pickingUp, icon: "storefront", time: "" },
+    { key: "on_the_way", label: t.orders.onTheWay, icon: "directions_bike", time: "" },
+    { key: "arrived", label: t.orders.arrived, icon: "location_on", time: "" },
+    { key: "delivered", label: t.orders.delivered, icon: "home_pin", time: "" },
+  ];
+}
 
-const printSteps = [
-  { key: "pending", label: "Order Placed", icon: "receipt_long", time: "" },
-  { key: "processing", label: "Printing in Progress", icon: "print", time: "" },
-  { key: "ready_for_pickup", label: "Ready for Pickup", icon: "inventory_2", time: "" },
-  { key: "on_the_way", label: "On the Way", icon: "directions_bike", time: "" },
-  { key: "arrived", label: "Arrived", icon: "location_on", time: "" },
-  { key: "delivered", label: "Delivered", icon: "home_pin", time: "" },
-];
+function getPrintSteps(t: any) {
+  return [
+    { key: "pending", label: t.orders.orderPlaced, icon: "receipt_long", time: "" },
+    { key: "processing", label: t.orders.printingInProgress, icon: "print", time: "" },
+    { key: "ready_for_pickup", label: t.orders.readyForPickup, icon: "inventory_2", time: "" },
+    { key: "on_the_way", label: t.orders.onTheWay, icon: "directions_bike", time: "" },
+    { key: "arrived", label: t.orders.arrived, icon: "location_on", time: "" },
+    { key: "delivered", label: t.orders.delivered, icon: "home_pin", time: "" },
+  ];
+}
 
 export default function OrderTrackingPage({ params }: { params: Promise<{ id: string }> }) {
   const { t } = useTranslation();
@@ -73,23 +77,23 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
       const { error } = await supabase.from("orders").update(updates).eq("id", id).eq("user_id", currentUserId);
       if (error) throw error;
       setOrder((prev: any) => prev ? { ...prev, ...updates } : prev);
-      addToast("Order cancelled successfully", "success");
+      addToast(t.orders.orderCancelledSuccess, "success");
     } catch (error) {
       console.error("Cancel error:", error);
-      addToast("Failed to cancel order. Please try again.", "error");
+      addToast(t.orders.cancelFailed, "error");
     }
     setShowCancelReason(false);
   };
 
   const riderInfo = order?.riders
     ? {
-        name: order.riders.name || "Rider",
+        name: order.riders.name || t.orders.rider,
         image: order.riders.profile_image || "https://ui-avatars.com/api/?name=Rider&background=0b50d5&color=fff",
         rating: order.riders.rating || 4.9,
         phone: order.riders.phone,
       }
     : {
-        name: "Assigning Rider...",
+        name: t.orders.assigningRider,
         image: "https://ui-avatars.com/api/?name=Rider&background=0b50d5&color=fff",
         rating: 0,
       };
@@ -106,8 +110,8 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
     return (
       <div className="min-h-screen bg-surface flex flex-col items-center justify-center text-on-surface p-6">
         <span className="text-6xl mb-4">🔍</span>
-        <h2 className="text-xl font-bold mb-2">Order not found</h2>
-        <p className="text-on-surface-variant text-center mb-6">We couldn&apos;t find this order. It may have been removed or you may not have permission to view it.</p>
+        <h2 className="text-xl font-bold mb-2">{t.orders.orderNotFound}</h2>
+        <p className="text-on-surface-variant text-center mb-6">{t.orders.orderNotFoundDesc}</p>
         <Link href="/app/orders" className="bg-primary text-white px-6 py-3 rounded-xl font-bold">
           {t.orders.viewAllOrders}
         </Link>
@@ -118,7 +122,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
     );
   }
 
-  const steps = order?.vendor_id === PRINTING_VENDOR_ID ? printSteps : foodSteps;
+  const steps = order?.vendor_id === PRINTING_VENDOR_ID ? getPrintSteps(t) : getFoodSteps(t);
   const currentStepIndex = steps.findIndex((s) => s.key === order.status);
 
   return (
@@ -134,9 +138,9 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                 {trackingInfo && (
                   <div className="absolute top-4 right-4 bg-white/90 backdrop-blur rounded-full px-4 py-3 shadow-lg flex items-center gap-2" style={{ zIndex: 10 }}>
                     <div className="text-center">
-                      <p className="text-[10px] text-[#5c403d] font-bold uppercase tracking-wider">ETA</p>
-                      <p className="text-xl font-black text-primary leading-none">{trackingInfo.eta} <span className="text-xs">MINS</span></p>
-                      <p className="text-[10px] text-[#5c403d] font-medium">{trackingInfo.distance} km · {trackingInfo.leg === "to_pickup" ? "to pickup" : "to you"}</p>
+                      <p className="text-[10px] text-[#5c403d] font-bold uppercase tracking-wider">{t.orders.eta}</p>
+                      <p className="text-xl font-black text-primary leading-none">{trackingInfo.eta} <span className="text-xs">{t.orders.minsUnit}</span></p>
+                      <p className="text-[10px] text-[#5c403d] font-medium">{trackingInfo.distance} km · {trackingInfo.leg === "to_pickup" ? t.orders.toPickup : t.orders.toYou}</p>
                     </div>
                   </div>
                 )}
@@ -194,7 +198,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
             currentUserId={currentUserId}
             senderType="user"
             thread={showChat === "vendor" ? "user-vendor" : "user-rider"}
-            otherName={showChat === "vendor" ? (order.vendor?.name || (order.vendor_id === PRINTING_VENDOR_ID ? "Print Store" : "Restaurant")) : (riderInfo?.name || "Rider")}
+            otherName={showChat === "vendor" ? (order.vendor?.name || (order.vendor_id === PRINTING_VENDOR_ID ? t.orders.printStore : "Restaurant")) : (riderInfo?.name || t.orders.rider)}
             otherAvatar={showChat === "vendor" ? order.vendor?.image_url || order.vendor?.logo_url || undefined : riderInfo?.image}
             onClose={() => setShowChat(null)}
           />

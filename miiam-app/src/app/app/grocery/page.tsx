@@ -3,19 +3,20 @@
 import ServiceProductGrid from "@/components/ServiceProductGrid";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 
-const groceryCategories = [
-  { id: "fruits", name: "Fruits", icon: "\uD83C\uDF4E", color: "bg-red-100" },
-  { id: "vegetables", name: "Vegetables", icon: "\uD83E\uDD6C", color: "bg-green-100" },
-  { id: "dairy", name: "Dairy", icon: "\uD83E\uDD5B", color: "bg-blue-100" },
-  { id: "bakery", name: "Bakery", icon: "\uD83C\uDF5E", color: "bg-amber-100" },
-  { id: "spices", name: "Spices", icon: "\uD83C\uDF36\uFE0F", color: "bg-orange-100" },
-  { id: "pulses", name: "Pulses", icon: "\uD83E\uDED8", color: "bg-brown-100" },
-  { id: "oils", name: "Oils", icon: "\uD83E\uDED7", color: "bg-yellow-100" },
-  { id: "beverages", name: "Beverages", icon: "\uD83E\uDD67", color: "bg-purple-100" },
-];
+
 
 export default function GroceryPage() {
   const { t } = useTranslation();
+  const groceryCategories = [
+    { id: "fruits", name: t.grocery.fruits, icon: "\uD83C\uDF4E", color: "bg-red-100" },
+    { id: "vegetables", name: t.grocery.vegetables, icon: "\uD83E\uDD6C", color: "bg-green-100" },
+    { id: "dairy", name: t.grocery.dairy, icon: "\uD83E\uDD5B", color: "bg-blue-100" },
+    { id: "bakery", name: t.grocery.bakery, icon: "\uD83C\uDF5E", color: "bg-amber-100" },
+    { id: "spices", name: t.grocery.spices, icon: "\uD83C\uDF36\uFE0F", color: "bg-orange-100" },
+    { id: "pulses", name: t.grocery.pulses, icon: "\uD83E\uDED8", color: "bg-brown-100" },
+    { id: "oils", name: t.grocery.oils, icon: "\uD83E\uDED7", color: "bg-yellow-100" },
+    { id: "beverages", name: t.grocery.beverages, icon: "\uD83E\uDD67", color: "bg-purple-100" },
+  ];
   return (
     <ServiceProductGrid
       serviceName="Grocery"

@@ -56,14 +56,14 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
         value: date.toISOString().split("T")[0],
         label:
           d === 0
-            ? "Today"
+            ? t.common.today
             : d === 1
-            ? "Tomorrow"
+            ? t.common.tomorrow
             : date.toLocaleDateString("en-IN", { weekday: "short", month: "short", day: "numeric" }),
       };
     });
     setDateOptions(options);
-  }, []);
+  }, [t]);
 
   const canProceed = selectedDate && selectedSlot && address.trim();
 
@@ -141,7 +141,7 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
               {t.services.reviewBooking}
             </button>
             <button onClick={() => { onClose(); if (navigator.vibrate) navigator.vibrate(10); }} className="w-full mt-3 py-3 text-on-surface-variant font-semibold text-sm hover:text-on-surface transition-colors">
-              Cancel
+              {t.common.cancel}
             </button>
           </>
         )}
@@ -182,7 +182,7 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
             <button
               onClick={async () => {
                 if (booking) return;
-                if (!address.trim()) { addToast("Please enter your service address", "error"); return; }
+                if (!address.trim()) { addToast(t.services.pleaseEnterAddress, "error"); return; }
                 setBooking(true);
                 // Simulate booking delay
                 await new Promise(resolve => setTimeout(resolve, 500));
@@ -221,7 +221,7 @@ function BookingModal({ service, onClose }: { service: Service; onClose: () => v
               onClick={() => { onClose(); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }}
               className="w-full bg-primary text-white py-4 rounded-2xl font-bold text-base hover:bg-primary-dim transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
-              Done
+              {t.common.done}
             </button>
           </div>
         )}
@@ -255,7 +255,7 @@ const services = [
     image: "https://images.unsplash.com/photo-1631564591547-4d46fe7c9c0a?w=400&q=80", 
     included: ["Complete interior cleaning", "Filter cleaning", "Coil cleaning", "Gas check"],
     warranty_days: 30,
-    badge: "Most Popular"
+    badge: "mostPopular"
   },
   { 
     id: "s2", 
@@ -295,7 +295,7 @@ const services = [
     image: "/images/service_cleaning.png", 
     included: ["All rooms", "Kitchen", "Bathrooms", "Balcony"],
     warranty_days: 7,
-    badge: "Best Seller"
+    badge: "bestSeller"
   },
   { 
     id: "s5", 
@@ -411,7 +411,7 @@ const services = [
     image: "/images/service_beauty.png", 
     included: ["Haircut", "Oiling", " blow dry", "Styling"],
     warranty_days: 7,
-    badge: "Popular"
+    badge: "popular"
   },
   { 
     id: "s14", 
@@ -424,7 +424,7 @@ const services = [
     image: "/images/service_beauty.png", 
     included: ["Body massage", "Scrub", "Facial", "Steam"],
     warranty_days: 7,
-    badge: "Premium"
+    badge: "premium"
   },
   { 
     id: "s15", 
@@ -499,7 +499,7 @@ const services = [
     image: "https://images.unsplash.com/photo-1624355284486-a4de69fc7241?w=400&q=80", 
     included: ["Inspection", "Chemical treatment", "Barriers"],
     warranty_days: 365,
-    badge: "Professional"
+    badge: "professional"
   },
   { 
     id: "s21", 
@@ -688,7 +688,7 @@ function ServicesContent() {
         <p className="text-sm text-on-surface-variant mt-1">{t.services.subtitle}</p>
       </header>
 
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Home Services' }]} />
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: t.services.homeServices }]} />
 
       <PullToRefresh onRefresh={async () => {
         await checkServiceability();
@@ -699,15 +699,15 @@ function ServicesContent() {
         <div className="bg-surface-container-low border-b border-amber-200 px-6 py-3 flex items-center gap-3">
           <span className="material-symbols-outlined text-amber-600 text-xl animate-bounce">warning</span>
           <div className="flex-1">
-            <p className="text-xs font-bold text-amber-800">Not serviceable at {userPincode ? `Pincode ${userPincode}` : userCity}</p>
-            <p className="text-[10px] text-amber-600 font-medium">Home services are not yet available in your area. You can still browse our services!</p>
+            <p className="text-xs font-bold text-amber-800">{t.services.notServiceable} {userPincode ? `Pincode ${userPincode}` : userCity}</p>
+            <p className="text-[10px] text-amber-600 font-medium">{t.services.notServiceableDesc}</p>
           </div>
         </div>
       )}
       {isServiceable && (userPincode || userCity) && (
         <div className="bg-surface-container-low border-b border-green-200 px-6 py-2 flex items-center gap-2">
           <span className="material-symbols-outlined text-green-600 text-sm">location_on</span>
-          <p className="text-[11px] font-bold text-green-700">Providing doorstep home services to {userPincode ? `Pincode ${userPincode}` : userCity}</p>
+          <p className="text-[11px] font-bold text-green-700">{t.services.providingServices} {userPincode ? `Pincode ${userPincode}` : userCity}</p>
         </div>
       )}
 
@@ -759,7 +759,7 @@ function ServicesContent() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
               {service.badge && (
                 <span className="absolute top-3 left-3 bg-surface-container-lowest/95 backdrop-blur-sm text-green-600 dark:text-green-400 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wide shadow-sm">
-                  {service.badge}
+                  {t.services[service.badge as keyof typeof t.services] || service.badge}
                 </span>
               )}
               {service.originalPrice && (
@@ -810,7 +810,7 @@ function ServicesContent() {
                 <button
                   onClick={() => {
                     if (!isServiceable) {
-                      addToast("Cannot book: Home services are not serviceable at your selected location!", "error");
+                      addToast(t.services.cannotBook, "error");
                     } else {
                       setBookingService(service as Service);
                     }

@@ -42,14 +42,14 @@ function parseIsOpen(hours: string | null | undefined): boolean {
   } catch { return true; }
 }
 
-const DEFAULT_BANNERS = [
-  { id: "1", label: "🔥 Today's Deal", title: "50% OFF your first order", sub: "Use code FIRST50", color: "from-primary to-primary-container", image_url: "" },
-  { id: "2", label: "⚡ Flash Sale", title: "Free delivery all day", sub: "On orders above ₹299", color: "from-violet-600 to-purple-400", image_url: "" },
-  { id: "3", label: "🌟 New Arrival", title: "Try something new", sub: "Freshly added restaurants", color: "from-amber-500 to-yellow-300", image_url: "" },
-];
-
 function PromoBannerCarousel() {
-  const [banners, setBanners] = useState<any[]>(DEFAULT_BANNERS);
+  const { t } = useTranslation();
+  const defaultBanners = [
+    { id: "1", label: t.food.promoteTitle, title: "50% OFF your first order", sub: "Use code FIRST50", color: "from-primary to-primary-container", image_url: "" },
+    { id: "2", label: "⚡ Flash Sale", title: "Free delivery all day", sub: "On orders above ₹299", color: "from-violet-600 to-purple-400", image_url: "" },
+    { id: "3", label: "🌟 New Arrival", title: "Try something new", sub: "Freshly added restaurants", color: "from-amber-500 to-yellow-300", image_url: "" },
+  ];
+  const [banners, setBanners] = useState<any[]>(defaultBanners);
   const [active, setActive] = useState(0);
 
   useEffect(() => {
@@ -65,7 +65,7 @@ function PromoBannerCarousel() {
           id: b.id,
           label: "📣 Promotion",
           title: b.title,
-          sub: b.link_url || "Check out this offer!",
+          sub: b.link_url || t.food.promoteDesc,
           color: "from-primary to-primary-container",
           image_url: b.image_url,
         })));
@@ -122,24 +122,18 @@ function PromoBannerCarousel() {
   );
 }
 
-const foodCategories = [
-  { id: "pizza", name: "Pizza", icon: "🍕", color: "bg-orange-100" },
-  { id: "burgers", name: "Burgers", icon: "🍔", color: "bg-amber-100" },
-  { id: "biryani", name: "Biryani", icon: "🍚", color: "bg-yellow-100" },
-  { id: "chinese", name: "Chinese", icon: "🥡", color: "bg-red-100" },
-  { id: "italian", name: "Italian", icon: "🍝", color: "bg-green-100" },
-  { id: "desserts", name: "Desserts", icon: "🍰", color: "bg-pink-100" },
-];
+
 
 type SortOption = "rating" | "delivery_time" | "price_low" | "price_high";
 
 function SortDropdown({ sort, setSort }: { sort: SortOption; setSort: (s: SortOption) => void }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const options: { value: SortOption; label: string }[] = [
-    { value: "rating", label: "★ Rating" },
-    { value: "delivery_time", label: "⚡ Delivery Time" },
-    { value: "price_low", label: "↓ Price: Low to High" },
-    { value: "price_high", label: "↑ Price: High to Low" },
+    { value: "rating", label: t.food.rating },
+    { value: "delivery_time", label: t.food.deliveryTime },
+    { value: "price_low", label: t.food.priceLowToHigh },
+    { value: "price_high", label: t.food.priceHighToLow },
   ];
   return (
     <div className="relative">
@@ -161,6 +155,7 @@ function SortDropdown({ sort, setSort }: { sort: SortOption; setSort: (s: SortOp
 }
 
 function PriceRangeFilter({ onApply }: { onApply: (min: number, max: number) => void }) {
+  const { t } = useTranslation();
   const [min, setMin] = useState(0);
   const [max, setMax] = useState(1000);
   const [open, setOpen] = useState(false);
@@ -172,13 +167,13 @@ function PriceRangeFilter({ onApply }: { onApply: (min: number, max: number) => 
       </button>
       {open && (
         <div className="absolute top-full right-0 mt-2 bg-surface-container-lowest rounded-xl shadow-lg border border-outline-variant z-20 p-4 min-w-[240px] animate-pop-in">
-          <p className="text-xs font-bold text-on-surface-variant mb-2">PRICE RANGE</p>
+          <p className="text-xs font-bold text-on-surface-variant mb-2">{t.food.priceRange}</p>
           <div className="flex gap-2 items-center">
-            <input type="number" value={min} onChange={(e) => setMin(Number(e.target.value))} className="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Min" />
+            <input type="number" value={min} onChange={(e) => setMin(Number(e.target.value))} className="w-full px-3 py-2 border rounded-lg text-sm" placeholder={t.food.min} />
             <span className="text-outline">-</span>
-            <input type="number" value={max} onChange={(e) => setMax(Number(e.target.value))} className="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Max" />
+            <input type="number" value={max} onChange={(e) => setMax(Number(e.target.value))} className="w-full px-3 py-2 border rounded-lg text-sm" placeholder={t.food.max} />
           </div>
-          <button onClick={() => { onApply(min, max); setOpen(false); if (navigator.vibrate) navigator.vibrate(15); }} className="w-full mt-3 py-2 bg-primary text-white text-sm font-bold rounded-lg active:scale-95 transition-transform">Apply</button>
+          <button onClick={() => { onApply(min, max); setOpen(false); if (navigator.vibrate) navigator.vibrate(15); }} className="w-full mt-3 py-2 bg-primary text-white text-sm font-bold rounded-lg active:scale-95 transition-transform">{t.food.apply}</button>
         </div>
       )}
     </div>
@@ -192,6 +187,7 @@ function AddToCartButton({
   item: { id: string; name: string; price: number; image_url?: string; is_veg?: boolean };
   restaurant: { id: string; shop_name?: string };
 }) {
+  const { t } = useTranslation();
   const { addItem, items, updateQuantity } = useCartStore();
   const { confirm } = useConfirm();
   const cartItem = items.find((i) => i.menu_item_id === item.id);
@@ -212,7 +208,7 @@ function AddToCartButton({
   }, [qty, prevQty]);
 
   const handleAdd = async () => {
-    if (isDifferentVendor && await confirm({ title: "Different Restaurant", message: `Your cart has items from another restaurant. Adding this will create separate orders. Continue?`, variant: "danger" })) {
+    if (isDifferentVendor && await confirm({ title: t.food.changeRestaurant, message: t.food.changeRestaurantDesc, variant: "danger" })) {
       addItem({
         id: item.id,
         menu_item_id: item.id,
@@ -246,7 +242,7 @@ function AddToCartButton({
         transition={{ duration: 0.4 }}
         className="px-4 py-1.5 bg-primary text-white text-xs font-bold rounded-full hover:bg-primary-dim shadow-sm"
       >
-        Add +
+        {t.common.add}
       </motion.button>
     );
   }
@@ -277,6 +273,7 @@ function AddToCartButton({
 }
 
 function CartFloater() {
+  const { t } = useTranslation();
   const { items, totalPrice, totalItems } = useCartStore();
   const [showAnimation, setShowAnimation] = useState(false);
   const itemCount = useMemo(() => totalItems(), [items]);
@@ -323,7 +320,7 @@ function CartFloater() {
               />
             )}
           </div>
-          <span className="font-bold">View Cart</span>
+          <span className="font-bold">{t.common.viewCart}</span>
         </div>
         <div className="flex items-center gap-2">
           <span className="font-black text-lg">₹{totalPrice().toFixed(2)}</span>
@@ -336,6 +333,14 @@ function CartFloater() {
 
 export default function FoodPageContent() {
   const { t } = useTranslation();
+  const foodCategories = [
+    { id: "pizza", name: t.food.pizza, icon: "🍕", color: "bg-orange-100" },
+    { id: "burgers", name: t.food.burgers, icon: "🍔", color: "bg-amber-100" },
+    { id: "biryani", name: t.food.biryani, icon: "🍚", color: "bg-yellow-100" },
+    { id: "chinese", name: t.food.chinese, icon: "🥡", color: "bg-red-100" },
+    { id: "italian", name: t.food.italian, icon: "🍝", color: "bg-green-100" },
+    { id: "desserts", name: "Desserts", icon: "🍰", color: "bg-pink-100" },
+  ];
   const { getSetting } = useServiceSettingsStore();
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [vegFilter, setVegFilter] = useState<"all" | "veg" | "non_veg">("all");
@@ -479,7 +484,7 @@ export default function FoodPageContent() {
           </p>
           {noLocalVendors && (
             <button onClick={() => { window.location.href = "/app/home?selectLocation=true"; }} className="text-[10px] font-black text-primary underline whitespace-nowrap">
-              Change
+              {t.common.change}
             </button>
           )}
         </div>
@@ -600,12 +605,12 @@ export default function FoodPageContent() {
                     <span className={`material-symbols-outlined text-lg ${favorites.has(restaurant.id) ? "text-red-500" : "text-outline"}`}>favorite</span>
                   </button>
                   {restaurant.is_new && (
-                    <span className="absolute top-2 left-2 bg-green-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full">NEW</span>
+                    <span className="absolute top-2 left-2 bg-green-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full">{t.food.new}</span>
                   )}
                   {(() => { const open = parseIsOpen(restaurant.opening_hours); return (
                     <span className={`absolute bottom-0 left-0 right-0 text-[9px] font-black text-center py-0.5 ${
                       open ? "bg-green-600/90 text-white" : "bg-black/60 text-white"
-                    }`}>{open ? "OPEN" : "CLOSED"}</span>
+                    }`}>{open ? t.food.open : t.food.closed}</span>
                   );})()}
                 </div>
                 <div className="p-4 flex-1">
@@ -622,7 +627,7 @@ export default function FoodPageContent() {
                   <div className="flex items-center gap-2 mt-1.5">
                     <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded font-medium">★ {restaurant.rating || "4.0"}</span>
                     <span className="text-xs text-outline">•</span>
-                    <span className="text-xs text-on-surface-variant">{restaurant.delivery_time_min ? `${restaurant.delivery_time_min}–${restaurant.delivery_time_max || restaurant.delivery_time_min + 15} min` : restaurant.delivery_time_minutes ? `${restaurant.delivery_time_minutes - 5}–${restaurant.delivery_time_minutes + 5} min` : restaurant.delivery_time || "30-40 min"}</span>
+                    <span className="text-xs text-on-surface-variant">{restaurant.delivery_time_min ? `${restaurant.delivery_time_min}–${restaurant.delivery_time_max || restaurant.delivery_time_min + 15} ${t.food.mins}` : restaurant.delivery_time_minutes ? `${restaurant.delivery_time_minutes - 5}–${restaurant.delivery_time_minutes + 5} ${t.food.mins}` : restaurant.delivery_time || `30-40 ${t.food.mins}`}</span>
                   </div>
                   <p className="text-xs text-on-surface-variant mt-1">{t.food.deliveryCharge} {restaurant.delivery_charge ? `₹${restaurant.delivery_charge}` : "₹49"}</p>
                   <div className="mt-2 flex items-center gap-1 text-primary font-bold text-xs">

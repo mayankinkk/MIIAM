@@ -222,7 +222,7 @@ export default function CartPage() {
                   </div>
                   <div className="min-w-0">
                     <h2 className="text-base font-bold tracking-tight truncate">{vendor.name}</h2>
-                    <p className="text-[10px] font-medium text-primary uppercase tracking-widest">Priority Delivery</p>
+                    <p className="text-[10px] font-medium text-primary uppercase tracking-widest">{t.cart.priorityDelivery}</p>
                   </div>
                 </div>
                 <div className="space-y-3 relative z-10">
@@ -273,14 +273,14 @@ export default function CartPage() {
                           onClick={() => removeItem(item.id)}
                           className="text-[9px] font-bold text-on-surface-variant hover:text-primary transition-colors uppercase tracking-wider"
                         >
-                          Remove
+                          {t.cart.remove}
                         </button>
                       </div>
                     </div>
                   ))}
                 </div>
                 <div className="mt-4 flex justify-between items-center text-xs border-t border-outline-variant/20 pt-3">
-                  <span className="text-on-surface-variant">Subtotal ({vendor.name})</span>
+                  <span className="text-on-surface-variant">{t.cart.subtotal} ({vendor.name})</span>
                   <span className="font-bold">₹{subtotalByVendor(vendor.id).toFixed(2)}</span>
                 </div>
               </div>
@@ -299,7 +299,7 @@ export default function CartPage() {
                   <span className="text-green-600 font-semibold">FREE</span>
                 </div>
                 <div className="flex justify-between gap-2">
-                  <span>Service Charge</span>
+                  <span>{t.cart.serviceCharge}</span>
                   <span className="text-on-surface font-semibold truncate">₹{(vendorIds.length * serviceCharge).toFixed(2)}</span>
                 </div>
 

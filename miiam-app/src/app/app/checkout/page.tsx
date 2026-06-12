@@ -163,9 +163,9 @@ export default function CheckoutPage() {
         {items.length === 0 ? (
           <div className="text-center py-20">
             <span className="material-symbols-outlined text-6xl text-slate-300">shopping_cart</span>
-            <h2 className="text-xl font-black text-slate-600 mt-4">Your cart is empty</h2>
-            <p className="text-sm text-slate-400 mt-2">Add some items to your cart before checking out.</p>
-            <a href="/app/home" className="inline-block mt-6 px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm">Browse Menu</a>
+            <h2 className="text-xl font-black text-slate-600 mt-4">{t.checkout.cartEmpty}</h2>
+            <p className="text-sm text-slate-400 mt-2">{t.checkout.cartEmptyDesc}</p>
+            <a href="/app/home" className="inline-block mt-6 px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm">{t.checkout.browseMenu}</a>
           </div>
         ) : (
 
@@ -268,14 +268,14 @@ export default function CheckoutPage() {
                 {(placing || razorpayLoading) ? (
                   <>
                     <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    Placing Order...
+                    {t.checkout.placingOrder}
                   </>
-                ) : "Place Order"}
+                ) : t.checkout.placeOrder}
                 {!placing && <span className="material-symbols-outlined">shield</span>}
               </button>
               <p className="text-center mt-6 text-xs text-on-surface-variant flex items-center justify-center gap-2">
                 <span className="material-symbols-outlined text-sm">lock</span>
-                100% Encrypted &amp; Secure Payment
+                {t.checkout.securePayment}
               </p>
             </aside>
           </div>

@@ -21,7 +21,7 @@ const servicesData: Record<string, any> = {
     image: "https://images.unsplash.com/photo-1631564591547-4d46fe7c9c0a?w=400&q=80", 
     included: ["Complete interior cleaning", "Filter cleaning", "Coil cleaning", "Gas check"],
     warranty_days: 30,
-    badge: "Most Popular",
+    badge: "mostPopular",
     description: "Get your AC units deep cleaned by certified technicians. Removes dust, mold, and bacteria for cleaner, healthier air."
   },
   s2: { 
@@ -49,7 +49,7 @@ const servicesData: Record<string, any> = {
     image: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=80", 
     included: ["All rooms", "Kitchen", "Bathrooms", "Balcony"],
     warranty_days: 7,
-    badge: "Best Seller",
+    badge: "bestSeller",
     description: "Complete home cleaning service covering all rooms, kitchen, bathrooms, and balcony. Professional team with eco-friendly products."
   },
   s4: { 
@@ -152,7 +152,7 @@ function ServiceDetailContent() {
         <div className="w-10" />
       </nav>
 
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Home Services', href: '/app/services' }, { label: service.name }]} />
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: t.services.homeServices, href: '/app/services' }, { label: service.name }]} />
 
       <div className="pt-16">
         <BlurImage src={service.image} alt={service.name} fill className="w-full h-64" sizes="100vw" />
@@ -161,7 +161,7 @@ function ServiceDetailContent() {
       <div className="p-4">
         {service.badge && (
           <span className="inline-block text-xs font-bold text-[#5b31fc] bg-purple-100 px-3 py-1 rounded-full mb-3">
-            {service.badge}
+            {t.services[service.badge as keyof typeof t.services] || service.badge}
           </span>
         )}
         
@@ -172,7 +172,7 @@ function ServiceDetailContent() {
             <span className="text-xs font-bold text-green-700">{service.rating}</span>
             <span className="text-green-700 text-xs">★</span>
           </div>
-          <span className="text-sm text-gray-500">{service.reviews.toLocaleString()} reviews</span>
+          <span className="text-sm text-gray-500">{service.reviews.toLocaleString()} {t.services.reviews}</span>
           <span className="text-gray-300">•</span>
           <span className="text-sm text-gray-500">{service.duration}</span>
         </div>
@@ -204,7 +204,7 @@ function ServiceDetailContent() {
               className="w-full p-3 border border-gray-200 rounded-xl flex items-center justify-between"
             >
               <span className={selectedDate ? "text-gray-800" : "text-gray-400"}>
-                {selectedDate || "Select Date"}
+                {selectedDate || t.services.selectDate}
               </span>
               <span className="material-symbols-outlined text-gray-400">calendar_today</span>
             </button>
@@ -235,7 +235,7 @@ function ServiceDetailContent() {
               className="w-full p-3 border border-gray-200 rounded-xl flex items-center justify-between"
             >
               <span className={selectedTime ? "text-gray-800" : "text-gray-400"}>
-                {selectedTime || "Select Time Slot"}
+                {selectedTime || t.services.selectTimeSlot}
               </span>
               <span className="material-symbols-outlined text-gray-400">schedule</span>
             </button>

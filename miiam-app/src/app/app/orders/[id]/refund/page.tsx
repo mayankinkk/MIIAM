@@ -60,7 +60,7 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
 
   const handleCancelOrder = async () => {
     if (!cancelReason.trim()) {
-      addToast("Please select a reason for cancellation", "error");
+      addToast(t.refund.selectReason, "error");
       return;
     }
 
@@ -79,17 +79,17 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
       setShowRefundSuccess(true);
     } catch (error) {
       console.error("Failed to cancel order:", error);
-      addToast("Failed to cancel order. Please try again.", "error");
+      addToast(t.refund.refundFailed, "error");
     } finally {
       setCancelling(false);
     }
   };
 
   const refundTimeline = [
-    { status: "requested", label: "Cancellation Requested", time: "Just now", completed: true },
-    { status: "processing", label: "Refund Processing", time: "1-2 business days", completed: refundStatus === "processing" || refundStatus === "approved" || refundStatus === "completed" },
-    { status: "approved", label: "Refund Approved", time: "Within 24 hours", completed: refundStatus === "approved" || refundStatus === "completed" },
-    { status: "completed", label: "Amount Credited", time: "2-5 business days", completed: refundStatus === "completed" },
+    { status: "requested", label: t.refund.cancellationRequested, time: t.refund.justNow, completed: true },
+    { status: "processing", label: t.refund.refundProcessing, time: t.refund.businessDays12, completed: refundStatus === "processing" || refundStatus === "approved" || refundStatus === "completed" },
+    { status: "approved", label: t.refund.refundApproved, time: t.refund.within24h, completed: refundStatus === "approved" || refundStatus === "completed" },
+    { status: "completed", label: t.refund.amountCredited, time: t.refund.businessDays25, completed: refundStatus === "completed" },
   ];
 
   if (loading) {
@@ -104,9 +104,9 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
     return (
       <div className="min-h-screen bg-surface flex flex-col items-center justify-center p-6">
         <span className="text-6xl mb-4">🔍</span>
-        <h2 className="text-xl font-bold text-on-surface mb-2">Order not found</h2>
+        <h2 className="text-xl font-bold text-on-surface mb-2">{t.orders.orderNotFound}</h2>
         <Link href="/app/orders" className="bg-primary text-white px-6 py-3 rounded-xl font-bold mt-4">
-          View All Orders
+          {t.orders.viewAllOrders}
         </Link>
       </div>
     );
@@ -129,8 +129,8 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
               check_circle
             </span>
             <div>
-              <p className="font-bold text-green-700">Cancellation Request Submitted</p>
-              <p className="text-sm text-green-600">Your refund is being processed</p>
+              <p className="font-bold text-green-700">{t.refund.cancellationSubmitted}</p>
+              <p className="text-sm text-green-600">{t.refund.refundBeingProcessed}</p>
             </div>
           </div>
         )}
@@ -157,8 +157,8 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
           </h1>
           <p className="text-on-surface-variant">
             {order.status === "refunded" 
-              ? "Your refund has been processed successfully"
-              : "Your order is still being processed"
+              ? t.refund.refundSuccess
+              : t.refund.orderStillProcessing
             }
           </p>
         </div>

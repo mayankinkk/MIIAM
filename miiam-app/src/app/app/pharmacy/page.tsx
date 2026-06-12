@@ -6,17 +6,18 @@ import { useToastStore } from "@/lib/store/toastStore";
 import ServiceProductGrid from "@/components/ServiceProductGrid";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 
-const pharmacyCategories = [
-  { id: "pain", name: "Pain Relief", icon: "\uD83D\uDC8A", color: "bg-red-100" },
-  { id: "fever", name: "Fever & Cold", icon: "\uD83C\uDF21\uFE0F", color: "bg-orange-100" },
-  { id: "digestive", name: "Digestive", icon: "\uD83D\uDCA7", color: "bg-green-100" },
-  { id: "vitamins", name: "Vitamins", icon: "\uD83D\uDC8A", color: "bg-purple-100" },
-  { id: "skincare", name: "Skin Care", icon: "\uD83E\uDDF4", color: "bg-pink-100" },
-  { id: "baby", name: "Baby Care", icon: "\uD83D\uDC76", color: "bg-blue-100" },
-];
+
 
 export default function PharmacyPage() {
   const { t } = useTranslation();
+  const pharmacyCategories = [
+    { id: "pain", name: t.pharmacy.painRelief, icon: "\uD83D\uDC8A", color: "bg-red-100" },
+    { id: "fever", name: t.pharmacy.feverCold, icon: "\uD83C\uDF21\uFE0F", color: "bg-orange-100" },
+    { id: "digestive", name: t.pharmacy.digestive, icon: "\uD83D\uDCA7", color: "bg-green-100" },
+    { id: "vitamins", name: t.pharmacy.vitamins, icon: "\uD83D\uDC8A", color: "bg-purple-100" },
+    { id: "skincare", name: t.pharmacy.skinCare, icon: "\uD83E\uDDF4", color: "bg-pink-100" },
+    { id: "baby", name: t.pharmacy.babyCare, icon: "\uD83D\uDC76", color: "bg-blue-100" },
+  ];
   const supabase = createClient();
   const [showPrescriptionModal, setShowPrescriptionModal] = useState(false);
   const [prescriptionFile, setPrescriptionFile] = useState<File | null>(null);
@@ -56,7 +57,7 @@ export default function PharmacyPage() {
       setPrescriptionPhone("");
     } catch (error: any) {
       console.error("Upload error:", error);
-      addToast("Failed to upload prescription. Please try again.", "error");
+      addToast(t.pharmacy.prescriptionFailed, "error");
     } finally {
       setUploading(false);
     }

@@ -108,16 +108,18 @@ function Confetti() {
   );
 }
 
-const feedbackTags = [
-  "Fast Delivery",
-  "Friendly Rider",
-  "Good Packaging",
-  "Hot Food",
-  "On Time",
-  "Fresh Ingredients",
-  "Great Taste",
-  "Careful Handling",
-];
+function getFeedbackTags(t: any) {
+  return [
+    t.rating.fastDelivery,
+    t.rating.friendlyRider,
+    t.rating.goodPackaging,
+    t.rating.hotFood,
+    t.rating.onTime,
+    t.rating.freshIngredients,
+    t.rating.greatTaste,
+    t.rating.carefulHandling,
+  ];
+}
 
 export default function RatingReviewPage({ params }: { params: Promise<{ id: string }> }) {
   const { t } = useTranslation();
@@ -214,7 +216,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
       setTimeout(() => router.push("/app/orders"), 2500);
     } catch (err) {
       console.error("Error submitting rating:", err);
-      addToast("Failed to submit rating. Please try again.", "error");
+      addToast(t.rating.ratingFailed, "error");
     }
   };
 
@@ -266,7 +268,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
           </div>
         </div>
       </header>
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'My Orders', href: '/app/orders' }, { label: 'Rate & Review' }]} />
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'My Orders', href: '/app/orders' }, { label: t.rating.rateAndReview }]} />
       <main className="pt-24 pb-12 px-6 max-w-md mx-auto space-y-6">
         <section className="text-center space-y-2">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-surface-container-highest rounded-full mb-4">
@@ -354,12 +356,12 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
             value={feedback}
             onChange={(e) => setFeedback(e.target.value)}
             className="w-full bg-white rounded-xl border-none focus:ring-2 focus:ring-primary/40 p-6 min-h-[120px] text-on-surface shadow-[0px_10px_20px_rgba(77,33,42,0.02)] resize-none"
-            placeholder="Share your experience (optional)"
+            placeholder={t.rating.shareExperience}
           />
         </section>
 
         <section className="flex flex-wrap gap-2">
-          {feedbackTags.map((tag) => (
+          {getFeedbackTags(t).map((tag) => (
             <button
               key={tag}
               onClick={() => toggleTag(tag)}
