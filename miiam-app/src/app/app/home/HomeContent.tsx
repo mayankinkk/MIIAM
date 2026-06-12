@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+
 import { createClient } from "@/lib/supabase/client";
 import { useLocationStore } from "@/lib/store/locationStore";
 import { useTranslation } from "@/lib/i18n/useTranslation";
@@ -15,7 +15,7 @@ import PrintCostCalculator from "@/components/print/PrintCostCalculator";
 
 
 export default function HomePage() {
-  const router = useRouter();
+
   const supabase = useMemo(() => createClient(), []);
   const { t } = useTranslation();
   const [loading, setLoading] = useState(true);

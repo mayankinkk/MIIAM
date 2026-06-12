@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { startLocationTracking, stopLocationTracking } from "@/lib/rider-location-tracker";
 import { RiderDashboardSkeleton } from "@/components/Skeleton";
 import { calculateEarnings } from "@/lib/earnings";
-import type { Order, OrderWithTiming, DeliveryStep } from "./types";
+import type { OrderWithTiming } from "./types";
 import QuickStats from "@/components/rider/QuickStats";
 import MapControls from "@/components/rider/MapControls";
 import CallModal from "@/components/rider/CallModal";

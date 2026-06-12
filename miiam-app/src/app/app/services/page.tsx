@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useServiceSettingsStore, ServiceCategory } from "@/lib/store/serviceSettingsStore";
 import ServiceUnavailable from "@/components/ServiceUnavailable";
 import { useLocationStore } from "@/lib/store/locationStore";
@@ -603,21 +603,9 @@ const services = [
   },
 ];
 
-// Map landing-page category IDs → listing-page category IDs
-const categoryIdMap: Record<string, string> = {
-  ac_repair: "ac",
-  beauty: "beauty",
-  plumbing: "plumbing",
-  electrical: "electrical",
-  cleaning: "cleaning",
-  appliance: "appliance",
-  pest: "pest",
-  car: "car",
-};
-
 function ServicesContent() {
   const { t } = useTranslation();
-  const router = useRouter();
+
   const searchParams = useSearchParams();
   const { getSetting } = useServiceSettingsStore();
   const [isServiceable, setIsServiceable] = useState(true);

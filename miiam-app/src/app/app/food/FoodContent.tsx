@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useServiceSettingsStore } from "@/lib/store/serviceSettingsStore";
 import ServiceUnavailable from "@/components/ServiceUnavailable";
@@ -11,7 +11,7 @@ import PullToRefresh from "@/components/PullToRefresh";
 import QuickActionsFAB from "@/components/QuickActionsFAB";
 import { createClient } from "@/lib/supabase/client";
 import { VendorCardSkeleton } from "@/components/Skeleton";
-import { useToastStore } from "@/lib/store/toastStore";
+
 import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { useFavoritesStore } from "@/lib/store/favoritesStore";
 import { useLocationStore } from "@/lib/store/locationStore";
