@@ -3,7 +3,6 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import ThemeProvider from "@/components/ThemeProvider";
 import { ConfirmProvider } from "@/components/ui/ConfirmDialog";
-import { ErrorBoundary } from "@/components/ErrorBoundary";
 import PageTransition from "@/components/PageTransition";
 import Toaster from "@/components/ui/Toaster";
 import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
@@ -95,11 +94,9 @@ export default function RootLayout({
             <SplashScreen />
             <ServiceWorkerRegistration />
             <AnalyticsTracker />
-            <ErrorBoundary>
               <div id="main-content">
                 <PageTransition>{children}</PageTransition>
               </div>
-            </ErrorBoundary>
             <Toaster />
           </ConfirmProvider>
         </ThemeProvider>
