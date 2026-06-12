@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/server";
+import { requireCronAuth } from "@/lib/security";
 
 async function activateScheduledOrders() {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const now = new Date().toISOString();
 
@@ -39,7 +40,7 @@ async function activateScheduledOrders() {
 
         await supabase.from("notifications").insert({
           user_id: order.user_id,
-          title: "Order Being Activated! 🚴",
+          title: "Order Being Activated!",
           body: `Your scheduled order is now visible to riders. They'll pick it up soon!`,
           type: "order_activated",
           order_id: order.id,
@@ -54,19 +55,11 @@ async function activateScheduledOrders() {
   });
 }
 
-async function requireCronAuth(request: NextRequest) {
-  const authHeader = request.headers.get("authorization") || request.headers.get("x-cron-secret");
-  const secret = process.env.CRON_SECRET;
-  if (!secret) return false;
-  return authHeader === `Bearer ${secret}`;
-}
-
 export async function POST(request: NextRequest) {
+  if (!(await requireCronAuth(request))) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   try {
-    const authorized = await requireCronAuth(request);
-    if (!authorized) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
     return await activateScheduledOrders();
   } catch (error: any) {
     console.error("[activate-scheduled] Error:", error);
@@ -75,11 +68,10 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
+  if (!(await requireCronAuth(request))) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   try {
-    const authorized = await requireCronAuth(request);
-    if (!authorized) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
     return await activateScheduledOrders();
   } catch (error: any) {
     console.error("[activate-scheduled] Error:", error);

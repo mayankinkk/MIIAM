@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/server";
 import { cookies } from "next/headers";
 import crypto from "crypto";
+import { validatePassword, verifyHmac } from "@/lib/security";
 
 export async function POST(request: NextRequest) {
   const supabaseAdmin = createAdminClient();
@@ -13,6 +14,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Email and password required" }, { status: 400 });
     }
 
+    const passwordCheck = validatePassword(password);
+    if (!passwordCheck.valid) {
+      return NextResponse.json({ error: passwordCheck.error }, { status: 400 });
+    }
+
     const cleanEmail = email.toLowerCase().trim();
 
     // Verify the password reset cookie exists and matches this email
@@ -22,18 +28,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Password reset not verified" }, { status: 403 });
     }
 
-    const secret = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    if (!secret) {
-      return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
-    }
-
     // Verify HMAC signature to prevent forgery
     const [randomToken, hmac] = verifiedToken.split(".");
     if (!randomToken || !hmac) {
       return NextResponse.json({ error: "Invalid verification token" }, { status: 403 });
     }
-    const expectedHmac = crypto.createHmac("sha256", secret).update(`${cleanEmail}:${randomToken}`).digest("hex");
-    if (hmac !== expectedHmac) {
+    if (!verifyHmac(cleanEmail, randomToken, hmac)) {
       return NextResponse.json({ error: "Verification token does not match email" }, { status: 403 });
     }
 

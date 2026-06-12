@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
 
     const meta = await getRequestMeta(req);
     const body = await req.json().catch(() => ({}));
-    const sessionToken = body?.session_token || crypto.randomUUID();
+    const sessionToken = crypto.randomUUID();
     const isCurrent = !!body?.is_current;
     const locationLabel = body?.location_label || null;
 

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createAdminClient } from "@/lib/supabase/server";
 import crypto from "crypto";
+import { signHmac } from "@/lib/security";
 
 export async function POST(request: NextRequest) {
   try {
@@ -43,7 +44,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
     }
     const randomToken = crypto.randomUUID();
-    const hmac = crypto.createHmac("sha256", secret).update(`${cleanEmail}:${randomToken}`).digest("hex");
+    const hmac = signHmac(cleanEmail, randomToken);
     const verifiedToken = `${randomToken}.${hmac}`;
     
     cookieStore.set("password_reset_verified", verifiedToken, {

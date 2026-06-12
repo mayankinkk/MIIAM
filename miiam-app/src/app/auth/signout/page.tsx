@@ -11,6 +11,11 @@ export default function SignOutPage() {
   useEffect(() => {
     async function signOut() {
       const supabase = createClient();
+
+      // Server-side session revocation
+      await fetch("/api/auth/logout", { method: "POST" });
+
+      // Client-side cookie cleanup
       await supabase.auth.signOut();
       setIsLoading(false);
     }

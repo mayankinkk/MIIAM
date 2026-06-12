@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/server";
 import { Resend } from "resend";
 import { randomInt } from "crypto";
+import { checkVerifyRateLimit, incrementVerifyAttempts } from "@/lib/security";
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
@@ -66,7 +67,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Email required" }, { status: 400 });
     }
 
-const cleanEmail = email.toLowerCase().trim();
+    const cleanEmail = email.toLowerCase().trim();
     
     if (!isValidEmail(cleanEmail)) {
       return NextResponse.json({ error: "Invalid email format" }, { status: 400 });
@@ -89,7 +90,6 @@ const cleanEmail = email.toLowerCase().trim();
         const { data: users, error: listError } = await supabase.auth.admin.listUsers();
         if (listError) {
           console.error("List users error:", listError);
-          // Continue anyway - don't block password reset, just log the error
         }
         const user = (users as { users: any[] })?.users?.find((u: any) => u.email?.toLowerCase() === cleanEmail);
         if (!user) {
@@ -103,10 +103,17 @@ const cleanEmail = email.toLowerCase().trim();
     const otp = generateOTP();
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString();
 
-    // Store OTP in database (upsert to handle duplicates)
+    // Hash OTP before storing
+    const { default: crypto } = await import("crypto");
+    const otpHash = crypto.createHash("sha256").update(otp).digest("hex");
+
+    // Upsert with purpose in the conflict target
     const { error: insertError } = await supabase
       .from("email_otps")
-      .upsert({ email: cleanEmail, otp, expires_at: expiresAt }, { onConflict: "email" });
+      .upsert(
+        { email: cleanEmail, otp: otpHash, purpose: purpose || "signup", expires_at: expiresAt, verified: false, attempts: 0 },
+        { onConflict: "email,purpose" }
+      );
 
     if (insertError) {
       console.error("Database error:", insertError);
@@ -134,36 +141,54 @@ export async function PUT(request: NextRequest) {
   const supabase = createAdminClient();
   
   try {
-    const { email, otpCode } = await request.json();
+    const { email, otpCode, purpose } = await request.json();
 
     if (!email || !otpCode) {
       return NextResponse.json({ error: "Email and code required" }, { status: 400 });
     }
 
     const cleanEmail = email.toLowerCase().trim();
+    const queryPurpose = purpose || "signup";
 
-    // Fetch OTP from database
+    // Rate limit verification attempts
+    if (!(await checkVerifyRateLimit(supabase, "email_otps", cleanEmail, "email"))) {
+      return NextResponse.json({ error: "Too many verification attempts. Please request a new code." }, { status: 429 });
+    }
+
+    // Fetch OTP from database - filter by purpose
     const { data: stored, error: fetchError } = await supabase
       .from("email_otps")
       .select("*")
       .eq("email", cleanEmail)
-      .single();
+      .eq("purpose", queryPurpose)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
 
     if (fetchError || !stored) {
       return NextResponse.json({ error: "No code found. Request new one" }, { status: 400 });
     }
 
     if (new Date() > new Date(stored.expires_at)) {
-      await supabase.from("email_otps").delete().eq("email", cleanEmail);
       return NextResponse.json({ error: "Code expired. Request new one" }, { status: 400 });
     }
 
-    if (stored.otp !== otpCode) {
+    // Hash provided OTP and compare
+    const { default: crypto } = await import("crypto");
+    const otpHash = crypto.createHash("sha256").update(otpCode).digest("hex");
+
+    if (stored.otp !== otpHash) {
+      // Track failed attempt
+      await incrementVerifyAttempts(supabase, "email_otps", cleanEmail, "email");
       return NextResponse.json({ error: "Invalid code" }, { status: 400 });
     }
 
-    // Delete OTP after successful verification
-    await supabase.from("email_otps").delete().eq("email", cleanEmail);
+    // Mark as verified but DON'T delete yet — verify-cookie needs it
+    await supabase
+      .from("email_otps")
+      .update({ verified: true })
+      .eq("email", cleanEmail)
+      .eq("purpose", queryPurpose);
 
     return NextResponse.json({
       success: true,

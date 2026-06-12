@@ -17,7 +17,6 @@ export async function POST(request: NextRequest) {
   try {
     const { 
       service_id, 
-      user_id, 
       provider_id, 
       scheduled_date, 
       scheduled_time, 
@@ -26,9 +25,12 @@ export async function POST(request: NextRequest) {
       total_amount
     } = await request.json();
 
-    if (!service_id || !user_id || !provider_id || !scheduled_date || !scheduled_time) {
+    if (!service_id || !provider_id || !scheduled_date || !scheduled_time) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
+
+    // Always use authenticated user.id — never trust request body for user_id
+    const user_id = user.id;
 
     const { data: existing } = await supabase
       .from("service_bookings")

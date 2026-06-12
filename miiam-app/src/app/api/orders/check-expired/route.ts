@@ -1,20 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient, createAdminClient } from "@/lib/supabase/server";
-
-async function requireCronAuth(request: NextRequest) {
-  const authHeader = request.headers.get("authorization") || request.headers.get("x-cron-secret");
-  const secret = process.env.CRON_SECRET;
-  if (secret && authHeader === `Bearer ${secret}`) return true;
-  return false;
-}
+import { createAdminClient } from "@/lib/supabase/server";
+import { requireCronAuth } from "@/lib/security";
 
 export async function POST(request: NextRequest) {
   if (!(await requireCronAuth(request))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   try {
-    const supabase = await createClient();
-    const adminClient = createAdminClient();
+    const supabase = createAdminClient();
     
     // Find orders that have expired (no rider assigned after 5 min) and haven't notified user
     const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();

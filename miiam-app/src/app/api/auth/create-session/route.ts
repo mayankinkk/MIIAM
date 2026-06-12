@@ -68,12 +68,6 @@ export async function POST(request: NextRequest) {
       success: true,
       userId: userRecord.id,
       email: userRecord.email,
-      session: {
-        access_token: sessionData.session.access_token,
-        refresh_token: sessionData.session.refresh_token,
-        expires_in: sessionData.session.expires_in,
-        expires_at: sessionData.session.expires_at,
-      }
     });
   } catch (error) {
     console.error("Create session error:", error);

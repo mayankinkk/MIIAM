@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import Razorpay from "razorpay";
+import { checkCsrf } from "@/lib/security";
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID || "",
@@ -13,6 +14,10 @@ export async function POST(req: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    if (!checkCsrf(req)) {
+      return NextResponse.json({ error: "CSRF validation failed" }, { status: 403 });
     }
 
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature, amount } = await req.json();

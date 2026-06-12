@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/server";
 import { randomInt } from "crypto";
+import { checkVerifyRateLimit, incrementVerifyAttempts } from "@/lib/security";
 
 const RATE_LIMIT_MAX = 5;
 const RATE_LIMIT_WINDOW = 10 * 60 * 1000;
+const VERIFY_ATTEMPT_LIMIT = 5;
 
 async function checkRateLimit(supabase: ReturnType<typeof createAdminClient>, phone: string): Promise<boolean> {
   const windowStart = new Date(Date.now() - RATE_LIMIT_WINDOW).toISOString();
@@ -15,7 +17,7 @@ async function checkRateLimit(supabase: ReturnType<typeof createAdminClient>, ph
 
   if (error) {
     console.error("Rate limit check error:", error);
-    return true; // fail open if DB error
+    return true;
   }
 
   return (count || 0) < RATE_LIMIT_MAX;
@@ -94,11 +96,14 @@ export async function POST(request: NextRequest) {
     const otp = generateOTP();
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString();
 
-    // Store OTP in database (upsert to avoid race condition)
+    // Hash OTP before storing
+    const { default: crypto } = await import("crypto");
+    const otpHash = crypto.createHash("sha256").update(otp).digest("hex");
+
     const { error: upsertError } = await supabase
       .from("phone_otp_verification")
       .upsert(
-        { phone_number: cleanPhone, otp_code: otp, purpose: purpose || "signup", expires_at: expiresAt },
+        { phone_number: cleanPhone, otp_code: otpHash, purpose: purpose || "signup", expires_at: expiresAt, attempts: 0 },
         { onConflict: "phone_number,purpose" }
       );
 
@@ -137,6 +142,11 @@ export async function PUT(request: NextRequest) {
 
     const cleanPhone = phoneNumber.replace(/\D/g, "");
 
+    // Rate limit verification attempts
+    if (!(await checkVerifyRateLimit(supabase, "phone_otp_verification", cleanPhone, "phone_number"))) {
+      return NextResponse.json({ error: "Too many verification attempts. Please request a new OTP." }, { status: 429 });
+    }
+
     // Fetch OTP from database
     const { data: stored, error: fetchError } = await supabase
       .from("phone_otp_verification")
@@ -155,7 +165,13 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: "OTP expired. Request new one" }, { status: 400 });
     }
 
-    if (stored.otp_code !== otpCode) {
+    // Hash provided OTP and compare
+    const { default: crypto } = await import("crypto");
+    const otpHash = crypto.createHash("sha256").update(otpCode).digest("hex");
+
+    if (stored.otp_code !== otpHash) {
+      // Track failed attempt
+      await incrementVerifyAttempts(supabase, "phone_otp_verification", cleanPhone, "phone_number");
       return NextResponse.json({ error: "Invalid OTP" }, { status: 400 });
     }
 
