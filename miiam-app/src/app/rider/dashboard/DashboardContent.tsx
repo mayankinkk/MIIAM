@@ -544,7 +544,7 @@ export default function RiderDashboard() {
 
   return (
     <div className="min-h-screen bg-background font-body-md text-on-surface">
-      <audio ref={audioRef} src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2teleQoKJZPl" preload="auto" />
+      <audio ref={audioRef} src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2teleQoKJZPl" preload="auto" aria-hidden="true" />
       <DashboardHeader isOnline={isOnline} streakDays={streakDays} onToggleOnline={async () => { const newStatus = !isOnline; setIsOnline(newStatus); if (riderId) await supabase.from("riders").update({ is_online: newStatus }).eq("id", riderId); }} onOpenQuests={() => setShowQuestModal(true)} />
       {isOnline && pendingOrders.length > 1 && !currentOrder && (
         <div className="fixed top-16 left-0 right-0 z-40 bg-[#0b50d5]/5 border-b border-[#0b50d5]/10 px-4 py-2 flex items-center justify-between">

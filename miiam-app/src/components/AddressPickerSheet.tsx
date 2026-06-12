@@ -346,6 +346,7 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
                   <input
                     type="text"
                     placeholder="Flat / House No. / Building *"
+                    aria-label="Flat / House number"
                     value={flat}
                     onChange={e => setFlat(e.target.value)}
                     className="w-full px-4 py-3.5 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c] focus:ring-2 focus:ring-[#ba001c]/15 text-sm"
@@ -353,6 +354,7 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
                   <input
                     type="text"
                     placeholder="Nearby Landmark (optional)"
+                    aria-label="Nearby landmark"
                     value={landmark}
                     onChange={e => setLandmark(e.target.value)}
                     className="w-full px-4 py-3.5 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c] focus:ring-2 focus:ring-[#ba001c]/15 text-sm"
@@ -404,6 +406,7 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
                   placeholder="Search area, street, landmark..."
+                  aria-label="Search area, street, landmark"
                   className="w-full pl-12 pr-4 py-3.5 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c] focus:ring-2 focus:ring-[#ba001c]/15 text-sm"
                 />
                 {searchLoading && (
@@ -441,6 +444,7 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
                   <input
                     type="text"
                     placeholder="Flat / House No. / Building *"
+                    aria-label="Flat / House number"
                     value={flat}
                     onChange={e => setFlat(e.target.value)}
                     className="w-full px-4 py-3.5 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c] focus:ring-2 focus:ring-[#ba001c]/15 text-sm"
@@ -448,12 +452,14 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
                   <input
                     type="text"
                     placeholder="Nearby Landmark (optional)"
+                    aria-label="Nearby landmark"
                     value={landmark}
                     onChange={e => setLandmark(e.target.value)}
                     className="w-full px-4 py-3.5 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c] focus:ring-2 focus:ring-[#ba001c]/15 text-sm"
                   />
                   <textarea
                     placeholder="Delivery instructions (e.g. Ring bell, 2nd floor)"
+                    aria-label="Delivery instructions"
                     value={instructions}
                     onChange={e => setInstructions(e.target.value)}
                     className="w-full px-4 py-3.5 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c] focus:ring-2 focus:ring-[#ba001c]/15 text-sm resize-none h-20"

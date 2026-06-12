@@ -135,7 +135,7 @@ export default function CheckoutPage() {
   if (!hydrated) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-surface">
-        <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+        <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" role="status" aria-live="polite" />
       </div>
     );
   }
@@ -144,7 +144,7 @@ export default function CheckoutPage() {
     <>
       <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-4 sm:px-6 py-3 sm:py-4 bg-surface/80 backdrop-blur-2xl shadow-sm">
         <div className="flex items-center gap-3 sm:gap-4">
-          <Link href="/app/cart" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-all">
+          <Link href="/app/cart" aria-label="Back to cart" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-all">
             <span className="material-symbols-outlined text-primary">arrow_back</span>
           </Link>
           <span className="text-xl sm:text-2xl font-extrabold tracking-tighter text-primary">MIIAM</span>

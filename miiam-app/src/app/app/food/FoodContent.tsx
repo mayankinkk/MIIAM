@@ -256,6 +256,7 @@ function AddToCartButton({
       <motion.button
         onClick={() => updateQuantity(item.id, qty - 1)}
         whileTap={{ scale: 0.75 }}
+        aria-label="Decrease quantity"
         className="text-white font-bold w-10 h-10 flex items-center justify-center"
       >
         −
@@ -264,6 +265,7 @@ function AddToCartButton({
       <motion.button
         onClick={handleAdd}
         whileTap={{ scale: 1.25 }}
+        aria-label="Increase quantity"
         className="text-white font-bold w-10 h-10 flex items-center justify-center"
       >
         +
@@ -600,6 +602,8 @@ export default function FoodPageContent() {
                   <BlurImage src={restaurant.cover_image_url || restaurant.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"} alt={restaurant.shop_name} fill className="w-full h-full" sizes="(max-width: 768px) 50vw, 128px" fallbackSrc="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80" />
                   <button
                     onClick={(e) => { e.preventDefault(); toggleFavorite(restaurant.id); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }}
+                    aria-label="Toggle favorite"
+                    aria-pressed={favorites.has(restaurant.id)}
                     className="absolute top-2 right-2 w-11 h-11 bg-white/90 rounded-full flex items-center justify-center shadow hover:scale-110 transition-transform"
                   >
                     <span className={`material-symbols-outlined text-lg ${favorites.has(restaurant.id) ? "text-red-500" : "text-outline"}`}>favorite</span>

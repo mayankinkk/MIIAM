@@ -668,7 +668,7 @@ function ServicesContent() {
       {/* Header - Urban Company style */}
       <header className="bg-surface-container-lowest px-4 py-4 sticky top-0 z-30 shadow-sm">
         <div className="flex items-center gap-2 mb-2">
-          <Link href="/app/explore" className="w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center hover:bg-surface-container-highest transition-colors">
+          <Link href="/app/explore" aria-label="Back to explore" className="w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center hover:bg-surface-container-highest transition-colors">
             <span className="material-symbols-outlined text-on-surface-variant text-sm">arrow_back</span>
           </Link>
           <h1 className="text-xl font-black text-on-surface">{t.services.title}</h1>

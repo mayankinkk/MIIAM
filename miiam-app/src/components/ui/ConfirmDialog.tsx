@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, createContext, useContext, ReactNode } from "react";
+import { useState, useCallback, useEffect, createContext, useContext, ReactNode } from "react";
 
 interface ConfirmState {
   open: boolean;
@@ -25,6 +25,17 @@ const ConfirmContext = createContext<{
 
 export function useConfirm() {
   return useContext(ConfirmContext);
+}
+
+function EscapeListener({ onCancel }: { onCancel: () => void }) {
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") onCancel();
+    }
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [onCancel]);
+  return null;
 }
 
 export function ConfirmProvider({ children }: { children: ReactNode }) {
@@ -68,10 +79,11 @@ export function ConfirmProvider({ children }: { children: ReactNode }) {
   return (
     <ConfirmContext.Provider value={{ confirm }}>
       {children}
+      {state.open && <EscapeListener onCancel={state.onCancel} />}
       {state.open && (
-        <div className="fixed inset-0 z-[200] bg-black/50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[200] bg-black/50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="confirm-dialog-title">
           <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl">
-            <h3 className="font-bold text-lg text-slate-900 mb-2">{state.title}</h3>
+            <h3 id="confirm-dialog-title" className="font-bold text-lg text-slate-900 mb-2">{state.title}</h3>
             <p className="text-sm text-slate-600 mb-6">{state.message}</p>
             <div className="flex gap-3">
               <button

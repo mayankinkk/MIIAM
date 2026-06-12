@@ -70,7 +70,7 @@ export default function CartPage() {
   if (!hydrated) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-surface">
-        <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" role="status" aria-live="polite"></div>
       </div>
     );
   }
@@ -163,10 +163,10 @@ export default function CartPage() {
           <span className="text-xl font-extrabold tracking-tighter text-primary">MIIAM</span>
         </div>
         <div className="flex items-center gap-3">
-          <Link href="/app/notifications" className="p-2 rounded-full hover:bg-surface-container transition-all">
+          <Link href="/app/notifications" aria-label="Notifications" className="p-2 rounded-full hover:bg-surface-container transition-all">
             <span className="material-symbols-outlined text-on-surface text-[22px]">notifications</span>
           </Link>
-          <Link href="/app/profile" className="w-9 h-9 rounded-full overflow-hidden border-2 border-primary-container bg-primary-container flex items-center justify-center">
+          <Link href="/app/profile" aria-label="Profile" className="w-9 h-9 rounded-full overflow-hidden border-2 border-primary-container bg-primary-container flex items-center justify-center">
             <span className="material-symbols-outlined text-white text-[20px]">person</span>
           </Link>
         </div>
@@ -319,7 +319,7 @@ export default function CartPage() {
             <div className="bg-surface-container-lowest rounded-t-2xl w-full max-h-[80vh] overflow-hidden">
               <div className="p-4 border-b border-outline-variant flex items-center justify-between">
                 <h3 className="text-base font-bold text-on-surface">{t.cart.reorderFromPast}</h3>
-                <button onClick={() => setShowReorderModal(false)} className="w-11 h-11 bg-surface-container rounded-full flex items-center justify-center">
+                <button onClick={() => setShowReorderModal(false)} aria-label="Close" className="w-11 h-11 bg-surface-container rounded-full flex items-center justify-center">
                   <span className="material-symbols-outlined text-[18px]">close</span>
                 </button>
               </div>
