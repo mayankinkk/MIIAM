@@ -400,35 +400,17 @@ export default function RiderOrdersPage() {
       const order = orders.find(o => o.id === currentOrderId);
       const riderEarning = calculateEarnings(0);
 
-      // Update order status (minimal columns to avoid schema issues)
-      try {
-        const { error: orderErr } = await supabase
-          .from("orders")
-          .update({
-            status: "delivered",
-            delivered_at: new Date().toISOString(),
-          })
-          .eq("id", currentOrderId);
-        if (orderErr) throw new Error("order update: " + orderErr.message);
-      } catch (orderErr) {
-        console.error("Order status update failed:", orderErr);
-      }
-
-      // Try to persist earnings if column exists
-      try {
-        await supabase
-          .from("orders")
-          .update({ rider_earning: riderEarning })
-          .eq("id", currentOrderId);
-      } catch { /* column may not exist */ }
-
-      // Try to persist cash collected if column exists
-      try {
-        await supabase
-          .from("orders")
-          .update({ customer_collected: cashToCollect })
-          .eq("id", currentOrderId);
-      } catch { /* column may not exist */ }
+      // Update order status + earnings in one atomic update
+      const { error: orderErr } = await supabase
+        .from("orders")
+        .update({
+          status: "delivered",
+          delivered_at: new Date().toISOString(),
+          rider_earning: riderEarning,
+          customer_collected: cashToCollect,
+        })
+        .eq("id", currentOrderId);
+      if (orderErr) throw new Error("order update: " + orderErr.message);
 
       if (order?.rider_id) {
         // Update rider delivery count

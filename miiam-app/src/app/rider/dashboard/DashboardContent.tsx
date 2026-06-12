@@ -465,8 +465,10 @@ export default function RiderDashboard() {
     const finalEarnings = calculateEarnings(currentOrder.totalDistance, 40, 8, currentOrder.peakMultiplier);
     try {
       if (currentOrder.orderDbId && riderId) {
-        const { error: orderErr } = await supabase.from("orders").update({ status: "delivered", delivered_at: new Date().toISOString(), rider_earning: finalEarnings }).eq("id", currentOrder.orderDbId);
+        const { error: orderErr } = await supabase.from("orders").update({ status: "delivered", delivered_at: new Date().toISOString() }).eq("id", currentOrder.orderDbId);
         if (orderErr) throw new Error("order update: " + orderErr.message);
+        // Best-effort: save earnings (column may not exist in DB)
+        await supabase.from("orders").update({ rider_earning: finalEarnings }).eq("id", currentOrder.orderDbId);
         await supabase.from("riders").update({ total_deliveries: riderDeliveries + 1 }).eq("id", riderId);
         setRiderDeliveries((prev) => prev + 1);
         const { data: wallet } = await supabase.from("rider_wallets").select("id, balance, total_earnings").eq("rider_id", riderId).maybeSingle();

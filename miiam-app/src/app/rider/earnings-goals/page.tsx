@@ -63,8 +63,10 @@ export default function RiderEarningsGoalsPage() {
         .in("status", ["delivered", "completed"])
         .order("placed_at", { ascending: false });
 
+      let totalE = 0;
+
       if (orders) {
-        let dayE = 0, dayD = 0, weekE = 0, weekD = 0, totalE = 0;
+        let dayE = 0, dayD = 0, weekE = 0, weekD = 0;
         const dayMap: Record<string, number> = {};
         const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
         const recent: DeliveryRecord[] = [];
@@ -102,6 +104,18 @@ export default function RiderEarningsGoalsPage() {
           last7.push(dayMap[dayNames[dd.getDay()]] || 0);
         }
         setDailyData(last7);
+      }
+
+      // Fallback: if total is 0, try reading from rider_wallets
+      if (totalE === 0) {
+        const { data: walletData } = await supabase
+          .from("rider_wallets")
+          .select("total_earnings")
+          .eq("rider_id", myRider.id)
+          .maybeSingle();
+        if (walletData) {
+          setTotalEarnings(Number(walletData.total_earnings) || 0);
+        }
       }
       setLoading(false);
     }

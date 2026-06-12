@@ -90,6 +90,8 @@ model Order {
   acceptedAt          DateTime? @map("accepted_at")
   pickedAt            DateTime? @map("picked_at")
   deliveredAt         DateTime? @map("delivered_at")
+  riderEarning        Decimal?  @default(0) @map("rider_earning")
+  customerCollected   Decimal?  @default(0) @map("customer_collected")
 
   orderItems          OrderItem[]
   reviews             Review[]
