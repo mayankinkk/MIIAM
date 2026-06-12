@@ -35,8 +35,8 @@ function SignupContent() {
   const handleGoogleLogin = async () => {
     setIsGoogleLoading(true);
     try {
-      const redirectTo = searchParams.get("redirect") || "";
-      const callbackUrl = `${window.location.origin}/auth/callback${redirectTo ? `?redirect=${encodeURIComponent(redirectTo)}` : ""}`;
+      const redirectTo = searchParams.get("redirect") || "/app/home";
+      const callbackUrl = `${window.location.origin}/auth/callback?redirect=${encodeURIComponent(redirectTo)}`;
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
