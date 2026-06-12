@@ -1,0 +1,33 @@
+"use client";
+
+import type { OrderWithTiming } from "@/app/rider/dashboard/types";
+import { calculatePeakEarnings } from "@/app/rider/dashboard/utils";
+
+interface NewOrderBannerProps {
+  visible: boolean;
+  order: OrderWithTiming | null;
+  onView: () => void;
+  onDismiss: () => void;
+}
+
+export default function NewOrderBanner({ visible, order, onView, onDismiss }: NewOrderBannerProps) {
+  if (!visible || !order) return null;
+
+  return (
+    <div className="fixed top-16 left-0 right-0 z-[90] bg-gradient-to-r from-[#0b50d5] to-[#0044bf] text-white p-3 flex items-center justify-between shadow-lg animate-slide-down">
+      <div className="flex items-center gap-3">
+        <span className="material-symbols-outlined animate-bounce">local_shipping</span>
+        <div>
+          <p className="font-bold text-sm">New Order Available!</p>
+          <p className="text-xs opacity-80">{order.type === "multi_stop" ? `${order.stops?.length} stops` : order.items} items • ₹{calculatePeakEarnings(order)}</p>
+        </div>
+      </div>
+      <button 
+        onClick={onView}
+        className="px-3 py-1 bg-white/20 rounded-full text-xs font-bold"
+      >
+        View
+      </button>
+    </div>
+  );
+}

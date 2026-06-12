@@ -8,19 +8,26 @@ import { startLocationTracking, stopLocationTracking } from "@/lib/rider-locatio
 import { RiderDashboardSkeleton } from "@/components/Skeleton";
 import { calculateEarnings } from "@/lib/earnings";
 import type { Order, OrderWithTiming, DeliveryStep } from "./types";
-import { calculatePeakEarnings, isPeakHour } from "./utils";
 import QuickStats from "@/components/rider/QuickStats";
 import MapControls from "@/components/rider/MapControls";
 import CallModal from "@/components/rider/CallModal";
 import OrderChatOverlay from "@/components/order/OrderChatOverlay";
-import CustomerLocationView from "@/components/rider/CustomerLocationView";
+import DashboardHeader from "@/components/rider/DashboardHeader";
+import IncomingOrderCard from "@/components/rider/IncomingOrderCard";
+import ActiveDeliveryView from "@/components/rider/ActiveDeliveryView";
+import AlertSettingsModal from "@/components/rider/AlertSettingsModal";
+import QuestModal from "@/components/rider/QuestModal";
+import CancelOrderModal from "@/components/rider/CancelOrderModal";
+import SkipOrderModal from "@/components/rider/SkipOrderModal";
+import LowBatteryWarning from "@/components/rider/LowBatteryWarning";
+import NewOrderBanner from "@/components/rider/NewOrderBanner";
 
 export default function RiderDashboard() {
   const router = useRouter();
   const supabaseRef = useRef(createClient());
   const supabase = supabaseRef.current;
   const [isOnline, setIsOnline] = useState(true);
-  const [countdown, setCountdown] = useState(300); // 5 minutes = 300 seconds
+  const [countdown, setCountdown] = useState(300);
   const [pendingOrders, setPendingOrders] = useState<OrderWithTiming[]>([]);
   const [selectedOrder, setSelectedOrder] = useState<OrderWithTiming | null>(null);
   const [currentOrder, setCurrentOrder] = useState<OrderWithTiming | null>(null);
@@ -31,49 +38,13 @@ export default function RiderDashboard() {
   const [riderDeliveries, setRiderDeliveries] = useState(0);
   const [riderEarnings, setRiderEarnings] = useState(0);
   const [orderTakenByOther, setOrderTakenByOther] = useState(false);
-  
   const [showSkipModal, setShowSkipModal] = useState(false);
   const [showAlertSettings, setShowAlertSettings] = useState(false);
   const [showNewOrderAlert, setShowNewOrderAlert] = useState(false);
   const [currentStopIndex, setCurrentStopIndex] = useState(0);
   const [snoozeMessage, setSnoozeMessage] = useState("");
   const [activeOrders, setActiveOrders] = useState<OrderWithTiming[]>([]);
-  
   const [currentUserId, setCurrentUserId] = useState<string>("");
-
-  // Subscribe to unread messages for the current order
-  useEffect(() => {
-    if (!currentOrder?.id || !currentUserId) {
-      setUnreadCount(0);
-      return;
-    }
-    const orderId = currentOrder.id;
-
-    async function loadUnread() {
-      const { count } = await supabase
-        .from("chat_messages")
-        .select("*", { count: "exact", head: true })
-        .eq("order_id", orderId)
-        .neq("sender_id", currentUserId)
-        .eq("read", false);
-      setUnreadCount(prev => {
-        if (count && count > prev && prev > 0) {
-          playMessageAlert();
-        }
-        return count || 0;
-      });
-    }
-
-    loadUnread();
-
-    const channel = supabase
-      .channel(`rider-unread-${orderId}`)
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "chat_messages", filter: `order_id=eq.${orderId}` }, () => { loadUnread(); })
-      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "chat_messages", filter: `order_id=eq.${orderId}` }, () => { loadUnread(); })
-      .subscribe();
-
-    return () => { supabase.removeChannel(channel); };
-  }, [currentOrder?.id, currentUserId, supabase]);
 
   const [deliveryStep, setDeliveryStep] = useState<"shopping" | "picking_up" | "picked" | "delivering" | "arrived">("shopping");
   const [soundEnabled, setSoundEnabled] = useState(true);
@@ -85,7 +56,6 @@ export default function RiderDashboard() {
   const riderMarkerRef = useRef<any>(null);
   const watchIdRef = useRef<number | null>(null);
 
-  // Quest & Streak System - loaded from DB
   const [dailyQuests, setDailyQuests] = useState([
     { id: 1, title: "Complete 5 Deliveries", current: 0, target: 5, bonus: 100 },
     { id: 2, title: "Earn ₹500 Today", current: 0, target: 500, bonus: 75 },
@@ -93,126 +63,77 @@ export default function RiderDashboard() {
   ]);
   const [streakDays, setStreakDays] = useState(0);
   const [showQuestModal, setShowQuestModal] = useState(false);
-
-  // Live Earnings - loaded from orders
   const [todayEarnings, setTodayEarnings] = useState(0);
   const [liveEarnings, setLiveEarnings] = useState(0);
-
-  // Cash Collection - loaded from orders
   const [cashCollected, setCashCollected] = useState(0);
   const [cashPending, setCashPending] = useState(0);
-
-  const handleCenterMap = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          if (mapInstanceRef.current) {
-            mapInstanceRef.current.setView([pos.coords.latitude, pos.coords.longitude], 15);
-          }
-        },
-        () => {}
-      );
-    }
-  };
-
-  // Cancel Flow
   const [showCancelModal, setShowCancelModal] = useState(false);
-  const [cancelReasons] = useState([
-    "Too far from pickup",
-    "Too far from delivery",
-    "Vehicle breakdown",
-    "Customer unreachable",
-    "Order unavailable",
-    "Other"
-  ]);
+  const [cancelReasons] = useState(["Too far from pickup", "Too far from delivery", "Vehicle breakdown", "Customer unreachable", "Order unavailable", "Other"]);
   const [pickedItems, setPickedItems] = useState<Set<number>>(new Set());
-
-  // Low Battery
   const [batteryLevel, setBatteryLevel] = useState(85);
   const [showLowBattery, setShowLowBattery] = useState(false);
-
-  // Customer Rating Preview - loaded from DB
   const [customerRating, setCustomerRating] = useState(5.0);
   const [error, setError] = useState<string | null>(null);
   const [initialLoading, setInitialLoading] = useState(true);
+
+  const handleCenterMap = useCallback(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => { mapInstanceRef.current?.setView([pos.coords.latitude, pos.coords.longitude], 15); },
+        () => {}
+      );
+    }
+  }, []);
+
+  const playNotificationSound = useCallback(() => {
+    if (dndMode) return;
+    if (soundEnabled && audioRef.current) {
+      audioRef.current.play().catch(() => {});
+    }
+    if (vibrationEnabled && navigator.vibrate) {
+      navigator.vibrate([200, 100, 200, 100, 500]);
+    }
+  }, [dndMode, soundEnabled, vibrationEnabled]);
+
+  const dismissNewOrderAlert = useCallback(() => setShowNewOrderAlert(false), []);
 
   // Get rider ID on mount + load real stats
   useEffect(() => {
     async function getRiderId() {
       try {
         const { data: { user } } = await supabase.auth.getUser();
-        if (!user) {
-          router.push("/rider/login");
-          return;
-        }
+        if (!user) { router.push("/rider/login"); return; }
         setCurrentUserId(user.id);
 
-        // Fetch rider profile — only select columns that are guaranteed to exist
-        const { data: riderRow } = await supabase
-          .from("riders")
-          .select("id, total_deliveries")
-          .eq("user_id", user.id)
-          .maybeSingle();
-
-        if (!riderRow) {
-          setError("You don't have a rider account yet.");
-          setInitialLoading(false);
-          return;
-        }
+        const { data: riderRow } = await supabase.from("riders").select("id, total_deliveries").eq("user_id", user.id).maybeSingle();
+        if (!riderRow) { setError("You don't have a rider account yet."); setInitialLoading(false); return; }
 
         const riderIdVal = riderRow.id;
         setRiderId(riderIdVal);
         setRiderDeliveries(riderRow.total_deliveries || 0);
 
-        // Calculate total earnings from orders (falls back to rider_wallets if rider_earning column missing)
         let totalEarnings = 0;
-        const { data: allDeliveredOrders } = await supabase
-          .from("orders")
-          .select("rider_earning")
-          .eq("rider_id", riderIdVal)
-          .in("status", ["delivered", "completed"]);
+        const { data: allDeliveredOrders } = await supabase.from("orders").select("rider_earning").eq("rider_id", riderIdVal).in("status", ["delivered", "completed"]);
         totalEarnings = (allDeliveredOrders || []).reduce((s, o) => s + (Number(o.rider_earning) || 0), 0);
         if (!totalEarnings) {
-          const { data: walletFallback } = await supabase
-            .from("rider_wallets")
-            .select("total_earnings")
-            .eq("rider_id", riderIdVal)
-            .maybeSingle();
+          const { data: walletFallback } = await supabase.from("rider_wallets").select("total_earnings").eq("rider_id", riderIdVal).maybeSingle();
           totalEarnings = Number(walletFallback?.total_earnings) || 0;
         }
         setRiderEarnings(totalEarnings);
 
-        // Load today's earnings
-        const todayStart = new Date();
-        todayStart.setHours(0, 0, 0, 0);
-        let todayEarned = 0;
-        let collected = 0;
-        const { data: todayOrders } = await supabase
-          .from("orders")
-          .select("rider_earning, customer_collected")
-          .eq("rider_id", riderIdVal)
-          .in("status", ["delivered", "completed"])
-          .gte("placed_at", todayStart.toISOString());
-
+        const todayStart = new Date(); todayStart.setHours(0, 0, 0, 0);
+        let todayEarned = 0; let collected = 0;
+        const { data: todayOrders } = await supabase.from("orders").select("rider_earning, customer_collected").eq("rider_id", riderIdVal).in("status", ["delivered", "completed"]).gte("placed_at", todayStart.toISOString());
         todayEarned = (todayOrders || []).reduce((s, o) => s + (Number(o.rider_earning) || 0), 0);
         if (!todayEarned) {
-          const weekStart = new Date();
-          weekStart.setHours(0, 0, 0, 0);
-          const { data: todayTxns } = await supabase
-            .from("rider_wallet")
-            .select("amount")
-            .eq("rider_id", riderIdVal)
-            .eq("type", "earning")
-            .gte("created_at", weekStart.toISOString());
+          const weekStart = new Date(); weekStart.setHours(0, 0, 0, 0);
+          const { data: todayTxns } = await supabase.from("rider_wallet").select("amount").eq("rider_id", riderIdVal).eq("type", "earning").gte("created_at", weekStart.toISOString());
           todayEarned = (todayTxns || []).reduce((s, t) => s + Number(t.amount), 0);
         }
         setTodayEarnings(todayEarned);
-
         (todayOrders || []).forEach(o => { collected += Number(o.customer_collected) || 0; });
-        setCashCollected(collected);
-        setCashPending(0);
+        setCashCollected(collected); setCashPending(0);
 
-        // Load DND mode
         const { data: settings } = await supabase.from("rider_settings").select("dnd_mode, sound_enabled, vibration_enabled").eq("rider_id", riderIdVal).maybeSingle();
         if (settings) {
           setDndMode(settings.dnd_mode || false);
@@ -220,131 +141,59 @@ export default function RiderDashboard() {
           if (settings.vibration_enabled !== undefined) setVibrationEnabled(settings.vibration_enabled);
         }
 
-        // Load quest progress
-        const { data: quests } = await supabase
-          .from("rider_quest_progress")
-          .select("*")
-          .eq("rider_id", riderIdVal);
+        const { data: quests } = await supabase.from("rider_quest_progress").select("*").eq("rider_id", riderIdVal);
         if (quests && quests.length > 0) {
           setDailyQuests(quests.map(q => ({
-            id: q.quest_id,
-            title: q.quest_id === 1 ? "Complete 5 Deliveries" : q.quest_id === 2 ? "Earn ₹500 Today" : "3-Star Ratings",
-            current: q.current_progress,
-            target: q.target,
-            bonus: q.bonus,
+            id: q.quest_id, title: q.quest_id === 1 ? "Complete 5 Deliveries" : q.quest_id === 2 ? "Earn ₹500 Today" : "3-Star Ratings",
+            current: q.current_progress, target: q.target, bonus: q.bonus,
           })));
         } else {
-          const defaultQuests = [
-            { quest_id: 1, target: 5, bonus: 100 },
-            { quest_id: 2, target: 500, bonus: 75 },
-            { quest_id: 3, target: 10, bonus: 50 },
-          ];
-          const initialProgress = [
-            { current: riderRow.total_deliveries || 0, target: 5 },
-            { current: todayEarned, target: 500 },
-            { current: 0, target: 10 },
-          ];
+          const defaultQuests = [{ quest_id: 1, target: 5, bonus: 100 }, { quest_id: 2, target: 500, bonus: 75 }, { quest_id: 3, target: 10, bonus: 50 }];
+          const initialProgress = [{ current: riderRow.total_deliveries || 0, target: 5 }, { current: todayEarned, target: 500 }, { current: 0, target: 10 }];
           setDailyQuests(initialProgress.map((p, i) => ({
-            id: defaultQuests[i].quest_id,
-            title: defaultQuests[i].quest_id === 1 ? "Complete 5 Deliveries" : defaultQuests[i].quest_id === 2 ? "Earn ₹500 Today" : "3-Star Ratings",
-            current: p.current,
-            target: p.target,
-            bonus: defaultQuests[i].bonus,
+            id: defaultQuests[i].quest_id, title: defaultQuests[i].quest_id === 1 ? "Complete 5 Deliveries" : defaultQuests[i].quest_id === 2 ? "Earn ₹500 Today" : "3-Star Ratings",
+            current: p.current, target: p.target, bonus: defaultQuests[i].bonus,
           })));
           for (const q of defaultQuests) {
-            await supabase.from("rider_quest_progress").insert({
-              rider_id: riderIdVal,
-              quest_id: q.quest_id,
-              current_progress: 0,
-              target: q.target,
-              bonus: q.bonus,
-            });
+            await supabase.from("rider_quest_progress").insert({ rider_id: riderIdVal, quest_id: q.quest_id, current_progress: 0, target: q.target, bonus: q.bonus });
           }
         }
 
-        // Load rider's current active order
         try {
           const activeStatuses = ["accepted", "preparing", "ready_for_pickup", "shopping", "picking_up", "on_the_way", "arrived"];
-          const { data: activeOrders } = await supabase
-            .from("orders")
-            .select("*, vendor:vendors(*)")
-            .eq("rider_id", riderIdVal)
-            .in("status", activeStatuses)
-            .order("placed_at", { ascending: false })
-            .limit(1);
-
-          if (activeOrders && activeOrders.length > 0) {
-            const dbOrder = activeOrders[0];
+          const { data: activeOrdersData } = await supabase.from("orders").select("*, vendor:vendors(*)").eq("rider_id", riderIdVal).in("status", activeStatuses).order("placed_at", { ascending: false }).limit(1);
+          if (activeOrdersData && activeOrdersData.length > 0) {
+            const dbOrder = activeOrdersData[0];
             const vendorData = (dbOrder as any).vendor as any;
-
-            // Fetch customer profile separately (user_id -> profiles table)
             let customerName = "Customer";
             let customerPhone = dbOrder.customer_phone || "+91 88888 88888";
             if (dbOrder.user_id) {
-              const { data: profile } = await supabase
-                .from("profiles")
-                .select("full_name, name, phone")
-                .eq("id", dbOrder.user_id)
-                .maybeSingle();
-              if (profile) {
-                customerName = (profile as any).full_name || (profile as any).name || "Customer";
-                customerPhone = (profile as any).phone || customerPhone;
-              }
+              const { data: profile } = await supabase.from("profiles").select("full_name, name, phone").eq("id", dbOrder.user_id).maybeSingle();
+              if (profile) { customerName = (profile as any).full_name || (profile as any).name || "Customer"; customerPhone = (profile as any).phone || customerPhone; }
             }
-
-            const { data: itemsData } = await supabase
-              .from("order_items")
-              .select("*")
-              .eq("order_id", dbOrder.id);
-
+            const { data: itemsData } = await supabase.from("order_items").select("*").eq("order_id", dbOrder.id);
             const items = itemsData || [];
             const itemsCount = items.reduce((sum: number, it: any) => sum + it.quantity, 0);
             const itemsList = items.map((it: any) => `${it.quantity}x ${it.name || "Item"}`);
-
             const activeOrder: OrderWithTiming = {
-              id: dbOrder.id,
-              orderDbId: dbOrder.id,
-              vendor: vendorData?.shop_name || vendorData?.name || "Restaurant",
-              vendorAddress: vendorData?.address || "Restaurant Address",
-              vendorPhone: vendorData?.phone || "+91 99999 99999",
-              vendorLat: vendorData?.latitude || vendorData?.lat || undefined,
-              vendorLng: vendorData?.longitude || vendorData?.lng || undefined,
-              customer: customerName,
-              customerPhone: customerPhone,
-              customerAddress: dbOrder.delivery_address || "Customer Delivery Location",
-              landmark: dbOrder.special_instructions || "N/A",
-              distance: 0,
-              distance2: 0,
-              totalDistance: 0,
-              earnings: calculateEarnings(0),
-              orderTotal: Math.round(dbOrder.total_amount || 0),
-              items: itemsCount || 1,
-              itemsList: itemsList.length > 0 ? itemsList : ["Items hidden"],
-              time: "Calculating...",
-              time2: "Calculating...",
-              estCompletion: 0,
-              priority: (dbOrder.total_amount > 500) ? "high" as const : "normal" as const,
-              peakMultiplier: 1.0,
-              specialInstructions: dbOrder.special_instructions || "",
-              otp: dbOrder.otp || "",
-              type: vendorData?.type || "food",
+              id: dbOrder.id, orderDbId: dbOrder.id, vendor: vendorData?.shop_name || vendorData?.name || "Restaurant",
+              vendorAddress: vendorData?.address || "Restaurant Address", vendorPhone: vendorData?.phone || "+91 99999 99999",
+              vendorLat: vendorData?.latitude || vendorData?.lat || undefined, vendorLng: vendorData?.longitude || vendorData?.lng || undefined,
+              customer: customerName, customerPhone, customerAddress: dbOrder.delivery_address || "Customer Delivery Location",
+              landmark: dbOrder.special_instructions || "N/A", distance: 0, distance2: 0, totalDistance: 0,
+              earnings: calculateEarnings(0), orderTotal: Math.round(dbOrder.total_amount || 0), items: itemsCount || 1,
+              itemsList: itemsList.length > 0 ? itemsList : ["Items hidden"], time: "Calculating...", time2: "Calculating...",
+              estCompletion: 0, priority: (dbOrder.total_amount > 500) ? "high" as const : "normal" as const,
+              peakMultiplier: 1.0, specialInstructions: dbOrder.special_instructions || "", otp: dbOrder.otp || "", type: vendorData?.type || "food",
             };
             setCurrentOrder(activeOrder);
-
             const statusStepMap: Record<string, "shopping" | "picking_up" | "picked" | "delivering" | "arrived"> = {
-              accepted: "shopping",
-              preparing: "shopping",
-              shopping: "shopping",
-              ready_for_pickup: "picking_up",
-              picking_up: "picking_up",
-              on_the_way: "delivering",
-              arrived: "arrived",
+              accepted: "shopping", preparing: "shopping", shopping: "shopping", ready_for_pickup: "picking_up",
+              picking_up: "picking_up", on_the_way: "delivering", arrived: "arrived",
             };
             setDeliveryStep(statusStepMap[dbOrder.status] || "shopping");
           }
-        } catch (activeErr) {
-          console.warn("Failed to load active order:", activeErr);
-        }
+        } catch (activeErr) { console.warn("Failed to load active order:", activeErr); }
 
         setInitialLoading(false);
       } catch (err) {
@@ -355,64 +204,35 @@ export default function RiderDashboard() {
     getRiderId();
   }, [supabase, router]);
 
-  // 5-minute countdown timer
   useEffect(() => {
     if (selectedOrder && countdown > 0) {
-      // Check if order is snoozed
-      if (selectedOrder.isSnoozed && selectedOrder.snoozeUntil && Date.now() < selectedOrder.snoozeUntil) {
-        return; // Don't countdown while snoozed
-      }
-      
+      if (selectedOrder.isSnoozed && selectedOrder.snoozeUntil && Date.now() < selectedOrder.snoozeUntil) return;
       const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
       return () => clearTimeout(timer);
     } else if (countdown === 0 && selectedOrder) {
-      autoDecline();
+      handleDecline(selectedOrder.id);
     }
   }, [countdown, selectedOrder]);
 
-  // Function to handle snooze
-  const handleSnooze = async (order: OrderWithTiming) => {
-    const snoozeUntil = Date.now() + 30000; // 30 seconds
-    
-    setPendingOrders(prev => prev.map(o => 
-      o.id === order.id 
-        ? { ...o, isSnoozed: true, snoozeUntil } 
-        : o
-    ));
-    
-    if (selectedOrder?.id === order.id) {
-      setSelectedOrder(prev => prev ? { ...prev, isSnoozed: true, snoozeUntil } : null);
-    }
-    
+  const handleSnooze = useCallback(async (order: OrderWithTiming) => {
+    const snoozeUntil = Date.now() + 30000;
+    setPendingOrders(prev => prev.map(o => o.id === order.id ? { ...o, isSnoozed: true, snoozeUntil } : o));
+    if (selectedOrder?.id === order.id) setSelectedOrder(prev => prev ? { ...prev, isSnoozed: true, snoozeUntil } : null);
     setSnoozeMessage("Order snoozed for 30 seconds");
     setTimeout(() => setSnoozeMessage(""), 3000);
-    
-    // Save snooze to database
     if (order.orderDbId && riderId) {
-      try {
-        await supabase.rpc('snooze_order_for_rider', {
-          p_order_id: order.orderDbId,
-          p_rider_id: riderId,
-          p_seconds: 30
-        });
-      } catch (e) {
-
-      }
+      try { await supabase.rpc('snooze_order_for_rider', { p_order_id: order.orderDbId, p_rider_id: riderId, p_seconds: 30 }); } catch { /* silent */ }
     }
-  };
+  }, [selectedOrder, riderId, supabase]);
 
-  // Check for snoozed orders periodically and wake them up
   useEffect(() => {
     const interval = setInterval(() => {
       const now = Date.now();
       setPendingOrders(prev => prev.map(o => {
-        if (o.isSnoozed && o.snoozeUntil && now >= o.snoozeUntil) {
-          return { ...o, isSnoozed: false, snoozeUntil: undefined };
-        }
+        if (o.isSnoozed && o.snoozeUntil && now >= o.snoozeUntil) return { ...o, isSnoozed: false, snoozeUntil: undefined };
         return o;
       }));
     }, 1000);
-    
     return () => clearInterval(interval);
   }, []);
 
@@ -420,107 +240,50 @@ export default function RiderDashboard() {
     async function fetchRealOrders() {
       try {
         if (!isOnline) return;
-      
-      const yesterday = new Date();
-      yesterday.setHours(yesterday.getHours() - 24);
-
-      // Only fetch orders that vendor marked ready, not yet assigned to a rider
-      const { data: dbOrders } = await supabase
-        .from("orders")
-        .select("*")
-        .is("rider_id", null)
-        .in("status", ["ready_for_pickup"])
-        .gte("placed_at", yesterday.toISOString())
-        .order("placed_at", { ascending: false });
-        
-      if (!dbOrders || dbOrders.length === 0) {
-        setPendingOrders([]);
-        return;
-      }
-      
-      // Calculate expiration time (5 minutes from now for new orders)
-      const now = Date.now();
-      const expirationTime = now + (5 * 60 * 1000); // 5 minutes
-      
-      const mappedOrders: OrderWithTiming[] = await Promise.all(dbOrders.map(async (dbOrder) => {
-        // Fetch related data sequentially
-        const [vendorRes, itemsRes, profileRes] = await Promise.all([
-          dbOrder.vendor_id ? supabase.from("vendors").select("*").eq("id", dbOrder.vendor_id).maybeSingle() : Promise.resolve({ data: null }),
-          supabase.from("order_items").select("*").eq("order_id", dbOrder.id),
-          dbOrder.user_id ? supabase.from("profiles").select("full_name, name, phone").eq("id", dbOrder.user_id).maybeSingle() : Promise.resolve({ data: null }),
-        ]);
-        let itemsList: string[] = [];
-        let itemsCount = 0;
-        
-        const items = itemsRes.data || [];
-        if (items.length > 0) {
-          itemsCount = items.reduce((sum, item) => sum + item.quantity, 0);
-          const menuItemIds = items.map(i => i.menu_item_id).filter(Boolean);
-          if (menuItemIds.length > 0) {
-            const { data: menuItems } = await supabase.from("menu_items").select("*").in("id", menuItemIds);
-            if (menuItems) {
-              itemsList = items.map((item: any) => {
-                const menuItem = menuItems.find(mi => mi.id === item.menu_item_id);
-                return `${item.quantity}x ${menuItem?.name || "Item"}`;
-              });
+        const yesterday = new Date(); yesterday.setHours(yesterday.getHours() - 24);
+        const { data: dbOrders } = await supabase.from("orders").select("*").is("rider_id", null).in("status", ["ready_for_pickup"]).gte("placed_at", yesterday.toISOString()).order("placed_at", { ascending: false });
+        if (!dbOrders || dbOrders.length === 0) { setPendingOrders([]); return; }
+        const now = Date.now(); const expirationTime = now + (5 * 60 * 1000);
+        const mappedOrders: OrderWithTiming[] = await Promise.all(dbOrders.map(async (dbOrder) => {
+          const [vendorRes, itemsRes, profileRes] = await Promise.all([
+            dbOrder.vendor_id ? supabase.from("vendors").select("*").eq("id", dbOrder.vendor_id).maybeSingle() : Promise.resolve({ data: null }),
+            supabase.from("order_items").select("*").eq("order_id", dbOrder.id),
+            dbOrder.user_id ? supabase.from("profiles").select("full_name, name, phone").eq("id", dbOrder.user_id).maybeSingle() : Promise.resolve({ data: null }),
+          ]);
+          let itemsList: string[] = []; let itemsCount = 0;
+          const items = itemsRes.data || [];
+          if (items.length > 0) {
+            itemsCount = items.reduce((sum, item) => sum + item.quantity, 0);
+            const menuItemIds = items.map(i => i.menu_item_id).filter(Boolean);
+            if (menuItemIds.length > 0) {
+              const { data: menuItems } = await supabase.from("menu_items").select("*").in("id", menuItemIds);
+              if (menuItems) itemsList = items.map((item: any) => { const menuItem = menuItems.find(mi => mi.id === item.menu_item_id); return `${item.quantity}x ${menuItem?.name || "Item"}`; });
             }
           }
-        }
-        
-        return {
-          id: dbOrder.id,
-          orderDbId: dbOrder.id,
-          vendor: vendorRes.data?.shop_name || vendorRes.data?.name || "Restaurant",
-          vendorAddress: vendorRes.data?.address || "Restaurant Address",
-          vendorPhone: vendorRes.data?.phone || "+91 99999 99999",
-          vendorLat: vendorRes.data?.latitude || vendorRes.data?.lat || 0,
-          vendorLng: vendorRes.data?.longitude || vendorRes.data?.lng || 0,
-          customer: profileRes.data?.full_name || (profileRes.data as any)?.name || "Customer",
-          customerPhone: profileRes.data?.phone || dbOrder.customer_phone || "+91 88888 88888",
-          customerAddress: dbOrder.delivery_address || "Customer Delivery Location",
-          landmark: dbOrder.special_instructions || "N/A",
-          distance: 0,
-          distance2: 0,
-          totalDistance: 0,
-          earnings: calculateEarnings(0),
-          orderTotal: Math.round(dbOrder.total_amount || 0),
-          items: itemsCount || 1,
-          itemsList: itemsList.length > 0 ? itemsList : ["Items hidden"],
-          time: "Calculating...",
-          time2: "Calculating...",
-          estCompletion: 0,
-          priority: (dbOrder.total_amount > 500) ? "high" : "normal",
-          peakMultiplier: 1.0,
-          specialInstructions: dbOrder.special_instructions || "",
-          otp: dbOrder.otp || "",
-          type: vendorRes.data?.type || "food",
-          expiresAt: expirationTime,
-          isSnoozed: false,
-        } as OrderWithTiming;
-      }));
-      
-      setPendingOrders(mappedOrders);
-    } catch (err) {
-      console.error("Failed to fetch pending orders:", err);
-      setPendingOrders([]);
+          return {
+            id: dbOrder.id, orderDbId: dbOrder.id, vendor: vendorRes.data?.shop_name || vendorRes.data?.name || "Restaurant",
+            vendorAddress: vendorRes.data?.address || "Restaurant Address", vendorPhone: vendorRes.data?.phone || "+91 99999 99999",
+            vendorLat: vendorRes.data?.latitude || vendorRes.data?.lat || 0, vendorLng: vendorRes.data?.longitude || vendorRes.data?.lng || 0,
+            customer: profileRes.data?.full_name || (profileRes.data as any)?.name || "Customer",
+            customerPhone: profileRes.data?.phone || dbOrder.customer_phone || "+91 88888 88888",
+            customerAddress: dbOrder.delivery_address || "Customer Delivery Location", landmark: dbOrder.special_instructions || "N/A",
+            distance: 0, distance2: 0, totalDistance: 0, earnings: calculateEarnings(0),
+            orderTotal: Math.round(dbOrder.total_amount || 0), items: itemsCount || 1,
+            itemsList: itemsList.length > 0 ? itemsList : ["Items hidden"], time: "Calculating...", time2: "Calculating...",
+            estCompletion: 0, priority: (dbOrder.total_amount > 500) ? "high" : "normal", peakMultiplier: 1.0,
+            specialInstructions: dbOrder.special_instructions || "", otp: dbOrder.otp || "", type: vendorRes.data?.type || "food",
+            expiresAt: expirationTime, isSnoozed: false,
+          } as OrderWithTiming;
+        }));
+        setPendingOrders(mappedOrders);
+      } catch (err) { console.error("Failed to fetch pending orders:", err); setPendingOrders([]); }
     }
-    }
-    
     fetchRealOrders();
-    
-    const channel = supabase
-      .channel('rider-orders-dash')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders', filter: `status=eq.ready_for_pickup` }, () => {
-        fetchRealOrders();
-      })
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'orders', filter: `status=eq.ready_for_pickup` }, () => {
-        fetchRealOrders();
-      })
+    const channel = supabase.channel('rider-orders-dash')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders', filter: `status=eq.ready_for_pickup` }, () => { fetchRealOrders(); })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'orders', filter: `status=eq.ready_for_pickup` }, () => { fetchRealOrders(); })
       .subscribe();
-      
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    return () => { supabase.removeChannel(channel); };
   }, [isOnline, supabase]);
 
   useEffect(() => {
@@ -530,523 +293,222 @@ export default function RiderDashboard() {
     }
   }, [pendingOrders, isOnline]);
 
-  const playNotificationSound = () => {
-    if (dndMode) return;
-    if (soundEnabled && audioRef.current) {
-      audioRef.current.play().catch(() => {});
-    }
-    if (vibrationEnabled && navigator.vibrate) {
-      navigator.vibrate([200, 100, 200, 100, 500]);
-    }
-  };
-
-  const dismissNewOrderAlert = () => {
-    setShowNewOrderAlert(false);
-  };
-
-  const autoDecline = () => {
-    if (selectedOrder) {
-      // Order expired - it will be handled by database for user notification
-      handleDecline(selectedOrder.id);
-    }
-  };
-
-  // Check for expired orders periodically
   useEffect(() => {
-    const checkExpired = setInterval(async () => {
+    const checkExpired = setInterval(() => {
       const now = Date.now();
-      setPendingOrders(prev => {
-        const filtered = prev.filter(o => {
-          // Remove orders that have been accepted by other riders (expired)
-          if (o.expiresAt && now > o.expiresAt + 5000) { // 5 sec grace period
-            return false;
-          }
-          return true;
-        });
-        return filtered;
-      });
+      setPendingOrders(prev => prev.filter(o => !(o.expiresAt && now > o.expiresAt + 5000)));
     }, 5000);
-    
     return () => clearInterval(checkExpired);
   }, []);
 
-  // Low battery warning
   useEffect(() => {
     if (typeof navigator !== 'undefined' && 'getBattery' in navigator) {
       (navigator as any).getBattery().then((battery: any) => {
         setBatteryLevel(Math.round(battery.level * 100));
         battery.addEventListener('levelchange', () => {
           setBatteryLevel(Math.round(battery.level * 100));
-          if (battery.level <= 0.2) {
-            setShowLowBattery(true);
-          }
+          if (battery.level <= 0.2) setShowLowBattery(true);
         });
       });
     }
   }, []);
 
-  // Live earnings are derived from actual order earnings, not a timer
-
-  // Initialize Leaflet map
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return;
     let isMounted = true;
-
     (async () => {
       const L = await import('leaflet');
       await import('leaflet/dist/leaflet.css');
-
       if (!isMounted || !mapRef.current) return;
-
       const map = L.map(mapRef.current, { zoomControl: false }).setView([28.6139, 77.2090], 14);
       L.control.zoom({ position: 'bottomright' }).addTo(map);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors',
-        maxZoom: 18,
-      }).addTo(map);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors', maxZoom: 18 }).addTo(map);
       mapInstanceRef.current = map;
-
-      // Try to center on rider's location
-      navigator.geolocation.getCurrentPosition(
-        (pos) => map.setView([pos.coords.latitude, pos.coords.longitude], 15),
-        () => {}
-      );
-
-      // Rider marker
-      const riderIcon = L.divIcon({
-        className: '',
-        html: `<div style="display:flex;align-items:center;justify-content:center;width:40px;height:40px;background:#0b50d5;border-radius:50%;border:3px solid white;box-shadow:0 3px 10px rgba(11,80,213,0.4);"><span style="font-size:20px;color:white;">🏍️</span></div>`,
-        iconSize: [40, 40],
-        iconAnchor: [20, 40],
-      });
+      navigator.geolocation.getCurrentPosition((pos) => map.setView([pos.coords.latitude, pos.coords.longitude], 15), () => {});
+      const riderIcon = L.divIcon({ className: '', html: `<div style="display:flex;align-items:center;justify-content:center;width:40px;height:40px;background:#0b50d5;border-radius:50%;border:3px solid white;box-shadow:0 3px 10px rgba(11,80,213,0.4);"><span style="font-size:20px;color:white;">🏍️</span></div>`, iconSize: [40, 40], iconAnchor: [20, 40] });
       riderMarkerRef.current = L.marker([28.6139, 77.2090], { icon: riderIcon }).addTo(map);
-
-      // Watch rider position
-      const watchId = navigator.geolocation.watchPosition(
-        (pos) => {
-          const { latitude, longitude } = pos.coords;
-          riderMarkerRef.current?.setLatLng([latitude, longitude]);
-        },
-        () => {},
-        { enableHighAccuracy: true, maximumAge: 5000, timeout: 10000 }
-      );
-
+      const watchId = navigator.geolocation.watchPosition((pos) => { riderMarkerRef.current?.setLatLng([pos.coords.latitude, pos.coords.longitude]); }, () => {}, { enableHighAccuracy: true, maximumAge: 5000, timeout: 10000 });
       watchIdRef.current = watchId;
     })();
-
     return () => {
       isMounted = false;
-      if (watchIdRef.current != null) {
-        navigator.geolocation.clearWatch(watchIdRef.current);
-      }
-      if (mapInstanceRef.current) {
-        mapInstanceRef.current.remove();
-        mapInstanceRef.current = null;
-      }
+      if (watchIdRef.current != null) navigator.geolocation.clearWatch(watchIdRef.current);
+      if (mapInstanceRef.current) { mapInstanceRef.current.remove(); mapInstanceRef.current = null; }
     };
   }, []);
 
-  // Update order markers when currentOrder changes
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map) return;
     const markers: any[] = [];
-
     (async () => {
       const L = await import('leaflet');
-
       if (currentOrder && currentOrder.vendorLat && currentOrder.vendorLng) {
-        const pickupIcon = L.divIcon({
-          className: '',
-          html: `<div style="display:flex;flex-direction:column;align-items:center;"><div style="width:44px;height:44px;background:white;border-radius:50%;border:3px solid #0b50d5;box-shadow:0 3px 10px rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:center;"><span style="font-size:20px;">🍽️</span></div><span style="margin-top:2px;padding:2px 6px;background:white;border-radius:6px;font-size:10px;font-weight:bold;box-shadow:0 1px 4px rgba(0,0,0,0.15);white-space:nowrap;">${currentOrder.vendor}</span></div>`,
-          iconSize: [44, 64],
-          iconAnchor: [22, 64],
-        });
+        const pickupIcon = L.divIcon({ className: '', html: `<div style="display:flex;flex-direction:column;align-items:center;"><div style="width:44px;height:44px;background:white;border-radius:50%;border:3px solid #0b50d5;box-shadow:0 3px 10px rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:center;"><span style="font-size:20px;">🍽️</span></div><span style="margin-top:2px;padding:2px 6px;background:white;border-radius:6px;font-size:10px;font-weight:bold;box-shadow:0 1px 4px rgba(0,0,0,0.15);white-space:nowrap;">${currentOrder.vendor}</span></div>`, iconSize: [44, 64], iconAnchor: [22, 64] });
         markers.push(L.marker([currentOrder.vendorLat, currentOrder.vendorLng], { icon: pickupIcon }).addTo(map));
-
         if (deliveryStep === "delivering" && currentOrder.customerLat && currentOrder.customerLng) {
-          const deliveryIcon = L.divIcon({
-            className: '',
-            html: `<div style="display:flex;flex-direction:column;align-items:center;"><div style="width:44px;height:44px;background:white;border-radius:50%;border:3px solid #ba001c;box-shadow:0 3px 10px rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:center;"><span style="font-size:20px;">🏠</span></div><span style="margin-top:2px;padding:2px 6px;background:white;border-radius:6px;font-size:10px;font-weight:bold;box-shadow:0 1px 4px rgba(0,0,0,0.15);white-space:nowrap;">${currentOrder.customer}</span></div>`,
-            iconSize: [44, 64],
-            iconAnchor: [22, 64],
-          });
+          const deliveryIcon = L.divIcon({ className: '', html: `<div style="display:flex;flex-direction:column;align-items:center;"><div style="width:44px;height:44px;background:white;border-radius:50%;border:3px solid #ba001c;box-shadow:0 3px 10px rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:center;"><span style="font-size:20px;">🏠</span></div><span style="margin-top:2px;padding:2px 6px;background:white;border-radius:6px;font-size:10px;font-weight:bold;box-shadow:0 1px 4px rgba(0,0,0,0.15);white-space:nowrap;">${currentOrder.customer}</span></div>`, iconSize: [44, 64], iconAnchor: [22, 64] });
           markers.push(L.marker([currentOrder.customerLat, currentOrder.customerLng], { icon: deliveryIcon }).addTo(map));
         }
       }
-
-      // Clean up old markers on next effect run
-      if (mapRef.current) {
-        (mapRef.current as any)._orderMarkers?.forEach((m: any) => m.remove());
-        (mapRef.current as any)._orderMarkers = markers;
-      }
+      if (mapRef.current) { (mapRef.current as any)._orderMarkers?.forEach((m: any) => m.remove()); (mapRef.current as any)._orderMarkers = markers; }
     })();
-
-    return () => {
-      markers.forEach(m => m.remove());
-    };
+    return () => { markers.forEach(m => m.remove()); };
   }, [currentOrder, deliveryStep]);
 
-  // Show pending order markers on map (demand heat visualization)
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map) return;
     (async () => {
       const L = await import('leaflet');
-      if ((mapRef.current as any)?._demandMarkers) {
-        (mapRef.current as any)._demandMarkers.forEach((m: any) => m.remove());
-      }
+      if ((mapRef.current as any)?._demandMarkers) (mapRef.current as any)._demandMarkers.forEach((m: any) => m.remove());
       const demandMarkers: any[] = [];
       pendingOrders.forEach((order) => {
         if (order.vendorLat && order.vendorLng) {
-          const dotIcon = L.divIcon({
-            className: '',
-            html: `<div style="width:16px;height:16px;background:rgba(11,80,213,0.5);border:2px solid #0b50d5;border-radius:50%;box-shadow:0 0 12px rgba(11,80,213,0.4);animation:pulse-dot 2s ease-in-out infinite;"></div>`,
-            iconSize: [16, 16],
-            iconAnchor: [8, 8],
-          });
-          const marker = L.marker([order.vendorLat, order.vendorLng], { icon: dotIcon })
-            .addTo(map)
-            .bindPopup(`<b>${order.vendor}</b><br/>₹${order.earnings} • ${order.items} items`);
-          demandMarkers.push(marker);
+          const dotIcon = L.divIcon({ className: '', html: `<div style="width:16px;height:16px;background:rgba(11,80,213,0.5);border:2px solid #0b50d5;border-radius:50%;box-shadow:0 0 12px rgba(11,80,213,0.4);animation:pulse-dot 2s ease-in-out infinite;"></div>`, iconSize: [16, 16], iconAnchor: [8, 8] });
+          demandMarkers.push(L.marker([order.vendorLat, order.vendorLng], { icon: dotIcon }).addTo(map).bindPopup(`<b>${order.vendor}</b><br/>₹${order.earnings} • ${order.items} items`));
         }
       });
       (mapRef.current as any)._demandMarkers = demandMarkers;
     })();
-    return () => {
-      if ((mapRef.current as any)?._demandMarkers) {
-        (mapRef.current as any)._demandMarkers.forEach((m: any) => m.remove());
-      }
-    };
+    return () => { if ((mapRef.current as any)?._demandMarkers) (mapRef.current as any)._demandMarkers.forEach((m: any) => m.remove()); };
   }, [pendingOrders]);
 
-  const clearAllPendingOrders = async () => {
-    if (!confirm("This will delete ALL pending orders from the database. This is intended for testing only. Continue?")) return;
-    
-    try {
-      const { error } = await supabase
-        .from("orders")
-        .delete()
-        .is("rider_id", null)
-        .in("status", ["pending"]);
-      
-      if (error) throw error;
-      alert("Successfully cleared all pending orders.");
-      setPendingOrders([]);
-    } catch (err: any) {
-      alert("Error clearing orders: " + err.message);
+  useEffect(() => {
+    if (!currentOrder?.id || !currentUserId) { setUnreadCount(0); return; }
+    const orderId = currentOrder.id;
+    async function loadUnread() {
+      const { count } = await supabase.from("chat_messages").select("*", { count: "exact", head: true }).eq("order_id", orderId).neq("sender_id", currentUserId).eq("read", false);
+      setUnreadCount(prev => { if (count && count > prev && prev > 0) playMessageAlert(); return count || 0; });
     }
+    loadUnread();
+    const channel = supabase.channel(`rider-unread-${orderId}`)
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "chat_messages", filter: `order_id=eq.${orderId}` }, () => { loadUnread(); })
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "chat_messages", filter: `order_id=eq.${orderId}` }, () => { loadUnread(); })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [currentOrder?.id, currentUserId, supabase]);
+
+  useEffect(() => {
+    if (typeof Notification !== "undefined" && Notification.permission === "default") Notification.requestPermission();
+  }, []);
+
+  function playMessageAlert() {
+    if (typeof Notification !== "undefined" && Notification.permission === "granted") {
+      new Notification("New message from customer", { body: `Order #${currentOrder?.id?.slice(0, 8) || ""}`, icon: "/icon.png" });
+    }
+    try {
+      const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const osc = ctx.createOscillator(); const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.frequency.value = 880; osc.type = "sine";
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+      osc.start(); osc.stop(ctx.currentTime + 0.3);
+    } catch (_) { /* audio not supported */ }
+  }
+
+  const clearAllPendingOrders = async () => {
+    try {
+      const { error } = await supabase.from("orders").delete().is("rider_id", null).in("status", ["pending"]);
+      if (error) throw error;
+      setPendingOrders([]);
+    } catch (err: any) { console.error("Clear failed:", err.message); }
   };
 
   const handleAccept = async (order: OrderWithTiming) => {
     let accepted = false;
-
-    // Try to accept via atomic database function
     if (order.orderDbId && riderId) {
       try {
-        const { data: success, error } = await supabase.rpc('accept_order_as_rider', {
-          p_order_id: order.orderDbId,
-          p_rider_id: riderId
-        });
-        
+        const { data: success, error } = await supabase.rpc('accept_order_as_rider', { p_order_id: order.orderDbId, p_rider_id: riderId });
         if (!success || error) {
-          // Order was already taken by another rider
           setOrderTakenByOther(true);
-          setTimeout(() => {
-            setOrderTakenByOther(false);
-            setPendingOrders(prev => prev.filter(o => o.id !== order.id));
-            setSelectedOrder(null);
-          }, 2000);
+          setTimeout(() => { setOrderTakenByOther(false); setPendingOrders(prev => prev.filter(o => o.id !== order.id)); setSelectedOrder(null); }, 2000);
           return;
         }
-        accepted = true; // RPC succeeded, skip fallback
-      } catch (e) {
-
-      }
+        accepted = true;
+      } catch { /* silent */ }
     }
-    
-    // Fallback: directly update order — assign rider to ready_for_pickup order
     if (!accepted && order.orderDbId && riderId) {
-      const { error } = await supabase
-        .from("orders")
-        .update({ 
-          rider_id: riderId, 
-          accepted_at: new Date().toISOString() 
-        })
-        .eq("id", order.orderDbId)
-        .is("rider_id", null); // Only if no rider assigned
-        
+      const { error } = await supabase.from("orders").update({ rider_id: riderId, accepted_at: new Date().toISOString() }).eq("id", order.orderDbId).is("rider_id", null);
       if (error) {
-        // Order already taken
         setOrderTakenByOther(true);
-        setTimeout(() => {
-          setOrderTakenByOther(false);
-          setPendingOrders(prev => prev.filter(o => o.id !== order.id));
-          setSelectedOrder(null);
-        }, 2000);
+        setTimeout(() => { setOrderTakenByOther(false); setPendingOrders(prev => prev.filter(o => o.id !== order.id)); setSelectedOrder(null); }, 2000);
         return;
       }
     }
-    
-    // Use functional updates to avoid stale closure
     setPendingOrders(prev => prev.filter(o => o.id !== order.id));
     setActiveOrders(prev => [...prev, order]);
     setCurrentOrder(prev => prev || order);
-    setSelectedOrder(null);
-    setCountdown(300);
-    
-    if (order.type === "multi_stop") {
-      setDeliveryStep("picking_up");
-    } else {
-      setDeliveryStep("shopping");
-    }
+    setSelectedOrder(null); setCountdown(300);
+    setDeliveryStep(order.type === "multi_stop" ? "picking_up" : "shopping");
   };
 
   const handleDecline = async (orderId: string, reason?: string) => {
-    // Use functional update to avoid stale closure
     setPendingOrders(prev => prev.filter(o => o.id !== orderId));
-    setSelectedOrder(null);
-    setShowSkipModal(false);
-    setCountdown(300);
-    
-    // Get the order from current state using a functional approach
-    // We need to fetch the order details for the API call
+    setSelectedOrder(null); setShowSkipModal(false); setCountdown(300);
     if (riderId && reason) {
       try {
-        // Find the order in the current pending orders before it gets filtered out
-        // We'll use a ref or fetch from the database
-        const { data: orderData } = await supabase
-          .from("orders")
-          .select("id")
-          .eq("id", orderId)
-          .maybeSingle();
-        
+        const { data: orderData } = await supabase.from("orders").select("id").eq("id", orderId).maybeSingle();
         if (orderData) {
-          await fetch("/api/rider/cancel-order", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ order_id: orderData.id, rider_id: riderId, reason }),
-          });
+          await fetch("/api/rider/cancel-order", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ order_id: orderData.id, rider_id: riderId, reason }) });
         }
       } catch { /* silent */ }
     }
   };
 
-  const handleSkip = (order: OrderWithTiming) => {
-    handleSnooze(order);
-  };
-
-  const handleCallCustomer = () => {
-    setShowCallModal(true);
-  };
-
-  const handleStartChat = () => {
-    if (currentOrder) {
-      setShowChatModal(true);
-    }
-  };
-
-  function playMessageAlert() {
-    // Browser notification
-    if (typeof Notification !== "undefined" && Notification.permission === "granted") {
-      new Notification("New message from customer", {
-        body: `Order #${currentOrder?.id?.slice(0, 8) || ""}`,
-        icon: "/icon.png",
-      });
-    }
-    // Sound alert
-    try {
-      const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.frequency.value = 880;
-      osc.type = "sine";
-      gain.gain.setValueAtTime(0.3, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
-      osc.start();
-      osc.stop(ctx.currentTime + 0.3);
-    } catch (_) { /* audio not supported */ }
-  }
-
-  // Request notification permission on mount
-  useEffect(() => {
-    if (typeof Notification !== "undefined" && Notification.permission === "default") {
-      Notification.requestPermission();
-    }
-  }, []);
-
   const handleComplete = async () => {
-    if (currentOrder) {
-      const finalEarnings = calculateEarnings(currentOrder.totalDistance, 40, 8, currentOrder.peakMultiplier);
-      let persisted = false;
-      try {
-        if (currentOrder.orderDbId && riderId) {
-          const { error: orderErr } = await supabase
-            .from("orders")
-            .update({
-              status: "delivered",
-              delivered_at: new Date().toISOString(),
-              rider_earning: finalEarnings,
-            })
-            .eq("id", currentOrder.orderDbId);
-          if (orderErr) throw new Error("order update: " + orderErr.message);
-
-          // Update rider's delivery count (only total_deliveries, not total_earnings which may not exist)
-          await supabase
-            .from("riders")
-            .update({ total_deliveries: riderDeliveries + 1 })
-            .eq("id", riderId);
-          setRiderDeliveries((prev) => prev + 1);
-
-          // Credit wallet — upsert to handle both create and update
-          const { data: wallet } = await supabase
-            .from("rider_wallets")
-            .select("id, balance, total_earnings")
-            .eq("rider_id", riderId)
-            .maybeSingle();
-
-          if (wallet) {
-            await supabase
-              .from("rider_wallets")
-              .update({
-                balance: (wallet.balance || 0) + finalEarnings,
-                total_earnings: (wallet.total_earnings || 0) + finalEarnings,
-              })
-              .eq("id", wallet.id);
-          } else {
-            await supabase
-              .from("rider_wallets")
-              .insert({
-                rider_id: riderId,
-                balance: finalEarnings,
-                total_earnings: finalEarnings,
-                pending_payout: 0,
-                advance_used: 0,
-              });
-          }
-
-          // Log transaction in rider_wallet table for history
-          await supabase
-            .from("rider_wallet")
-            .insert({
-              rider_id: riderId,
-              amount: finalEarnings,
-              type: "earning",
-              description: `Delivery earnings for order #${currentOrder.orderDbId.slice(0, 8)}`,
-              order_id: currentOrder.orderDbId,
-              created_at: new Date().toISOString(),
-            });
-
-          // Verify the write by re-reading earnings
-          const { data: verify } = await supabase
-            .from("orders")
-            .select("rider_earning")
-            .eq("id", currentOrder.orderDbId)
-            .maybeSingle();
-          if (verify && Number(verify.rider_earning) > 0) {
-            persisted = true;
-            setRiderEarnings((prev) => prev + finalEarnings);
-          } else {
-            console.warn("Earnings write verification returned 0, but update succeeded");
-            setRiderEarnings((prev) => prev + finalEarnings);
-          }
-
-          // Notify customer
-          if (currentOrder?.user_id) {
-            await supabase
-              .from("notifications")
-              .insert({
-                user_id: currentOrder.user_id,
-                title: "Order Delivered! 🎉",
-                message: "Your order has been delivered. Enjoy your meal!",
-                type: "order",
-                read: false,
-                created_at: new Date().toISOString(),
-              });
-            try {
-              await fetch("/api/emails/order-status", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ orderId: currentOrder.orderDbId, status: "delivered" }),
-              });
-            } catch (emailErr) {
-              console.warn("Failed to send delivery email:", emailErr);
-            }
-          }
+    if (!currentOrder) return;
+    const finalEarnings = calculateEarnings(currentOrder.totalDistance, 40, 8, currentOrder.peakMultiplier);
+    try {
+      if (currentOrder.orderDbId && riderId) {
+        const { error: orderErr } = await supabase.from("orders").update({ status: "delivered", delivered_at: new Date().toISOString(), rider_earning: finalEarnings }).eq("id", currentOrder.orderDbId);
+        if (orderErr) throw new Error("order update: " + orderErr.message);
+        await supabase.from("riders").update({ total_deliveries: riderDeliveries + 1 }).eq("id", riderId);
+        setRiderDeliveries((prev) => prev + 1);
+        const { data: wallet } = await supabase.from("rider_wallets").select("id, balance, total_earnings").eq("rider_id", riderId).maybeSingle();
+        if (wallet) {
+          await supabase.from("rider_wallets").update({ balance: (wallet.balance || 0) + finalEarnings, total_earnings: (wallet.total_earnings || 0) + finalEarnings }).eq("id", wallet.id);
+        } else {
+          await supabase.from("rider_wallets").insert({ rider_id: riderId, balance: finalEarnings, total_earnings: finalEarnings, pending_payout: 0, advance_used: 0 });
         }
-        alert(`Order delivered successfully! ₹${finalEarnings} earned.${persisted ? "" : " (pending sync)"}`);
-      } catch (e) {
-        console.error("Failed to persist delivery:", e);
-        alert(`Order delivered! ₹${finalEarnings} earned. (Sync will complete on next refresh.)`);
+        await supabase.from("rider_wallet").insert({ rider_id: riderId, amount: finalEarnings, type: "earning", description: `Delivery earnings for order #${currentOrder.orderDbId.slice(0, 8)}`, order_id: currentOrder.orderDbId, created_at: new Date().toISOString() });
+        const { data: verify } = await supabase.from("orders").select("rider_earning").eq("id", currentOrder.orderDbId).maybeSingle();
+        if (verify && Number(verify.rider_earning) > 0) setRiderEarnings((prev) => prev + finalEarnings);
+        else setRiderEarnings((prev) => prev + finalEarnings);
+        if (currentOrder?.user_id) {
+          await supabase.from("notifications").insert({ user_id: currentOrder.user_id, title: "Order Delivered! 🎉", message: "Your order has been delivered. Enjoy your meal!", type: "order", read: false, created_at: new Date().toISOString() });
+          try { await fetch("/api/emails/order-status", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ orderId: currentOrder.orderDbId, status: "delivered" }) }); } catch { /* silent */ }
+        }
       }
-      setCurrentOrder(null);
-      stopLocationTracking();
-      setActiveOrders(prev => {
-        const remaining = prev.filter(o => o.id !== currentOrder?.id);
-        if (remaining.length > 0) {
-          setCurrentOrder(remaining[0]);
-          setDeliveryStep("shopping");
-        }
-        return remaining;
-      });
-    }
+    } catch (e) { console.error("Failed to persist delivery:", e); }
+    setCurrentOrder(null); stopLocationTracking();
+    setActiveOrders(prev => {
+      const remaining = prev.filter(o => o.id !== currentOrder?.id);
+      if (remaining.length > 0) { setCurrentOrder(remaining[0]); setDeliveryStep("shopping"); }
+      return remaining;
+    });
   };
 
   const handlePickedUp = async () => {
     setDeliveryStep("delivering");
     if (currentOrder?.orderDbId && riderId) {
-      try {
-        await supabase.from("orders").update({
-          status: "on_the_way",
-          picked_at: new Date().toISOString(),
-        }).eq("id", currentOrder.orderDbId);
-        startLocationTracking(riderId, currentOrder.orderDbId);
-      } catch (err) {
-        console.error("Failed to update order status:", err);
-      }
+      try { await supabase.from("orders").update({ status: "on_the_way", picked_at: new Date().toISOString() }).eq("id", currentOrder.orderDbId); startLocationTracking(riderId, currentOrder.orderDbId); } catch { /* silent */ }
     }
   };
 
   const handleArrived = async () => {
     if (currentOrder?.type === "multi_stop" && currentOrder.stops && currentStopIndex < currentOrder.stops.length - 1) {
       setCurrentStopIndex(currentStopIndex + 1);
-      if (currentOrder.orderDbId) {
-        try {
-          await supabase.from("orders").update({
-            delivery_notes: `Stop ${currentStopIndex + 2}/${currentOrder.stops.length} - ${currentOrder.stops[currentStopIndex + 1]?.name}`,
-          }).eq("id", currentOrder.orderDbId);
-        } catch (err) {
-          console.error("Failed to update stop progress:", err);
-        }
-      }
-      alert(`Stop ${currentStopIndex + 1} delivered! Moving to stop ${currentStopIndex + 2}...`);
+      if (currentOrder.orderDbId) { try { await supabase.from("orders").update({ delivery_notes: `Stop ${currentStopIndex + 2}/${currentOrder.stops.length} - ${currentOrder.stops[currentStopIndex + 1]?.name}` }).eq("id", currentOrder.orderDbId); } catch { /* silent */ } }
     } else {
-      if (currentOrder?.orderDbId) {
-        try {
-          await supabase.from("orders").update({
-            status: "arrived",
-            arrived_at: new Date().toISOString(),
-          }).eq("id", currentOrder.orderDbId);
-        } catch (err) {
-          console.error("Failed to update arrived status:", err);
-        }
-      }
+      if (currentOrder?.orderDbId) { try { await supabase.from("orders").update({ status: "arrived", arrived_at: new Date().toISOString() }).eq("id", currentOrder.orderDbId); } catch { /* silent */ } }
       setDeliveryStep("arrived");
     }
   };
 
   const handleItemsCollected = async () => {
-    if (currentOrder?.orderDbId) {
-      try {
-        await supabase.from("orders").update({
-          status: "picking_up",
-        }).eq("id", currentOrder.orderDbId);
-      } catch (err) {
-        console.error("Failed to update items collected status:", err);
-      }
-    }
+    if (currentOrder?.orderDbId) { try { await supabase.from("orders").update({ status: "picking_up" }).eq("id", currentOrder.orderDbId); } catch { /* silent */ } }
     setDeliveryStep("picking_up");
   };
 
@@ -1059,970 +521,64 @@ export default function RiderDashboard() {
             <>
               <span className="material-symbols-outlined text-5xl text-amber-400 mb-4 block">motorcycle</span>
               <h2 className="text-xl font-bold text-[#4d212a] mb-2">Not a Rider Yet</h2>
-              <p className="text-slate-500 mb-2">You're logged in, but you don't have a rider account.</p>
+              <p className="text-slate-500 mb-2">You&apos;re logged in, but you don&apos;t have a rider account.</p>
               <p className="text-slate-500 mb-6">Sign up to start delivering and earning.</p>
-              <Link
-                href="/rider/apply"
-                className="inline-block px-6 py-3 bg-[#0b50d5] text-white rounded-xl font-bold"
-              >
-                Apply to Become a Rider
-              </Link>
+              <Link href="/rider/apply" className="inline-block px-6 py-3 bg-[#0b50d5] text-white rounded-xl font-bold">Apply to Become a Rider</Link>
             </>
           ) : (
             <>
               <span className="material-symbols-outlined text-5xl text-red-400 mb-4 block">wifi_off</span>
               <h2 className="text-xl font-bold text-[#4d212a] mb-2">Unable to load dashboard</h2>
               <p className="text-slate-500 mb-6">{error}</p>
-              <button
-                onClick={() => window.location.reload()}
-                className="px-6 py-3 bg-[#0b50d5] text-white rounded-xl font-bold"
-              >
-                Try Again
-              </button>
+              <button onClick={() => window.location.reload()} className="px-6 py-3 bg-[#0b50d5] text-white rounded-xl font-bold">Try Again</button>
             </>
           )}
         </div>
       </div>
     );
   }
-
-  if (initialLoading) {
-    return <RiderDashboardSkeleton />;
-  }
+  if (initialLoading) return <RiderDashboardSkeleton />;
 
   return (
     <div className="min-h-screen bg-background font-body-md text-on-surface">
       <audio ref={audioRef} src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2teleQoKJZPl" preload="auto" />
-
-      {/* Header */}
-      <header className="fixed top-0 w-full z-50 flex justify-between items-center px-4 py-3 bg-white/90 backdrop-blur-lg border-b border-white/20 shadow-lg">
-        <div className="flex items-center gap-2">
-          <span className="text-xl font-black italic tracking-tighter text-primary">MIIAM</span>
-          <button
-            onClick={async () => {
-              const newStatus = !isOnline;
-              setIsOnline(newStatus);
-              if (riderId) await supabase.from("riders").update({ is_online: newStatus }).eq("id", riderId);
-            }}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold transition-all ${
-              isOnline ? "bg-green-100 text-green-700" : "bg-slate-200 text-slate-500"
-            }`}
-          >
-            <span className={`w-2 h-2 rounded-full ${isOnline ? "bg-green-500" : "bg-slate-400"}`} />
-            {isOnline ? "Online" : "Offline"}
-          </button>
-        </div>
-        <div className="flex items-center gap-2">
-          <button 
-            onClick={() => window.open("tel:+9118001234567", "_self")}
-            className="p-2 bg-red-50 rounded-full animate-pulse" 
-            title="Emergency SOS"
-          >
-            <span className="material-symbols-outlined text-red-500">emergency</span>
-          </button>
-          <button 
-            onClick={() => setShowQuestModal(true)}
-            className="p-2 bg-amber-50 rounded-full relative" 
-            title="Daily Quests"
-          >
-            <span className="material-symbols-outlined text-amber-500">local_fire_department</span>
-            {streakDays > 0 && (
-              <span className="absolute -top-1 -right-1 w-4 h-4 bg-orange-500 text-white text-[8px] font-bold rounded-full flex items-center justify-center">
-                {streakDays}
-              </span>
-            )}
-          </button>
-          <Link href="/rider/analytics" className="p-2 bg-blue-50 rounded-full" title="Analytics">
-            <span className="material-symbols-outlined text-blue-600">insights</span>
-          </Link>
-          <Link href="/rider/achievements" className="p-2 bg-amber-50 rounded-full" title="Achievements">
-            <span className="material-symbols-outlined text-amber-500">emoji_events</span>
-          </Link>
-          <Link href="/rider/account" className="p-2">
-            <span className="material-symbols-outlined text-slate-600">person</span>
-          </Link>
-        </div>
-      </header>
-
-      {/* Batch Mode Indicator */}
+      <DashboardHeader isOnline={isOnline} streakDays={streakDays} onToggleOnline={async () => { const newStatus = !isOnline; setIsOnline(newStatus); if (riderId) await supabase.from("riders").update({ is_online: newStatus }).eq("id", riderId); }} onOpenQuests={() => setShowQuestModal(true)} />
       {isOnline && pendingOrders.length > 1 && !currentOrder && (
         <div className="fixed top-16 left-0 right-0 z-40 bg-[#0b50d5]/5 border-b border-[#0b50d5]/10 px-4 py-2 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-[#0b50d5] text-sm">stacked_bar_chart</span>
             <span className="text-sm font-bold text-[#0b50d5]">{pendingOrders.length} orders available</span>
           </div>
-          <button
-            onClick={() => {
-              pendingOrders.forEach((order) => handleAccept(order));
-            }}
-            className="px-4 py-1.5 bg-[#0b50d5] text-white text-xs font-bold rounded-full"
-          >
-            Accept All
-          </button>
+          <button onClick={() => { pendingOrders.forEach((order) => handleAccept(order)); }} className="px-4 py-1.5 bg-[#0b50d5] text-white text-xs font-bold rounded-full">Accept All</button>
         </div>
       )}
-
-      {/* Snooze Message Toast */}
       {snoozeMessage && (
         <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-slate-800 text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2">
           <span className="material-symbols-outlined text-sm">snooze</span>
           <span className="text-sm font-medium">{snoozeMessage}</span>
         </div>
       )}
-
-      {/* Main Content */}
       <main className="relative h-screen w-full pt-16">
-        {/* Live Map */}
-        <div className="absolute inset-0 z-0">
-          <div ref={mapRef} className="w-full h-full" />
-        </div>
-
-        {/* Incoming Order Overlay */}
+        <div className="absolute inset-0 z-0"><div ref={mapRef} className="w-full h-full" /></div>
         {!currentOrder && pendingOrders.length > 0 && (
-          <div className="absolute inset-0 z-10 flex items-end justify-center pb-24 px-4">
-            <div className="max-w-md w-full bg-white/95 backdrop-blur-xl rounded-2xl overflow-hidden shadow-2xl border border-white flex flex-col max-h-[80vh]">
-              <div className="bg-gradient-to-r from-[#0b50d5] to-[#0044bf] p-4 flex items-center justify-between text-white">
-                <div className="flex items-center gap-3">
-                  <div className="relative w-12 h-12">
-                    <svg className="w-full h-full -rotate-90">
-                      <circle cx="24" cy="24" fill="transparent" r="22" stroke="rgba(255,255,255,0.3)" strokeWidth="3"></circle>
-                      <circle cx="24" cy="24" fill="transparent" r="22" stroke="white" strokeWidth="3" strokeDasharray={`${(300 - countdown) / 300 * 138} 138`}></circle>
-                    </svg>
-                    <span className="absolute inset-0 flex items-center justify-center font-black text-sm">
-                      {Math.floor(countdown / 60)}:{(countdown % 60).toString().padStart(2, '0')}
-                    </span>
-                  </div>
-                  <div>
-                    <p className="text-[10px] opacity-80">NEW ORDER • 5 MIN</p>
-                    <h2 className="font-bold text-lg">{pendingOrders[0].id?.substring(0, 8).toUpperCase() || "ORDER"}</h2>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-[10px] opacity-80">YOUR CUT</p>
-                  <div className="flex items-center gap-1">
-                    <span className="text-2xl font-black">₹{calculatePeakEarnings(pendingOrders[0])}</span>
-                    {pendingOrders[0].peakMultiplier > 1 && (
-                      <span className="bg-yellow-400 text-[#0b50d5] text-[10px] font-bold px-1.5 rounded">+{(pendingOrders[0].peakMultiplier - 1) * 100}%</span>
-                    )}
-                  </div>
-                  <p className="text-[10px] opacity-60">Order: ₹{pendingOrders[0].orderTotal}</p>
-                </div>
-              </div>
-              
-              <div className="p-4 overflow-y-auto flex-1">
-                <div className="flex gap-2 mb-4 flex-wrap">
-                  {pendingOrders[0].type === "multi_stop" ? (
-                    <span className="bg-purple-100 text-purple-700 px-2 py-1 rounded-full text-[10px] font-bold flex items-center gap-1">
-                      <span className="material-symbols-outlined text-[12px]">inventory_2</span>
-                      {pendingOrders[0].stops?.length} STOPS
-                    </span>
-                  ) : (
-                    <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded-full text-[10px] font-bold">
-                      FOOD DELIVERY
-                    </span>
-                  )}
-                  <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded-full text-[10px] font-bold">
-                    {pendingOrders[0].items} ITEMS
-                  </span>
-                  {pendingOrders[0].priority === "high" && (
-                    <span className="bg-red-100 text-red-600 px-2 py-1 rounded-full text-[10px] font-bold flex items-center gap-1">
-                      <span className="material-symbols-outlined text-[12px]">bolt</span>
-                      HIGH PRIORITY
-                    </span>
-                  )}
-                  {isPeakHour() && (
-                    <span className="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full text-[10px] font-bold">
-                      PEAK HOUR
-                    </span>
-                  )}
-                  {/* Customer Rating Preview */}
-                  <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-[10px] font-bold flex items-center gap-1">
-                    <span className="material-symbols-outlined text-[12px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                    {customerRating}
-                  </span>
-                </div>
-
-                {/* Multi-Stop Info */}
-                {pendingOrders[0].type === "multi_stop" && pendingOrders[0].stops && (
-                  <div className="bg-purple-50 p-3 rounded-xl mb-4 border border-purple-100">
-                    <p className="text-[10px] text-purple-600 font-bold mb-2">📦 MULTI-STOP BATCH DELIVERY</p>
-                    <div className="space-y-2">
-                      {pendingOrders[0].stops.map((stop, i) => (
-                        <div key={i} className="flex items-center justify-between text-xs">
-                          <div className="flex items-center gap-2">
-                            <span className="w-5 h-5 bg-purple-200 rounded-full flex items-center justify-center text-purple-700 font-bold text-[8px]">{i + 1}</span>
-                            <span className="text-slate-600">{stop.name}</span>
-                          </div>
-                          <span className="text-purple-600 font-bold">{stop.distance} km</span>
-                        </div>
-                      ))}
-                    </div>
-                    <p className="text-[9px] text-purple-500 mt-2">Complete all deliveries to earn ₹{pendingOrders[0].earnings}</p>
-                  </div>
-                )}
-
-                {/* Fare Calculator */}
-                <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-3 rounded-xl mb-4 border border-green-100">
-                  <p className="text-[10px] text-green-600 font-bold mb-2">EARNINGS BREAKDOWN</p>
-                  <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div className="flex justify-between">
-                      <span className="text-slate-500">Base Fare</span>
-                      <span className="font-bold">₹40</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-500">Distance ({pendingOrders[0].totalDistance} km)</span>
-                      <span className="font-bold">₹{pendingOrders[0].totalDistance * 8}</span>
-                    </div>
-                    {pendingOrders[0].peakMultiplier > 1 && (
-                      <>
-                        <div className="flex justify-between">
-                          <span className="text-slate-500">Peak Bonus</span>
-                          <span className="font-bold text-green-600">+₹{Math.round(40 + pendingOrders[0].totalDistance * 8) * (pendingOrders[0].peakMultiplier - 1)}</span>
-                        </div>
-                        <div className="flex justify-between border-t pt-1 mt-1">
-                          <span className="font-bold">Total</span>
-                          <span className="font-black text-green-600">₹{calculatePeakEarnings(pendingOrders[0])}</span>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </div>
-
-                <div className="space-y-4 relative">
-                  <div className="absolute left-[10px] top-4 bottom-4 w-0.5 border-l-2 border-dashed border-slate-300"></div>
-                  
-                  <div className="flex items-start gap-3">
-                    <div className="z-10 bg-[#0b50d5] w-5 h-5 rounded-full flex items-center justify-center">
-                      <span className="material-symbols-outlined text-white text-xs">restaurant</span>
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-[9px] text-[#0b50d5] font-bold">PICKUP</p>
-                      <p className="font-bold text-sm">{pendingOrders[0].vendor}</p>
-                      <p className="text-[10px] text-slate-500">{pendingOrders[0].vendorAddress}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-bold text-sm">{pendingOrders[0].distance} km</p>
-                      <p className="text-[9px] text-slate-400">{pendingOrders[0].time}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start gap-3">
-                    <div className="z-10 bg-[#4d212a] w-5 h-5 rounded-full flex items-center justify-center">
-                      <span className="material-symbols-outlined text-white text-xs">home</span>
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-[9px] text-[#4d212a] font-bold">DROP</p>
-                      <p className="font-bold text-sm">{pendingOrders[0].customer}</p>
-                      <p className="text-[10px] text-slate-500">{pendingOrders[0].customerAddress}</p>
-                      <p className="text-[9px] text-slate-400 mt-1">📍 {pendingOrders[0].landmark}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-bold text-sm">{pendingOrders[0].distance2} km</p>
-                      <p className="text-[9px] text-slate-400">{pendingOrders[0].time2}</p>
-                    </div>
-                  </div>
-                </div>
-
-                {pendingOrders[0].specialInstructions && (
-                  <div className="mt-4 bg-amber-50 p-3 rounded-xl border border-amber-100">
-                    <p className="text-[9px] text-amber-700 font-bold mb-1">📝 SPECIAL INSTRUCTIONS</p>
-                    <p className="text-xs text-amber-800">{pendingOrders[0].specialInstructions}</p>
-                  </div>
-                )}
-
-                <div className="mt-4 grid grid-cols-2 gap-3 bg-slate-50 p-3 rounded-xl">
-                  <div>
-                    <p className="text-[9px] text-slate-400">TOTAL DISTANCE</p>
-                    <p className="font-bold">{pendingOrders[0].totalDistance} km</p>
-                  </div>
-                  <div>
-                    <p className="text-[9px] text-slate-400">EST. TIME</p>
-                    <p className="font-bold">{pendingOrders[0].estCompletion} min</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="p-4 border-t bg-slate-50 flex gap-3">
-                <button 
-                  onClick={() => setShowCancelModal(true)}
-                  className="flex-1 py-3 bg-slate-200 text-slate-600 font-bold rounded-xl text-sm"
-                >
-                  Decline
-                </button>
-                <button 
-                  onClick={() => handleAccept(pendingOrders[0])}
-                  className="flex-[2] py-3 bg-[#0b50d5] text-white font-black rounded-xl text-sm shadow-lg"
-                >
-                  ACCEPT ORDER
-                </button>
-              </div>
-              {/* Order taken by other rider alert */}
-              {orderTakenByOther && (
-                <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-50">
-                  <div className="bg-white rounded-2xl p-6 text-center max-w-xs mx-4">
-                    <span className="material-symbols-outlined text-red-500 text-5xl">error</span>
-                    <p className="font-bold text-lg mt-3">Order Taken!</p>
-                    <p className="text-sm text-slate-500 mt-1">Another rider accepted this order first.</p>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
+          <IncomingOrderCard order={pendingOrders[0]} countdown={countdown} customerRating={customerRating} onAccept={handleAccept} onDecline={() => setShowCancelModal(true)} isTakenByOther={orderTakenByOther} />
         )}
-
-        {/* Active Delivery View */}
         {currentOrder && (
-          <div className="absolute inset-0 z-10 flex items-end justify-center pb-24 px-4">
-            <div className="max-w-md w-full bg-white rounded-2xl overflow-hidden shadow-2xl">
-              {/* Multi-order Switcher */}
-              {activeOrders.length > 1 && (
-                <div className="bg-slate-50 border-b border-slate-200 px-3 py-2 flex items-center gap-1 overflow-x-auto">
-                  <span className="material-symbols-outlined text-slate-400 text-sm">stack</span>
-                  {activeOrders.map((ao, idx) => (
-                    <button
-                      key={ao.id}
-                      onClick={() => {
-                        setCurrentOrder(ao);
-                        setDeliveryStep("shopping");
-                      }}
-                      className={`flex-shrink-0 px-3 py-1 rounded-full text-[10px] font-bold transition-all ${
-                        currentOrder?.id === ao.id
-                          ? "bg-[#0b50d5] text-white"
-                          : "bg-white text-slate-500 border border-slate-200"
-                      }`}
-                    >
-                      #{ao.id.slice(-4).toUpperCase()}
-                    </button>
-                  ))}
-                </div>
-              )}
-              <div className={`p-4 text-white ${deliveryStep === "shopping" ? "bg-purple-600" : deliveryStep === "picking_up" ? "bg-[#0b50d5]" : deliveryStep === "delivering" ? "bg-[#4d212a]" : "bg-green-600"}`}>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>
-                      {deliveryStep === "picking_up" ? "restaurant" : deliveryStep === "delivering" ? "local_shipping" : "location_on"}
-                    </span>
-                    <span className="font-bold text-sm uppercase">
-                      {currentOrder.type === "multi_stop" 
-                        ? deliveryStep === "picking_up" ? "Pick Up" : deliveryStep === "delivering" ? `Stop ${currentStopIndex + 1}/${currentOrder.stops?.length}` : "Complete"
-                        : deliveryStep === "shopping" ? "Shop Items" : deliveryStep === "picking_up" ? "Pick Up" : deliveryStep === "delivering" ? "Delivering" : "Arrived"
-                      }
-                    </span>
-                    {currentOrder.type === "multi_stop" && (
-                      <span className="bg-white/20 px-2 py-0.5 rounded text-[10px]">BATCH</span>
-                    )}
-                  </div>
-                  <div className="text-right">
-                    <p className="text-2xl font-black">₹{calculatePeakEarnings(currentOrder)}</p>
-                  </div>
-                </div>
-
-                {/* Multi-Stop Progress Bar */}
-                {currentOrder.type === "multi_stop" && currentOrder.stops && (
-                  <div className="mb-3">
-                    <div className="flex items-center justify-between text-[9px] mb-1">
-                      <span className="opacity-70">Progress</span>
-                      <span>{currentStopIndex + 1}/{currentOrder.stops.length} Stops</span>
-                    </div>
-                    <div className="h-2 bg-white/20 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-white transition-all"
-                        style={{ width: `${((currentStopIndex + 1) / currentOrder.stops.length) * 100}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Customer Live Location (visible when on delivery leg) */}
-                {(deliveryStep === "delivering" || deliveryStep === "arrived") && currentOrder.orderDbId && (
-                  <div className="bg-white">
-                    <CustomerLocationView orderId={currentOrder.orderDbId} className="rounded-none border-0" height={170} />
-                  </div>
-                )}
-
-                {/* Progress Steps */}
-                <div className="flex items-center justify-between text-[10px]">
-                  {currentOrder.type === "multi_stop" ? (
-                    <>
-                      <div className={`flex flex-col items-center ${deliveryStep === "picking_up" ? "text-white" : "text-white/50"}`}>
-                        <div className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${deliveryStep === "picking_up" ? "bg-white text-[#0b50d5]" : "bg-white/30"}`}>1</div>
-                        <span>Pickup</span>
-                      </div>
-                      <div className="flex-1 h-0.5 bg-white/30 mx-2"><div className={`h-full bg-white ${deliveryStep !== "picking_up" ? "w-full" : "w-0"}`}></div></div>
-                      <div className={`flex flex-col items-center ${deliveryStep === "delivering" || deliveryStep === "arrived" ? "text-white" : "text-white/50"}`}>
-                        <div className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${deliveryStep === "delivering" || deliveryStep === "arrived" ? "bg-white text-[#4d212a]" : "bg-white/30"}`}>2</div>
-                        <span>Deliveries</span>
-                      </div>
-                      <div className="flex-1 h-0.5 bg-white/30 mx-2"><div className={`h-full bg-white ${deliveryStep === "arrived" ? "w-full" : "w-0"}`}></div></div>
-                      <div className={`flex flex-col items-center ${deliveryStep === "arrived" ? "text-white" : "text-white/50"}`}>
-                        <div className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${deliveryStep === "arrived" ? "bg-white text-green-600" : "bg-white/30"}`}>3</div>
-                        <span>Complete</span>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className={`flex flex-col items-center ${deliveryStep === "shopping" ? "text-white" : "text-white/50"}`}>
-                        <div className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${deliveryStep === "shopping" ? "bg-white text-purple-600" : "bg-white/30"}`}>1</div>
-                        <span>Shop</span>
-                      </div>
-                      <div className="flex-1 h-0.5 bg-white/30 mx-2"><div className={`h-full bg-white ${["picking_up", "delivering", "arrived"].includes(deliveryStep) ? "w-full" : "w-0"}`}></div></div>
-                      <div className={`flex flex-col items-center ${deliveryStep === "picking_up" || deliveryStep === "delivering" || deliveryStep === "arrived" ? "text-white" : "text-white/50"}`}>
-                        <div className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${["picking_up", "delivering", "arrived"].includes(deliveryStep) ? "bg-white text-[#0b50d5]" : "bg-white/30"}`}>2</div>
-                        <span>Deliver</span>
-                      </div>
-                      <div className="flex-1 h-0.5 bg-white/30 mx-2"><div className={`h-full bg-white ${deliveryStep === "arrived" ? "w-full" : "w-0"}`}></div></div>
-                      <div className={`flex flex-col items-center ${deliveryStep === "arrived" ? "text-white" : "text-white/50"}`}>
-                        <div className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${deliveryStep === "arrived" ? "bg-white text-green-600" : "bg-white/30"}`}>3</div>
-                        <span>Collect ₹</span>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </div>
-
-              <div className="p-4">
-                {/* Shopping Step - For grocery/shopping orders */}
-                {deliveryStep === "shopping" && currentOrder.type !== "multi_stop" && (
-                  <>
-                    <div className="mb-4">
-                      <p className="text-[10px] text-purple-600 font-bold mb-2">🛒 SHOPPING MODE</p>
-                      <p className="text-[10px] text-slate-400">GO TO STORE AND BUY THESE ITEMS</p>
-                      <p className="font-bold text-lg mt-2">{currentOrder.vendor}</p>
-                      <p className="text-sm text-slate-500">{currentOrder.vendorAddress}</p>
-                    </div>
-                    
-                    <div className="bg-purple-50 p-4 rounded-xl mb-4">
-                      <p className="text-[10px] text-purple-600 font-bold mb-3">ITEMS TO BUY</p>
-                      <div className="space-y-2">
-                        {currentOrder.itemsList.map((item, i) => (
-                          <div key={i} className="flex items-center justify-between p-2 bg-white rounded-lg">
-                            <span className="text-sm font-medium text-slate-700">• {item}</span>
-                            <button
-                              onClick={() => setPickedItems(prev => {
-                                const next = new Set(prev);
-                                if (next.has(i)) next.delete(i); else next.add(i);
-                                return next;
-                              })}
-                              className={`text-[10px] px-2 py-1 rounded-full font-bold ${pickedItems.has(i) ? "bg-green-500 text-white" : "bg-green-100 text-green-700"}`}
-                            >
-                              {pickedItems.has(i) ? "✓ PICKED" : "PICK"}
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {currentOrder.specialInstructions && (
-                      <div className="bg-amber-50 p-3 rounded-xl mb-4">
-                        <p className="text-[10px] text-amber-600 font-bold mb-1">📝 CUSTOMER NOTES</p>
-                        <p className="text-sm text-amber-800">{currentOrder.specialInstructions}</p>
-                      </div>
-                    )}
-
-                    <div className="bg-slate-50 p-3 rounded-xl mb-4">
-                      <p className="text-[10px] text-slate-400 mb-2">DELIVER TO</p>
-                      <p className="font-bold">{currentOrder.customer}</p>
-                      <p className="text-sm text-slate-500">{currentOrder.customerAddress}</p>
-                      <p className="text-xs text-slate-400">📍 {currentOrder.landmark}</p>
-                    </div>
-
-                    <div className="flex gap-3">
-                      <button 
-                        onClick={handleCallCustomer}
-                        className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl flex items-center justify-center gap-2"
-                      >
-                        <span className="material-symbols-outlined">call</span>
-                        Call Customer
-                      </button>
-                      <button 
-                        onClick={handleStartChat}
-                        className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl flex items-center justify-center gap-2 relative"
-                      >
-                        <span className="material-symbols-outlined">chat</span>
-                        Chat
-                        {unreadCount > 0 && (
-                          <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-                            {unreadCount > 9 ? "9+" : unreadCount}
-                          </span>
-                        )}
-                      </button>
-                    </div>
-
-                    <Link 
-                      href="/rider/orders"
-                      className="w-full mt-3 py-4 bg-purple-600 text-white font-black rounded-xl flex items-center justify-center gap-2"
-                    >
-                      <span className="material-symbols-outlined">inventory_2</span>
-                      GO TO SHOPPING LIST
-                    </Link>
-
-                    <button 
-                      onClick={handleItemsCollected}
-                      className="w-full mt-3 py-3 bg-green-500 text-white font-bold rounded-xl"
-                    >
-                      ALL ITEMS COLLECTED ✓
-                    </button>
-                  </>
-                )}
-
-                {deliveryStep === "picking_up" && (
-                  <>
-                    <div className="mb-4">
-                      <p className="text-[10px] text-slate-400">PICKUP FROM</p>
-                      <p className="font-bold text-lg">{currentOrder.vendor}</p>
-                      <p className="text-sm text-slate-500">{currentOrder.vendorAddress}</p>
-                    </div>
-                    <div className="bg-slate-50 p-3 rounded-xl mb-4">
-                      <p className="text-[10px] text-slate-400 mb-2">ORDER ITEMS</p>
-                      {currentOrder.itemsList.map((item, i) => (
-                        <p key={i} className="text-sm text-slate-600">• {item}</p>
-                      ))}
-                    </div>
-                    {currentOrder.type === "multi_stop" && currentOrder.stops && (
-                      <div className="bg-purple-50 p-3 rounded-xl mb-4">
-                        <p className="text-[10px] text-purple-600 font-bold mb-2">📦 DELIVERY STOPS</p>
-                        {currentOrder.stops.map((stop, i) => (
-                          <div key={i} className={`flex items-center gap-2 text-sm py-1 ${i === currentStopIndex ? "text-purple-700 font-bold" : i < currentStopIndex ? "text-green-600 line-through" : "text-slate-500"}`}>
-                            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${i === currentStopIndex ? "bg-purple-500 text-white" : i < currentStopIndex ? "bg-green-500 text-white" : "bg-slate-200"}`}>
-                              {i < currentStopIndex ? "✓" : i + 1}
-                            </span>
-                            {stop.name}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    <div className="flex gap-3">
-                      <button 
-                        onClick={handleCallCustomer}
-                        className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl flex items-center justify-center gap-2"
-                      >
-                        <span className="material-symbols-outlined">call</span>
-                        Call Vendor
-                      </button>
-                      <button 
-                        onClick={handleStartChat}
-                        className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl flex items-center justify-center gap-2 relative"
-                      >
-                        <span className="material-symbols-outlined">chat</span>
-                        Chat
-                        {unreadCount > 0 && (
-                          <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-                            {unreadCount > 9 ? "9+" : unreadCount}
-                          </span>
-                        )}
-                      </button>
-                    </div>
-                    <button 
-                      onClick={handlePickedUp}
-                      className="w-full mt-3 py-4 bg-green-500 text-white font-black rounded-xl"
-                    >
-                      {currentOrder.type === "multi_stop" ? `START DELIVERIES (${currentOrder.stops?.length} STOPS)` : "PICKED UP ORDER ✓"}
-                    </button>
-                  </>
-                )}
-
-                {deliveryStep === "delivering" && currentOrder.type === "multi_stop" && currentOrder.stops ? (
-                  <>
-                    <div className="mb-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="bg-purple-100 text-purple-700 px-2 py-1 rounded-full text-[10px] font-bold">
-                          STOP {currentStopIndex + 1} OF {currentOrder.stops.length}
-                        </span>
-                        <span className="text-xs text-slate-400">
-                          {currentOrder.stops[currentStopIndex].time}
-                        </span>
-                      </div>
-                      <p className="font-bold text-lg">{currentOrder.stops[currentStopIndex].name}</p>
-                      <p className="text-sm text-slate-500">{currentOrder.stops[currentStopIndex].address}</p>
-                      <p className="text-xs text-slate-400 mt-1">📍 {currentOrder.stops[currentStopIndex].landmark}</p>
-                    </div>
-                    {/* Remaining Stops */}
-                    <div className="bg-slate-50 p-3 rounded-xl mb-4">
-                      <p className="text-[10px] text-slate-400 mb-2">UPCOMING STOPS</p>
-                      {currentOrder.stops.slice(currentStopIndex + 1).map((stop, i) => (
-                        <div key={i} className="flex items-center gap-2 text-sm text-slate-500 py-1">
-                          <span className="w-5 h-5 bg-slate-200 rounded-full flex items-center justify-center text-[10px]">{currentStopIndex + i + 2}</span>
-                          {stop.name} - {stop.distance}km
-                        </div>
-                      ))}
-                    </div>
-                    
-                    <div className="flex gap-3">
-                      <button 
-                        onClick={handleCallCustomer}
-                        className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl flex items-center justify-center gap-2"
-                      >
-                        <span className="material-symbols-outlined">call</span>
-                        Call Customer
-                      </button>
-                      <button 
-                        onClick={handleStartChat}
-                        className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl flex items-center justify-center gap-2 relative"
-                      >
-                        <span className="material-symbols-outlined">chat</span>
-                        Chat
-                        {unreadCount > 0 && (
-                          <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-                            {unreadCount > 9 ? "9+" : unreadCount}
-                          </span>
-                        )}
-                      </button>
-                    </div>
-                    <button 
-                      onClick={() => {
-                        if (navigator.geolocation) {
-                          navigator.geolocation.getCurrentPosition(
-                            (pos) => {
-                              const url = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
-                              navigator.clipboard.writeText(url);
-                              import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Location link copied!", "success"));
-                            },
-                            () => import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Could not get location", "error"))
-                          );
-                        }
-                      }}
-                      className="w-full mt-3 py-2 bg-green-100 text-green-700 font-bold rounded-xl flex items-center justify-center gap-2"
-                    >
-                      <span className="material-symbols-outlined">share_location</span>
-                      Share Live Location
-                    </button>
-                    <a 
-                      href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(currentOrder.stops[currentStopIndex].address)}`}
-                      target="_blank"
-                      className="w-full mt-2 py-3 bg-[#0b50d5] text-white font-bold rounded-xl flex items-center justify-center gap-2"
-                    >
-                      <span className="material-symbols-outlined">navigation</span>
-                      Navigate to Stop
-                    </a>
-                    <button 
-                      onClick={handleArrived}
-                      className="w-full mt-3 py-4 bg-green-500 text-white font-black rounded-xl"
-                    >
-                      I'VE ARRIVED 🚩
-                    </button>
-                  </>
-                ) : deliveryStep === "delivering" && (
-                  <>
-                    <div className="mb-4">
-                      <p className="text-[10px] text-slate-400">DELIVER TO</p>
-                      <p className="font-bold text-lg">{currentOrder.customer}</p>
-                      <p className="text-sm text-slate-500">{currentOrder.customerAddress}</p>
-                      <p className="text-xs text-slate-400 mt-1">📍 {currentOrder.landmark}</p>
-                    </div>
-                    <div className="flex gap-3">
-                      <button 
-                        onClick={handleCallCustomer}
-                        className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl flex items-center justify-center gap-2"
-                      >
-                        <span className="material-symbols-outlined">call</span>
-                        Call Customer
-                      </button>
-                      <button 
-                        onClick={handleStartChat}
-                        className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl flex items-center justify-center gap-2 relative"
-                      >
-                        <span className="material-symbols-outlined">chat</span>
-                        Chat
-                        {unreadCount > 0 && (
-                          <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-                            {unreadCount > 9 ? "9+" : unreadCount}
-                          </span>
-                        )}
-                      </button>
-                    </div>
-                    <button 
-                      onClick={() => {
-                        if (navigator.geolocation) {
-                          navigator.geolocation.getCurrentPosition(
-                            (pos) => {
-                              const url = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
-                              navigator.clipboard.writeText(url);
-                              import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Location link copied!", "success"));
-                            },
-                            () => import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Could not get location", "error"))
-                          );
-                        }
-                      }}
-                      className="w-full mt-3 py-2 bg-green-100 text-green-700 font-bold rounded-xl flex items-center justify-center gap-2"
-                    >
-                      <span className="material-symbols-outlined">share_location</span>
-                      Share Live Location
-                    </button>
-                    <a 
-                      href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(currentOrder.customerAddress)}`}
-                      target="_blank"
-                      className="w-full mt-2 py-3 bg-[#0b50d5] text-white font-bold rounded-xl flex items-center justify-center gap-2"
-                    >
-                      <span className="material-symbols-outlined">navigation</span>
-                      Navigate
-                    </a>
-                    <button 
-                      onClick={handleArrived}
-                      className="w-full mt-3 py-4 bg-green-500 text-white font-black rounded-xl"
-                    >
-                      I'VE ARRIVED 🚩
-                    </button>
-                  </>
-                )}
-
-                {deliveryStep === "arrived" && (
-                  <div className="text-center">
-                    <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <span className="material-symbols-outlined text-green-600 text-5xl">location_on</span>
-                    </div>
-                    <p className="font-bold text-xl mb-2">You've Arrived!</p>
-                    <p className="text-sm text-slate-500 mb-4">Ready to complete delivery</p>
-                    <button 
-                      onClick={handleComplete}
-                      className="w-full py-4 bg-green-500 text-white font-black rounded-xl"
-                    >
-                      COMPLETE DELIVERY
-                    </button>
-                  </div>
-                )}
-
-              {/* Cancel Modal */}
-              {showCancelModal && (
-                <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-                  <div className="bg-white rounded-2xl w-full max-w-sm p-4">
-                    <h3 className="font-bold text-lg mb-4">Decline Order</h3>
-                    <p className="text-sm text-slate-500 mb-4">Select a reason for declining:</p>
-                    <div className="space-y-2 max-h-60 overflow-y-auto">
-                      {cancelReasons.map((reason) => (
-                        <button
-                          key={reason}
-                          onClick={() => {
-                            handleDecline(pendingOrders[0]?.id || "", reason);
-                            setShowCancelModal(false);
-                          }}
-                          className="w-full text-left p-3 bg-slate-50 rounded-xl hover:bg-slate-100 text-sm"
-                        >
-                          {reason}
-                        </button>
-                      ))}
-                    </div>
-                    <button 
-                      onClick={() => setShowCancelModal(false)}
-                      className="w-full mt-4 py-3 bg-slate-200 text-slate-600 font-bold rounded-xl"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* Quest Modal */}
-              {showQuestModal && (
-                <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-                  <div className="bg-white rounded-2xl w-full max-w-sm p-4">
-                    <div className="flex justify-between items-center mb-4">
-                      <h3 className="font-bold text-lg">Daily Quests</h3>
-                      <button onClick={() => setShowQuestModal(false)}>
-                        <span className="material-symbols-outlined">close</span>
-                      </button>
-                    </div>
-                    
-                    {/* Streak */}
-                    <div className="bg-gradient-to-r from-orange-400 to-red-500 text-white p-4 rounded-xl mb-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>local_fire_department</span>
-                        <span className="font-bold">{streakDays} Day Streak!</span>
-                      </div>
-                      <p className="text-xs opacity-80">Complete daily quests to maintain your streak</p>
-                    </div>
-                    
-                    {/* Quests */}
-                    <div className="space-y-3">
-                      {dailyQuests.map((quest) => (
-                        <div key={quest.id} className="p-3 bg-slate-50 rounded-xl">
-                          <div className="flex justify-between items-center mb-2">
-                            <span className="font-bold text-sm">{quest.title}</span>
-                            <span className="text-green-600 font-bold text-sm">+₹{quest.bonus}</span>
-                          </div>
-                          <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
-                            <div 
-                              className="h-full bg-green-500 rounded-full" 
-                              style={{ width: `${(quest.current / quest.target) * 100}%` }}
-                            ></div>
-                          </div>
-                          <p className="text-[10px] text-slate-400 mt-1">{quest.current}/{quest.target} completed</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Low Battery Warning */}
-              {showLowBattery && (
-                <div className="fixed top-24 left-1/2 -translate-x-1/2 z-50 bg-yellow-500 text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2 animate-pulse">
-                  <span className="material-symbols-outlined text-sm">battery_alert</span>
-                  <span className="text-sm font-medium">Low Battery ({batteryLevel}%)</span>
-                  <button onClick={() => setShowLowBattery(false)}>
-                    <span className="material-symbols-outlined text-sm">close</span>
-                  </button>
-                </div>
-              )}
-            </div>
-            </div>
-          </div>
+          <ActiveDeliveryView currentOrder={currentOrder} activeOrders={activeOrders} deliveryStep={deliveryStep} currentStopIndex={currentStopIndex} unreadCount={unreadCount} pickedItems={pickedItems} onSetCurrentOrder={(o) => { setCurrentOrder(o); setDeliveryStep("shopping"); }} onSetDeliveryStep={(s) => setDeliveryStep(s as any)} onCallCustomer={() => setShowCallModal(true)} onStartChat={() => setShowChatModal(true)} onPickedUp={handlePickedUp} onArrived={handleArrived} onComplete={handleComplete} onItemsCollected={handleItemsCollected} onSetPickedItems={setPickedItems as any} />
         )}
-
-        <MapControls
-          onZoomIn={() => mapInstanceRef.current?.zoomIn()}
-          onZoomOut={() => mapInstanceRef.current?.zoomOut()}
-          onCenter={handleCenterMap}
-        />
-
-        <QuickStats
-          todayEarnings={todayEarnings}
-          liveEarnings={liveEarnings}
-          cashCollected={cashCollected}
-          cashPending={cashPending}
-          dndMode={dndMode}
-          hasActiveOrder={!!currentOrder}
-          deliveryStep={deliveryStep}
-        />
+        <MapControls onZoomIn={() => mapInstanceRef.current?.zoomIn()} onZoomOut={() => mapInstanceRef.current?.zoomOut()} onCenter={handleCenterMap} />
+        <QuickStats todayEarnings={todayEarnings} liveEarnings={liveEarnings} cashCollected={cashCollected} cashPending={cashPending} dndMode={dndMode} hasActiveOrder={!!currentOrder} deliveryStep={deliveryStep} />
       </main>
-
-      {/* Bottom Navigation */}
-
-
-      <CallModal
-        open={showCallModal}
-        onClose={() => setShowCallModal(false)}
-        name={currentOrder?.vendor}
-        phone={currentOrder?.vendorPhone || currentOrder?.customerPhone}
-      />
-
+      <CallModal open={showCallModal} onClose={() => setShowCallModal(false)} name={currentOrder?.vendor} phone={currentOrder?.vendorPhone || currentOrder?.customerPhone} />
       {showChatModal && currentOrder && currentUserId && (
-        <OrderChatOverlay
-          orderId={currentOrder.id}
-          currentUserId={currentUserId}
-          senderType="rider"
-          otherName={currentOrder.customer || "Customer"}
-          onClose={() => setShowChatModal(false)}
-        />
+        <OrderChatOverlay orderId={currentOrder.id} currentUserId={currentUserId} senderType="rider" otherName={currentOrder.customer || "Customer"} onClose={() => setShowChatModal(false)} />
       )}
-
-      {/* Skip Modal */}
-      {showSkipModal && (
-        <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-sm">
-            <h3 className="font-bold text-xl text-center mb-2">Skip Order?</h3>
-            <p className="text-sm text-slate-500 text-center mb-6">This order will be snoozed for 30 seconds</p>
-            <div className="flex gap-3">
-              <button 
-                onClick={() => setShowSkipModal(false)}
-                className="flex-1 py-3 bg-slate-200 text-slate-600 font-bold rounded-xl"
-              >
-                Cancel
-              </button>
-              <button 
-                onClick={() => handleDecline(pendingOrders[0]?.id || "")}
-                className="flex-1 py-3 bg-red-500 text-white font-bold rounded-xl"
-              >
-                Skip
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Alert Settings Modal */}
-      {showAlertSettings && (
-        <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-sm">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-bold text-xl">Alert Settings</h3>
-              <button onClick={() => setShowAlertSettings(false)}>
-                <span className="material-symbols-outlined">close</span>
-              </button>
-            </div>
-            
-            <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
-                <div className="flex items-center gap-3">
-                  <span className="material-symbols-outlined text-[#0b50d5]">volume_up</span>
-                  <div>
-                    <p className="font-bold">Sound Alert</p>
-                    <p className="text-xs text-slate-500">Play sound for new orders</p>
-                  </div>
-                </div>
-                <button 
-                  onClick={() => setSoundEnabled(!soundEnabled)}
-                  className={`w-12 h-6 rounded-full transition-all ${soundEnabled ? "bg-green-500" : "bg-slate-300"}`}
-                >
-                  <div className={`w-5 h-5 bg-white rounded-full transition-all ${soundEnabled ? "translate-x-6" : "translate-x-0.5"}`}></div>
-                </button>
-              </div>
-
-              <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
-                <div className="flex items-center gap-3">
-                  <span className="material-symbols-outlined text-[#0b50d5]">vibration</span>
-                  <div>
-                    <p className="font-bold">Vibration</p>
-                    <p className="text-xs text-slate-500">Vibrate for new orders</p>
-                  </div>
-                </div>
-                <button 
-                  onClick={() => setVibrationEnabled(!vibrationEnabled)}
-                  className={`w-12 h-6 rounded-full transition-all ${vibrationEnabled ? "bg-green-500" : "bg-slate-300"}`}
-                >
-                  <div className={`w-5 h-5 bg-white rounded-full transition-all ${vibrationEnabled ? "translate-x-6" : "translate-x-0.5"}`}></div>
-                </button>
-              </div>
-
-              <div className="p-4 bg-blue-50 rounded-xl">
-                <div className="flex items-start gap-2">
-                  <span className="material-symbols-outlined text-blue-600 text-sm">info</span>
-                  <p className="text-xs text-blue-700">
-                    Alerts are triggered when you are online and a new order arrives within your zone.
-                  </p>
-                </div>
-              </div>
-
-              <div className="pt-4 border-t border-slate-100">
-                <p className="text-[10px] font-black text-slate-400 uppercase mb-3">Developer Tools</p>
-                <button 
-                  onClick={clearAllPendingOrders}
-                  className="w-full py-3 rounded-xl bg-red-50 text-red-600 font-bold text-xs flex items-center justify-center gap-2 hover:bg-red-100 transition-colors"
-                >
-                  <span className="material-symbols-outlined text-sm">delete_sweep</span>
-                  Clear All Pending Orders
-                </button>
-                <p className="text-[10px] text-slate-400 mt-2 text-center italic">Deletes all unassigned pending orders from database.</p>
-              </div>
-            </div>
-
-            <button 
-              onClick={() => setShowAlertSettings(false)}
-              className="w-full mt-4 py-3 bg-[#0b50d5] text-white font-bold rounded-xl"
-            >
-              Save Settings
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* New Order Alert Banner */}
-      {showNewOrderAlert && pendingOrders.length > 0 && !currentOrder && (
-        <div className="fixed top-16 left-0 right-0 z-[90] bg-gradient-to-r from-[#0b50d5] to-[#0044bf] text-white p-3 flex items-center justify-between shadow-lg animate-slide-down">
-          <div className="flex items-center gap-3">
-            <span className="material-symbols-outlined animate-bounce">local_shipping</span>
-            <div>
-              <p className="font-bold text-sm">New Order Available!</p>
-              <p className="text-xs opacity-80">{pendingOrders[0].type === "multi_stop" ? `${pendingOrders[0].stops?.length} stops` : pendingOrders[0].items} items • ₹{calculatePeakEarnings(pendingOrders[0])}</p>
-            </div>
-          </div>
-          <button 
-            onClick={dismissNewOrderAlert}
-            className="px-3 py-1 bg-white/20 rounded-full text-xs font-bold"
-          >
-            View
-          </button>
-        </div>
-      )}
+      <SkipOrderModal open={showSkipModal} onConfirm={() => handleDecline(pendingOrders[0]?.id || "")} onCancel={() => setShowSkipModal(false)} />
+      <AlertSettingsModal open={showAlertSettings} soundEnabled={soundEnabled} vibrationEnabled={vibrationEnabled} onSoundChange={setSoundEnabled} onVibrationChange={setVibrationEnabled} onClearOrders={clearAllPendingOrders} onClose={() => setShowAlertSettings(false)} />
+      <CancelOrderModal open={showCancelModal} reasons={cancelReasons} onSelectReason={(reason) => { handleDecline(pendingOrders[0]?.id || "", reason); setShowCancelModal(false); }} onClose={() => setShowCancelModal(false)} />
+      <QuestModal open={showQuestModal} quests={dailyQuests} streakDays={streakDays} onClose={() => setShowQuestModal(false)} />
+      <LowBatteryWarning visible={showLowBattery} level={batteryLevel} onDismiss={() => setShowLowBattery(false)} />
+      <NewOrderBanner visible={showNewOrderAlert} order={pendingOrders[0] || null} onView={dismissNewOrderAlert} onDismiss={dismissNewOrderAlert} />
     </div>
   );
 }
