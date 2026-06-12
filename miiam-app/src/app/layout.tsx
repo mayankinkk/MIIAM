@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import ThemeProvider from "@/components/ThemeProvider";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
@@ -9,6 +10,13 @@ import { AnalyticsTracker } from "@/lib/analytics";
 import SplashScreen from "@/components/SplashScreen";
 import OfflineBanner from "@/components/OfflineBanner";
 import { SkipLink } from "@/lib/accessibility";
+
+const jakartaSans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+  variable: "--font-jakarta",
+});
 
 export const metadata: Metadata = {
   title: "MIIAM — Food & Services App",
@@ -43,7 +51,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html suppressHydrationWarning>
+    <html suppressHydrationWarning className={jakartaSans.variable}>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover" />
         <meta name="theme-color" content="#ba001c" />
@@ -63,13 +71,7 @@ export default function RootLayout({
             } catch(e) { document.documentElement.lang = "en"; }
           `
         }} />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://ui-avatars.com" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
-          rel="stylesheet"
-        />
         <link
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
           rel="stylesheet"

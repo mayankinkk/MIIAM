@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Razorpay from "razorpay";
 import { createClient } from "@/lib/supabase/server";
-import { checkCsrf } from "@/lib/security";
+import { checkCsrf, getClientIp, checkIpRateLimit } from "@/lib/security";
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID || "",
@@ -18,6 +18,12 @@ export async function POST(req: NextRequest) {
 
     if (!checkCsrf(req)) {
       return NextResponse.json({ error: "CSRF validation failed" }, { status: 403 });
+    }
+
+    // Rate limit: max 10 payment order creations per minute per IP
+    const ip = getClientIp(req);
+    if (!checkIpRateLimit(ip, 10, 60 * 1000)) {
+      return NextResponse.json({ error: "Too many requests" }, { status: 429 });
     }
 
     if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {

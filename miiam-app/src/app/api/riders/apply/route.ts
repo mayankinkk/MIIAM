@@ -1,9 +1,16 @@
 import { NextResponse } from "next/server";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
+import { getClientIp, checkIpRateLimit } from "@/lib/security";
 
 export async function POST(request: Request) {
   if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
     return NextResponse.json({ error: "Service role key not configured" }, { status: 500 });
+  }
+
+  // Rate limit: max 3 rider applications per hour per IP
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+  if (!checkIpRateLimit(ip, 3, 60 * 60 * 1000)) {
+    return NextResponse.json({ error: "Too many applications. Please try again later." }, { status: 429 });
   }
   
   const supabase = await createClient();

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -277,17 +277,18 @@ function AddToCartButton({
 function CartFloater() {
   const { items, totalPrice, totalItems } = useCartStore();
   const [showAnimation, setShowAnimation] = useState(false);
-  const [prevCount, setPrevCount] = useState(totalItems());
+  const itemCount = useMemo(() => totalItems(), [items]);
+  const [prevCount, setPrevCount] = useState(itemCount);
   
   useEffect(() => {
-    if (totalItems() > prevCount) {
+    if (itemCount > prevCount) {
       setShowAnimation(true);
       const timer = setTimeout(() => setShowAnimation(false), 500);
-      setPrevCount(totalItems());
+      setPrevCount(itemCount);
       return () => clearTimeout(timer);
     }
-    setPrevCount(totalItems());
-  }, [totalItems(), prevCount]);
+    setPrevCount(itemCount);
+  }, [itemCount, prevCount]);
   
   if (items.length === 0) return null;
   return (
@@ -309,7 +310,7 @@ function CartFloater() {
               transition={{ duration: 0.4 }}
               className="bg-surface-container-lowest text-primary font-black text-xs px-2 py-0.5 rounded-full inline-block"
             >
-              {totalItems()}
+              {itemCount}
             </motion.span>
             {showAnimation && (
               <motion.span
@@ -331,7 +332,7 @@ function CartFloater() {
   );
 }
 
-export default function FoodPage() {
+function FoodPageContent() {
   const { t } = useTranslation();
   const { getSetting } = useServiceSettingsStore();
   const [selectedCategory, setSelectedCategory] = useState("all");

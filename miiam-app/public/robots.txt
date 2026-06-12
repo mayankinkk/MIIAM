@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /app/
+Allow: /auth/
+Disallow: /admin/
+Disallow: /api/
+Disallow: /rider/
+Disallow: /partner/
+Disallow: /printing/
+Disallow: /_next/
+
+Sitemap: https://miiam.app/sitemap.xml

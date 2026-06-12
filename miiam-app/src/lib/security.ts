@@ -86,3 +86,31 @@ export function checkCsrf(request: NextRequest): boolean {
   }
   return true;
 }
+
+// IP-based rate limiting using in-memory store (resets on serverless cold start,
+// but sufficient for basic abuse prevention; use Redis for persistent limits)
+const ipRateLimits = new Map<string, { count: number; resetTime: number }>();
+
+export function checkIpRateLimit(
+  ip: string,
+  maxRequests: number = 30,
+  windowMs: number = 60 * 1000
+): boolean {
+  const now = Date.now();
+  const entry = ipRateLimits.get(ip);
+
+  if (!entry || now > entry.resetTime) {
+    ipRateLimits.set(ip, { count: 1, resetTime: now + windowMs });
+    return true;
+  }
+
+  if (entry.count >= maxRequests) return false;
+  entry.count++;
+  return true;
+}
+
+export function getClientIp(request: NextRequest): string {
+  const forwarded = request.headers.get("x-forwarded-for");
+  if (forwarded) return forwarded.split(",")[0]?.trim() || "unknown";
+  return request.headers.get("x-real-ip") || "unknown";
+}

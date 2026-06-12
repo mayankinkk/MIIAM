@@ -88,7 +88,6 @@ export default function OrdersPage() {
         .eq("user_id", authUser.id)
         .order("placed_at", { ascending: false });
 
-      console.log("Orders response:", ordersData, "error:", ordersError);
       if (ordersError) {
         console.error("Fetch orders error:", ordersError.message);
         addToast("Failed to load orders. Please try again.", "error");

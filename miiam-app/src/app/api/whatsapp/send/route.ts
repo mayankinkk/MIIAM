@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { getClientIp, checkIpRateLimit } from "@/lib/security";
 
 const WHATSAPP_CLOUD_API_URL = "https://graph.facebook.com/v18.0";
 
@@ -68,6 +69,12 @@ export async function POST(request: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Rate limit: max 10 messages per minute per IP
+    const ip = getClientIp(request);
+    if (!checkIpRateLimit(ip, 10, 60 * 1000)) {
+      return NextResponse.json({ error: "Too many requests" }, { status: 429 });
     }
 
     const WHATSAPP_PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID;

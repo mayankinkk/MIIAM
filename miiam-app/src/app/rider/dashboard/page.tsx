@@ -396,7 +396,7 @@ export default function RiderDashboard() {
           p_seconds: 30
         });
       } catch (e) {
-        console.log("Snooze RPC not available, using local only");
+
       }
     }
   };
@@ -761,7 +761,7 @@ export default function RiderDashboard() {
         }
         accepted = true; // RPC succeeded, skip fallback
       } catch (e) {
-        console.log("RPC not available, using fallback");
+
       }
     }
     

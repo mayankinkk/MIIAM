@@ -16,8 +16,10 @@
   },
   "dependencies": {
     "@prisma/client": "^7.8.0",
+    "@sentry/nextjs": "^10.57.0",
     "@supabase/ssr": "^0.10.3",
     "@supabase/supabase-js": "^2.106.2",
+    "@t3-oss/env-nextjs": "^0.13.11",
     "framer-motion": "^12.38.0",
     "leaflet": "^1.9.4",
     "lucide-react": "^1.8.0",
@@ -27,6 +29,7 @@
     "react-dom": "19.2.4",
     "react-leaflet": "^5.0.0",
     "resend": "^6.12.2",
+    "zod": "^4.4.3",
     "zustand": "^5.0.12"
   },
   "devDependencies": {
