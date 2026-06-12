@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { OrderWithTiming } from "@/app/rider/dashboard/types";
 import { calculatePeakEarnings } from "@/app/rider/dashboard/utils";
 import CustomerLocationView from "@/components/rider/CustomerLocationView";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 
 interface ActiveDeliveryViewProps {
   currentOrder: OrderWithTiming;
@@ -40,6 +41,7 @@ export default function ActiveDeliveryView({
   onItemsCollected,
   onSetPickedItems,
 }: ActiveDeliveryViewProps) {
+  const { t } = useTranslation();
   const headerBg = deliveryStep === "shopping" ? "bg-purple-600" : deliveryStep === "picking_up" ? "bg-[#0b50d5]" : deliveryStep === "delivering" ? "bg-[#4d212a]" : "bg-green-600";
 
   return (
@@ -72,12 +74,12 @@ export default function ActiveDeliveryView({
               </span>
               <span className="font-bold text-sm uppercase">
                 {currentOrder.type === "multi_stop" 
-                  ? deliveryStep === "picking_up" ? "Pick Up" : deliveryStep === "delivering" ? `Stop ${currentStopIndex + 1}/${currentOrder.stops?.length}` : "Complete"
-                  : deliveryStep === "shopping" ? "Shop Items" : deliveryStep === "picking_up" ? "Pick Up" : deliveryStep === "delivering" ? "Delivering" : "Arrived"
+                  ? deliveryStep === "picking_up" ? t.rider.delivery.pickupStep : deliveryStep === "delivering" ? `${t.rider.delivery.stop} ${currentStopIndex + 1}/${currentOrder.stops?.length}` : t.rider.delivery.completeStep
+                  : deliveryStep === "shopping" ? t.rider.delivery.shopItemsLabel : deliveryStep === "picking_up" ? t.rider.delivery.pickupStep : deliveryStep === "delivering" ? t.rider.delivery.deliveringLabel : t.rider.delivery.arrivedLabel
                 }
               </span>
               {currentOrder.type === "multi_stop" && (
-                <span className="bg-white/20 px-2 py-0.5 rounded text-[10px]">BATCH</span>
+                <span className="bg-white/20 px-2 py-0.5 rounded text-[10px]">{t.rider.delivery.batch}</span>
               )}
             </div>
             <div className="text-right">
@@ -88,8 +90,8 @@ export default function ActiveDeliveryView({
           {currentOrder.type === "multi_stop" && currentOrder.stops && (
             <div className="mb-3">
               <div className="flex items-center justify-between text-[9px] mb-1">
-                <span className="opacity-70">Progress</span>
-                <span>{currentStopIndex + 1}/{currentOrder.stops.length} Stops</span>
+                <span className="opacity-70">{t.rider.delivery.progress}</span>
+                <span>{currentStopIndex + 1}/{currentOrder.stops.length} {t.rider.delivery.stops}</span>
               </div>
               <div className="h-2 bg-white/20 rounded-full overflow-hidden">
                 <div
@@ -111,34 +113,34 @@ export default function ActiveDeliveryView({
               <>
                 <div className={`flex flex-col items-center ${deliveryStep === "picking_up" ? "text-white" : "text-white/50"}`}>
                   <div className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${deliveryStep === "picking_up" ? "bg-white text-[#0b50d5]" : "bg-white/30"}`}>1</div>
-                  <span>Pickup</span>
+                  <span>{t.rider.delivery.pickupStep}</span>
                 </div>
                 <div className="flex-1 h-0.5 bg-white/30 mx-2"><div className={`h-full bg-white ${deliveryStep !== "picking_up" ? "w-full" : "w-0"}`}></div></div>
                 <div className={`flex flex-col items-center ${deliveryStep === "delivering" || deliveryStep === "arrived" ? "text-white" : "text-white/50"}`}>
                   <div className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${deliveryStep === "delivering" || deliveryStep === "arrived" ? "bg-white text-[#4d212a]" : "bg-white/30"}`}>2</div>
-                  <span>Deliveries</span>
+                  <span>{t.rider.delivery.deliveriesStep}</span>
                 </div>
                 <div className="flex-1 h-0.5 bg-white/30 mx-2"><div className={`h-full bg-white ${deliveryStep === "arrived" ? "w-full" : "w-0"}`}></div></div>
                 <div className={`flex flex-col items-center ${deliveryStep === "arrived" ? "text-white" : "text-white/50"}`}>
                   <div className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${deliveryStep === "arrived" ? "bg-white text-green-600" : "bg-white/30"}`}>3</div>
-                  <span>Complete</span>
+                  <span>{t.rider.delivery.completeStep}</span>
                 </div>
               </>
             ) : (
               <>
                 <div className={`flex flex-col items-center ${deliveryStep === "shopping" ? "text-white" : "text-white/50"}`}>
                   <div className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${deliveryStep === "shopping" ? "bg-white text-purple-600" : "bg-white/30"}`}>1</div>
-                  <span>Shop</span>
+                  <span>{t.rider.delivery.shopStep}</span>
                 </div>
                 <div className="flex-1 h-0.5 bg-white/30 mx-2"><div className={`h-full bg-white ${["picking_up", "delivering", "arrived"].includes(deliveryStep) ? "w-full" : "w-0"}`}></div></div>
                 <div className={`flex flex-col items-center ${["picking_up", "delivering", "arrived"].includes(deliveryStep) ? "text-white" : "text-white/50"}`}>
                   <div className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${["picking_up", "delivering", "arrived"].includes(deliveryStep) ? "bg-white text-[#0b50d5]" : "bg-white/30"}`}>2</div>
-                  <span>Deliver</span>
+                  <span>{t.rider.delivery.deliverStep}</span>
                 </div>
                 <div className="flex-1 h-0.5 bg-white/30 mx-2"><div className={`h-full bg-white ${deliveryStep === "arrived" ? "w-full" : "w-0"}`}></div></div>
                 <div className={`flex flex-col items-center ${deliveryStep === "arrived" ? "text-white" : "text-white/50"}`}>
                   <div className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${deliveryStep === "arrived" ? "bg-white text-green-600" : "bg-white/30"}`}>3</div>
-                  <span>Collect ₹</span>
+                  <span>{t.rider.delivery.collectStep}</span>
                 </div>
               </>
             )}
@@ -149,14 +151,14 @@ export default function ActiveDeliveryView({
           {deliveryStep === "shopping" && currentOrder.type !== "multi_stop" && (
             <>
               <div className="mb-4">
-                <p className="text-[10px] text-purple-600 font-bold mb-2">🛒 SHOPPING MODE</p>
-                <p className="text-[10px] text-slate-400">GO TO STORE AND BUY THESE ITEMS</p>
+                <p className="text-[10px] text-purple-600 font-bold mb-2">{t.rider.delivery.shoppingMode}</p>
+                <p className="text-[10px] text-slate-400">{t.rider.delivery.goToStore}</p>
                 <p className="font-bold text-lg mt-2">{currentOrder.vendor}</p>
                 <p className="text-sm text-slate-500">{currentOrder.vendorAddress}</p>
               </div>
               
               <div className="bg-purple-50 p-4 rounded-xl mb-4">
-                <p className="text-[10px] text-purple-600 font-bold mb-3">ITEMS TO BUY</p>
+                <p className="text-[10px] text-purple-600 font-bold mb-3">{t.rider.delivery.itemsToBuy}</p>
                 <div className="space-y-2">
                   {currentOrder.itemsList.map((item: string, i: number) => (
                     <div key={i} className="flex items-center justify-between p-2 bg-white rounded-lg">
@@ -169,7 +171,7 @@ export default function ActiveDeliveryView({
                         })}
                         className={`text-[10px] px-2 py-1 rounded-full font-bold ${pickedItems.has(i) ? "bg-green-500 text-white" : "bg-green-100 text-green-700"}`}
                       >
-                        {pickedItems.has(i) ? "✓ PICKED" : "PICK"}
+                        {pickedItems.has(i) ? t.rider.delivery.picked : t.rider.delivery.pick}
                       </button>
                     </div>
                   ))}
@@ -178,13 +180,13 @@ export default function ActiveDeliveryView({
 
               {currentOrder.specialInstructions && (
                 <div className="bg-amber-50 p-3 rounded-xl mb-4">
-                  <p className="text-[10px] text-amber-600 font-bold mb-1">📝 CUSTOMER NOTES</p>
+                  <p className="text-[10px] text-amber-600 font-bold mb-1">{t.rider.delivery.customerNotes}</p>
                   <p className="text-sm text-amber-800">{currentOrder.specialInstructions}</p>
                 </div>
               )}
 
               <div className="bg-slate-50 p-3 rounded-xl mb-4">
-                <p className="text-[10px] text-slate-400 mb-2">DELIVER TO</p>
+                <p className="text-[10px] text-slate-400 mb-2">{t.rider.delivery.deliverTo}</p>
                 <p className="font-bold">{currentOrder.customer}</p>
                 <p className="text-sm text-slate-500">{currentOrder.customerAddress}</p>
                 <p className="text-xs text-slate-400">📍 {currentOrder.landmark}</p>
@@ -192,10 +194,10 @@ export default function ActiveDeliveryView({
 
               <div className="flex gap-3">
                 <button onClick={onCallCustomer} className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl flex items-center justify-center gap-2">
-                  <span className="material-symbols-outlined">call</span>Call Customer
+                  <span className="material-symbols-outlined">call</span>{t.rider.delivery.callCustomer}
                 </button>
                 <button onClick={onStartChat} className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl flex items-center justify-center gap-2 relative">
-                  <span className="material-symbols-outlined">chat</span>Chat
+                  <span className="material-symbols-outlined">chat</span>{t.rider.delivery.chat}
                   {unreadCount > 0 && (
                     <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
                       {unreadCount > 9 ? "9+" : unreadCount}
@@ -205,11 +207,11 @@ export default function ActiveDeliveryView({
               </div>
 
               <Link href="/rider/orders" className="w-full mt-3 py-4 bg-purple-600 text-white font-black rounded-xl flex items-center justify-center gap-2">
-                <span className="material-symbols-outlined">inventory_2</span>GO TO SHOPPING LIST
+                <span className="material-symbols-outlined">inventory_2</span>{t.rider.delivery.goToShoppingList}
               </Link>
 
               <button onClick={onItemsCollected} className="w-full mt-3 py-3 bg-green-500 text-white font-bold rounded-xl">
-                ALL ITEMS COLLECTED ✓
+                {t.rider.delivery.allItemsCollected}
               </button>
             </>
           )}
@@ -217,19 +219,19 @@ export default function ActiveDeliveryView({
           {deliveryStep === "picking_up" && (
             <>
               <div className="mb-4">
-                <p className="text-[10px] text-slate-400">PICKUP FROM</p>
+                <p className="text-[10px] text-slate-400">{t.rider.delivery.pickupFrom}</p>
                 <p className="font-bold text-lg">{currentOrder.vendor}</p>
                 <p className="text-sm text-slate-500">{currentOrder.vendorAddress}</p>
               </div>
               <div className="bg-slate-50 p-3 rounded-xl mb-4">
-                <p className="text-[10px] text-slate-400 mb-2">ORDER ITEMS</p>
+                <p className="text-[10px] text-slate-400 mb-2">{t.rider.delivery.orderItems}</p>
                 {currentOrder.itemsList.map((item, i) => (
                   <p key={i} className="text-sm text-slate-600">• {item}</p>
                 ))}
               </div>
               {currentOrder.type === "multi_stop" && currentOrder.stops && (
                 <div className="bg-purple-50 p-3 rounded-xl mb-4">
-                  <p className="text-[10px] text-purple-600 font-bold mb-2">📦 DELIVERY STOPS</p>
+                  <p className="text-[10px] text-purple-600 font-bold mb-2">{t.rider.delivery.deliveryStops}</p>
                   {currentOrder.stops.map((stop, i) => (
                     <div key={i} className={`flex items-center gap-2 text-sm py-1 ${i === currentStopIndex ? "text-purple-700 font-bold" : i < currentStopIndex ? "text-green-600 line-through" : "text-slate-500"}`}>
                       <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${i === currentStopIndex ? "bg-purple-500 text-white" : i < currentStopIndex ? "bg-green-500 text-white" : "bg-slate-200"}`}>
@@ -242,10 +244,10 @@ export default function ActiveDeliveryView({
               )}
               <div className="flex gap-3">
                 <button onClick={onCallCustomer} className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl flex items-center justify-center gap-2">
-                  <span className="material-symbols-outlined">call</span>Call Vendor
+                  <span className="material-symbols-outlined">call</span>{t.rider.delivery.callVendor}
                 </button>
                 <button onClick={onStartChat} className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl flex items-center justify-center gap-2 relative">
-                  <span className="material-symbols-outlined">chat</span>Chat
+                  <span className="material-symbols-outlined">chat</span>{t.rider.delivery.chat}
                   {unreadCount > 0 && (
                     <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
                       {unreadCount > 9 ? "9+" : unreadCount}
@@ -254,7 +256,7 @@ export default function ActiveDeliveryView({
                 </button>
               </div>
               <button onClick={onPickedUp} className="w-full mt-3 py-4 bg-green-500 text-white font-black rounded-xl">
-                {currentOrder.type === "multi_stop" ? `START DELIVERIES (${currentOrder.stops?.length} STOPS)` : "PICKED UP ORDER ✓"}
+                {currentOrder.type === "multi_stop" ? `${t.rider.delivery.startDeliveries} (${currentOrder.stops?.length} ${t.rider.order.stops})` : t.rider.delivery.pickedUpOrder}
               </button>
             </>
           )}
@@ -264,7 +266,7 @@ export default function ActiveDeliveryView({
               <div className="mb-4">
                 <div className="flex items-center justify-between mb-2">
                   <span className="bg-purple-100 text-purple-700 px-2 py-1 rounded-full text-[10px] font-bold">
-                    STOP {currentStopIndex + 1} OF {currentOrder.stops.length}
+                    {t.rider.delivery.stop} {currentStopIndex + 1} {t.rider.delivery.of} {currentOrder.stops.length}
                   </span>
                   <span className="text-xs text-slate-400">{currentOrder.stops[currentStopIndex].time}</span>
                 </div>
@@ -273,7 +275,7 @@ export default function ActiveDeliveryView({
                 <p className="text-xs text-slate-400 mt-1">📍 {currentOrder.stops[currentStopIndex].landmark}</p>
               </div>
               <div className="bg-slate-50 p-3 rounded-xl mb-4">
-                <p className="text-[10px] text-slate-400 mb-2">UPCOMING STOPS</p>
+                <p className="text-[10px] text-slate-400 mb-2">{t.rider.delivery.upcomingStops}</p>
                 {currentOrder.stops.slice(currentStopIndex + 1).map((stop, i) => (
                   <div key={i} className="flex items-center gap-2 text-sm text-slate-500 py-1">
                     <span className="w-5 h-5 bg-slate-200 rounded-full flex items-center justify-center text-[10px]">{currentStopIndex + i + 2}</span>
@@ -301,41 +303,41 @@ export default function ActiveDeliveryView({
                       (pos) => {
                         const url = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
                         navigator.clipboard.writeText(url);
-                        import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Location link copied!", "success"));
+                        import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast(t.rider.delivery.locationCopied, "success"));
                       },
-                      () => import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Could not get location", "error"))
+                      () => import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast(t.rider.delivery.locationError, "error"))
                     );
                   }
                 }}
                 className="w-full mt-3 py-2 bg-green-100 text-green-700 font-bold rounded-xl flex items-center justify-center gap-2"
               >
-                <span className="material-symbols-outlined">share_location</span>Share Live Location
+                <span className="material-symbols-outlined">share_location</span>{t.rider.delivery.shareLiveLocation}
               </button>
               <a 
                 href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(currentOrder.stops[currentStopIndex].address)}`}
                 target="_blank"
                 className="w-full mt-2 py-3 bg-[#0b50d5] text-white font-bold rounded-xl flex items-center justify-center gap-2"
               >
-                <span className="material-symbols-outlined">navigation</span>Navigate to Stop
+                <span className="material-symbols-outlined">navigation</span>{t.rider.delivery.navigateToStop}
               </a>
               <button onClick={onArrived} className="w-full mt-3 py-4 bg-green-500 text-white font-black rounded-xl">
-                I&apos;VE ARRIVED 🚩
+                {t.rider.delivery.iveArrived}
               </button>
             </>
           ) : deliveryStep === "delivering" ? (
             <>
               <div className="mb-4">
-                <p className="text-[10px] text-slate-400">DELIVER TO</p>
+                <p className="text-[10px] text-slate-400">{t.rider.delivery.deliverTo}</p>
                 <p className="font-bold text-lg">{currentOrder.customer}</p>
                 <p className="text-sm text-slate-500">{currentOrder.customerAddress}</p>
                 <p className="text-xs text-slate-400 mt-1">📍 {currentOrder.landmark}</p>
               </div>
               <div className="flex gap-3">
                 <button onClick={onCallCustomer} className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl flex items-center justify-center gap-2">
-                  <span className="material-symbols-outlined">call</span>Call Customer
+                  <span className="material-symbols-outlined">call</span>{t.rider.delivery.callCustomer}
                 </button>
                 <button onClick={onStartChat} className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl flex items-center justify-center gap-2 relative">
-                  <span className="material-symbols-outlined">chat</span>Chat
+                  <span className="material-symbols-outlined">chat</span>{t.rider.delivery.chat}
                   {unreadCount > 0 && (
                     <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
                       {unreadCount > 9 ? "9+" : unreadCount}
@@ -350,25 +352,25 @@ export default function ActiveDeliveryView({
                       (pos) => {
                         const url = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
                         navigator.clipboard.writeText(url);
-                        import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Location link copied!", "success"));
+                        import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast(t.rider.delivery.locationCopied, "success"));
                       },
-                      () => import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Could not get location", "error"))
+                      () => import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast(t.rider.delivery.locationError, "error"))
                     );
                   }
                 }}
                 className="w-full mt-3 py-2 bg-green-100 text-green-700 font-bold rounded-xl flex items-center justify-center gap-2"
               >
-                <span className="material-symbols-outlined">share_location</span>Share Live Location
+                <span className="material-symbols-outlined">share_location</span>{t.rider.delivery.shareLiveLocation}
               </button>
               <a 
                 href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(currentOrder.customerAddress)}`}
                 target="_blank"
                 className="w-full mt-2 py-3 bg-[#0b50d5] text-white font-bold rounded-xl flex items-center justify-center gap-2"
               >
-                <span className="material-symbols-outlined">navigation</span>Navigate
+                <span className="material-symbols-outlined">navigation</span>{t.rider.delivery.navigate}
               </a>
               <button onClick={onArrived} className="w-full mt-3 py-4 bg-green-500 text-white font-black rounded-xl">
-                I&apos;VE ARRIVED 🚩
+                {t.rider.delivery.iveArrived}
               </button>
             </>
           ) : null}
@@ -378,10 +380,10 @@ export default function ActiveDeliveryView({
               <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="material-symbols-outlined text-green-600 text-5xl">location_on</span>
               </div>
-              <p className="font-bold text-xl mb-2">You&apos;ve Arrived!</p>
-              <p className="text-sm text-slate-500 mb-4">Ready to complete delivery</p>
+              <p className="font-bold text-xl mb-2">{t.rider.delivery.youveArrived}</p>
+              <p className="text-sm text-slate-500 mb-4">{t.rider.delivery.readyToComplete}</p>
               <button onClick={onComplete} className="w-full py-4 bg-green-500 text-white font-black rounded-xl">
-                COMPLETE DELIVERY
+                {t.rider.delivery.completeDelivery}
               </button>
             </div>
           )}

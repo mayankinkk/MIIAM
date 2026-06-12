@@ -2,6 +2,7 @@
 
 import type { OrderWithTiming } from "@/app/rider/dashboard/types";
 import { calculatePeakEarnings, isPeakHour } from "@/app/rider/dashboard/utils";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 
 interface IncomingOrderCardProps {
   order: OrderWithTiming;
@@ -20,6 +21,8 @@ export default function IncomingOrderCard({
   onDecline,
   isTakenByOther,
 }: IncomingOrderCardProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="absolute inset-0 z-10 flex items-end justify-center pb-24 px-4">
       <div className="max-w-md w-full bg-white/95 backdrop-blur-xl rounded-2xl overflow-hidden shadow-2xl border border-white flex flex-col max-h-[80vh]">
@@ -35,19 +38,19 @@ export default function IncomingOrderCard({
               </span>
             </div>
             <div>
-              <p className="text-[10px] opacity-80">NEW ORDER • 5 MIN</p>
-              <h2 className="font-bold text-lg">{order.id?.substring(0, 8).toUpperCase() || "ORDER"}</h2>
+              <p className="text-[10px] opacity-80">{t.rider.order.newOrder} • {t.rider.order.fiveMin}</p>
+              <h2 className="font-bold text-lg">{order.id?.substring(0, 8).toUpperCase() || t.rider.order.order}</h2>
             </div>
           </div>
           <div className="text-right">
-            <p className="text-[10px] opacity-80">YOUR CUT</p>
+            <p className="text-[10px] opacity-80">{t.rider.order.yourCut}</p>
             <div className="flex items-center gap-1">
               <span className="text-2xl font-black">₹{calculatePeakEarnings(order)}</span>
               {order.peakMultiplier > 1 && (
                 <span className="bg-yellow-400 text-[#0b50d5] text-[10px] font-bold px-1.5 rounded">+{(order.peakMultiplier - 1) * 100}%</span>
               )}
             </div>
-            <p className="text-[10px] opacity-60">Order: ₹{order.orderTotal}</p>
+            <p className="text-[10px] opacity-60">{t.rider.order.orderTotal} ₹{order.orderTotal}</p>
           </div>
         </div>
         
@@ -56,25 +59,25 @@ export default function IncomingOrderCard({
             {order.type === "multi_stop" ? (
               <span className="bg-purple-100 text-purple-700 px-2 py-1 rounded-full text-[10px] font-bold flex items-center gap-1">
                 <span className="material-symbols-outlined text-[12px]">inventory_2</span>
-                {order.stops?.length} STOPS
+                {order.stops?.length} {t.rider.order.stops}
               </span>
             ) : (
               <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded-full text-[10px] font-bold">
-                FOOD DELIVERY
+                {t.rider.order.foodDelivery}
               </span>
             )}
             <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded-full text-[10px] font-bold">
-              {order.items} ITEMS
+              {order.items} {t.rider.order.items}
             </span>
             {order.priority === "high" && (
               <span className="bg-red-100 text-red-600 px-2 py-1 rounded-full text-[10px] font-bold flex items-center gap-1">
                 <span className="material-symbols-outlined text-[12px]">bolt</span>
-                HIGH PRIORITY
+                {t.rider.order.highPriority}
               </span>
             )}
             {isPeakHour() && (
               <span className="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full text-[10px] font-bold">
-                PEAK HOUR
+                {t.rider.order.peakHour}
               </span>
             )}
             <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-[10px] font-bold flex items-center gap-1">
@@ -85,7 +88,7 @@ export default function IncomingOrderCard({
 
           {order.type === "multi_stop" && order.stops && (
             <div className="bg-purple-50 p-3 rounded-xl mb-4 border border-purple-100">
-              <p className="text-[10px] text-purple-600 font-bold mb-2">📦 MULTI-STOP BATCH DELIVERY</p>
+              <p className="text-[10px] text-purple-600 font-bold mb-2">{t.rider.order.multiStopBatch}</p>
               <div className="space-y-2">
                 {order.stops.map((stop, i) => (
                   <div key={i} className="flex items-center justify-between text-xs">
@@ -97,29 +100,29 @@ export default function IncomingOrderCard({
                   </div>
                 ))}
               </div>
-              <p className="text-[9px] text-purple-500 mt-2">Complete all deliveries to earn ₹{order.earnings}</p>
+              <p className="text-[9px] text-purple-500 mt-2">{t.rider.order.completeAllToEarn} ₹{order.earnings}</p>
             </div>
           )}
 
           <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-3 rounded-xl mb-4 border border-green-100">
-            <p className="text-[10px] text-green-600 font-bold mb-2">EARNINGS BREAKDOWN</p>
+            <p className="text-[10px] text-green-600 font-bold mb-2">{t.rider.order.earningsBreakdown}</p>
             <div className="grid grid-cols-2 gap-2 text-xs">
               <div className="flex justify-between">
-                <span className="text-slate-500">Base Fare</span>
+                <span className="text-slate-500">{t.rider.order.baseFare}</span>
                 <span className="font-bold">₹40</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">Distance ({order.totalDistance} km)</span>
+                <span className="text-slate-500">{t.rider.order.distance} ({order.totalDistance} km)</span>
                 <span className="font-bold">₹{order.totalDistance * 8}</span>
               </div>
               {order.peakMultiplier > 1 && (
                 <>
                   <div className="flex justify-between">
-                    <span className="text-slate-500">Peak Bonus</span>
+                    <span className="text-slate-500">{t.rider.order.peakBonus}</span>
                     <span className="font-bold text-green-600">+₹{Math.round(40 + order.totalDistance * 8) * (order.peakMultiplier - 1)}</span>
                   </div>
                   <div className="flex justify-between border-t pt-1 mt-1">
-                    <span className="font-bold">Total</span>
+                    <span className="font-bold">{t.rider.order.total}</span>
                     <span className="font-black text-green-600">₹{calculatePeakEarnings(order)}</span>
                   </div>
                 </>
@@ -135,7 +138,7 @@ export default function IncomingOrderCard({
                 <span className="material-symbols-outlined text-white text-xs">restaurant</span>
               </div>
               <div className="flex-1">
-                <p className="text-[9px] text-[#0b50d5] font-bold">PICKUP</p>
+                <p className="text-[9px] text-[#0b50d5] font-bold">{t.rider.order.pickup}</p>
                 <p className="font-bold text-sm">{order.vendor}</p>
                 <p className="text-[10px] text-slate-500">{order.vendorAddress}</p>
               </div>
@@ -150,7 +153,7 @@ export default function IncomingOrderCard({
                 <span className="material-symbols-outlined text-white text-xs">home</span>
               </div>
               <div className="flex-1">
-                <p className="text-[9px] text-[#4d212a] font-bold">DROP</p>
+                <p className="text-[9px] text-[#4d212a] font-bold">{t.rider.order.drop}</p>
                 <p className="font-bold text-sm">{order.customer}</p>
                 <p className="text-[10px] text-slate-500">{order.customerAddress}</p>
                 <p className="text-[9px] text-slate-400 mt-1">📍 {order.landmark}</p>
@@ -164,18 +167,18 @@ export default function IncomingOrderCard({
 
           {order.specialInstructions && (
             <div className="mt-4 bg-amber-50 p-3 rounded-xl border border-amber-100">
-              <p className="text-[9px] text-amber-700 font-bold mb-1">📝 SPECIAL INSTRUCTIONS</p>
+              <p className="text-[9px] text-amber-700 font-bold mb-1">{t.rider.order.specialInstructions}</p>
               <p className="text-xs text-amber-800">{order.specialInstructions}</p>
             </div>
           )}
 
           <div className="mt-4 grid grid-cols-2 gap-3 bg-slate-50 p-3 rounded-xl">
             <div>
-              <p className="text-[9px] text-slate-400">TOTAL DISTANCE</p>
+              <p className="text-[9px] text-slate-400">{t.rider.order.totalDistance}</p>
               <p className="font-bold">{order.totalDistance} km</p>
             </div>
             <div>
-              <p className="text-[9px] text-slate-400">EST. TIME</p>
+              <p className="text-[9px] text-slate-400">{t.rider.order.estTime}</p>
               <p className="font-bold">{order.estCompletion} min</p>
             </div>
           </div>
@@ -186,13 +189,13 @@ export default function IncomingOrderCard({
             onClick={onDecline}
             className="flex-1 py-3 bg-slate-200 text-slate-600 font-bold rounded-xl text-sm"
           >
-            Decline
+{t.rider.order.decline}
           </button>
           <button 
             onClick={() => onAccept(order)}
             className="flex-[2] py-3 bg-[#0b50d5] text-white font-black rounded-xl text-sm shadow-lg"
           >
-            ACCEPT ORDER
+            {t.rider.order.acceptOrder}
           </button>
         </div>
 
@@ -200,8 +203,8 @@ export default function IncomingOrderCard({
           <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-50">
             <div className="bg-white rounded-2xl p-6 text-center max-w-xs mx-4">
               <span className="material-symbols-outlined text-red-500 text-5xl">error</span>
-              <p className="font-bold text-lg mt-3">Order Taken!</p>
-              <p className="text-sm text-slate-500 mt-1">Another rider accepted this order first.</p>
+              <p className="font-bold text-lg mt-3">{t.rider.order.orderTaken}</p>
+              <p className="text-sm text-slate-500 mt-1">{t.rider.order.orderTakenDesc}</p>
             </div>
           </div>
         )}

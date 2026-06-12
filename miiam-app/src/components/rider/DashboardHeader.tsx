@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 
 interface DashboardHeaderProps {
   isOnline: boolean;
@@ -10,6 +11,8 @@ interface DashboardHeaderProps {
 }
 
 export default function DashboardHeader({ isOnline, streakDays, onToggleOnline, onOpenQuests }: DashboardHeaderProps) {
+  const { t } = useTranslation();
+
   return (
     <header className="fixed top-0 w-full z-50 flex justify-between items-center px-4 py-3 bg-white/90 backdrop-blur-lg border-b border-white/20 shadow-lg">
       <div className="flex items-center gap-2">
@@ -21,21 +24,21 @@ export default function DashboardHeader({ isOnline, streakDays, onToggleOnline, 
           }`}
         >
           <span className={`w-2 h-2 rounded-full ${isOnline ? "bg-green-500" : "bg-slate-400"}`} />
-          {isOnline ? "Online" : "Offline"}
+          {isOnline ? t.rider.header.online : t.rider.header.offline}
         </button>
       </div>
       <div className="flex items-center gap-2">
         <button 
           onClick={() => window.open("tel:+9118001234567", "_self")}
           className="p-2 bg-red-50 rounded-full animate-pulse" 
-          title="Emergency SOS"
+          title={t.rider.header.emergencySos}
         >
           <span className="material-symbols-outlined text-red-500">emergency</span>
         </button>
         <button 
           onClick={onOpenQuests}
           className="p-2 bg-amber-50 rounded-full relative" 
-          title="Daily Quests"
+          title={t.rider.header.dailyQuests}
         >
           <span className="material-symbols-outlined text-amber-500">local_fire_department</span>
           {streakDays > 0 && (
@@ -44,10 +47,10 @@ export default function DashboardHeader({ isOnline, streakDays, onToggleOnline, 
             </span>
           )}
         </button>
-        <Link href="/rider/analytics" className="p-2 bg-blue-50 rounded-full" title="Analytics">
+        <Link href="/rider/analytics" className="p-2 bg-blue-50 rounded-full" title={t.rider.header.analytics}>
           <span className="material-symbols-outlined text-blue-600">insights</span>
         </Link>
-        <Link href="/rider/achievements" className="p-2 bg-amber-50 rounded-full" title="Achievements">
+        <Link href="/rider/achievements" className="p-2 bg-amber-50 rounded-full" title={t.rider.header.achievements}>
           <span className="material-symbols-outlined text-amber-500">emoji_events</span>
         </Link>
         <Link href="/rider/account" className="p-2">

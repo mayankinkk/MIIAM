@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 
 interface AlertSettingsModalProps {
   open: boolean;
@@ -21,13 +22,15 @@ export default function AlertSettingsModal({
   onClearOrders,
   onClose,
 }: AlertSettingsModalProps) {
+  const { t } = useTranslation();
+
   if (!open) return null;
 
   return (
     <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl p-6 w-full max-w-sm">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-bold text-xl">Alert Settings</h3>
+          <h3 className="font-bold text-xl">{t.rider.modals.alertSettings}</h3>
           <button onClick={onClose}>
             <span className="material-symbols-outlined">close</span>
           </button>
@@ -38,8 +41,8 @@ export default function AlertSettingsModal({
             <div className="flex items-center gap-3">
               <span className="material-symbols-outlined text-[#0b50d5]">volume_up</span>
               <div>
-                <p className="font-bold">Sound Alert</p>
-                <p className="text-xs text-slate-500">Play sound for new orders</p>
+                <p className="font-bold">{t.rider.modals.soundAlert}</p>
+                <p className="text-xs text-slate-500">{t.rider.modals.soundAlertDesc}</p>
               </div>
             </div>
             <button 
@@ -54,8 +57,8 @@ export default function AlertSettingsModal({
             <div className="flex items-center gap-3">
               <span className="material-symbols-outlined text-[#0b50d5]">vibration</span>
               <div>
-                <p className="font-bold">Vibration</p>
-                <p className="text-xs text-slate-500">Vibrate for new orders</p>
+                <p className="font-bold">{t.rider.modals.vibration}</p>
+                <p className="text-xs text-slate-500">{t.rider.modals.vibrationDesc}</p>
               </div>
             </div>
             <button 
@@ -70,21 +73,21 @@ export default function AlertSettingsModal({
             <div className="flex items-start gap-2">
               <span className="material-symbols-outlined text-blue-600 text-sm">info</span>
               <p className="text-xs text-blue-700">
-                Alerts are triggered when you are online and a new order arrives within your zone.
+                {t.rider.modals.alertsInfo}
               </p>
             </div>
           </div>
 
           <div className="pt-4 border-t border-slate-100">
-            <p className="text-[10px] font-black text-slate-400 uppercase mb-3">Developer Tools</p>
+            <p className="text-[10px] font-black text-slate-400 uppercase mb-3">{t.rider.modals.developerTools}</p>
             <button 
               onClick={onClearOrders}
               className="w-full py-3 rounded-xl bg-red-50 text-red-600 font-bold text-xs flex items-center justify-center gap-2 hover:bg-red-100 transition-colors"
             >
               <span className="material-symbols-outlined text-sm">delete_sweep</span>
-              Clear All Pending Orders
+              {t.rider.modals.clearPendingOrders}
             </button>
-            <p className="text-[10px] text-slate-400 mt-2 text-center italic">Deletes all unassigned pending orders from database.</p>
+            <p className="text-[10px] text-slate-400 mt-2 text-center italic">{t.rider.modals.clearPendingDesc}</p>
           </div>
         </div>
 
@@ -92,7 +95,7 @@ export default function AlertSettingsModal({
           onClick={onClose}
           className="w-full mt-4 py-3 bg-[#0b50d5] text-white font-bold rounded-xl"
         >
-          Save Settings
+          {t.rider.modals.saveSettings}
         </button>
       </div>
     </div>

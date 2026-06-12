@@ -21,11 +21,13 @@ import CancelOrderModal from "@/components/rider/CancelOrderModal";
 import SkipOrderModal from "@/components/rider/SkipOrderModal";
 import LowBatteryWarning from "@/components/rider/LowBatteryWarning";
 import NewOrderBanner from "@/components/rider/NewOrderBanner";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 
 export default function RiderDashboard() {
   const router = useRouter();
   const supabaseRef = useRef(createClient());
   const supabase = supabaseRef.current;
+  const { t } = useTranslation();
   const [isOnline, setIsOnline] = useState(true);
   const [countdown, setCountdown] = useState(300);
   const [pendingOrders, setPendingOrders] = useState<OrderWithTiming[]>([]);
@@ -56,10 +58,11 @@ export default function RiderDashboard() {
   const riderMarkerRef = useRef<any>(null);
   const watchIdRef = useRef<number | null>(null);
 
+  const questTitles = { complete5: t.rider.quests.complete5, earn500: t.rider.quests.earn500, threeStar: t.rider.quests.threeStar };
   const [dailyQuests, setDailyQuests] = useState([
-    { id: 1, title: "Complete 5 Deliveries", current: 0, target: 5, bonus: 100 },
-    { id: 2, title: "Earn ₹500 Today", current: 0, target: 500, bonus: 75 },
-    { id: 3, title: "3-Star Ratings", current: 0, target: 10, bonus: 50 },
+    { id: 1, title: questTitles.complete5, current: 0, target: 5, bonus: 100 },
+    { id: 2, title: questTitles.earn500, current: 0, target: 500, bonus: 75 },
+    { id: 3, title: questTitles.threeStar, current: 0, target: 10, bonus: 50 },
   ]);
   const [streakDays, setStreakDays] = useState(0);
   const [showQuestModal, setShowQuestModal] = useState(false);
@@ -68,7 +71,7 @@ export default function RiderDashboard() {
   const [cashCollected, setCashCollected] = useState(0);
   const [cashPending, setCashPending] = useState(0);
   const [showCancelModal, setShowCancelModal] = useState(false);
-  const [cancelReasons] = useState(["Too far from pickup", "Too far from delivery", "Vehicle breakdown", "Customer unreachable", "Order unavailable", "Other"]);
+  const cancelReasons = [t.rider.cancelReasons.tooFarPickup, t.rider.cancelReasons.tooFarDelivery, t.rider.cancelReasons.vehicleBreakdown, t.rider.cancelReasons.customerUnreachable, t.rider.cancelReasons.orderUnavailable, t.rider.cancelReasons.other];
   const [pickedItems, setPickedItems] = useState<Set<number>>(new Set());
   const [batteryLevel, setBatteryLevel] = useState(85);
   const [showLowBattery, setShowLowBattery] = useState(false);
@@ -144,14 +147,14 @@ export default function RiderDashboard() {
         const { data: quests } = await supabase.from("rider_quest_progress").select("*").eq("rider_id", riderIdVal);
         if (quests && quests.length > 0) {
           setDailyQuests(quests.map(q => ({
-            id: q.quest_id, title: q.quest_id === 1 ? "Complete 5 Deliveries" : q.quest_id === 2 ? "Earn ₹500 Today" : "3-Star Ratings",
+            id: q.quest_id, title: q.quest_id === 1 ? questTitles.complete5 : q.quest_id === 2 ? questTitles.earn500 : questTitles.threeStar,
             current: q.current_progress, target: q.target, bonus: q.bonus,
           })));
         } else {
           const defaultQuests = [{ quest_id: 1, target: 5, bonus: 100 }, { quest_id: 2, target: 500, bonus: 75 }, { quest_id: 3, target: 10, bonus: 50 }];
           const initialProgress = [{ current: riderRow.total_deliveries || 0, target: 5 }, { current: todayEarned, target: 500 }, { current: 0, target: 10 }];
           setDailyQuests(initialProgress.map((p, i) => ({
-            id: defaultQuests[i].quest_id, title: defaultQuests[i].quest_id === 1 ? "Complete 5 Deliveries" : defaultQuests[i].quest_id === 2 ? "Earn ₹500 Today" : "3-Star Ratings",
+            id: defaultQuests[i].quest_id, title: defaultQuests[i].quest_id === 1 ? questTitles.complete5 : defaultQuests[i].quest_id === 2 ? questTitles.earn500 : questTitles.threeStar,
             current: p.current, target: p.target, bonus: defaultQuests[i].bonus,
           })));
           for (const q of defaultQuests) {
@@ -218,7 +221,7 @@ export default function RiderDashboard() {
     const snoozeUntil = Date.now() + 30000;
     setPendingOrders(prev => prev.map(o => o.id === order.id ? { ...o, isSnoozed: true, snoozeUntil } : o));
     if (selectedOrder?.id === order.id) setSelectedOrder(prev => prev ? { ...prev, isSnoozed: true, snoozeUntil } : null);
-    setSnoozeMessage("Order snoozed for 30 seconds");
+    setSnoozeMessage(t.rider.notifications.snoozed);
     setTimeout(() => setSnoozeMessage(""), 3000);
     if (order.orderDbId && riderId) {
       try { await supabase.rpc('snooze_order_for_rider', { p_order_id: order.orderDbId, p_rider_id: riderId, p_seconds: 30 }); } catch { /* silent */ }
@@ -395,7 +398,7 @@ export default function RiderDashboard() {
 
   function playMessageAlert() {
     if (typeof Notification !== "undefined" && Notification.permission === "granted") {
-      new Notification("New message from customer", { body: `Order #${currentOrder?.id?.slice(0, 8) || ""}`, icon: "/icon.png" });
+      new Notification(t.rider.notifications.newMessage, { body: `Order #${currentOrder?.id?.slice(0, 8) || ""}`, icon: "/icon.png" });
     }
     try {
       const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
@@ -477,7 +480,7 @@ export default function RiderDashboard() {
         if (verify && Number(verify.rider_earning) > 0) setRiderEarnings((prev) => prev + finalEarnings);
         else setRiderEarnings((prev) => prev + finalEarnings);
         if (currentOrder?.user_id) {
-          await supabase.from("notifications").insert({ user_id: currentOrder.user_id, title: "Order Delivered! 🎉", message: "Your order has been delivered. Enjoy your meal!", type: "order", read: false, created_at: new Date().toISOString() });
+          await supabase.from("notifications").insert({ user_id: currentOrder.user_id, title: t.rider.notifications.orderDeliveredTitle, message: t.rider.notifications.orderDeliveredMsg, type: "order", read: false, created_at: new Date().toISOString() });
           try { await fetch("/api/emails/order-status", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ orderId: currentOrder.orderDbId, status: "delivered" }) }); } catch { /* silent */ }
         }
       }
@@ -520,17 +523,17 @@ export default function RiderDashboard() {
           {isNotRider ? (
             <>
               <span className="material-symbols-outlined text-5xl text-amber-400 mb-4 block">motorcycle</span>
-              <h2 className="text-xl font-bold text-[#4d212a] mb-2">Not a Rider Yet</h2>
-              <p className="text-slate-500 mb-2">You&apos;re logged in, but you don&apos;t have a rider account.</p>
-              <p className="text-slate-500 mb-6">Sign up to start delivering and earning.</p>
-              <Link href="/rider/apply" className="inline-block px-6 py-3 bg-[#0b50d5] text-white rounded-xl font-bold">Apply to Become a Rider</Link>
+              <h2 className="text-xl font-bold text-[#4d212a] mb-2">{t.rider.errors.notRiderYet}</h2>
+              <p className="text-slate-500 mb-2">{t.rider.errors.notRiderDesc}</p>
+              <p className="text-slate-500 mb-6">{t.rider.errors.notRiderCta}</p>
+              <Link href="/rider/apply" className="inline-block px-6 py-3 bg-[#0b50d5] text-white rounded-xl font-bold">{t.rider.errors.applyToRider}</Link>
             </>
           ) : (
             <>
               <span className="material-symbols-outlined text-5xl text-red-400 mb-4 block">wifi_off</span>
-              <h2 className="text-xl font-bold text-[#4d212a] mb-2">Unable to load dashboard</h2>
+              <h2 className="text-xl font-bold text-[#4d212a] mb-2">{t.rider.errors.unableToLoad}</h2>
               <p className="text-slate-500 mb-6">{error}</p>
-              <button onClick={() => window.location.reload()} className="px-6 py-3 bg-[#0b50d5] text-white rounded-xl font-bold">Try Again</button>
+              <button onClick={() => window.location.reload()} className="px-6 py-3 bg-[#0b50d5] text-white rounded-xl font-bold">{t.rider.errors.tryAgain}</button>
             </>
           )}
         </div>
@@ -547,9 +550,9 @@ export default function RiderDashboard() {
         <div className="fixed top-16 left-0 right-0 z-40 bg-[#0b50d5]/5 border-b border-[#0b50d5]/10 px-4 py-2 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-[#0b50d5] text-sm">stacked_bar_chart</span>
-            <span className="text-sm font-bold text-[#0b50d5]">{pendingOrders.length} orders available</span>
+            <span className="text-sm font-bold text-[#0b50d5]">{pendingOrders.length} {t.rider.stats.ordersAvailable}</span>
           </div>
-          <button onClick={() => { pendingOrders.forEach((order) => handleAccept(order)); }} className="px-4 py-1.5 bg-[#0b50d5] text-white text-xs font-bold rounded-full">Accept All</button>
+          <button onClick={() => { pendingOrders.forEach((order) => handleAccept(order)); }} className="px-4 py-1.5 bg-[#0b50d5] text-white text-xs font-bold rounded-full">{t.rider.stats.acceptAll}</button>
         </div>
       )}
       {snoozeMessage && (

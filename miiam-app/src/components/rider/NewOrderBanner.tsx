@@ -2,6 +2,7 @@
 
 import type { OrderWithTiming } from "@/app/rider/dashboard/types";
 import { calculatePeakEarnings } from "@/app/rider/dashboard/utils";
+import { useTranslation } from "@/lib/i18n/useTranslation";
 
 interface NewOrderBannerProps {
   visible: boolean;
@@ -11,6 +12,8 @@ interface NewOrderBannerProps {
 }
 
 export default function NewOrderBanner({ visible, order, onView, onDismiss }: NewOrderBannerProps) {
+  const { t } = useTranslation();
+
   if (!visible || !order) return null;
 
   return (
@@ -18,7 +21,7 @@ export default function NewOrderBanner({ visible, order, onView, onDismiss }: Ne
       <div className="flex items-center gap-3">
         <span className="material-symbols-outlined animate-bounce">local_shipping</span>
         <div>
-          <p className="font-bold text-sm">New Order Available!</p>
+          <p className="font-bold text-sm">{t.rider.banner.newOrderAvailable}</p>
           <p className="text-xs opacity-80">{order.type === "multi_stop" ? `${order.stops?.length} stops` : order.items} items • ₹{calculatePeakEarnings(order)}</p>
         </div>
       </div>
@@ -26,7 +29,7 @@ export default function NewOrderBanner({ visible, order, onView, onDismiss }: Ne
         onClick={onView}
         className="px-3 py-1 bg-white/20 rounded-full text-xs font-bold"
       >
-        View
+{t.rider.banner.view}
       </button>
     </div>
   );

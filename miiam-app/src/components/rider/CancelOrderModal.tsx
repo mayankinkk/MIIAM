@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "@/lib/i18n/useTranslation";
+
 interface CancelOrderModalProps {
   open: boolean;
   reasons: string[];
@@ -8,13 +10,15 @@ interface CancelOrderModalProps {
 }
 
 export default function CancelOrderModal({ open, reasons, onSelectReason, onClose }: CancelOrderModalProps) {
+  const { t } = useTranslation();
+
   if (!open) return null;
 
   return (
     <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl w-full max-w-sm p-4">
-        <h3 className="font-bold text-lg mb-4">Decline Order</h3>
-        <p className="text-sm text-slate-500 mb-4">Select a reason for declining:</p>
+        <h3 className="font-bold text-lg mb-4">{t.rider.modals.declineOrder}</h3>
+        <p className="text-sm text-slate-500 mb-4">{t.rider.modals.declineOrderReason}</p>
         <div className="space-y-2 max-h-60 overflow-y-auto">
           {reasons.map((reason) => (
             <button
@@ -30,7 +34,7 @@ export default function CancelOrderModal({ open, reasons, onSelectReason, onClos
           onClick={onClose}
           className="w-full mt-4 py-3 bg-slate-200 text-slate-600 font-bold rounded-xl"
         >
-          Cancel
+{t.common.cancel}
         </button>
       </div>
     </div>
