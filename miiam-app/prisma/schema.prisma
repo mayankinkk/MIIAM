@@ -94,6 +94,7 @@ model Order {
   orderItems          OrderItem[]
   reviews             Review[]
   chatMessages        ChatMessage[]
+  orderChats          OrderChat[]
 
   @@map("orders")
 }
