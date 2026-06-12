@@ -801,7 +801,6 @@ const hi: Translations = {
       emergencySos: "आपातकाल SOS",
       dailyQuests: "दैनिक क्वेस्ट",
       analytics: "एनालिटिक्स",
-      achievements: "उपलब्धियाँ",
     },
     order: {
       newOrder: "नया ऑर्डर",

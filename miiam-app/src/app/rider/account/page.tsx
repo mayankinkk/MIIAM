@@ -268,10 +268,6 @@ export default function RiderAccountPage() {
             <span className="text-2xl">📊</span>
             <span className="text-[10px] font-bold">Analytics</span>
           </Link>
-          <Link href="/rider/achievements" className="bg-white p-3 rounded-xl shadow-sm flex flex-col items-center gap-1">
-            <span className="text-2xl">🏆</span>
-            <span className="text-[10px] font-bold">Badges</span>
-          </Link>
           <Link href="/rider/vehicle" className="bg-white p-3 rounded-xl shadow-sm flex flex-col items-center gap-1">
             <span className="text-2xl">🛵</span>
             <span className="text-[10px] font-bold">Vehicle</span>
@@ -293,11 +289,6 @@ export default function RiderAccountPage() {
           <Link href="/rider/analytics" className="flex items-center gap-3 p-4 border-b border-slate-100">
             <span className="material-symbols-outlined text-[#0b50d5]">insights</span>
             <span className="flex-1 font-bold text-[#4d212a]">Analytics</span>
-            <span className="material-symbols-outlined text-slate-400">chevron_right</span>
-          </Link>
-          <Link href="/rider/achievements" className="flex items-center gap-3 p-4 border-b border-slate-100">
-            <span className="material-symbols-outlined text-amber-500">emoji_events</span>
-            <span className="flex-1 font-bold text-[#4d212a]">Achievements</span>
             <span className="material-symbols-outlined text-slate-400">chevron_right</span>
           </Link>
           <Link href="/rider/vehicle" className="flex items-center gap-3 p-4 border-b border-slate-100">

@@ -9,7 +9,6 @@ interface InsightUser {
   id: string;
   email: string;
   full_name: string;
-  total_loyalty_points: number;
   created_at: string;
 }
 
@@ -46,17 +45,6 @@ export default function CustomerInsights() {
     return created > monthAgo;
   }).length;
 
-  const totalLoyaltyPoints = users.reduce((s, u) => s + (u.total_loyalty_points || 0), 0);
-  const avgLoyaltyPoints = users.length > 0 ? Math.round(totalLoyaltyPoints / users.length) : 0;
-
-  const avgPointsPerUser = users.length > 0 ? Math.round(totalLoyaltyPoints / users.length) : 0;
-
-  const highValueUsers = users.filter(u => (u.total_loyalty_points || 0) > 500).length;
-
-  const regularUsers = users.filter(u => (u.total_loyalty_points || 0) > 100 && (u.total_loyalty_points || 0) <= 500).length;
-
-  const newUsers = users.filter(u => (u.total_loyalty_points || 0) <= 100).length;
-
   // Order frequency
   const userOrderCounts: Record<string, number> = {};
   orders.forEach(o => {
@@ -64,7 +52,7 @@ export default function CustomerInsights() {
   });
   
   const frequentBuyers = Object.values(userOrderCounts).filter(c => c > 5).length;
-  const occasionalBuyers = Object.values(userOrderCounts).filter(c => c > 1 && c <= 5).length;
+  const regularBuyers = Object.values(userOrderCounts).filter(c => c >= 2 && c <= 5).length;
   const oneTimeBuyers = Object.values(userOrderCounts).filter(c => c === 1).length;
 
   // Activity heatmap data (simulated)
@@ -95,12 +83,12 @@ export default function CustomerInsights() {
           <p className="text-3xl font-black text-green-600">+{newUsersThisMonth}</p>
         </div>
         <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
-          <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Avg Loyalty Points</p>
-          <p className="text-3xl font-black text-amber-500">{avgLoyaltyPoints}</p>
+          <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Total Orders</p>
+          <p className="text-3xl font-black text-slate-800">{orders.length}</p>
         </div>
         <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
-          <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Total Points</p>
-          <p className="text-3xl font-black text-slate-800">{totalLoyaltyPoints.toLocaleString()}</p>
+          <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Avg Orders/User</p>
+          <p className="text-3xl font-black text-amber-500">{users.length > 0 ? Math.round(orders.length / users.length) : 0}</p>
         </div>
       </div>
 
@@ -111,15 +99,15 @@ export default function CustomerInsights() {
           <div className="space-y-4">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                <span className="material-symbols-outlined text-purple-600">workspace_premium</span>
+                <span className="material-symbols-outlined text-purple-600">local_shipping</span>
               </div>
               <div className="flex-1">
                 <div className="flex justify-between">
-                  <span className="font-bold text-slate-800">High Value (500+ pts)</span>
-                  <span className="font-black text-purple-600">{highValueUsers}</span>
+                  <span className="font-bold text-slate-800">Frequent Buyers (&gt;5 orders)</span>
+                  <span className="font-black text-purple-600">{frequentBuyers}</span>
                 </div>
                 <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-purple-500" style={{ width: `${(highValueUsers / users.length) * 100}%` }} />
+                  <div className="h-full bg-purple-500" style={{ width: `${(frequentBuyers / (users.length || 1)) * 100}%` }} />
                 </div>
               </div>
             </div>
@@ -129,25 +117,25 @@ export default function CustomerInsights() {
               </div>
               <div className="flex-1">
                 <div className="flex justify-between">
-                  <span className="font-bold text-slate-800">Regular (100-500 pts)</span>
-                  <span className="font-black text-blue-600">{regularUsers}</span>
+                  <span className="font-bold text-slate-800">Regular (2-5 orders)</span>
+                  <span className="font-black text-blue-600">{regularBuyers}</span>
                 </div>
                 <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-blue-500" style={{ width: `${(regularUsers / users.length) * 100}%` }} />
+                  <div className="h-full bg-blue-500" style={{ width: `${(regularBuyers / (users.length || 1)) * 100}%` }} />
                 </div>
               </div>
             </div>
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
-                <span className="material-symbols-outlined text-slate-600">person_add</span>
+                <span className="material-symbols-outlined text-slate-600">person_off</span>
               </div>
               <div className="flex-1">
                 <div className="flex justify-between">
-                  <span className="font-bold text-slate-800">New (&lt;100 pts)</span>
-                  <span className="font-black text-slate-600">{newUsers}</span>
+                  <span className="font-bold text-slate-800">One-time Buyers</span>
+                  <span className="font-black text-slate-600">{oneTimeBuyers}</span>
                 </div>
                 <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-slate-400" style={{ width: `${(newUsers / users.length) * 100}%` }} />
+                  <div className="h-full bg-slate-400" style={{ width: `${(oneTimeBuyers / (users.length || 1)) * 100}%` }} />
                 </div>
               </div>
             </div>
@@ -172,17 +160,17 @@ export default function CustomerInsights() {
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
                 <span className="material-symbols-outlined text-amber-600">shopping_bag</span>
               </div>
               <div className="flex-1">
                 <div className="flex justify-between">
                   <span className="font-bold text-slate-800">Occasional (2-5 orders)</span>
-                  <span className="font-black text-amber-600">{occasionalBuyers}</span>
+                  <span className="font-black text-amber-600">{regularBuyers}</span>
                 </div>
                 <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-amber-500" style={{ width: `${(occasionalBuyers / (users.length || 1)) * 100}%` }} />
+                  <div className="h-full bg-amber-500" style={{ width: `${(regularBuyers / (users.length || 1)) * 100}%` }} />
                 </div>
               </div>
             </div>
@@ -222,13 +210,13 @@ export default function CustomerInsights() {
         </div>
       </div>
 
-      {/* Top Users */}
+      {/* Top Users by Orders */}
       <div className="bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
         <div className="p-4 border-b border-slate-100">
-          <h2 className="font-black text-slate-800 uppercase tracking-widest text-sm">Top Users by Points</h2>
+          <h2 className="font-black text-slate-800 uppercase tracking-widest text-sm">Top Users by Orders</h2>
         </div>
         <div className="divide-y divide-slate-50">
-          {users.sort((a, b) => (b.total_loyalty_points || 0) - (a.total_loyalty_points || 0)).slice(0, 10).map((user, i) => (
+          {users.sort((a, b) => (userOrderCounts[b.id] || 0) - (userOrderCounts[a.id] || 0)).slice(0, 10).map((user, i) => (
             <div key={user.id} className="p-4 flex items-center gap-4 hover:bg-slate-50">
               <span className="w-6 h-6 bg-[#ba001c] text-white rounded-full flex items-center justify-center text-xs font-bold">
                 {i + 1}
@@ -241,7 +229,7 @@ export default function CustomerInsights() {
                 <p className="text-xs text-slate-400">{user.email}</p>
               </div>
               <div className="text-right">
-                <p className="font-black text-amber-500">{user.total_loyalty_points || 0} pts</p>
+                <p className="font-black text-amber-500">{userOrderCounts[user.id] || 0} orders</p>
               </div>
             </div>
           ))}

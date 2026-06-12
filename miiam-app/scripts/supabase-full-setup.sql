@@ -17,7 +17,6 @@ create table if not exists profiles (
   is_profile_complete boolean default false,
   referral_code text unique,
   referred_by uuid references profiles(id),
-  total_loyalty_points integer default 0,
   created_at timestamp with time zone default timezone('utc'::text, now())
 );
 
@@ -171,17 +170,6 @@ create table if not exists notifications (
   created_at timestamp with time zone default timezone('utc'::text, now())
 );
 
--- LOYALTY POINTS TRANSACTIONS
-create table if not exists loyalty_points_transactions (
-  id uuid default uuid_generate_v4() primary key,
-  user_id uuid references profiles(id) on delete cascade,
-  points integer not null,
-  type text not null,
-  description text,
-  reference_id text,
-  created_at timestamp with time zone default timezone('utc'::text, now())
-);
-
 -- ENABLE RLS ON ALL TABLES
 alter table profiles enable row level security;
 alter table orders enable row level security;
@@ -193,7 +181,6 @@ alter table reviews enable row level security;
 alter table promo_codes enable row level security;
 alter table audit_logs enable row level security;
 alter table chat_messages enable row level security;
-alter table loyalty_points_transactions enable row level security;
 alter table notifications enable row level security;
 
 -- FUNCTION: Auto-create notification when order status changes
@@ -264,62 +251,6 @@ $$ LANGUAGE plpgsql;
 -- TRIGGER: Execute function on order status change
 DROP TRIGGER IF EXISTS order_status_notification_trigger ON orders;
 CREATE TRIGGER order_status_notification_trigger
-AFTER UPDATE ON orders
-FOR EACH ROW
-EXECUTE FUNCTION create_order_status_notification();
-
--- FUNCTION: Award loyalty points for purchases (10 points per ₹100 spent)
-CREATE OR REPLACE FUNCTION award_purchase_points()
-RETURNS TRIGGER AS $$
-DECLARE
-  points_earned INTEGER;
-  point_value DECIMAL := 0.10;
-BEGIN
-  -- Only when order is delivered and not already processed
-  IF NEW.status = 'delivered' AND OLD.status != 'delivered' AND NEW.user_id IS NOT NULL THEN
-    -- Calculate points: 10 points per ₹100
-    points_earned := FLOOR(NEW.total_amount / 100) * 10;
-    
-    IF points_earned > 0 THEN
-      -- Update user points
-      UPDATE profiles 
-      SET total_loyalty_points = COALESCE(total_loyalty_points, 0) + points_earned
-      WHERE id = NEW.user_id;
-
-      -- Record transaction
-      INSERT INTO loyalty_points_transactions (user_id, points, type, description, reference_id, created_at)
-      VALUES (
-        NEW.user_id,
-        points_earned,
-        'purchase_earned',
-        'Points earned from order #' || LEFT(NEW.id::TEXT, 8),
-        NEW.id,
-        NOW()
-      );
-
-      -- Create notification
-      INSERT INTO notifications (user_id, title, message, type, read, icon, created_at)
-      VALUES (
-        NEW.user_id,
-        '🎁 Points Earned!',
-        'You earned ' || points_earned || ' loyalty points from your order! (₹' || (points_earned * point_value) || ' value)',
-        'loyalty',
-        false,
-        'stars',
-        NOW()
-      );
-    END IF;
-  END IF;
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
--- TRIGGER: Award purchase points when order is delivered
-DROP TRIGGER IF EXISTS order_purchase_points_trigger ON orders;
-CREATE TRIGGER order_purchase_points_trigger
-AFTER UPDATE ON orders
-FOR EACH ROW
-EXECUTE FUNCTION award_purchase_points();
 AFTER UPDATE ON orders
 FOR EACH ROW
 EXECUTE FUNCTION create_order_status_notification();

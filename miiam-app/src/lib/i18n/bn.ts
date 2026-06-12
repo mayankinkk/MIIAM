@@ -801,7 +801,6 @@ const bn: Translations = {
       emergencySos: "জরুরি SOS",
       dailyQuests: "দৈনিক কুয়েস্ট",
       analytics: "বিশ্লেষণ",
-      achievements: "অর্জন",
     },
     order: {
       newOrder: "নতুন অর্ডার",

@@ -20,17 +20,15 @@ model Profile {
   referredById          String?   @map("referred_by")
   referredBy            Profile?  @relation("Referrals", fields: [referredById], references: [id])
   referrals             Profile[] @relation("Referrals")
-  totalLoyaltyPoints    Int?      @default(0) @map("total_loyalty_points")
-  createdAt             DateTime? @default(now()) @map("created_at")
+   createdAt             DateTime? @default(now()) @map("created_at")
 
-  orders                Order[]
+   orders                Order[]
   riders                Rider[]
   reviews               Review[]
   auditLogs             AuditLog[]
   chatMessages          ChatMessage[]
-  notifications         Notification[]
-  loyaltyPoints         LoyaltyPointsTransaction[]
-  recurringSchedules    RecurringSchedule[]
+   notifications         Notification[]
+   recurringSchedules    RecurringSchedule[]
 
   @@map("profiles")
 }
@@ -240,19 +238,6 @@ model Notification {
   createdAt   DateTime? @default(now()) @map("created_at")
 
   @@map("notifications")
-}
-
-model LoyaltyPointsTransaction {
-  id          String    @id @default(uuid())
-  userId      String?   @map("user_id")
-  user        Profile?  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  points      Int
-  type        String
-  description String?
-  referenceId String?   @map("reference_id")
-  createdAt   DateTime? @default(now()) @map("created_at")
-
-  @@map("loyalty_points_transactions")
 }
 
 model GroceryProduct {

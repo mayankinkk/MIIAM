@@ -109,6 +109,5 @@ create table if not exists referrals (
   referred_email text,
   referred_id uuid references profiles(id),
   status text default 'pending',
-  reward_given boolean default false,
   created_at timestamptz default now()
 );

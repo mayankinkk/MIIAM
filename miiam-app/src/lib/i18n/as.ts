@@ -801,7 +801,6 @@ const as: Translations = {
       emergencySos: "জৰুৰীকালীন SOS",
       dailyQuests: "দৈনিক কুৱেছ্ট",
       analytics: "বিশ্লেষণ",
-      achievements: "সাফল্য",
     },
     order: {
       newOrder: "নতুন অৰ্ডাৰ",

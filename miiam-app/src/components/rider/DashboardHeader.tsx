@@ -50,9 +50,6 @@ export default function DashboardHeader({ isOnline, streakDays, onToggleOnline, 
         <Link href="/rider/analytics" className="p-2 bg-blue-50 rounded-full" title={t.rider.header.analytics}>
           <span className="material-symbols-outlined text-blue-600">insights</span>
         </Link>
-        <Link href="/rider/achievements" className="p-2 bg-amber-50 rounded-full" title={t.rider.header.achievements}>
-          <span className="material-symbols-outlined text-amber-500">emoji_events</span>
-        </Link>
         <Link href="/rider/account" className="p-2">
           <span className="material-symbols-outlined text-slate-600">person</span>
         </Link>

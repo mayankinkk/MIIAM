@@ -131,7 +131,6 @@ export default function UserRegistry() {
               <tr>
                 <th className="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Profile</th>
                 <th className="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Role</th>
-                <th className="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Loyalty Pts</th>
                 <th className="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Join Date</th>
                 <th className="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
               </tr>
@@ -158,15 +157,6 @@ export default function UserRegistry() {
                     }`}>
                       {profile.role}
                     </span>
-                  </td>
-                  <td className="p-6 text-center">
-                    <div className="flex flex-col items-center">
-                      <span className="text-sm font-black text-slate-800">{0}</span>
-                      <p className="text-[10px] text-slate-500">Loyalty Pts</p>
-                    </div>
-                    <div className="bg-slate-100 rounded-full h-2 w-full mt-2">
-                      <div className="h-full bg-amber-400 rounded-full" style={{ width: '0%' }} />
-                    </div>
                   </td>
                   <td className="p-6 text-center">
                     <p className="text-xs text-slate-500 font-bold">{profile.created_at ? new Date(profile.created_at).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' }) : "N/A"}</p>

@@ -799,7 +799,6 @@ const en = {
       emergencySos: "Emergency SOS",
       dailyQuests: "Daily Quests",
       analytics: "Analytics",
-      achievements: "Achievements",
     },
     order: {
       newOrder: "NEW ORDER",
