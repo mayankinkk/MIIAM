@@ -90,8 +90,8 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
-  const supabase = await createClient();
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  const supabaseAdmin = await createClient();
+  const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser();
   if (authError || !user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -104,7 +104,7 @@ export async function GET(request: NextRequest) {
   }
 
   // Get notification history
-  const { data: notifications } = await supabase
+  const { data: notifications } = await supabaseAdmin
     .from("notifications")
     .select("*")
     .eq("user_id", userId)
