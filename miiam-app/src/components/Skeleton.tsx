@@ -266,3 +266,33 @@ export function HomeSkeleton() {
     </div>
   );
 }
+
+export function FoodSkeleton() {
+  return (
+    <div className="min-h-screen bg-surface pb-24">
+      <div className="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-2xl px-4 py-4">
+        <Skeleton className="h-10 w-full rounded-full" />
+      </div>
+      <div className="pt-20 px-4 space-y-4">
+        <div className="flex gap-2 overflow-hidden">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <Skeleton key={i} className="h-10 w-20 rounded-full flex-shrink-0" />
+          ))}
+        </div>
+        <div className="flex gap-2">
+          <Skeleton className="h-8 w-16 rounded-full" />
+          <Skeleton className="h-8 w-16 rounded-full" />
+        </div>
+        <div className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="bg-white rounded-2xl p-4 space-y-3">
+              <Skeleton className="h-40 w-full rounded-xl" />
+              <Skeleton className="h-5 w-32" />
+              <Skeleton className="h-4 w-48" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
