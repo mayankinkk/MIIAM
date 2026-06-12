@@ -149,11 +149,11 @@ describe("Addresses API", () => {
 });
 
 describe("Settings API", () => {
-  it("GET returns 401 when not admin", async () => {
+  it("GET returns 403 when not admin", async () => {
     profileQueryResult = { data: { role: "user" }, error: null };
     const { GET } = await import("../settings/route");
     const res = await GET();
-    expect(res.status).toBe(401);
+    expect(res.status).toBe(403);
   });
 
   it("GET returns 401 when unauthenticated", async () => {

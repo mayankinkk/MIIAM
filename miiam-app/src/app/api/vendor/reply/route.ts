@@ -13,6 +13,9 @@ export async function POST(req: Request) {
     if (!reviewId || !reply?.trim()) {
       return NextResponse.json({ error: "reviewId and reply are required" }, { status: 400 });
     }
+    if (reply.trim().length > 2000) {
+      return NextResponse.json({ error: "Reply must be under 2000 characters" }, { status: 400 });
+    }
 
     const { data: vendor } = await supabase
       .from("vendors")

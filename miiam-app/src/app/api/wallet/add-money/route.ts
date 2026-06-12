@@ -56,8 +56,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Amount mismatch" }, { status: 400 });
     }
 
-    // Increment wallet balance
+    // Check for duplicate transaction
     const supabaseAdmin = createAdminClient();
+    const { data: existingTx } = await supabaseAdmin
+      .from("wallet_transactions")
+      .select("id")
+      .eq("razorpay_payment_id", razorpay_payment_id)
+      .maybeSingle();
+    if (existingTx) {
+      return NextResponse.json({ success: true, amount, message: "Already processed" });
+    }
+
+    // Increment wallet balance
     const { error: rpcError } = await supabaseAdmin.rpc("increment_wallet_balance", {
       p_user_id: user.id,
       p_amount: amount,
@@ -74,6 +84,7 @@ export async function POST(req: NextRequest) {
       amount,
       type: "deposit",
       status: "completed",
+      razorpay_payment_id,
     });
 
     return NextResponse.json({ success: true, amount });

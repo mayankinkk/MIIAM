@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { getClientIp, checkIpRateLimit } from "@/lib/security";
 import { createRouteLogger } from "@/lib/logger";
 
@@ -73,6 +73,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const supabaseAdmin = createAdminClient();
+    const { data: profile } = await supabaseAdmin.from("profiles").select("role").eq("id", user.id).maybeSingle();
+    if (!profile || profile.role !== "admin") {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     // Rate limit: max 10 messages per minute per IP
     const ip = getClientIp(request);
     if (!checkIpRateLimit(ip, 10, 60 * 1000)) {
@@ -136,7 +142,6 @@ export async function POST(request: NextRequest) {
 
     if (!response.ok) {
       logger.error({ err: data }, "WhatsApp API error");
-      const supabaseAdmin = (await import("@/lib/supabase/server")).createAdminClient();
       await supabaseAdmin.from("whatsapp_messages").insert({
         phone_number: toPhone,
         template_name: templateName,
@@ -149,7 +154,6 @@ export async function POST(request: NextRequest) {
     }
 
     const messageId = data.messages?.[0]?.id;
-    const supabaseAdmin = (await import("@/lib/supabase/server")).createAdminClient();
     await supabaseAdmin.from("whatsapp_messages").insert({
       phone_number: toPhone,
       template_name: templateName,

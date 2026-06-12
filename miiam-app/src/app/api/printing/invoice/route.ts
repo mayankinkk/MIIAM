@@ -6,7 +6,7 @@ import { PRINTING_VENDOR_ID } from "@/lib/constants";
 const SELLER = {
   name: "MIIAM Print Services",
   address: "Plot 14, Sector 18, MG Road, Bengaluru, Karnataka 560001",
-  gstin: "29ABCDE1234F1Z5",
+  gstin: process.env.SELLER_GSTIN || "29ABCDE1234F1Z5",
   state: "Karnataka (29)",
 };
 

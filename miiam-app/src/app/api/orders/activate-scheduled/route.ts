@@ -25,6 +25,7 @@ async function activateScheduledOrders() {
   }
 
   let activatedCount = 0;
+  const activatedOrderIds: string[] = [];
 
   for (const order of scheduledOrders) {
     const scheduledTime = new Date(order.scheduled_delivery).getTime();
@@ -38,17 +39,24 @@ async function activateScheduledOrders() {
 
       if (!updateError) {
         activatedCount++;
+        activatedOrderIds.push(order.id);
         logger.info("Activated order " + order.id);
-
-        await supabase.from("notifications").insert({
-          user_id: order.user_id,
-          title: "Order Being Activated!",
-          body: `Your scheduled order is now visible to riders. They'll pick it up soon!`,
-          type: "order_activated",
-          order_id: order.id,
-        });
       }
     }
+  }
+
+  if (activatedOrderIds.length > 0) {
+    const notificationsToInsert = activatedOrderIds.map(orderId => {
+      const order = scheduledOrders.find(o => o.id === orderId);
+      return {
+        user_id: order?.user_id,
+        title: "Order Being Activated!",
+        body: "Your scheduled order is now visible to riders.",
+        type: "order_activated",
+        order_id: orderId,
+      };
+    });
+    await supabase.from("notifications").insert(notificationsToInsert);
   }
 
   return NextResponse.json({

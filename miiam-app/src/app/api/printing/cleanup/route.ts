@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/server";
+import { requireCronAuth } from "@/lib/security";
 import { PRINTING_VENDOR_ID } from "@/lib/constants";
 
 const FINAL_STATUSES = ["delivered", "cancelled", "refunded"] as const;
@@ -17,7 +18,7 @@ function extractPathFromUrl(url: string, bucket: string): string | null {
 }
 
 async function collectOrderFilePaths(
-  supabase: Awaited<ReturnType<typeof createClient>>,
+  supabase: ReturnType<typeof createAdminClient>,
   orderIds: string[]
 ): Promise<{ bucket: string; paths: string[] }[]> {
   if (orderIds.length === 0) return [];
@@ -53,7 +54,7 @@ async function collectOrderFilePaths(
   return out;
 }
 
-async function cleanPrintedFiles(supabase: Awaited<ReturnType<typeof createClient>>) {
+async function cleanPrintedFiles(supabase: ReturnType<typeof createAdminClient>) {
   const { data: orders, error: fetchError } = await supabase
     .from("orders")
     .select("id, created_at")
@@ -90,7 +91,7 @@ async function cleanPrintedFiles(supabase: Awaited<ReturnType<typeof createClien
   return { cleaned: cleanedCount, abandoned: 0, orders: orderIds.length };
 }
 
-async function cleanAbandonedUploads(supabase: Awaited<ReturnType<typeof createClient>>) {
+async function cleanAbandonedUploads(supabase: ReturnType<typeof createAdminClient>) {
   const cutoff = Date.now() - ABANDONED_TTL_MS;
   let totalRemoved = 0;
 
@@ -115,7 +116,7 @@ async function cleanAbandonedUploads(supabase: Awaited<ReturnType<typeof createC
   return totalRemoved;
 }
 
-async function handleCleanup(supabase: Awaited<ReturnType<typeof createClient>>) {
+async function handleCleanup(supabase: ReturnType<typeof createAdminClient>) {
   const orderResult = await cleanPrintedFiles(supabase);
   const abandonedCount = await cleanAbandonedUploads(supabase);
 
@@ -127,24 +128,13 @@ async function handleCleanup(supabase: Awaited<ReturnType<typeof createClient>>)
   });
 }
 
-async function requireCronAuth(request: NextRequest) {
-  const authHeader = request.headers.get("authorization") || request.headers.get("x-cron-secret");
-  const secret = process.env.CRON_SECRET;
-  if (!secret) {
-    console.error("[printing-cleanup] CRON_SECRET env var is not set — rejecting request");
-    return false;
-  }
-  if (authHeader === `Bearer ${secret}`) return true;
-  return false;
-}
-
 export async function POST(request: NextRequest) {
   try {
     const authorized = await requireCronAuth(request);
     if (!authorized) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const supabase = await createClient();
+    const supabase = createAdminClient();
     return await handleCleanup(supabase);
   } catch (error: any) {
     console.error("[printing-cleanup] Error:", error);

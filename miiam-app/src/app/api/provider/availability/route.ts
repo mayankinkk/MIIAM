@@ -113,6 +113,16 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { provider_id, date, is_unavailable, available_hours, reason } = body;
 
+    const { data: provider } = await supabase
+      .from("providers")
+      .select("id")
+      .eq("id", provider_id)
+      .eq("user_id", user.id)
+      .maybeSingle();
+    if (!provider) {
+      return NextResponse.json({ error: "Provider not found or unauthorized" }, { status: 403 });
+    }
+
     if (!provider_id || !date) {
       return NextResponse.json({ error: "provider_id and date required" }, { status: 400 });
     }

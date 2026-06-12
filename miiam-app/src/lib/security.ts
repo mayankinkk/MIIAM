@@ -84,6 +84,8 @@ export function checkCsrf(request: NextRequest): boolean {
       return false;
     }
   }
+  const hasCookies = request.cookies.getAll().length > 0;
+  if (hasCookies && !origin && !referer) return false;
   return true;
 }
 
@@ -106,6 +108,15 @@ export function checkIpRateLimit(
 
   if (entry.count >= maxRequests) return false;
   entry.count++;
+
+  // Cleanup expired entries periodically (every 1000 calls)
+  if (ipRateLimits.size > 1000) {
+    const now2 = Date.now();
+    for (const [key, val] of ipRateLimits) {
+      if (now2 > val.resetTime) ipRateLimits.delete(key);
+    }
+  }
+
   return true;
 }
 

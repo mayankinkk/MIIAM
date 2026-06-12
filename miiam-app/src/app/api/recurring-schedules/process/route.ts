@@ -88,7 +88,8 @@ export async function POST(request: NextRequest) {
         }
 
         try {
-          await fetch(`${process.env.NEXT_PUBLIC_APP_URL || ""}/api/emails/order-confirmation`, {
+          const appUrl = process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+          await fetch(`${appUrl}/api/emails/order-confirmation`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ orderId: order.id }),

@@ -4,15 +4,15 @@ import { createAdminClient, createClient } from "@/lib/supabase/server";
 async function requireAdmin() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return null;
+  if (!user) return { user: null, isAdmin: false };
   const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
-  if (!profile || profile.role !== "admin") return null;
-  return user;
+  return { user, isAdmin: profile?.role === "admin" };
 }
 
 export async function GET() {
-  const user = await requireAdmin();
+  const { user, isAdmin } = await requireAdmin();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!isAdmin) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const supabase = createAdminClient();
 
@@ -30,8 +30,9 @@ export async function GET() {
 }
 
 export async function PUT(request: NextRequest) {
-  const user = await requireAdmin();
+  const { user, isAdmin } = await requireAdmin();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!isAdmin) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const supabase = createAdminClient();
 
@@ -75,8 +76,9 @@ export async function PUT(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const user = await requireAdmin();
+  const { user, isAdmin } = await requireAdmin();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!isAdmin) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const supabase = createAdminClient();
 

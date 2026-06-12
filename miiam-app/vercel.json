@@ -11,6 +11,10 @@
     {
       "path": "/api/orders/check-expired",
       "schedule": "*/10 * * * *"
+    },
+    {
+      "path": "/api/recurring-schedules/process",
+      "schedule": "0 6 * * *"
     }
   ]
 }
