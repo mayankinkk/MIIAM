@@ -34,8 +34,15 @@ jobs:
           cache-dependency-path: miiam-app/package-lock.json
       - name: Install dependencies
         run: cd miiam-app && npm ci
-      - name: Run tests
-        run: cd miiam-app && npm run test:run
+      - name: Run tests with coverage
+        run: cd miiam-app && npx vitest run --coverage
+      - name: Upload coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: miiam-app/coverage/
+          retention-days: 30
 
   build:
     name: Build
