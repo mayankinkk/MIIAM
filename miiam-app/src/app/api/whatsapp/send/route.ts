@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { getClientIp, checkIpRateLimit } from "@/lib/security";
+import { createRouteLogger } from "@/lib/logger";
 
 const WHATSAPP_CLOUD_API_URL = "https://graph.facebook.com/v18.0";
 
@@ -64,6 +65,7 @@ const messageTemplates: Record<string, { name: string; language: string; compone
 };
 
 export async function POST(request: NextRequest) {
+  const logger = createRouteLogger("whatsapp/send");
   try {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
@@ -133,7 +135,7 @@ export async function POST(request: NextRequest) {
     const data = await response.json();
 
     if (!response.ok) {
-      console.error("[WhatsApp] API error:", data);
+      logger.error({ err: data }, "WhatsApp API error");
       const supabaseAdmin = (await import("@/lib/supabase/server")).createAdminClient();
       await supabaseAdmin.from("whatsapp_messages").insert({
         phone_number: toPhone,
@@ -159,7 +161,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true, messageId });
   } catch (error) {
-    console.error("[WhatsApp] Error:", error);
+    logger.error({ err: error }, "WhatsApp send error");
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Unknown error" },
       { status: 500 }

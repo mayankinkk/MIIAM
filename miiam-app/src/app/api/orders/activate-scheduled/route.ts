@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/server";
 import { requireCronAuth } from "@/lib/security";
+import { createRouteLogger } from "@/lib/logger";
 
 async function activateScheduledOrders() {
+  const logger = createRouteLogger("orders/activate-scheduled");
   const supabase = createAdminClient();
 
   const now = new Date().toISOString();
@@ -14,7 +16,7 @@ async function activateScheduledOrders() {
     .lt("scheduled_delivery", now);
 
   if (fetchError) {
-    console.error("[activate-scheduled] Fetch error:", fetchError);
+    logger.error({ err: fetchError }, "Failed to fetch scheduled orders");
     return NextResponse.json({ error: fetchError.message }, { status: 500 });
   }
 
@@ -36,7 +38,7 @@ async function activateScheduledOrders() {
 
       if (!updateError) {
         activatedCount++;
-        console.log(`[activate-scheduled] Activated order ${order.id}`);
+        logger.info("Activated order " + order.id);
 
         await supabase.from("notifications").insert({
           user_id: order.user_id,
@@ -56,25 +58,27 @@ async function activateScheduledOrders() {
 }
 
 export async function POST(request: NextRequest) {
+  const logger = createRouteLogger("orders/activate-scheduled");
   if (!(await requireCronAuth(request))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   try {
     return await activateScheduledOrders();
   } catch (error: any) {
-    console.error("[activate-scheduled] Error:", error);
+    logger.error({ err: error }, "Error activating scheduled orders");
     return NextResponse.json({ error: error?.message || "Server error" }, { status: 500 });
   }
 }
 
 export async function GET(request: NextRequest) {
+  const logger = createRouteLogger("orders/activate-scheduled");
   if (!(await requireCronAuth(request))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   try {
     return await activateScheduledOrders();
   } catch (error: any) {
-    console.error("[activate-scheduled] Error:", error);
+    logger.error({ err: error }, "Error activating scheduled orders");
     return NextResponse.json({ error: error?.message || "Server error" }, { status: 500 });
   }
 }

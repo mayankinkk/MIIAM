@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Razorpay from "razorpay";
 import { createClient } from "@/lib/supabase/server";
 import { checkCsrf, getClientIp, checkIpRateLimit } from "@/lib/security";
+import { createRouteLogger } from "@/lib/logger";
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID || "",
@@ -9,6 +10,7 @@ const razorpay = new Razorpay({
 });
 
 export async function POST(req: NextRequest) {
+  const logger = createRouteLogger("payment/create-order");
   try {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
@@ -53,7 +55,7 @@ export async function POST(req: NextRequest) {
       keyId: process.env.RAZORPAY_KEY_ID,
     });
   } catch (error: any) {
-    console.error("Razorpay order creation failed:", error);
+    logger.error({ err: error }, "Razorpay order creation failed");
     return NextResponse.json(
       { error: error.message || "Failed to create payment order" },
       { status: 500 }

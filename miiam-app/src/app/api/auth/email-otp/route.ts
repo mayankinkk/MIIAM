@@ -3,6 +3,7 @@ import { createAdminClient } from "@/lib/supabase/server";
 import { Resend } from "resend";
 import { randomInt } from "crypto";
 import { checkVerifyRateLimit, incrementVerifyAttempts } from "@/lib/security";
+import { createRouteLogger } from "@/lib/logger";
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
@@ -18,11 +19,12 @@ async function sendEmail(email: string, otp: string, purpose?: string): Promise<
   if (!resend) {
     return { success: false, error: "Email service not configured. Please contact support." };
   }
-  
-  const subject = purpose === "password_reset" 
-    ? "MIIAM - Reset Your Password" 
+
+  const logger = createRouteLogger("auth/email-otp");
+  const subject = purpose === "password_reset"
+    ? "MIIAM - Reset Your Password"
     : "MIIAM - Your Verification Code";
-  
+
   try {
     const { error } = await resend.emails.send({
       from: "MIIAM <noreply@miiam.in>",
@@ -46,20 +48,21 @@ async function sendEmail(email: string, otp: string, purpose?: string): Promise<
     });
 
     if (error) {
-      console.error("Resend error:", error);
+      logger.error({ err: error }, "Resend email error");
       return { success: false, error: error.message };
     }
 
     return { success: true };
   } catch (err) {
-    console.error("Email send error:", err);
+    logger.error({ err: err }, "Email send error");
     return { success: false, error: "Failed to send email" };
   }
 }
 
 export async function POST(request: NextRequest) {
+  const logger = createRouteLogger("auth/email-otp");
   const supabase = createAdminClient();
-  
+
   try {
     const { email, purpose } = await request.json();
 
@@ -89,14 +92,14 @@ export async function POST(request: NextRequest) {
       try {
         const { data: users, error: listError } = await supabase.auth.admin.listUsers();
         if (listError) {
-          console.error("List users error:", listError);
+          logger.error({ err: listError }, "Failed to list users");
         }
         const user = (users as { users: any[] })?.users?.find((u: any) => u.email?.toLowerCase() === cleanEmail);
         if (!user) {
           return NextResponse.json({ error: "No account found with this email" }, { status: 404 });
         }
       } catch (e) {
-        console.error("User lookup error:", e);
+        logger.error({ err: e }, "User lookup error");
       }
     }
     
@@ -116,7 +119,7 @@ export async function POST(request: NextRequest) {
       );
 
     if (insertError) {
-      console.error("Database error:", insertError);
+      logger.error({ err: insertError }, "Failed to store OTP");
       return NextResponse.json({ error: "Failed to store code" }, { status: 500 });
     }
 
@@ -132,14 +135,15 @@ export async function POST(request: NextRequest) {
       expiresIn: 600,
     });
   } catch (error) {
-    console.error("Email OTP Error:", error);
+    logger.error({ err: error }, "Email OTP error");
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
 
 export async function PUT(request: NextRequest) {
+  const logger = createRouteLogger("auth/email-otp");
   const supabase = createAdminClient();
-  
+
   try {
     const { email, otpCode, purpose } = await request.json();
 
@@ -196,7 +200,7 @@ export async function PUT(request: NextRequest) {
       email: cleanEmail,
     });
   } catch (error) {
-    console.error("Email OTP verify error:", error);
+    logger.error({ err: error }, "Email OTP verify error");
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

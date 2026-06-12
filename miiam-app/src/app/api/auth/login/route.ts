@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
+import { createRouteLogger } from "@/lib/logger";
 
 const LOGIN_RATE_LIMIT_MAX = 5;
 const LOGIN_RATE_LIMIT_WINDOW = 10 * 60 * 1000;
@@ -16,6 +17,7 @@ async function checkLoginRateLimit(supabase: ReturnType<typeof createAdminClient
 }
 
 export async function POST(request: NextRequest) {
+  const logger = createRouteLogger("auth/login");
   try {
     const { email, password } = await request.json();
 
@@ -53,7 +55,7 @@ export async function POST(request: NextRequest) {
       email: data.user.email,
     });
   } catch (error: any) {
-    console.error("[login] error:", error);
+    logger.error({ err: error }, "Login error");
     return NextResponse.json({ error: error?.message || "Server error" }, { status: 500 });
   }
 }

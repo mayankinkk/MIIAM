@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Razorpay from "razorpay";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { checkCsrf } from "@/lib/security";
+import { createRouteLogger } from "@/lib/logger";
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID || "",
@@ -9,6 +10,7 @@ const razorpay = new Razorpay({
 });
 
 export async function POST(req: NextRequest) {
+  const logger = createRouteLogger("payment/verify");
   try {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
@@ -69,7 +71,7 @@ export async function POST(req: NextRequest) {
         .eq("id", orderId);
 
       if (updateError) {
-        console.error("Failed to update order payment status:", updateError);
+        logger.error({ err: updateError }, "Failed to update order payment status");
       }
     }
 
@@ -81,7 +83,7 @@ export async function POST(req: NextRequest) {
       method: payment.method,
     });
   } catch (error: any) {
-    console.error("Payment verification failed:", error);
+    logger.error({ err: error }, "Payment verification failed");
     return NextResponse.json(
       { error: error.message || "Payment verification failed" },
       { status: 500 }

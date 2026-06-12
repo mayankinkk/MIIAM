@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/server";
 import { requireCronAuth } from "@/lib/security";
+import { createRouteLogger } from "@/lib/logger";
 
 export async function POST(request: NextRequest) {
+  const logger = createRouteLogger("orders/check-expired");
   if (!(await requireCronAuth(request))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -21,7 +23,7 @@ export async function POST(request: NextRequest) {
       .eq("no_rider_notified", false);
     
     if (error) {
-      console.error("Error fetching expired orders:", error);
+      logger.error({ err: error }, "Error fetching expired orders");
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
     
@@ -43,7 +45,7 @@ export async function POST(request: NextRequest) {
         .eq("id", order.id);
       
       if (updateError) {
-        console.error("Error updating order:", updateError);
+        logger.error({ err: updateError }, "Error updating order");
         continue;
       }
       
@@ -69,7 +71,7 @@ export async function POST(request: NextRequest) {
       message: `Processed ${processedCount} expired orders` 
     });
   } catch (error: any) {
-    console.error("Error in check-expired-orders:", error);
+    logger.error({ err: error }, "Error in check-expired-orders");
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

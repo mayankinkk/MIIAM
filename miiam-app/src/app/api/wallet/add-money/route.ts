@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import Razorpay from "razorpay";
 import { checkCsrf } from "@/lib/security";
+import { createRouteLogger } from "@/lib/logger";
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID || "",
@@ -9,6 +10,7 @@ const razorpay = new Razorpay({
 });
 
 export async function POST(req: NextRequest) {
+  const logger = createRouteLogger("wallet/add-money");
   try {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
@@ -57,7 +59,7 @@ export async function POST(req: NextRequest) {
     });
 
     if (rpcError) {
-      console.error("[wallet] RPC error:", rpcError);
+      logger.error({ err: rpcError }, "Wallet RPC error");
       return NextResponse.json({ error: "Failed to update wallet" }, { status: 500 });
     }
 
@@ -71,7 +73,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true, amount });
   } catch (error: any) {
-    console.error("[wallet] Error:", error);
+    logger.error({ err: error }, "Wallet add money error");
     return NextResponse.json({ error: error.message || "Server error" }, { status: 500 });
   }
 }

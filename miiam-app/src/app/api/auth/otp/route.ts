@@ -2,12 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/server";
 import { randomInt } from "crypto";
 import { checkVerifyRateLimit, incrementVerifyAttempts } from "@/lib/security";
+import { createRouteLogger } from "@/lib/logger";
 
 const RATE_LIMIT_MAX = 5;
 const RATE_LIMIT_WINDOW = 10 * 60 * 1000;
 const VERIFY_ATTEMPT_LIMIT = 5;
 
 async function checkRateLimit(supabase: ReturnType<typeof createAdminClient>, phone: string): Promise<boolean> {
+  const logger = createRouteLogger("auth/otp");
   const windowStart = new Date(Date.now() - RATE_LIMIT_WINDOW).toISOString();
   const { count, error } = await supabase
     .from("phone_otp_verification")
@@ -16,7 +18,7 @@ async function checkRateLimit(supabase: ReturnType<typeof createAdminClient>, ph
     .gte("created_at", windowStart);
 
   if (error) {
-    console.error("Rate limit check error:", error);
+    logger.error({ err: error }, "Rate limit check error");
     return true;
   }
 
@@ -68,12 +70,14 @@ async function sendSMS(phoneNumber: string, message: string): Promise<{ success:
 
     return { success: false, error: "Unsupported SMS provider" };
   } catch (error) {
-    console.error("SMS Error:", error);
+    const logger = createRouteLogger("auth/otp");
+    logger.error({ err: error }, "SMS error");
     return { success: false, error: "SMS service unavailable" };
   }
 }
 
 export async function POST(request: NextRequest) {
+  const logger = createRouteLogger("auth/otp");
   const supabase = createAdminClient();
 
   try {
@@ -108,7 +112,7 @@ export async function POST(request: NextRequest) {
       );
 
     if (upsertError) {
-      console.error("Database error:", upsertError);
+      logger.error({ err: upsertError }, "Failed to store OTP");
       return NextResponse.json({ error: "Failed to store OTP" }, { status: 500 });
     }
 
@@ -125,12 +129,13 @@ export async function POST(request: NextRequest) {
       expiresIn: 600,
     });
   } catch (error) {
-    console.error("OTP API Error:", error);
+    logger.error({ err: error }, "OTP API error");
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
 
 export async function PUT(request: NextRequest) {
+  const logger = createRouteLogger("auth/otp");
   const supabase = createAdminClient();
 
   try {
