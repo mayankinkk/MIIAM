@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import ThemeProvider from "@/components/ThemeProvider";
+import { ConfirmProvider } from "@/components/ui/ConfirmDialog";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import PageTransition from "@/components/PageTransition";
 import Toaster from "@/components/ui/Toaster";
@@ -87,15 +88,17 @@ export default function RootLayout({
         </noscript>
         <OfflineBanner />
         <ThemeProvider>
-          <SplashScreen />
-          <ServiceWorkerRegistration />
-          <AnalyticsTracker />
-          <ErrorBoundary>
-            <div id="main-content">
-              <PageTransition>{children}</PageTransition>
-            </div>
-          </ErrorBoundary>
-          <Toaster />
+          <ConfirmProvider>
+            <SplashScreen />
+            <ServiceWorkerRegistration />
+            <AnalyticsTracker />
+            <ErrorBoundary>
+              <div id="main-content">
+                <PageTransition>{children}</PageTransition>
+              </div>
+            </ErrorBoundary>
+            <Toaster />
+          </ConfirmProvider>
         </ThemeProvider>
       </body>
     </html>

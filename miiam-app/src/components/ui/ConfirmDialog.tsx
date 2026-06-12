@@ -1,0 +1,99 @@
+"use client";
+
+import { useState, useCallback, createContext, useContext, ReactNode } from "react";
+
+interface ConfirmState {
+  open: boolean;
+  title: string;
+  message: string;
+  confirmText?: string;
+  cancelText?: string;
+  variant?: "danger" | "default";
+  onConfirm: () => void;
+  onCancel: () => void;
+}
+
+const ConfirmContext = createContext<{
+  confirm: (options: {
+    title: string;
+    message: string;
+    confirmText?: string;
+    cancelText?: string;
+    variant?: "danger" | "default";
+  }) => Promise<boolean>;
+}>({ confirm: () => Promise.resolve(false) });
+
+export function useConfirm() {
+  return useContext(ConfirmContext);
+}
+
+export function ConfirmProvider({ children }: { children: ReactNode }) {
+  const [state, setState] = useState<ConfirmState>({
+    open: false,
+    title: "",
+    message: "",
+    onConfirm: () => {},
+    onCancel: () => {},
+  });
+
+  const confirm = useCallback(
+    (options: {
+      title: string;
+      message: string;
+      confirmText?: string;
+      cancelText?: string;
+      variant?: "danger" | "default";
+    }) =>
+      new Promise<boolean>((resolve) => {
+        setState({
+          open: true,
+          title: options.title,
+          message: options.message,
+          confirmText: options.confirmText,
+          cancelText: options.cancelText,
+          variant: options.variant,
+          onConfirm: () => {
+            setState((s) => ({ ...s, open: false }));
+            resolve(true);
+          },
+          onCancel: () => {
+            setState((s) => ({ ...s, open: false }));
+            resolve(false);
+          },
+        });
+      }),
+    []
+  );
+
+  return (
+    <ConfirmContext.Provider value={{ confirm }}>
+      {children}
+      {state.open && (
+        <div className="fixed inset-0 z-[200] bg-black/50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl">
+            <h3 className="font-bold text-lg text-slate-900 mb-2">{state.title}</h3>
+            <p className="text-sm text-slate-600 mb-6">{state.message}</p>
+            <div className="flex gap-3">
+              <button
+                onClick={state.onCancel}
+                className="flex-1 py-3 rounded-xl font-bold text-sm text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors"
+              >
+                {state.cancelText || "Cancel"}
+              </button>
+              <button
+                onClick={state.onConfirm}
+                className={`flex-1 py-3 rounded-xl font-bold text-sm text-white transition-colors ${
+                  state.variant === "danger"
+                    ? "bg-red-600 hover:bg-red-700"
+                    : "bg-[#ba001c] hover:bg-[#a00018]"
+                }`}
+              >
+                {state.confirmText || "Confirm"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </ConfirmContext.Provider>
+  );
+}

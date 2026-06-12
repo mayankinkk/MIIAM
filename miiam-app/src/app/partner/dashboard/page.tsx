@@ -3,11 +3,13 @@
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { getVendorForUser, getVendorMenuItems } from "@/lib/vendor";
 import type { Order } from "@/lib/types";
 
 export default function VendorDashboard() {
   const supabase = createClient();
+  const { confirm } = useConfirm();
   const [vendor, setVendor] = useState<{ id: string; shop_name: string; status: string; rating: number; review_count: number; type?: string } | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
   const [isOpen, setIsOpen] = useState(true);
@@ -149,7 +151,7 @@ export default function VendorDashboard() {
   };
 
   const handleCancelOrder = async (orderId: string) => {
-    if (!confirm("Are you sure you want to cancel this order?")) return;
+    if (!await confirm({ title: "Cancel Order", message: "Are you sure you want to cancel this order?", variant: "danger" })) return;
     setProcessingOrder(orderId);
     try {
       await supabase

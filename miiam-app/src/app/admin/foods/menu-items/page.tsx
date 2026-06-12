@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import ImageUpload from "@/components/ImageUpload";
+import { useConfirm } from "@/components/ui/ConfirmDialog";
+import { useToastStore } from "@/lib/store/toastStore";
 
 interface MenuItem {
   id: string;
@@ -19,6 +21,7 @@ interface MenuItem {
 }
 
 export default function AdminMenuItemsPage() {
+  const { confirm } = useConfirm();
   const supabase = createClient();
   const [items, setItems] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -55,7 +58,7 @@ export default function AdminMenuItemsPage() {
 
   const handleAddItem = async () => {
     if (!newItem.name || !newItem.price || !newItem.vendor_id) {
-      alert("Please fill all required fields");
+      useToastStore.getState().addToast("Please fill all required fields", "error");
       return;
     }
     setLoading(true);
@@ -69,12 +72,12 @@ export default function AdminMenuItemsPage() {
         available: true,
       });
       if (error) throw error;
-      alert("Menu item added!");
+      useToastStore.getState().addToast("Menu item added!", "success");
       setShowAddModal(false);
       setNewItem({ name: "", price: "", category: "Main Course", vendor_id: "", image_url: "" });
       loadData();
     } catch (error: any) {
-      alert(`Failed: ${error.message}`);
+      useToastStore.getState().addToast(`Failed: ${error.message}`, "error");
     } finally {
       setLoading(false);
     }
@@ -95,25 +98,25 @@ export default function AdminMenuItemsPage() {
         })
         .eq("id", editingItem.id);
       if (error) throw error;
-      alert("Item updated!");
+      useToastStore.getState().addToast("Item updated!", "success");
       setEditingItem(null);
       loadData();
     } catch (error: any) {
-      alert(`Failed: ${error.message}`);
+      useToastStore.getState().addToast(`Failed: ${error.message}`, "error");
     } finally {
       setLoading(false);
     }
   };
 
   const handleDeleteItem = async (id: string) => {
-    if (!confirm("Delete this item?")) return;
+    if (!await confirm({ title: "Delete", message: "Are you sure you want to delete this item?", variant: "danger" })) return;
     setLoading(true);
     try {
       await supabase.from("menu_items").delete().eq("id", id);
       setItems(items.filter(i => i.id !== id));
-      alert("Item deleted!");
+      useToastStore.getState().addToast("Item deleted!", "success");
     } catch (error: any) {
-      alert(`Failed: ${error.message}`);
+      useToastStore.getState().addToast(`Failed: ${error.message}`, "error");
     } finally {
       setLoading(false);
     }
@@ -127,7 +130,7 @@ export default function AdminMenuItemsPage() {
         .eq("id", item.id);
       setItems(items.map(i => i.id === item.id ? { ...i, available: !i.available } : i));
     } catch (error: any) {
-      alert(`Failed: ${error.message}`);
+      useToastStore.getState().addToast(`Failed: ${error.message}`, "error");
     }
   };
 

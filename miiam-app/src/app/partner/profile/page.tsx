@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useToastStore } from "@/lib/store/toastStore";
 import { getVendorForUser } from "@/lib/vendor";
 
 interface VendorProfile {
@@ -51,7 +52,7 @@ export default function VendorProfilePage() {
       .from("menu-images")
       .upload(fileName, file);
     if (uploadError) {
-      alert("Upload failed. Make sure the 'menu-images' bucket exists in Supabase Storage with public read access.");
+      useToastStore.getState().addToast("Upload failed. Make sure the 'menu-images' bucket exists in Supabase Storage with public read access.", "error");
       return null;
     }
     const { data: { publicUrl } } = supabase.storage

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useToastStore } from "@/lib/store/toastStore";
 
 interface Review {
   id: string;
@@ -45,7 +46,7 @@ export default function ReviewsPage() {
       const { error } = await supabase.from("reviews").update({ [field]: !currentStatus }).eq("id", id);
       if (error) {
         console.error("Update failed:", error);
-        alert("Could not update review. Ensure database schema supports this field.");
+        useToastStore.getState().addToast("Could not update review. Ensure database schema supports this field.", "error");
         return;
       }
       setReviews(reviews.map(r => r.id === id ? { ...r, [field]: !currentStatus } : r));

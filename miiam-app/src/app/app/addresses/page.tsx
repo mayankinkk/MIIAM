@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
@@ -172,6 +173,7 @@ const defaultAddresses = [
 
 export default function AddressBookPage() {
   const { t } = useTranslation();
+  const { confirm } = useConfirm();
   const supabase = useMemo(() => createClient(), []);
   const router = useRouter();
   const [addresses, setAddresses] = useState<any[]>([]);
@@ -282,7 +284,7 @@ export default function AddressBookPage() {
   };
 
   const handleDelete = async (addressId: string) => {
-    if (confirm("Delete this address?")) {
+    if (await confirm({ title: "Delete Address", message: "Delete this address?", variant: "danger" })) {
       await fetch(`/api/addresses?id=${addressId}`, { method: "DELETE" });
       setAddresses(addresses.filter((addr) => addr.id !== addressId));
     }

@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useToastStore } from "@/lib/store/toastStore";
 import { getVendorIdForUser, getVendorMenuItems } from "@/lib/vendor";
 import type { Order, OrderStatus } from "@/lib/types";
 
@@ -127,7 +128,7 @@ export default function PartnerPOS() {
       .eq("id", orderId);
 
     if (error) {
-      alert("Error: " + error.message);
+      useToastStore.getState().addToast("Error: " + error.message, "error");
       return;
     }
 
@@ -148,7 +149,7 @@ export default function PartnerPOS() {
       .update({ delay_minutes: delayMinutes, delay_reason: delayReason })
       .eq("id", orderId);
     if (error) {
-      alert("Error: " + error.message);
+      useToastStore.getState().addToast("Error: " + error.message, "error");
       return;
     }
     setDelayModal(null);

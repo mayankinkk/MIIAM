@@ -2,6 +2,8 @@
 
 import { useEffect, useState, useRef, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useConfirm } from "@/components/ui/ConfirmDialog";
+import { useToastStore } from "@/lib/store/toastStore";
 import { getVendorForUser } from "@/lib/vendor";
 
 interface Vendor {
@@ -70,6 +72,7 @@ function getVendorKey(type?: string): string {
 
 export default function PartnerMenuPage() {
   const supabase = useMemo(() => createClient(), []);
+  const { confirm } = useConfirm();
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [selectedVendorId, setSelectedVendorId] = useState("");
   const [items, setItems] = useState<AnyItem[]>([]);
@@ -285,7 +288,7 @@ export default function PartnerMenuPage() {
       .update({ categories: newCats })
       .eq("id", selectedVendorId);
     if (error) {
-      alert("Failed to save categories: " + error.message);
+      useToastStore.getState().addToast("Failed to save categories: " + error.message, "error");
       return;
     }
     setVendorCategories(newCats);
@@ -294,11 +297,11 @@ export default function PartnerMenuPage() {
 
   const handleAddItem = async () => {
     if (!newItem.name || !newItem.price) {
-      alert("Please fill in item name and price");
+      useToastStore.getState().addToast("Please fill in item name and price", "error");
       return;
     }
     if (!selectedVendorId) {
-      alert("No vendor selected. Please select a vendor first.");
+      useToastStore.getState().addToast("No vendor selected. Please select a vendor first.", "error");
       return;
     }
     setUploading(true);
@@ -322,7 +325,7 @@ export default function PartnerMenuPage() {
       resetNewItem();
       loadItems();
     } catch (error: any) {
-      alert("Failed: " + error.message);
+      useToastStore.getState().addToast("Failed: " + error.message, "error");
     } finally {
       setUploading(false);
     }
@@ -337,17 +340,17 @@ export default function PartnerMenuPage() {
       setEditingItem(null);
       loadItems();
     } catch (error: any) {
-      alert("Failed: " + error.message);
+      useToastStore.getState().addToast("Failed: " + error.message, "error");
     }
   };
 
   const handleDeleteItem = async (id: string) => {
-    if (!confirm("Delete this item?")) return;
+    if (!await confirm({ title: "Delete Item", message: "Delete this item?", variant: "danger" })) return;
     try {
       await supabase.from(table).delete().eq("id", id);
       setItems(items.filter(i => i.id !== id));
     } catch (error: any) {
-      alert("Failed: " + error.message);
+      useToastStore.getState().addToast("Failed: " + error.message, "error");
     }
   };
 
@@ -429,7 +432,7 @@ export default function PartnerMenuPage() {
           <button
             onClick={() => {
               if (!selectedVendorId) {
-                alert("Cannot add item: No active vendor is selected or associated with your account.");
+                useToastStore.getState().addToast("Cannot add item: No active vendor is selected or associated with your account.", "error");
                 return;
               }
               resetNewItem();
@@ -575,7 +578,7 @@ export default function PartnerMenuPage() {
                     const { error } = await supabase.from(table).insert(payload);
                     if (!error) imported++;
                   }
-                  alert(`Imported ${imported} of ${rows.length} items`);
+                  useToastStore.getState().addToast(`Imported ${imported} of ${rows.length} items`, "success");
                   loadItems();
                   e.target.value = '';
                 }}
@@ -1476,8 +1479,8 @@ export default function PartnerMenuPage() {
                         <span className="material-symbols-outlined text-lg text-slate-500">edit</span>
                       </button>
                       <button
-                        onClick={() => {
-                          if (confirm(`Delete category "${cat}"? Items in this category won't be deleted.`)) {
+                        onClick={async () => {
+                          if (await confirm({ title: "Delete Category", message: `Delete category "${cat}"? Items in this category won't be deleted.`, variant: "danger" })) {
                             saveCategories(vendorCategories.filter(c => c !== cat));
                           }
                         }}

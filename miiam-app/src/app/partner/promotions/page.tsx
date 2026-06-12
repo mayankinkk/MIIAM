@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useConfirm } from "@/components/ui/ConfirmDialog";
+import { useToastStore } from "@/lib/store/toastStore";
 import { getVendorIdForUser } from "@/lib/vendor";
 
 interface PromoCode {
@@ -29,6 +31,7 @@ interface CustomerSegment {
 
 export default function VendorPromotions() {
   const supabase = createClient();
+  const { confirm } = useConfirm();
   const [vendorId, setVendorId] = useState<string | null>(null);
   const [promoCodes, setPromoCodes] = useState<PromoCode[]>([]);
   const [loading, setLoading] = useState(true);
@@ -106,7 +109,7 @@ export default function VendorPromotions() {
 
   const handleCreate = async () => {
     if (!newPromo.code || !newPromo.valid_until) {
-      alert("Please fill in all required fields");
+      useToastStore.getState().addToast("Please fill in all required fields", "error");
       return;
     }
     if (!vendorId) return;
@@ -125,7 +128,7 @@ export default function VendorPromotions() {
     });
 
     if (error) {
-      alert("Error creating promo: " + error.message);
+      useToastStore.getState().addToast("Error creating promo: " + error.message, "error");
       return;
     }
 
@@ -140,7 +143,7 @@ export default function VendorPromotions() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Delete this promotion?")) return;
+    if (!await confirm({ title: "Delete Promotion", message: "Delete this promotion?", variant: "danger" })) return;
     await supabase.from("promo_codes").delete().eq("id", id);
     setPromoCodes(promoCodes.filter((p) => p.id !== id));
   };

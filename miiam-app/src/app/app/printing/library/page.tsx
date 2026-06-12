@@ -12,6 +12,7 @@ import { getPrintingPricing } from "@/lib/printing-pricing";
 import { bytesToHumanReadable } from "@/lib/printing-utils";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import { useToastStore } from "@/lib/store/toastStore";
+import { useConfirm } from "@/components/ui/ConfirmDialog";
 import PrintHero from "@/components/print/PrintHero";
 
 export default function PrintLibraryPage() {
@@ -22,6 +23,7 @@ export default function PrintLibraryPage() {
   const serviceSettings = useServiceSettingsStore();
   const userDefaults = usePrintSettingsStore((s) => s.defaults);
   const toast = useToastStore();
+  const { confirm } = useConfirm();
   const [reprinting, setReprinting] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
 
@@ -113,8 +115,8 @@ export default function PrintLibraryPage() {
                   {files.length} / {MAX_ITEMS} · {bytesToHumanReadable(files.reduce((a, f) => a + f.size, 0))} / {bytesToHumanReadable(MAX_BYTES)}
                 </span>
                 <button
-                  onClick={() => {
-                    if (confirm("Clear all files from your library?")) clearAll();
+                  onClick={async () => {
+                    if (await confirm({ title: "Clear Library", message: "Clear all files from your library?", variant: "danger" })) clearAll();
                   }}
                   className="text-red-500 font-bold hover:underline"
                 >

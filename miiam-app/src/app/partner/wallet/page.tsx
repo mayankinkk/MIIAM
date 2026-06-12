@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { getVendorIdForUser } from "@/lib/vendor";
 import type { Order } from "@/lib/types";
+import { useToastStore } from "@/lib/store/toastStore";
 
 interface VendorWallet {
   balance: number;
@@ -76,7 +77,7 @@ export default function VendorWalletPage() {
     const amount = parseFloat(payoutAmount);
     if (!amount || amount <= 0) return;
     if (amount > wallet.balance) {
-      alert("Insufficient balance");
+      useToastStore.getState().addToast("Insufficient balance", "error");
       return;
     }
     setWallet({

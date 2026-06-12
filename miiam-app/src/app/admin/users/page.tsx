@@ -4,10 +4,12 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { Profile } from "@/lib/types";
 import { ProfileSkeleton } from "@/components/Skeleton";
+import { useConfirm } from "@/components/ui/ConfirmDialog";
 
 const PAGE_SIZE = 15;
 
 export default function UserRegistry() {
+  const { confirm } = useConfirm();
   const supabase = createClient();
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
@@ -46,7 +48,7 @@ export default function UserRegistry() {
       setSelectedProfile(profile);
       setShowRoleModal(true);
     } else if (action === "delete") {
-      if (confirm(`Are you sure you want to delete ${profile.full_name}?`)) {
+      if (await confirm({ title: "Delete", message: `Are you sure you want to delete ${profile.full_name}?`, variant: "danger" })) {
         await supabase.from("profiles").delete().eq("id", profile.id);
         loadProfiles();
       }

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useConfirm } from "@/components/ui/ConfirmDialog";
 
 type JobApplication = {
   id: string;
@@ -42,6 +43,7 @@ type JobApplication = {
 };
 
 export default function AdminApplicationsPage() {
+  const { confirm } = useConfirm();
   const supabase = createClient();
   const [applications, setApplications] = useState<JobApplication[]>([]);
   const [loading, setLoading] = useState(true);
@@ -76,7 +78,7 @@ export default function AdminApplicationsPage() {
   }
 
   async function deleteApplication(id: string) {
-    if (!confirm("Delete this application?")) return;
+    if (!await confirm({ title: "Delete", message: "Are you sure you want to delete this application?", variant: "danger" })) return;
     await supabase.from("job_applications").delete().eq("id", id);
     loadApplications();
   }

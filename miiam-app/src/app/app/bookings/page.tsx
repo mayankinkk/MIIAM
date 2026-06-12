@@ -2,11 +2,13 @@
 
 import Link from "next/link";
 import { useDiningStore } from "@/lib/store/diningStore";
+import { useConfirm } from "@/components/ui/ConfirmDialog";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 
 export default function BookingsPage() {
   const { bookings, cancelBooking } = useDiningStore();
+  const { confirm } = useConfirm();
   const { t } = useTranslation();
 
   return (
@@ -102,8 +104,8 @@ export default function BookingsPage() {
                           View Restaurant
                         </Link>
                         <button 
-                          onClick={() => {
-                            if (window.confirm("Are you sure you want to cancel this booking?")) {
+                          onClick={async () => {
+                            if (await confirm({ title: "Cancel Booking", message: "Are you sure you want to cancel this booking?", variant: "danger" })) {
                               cancelBooking(booking.id);
                             }
                           }}

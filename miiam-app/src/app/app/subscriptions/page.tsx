@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
+import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 
 interface RecurringSchedule {
@@ -41,6 +42,7 @@ export default function SubscriptionsPage() {
   const [loading, setLoading] = useState(true);
   const supabase = createClient();
   const { addToast } = useToastStore();
+  const { confirm } = useConfirm();
 
   useEffect(() => {
     loadSchedules();
@@ -87,7 +89,7 @@ export default function SubscriptionsPage() {
   }
 
   async function cancelSchedule(id: string) {
-    if (!confirm("Cancel this recurring subscription?")) return;
+    if (!await confirm({ title: "Cancel Subscription", message: "Cancel this recurring subscription?", variant: "danger" })) return;
     const { error } = await supabase
       .from("recurring_schedules")
       .update({ status: "cancelled", end_date: new Date().toISOString(), updated_at: new Date().toISOString() })

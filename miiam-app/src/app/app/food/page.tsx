@@ -12,6 +12,7 @@ import QuickActionsFAB from "@/components/QuickActionsFAB";
 import { createClient } from "@/lib/supabase/client";
 import { VendorCardSkeleton } from "@/components/Skeleton";
 import { useToastStore } from "@/lib/store/toastStore";
+import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { useFavoritesStore } from "@/lib/store/favoritesStore";
 import { useLocationStore } from "@/lib/store/locationStore";
 import EmptyState from "@/components/EmptyState";
@@ -192,6 +193,7 @@ function AddToCartButton({
   restaurant: { id: string; shop_name?: string };
 }) {
   const { addItem, items, updateQuantity } = useCartStore();
+  const { confirm } = useConfirm();
   const cartItem = items.find((i) => i.menu_item_id === item.id);
   const qty = cartItem?.quantity ?? 0;
   const cartVendorId = items.length > 0 ? items[0].vendor_id : null;
@@ -209,8 +211,8 @@ function AddToCartButton({
     setPrevQty(qty);
   }, [qty, prevQty]);
 
-  const handleAdd = () => {
-    if (isDifferentVendor && confirm(`Your cart has items from another restaurant. Adding this will create separate orders. Continue?`)) {
+  const handleAdd = async () => {
+    if (isDifferentVendor && await confirm({ title: "Different Restaurant", message: `Your cart has items from another restaurant. Adding this will create separate orders. Continue?`, variant: "danger" })) {
       addItem({
         id: item.id,
         menu_item_id: item.id,

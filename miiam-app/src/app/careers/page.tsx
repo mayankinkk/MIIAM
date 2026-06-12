@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { useToastStore } from "@/lib/store/toastStore";
 
 const departments = ["All", "Delivery", "Operations", "Technology", "Marketing", "Support"];
 
@@ -112,7 +113,7 @@ export default function CareersPage() {
     if (data) {
       setFoundStatus({ status: data.status, name: data.full_name });
     } else {
-      alert("No application found for this phone number");
+      useToastStore.getState().addToast("No application found for this phone number", "error");
     }
     setCheckingStatus(false);
   };
@@ -194,12 +195,12 @@ export default function CareersPage() {
       });
 
       if (error) {
-        alert("Something went wrong. Please try again.");
+        useToastStore.getState().addToast("Something went wrong. Please try again.", "error");
       } else {
-        alert("Application submitted! We'll contact you soon.");
+        useToastStore.getState().addToast("Application submitted! We'll contact you soon.", "success");
       }
     } catch (err) {
-      alert("Error uploading files. Please try again.");
+      useToastStore.getState().addToast("Error uploading files. Please try again.", "error");
     }
 
     setShowApplyForm(false);

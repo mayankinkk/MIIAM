@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
+import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { deviceIcon, deviceLabel, parseUserAgent, DeviceInfo } from "@/lib/device";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { useTranslation } from "@/lib/i18n/useTranslation";
@@ -70,6 +71,7 @@ export default function DevicesPage() {
   const { t } = useTranslation();
   const router = useRouter();
   const { addToast } = useToastStore();
+  const { confirm } = useConfirm();
   const [sessions, setSessions] = useState<SessionRow[]>([]);
   const [events, setEvents] = useState<LoginEvent[]>([]);
   const [loading, setLoading] = useState(true);
@@ -137,7 +139,7 @@ export default function DevicesPage() {
   }, []);
 
   const revoke = async (id: string) => {
-    if (!confirm("Sign this device out of MIIAM?")) return;
+    if (!await confirm({ title: "Sign Out Device", message: "Sign this device out of MIIAM?", variant: "danger" })) return;
     setRevoking(id);
     try {
       const res = await fetch(`/api/auth/sessions/${id}`, { method: "DELETE" });
@@ -154,7 +156,7 @@ export default function DevicesPage() {
   const revokeAllOthers = async () => {
     const others = sessions.filter((s) => s.id !== currentSessionId);
     if (others.length === 0) return;
-    if (!confirm(`Sign out ${others.length} other device${others.length > 1 ? "s" : ""}?`)) return;
+    if (!await confirm({ title: "Sign Out Other Devices", message: `Sign out ${others.length} other device${others.length > 1 ? "s" : ""}?`, variant: "danger" })) return;
     setRevokingAll(true);
     try {
       const results = await Promise.all(

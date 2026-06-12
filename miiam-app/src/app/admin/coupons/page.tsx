@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useConfirm } from "@/components/ui/ConfirmDialog";
 
 type Coupon = {
   id: string;
@@ -22,6 +23,7 @@ type Coupon = {
 // removed mock coupons
 
 export default function CouponsAdminPage() {
+  const { confirm } = useConfirm();
   const supabase = createClient();
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [showModal, setShowModal] = useState(false);
@@ -107,7 +109,7 @@ export default function CouponsAdminPage() {
   };
 
   const deleteCoupon = async (id: string) => {
-    if (confirm("Are you sure you want to delete this coupon?")) {
+    if (await confirm({ title: "Delete", message: "Are you sure you want to delete this coupon?", variant: "danger" })) {
       await supabase.from("promo_codes").delete().eq("id", id);
       loadCoupons();
     }

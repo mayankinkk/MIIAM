@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useConfirm } from "@/components/ui/ConfirmDialog";
+import { useToastStore } from "@/lib/store/toastStore";
 
 interface SponsoredItem {
   id: string;
@@ -16,6 +18,7 @@ interface SponsoredItem {
 }
 
 export default function SponsoredListingsPage() {
+  const { confirm } = useConfirm();
   const supabase = createClient();
   const [items, setItems] = useState<SponsoredItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -50,7 +53,7 @@ export default function SponsoredListingsPage() {
 
   const handleSave = async () => {
     if (!form.vendor_id || !form.start_date || !form.end_date || !form.budget) {
-      alert("Please fill all required fields");
+      useToastStore.getState().addToast("Please fill all required fields", "error");
       return;
     }
     setSaving(true);
@@ -84,7 +87,7 @@ export default function SponsoredListingsPage() {
       setEditingItem(null);
       load();
     } catch (err: any) {
-      alert(`Failed: ${err.message}`);
+      useToastStore.getState().addToast(`Failed: ${err.message}`, "error");
     } finally {
       setSaving(false);
     }
@@ -95,17 +98,17 @@ export default function SponsoredListingsPage() {
       await supabase.from("sponsored_listings").update({ status: newStatus }).eq("id", id);
       setItems(prev => prev.map(item => item.id === id ? { ...item, status: newStatus as any } : item));
     } catch (err: any) {
-      alert(`Failed: ${err.message}`);
+      useToastStore.getState().addToast(`Failed: ${err.message}`, "error");
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Delete this sponsored listing?")) return;
+    if (!await confirm({ title: "Delete", message: "Are you sure you want to delete this sponsored listing?", variant: "danger" })) return;
     try {
       await supabase.from("sponsored_listings").delete().eq("id", id);
       setItems(prev => prev.filter(item => item.id !== id));
     } catch (err: any) {
-      alert(`Failed: ${err.message}`);
+      useToastStore.getState().addToast(`Failed: ${err.message}`, "error");
     }
   };
 

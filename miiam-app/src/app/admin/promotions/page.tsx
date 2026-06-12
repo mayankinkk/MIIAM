@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { useConfirm } from "@/components/ui/ConfirmDialog";
 
 const supabase = createClient();
 
@@ -21,6 +22,7 @@ interface Promotion {
 }
 
 export default function PromotionsPage() {
+  const { confirm } = useConfirm();
   const [promos, setPromos] = useState<Promotion[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
@@ -60,7 +62,7 @@ export default function PromotionsPage() {
   }
 
   async function deletePromo(id: string) {
-    if (!confirm("Delete this promotion?")) return;
+    if (!await confirm({ title: "Delete", message: "Are you sure you want to delete this promotion?", variant: "danger" })) return;
     await supabase.from("promo_codes").delete().eq("id", id);
     loadPromos();
   }

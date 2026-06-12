@@ -5,6 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import ImageUpload from "@/components/ImageUpload";
+import { useConfirm } from "@/components/ui/ConfirmDialog";
+import { useToastStore } from "@/lib/store/toastStore";
 
 const supabase = createClient();
 
@@ -23,6 +25,7 @@ interface Medicine {
 }
 
 export default function PharmacyMedicinesPage() {
+  const { confirm } = useConfirm();
   const [medicines, setMedicines] = useState<Medicine[]>([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({ total: 0, lowStock: 0, outOfStock: 0, prescription: 0 });
@@ -100,7 +103,7 @@ export default function PharmacyMedicinesPage() {
 
   const handleSave = async () => {
     if (!newMedicine.name || !newMedicine.price || !newMedicine.vendor_id) {
-      alert("Please fill in required fields (Name, Price, Vendor)");
+      useToastStore.getState().addToast("Please fill in required fields (Name, Price, Vendor)", "error");
       return;
     }
 
@@ -135,23 +138,23 @@ export default function PharmacyMedicinesPage() {
 
       resetModal();
       loadMedicines();
-      alert(editingMedicine ? "Medicine updated!" : "Medicine added!");
+      useToastStore.getState().addToast(editingMedicine ? "Medicine updated!" : "Medicine added!", "success");
     } catch (error: any) {
       console.error("Error saving:", error);
-      alert("Failed: " + error.message);
+      useToastStore.getState().addToast("Failed: " + error.message, "error");
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Delete this medicine?")) return;
+    if (!await confirm({ title: "Delete", message: "Are you sure you want to delete this medicine?", variant: "danger" })) return;
     try {
       const { error } = await supabase.from("pharmacy_medicines").delete().eq("id", id);
       if (error) throw error;
       setMedicines(medicines.filter(m => m.id !== id));
     } catch (error: any) {
-      alert("Failed: " + error.message);
+      useToastStore.getState().addToast("Failed: " + error.message, "error");
     }
   };
 

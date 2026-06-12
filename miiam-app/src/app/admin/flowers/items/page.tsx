@@ -5,6 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import ImageUpload from "@/components/ImageUpload";
+import { useConfirm } from "@/components/ui/ConfirmDialog";
+import { useToastStore } from "@/lib/store/toastStore";
 
 const supabase = createClient();
 
@@ -22,6 +24,7 @@ interface FlowerItem {
 }
 
 export default function FlowersItemsPage() {
+  const { confirm } = useConfirm();
   const [items, setItems] = useState<FlowerItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({ total: 0, categories: 0 });
@@ -76,7 +79,7 @@ export default function FlowersItemsPage() {
 
   const handleSave = async () => {
     if (!newItem.name || !newItem.price || !newItem.vendor_id) {
-      alert("Please fill in required fields (Name, Price, Vendor)");
+      useToastStore.getState().addToast("Please fill in required fields (Name, Price, Vendor)", "error");
       return;
     }
 
@@ -109,23 +112,23 @@ export default function FlowersItemsPage() {
 
       resetModal();
       loadItems();
-      alert(editingItem ? "Item updated!" : "Item added!");
+      useToastStore.getState().addToast(editingItem ? "Item updated!" : "Item added!", "success");
     } catch (error: any) {
       console.error("Error saving:", error);
-      alert("Failed: " + error.message);
+      useToastStore.getState().addToast("Failed: " + error.message, "error");
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Delete this item?")) return;
+    if (!await confirm({ title: "Delete", message: "Are you sure you want to delete this item?", variant: "danger" })) return;
     try {
       const { error } = await supabase.from("flower_items").delete().eq("id", id);
       if (error) throw error;
       setItems(items.filter(i => i.id !== id));
     } catch (error: any) {
-      alert("Failed: " + error.message);
+      useToastStore.getState().addToast("Failed: " + error.message, "error");
     }
   };
 

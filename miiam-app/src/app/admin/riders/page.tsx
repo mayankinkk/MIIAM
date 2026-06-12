@@ -5,10 +5,13 @@ import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { createClient } from "@/lib/supabase/client";
 import type { Rider } from "@/lib/types";
+import { useConfirm } from "@/components/ui/ConfirmDialog";
+import { useToastStore } from "@/lib/store/toastStore";
 
 const AdminRiderMap = dynamic(() => import("@/components/admin/AdminRiderMap"), { ssr: false });
 
 function RidersPage() {
+  const { confirm } = useConfirm();
   const supabase = createClient();
   const [riders, setRiders] = useState<Rider[]>([]);
   const [loading, setLoading] = useState(true);
@@ -93,7 +96,7 @@ function RidersPage() {
         body: formData,
       });
       const data = await res.json();
-      if (!res.ok) { alert(data.error || "Failed"); setSaving(false); return; }
+      if (!res.ok) { useToastStore.getState().addToast(data.error || "Failed", "error"); setSaving(false); return; }
       setShowAddModal(false);
       setNewRider({ email: "", phone: "", full_name: "", profile_photo: null, id_proof_type: "", id_proof_image: null, vehicle_type: "motorcycle", vehicle_number: "" });
       loadRiders();
@@ -333,7 +336,7 @@ function RidersPage() {
                 {saving ? "Saving..." : isEditing ? "Save Changes" : "Add Rider"}
               </button>
               {isEditing && (
-                <button type="button" onClick={() => { if (confirm("Delete?")) deleteRider(selectedRider?.id!); }} className="w-full py-4 rounded-xl font-black text-xs uppercase text-red-600 bg-red-50 hover:bg-red-100 transition-all mt-2">
+                <button type="button" onClick={async () => { if (await confirm({ title: "Delete", message: "Are you sure?", variant: "danger" })) deleteRider(selectedRider?.id!); }} className="w-full py-4 rounded-xl font-black text-xs uppercase text-red-600 bg-red-50 hover:bg-red-100 transition-all mt-2">
                   Delete Rider Account
                 </button>
               )}
