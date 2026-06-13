@@ -10,35 +10,14 @@ function CallbackContent() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const code = searchParams.get("code");
     const redirectTo = searchParams.get("redirect") || "/app/home";
-
-    if (!code) {
-      router.replace("/auth/login");
-      return;
-    }
-
     const supabase = createClient();
 
-    supabase.auth.exchangeCodeForSession(code).then(async ({ error: exchangeError }) => {
-      if (exchangeError) {
-        console.error("OAuth exchange error:", exchangeError.message);
-        setError(exchangeError.message);
-        setTimeout(() => router.replace("/auth/login"), 3000);
-        return;
-      }
-
-      const { data: { user } } = await supabase.auth.getUser();
-
-      if (!user) {
-        router.replace("/auth/login");
-        return;
-      }
-
+    async function handlePostAuth(userId: string) {
       const { data: profile } = await supabase
         .from("profiles")
         .select("role, is_profile_complete")
-        .eq("id", user.id)
+        .eq("id", userId)
         .single();
 
       if (!profile) {
@@ -50,7 +29,48 @@ function CallbackContent() {
       } else {
         router.replace(redirectTo);
       }
-    });
+    }
+
+    async function handleAuth() {
+      // Check if session already exists (auto-exchanged by createBrowserClient init)
+      const { data: { session: existingSession } } = await supabase.auth.getSession();
+
+      if (existingSession?.user) {
+        await handlePostAuth(existingSession.user.id);
+        return;
+      }
+
+      // No session yet, try explicit exchange
+      const code = searchParams.get("code");
+      if (!code) {
+        router.replace("/auth/login");
+        return;
+      }
+
+      const { data, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+
+      if (exchangeError) {
+        // Code might have been consumed by auto-exchange race condition
+        // Check one more time if session was established
+        const { data: { session: retrySession } } = await supabase.auth.getSession();
+        if (retrySession?.user) {
+          await handlePostAuth(retrySession.user.id);
+          return;
+        }
+        console.error("OAuth exchange error:", exchangeError.message);
+        setError(exchangeError.message);
+        setTimeout(() => router.replace("/auth/login"), 3000);
+        return;
+      }
+
+      if (data.session?.user) {
+        await handlePostAuth(data.session.user.id);
+      } else {
+        router.replace("/auth/login");
+      }
+    }
+
+    handleAuth();
   }, []);
 
   if (error) {
