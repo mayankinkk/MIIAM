@@ -11,6 +11,43 @@ DROP POLICY IF EXISTS "Promo codes all access" ON promo_codes;
 DROP POLICY IF EXISTS "Riders all access" ON riders;
 DROP POLICY IF EXISTS "Delivery addresses all access" ON delivery_addresses;
 
+-- Also drop any existing restrictive policies from rls_policies.sql to allow re-creation
+DROP POLICY IF EXISTS "Customers can view own orders" ON orders;
+DROP POLICY IF EXISTS "Vendors can view orders for their store" ON orders;
+DROP POLICY IF EXISTS "Riders can view assigned orders" ON orders;
+DROP POLICY IF EXISTS "Vendors can update their order status" ON orders;
+DROP POLICY IF EXISTS "Riders can update assigned orders" ON orders;
+DROP POLICY IF EXISTS "Authenticated users can create orders" ON orders;
+DROP POLICY IF EXISTS "Admins can manage all orders" ON orders;
+
+DROP POLICY IF EXISTS "Users can view own order items" ON order_items;
+DROP POLICY IF EXISTS "Vendors can view their order items" ON order_items;
+DROP POLICY IF EXISTS "Riders can view their order items" ON order_items;
+DROP POLICY IF EXISTS "Vendors can manage order items for their store" ON order_items;
+DROP POLICY IF EXISTS "Admins can manage all order items" ON order_items;
+
+DROP POLICY IF EXISTS "Users can view own notifications" ON notifications;
+DROP POLICY IF EXISTS "Users can update own notifications" ON notifications;
+DROP POLICY IF EXISTS "Admins can manage all notifications" ON notifications;
+DROP POLICY IF EXISTS "Service role can insert notifications" ON notifications;
+
+DROP POLICY IF EXISTS "Users can view own push tokens" ON user_push_tokens;
+DROP POLICY IF EXISTS "Users can manage own push tokens" ON user_push_tokens;
+
+DROP POLICY IF EXISTS "Service role can manage pending notifications" ON pending_notifications;
+
+DROP POLICY IF EXISTS "Anyone can view active promo codes" ON promo_codes;
+DROP POLICY IF EXISTS "Admins can manage all promo codes" ON promo_codes;
+
+DROP POLICY IF EXISTS "Riders can view own profile" ON riders;
+DROP POLICY IF EXISTS "Riders can update own profile" ON riders;
+DROP POLICY IF EXISTS "Anyone can view active riders" ON riders;
+DROP POLICY IF EXISTS "Admins can manage all riders" ON riders;
+
+DROP POLICY IF EXISTS "Users can view own addresses" ON delivery_addresses;
+DROP POLICY IF EXISTS "Users can manage own addresses" ON delivery_addresses;
+DROP POLICY IF EXISTS "Admins can manage all addresses" ON delivery_addresses;
+
 -- ORDERS: proper restrictive policies
 CREATE POLICY "Customers can view own orders" ON orders
   FOR SELECT USING (auth.uid() = user_id);
