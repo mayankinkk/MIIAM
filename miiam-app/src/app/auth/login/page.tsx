@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, Suspense } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
@@ -13,6 +13,16 @@ function LoginContent() {
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) {
+        const redirectTo = searchParams.get("redirect") || "/app/home";
+        router.replace(redirectTo);
+      }
+    });
+  }, []);
 
   const [password, setPassword] = useState("");
 

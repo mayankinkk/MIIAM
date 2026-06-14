@@ -20,12 +20,14 @@ function CallbackContent() {
         .eq("id", userId)
         .single();
 
+      const profileSetupUrl = `/auth/profile-setup?redirect=${encodeURIComponent(redirectTo)}`;
+
       if (!profile) {
-        router.replace("/auth/profile-setup");
+        router.replace(profileSetupUrl);
       } else if (profile.role === "admin") {
         router.replace("/admin");
       } else if (!profile.is_profile_complete) {
-        router.replace("/auth/profile-setup");
+        router.replace(profileSetupUrl);
       } else {
         router.replace(redirectTo);
       }

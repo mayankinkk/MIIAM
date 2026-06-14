@@ -10,5 +10,12 @@ export function createClient() {
     }
     throw new Error(message);
   }
-  return createBrowserClient(url, key);
+  return createBrowserClient(url, key, {
+    cookieOptions: {
+      name: "sb-auth-token",
+      path: "/",
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+    },
+  });
 }
