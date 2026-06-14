@@ -27,6 +27,7 @@ export default function CartPage() {
 
   const [hydrated, setHydrated] = useState(false);
   const [vendorDeliveryCharges, setVendorDeliveryCharges] = useState<Record<string, number>>({});
+  const [serviceCharge, setServiceCharge] = useState(8);
 
   useEffect(() => {
     const unsub = useCartStore.persist.onFinishHydration(() => setHydrated(true));
@@ -89,7 +90,6 @@ export default function CartPage() {
 
   const vendorIds = Array.from(new Set(safeItems.map((i) => i.vendor_id).filter(Boolean)));
   const totalDeliveryFee = 0;
-  const [serviceCharge, setServiceCharge] = useState(8);
   const grandTotal = Math.max(0, total + totalDeliveryFee + (vendorIds.length * serviceCharge));
 
 
