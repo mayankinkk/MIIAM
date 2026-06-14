@@ -360,6 +360,7 @@ export default function FoodPageContent() {
   const [heroAsset, setHeroAsset] = useState<{ image_url: string; title: string; subtitle: string } | null>(null);
   const userPincode = useLocationStore((s) => s.pincode);
   const userCity = useLocationStore((s) => s.city);
+  const displayAddress = useLocationStore((s) => s.displayAddress);
   const hasLocation = !!(userPincode || userCity);
   const [noLocalVendors, setNoLocalVendors] = useState(false);
   const [showLocationModal, setShowLocationModal] = useState(false);
@@ -482,8 +483,8 @@ export default function FoodPageContent() {
           <span className={`material-symbols-outlined text-sm ${noLocalVendors ? "text-red-500" : "text-green-600"}`}>location_on</span>
           <p className={`text-[11px] font-bold flex-1 ${noLocalVendors ? "text-red-700" : "text-green-700"}`}>
             {noLocalVendors
-              ? `No restaurants available near ${locationStore.displayAddress}`
-              : `Showing restaurants near ${locationStore.displayAddress}`
+              ? `No restaurants available near ${displayAddress}`
+              : `Showing restaurants near ${displayAddress}`
             }
           </p>
           {noLocalVendors && (
@@ -580,7 +581,7 @@ export default function FoodPageContent() {
             </div>
             <h3 className="text-lg font-black text-on-surface mb-1">{t.home.notAvailable}</h3>
             <p className="text-sm text-on-surface-variant mb-1">{t.home.notAvailableDesc}</p>
-            <p className="text-sm font-bold text-primary mb-4">{locationStore.displayAddress}</p>
+            <p className="text-sm font-bold text-primary mb-4">{displayAddress}</p>
             <p className="text-xs text-outline mb-5">We're expanding every day! Try a nearby pincode or check back soon.</p>
             <button
               onClick={() => { window.location.href = "/app/home?selectLocation=true"; }}
