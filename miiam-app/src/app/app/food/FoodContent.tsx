@@ -387,14 +387,6 @@ export default function FoodPageContent() {
     try {
       const heroRes = await supabase.from("page_assets").select("*").eq("section", "food_hero").eq("is_active", true).maybeSingle();
 
-      if (!userPincode && !userCity) {
-        setRestaurants([]);
-        setMenuItems([]);
-        if (heroRes?.data) setHeroAsset(heroRes.data);
-        setLoading(false);
-        return;
-      }
-
       let query = supabase
         .from("vendors")
         .select("*")
@@ -404,13 +396,20 @@ export default function FoodPageContent() {
       if (userPincode) {
         query = query.eq("pincode", userPincode);
       } else if (userCity) {
-        query = query.eq("city", userCity.toLowerCase());
+        query = query.ilike("city", userCity);
       }
 
       query = query.order("created_at", { ascending: false });
-      const vendorsRes = await query;
+      const { data: vendorsData, error: vendorsError } = await query;
 
-      const filteredVendors = vendorsRes.data || [];
+      if (vendorsError) {
+        console.error("Vendors query failed:", vendorsError.message);
+        setFetchError("Couldn't load restaurants. Please try again.");
+        setLoading(false);
+        return;
+      }
+
+      const filteredVendors = vendorsData || [];
 
       if (filteredVendors.length === 0) {
         setNoLocalVendors(true);
@@ -419,8 +418,11 @@ export default function FoodPageContent() {
       setRestaurants(filteredVendors);
       const vendorIds = filteredVendors.map(v => v.id);
       if (vendorIds.length > 0) {
-        const itemsRes = await supabase.from("menu_items").select("*").in("vendor_id", vendorIds).order("name");
-        setMenuItems(itemsRes.data || []);
+        const { data: itemsData, error: itemsError } = await supabase.from("menu_items").select("*").in("vendor_id", vendorIds).order("name");
+        if (itemsError) {
+          console.error("Menu items query failed:", itemsError.message);
+        }
+        setMenuItems(itemsData || []);
       } else {
         setMenuItems([]);
       }
@@ -470,7 +472,7 @@ export default function FoodPageContent() {
   const filteredRestaurants =
     selectedCategory === "all"
       ? sortedRestaurants
-      : sortedRestaurants.filter((r) => r.cuisine?.toLowerCase() === selectedCategory);
+      : sortedRestaurants.filter((r) => r.cuisine?.toLowerCase().includes(selectedCategory));
 
   return (
     <PullToRefresh onRefresh={handleRefresh} className="min-h-screen bg-surface">
