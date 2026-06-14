@@ -12,7 +12,6 @@ export function createClient() {
   }
   return createBrowserClient(url, key, {
     cookieOptions: {
-      name: "sb-auth-token",
       path: "/",
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
