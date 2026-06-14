@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -343,7 +343,7 @@ export default function FoodPageContent() {
     { id: "italian", name: t.food.italian, icon: "🍝", color: "bg-green-100" },
     { id: "desserts", name: "Desserts", icon: "🍰", color: "bg-pink-100" },
   ];
-  const { getSetting } = useServiceSettingsStore();
+  const getSetting = useServiceSettingsStore((s) => s.getSetting);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [vegFilter, setVegFilter] = useState<"all" | "veg" | "non_veg">("all");
   const [sortBy, setSortBy] = useState<SortOption>("rating");
@@ -351,36 +351,21 @@ export default function FoodPageContent() {
   const [priceMax, setPriceMax] = useState(1000);
   const [restaurants, setRestaurants] = useState<any[]>([]);
   const [menuItems, setMenuItems] = useState<any[]>([]);
-  const { favoriteIds, toggle, setFavorites } = useFavoritesStore();
-  const favorites = new Set(favoriteIds);
+  const favoriteIds = useFavoritesStore((s) => s.favoriteIds);
+  const toggle = useFavoritesStore((s) => s.toggle);
+  const setFavorites = useFavoritesStore((s) => s.setFavorites);
+  const favorites = useMemo(() => new Set(favoriteIds), [favoriteIds]);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [heroAsset, setHeroAsset] = useState<{ image_url: string; title: string; subtitle: string } | null>(null);
-  const locationStore = useLocationStore();
-  const userPincode = locationStore.pincode;
-  const userCity = locationStore.city;
+  const userPincode = useLocationStore((s) => s.pincode);
+  const userCity = useLocationStore((s) => s.city);
   const hasLocation = !!(userPincode || userCity);
   const [noLocalVendors, setNoLocalVendors] = useState(false);
   const [showLocationModal, setShowLocationModal] = useState(false);
   const foodSetting = getSetting("food");
 
-  if (foodSetting && !foodSetting.isEnabled) {
-    return <ServiceUnavailable serviceName="Food Delivery" message={foodSetting.message} icon="restaurant" />;
-  }
-
-  if (fetchError) {
-    return (
-      <div className="min-h-screen bg-surface flex items-center justify-center px-6">
-        <NetworkError onRetry={() => fetchData()} />
-      </div>
-    );
-  }
-
-  const handleRefresh = async () => {
-    await fetchData();
-  };
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async (pincode?: string | null, city?: string | null) => {
     setLoading(true);
     setNoLocalVendors(false);
     setFetchError(null);
@@ -393,10 +378,10 @@ export default function FoodPageContent() {
         .in("type", ["food", "restaurant"])
         .eq("status", "active");
 
-      if (userPincode) {
-        query = query.eq("pincode", userPincode);
-      } else if (userCity) {
-        query = query.ilike("city", userCity);
+      if (pincode) {
+        query = query.eq("pincode", pincode);
+      } else if (city) {
+        query = query.ilike("city", city);
       }
 
       query = query.order("created_at", { ascending: false });
@@ -433,11 +418,14 @@ export default function FoodPageContent() {
       setFetchError("Couldn't load restaurants. Please try again.");
     }
     setLoading(false);
-  };
+  }, []);
+
+  const handleRefresh = useCallback(async () => {
+    await fetchData(userPincode, userCity);
+  }, [fetchData, userPincode, userCity]);
 
   useEffect(() => {
-    fetchData();
-    // Load from Supabase if auth
+    fetchData(userPincode, userCity);
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (user) {
         supabase.from("favorites").select("vendor_id").eq("user_id", user.id).then(({ data }) => {
@@ -445,7 +433,19 @@ export default function FoodPageContent() {
         });
       }
     });
-  }, [userPincode, userCity]);
+  }, [userPincode, userCity, fetchData, setFavorites]);
+
+  if (foodSetting && !foodSetting.isEnabled) {
+    return <ServiceUnavailable serviceName="Food Delivery" message={foodSetting.message} icon="restaurant" />;
+  }
+
+  if (fetchError) {
+    return (
+      <div className="min-h-screen bg-surface flex items-center justify-center px-6">
+        <NetworkError onRetry={() => fetchData(userPincode, userCity)} />
+      </div>
+    );
+  }
 
   const toggleFavorite = async (id: string) => {
     toggle(id);
