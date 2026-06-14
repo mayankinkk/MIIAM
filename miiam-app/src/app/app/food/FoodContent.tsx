@@ -18,7 +18,7 @@ import { useLocationStore } from "@/lib/store/locationStore";
 import EmptyState from "@/components/EmptyState";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
-import { StaggerContainer, StaggerItem, PressScale, CartBounce } from "@/components/ui/AnimationWrappers";
+import { PressScale, CartBounce } from "@/components/ui/AnimationWrappers";
 import { NetworkError } from "@/components/ui/EmptyStates";
 
 const supabase = createClient();
@@ -462,10 +462,10 @@ export default function FoodPageContent() {
 
   const sortedRestaurants = [...restaurants].sort((a, b) => {
     switch (sortBy) {
-      case "rating": return (b.rating || 0) - (a.rating || 0);
+      case "rating": return parseFloat(b.rating || "0") - parseFloat(a.rating || "0");
       case "delivery_time": return (a.delivery_time_min || 999) - (b.delivery_time_min || 999);
-      case "price_low": return (a.min_order_amount || 0) - (b.min_order_amount || 0);
-      case "price_high": return (b.min_order_amount || 0) - (a.min_order_amount || 0);
+      case "price_low": return parseFloat(a.min_order_amount || "0") - parseFloat(b.min_order_amount || "0");
+      case "price_high": return parseFloat(b.min_order_amount || "0") - parseFloat(a.min_order_amount || "0");
       default: return 0;
     }
   });
@@ -593,10 +593,10 @@ export default function FoodPageContent() {
         ) : filteredRestaurants.length === 0 ? (
           <EmptyState icon="🍽️" title={t.food.noRestaurants} description={t.food.noRestaurantsDesc} actionLabel={t.food.showAll} onAction={() => setVegFilter("all")} />
         ) : (
-          <StaggerContainer className="space-y-4">
-          {filteredRestaurants.map((restaurant, index) => (
-            <StaggerItem key={restaurant.id}>
+          <div className="space-y-4">
+          {filteredRestaurants.map((restaurant) => (
             <Link
+              key={restaurant.id}
               href={`/app/food/${restaurant.id}`}
               className="block bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm card-lift active:scale-[0.98] transition-transform"
             >
@@ -644,9 +644,8 @@ export default function FoodPageContent() {
                 </div>
               </div>
             </Link>
-            </StaggerItem>
           ))}
-          </StaggerContainer>
+          </div>
         )}
       </main>
       <CartFloater />
