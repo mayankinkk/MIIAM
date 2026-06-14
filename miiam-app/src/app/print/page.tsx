@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useLanguageStore } from "@/lib/store/languageStore";
 import { getTranslations } from "@/lib/i18n";
 import { getPrintingPricing } from "@/lib/printing-pricing";
-import LanguageSwitcher from "@/components/layout/LanguageSwitcher";
+import { LandingNavbar } from "@/components/layout/LandingNavbar";
 
 export default function PublicPrintLanding() {
   const { language } = useLanguageStore();
@@ -36,22 +36,19 @@ export default function PublicPrintLanding() {
   return (
     <>
       {/* SEO meta — Next.js will use the page's layout if defined; keep head in layout for app router */}
-      <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-2xl border-b border-slate-100/80">
-        <div className="flex justify-between items-center max-w-7xl mx-auto px-6 lg:px-8 py-4">
-          <Link href="/" className="text-2xl font-black text-[var(--color-primary)] tracking-tighter">
-            MIIAM
+      <LandingNavbar
+        variant="indigo"
+        links={[]}
+        showGetApp={false}
+        rightContent={
+          <Link
+            href="/app/printing"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-full font-bold text-sm shadow-lg shadow-indigo-500/20 transition-all"
+          >
+            Start printing →
           </Link>
-          <div className="flex items-center gap-3">
-            {mounted && <LanguageSwitcher />}
-            <Link
-              href="/app/printing"
-              className="bg-[#6366f1] hover:bg-[#4f46e5] text-white px-5 py-2 rounded-full font-bold text-sm shadow-lg shadow-indigo-500/20 transition-all"
-            >
-              Start printing →
-            </Link>
-          </div>
-        </div>
-      </nav>
+        }
+      />
 
       <main className="pt-20">
         {/* Hero */}

@@ -1,26 +1,17 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useLanguageStore } from "@/lib/store/languageStore";
 import { getTranslations } from "@/lib/i18n";
-import LanguageSwitcher from "@/components/layout/LanguageSwitcher";
-import { createClient } from "@/lib/supabase/client";
+import { LandingNavbar, LandingFooter } from "@/components/layout/LandingNavbar";
 
 export default function LandingPage() {
   const { language } = useLanguageStore();
   const [mounted, setMounted] = useState(false);
-  const [user, setUser] = useState<any>(null);
-  const supabaseRef = useRef(createClient());
 
   useEffect(() => {
     setMounted(true);
-    const supabase = supabaseRef.current;
-    const checkUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-    };
-    checkUser();
   }, []);
 
   const t = mounted ? getTranslations(language).landing : getTranslations('en').landing;
@@ -35,52 +26,7 @@ export default function LandingPage() {
 
   return (
     <>
-      {/* ── Navbar ── */}
-      <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-2xl border-b border-slate-100/80 transition-all duration-500">
-        <div className="flex justify-between items-center max-w-7xl mx-auto px-6 lg:px-8 py-4">
-          <Link href="/" className="text-3xl font-black text-[var(--color-primary)] tracking-tighter select-none">
-            MIIAM
-          </Link>
-          <div className="hidden md:flex items-center gap-8">
-            {[
-              { label: t.navFood, href: "/app/food" },
-              { label: t.navServices, href: "/services" },
-              { label: t.navVendors, href: "/app/explore" },
-              { label: t.navCareers, href: "/careers" },
-              { label: t.navBusiness, href: "/about" },
-            ].map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="text-slate-600 font-semibold text-sm hover:text-[var(--color-primary)] transition-colors duration-200 relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-[var(--color-primary)] after:transition-all after:duration-300 hover:after:w-full"
-              >
-                {item.label}
-              </Link>
-            ))}
-          </div>
-          <div className="flex items-center gap-3">
-            {mounted && <LanguageSwitcher />}
-            {user ? (
-              <Link
-                href="/app/profile"
-                className="flex items-center gap-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 px-4 py-2 rounded-full transition-all duration-200 group"
-              >
-                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-light)] text-white flex items-center justify-center font-bold text-xs">
-                  {user.email?.[0].toUpperCase()}
-                </div>
-                <span className="text-sm font-semibold text-slate-700 group-hover:text-[var(--color-primary)] hidden sm:block">My Account</span>
-              </Link>
-            ) : (
-              <Link
-                href="/onboarding"
-                className="bg-[var(--color-primary)] hover:bg-[var(--color-primary-dim)] text-white px-6 py-2.5 rounded-full font-bold text-sm shadow-lg shadow-[var(--color-primary)]/20 hover:shadow-[var(--color-primary)]/30 active:scale-95 transition-all duration-200"
-              >
-                {t.getApp}
-              </Link>
-            )}
-          </div>
-        </div>
-      </nav>
+      <LandingNavbar />
 
       <main className="pt-[72px] overflow-x-hidden">
 
@@ -297,29 +243,7 @@ export default function LandingPage() {
         </section>
       </main>
 
-      {/* ── Footer ── */}
-      <footer className="bg-[var(--color-inverse-surface)] w-full py-14 px-6 lg:px-10">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-10 max-w-7xl mx-auto">
-          <div className="text-2xl font-black text-white tracking-tighter">MIIAM</div>
-          <div className="flex flex-wrap gap-8 justify-center">
-            <Link href="/terms" className="text-slate-500 text-xs uppercase tracking-widest font-semibold hover:text-white transition-colors duration-200">
-              Terms
-            </Link>
-            <Link href="/privacy" className="text-slate-500 text-xs uppercase tracking-widest font-semibold hover:text-white transition-colors duration-200">
-              Privacy
-            </Link>
-            <Link href="/refunds" className="text-slate-500 text-xs uppercase tracking-widest font-semibold hover:text-white transition-colors duration-200">
-              Refunds
-            </Link>
-            <Link href="/app/support" className="text-slate-500 text-xs uppercase tracking-widest font-semibold hover:text-white transition-colors duration-200">
-              Contact Us
-            </Link>
-          </div>
-          <div className="text-slate-600 text-xs font-medium">
-            {t.footerRights}
-          </div>
-        </div>
-      </footer>
+      <LandingFooter />
     </>
   );
 }
