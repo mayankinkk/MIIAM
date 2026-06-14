@@ -37,13 +37,13 @@ export default function PublicPrintLanding() {
     <>
       {/* SEO meta — Next.js will use the page's layout if defined; keep head in layout for app router */}
       <LandingNavbar
-        variant="indigo"
+        variant="default"
         links={[]}
         showGetApp={false}
         rightContent={
           <Link
             href="/app/printing"
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-full font-bold text-sm shadow-lg shadow-indigo-500/20 transition-all"
+            className="bg-[var(--color-primary)] hover:bg-[var(--color-primary-dim)] text-white px-5 py-2 rounded-full font-bold text-sm shadow-lg shadow-[var(--color-primary)]/20 transition-all"
           >
             Start printing →
           </Link>
@@ -52,9 +52,9 @@ export default function PublicPrintLanding() {
 
       <main className="pt-20">
         {/* Hero */}
-        <section className="relative overflow-hidden bg-gradient-to-br from-[#1e1b4b] via-[#312e81] to-[#1e1b4b]">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-500/30 rounded-full blur-[120px] pointer-events-none" />
-          <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-purple-500/20 rounded-full blur-[100px] pointer-events-none" />
+        <section className="relative overflow-hidden bg-gradient-to-br from-[#0f0505] via-[#1a0a0e] to-[#0a0a0a]">
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[var(--color-primary)]/20 rounded-full blur-[120px] pointer-events-none" />
+          <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-[var(--color-primary)]/15 rounded-full blur-[100px] pointer-events-none" />
 
           <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-8 py-20 text-center">
             <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full mb-6 border border-white/10">
@@ -63,7 +63,7 @@ export default function PublicPrintLanding() {
             </div>
             <h1 className="text-4xl sm:text-6xl font-black text-white tracking-tight leading-[1.05] mb-6">
               Print anything.<br />
-              <span className="bg-gradient-to-r from-indigo-300 to-purple-300 bg-clip-text text-transparent">Delivered in 30 minutes.</span>
+              <span className="bg-gradient-to-r from-[var(--color-primary-light)] to-[#ffc371] bg-clip-text text-transparent">Delivered in 30 minutes.</span>
             </h1>
             <p className="text-white/70 text-lg sm:text-xl max-w-2xl mx-auto mb-8 leading-relaxed font-medium">
               Documents, passport photos, reports, presentations. Upload, customize, and we'll print and deliver to your door.
@@ -71,7 +71,7 @@ export default function PublicPrintLanding() {
             <div className="flex flex-wrap items-center justify-center gap-4">
               <Link
                 href="/app/printing"
-                className="flex items-center gap-2 bg-white text-indigo-700 hover:bg-indigo-50 px-8 py-4 rounded-2xl font-black text-base shadow-xl transition-all"
+                className="flex items-center gap-2 bg-white text-[var(--color-primary)] hover:bg-[var(--color-primary)]/5 px-8 py-4 rounded-2xl font-black text-base shadow-xl transition-all"
               >
                 <span className="material-symbols-outlined">upload</span>
                 Upload &amp; Print
@@ -99,8 +99,8 @@ export default function PublicPrintLanding() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {features.map((f) => (
               <div key={f.title} className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
-                <div className="w-11 h-11 bg-indigo-100 rounded-xl flex items-center justify-center mb-3">
-                  <span className="material-symbols-outlined text-indigo-600">{f.icon}</span>
+                <div className="w-11 h-11 bg-[var(--color-primary)]/10 rounded-xl flex items-center justify-center mb-3">
+                  <span className="material-symbols-outlined text-[var(--color-primary)]">{f.icon}</span>
                 </div>
                 <h3 className="font-bold text-slate-800 text-sm">{f.title}</h3>
                 <p className="text-xs text-slate-500 mt-1 leading-snug">{f.desc}</p>
@@ -116,8 +116,8 @@ export default function PublicPrintLanding() {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {useCases.map((u) => (
                 <div key={u.label} className="bg-white rounded-2xl p-5 text-center border border-slate-100">
-                  <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center mx-auto mb-2">
-                    <span className="material-symbols-outlined text-indigo-600 text-xl">{u.icon}</span>
+                  <div className="w-12 h-12 bg-[var(--color-primary)]/5 rounded-2xl flex items-center justify-center mx-auto mb-2">
+                    <span className="material-symbols-outlined text-[var(--color-primary)] text-xl">{u.icon}</span>
                   </div>
                   <p className="font-bold text-slate-800 text-sm">{u.label}</p>
                   <p className="text-xs text-slate-500 mt-0.5">{u.desc}</p>
@@ -142,7 +142,7 @@ export default function PublicPrintLanding() {
                 <li>• Same-day delivery</li>
               </ul>
             </div>
-            <div className="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-2xl p-6 text-white">
+            <div className="bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dim)] rounded-2xl p-6 text-white">
               <p className="text-xs text-white/70 font-black uppercase tracking-widest">Color</p>
               <p className="text-5xl font-black mt-2">₹{pricing.colorPerPage}</p>
               <p className="text-white/80 text-sm mt-1">per page · A4 · premium color</p>
@@ -179,12 +179,12 @@ export default function PublicPrintLanding() {
 
         {/* Final CTA */}
         <section className="max-w-4xl mx-auto px-6 lg:px-8 pb-20 text-center">
-          <div className="bg-gradient-to-r from-indigo-600 to-purple-700 rounded-3xl p-10 text-white">
+          <div className="bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dim)] rounded-3xl p-10 text-white">
             <h2 className="text-3xl font-black mb-2">Ready to print?</h2>
             <p className="text-white/80 mb-6">Upload in 30 seconds. Pickup in 30 minutes.</p>
             <Link
               href="/app/printing"
-              className="inline-flex items-center gap-2 bg-white text-indigo-700 px-8 py-4 rounded-2xl font-black text-base shadow-xl hover:bg-indigo-50 transition-all"
+              className="inline-flex items-center gap-2 bg-white text-[var(--color-primary)] px-8 py-4 rounded-2xl font-black text-base shadow-xl hover:bg-[var(--color-primary)]/5 transition-all"
             >
               <span className="material-symbols-outlined">print</span>
               Start printing

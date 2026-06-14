@@ -10,7 +10,7 @@ export type { BadgeProps, BadgeVariant, BadgeSize } from "./Badge";
 export { Input } from "./Input";
 export type { InputProps } from "./Input";
 
-export { ConfirmDialog, ConfirmProvider, useConfirm } from "./ConfirmDialog";
+export { ConfirmProvider, useConfirm } from "./ConfirmDialog";
 export { EmptyState, EmptyCart, EmptyOrders, EmptyFavorites, EmptyAddresses, EmptySearch, EmptyBookings, NetworkError } from "./EmptyStates";
 export { Shimmer, ShimmerCard, ShimmerList, ShimmerProductCard } from "./Shimmer";
-export { Toaster, toast } from "./Toaster";
+export { default as Toaster } from "./Toaster";
