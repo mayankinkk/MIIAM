@@ -6,11 +6,11 @@
     },
     {
       "path": "/api/orders/activate-scheduled",
-      "schedule": "*/5 * * * *"
+      "schedule": "0 1 * * *"
     },
     {
       "path": "/api/orders/check-expired",
-      "schedule": "*/10 * * * *"
+      "schedule": "0 2 * * *"
     },
     {
       "path": "/api/recurring-schedules/process",
