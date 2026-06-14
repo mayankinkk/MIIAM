@@ -39,6 +39,8 @@ export default function CheckoutPage() {
   const [savedAddresses, setSavedAddresses] = useState<SelectedAddress[]>([]);
   const [showAddressPicker, setShowAddressPicker] = useState(false);
   const [serviceCharge, setServiceCharge] = useState(8);
+  const [promoCodesRaw, setPromoCodesRaw] = useState<any[]>([]);
+  const [hydrated, setHydrated] = useState(false);
   const { items, totalPrice } = useCartStore();
   const supabase = useMemo(() => createClient(), []);
 
@@ -99,7 +101,6 @@ export default function CheckoutPage() {
     loadVendorDetails();
   }, [items, supabase]);
 
-  const [promoCodesRaw, setPromoCodesRaw] = useState<any[]>([]);
   const subtotal = totalPrice();
   const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean)));
   const serviceVendorIds = vendorIds.filter((id) => id !== PRINTING_VENDOR_ID && id !== SERVICES_VENDOR_ID);
@@ -125,7 +126,6 @@ export default function CheckoutPage() {
   const { placeOrder } = usePlaceOrder(supabase);
   const { pay, loading: razorpayLoading } = useRazorpay();
 
-  const [hydrated, setHydrated] = useState(false);
   useEffect(() => {
     const unsub = useCartStore.persist.onFinishHydration(() => setHydrated(true));
     if (useCartStore.persist.hasHydrated()) setHydrated(true);
