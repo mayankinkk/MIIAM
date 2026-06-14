@@ -4,11 +4,6 @@ import { createClient } from "@/lib/supabase/server";
 import { checkCsrf, getClientIp, checkIpRateLimit } from "@/lib/security";
 import { createRouteLogger } from "@/lib/logger";
 
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID || "",
-  key_secret: process.env.RAZORPAY_KEY_SECRET || "",
-});
-
 export async function POST(req: NextRequest) {
   const logger = createRouteLogger("payment/create-order");
   try {
@@ -34,6 +29,11 @@ export async function POST(req: NextRequest) {
         { status: 503 }
       );
     }
+
+    const razorpay = new Razorpay({
+      key_id: process.env.RAZORPAY_KEY_ID!,
+      key_secret: process.env.RAZORPAY_KEY_SECRET!,
+    });
 
     const { amount, receipt, notes } = await req.json();
 
