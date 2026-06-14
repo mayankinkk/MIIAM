@@ -75,9 +75,7 @@ export async function POST(req: NextRequest) {
       const { error: updateError } = await supabaseAdmin
         .from("orders")
         .update({
-          payment_id: razorpay_payment_id,
-          payment_status: "paid",
-          payment_razorpay_order_id: razorpay_order_id,
+          status: "confirmed",
         })
         .eq("id", orderId);
 

@@ -132,15 +132,6 @@ export function usePlaceOrder(supabase: SupabaseClient) {
           placed_at: new Date().toISOString(),
         };
 
-        // Attach payment details for online payments
-        if (paymentDetails) {
-          orderData.payment_id = paymentDetails.paymentId;
-          orderData.payment_status = "paid";
-          orderData.payment_razorpay_order_id = paymentDetails.razorpayOrderId;
-        } else if (paymentMethod === "cod") {
-          orderData.payment_status = "pending";
-        }
-
         const { data: order, error: orderError } = await supabase
           .from("orders")
           .insert(orderData)

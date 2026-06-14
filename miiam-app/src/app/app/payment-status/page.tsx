@@ -95,11 +95,11 @@ function PaymentStatusContent() {
       try {
         const { data: order } = await supabase
           .from("orders")
-          .select("payment_status")
+          .select("status")
           .eq("id", orderId)
           .single();
 
-        if (order?.payment_status === "paid") {
+        if (order?.status && order.status !== "pending") {
           setProgress(100);
           setStatus("success");
           return true;
@@ -113,10 +113,10 @@ function PaymentStatusContent() {
         try {
           const { data: order } = await supabase
             .from("orders")
-            .select("payment_status")
+            .select("status")
             .eq("id", orderId)
             .single();
-          if (order?.payment_status === "paid") {
+          if (order?.status && order.status !== "pending") {
             setProgress(100);
             setStatus("success");
             return;
