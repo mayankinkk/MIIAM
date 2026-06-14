@@ -4,11 +4,6 @@ import Razorpay from "razorpay";
 import { checkCsrf, getClientIp, checkIpRateLimit } from "@/lib/security";
 import { createRouteLogger } from "@/lib/logger";
 
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID || "",
-  key_secret: process.env.RAZORPAY_KEY_SECRET || "",
-});
-
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
   if (!checkIpRateLimit(ip, 10, 60_000)) {
@@ -26,6 +21,15 @@ export async function POST(req: NextRequest) {
     if (!checkCsrf(req)) {
       return NextResponse.json({ error: "CSRF validation failed" }, { status: 403 });
     }
+
+    if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+      return NextResponse.json({ error: "Payment gateway not configured" }, { status: 503 });
+    }
+
+    const razorpay = new Razorpay({
+      key_id: process.env.RAZORPAY_KEY_ID,
+      key_secret: process.env.RAZORPAY_KEY_SECRET,
+    });
 
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature, amount } = await req.json();
 
