@@ -30,13 +30,13 @@ export function EmptyState({
 
   const typeStyles: Record<string, { bg: string; icon: string; animation: string }> = {
     cart: { 
-      bg: "bg-[#ffe1e4]", 
-      icon: "text-[#ba001c]",
+      bg: "bg-[var(--color-surface-container)]", 
+      icon: "text-[var(--color-primary)]",
       animation: mounted ? "animate-bounce-subtle" : ""
     },
     orders: { 
-      bg: "bg-[#c4d0ff]/20", 
-      icon: "text-[#0b50d5]",
+      bg: "bg-[var(--color-secondary-container)]/20", 
+      icon: "text-[var(--color-secondary)]",
       animation: mounted ? "animate-pulse-slow" : ""
     },
     favorites: { 
@@ -64,7 +64,7 @@ export function EmptyState({
       <div className={`w-28 h-28 ${style.bg} rounded-full flex items-center justify-center mb-6 ${style.animation} relative`}>
         {/* Decorative elements */}
         <div className="absolute -top-2 -right-2 w-6 h-6 bg-amber-200/50 rounded-full animate-float" />
-        <div className="absolute -bottom-2 -left-2 w-4 h-4 bg-[#ba001c]/20 rounded-full animate-float-delayed" />
+        <div className="absolute -bottom-2 -left-2 w-4 h-4 bg-[var(--color-primary)]/20 rounded-full animate-float-delayed" />
         <div className="absolute top-1/2 -left-4 w-3 h-3 bg-blue-200/50 rounded-full animate-float" />
         
         {/* Main icon/emoji */}
@@ -78,12 +78,12 @@ export function EmptyState({
       </div>
       
       {/* Title with typewriter effect */}
-      <h3 className={`text-xl font-bold text-[#4d212a] mb-2 ${mounted ? "animate-fade-up" : ""}`}>
+      <h3 className={`text-xl font-bold text-[var(--color-on-surface)] mb-2 ${mounted ? "animate-fade-up" : ""}`}>
         {title}
       </h3>
       
       {/* Description */}
-      <p className={`text-[#814c55] text-sm mb-6 max-w-xs ${mounted ? "animate-fade-up-delay" : ""}`}>
+      <p className={`text-[var(--color-on-surface-variant)] text-sm mb-6 max-w-xs ${mounted ? "animate-fade-up-delay" : ""}`}>
         {description}
       </p>
       
@@ -91,7 +91,7 @@ export function EmptyState({
       {actionLabel && actionHref && (
         <Link 
           href={actionHref} 
-          className={`group relative px-6 py-3 bg-[#ba001c] text-white font-bold rounded-xl overflow-hidden transition-all duration-300 hover:bg-[#a40017] hover:scale-105 active:scale-95 ${mounted ? "animate-fade-up-delay-2" : ""}`}
+          className={`group relative px-6 py-3 bg-[var(--color-primary)] text-white font-bold rounded-xl overflow-hidden transition-all duration-300 hover:bg-[var(--color-primary-dim)] hover:scale-105 active:scale-95 ${mounted ? "animate-fade-up-delay-2" : ""}`}
         >
           {/* Shimmer effect on hover */}
           <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
@@ -197,14 +197,14 @@ export function NetworkError({ onRetry }: { onRetry?: () => void }) {
       <div className="w-24 h-24 bg-red-50 rounded-full flex items-center justify-center mb-6 animate-pulse">
         <span className="text-5xl">📡</span>
       </div>
-      <h3 className="text-xl font-bold text-[#4d212a] mb-2">Connection Lost</h3>
-      <p className="text-[#814c55] text-sm mb-6 max-w-xs">
+      <h3 className="text-xl font-bold text-[var(--color-on-surface)] mb-2">Connection Lost</h3>
+      <p className="text-[var(--color-on-surface-variant)] text-sm mb-6 max-w-xs">
         Please check your internet connection and try again.
       </p>
       {onRetry && (
         <button 
           onClick={onRetry}
-          className="px-6 py-3 bg-[#ba001c] text-white font-bold rounded-xl hover:bg-[#a40017] transition-colors flex items-center gap-2"
+          className="px-6 py-3 bg-[var(--color-primary)] text-white font-bold rounded-xl hover:bg-[var(--color-primary-dim)] transition-colors flex items-center gap-2"
         >
           <span className="material-symbols-outlined">refresh</span>
           Retry

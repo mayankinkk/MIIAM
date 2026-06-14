@@ -26,7 +26,7 @@ export default function LandingPage() {
   const t = mounted ? getTranslations(language).landing : getTranslations('en').landing;
 
   const quickServices = [
-    { icon: "restaurant", label: "Food", href: "/app/food", color: "from-[#ba001c] to-[#ff5f6d]" },
+    { icon: "restaurant", label: "Food", href: "/app/food", color: "from-[var(--color-primary)] to-[var(--color-primary-light)]" },
     { icon: "home_repair_service", label: "Services", href: "/services", color: "from-[#0b50d5] to-[#667eea]" },
     { icon: "local_grocery_store", label: "Grocery", href: "/app/grocery", color: "from-[#11998e] to-[#38ef7d]" },
     { icon: "spa", label: "Beauty", href: "/app/beauty", color: "from-[#ee0979] to-[#ff6a00]" },
@@ -38,7 +38,7 @@ export default function LandingPage() {
       {/* ── Navbar ── */}
       <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-2xl border-b border-slate-100/80 transition-all duration-500">
         <div className="flex justify-between items-center max-w-7xl mx-auto px-6 lg:px-8 py-4">
-          <Link href="/" className="text-3xl font-black text-[#ba001c] tracking-tighter select-none">
+          <Link href="/" className="text-3xl font-black text-[var(--color-primary)] tracking-tighter select-none">
             MIIAM
           </Link>
           <div className="hidden md:flex items-center gap-8">
@@ -52,7 +52,7 @@ export default function LandingPage() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-slate-600 font-semibold text-sm hover:text-[#ba001c] transition-colors duration-200 relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-[#ba001c] after:transition-all after:duration-300 hover:after:w-full"
+                className="text-slate-600 font-semibold text-sm hover:text-[var(--color-primary)] transition-colors duration-200 relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-[var(--color-primary)] after:transition-all after:duration-300 hover:after:w-full"
               >
                 {item.label}
               </Link>
@@ -65,15 +65,15 @@ export default function LandingPage() {
                 href="/app/profile"
                 className="flex items-center gap-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 px-4 py-2 rounded-full transition-all duration-200 group"
               >
-                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#ba001c] to-[#ff5f6d] text-white flex items-center justify-center font-bold text-xs">
+                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-light)] text-white flex items-center justify-center font-bold text-xs">
                   {user.email?.[0].toUpperCase()}
                 </div>
-                <span className="text-sm font-semibold text-slate-700 group-hover:text-[#ba001c] hidden sm:block">My Account</span>
+                <span className="text-sm font-semibold text-slate-700 group-hover:text-[var(--color-primary)] hidden sm:block">My Account</span>
               </Link>
             ) : (
               <Link
                 href="/onboarding"
-                className="bg-[#ba001c] hover:bg-[#a40017] text-white px-6 py-2.5 rounded-full font-bold text-sm shadow-lg shadow-[#ba001c]/20 hover:shadow-[#ba001c]/30 active:scale-95 transition-all duration-200"
+                className="bg-[var(--color-primary)] hover:bg-[var(--color-primary-dim)] text-white px-6 py-2.5 rounded-full font-bold text-sm shadow-lg shadow-[var(--color-primary)]/20 hover:shadow-[var(--color-primary)]/30 active:scale-95 transition-all duration-200"
               >
                 {t.getApp}
               </Link>
@@ -91,15 +91,16 @@ export default function LandingPage() {
             <div className="absolute inset-0 bg-gradient-to-br from-[#0f0f0f] via-[#1a0a0e] to-[#0a0a0a]" />
             <img
               src="/images/food_hero.png"
-              alt="Food"
+              alt=""
+              role="presentation"
               className="absolute inset-0 w-full h-full object-cover opacity-[0.12] mix-blend-luminosity"
               onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200&q=80"; }}
             />
           </div>
 
           {/* Decorative glow */}
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#ba001c]/20 rounded-full blur-[120px] pointer-events-none" />
-          <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-[#0b50d5]/15 rounded-full blur-[100px] pointer-events-none" />
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[var(--color-primary)]/20 rounded-full blur-[120px] pointer-events-none" />
+          <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-[var(--color-secondary)]/15 rounded-full blur-[100px] pointer-events-none" />
 
           <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 w-full">
             <div className="max-w-2xl">
@@ -111,7 +112,7 @@ export default function LandingPage() {
               <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black text-white tracking-tight leading-[1.05] mb-6">
                 {t.heroTitle1}
                 <br />
-                <span className="bg-gradient-to-r from-[#ff5f6d] to-[#ffc371] bg-clip-text text-transparent">{t.heroTitle2}</span>
+                <span className="bg-gradient-to-r from-[var(--color-primary-light)] to-[#ffc371] bg-clip-text text-transparent">{t.heroTitle2}</span>
               </h1>
 
               <p className="text-white/50 text-lg sm:text-xl max-w-lg mb-10 leading-relaxed font-medium">
@@ -121,7 +122,7 @@ export default function LandingPage() {
               <div className="flex flex-wrap gap-4">
                 <Link
                   href="/app/food"
-                  className="group flex items-center gap-3 bg-[#ba001c] hover:bg-[#d0001f] text-white pl-7 pr-5 py-4 rounded-2xl font-bold text-base shadow-xl shadow-[#ba001c]/25 hover:shadow-[#ba001c]/40 active:scale-[0.97] transition-all duration-200"
+                  className="group flex items-center gap-3 bg-[var(--color-primary)] hover:bg-[var(--color-primary-dim)] text-white pl-7 pr-5 py-4 rounded-2xl font-bold text-base shadow-xl shadow-[var(--color-primary)]/25 hover:shadow-[var(--color-primary)]/40 active:scale-[0.97] transition-all duration-200"
                 >
                   {t.orderFood}
                   <span className="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform">arrow_forward</span>
@@ -151,7 +152,7 @@ export default function LandingPage() {
                   <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${svc.color} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
                     <span className="material-symbols-outlined text-white text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>{svc.icon}</span>
                   </div>
-                  <span className="text-xs font-bold text-slate-600 group-hover:text-[#ba001c] transition-colors">{svc.label}</span>
+                  <span className="text-xs font-bold text-slate-600 group-hover:text-[var(--color-primary)] transition-colors">{svc.label}</span>
                 </Link>
               ))}
             </div>
@@ -162,9 +163,9 @@ export default function LandingPage() {
         <section className="max-w-5xl mx-auto px-6 lg:px-8 py-16">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
-              { icon: "shopping_cart_checkout", label: t.featureCart, sub: "Easy ordering", color: "bg-red-50 text-[#ba001c]" },
+              { icon: "shopping_cart_checkout", label: t.featureCart, sub: "Easy ordering", color: "bg-red-50 text-[var(--color-primary)]" },
               { icon: "bolt", label: t.featureDelivery, sub: "Under 30 mins", color: "bg-amber-50 text-amber-600" },
-              { icon: "verified_user", label: t.featurePros, sub: "Background verified", color: "bg-blue-50 text-[#0b50d5]" },
+              { icon: "verified_user", label: t.featurePros, sub: "Background verified", color: "bg-blue-50 text-[var(--color-secondary)]" },
               { icon: "support_agent", label: t.featureSupport, sub: "Always available", color: "bg-green-50 text-green-600" },
             ].map((item) => (
               <div key={item.label} className="flex items-start gap-3 group">
@@ -187,7 +188,7 @@ export default function LandingPage() {
               <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-800">{t.popularNearYou}</h2>
               <p className="text-slate-400 font-medium mt-1.5">{t.popularDesc}</p>
             </div>
-            <Link href="/app/explore" className="text-[#ba001c] font-bold text-sm flex items-center gap-1.5 hover:gap-3 transition-all duration-200">
+            <Link href="/app/explore" className="text-[var(--color-primary)] font-bold text-sm flex items-center gap-1.5 hover:gap-3 transition-all duration-200">
               {t.viewAll} <span className="material-symbols-outlined text-lg">arrow_forward</span>
             </Link>
           </div>
@@ -205,7 +206,7 @@ export default function LandingPage() {
               <div className="p-6">
                 <div className="flex justify-between items-start">
                   <div>
-                    <span className="bg-[#ba001c]/10 text-[#ba001c] text-[10px] font-black px-3 py-1 rounded-full mb-3 inline-block uppercase tracking-wider">{t.trendingFood}</span>
+                    <span className="bg-[var(--color-primary)]/10 text-[var(--color-primary)] text-[10px] font-black px-3 py-1 rounded-full mb-3 inline-block uppercase tracking-wider">{t.trendingFood}</span>
                     <h3 className="text-xl font-bold text-slate-800">Pizza Paradise</h3>
                     <div className="flex items-center gap-2 mt-1.5 text-slate-500 text-sm font-medium">
                       <span className="flex items-center gap-1 text-green-600 font-bold">
@@ -218,7 +219,7 @@ export default function LandingPage() {
                       <span>15-20 mins</span>
                     </div>
                   </div>
-                  <span className="bg-[#ba001c] p-3 rounded-xl text-white shadow-lg shadow-[#ba001c]/20">
+                  <span className="bg-[var(--color-primary)] p-3 rounded-xl text-white shadow-lg shadow-[var(--color-primary)]/20">
                     <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>add_shopping_cart</span>
                   </span>
                 </div>
@@ -236,12 +237,12 @@ export default function LandingPage() {
                 />
               </div>
               <div className="p-6 flex-1 flex flex-col">
-                <span className="bg-[#0b50d5]/10 text-[#0b50d5] text-[10px] font-black px-3 py-1 rounded-full mb-3 self-start uppercase tracking-wider">Service Pro</span>
+                <span className="bg-[var(--color-secondary)]/10 text-[var(--color-secondary)] text-[10px] font-black px-3 py-1 rounded-full mb-3 self-start uppercase tracking-wider">Service Pro</span>
                 <h3 className="text-xl font-bold text-slate-800">PureHome Cleaning</h3>
                 <div className="mt-auto pt-4 flex justify-between items-center">
                   <span className="text-slate-500 font-bold text-sm">From ₹29/hr</span>
                   <span className="flex items-center gap-1.5 font-bold text-sm text-slate-700">
-                    <span className="material-symbols-outlined text-[#0b50d5] text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
+                    <span className="material-symbols-outlined text-[var(--color-secondary)] text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
                     Elite
                   </span>
                 </div>
@@ -254,20 +255,20 @@ export default function LandingPage() {
         <section className="max-w-7xl mx-auto px-6 lg:px-8 mb-24">
           <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#0f0505] via-[#1a0a0e] to-[#0a0a0a] p-10 md:p-16 flex flex-col md:flex-row items-center gap-10">
             {/* Decorative glow */}
-            <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-[#ba001c]/20 to-transparent pointer-events-none" />
-            <div className="absolute -top-20 -right-20 w-72 h-72 bg-[#ba001c]/15 rounded-full blur-[80px] pointer-events-none" />
+            <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-[var(--color-primary)]/20 to-transparent pointer-events-none" />
+            <div className="absolute -top-20 -right-20 w-72 h-72 bg-[var(--color-primary)]/15 rounded-full blur-[80px] pointer-events-none" />
 
             <div className="relative z-10 flex-1">
-              <span className="text-[#ff7670] font-black tracking-widest text-xs uppercase mb-4 block">{t.promoLabel}</span>
+              <span className="text-[var(--color-primary-container)] font-black tracking-widest text-xs uppercase mb-4 block">{t.promoLabel}</span>
               <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight leading-none mb-5">
-                {t.promoTitle1}<br /><span className="bg-gradient-to-r from-[#ff5f6d] to-[#ffc371] bg-clip-text text-transparent">{t.promoTitle2}</span>
+                {t.promoTitle1}<br /><span className="bg-gradient-to-r from-[var(--color-primary-light)] to-[#ffc371] bg-clip-text text-transparent">{t.promoTitle2}</span>
               </h2>
               <p className="text-white/40 text-lg max-w-md mb-8">
                 {t.promoDesc1}<span className="text-white font-bold">MIIAM50</span>{t.promoDesc2}
               </p>
               <Link
                 href="/onboarding"
-                className="inline-flex items-center gap-2 bg-[#ba001c] text-white px-8 py-4 rounded-2xl font-bold text-base shadow-xl shadow-[#ba001c]/20 hover:shadow-[#ba001c]/40 active:scale-95 transition-all duration-200"
+                className="inline-flex items-center gap-2 bg-[var(--color-primary)] text-white px-8 py-4 rounded-2xl font-bold text-base shadow-xl shadow-[var(--color-primary)]/20 hover:shadow-[var(--color-primary)]/40 active:scale-95 transition-all duration-200"
               >
                 {t.claimOffer}
                 <span className="material-symbols-outlined text-lg">arrow_forward</span>
@@ -276,7 +277,7 @@ export default function LandingPage() {
             <div className="relative z-10 w-full md:w-1/3">
               <div className="bg-white/[0.06] backdrop-blur-xl p-7 rounded-2xl border border-white/10 shadow-2xl">
                 <div className="flex gap-4 mb-5">
-                  <div className="w-11 h-11 bg-gradient-to-br from-[#ba001c] to-[#ff5f6d] rounded-xl flex items-center justify-center shadow-lg">
+                  <div className="w-11 h-11 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-light)] rounded-xl flex items-center justify-center shadow-lg">
                     <span className="material-symbols-outlined text-white text-lg">confirmation_number</span>
                   </div>
                   <div>
@@ -286,7 +287,7 @@ export default function LandingPage() {
                 </div>
                 <div className="space-y-3">
                   <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-[#ba001c] to-[#ff5f6d] w-2/3 rounded-full" />
+                    <div className="h-full bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-light)] w-2/3 rounded-full" />
                   </div>
                   <p className="text-white/40 text-xs font-medium">942 people claimed this today</p>
                 </div>
@@ -297,7 +298,7 @@ export default function LandingPage() {
       </main>
 
       {/* ── Footer ── */}
-      <footer className="bg-[#0a0a0a] w-full py-14 px-6 lg:px-10">
+      <footer className="bg-[var(--color-inverse-surface)] w-full py-14 px-6 lg:px-10">
         <div className="flex flex-col md:flex-row justify-between items-center gap-10 max-w-7xl mx-auto">
           <div className="text-2xl font-black text-white tracking-tighter">MIIAM</div>
           <div className="flex flex-wrap gap-8 justify-center">

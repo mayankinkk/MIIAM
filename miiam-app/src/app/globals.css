@@ -5,6 +5,7 @@
   /* MIIAM Color System — Semantic Names (aliases for readability) */
   --color-brand-primary: #ba001c;
   --color-brand-primary-hover: #a40017;
+  --color-brand-primary-light: #ff5f6d;
   --color-brand-secondary: #0b50d5;
   --color-brand-tertiary: #6c5a00;
   --color-surface-neutral: #ffffff;
@@ -44,6 +45,7 @@
   --color-primary-dim: #a40017;
   --color-primary-container: #ff7670;
   --color-primary-fixed: #ff7670;
+  --color-primary-light: #ff5f6d;
   --color-primary-fixed-dim: #ff5a57;
   --color-on-primary: #ffefee;
   --color-on-primary-container: #4e0006;
@@ -131,6 +133,7 @@
   --color-surface-tint: #ff7670;
   --color-primary: #ff7670;
   --color-primary-dim: #ff5352;
+  --color-primary-light: #ff5f6d;
   --color-primary-container: #a40017;
   --color-primary-fixed: #a40017;
   --color-primary-fixed-dim: #8c1500;

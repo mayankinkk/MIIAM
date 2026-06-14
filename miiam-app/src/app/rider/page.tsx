@@ -27,7 +27,7 @@ export default async function RiderDashboardPage() {
 
   return (
     <div className="bg-[#fff4f4] min-h-screen">
-      <header className="bg-[#0b50d5] text-white p-6 pb-12 rounded-b-[3rem] shadow-[0px_20px_40px_rgba(11,80,213,0.2)]">
+      <header className="bg-[var(--color-secondary)] text-white p-6 pb-12 rounded-b-[3rem] shadow-[0px_20px_40px_rgba(11,80,213,0.2)]">
         <div className="flex justify-between items-center mb-8">
           <span className="text-3xl font-black tracking-tighter">MIIAM</span>
           <div className={`px-3 py-1 rounded-full text-xs font-bold flex items-center gap-2 ${
@@ -53,48 +53,50 @@ export default async function RiderDashboardPage() {
 
       <main className="px-6 -mt-6">
         <div className="grid grid-cols-2 gap-4 mb-8">
-          <Link href="/rider/wallet" className="bg-white rounded-2xl p-6 shadow-lg shadow-[#0b50d5]/5">
-            <p className="text-xs font-bold text-[#814c55] uppercase tracking-widest mb-2">Today's Earnings</p>
-            <p className="text-3xl font-black text-[#0b50d5]">₹0.00</p>
+          <Link href="/rider/wallet" className="bg-white rounded-2xl p-6 shadow-lg shadow-[var(--color-secondary)]/5">
+            <p className="text-xs font-bold text-[var(--color-on-surface-variant)] uppercase tracking-widest mb-2">Today's Earnings</p>
+            <p className="text-3xl font-black text-[var(--color-secondary)]">₹0.00</p>
           </Link>
-          <Link href="/rider/orders" className="bg-white rounded-2xl p-6 shadow-lg shadow-[#0b50d5]/5">
-            <p className="text-xs font-bold text-[#814c55] uppercase tracking-widest mb-2">Deliveries</p>
-            <p className="text-3xl font-black text-[#0b50d5]">0</p>
+          <Link href="/rider/orders" className="bg-white rounded-2xl p-6 shadow-lg shadow-[var(--color-secondary)]/5">
+            <p className="text-xs font-bold text-[var(--color-on-surface-variant)] uppercase tracking-widest mb-2">Deliveries</p>
+            <p className="text-3xl font-black text-[var(--color-secondary)]">0</p>
           </Link>
         </div>
 
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-extrabold text-[#4d212a] tracking-tight">Available Orders</h2>
-          <Link href="/rider/orders" className="text-sm font-bold text-[#0b50d5]">View All</Link>
+          <h2 className="text-2xl font-extrabold text-[var(--color-on-surface)] tracking-tight">Available Orders</h2>
+          <Link href="/rider/orders" className="text-sm font-bold text-[var(--color-secondary)]">View All</Link>
         </div>
         
         <div className="space-y-4 mb-32">
           {orders && orders.length > 0 ? orders.map((order: any) => (
-            <Link 
-              key={order.id} 
-              href={`/rider/orders`}
-              className="bg-white rounded-2xl p-6 shadow-[0px_10px_30px_rgba(77,33,42,0.04)] border border-[#dd9ca6]/10 relative overflow-hidden group block"
+            <div
+              key={order.id}
+              className="bg-white rounded-2xl p-6 shadow-[0px_10px_30px_rgba(77,33,42,0.04)] border border-[#dd9ca6]/10 relative overflow-hidden"
             >
-              <div className="absolute top-0 right-0 w-24 h-24 bg-[#0b50d5]/5 rounded-bl-full" />
+              <div className="absolute top-0 right-0 w-24 h-24 bg-[var(--color-secondary)]/5 rounded-bl-full" />
               <div className="flex justify-between items-start mb-4 relative z-10">
                 <div>
-                  <h3 className="font-bold text-xl text-[#4d212a]">{order.vendor?.name}</h3>
-                  <p className="text-[#814c55] text-sm flex items-center gap-1 mt-1">
+                  <h3 className="font-bold text-xl text-[var(--color-on-surface)]">{order.vendor?.name}</h3>
+                  <p className="text-[var(--color-on-surface-variant)] text-sm flex items-center gap-1 mt-1">
                     <span className="material-symbols-outlined text-sm">store</span>
                     Pick up here
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-2xl font-black text-[#ba001c]">₹{order.total_amount}</p>
-                  <p className="text-[10px] font-bold text-[#814c55] uppercase tracking-widest">Est. Earn</p>
+                  <p className="text-2xl font-black text-[var(--color-primary)]">₹{order.total_amount}</p>
+                  <p className="text-[10px] font-bold text-[var(--color-on-surface-variant)] uppercase tracking-widest">Est. Earn</p>
                 </div>
               </div>
               <div className="flex gap-3 relative z-10">
-                <span className="flex-1 bg-[#ffecee] text-[#ba001c] py-3 rounded-xl font-bold text-center hover:bg-[#ba001c] hover:text-white transition-colors cursor-pointer">
+                <Link
+                  href="/rider/orders"
+                  className="flex-1 bg-[var(--color-surface-container-low)] text-[var(--color-primary)] py-3 rounded-xl font-bold text-center hover:bg-[var(--color-primary)] hover:text-white transition-colors no-underline block"
+                >
                   View & Accept
-                </span>
+                </Link>
               </div>
-            </Link>
+            </div>
           )) : (
             <div className="bg-white rounded-2xl p-8 text-center">
               <span className="material-symbols-outlined text-4xl text-slate-300">shopping_bag</span>

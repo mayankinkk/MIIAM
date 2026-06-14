@@ -38,7 +38,7 @@ export default function PublicPrintLanding() {
       {/* SEO meta — Next.js will use the page's layout if defined; keep head in layout for app router */}
       <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-2xl border-b border-slate-100/80">
         <div className="flex justify-between items-center max-w-7xl mx-auto px-6 lg:px-8 py-4">
-          <Link href="/" className="text-2xl font-black text-[#ba001c] tracking-tighter">
+          <Link href="/" className="text-2xl font-black text-[var(--color-primary)] tracking-tighter">
             MIIAM
           </Link>
           <div className="flex items-center gap-3">
