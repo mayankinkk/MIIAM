@@ -31,15 +31,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Email required" }, { status: 400 });
     }
 
-    const { data: { users }, error: listError } = await supabaseAdmin.auth.admin.listUsers();
+    const { data: userData, error: getUserError } = await supabaseAdmin.auth.admin.getUserByEmail(email.toLowerCase());
     
-    if (listError) {
-      console.error("List users error:", listError);
-    }
+    let userRecord = userData?.user;
 
-    let userRecord = users?.find(u => u.email?.toLowerCase() === email.toLowerCase());
-
-    if (!userRecord) {
+    if (getUserError || !userRecord) {
       const { data: newUser, error: createError } = await supabaseAdmin.auth.admin.createUser({
         email: email.toLowerCase(),
         email_confirm: true,

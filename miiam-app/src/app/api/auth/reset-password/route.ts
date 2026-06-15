@@ -41,21 +41,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Verification mismatch" }, { status: 403 });
     }
 
-    // Find user using listUsers
-    const { data: { users }, error: listError } = await supabaseAdmin.auth.admin.listUsers({
-      page: 1,
-      perPage: 1000,
-    });
+    // Find user by email
+    const { data: userData, error: getUserError } = await supabaseAdmin.auth.admin.getUserByEmail(cleanEmail);
 
-    if (listError) {
-      return NextResponse.json({ error: "Failed to look up users" }, { status: 500 });
-    }
-
-    const user = users?.find(u => u.email?.toLowerCase() === cleanEmail);
-
-    if (!user) {
+    if (getUserError || !userData?.user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
+
+    const user = userData.user;
 
     // Update password and confirm email
     const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(user.id, { 
