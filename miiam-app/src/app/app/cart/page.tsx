@@ -31,12 +31,13 @@ export default function CartPage() {
   const router = useRouter();
   const { addToast } = useToastStore();
 
-  const [hydrated, setHydrated] = useState(() => useCartStore.persist.hasHydrated());
+  const [hydrated, setHydrated] = useState(() => useCartStore.persist?.hasHydrated() ?? false);
   const [vendorDeliveryCharges, setVendorDeliveryCharges] = useState<Record<string, number>>({});
   const [serviceCharge, setServiceCharge] = useState(8);
 
   useEffect(() => {
     if (hydrated) return;
+    if (!useCartStore.persist) return;
     const unsub = useCartStore.persist.onFinishHydration(() => setHydrated(true));
     return unsub;
   }, [hydrated]);
