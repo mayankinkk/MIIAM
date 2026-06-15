@@ -49,8 +49,8 @@ export async function requireCronAuth(request: NextRequest): Promise<boolean> {
 }
 
 export function getHmacSecret(): string {
-  const secret = process.env.HMAC_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!secret) throw new Error("HMAC_SECRET or SUPABASE_SERVICE_ROLE_KEY must be set");
+  const secret = process.env.HMAC_SECRET;
+  if (!secret) throw new Error("HMAC_SECRET must be set — never fallback to other secrets");
   return secret;
 }
 
