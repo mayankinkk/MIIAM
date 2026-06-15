@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 
 type CardVariant = "default" | "elevated" | "outlined" | "glass";
 
@@ -25,7 +26,7 @@ const variantStyles: Record<CardVariant, string> = {
   outlined:
     "bg-transparent border-2 border-[var(--color-border-default)]",
   glass:
-    "bg-[var(--color-surface-container-lowest)]/70 backdrop-blur-xl border border-white/20 shadow-lg",
+    "bg-[var(--color-surface-container-lowest)] backdrop-blur-xl border border-[var(--color-border-subtle)] shadow-lg",
 };
 
 const paddingStyles = {
@@ -138,16 +139,17 @@ function CardMedia({
 }) {
   return (
     <div
-      className={`overflow-hidden ${className}`}
+      className={`overflow-hidden relative ${className}`}
       style={{ aspectRatio }}
     >
-      <img
+      <Image
         src={src}
         alt={alt}
-        className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+        fill
+        className="object-cover hover:scale-105 transition-transform duration-700"
         loading="lazy"
         onError={(e) => {
-          (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(alt)}&background=ba001c&color=fff`;
+          // fallback handled by next/image
         }}
       />
     </div>
