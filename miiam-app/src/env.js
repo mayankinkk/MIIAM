@@ -14,7 +14,7 @@ export const env = createEnv({
     WHATSAPP_PHONE_NUMBER_ID: z.string().optional(),
     WHATSAPP_ACCESS_TOKEN: z.string().optional(),
     CRON_SECRET: z.string().optional(),
-    HMAC_SECRET: z.string().min(1),
+    HMAC_SECRET: z.string().optional(),
     SENTRY_DSN: z.string().optional(),
   },
   client: {
