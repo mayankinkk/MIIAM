@@ -253,7 +253,7 @@ export default function VendorDashboard() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-slate-200">
           <div className="flex items-center justify-between mb-3">
             <span className="material-symbols-outlined text-slate-400">receipt_long</span>
             <span className="text-xs text-green-600 font-bold bg-green-50 px-2 py-1 rounded-full">
@@ -264,7 +264,7 @@ export default function VendorDashboard() {
           <p className="text-sm text-slate-500 font-medium mt-1">Today&apos;s Orders</p>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-slate-200">
           <div className="flex items-center justify-between mb-3">
             <span className="material-symbols-outlined text-slate-400">paid</span>
           </div>
@@ -272,7 +272,7 @@ export default function VendorDashboard() {
           <p className="text-sm text-slate-500 font-medium mt-1">Today&apos;s Revenue</p>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-slate-200">
           <div className="flex items-center justify-between mb-3">
             <span className="material-symbols-outlined text-amber-500">star</span>
             <span className="text-xs text-slate-400 font-medium">{vendor.review_count} reviews</span>
@@ -281,7 +281,7 @@ export default function VendorDashboard() {
           <p className="text-sm text-slate-500 font-medium mt-1">Average Rating</p>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-slate-200">
           <div className="flex items-center justify-between mb-3">
             <span className="material-symbols-outlined text-slate-400">inventory_2</span>
           </div>
@@ -316,7 +316,7 @@ export default function VendorDashboard() {
           </div>
 
           {pendingOrders.length === 0 ? (
-            <div className="bg-white border-2 border-dashed border-slate-200 rounded-3xl p-12 text-center">
+            <div className="bg-[var(--color-surface-container-lowest)] border-2 border-dashed border-slate-200 rounded-3xl p-12 text-center">
               <span className="material-symbols-outlined text-5xl text-slate-300 mb-3">check_circle</span>
               <p className="text-slate-400 font-medium">No pending orders</p>
               <p className="text-slate-300 text-sm mt-1">New orders will appear here in real-time</p>
@@ -324,7 +324,7 @@ export default function VendorDashboard() {
           ) : (
             <div className="space-y-4">
               {pendingOrders.slice(0, 5).map((order) => (
-                <div key={order.id} className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 border-l-4 border-l-[#ba001c]">
+                <div key={order.id} className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-sm border border-slate-200 border-l-4 border-l-[#ba001c]">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                       <span className="font-extrabold text-slate-900">#{order.id.slice(0, 8).toUpperCase()}</span>
@@ -380,7 +380,7 @@ export default function VendorDashboard() {
               </h2>
               <div className="space-y-4">
                 {activeOrders.map((order) => (
-                  <div key={order.id} className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 border-l-4 border-l-blue-500">
+                  <div key={order.id} className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-sm border border-slate-200 border-l-4 border-l-blue-500">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2">
                         <span className="font-extrabold text-slate-900">#{order.id.slice(0, 8).toUpperCase()}</span>
@@ -420,7 +420,7 @@ export default function VendorDashboard() {
         {/* Quick Actions & Recent Orders */}
         <div className="space-y-6">
           {/* Quick Actions */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-slate-200">
             <h3 className="font-bold text-slate-800 mb-4">Quick Actions</h3>
             <div className="grid grid-cols-2 gap-3">
               <Link
@@ -455,7 +455,7 @@ export default function VendorDashboard() {
           </div>
 
           {/* Recent Orders */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-slate-200">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-bold text-slate-800">Recent Orders</h3>
               <Link href="/partner/orders" className="text-xs font-bold text-[#ba001c]">See All</Link>

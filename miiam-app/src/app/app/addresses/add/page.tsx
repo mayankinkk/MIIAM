@@ -370,7 +370,7 @@ export default function AddressPickerPage() {
 
   return (
     <div className="h-screen flex flex-col bg-white">
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-[var(--color-surface-container-lowest)] shadow-md">
         <div className="flex items-center gap-3 px-4 py-3">
           <Link href="/app/checkout">
             <span className="material-symbols-outlined text-on-surface">arrow_back</span>
@@ -390,7 +390,7 @@ export default function AddressPickerPage() {
         <button
           onClick={() => handleDetectLocation(true)}
           disabled={detecting}
-          className="absolute bottom-36 right-4 z-40 bg-white p-3 rounded-full shadow-lg hover:bg-slate-50 transition-all"
+          className="absolute bottom-36 right-4 z-40 bg-[var(--color-surface-container-lowest)] p-3 rounded-full shadow-lg hover:bg-slate-50 transition-all"
           title="Use current location"
         >
           {detecting ? (
@@ -422,7 +422,7 @@ export default function AddressPickerPage() {
         )}
 
         {currentLocation && (
-          <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-xl z-50 max-h-[50vh] overflow-y-auto">
+          <div className="absolute bottom-0 left-0 right-0 bg-[var(--color-surface-container-lowest)] rounded-t-2xl shadow-xl z-50 max-h-[50vh] overflow-y-auto">
             <div className="p-4 border-b border-slate-100">
               <div className="flex items-center gap-2 mb-2">
                 <span className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
@@ -523,7 +523,7 @@ export default function AddressPickerPage() {
         )}
 
         {!currentLocation && (
-          <div className="absolute bottom-4 left-4 right-4 bg-white rounded-xl shadow-lg p-4 z-40">
+          <div className="absolute bottom-4 left-4 right-4 bg-[var(--color-surface-container-lowest)] rounded-xl shadow-lg p-4 z-40">
             <div className="relative">
               <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
               <input

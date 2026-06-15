@@ -144,7 +144,7 @@ export default function CameraCapture({
           onClick={handleCapture}
           disabled={!ready || !!error}
           aria-label="Capture photo"
-          className="w-20 h-20 rounded-full bg-white flex items-center justify-center disabled:opacity-30 active:scale-95 transition-transform"
+          className="w-20 h-20 rounded-full bg-[var(--color-surface-container-lowest)] flex items-center justify-center disabled:opacity-30 active:scale-95 transition-transform"
         >
           <span className="material-symbols-outlined text-black text-4xl">photo_camera</span>
         </button>

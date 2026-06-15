@@ -189,7 +189,7 @@ export default function TechnicianTracker({ orderId, customerLat = 26.1465, cust
 
   if (loading) {
     return (
-      <div className="p-4 bg-white rounded-xl border border-slate-100">
+      <div className="p-4 bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-100">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-slate-100 rounded-full animate-pulse" />
           <div className="flex-1">
@@ -203,7 +203,7 @@ export default function TechnicianTracker({ orderId, customerLat = 26.1465, cust
 
   if (!technician) {
     return (
-      <div className="p-4 bg-white rounded-xl border border-slate-100">
+      <div className="p-4 bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-100">
         <p className="text-sm text-slate-500 text-center">Technician not assigned yet</p>
       </div>
     );
@@ -219,7 +219,7 @@ export default function TechnicianTracker({ orderId, customerLat = 26.1465, cust
   const currentStepIndex = statusSteps.findIndex(s => s.key === technician.status);
 
   return (
-    <div className="bg-white rounded-xl border border-slate-100 p-4 space-y-4">
+    <div className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-100 p-4 space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -235,11 +235,11 @@ export default function TechnicianTracker({ orderId, customerLat = 26.1465, cust
       {/* Map */}
       <div className="relative rounded-xl overflow-hidden border border-slate-100">
         <div ref={mapRef} className="h-48 w-full" />
-        <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-md flex items-center gap-2">
+        <div className="absolute top-3 left-3 bg-[var(--color-surface-container-lowest)]/90 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-md flex items-center gap-2">
           <div className="w-2 h-2 bg-[#ba001c] rounded-full animate-pulse" />
           <span className="text-xs font-bold text-slate-700">Live</span>
         </div>
-        <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-md flex items-center gap-1.5">
+        <div className="absolute top-3 right-3 bg-[var(--color-surface-container-lowest)]/90 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-md flex items-center gap-1.5">
           <span className="material-symbols-outlined text-blue-500 text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>home</span>
           <span className="text-xs font-bold text-slate-700">Your Location</span>
         </div>

@@ -52,14 +52,14 @@ export default function PartnerKOTPage() {
       </div>
 
       {orders.length === 0 ? (
-        <div className="bg-white rounded-2xl p-12 text-center border border-slate-200">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-12 text-center border border-slate-200">
           <span className="material-symbols-outlined text-5xl text-slate-300">restaurant</span>
           <p className="text-slate-400 font-medium mt-3">No pending tickets</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {orders.map((order) => (
-            <div key={order.id} className="bg-white rounded-2xl border border-slate-200 p-5 space-y-3 shadow-sm">
+            <div key={order.id} className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-200 p-5 space-y-3 shadow-sm">
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-xs font-bold text-slate-400">#{order.id.slice(0, 8).toUpperCase()}</p>

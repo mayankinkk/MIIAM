@@ -123,17 +123,17 @@ export default function RiderIncidentPage() {
           </div>
           <p className="text-sm opacity-90 mb-3">Call immediately for life-threatening situations</p>
           <div className="flex gap-2">
-            <a href="tel:102" className="flex-1 bg-white text-red-600 py-2 rounded-lg font-bold text-center text-sm">
+            <a href="tel:102" className="flex-1 bg-[var(--color-surface-container-lowest)] text-red-600 py-2 rounded-lg font-bold text-center text-sm">
               Call 102
             </a>
-            <a href="tel:100" className="flex-1 bg-white text-red-600 py-2 rounded-lg font-bold text-center text-sm">
+            <a href="tel:100" className="flex-1 bg-[var(--color-surface-container-lowest)] text-red-600 py-2 rounded-lg font-bold text-center text-sm">
               Call 100
             </a>
           </div>
         </div>
 
         {/* One-Tap Emergency Button */}
-        <div className="bg-white rounded-2xl p-6 shadow-lg text-center">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg text-center">
           <h3 className="font-bold text-[#4d212a] mb-4">One-Tap Emergency</h3>
           <button
             onClick={() => handleQuickReport("emergency")}
@@ -146,7 +146,7 @@ export default function RiderIncidentPage() {
         </div>
 
         {/* Quick Report Types */}
-        <div className="bg-white rounded-2xl p-5 shadow-lg">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-lg">
           <h3 className="font-bold text-[#4d212a] mb-4">What happened?</h3>
           <div className="grid grid-cols-2 gap-3">
             {incidentTypes.map((type) => (
@@ -163,7 +163,7 @@ export default function RiderIncidentPage() {
         </div>
 
         {/* Emergency Contacts */}
-        <div className="bg-white rounded-2xl p-5 shadow-lg">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-lg">
           <h3 className="font-bold text-[#4d212a] mb-4">Quick Contacts</h3>
           <div className="space-y-3">
             {emergencyContacts.map((contact, i) => (
@@ -188,7 +188,7 @@ export default function RiderIncidentPage() {
         </div>
 
         {/* Recent Incidents */}
-        <div className="bg-white rounded-2xl p-5 shadow-lg">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-lg">
           <h3 className="font-bold text-[#4d212a] mb-4">Recent Reports</h3>
           <div className="space-y-3">
             {recentIncidents.length > 0 ? recentIncidents.map((report, i) => (
@@ -222,7 +222,7 @@ export default function RiderIncidentPage() {
       {/* Incident Report Modal */}
       {showConfirm && (
         <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-sm">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-sm">
             <div className="text-center mb-4">
               <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
                 <span className="text-3xl">

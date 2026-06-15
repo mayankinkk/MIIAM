@@ -37,7 +37,7 @@ export default function RiderSupportPage() {
       </header>
 
       <main className="p-6 space-y-6 pb-32">
-        <div className="bg-white rounded-2xl p-6 shadow-lg">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg">
           <h2 className="font-bold text-[#4d212a] mb-4">Contact Us</h2>
           <div className="space-y-3">
             <a href={`tel:${support.support_phone}`} className="w-full flex items-center gap-3 p-4 bg-slate-50 rounded-xl">
@@ -58,7 +58,7 @@ export default function RiderSupportPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl p-6 shadow-lg">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg">
           <h2 className="font-bold text-[#4d212a] mb-4">Frequently Asked Questions</h2>
           <div className="space-y-3">
             {faqs.map((faq, i) => (

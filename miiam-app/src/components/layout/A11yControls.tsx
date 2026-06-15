@@ -20,7 +20,7 @@ export default function A11yControls() {
   if (!mounted) return null;
 
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl p-4 space-y-3 text-sm">
+    <div className="bg-[var(--color-surface-container-lowest)] border border-slate-200 rounded-2xl p-4 space-y-3 text-sm">
       <div className="flex items-center gap-2 mb-1">
         <span className="material-symbols-outlined text-base text-slate-600">accessibility_new</span>
         <p className="font-bold text-slate-800">Accessibility</p>

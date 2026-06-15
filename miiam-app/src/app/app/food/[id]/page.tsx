@@ -432,7 +432,7 @@ export default function RestaurantProfilePage() {
               <h1 className="text-white font-black text-2xl sm:text-3xl leading-tight">{vendor.shop_name}</h1>
               <p className="text-white/80 text-sm mt-1 font-medium">{vendor.cuisine}</p>
             </div>
-            <div className="bg-white/20 backdrop-blur-sm rounded-2xl px-4 py-2 text-center flex-shrink-0">
+            <div className="bg-[var(--color-surface-container-lowest)]/20 backdrop-blur-sm rounded-2xl px-4 py-2 text-center flex-shrink-0">
               <p className="text-white font-black text-xl">{avgRating}</p>
               <div className="flex text-amber-400 text-xs">{'★'.repeat(5)}</div>
               <p className="text-white/70 text-[10px] mt-0.5">{reviews.length || vendor.rating_count || 0} reviews</p>

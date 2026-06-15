@@ -19,7 +19,7 @@ export function Shimmer({ className = "" }: { className?: string }) {
 
 export function ShimmerCard() {
   return (
-    <div className="bg-white rounded-2xl p-4">
+    <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4">
       <Shimmer className="h-32 w-full rounded-xl mb-4" />
       <Shimmer className="h-4 w-3/4 mb-2" />
       <Shimmer className="h-3 w-1/2" />
@@ -31,7 +31,7 @@ export function ShimmerList({ count = 5 }: { count?: number }) {
   return (
     <div className="space-y-4">
       {Array.from({ length: count }).map((_, i) => (
-        <div key={i} className="flex gap-4 p-4 bg-white rounded-xl">
+        <div key={i} className="flex gap-4 p-4 bg-[var(--color-surface-container-lowest)] rounded-xl">
           <Shimmer className="w-20 h-20 rounded-lg" />
           <div className="flex-1">
             <Shimmer className="h-4 w-3/4 mb-2" />
@@ -45,7 +45,7 @@ export function ShimmerList({ count = 5 }: { count?: number }) {
 
 export function ShimmerProductCard() {
   return (
-    <div className="bg-white rounded-2xl overflow-hidden">
+    <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl overflow-hidden">
       <Shimmer className="h-32 w-full" />
       <div className="p-3">
         <Shimmer className="h-4 w-3/4 mb-2" />

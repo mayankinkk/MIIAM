@@ -99,13 +99,13 @@ export default function RiderAnalyticsPage() {
           <h1 className="text-2xl font-black tracking-tighter">Analytics</h1>
         </div>
 
-        <div className="flex gap-2 mt-6 bg-white/10 p-1 rounded-xl">
+        <div className="flex gap-2 mt-6 bg-[var(--color-surface-container-lowest)]/10 p-1 rounded-xl">
           {(["week", "month", "year"] as const).map(p => (
             <button
               key={p}
               onClick={() => setPeriod(p)}
               className={`flex-1 py-2 rounded-lg text-sm font-bold ${
-                period === p ? "bg-white text-[#0b50d5]" : "text-white/70"
+                period === p ? "bg-[var(--color-surface-container-lowest)] text-[#0b50d5]" : "text-white/70"
               }`}
             >
               {p.charAt(0).toUpperCase() + p.slice(1)}
@@ -118,7 +118,7 @@ export default function RiderAnalyticsPage() {
         {loading ? (
           <div className="space-y-3">
             {[1, 2, 3].map(i => (
-              <div key={i} className="bg-white rounded-xl p-4 animate-pulse">
+              <div key={i} className="bg-[var(--color-surface-container-lowest)] rounded-xl p-4 animate-pulse">
                 <div className="h-20 bg-slate-200 rounded mb-2" />
                 <div className="h-4 bg-slate-200 rounded w-3/4" />
               </div>
@@ -128,19 +128,19 @@ export default function RiderAnalyticsPage() {
           <>
             {/* Summary Cards */}
             <div className="grid grid-cols-2 gap-3">
-              <div className="bg-white rounded-2xl p-4 shadow-sm">
+              <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-sm">
                 <p className="text-xs text-slate-400">Total Deliveries</p>
                 <p className="text-3xl font-black text-[#0b50d5] mt-1">{totalDeliveries}</p>
               </div>
-              <div className="bg-white rounded-2xl p-4 shadow-sm">
+              <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-sm">
                 <p className="text-xs text-slate-400">Total Earnings</p>
                 <p className="text-3xl font-black text-green-600">₹{totalEarnings}</p>
               </div>
-              <div className="bg-white rounded-2xl p-4 shadow-sm">
+              <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-sm">
                 <p className="text-xs text-slate-400">Avg Rating</p>
                 <p className="text-3xl font-black text-amber-500">{avgRating} ★</p>
               </div>
-              <div className="bg-white rounded-2xl p-4 shadow-sm">
+              <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-sm">
                 <p className="text-xs text-slate-400">Avg Earning/Delivery</p>
                 <p className="text-3xl font-black text-[#0b50d5]">
                   {totalDeliveries > 0 ? `₹${Math.round(totalEarnings / totalDeliveries)}` : "₹0"}
@@ -149,7 +149,7 @@ export default function RiderAnalyticsPage() {
             </div>
 
             {/* Earnings Chart */}
-            <div className="bg-white rounded-2xl p-5 shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-sm">
               <h3 className="font-bold text-slate-800 mb-4">Earnings This {period.charAt(0).toUpperCase() + period.slice(1)}</h3>
               {totalEarnings === 0 ? (
                 <div className="text-center py-8 text-slate-400">
@@ -178,7 +178,7 @@ export default function RiderAnalyticsPage() {
             </div>
 
             {/* Stats Grid */}
-            <div className="bg-white rounded-2xl p-5 shadow-sm space-y-3">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-sm space-y-3">
               
 
               <div className="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
@@ -198,7 +198,7 @@ export default function RiderAnalyticsPage() {
             </div>
 
             {/* Rating Breakdown */}
-            <div className="bg-white rounded-2xl p-5 shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-sm">
               <h3 className="font-bold text-slate-800 mb-4">Rating Breakdown</h3>
               <div className="flex items-center gap-4">
                 <div className="text-center">

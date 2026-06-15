@@ -73,7 +73,7 @@ export default function PrintServiceGrid({ activePreset, onSelect }: Props) {
           const isActive = activePreset === svc.id;
           const card = (
             <div
-              className={`relative group rounded-2xl bg-white p-3 sm:p-4 border-2 transition-all cursor-pointer active:scale-95 ${
+              className={`relative group rounded-2xl bg-[var(--color-surface-container-lowest)] p-3 sm:p-4 border-2 transition-all cursor-pointer active:scale-95 ${
                 isActive
                   ? "border-indigo-500 shadow-lg shadow-indigo-500/20 ring-2 ring-indigo-200"
                   : `border-slate-100 ring-1 ${meta.ring} hover:shadow-md hover:-translate-y-0.5`

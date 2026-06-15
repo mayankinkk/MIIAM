@@ -22,7 +22,7 @@ export default function NotFound() {
           </Link>
           <Link
             href="/app/home"
-            className="block w-full px-6 py-3 bg-white border-2 border-slate-200 text-slate-700 rounded-xl font-bold hover:border-[#ba001c] transition-colors"
+            className="block w-full px-6 py-3 bg-[var(--color-surface-container-lowest)] border-2 border-slate-200 text-slate-700 rounded-xl font-bold hover:border-[#ba001c] transition-colors"
           >
             Open App
           </Link>

@@ -457,7 +457,7 @@ export default function AdminVendorsPage() {
 
       {showAddVendor && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto">
-          <div className="bg-white rounded-3xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-black text-slate-800">Create Vendor Profile</h2>
               <button
@@ -790,7 +790,7 @@ export default function AdminVendorsPage() {
 
       {editingVendor && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto">
-          <div className="bg-white rounded-3xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-black text-slate-800">Edit Vendor Profile</h2>
               <button
@@ -1009,7 +1009,7 @@ export default function AdminVendorsPage() {
                       </div>
                     </div>
                     <div className={`w-12 h-7 rounded-full p-1 transition-colors ${editForm.isFeatured ? "bg-amber-500" : "bg-slate-200"}`}>
-                      <div className={`w-5 h-5 bg-white rounded-full shadow transition-transform ${editForm.isFeatured ? "translate-x-5" : ""}`} />
+                      <div className={`w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full shadow transition-transform ${editForm.isFeatured ? "translate-x-5" : ""}`} />
                     </div>
                   </label>
 
@@ -1030,7 +1030,7 @@ export default function AdminVendorsPage() {
                       </div>
                     </div>
                     <div className={`w-12 h-7 rounded-full p-1 transition-colors ${editForm.isPromoted ? "bg-purple-500" : "bg-slate-200"}`}>
-                      <div className={`w-5 h-5 bg-white rounded-full shadow transition-transform ${editForm.isPromoted ? "translate-x-5" : ""}`} />
+                      <div className={`w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full shadow transition-transform ${editForm.isPromoted ? "translate-x-5" : ""}`} />
                     </div>
                   </label>
 
@@ -1051,7 +1051,7 @@ export default function AdminVendorsPage() {
                       </div>
                     </div>
                     <div className={`w-12 h-7 rounded-full p-1 transition-colors ${editForm.isNew ? "bg-green-500" : "bg-slate-200"}`}>
-                      <div className={`w-5 h-5 bg-white rounded-full shadow transition-transform ${editForm.isNew ? "translate-x-5" : ""}`} />
+                      <div className={`w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full shadow transition-transform ${editForm.isNew ? "translate-x-5" : ""}`} />
                     </div>
                   </label>
                 </div>
@@ -1089,7 +1089,7 @@ export default function AdminVendorsPage() {
                         <button
                           type="button"
                           onClick={() => setEditingMenuItem(item)}
-                          className="p-1.5 bg-white border border-slate-200 rounded-lg hover:border-[#ba001c] hover:text-[#ba001c] transition-all flex items-center justify-center"
+                          className="p-1.5 bg-[var(--color-surface-container-lowest)] border border-slate-200 rounded-lg hover:border-[#ba001c] hover:text-[#ba001c] transition-all flex items-center justify-center"
                           title="Edit details"
                         >
                           <span className="material-symbols-outlined text-xs">edit</span>
@@ -1097,7 +1097,7 @@ export default function AdminVendorsPage() {
                         <button
                           type="button"
                           onClick={() => item.id && handleDeleteMenuItem(item.id)}
-                          className="p-1.5 bg-white border border-slate-200 text-red-500 rounded-lg hover:bg-red-50 transition-all flex items-center justify-center"
+                          className="p-1.5 bg-[var(--color-surface-container-lowest)] border border-slate-200 text-red-500 rounded-lg hover:bg-red-50 transition-all flex items-center justify-center"
                           title="Delete"
                         >
                           <span className="material-symbols-outlined text-xs">delete</span>
@@ -1143,7 +1143,7 @@ export default function AdminVendorsPage() {
                       </select>
 
                       <div>
-                        <label className="bg-white border border-slate-200 hover:border-[#ba001c] hover:bg-slate-50 transition-all text-slate-600 font-bold px-3 py-2.5 rounded-lg cursor-pointer text-xs flex items-center justify-center gap-1.5 h-[42px] min-w-0">
+                        <label className="bg-[var(--color-surface-container-lowest)] border border-slate-200 hover:border-[#ba001c] hover:bg-slate-50 transition-all text-slate-600 font-bold px-3 py-2.5 rounded-lg cursor-pointer text-xs flex items-center justify-center gap-1.5 h-[42px] min-w-0">
                           <span className="material-symbols-outlined text-sm flex-shrink-0">upload</span>
                           <span className="truncate">{newMenuItem.image_url ? "Image Selected" : "Upload Image"}</span>
                           <input
@@ -1242,7 +1242,7 @@ export default function AdminVendorsPage() {
         </div>
       )}
 
-      <div className="bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
         <div className="p-6 border-b border-slate-50">
           <h2 className="font-black text-slate-800 uppercase tracking-widest text-sm">All Vendors</h2>
         </div>
@@ -1309,7 +1309,7 @@ export default function AdminVendorsPage() {
 
       {editingMenuItem && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-[60] overflow-y-auto animate-fade-in">
-          <div className="bg-white rounded-3xl p-6 max-w-md w-full mx-4 shadow-2xl animate-scale-up">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-6 max-w-md w-full mx-4 shadow-2xl animate-scale-up">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-black text-slate-800">Edit Menu Item Details</h3>
               <button

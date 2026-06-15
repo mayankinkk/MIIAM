@@ -173,7 +173,7 @@ export default function AdminPrintingAnalytics() {
   return (
     <div className="px-4 md:px-8 py-6">
       <div className="flex items-center gap-3 mb-6">
-        <Link href="/admin/printing" className="w-10 h-10 bg-white border border-slate-200 rounded-xl flex items-center justify-center">
+        <Link href="/admin/printing" className="w-10 h-10 bg-[var(--color-surface-container-lowest)] border border-slate-200 rounded-xl flex items-center justify-center">
           <span className="material-symbols-outlined text-slate-600">arrow_back</span>
         </Link>
         <div className="flex-1">
@@ -183,7 +183,7 @@ export default function AdminPrintingAnalytics() {
         <select
           value={days}
           onChange={(e) => setDays(parseInt(e.target.value, 10))}
-          className="px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-bold"
+          className="px-3 py-2 bg-[var(--color-surface-container-lowest)] border border-slate-200 rounded-lg text-sm font-bold"
         >
           <option value={7}>Last 7 days</option>
           <option value={14}>Last 14 days</option>
@@ -204,7 +204,7 @@ export default function AdminPrintingAnalytics() {
           </div>
 
           {/* Daily chart */}
-          <div className="bg-white rounded-2xl border border-slate-100 p-5">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-100 p-5">
             <h3 className="font-bold text-slate-800 mb-3 flex items-center gap-2">
               <span className="material-symbols-outlined text-primary">bar_chart</span>
               Daily revenue
@@ -230,7 +230,7 @@ export default function AdminPrintingAnalytics() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Color split */}
-            <div className="bg-white rounded-2xl border border-slate-100 p-5">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-100 p-5">
               <h3 className="font-bold text-slate-800 mb-3 flex items-center gap-2">
                 <span className="material-symbols-outlined text-primary">palette</span>
                 Color split
@@ -242,7 +242,7 @@ export default function AdminPrintingAnalytics() {
             </div>
 
             {/* Revenue breakdown */}
-            <div className="bg-white rounded-2xl border border-slate-100 p-5">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-100 p-5">
               <h3 className="font-bold text-slate-800 mb-3 flex items-center gap-2">
                 <span className="material-symbols-outlined text-primary">payments</span>
                 Revenue breakdown
@@ -260,7 +260,7 @@ export default function AdminPrintingAnalytics() {
           </div>
 
           {/* Top customers */}
-          <div className="bg-white rounded-2xl border border-slate-100 p-5">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-100 p-5">
             <h3 className="font-bold text-slate-800 mb-3 flex items-center gap-2">
               <span className="material-symbols-outlined text-primary">group</span>
               Top customers

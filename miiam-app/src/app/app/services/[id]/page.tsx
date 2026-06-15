@@ -144,7 +144,7 @@ function ServiceDetailContent() {
 
   return (
     <div className="min-h-screen bg-white pb-24">
-      <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-4 py-4 bg-white/80 backdrop-blur-2xl border-b border-gray-100">
+      <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-4 py-4 bg-[var(--color-surface-container-lowest)]/80 backdrop-blur-2xl border-b border-gray-100">
         <button onClick={() => router.back()} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100">
           <span className="material-symbols-outlined text-gray-700">arrow_back</span>
         </button>

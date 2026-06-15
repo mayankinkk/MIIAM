@@ -161,7 +161,7 @@ export default function OrderItemsList({ order, onChatVendor }: OrderItemsListPr
             href={`/api/printing/invoice?orderId=${order.id}`}
             target="_blank"
             rel="noreferrer"
-            className="w-full bg-white border-2 border-indigo-200 text-indigo-700 rounded-xl py-4 sm:py-5 text-base sm:text-lg font-extrabold hover:bg-indigo-50 active:scale-95 transition-all flex items-center justify-center gap-2"
+            className="w-full bg-[var(--color-surface-container-lowest)] border-2 border-indigo-200 text-indigo-700 rounded-xl py-4 sm:py-5 text-base sm:text-lg font-extrabold hover:bg-indigo-50 active:scale-95 transition-all flex items-center justify-center gap-2"
           >
             <span className="material-symbols-outlined">description</span>
             {t.orders.gstInvoice}

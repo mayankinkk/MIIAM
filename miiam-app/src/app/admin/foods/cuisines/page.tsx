@@ -128,25 +128,25 @@ export default function AdminCuisinesPage() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white p-5 rounded-2xl border border-slate-100">
+        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-slate-100">
           <p className="text-slate-400 text-[10px] font-bold uppercase">Total Cuisines</p>
           <p className="text-2xl font-black text-slate-800">{cuisines.length}</p>
         </div>
-        <div className="bg-white p-5 rounded-2xl border border-slate-100">
+        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-slate-100">
           <p className="text-slate-400 text-[10px] font-bold uppercase">Active</p>
           <p className="text-2xl font-black text-green-600">{cuisines.filter(c => c.active).length}</p>
         </div>
-        <div className="bg-white p-5 rounded-2xl border border-slate-100">
+        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-slate-100">
           <p className="text-slate-400 text-[10px] font-bold uppercase">Total Items</p>
           <p className="text-2xl font-black text-slate-800">{cuisines.reduce((acc, c) => acc + (c.item_count || 0), 0)}</p>
         </div>
-        <div className="bg-white p-5 rounded-2xl border border-slate-100">
+        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-slate-100">
           <p className="text-slate-400 text-[10px] font-bold uppercase">Vendors</p>
           <p className="text-2xl font-black text-slate-800">{cuisines.reduce((acc, c) => acc + (c.vendor_count || 0), 0)}</p>
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-100 overflow-hidden shadow-sm">
         <div className="p-4 border-b">
           <div className="relative max-w-md">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
@@ -209,7 +209,7 @@ export default function AdminCuisinesPage() {
 
       {showAddModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl max-w-md w-full p-6">
             <div className="flex justify-between items-center mb-4">
               <h2 className="font-black text-lg">Add New Cuisine</h2>
               <button onClick={() => setShowAddModal(false)} className="text-slate-400">
@@ -251,7 +251,7 @@ export default function AdminCuisinesPage() {
 
       {editingCuisine && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl max-w-md w-full p-6">
             <div className="flex justify-between items-center mb-4">
               <h2 className="font-black text-lg">Edit Cuisine</h2>
               <button onClick={() => setEditingCuisine(null)} className="text-slate-400">

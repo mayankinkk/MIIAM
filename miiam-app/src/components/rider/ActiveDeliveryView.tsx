@@ -46,7 +46,7 @@ export default function ActiveDeliveryView({
 
   return (
     <div className="absolute inset-0 z-10 flex items-end justify-center pb-24 px-4">
-      <div className="max-w-md w-full bg-white rounded-2xl overflow-hidden shadow-2xl">
+      <div className="max-w-md w-full bg-[var(--color-surface-container-lowest)] rounded-2xl overflow-hidden shadow-2xl">
         {activeOrders.length > 1 && (
           <div className="bg-slate-50 border-b border-slate-200 px-3 py-2 flex items-center gap-1 overflow-x-auto">
             <span className="material-symbols-outlined text-slate-400 text-sm">stack</span>
@@ -57,7 +57,7 @@ export default function ActiveDeliveryView({
                 className={`flex-shrink-0 px-3 py-1 rounded-full text-[10px] font-bold transition-all ${
                   currentOrder?.id === ao.id
                     ? "bg-[#0b50d5] text-white"
-                    : "bg-white text-slate-500 border border-slate-200"
+                    : "bg-[var(--color-surface-container-lowest)] text-slate-500 border border-slate-200"
                 }`}
               >
                 #{ao.id.slice(-4).toUpperCase()}
@@ -103,7 +103,7 @@ export default function ActiveDeliveryView({
           )}
 
           {(deliveryStep === "delivering" || deliveryStep === "arrived") && currentOrder.orderDbId && (
-            <div className="bg-white">
+            <div className="bg-[var(--color-surface-container-lowest)]">
               <CustomerLocationView orderId={currentOrder.orderDbId} className="rounded-none border-0" height={170} />
             </div>
           )}
@@ -112,34 +112,34 @@ export default function ActiveDeliveryView({
             {currentOrder.type === "multi_stop" ? (
               <>
                 <div className={`flex flex-col items-center ${deliveryStep === "picking_up" ? "text-white" : "text-white/50"}`}>
-                  <div className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${deliveryStep === "picking_up" ? "bg-white text-[#0b50d5]" : "bg-white/30"}`}>1</div>
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${deliveryStep === "picking_up" ? "bg-[var(--color-surface-container-lowest)] text-[#0b50d5]" : "bg-white/30"}`}>1</div>
                   <span>{t.rider.delivery.pickupStep}</span>
                 </div>
                 <div className="flex-1 h-0.5 bg-white/30 mx-2"><div className={`h-full bg-white ${deliveryStep !== "picking_up" ? "w-full" : "w-0"}`}></div></div>
                 <div className={`flex flex-col items-center ${deliveryStep === "delivering" || deliveryStep === "arrived" ? "text-white" : "text-white/50"}`}>
-                  <div className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${deliveryStep === "delivering" || deliveryStep === "arrived" ? "bg-white text-[#4d212a]" : "bg-white/30"}`}>2</div>
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${deliveryStep === "delivering" || deliveryStep === "arrived" ? "bg-[var(--color-surface-container-lowest)] text-[#4d212a]" : "bg-white/30"}`}>2</div>
                   <span>{t.rider.delivery.deliveriesStep}</span>
                 </div>
                 <div className="flex-1 h-0.5 bg-white/30 mx-2"><div className={`h-full bg-white ${deliveryStep === "arrived" ? "w-full" : "w-0"}`}></div></div>
                 <div className={`flex flex-col items-center ${deliveryStep === "arrived" ? "text-white" : "text-white/50"}`}>
-                  <div className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${deliveryStep === "arrived" ? "bg-white text-green-600" : "bg-white/30"}`}>3</div>
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${deliveryStep === "arrived" ? "bg-[var(--color-surface-container-lowest)] text-green-600" : "bg-white/30"}`}>3</div>
                   <span>{t.rider.delivery.completeStep}</span>
                 </div>
               </>
             ) : (
               <>
                 <div className={`flex flex-col items-center ${deliveryStep === "shopping" ? "text-white" : "text-white/50"}`}>
-                  <div className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${deliveryStep === "shopping" ? "bg-white text-purple-600" : "bg-white/30"}`}>1</div>
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${deliveryStep === "shopping" ? "bg-[var(--color-surface-container-lowest)] text-purple-600" : "bg-white/30"}`}>1</div>
                   <span>{t.rider.delivery.shopStep}</span>
                 </div>
                 <div className="flex-1 h-0.5 bg-white/30 mx-2"><div className={`h-full bg-white ${["picking_up", "delivering", "arrived"].includes(deliveryStep) ? "w-full" : "w-0"}`}></div></div>
                 <div className={`flex flex-col items-center ${["picking_up", "delivering", "arrived"].includes(deliveryStep) ? "text-white" : "text-white/50"}`}>
-                  <div className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${["picking_up", "delivering", "arrived"].includes(deliveryStep) ? "bg-white text-[#0b50d5]" : "bg-white/30"}`}>2</div>
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${["picking_up", "delivering", "arrived"].includes(deliveryStep) ? "bg-[var(--color-surface-container-lowest)] text-[#0b50d5]" : "bg-white/30"}`}>2</div>
                   <span>{t.rider.delivery.deliverStep}</span>
                 </div>
                 <div className="flex-1 h-0.5 bg-white/30 mx-2"><div className={`h-full bg-white ${deliveryStep === "arrived" ? "w-full" : "w-0"}`}></div></div>
                 <div className={`flex flex-col items-center ${deliveryStep === "arrived" ? "text-white" : "text-white/50"}`}>
-                  <div className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${deliveryStep === "arrived" ? "bg-white text-green-600" : "bg-white/30"}`}>3</div>
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${deliveryStep === "arrived" ? "bg-[var(--color-surface-container-lowest)] text-green-600" : "bg-white/30"}`}>3</div>
                   <span>{t.rider.delivery.collectStep}</span>
                 </div>
               </>
@@ -161,7 +161,7 @@ export default function ActiveDeliveryView({
                 <p className="text-[10px] text-purple-600 font-bold mb-3">{t.rider.delivery.itemsToBuy}</p>
                 <div className="space-y-2">
                   {currentOrder.itemsList.map((item: string, i: number) => (
-                    <div key={i} className="flex items-center justify-between p-2 bg-white rounded-lg">
+                    <div key={i} className="flex items-center justify-between p-2 bg-[var(--color-surface-container-lowest)] rounded-lg">
                       <span className="text-sm font-medium text-slate-700">• {item}</span>
                       <button
                         onClick={() => onSetPickedItems(prev => {

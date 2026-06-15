@@ -83,13 +83,13 @@ export default function PartnerChatPage() {
       </div>
 
       {orderIds.length === 0 ? (
-        <div className="bg-white rounded-2xl p-12 text-center border border-slate-200">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-12 text-center border border-slate-200">
           <span className="material-symbols-outlined text-5xl text-slate-300">chat</span>
           <p className="text-slate-400 font-medium mt-3">No messages yet</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-1 bg-white rounded-2xl border border-slate-200 divide-y divide-slate-100">
+          <div className="lg:col-span-1 bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-200 divide-y divide-slate-100">
             {orderIds.map((oid) => {
               const msgs = grouped[oid];
               const last = msgs[0];
@@ -110,7 +110,7 @@ export default function PartnerChatPage() {
             })}
           </div>
 
-          <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200 flex flex-col">
+          <div className="lg:col-span-2 bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-200 flex flex-col">
             {!activeOrder ? (
               <div className="p-12 text-center text-slate-400 font-medium">Select a conversation</div>
             ) : (

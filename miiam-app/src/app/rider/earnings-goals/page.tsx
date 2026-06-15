@@ -166,7 +166,7 @@ export default function RiderEarningsGoalsPage() {
         </div>
 
         {/* Daily Goal */}
-        <div className="bg-white rounded-2xl p-5 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-sm">
           <div className="flex justify-between items-center mb-3">
             <h3 className="font-bold text-slate-800">Daily Goal</h3>
             <button onClick={() => { setGoalType("daily"); setShowSetGoal(true); }} className="text-xs text-[#0b50d5] font-bold">Edit</button>
@@ -183,7 +183,7 @@ export default function RiderEarningsGoalsPage() {
         </div>
 
         {/* Weekly Goal */}
-        <div className="bg-white rounded-2xl p-5 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-sm">
           <div className="flex justify-between items-center mb-3">
             <h3 className="font-bold text-slate-800">Weekly Goal</h3>
             <button onClick={() => { setGoalType("weekly"); setShowSetGoal(true); }} className="text-xs text-[#0b50d5] font-bold">Edit</button>
@@ -200,7 +200,7 @@ export default function RiderEarningsGoalsPage() {
         </div>
 
         {/* Earnings Breakdown */}
-        <div className="bg-white rounded-2xl p-5 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-sm">
           <h3 className="font-bold text-slate-800 mb-3">Earnings Breakdown</h3>
           <div className="grid grid-cols-3 gap-3">
             <div className="bg-slate-50 p-3 rounded-xl text-center">
@@ -221,7 +221,7 @@ export default function RiderEarningsGoalsPage() {
         </div>
 
         {/* Last 7 Days Chart */}
-        <div className="bg-white rounded-2xl p-5 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-sm">
           <h3 className="font-bold text-slate-800 mb-4">Last 7 Days</h3>
           {dailyData.length === 0 ? (
             <div className="text-center py-8 text-slate-400">
@@ -252,7 +252,7 @@ export default function RiderEarningsGoalsPage() {
         </div>
 
         {/* Recent Deliveries */}
-        <div className="bg-white rounded-2xl p-5 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-sm">
           <h3 className="font-bold text-slate-800 mb-4">Recent Deliveries</h3>
           {recentDeliveries.length === 0 ? (
             <p className="text-sm text-slate-400 text-center py-4">No deliveries yet</p>
@@ -275,7 +275,7 @@ export default function RiderEarningsGoalsPage() {
       {/* Set Goal Modal */}
       {showSetGoal && (
         <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-sm">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-sm">
             <h3 className="font-bold text-xl mb-4">Set {goalType === "daily" ? "Daily" : "Weekly"} Goal</h3>
             <div className="space-y-3">
               {goalType === "daily" ? (

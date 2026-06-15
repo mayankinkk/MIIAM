@@ -123,14 +123,14 @@ function RidersPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white p-6 rounded-3xl border border-slate-100"><p className="text-xs font-black text-slate-400 uppercase mb-1">Total Riders</p><p className="text-3xl font-black">{riders.length}</p></div>
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-slate-100"><p className="text-xs font-black text-slate-400 uppercase mb-1">Total Riders</p><p className="text-3xl font-black">{riders.length}</p></div>
         <div className="bg-green-50 p-6 rounded-3xl border border-green-100"><p className="text-xs font-black text-green-600 uppercase mb-1">Online Now</p><p className="text-3xl font-black text-green-600">{onlineCount}</p></div>
-        <div className="bg-white p-6 rounded-3xl border border-slate-100"><p className="text-xs font-black text-slate-400 uppercase mb-1">Total Deliveries</p><p className="text-3xl font-black">{totalDeliveries}</p></div>
-        <div className="bg-white p-6 rounded-3xl border border-slate-100"><p className="text-xs font-black text-slate-400 uppercase mb-1">Avg Rating</p><p className="text-3xl font-black flex items-center gap-1">{avgRating.toFixed(1)} <span className="material-symbols-outlined text-amber-500 text-xl">star</span></p></div>
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-slate-100"><p className="text-xs font-black text-slate-400 uppercase mb-1">Total Deliveries</p><p className="text-3xl font-black">{totalDeliveries}</p></div>
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-slate-100"><p className="text-xs font-black text-slate-400 uppercase mb-1">Avg Rating</p><p className="text-3xl font-black flex items-center gap-1">{avgRating.toFixed(1)} <span className="material-symbols-outlined text-amber-500 text-xl">star</span></p></div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-white rounded-3xl border border-slate-100 overflow-hidden">
+        <div className="lg:col-span-2 bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 overflow-hidden">
           <div className="p-4 border-b border-slate-100 flex justify-between items-center">
             <h2 className="font-black text-slate-800 uppercase text-sm">Live Map</h2>
             <div className="flex items-center gap-2"><span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span><span className="text-xs font-bold text-slate-400">Live</span></div>
@@ -140,7 +140,7 @@ function RidersPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-3xl border border-slate-100 overflow-hidden">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 overflow-hidden">
           <div className="p-4 border-b border-slate-100">
             <div className="flex gap-2">
               {(["all", "online", "offline"] as const).map(f => (
@@ -246,8 +246,8 @@ function RidersPage() {
                   </div>
                   <div className="space-y-4">
                     <h3 className="text-xs font-black text-slate-400 uppercase">Contact</h3>
-                    <div className="p-4 bg-white border border-slate-100 rounded-2xl flex items-center gap-4"><span className="material-symbols-outlined text-slate-400">mail</span><p className="font-bold">{selectedRider.profile?.email || "No email"}</p></div>
-                    <div className="p-4 bg-white border border-slate-100 rounded-2xl flex items-center gap-4"><span className="material-symbols-outlined text-slate-400">call</span><p className="font-bold">{selectedRider.phone || "No phone"}</p></div>
+                    <div className="p-4 bg-[var(--color-surface-container-lowest)] border border-slate-100 rounded-2xl flex items-center gap-4"><span className="material-symbols-outlined text-slate-400">mail</span><p className="font-bold">{selectedRider.profile?.email || "No email"}</p></div>
+                    <div className="p-4 bg-[var(--color-surface-container-lowest)] border border-slate-100 rounded-2xl flex items-center gap-4"><span className="material-symbols-outlined text-slate-400">call</span><p className="font-bold">{selectedRider.phone || "No phone"}</p></div>
                   </div>
                   <div className="flex gap-3 pt-6">
                     <button 
@@ -285,7 +285,7 @@ function RidersPage() {
 
               {activeTab === "docs" && (
                 <div className="space-y-4">
-                  <div className="p-5 bg-white border border-slate-100 rounded-2xl flex items-center justify-between group">
+                  <div className="p-5 bg-[var(--color-surface-container-lowest)] border border-slate-100 rounded-2xl flex items-center justify-between group">
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 rounded-xl bg-slate-100 overflow-hidden flex items-center justify-center">
                         {selectedRider.profile?.avatar_url ? <img src={selectedRider.profile.avatar_url} alt={`${selectedRider.name || 'Selected rider'}'s avatar`} className="w-full h-full object-cover" /> : <span className="material-symbols-outlined text-slate-400">person</span>}
@@ -297,7 +297,7 @@ function RidersPage() {
                     </div>
                     {selectedRider.profile?.avatar_url && <a href={selectedRider.profile.avatar_url} target="_blank" className="text-xs font-black text-[#ba001c] uppercase">View</a>}
                   </div>
-                  <div className="p-5 bg-white border border-slate-100 rounded-2xl flex items-center justify-between group">
+                  <div className="p-5 bg-[var(--color-surface-container-lowest)] border border-slate-100 rounded-2xl flex items-center justify-between group">
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 rounded-xl bg-slate-100 overflow-hidden flex items-center justify-center">
                         {selectedRider.id_proof_image ? <img src={selectedRider.id_proof_image} alt={`${selectedRider.id_proof_type || 'Govt ID'} proof image`} className="w-full h-full object-cover" /> : <span className="material-symbols-outlined text-slate-400">badge</span>}
@@ -318,7 +318,7 @@ function RidersPage() {
 
       {showAddModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-slate-100 flex justify-between items-center sticky top-0 bg-white">
               <h2 className="text-xl font-black text-slate-800">{isEditing ? "Edit Rider" : "Add Rider"}</h2>
               <button onClick={() => { setShowAddModal(false); setIsEditing(false); }} className="text-slate-400 hover:text-slate-600 p-2"><span className="material-symbols-outlined">close</span></button>
@@ -388,7 +388,7 @@ function RiderOrdersHistory({ riderId }: { riderId: string }) {
   return (
     <div className="space-y-3">
       {orders.map(order => (
-        <div key={order.id} className="bg-white border border-slate-100 rounded-xl p-4">
+        <div key={order.id} className="bg-[var(--color-surface-container-lowest)] border border-slate-100 rounded-xl p-4">
           <div className="flex justify-between items-start mb-2">
             <div>
               <p className="text-xs font-bold text-slate-500">#{order.id.slice(0, 8)}</p>

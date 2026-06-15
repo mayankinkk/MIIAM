@@ -103,7 +103,7 @@ export default function AdminSidebar() {
   const fullPath = pathname + (searchParams.toString() ? `?${searchParams.toString()}` : "");
 
   return (
-    <aside className="w-64 bg-white border-r border-[#ba001c]/10 fixed h-full z-20 flex flex-col hidden md:flex shadow-2xl shadow-red-900/5 overflow-y-auto custom-scrollbar">
+    <aside className="w-64 bg-[var(--color-surface-container-lowest)] border-r border-[#ba001c]/10 fixed h-full z-20 flex flex-col hidden md:flex shadow-2xl shadow-red-900/5 overflow-y-auto custom-scrollbar">
       <div className="p-6 border-b border-slate-50 flex items-center gap-3">
         <div className="w-8 h-8 bg-[#ba001c] rounded-lg flex items-center justify-center text-white font-black">M</div>
         <Link href="/admin" className="text-xl font-black tracking-tighter text-[#ba001c]">

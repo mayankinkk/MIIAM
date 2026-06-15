@@ -33,13 +33,13 @@ export default function CheckoutPrintOrderSummary({ items }: CheckoutPrintOrderS
                 <div className="font-bold text-indigo-700 shrink-0">₹{item.price} x {item.quantity}</div>
               </div>
               <div className="flex flex-wrap gap-2 text-xs">
-                {settings.pages && <span className="px-2 py-1 bg-white rounded-lg font-semibold">{settings.pages} pg</span>}
-                {settings.copies && <span className="px-2 py-1 bg-white rounded-lg font-semibold">{settings.copies} cp</span>}
-                {settings.colorMode && <span className="px-2 py-1 bg-white rounded-lg font-semibold capitalize">{settings.colorMode === "bw" ? "B&W" : "Color"}</span>}
-                {settings.paperSize && <span className="px-2 py-1 bg-white rounded-lg font-semibold uppercase">{settings.paperSize}</span>}
-                {settings.orientation && <span className="px-2 py-1 bg-white rounded-lg font-semibold capitalize">{settings.orientation}</span>}
-                {settings.paperType && <span className="px-2 py-1 bg-white rounded-lg font-semibold capitalize">{settings.paperType}</span>}
-                {settings.sides && <span className="px-2 py-1 bg-white rounded-lg font-semibold capitalize">{settings.sides} sided</span>}
+                {settings.pages && <span className="px-2 py-1 bg-[var(--color-surface-container-lowest)] rounded-lg font-semibold">{settings.pages} pg</span>}
+                {settings.copies && <span className="px-2 py-1 bg-[var(--color-surface-container-lowest)] rounded-lg font-semibold">{settings.copies} cp</span>}
+                {settings.colorMode && <span className="px-2 py-1 bg-[var(--color-surface-container-lowest)] rounded-lg font-semibold capitalize">{settings.colorMode === "bw" ? "B&W" : "Color"}</span>}
+                {settings.paperSize && <span className="px-2 py-1 bg-[var(--color-surface-container-lowest)] rounded-lg font-semibold uppercase">{settings.paperSize}</span>}
+                {settings.orientation && <span className="px-2 py-1 bg-[var(--color-surface-container-lowest)] rounded-lg font-semibold capitalize">{settings.orientation}</span>}
+                {settings.paperType && <span className="px-2 py-1 bg-[var(--color-surface-container-lowest)] rounded-lg font-semibold capitalize">{settings.paperType}</span>}
+                {settings.sides && <span className="px-2 py-1 bg-[var(--color-surface-container-lowest)] rounded-lg font-semibold capitalize">{settings.sides} sided</span>}
               </div>
               {settings.fileNames && (
                 <div className="mt-2 text-xs text-on-surface-variant break-words">

@@ -109,7 +109,7 @@ export default function SettingsPage() {
             className={`px-4 py-2 rounded-lg text-sm font-bold uppercase ${
               activeTab === tab
                 ? "bg-[#ba001c] text-white"
-                : "bg-white text-slate-600 border border-slate-200"
+                : "bg-[var(--color-surface-container-lowest)] text-slate-600 border border-slate-200"
             }`}
           >
             {tab}
@@ -119,7 +119,7 @@ export default function SettingsPage() {
 
       {activeTab === "general" && (
         <div className="space-y-6">
-          <div className="bg-white rounded-3xl border border-slate-100 p-8 shadow-sm">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-8 shadow-sm">
             <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm mb-6">Platform Details</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -161,7 +161,7 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          <div className="bg-white rounded-3xl border border-slate-100 p-8 shadow-sm">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-8 shadow-sm">
             <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm mb-6">Business Configuration</h3>
             <div className="space-y-4">
               <div className="flex items-center justify-between p-4 border border-slate-100 rounded-xl">
@@ -173,7 +173,7 @@ export default function SettingsPage() {
                   onClick={() => toggleKey("maintenance_mode")}
                   className={`w-12 h-6 rounded-full relative transition-colors ${isOn("maintenance_mode") ? "bg-red-500" : "bg-slate-200"}`}
                 >
-                  <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${isOn("maintenance_mode") ? "right-1" : "left-1"}`} />
+                  <span className={`absolute top-1 w-4 h-4 bg-[var(--color-surface-container-lowest)] rounded-full transition-all ${isOn("maintenance_mode") ? "right-1" : "left-1"}`} />
                 </button>
               </div>
               <div className="flex items-center justify-between p-4 border border-slate-100 rounded-xl">
@@ -185,7 +185,7 @@ export default function SettingsPage() {
                   onClick={() => toggleKey("new_user_registration")}
                   className={`w-12 h-6 rounded-full relative transition-colors ${isOn("new_user_registration") ? "bg-green-500" : "bg-slate-200"}`}
                 >
-                  <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${isOn("new_user_registration") ? "right-1" : "left-1"}`} />
+                  <span className={`absolute top-1 w-4 h-4 bg-[var(--color-surface-container-lowest)] rounded-full transition-all ${isOn("new_user_registration") ? "right-1" : "left-1"}`} />
                 </button>
               </div>
               <div className="flex items-center justify-between p-4 border border-slate-100 rounded-xl">
@@ -197,7 +197,7 @@ export default function SettingsPage() {
                   onClick={() => toggleKey("partner_onboarding")}
                   className={`w-12 h-6 rounded-full relative transition-colors ${isOn("partner_onboarding") ? "bg-green-500" : "bg-slate-200"}`}
                 >
-                  <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${isOn("partner_onboarding") ? "right-1" : "left-1"}`} />
+                  <span className={`absolute top-1 w-4 h-4 bg-[var(--color-surface-container-lowest)] rounded-full transition-all ${isOn("partner_onboarding") ? "right-1" : "left-1"}`} />
                 </button>
               </div>
             </div>
@@ -206,7 +206,7 @@ export default function SettingsPage() {
       )}
 
       {activeTab === "delivery" && (
-        <div className="bg-white rounded-3xl border border-slate-100 p-8 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-8 shadow-sm">
           <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm mb-6">Delivery Settings</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -270,7 +270,7 @@ export default function SettingsPage() {
       )}
 
       {activeTab === "payments" && (
-        <div className="bg-white rounded-3xl border border-slate-100 p-8 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-8 shadow-sm">
           <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm mb-6">Payment Settings</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -317,7 +317,7 @@ export default function SettingsPage() {
       )}
 
       {activeTab === "notifications" && (
-        <div className="bg-white rounded-3xl border border-slate-100 p-8 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-8 shadow-sm">
           <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm mb-6">Notification Settings</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between p-4 border border-slate-100 rounded-xl">
@@ -329,7 +329,7 @@ export default function SettingsPage() {
                 onClick={() => toggleKey("notif_order_updates")}
                 className={`w-12 h-6 rounded-full relative transition-colors ${isOn("notif_order_updates") ? "bg-green-500" : "bg-slate-200"}`}
               >
-                <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${isOn("notif_order_updates") ? "right-1" : "left-1"}`} />
+                <span className={`absolute top-1 w-4 h-4 bg-[var(--color-surface-container-lowest)] rounded-full transition-all ${isOn("notif_order_updates") ? "right-1" : "left-1"}`} />
               </button>
             </div>
             <div className="flex items-center justify-between p-4 border border-slate-100 rounded-xl">
@@ -341,7 +341,7 @@ export default function SettingsPage() {
                 onClick={() => toggleKey("notif_promotions")}
                 className={`w-12 h-6 rounded-full relative transition-colors ${isOn("notif_promotions") ? "bg-green-500" : "bg-slate-200"}`}
               >
-                <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${isOn("notif_promotions") ? "right-1" : "left-1"}`} />
+                <span className={`absolute top-1 w-4 h-4 bg-[var(--color-surface-container-lowest)] rounded-full transition-all ${isOn("notif_promotions") ? "right-1" : "left-1"}`} />
               </button>
             </div>
             <div className="flex items-center justify-between p-4 border border-slate-100 rounded-xl">
@@ -353,7 +353,7 @@ export default function SettingsPage() {
                 onClick={() => toggleKey("notif_sms")}
                 className={`w-12 h-6 rounded-full relative transition-colors ${isOn("notif_sms") ? "bg-green-500" : "bg-slate-200"}`}
               >
-                <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${isOn("notif_sms") ? "right-1" : "left-1"}`} />
+                <span className={`absolute top-1 w-4 h-4 bg-[var(--color-surface-container-lowest)] rounded-full transition-all ${isOn("notif_sms") ? "right-1" : "left-1"}`} />
               </button>
             </div>
           </div>
@@ -362,7 +362,7 @@ export default function SettingsPage() {
 
       {activeTab === "support" && (
         <div className="space-y-6">
-          <div className="bg-white rounded-3xl border border-slate-100 p-8 shadow-sm">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-8 shadow-sm">
             <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm mb-6">Contact Information</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -428,7 +428,7 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          <div className="bg-white rounded-3xl border border-slate-100 p-8 shadow-sm">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-8 shadow-sm">
             <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm mb-6">Social Media Links</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -501,7 +501,7 @@ export default function SettingsPage() {
 
       {activeTab === "legal" && (
         <div className="space-y-6">
-          <div className="bg-white rounded-3xl border border-slate-100 p-8 shadow-sm">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-8 shadow-sm">
             <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm mb-6">Contact Information</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -570,7 +570,7 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          <div className="bg-white rounded-3xl border border-slate-100 p-8 shadow-sm">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-8 shadow-sm">
             <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm mb-6">Policy Pages</h3>
             <div className="space-y-4">
               <p className="text-sm text-slate-500">

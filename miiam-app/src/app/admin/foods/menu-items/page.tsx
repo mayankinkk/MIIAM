@@ -158,7 +158,7 @@ export default function AdminMenuItemsPage() {
         </button>
       </div>
 
-      <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-100 overflow-hidden shadow-sm">
         <div className="p-4 border-b flex items-center gap-4 flex-wrap">
           <div className="relative flex-1 min-w-[200px]">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
@@ -271,7 +271,7 @@ export default function AdminMenuItemsPage() {
 
       {showAddModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl max-w-md w-full p-6">
             <div className="flex justify-between items-center mb-4">
               <h2 className="font-black text-lg">Add Menu Item</h2>
               <button onClick={() => setShowAddModal(false)} className="text-slate-400">
@@ -353,7 +353,7 @@ export default function AdminMenuItemsPage() {
 
       {editingItem && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl max-w-md w-full p-6">
             <div className="flex justify-between items-center mb-4">
               <h2 className="font-black text-lg">Edit Menu Item</h2>
               <button onClick={() => setEditingItem(null)} className="text-slate-400">

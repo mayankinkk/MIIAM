@@ -68,7 +68,7 @@ export function PaymentOptions({ total, selected, onSelect, walletBalance = 0 }:
             <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
               isSelected ? "border-[#ba001c] bg-[#ba001c]" : "border-slate-300"
             }`}>
-              {isSelected && <div className="w-2 h-2 bg-white rounded-full" />}
+              {isSelected && <div className="w-2 h-2 bg-[var(--color-surface-container-lowest)] rounded-full" />}
             </div>
           </button>
         );
@@ -184,12 +184,12 @@ export function UPIQRCode({ amount, onSuccess, onFailure }: UPIQRCodeProps) {
   const upiId = "miiam@upi";
 
   return (
-    <div className="bg-white rounded-2xl p-6 text-center">
+    <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 text-center">
       <h3 className="font-bold text-lg mb-4">Scan to Pay ₹{amount.toFixed(0)}</h3>
       
       <div className="w-48 h-48 bg-slate-100 rounded-xl mx-auto mb-4 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-32 h-32 bg-white rounded-lg border-2 border-dashed border-slate-300 flex items-center justify-center mx-auto">
+          <div className="w-32 h-32 bg-[var(--color-surface-container-lowest)] rounded-lg border-2 border-dashed border-slate-300 flex items-center justify-center mx-auto">
             <span className="text-4xl font-bold text-[#ba001c]">QR</span>
           </div>
         </div>

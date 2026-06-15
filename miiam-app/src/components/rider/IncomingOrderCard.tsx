@@ -201,7 +201,7 @@ export default function IncomingOrderCard({
 
         {isTakenByOther && (
           <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-2xl p-6 text-center max-w-xs mx-4">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 text-center max-w-xs mx-4">
               <span className="material-symbols-outlined text-red-500 text-5xl">error</span>
               <p className="font-bold text-lg mt-3">{t.rider.order.orderTaken}</p>
               <p className="text-sm text-slate-500 mt-1">{t.rider.order.orderTakenDesc}</p>

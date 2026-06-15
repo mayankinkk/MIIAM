@@ -62,7 +62,7 @@ export default function ServiceSettingsPage() {
         Reset to Defaults
       </button>
 
-      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
         <div className="p-4 border-b border-slate-100 bg-slate-50">
           <div className="grid grid-cols-12 gap-4 text-xs font-bold text-slate-500 uppercase tracking-widest">
             <div className="col-span-3">Service</div>
@@ -96,7 +96,7 @@ export default function ServiceSettingsPage() {
                   }`}
                 >
                   <span
-                    className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
+                    className={`absolute top-0.5 w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full shadow transition-transform ${
                       service.isEnabled ? "left-6" : "left-0.5"
                     }`}
                   />

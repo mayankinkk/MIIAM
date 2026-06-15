@@ -91,7 +91,7 @@ export default function FlowersAdmin() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white p-6 rounded-2xl border border-slate-100">
+          <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl border border-slate-100">
             <p className="text-slate-400 text-sm">Total Orders</p>
             <p className="text-3xl font-black text-slate-800 mt-1">{loading ? "..." : stats.totalOrders}</p>
             {stats.lastMonthOrders > 0 ? (
@@ -102,7 +102,7 @@ export default function FlowersAdmin() {
               <p className="text-slate-400 text-sm mt-2">No prior data</p>
             )}
           </div>
-          <div className="bg-white p-6 rounded-2xl border border-slate-100">
+          <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl border border-slate-100">
             <p className="text-slate-400 text-sm">Revenue</p>
             <p className="text-3xl font-black text-slate-800 mt-1">{loading ? "..." : `₹${(stats.revenue / 100000).toFixed(1)}L`}</p>
             {stats.lastMonthRevenue > 0 ? (
@@ -113,12 +113,12 @@ export default function FlowersAdmin() {
               <p className="text-slate-400 text-sm mt-2">No prior data</p>
             )}
           </div>
-          <div className="bg-white p-6 rounded-2xl border border-slate-100">
+          <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl border border-slate-100">
             <p className="text-slate-400 text-sm">Active Partners</p>
             <p className="text-3xl font-black text-slate-800 mt-1">{loading ? "..." : stats.activePartners}</p>
             <p className="text-green-600 text-sm mt-2">{stats.newPartnersThisMonth > 0 ? `↑ ${stats.newPartnersThisMonth} new this month` : "No new partners"}</p>
           </div>
-          <div className="bg-white p-6 rounded-2xl border border-slate-100">
+          <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl border border-slate-100">
             <p className="text-slate-400 text-sm">Total Items</p>
             <p className="text-3xl font-black text-slate-800 mt-1">{loading ? "..." : stats.totalItems}</p>
             <p className="text-slate-400 text-sm mt-2">In catalog</p>
@@ -126,7 +126,7 @@ export default function FlowersAdmin() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Link href="/admin/flowers/orders" className="bg-white p-6 rounded-2xl border border-slate-100 hover:border-[#ba001c] hover:shadow-lg transition-all group">
+          <Link href="/admin/flowers/orders" className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl border border-slate-100 hover:border-[#ba001c] hover:shadow-lg transition-all group">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-[#ba001c]/10 rounded-xl flex items-center justify-center">
                 <span className="material-symbols-outlined text-2xl text-[#ba001c]">receipt_long</span>
@@ -141,7 +141,7 @@ export default function FlowersAdmin() {
             </div>
           </Link>
 
-          <Link href="/admin/flowers/items" className="bg-white p-6 rounded-2xl border border-slate-100 hover:border-[#ba001c] hover:shadow-lg transition-all group">
+          <Link href="/admin/flowers/items" className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl border border-slate-100 hover:border-[#ba001c] hover:shadow-lg transition-all group">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
                 <span className="material-symbols-outlined text-2xl text-blue-600">local_florist</span>
@@ -156,7 +156,7 @@ export default function FlowersAdmin() {
             </div>
           </Link>
 
-          <Link href="/admin/flowers/partners" className="bg-white p-6 rounded-2xl border border-slate-100 hover:border-[#ba001c] hover:shadow-lg transition-all group">
+          <Link href="/admin/flowers/partners" className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl border border-slate-100 hover:border-[#ba001c] hover:shadow-lg transition-all group">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
                 <span className="material-symbols-outlined text-2xl text-green-600">store</span>

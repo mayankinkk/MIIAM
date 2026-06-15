@@ -80,7 +80,7 @@ export default function PromotionsPage() {
       </div>
 
       {showCreate && (
-        <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm space-y-4">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-100 p-6 shadow-sm space-y-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div>
               <label className="block text-xs font-bold text-slate-400 uppercase mb-1">Code</label>
@@ -121,7 +121,7 @@ export default function PromotionsPage() {
         </div>
       )}
 
-      <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-100 overflow-hidden shadow-sm">
         {loading ? (
           <div className="flex items-center justify-center py-12"><div className="w-8 h-8 border-4 border-[#ba001c]/20 border-t-[#ba001c] rounded-full animate-spin" /></div>
         ) : promos.length === 0 ? (

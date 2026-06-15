@@ -213,7 +213,7 @@ export default function PharmacyPartnersPage() {
       </div>
 
       <div className="grid grid-cols-4 gap-4 mb-6">
-        <div className="bg-white p-4 rounded-xl border border-slate-100">
+        <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-slate-100">
           <p className="text-slate-400 text-xs font-bold">TOTAL PARTNERS</p>
           <p className="text-2xl font-black text-slate-800 mt-1">{stats.total}</p>
         </div>
@@ -234,9 +234,9 @@ export default function PharmacyPartnersPage() {
       <div className="flex gap-4 mb-6">
         <div className="flex-1 relative">
           <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined">search</span>
-          <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search by shop name or owner..." className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-[#ba001c]" />
+          <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search by shop name or owner..." className="w-full pl-10 pr-4 py-3 bg-[var(--color-surface-container-lowest)] border border-slate-200 rounded-xl focus:outline-none focus:border-[#ba001c]" />
         </div>
-        <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-[#ba001c]">
+        <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="px-4 py-3 bg-[var(--color-surface-container-lowest)] border border-slate-200 rounded-xl focus:outline-none focus:border-[#ba001c]">
           <option value="all">All Status</option>
           <option value="active">Active</option>
           <option value="inactive">Inactive</option>
@@ -247,12 +247,12 @@ export default function PharmacyPartnersPage() {
       {loading ? (
         <div className="text-center py-12 text-slate-500">Loading partners...</div>
       ) : filteredPartners.length === 0 ? (
-        <div className="text-center py-12 text-slate-500 bg-white rounded-xl">
+        <div className="text-center py-12 text-slate-500 bg-[var(--color-surface-container-lowest)] rounded-xl">
           <span className="material-symbols-outlined text-5xl text-slate-300">store</span>
           <p className="mt-4 font-bold">No partners found</p>
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-slate-100 overflow-hidden">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-100 overflow-hidden">
           <table className="w-full">
             <thead className="bg-slate-50">
               <tr>
@@ -304,7 +304,7 @@ export default function PharmacyPartnersPage() {
 
       {showAddModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto py-8">
-          <div className="bg-white rounded-2xl w-full max-w-lg mx-4 my-auto">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-lg mx-4 my-auto">
             <div className="p-6 border-b">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-black text-slate-800">{editingPartner ? "Edit Partner" : "Add Pharmacy Partner"}</h2>

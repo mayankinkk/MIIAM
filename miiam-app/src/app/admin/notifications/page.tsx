@@ -88,7 +88,7 @@ export default function NotificationCenter() {
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-slate-100 shadow-sm">
           <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Total</p>
           <p className="text-3xl font-black text-slate-800">{notifications.length}</p>
         </div>
@@ -96,11 +96,11 @@ export default function NotificationCenter() {
           <p className="text-xs font-black text-yellow-600 uppercase tracking-widest mb-1">Unread</p>
           <p className="text-3xl font-black text-yellow-600">{unreadCount}</p>
         </div>
-        <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-slate-100 shadow-sm">
           <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Order Alerts</p>
           <p className="text-3xl font-black text-slate-800">{notifications.filter(n => n.type === "order").length}</p>
         </div>
-        <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-slate-100 shadow-sm">
           <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Promotions</p>
           <p className="text-3xl font-black text-slate-800">{notifications.filter(n => n.type === "promo").length}</p>
         </div>
@@ -116,7 +116,7 @@ export default function NotificationCenter() {
       )}
 
       {/* Notifications List */}
-      <div className="bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
         <div className="divide-y divide-slate-50 max-h-[500px] overflow-y-auto">
           {notifications.map(notification => (
             <div 
@@ -175,7 +175,7 @@ export default function NotificationCenter() {
       {/* Send Notification Modal */}
       {showSend && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl max-w-md w-full">
             <div className="p-6 border-b border-slate-100 flex justify-between items-center">
               <h2 className="text-xl font-black text-slate-800">Send Notification</h2>
               <button onClick={() => setShowSend(false)} className="text-slate-400 hover:text-slate-600">

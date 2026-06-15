@@ -263,7 +263,7 @@ export default function AdminPrintingPage() {
           <span className="material-symbols-outlined text-sm">{showPricing ? "expand_less" : "expand_more"}</span>
         </button>
         {showPricing && (
-          <div className="mt-2 bg-white rounded-xl border border-slate-100 p-4 max-w-md space-y-3">
+          <div className="mt-2 bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-100 p-4 max-w-md space-y-3">
             {(["bwPerPage", "colorPerPage", "glossySurcharge", "a3Surcharge"] as const).map((key) => (
               <div key={key} className="flex items-center justify-between">
                 <label className="text-sm font-bold text-slate-600 capitalize">{key.replace(/([A-Z])/g, " $1")} (₹)</label>
@@ -286,7 +286,7 @@ export default function AdminPrintingPage() {
           <span className="material-symbols-outlined text-sm">{showAddons ? "expand_less" : "expand_more"}</span>
         </button>
         {showAddons && (
-          <div className="mt-2 bg-white rounded-xl border border-slate-100 p-4 max-w-2xl space-y-4">
+          <div className="mt-2 bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-100 p-4 max-w-2xl space-y-4">
             <div>
               <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Rush tier multipliers</p>
               <div className="grid grid-cols-2 gap-2">
@@ -364,7 +364,7 @@ export default function AdminPrintingPage() {
       </div>
 
       <div className="grid grid-cols-4 gap-4 mb-4">
-        <div className="bg-white p-4 rounded-xl border border-slate-100">
+        <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-slate-100">
           <p className="text-slate-400 text-xs font-bold">TOTAL</p>
           <p className="text-2xl font-black text-slate-800 mt-1">{stats.total}</p>
         </div>
@@ -413,13 +413,13 @@ export default function AdminPrintingPage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search by order ID..."
-            className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500"
+            className="w-full pl-10 pr-4 py-3 bg-[var(--color-surface-container-lowest)] border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500"
           />
         </div>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500"
+          className="px-4 py-3 bg-[var(--color-surface-container-lowest)] border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500"
         >
           <option value="all">All Status</option>
           <option value="pending">Pending</option>
@@ -432,13 +432,13 @@ export default function AdminPrintingPage() {
       </div>
 
       {filteredOrders.length === 0 ? (
-        <div className="text-center py-12 text-slate-500 bg-white rounded-xl">
+        <div className="text-center py-12 text-slate-500 bg-[var(--color-surface-container-lowest)] rounded-xl">
           <span className="material-symbols-outlined text-5xl text-slate-300">print</span>
           <p className="mt-4 font-bold">No print orders yet</p>
         </div>
       ) : (
         <>
-        <div className="bg-white rounded-xl border border-slate-100 overflow-hidden">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-100 overflow-hidden">
           <table className="w-full">
             <thead className="bg-slate-50">
               <tr>
@@ -519,7 +519,7 @@ export default function AdminPrintingPage() {
           </table>
         </div>
         {totalPages > 1 && (
-          <div className="flex items-center justify-between mt-4 bg-white rounded-xl border border-slate-100 p-3">
+          <div className="flex items-center justify-between mt-4 bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-100 p-3">
             <p className="text-xs text-slate-500">
               Showing {((page - 1) * PAGE_SIZE) + 1}–{Math.min(page * PAGE_SIZE, filteredOrders.length)} of {filteredOrders.length}
             </p>
@@ -573,7 +573,7 @@ export default function AdminPrintingPage() {
         const hasAnyAddOns = selSettings.addOns && selSettings.addOns.length > 0;
         return (
           <div className="fixed inset-0 z-50 bg-black/50 flex items-start justify-center p-4 pt-[5vh] overflow-y-auto">
-            <div className="bg-white rounded-2xl w-full max-w-2xl">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-2xl">
               <div className="flex items-center justify-between p-6 pb-0">
                 <div>
                   <h3 className="font-bold text-lg">Order Details</h3>
@@ -604,14 +604,14 @@ export default function AdminPrintingPage() {
                   <div className="bg-indigo-50 rounded-xl p-4 space-y-2">
                     <h4 className="text-xs font-bold text-indigo-800 uppercase tracking-wider">Print Settings</h4>
                     <div className="flex flex-wrap gap-1.5">
-                      {(selSettings.pages || fallbackPages) && <span className="px-2.5 py-1 bg-white text-indigo-700 rounded-lg text-xs font-bold">{selSettings.pages || fallbackPages} pages</span>}
-                      {selSettings.copies && <span className="px-2.5 py-1 bg-white text-indigo-700 rounded-lg text-xs font-bold">{selSettings.copies} copies</span>}
-                      {selSettings.colorMode && <span className="px-2.5 py-1 bg-white text-indigo-700 rounded-lg text-xs font-bold capitalize">{selSettings.colorMode === "bw" ? "B&W" : "Color"}</span>}
-                      {selSettings.paperSize && <span className="px-2.5 py-1 bg-white text-indigo-700 rounded-lg text-xs font-bold uppercase">{selSettings.paperSize}</span>}
-                      {selSettings.orientation && <span className="px-2.5 py-1 bg-white text-indigo-700 rounded-lg text-xs font-bold capitalize">{selSettings.orientation}</span>}
-                      {selSettings.sides && <span className="px-2.5 py-1 bg-white text-indigo-700 rounded-lg text-xs font-bold capitalize">{selSettings.sides} sided</span>}
-                      {selSettings.paperType && <span className="px-2.5 py-1 bg-white text-indigo-700 rounded-lg text-xs font-bold capitalize">{selSettings.paperType}</span>}
-                      {fallbackEta && <span className="px-2.5 py-1 bg-white text-indigo-700 rounded-lg text-xs font-bold">ETA {fallbackEta}m</span>}
+                      {(selSettings.pages || fallbackPages) && <span className="px-2.5 py-1 bg-[var(--color-surface-container-lowest)] text-indigo-700 rounded-lg text-xs font-bold">{selSettings.pages || fallbackPages} pages</span>}
+                      {selSettings.copies && <span className="px-2.5 py-1 bg-[var(--color-surface-container-lowest)] text-indigo-700 rounded-lg text-xs font-bold">{selSettings.copies} copies</span>}
+                      {selSettings.colorMode && <span className="px-2.5 py-1 bg-[var(--color-surface-container-lowest)] text-indigo-700 rounded-lg text-xs font-bold capitalize">{selSettings.colorMode === "bw" ? "B&W" : "Color"}</span>}
+                      {selSettings.paperSize && <span className="px-2.5 py-1 bg-[var(--color-surface-container-lowest)] text-indigo-700 rounded-lg text-xs font-bold uppercase">{selSettings.paperSize}</span>}
+                      {selSettings.orientation && <span className="px-2.5 py-1 bg-[var(--color-surface-container-lowest)] text-indigo-700 rounded-lg text-xs font-bold capitalize">{selSettings.orientation}</span>}
+                      {selSettings.sides && <span className="px-2.5 py-1 bg-[var(--color-surface-container-lowest)] text-indigo-700 rounded-lg text-xs font-bold capitalize">{selSettings.sides} sided</span>}
+                      {selSettings.paperType && <span className="px-2.5 py-1 bg-[var(--color-surface-container-lowest)] text-indigo-700 rounded-lg text-xs font-bold capitalize">{selSettings.paperType}</span>}
+                      {fallbackEta && <span className="px-2.5 py-1 bg-[var(--color-surface-container-lowest)] text-indigo-700 rounded-lg text-xs font-bold">ETA {fallbackEta}m</span>}
                       {selSettings.rushTier && selSettings.rushTier !== "standard" && (
                         <span className="px-2.5 py-1 bg-rose-100 text-rose-700 rounded-lg text-xs font-bold">⚡ {selSettings.rushLabel || selSettings.rushTier}</span>
                       )}
@@ -753,7 +753,7 @@ export default function AdminPrintingPage() {
       {/* File Preview Modal */}
       {previewFile && (
         <div className="fixed inset-0 z-[70] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setPreviewFile(null)}>
-          <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between p-4 border-b border-slate-100">
               <div className="flex-1 min-w-0 pr-2">
                 <h3 className="font-bold text-slate-800 truncate">{previewFile.name}</h3>
@@ -767,7 +767,7 @@ export default function AdminPrintingPage() {
               {previewFile.type.startsWith("image/") ? (
                 <img src={previewFile.url} alt={previewFile.name} className="max-w-full max-h-[75vh] object-contain rounded-lg shadow-md" />
               ) : previewFile.type === "application/pdf" || previewFile.name.toLowerCase().endsWith(".pdf") ? (
-                <iframe src={previewFile.url} title={previewFile.name} className="w-full h-[75vh] bg-white rounded-lg shadow-md border-0" />
+                <iframe src={previewFile.url} title={previewFile.name} className="w-full h-[75vh] bg-[var(--color-surface-container-lowest)] rounded-lg shadow-md border-0" />
               ) : (
                 <div className="text-slate-500">Preview not available for this file type</div>
               )}

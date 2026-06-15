@@ -176,7 +176,7 @@ export default function VendorPromotions() {
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {segments.map((seg) => (
-              <div key={seg.key} className="bg-white rounded-2xl p-5 border border-slate-200 hover:shadow-sm transition-shadow">
+              <div key={seg.key} className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 border border-slate-200 hover:shadow-sm transition-shadow">
                 <div className="flex items-center justify-between mb-3">
                   <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center">
                     <span className="material-symbols-outlined text-slate-600">{seg.icon}</span>
@@ -196,7 +196,7 @@ export default function VendorPromotions() {
         {loading ? (
           <div className="col-span-full text-center py-12 text-slate-400 animate-pulse">Loading promotions...</div>
         ) : promoCodes.length === 0 ? (
-          <div className="col-span-full bg-white border-2 border-dashed border-slate-200 rounded-3xl p-16 text-center">
+          <div className="col-span-full bg-[var(--color-surface-container-lowest)] border-2 border-dashed border-slate-200 rounded-3xl p-16 text-center">
             <span className="material-symbols-outlined text-6xl text-slate-300 mb-4">local_offer</span>
             <p className="text-slate-400 font-medium text-lg">No promotions yet</p>
             <p className="text-slate-300 text-sm mt-1">Create your first offer to attract more customers</p>
@@ -207,7 +207,7 @@ export default function VendorPromotions() {
             return (
               <div
                 key={promo.id}
-                className={`bg-white rounded-2xl p-6 shadow-sm border transition-all ${
+                className={`bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border transition-all ${
                   expired ? "border-slate-200 opacity-60" : "border-slate-200 hover:shadow-md"
                 }`}
               >

@@ -194,7 +194,7 @@ function SetPasswordContent() {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#00174c]/80 via-transparent to-transparent" />
         </div>
-        <div className="relative z-10 bg-white/70 backdrop-blur-xl p-10 rounded-lg max-w-lg" style={{ boxShadow: '0 20px 40px rgba(77, 33, 42, 0.06)' }}>
+        <div className="relative z-10 bg-[var(--color-surface-container-lowest)]/70 backdrop-blur-xl p-10 rounded-lg max-w-lg" style={{ boxShadow: '0 20px 40px rgba(77, 33, 42, 0.06)' }}>
           <h2 className="text-[3rem] leading-tight tracking-[-0.02em] font-extrabold text-[#00174c]">Welcome to MIIAM</h2>
           <p className="text-[#5c403d] mt-4">Your journey to premium experiences starts here.</p>
         </div>

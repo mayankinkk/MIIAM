@@ -115,7 +115,7 @@ export default function LiveChatSupport() {
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-200px)]">
         {/* Chat List */}
-        <div className="bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
           <div className="p-4 border-b border-slate-100">
             <h2 className="font-black text-slate-800 uppercase tracking-widest text-sm">Active Chats</h2>
           </div>
@@ -149,7 +149,7 @@ export default function LiveChatSupport() {
         </div>
 
         {/* Chat Window */}
-        <div className="lg:col-span-2 bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-sm flex flex-col">
+        <div className="lg:col-span-2 bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 overflow-hidden shadow-sm flex flex-col">
           {selectedChat ? (
             <>
               <div className="p-4 border-b border-slate-100 flex justify-between items-center">

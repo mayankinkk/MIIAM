@@ -163,7 +163,7 @@ function RiderLoginContent() {
             &quot;Switching to MIIAM was the best decision. The flexible hours and transparent earnings let me ride on my own terms. Plus, the app is incredibly easy to use.&quot;
           </p>
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center font-bold text-white text-xl border border-white/40">R</div>
+            <div className="w-12 h-12 bg-[var(--color-surface-container-lowest)]/20 rounded-full flex items-center justify-center font-bold text-white text-xl border border-white/40">R</div>
             <div>
               <p className="text-white font-bold">Rahul K.</p>
               <p className="text-white/70 text-sm">Top Rider &bull; 800+ deliveries</p>
@@ -175,7 +175,7 @@ function RiderLoginContent() {
       {/* Forgot Password Modal */}
       {showForgotPassword && (
         <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4" onClick={() => { if (!resetSent) setShowForgotPassword(false); }}>
-          <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl" onClick={e => e.stopPropagation()}>
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-sm shadow-2xl" onClick={e => e.stopPropagation()}>
             {resetSent ? (
               <div className="text-center">
                 <span className="text-5xl block mb-4">📧</span>

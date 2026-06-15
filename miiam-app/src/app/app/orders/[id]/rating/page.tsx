@@ -278,7 +278,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
           <p className="text-on-surface-variant font-medium">{t.rating.subtitle}</p>
         </section>
 
-        <section className="bg-white rounded-xl p-8 shadow-[0px_20px_40px_rgba(77,33,42,0.04)] space-y-6">
+        <section className="bg-[var(--color-surface-container-lowest)] rounded-xl p-8 shadow-[0px_20px_40px_rgba(77,33,42,0.04)] space-y-6">
           <AnimatedStarRating
             rating={foodRating}
             hover={hoverFood}
@@ -289,7 +289,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
           />
         </section>
 
-        <section className="bg-white rounded-xl p-6 shadow-[0px_20px_40px_rgba(77,33,42,0.04)] space-y-4">
+        <section className="bg-[var(--color-surface-container-lowest)] rounded-xl p-6 shadow-[0px_20px_40px_rgba(77,33,42,0.04)] space-y-4">
           <h3 className="text-sm font-bold text-on-surface-variant text-center uppercase tracking-wider">{t.rating.rateInDetail}</h3>
           <div className="space-y-3">
             {[
@@ -322,7 +322,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
           </div>
         </section>
 
-        <section className="bg-white rounded-xl p-8 shadow-[0px_20px_40px_rgba(77,33,42,0.04)] space-y-6">
+        <section className="bg-[var(--color-surface-container-lowest)] rounded-xl p-8 shadow-[0px_20px_40px_rgba(77,33,42,0.04)] space-y-6">
           <div className="flex flex-col items-center gap-4">
             <div className="relative">
               <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-surface-container">
@@ -355,7 +355,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
           <textarea
             value={feedback}
             onChange={(e) => setFeedback(e.target.value)}
-            className="w-full bg-white rounded-xl border-none focus:ring-2 focus:ring-primary/40 p-6 min-h-[120px] text-on-surface shadow-[0px_10px_20px_rgba(77,33,42,0.02)] resize-none"
+            className="w-full bg-[var(--color-surface-container-lowest)] rounded-xl border-none focus:ring-2 focus:ring-primary/40 p-6 min-h-[120px] text-on-surface shadow-[0px_10px_20px_rgba(77,33,42,0.02)] resize-none"
             placeholder={t.rating.shareExperience}
           />
         </section>
@@ -368,7 +368,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
               className={`px-4 py-2 rounded-full text-sm font-semibold transition-all active:scale-95 ${
                 selectedTags.includes(tag)
                   ? "bg-primary text-white"
-                  : "bg-white text-on-surface-variant hover:bg-surface-container"
+                  : "bg-[var(--color-surface-container-lowest)] text-on-surface-variant hover:bg-surface-container"
               }`}
             >
               {tag}

@@ -119,7 +119,7 @@ export default function VendorProfilePage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-white rounded-2xl p-1.5 shadow-sm border border-slate-200">
+      <div className="flex gap-1 bg-[var(--color-surface-container-lowest)] rounded-2xl p-1.5 shadow-sm border border-slate-200">
         {([
           { id: "store", label: "Store Info", icon: "store" },
           { id: "business", label: "Business Docs", icon: "description" },
@@ -140,7 +140,7 @@ export default function VendorProfilePage() {
 
       {/* Store Info */}
       {activeTab === "store" && (
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-6">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-slate-200 space-y-6">
           <div className="flex items-center gap-6">
             <div className="relative w-24 h-24 bg-slate-100 rounded-2xl flex items-center justify-center overflow-hidden flex-shrink-0 group">
               {form.cover_image_url ? (
@@ -365,7 +365,7 @@ export default function VendorProfilePage() {
 
       {/* Business Docs */}
       {activeTab === "business" && (
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-6">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-slate-200 space-y-6">
           <p className="text-sm text-slate-500">Your business documents are stored securely for verification purposes.</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
@@ -423,7 +423,7 @@ export default function VendorProfilePage() {
       {/* Delivery Settings */}
       {activeTab === "delivery" && (
         <div className="space-y-6">
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-6">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-slate-200 space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="text-sm font-semibold text-slate-700">Min Order Amount (₹)</label>
@@ -465,7 +465,7 @@ export default function VendorProfilePage() {
           </div>
 
           {/* Delivery Zones */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined text-[#ba001c]">location_on</span>
               <h3 className="font-extrabold text-slate-900 text-lg">Delivery Zones</h3>
@@ -494,7 +494,7 @@ export default function VendorProfilePage() {
           </div>
 
           {/* Cancellation Policy */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined text-[#ba001c]">cancel_schedule_send</span>
               <h3 className="font-extrabold text-slate-900 text-lg">Cancellation Policy</h3>

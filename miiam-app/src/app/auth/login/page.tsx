@@ -88,7 +88,7 @@ function LoginContent() {
 
       {/* Right Side - Auth Card */}
       <section className="w-full lg:w-1/2 flex items-center justify-center p-6 md:p-12 lg:p-24 bg-[#fff0ef]">
-        <div className="w-full max-w-md space-y-8 bg-white p-8 md:p-12 rounded-xl" style={{ boxShadow: '0 20px 40px rgba(77, 33, 42, 0.06)' }}>
+        <div className="w-full max-w-md space-y-8 bg-[var(--color-surface-container-lowest)] p-8 md:p-12 rounded-xl" style={{ boxShadow: '0 20px 40px rgba(77, 33, 42, 0.06)' }}>
           {/* Header */}
           <div className="space-y-2">
             <div className="text-3xl font-black tracking-tighter text-red-700 mb-8">MIIAM</div>

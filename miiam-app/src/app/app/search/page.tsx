@@ -165,7 +165,7 @@ function SearchContent() {
               type="text"
               value={inputValue}
               placeholder="Search restaurants, dishes..."
-              className="w-full bg-white border-none rounded-xl pl-12 pr-4 py-3 text-on-surface font-medium focus:outline-none focus:ring-2 focus:ring-primary/40"
+              className="w-full bg-[var(--color-surface-container-lowest)] border-none rounded-xl pl-12 pr-4 py-3 text-on-surface font-medium focus:outline-none focus:ring-2 focus:ring-primary/40"
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
@@ -193,7 +193,7 @@ function SearchContent() {
                   className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${
                     activeTab === tab
                       ? "bg-primary text-white"
-                      : "bg-white text-on-surface-variant border border-outline-variant/30"
+                      : "bg-[var(--color-surface-container-lowest)] text-on-surface-variant border border-outline-variant/30"
                   }`}
                 >
                   {tab === "all" ? "All" : tab === "vendors" ? "Restaurants" : "Dishes"}
@@ -228,7 +228,7 @@ function SearchContent() {
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {searchHistory.map((term) => (
-                    <Link key={term} href={`/app/search?q=${term}`} className="px-4 py-2 bg-white rounded-full text-sm text-on-surface-variant border border-outline-variant/30 hover:border-primary transition-all flex items-center gap-2">
+                    <Link key={term} href={`/app/search?q=${term}`} className="px-4 py-2 bg-[var(--color-surface-container-lowest)] rounded-full text-sm text-on-surface-variant border border-outline-variant/30 hover:border-primary transition-all flex items-center gap-2">
                       <span className="material-symbols-outlined text-sm">history</span>
                       {term}
                     </Link>
@@ -245,7 +245,7 @@ function SearchContent() {
                   <Link
                     key={tag}
                     href={`/app/search?q=${tag}`}
-                    className="px-4 py-2 bg-white rounded-full text-sm text-on-surface-variant border border-outline-variant/30 hover:border-primary transition-all"
+                    className="px-4 py-2 bg-[var(--color-surface-container-lowest)] rounded-full text-sm text-on-surface-variant border border-outline-variant/30 hover:border-primary transition-all"
                   >
                     {tag}
                   </Link>
@@ -263,7 +263,7 @@ function SearchContent() {
                   <Link
                     key={tag}
                     href={`/app/search?q=${tag}`}
-                    className="px-4 py-2 bg-white rounded-full text-sm text-on-surface-variant border border-outline-variant/30 hover:border-primary hover:bg-primary/5 transition-all"
+                    className="px-4 py-2 bg-[var(--color-surface-container-lowest)] rounded-full text-sm text-on-surface-variant border border-outline-variant/30 hover:border-primary hover:bg-primary/5 transition-all"
                   >
                     {tag}
                   </Link>
@@ -293,7 +293,7 @@ function SearchContent() {
                             <span className="material-symbols-outlined text-4xl text-outline-variant">restaurant</span>
                           </div>
                         )}
-                        <div className="absolute bottom-2 left-2 bg-white/90 backdrop-blur px-2 py-1 rounded-lg text-xs font-bold text-on-surface">
+                        <div className="absolute bottom-2 left-2 bg-[var(--color-surface-container-lowest)]/90 backdrop-blur px-2 py-1 rounded-lg text-xs font-bold text-on-surface">
                           ⭐ {vendor.rating?.toFixed(1) || "N/A"}
                         </div>
                       </div>

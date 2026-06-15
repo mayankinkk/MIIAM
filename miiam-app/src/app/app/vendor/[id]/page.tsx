@@ -137,7 +137,7 @@ const sortedItems = [...filteredItems].sort((a, b) => (((b as any).is_featured |
           <div className="w-full h-full bg-gradient-to-b from-slate-300 to-slate-100" />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-        <button onClick={() => router.back()} className="absolute top-4 left-4 bg-white/90 p-2 rounded-full shadow-md">
+        <button onClick={() => router.back()} className="absolute top-4 left-4 bg-[var(--color-surface-container-lowest)]/90 p-2 rounded-full shadow-md">
           <span className="material-symbols-outlined">arrow_back</span>
         </button>
         <div className="absolute bottom-4 left-4 right-4">
@@ -149,7 +149,7 @@ const sortedItems = [...filteredItems].sort((a, b) => (((b as any).is_featured |
       <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: vendor.shop_name }]} />
 
       {/* Restaurant Info Bar */}
-      <div className="bg-white border-b border-slate-100 px-4 py-3">
+      <div className="bg-[var(--color-surface-container-lowest)] border-b border-slate-100 px-4 py-3">
         <div className="flex items-center gap-4 overflow-x-auto no-scrollbar">
           <div className="flex items-center gap-2 bg-green-100 text-green-700 px-3 py-1.5 rounded-lg text-sm font-bold">
             <span className="material-symbols-outlined text-sm">star</span>
@@ -173,7 +173,7 @@ const sortedItems = [...filteredItems].sort((a, b) => (((b as any).is_featured |
 
       {/* Reviews Section */}
       {reviews.length > 0 && (
-        <div className="bg-white border-b border-slate-100 px-4 py-4">
+        <div className="bg-[var(--color-surface-container-lowest)] border-b border-slate-100 px-4 py-4">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-bold text-slate-800">Customer Reviews</h2>
             <Link href={`/app/vendor/${vendorId}/reviews`} className="text-sm text-primary font-bold">
@@ -226,7 +226,7 @@ const sortedItems = [...filteredItems].sort((a, b) => (((b as any).is_featured |
       )}
 
       {/* Restaurant Details */}
-      <div className="bg-white border-b border-slate-100 px-4 py-4">
+      <div className="bg-[var(--color-surface-container-lowest)] border-b border-slate-100 px-4 py-4">
         <div className="flex items-start gap-3 mb-3">
           <span className="material-symbols-outlined text-primary">location_on</span>
           <div>
@@ -280,7 +280,7 @@ const sortedItems = [...filteredItems].sort((a, b) => (((b as any).is_featured |
           sortedItems.map((item) => {
             const qty = getQty(item.id);
             return (
-              <div key={item.id} className="bg-white rounded-2xl p-4 flex gap-4 shadow-sm">
+              <div key={item.id} className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 flex gap-4 shadow-sm">
                 <div className="w-24 h-24 rounded-xl overflow-hidden flex-shrink-0 bg-slate-100 relative cursor-pointer" onClick={() => {
                   const imgs = item.images?.filter(Boolean) || (item.image_url ? [item.image_url] : []);
                   if (imgs.length > 1) {

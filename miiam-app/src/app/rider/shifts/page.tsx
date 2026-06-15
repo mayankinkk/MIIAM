@@ -74,7 +74,7 @@ export default function RiderShifts() {
 
   return (
     <div className="min-h-screen bg-slate-50 pb-24">
-      <div className="bg-white px-5 pt-6 pb-4 sticky top-0 z-10 border-b border-slate-100">
+      <div className="bg-[var(--color-surface-container-lowest)] px-5 pt-6 pb-4 sticky top-0 z-10 border-b border-slate-100">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-extrabold text-slate-900">Work Shifts</h1>
@@ -93,7 +93,7 @@ export default function RiderShifts() {
           groupedShifts.map((g) => {
             const isToday = g.day === new Date().getDay();
             return (
-              <div key={g.day} className={`bg-white rounded-2xl p-4 border ${isToday ? "border-[#0b50d5]/30 ring-1 ring-[#0b50d5]/10" : "border-slate-200"}`}>
+              <div key={g.day} className={`bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 border ${isToday ? "border-[#0b50d5]/30 ring-1 ring-[#0b50d5]/10" : "border-slate-200"}`}>
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <span className={`font-bold text-sm ${isToday ? "text-[#0b50d5]" : "text-slate-700"}`}>{g.label}</span>
@@ -116,7 +116,7 @@ export default function RiderShifts() {
                         </div>
                         <div className="flex items-center gap-2">
                           <button onClick={() => toggleShift(shift)} className={`w-10 h-6 rounded-full transition-all ${shift.is_active ? "bg-green-500" : "bg-slate-300"}`}>
-                            <div className={`w-4 h-4 bg-white rounded-full transition-all ${shift.is_active ? "translate-x-5" : "translate-x-0.5"}`} />
+                            <div className={`w-4 h-4 bg-[var(--color-surface-container-lowest)] rounded-full transition-all ${shift.is_active ? "translate-x-5" : "translate-x-0.5"}`} />
                           </button>
                           <button onClick={() => handleDelete(shift.id)} className="p-1.5 hover:bg-red-50 rounded-lg">
                             <span className="material-symbols-outlined text-sm text-red-400">delete</span>

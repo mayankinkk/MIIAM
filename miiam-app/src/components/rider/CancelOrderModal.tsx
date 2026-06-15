@@ -16,7 +16,7 @@ export default function CancelOrderModal({ open, reasons, onSelectReason, onClos
 
   return (
     <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl w-full max-w-sm p-4">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-sm p-4">
         <h3 className="font-bold text-lg mb-4">{t.rider.modals.declineOrder}</h3>
         <p className="text-sm text-slate-500 mb-4">{t.rider.modals.declineOrderReason}</p>
         <div className="space-y-2 max-h-60 overflow-y-auto">

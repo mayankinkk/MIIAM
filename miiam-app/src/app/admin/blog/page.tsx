@@ -158,7 +158,7 @@ export default function BlogAdminPage() {
           </div>
           <button
             onClick={openCreateModal}
-            className="bg-white text-green-600 px-6 py-3 rounded-xl font-bold hover:bg-white/90 transition-all flex items-center gap-2"
+            className="bg-[var(--color-surface-container-lowest)] text-green-600 px-6 py-3 rounded-xl font-bold hover:bg-[var(--color-surface-container-lowest)]/90 transition-all flex items-center gap-2"
           >
             <span className="material-symbols-outlined">add</span>
             New Article
@@ -167,19 +167,19 @@ export default function BlogAdminPage() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-6 -mt-8">
-        <div className="bg-white rounded-2xl p-4 shadow-lg">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-lg">
           <div className="text-sm text-slate-500 mb-1">Total Articles</div>
           <div className="text-2xl font-black text-slate-800">{posts.length}</div>
         </div>
-        <div className="bg-white rounded-2xl p-4 shadow-lg">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-lg">
           <div className="text-sm text-slate-500 mb-1">Published</div>
           <div className="text-2xl font-black text-green-600">{publishedCount}</div>
         </div>
-        <div className="bg-white rounded-2xl p-4 shadow-lg">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-lg">
           <div className="text-sm text-slate-500 mb-1">Total Views</div>
           <div className="text-2xl font-black text-slate-800">{totalViews.toLocaleString()}</div>
         </div>
-        <div className="bg-white rounded-2xl p-4 shadow-lg">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-lg">
           <div className="text-sm text-slate-500 mb-1">Avg Views</div>
           <div className="text-2xl font-black text-slate-800">
             {posts.length > 0 ? Math.round(totalViews / posts.length).toLocaleString() : "0"}
@@ -197,7 +197,7 @@ export default function BlogAdminPage() {
                 className={`px-4 py-2 rounded-full font-bold text-sm whitespace-nowrap transition-colors ${
                   activeCategory === cat
                     ? "bg-green-600 text-white"
-                    : "bg-white text-slate-600 border border-slate-200"
+                    : "bg-[var(--color-surface-container-lowest)] text-slate-600 border border-slate-200"
                 }`}
               >
                 {cat}
@@ -223,7 +223,7 @@ export default function BlogAdminPage() {
             <div className="w-8 h-8 border-4 border-green-500 border-t-transparent rounded-full animate-spin" />
           </div>
         ) : filteredPosts.length === 0 ? (
-          <div className="bg-white rounded-2xl p-12 text-center">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-12 text-center">
             <span className="material-symbols-outlined text-5xl text-slate-300">article</span>
             <p className="text-slate-400 font-medium mt-3">No articles yet</p>
             <button onClick={openCreateModal} className="mt-4 text-green-600 font-bold text-sm hover:underline">
@@ -233,7 +233,7 @@ export default function BlogAdminPage() {
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredPosts.map(post => (
-              <div key={post.id} className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+              <div key={post.id} className="bg-[var(--color-surface-container-lowest)] rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
                 <div className="relative h-40">
                   {post.image ? (
                     <img src={post.image} alt={post.title} className="w-full h-full object-cover" />
@@ -243,7 +243,7 @@ export default function BlogAdminPage() {
                     </div>
                   )}
                   <div className="absolute top-3 left-3">
-                    <span className="bg-white/90 backdrop-blur px-2 py-1 rounded-full text-xs font-bold text-slate-700">
+                    <span className="bg-[var(--color-surface-container-lowest)]/90 backdrop-blur px-2 py-1 rounded-full text-xs font-bold text-slate-700">
                       {post.category}
                     </span>
                   </div>
@@ -299,7 +299,7 @@ export default function BlogAdminPage() {
 
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-3xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-slate-100">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-black text-slate-800">

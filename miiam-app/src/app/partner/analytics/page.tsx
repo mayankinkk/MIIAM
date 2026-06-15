@@ -235,11 +235,11 @@ export default function VendorAnalytics() {
         <div className="flex gap-2">
           {(["week", "month", "all"] as const).map((p) => (
             <button key={p} onClick={() => setPeriod(p)}
-              className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${period === p ? "bg-[#ba001c] text-white" : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50"}`}>
+              className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${period === p ? "bg-[#ba001c] text-white" : "bg-[var(--color-surface-container-lowest)] text-slate-600 border border-slate-200 hover:bg-slate-50"}`}>
               {p === "week" ? "This Week" : p === "month" ? "This Month" : "All Time"}
             </button>
           ))}
-          <button onClick={exportCSV} className="px-4 py-2 rounded-xl text-sm font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 flex items-center gap-1">
+          <button onClick={exportCSV} className="px-4 py-2 rounded-xl text-sm font-bold bg-[var(--color-surface-container-lowest)] text-slate-600 border border-slate-200 hover:bg-slate-50 flex items-center gap-1">
             <span className="material-symbols-outlined text-base">download</span> Export
           </button>
         </div>
@@ -252,16 +252,16 @@ export default function VendorAnalytics() {
           <p className="text-3xl font-black mt-1">₹{totalRevenue.toFixed(0)}</p>
           <p className="text-white/50 text-xs mt-1">{deliveredOrders.length} orders</p>
         </div>
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-slate-200">
           <p className="text-slate-500 text-sm font-medium">Orders</p>
           <p className="text-3xl font-black text-slate-900 mt-1">{totalOrders}</p>
           <p className="text-slate-400 text-xs mt-1">{deliveredOrders.length} delivered</p>
         </div>
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-slate-200">
           <p className="text-slate-500 text-sm font-medium">Avg. Order Value</p>
           <p className="text-3xl font-black text-slate-900 mt-1">₹{avgOrderValue.toFixed(0)}</p>
         </div>
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-slate-200">
           <p className="text-slate-500 text-sm font-medium">Items Sold</p>
           <p className="text-3xl font-black text-slate-900 mt-1">
             {deliveredOrders.reduce((s, o) => s + (o.items?.reduce((si, i) => si + i.quantity, 0) || 0), 0)}
@@ -271,7 +271,7 @@ export default function VendorAnalytics() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Revenue Chart */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-slate-200">
           <h3 className="font-bold text-slate-800 mb-4">Daily Revenue</h3>
           {dailyRevenue.length === 0 ? (
             <p className="text-slate-400 text-sm text-center py-8">No data for this period</p>
@@ -297,7 +297,7 @@ export default function VendorAnalytics() {
         </div>
 
         {/* Peak Hours */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-slate-200">
           <h3 className="font-bold text-slate-800 mb-4">Peak Hours</h3>
           <div className="space-y-2">
             {peakHours.map((h) => {
@@ -340,7 +340,7 @@ export default function VendorAnalytics() {
           ? Math.round((prepTimes.filter(t => t <= 45).length / prepTimes.length) * 100)
           : null;
         return (
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-slate-200">
             <div className="flex items-center gap-2 mb-4">
               <span className="material-symbols-outlined text-emerald-500">speed</span>
               <h3 className="font-bold text-slate-800">Performance & Staffing</h3>
@@ -379,7 +379,7 @@ export default function VendorAnalytics() {
 
       {/* Rating Breakdown */}
       {dimRatings && (
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-slate-200">
           <div className="flex items-center gap-2 mb-4">
             <span className="material-symbols-outlined text-amber-500">star</span>
             <h3 className="font-bold text-slate-800">Rating Breakdown</h3>
@@ -410,7 +410,7 @@ export default function VendorAnalytics() {
 
       {/* Competitor Benchmarking */}
       {competitors.length > 0 && (
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-slate-200">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-bold text-slate-800">Competitor Benchmarking</h3>
             <span className="text-xs text-slate-400 bg-slate-100 px-2 py-1 rounded-full">{competitorCount} similar vendors</span>
@@ -467,7 +467,7 @@ export default function VendorAnalytics() {
 
       {/* Demand Forecasting */}
       {forecast && (
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-slate-200">
           <div className="flex items-center gap-2 mb-4">
             <span className="material-symbols-outlined text-purple-500">trending_up</span>
             <h3 className="font-bold text-slate-800">Demand Forecast</h3>
@@ -512,7 +512,7 @@ export default function VendorAnalytics() {
       )}
 
       {/* Popular Items */}
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-slate-200">
         <h3 className="font-bold text-slate-800 mb-4">Popular Items</h3>
         {popularItems.length === 0 ? (
           <p className="text-slate-400 text-sm text-center py-8">No items sold yet</p>
@@ -576,7 +576,7 @@ export default function VendorAnalytics() {
           .sort((a, b) => b.reorderRate - a.reorderRate)
           .slice(0, 10);
         return reorderItems.length > 0 ? (
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-slate-200">
             <div className="flex items-center gap-2 mb-4">
               <span className="material-symbols-outlined text-indigo-500">replay</span>
               <h3 className="font-bold text-slate-800">Re-order Analysis</h3>
@@ -613,7 +613,7 @@ export default function VendorAnalytics() {
       })()}
 
       {/* Order Status Breakdown */}
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-slate-200">
         <h3 className="font-bold text-slate-800 mb-4">Order Status Breakdown</h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {([

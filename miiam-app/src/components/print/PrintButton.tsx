@@ -34,7 +34,7 @@ export default function PrintButton({
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          className="w-full bg-white border border-outline-variant text-on-surface rounded-xl py-3 font-bold flex items-center justify-center gap-2 hover:bg-surface-container transition-all"
+          className="w-full bg-[var(--color-surface-container-lowest)] border border-outline-variant text-on-surface rounded-xl py-3 font-bold flex items-center justify-center gap-2 hover:bg-surface-container transition-all"
         >
           <span className="material-symbols-outlined">print</span>
           Print
@@ -42,7 +42,7 @@ export default function PrintButton({
         {open && (
           <>
             <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-            <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-outline-variant z-50 overflow-hidden print:hidden">
+            <div className="absolute right-0 mt-2 w-56 bg-[var(--color-surface-container-lowest)] rounded-xl shadow-xl border border-outline-variant z-50 overflow-hidden print:hidden">
               <button onClick={() => trigger("receipt")} className="w-full text-left px-4 py-3 hover:bg-surface-container flex items-center gap-2 text-sm font-medium">
                 <span className="material-symbols-outlined text-primary">receipt_long</span>
                 Customer Receipt
@@ -79,7 +79,7 @@ export default function PrintButton({
       <button
         type="button"
         onClick={() => trigger("receipt")}
-        className="bg-white border border-outline-variant text-on-surface rounded-full w-10 h-10 flex items-center justify-center hover:bg-surface-container transition-all print:hidden"
+        className="bg-[var(--color-surface-container-lowest)] border border-outline-variant text-on-surface rounded-full w-10 h-10 flex items-center justify-center hover:bg-surface-container transition-all print:hidden"
         title="Print Receipt"
         aria-label="Print receipt"
       >

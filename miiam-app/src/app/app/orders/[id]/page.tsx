@@ -136,7 +136,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
             {order?.vendor_id !== PRINTING_VENDOR_ID && (
               <div className="relative w-full h-[260px] sm:h-[420px] rounded-2xl overflow-hidden shadow-sm">
                 {trackingInfo && (
-                  <div className="absolute top-4 right-4 bg-white/90 backdrop-blur rounded-full px-4 py-3 shadow-lg flex items-center gap-2" style={{ zIndex: 10 }}>
+                  <div className="absolute top-4 right-4 bg-[var(--color-surface-container-lowest)]/90 backdrop-blur rounded-full px-4 py-3 shadow-lg flex items-center gap-2" style={{ zIndex: 10 }}>
                     <div className="text-center">
                       <p className="text-[10px] text-[#5c403d] font-bold uppercase tracking-wider">{t.orders.eta}</p>
                       <p className="text-xl font-black text-primary leading-none">{trackingInfo.eta} <span className="text-xs">{t.orders.minsUnit}</span></p>

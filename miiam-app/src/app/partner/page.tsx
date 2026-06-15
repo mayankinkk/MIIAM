@@ -115,7 +115,7 @@ export default function PartnerLanding() {
           <p className="text-slate-500 text-center mb-12 max-w-2xl mx-auto">Everything you need to run and grow your delivery business</p>
           <div className="grid md:grid-cols-3 gap-6">
             {benefits.map((b) => (
-              <div key={b.title} className="bg-white p-6 rounded-2xl border border-slate-200 hover:shadow-lg transition-shadow">
+              <div key={b.title} className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl border border-slate-200 hover:shadow-lg transition-shadow">
                 <div className="w-12 h-12 bg-[#ffe1e4] rounded-xl flex items-center justify-center mb-4">
                   <span className="material-symbols-outlined text-[#ba001c]">{b.icon}</span>
                 </div>
@@ -158,7 +158,7 @@ export default function PartnerLanding() {
           <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 text-center mb-12">Frequently Asked Questions</h2>
           <div className="space-y-4">
             {faqs.map((f) => (
-              <details key={f.q} className="bg-white rounded-2xl border border-slate-200 group">
+              <details key={f.q} className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-200 group">
                 <summary className="px-6 py-5 font-bold text-slate-800 cursor-pointer flex items-center justify-between list-none">
                   {f.q}
                   <span className="material-symbols-outlined text-slate-400 group-open:rotate-180 transition-transform">expand_more</span>

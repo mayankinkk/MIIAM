@@ -121,7 +121,7 @@ export default function CustomizationModal({ item, vendor_id, vendor_name, onClo
     <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
 
-      <div className="relative w-full max-w-sm bg-white rounded-t-3xl sm:rounded-3xl flex flex-col animate-slide-up">
+      <div className="relative w-full max-w-sm bg-[var(--color-surface-container-lowest)] rounded-t-3xl sm:rounded-3xl flex flex-col animate-slide-up">
         {/* Header */}
         <div className="bg-white z-10 border-b border-slate-100 px-6 py-4 flex items-center justify-between rounded-t-3xl sm:rounded-t-3xl">
           <div>
@@ -161,14 +161,14 @@ export default function CustomizationModal({ item, vendor_id, vendor_name, onClo
             <div className="flex items-center gap-4 bg-slate-50 rounded-2xl p-2 w-fit">
               <button
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="w-10 h-10 rounded-xl bg-white shadow flex items-center justify-center hover:bg-[#ffe1e4] transition-colors"
+                className="w-10 h-10 rounded-xl bg-[var(--color-surface-container-lowest)] shadow flex items-center justify-center hover:bg-[#ffe1e4] transition-colors"
               >
                 <span className="material-symbols-outlined text-[#ba001c]">remove</span>
               </button>
               <span className="text-xl font-extrabold text-slate-900 w-8 text-center">{quantity}</span>
               <button
                 onClick={() => setQuantity(quantity + 1)}
-                className="w-10 h-10 rounded-xl bg-white shadow flex items-center justify-center hover:bg-[#ffe1e4] transition-colors"
+                className="w-10 h-10 rounded-xl bg-[var(--color-surface-container-lowest)] shadow flex items-center justify-center hover:bg-[#ffe1e4] transition-colors"
               >
                 <span className="material-symbols-outlined text-[#ba001c]">add</span>
               </button>
@@ -177,7 +177,7 @@ export default function CustomizationModal({ item, vendor_id, vendor_name, onClo
         </div>
 
         {/* Footer */}
-        <div className="bg-white border-t border-slate-100 px-6 py-4 pb-[env(safe-area-inset-bottom)]">
+        <div className="bg-[var(--color-surface-container-lowest)] border-t border-slate-100 px-6 py-4 pb-[env(safe-area-inset-bottom)]">
           <button
             onClick={handleAddToCart}
             className="w-full py-4 bg-[#ba001c] text-white font-extrabold rounded-2xl flex items-center justify-center gap-3 hover:bg-[#a40017] active:scale-95 transition-all shadow-lg shadow-[#ba001c]/30"

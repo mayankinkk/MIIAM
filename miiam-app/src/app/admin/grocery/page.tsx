@@ -65,22 +65,22 @@ export default function GroceryAdmin() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white p-6 rounded-2xl border border-slate-100">
+          <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl border border-slate-100">
             <p className="text-slate-400 text-sm">Total Orders</p>
             <p className="text-3xl font-black text-slate-800 mt-1">{loading ? "..." : stats.totalOrders}</p>
             <p className="text-green-600 text-sm mt-2">↑ 12% from last month</p>
           </div>
-          <div className="bg-white p-6 rounded-2xl border border-slate-100">
+          <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl border border-slate-100">
             <p className="text-slate-400 text-sm">Revenue</p>
             <p className="text-3xl font-black text-slate-800 mt-1">{loading ? "..." : `₹${(stats.revenue / 100000).toFixed(1)}L`}</p>
             <p className="text-green-600 text-sm mt-2">↑ 8% from last month</p>
           </div>
-          <div className="bg-white p-6 rounded-2xl border border-slate-100">
+          <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl border border-slate-100">
             <p className="text-slate-400 text-sm">Active Partners</p>
             <p className="text-3xl font-black text-slate-800 mt-1">{loading ? "..." : stats.activePartners}</p>
             <p className="text-green-600 text-sm mt-2">↑ 3 new this month</p>
           </div>
-          <div className="bg-white p-6 rounded-2xl border border-slate-100">
+          <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl border border-slate-100">
             <p className="text-slate-400 text-sm">Total Products</p>
             <p className="text-3xl font-black text-slate-800 mt-1">{loading ? "..." : stats.totalProducts}</p>
             <p className="text-green-600 text-sm mt-2">In inventory</p>
@@ -88,7 +88,7 @@ export default function GroceryAdmin() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Link href="/admin/grocery/orders" className="bg-white p-6 rounded-2xl border border-slate-100 hover:border-[#ba001c] hover:shadow-lg transition-all group">
+          <Link href="/admin/grocery/orders" className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl border border-slate-100 hover:border-[#ba001c] hover:shadow-lg transition-all group">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-[#ba001c]/10 rounded-xl flex items-center justify-center">
                 <span className="material-symbols-outlined text-2xl text-[#ba001c]">receipt_long</span>
@@ -103,7 +103,7 @@ export default function GroceryAdmin() {
             </div>
           </Link>
 
-          <Link href="/admin/grocery/inventory" className="bg-white p-6 rounded-2xl border border-slate-100 hover:border-[#ba001c] hover:shadow-lg transition-all group">
+          <Link href="/admin/grocery/inventory" className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl border border-slate-100 hover:border-[#ba001c] hover:shadow-lg transition-all group">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
                 <span className="material-symbols-outlined text-2xl text-blue-600">inventory_2</span>
@@ -118,7 +118,7 @@ export default function GroceryAdmin() {
             </div>
           </Link>
 
-          <Link href="/admin/grocery/partners" className="bg-white p-6 rounded-2xl border border-slate-100 hover:border-[#ba001c] hover:shadow-lg transition-all group">
+          <Link href="/admin/grocery/partners" className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl border border-slate-100 hover:border-[#ba001c] hover:shadow-lg transition-all group">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
                 <span className="material-symbols-outlined text-2xl text-green-600">store</span>

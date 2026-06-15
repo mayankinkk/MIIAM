@@ -214,23 +214,23 @@ export default function PartnerPOS() {
 
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-5 gap-4">
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-slate-200">
           <p className="text-slate-500 text-sm font-bold uppercase tracking-wider mb-1">Active</p>
           <p className="text-4xl font-black text-[#ba001c]">{activeOrders.length}</p>
         </div>
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-slate-200">
           <p className="text-slate-500 text-sm font-bold uppercase tracking-wider mb-1">Pending</p>
           <p className="text-4xl font-black text-amber-600">{orders.filter((o) => o.status === "pending").length}</p>
         </div>
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-slate-200">
           <p className="text-slate-500 text-sm font-bold uppercase tracking-wider mb-1">Ready for Pickup</p>
           <p className="text-4xl font-black text-purple-600">{orders.filter((o) => o.status === "ready_for_pickup").length}</p>
         </div>
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-slate-200">
           <p className="text-slate-500 text-sm font-bold uppercase tracking-wider mb-1">Delivered</p>
           <p className="text-4xl font-black text-green-600">{orders.filter((o) => o.status === "delivered").length}</p>
         </div>
-        <button onClick={() => setShowScheduled(!showScheduled)} className={`p-6 rounded-2xl shadow-sm border text-left transition-colors ${showScheduled ? "bg-indigo-50 border-indigo-300" : "bg-white border-slate-200 hover:bg-slate-50"}`}>
+        <button onClick={() => setShowScheduled(!showScheduled)} className={`p-6 rounded-2xl shadow-sm border text-left transition-colors ${showScheduled ? "bg-indigo-50 border-indigo-300" : "bg-[var(--color-surface-container-lowest)] border-slate-200 hover:bg-slate-50"}`}>
           <p className="text-slate-500 text-sm font-bold uppercase tracking-wider mb-1">Scheduled</p>
           <p className="text-4xl font-black text-indigo-600">{scheduledOrders.length}</p>
         </button>
@@ -247,14 +247,14 @@ export default function PartnerPOS() {
             <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Upcoming</span>
           </div>
           {scheduledOrders.length === 0 ? (
-            <div className="bg-white border-2 border-dashed border-slate-200 rounded-3xl p-12 text-center">
+            <div className="bg-[var(--color-surface-container-lowest)] border-2 border-dashed border-slate-200 rounded-3xl p-12 text-center">
               <span className="material-symbols-outlined text-5xl text-slate-300 mb-3">calendar_month</span>
               <p className="text-slate-400 font-medium">No scheduled orders</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
               {scheduledOrders.map((order) => (
-                <div key={order.id} className="bg-white rounded-3xl p-5 shadow-sm border border-indigo-100 border-l-4 border-l-indigo-500">
+                <div key={order.id} className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-5 shadow-sm border border-indigo-100 border-l-4 border-l-indigo-500">
                   <div className="flex justify-between items-start mb-3">
                     <div>
                       <span className="text-lg font-black text-slate-900">#{order.id.slice(0, 8).toUpperCase()}</span>
@@ -295,7 +295,7 @@ export default function PartnerPOS() {
             <button
               onClick={() => { setBatchMode(!batchMode); setBatchSelected(new Set()); }}
               className={`text-xs font-bold px-3 py-1.5 rounded-lg border transition-colors ${
-                batchMode ? "bg-[#ba001c] text-white border-[#ba001c]" : "bg-white text-slate-500 border-slate-200 hover:bg-slate-50"
+                batchMode ? "bg-[#ba001c] text-white border-[#ba001c]" : "bg-[var(--color-surface-container-lowest)] text-slate-500 border-slate-200 hover:bg-slate-50"
               }`}
             >
               Batch
@@ -351,7 +351,7 @@ export default function PartnerPOS() {
         </div>
 
         {activeOrders.length === 0 ? (
-          <div className="bg-white border-2 border-dashed border-slate-200 rounded-3xl p-16 text-center">
+          <div className="bg-[var(--color-surface-container-lowest)] border-2 border-dashed border-slate-200 rounded-3xl p-16 text-center">
             <span className="material-symbols-outlined text-6xl text-slate-300 mb-4">check_circle</span>
             <p className="text-slate-400 font-medium text-lg">All caught up!</p>
             <p className="text-slate-300 text-sm mt-1">Waiting for new orders...</p>
@@ -363,7 +363,7 @@ export default function PartnerPOS() {
               return (
                 <div
                   key={order.id}
-                  className={`bg-white rounded-3xl p-6 shadow-sm border transition-all ${
+                  className={`bg-[var(--color-surface-container-lowest)] rounded-3xl p-6 shadow-sm border transition-all ${
                     batchSelected.has(order.id) ? "border-[#ba001c] ring-2 ring-[#ba001c]/20" : "border-slate-200 hover:shadow-md"
                   }`}
                 >
@@ -524,7 +524,7 @@ export default function PartnerPOS() {
       {/* Past Orders */}
       <section className="pt-4">
         <h2 className="text-xl font-bold text-slate-800 mb-6">Completed / Cancelled</h2>
-        <div className="bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-200">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl overflow-hidden shadow-sm border border-slate-200">
           <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead className="bg-slate-50 border-b border-slate-100">
@@ -572,7 +572,7 @@ export default function PartnerPOS() {
       {/* Delay Notification Modal */}
       {delayModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setDelayModal(null)}>
-          <div className="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-6 max-w-sm w-full shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center gap-3 mb-4">
               <span className="material-symbols-outlined text-3xl text-orange-500">schedule</span>
               <div>
@@ -646,7 +646,7 @@ export default function PartnerPOS() {
       {/* Prep Time Modal */}
       {prepTimeModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setPrepTimeModal(null)}>
-          <div className="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-6 max-w-sm w-full shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center gap-3 mb-4">
               <span className="material-symbols-outlined text-3xl text-amber-500">timer</span>
               <div>
@@ -703,7 +703,7 @@ export default function PartnerPOS() {
       {/* Customer History Modal */}
       {custHistoryModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setCustHistoryModal(null)}>
-          <div className="bg-white rounded-3xl p-6 max-w-lg w-full shadow-2xl max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-6 max-w-lg w-full shadow-2xl max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-extrabold text-slate-900">Customer Order History</h3>
               <button onClick={() => setCustHistoryModal(null)} className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">

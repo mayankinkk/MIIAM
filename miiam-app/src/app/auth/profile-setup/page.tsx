@@ -270,7 +270,7 @@ function ProfileSetupContent() {
                     className={`py-3 px-4 rounded-xl font-bold text-sm transition-all ${
                       formData.state === state
                         ? "bg-[#ba001c] text-white"
-                        : "bg-white border-2 border-slate-200 text-slate-600 hover:border-[#ba001c]"
+                        : "bg-[var(--color-surface-container-lowest)] border-2 border-slate-200 text-slate-600 hover:border-[#ba001c]"
                     }`}
                   >
                     {state}
@@ -321,7 +321,7 @@ function ProfileSetupContent() {
                       className={`py-3 px-4 rounded-xl font-bold text-sm transition-all ${
                         formData.city === city
                           ? "bg-[#ba001c] text-white"
-                          : "bg-white border-2 border-slate-200 text-slate-600 hover:border-[#ba001c]"
+                          : "bg-[var(--color-surface-container-lowest)] border-2 border-slate-200 text-slate-600 hover:border-[#ba001c]"
                       }`}
                     >
                       {city}
@@ -365,7 +365,7 @@ function ProfileSetupContent() {
 
         {/* Completion celebration overlay */}
         {loading && (
-          <div className="fixed inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="fixed inset-0 bg-[var(--color-surface-container-lowest)]/80 backdrop-blur-sm flex items-center justify-center z-50">
             <div className="text-center animate-fade-in">
               <div className="text-6xl mb-4">🎉</div>
               <p className="text-xl font-black text-[#4d212a]">Welcome to MIIAM!</p>

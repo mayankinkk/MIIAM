@@ -28,7 +28,7 @@ export default function OnboardingPage() {
 
           {/* Bento Grid */}
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mb-12">
-            <div className="md:col-span-8 bg-white rounded-lg p-10 shadow-[0px_20px_40px_rgba(77,33,42,0.06)] flex flex-col justify-between min-h-[400px]">
+            <div className="md:col-span-8 bg-[var(--color-surface-container-lowest)] rounded-lg p-10 shadow-[0px_20px_40px_rgba(77,33,42,0.06)] flex flex-col justify-between min-h-[400px]">
               <div>
                 <h1 className="text-5xl md:text-6xl font-extrabold tracking-tighter mb-6 leading-none">
                   Taste the <span className="text-[#ba001c]">Vibrant</span> Side of Life.
@@ -91,7 +91,7 @@ export default function OnboardingPage() {
             <p className="text-[#814c55] text-lg">Swipe between Appetite and Trust.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-            <div className="bg-white rounded-lg p-12 relative overflow-hidden group shadow-[0px_20px_40px_rgba(77,33,42,0.04)]">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-lg p-12 relative overflow-hidden group shadow-[0px_20px_40px_rgba(77,33,42,0.04)]">
               <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#ba001c]/10 rounded-full transform group-hover:scale-150 transition-transform duration-700" />
               <div className="mb-8 w-20 h-20 rounded-full bg-[#ffd2d7] flex items-center justify-center">
                 <span className="material-symbols-outlined text-4xl text-[#ba001c]" style={{ fontVariationSettings: "'FILL' 1" }}>restaurant_menu</span>
@@ -105,7 +105,7 @@ export default function OnboardingPage() {
                 <span className="px-4 py-2 bg-[#ba001c]/10 text-[#ba001c] rounded-full text-xs font-bold uppercase tracking-wider">Exclusive Chefs</span>
               </div>
             </div>
-            <div className="bg-white rounded-lg p-12 relative overflow-hidden group shadow-[0px_20px_40px_rgba(77,33,42,0.04)]">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-lg p-12 relative overflow-hidden group shadow-[0px_20px_40px_rgba(77,33,42,0.04)]">
               <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#0b50d5]/10 rounded-full transform group-hover:scale-150 transition-transform duration-700" />
               <div className="mb-8 w-20 h-20 rounded-full bg-[#ffd2d7] flex items-center justify-center">
                 <span className="material-symbols-outlined text-4xl text-[#0b50d5]" style={{ fontVariationSettings: "'FILL' 1" }}>verified_user</span>

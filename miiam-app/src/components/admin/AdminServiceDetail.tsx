@@ -121,25 +121,25 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-slate-100 shadow-sm">
           <p className="text-xs font-bold text-slate-400 uppercase">Total Bookings</p>
           <p className="text-2xl font-black text-slate-800 mt-1">{loading ? "—" : totalBookings}</p>
         </div>
-        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-slate-100 shadow-sm">
           <p className="text-xs font-bold text-slate-400 uppercase">Revenue</p>
           <p className="text-2xl font-black text-slate-800 mt-1">{loading ? "—" : `₹${totalRevenue.toLocaleString("en-IN")}`}</p>
         </div>
-        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-slate-100 shadow-sm">
           <p className="text-xs font-bold text-slate-400 uppercase">Completed</p>
           <p className="text-2xl font-black text-slate-800 mt-1">{loading ? "—" : completedCount}</p>
         </div>
-        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-slate-100 shadow-sm">
           <p className="text-xs font-bold text-slate-400 uppercase">Completion Rate</p>
           <p className="text-2xl font-black text-slate-800 mt-1">{loading ? "—" : `${completionRate}%`}</p>
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-100 overflow-hidden shadow-sm">
         <div className="p-5 border-b border-slate-50">
           <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm">Recent Bookings</h3>
         </div>

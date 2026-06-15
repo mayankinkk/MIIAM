@@ -87,7 +87,7 @@ export default function SwipeableRow({
       )}
       {/* Content */}
       <div
-        className="relative bg-white rounded-xl transition-transform"
+        className="relative bg-[var(--color-surface-container-lowest)] rounded-xl transition-transform"
         style={{
           transform: swiping ? `translateX(${offsetX}px)` : undefined,
           transition: swiping ? "none" : "transform 0.3s ease",

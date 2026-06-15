@@ -88,7 +88,7 @@ export default function RiderNotificationsPage() {
           </Link>
           <h1 className="text-2xl font-black tracking-tighter">Notifications</h1>
           {unreadCount > 0 && (
-            <button onClick={markAllRead} className="text-sm font-bold bg-white/20 px-4 py-2.5 rounded-full">
+            <button onClick={markAllRead} className="text-sm font-bold bg-[var(--color-surface-container-lowest)]/20 px-4 py-2.5 rounded-full">
               Clear All
             </button>
           )}
@@ -107,7 +107,7 @@ export default function RiderNotificationsPage() {
         ) : notifications.map((notif) => (
           <div
             key={notif.id}
-            className={`bg-white p-4 rounded-2xl shadow-lg ${notif.read ? "opacity-75" : ""}`}
+            className={`bg-[var(--color-surface-container-lowest)] p-4 rounded-2xl shadow-lg ${notif.read ? "opacity-75" : ""}`}
           >
             <div className="flex items-start gap-3">
               {!notif.read && (

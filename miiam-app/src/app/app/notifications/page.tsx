@@ -65,7 +65,7 @@ export default function NotificationsPage() {
   return (
     <PullToRefresh onRefresh={fetchNotifications}>
     <div className="min-h-screen bg-surface pb-24">
-      <header className="fixed top-0 w-full z-50 bg-white shadow-sm">
+      <header className="fixed top-0 w-full z-50 bg-[var(--color-surface-container-lowest)] shadow-sm">
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-4">
             <Link href="/app/explore" className="w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center">

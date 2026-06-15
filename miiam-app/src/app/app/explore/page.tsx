@@ -293,7 +293,7 @@ export default function ExplorePage() {
             >
               <span className="material-symbols-outlined text-lg">filter_list</span>
               Filters
-              {hasActiveFilters && <span className="w-2 h-2 bg-white rounded-full" />}
+              {hasActiveFilters && <span className="w-2 h-2 bg-[var(--color-surface-container-lowest)] rounded-full" />}
             </button>
           </div>
           
@@ -444,7 +444,7 @@ export default function ExplorePage() {
         <FadeIn>
         <div className="bg-gradient-to-r from-slate-800 to-slate-900 rounded-2xl p-6 text-white">
           <div className="flex items-center gap-4 mb-4">
-            <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center">
+            <div className="w-16 h-16 bg-[var(--color-surface-container-lowest)]/10 rounded-2xl flex items-center justify-center">
               <span className="material-symbols-outlined text-3xl">store</span>
             </div>
             <div>
@@ -453,7 +453,7 @@ export default function ExplorePage() {
             </div>
           </div>
           <p className="text-sm text-white/80 mb-4">Join 10,000+ restaurants and service providers earning with MIIAM.</p>
-          <a href="https://partner.miiam.in" target="_blank" rel="noopener noreferrer" className="block w-full py-3 bg-white text-slate-900 font-bold rounded-xl hover:bg-slate-100 transition-colors text-center">
+          <a href="https://partner.miiam.in" target="_blank" rel="noopener noreferrer" className="block w-full py-3 bg-[var(--color-surface-container-lowest)] text-slate-900 font-bold rounded-xl hover:bg-slate-100 transition-colors text-center">
             Register Your Business
           </a>
         </div>
@@ -465,11 +465,11 @@ export default function ExplorePage() {
           <h3 className="font-black text-2xl mb-2">Download MIIAM App</h3>
           <p className="text-sm text-white/80 mb-4">Get exclusive deals and faster ordering</p>
           <div className="flex gap-3 justify-center">
-            <a href="https://apps.apple.com/app/miiam" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-white/20 px-4 py-2 rounded-xl hover:bg-white/30 transition-colors">
+            <a href="https://apps.apple.com/app/miiam" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-[var(--color-surface-container-lowest)]/20 px-4 py-2 rounded-xl hover:bg-white/30 transition-colors">
               <span className="text-2xl">🍎</span>
               <span className="font-bold text-sm">App Store</span>
             </a>
-            <a href="https://play.google.com/store/apps/details?id=in.miiam.app" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-white/20 px-4 py-2 rounded-xl hover:bg-white/30 transition-colors">
+            <a href="https://play.google.com/store/apps/details?id=in.miiam.app" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-[var(--color-surface-container-lowest)]/20 px-4 py-2 rounded-xl hover:bg-white/30 transition-colors">
               <span className="text-2xl">🤖</span>
               <span className="font-bold text-sm">Play Store</span>
             </a>

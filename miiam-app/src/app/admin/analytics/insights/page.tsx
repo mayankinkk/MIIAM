@@ -74,19 +74,19 @@ export default function CustomerInsights() {
 
       {/* User Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-slate-100 shadow-sm">
           <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Total Users</p>
           <p className="text-3xl font-black text-slate-800">{users.length}</p>
         </div>
-        <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-slate-100 shadow-sm">
           <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">New This Month</p>
           <p className="text-3xl font-black text-green-600">+{newUsersThisMonth}</p>
         </div>
-        <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-slate-100 shadow-sm">
           <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Total Orders</p>
           <p className="text-3xl font-black text-slate-800">{orders.length}</p>
         </div>
-        <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-slate-100 shadow-sm">
           <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Avg Orders/User</p>
           <p className="text-3xl font-black text-amber-500">{users.length > 0 ? Math.round(orders.length / users.length) : 0}</p>
         </div>
@@ -94,7 +94,7 @@ export default function CustomerInsights() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* User Segments */}
-        <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-6 shadow-sm">
           <h2 className="text-lg font-black text-slate-800 mb-6">User Segments</h2>
           <div className="space-y-4">
             <div className="flex items-center gap-4">
@@ -143,7 +143,7 @@ export default function CustomerInsights() {
         </div>
 
         {/* Purchase Frequency */}
-        <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-6 shadow-sm">
           <h2 className="text-lg font-black text-slate-800 mb-6">Purchase Frequency</h2>
           <div className="space-y-4">
             <div className="flex items-center gap-4">
@@ -193,7 +193,7 @@ export default function CustomerInsights() {
       </div>
 
       {/* Activity Heatmap */}
-      <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-6 shadow-sm">
         <h2 className="text-lg font-black text-slate-800 mb-6">Order Activity by Hour</h2>
         <div className="flex items-end gap-1 h-40">
           {activityByHour.map((count, hour) => (
@@ -211,7 +211,7 @@ export default function CustomerInsights() {
       </div>
 
       {/* Top Users by Orders */}
-      <div className="bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
         <div className="p-4 border-b border-slate-100">
           <h2 className="font-black text-slate-800 uppercase tracking-widest text-sm">Top Users by Orders</h2>
         </div>

@@ -56,7 +56,7 @@ export default function AdminHeader() {
   }
 
   return (
-    <header className="fixed top-0 right-0 left-0 md:left-64 bg-white/80 backdrop-blur-md border-b border-slate-100 px-8 py-4 flex items-center justify-between z-10">
+    <header className="fixed top-0 right-0 left-0 md:left-64 bg-[var(--color-surface-container-lowest)]/80 backdrop-blur-md border-b border-slate-100 px-8 py-4 flex items-center justify-between z-10">
       <div className="flex items-center gap-2 text-slate-400 font-bold text-sm">
         <span>Pages</span>
         <span>/</span>

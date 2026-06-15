@@ -157,7 +157,7 @@ export default function PageAssetsPage() {
           return (
             <div
               key={asset.id}
-              className={`bg-white rounded-3xl border shadow-sm overflow-hidden ${meta?.color || "border-slate-100"}`}
+              className={`bg-[var(--color-surface-container-lowest)] rounded-3xl border shadow-sm overflow-hidden ${meta?.color || "border-slate-100"}`}
             >
               <div className="flex flex-col md:flex-row">
                 {/* Preview */}
@@ -173,7 +173,7 @@ export default function PageAssetsPage() {
                     {asset.subtitle && <p className="text-white/80 text-xs mt-0.5">{asset.subtitle}</p>}
                   </div>
                   {!asset.is_active && (
-                    <div className="absolute inset-0 bg-white/70 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-[var(--color-surface-container-lowest)]/70 flex items-center justify-center">
                       <span className="bg-red-100 text-red-600 font-bold text-sm px-3 py-1 rounded-full">INACTIVE</span>
                     </div>
                   )}
@@ -242,7 +242,7 @@ export default function PageAssetsPage() {
         })}
 
         {assets.length === 0 && (
-          <div className="bg-white rounded-3xl border border-slate-100 p-16 text-center">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-16 text-center">
             <span className="material-symbols-outlined text-4xl text-slate-300 mb-3 block">image_not_supported</span>
             <p className="font-bold text-slate-500">No page assets found.</p>
             <p className="text-sm text-slate-400 mt-1">Run the SQL migration to create the page_assets table first.</p>
@@ -253,7 +253,7 @@ export default function PageAssetsPage() {
       {/* Edit Modal */}
       {editingAsset && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-xl w-full shadow-2xl">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl max-w-xl w-full shadow-2xl">
             <div className="p-6 border-b border-slate-100 flex justify-between items-center">
               <div>
                 <h2 className="text-xl font-black text-slate-800">
@@ -316,7 +316,7 @@ export default function PageAssetsPage() {
                   onClick={() => setEditForm({ ...editForm, is_active: !editForm.is_active })}
                   className={`w-12 h-7 rounded-full p-1 transition-colors cursor-pointer ${editForm.is_active ? "bg-green-500" : "bg-slate-200"}`}
                 >
-                  <div className={`w-5 h-5 bg-white rounded-full shadow transition-transform ${editForm.is_active ? "translate-x-5" : ""}`} />
+                  <div className={`w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full shadow transition-transform ${editForm.is_active ? "translate-x-5" : ""}`} />
                 </div>
                 <span className="text-sm font-semibold text-slate-700">{editForm.is_active ? "Active (shown to users)" : "Inactive (hidden)"}</span>
               </label>
@@ -344,7 +344,7 @@ export default function PageAssetsPage() {
       {/* Add Modal */}
       {showAddModal && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-lg w-full shadow-2xl">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl max-w-lg w-full shadow-2xl">
             <div className="p-6 border-b border-slate-100 flex justify-between items-center">
               <h2 className="text-xl font-black text-slate-800">Add Page Section</h2>
               <button onClick={() => setShowAddModal(false)} className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">

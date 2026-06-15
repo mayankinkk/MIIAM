@@ -114,7 +114,7 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
 
   return (
     <div className="min-h-screen bg-surface">
-      <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-white/90 backdrop-blur-2xl shadow-sm">
+      <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-[var(--color-surface-container-lowest)]/90 backdrop-blur-2xl shadow-sm">
         <Link href={`/app/orders/${id}`} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-all">
           <span className="material-symbols-outlined text-primary">arrow_back</span>
         </Link>
@@ -163,7 +163,7 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
           </p>
         </div>
 
-        <div className="bg-white rounded-xl p-6 shadow-sm mb-6">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-xl p-6 shadow-sm mb-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-bold text-on-surface">{t.refund.orderDetails}</h2>
             <span className="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded-full font-bold">
@@ -197,7 +197,7 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
         )}
 
         {showCancelForm && (
-          <div className="bg-white rounded-xl p-6 shadow-sm mb-6">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-xl p-6 shadow-sm mb-6">
             <h3 className="font-bold text-on-surface mb-4">{t.refund.whyCancelling}</h3>
             <div className="space-y-3">
               {[
@@ -251,7 +251,7 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
           </div>
         )}
 
-        <div className="bg-white rounded-xl p-6 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-xl p-6 shadow-sm">
           <h3 className="font-bold text-on-surface mb-4">{t.refund.refundStatus}</h3>
           <div className="space-y-4 relative">
             <div className="absolute left-[19px] top-4 bottom-4 w-0.5 bg-slate-100" />

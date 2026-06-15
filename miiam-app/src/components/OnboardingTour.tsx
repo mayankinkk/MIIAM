@@ -83,7 +83,7 @@ export default function OnboardingTour({ onComplete }: OnboardingTourProps) {
 
       {/* Tour Card */}
       <div className="fixed bottom-8 left-4 right-4 z-50 max-w-md mx-auto">
-        <div className="bg-white rounded-2xl shadow-2xl p-6 animate-slide-up">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl shadow-2xl p-6 animate-slide-up">
           {/* Progress dots */}
           <div className="flex gap-1.5 mb-4">
             {steps.map((_, i) => (

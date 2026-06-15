@@ -94,7 +94,7 @@ export default function CustomerLocationView({ orderId, className = "", height =
   if (!orderId) return null;
 
   return (
-    <div className={`bg-white rounded-xl border border-outline-variant/30 overflow-hidden ${className}`}>
+    <div className={`bg-[var(--color-surface-container-lowest)] rounded-xl border border-outline-variant/30 overflow-hidden ${className}`}>
       <div className="flex items-center justify-between px-3 py-2 border-b border-outline-variant/10">
         <div className="flex items-center gap-2">
           <span className="material-symbols-outlined text-secondary text-base" style={{ fontVariationSettings: "'FILL' 1" }}>

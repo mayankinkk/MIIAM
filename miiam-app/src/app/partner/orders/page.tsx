@@ -94,7 +94,7 @@ export default function VendorOrders() {
           <button
             key={s.key}
             onClick={() => setFilter(s.key)}
-            className={`bg-white p-5 rounded-2xl border text-left transition-all ${
+            className={`bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border text-left transition-all ${
               filter === s.key ? "border-[#ba001c] shadow-sm" : "border-slate-200 hover:border-slate-300"
             }`}
           >
@@ -105,7 +105,7 @@ export default function VendorOrders() {
       </div>
 
       {/* Search & Filter */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-4 flex items-center gap-4 flex-wrap">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-200 p-4 flex items-center gap-4 flex-wrap">
         <div className="relative flex-1 min-w-[200px]">
           <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
           <input
@@ -136,7 +136,7 @@ export default function VendorOrders() {
         {loading ? (
           <div className="text-center py-12 text-slate-400 font-medium animate-pulse">Loading orders...</div>
         ) : filteredOrders.length === 0 ? (
-          <div className="bg-white border-2 border-dashed border-slate-200 rounded-3xl p-16 text-center">
+          <div className="bg-[var(--color-surface-container-lowest)] border-2 border-dashed border-slate-200 rounded-3xl p-16 text-center">
             <span className="material-symbols-outlined text-6xl text-slate-300 mb-4">receipt_long</span>
             <p className="text-slate-400 font-medium text-lg">No orders found</p>
           </div>
@@ -144,7 +144,7 @@ export default function VendorOrders() {
           filteredOrders.map((order) => (
             <div
               key={order.id}
-              className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 hover:shadow-md transition-shadow"
+              className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-sm border border-slate-200 hover:shadow-md transition-shadow"
             >
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="flex-1">

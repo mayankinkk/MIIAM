@@ -33,7 +33,7 @@ export function RiderTipSelector({ orderAmount, onTipSelect, onSkip }: RiderTipP
   };
 
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-lg">
+    <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg">
       <div className="flex items-center gap-3 mb-6">
         <div className="w-12 h-12 bg-[#0b50d5]/10 rounded-full flex items-center justify-center">
           <span className="material-symbols-outlined text-2xl text-[#0b50d5]">directions_bike</span>

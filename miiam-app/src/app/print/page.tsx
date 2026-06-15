@@ -57,7 +57,7 @@ export default function PublicPrintLanding() {
           <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-[var(--color-primary)]/15 rounded-full blur-[100px] pointer-events-none" />
 
           <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-8 py-20 text-center">
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full mb-6 border border-white/10">
+            <div className="inline-flex items-center gap-2 bg-[var(--color-surface-container-lowest)]/10 backdrop-blur-md px-4 py-2 rounded-full mb-6 border border-white/10">
               <span className="material-symbols-outlined text-white text-base">print</span>
               <span className="text-white/90 text-xs font-semibold tracking-wide">MIIAM Print Store</span>
             </div>
@@ -71,21 +71,21 @@ export default function PublicPrintLanding() {
             <div className="flex flex-wrap items-center justify-center gap-4">
               <Link
                 href="/app/printing"
-                className="flex items-center gap-2 bg-white text-[var(--color-primary)] hover:bg-[var(--color-primary)]/5 px-8 py-4 rounded-2xl font-black text-base shadow-xl transition-all"
+                className="flex items-center gap-2 bg-[var(--color-surface-container-lowest)] text-[var(--color-primary)] hover:bg-[var(--color-primary)]/5 px-8 py-4 rounded-2xl font-black text-base shadow-xl transition-all"
               >
                 <span className="material-symbols-outlined">upload</span>
                 Upload &amp; Print
               </Link>
               <Link
                 href="/app/printing/passport"
-                className="flex items-center gap-2 bg-white/10 backdrop-blur-md text-white border border-white/20 px-6 py-4 rounded-2xl font-bold text-base transition-all"
+                className="flex items-center gap-2 bg-[var(--color-surface-container-lowest)]/10 backdrop-blur-md text-white border border-white/20 px-6 py-4 rounded-2xl font-bold text-base transition-all"
               >
                 <span className="material-symbols-outlined">face</span>
                 Passport Photos
               </Link>
             </div>
 
-            <div className="mt-10 inline-flex items-baseline gap-2 bg-white/10 backdrop-blur-md px-6 py-3 rounded-full border border-white/10">
+            <div className="mt-10 inline-flex items-baseline gap-2 bg-[var(--color-surface-container-lowest)]/10 backdrop-blur-md px-6 py-3 rounded-full border border-white/10">
               <span className="text-white/60 text-sm">From</span>
               <span className="text-3xl font-black text-white">₹{pricing.bwPerPage}</span>
               <span className="text-white/60 text-sm">per B&amp;W page · ₹{pricing.colorPerPage} color</span>
@@ -98,7 +98,7 @@ export default function PublicPrintLanding() {
           <h2 className="text-2xl font-black text-slate-800 text-center mb-10">Why print with MIIAM</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {features.map((f) => (
-              <div key={f.title} className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+              <div key={f.title} className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 border border-slate-100 shadow-sm">
                 <div className="w-11 h-11 bg-[var(--color-primary)]/10 rounded-xl flex items-center justify-center mb-3">
                   <span className="material-symbols-outlined text-[var(--color-primary)]">{f.icon}</span>
                 </div>
@@ -115,7 +115,7 @@ export default function PublicPrintLanding() {
             <h2 className="text-2xl font-black text-slate-800 text-center mb-10">Who prints with us</h2>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {useCases.map((u) => (
-                <div key={u.label} className="bg-white rounded-2xl p-5 text-center border border-slate-100">
+                <div key={u.label} className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 text-center border border-slate-100">
                   <div className="w-12 h-12 bg-[var(--color-primary)]/5 rounded-2xl flex items-center justify-center mx-auto mb-2">
                     <span className="material-symbols-outlined text-[var(--color-primary)] text-xl">{u.icon}</span>
                   </div>
@@ -132,7 +132,7 @@ export default function PublicPrintLanding() {
           <h2 className="text-2xl font-black text-slate-800 text-center mb-2">Transparent pricing</h2>
           <p className="text-center text-slate-500 mb-10">No minimum, no hidden fees</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="bg-white rounded-2xl p-6 border-2 border-slate-100">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 border-2 border-slate-100">
               <p className="text-xs text-slate-500 font-black uppercase tracking-widest">Black &amp; White</p>
               <p className="text-5xl font-black text-slate-800 mt-2">₹{pricing.bwPerPage}</p>
               <p className="text-slate-500 text-sm mt-1">per page · single-sided A4</p>
@@ -166,7 +166,7 @@ export default function PublicPrintLanding() {
               { q: "Can I print passport photos?", a: "Yes — we support passport, visa, and ID photos for 11 countries including India, US, Schengen, UK, Japan, China, Canada, and Australia." },
               { q: "Do you offer binding and lamination?", a: "Yes. We offer spiral, soft, and hard binding, plus A4 and ID-card lamination. Cover pages, hole-punching, and folding are also available." },
             ].map((item) => (
-              <details key={item.q} className="bg-white border border-slate-100 rounded-2xl p-4 group">
+              <details key={item.q} className="bg-[var(--color-surface-container-lowest)] border border-slate-100 rounded-2xl p-4 group">
                 <summary className="font-bold text-slate-800 cursor-pointer flex items-center justify-between text-sm">
                   {item.q}
                   <span className="material-symbols-outlined text-slate-400 group-open:rotate-180 transition-transform">expand_more</span>
@@ -184,7 +184,7 @@ export default function PublicPrintLanding() {
             <p className="text-white/80 mb-6">Upload in 30 seconds. Pickup in 30 minutes.</p>
             <Link
               href="/app/printing"
-              className="inline-flex items-center gap-2 bg-white text-[var(--color-primary)] px-8 py-4 rounded-2xl font-black text-base shadow-xl hover:bg-[var(--color-primary)]/5 transition-all"
+              className="inline-flex items-center gap-2 bg-[var(--color-surface-container-lowest)] text-[var(--color-primary)] px-8 py-4 rounded-2xl font-black text-base shadow-xl hover:bg-[var(--color-primary)]/5 transition-all"
             >
               <span className="material-symbols-outlined">print</span>
               Start printing

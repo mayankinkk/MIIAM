@@ -95,7 +95,7 @@ export default function AuditLogs() {
       {/* Action Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
         {Object.entries(actionStats).map(([action, count]) => (
-          <div key={action} className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+          <div key={action} className="bg-[var(--color-surface-container-lowest)] p-4 rounded-2xl border border-slate-100 shadow-sm">
             <p className="text-xs font-black text-slate-400 uppercase truncate">{action}</p>
             <p className="text-2xl font-black text-slate-800">{count}</p>
           </div>
@@ -103,7 +103,7 @@ export default function AuditLogs() {
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-3xl border border-slate-100 p-4 shadow-sm">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-4 shadow-sm">
         <div className="flex gap-4 flex-wrap">
           <select
             value={filter}
@@ -131,7 +131,7 @@ export default function AuditLogs() {
       </div>
 
       {/* Logs Table */}
-      <div className="bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead className="bg-slate-50 border-b border-slate-100">

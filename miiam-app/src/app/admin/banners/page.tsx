@@ -89,7 +89,7 @@ export default function BannerManagement() {
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-slate-100 shadow-sm">
           <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Total Banners</p>
           <p className="text-3xl font-black text-slate-800">{banners.length}</p>
         </div>
@@ -97,14 +97,14 @@ export default function BannerManagement() {
           <p className="text-xs font-black text-green-600 uppercase tracking-widest mb-1">Active</p>
           <p className="text-3xl font-black text-green-600">{banners.filter(b => b.is_active).length}</p>
         </div>
-        <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-slate-100 shadow-sm">
           <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Inactive</p>
           <p className="text-3xl font-black text-slate-400">{banners.filter(b => !b.is_active).length}</p>
         </div>
       </div>
 
       {/* Banner Reorder */}
-      <div className="bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
         <div className="p-4 border-b border-slate-100">
           <h2 className="font-black text-slate-800 uppercase tracking-widest text-sm">Active Banners (Drag to reorder)</h2>
         </div>
@@ -155,7 +155,7 @@ export default function BannerManagement() {
       </div>
 
       {/* Inactive Banners */}
-      <div className="bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
         <div className="p-4 border-b border-slate-100">
           <h2 className="font-black text-slate-400 uppercase tracking-widest text-sm">Inactive Banners</h2>
         </div>
@@ -199,7 +199,7 @@ export default function BannerManagement() {
       {/* Add Banner Modal */}
       {showAdd && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl max-w-md w-full">
             <div className="p-6 border-b border-slate-100 flex justify-between items-center">
               <h2 className="text-xl font-black text-slate-800">Add Banner</h2>
               <button onClick={() => setShowAdd(false)} className="text-slate-400 hover:text-slate-600">

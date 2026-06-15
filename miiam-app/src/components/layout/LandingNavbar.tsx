@@ -57,7 +57,7 @@ export function LandingNavbar({
   const linkColor = variant === "indigo" ? "text-indigo-600" : "text-[var(--color-primary)]";
 
   return (
-    <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-2xl border-b border-slate-100/80 transition-all duration-500">
+    <nav className="fixed top-0 w-full z-50 bg-[var(--color-surface-container-lowest)]/80 backdrop-blur-2xl border-b border-slate-100/80 transition-all duration-500">
       <div className="flex justify-between items-center max-w-7xl mx-auto px-6 lg:px-8 py-4">
         <Link href="/" className={`text-3xl font-black ${brandColor} tracking-tighter select-none`}>
           MIIAM

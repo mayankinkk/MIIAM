@@ -89,7 +89,7 @@ function EmailVerifyContent() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#fff4f4] to-white flex flex-col">
       <div className="p-6">
-        <button onClick={() => router.back()} className="w-10 h-10 bg-white shadow-md rounded-full flex items-center justify-center">
+        <button onClick={() => router.back()} className="w-10 h-10 bg-[var(--color-surface-container-lowest)] shadow-md rounded-full flex items-center justify-center">
           <span className="material-symbols-outlined text-slate-600">arrow_back</span>
         </button>
       </div>

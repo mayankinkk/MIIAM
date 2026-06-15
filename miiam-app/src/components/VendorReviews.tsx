@@ -99,7 +99,7 @@ export default function VendorReviews({ vendorId }: VendorReviewsProps) {
 
           <div className="space-y-3">
             {reviews.map((review) => (
-              <div key={review.id} className="p-4 bg-white rounded-xl border border-slate-100">
+              <div key={review.id} className="p-4 bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-100">
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-full bg-[#ba001c] flex items-center justify-center text-white font-bold text-sm">

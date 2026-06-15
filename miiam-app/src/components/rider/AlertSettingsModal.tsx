@@ -28,7 +28,7 @@ export default function AlertSettingsModal({
 
   return (
     <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl p-6 w-full max-w-sm">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-sm">
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-bold text-xl">{t.rider.modals.alertSettings}</h3>
           <button onClick={onClose}>
@@ -49,7 +49,7 @@ export default function AlertSettingsModal({
               onClick={() => onSoundChange(!soundEnabled)}
               className={`w-12 h-6 rounded-full transition-all ${soundEnabled ? "bg-green-500" : "bg-slate-300"}`}
             >
-              <div className={`w-5 h-5 bg-white rounded-full transition-all ${soundEnabled ? "translate-x-6" : "translate-x-0.5"}`}></div>
+              <div className={`w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full transition-all ${soundEnabled ? "translate-x-6" : "translate-x-0.5"}`}></div>
             </button>
           </div>
 
@@ -65,7 +65,7 @@ export default function AlertSettingsModal({
               onClick={() => onVibrationChange(!vibrationEnabled)}
               className={`w-12 h-6 rounded-full transition-all ${vibrationEnabled ? "bg-green-500" : "bg-slate-300"}`}
             >
-              <div className={`w-5 h-5 bg-white rounded-full transition-all ${vibrationEnabled ? "translate-x-6" : "translate-x-0.5"}`}></div>
+              <div className={`w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full transition-all ${vibrationEnabled ? "translate-x-6" : "translate-x-0.5"}`}></div>
             </button>
           </div>
 

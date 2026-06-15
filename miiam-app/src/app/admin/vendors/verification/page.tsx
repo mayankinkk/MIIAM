@@ -103,19 +103,19 @@ export default function VerificationPage() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-slate-100 shadow-sm">
           <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Pending Review</p>
           <p className="text-3xl font-black text-yellow-600">{pendingCount}</p>
         </div>
-        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-slate-100 shadow-sm">
           <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Active Partners</p>
           <p className="text-3xl font-black text-green-600">{approvedToday}</p>
         </div>
-        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-slate-100 shadow-sm">
           <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Total Vendors</p>
           <p className="text-3xl font-black text-slate-800">{vendors.length}</p>
         </div>
-        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-slate-100 shadow-sm">
           <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Suspended</p>
           <p className="text-3xl font-black text-red-600">{vendors.filter(v => v.status === "suspended").length}</p>
         </div>
@@ -129,7 +129,7 @@ export default function VerificationPage() {
             className={`px-4 py-2 rounded-lg text-xs font-bold uppercase ${
               filter === status
                 ? "bg-[#ba001c] text-white"
-                : "bg-white text-slate-600 border border-slate-200"
+                : "bg-[var(--color-surface-container-lowest)] text-slate-600 border border-slate-200"
             }`}
           >
             {status === "all" ? "All" : status}
@@ -137,7 +137,7 @@ export default function VerificationPage() {
         ))}
       </div>
 
-      <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-100 overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead className="bg-slate-50">
@@ -221,7 +221,7 @@ export default function VerificationPage() {
 
       {selectedVendor && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full max-h-[80vh] overflow-y-auto">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl max-w-lg w-full max-h-[80vh] overflow-y-auto">
             <div className="p-6 border-b flex items-center justify-between sticky top-0 bg-white">
               <h2 className="font-black text-lg">Vendor Details</h2>
               <button onClick={() => setSelectedVendor(null)} className="text-slate-400">

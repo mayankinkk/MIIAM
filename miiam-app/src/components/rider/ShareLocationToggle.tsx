@@ -41,7 +41,7 @@ export default function ShareLocationToggle({ orderId, userId, enabled, classNam
         className={`w-full rounded-xl py-3 px-4 font-bold flex items-center justify-center gap-2 transition-all border ${
           sharing
             ? "bg-tertiary text-on-tertiary border-tertiary-dim shadow-lg shadow-tertiary/20"
-            : "bg-white text-on-surface border-outline-variant hover:bg-surface-container"
+            : "bg-[var(--color-surface-container-lowest)] text-on-surface border-outline-variant hover:bg-surface-container"
         }`}
       >
         <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>

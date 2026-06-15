@@ -36,7 +36,7 @@ export default function CheckoutPromoCode({ promoApplied, promoCode, onPromoCode
       ) : (
         <div className="relative">
           <input
-            className="w-full bg-white border-none rounded-xl py-3.5 sm:py-4 pl-3 sm:pl-4 pr-24 sm:pr-32 focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm sm:text-base"
+            className="w-full bg-[var(--color-surface-container-lowest)] border-none rounded-xl py-3.5 sm:py-4 pl-3 sm:pl-4 pr-24 sm:pr-32 focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm sm:text-base"
             placeholder="Promo Code"
             value={promoCode}
             onChange={(e) => { onPromoCodeChange(e.target.value); }}

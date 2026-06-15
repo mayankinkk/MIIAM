@@ -64,7 +64,7 @@ export default function RiderApplyPage() {
   if (success) {
     return (
       <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center p-6">
-        <div className="bg-white rounded-3xl p-12 max-w-lg w-full text-center shadow-xl">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-12 max-w-lg w-full text-center shadow-xl">
           <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <span className="material-symbols-outlined text-green-600 text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
           </div>

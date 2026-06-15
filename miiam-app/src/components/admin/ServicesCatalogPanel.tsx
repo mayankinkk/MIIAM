@@ -32,7 +32,7 @@ export default function ServicesCatalogPanel({ open, onClose }: Props) {
   if (!open) return null;
 
   return (
-    <div className="mt-2 bg-white rounded-xl border border-slate-100 p-4 max-w-2xl space-y-3">
+    <div className="mt-2 bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-100 p-4 max-w-2xl space-y-3">
       <div className="flex items-center justify-between">
         <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">
           Services catalog ({services.filter((s) => s.enabled).length}/{services.length} visible)
@@ -61,7 +61,7 @@ export default function ServicesCatalogPanel({ open, onClose }: Props) {
               <div
                 key={svc.id}
                 className={`flex items-center gap-2 p-2.5 rounded-lg border transition-colors ${
-                  svc.enabled ? "bg-white border-slate-200" : "bg-slate-50 border-slate-100 opacity-60"
+                  svc.enabled ? "bg-[var(--color-surface-container-lowest)] border-slate-200" : "bg-slate-50 border-slate-100 opacity-60"
                 }`}
               >
                 <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${meta.accent} flex items-center justify-center shrink-0`}>
@@ -128,7 +128,7 @@ export default function ServicesCatalogPanel({ open, onClose }: Props) {
                   aria-pressed={svc.enabled}
                 >
                   <span
-                    className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${
+                    className={`absolute top-0.5 w-4 h-4 rounded-full bg-[var(--color-surface-container-lowest)] shadow transition-transform ${
                       svc.enabled ? "translate-x-5" : "translate-x-0.5"
                     }`}
                   />

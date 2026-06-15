@@ -108,7 +108,7 @@ export default function RiderTrainingPage() {
 
       <main className="px-6 -mt-4 space-y-6 pb-32">
         {/* Progress */}
-        <div className="bg-white rounded-2xl p-5 shadow-lg">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-lg">
           <div className="flex items-center justify-between mb-3">
             <h3 className="font-bold text-[#4d212a]">Your Progress</h3>
             <span className="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full">
@@ -133,7 +133,7 @@ export default function RiderTrainingPage() {
               className={`flex-shrink-0 px-4 py-2 rounded-full text-xs font-bold transition-all ${
                 activeCategory === cat 
                   ? "bg-[#0b50d5] text-white" 
-                  : "bg-white text-slate-500"
+                  : "bg-[var(--color-surface-container-lowest)] text-slate-500"
               }`}
             >
               {cat}
@@ -147,7 +147,7 @@ export default function RiderTrainingPage() {
             <div 
               key={video.id}
               onClick={() => openVideo(video)}
-              className="bg-white rounded-2xl p-4 shadow-sm cursor-pointer hover:shadow-lg transition-all"
+              className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-sm cursor-pointer hover:shadow-lg transition-all"
             >
               <div className="w-full h-24 bg-slate-100 rounded-xl flex items-center justify-center text-4xl mb-3 relative">
                 {video.thumbnail}
@@ -183,7 +183,7 @@ export default function RiderTrainingPage() {
         </div>
 
         {/* Quick Tips */}
-        <div className="bg-white rounded-2xl p-5 shadow-lg">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-lg">
           <h3 className="font-bold text-[#4d212a] mb-4">💡 Quick Tips</h3>
           <div className="space-y-3">
             {[
@@ -229,7 +229,7 @@ export default function RiderTrainingPage() {
       {/* Video Modal */}
       {showVideoModal && selectedVideo && (
         <div className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-md overflow-hidden">
             <div className="bg-black h-48 flex items-center justify-center text-6xl">
               {selectedVideo.thumbnail}
             </div>
@@ -257,7 +257,7 @@ export default function RiderTrainingPage() {
       {/* Quiz Modal */}
       {showQuiz && (
         <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-sm">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-sm">
             <h3 className="font-bold text-xl mb-4">Daily Quiz</h3>
             <div className="mb-4">
               <p className="font-bold mb-3">{quizzes[quizIndex].question}</p>

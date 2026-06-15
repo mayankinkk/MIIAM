@@ -252,7 +252,7 @@ export default function AdvancedAnalytics() {
               key={p}
               onClick={() => setPeriod(p)}
               className={`px-4 py-2 rounded-lg text-xs font-bold transition-colors ${
-                period === p ? "bg-white text-[#ba001c] shadow-sm" : "text-slate-500"
+                period === p ? "bg-[var(--color-surface-container-lowest)] text-[#ba001c] shadow-sm" : "text-slate-500"
               }`}
             >
               {p === "7d" ? "7 Days" : p === "30d" ? "30 Days" : "90 Days"}
@@ -261,7 +261,7 @@ export default function AdvancedAnalytics() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-slate-100 p-1 inline-flex">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-100 p-1 inline-flex">
         {(["overview", "orders", "users", "vendors", "riders", "reports"] as const).map((tab) => (
           <button
             key={tab}
@@ -281,22 +281,22 @@ export default function AdvancedAnalytics() {
         <div className="space-y-8">
           {/* Quick Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-white p-6 rounded-2xl shadow-lg">
+            <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-lg">
               <p className="text-sm text-slate-500 mb-1">Customer Retention</p>
               <p className="text-3xl font-black text-green-600">{customerRetention}%</p>
               <p className="text-xs text-green-500 mt-1">{uniqueUsersWithOrders} customers, {usersWithRepeatOrders} returning</p>
             </div>
-            <div className="bg-white p-6 rounded-2xl shadow-lg">
+            <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-lg">
               <p className="text-sm text-slate-500 mb-1">Repeat Orders</p>
               <p className="text-3xl font-black text-blue-600">{repeatOrderPct}%</p>
               <p className="text-xs text-slate-400 mt-1">Avg {avgOrdersPerCustomer} orders/customer</p>
             </div>
-            <div className="bg-white p-6 rounded-2xl shadow-lg">
+            <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-lg">
               <p className="text-sm text-slate-500 mb-1">Avg Delivery Time</p>
               <p className="text-3xl font-black text-purple-600">{avgDeliveryMinutes} min</p>
               <p className="text-xs text-slate-400 mt-1">Across {ordersWithDeliveryTime.length} deliveries</p>
             </div>
-            <div className="bg-white p-6 rounded-2xl shadow-lg">
+            <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-lg">
               <p className="text-sm text-slate-500 mb-1">CSAT Score</p>
               <p className="text-3xl font-black text-amber-600">{avgRating.toFixed(1)}/5</p>
               <p className="text-xs text-slate-400 mt-1">Based on {totalReviews.toLocaleString()} reviews</p>
@@ -304,7 +304,7 @@ export default function AdvancedAnalytics() {
           </div>
 
           {/* Order Heatmap by Hour & Day */}
-          <div className="bg-white rounded-2xl p-6 shadow-lg">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-lg font-black text-slate-800">Order Heatmap</h3>
               <div className="flex gap-2">
@@ -356,7 +356,7 @@ export default function AdvancedAnalytics() {
           </div>
 
           {/* Service Category Performance */}
-          <div className="bg-white rounded-2xl p-6 shadow-lg">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg">
             <h3 className="text-lg font-black text-slate-800 mb-6">Service Category Performance</h3>
             <div className="space-y-4">
               {topCategories.map(([name, stats]) => (
@@ -383,7 +383,7 @@ export default function AdvancedAnalytics() {
           </div>
 
           {/* Export Options */}
-          <div className="bg-white rounded-2xl p-6 shadow-lg">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg">
             <h3 className="text-lg font-black text-slate-800 mb-6">Export Reports</h3>
             <div className="grid md:grid-cols-3 gap-4">
               <button
@@ -470,7 +470,7 @@ export default function AdvancedAnalytics() {
               <p className="text-4xl font-black">₹{totalRevenue.toLocaleString()}</p>
               <p className="text-xs text-white/60 mt-2">{orderCount} orders</p>
             </div>
-            <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-slate-100 shadow-sm">
               <div className="flex items-center gap-2 mb-2">
                 <span className="material-symbols-outlined text-slate-400">shopping_cart</span>
                 <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Avg Order</span>
@@ -478,7 +478,7 @@ export default function AdvancedAnalytics() {
               <p className="text-3xl font-black text-slate-800">₹{Math.round(avgOrderValue)}</p>
               <p className="text-xs text-green-500 mt-2">per order</p>
             </div>
-            <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-slate-100 shadow-sm">
               <div className="flex items-center gap-2 mb-2">
                 <span className="material-symbols-outlined text-slate-400">group</span>
                 <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">New Users</span>
@@ -486,7 +486,7 @@ export default function AdvancedAnalytics() {
               <p className="text-3xl font-black text-slate-800">{newUsersCount}</p>
               <p className="text-xs text-green-500 mt-2">this period</p>
             </div>
-            <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-slate-100 shadow-sm">
               <div className="flex items-center gap-2 mb-2">
                 <span className="material-symbols-outlined text-slate-400">local_shipping</span>
                 <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Peak Hours</span>
@@ -497,7 +497,7 @@ export default function AdvancedAnalytics() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 bg-white rounded-3xl border border-slate-100 p-6 shadow-sm">
+            <div className="lg:col-span-2 bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-6 shadow-sm">
               <h2 className="text-lg font-black text-slate-800 mb-6">Revenue Trend</h2>
               <div className="h-64 flex items-end gap-2">
                 {chartData.length === 0 ? (
@@ -523,7 +523,7 @@ export default function AdvancedAnalytics() {
               </div>
             </div>
 
-            <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-6 shadow-sm">
               <h2 className="text-lg font-black text-slate-800 mb-6">Order Status</h2>
               <div className="space-y-4">
                 {statusDistribution.map((item) => (
@@ -553,7 +553,7 @@ export default function AdvancedAnalytics() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-6 shadow-sm">
               <h2 className="text-lg font-black text-slate-800 mb-6">Top Vendors by Revenue</h2>
               <div className="space-y-4">
                 {topVendors.map(([vendor, data], i) => (
@@ -582,7 +582,7 @@ export default function AdvancedAnalytics() {
               </div>
             </div>
 
-            <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-6 shadow-sm">
               <h2 className="text-lg font-black text-slate-800 mb-6">Operations Metrics</h2>
               <div className="grid grid-cols-2 gap-4">
                 <div className="p-4 bg-green-50 rounded-xl">
@@ -624,7 +624,7 @@ export default function AdvancedAnalytics() {
       )}
 
       {activeTab === "orders" && (
-        <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-6 shadow-sm">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-lg font-black text-slate-800">Orders Report</h2>
             <button
@@ -683,18 +683,18 @@ export default function AdvancedAnalytics() {
       )}
 
       {activeTab === "users" && (
-        <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-6 shadow-sm">
           <h2 className="text-lg font-black text-slate-800 mb-6">User Analytics</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="p-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl text-white">
               <p className="text-xs font-bold opacity-80">Total Users</p>
               <p className="text-4xl font-black mt-2">{users.length}</p>
             </div>
-            <div className="p-6 bg-white border border-slate-100 rounded-2xl">
+            <div className="p-6 bg-[var(--color-surface-container-lowest)] border border-slate-100 rounded-2xl">
               <p className="text-xs font-bold text-slate-400">New This Period</p>
               <p className="text-4xl font-black text-slate-800 mt-2">{newUsersCount}</p>
             </div>
-            <div className="p-6 bg-white border border-slate-100 rounded-2xl">
+            <div className="p-6 bg-[var(--color-surface-container-lowest)] border border-slate-100 rounded-2xl">
               <p className="text-xs font-bold text-slate-400">Conversion Rate</p>
               <p className="text-4xl font-black text-slate-800 mt-2">
                 {users.length ? Math.round((orderCount / users.length) * 100) : 0}%
@@ -705,7 +705,7 @@ export default function AdvancedAnalytics() {
       )}
 
       {activeTab === "vendors" && (
-        <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-6 shadow-sm">
           <h2 className="text-lg font-black text-slate-800 mb-6">Vendor Analytics</h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <div className="p-4 bg-green-50 rounded-xl text-center">
@@ -757,7 +757,7 @@ export default function AdvancedAnalytics() {
       )}
 
       {activeTab === "riders" && (
-        <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-6 shadow-sm">
           <h2 className="text-lg font-black text-slate-800 mb-6">Rider Analytics</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="p-6 bg-gradient-to-br from-amber-500 to-amber-600 rounded-2xl text-white">
@@ -768,7 +768,7 @@ export default function AdvancedAnalytics() {
               <p className="text-xs font-bold text-green-600">Online Now</p>
               <p className="text-4xl font-black text-green-600 mt-2">{onlineRiders}</p>
             </div>
-            <div className="p-6 bg-white border border-slate-100 rounded-2xl">
+            <div className="p-6 bg-[var(--color-surface-container-lowest)] border border-slate-100 rounded-2xl">
               <p className="text-xs font-bold text-slate-400">Total Earnings</p>
               <p className="text-4xl font-black text-slate-800 mt-2">
                 ₹{riders.reduce((s, r) => s + (r.total_earnings || 0), 0).toLocaleString()}

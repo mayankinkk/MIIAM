@@ -83,14 +83,14 @@ export default function EnhancedProfilePage() {
       <header className="bg-gradient-to-br from-primary to-primary-container text-white p-6 pb-12 rounded-b-[3rem]">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-xl font-black">{t.profile.title}</h1>
-          <Link href="/app/profile/edit" className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors">
+          <Link href="/app/profile/edit" className="p-2 bg-[var(--color-surface-container-lowest)]/10 rounded-full hover:bg-[var(--color-surface-container-lowest)]/20 transition-colors">
             <span className="material-symbols-outlined">edit</span>
           </Link>
         </div>
 
         {/* Profile Card */}
         <div className="flex items-center gap-4">
-          <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center text-3xl font-black border-4 border-white/30 overflow-hidden">
+          <div className="w-20 h-20 rounded-full bg-[var(--color-surface-container-lowest)]/20 flex items-center justify-center text-3xl font-black border-4 border-white/30 overflow-hidden">
             {profile?.avatar_url ? (
               <BlurImage src={profile.avatar_url} alt="Avatar" fill className="w-full h-full" sizes="80px" />
             ) : (
@@ -107,15 +107,15 @@ export default function EnhancedProfilePage() {
 
         {/* Quick Stats */}
         <div className="grid grid-cols-3 gap-4 mt-8">
-          <div className="bg-white/10 rounded-xl p-3 text-center">
+          <div className="bg-[var(--color-surface-container-lowest)]/10 rounded-xl p-3 text-center">
             <p className="text-2xl font-black">{stats.orders}</p>
             <p className="text-[10px] text-white/70 uppercase tracking-wider">{t.profile.orders}</p>
           </div>
-          <div className="bg-white/10 rounded-xl p-3 text-center">
+          <div className="bg-[var(--color-surface-container-lowest)]/10 rounded-xl p-3 text-center">
             <p className="text-2xl font-black">{stats.reviews}</p>
             <p className="text-[10px] text-white/70 uppercase tracking-wider">{t.profile.reviews}</p>
           </div>
-          <div className="bg-white/10 rounded-xl p-3 text-center">
+          <div className="bg-[var(--color-surface-container-lowest)]/10 rounded-xl p-3 text-center">
             <p className="text-2xl font-black">{stats.saved}</p>
             <p className="text-[10px] text-white/70 uppercase tracking-wider">{t.profile.saved}</p>
           </div>
@@ -129,7 +129,7 @@ export default function EnhancedProfilePage() {
         {/* Menu Sections */}
         <div className="space-y-2">
           {menuItems.slice(0, 4).map((item) => (
-            <Link key={item.id} href={`/app/${item.id}`} className="block bg-white rounded-2xl p-4 flex items-center gap-4 hover:shadow-md transition-shadow">
+            <Link key={item.id} href={`/app/${item.id}`} className="block bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 flex items-center gap-4 hover:shadow-md transition-shadow">
               <div className={`w-12 h-12 rounded-xl ${item.bg} flex items-center justify-center`}>
                 <span className={`material-symbols-outlined ${item.color}`}>{item.icon}</span>
               </div>
@@ -145,7 +145,7 @@ export default function EnhancedProfilePage() {
         {/* Second Section */}
         <div className="space-y-2">
           {menuItems.slice(4, 8).map((item) => (
-            <Link key={item.id} href={`/app/${item.id}`} className="block bg-white rounded-2xl p-4 flex items-center gap-4 hover:shadow-md transition-shadow">
+            <Link key={item.id} href={`/app/${item.id}`} className="block bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 flex items-center gap-4 hover:shadow-md transition-shadow">
               <div className={`w-12 h-12 rounded-xl ${item.bg} flex items-center justify-center`}>
                 <span className={`material-symbols-outlined ${item.color}`}>{item.icon}</span>
               </div>
@@ -168,7 +168,7 @@ export default function EnhancedProfilePage() {
                   triggerHaptic("medium");
                   setShowHapticSettings(!showHapticSettings);
                 }}
-                className="w-full bg-white rounded-2xl p-4 flex items-center gap-4 hover:shadow-md transition-shadow"
+                className="w-full bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 flex items-center gap-4 hover:shadow-md transition-shadow"
               >
                 <div className={`w-12 h-12 rounded-xl ${item.bg} flex items-center justify-center`}>
                   <span className={`material-symbols-outlined ${item.color}`}>{item.icon}</span>
@@ -180,7 +180,7 @@ export default function EnhancedProfilePage() {
                 <span className={`material-symbols-outlined text-slate-300 transition-transform ${showHapticSettings ? "rotate-180" : ""}`}>expand_more</span>
               </button>
             ) : (
-              <Link key={item.id} href={`/app/${item.id}`} className="block bg-white rounded-2xl p-4 flex items-center gap-4 hover:shadow-md transition-shadow">
+              <Link key={item.id} href={`/app/${item.id}`} className="block bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 flex items-center gap-4 hover:shadow-md transition-shadow">
                 <div className={`w-12 h-12 rounded-xl ${item.bg} flex items-center justify-center`}>
                   <span className={`material-symbols-outlined ${item.color}`}>{item.icon}</span>
                 </div>
@@ -196,7 +196,7 @@ export default function EnhancedProfilePage() {
 
         {/* Haptic Feedback Settings Panel */}
         {showHapticSettings && (
-          <div className="bg-white rounded-2xl p-4 space-y-2 animate-fade-in">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 space-y-2 animate-fade-in">
             <div className="flex items-center gap-3 mb-4 pb-3 border-b border-slate-100">
               <span className="material-symbols-outlined text-primary">vibration</span>
               <p className="font-bold text-slate-800">{t.profile.hapticFeedbackSettings}</p>
@@ -216,7 +216,7 @@ export default function EnhancedProfilePage() {
                 </div>
               </div>
               <div className={`w-12 h-7 rounded-full relative transition-colors ${settings.enabled ? "bg-primary" : "bg-slate-300"}`}>
-                <div className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow-md transition-all ${settings.enabled ? "left-6" : "left-1"}`} />
+                <div className={`absolute top-1 w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full shadow-md transition-all ${settings.enabled ? "left-6" : "left-1"}`} />
               </div>
             </button>
 
@@ -238,7 +238,7 @@ export default function EnhancedProfilePage() {
                 </div>
               </div>
               <div className={`w-12 h-7 rounded-full relative transition-colors ${settings.light ? "bg-primary" : "bg-slate-300"}`}>
-                <div className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow-md transition-all ${settings.light ? "left-6" : "left-1"}`} />
+                <div className={`absolute top-1 w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full shadow-md transition-all ${settings.light ? "left-6" : "left-1"}`} />
               </div>
             </button>
 
@@ -260,7 +260,7 @@ export default function EnhancedProfilePage() {
                 </div>
               </div>
               <div className={`w-12 h-7 rounded-full relative transition-colors ${settings.medium ? "bg-primary" : "bg-slate-300"}`}>
-                <div className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow-md transition-all ${settings.medium ? "left-6" : "left-1"}`} />
+                <div className={`absolute top-1 w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full shadow-md transition-all ${settings.medium ? "left-6" : "left-1"}`} />
               </div>
             </button>
 
@@ -282,7 +282,7 @@ export default function EnhancedProfilePage() {
                 </div>
               </div>
               <div className={`w-12 h-7 rounded-full relative transition-colors ${settings.heavy ? "bg-primary" : "bg-slate-300"}`}>
-                <div className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow-md transition-all ${settings.heavy ? "left-6" : "left-1"}`} />
+                <div className={`absolute top-1 w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full shadow-md transition-all ${settings.heavy ? "left-6" : "left-1"}`} />
               </div>
             </button>
           </div>
@@ -291,7 +291,7 @@ export default function EnhancedProfilePage() {
         {/* Logout */}
         <button 
           onClick={handleLogout}
-          className="w-full bg-white rounded-2xl p-4 flex items-center gap-4 hover:bg-red-50 transition-colors group"
+          className="w-full bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 flex items-center gap-4 hover:bg-red-50 transition-colors group"
         >
           <div className="w-12 h-12 rounded-xl bg-red-50 flex items-center justify-center group-hover:bg-red-100">
             <span className="material-symbols-outlined text-red-500">logout</span>

@@ -38,7 +38,7 @@ export default async function RiderDashboardPage() {
           </div>
         </div>
         <div className="flex items-center gap-6">
-          <div className="w-20 h-20 bg-white/20 rounded-full border-2 border-white/40 flex items-center justify-center font-bold text-3xl">
+          <div className="w-20 h-20 bg-[var(--color-surface-container-lowest)]/20 rounded-full border-2 border-white/40 flex items-center justify-center font-bold text-3xl">
             {rider?.profile?.full_name?.[0] || "R"}
           </div>
           <div>
@@ -53,11 +53,11 @@ export default async function RiderDashboardPage() {
 
       <main className="px-6 -mt-6">
         <div className="grid grid-cols-2 gap-4 mb-8">
-          <Link href="/rider/wallet" className="bg-white rounded-2xl p-6 shadow-lg shadow-[var(--color-secondary)]/5">
+          <Link href="/rider/wallet" className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg shadow-[var(--color-secondary)]/5">
             <p className="text-xs font-bold text-[var(--color-on-surface-variant)] uppercase tracking-widest mb-2">Today's Earnings</p>
             <p className="text-3xl font-black text-[var(--color-secondary)]">₹0.00</p>
           </Link>
-          <Link href="/rider/orders" className="bg-white rounded-2xl p-6 shadow-lg shadow-[var(--color-secondary)]/5">
+          <Link href="/rider/orders" className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg shadow-[var(--color-secondary)]/5">
             <p className="text-xs font-bold text-[var(--color-on-surface-variant)] uppercase tracking-widest mb-2">Deliveries</p>
             <p className="text-3xl font-black text-[var(--color-secondary)]">0</p>
           </Link>
@@ -72,7 +72,7 @@ export default async function RiderDashboardPage() {
           {orders && orders.length > 0 ? orders.map((order: any) => (
             <div
               key={order.id}
-              className="bg-white rounded-2xl p-6 shadow-[0px_10px_30px_rgba(77,33,42,0.04)] border border-[#dd9ca6]/10 relative overflow-hidden"
+              className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-[0px_10px_30px_rgba(77,33,42,0.04)] border border-[#dd9ca6]/10 relative overflow-hidden"
             >
               <div className="absolute top-0 right-0 w-24 h-24 bg-[var(--color-secondary)]/5 rounded-bl-full" />
               <div className="flex justify-between items-start mb-4 relative z-10">
@@ -98,7 +98,7 @@ export default async function RiderDashboardPage() {
               </div>
             </div>
           )) : (
-            <div className="bg-white rounded-2xl p-8 text-center">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-8 text-center">
               <span className="material-symbols-outlined text-4xl text-slate-300">shopping_bag</span>
               <p className="text-slate-400 mt-2">No orders available right now</p>
               <p className="text-xs text-slate-400 mt-1">Check back soon!</p>

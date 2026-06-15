@@ -96,7 +96,7 @@ function RateCustomerContent() {
       </header>
 
       <main className="p-6 -mt-6 space-y-6 pb-32">
-        <div className="bg-white rounded-2xl p-6 shadow-lg">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg">
           <div className="flex items-center gap-4 mb-6">
             <div className="w-16 h-16 bg-[#0b50d5] rounded-full flex items-center justify-center text-white text-2xl font-bold">
               {customerName[0]}
@@ -135,7 +135,7 @@ function RateCustomerContent() {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl p-6 shadow-lg">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg">
           <h3 className="font-bold text-[#4d212a] mb-4">Quick Feedback</h3>
           <div className="space-y-3">
             <label className="flex items-center justify-between p-3 bg-slate-50 rounded-xl cursor-pointer">
@@ -177,7 +177,7 @@ function RateCustomerContent() {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl p-6 shadow-lg">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg">
           <h3 className="font-bold text-[#4d212a] mb-4">Additional Comments (Optional)</h3>
           <textarea 
             value={additionalComment}

@@ -172,7 +172,7 @@ export default function RiderDocumentsPage() {
           </div>
         )}
 
-        <div className="bg-white rounded-2xl p-6 shadow-lg">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg">
           <h2 className="font-bold text-[#4d212a] mb-4">Required Documents</h2>
           <div className="space-y-3">
             {documentTypes.map(doc => {
@@ -214,7 +214,7 @@ export default function RiderDocumentsPage() {
         </div>
 
         {documents.length > 0 && (
-          <div className="bg-white rounded-2xl p-6 shadow-lg">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg">
             <h2 className="font-bold text-[#4d212a] mb-4">Recently Uploaded</h2>
             <div className="space-y-2">
               {documents.slice(0, 5).map(doc => (

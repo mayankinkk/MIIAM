@@ -218,7 +218,7 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
       />
 
       {/* Sheet */}
-      <div className="addr-sheet fixed bottom-0 left-0 right-0 z-[201] bg-white rounded-t-3xl max-h-[92vh] flex flex-col shadow-2xl"
+      <div className="addr-sheet fixed bottom-0 left-0 right-0 z-[201] bg-[var(--color-surface-container-lowest)] rounded-t-3xl max-h-[92vh] flex flex-col shadow-2xl"
         style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
         {/* Handle + Header */}
         <div className="flex-shrink-0 px-5 pt-4 pb-3 border-b border-slate-100">
@@ -416,7 +416,7 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
 
               {/* Suggestions */}
               {suggestions.length > 0 && (
-                <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-lg -mt-2">
+                <div className="bg-[var(--color-surface-container-lowest)] border border-slate-200 rounded-xl overflow-hidden shadow-lg -mt-2">
                   {suggestions.map((s, i) => (
                     <button
                       key={i}

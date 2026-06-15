@@ -93,7 +93,7 @@ export default function PrintVoiceSearch({ onResult, language = "en", placeholde
       aria-label={listening ? "Stop voice search" : "Start voice search"}
       aria-pressed={listening}
       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors ${
-        listening ? "bg-rose-100 border-rose-300 text-rose-700" : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50"
+        listening ? "bg-rose-100 border-rose-300 text-rose-700" : "bg-[var(--color-surface-container-lowest)] border-slate-200 text-slate-700 hover:bg-slate-50"
       }`}
     >
       <span className="material-symbols-outlined text-base" style={{ fontVariationSettings: "'FILL' 1" }}>

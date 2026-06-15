@@ -62,7 +62,7 @@ export default function ReviewForm({ vendorId, orderId, onSuccess }: ReviewFormP
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white rounded-xl p-6 shadow-sm">
+    <form onSubmit={handleSubmit} className="bg-[var(--color-surface-container-lowest)] rounded-xl p-6 shadow-sm">
       <h3 className="font-bold text-slate-800 mb-4">Rate your experience</h3>
       
       <div className="flex items-center gap-1 mb-4">

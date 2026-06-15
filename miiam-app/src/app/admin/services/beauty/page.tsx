@@ -75,7 +75,7 @@ export default function BeautyServicesAdmin() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-6 -mt-8">
-        <div className="bg-white rounded-2xl p-4 shadow-lg">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-lg">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 bg-pink-100 rounded-xl flex items-center justify-center">
               <span className="material-symbols-outlined text-pink-600">spa</span>
@@ -86,7 +86,7 @@ export default function BeautyServicesAdmin() {
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-2xl p-4 shadow-lg">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-lg">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
               <span className="material-symbols-outlined text-purple-600">event</span>
@@ -97,7 +97,7 @@ export default function BeautyServicesAdmin() {
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-2xl p-4 shadow-lg">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-lg">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
               <span className="material-symbols-outlined text-amber-600">people</span>
@@ -108,7 +108,7 @@ export default function BeautyServicesAdmin() {
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-2xl p-4 shadow-lg">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-lg">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
               <span className="material-symbols-outlined text-green-600">check_circle</span>
@@ -148,7 +148,7 @@ export default function BeautyServicesAdmin() {
           <>
             {activeTab === "overview" && (
               <div className="space-y-6">
-                <div className="bg-white rounded-2xl p-6 shadow-lg">
+                <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg">
                   <h2 className="text-lg font-bold text-slate-800 mb-4">Categories</h2>
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {categoryStats.map((cat) => (
@@ -170,7 +170,7 @@ export default function BeautyServicesAdmin() {
                   </div>
                 </div>
 
-                <div className="bg-white rounded-2xl p-6 shadow-lg">
+                <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg">
                   <div className="flex items-center justify-between mb-4">
                     <h2 className="text-lg font-bold text-slate-800">Recent Bookings</h2>
                     <button onClick={() => setActiveTab("bookings")} className="text-sm font-bold text-pink-600 hover:underline">
@@ -211,7 +211,7 @@ export default function BeautyServicesAdmin() {
             )}
 
             {activeTab === "bookings" && (
-              <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+              <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl shadow-lg overflow-hidden">
                 {bookings.length === 0 ? (
                   <div className="text-center py-12 text-slate-400">
                     <span className="material-symbols-outlined text-5xl text-slate-300">event_busy</span>
@@ -259,7 +259,7 @@ export default function BeautyServicesAdmin() {
             )}
 
             {activeTab === "professionals" && (
-              <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+              <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl shadow-lg overflow-hidden">
                 {providers.length === 0 ? (
                   <div className="text-center py-12 text-slate-400">
                     <span className="material-symbols-outlined text-5xl text-slate-300">people</span>

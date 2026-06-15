@@ -132,7 +132,7 @@ export default function GroceryOrdersPage() {
       </div>
 
       <div className="grid grid-cols-4 gap-4 mb-6">
-        <div className="bg-white p-4 rounded-xl border border-slate-100">
+        <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-slate-100">
           <p className="text-slate-400 text-xs font-bold">TOTAL ORDERS</p>
           <p className="text-2xl font-black text-slate-800 mt-1">{stats.total}</p>
         </div>
@@ -158,13 +158,13 @@ export default function GroceryOrdersPage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search by order ID or customer name..."
-            className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-[#ba001c]"
+            className="w-full pl-10 pr-4 py-3 bg-[var(--color-surface-container-lowest)] border border-slate-200 rounded-xl focus:outline-none focus:border-[#ba001c]"
           />
         </div>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-[#ba001c]"
+          className="px-4 py-3 bg-[var(--color-surface-container-lowest)] border border-slate-200 rounded-xl focus:outline-none focus:border-[#ba001c]"
         >
           <option value="all">All Status</option>
           {statusOptions.map(opt => (
@@ -176,12 +176,12 @@ export default function GroceryOrdersPage() {
       {loading ? (
         <div className="text-center py-12 text-slate-500">Loading orders...</div>
       ) : filteredOrders.length === 0 ? (
-        <div className="text-center py-12 text-slate-500 bg-white rounded-xl">
+        <div className="text-center py-12 text-slate-500 bg-[var(--color-surface-container-lowest)] rounded-xl">
           <span className="material-symbols-outlined text-5xl text-slate-300">receipt_long</span>
           <p className="mt-4 font-bold">No orders found</p>
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-slate-100 overflow-hidden">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-100 overflow-hidden">
           <table className="w-full">
             <thead className="bg-slate-50">
               <tr>
@@ -229,7 +229,7 @@ export default function GroceryOrdersPage() {
 
       {selectedOrder && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b sticky top-0 bg-white">
               <div className="flex items-center justify-between">
                 <div>

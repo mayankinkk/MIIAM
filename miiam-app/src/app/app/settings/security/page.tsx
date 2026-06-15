@@ -82,7 +82,7 @@ export default function SecurityPage() {
               onClick={() => setTwoFAEnabled(!twoFAEnabled)}
               className={`relative w-12 h-6 rounded-full transition-colors ${twoFAEnabled ? "bg-primary" : "bg-surface-container-high"}`}
             >
-              <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${twoFAEnabled ? "left-7" : "left-1"}`} />
+              <span className={`absolute top-1 w-4 h-4 bg-[var(--color-surface-container-lowest)] rounded-full shadow transition-all ${twoFAEnabled ? "left-7" : "left-1"}`} />
             </button>
           </div>
           {twoFAEnabled && (

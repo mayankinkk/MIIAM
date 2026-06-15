@@ -123,7 +123,7 @@ export default function AdminDashboard() {
           <h1 className="text-3xl font-black text-slate-800">Super Admin Dashboard</h1>
           <p className="text-slate-500 text-sm mt-1">Real-time overview of MIIAM platform</p>
         </div>
-        <button onClick={loadDashboardData} className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50">
+        <button onClick={loadDashboardData} className="flex items-center gap-2 px-4 py-2 bg-[var(--color-surface-container-lowest)] border border-slate-200 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50">
           <span className="material-symbols-outlined text-sm">refresh</span>
           Refresh
         </button>
@@ -142,22 +142,22 @@ export default function AdminDashboard() {
               <p className="text-3xl font-black mt-2">₹{stats.totalRevenue.toLocaleString()}</p>
               <p className="text-xs opacity-60 mt-1">{stats.totalOrders} total orders</p>
             </div>
-            <div className="bg-white border border-slate-100 p-5 rounded-2xl shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] border border-slate-100 p-5 rounded-2xl shadow-sm">
               <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Orders Today</p>
               <p className="text-3xl font-black text-slate-800 mt-2">{stats.ordersToday}</p>
               <p className="text-xs text-blue-500 mt-1">since midnight</p>
             </div>
-            <div className="bg-white border border-slate-100 p-5 rounded-2xl shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] border border-slate-100 p-5 rounded-2xl shadow-sm">
               <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Pending</p>
               <p className="text-3xl font-black text-amber-600 mt-2">{stats.pendingOrders}</p>
               <p className="text-xs text-slate-400 mt-1">active orders</p>
             </div>
-            <div className="bg-white border border-slate-100 p-5 rounded-2xl shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] border border-slate-100 p-5 rounded-2xl shadow-sm">
               <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Live Vendors</p>
               <p className="text-3xl font-black text-green-600 mt-2">{stats.activeVendors}</p>
               <p className="text-xs text-slate-400 mt-1">active partners</p>
             </div>
-            <div className="bg-white border border-slate-100 p-5 rounded-2xl shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] border border-slate-100 p-5 rounded-2xl shadow-sm">
               <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Riders</p>
               <p className="text-3xl font-black text-purple-600 mt-2">{stats.onlineRiders}</p>
               <p className="text-xs text-slate-400 mt-1">active riders</p>
@@ -166,7 +166,7 @@ export default function AdminDashboard() {
 
           {/* System Health */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-white border border-slate-100 p-5 rounded-2xl shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] border border-slate-100 p-5 rounded-2xl shadow-sm">
               <div className="flex items-center gap-2 mb-2">
                 <span className="material-symbols-outlined text-blue-500 text-lg">group</span>
                 <p className="text-xs font-bold text-slate-400 uppercase">Total Users</p>
@@ -174,7 +174,7 @@ export default function AdminDashboard() {
               <p className="text-2xl font-black text-slate-800">{stats.totalUsers}</p>
               <p className="text-xs text-green-500 mt-1">+{stats.newUsersToday} today</p>
             </div>
-            <div className="bg-white border border-slate-100 p-5 rounded-2xl shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] border border-slate-100 p-5 rounded-2xl shadow-sm">
               <div className="flex items-center gap-2 mb-2">
                 <span className="material-symbols-outlined text-green-500 text-lg">paid</span>
                 <p className="text-xs font-bold text-slate-400 uppercase">Avg Order Value</p>
@@ -182,7 +182,7 @@ export default function AdminDashboard() {
               <p className="text-2xl font-black text-slate-800">₹{stats.avgOrderValue.toFixed(0)}</p>
               <p className="text-xs text-slate-400 mt-1">per delivered order</p>
             </div>
-            <div className="bg-white border border-slate-100 p-5 rounded-2xl shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] border border-slate-100 p-5 rounded-2xl shadow-sm">
               <div className="flex items-center gap-2 mb-2">
                 <span className="material-symbols-outlined text-red-500 text-lg">cancel</span>
                 <p className="text-xs font-bold text-slate-400 uppercase">Cancelled</p>
@@ -190,7 +190,7 @@ export default function AdminDashboard() {
               <p className="text-2xl font-black text-red-600">{stats.cancelledOrders}</p>
               <p className="text-xs text-slate-400 mt-1">{stats.totalOrders > 0 ? ((stats.cancelledOrders / stats.totalOrders) * 100).toFixed(1) : 0}% cancellation rate</p>
             </div>
-            <div className="bg-white border border-slate-100 p-5 rounded-2xl shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] border border-slate-100 p-5 rounded-2xl shadow-sm">
               <div className="flex items-center gap-2 mb-2">
                 <span className="material-symbols-outlined text-purple-500 text-lg">speed</span>
                 <p className="text-xs font-bold text-slate-400 uppercase">Platform Health</p>
@@ -205,7 +205,7 @@ export default function AdminDashboard() {
           </div>
 
           {/* Category Revenue Breakdown */}
-          <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-100 p-6 shadow-sm">
             <h2 className="text-lg font-black text-slate-800 mb-6">Revenue by Category</h2>
             {Object.keys(categoryRevenue).length === 0 ? (
               <p className="text-slate-400 text-center py-8">No order data yet</p>
@@ -236,7 +236,7 @@ export default function AdminDashboard() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Recent Activity Feed */}
-            <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-100 p-6 shadow-sm">
               <h2 className="text-lg font-black text-slate-800 mb-4">Recent Activity</h2>
               <div className="space-y-3 max-h-96 overflow-y-auto">
                 {recentActivity.length === 0 ? (
@@ -262,7 +262,7 @@ export default function AdminDashboard() {
             </div>
 
             {/* Recent Orders */}
-            <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-100 p-6 shadow-sm">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-black text-slate-800">Recent Orders</h2>
                 <button onClick={() => router.push("/admin/orders")} className="text-sm font-bold text-[#ba001c]">View All →</button>
@@ -300,7 +300,7 @@ export default function AdminDashboard() {
           </div>
 
           {/* Recent Vendors */}
-          <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-100 p-6 shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-black text-slate-800">Recent Vendors</h2>
               <button onClick={() => router.push("/admin/vendors")} className="text-sm font-bold text-[#ba001c]">View All →</button>
@@ -353,7 +353,7 @@ export default function AdminDashboard() {
                 <button
                   key={item.id}
                   onClick={() => router.push(item.route)}
-                  className="bg-white p-6 rounded-2xl border-2 border-slate-100 shadow-sm hover:border-[#ba001c] hover:shadow-lg transition-all text-left group"
+                  className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl border-2 border-slate-100 shadow-sm hover:border-[#ba001c] hover:shadow-lg transition-all text-left group"
                 >
                   <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-3 ${item.color}`}>
                     <span className="material-symbols-outlined text-2xl">{item.icon}</span>

@@ -135,7 +135,7 @@ export default function ServicesLandingPage() {
               />
 
               {/* Card Content */}
-              <div className="relative bg-white rounded-3xl shadow-lg hover:shadow-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2">
+              <div className="relative bg-[var(--color-surface-container-lowest)] rounded-3xl shadow-lg hover:shadow-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2">
                 {/* Image Section */}
                 <div className="relative h-48 overflow-hidden">
                   <img 
@@ -217,7 +217,7 @@ export default function ServicesLandingPage() {
       </div>
 
       {/* Why Choose Us */}
-      <div className="bg-white py-16">
+      <div className="bg-[var(--color-surface-container-lowest)] py-16">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-black text-[#4d212a] mb-3">Why MIIAM?</h2>
@@ -263,11 +263,11 @@ export default function ServicesLandingPage() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link 
                   href="/app/services"
-                  className="px-8 py-4 bg-white text-[#ba001c] rounded-2xl font-bold hover:bg-white/90 transition-all hover:scale-105"
+                  className="px-8 py-4 bg-[var(--color-surface-container-lowest)] text-[#ba001c] rounded-2xl font-bold hover:bg-[var(--color-surface-container-lowest)]/90 transition-all hover:scale-105"
                 >
                   Browse All Services
                 </Link>
-                <button className="px-8 py-4 bg-white/10 text-white border-2 border-white/20 rounded-2xl font-bold hover:bg-white/20 transition-all">
+                <button className="px-8 py-4 bg-[var(--color-surface-container-lowest)]/10 text-white border-2 border-white/20 rounded-2xl font-bold hover:bg-[var(--color-surface-container-lowest)]/20 transition-all">
                   Request a Service
                 </button>
               </div>

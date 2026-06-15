@@ -201,7 +201,7 @@ export default function PharmacyMedicinesPage() {
       </div>
 
       <div className="grid grid-cols-4 gap-4 mb-6">
-        <div className="bg-white p-4 rounded-xl border border-slate-100">
+        <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-slate-100">
           <p className="text-slate-400 text-xs font-bold">TOTAL MEDICINES</p>
           <p className="text-2xl font-black text-slate-800 mt-1">{stats.total}</p>
         </div>
@@ -227,14 +227,14 @@ export default function PharmacyMedicinesPage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search by medicine name..."
-            className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-[#ba001c]"
+            className="w-full pl-10 pr-4 py-3 bg-[var(--color-surface-container-lowest)] border border-slate-200 rounded-xl focus:outline-none focus:border-[#ba001c]"
           />
         </div>
-        <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} className="px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-[#ba001c]">
+        <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} className="px-4 py-3 bg-[var(--color-surface-container-lowest)] border border-slate-200 rounded-xl focus:outline-none focus:border-[#ba001c]">
           <option value="all">All Categories</option>
           {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
         </select>
-        <select value={vendorFilter} onChange={(e) => setVendorFilter(e.target.value)} className="px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-[#ba001c]">
+        <select value={vendorFilter} onChange={(e) => setVendorFilter(e.target.value)} className="px-4 py-3 bg-[var(--color-surface-container-lowest)] border border-slate-200 rounded-xl focus:outline-none focus:border-[#ba001c]">
           <option value="all">All Vendors</option>
           {vendors.map(v => <option key={v.id} value={v.id}>{v.shop_name}</option>)}
         </select>
@@ -243,14 +243,14 @@ export default function PharmacyMedicinesPage() {
       {loading ? (
         <div className="text-center py-12 text-slate-500">Loading medicines...</div>
       ) : filteredMedicines.length === 0 ? (
-        <div className="text-center py-12 text-slate-500 bg-white rounded-xl">
+        <div className="text-center py-12 text-slate-500 bg-[var(--color-surface-container-lowest)] rounded-xl">
           <span className="material-symbols-outlined text-5xl text-slate-300">medication</span>
           <p className="mt-4 font-bold">No medicines found</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredMedicines.map((medicine) => (
-            <div key={medicine.id} className="bg-white rounded-2xl border border-slate-100 overflow-hidden hover:shadow-lg transition-shadow">
+            <div key={medicine.id} className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-100 overflow-hidden hover:shadow-lg transition-shadow">
               <div className="h-40 bg-slate-100 relative">
                 {medicine.image_url ? (
                   <Image src={medicine.image_url} alt={medicine.name} fill className="object-cover" />
@@ -296,7 +296,7 @@ export default function PharmacyMedicinesPage() {
 
       {showAddModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b sticky top-0 bg-white">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-black text-slate-800">{editingMedicine ? "Edit Medicine" : "Add Medicine"}</h2>

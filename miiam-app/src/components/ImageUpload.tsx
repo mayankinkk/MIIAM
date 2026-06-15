@@ -72,7 +72,7 @@ export default function ImageUpload({
           </div>
         )}
         {uploading && (
-          <div className="absolute inset-0 bg-white/70 flex items-center justify-center">
+          <div className="absolute inset-0 bg-[var(--color-surface-container-lowest)]/70 flex items-center justify-center">
             <span className="material-symbols-outlined text-[#ba001c] animate-spin">progress_activity</span>
           </div>
         )}

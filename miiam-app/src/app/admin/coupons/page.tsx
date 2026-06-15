@@ -126,7 +126,7 @@ export default function CouponsAdminPage() {
           </div>
           <button
             onClick={() => setShowModal(true)}
-            className="bg-white text-[#ba001c] px-6 py-3 rounded-xl font-bold hover:bg-white/90 transition-all flex items-center gap-2"
+            className="bg-[var(--color-surface-container-lowest)] text-[#ba001c] px-6 py-3 rounded-xl font-bold hover:bg-[var(--color-surface-container-lowest)]/90 transition-all flex items-center gap-2"
           >
             <span className="material-symbols-outlined">add</span>
             Create Coupon
@@ -136,21 +136,21 @@ export default function CouponsAdminPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-6 -mt-8">
-        <div className="bg-white rounded-2xl p-4 shadow-lg">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-lg">
           <div className="text-sm text-slate-500 mb-1">Total Coupons</div>
           <div className="text-2xl font-black text-slate-800">{coupons.length}</div>
         </div>
-        <div className="bg-white rounded-2xl p-4 shadow-lg">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-lg">
           <div className="text-sm text-slate-500 mb-1">Active Coupons</div>
           <div className="text-2xl font-black text-green-600">{activeCoupons}</div>
         </div>
-        <div className="bg-white rounded-2xl p-4 shadow-lg">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-lg">
           <div className="text-sm text-slate-500 mb-1">Total Uses</div>
           <div className="text-2xl font-black text-slate-800">
             {coupons.reduce((s, c) => s + c.used_count, 0)}
           </div>
         </div>
-        <div className="bg-white rounded-2xl p-4 shadow-lg">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-lg">
           <div className="text-sm text-slate-500 mb-1">Total Discount Given</div>
           <div className="text-2xl font-black text-[#ba001c]">₹{totalDiscount.toLocaleString()}</div>
         </div>
@@ -166,7 +166,7 @@ export default function CouponsAdminPage() {
               className={`px-4 py-2 rounded-full font-bold text-sm capitalize transition-colors ${
                 filter === f
                   ? "bg-[#ba001c] text-white"
-                  : "bg-white text-slate-600 border border-slate-200"
+                  : "bg-[var(--color-surface-container-lowest)] text-slate-600 border border-slate-200"
               }`}
             >
               {f}
@@ -177,7 +177,7 @@ export default function CouponsAdminPage() {
 
       {/* Coupons Table */}
       <div className="px-6 pb-6">
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl shadow-lg overflow-hidden">
           <table className="w-full">
             <thead className="bg-slate-50 border-b border-slate-100">
               <tr>
@@ -268,7 +268,7 @@ export default function CouponsAdminPage() {
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl w-full max-w-lg p-6 m-4">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl w-full max-w-lg p-6 m-4">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-black text-slate-800">
                 {editingCoupon ? "Edit Coupon" : "Create New Coupon"}

@@ -117,7 +117,7 @@ export default function VendorRegister() {
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#ba001c]/5 to-white flex items-center justify-center p-4">
         <div className="w-full max-w-lg text-center">
-          <div className="bg-white rounded-3xl p-10 shadow-lg border border-slate-200 space-y-6">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-10 shadow-lg border border-slate-200 space-y-6">
             {/* Animated checkmark */}
             <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto">
               <span className="material-symbols-outlined text-green-600 text-5xl">check_circle</span>
@@ -190,7 +190,7 @@ export default function VendorRegister() {
         </div>
 
         {/* Form Card */}
-        <div className="bg-white rounded-3xl p-8 shadow-lg border border-slate-200">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-8 shadow-lg border border-slate-200">
           {step === 1 && (
             <div className="space-y-5">
               <h2 className="text-xl font-extrabold text-slate-900">Owner Details</h2>

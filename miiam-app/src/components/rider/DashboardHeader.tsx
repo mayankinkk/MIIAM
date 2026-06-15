@@ -14,7 +14,7 @@ export default function DashboardHeader({ isOnline, streakDays, onToggleOnline, 
   const { t } = useTranslation();
 
   return (
-    <header className="fixed top-0 w-full z-50 flex justify-between items-center px-4 py-3 bg-white/90 backdrop-blur-lg border-b border-white/20 shadow-lg">
+    <header className="fixed top-0 w-full z-50 flex justify-between items-center px-4 py-3 bg-[var(--color-surface-container-lowest)]/90 backdrop-blur-lg border-b border-white/20 shadow-lg">
       <div className="flex items-center gap-2">
         <span className="text-xl font-black italic tracking-tighter text-primary">MIIAM</span>
         <button

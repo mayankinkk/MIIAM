@@ -111,7 +111,7 @@ export default function RiderVehiclePage() {
       <header className="bg-gradient-to-br from-slate-700 to-slate-900 text-white p-6 pb-8 rounded-b-[3rem]">
         <div className="flex justify-between items-center">
           <Link href="/rider/dashboard" className="text-3xl font-black tracking-tighter">MIIAM</Link>
-          <button onClick={() => setShowAddVehicle(true)} className="bg-white/20 p-2 rounded-lg">
+          <button onClick={() => setShowAddVehicle(true)} className="bg-[var(--color-surface-container-lowest)]/20 p-2 rounded-lg">
             <span className="material-symbols-outlined">add</span>
           </button>
         </div>
@@ -141,7 +141,7 @@ export default function RiderVehiclePage() {
         )}
 
         {/* Current Vehicle */}
-        <div className="bg-white rounded-2xl p-5 shadow-lg">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-lg">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-bold text-[#4d212a]">Current Vehicle</h3>
             <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">Active</span>
@@ -184,7 +184,7 @@ export default function RiderVehiclePage() {
         </div>
 
         {/* Tabs */}
-        <div className="bg-white rounded-xl p-1 flex">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-xl p-1 flex">
           {(["vehicles", "maintenance", "fuel"] as const).map((tab) => (
             <button
               key={tab}
@@ -204,7 +204,7 @@ export default function RiderVehiclePage() {
               <div 
                 key={vehicle.id}
                 onClick={() => setSelectedVehicle(vehicle)}
-                className={`bg-white rounded-2xl p-4 shadow-sm border-2 cursor-pointer transition-all ${
+                className={`bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-sm border-2 cursor-pointer transition-all ${
                   vehicle.isDefault ? "border-[#0b50d5]" : "border-transparent"
                 }`}
               >
@@ -238,7 +238,7 @@ export default function RiderVehiclePage() {
         {activeTab === "maintenance" && (
           <>
             {maintenanceRecords.length > 0 && (
-              <div className="bg-white rounded-2xl p-4 shadow-sm">
+              <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-sm">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-bold text-[#4d212a]">Service History</h3>
                 </div>
@@ -257,7 +257,7 @@ export default function RiderVehiclePage() {
               </div>
             )}
             {maintenanceRecords.length === 0 && (
-              <div className="bg-white rounded-2xl p-4 shadow-sm text-center py-8 text-slate-400">
+              <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-sm text-center py-8 text-slate-400">
                 <span className="material-symbols-outlined text-4xl">build</span>
                 <p className="mt-2 font-medium">No service records yet</p>
               </div>
@@ -280,7 +280,7 @@ export default function RiderVehiclePage() {
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl p-4 shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-sm">
               <h3 className="font-bold text-[#4d212a] mb-4">Fuel Log</h3>
               <div className="space-y-3">
                 {fuelLog.map((log, i) => (
@@ -297,7 +297,7 @@ export default function RiderVehiclePage() {
 
             <button
               onClick={() => setShowAddFuelModal(true)}
-              className="w-full py-4 bg-white border-2 border-slate-200 rounded-2xl font-bold text-slate-600 flex items-center justify-center gap-2"
+              className="w-full py-4 bg-[var(--color-surface-container-lowest)] border-2 border-slate-200 rounded-2xl font-bold text-slate-600 flex items-center justify-center gap-2"
             >
               <span className="material-symbols-outlined">local_gas_station</span>
               Add Fuel Entry
@@ -320,14 +320,14 @@ export default function RiderVehiclePage() {
                 import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Add a vehicle first to view insurance details", "info"));
               }
             }}
-            className="bg-white p-4 rounded-2xl shadow-sm flex items-center gap-3"
+            className="bg-[var(--color-surface-container-lowest)] p-4 rounded-2xl shadow-sm flex items-center gap-3"
           >
             <span className="material-symbols-outlined text-blue-600">policy</span>
             <span className="font-bold text-sm">Insurance</span>
           </button>
           <button
             onClick={() => window.open("https://www.google.com/maps/search/service+center+near+me", "_blank")}
-            className="bg-white p-4 rounded-2xl shadow-sm flex items-center gap-3"
+            className="bg-[var(--color-surface-container-lowest)] p-4 rounded-2xl shadow-sm flex items-center gap-3"
           >
             <span className="material-symbols-outlined text-amber-600">build</span>
             <span className="font-bold text-sm">Service Center</span>
@@ -367,7 +367,7 @@ export default function RiderVehiclePage() {
       {/* Add Fuel Entry Modal */}
       {showAddFuelModal && (
         <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md p-6">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-md p-6">
             <h3 className="font-bold text-lg mb-4">Add Fuel Entry</h3>
             <div className="space-y-3">
               <input type="date" value={fuelForm.date} onChange={(e) => setFuelForm({ ...fuelForm, date: e.target.value })} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm" />
@@ -441,7 +441,7 @@ function AddVehicleModal({ riderId, onClose, onSaved }: { riderId: string | null
 
   return (
     <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl p-6 w-full max-w-sm">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-sm">
         <h3 className="font-bold text-xl mb-4">Add New Vehicle</h3>
         <div className="space-y-3">
           <select value={type} onChange={(e) => setType(e.target.value as any)} className="w-full p-3 border-2 border-slate-200 rounded-xl">

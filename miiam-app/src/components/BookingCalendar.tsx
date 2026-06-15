@@ -167,7 +167,7 @@ export default function BookingCalendar({
   const monthName = currentMonth.toLocaleString("default", { month: "long", year: "numeric" });
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-6">
+    <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl shadow-lg p-6">
       <h3 className="text-lg font-black text-[#4d212a] mb-4">Book Appointment</h3>
 
       <div className="flex items-center justify-between mb-4">
@@ -289,7 +289,7 @@ export default function BookingCalendar({
 
       {showConfirmation && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-6">
-          <div className="bg-white rounded-3xl p-8 max-w-sm w-full text-center">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-8 max-w-sm w-full text-center">
             <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <span className="material-symbols-outlined text-green-600 text-4xl">check_circle</span>
             </div>

@@ -79,7 +79,7 @@ export default function ReviewsPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-slate-100 shadow-sm">
           <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Total Reviews</p>
           <p className="text-3xl font-black text-slate-800">{reviews.length}</p>
         </div>
@@ -89,18 +89,18 @@ export default function ReviewsPage() {
             {avgRating} <span className="material-symbols-outlined text-xl">star</span>
           </p>
         </div>
-        <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-slate-100 shadow-sm">
           <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">5-Star Reviews</p>
           <p className="text-3xl font-black text-green-600">{fiveStars}</p>
         </div>
-        <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-slate-100 shadow-sm">
           <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">1-Star Reviews</p>
           <p className="text-3xl font-black text-red-500">{oneStars}</p>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-3xl border border-slate-100 p-4 shadow-sm">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-4 shadow-sm">
         <div className="flex gap-4 flex-wrap">
           {(["all", "vendor", "rider"] as const).map(f => (
             <button
@@ -127,7 +127,7 @@ export default function ReviewsPage() {
       </div>
 
       {/* Reviews List */}
-      <div className="bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
         <div className="divide-y divide-slate-50 max-h-[500px] overflow-y-auto">
           {filteredReviews.map(review => (
             <div key={review.id} className="p-4 hover:bg-slate-50">

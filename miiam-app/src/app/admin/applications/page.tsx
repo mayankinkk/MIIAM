@@ -115,7 +115,7 @@ export default function AdminApplicationsPage() {
           { label: "Reviewed", value: stats.reviewed, color: "bg-blue-500", icon: "fact_check" },
           { label: "Hired", value: stats.hired, color: "bg-green-500", icon: "check_circle" },
         ].map((stat) => (
-          <div key={stat.label} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+          <div key={stat.label} className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-slate-100">
             <div className={`w-10 h-10 ${stat.color} rounded-xl flex items-center justify-center mb-3`}>
               <span className="material-symbols-outlined text-white">{stat.icon}</span>
             </div>
@@ -141,7 +141,7 @@ export default function AdminApplicationsPage() {
         ))}
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-slate-50 border-b border-slate-100">
@@ -232,8 +232,8 @@ export default function AdminApplicationsPage() {
       {/* Detail Modal */}
       {selectedApp && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-white border-b border-slate-100 px-6 py-4 flex items-center justify-between">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-[var(--color-surface-container-lowest)] border-b border-slate-100 px-6 py-4 flex items-center justify-between">
               <h2 className="text-xl font-bold text-slate-900">Application Details</h2>
               <button
                 onClick={() => setSelectedApp(null)}

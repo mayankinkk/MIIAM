@@ -104,7 +104,7 @@ export function LiveChatSupport({ orderId, onClose }: LiveChatProps) {
                     ? "bg-[#ba001c] text-white rounded-br-md"
                     : msg.role === "system"
                     ? "bg-yellow-100 text-yellow-800 text-sm"
-                    : "bg-white text-slate-800 rounded-bl-md shadow-sm"
+                    : "bg-[var(--color-surface-container-lowest)] text-slate-800 rounded-bl-md shadow-sm"
                 }`}
               >
                 <p className="text-sm">{msg.message}</p>
@@ -119,7 +119,7 @@ export function LiveChatSupport({ orderId, onClose }: LiveChatProps) {
           
           {isTyping && (
             <div className="flex justify-start">
-              <div className="bg-white px-4 py-3 rounded-2xl rounded-bl-md shadow-sm">
+              <div className="bg-[var(--color-surface-container-lowest)] px-4 py-3 rounded-2xl rounded-bl-md shadow-sm">
                 <div className="flex gap-1">
                   <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" />
                   <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce delay-75" />

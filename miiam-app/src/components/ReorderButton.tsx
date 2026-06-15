@@ -104,7 +104,7 @@ export function OrderHistoryCard({ order }: OrderHistoryCardProps) {
   const date = new Date(order.created_at);
   
   return (
-    <div className="bg-white rounded-xl p-4 shadow-sm">
+    <div className="bg-[var(--color-surface-container-lowest)] rounded-xl p-4 shadow-sm">
       <div className="flex justify-between items-start mb-3">
         <div>
           <Link href={`/app/vendor/${order.vendor_id}`} className="font-bold text-slate-800 hover:text-[#ba001c]">

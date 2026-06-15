@@ -45,7 +45,7 @@ export function MenuItemCustomizationCard({
   };
 
   return (
-    <div className="bg-white rounded-xl p-4 border border-slate-100">
+    <div className="bg-[var(--color-surface-container-lowest)] rounded-xl p-4 border border-slate-100">
       <div className="flex items-center justify-between mb-3">
         <div>
           <h4 className="font-bold text-slate-800">{customization.name}</h4>
@@ -82,7 +82,7 @@ export function MenuItemCustomizationCard({
                 <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
                   isSelected ? "border-[#ba001c] bg-[#ba001c]" : "border-slate-300"
                 }`}>
-                  {isSelected && <div className="w-2 h-2 bg-white rounded-full" />}
+                  {isSelected && <div className="w-2 h-2 bg-[var(--color-surface-container-lowest)] rounded-full" />}
                 </div>
                 <span className={`font-medium ${isSelected ? "text-slate-800" : "text-slate-600"}`}>
                   {option.name}

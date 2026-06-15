@@ -61,7 +61,7 @@ export default function VendorReviewsPage() {
 
   return (
     <div className="min-h-screen bg-[#f8f8f8] pb-24">
-      <header className="bg-white border-b border-slate-100 px-4 py-4 sticky top-0 z-10">
+      <header className="bg-[var(--color-surface-container-lowest)] border-b border-slate-100 px-4 py-4 sticky top-0 z-10">
         <div className="flex items-center gap-3">
           <button onClick={() => router.back()} className="p-2 -ml-2 hover:bg-slate-100 rounded-full">
             <span className="material-symbols-outlined">arrow_back</span>
@@ -74,7 +74,7 @@ export default function VendorReviewsPage() {
       </header>
       <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Reviews' }]} />
       {/* Rating Summary */}
-      <div className="bg-white border-b border-slate-100 p-4">
+      <div className="bg-[var(--color-surface-container-lowest)] border-b border-slate-100 p-4">
         <div className="flex items-center gap-6">
           <div className="text-center">
             <p className="text-4xl font-black text-slate-800">{vendor?.rating || "4.5"}</p>
@@ -96,7 +96,7 @@ export default function VendorReviewsPage() {
       </div>
 
       {/* Filter */}
-      <div className="bg-white border-b border-slate-100 px-4 py-3 overflow-x-auto">
+      <div className="bg-[var(--color-surface-container-lowest)] border-b border-slate-100 px-4 py-3 overflow-x-auto">
         <div className="flex gap-2">
           {(["all", "5", "4", "3", "2", "1"] as const).map((f) => (
             <button
@@ -118,7 +118,7 @@ export default function VendorReviewsPage() {
           <EmptyState icon="⭐" title={t.food.noReviews} description={t.food.beFirst} />
         ) : (
           filteredReviews.map((review: any) => (
-            <div key={review.id} className="bg-white rounded-xl p-4 shadow-sm">
+            <div key={review.id} className="bg-[var(--color-surface-container-lowest)] rounded-xl p-4 shadow-sm">
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
                   {review.profile?.full_name?.[0] || "U"}

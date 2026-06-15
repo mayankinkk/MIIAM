@@ -122,7 +122,7 @@ export default function RiderEarningsPage() {
               key={p}
               onClick={() => setPeriod(p)}
               className={`px-4 py-2 rounded-lg text-xs font-bold transition-colors ${
-                period === p ? "bg-white text-[#ba001c] shadow-sm" : "text-slate-500"
+                period === p ? "bg-[var(--color-surface-container-lowest)] text-[#ba001c] shadow-sm" : "text-slate-500"
               }`}
             >
               {p === "week" ? "This Week" : p === "month" ? "This Month" : "All Time"}
@@ -140,7 +140,7 @@ export default function RiderEarningsPage() {
           <p className="text-4xl font-black">₹{totalEarnings.toLocaleString()}</p>
           <p className="text-xs text-white/60 mt-2">{totalDeliveries} deliveries</p>
         </div>
-        <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-slate-100 shadow-sm">
           <div className="flex items-center gap-2 mb-2">
             <span className="material-symbols-outlined text-slate-400">two_wheeler</span>
             <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Active Riders</span>
@@ -148,7 +148,7 @@ export default function RiderEarningsPage() {
           <p className="text-3xl font-black text-slate-800">{onlineRiders}</p>
           <p className="text-xs text-green-500 mt-2">online now</p>
         </div>
-        <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-slate-100 shadow-sm">
           <div className="flex items-center gap-2 mb-2">
             <span className="material-symbols-outlined text-slate-400">inventory_2</span>
             <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Avg Deliveries</span>
@@ -158,7 +158,7 @@ export default function RiderEarningsPage() {
           </p>
           <p className="text-xs text-slate-400 mt-2">per rider</p>
         </div>
-        <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-slate-100 shadow-sm">
           <div className="flex items-center gap-2 mb-2">
             <span className="material-symbols-outlined text-amber-500">star</span>
             <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Avg Rating</span>
@@ -168,7 +168,7 @@ export default function RiderEarningsPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-6 shadow-sm">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-lg font-black text-slate-800">Rider Performance</h2>
           <div className="flex gap-2">
@@ -241,7 +241,7 @@ export default function RiderEarningsPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-6 shadow-sm">
           <h3 className="text-lg font-black text-slate-800 mb-6">Top Earners This Month</h3>
           <div className="space-y-4">
             {sortedRiders.slice(0, 5).map((rider, index) => (
@@ -266,7 +266,7 @@ export default function RiderEarningsPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-6 shadow-sm">
           <h3 className="text-lg font-black text-slate-800 mb-6">Payout Summary</h3>
           <div className="space-y-4">
             <div className="flex justify-between items-center p-4 bg-slate-50 rounded-xl">

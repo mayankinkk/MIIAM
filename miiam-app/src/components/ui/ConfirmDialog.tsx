@@ -82,7 +82,7 @@ export function ConfirmProvider({ children }: { children: ReactNode }) {
       {state.open && <EscapeListener onCancel={state.onCancel} />}
       {state.open && (
         <div className="fixed inset-0 z-[200] bg-black/50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="confirm-dialog-title">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-sm shadow-2xl">
             <h3 id="confirm-dialog-title" className="font-bold text-lg text-slate-900 mb-2">{state.title}</h3>
             <p className="text-sm text-slate-600 mb-6">{state.message}</p>
             <div className="flex gap-3">

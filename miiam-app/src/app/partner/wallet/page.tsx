@@ -124,7 +124,7 @@ export default function VendorWalletPage() {
         </div>
         <button
           onClick={() => setShowRequestPayout(true)}
-          className="w-full mt-6 bg-white text-[#ba001c] py-4 rounded-2xl font-extrabold text-lg hover:bg-white/90 transition-colors"
+          className="w-full mt-6 bg-[var(--color-surface-container-lowest)] text-[#ba001c] py-4 rounded-2xl font-extrabold text-lg hover:bg-[var(--color-surface-container-lowest)]/90 transition-colors"
         >
           Request Payout
         </button>
@@ -132,22 +132,22 @@ export default function VendorWalletPage() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-slate-200">
           <span className="material-symbols-outlined text-green-500">trending_up</span>
           <p className="text-2xl font-black text-slate-900 mt-2">₹{(wallet.total_earned * 0.85).toFixed(0)}</p>
           <p className="text-sm text-slate-500 font-medium">Net Earnings (after 15% fee)</p>
         </div>
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-slate-200">
           <span className="material-symbols-outlined text-blue-500">receipt_long</span>
           <p className="text-2xl font-black text-slate-900 mt-2">{deliveredOrders.length}</p>
           <p className="text-sm text-slate-500 font-medium">Completed Orders</p>
         </div>
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-slate-200">
           <span className="material-symbols-outlined text-amber-500">percent</span>
           <p className="text-2xl font-black text-slate-900 mt-2">15%</p>
           <p className="text-sm text-slate-500 font-medium">Platform Fee</p>
         </div>
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-slate-200">
           <span className="material-symbols-outlined text-purple-500">payments</span>
           <p className="text-2xl font-black text-slate-900 mt-2">
             ₹{wallet.total_earned > 0 ? (wallet.total_earned / deliveredOrders.length).toFixed(0) : 0}
@@ -157,7 +157,7 @@ export default function VendorWalletPage() {
       </div>
 
       {/* Recent Transactions */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
         <div className="p-6 pb-4">
           <h3 className="font-bold text-slate-800">Recent Transactions</h3>
         </div>

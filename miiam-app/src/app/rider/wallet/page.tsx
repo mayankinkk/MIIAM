@@ -286,7 +286,7 @@ export default function RiderWalletPage() {
               </button>
               <button 
                 onClick={() => requestPayout(500)}
-                className="flex-1 bg-white text-[#0b50d5] py-3 rounded-xl font-bold"
+                className="flex-1 bg-[var(--color-surface-container-lowest)] text-[#0b50d5] py-3 rounded-xl font-bold"
               >
                 Weekly Payout
               </button>
@@ -296,7 +296,7 @@ export default function RiderWalletPage() {
       </header>
 
       <main className="px-6 -mt-6 space-y-6 pb-32">
-        <div className="bg-white rounded-2xl p-1 flex">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-1 flex">
           {(["wallet", "earnings", "payouts"] as const).map((tab) => (
             <button
               key={tab}
@@ -315,15 +315,15 @@ export default function RiderWalletPage() {
         {activeTab === "wallet" && (
           <>
             <div className="grid grid-cols-3 gap-3">
-              <div className="bg-white p-3 rounded-2xl shadow-lg text-center">
+              <div className="bg-[var(--color-surface-container-lowest)] p-3 rounded-2xl shadow-lg text-center">
                 <p className="text-[9px] text-slate-400 uppercase">Total Earned</p>
                 <p className="text-lg font-black text-green-600">₹{walletData.totalEarnings}</p>
               </div>
-              <div className="bg-white p-3 rounded-2xl shadow-lg text-center">
+              <div className="bg-[var(--color-surface-container-lowest)] p-3 rounded-2xl shadow-lg text-center">
                 <p className="text-[9px] text-slate-400 uppercase">Advance Used</p>
                 <p className="text-lg font-black text-amber-600">₹{walletData.advanceUsed}</p>
               </div>
-              <div className="bg-white p-3 rounded-2xl shadow-lg text-center">
+              <div className="bg-[var(--color-surface-container-lowest)] p-3 rounded-2xl shadow-lg text-center">
                 <p className="text-[9px] text-slate-400 uppercase">Pending</p>
                 <p className="text-lg font-black text-slate-400">₹{walletData.pendingPayout}</p>
               </div>
@@ -354,7 +354,7 @@ export default function RiderWalletPage() {
             
             <div className="space-y-3">
               {displayTxns.map((txn) => (
-                <div key={txn.id} className="bg-white p-4 rounded-2xl shadow-sm flex justify-between items-center">
+                <div key={txn.id} className="bg-[var(--color-surface-container-lowest)] p-4 rounded-2xl shadow-sm flex justify-between items-center">
                   <div className="flex items-center gap-3">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
                       txn.type === "earning" ? "bg-green-100" : 
@@ -395,7 +395,7 @@ export default function RiderWalletPage() {
                   key={p}
                   onClick={() => setPeriod(p)}
                   className={`flex-1 py-2 rounded-lg text-xs font-bold transition-colors ${
-                    period === p ? "bg-white text-[#0b50d5] shadow-sm" : "text-slate-500"
+                    period === p ? "bg-[var(--color-surface-container-lowest)] text-[#0b50d5] shadow-sm" : "text-slate-500"
                   }`}
                 >
                   {p === "today" ? "Today" : p === "week" ? "This Week" : "This Month"}
@@ -409,7 +409,7 @@ export default function RiderWalletPage() {
                 <p className="text-3xl font-black mt-2">₹{totalWeekEarnings}</p>
                 <p className="text-xs opacity-80 mt-1">{period === "week" ? "This Week" : period === "today" ? "Today" : "This Month"}</p>
               </div>
-              <div className="bg-white p-6 rounded-2xl border border-slate-100">
+              <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl border border-slate-100">
                 <p className="text-xs font-bold text-slate-400">Total Deliveries</p>
                 <p className="text-3xl font-black text-slate-800 mt-2">{totalDeliveries}</p>
                 <p className="text-xs text-green-500 mt-1">{totalDeliveries > 0 ? `₹${Math.round(totalWeekEarnings / totalDeliveries)}/delivery` : "No deliveries yet"}</p>
@@ -438,7 +438,7 @@ export default function RiderWalletPage() {
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl p-6 shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm">
               <h3 className="font-bold text-slate-800 mb-4">Daily Breakdown</h3>
               <div className="space-y-3">
                 {(weeklyEarnings.length > 0 ? weeklyEarnings : [
@@ -466,7 +466,7 @@ export default function RiderWalletPage() {
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl p-6 shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm">
               <h3 className="font-bold text-slate-800 mb-4">Earnings Chart</h3>
               <div className="h-40 flex items-end gap-2">
                 {(weeklyEarnings.length > 0 ? weeklyEarnings : [
@@ -500,7 +500,7 @@ export default function RiderWalletPage() {
                 const a = document.createElement("a"); a.href = url; a.download = "earnings-report.csv"; a.click();
                 URL.revokeObjectURL(url);
               }}
-              className="w-full py-4 bg-white border-2 border-slate-200 rounded-2xl font-bold text-slate-600 flex items-center justify-center gap-2"
+              className="w-full py-4 bg-[var(--color-surface-container-lowest)] border-2 border-slate-200 rounded-2xl font-bold text-slate-600 flex items-center justify-center gap-2"
             >
               <span className="material-symbols-outlined">download</span>
               Download Report
@@ -510,7 +510,7 @@ export default function RiderWalletPage() {
 
         {activeTab === "payouts" && (
           <>
-              <div className="bg-white rounded-2xl p-6 shadow-sm">
+              <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm">
               <h3 className="font-bold text-slate-800 mb-4">Bank Details</h3>
               <div className="bg-slate-50 p-4 rounded-xl flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -538,7 +538,7 @@ export default function RiderWalletPage() {
               </button>
             </div>
 
-            <div className="bg-white rounded-2xl p-6 shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm">
               <h3 className="font-bold text-slate-800 mb-4">Payout History</h3>
               <div className="space-y-3">
                 {payoutHistory.length > 0 ? payoutHistory.map((payout, i) => (
@@ -559,7 +559,7 @@ export default function RiderWalletPage() {
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl p-6 shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm">
               <h3 className="font-bold text-slate-800 mb-4">Request Payout</h3>
               <div className="flex gap-3 mb-4">
                 {[500, 1000, 2000].map((amount) => (
@@ -587,7 +587,7 @@ export default function RiderWalletPage() {
       {/* Instant Payout Modal */}
       {showInstantPayout && (
         <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-sm">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-sm">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-bold text-xl">Instant Payout</h3>
               <button onClick={() => setShowInstantPayout(false)}>
@@ -658,7 +658,7 @@ export default function RiderWalletPage() {
     {/* Bank Account Modal */}
     {showBankModal && (
       <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl w-full max-w-md p-6">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-md p-6">
           <h3 className="font-bold text-lg mb-4">Bank Account Details</h3>
           <div className="space-y-3">
             <input

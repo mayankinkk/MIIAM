@@ -27,7 +27,7 @@ function AddressCard({ address, onSelect, onEdit, onDelete, onSetDefault }: Addr
   const colors = labelColors[address.label as keyof typeof labelColors] || labelColors.Other;
   
   return (
-    <div className={`bg-white rounded-2xl overflow-hidden shadow-sm transition-all group ${address.is_default ? "ring-2 ring-primary" : ""}`}>
+    <div className={`bg-[var(--color-surface-container-lowest)] rounded-2xl overflow-hidden shadow-sm transition-all group ${address.is_default ? "ring-2 ring-primary" : ""}`}>
       {/* Default badge */}
       {address.is_default && (
         <div className="bg-primary text-white text-xs font-bold px-4 py-2 flex items-center gap-2">
@@ -69,7 +69,7 @@ function AddressCard({ address, onSelect, onEdit, onDelete, onSetDefault }: Addr
           {/* Gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-white/80 to-transparent" />
           {/* Coordinates badge */}
-          <div className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg text-[10px] font-bold text-slate-600 flex items-center gap-1">
+          <div className="absolute top-2 right-2 bg-[var(--color-surface-container-lowest)]/90 backdrop-blur-sm px-2 py-1 rounded-lg text-[10px] font-bold text-slate-600 flex items-center gap-1">
             <span className="material-symbols-outlined text-xs">pin_drop</span>
             Guwahati
           </div>
@@ -348,7 +348,7 @@ export default function AddressBookPage() {
   return (
     <div className="min-h-screen bg-[#f8f8f8] pb-24">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white shadow-sm">
+      <header className="sticky top-0 z-50 bg-[var(--color-surface-container-lowest)] shadow-sm">
         <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/app/profile" className="text-2xl font-black text-primary tracking-tighter">
             MIIAM
@@ -532,7 +532,7 @@ export default function AddressBookPage() {
               <button
                 onClick={handleUseMyLocation}
                 disabled={detectingLocation}
-                className="w-full py-3 bg-white border border-primary text-primary font-bold rounded-xl flex items-center justify-center gap-2 hover:bg-surface transition-colors"
+                className="w-full py-3 bg-[var(--color-surface-container-lowest)] border border-primary text-primary font-bold rounded-xl flex items-center justify-center gap-2 hover:bg-surface transition-colors"
               >
                 <span className="material-symbols-outlined">{detectingLocation ? "sync" : "my_location"}</span>
                 {detectingLocation ? "Detecting Location..." : "Use My Current Location"}

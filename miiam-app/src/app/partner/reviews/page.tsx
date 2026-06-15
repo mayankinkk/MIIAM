@@ -99,19 +99,19 @@ export default function PartnerReviewsPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-xl border border-slate-200 text-center">
+        <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-slate-200 text-center">
           <p className="text-2xl font-black text-slate-900">{stats.total}</p>
           <p className="text-xs text-slate-500 mt-1">Total</p>
         </div>
-        <div className="bg-white p-4 rounded-xl border border-slate-200 text-center">
+        <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-slate-200 text-center">
           <p className="text-2xl font-black text-amber-500">{stats.average}</p>
           <p className="text-xs text-slate-500 mt-1">Avg Rating</p>
         </div>
-        <div className="bg-white p-4 rounded-xl border border-slate-200 text-center">
+        <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-slate-200 text-center">
           <p className="text-2xl font-black text-green-600">{stats.withReplies}</p>
           <p className="text-xs text-slate-500 mt-1">Replied</p>
         </div>
-        <div className="bg-white p-4 rounded-xl border border-slate-200 text-center">
+        <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-slate-200 text-center">
           <p className="text-2xl font-black text-slate-900">{stats.unreplied}</p>
           <p className="text-xs text-slate-500 mt-1">Awaiting Reply</p>
         </div>
@@ -120,13 +120,13 @@ export default function PartnerReviewsPage() {
       {/* Reviews List */}
       <div className="space-y-4">
         {reviews.length === 0 ? (
-          <div className="bg-white rounded-xl p-12 text-center border border-slate-200">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-xl p-12 text-center border border-slate-200">
             <span className="material-symbols-outlined text-5xl text-slate-300">reviews</span>
             <p className="text-slate-500 mt-3">No reviews yet</p>
           </div>
         ) : (
           reviews.map((review) => (
-            <div key={review.id} className="bg-white rounded-xl p-5 border border-slate-200">
+            <div key={review.id} className="bg-[var(--color-surface-container-lowest)] rounded-xl p-5 border border-slate-200">
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm flex-shrink-0">
                   {review.profile?.full_name?.[0] || "U"}

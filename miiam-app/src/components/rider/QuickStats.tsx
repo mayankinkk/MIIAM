@@ -26,14 +26,14 @@ export default function QuickStats({
   return (
     <div className="fixed top-20 left-4 z-20 space-y-2">
       <WeatherWidget />
-      <div className="bg-white/90 backdrop-blur p-3 rounded-xl shadow-lg">
+      <div className="bg-[var(--color-surface-container-lowest)]/90 backdrop-blur p-3 rounded-xl shadow-lg">
         <p className="text-[10px] text-slate-400">{t.rider.stats.todayEarnings}</p>
         <p className="font-black text-xl text-green-600">₹{todayEarnings + liveEarnings}</p>
         {hasActiveOrder && (deliveryStep === "delivering" || deliveryStep === "picking_up") && (
           <p className="text-[8px] text-orange-500 animate-pulse">+₹{liveEarnings} ({t.rider.stats.live})</p>
         )}
       </div>
-      <div className="bg-white/90 backdrop-blur p-2 rounded-xl shadow-lg flex items-center gap-2">
+      <div className="bg-[var(--color-surface-container-lowest)]/90 backdrop-blur p-2 rounded-xl shadow-lg flex items-center gap-2">
         <span className="material-symbols-outlined text-green-600 text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>account_balance_wallet</span>
         <div>
           <p className="text-[8px] text-slate-400">{t.rider.stats.cash}</p>

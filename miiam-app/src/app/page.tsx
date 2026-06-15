@@ -50,7 +50,7 @@ export default function LandingPage() {
 
           <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 w-full">
             <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full mb-8 border border-white/10">
+              <div className="inline-flex items-center gap-2 bg-[var(--color-surface-container-lowest)]/10 backdrop-blur-md px-4 py-2 rounded-full mb-8 border border-white/10">
                 <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
                 <span className="text-white/80 text-xs font-semibold tracking-wide">Now serving your city</span>
               </div>
@@ -75,7 +75,7 @@ export default function LandingPage() {
                 </Link>
                 <Link
                   href="/services"
-                  className="group flex items-center gap-3 bg-white/10 hover:bg-white/15 backdrop-blur-md text-white border border-white/20 pl-7 pr-5 py-4 rounded-2xl font-bold text-base active:scale-[0.97] transition-all duration-200"
+                  className="group flex items-center gap-3 bg-[var(--color-surface-container-lowest)]/10 hover:bg-white/15 backdrop-blur-md text-white border border-white/20 pl-7 pr-5 py-4 rounded-2xl font-bold text-base active:scale-[0.97] transition-all duration-200"
                 >
                   {t.bookService}
                   <span className="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform">arrow_forward</span>
@@ -87,7 +87,7 @@ export default function LandingPage() {
 
         {/* ── Quick Services Grid ── */}
         <section className="relative z-20 -mt-16 max-w-5xl mx-auto px-6 lg:px-8">
-          <div className="bg-white rounded-3xl shadow-[0_8px_40px_rgba(0,0,0,0.08)] border border-slate-100 p-6 sm:p-8">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl shadow-[0_8px_40px_rgba(0,0,0,0.08)] border border-slate-100 p-6 sm:p-8">
             <div className="grid grid-cols-3 sm:grid-cols-6 gap-4">
               {quickServices.map((svc) => (
                 <Link
@@ -141,7 +141,7 @@ export default function LandingPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Food Card - Links to Pizza Paradise */}
-            <Link href="/app/vendor/r2" className="md:col-span-2 group relative overflow-hidden rounded-2xl bg-white shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-slate-100 hover:shadow-[0_8px_40px_rgba(0,0,0,0.1)] transition-shadow duration-500">
+            <Link href="/app/vendor/r2" className="md:col-span-2 group relative overflow-hidden rounded-2xl bg-[var(--color-surface-container-lowest)] shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-slate-100 hover:shadow-[0_8px_40px_rgba(0,0,0,0.1)] transition-shadow duration-500">
               <div className="aspect-[16/9] overflow-hidden">
                 <img
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
@@ -173,7 +173,7 @@ export default function LandingPage() {
             </Link>
 
             {/* Service Card */}
-            <div className="group relative overflow-hidden rounded-2xl bg-white shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-slate-100 flex flex-col hover:shadow-[0_8px_40px_rgba(0,0,0,0.1)] transition-shadow duration-500">
+            <div className="group relative overflow-hidden rounded-2xl bg-[var(--color-surface-container-lowest)] shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-slate-100 flex flex-col hover:shadow-[0_8px_40px_rgba(0,0,0,0.1)] transition-shadow duration-500">
               <div className="aspect-square overflow-hidden">
                 <img
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
@@ -232,7 +232,7 @@ export default function LandingPage() {
                   </div>
                 </div>
                 <div className="space-y-3">
-                  <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+                  <div className="h-1.5 w-full bg-[var(--color-surface-container-lowest)]/10 rounded-full overflow-hidden">
                     <div className="h-full bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-light)] w-2/3 rounded-full" />
                   </div>
                   <p className="text-white/40 text-xs font-medium">942 people claimed this today</p>

@@ -30,7 +30,7 @@ export default function RefundsPage() {
   return (
     <div className="min-h-screen bg-[#fff4f4]">
       {/* Header */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
+      <header className="bg-[var(--color-surface-container-lowest)] border-b border-slate-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <Link href="/" className="flex items-center gap-3">
@@ -79,7 +79,7 @@ export default function RefundsPage() {
 
           {/* Main Content */}
           <main className="lg:col-span-9 mt-8 lg:mt-0">
-            <div className="bg-white rounded-2xl shadow-sm p-6 sm:p-8 lg:p-10">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl shadow-sm p-6 sm:p-8 lg:p-10">
               <div className="flex items-center gap-3 mb-8">
                 <span className="material-symbols-outlined text-4xl text-[#ba001c]">attach_money</span>
                 <div>
@@ -249,7 +249,7 @@ export default function RefundsPage() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-slate-200 py-8 mt-12">
+      <footer className="bg-[var(--color-surface-container-lowest)] border-t border-slate-200 py-8 mt-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-2">

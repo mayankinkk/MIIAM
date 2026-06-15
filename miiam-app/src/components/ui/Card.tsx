@@ -25,7 +25,7 @@ const variantStyles: Record<CardVariant, string> = {
   outlined:
     "bg-transparent border-2 border-[var(--color-border-default)]",
   glass:
-    "bg-white/70 backdrop-blur-xl border border-white/20 shadow-lg",
+    "bg-[var(--color-surface-container-lowest)]/70 backdrop-blur-xl border border-white/20 shadow-lg",
 };
 
 const paddingStyles = {

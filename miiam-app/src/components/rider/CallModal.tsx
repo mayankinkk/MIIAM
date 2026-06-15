@@ -14,7 +14,7 @@ export default function CallModal({ open, onClose, name, phone }: CallModalProps
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl p-6 w-full max-w-sm">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-sm">
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-bold text-lg">{t.rider.callModal.call}</h3>
           <button onClick={onClose} aria-label="Close">

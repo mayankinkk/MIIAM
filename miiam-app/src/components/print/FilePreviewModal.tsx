@@ -101,7 +101,7 @@ export default function FilePreviewModal({ file, onClose }: FilePreviewModalProp
             <iframe
               src={file.url}
               title={file.name}
-              className="w-full h-[70vh] bg-white rounded-lg shadow-md border-0"
+              className="w-full h-[70vh] bg-[var(--color-surface-container-lowest)] rounded-lg shadow-md border-0"
               onLoad={() => setLoading(false)}
             />
           ) : (

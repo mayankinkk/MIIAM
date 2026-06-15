@@ -97,7 +97,7 @@ export default function RiderSettingsPage() {
 
       <main className="px-6 -mt-4 space-y-6 pb-32">
         {/* Account Section */}
-        <div className="bg-white rounded-2xl p-5 shadow-lg">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-lg">
           <h3 className="font-bold text-[#4d212a] mb-4">Account</h3>
           <div className="space-y-3">
             <Link href="/rider/account" className="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
@@ -125,7 +125,7 @@ export default function RiderSettingsPage() {
         </div>
 
         {/* Order Preferences */}
-        <div className="bg-white rounded-2xl p-5 shadow-lg">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-lg">
           <h3 className="font-bold text-[#4d212a] mb-4">Order Preferences</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -137,7 +137,7 @@ export default function RiderSettingsPage() {
                 onClick={() => { setAutoAccept(!autoAccept); saveSetting({ auto_accept: !autoAccept }); }}
                 className={`w-12 h-6 rounded-full transition-colors ${autoAccept ? "bg-green-500" : "bg-slate-200"}`}
               >
-                <div className={`w-5 h-5 bg-white rounded-full shadow transition-transform ${autoAccept ? "translate-x-6" : "translate-x-0.5"}`} />
+                <div className={`w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full shadow transition-transform ${autoAccept ? "translate-x-6" : "translate-x-0.5"}`} />
               </button>
             </div>
             
@@ -150,7 +150,7 @@ export default function RiderSettingsPage() {
                 onClick={() => { setOnlyHighEarnings(!onlyHighEarnings); saveSetting({ only_high_earnings: !onlyHighEarnings }); }}
                 className={`w-12 h-6 rounded-full transition-colors ${onlyHighEarnings ? "bg-green-500" : "bg-slate-200"}`}
               >
-                <div className={`w-5 h-5 bg-white rounded-full shadow transition-transform ${onlyHighEarnings ? "translate-x-6" : "translate-x-0.5"}`} />
+                <div className={`w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full shadow transition-transform ${onlyHighEarnings ? "translate-x-6" : "translate-x-0.5"}`} />
               </button>
             </div>
 
@@ -177,7 +177,7 @@ export default function RiderSettingsPage() {
         </div>
 
         {/* Notifications */}
-        <div className="bg-white rounded-2xl p-5 shadow-lg">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-lg">
           <h3 className="font-bold text-[#4d212a] mb-4">Notifications</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -189,7 +189,7 @@ export default function RiderSettingsPage() {
                 onClick={() => { setSoundEnabled(!soundEnabled); saveSetting({ sound_enabled: !soundEnabled }); }}
                 className={`w-12 h-6 rounded-full transition-colors ${soundEnabled ? "bg-green-500" : "bg-slate-200"}`}
               >
-                <div className={`w-5 h-5 bg-white rounded-full shadow transition-transform ${soundEnabled ? "translate-x-6" : "translate-x-0.5"}`} />
+                <div className={`w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full shadow transition-transform ${soundEnabled ? "translate-x-6" : "translate-x-0.5"}`} />
               </button>
             </div>
             
@@ -202,7 +202,7 @@ export default function RiderSettingsPage() {
                 onClick={() => { setVibrationEnabled(!vibrationEnabled); saveSetting({ vibration_enabled: !vibrationEnabled }); }}
                 className={`w-12 h-6 rounded-full transition-colors ${vibrationEnabled ? "bg-green-500" : "bg-slate-200"}`}
               >
-                <div className={`w-5 h-5 bg-white rounded-full shadow transition-transform ${vibrationEnabled ? "translate-x-6" : "translate-x-0.5"}`} />
+                <div className={`w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full shadow transition-transform ${vibrationEnabled ? "translate-x-6" : "translate-x-0.5"}`} />
               </button>
             </div>
 
@@ -215,7 +215,7 @@ export default function RiderSettingsPage() {
                 onClick={() => { setDndMode(!dndMode); saveSetting({ dnd_mode: !dndMode }); }}
                 className={`w-12 h-6 rounded-full transition-colors ${dndMode ? "bg-red-500" : "bg-slate-200"}`}
               >
-                <div className={`w-5 h-5 bg-white rounded-full shadow transition-transform ${dndMode ? "translate-x-6" : "translate-x-0.5"}`} />
+                <div className={`w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full shadow transition-transform ${dndMode ? "translate-x-6" : "translate-x-0.5"}`} />
               </button>
             </div>
 
@@ -230,7 +230,7 @@ export default function RiderSettingsPage() {
         </div>
 
         {/* Appearance */}
-        <div className="bg-white rounded-2xl p-5 shadow-lg">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-lg">
           <h3 className="font-bold text-[#4d212a] mb-4">Appearance</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -242,7 +242,7 @@ export default function RiderSettingsPage() {
                 onClick={() => { setDarkMode(!darkMode); saveSetting({ dark_mode: !darkMode }); }}
                 className={`w-12 h-6 rounded-full transition-colors ${darkMode ? "bg-green-500" : "bg-slate-200"}`}
               >
-                <div className={`w-5 h-5 bg-white rounded-full shadow transition-transform ${darkMode ? "translate-x-6" : "translate-x-0.5"}`} />
+                <div className={`w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full shadow transition-transform ${darkMode ? "translate-x-6" : "translate-x-0.5"}`} />
               </button>
             </div>
             
@@ -263,7 +263,7 @@ export default function RiderSettingsPage() {
         </div>
 
         {/* Support */}
-        <div className="bg-white rounded-2xl p-5 shadow-lg">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-lg">
           <h3 className="font-bold text-[#4d212a] mb-4">Support</h3>
           <div className="space-y-3">
             <Link href="/rider/support" className="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
@@ -291,7 +291,7 @@ export default function RiderSettingsPage() {
         </div>
 
         {/* Privacy & Legal */}
-        <div className="bg-white rounded-2xl p-5 shadow-lg">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-lg">
           <h3 className="font-bold text-[#4d212a] mb-4">Privacy & Legal</h3>
           <div className="space-y-3">
             <Link href="/privacy" className="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
@@ -316,7 +316,7 @@ export default function RiderSettingsPage() {
       {/* Language Modal */}
       {showLanguageModal && (
         <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-sm">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-sm">
             <h3 className="font-bold text-xl mb-4">Select Language</h3>
             <div className="space-y-2">
               {["English", "Hindi", "Bengali", "Tamil", "Telugu", "Marathi"].map((lang) => (

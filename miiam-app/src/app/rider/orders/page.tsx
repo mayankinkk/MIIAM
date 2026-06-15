@@ -629,17 +629,17 @@ export default function RiderOrdersPage() {
         <div className="flex justify-between items-center mb-4">
           <Link href="/rider/dashboard" className="text-2xl font-black tracking-tighter">MIIAM</Link>
           <div className="flex items-center gap-2">
-            <button onClick={() => setShowAutoSkip(!showAutoSkip)} className="relative p-2 bg-white/20 rounded-full">
+            <button onClick={() => setShowAutoSkip(!showAutoSkip)} className="relative p-2 bg-[var(--color-surface-container-lowest)]/20 rounded-full">
               <span className="material-symbols-outlined">timer</span>
               {showAutoSkip && <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>}
             </button>
-            <Link href="/rider/analytics" className="p-2 bg-white/20 rounded-full">
+            <Link href="/rider/analytics" className="p-2 bg-[var(--color-surface-container-lowest)]/20 rounded-full">
               <span className="material-symbols-outlined">insights</span>
             </Link>
             <Link href="/rider/incident" className="p-2 bg-red-500/20 rounded-full">
               <span className="material-symbols-outlined text-red-400">emergency</span>
             </Link>
-            <Link href="/rider/account" className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+            <Link href="/rider/account" className="w-10 h-10 bg-[var(--color-surface-container-lowest)]/20 rounded-full flex items-center justify-center">
               <span className="material-symbols-outlined">person</span>
             </Link>
           </div>
@@ -664,7 +664,7 @@ export default function RiderOrdersPage() {
               key={p}
               onClick={() => setDateFilter(p)}
               className={`py-1.5 px-3 rounded-lg text-xs font-bold ${
-                dateFilter === p ? "bg-white text-[#0b50d5]" : "bg-white/10 text-white/70"
+                dateFilter === p ? "bg-[var(--color-surface-container-lowest)] text-[#0b50d5]" : "bg-[var(--color-surface-container-lowest)]/10 text-white/70"
               }`}
             >
               {p === "today" ? "Today" : p === "week" ? "This Week" : "This Month"}
@@ -674,7 +674,7 @@ export default function RiderOrdersPage() {
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
             className={`py-1.5 px-3 rounded-lg text-xs font-bold ${
-              sortBy !== "newest" ? "bg-white text-[#0b50d5]" : "bg-white/10 text-white/70"
+              sortBy !== "newest" ? "bg-[var(--color-surface-container-lowest)] text-[#0b50d5]" : "bg-[var(--color-surface-container-lowest)]/10 text-white/70"
             }`}
           >
             <option value="newest">Newest First</option>
@@ -686,7 +686,7 @@ export default function RiderOrdersPage() {
 
       {/* Auto Skip Settings */}
       {showAutoSkip && (
-        <div className="mx-4 -mt-2 bg-white rounded-xl p-4 shadow-lg">
+        <div className="mx-4 -mt-2 bg-[var(--color-surface-container-lowest)] rounded-xl p-4 shadow-lg">
           <div className="flex items-center justify-between">
             <div>
               <p className="font-bold text-sm">Auto-Skip Orders</p>
@@ -707,15 +707,15 @@ export default function RiderOrdersPage() {
 
       {/* Quick Stats */}
       <div className="px-4 py-3 flex gap-3 overflow-x-auto no-scrollbar">
-        <div className="bg-white px-4 py-2 rounded-xl shadow-sm min-w-[90px] shrink-0">
+        <div className="bg-[var(--color-surface-container-lowest)] px-4 py-2 rounded-xl shadow-sm min-w-[90px] shrink-0">
           <p className="text-[10px] text-slate-400">TODAY'S EARNINGS</p>
           <p className="font-black text-green-600 text-sm">₹{todayEarnings}</p>
         </div>
-        <div className="bg-white px-4 py-2 rounded-xl shadow-sm min-w-[80px] shrink-0">
+        <div className="bg-[var(--color-surface-container-lowest)] px-4 py-2 rounded-xl shadow-sm min-w-[80px] shrink-0">
           <p className="text-[10px] text-slate-400">COMPLETED</p>
           <p className="font-black text-[#0b50d5] text-sm">{completedOrders.length}</p>
         </div>
-        <div className="bg-white px-4 py-2 rounded-xl shadow-sm min-w-[90px] shrink-0">
+        <div className="bg-[var(--color-surface-container-lowest)] px-4 py-2 rounded-xl shadow-sm min-w-[90px] shrink-0">
           <p className="text-[10px] text-slate-400">IN PROGRESS</p>
           <p className="font-black text-purple-600 text-sm">{shoppingOrders.length}</p>
         </div>
@@ -723,7 +723,7 @@ export default function RiderOrdersPage() {
 
       <main className="p-4 space-y-4 pb-32">
         {/* Tabs */}
-        <div className="flex gap-2 bg-white p-1 rounded-xl">
+        <div className="flex gap-2 bg-[var(--color-surface-container-lowest)] p-1 rounded-xl">
           {(["available", "shopping", "completed", "history"] as const).map(tab => (
             <button
               key={tab}
@@ -742,7 +742,7 @@ export default function RiderOrdersPage() {
           <div className="fixed bottom-24 left-4 right-4 bg-green-500 text-white p-3 rounded-xl flex items-center justify-between shadow-lg z-40"
             style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}>
             <span className="font-bold">{selectedOrders.length} orders selected</span>
-            <button onClick={batchAccept} className="bg-white text-green-600 px-4 py-2.5 rounded-lg font-bold">
+            <button onClick={batchAccept} className="bg-[var(--color-surface-container-lowest)] text-green-600 px-4 py-2.5 rounded-lg font-bold">
               Accept All
             </button>
           </div>
@@ -807,7 +807,7 @@ export default function RiderOrdersPage() {
 
         {activeTab === "history" && (
           <>
-            <div className="bg-white rounded-xl p-4 shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-xl p-4 shadow-sm">
               <h3 className="font-bold text-[#4d212a] mb-3">📊 Performance Stats</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div className="text-center p-3 bg-slate-50 rounded-xl">
@@ -830,7 +830,7 @@ export default function RiderOrdersPage() {
       {/* Cash Collection Modal */}
       {showCashCollectModal && (
         <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-sm">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-sm">
             <div className="text-center mb-4">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
                 <span className="material-symbols-outlined text-green-600 text-4xl">payments</span>
@@ -856,7 +856,7 @@ export default function RiderOrdersPage() {
       {/* Issue Reporting Modal */}
       {showIssueModal && (
         <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-sm">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-sm">
             <h3 className="font-bold text-xl mb-4">Report Issue</h3>
             <div className="space-y-2">
               {["Wrong Items", "Store Closed", "Customer Unreachable", "Safety Concern", "Other"].map(issue => (
@@ -906,7 +906,7 @@ function OrderCard({ order, onAccept, isSelected, onToggleSelect }: { order: Ord
   const estimatedEarning = order.total_amount + (order.delivery_fee || 0);
 
   return (
-    <div className="bg-white rounded-2xl p-4 shadow-lg border-2 border-transparent hover:border-[#0b50d5]/30">
+    <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-lg border-2 border-transparent hover:border-[#0b50d5]/30">
       <div className="flex justify-between items-start mb-2">
         <div className="flex items-start gap-3">
           <button onClick={onToggleSelect} className={`mt-1 w-10 h-10 rounded-full border-2 flex items-center justify-center ${isSelected ? "bg-[#0b50d5] border-[#0b50d5]" : "border-slate-300"}`}>
@@ -1129,7 +1129,7 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
   }, [showMap, phase, order.id, vendorAddress, deliveryAddress]);
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+    <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl shadow-lg overflow-hidden">
       <style>{`
         @keyframes pulse-ring { 0%{transform:scale(0.8);opacity:0.8} 100%{transform:scale(1.8);opacity:0} }
         @keyframes slide-up { from{transform:translateY(6px);opacity:0} to{transform:translateY(0);opacity:1} }
@@ -1138,13 +1138,13 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
       {/* === Compact Header — always visible === */}
       <button onClick={() => setExpanded(!expanded)} className="w-full text-left">
         <div className={`px-4 py-3 flex items-center gap-3 ${phase === "pickup" ? "bg-gradient-to-r from-green-600 to-emerald-500" : "bg-gradient-to-r from-[#0b50d5] to-indigo-600"}`}>
-          <div className="w-9 h-9 bg-white/20 rounded-full flex items-center justify-center text-base flex-shrink-0">
+          <div className="w-9 h-9 bg-[var(--color-surface-container-lowest)]/20 rounded-full flex items-center justify-center text-base flex-shrink-0">
             {phase === "pickup" ? "🏪" : "🏠"}
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
               <p className="text-white font-extrabold text-xs truncate">{order.vendor?.name || "Order"}</p>
-              <span className="text-[10px] text-white/70 font-bold bg-white/10 px-1.5 py-0.5 rounded-full shrink-0">{phase === "pickup" ? "Pickup" : "Delivery"}</span>
+              <span className="text-[10px] text-white/70 font-bold bg-[var(--color-surface-container-lowest)]/10 px-1.5 py-0.5 rounded-full shrink-0">{phase === "pickup" ? "Pickup" : "Delivery"}</span>
             </div>
             <p className="text-white/80 text-[10px] truncate mt-0.5">
               {phase === "pickup" ? vendorAddress : deliveryAddress}
@@ -1192,7 +1192,7 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
               <div ref={mapRef} className="w-full" style={{ height: 200 }} />
               {!trackingInfo && (
                 <div className="absolute inset-0 bg-slate-900/20 flex items-center justify-center z-[400]">
-                  <div className="bg-white rounded-xl px-4 py-3 flex items-center gap-2 shadow-lg">
+                  <div className="bg-[var(--color-surface-container-lowest)] rounded-xl px-4 py-3 flex items-center gap-2 shadow-lg">
                     <div className="w-4 h-4 border-2 border-[#0b50d5] border-t-transparent rounded-full animate-spin"/>
                     <span className="text-sm font-bold text-slate-700">Loading route...</span>
                   </div>
@@ -1322,7 +1322,7 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
 
 function CompletedCard({ order }: { order: Order }) {
   return (
-    <div className="bg-white rounded-2xl p-4 shadow-lg">
+    <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-lg">
       <div className="flex justify-between items-start">
         <div>
           <h3 className="font-bold text-[#4d212a]">{order.vendor?.name}</h3>
@@ -1342,7 +1342,7 @@ function HistoryCard({ order }: { order: Order }) {
   const earned = (order.customer_collected || 0) - spent;
 
   return (
-    <div className="bg-white rounded-xl p-3 shadow-sm mb-2">
+    <div className="bg-[var(--color-surface-container-lowest)] rounded-xl p-3 shadow-sm mb-2">
       <div className="flex justify-between items-center">
         <div>
           <p className="font-bold text-sm">{order.vendor?.name}</p>

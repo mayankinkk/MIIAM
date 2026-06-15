@@ -83,7 +83,7 @@ export function HapticToggle({
       <div className={`w-12 h-7 rounded-full relative transition-colors ${
         isEnabled ? "bg-[#ba001c]" : "bg-slate-300"
       }`}>
-        <div className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow-md transition-all ${
+        <div className={`absolute top-1 w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full shadow-md transition-all ${
           isEnabled ? "left-6" : "left-1"
         }`} />
       </div>

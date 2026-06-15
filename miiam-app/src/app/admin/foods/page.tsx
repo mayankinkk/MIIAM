@@ -195,7 +195,7 @@ export default function AdminFoodsDashboard() {
           { label: "Pending", value: pendingOrders, icon: "schedule", color: "text-yellow-600" },
           { label: "Delivered", value: orders.filter(o => o.status === "delivered").length, icon: "check_circle", color: "text-green-600" },
         ].map((kpi, idx) => (
-          <div key={idx} className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+          <div key={idx} className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl shadow-sm border border-slate-100">
             <div className={`w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center mb-3 ${kpi.color}`}>
               <span className="material-symbols-outlined text-lg">{kpi.icon}</span>
             </div>
@@ -205,7 +205,7 @@ export default function AdminFoodsDashboard() {
         ))}
       </div>
 
-      <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-100 overflow-hidden shadow-sm">
         <div className="p-4 border-b border-slate-50">
           <div className="flex items-center justify-between gap-4 flex-wrap">
             <div className="flex items-center gap-3 flex-1">
@@ -230,7 +230,7 @@ export default function AdminFoodsDashboard() {
                 >
                   <span className="material-symbols-outlined text-sm">filter_list</span>
                   Filters
-                  {hasActiveFilters && <span className="bg-white text-[#ba001c] rounded-full w-5 h-5 text-xs flex items-center justify-center">!</span>}
+                  {hasActiveFilters && <span className="bg-[var(--color-surface-container-lowest)] text-[#ba001c] rounded-full w-5 h-5 text-xs flex items-center justify-center">!</span>}
                 </button>
                 <select
                   value={sortBy}
@@ -455,7 +455,7 @@ export default function AdminFoodsDashboard() {
 
       {selectedOrder && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full max-h-[80vh] overflow-y-auto">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl max-w-lg w-full max-h-[80vh] overflow-y-auto">
             <div className="p-6 border-b flex items-center justify-between">
               <h2 className="font-black text-lg">Order #{selectedOrder.id?.slice(0, 8).toUpperCase()}</h2>
               <button onClick={() => setSelectedOrder(null)} className="text-slate-400">

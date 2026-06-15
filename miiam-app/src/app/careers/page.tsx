@@ -218,7 +218,7 @@ export default function CareersPage() {
   return (
     <div className="min-h-screen bg-[#f8f8f8]">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white shadow-sm">
+      <header className="sticky top-0 z-50 bg-[var(--color-surface-container-lowest)] shadow-sm">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="text-2xl font-black text-[#ba001c] tracking-tighter">
             MIIAM
@@ -240,7 +240,7 @@ export default function CareersPage() {
       {/* Hero */}
       <section className="bg-gradient-to-br from-[#ba001c] to-[#6b0011] px-4 py-20 text-center text-white">
         <div className="max-w-3xl mx-auto">
-          <span className="inline-block bg-white/20 text-white text-xs font-bold px-4 py-2 rounded-full mb-6 backdrop-blur-sm">
+          <span className="inline-block bg-[var(--color-surface-container-lowest)]/20 text-white text-xs font-bold px-4 py-2 rounded-full mb-6 backdrop-blur-sm">
             🚀 JOIN OUR TEAM
           </span>
           <h1 className="text-4xl md:text-5xl font-extrabold mb-4">
@@ -250,12 +250,12 @@ export default function CareersPage() {
             We're building Assam's fastest food delivery platform. Join us and make an impact while growing your career.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-              <a href="#openings" className="bg-white text-[#ba001c] px-8 py-4 rounded-xl font-bold hover:scale-105 transition-transform shadow-xl">
+              <a href="#openings" className="bg-[var(--color-surface-container-lowest)] text-[#ba001c] px-8 py-4 rounded-xl font-bold hover:scale-105 transition-transform shadow-xl">
                 View Open Positions
               </a>
               <button 
                 onClick={() => setShowStatusCheck(true)}
-                className="bg-white/20 text-white px-8 py-4 rounded-xl font-bold hover:bg-white/30 transition-colors"
+                className="bg-[var(--color-surface-container-lowest)]/20 text-white px-8 py-4 rounded-xl font-bold hover:bg-white/30 transition-colors"
               >
                 Check Application Status
               </button>
@@ -264,7 +264,7 @@ export default function CareersPage() {
       </section>
 
       {/* Stats */}
-      <section className="bg-white px-4 py-10 border-b border-slate-100">
+      <section className="bg-[var(--color-surface-container-lowest)] px-4 py-10 border-b border-slate-100">
         <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           {[
             { value: "100+", label: "Team Members" },
@@ -288,7 +288,7 @@ export default function CareersPage() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {benefits.map((benefit) => (
-            <div key={benefit.title} className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-shadow">
+            <div key={benefit.title} className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm hover:shadow-lg transition-shadow">
               <div className={`w-14 h-14 bg-gradient-to-br ${benefit.color} rounded-xl flex items-center justify-center mb-4`}>
                 <span className="material-symbols-outlined text-white text-2xl">{benefit.icon}</span>
               </div>
@@ -300,7 +300,7 @@ export default function CareersPage() {
       </section>
 
       {/* Job Openings */}
-      <section id="openings" className="bg-white px-4 py-16">
+      <section id="openings" className="bg-[var(--color-surface-container-lowest)] px-4 py-16">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-extrabold text-slate-900 mb-2">Open Positions</h2>
@@ -359,7 +359,7 @@ export default function CareersPage() {
                   <p className="text-xs text-slate-500 font-semibold mb-2">Requirements:</p>
                   <div className="flex flex-wrap gap-2">
                     {job.requirements.map((req, i) => (
-                      <span key={i} className="bg-white text-slate-600 text-xs px-3 py-1 rounded-full border border-slate-200">
+                      <span key={i} className="bg-[var(--color-surface-container-lowest)] text-slate-600 text-xs px-3 py-1 rounded-full border border-slate-200">
                         {req}
                       </span>
                     ))}
@@ -393,7 +393,7 @@ export default function CareersPage() {
               setSelectedJob(null);
               setShowApplyForm(true);
             }}
-            className="bg-white text-[#ba001c] px-10 py-4 rounded-xl font-bold text-lg hover:scale-105 transition-transform shadow-xl"
+            className="bg-[var(--color-surface-container-lowest)] text-[#ba001c] px-10 py-4 rounded-xl font-bold text-lg hover:scale-105 transition-transform shadow-xl"
           >
             Send Your Resume
           </button>
@@ -415,8 +415,8 @@ export default function CareersPage() {
       {/* Application Modal */}
       {showApplyForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-white border-b border-slate-100 px-6 py-4 flex items-center justify-between">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-[var(--color-surface-container-lowest)] border-b border-slate-100 px-6 py-4 flex items-center justify-between">
               <div>
                 <h2 className="text-xl font-bold text-slate-900">
                   {selectedJob ? `Apply: ${selectedJob.title}` : "Apply for Delivery Rider"}
@@ -440,19 +440,19 @@ export default function CareersPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="text-sm font-semibold text-slate-700">Full Name *</label>
-                    <input type="text" required placeholder="Enter your full name" className="w-full mt-1 px-4 py-3 bg-white rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]" value={formData.fullName} onChange={(e) => setFormData({ ...formData, fullName: e.target.value })} />
+                    <input type="text" required placeholder="Enter your full name" className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]" value={formData.fullName} onChange={(e) => setFormData({ ...formData, fullName: e.target.value })} />
                   </div>
                   <div>
                     <label className="text-sm font-semibold text-slate-700">Phone Number *</label>
-                    <input type="tel" required placeholder="10-digit phone number" className="w-full mt-1 px-4 py-3 bg-white rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]" value={formData.phoneNumber} onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })} />
+                    <input type="tel" required placeholder="10-digit phone number" className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]" value={formData.phoneNumber} onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })} />
                   </div>
                   <div>
                     <label className="text-sm font-semibold text-slate-700">Email Address *</label>
-                    <input type="email" required placeholder="Enter your email" className="w-full mt-1 px-4 py-3 bg-white rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
+                    <input type="email" required placeholder="Enter your email" className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
                   </div>
                   <div>
                     <label className="text-sm font-semibold text-slate-700">Passport Picture *</label>
-                    <input type="file" required accept="image/*" className="w-full mt-1 px-4 py-3 bg-white rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c] text-sm" onChange={(e) => setFormData({ ...formData, passportPicture: e.target.files?.[0] || null })} />
+                    <input type="file" required accept="image/*" className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c] text-sm" onChange={(e) => setFormData({ ...formData, passportPicture: e.target.files?.[0] || null })} />
                   </div>
                 </div>
               </div>
@@ -466,11 +466,11 @@ export default function CareersPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="text-sm font-semibold text-slate-700">Age / Date of Birth *</label>
-                    <input type="text" required placeholder="e.g., 25 years or 15/01/1999" className="w-full mt-1 px-4 py-3 bg-white rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]" value={formData.ageOrDob} onChange={(e) => setFormData({ ...formData, ageOrDob: e.target.value })} />
+                    <input type="text" required placeholder="e.g., 25 years or 15/01/1999" className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]" value={formData.ageOrDob} onChange={(e) => setFormData({ ...formData, ageOrDob: e.target.value })} />
                   </div>
                   <div>
                     <label className="text-sm font-semibold text-slate-700">Gender (Optional)</label>
-                    <select className="w-full mt-1 px-4 py-3 bg-white rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]" value={formData.gender} onChange={(e) => setFormData({ ...formData, gender: e.target.value })}>
+                    <select className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]" value={formData.gender} onChange={(e) => setFormData({ ...formData, gender: e.target.value })}>
                       <option value="">Select Gender</option>
                       <option value="Male">Male</option>
                       <option value="Female">Female</option>
@@ -489,21 +489,21 @@ export default function CareersPage() {
                 <div className="space-y-4">
                   <div>
                     <label className="text-sm font-semibold text-slate-700">Current Address *</label>
-                    <input type="text" required placeholder="House/Flat/Street name" className="w-full mt-1 px-4 py-3 bg-white rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]" value={formData.currentAddress} onChange={(e) => setFormData({ ...formData, currentAddress: e.target.value })} />
+                    <input type="text" required placeholder="House/Flat/Street name" className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]" value={formData.currentAddress} onChange={(e) => setFormData({ ...formData, currentAddress: e.target.value })} />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="text-sm font-semibold text-slate-700">City *</label>
-                      <input type="text" required defaultValue="Guwahati" className="w-full mt-1 px-4 py-3 bg-white rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]" value={formData.city} onChange={(e) => setFormData({ ...formData, city: e.target.value })} />
+                      <input type="text" required defaultValue="Guwahati" className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]" value={formData.city} onChange={(e) => setFormData({ ...formData, city: e.target.value })} />
                     </div>
                     <div>
                       <label className="text-sm font-semibold text-slate-700">Pincode *</label>
-                      <input type="text" required placeholder="6-digit pincode" className="w-full mt-1 px-4 py-3 bg-white rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]" value={formData.pincode} onChange={(e) => setFormData({ ...formData, pincode: e.target.value })} />
+                      <input type="text" required placeholder="6-digit pincode" className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]" value={formData.pincode} onChange={(e) => setFormData({ ...formData, pincode: e.target.value })} />
                     </div>
                   </div>
                   <div>
                     <label className="text-sm font-semibold text-slate-700">Landmark (Optional)</label>
-                    <input type="text" placeholder="Near landmark, if any" className="w-full mt-1 px-4 py-3 bg-white rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]" value={formData.landmark} onChange={(e) => setFormData({ ...formData, landmark: e.target.value })} />
+                    <input type="text" placeholder="Near landmark, if any" className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]" value={formData.landmark} onChange={(e) => setFormData({ ...formData, landmark: e.target.value })} />
                   </div>
                 </div>
               </div>
@@ -518,7 +518,7 @@ export default function CareersPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="text-sm font-semibold text-slate-700">Vehicle Type *</label>
-                      <select required value={formData.vehicleType} onChange={(e) => setFormData({ ...formData, vehicleType: e.target.value })} className="w-full mt-1 px-4 py-3 bg-white rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]">
+                      <select required value={formData.vehicleType} onChange={(e) => setFormData({ ...formData, vehicleType: e.target.value })} className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]">
                         <option value="">Select Vehicle</option>
                         <option value="Bike">Bike</option>
                         <option value="Scooter">Scooter</option>
@@ -528,7 +528,7 @@ export default function CareersPage() {
                     {formData.vehicleType !== "Cycle" && (
                       <div>
                         <label className="text-sm font-semibold text-slate-700">Vehicle Number *</label>
-                        <input type="text" required placeholder="e.g., AS-01-AB-1234" className="w-full mt-1 px-4 py-3 bg-white rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]" value={formData.vehicleNumber} onChange={(e) => setFormData({ ...formData, vehicleNumber: e.target.value })} />
+                        <input type="text" required placeholder="e.g., AS-01-AB-1234" className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]" value={formData.vehicleNumber} onChange={(e) => setFormData({ ...formData, vehicleNumber: e.target.value })} />
                       </div>
                     )}
                   </div>
@@ -536,16 +536,16 @@ export default function CareersPage() {
                     <>
                       <div>
                         <label className="text-sm font-semibold text-slate-700">Driving License Number *</label>
-                        <input type="text" required placeholder="Enter license number" className="w-full mt-1 px-4 py-3 bg-white rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]" value={formData.drivingLicenseNumber} onChange={(e) => setFormData({ ...formData, drivingLicenseNumber: e.target.value })} />
+                        <input type="text" required placeholder="Enter license number" className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]" value={formData.drivingLicenseNumber} onChange={(e) => setFormData({ ...formData, drivingLicenseNumber: e.target.value })} />
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                           <label className="text-sm font-semibold text-slate-700">Upload Driving License *</label>
-                          <input type="file" required accept="image/*,.pdf" className="w-full mt-1 px-4 py-3 bg-white rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c] text-sm" onChange={(e) => setFormData({ ...formData, drivingLicenseUrl: e.target.files?.[0] || null })} />
+                          <input type="file" required accept="image/*,.pdf" className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c] text-sm" onChange={(e) => setFormData({ ...formData, drivingLicenseUrl: e.target.files?.[0] || null })} />
                         </div>
                         <div>
                           <label className="text-sm font-semibold text-slate-700">RC Upload (Optional)</label>
-                          <input type="file" accept="image/*,.pdf" className="w-full mt-1 px-4 py-3 bg-white rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c] text-sm" onChange={(e) => setFormData({ ...formData, rcUrl: e.target.files?.[0] || null })} />
+                          <input type="file" accept="image/*,.pdf" className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c] text-sm" onChange={(e) => setFormData({ ...formData, rcUrl: e.target.files?.[0] || null })} />
                         </div>
                       </div>
                     </>
@@ -563,7 +563,7 @@ export default function CareersPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="text-sm font-semibold text-slate-700">Full-time / Part-time *</label>
-                      <select required className="w-full mt-1 px-4 py-3 bg-white rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]" value={formData.workType} onChange={(e) => setFormData({ ...formData, workType: e.target.value })}>
+                      <select required className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]" value={formData.workType} onChange={(e) => setFormData({ ...formData, workType: e.target.value })}>
                         <option value="">Select</option>
                         <option value="Full-time">Full-time</option>
                         <option value="Part-time">Part-time</option>
@@ -571,7 +571,7 @@ export default function CareersPage() {
                     </div>
                     <div>
                       <label className="text-sm font-semibold text-slate-700">Preferred Area *</label>
-                      <input type="text" required placeholder="e.g., Guwahati" className="w-full mt-1 px-4 py-3 bg-white rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]" value={formData.preferredArea} onChange={(e) => setFormData({ ...formData, preferredArea: e.target.value })} />
+                      <input type="text" required placeholder="e.g., Guwahati" className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]" value={formData.preferredArea} onChange={(e) => setFormData({ ...formData, preferredArea: e.target.value })} />
                     </div>
                   </div>
                   <div>
@@ -636,7 +636,7 @@ export default function CareersPage() {
                   {formData.hasDeliveryExperience && (
                     <div>
                       <label className="text-sm font-semibold text-slate-700">If yes, which platform? (Optional)</label>
-                      <input type="text" placeholder="e.g., Swiggy, Zomato, Blinkit" className="w-full mt-1 px-4 py-3 bg-white rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]" value={formData.previousPlatform} onChange={(e) => setFormData({ ...formData, previousPlatform: e.target.value })} />
+                      <input type="text" placeholder="e.g., Swiggy, Zomato, Blinkit" className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]" value={formData.previousPlatform} onChange={(e) => setFormData({ ...formData, previousPlatform: e.target.value })} />
                     </div>
                   )}
                 </div>
@@ -649,7 +649,7 @@ export default function CareersPage() {
                   Device Check
                 </h3>
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between bg-white px-4 py-3 rounded-xl border border-slate-200">
+                  <div className="flex items-center justify-between bg-[var(--color-surface-container-lowest)] px-4 py-3 rounded-xl border border-slate-200">
                     <span className="text-sm text-slate-700">Do you own a smartphone?</span>
                     <div className="flex gap-2">
                       <label className={`flex items-center gap-1 px-4 py-2 rounded-lg border cursor-pointer ${formData.hasSmartphone === true ? 'border-[#ba001c] bg-red-50' : 'border-slate-200'}`}>
@@ -662,7 +662,7 @@ export default function CareersPage() {
                       </label>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between bg-white px-4 py-3 rounded-xl border border-slate-200">
+                  <div className="flex items-center justify-between bg-[var(--color-surface-container-lowest)] px-4 py-3 rounded-xl border border-slate-200">
                     <span className="text-sm text-slate-700">Comfortable using Google Maps?</span>
                     <div className="flex gap-2">
                       <label className={`flex items-center gap-1 px-4 py-2 rounded-lg border cursor-pointer ${formData.comfortableGoogleMaps === true ? 'border-[#ba001c] bg-red-50' : 'border-slate-200'}`}>
@@ -686,7 +686,7 @@ export default function CareersPage() {
                 </h3>
                 <div>
                   <label className="text-sm font-semibold text-slate-700">Upload Aadhaar Card *</label>
-                  <input type="file" required accept="image/*,.pdf" className="w-full mt-1 px-4 py-3 bg-white rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c] text-sm" onChange={(e) => setFormData({ ...formData, aadhaarCardUrl: e.target.files?.[0] || null })} />
+                  <input type="file" required accept="image/*,.pdf" className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c] text-sm" onChange={(e) => setFormData({ ...formData, aadhaarCardUrl: e.target.files?.[0] || null })} />
                   <p className="text-xs text-slate-400 mt-1">Accepted formats: JPG, PNG, PDF</p>
                 </div>
               </div>
@@ -701,7 +701,7 @@ export default function CareersPage() {
       {/* Status Check Modal */}
       {showStatusCheck && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl animate-scale-in">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl w-full max-w-md overflow-hidden shadow-2xl animate-scale-in">
             <div className="p-6 border-b border-slate-100 flex items-center justify-between">
               <h3 className="text-xl font-black text-slate-800">Check Your Status</h3>
               <button 

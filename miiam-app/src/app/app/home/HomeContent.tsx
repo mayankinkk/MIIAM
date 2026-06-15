@@ -399,7 +399,7 @@ export default function HomePage() {
         <Link href="/app/explore">
           <div className={`relative h-28 rounded-2xl overflow-hidden bg-gradient-to-r ${offers[currentOffer].color}`}>
             <div className="absolute top-3 left-4">
-              <span className="text-[10px] font-bold bg-white/20 text-white px-2 py-1 rounded">
+              <span className="text-[10px] font-bold bg-[var(--color-surface-container-lowest)]/20 text-white px-2 py-1 rounded">
                 {offers[currentOffer].badge}
               </span>
             </div>
@@ -413,7 +413,7 @@ export default function HomePage() {
             {/* Dots */}
             <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5">
               {offers.map((_, i) => (
-                <div key={i} className={`w-1.5 h-1.5 rounded-full ${i === currentOffer ? 'bg-white' : 'bg-white/40'}`} />
+                <div key={i} className={`w-1.5 h-1.5 rounded-full ${i === currentOffer ? 'bg-white' : 'bg-[var(--color-surface-container-lowest)]/40'}`} />
               ))}
             </div>
           </div>
@@ -541,9 +541,9 @@ export default function HomePage() {
             <h2 className="text-lg font-bold text-on-surface">{t.home.featuredToday}</h2>
           </div>
           <Link href={`/app/vendor/${spotlightRestaurant.id}`} className="block relative bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl p-5 text-white overflow-hidden">
-            <div className="absolute -right-6 -bottom-6 w-40 h-40 bg-white/10 rounded-full blur-2xl" />
+            <div className="absolute -right-6 -bottom-6 w-40 h-40 bg-[var(--color-surface-container-lowest)]/10 rounded-full blur-2xl" />
             <div className="relative z-10 flex items-center gap-4">
-              <div className="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center overflow-hidden">
+              <div className="w-20 h-20 bg-[var(--color-surface-container-lowest)]/20 rounded-2xl flex items-center justify-center overflow-hidden">
                 {spotlightRestaurant.cover_image_url || spotlightRestaurant.image_url ? (
                   <BlurImage src={spotlightRestaurant.cover_image_url || spotlightRestaurant.image_url} alt={`${spotlightRestaurant.name || spotlightRestaurant.shop_name} featured`} fill className="w-full h-full" sizes="80px" />
                 ) : (
@@ -557,7 +557,7 @@ export default function HomePage() {
                 <h3 className="text-xl font-black">{spotlightRestaurant.name || spotlightRestaurant.shop_name}</h3>
                 <p className="text-sm text-white/80">{spotlightRestaurant.cuisine || t.home.variousCuisines}</p>
                 <div className="flex items-center gap-2 mt-2">
-                  <span className="flex items-center gap-1 bg-white/20 px-2 py-1 rounded-full text-xs font-bold">
+                  <span className="flex items-center gap-1 bg-[var(--color-surface-container-lowest)]/20 px-2 py-1 rounded-full text-xs font-bold">
                     ★ {spotlightRestaurant.rating || 4.0}
                   </span>
                   <span className="text-xs text-white/80">{t.home.minDelivery}</span>

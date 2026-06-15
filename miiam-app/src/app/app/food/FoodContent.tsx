@@ -105,7 +105,7 @@ function PromoBannerCarousel() {
               <button 
                 key={i} 
                 onClick={() => setActive(i)}
-                className={`h-1.5 rounded-full transition-all duration-300 ${i === active ? "w-5 bg-surface-container-lowest" : "w-1.5 bg-white/40"}`} 
+                className={`h-1.5 rounded-full transition-all duration-300 ${i === active ? "w-5 bg-surface-container-lowest" : "w-1.5 bg-[var(--color-surface-container-lowest)]/40"}`} 
               />
             ))}
           </div>
@@ -113,7 +113,7 @@ function PromoBannerCarousel() {
         
         {!b.image_url && (
           <>
-            <div className="absolute -right-4 -bottom-4 w-20 h-20 bg-white/10 rounded-full" />
+            <div className="absolute -right-4 -bottom-4 w-20 h-20 bg-[var(--color-surface-container-lowest)]/10 rounded-full" />
             <div className="absolute -right-8 -top-4 w-28 h-28 bg-white/5 rounded-full" />
           </>
         )}
@@ -607,7 +607,7 @@ export default function FoodPageContent() {
                     onClick={(e) => { e.preventDefault(); toggleFavorite(restaurant.id); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }}
                     aria-label="Toggle favorite"
                     aria-pressed={favorites.has(restaurant.id)}
-                    className="absolute top-2 right-2 w-11 h-11 bg-white/90 rounded-full flex items-center justify-center shadow hover:scale-110 transition-transform"
+                    className="absolute top-2 right-2 w-11 h-11 bg-[var(--color-surface-container-lowest)]/90 rounded-full flex items-center justify-center shadow hover:scale-110 transition-transform"
                   >
                     <span className={`material-symbols-outlined text-lg ${favorites.has(restaurant.id) ? "text-red-500" : "text-outline"}`}>favorite</span>
                   </button>

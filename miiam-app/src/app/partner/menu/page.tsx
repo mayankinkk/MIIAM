@@ -446,7 +446,7 @@ export default function PartnerMenuPage() {
           <button
             onClick={() => { setBulkMode(!bulkMode); setSelectedItems(new Set()); }}
             className={`px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 border transition-colors ${
-              bulkMode ? "bg-[#ba001c] text-white border-[#ba001c]" : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
+              bulkMode ? "bg-[#ba001c] text-white border-[#ba001c]" : "bg-[var(--color-surface-container-lowest)] text-slate-700 border-slate-200 hover:bg-slate-50"
             }`}
           >
             <span className="material-symbols-outlined text-lg">select_all</span>
@@ -456,7 +456,7 @@ export default function PartnerMenuPage() {
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-4 flex items-center gap-4 flex-wrap">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-200 p-4 flex items-center gap-4 flex-wrap">
         <div className="relative flex-1 min-w-[200px]">
           <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
           <input
@@ -527,7 +527,7 @@ export default function PartnerMenuPage() {
                 if (noImg === 0 && noDesc === 0 && outOfStock === 0 && total >= 10) suggestions.push(`Your menu looks great! Continue adding seasonal specials.`);
                 return suggestions;
               })().map((s, i) => (
-                <div key={i} className="bg-white rounded-xl p-3 border border-slate-100 flex items-start gap-2">
+                <div key={i} className="bg-[var(--color-surface-container-lowest)] rounded-xl p-3 border border-slate-100 flex items-start gap-2">
                   <span className="material-symbols-outlined text-[#ba001c] text-lg shrink-0">lightbulb</span>
                   <span className="text-slate-700">{s}</span>
                 </div>
@@ -535,7 +535,7 @@ export default function PartnerMenuPage() {
             </div>
           </div>
           {/* Bulk Import Card */}
-          <div className="bg-white rounded-2xl border border-slate-200 p-5 flex flex-col items-center justify-center text-center">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-200 p-5 flex flex-col items-center justify-center text-center">
             <span className="material-symbols-outlined text-3xl text-slate-400 mb-2">file_upload</span>
             <p className="font-bold text-slate-800 text-sm">Bulk Import Items</p>
             <p className="text-xs text-slate-400 mt-1 mb-3">CSV upload</p>
@@ -706,7 +706,7 @@ export default function PartnerMenuPage() {
       )}
 
       {/* Items Table */}
-      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-200 overflow-hidden">
         {loading ? (
           <div className="p-12 text-center text-slate-400 font-medium">Loading items...</div>
         ) : filteredItems.length === 0 ? (
@@ -1021,7 +1021,7 @@ export default function PartnerMenuPage() {
                             className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${
                               newItem.discount_percent === p
                                 ? "bg-[#ba001c] text-white shadow-md"
-                                : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50"
+                                : "bg-[var(--color-surface-container-lowest)] text-slate-600 border border-slate-200 hover:bg-slate-50"
                             }`}
                           >
                             {p}%
@@ -1267,7 +1267,7 @@ export default function PartnerMenuPage() {
                             className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${
                               (editingItem as any).discount_percent === p
                                 ? "bg-[#ba001c] text-white shadow-md"
-                                : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50"
+                                : "bg-[var(--color-surface-container-lowest)] text-slate-600 border border-slate-200 hover:bg-slate-50"
                             }`}
                           >
                             {p}%

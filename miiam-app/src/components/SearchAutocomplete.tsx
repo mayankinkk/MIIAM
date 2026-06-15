@@ -166,7 +166,7 @@ export function SearchAutocomplete({ onSelect, className = "" }: SearchAutocompl
       </div>
 
       {showDropdown && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden z-50">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-[var(--color-surface-container-lowest)] rounded-2xl shadow-xl border border-slate-100 overflow-hidden z-50">
           {loading && (
             <div className="p-4 text-center text-sm text-slate-500">
               <span className="material-symbols-outlined animate-spin text-lg mr-2">progress_activity</span>

@@ -90,10 +90,10 @@ export default function WalletPage() {
         
         {/* Wallet Balance Card */}
         <div className="bg-gradient-to-r from-on-primary to-primary rounded-3xl p-8 mb-8 text-white relative overflow-hidden shadow-2xl shadow-primary/30">
-          <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute top-0 right-0 w-48 h-48 bg-[var(--color-surface-container-lowest)]/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
           <div className="relative z-10 flex flex-col items-start gap-6">
             <div className="w-full flex justify-between items-start">
-              <div className="flex items-center gap-2 bg-white/20 px-3 py-1.5 rounded-full">
+              <div className="flex items-center gap-2 bg-[var(--color-surface-container-lowest)]/20 px-3 py-1.5 rounded-full">
                 <span className="material-symbols-outlined text-sm">account_balance_wallet</span>
                 <span className="text-xs font-bold tracking-widest uppercase">MIIAM Wallet</span>
               </div>
@@ -108,13 +108,13 @@ export default function WalletPage() {
             <div className="w-full flex gap-3 mt-2">
               <button
                 onClick={() => setShowAddMoney(true)}
-                className="flex-1 bg-white text-primary py-3 rounded-xl font-bold text-sm shadow-lg hover:scale-[1.02] active:scale-95 transition-all"
+                className="flex-1 bg-[var(--color-surface-container-lowest)] text-primary py-3 rounded-xl font-bold text-sm shadow-lg hover:scale-[1.02] active:scale-95 transition-all"
               >
                 Add Money
               </button>
               <button
                 onClick={() => setShowWithdraw(true)}
-                className="flex-1 border border-white/30 text-white py-3 rounded-xl font-bold text-sm hover:bg-white/10 transition-all"
+                className="flex-1 border border-white/30 text-white py-3 rounded-xl font-bold text-sm hover:bg-[var(--color-surface-container-lowest)]/10 transition-all"
               >
                 Withdraw
               </button>
@@ -168,7 +168,7 @@ export default function WalletPage() {
     {/* Add Money Modal */}
     {showAddMoney && (
       <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl w-full max-w-md p-6">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-md p-6">
           <h3 className="font-bold text-lg mb-4">Add Money to Wallet</h3>
           <div className="space-y-3">
             <div className="flex gap-2">
@@ -234,7 +234,7 @@ export default function WalletPage() {
     {/* Withdraw Modal */}
     {showWithdraw && (
       <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl w-full max-w-md p-6">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-md p-6">
           <h3 className="font-bold text-lg mb-4">Withdraw to Bank</h3>
           <p className="text-sm text-slate-500 mb-4">Available: <span className="font-bold text-primary">₹{balance.toFixed(2)}</span></p>
           <div className="space-y-3">

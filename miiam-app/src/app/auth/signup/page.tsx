@@ -151,7 +151,7 @@ function SignupContent() {
         </div>
 
         {/* Content Overlay */}
-        <div className="relative z-10 bg-white/70 backdrop-blur-xl p-10 rounded-lg max-w-lg" style={{ boxShadow: '0 20px 40px rgba(77, 33, 42, 0.06)', border: '1px solid rgba(255, 255, 255, 0.3)' }}>
+        <div className="relative z-10 bg-[var(--color-surface-container-lowest)]/70 backdrop-blur-xl p-10 rounded-lg max-w-lg" style={{ boxShadow: '0 20px 40px rgba(77, 33, 42, 0.06)', border: '1px solid rgba(255, 255, 255, 0.3)' }}>
           <div className="space-y-6">
             <span className="inline-block bg-[#ba001c] text-white px-4 py-1 rounded-full text-[10px] tracking-[0.3em] font-bold">PREMIUM SERVICES</span>
             <h2 className="text-[3rem] leading-tight tracking-[-0.02em] font-extrabold text-[#00174c]" style={{ fontFamily: 'Plus Jakarta Sans' }}>Expert care for your urban lifestyle.</h2>
@@ -171,8 +171,8 @@ function SignupContent() {
         {/* Decorative Elements */}
         <div className="absolute top-12 right-12 flex gap-4">
           <div className="w-3 h-3 rounded-full bg-[#ba001c] shadow-lg animate-pulse" />
-          <div className="w-3 h-3 rounded-full bg-white/40" />
-          <div className="w-3 h-3 rounded-full bg-white/20" />
+          <div className="w-3 h-3 rounded-full bg-[var(--color-surface-container-lowest)]/40" />
+          <div className="w-3 h-3 rounded-full bg-[var(--color-surface-container-lowest)]/20" />
         </div>
       </section>
     </div>

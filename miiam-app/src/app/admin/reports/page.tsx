@@ -219,7 +219,7 @@ export default function ReportsPage() {
             className={`p-6 rounded-2xl text-left transition-all ${
               reportType === type.id
                 ? "bg-[#ba001c] text-white shadow-lg shadow-red-900/20"
-                : "bg-white border border-slate-100 hover:border-slate-200"
+                : "bg-[var(--color-surface-container-lowest)] border border-slate-100 hover:border-slate-200"
             }`}
           >
             <span className={`material-symbols-outlined text-2xl mb-3 ${reportType === type.id ? "text-white" : "text-slate-400"}`}>{type.icon}</span>
@@ -229,7 +229,7 @@ export default function ReportsPage() {
         ))}
       </div>
 
-      <div className="bg-white rounded-3xl border border-slate-100 p-8 shadow-sm">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-8 shadow-sm">
         <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm mb-6">Date Range</h3>
         <div className="flex flex-wrap gap-4 items-end">
           <div>
@@ -257,7 +257,7 @@ export default function ReportsPage() {
       ) : (
         <>
           {reportType === "orders" && (
-            <div className="bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
               <div className="p-6 border-b border-slate-50 flex justify-between items-center">
                 <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm">Orders Report</h3>
                 <button onClick={exportCsv} className="px-4 py-2 bg-[#ba001c] rounded-lg text-xs font-bold text-white flex items-center gap-1 hover:opacity-90">
@@ -301,7 +301,7 @@ export default function ReportsPage() {
           )}
 
           {reportType === "revenue" && (
-            <div className="bg-white rounded-3xl border border-slate-100 p-8 shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-8 shadow-sm">
               <div className="flex justify-between items-center mb-6">
                 <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm">Revenue Report</h3>
                 <button onClick={exportCsv} className="px-4 py-2 bg-[#ba001c] rounded-lg text-xs font-bold text-white flex items-center gap-1 hover:opacity-90">
@@ -330,7 +330,7 @@ export default function ReportsPage() {
           )}
 
           {reportType === "vendors" && (
-            <div className="bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
               <div className="p-6 border-b border-slate-50 flex justify-between items-center">
                 <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm">Vendor Performance Report</h3>
                 <button onClick={exportCsv} className="px-4 py-2 bg-[#ba001c] rounded-lg text-xs font-bold text-white flex items-center gap-1 hover:opacity-90">
@@ -363,7 +363,7 @@ export default function ReportsPage() {
           )}
 
           {reportType === "riders" && (
-            <div className="bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
               <div className="p-6 border-b border-slate-50 flex justify-between items-center">
                 <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm">Rider Performance Report</h3>
                 <button onClick={exportCsv} className="px-4 py-2 bg-[#ba001c] rounded-lg text-xs font-bold text-white flex items-center gap-1 hover:opacity-90">
@@ -396,7 +396,7 @@ export default function ReportsPage() {
           )}
 
           {reportType === "users" && (
-            <div className="bg-white rounded-3xl border border-slate-100 p-8 shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-8 shadow-sm">
               <div className="flex justify-between items-center mb-6">
                 <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm">User Analytics Report</h3>
                 <button onClick={exportCsv} className="px-4 py-2 bg-[#ba001c] rounded-lg text-xs font-bold text-white flex items-center gap-1 hover:opacity-90">

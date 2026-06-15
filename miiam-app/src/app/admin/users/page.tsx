@@ -80,7 +80,7 @@ export default function UserRegistry() {
           <div className="h-5 w-72 bg-slate-200 rounded animate-pulse" />
         </div>
       </div>
-      <div className="bg-white rounded-3xl border border-slate-100 p-6">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-6">
         <div className="space-y-4">
           {[1,2,3,4,5].map(i => (
             <div key={i} className="flex items-center gap-4 p-4">
@@ -105,7 +105,7 @@ export default function UserRegistry() {
         </div>
       </div>
 
-      <div className="bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
         <div className="p-6 border-b border-slate-50 flex items-center gap-4">
            <div className="bg-slate-50 border border-slate-100 rounded-xl px-4 py-2 flex items-center gap-2 flex-1 max-w-sm">
              <span className="material-symbols-outlined text-slate-400 text-sm">search</span>
@@ -169,7 +169,7 @@ export default function UserRegistry() {
                       <span className="material-symbols-outlined text-[20px]">more_vert</span>
                     </button>
                     {openMenuId === profile.id && (
-                      <div className="absolute right-6 top-10 bg-white border border-slate-200 rounded-xl shadow-lg py-2 z-50 min-w-[140px]">
+                      <div className="absolute right-6 top-10 bg-[var(--color-surface-container-lowest)] border border-slate-200 rounded-xl shadow-lg py-2 z-50 min-w-[140px]">
                         <button 
                           onClick={() => handleAction("view", profile)}
                           className="w-full px-4 py-2 text-left text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2"
@@ -225,7 +225,7 @@ export default function UserRegistry() {
       {/* User Detail Modal */}
       {showDetailModal && selectedProfile && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-md mx-4">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-md mx-4">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-black text-slate-800">User Details</h3>
               <button onClick={() => setShowDetailModal(false)} className="p-1 hover:bg-slate-100 rounded-full">
@@ -247,7 +247,7 @@ export default function UserRegistry() {
       {/* Role Change Modal */}
       {showRoleModal && selectedProfile && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-sm mx-4">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-sm mx-4">
             <h3 className="text-lg font-black text-slate-800 mb-4">Change Role — {selectedProfile.full_name}</h3>
             <div className="space-y-2">
               {["customer", "admin", "rider"].map(role => (

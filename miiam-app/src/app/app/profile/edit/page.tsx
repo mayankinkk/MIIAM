@@ -162,7 +162,7 @@ export default function EditProfilePage() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="bg-white rounded-xl p-6 shadow-[0px_10px_30px_rgba(77,33,42,0.04)] space-y-6">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-xl p-6 shadow-[0px_10px_30px_rgba(77,33,42,0.04)] space-y-6">
             
             {/* Avatar Upload */}
             <div className="flex flex-col items-center justify-center border-b border-outline-variant/20 pb-6 mb-6">

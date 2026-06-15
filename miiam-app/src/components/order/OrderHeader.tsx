@@ -12,7 +12,7 @@ interface OrderHeaderProps {
 export default function OrderHeader({ orderId, isRefreshing, onRefresh }: OrderHeaderProps) {
   return (
     <>
-      <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-3 sm:px-6 py-4 bg-white/90 backdrop-blur-2xl shadow-sm">
+      <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-3 sm:px-6 py-4 bg-[var(--color-surface-container-lowest)]/90 backdrop-blur-2xl shadow-sm">
         <div className="flex items-center gap-4">
           <Link href="/app/orders" className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container hover:bg-surface-container-high transition-all">
             <span className="material-symbols-outlined text-primary">arrow_back</span>

@@ -122,7 +122,7 @@ export default function AdminCustomerInsights() {
         <div className="flex gap-2 bg-slate-100 p-1 rounded-xl">
           {(["7d", "30d", "90d"] as const).map((p) => (
             <button key={p} onClick={() => setPeriod(p)}
-              className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors ${period === p ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}>
+              className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors ${period === p ? "bg-[var(--color-surface-container-lowest)] text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}>
               {p === "7d" ? "7 Days" : p === "30d" ? "30 Days" : "90 Days"}
             </button>
           ))}
@@ -141,7 +141,7 @@ export default function AdminCustomerInsights() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Top Vendors by Orders */}
-        <div className="lg:col-span-2 bg-white rounded-xl border border-slate-200 p-5">
+        <div className="lg:col-span-2 bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-200 p-5">
           <h3 className="font-bold text-slate-800 mb-4">Top Vendors by Orders</h3>
           <div className="space-y-3">
             {insights.topVendors.map((v: any, i: number) => (
@@ -161,7 +161,7 @@ export default function AdminCustomerInsights() {
         </div>
 
         {/* Top Rated Vendors */}
-        <div className="bg-white rounded-xl border border-slate-200 p-5">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-200 p-5">
           <h3 className="font-bold text-slate-800 mb-4">Top Rated Vendors</h3>
           <div className="space-y-3">
             {insights.topRatedVendors.slice(0, 8).map((v: any, i: number) => (
@@ -179,7 +179,7 @@ export default function AdminCustomerInsights() {
 
       {/* Peak Days / Order Health */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-xl border border-slate-200 p-5">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-200 p-5">
           <h3 className="font-bold text-slate-800 mb-4">Peak Order Days</h3>
           <div className="space-y-2">
             {insights.peakDays.map(([day, count]: [string, number], i: number) => (
@@ -195,7 +195,7 @@ export default function AdminCustomerInsights() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200 p-5">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-200 p-5">
           <h3 className="font-bold text-slate-800 mb-4">Order Health</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between p-4 bg-green-50 rounded-xl">
@@ -228,7 +228,7 @@ export default function AdminCustomerInsights() {
 
 function MetricCard({ title, value, icon, color }: { title: string; value: string | number; icon: string; color: string }) {
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-4">
+    <div className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-200 p-4">
       <div className="flex items-center gap-2 mb-2">
         <span className={`material-symbols-outlined text-lg ${color}`}>{icon}</span>
         <p className="text-xs text-slate-500 font-medium">{title}</p>

@@ -125,7 +125,7 @@ export default function AdminPrintingKanban() {
   return (
     <div className="px-4 md:px-8 py-6">
       <div className="flex items-center gap-3 mb-6">
-        <Link href="/admin/printing" className="w-10 h-10 bg-white border border-slate-200 rounded-xl flex items-center justify-center">
+        <Link href="/admin/printing" className="w-10 h-10 bg-[var(--color-surface-container-lowest)] border border-slate-200 rounded-xl flex items-center justify-center">
           <span className="material-symbols-outlined text-slate-600">arrow_back</span>
         </Link>
         <div className="flex-1">
@@ -153,7 +153,7 @@ export default function AdminPrintingKanban() {
                   <span className="material-symbols-outlined text-base">{col.icon}</span>
                   {col.label}
                 </h3>
-                <span className="text-xs bg-white/70 px-2 py-0.5 rounded-full font-bold text-slate-700">
+                <span className="text-xs bg-[var(--color-surface-container-lowest)]/70 px-2 py-0.5 rounded-full font-bold text-slate-700">
                   {byColumn[col.id].length}
                 </span>
               </div>
@@ -172,7 +172,7 @@ export default function AdminPrintingKanban() {
                       draggable
                       onDragStart={(e) => handleDragStart(e, order.id)}
                       onClick={() => setSelectedOrder(order)}
-                      className={`bg-white rounded-xl p-3 shadow-sm border border-slate-100 cursor-move hover:shadow-md transition-shadow ${
+                      className={`bg-[var(--color-surface-container-lowest)] rounded-xl p-3 shadow-sm border border-slate-100 cursor-move hover:shadow-md transition-shadow ${
                         draggingId === order.id ? "opacity-50" : ""
                       } ${order.priority > 0 ? "ring-2 ring-amber-300" : ""}`}
                     >
@@ -224,7 +224,7 @@ export default function AdminPrintingKanban() {
         const hasAnySettings = selSettings.pages || selSettings.copies || selSettings.colorMode || selSettings.paperSize || fallbackPages;
         return (
           <div className="fixed inset-0 z-50 bg-black/50 flex items-start justify-center p-4 pt-[5vh] overflow-y-auto" onClick={() => setSelectedOrder(null)}>
-            <div className="bg-white rounded-2xl w-full max-w-lg" onClick={(e) => e.stopPropagation()}>
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-lg" onClick={(e) => e.stopPropagation()}>
               <div className="flex items-center justify-between p-5 pb-0">
                 <div>
                   <h3 className="font-bold text-lg">Order #{selectedOrder.id.slice(0, 8)}</h3>

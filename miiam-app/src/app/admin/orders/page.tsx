@@ -212,26 +212,26 @@ export default function OrderManagement() {
     <div className="px-8 space-y-8">
       {/* Top Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl shadow-sm border border-slate-100">
           <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Total Orders</p>
           <p className="text-3xl font-black text-slate-800">{orders.length}</p>
         </div>
-        <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl shadow-sm border border-slate-100">
           <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Revenue</p>
           <p className="text-3xl font-black text-green-600">₹{totalRevenue.toLocaleString()}</p>
         </div>
-        <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl shadow-sm border border-slate-100">
           <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Pending</p>
           <p className="text-3xl font-black text-yellow-600">{pendingOrders}</p>
         </div>
-        <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl shadow-sm border border-slate-100">
           <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Avg Order</p>
           <p className="text-3xl font-black text-slate-800">₹{orders.length ? Math.round(totalRevenue / orders.filter(o => o.status === "delivered").length) : 0}</p>
         </div>
       </div>
 
       {/* Filters & Actions */}
-      <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-6 shadow-sm">
         <div className="flex flex-wrap gap-4 items-center justify-between">
           <div className="flex gap-4 items-center flex-wrap">
             <div className="relative">
@@ -282,7 +282,7 @@ export default function OrderManagement() {
       </div>
 
       {/* Orders Table */}
-      <div className="bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead className="bg-slate-50 border-b border-slate-100">
@@ -350,7 +350,7 @@ export default function OrderManagement() {
       {/* Order Detail Modal */}
       {selectedOrder && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-slate-100 flex justify-between items-center sticky top-0 bg-white">
               <div>
                 <h2 className="text-xl font-black text-slate-800">Order #{selectedOrder.id.slice(0, 8)}</h2>

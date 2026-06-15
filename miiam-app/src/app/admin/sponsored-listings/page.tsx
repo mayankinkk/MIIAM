@@ -149,7 +149,7 @@ export default function SponsoredListingsPage() {
       {loading ? (
         <div className="text-center text-slate-400 font-medium py-12 animate-pulse">Loading...</div>
       ) : items.length === 0 ? (
-        <div className="bg-white rounded-2xl p-12 text-center border border-slate-200">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-12 text-center border border-slate-200">
           <span className="material-symbols-outlined text-5xl text-slate-300">campaign</span>
           <p className="text-slate-400 font-medium mt-3">No sponsored listings yet</p>
           <button onClick={openCreateModal} className="mt-4 text-[#ba001c] font-bold text-sm hover:underline">
@@ -157,7 +157,7 @@ export default function SponsoredListingsPage() {
           </button>
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-200 overflow-hidden">
           <table className="w-full text-left">
             <thead className="bg-slate-50 border-b border-slate-100">
               <tr>
@@ -220,7 +220,7 @@ export default function SponsoredListingsPage() {
 
       {showCreateModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md p-6">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-md p-6">
             <div className="flex justify-between items-center mb-4">
               <h2 className="font-black text-lg">{editingItem ? "Edit Listing" : "New Sponsored Listing"}</h2>
               <button onClick={() => { setShowCreateModal(false); setEditingItem(null); }} className="text-slate-400">

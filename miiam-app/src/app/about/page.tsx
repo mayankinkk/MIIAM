@@ -24,7 +24,7 @@ export default function AboutUsPage() {
   return (
     <div className="min-h-screen bg-[#fff4f4] font-sans selection:bg-[#ba001c]/10">
       {/* Navbar */}
-      <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl border-b border-[#ba001c]/10">
+      <nav className="fixed top-0 w-full z-50 bg-[var(--color-surface-container-lowest)]/80 backdrop-blur-xl border-b border-[#ba001c]/10">
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
           <Link href="/" className="text-2xl font-black text-[#ba001c] tracking-tighter">
             MIIAM
@@ -77,7 +77,7 @@ export default function AboutUsPage() {
           <Link href="/auth/signup" className="px-10 py-5 bg-[#ba001c] text-white font-bold rounded-2xl hover:scale-105 transition-all shadow-xl shadow-red-900/20">
             Join as a Customer
           </Link>
-          <Link href="/careers" className="px-10 py-5 bg-white border-2 border-slate-100 text-slate-900 font-bold rounded-2xl hover:bg-slate-50 transition-all">
+          <Link href="/careers" className="px-10 py-5 bg-[var(--color-surface-container-lowest)] border-2 border-slate-100 text-slate-900 font-bold rounded-2xl hover:bg-slate-50 transition-all">
             Join the Fleet
           </Link>
         </div>

@@ -45,7 +45,7 @@ export default function RiderNavBar({ active }: RiderNavBarProps) {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pt-4 bg-white/90 backdrop-blur-xl shadow-[0px_-10px_30px_rgba(11,80,213,0.1)] rounded-t-[2rem]"
+      className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pt-4 bg-[var(--color-surface-container-lowest)]/90 backdrop-blur-xl shadow-[0px_-10px_30px_rgba(11,80,213,0.1)] rounded-t-[2rem]"
       style={{ paddingBottom: "calc(1.5rem + env(safe-area-inset-bottom, 0px))" }}
     >
       <button
@@ -54,7 +54,7 @@ export default function RiderNavBar({ active }: RiderNavBarProps) {
         title={isOnline ? "Go Offline" : "Go Online"}
       >
         <span className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${isOnline ? "bg-green-500 border-green-500" : "bg-slate-200 border-slate-300"}`}>
-          <span className={`w-2 h-2 rounded-full ${isOnline ? "bg-white" : "bg-slate-400"}`} />
+          <span className={`w-2 h-2 rounded-full ${isOnline ? "bg-[var(--color-surface-container-lowest)]" : "bg-slate-400"}`} />
         </span>
         <span className={`text-[8px] font-bold mt-0.5 ${isOnline ? "text-green-600" : "text-slate-400"}`}>
           {isOnline ? "ONLINE" : "OFF"}

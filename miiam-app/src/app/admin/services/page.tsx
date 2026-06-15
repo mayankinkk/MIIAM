@@ -123,7 +123,7 @@ export default function EnhancedServicesDashboard() {
               const a = document.createElement("a"); a.href = url; a.download = "service-bookings.csv"; a.click();
               URL.revokeObjectURL(url);
             }}
-            className="px-4 py-2 bg-white border border-slate-200 rounded-xl font-bold text-sm flex items-center gap-2 hover:border-[#ba001c]"
+            className="px-4 py-2 bg-[var(--color-surface-container-lowest)] border border-slate-200 rounded-xl font-bold text-sm flex items-center gap-2 hover:border-[#ba001c]"
           >
             <span className="material-symbols-outlined text-sm">download</span>
             Export
@@ -138,7 +138,7 @@ export default function EnhancedServicesDashboard() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-slate-100 p-1 inline-flex">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-100 p-1 inline-flex">
         {(["dashboard", "bookings", "providers", "settings"] as const).map((tab) => (
           <button
             key={tab}
@@ -165,7 +165,7 @@ export default function EnhancedServicesDashboard() {
               <p className="text-4xl font-black">₹{stats.totalGMV.toLocaleString()}</p>
               <p className="text-xs text-white/60 mt-2">from {stats.completedBookings} completed bookings</p>
             </div>
-            <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-slate-100 shadow-sm">
               <div className="flex items-center gap-2 mb-2">
                 <span className="material-symbols-outlined text-blue-500">calendar_month</span>
                 <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Active Bookings</span>
@@ -173,7 +173,7 @@ export default function EnhancedServicesDashboard() {
               <p className="text-3xl font-black text-slate-800">{stats.activeBookings}</p>
               <p className="text-xs text-green-500 mt-2">Live tracking</p>
             </div>
-            <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-slate-100 shadow-sm">
               <div className="flex items-center gap-2 mb-2">
                 <span className="material-symbols-outlined text-purple-500">receipt_long</span>
                 <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Total Bookings</span>
@@ -181,7 +181,7 @@ export default function EnhancedServicesDashboard() {
               <p className="text-3xl font-black text-slate-800">{stats.totalBookings}</p>
               <p className="text-xs text-slate-400 mt-2">All time</p>
             </div>
-            <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-slate-100 shadow-sm">
               <div className="flex items-center gap-2 mb-2">
                 <span className="material-symbols-outlined text-amber-500">check_circle</span>
                 <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Completed</span>
@@ -193,7 +193,7 @@ export default function EnhancedServicesDashboard() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
-              <div className="bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
+              <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
                 <div className="p-6 border-b border-slate-50 flex justify-between items-center">
                   <h2 className="font-black text-slate-800 uppercase tracking-widest text-sm">Service Overview</h2>
                 </div>
@@ -230,26 +230,26 @@ export default function EnhancedServicesDashboard() {
                 <div className="space-y-2">
                   <button
                     onClick={() => setActiveTab("settings")}
-                    className="w-full py-2 bg-white/20 rounded-xl text-sm font-bold hover:bg-white/30 transition-colors text-left px-4"
+                    className="w-full py-2 bg-[var(--color-surface-container-lowest)]/20 rounded-xl text-sm font-bold hover:bg-white/30 transition-colors text-left px-4"
                   >
                     + Add New Service
                   </button>
                   <button
                     onClick={() => setActiveTab("providers")}
-                    className="w-full py-2 bg-white/20 rounded-xl text-sm font-bold hover:bg-white/30 transition-colors text-left px-4"
+                    className="w-full py-2 bg-[var(--color-surface-container-lowest)]/20 rounded-xl text-sm font-bold hover:bg-white/30 transition-colors text-left px-4"
                   >
                     Manage Providers
                   </button>
                   <Link
                     href="/admin/analytics"
-                    className="block w-full py-2 bg-white/20 rounded-xl text-sm font-bold hover:bg-white/30 transition-colors text-left px-4"
+                    className="block w-full py-2 bg-[var(--color-surface-container-lowest)]/20 rounded-xl text-sm font-bold hover:bg-white/30 transition-colors text-left px-4"
                   >
                     View Analytics
                   </Link>
                 </div>
               </div>
 
-              <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+              <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-6 border border-slate-100 shadow-sm">
                 <h3 className="font-black text-slate-800 uppercase tracking-widest text-xs mb-4">Bookings by Status</h3>
                 <div className="space-y-3">
                   {Object.entries(statusCounts).map(([status, count]) => (
@@ -263,7 +263,7 @@ export default function EnhancedServicesDashboard() {
             </div>
           </div>
 
-          <div className="bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
             <div className="p-6 border-b border-slate-50 flex justify-between items-center">
               <h2 className="font-black text-slate-800 uppercase tracking-widest text-sm">Recent Bookings</h2>
               <button
@@ -320,7 +320,7 @@ export default function EnhancedServicesDashboard() {
       )}
 
       {activeTab === "bookings" && (
-        <div className="bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
           <div className="p-6 border-b border-slate-50 flex flex-wrap gap-4 items-center">
             <div className="flex gap-2">
               {(["all", "pending", "in_progress", "completed", "cancelled"] as const).map((status) => (
@@ -422,7 +422,7 @@ export default function EnhancedServicesDashboard() {
       )}
 
       {activeTab === "providers" && (
-        <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-6 shadow-sm">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-black text-slate-800">Service Providers</h2>
             <button
@@ -443,7 +443,7 @@ export default function EnhancedServicesDashboard() {
 
       {activeTab === "settings" && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-6 shadow-sm">
             <h2 className="text-lg font-black text-slate-800 mb-6">Service Categories</h2>
             <div className="space-y-3">
               {serviceOptions.map((service) => (
@@ -469,7 +469,7 @@ export default function EnhancedServicesDashboard() {
             </button>
           </div>
 
-          <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-6 shadow-sm">
             <h2 className="text-lg font-black text-slate-800 mb-6">Pricing & Commission</h2>
             <div className="space-y-4">
               <div className="flex justify-between items-center p-3 bg-slate-50 rounded-xl">
@@ -542,7 +542,7 @@ export default function EnhancedServicesDashboard() {
       {/* Provider Registration Modal */}
       {showProviderModal && (
         <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md p-6">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-md p-6">
             <h3 className="font-bold text-lg mb-4">Register Service Provider</h3>
             <div className="space-y-3">
               <input type="text" placeholder="Full Name" value={providerForm.name} onChange={(e) => setProviderForm({ ...providerForm, name: e.target.value })} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm" />
@@ -579,7 +579,7 @@ export default function EnhancedServicesDashboard() {
       {/* Category Creation Modal */}
       {showCategoryModal && (
         <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md p-6">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-md p-6">
             <h3 className="font-bold text-lg mb-4">Add Service Category</h3>
             <div className="space-y-3">
               <input type="text" placeholder="Category Name" value={categoryForm.name} onChange={(e) => setCategoryForm({ ...categoryForm, name: e.target.value })} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm" />

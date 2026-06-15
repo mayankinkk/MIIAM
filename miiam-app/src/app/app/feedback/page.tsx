@@ -118,7 +118,7 @@ function FeedbackContent() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-surface to-white">
       {/* Header */}
-      <div className="bg-white p-6 border-b border-pink-100">
+      <div className="bg-[var(--color-surface-container-lowest)] p-6 border-b border-pink-100">
         <Link href="/app/home" className="flex items-center gap-2 text-slate-600 hover:text-primary">
           <span className="material-symbols-outlined">arrow_back</span>
           <span className="font-bold">Back</span>
@@ -129,7 +129,7 @@ function FeedbackContent() {
 
       <div className="max-w-lg mx-auto p-6">
         {/* Service Info */}
-        <div className="bg-white rounded-2xl p-6 shadow-lg mb-6">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg mb-6">
           <h2 className="text-lg font-bold text-on-surface mb-1">{serviceName}</h2>
           <p className="text-sm text-slate-500 mb-4">by {providerName}</p>
           <div className="flex items-center justify-between">
@@ -139,7 +139,7 @@ function FeedbackContent() {
         </div>
 
         {/* Rating */}
-        <div className="bg-white rounded-2xl p-6 shadow-lg mb-6">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg mb-6">
           <h3 className="text-lg font-bold text-on-surface mb-4 text-center">
             {t.rating.subtitle}
           </h3>
@@ -176,7 +176,7 @@ function FeedbackContent() {
 
         {/* Tags */}
         {rating > 0 && (
-          <div className="bg-white rounded-2xl p-6 shadow-lg mb-6 animate-fade-in">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg mb-6 animate-fade-in">
             <h3 className="text-lg font-bold text-on-surface mb-4">What did you like?</h3>
             <div className="flex flex-wrap gap-2">
               {tags.map((tag) => (
@@ -198,7 +198,7 @@ function FeedbackContent() {
 
         {/* Review */}
         {rating > 0 && (
-          <div className="bg-white rounded-2xl p-6 shadow-lg mb-6 animate-fade-in">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg mb-6 animate-fade-in">
             <h3 className="text-lg font-bold text-on-surface mb-4">
               {t.rating.shareExperience}
             </h3>

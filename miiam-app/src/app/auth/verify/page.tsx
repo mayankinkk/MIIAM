@@ -134,7 +134,7 @@ function OTPVerificationContent() {
       <div className="p-6">
         <button
           onClick={() => router.back()}
-          className="w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-md"
+          className="w-10 h-10 flex items-center justify-center rounded-full bg-[var(--color-surface-container-lowest)] shadow-md"
         >
           <span className="material-symbols-outlined text-slate-600">arrow_back</span>
         </button>

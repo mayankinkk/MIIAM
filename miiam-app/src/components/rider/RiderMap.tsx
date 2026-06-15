@@ -421,7 +421,7 @@ export default function RiderMap({
         .leaflet-container .leaflet-pane > img.leaflet-tile { position: absolute; left: 0; bottom: -1px; }
       `}</style>
       <div className="absolute top-3 left-3 z-10 bg-red-600 text-white text-[10px] font-black px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
-        <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
+        <span className="w-1.5 h-1.5 bg-[var(--color-surface-container-lowest)] rounded-full animate-pulse" />
         LIVE
       </div>
       <div ref={mapRef} className="w-full h-full" style={{ position: "absolute", inset: 0 }} />

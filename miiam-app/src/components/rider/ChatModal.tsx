@@ -109,7 +109,7 @@ export default function ChatModal({
 
   return (
     <div className="fixed inset-0 z-[100] bg-black/50 flex items-end">
-      <div className="bg-white rounded-t-2xl w-full h-[70vh] flex flex-col">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-t-2xl w-full h-[70vh] flex flex-col">
         <div className="p-4 border-b flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button onClick={onClose}>

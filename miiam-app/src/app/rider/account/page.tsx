@@ -168,7 +168,7 @@ export default function RiderAccountPage() {
 
       <main className="px-6 space-y-6 pb-32">
         {/* Profile Card */}
-        <div className="bg-white rounded-3xl p-6 shadow-lg -mt-12">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-6 shadow-lg -mt-12">
           <div className="flex items-center gap-4">
             <div className="w-20 h-20 bg-[#0b50d5] rounded-full flex items-center justify-center text-white text-3xl font-bold">
               {displayRider.name?.[0] || "R"}
@@ -216,7 +216,7 @@ export default function RiderAccountPage() {
         {/* Shift Schedule Button */}
         <button
           onClick={() => setShowShiftModal(true)}
-          className="w-full p-4 bg-white rounded-2xl shadow-lg flex items-center justify-between"
+          className="w-full p-4 bg-[var(--color-surface-container-lowest)] rounded-2xl shadow-lg flex items-center justify-between"
         >
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
@@ -232,22 +232,22 @@ export default function RiderAccountPage() {
 
         {/* Quick Stats */}
         <div className="grid grid-cols-3 gap-3">
-          <div className="bg-white p-3 rounded-2xl shadow-sm text-center">
+          <div className="bg-[var(--color-surface-container-lowest)] p-3 rounded-2xl shadow-sm text-center">
             <p className="text-lg font-black text-[#0b50d5]">{displayRider?.totalDeliveries || 0}</p>
             <p className="text-[9px] text-slate-400">Deliveries</p>
           </div>
-          <div className="bg-white p-3 rounded-2xl shadow-sm text-center">
+          <div className="bg-[var(--color-surface-container-lowest)] p-3 rounded-2xl shadow-sm text-center">
             <p className="text-lg font-black text-green-600">₹{displayRider?.totalEarnings || 0}</p>
             <p className="text-[9px] text-slate-400">Earned</p>
           </div>
-          <div className="bg-white p-3 rounded-2xl shadow-sm text-center">
+          <div className="bg-[var(--color-surface-container-lowest)] p-3 rounded-2xl shadow-sm text-center">
             <p className="text-lg font-black text-[#0b50d5]">{(displayRider?.rating || 5).toFixed(1)}</p>
             <p className="text-[9px] text-slate-400">Rating</p>
           </div>
         </div>
 
         {/* Rating Info */}
-        <div className="bg-white rounded-2xl p-4 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-sm">
           <div className="flex items-center justify-between mb-2">
             <p className="font-bold text-[#4d212a]">Your Rating</p>
             <div className="flex items-center gap-1">
@@ -264,18 +264,18 @@ export default function RiderAccountPage() {
 
         {/* Quick Links */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <Link href="/rider/analytics" className="bg-white p-3 rounded-xl shadow-sm flex flex-col items-center gap-1">
+          <Link href="/rider/analytics" className="bg-[var(--color-surface-container-lowest)] p-3 rounded-xl shadow-sm flex flex-col items-center gap-1">
             <span className="text-2xl">📊</span>
             <span className="text-[10px] font-bold">Analytics</span>
           </Link>
-          <Link href="/rider/vehicle" className="bg-white p-3 rounded-xl shadow-sm flex flex-col items-center gap-1">
+          <Link href="/rider/vehicle" className="bg-[var(--color-surface-container-lowest)] p-3 rounded-xl shadow-sm flex flex-col items-center gap-1">
             <span className="text-2xl">🛵</span>
             <span className="text-[10px] font-bold">Vehicle</span>
           </Link>
         </div>
 
         {/* Menu */}
-        <div className="bg-white rounded-2xl overflow-hidden shadow-lg">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl overflow-hidden shadow-lg">
           <Link href="/rider/orders" className="flex items-center gap-3 p-4 border-b border-slate-100">
             <span className="material-symbols-outlined text-[#0b50d5]">receipt_long</span>
             <span className="flex-1 font-bold text-[#4d212a]">My Orders</span>
@@ -340,7 +340,7 @@ export default function RiderAccountPage() {
         </div>
 
         {/* Language Settings */}
-        <div className="bg-white rounded-2xl p-4 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-sm">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <span className="material-symbols-outlined text-slate-600">language</span>
@@ -361,7 +361,7 @@ export default function RiderAccountPage() {
       {/* Shift Modal */}
       {showShiftModal && (
         <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-sm">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-sm">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-bold text-xl">Set Your Schedule</h3>
               <button onClick={() => setShowShiftModal(false)}>
