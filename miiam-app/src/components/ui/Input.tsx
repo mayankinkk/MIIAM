@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, useState } from "react";
+import { forwardRef, useId, useState } from "react";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -31,7 +31,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     ref
   ) => {
     const [focused, setFocused] = useState(false);
-    const inputId = id || `input-${Math.random().toString(36).slice(2, 9)}`;
+    const generatedId = useId();
+    const inputId = id || generatedId;
 
     const handleClear = () => {
       if (onChange) {
