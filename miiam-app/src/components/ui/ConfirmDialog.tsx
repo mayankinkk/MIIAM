@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, createContext, useContext, ReactNode } from "react";
+import { useState, useCallback, useRef, useEffect, createContext, useContext, ReactNode } from "react";
 
 interface ConfirmState {
   open: boolean;
@@ -27,15 +27,46 @@ export function useConfirm() {
   return useContext(ConfirmContext);
 }
 
-function EscapeListener({ onCancel }: { onCancel: () => void }) {
+function FocusTrap({ onClose }: { onClose: () => void }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const focusable = container.querySelectorAll<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    first?.focus();
+
     function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") onCancel();
+      if (e.key === "Escape") {
+        onClose();
+        return;
+      }
+      if (e.key !== "Tab") return;
+
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last?.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first?.focus();
+        }
+      }
     }
+
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [onCancel]);
-  return null;
+  }, [onClose]);
+
+  return containerRef;
 }
 
 export function ConfirmProvider({ children }: { children: ReactNode }) {
@@ -79,33 +110,46 @@ export function ConfirmProvider({ children }: { children: ReactNode }) {
   return (
     <ConfirmContext.Provider value={{ confirm }}>
       {children}
-      {state.open && <EscapeListener onCancel={state.onCancel} />}
       {state.open && (
-        <div className="fixed inset-0 z-[200] bg-black/50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="confirm-dialog-title">
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-sm shadow-2xl">
-            <h3 id="confirm-dialog-title" className="font-bold text-lg text-[var(--color-on-surface)] mb-2">{state.title}</h3>
-            <p className="text-sm text-[var(--color-on-surface-variant)] mb-6">{state.message}</p>
-            <div className="flex gap-3">
-              <button
-                onClick={state.onCancel}
-                className="flex-1 py-3 rounded-xl font-bold text-sm text-[var(--color-on-surface-variant)] bg-[var(--color-surface-container)] hover:bg-[var(--color-surface-container-high)] transition-colors"
-              >
-                {state.cancelText || "Cancel"}
-              </button>
-              <button
-                onClick={state.onConfirm}
-                className={`flex-1 py-3 rounded-xl font-bold text-sm text-white transition-colors ${
-                  state.variant === "danger"
-                    ? "bg-red-600 hover:bg-red-700"
-                    : "bg-[var(--color-primary)] hover:bg-[#a00018]"
-                }`}
-              >
-                {state.confirmText || "Confirm"}
-              </button>
-            </div>
-          </div>
-        </div>
+        <ConfirmDialogInner state={state} />
       )}
     </ConfirmContext.Provider>
+  );
+}
+
+function ConfirmDialogInner({ state }: { state: ConfirmState }) {
+  const containerRef = FocusTrap({ onClose: state.onCancel });
+
+  return (
+    <div
+      ref={containerRef}
+      className="fixed inset-0 z-[200] bg-black/50 flex items-center justify-center p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="confirm-dialog-title"
+    >
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-sm shadow-2xl">
+        <h3 id="confirm-dialog-title" className="font-bold text-lg text-[var(--color-on-surface)] mb-2">{state.title}</h3>
+        <p className="text-sm text-[var(--color-on-surface-variant)] mb-6">{state.message}</p>
+        <div className="flex gap-3">
+          <button
+            onClick={state.onCancel}
+            className="flex-1 py-3 rounded-xl font-bold text-sm text-[var(--color-on-surface-variant)] bg-[var(--color-surface-container)] hover:bg-[var(--color-surface-container-high)] transition-colors"
+          >
+            {state.cancelText || "Cancel"}
+          </button>
+          <button
+            onClick={state.onConfirm}
+            className={`flex-1 py-3 rounded-xl font-bold text-sm text-white transition-colors ${
+              state.variant === "danger"
+                ? "bg-red-600 hover:bg-red-700"
+                : "bg-[var(--color-primary)] hover:bg-[var(--color-primary-dim)]"
+            }`}
+          >
+            {state.confirmText || "Confirm"}
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
