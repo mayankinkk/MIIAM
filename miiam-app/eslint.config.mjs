@@ -7,32 +7,42 @@ const eslintConfig = defineConfig([
   ...nextTs,
   {
     rules: {
-      "@typescript-eslint/no-explicit-any": "off",
-      "@typescript-eslint/no-unused-vars": "off",
-      "@typescript-eslint/no-non-null-asserted-optional-chain": "off",
-      "@typescript-eslint/no-unused-expressions": "off",
-      "@next/next/no-img-element": "off",
-      "@next/next/no-page-custom-font": "off",
-      "jsx-a11y/alt-text": "off",
-      "react-hooks/set-state-in-effect": "off",
-      "react-hooks/exhaustive-deps": "off",
-      "react-hooks/rules-of-hooks": "off",
-      "react-hooks/refs": "off",
-      "react/no-unescaped-entities": "off",
-      "react-hooks/purity": "off",
-      "react-hooks/immutability": "off",
+      // Keep these OFF only if truly justified per-file with eslint-disable
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }],
+      "@typescript-eslint/no-non-null-asserted-optional-chain": "error",
+      "@typescript-eslint/no-unused-expressions": "warn",
+
+      // Next.js rules
+      "@next/next/no-img-element": "warn",
+      "@next/next/no-page-custom-font": "warn",
+
+      // Accessibility - these should be errors, not off
+      "jsx-a11y/alt-text": "error",
+      "jsx-a11y/anchor-is-valid": "error",
+      "jsx-a11y/click-events-have-key-events": "warn",
+      "jsx-a11y/no-static-element-interactions": "warn",
+
+      // React hooks - these prevent bugs, should be errors
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "warn",
+
+      // React
+      "react/no-unescaped-entities": "warn",
     },
   },
-  // Override default ignores of eslint-config-next.
   globalIgnores([
-    // Default ignores of eslint-config-next:
     ".next/**",
     "out/**",
     "build/**",
+    "coverage/**",
+    "public/**",
+    "scripts/**",
     "next-env.d.ts",
     "test-*.js",
     "*.test.ts",
     "*.spec.ts",
+    "node_modules/**",
   ]),
 ]);
 

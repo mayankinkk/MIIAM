@@ -1,0 +1,15 @@
+Dockerfile
+docker-compose.yml
+.dockerignore
+node_modules
+npm-debug.log
+coverage
+.next
+.git
+.github
+*.md
+.vscode
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local

@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: "standalone",
   images: {
     contentDispositionType: "attachment",
     formats: ['image/avif', 'image/webp'],
