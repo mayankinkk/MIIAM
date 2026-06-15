@@ -44,7 +44,9 @@ export async function POST(req: NextRequest) {
       .update(`${razorpay_order_id}|${razorpay_payment_id}`)
       .digest("hex");
 
-    if (expectedSignature !== razorpay_signature) {
+    const sigBuffer = Buffer.from(expectedSignature);
+    const providedBuffer = Buffer.from(razorpay_signature);
+    if (sigBuffer.length !== providedBuffer.length || !crypto.timingSafeEqual(sigBuffer, providedBuffer)) {
       return NextResponse.json({ error: "Invalid payment signature" }, { status: 400 });
     }
 
