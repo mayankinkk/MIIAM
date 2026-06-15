@@ -401,34 +401,7 @@ body {
   animation: fade-in 0.4s ease-out;
 }
 
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-.coupon-shimmer {
-  background: linear-gradient(90deg, var(--color-primary, #ba001c) 0%, var(--color-primary-container, #ff7670) 25%, #ffc371 50%, var(--color-primary-container, #ff7670) 75%, var(--color-primary, #ba001c) 100%);
-  background-size: 200% 100%;
-  animation: shimmer 2s linear infinite;
-}
-
 /* Confetti animations */
-@keyframes confetti-fall {
-  0% {
-    transform: translateY(-100vh) rotate(0deg);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(100vh) rotate(720deg);
-    opacity: 0;
-  }
-}
-
-@keyframes confetti-spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
 @keyframes bounce-in {
   0% {
     transform: scale(0.3);
@@ -623,11 +596,6 @@ textarea:focus-visible {
   to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes reveal-scale {
-  from { opacity: 0; transform: scale(0.85); }
-  to { opacity: 1; transform: scale(1); }
-}
-
 @keyframes reveal-left {
   from { opacity: 0; transform: translateX(-30px); }
   to { opacity: 1; transform: translateX(0); }
@@ -706,10 +674,6 @@ textarea:focus-visible {
 
 .animate-reveal-up {
   animation: reveal-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-.animate-reveal-scale {
-  animation: reveal-scale 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .animate-reveal-left {
