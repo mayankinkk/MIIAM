@@ -31,11 +31,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Email required" }, { status: 400 });
     }
 
-    const { data: userData, error: getUserError } = await supabaseAdmin.auth.admin.getUserByEmail(email.toLowerCase());
+    // Find or create user by email
+    const { data: { users }, error: listError } = await supabaseAdmin.auth.admin.listUsers({
+      page: 1,
+      perPage: 1000,
+    });
     
-    let userRecord = userData?.user;
+    const userRecord = users?.find(u => u.email?.toLowerCase() === email.toLowerCase());
 
-    if (getUserError || !userRecord) {
+    if (!userRecord) {
       const { data: newUser, error: createError } = await supabaseAdmin.auth.admin.createUser({
         email: email.toLowerCase(),
         email_confirm: true,
@@ -46,11 +50,16 @@ export async function POST(request: NextRequest) {
         console.error("Create user error:", createError);
         return NextResponse.json({ error: "Failed to create user" }, { status: 500 });
       }
-      userRecord = newUser?.user;
-    }
+      
+      const { data: sessionData, error: sessionError } = await (supabaseAdmin.auth.admin as any).createSession({
+        userId: newUser.user.id,
+      });
 
-    if (!userRecord) {
-      return NextResponse.json({ error: "Failed to get user" }, { status: 500 });
+      return NextResponse.json({
+        success: true,
+        userId: newUser.user.id,
+        email: newUser.user.email,
+      });
     }
 
     const { data: sessionData, error: sessionError } = await (supabaseAdmin.auth.admin as any).createSession({

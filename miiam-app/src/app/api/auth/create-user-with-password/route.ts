@@ -42,18 +42,23 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Verification token does not match email" }, { status: 403 });
     }
 
-    // Find existing user by email
-    const { data: existingUser, error: getUserError } = await supabaseAdmin.auth.admin.getUserByEmail(cleanEmail);
+    // Find existing user using listUsers
+    const { data: { users }, error: listError } = await supabaseAdmin.auth.admin.listUsers({
+      page: 1,
+      perPage: 1000,
+    });
 
-    if (getUserError && getUserError.message !== "User not found") {
-      console.error("[create-user] getUserByEmail error:", getUserError);
+    if (listError) {
+      console.error("[create-user] listUsers error:", listError);
       return NextResponse.json({ error: "Failed to look up users" }, { status: 500 });
     }
 
+    const existingUser = users?.find(u => u.email?.toLowerCase() === cleanEmail);
+
     let userId = null;
 
-    if (existingUser?.user) {
-      const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(existingUser.user.id, {
+    if (existingUser) {
+      const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(existingUser.id, {
         email: cleanEmail,
         password,
         email_confirm: true,
@@ -64,7 +69,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: updateError.message || "Failed to update account" }, { status: 500 });
       }
 
-      userId = existingUser.user.id;
+      userId = existingUser.id;
     } else {
       const { data: newUser, error: createError } = await supabaseAdmin.auth.admin.createUser({
         email: cleanEmail,

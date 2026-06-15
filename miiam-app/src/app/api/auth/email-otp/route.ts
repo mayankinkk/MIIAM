@@ -90,8 +90,13 @@ export async function POST(request: NextRequest) {
     // For password_reset, check if user exists
     if (purpose === "password_reset") {
       try {
-        const { data: userData, error: getUserError } = await supabase.auth.admin.getUserByEmail(cleanEmail);
-        if (getUserError || !userData?.user) {
+        const { data, error: listError } = await supabase.auth.admin.listUsers();
+        if (listError) {
+          logger.error({ err: listError }, "Failed to list users");
+        }
+        const userList = (data as unknown as { users: { email?: string }[] })?.users ?? [];
+        const user = userList.find((u) => u.email?.toLowerCase() === cleanEmail);
+        if (!user) {
           return NextResponse.json({ error: "No account found with this email" }, { status: 404 });
         }
       } catch (e) {

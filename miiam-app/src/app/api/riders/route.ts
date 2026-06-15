@@ -45,10 +45,11 @@ export async function POST(request: Request) {
 
   if (authError) {
     if (authError.message.toLowerCase().includes("email") || authError.message.toLowerCase().includes("phone") || authError.code === "email_exists" || authError.code === "phone_exists") {
-      // Find the existing user by email
-      const { data: userData } = await adminClient.auth.admin.getUserByEmail(email);
-      if (userData?.user) {
-        userId = userData.user.id;
+      // Find the existing user
+      const { data: users } = await adminClient.auth.admin.listUsers();
+      const existingUser = users.users.find(u => u.email === email || u.phone === phone);
+      if (existingUser) {
+        userId = existingUser.id;
       } else {
         return NextResponse.json({ error: "User exists in auth but could not be retrieved" }, { status: 400 });
       }
