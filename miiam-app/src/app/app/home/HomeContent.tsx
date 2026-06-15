@@ -514,7 +514,7 @@ export default function HomePage() {
       {/* Categories with Offers */}
       <div className="px-4 pb-4">
         <h2 className="text-lg font-bold text-on-surface mb-3">{t.home.categories}</h2>
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {categories.map((cat) => (
             <Link key={cat.id} href={`/app/${cat.id}`} className="relative">
               <div className={`${cat.color} dark:bg-surface-container rounded-2xl p-4 text-center shadow-sm`}>
