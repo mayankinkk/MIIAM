@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient, createClient } from "@/lib/supabase/server";
+import { checkCsrf } from "@/lib/security";
 
 export async function POST(req: NextRequest) {
+  if (!checkCsrf(req)) {
+    return NextResponse.json({ error: "CSRF validation failed" }, { status: 403 });
+  }
+
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {

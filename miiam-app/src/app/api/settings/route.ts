@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient, createClient } from "@/lib/supabase/server";
+import { checkCsrf } from "@/lib/security";
 
 async function requireAdmin() {
   const supabase = await createClient();
@@ -33,6 +34,10 @@ export async function PUT(request: NextRequest) {
   const { user, isAdmin } = await requireAdmin();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   if (!isAdmin) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  if (!checkCsrf(request)) {
+    return NextResponse.json({ error: "CSRF validation failed" }, { status: 403 });
+  }
 
   const supabase = createAdminClient();
 
@@ -79,6 +84,10 @@ export async function POST(request: NextRequest) {
   const { user, isAdmin } = await requireAdmin();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   if (!isAdmin) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  if (!checkCsrf(request)) {
+    return NextResponse.json({ error: "CSRF validation failed" }, { status: 403 });
+  }
 
   const supabase = createAdminClient();
 
