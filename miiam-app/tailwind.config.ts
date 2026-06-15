@@ -11,9 +11,11 @@ const config: Config = {
     extend: {
       colors: {},
       borderRadius: {
-        DEFAULT: "1rem",
-        lg: "2rem",
-        xl: "3rem",
+        DEFAULT: "0.5rem",
+        sm: "0.375rem",
+        lg: "1rem",
+        xl: "1.5rem",
+        "2xl": "2rem",
         full: "9999px",
       },
       fontFamily: {
