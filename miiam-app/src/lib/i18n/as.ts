@@ -583,6 +583,13 @@ const as: Translations = {
     homeServices: "ঘৰৰ সেৱা",
     notAvailableArea: "ঘৰৰ সেৱা এতিয়া আপোনাৰ অঞ্চলত উপলব্ধ নাই। আমি দ্ৰুত বিস্তাৰ হৈ আছো!",
     providingServices: "ঘৰলৈ সেৱা প্ৰদান কৰি আছো",
+    serviceNotFound: "সেৱা পোৱা নগ'ল",
+    serviceNotFoundDesc: "আপুনি যে সেৱা বিচাৰি আছে সেইটো উপস্থিত নাই বা আঁতৰাই দিয়া হৈছে।",
+    browseServices: "সেৱা ব্ৰাউজ কৰক",
+    warrantyDays: "{days}-দিনৰ ৱাৰেণ্টি",
+    noServices: "কোনো সেৱা পোৱা নগ'ল",
+    tryDifferentCategory: "এটা বেলেগ শ্ৰেণী বাছনি কৰিবলৈ চেষ্টা কৰক",
+    showAll: "সকলো সেৱা দেখুৱাওক",
   },
   grocery: {
     title: "মুদি",

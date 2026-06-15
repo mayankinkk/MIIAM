@@ -21,47 +21,56 @@ export async function POST(request: NextRequest) {
   const supabase = createAdminClient();
 
   try {
-    const { 
-      service_id, 
-      provider_id, 
-      scheduled_date, 
-      scheduled_time, 
+    const {
+      service_type,
+      sub_service,
+      user_name,
+      user_phone,
       address,
+      scheduled_date,
+      scheduled_time,
+      amount,
       notes,
-      total_amount
+      provider_id,
     } = await request.json();
 
-    if (!service_id || !provider_id || !scheduled_date || !scheduled_time) {
+    if (!service_type || !scheduled_date || !scheduled_time || !address) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
     // Always use authenticated user.id — never trust request body for user_id
     const user_id = user.id;
 
-    const { data: existing } = await supabase
-      .from("service_bookings")
-      .select("id")
-      .eq("provider_id", provider_id)
-      .eq("scheduled_date", scheduled_date)
-      .eq("scheduled_time", scheduled_time)
-      .eq("status", "confirmed")
-      .maybeSingle();
+    // Check for conflicting bookings (same provider, date, time)
+    if (provider_id) {
+      const { data: existing } = await supabase
+        .from("service_bookings")
+        .select("id")
+        .eq("provider_id", provider_id)
+        .eq("scheduled_date", scheduled_date)
+        .eq("scheduled_time", scheduled_time)
+        .eq("status", "confirmed")
+        .maybeSingle();
 
-    if (existing) {
-      return NextResponse.json({ error: "Time slot already booked" }, { status: 409 });
+      if (existing) {
+        return NextResponse.json({ error: "Time slot already booked" }, { status: 409 });
+      }
     }
 
     const { data: booking, error } = await supabase
       .from("service_bookings")
       .insert({
-        service_id,
+        service_type,
+        sub_service: sub_service || null,
         user_id,
-        provider_id,
+        user_name: user_name || "Customer",
+        user_phone: user_phone || "",
+        address,
         scheduled_date,
         scheduled_time,
-        address: address || null,
+        amount: amount || 0,
+        provider_id: provider_id || null,
         notes: notes || null,
-        total_amount: total_amount || null,
         status: "confirmed",
       })
       .select()
@@ -69,20 +78,19 @@ export async function POST(request: NextRequest) {
 
     if (error) throw error;
 
-    // Send booking confirmation email
+    // Send booking confirmation email (best-effort)
     try {
       const { data: profile } = await supabase.from("profiles").select("email, full_name").eq("id", user_id).single();
-      const { data: service } = await supabase.from("services").select("name").eq("id", service_id).single();
       if (profile?.email) {
         const { sendBookingConfirmationEmail } = await import("@/lib/email");
         await sendBookingConfirmationEmail({
-          customerName: profile.full_name || "there",
+          customerName: profile.full_name || user_name || "there",
           customerEmail: profile.email,
-          serviceName: service?.name || "Service",
+          serviceName: sub_service || service_type,
           date: scheduled_date,
           time: scheduled_time,
-          address: address || "",
-          total: total_amount || 0,
+          address,
+          total: amount || 0,
           bookingId: booking.id,
         });
       }
@@ -129,9 +137,9 @@ export async function GET(request: NextRequest) {
     }
     const { data: bookings, error } = await supabase
       .from("service_bookings")
-      .select("*, service:services(name, category)")
+      .select("*")
       .eq("user_id", user_id)
-      .order("scheduled_date", { ascending: false });
+      .order("created_at", { ascending: false });
 
     if (error) {
       return NextResponse.json({ bookings: [] });

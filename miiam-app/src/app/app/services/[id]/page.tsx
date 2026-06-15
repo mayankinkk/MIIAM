@@ -1,113 +1,21 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, Suspense, useCallback, useMemo } from "react";
 import { useTranslation } from "@/lib/i18n/useTranslation";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { useCartStore } from "@/lib/store/cartStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
 import { SERVICES_VENDOR_ID } from "@/lib/constants";
-
-const servicesData: Record<string, any> = {
-  s1: { 
-    id: "s1", 
-    name: "AC Deep Cleaning", 
-    category: "ac",
-    rating: 4.8, 
-    reviews: 28450, 
-    price: 599, 
-    originalPrice: 799,
-    duration: "90 mins", 
-    image: "https://images.unsplash.com/photo-1631564591547-4d46fe7c9c0a?w=400&q=80", 
-    included: ["Complete interior cleaning", "Filter cleaning", "Coil cleaning", "Gas check"],
-    warranty_days: 30,
-    badge: "mostPopular",
-    description: "Get your AC units deep cleaned by certified technicians. Removes dust, mold, and bacteria for cleaner, healthier air."
-  },
-  s2: { 
-    id: "s2", 
-    name: "AC Gas Refill", 
-    category: "ac",
-    rating: 4.7, 
-    reviews: 18200, 
-    price: 450, 
-    duration: "30 mins", 
-    image: "https://images.unsplash.com/photo-1631564591547-4d46fe7c9c0a?w=400&q=80", 
-    included: ["Gas refill", "Leak check", "Performance test"],
-    warranty_days: 90,
-    description: "Professional AC gas refill service. Restores cooling efficiency and maintains optimal performance."
-  },
-  s3: { 
-    id: "s3", 
-    name: "Full Home Cleaning", 
-    category: "cleaning",
-    rating: 4.8, 
-    reviews: 45000, 
-    price: 2499, 
-    originalPrice: 3499,
-    duration: "4-5 hrs", 
-    image: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=80", 
-    included: ["All rooms", "Kitchen", "Bathrooms", "Balcony"],
-    warranty_days: 7,
-    badge: "bestSeller",
-    description: "Complete home cleaning service covering all rooms, kitchen, bathrooms, and balcony. Professional team with eco-friendly products."
-  },
-  s4: { 
-    id: "s4", 
-    name: "Bathroom Deep Cleaning", 
-    category: "cleaning",
-    rating: 4.7, 
-    reviews: 32100, 
-    price: 799, 
-    duration: "2 hrs", 
-    image: "https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=400&q=80", 
-    included: ["Floor cleaning", "Tile cleaning", "Fitting cleaning", "Disinfection"],
-    warranty_days: 7,
-    description: "Deep cleaning for your bathrooms. Removes stains, mold, and limescale. Sanitization included."
-  },
-  s5: { 
-    id: "s5", 
-    name: "Tap & Mixer Repair", 
-    category: "plumbing",
-    rating: 4.8, 
-    reviews: 22300, 
-    price: 199, 
-    duration: "45 mins", 
-    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80", 
-    included: ["Inspection", "Washer replacement", "Thread check"],
-    warranty_days: 30,
-    description: "Professional plumbing repair service. Fix leaking taps, faulty mixers, and replace washers."
-  },
-  s6: { 
-    id: "s6", 
-    name: "Fan Installation", 
-    category: "electrical",
-    rating: 4.8, 
-    reviews: 28900, 
-    price: 149, 
-    duration: "30 mins", 
-    image: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=400&q=80", 
-    included: ["Installation", "Wiring", "Testing"],
-    warranty_days: 90,
-    description: "Professional fan installation service. Safe and secure installation with testing."
-  },
-};
-
-const timeSlots = [
-  "09:00 AM - 11:00 AM",
-  "11:00 AM - 01:00 PM",
-  "02:00 PM - 04:00 PM",
-  "04:00 PM - 06:00 PM",
-  "06:00 PM - 08:00 PM",
-];
+import { getServiceById, SERVICE_TIME_SLOTS } from "@/lib/data/services";
 
 function ServiceDetailContent() {
   const { t } = useTranslation();
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const serviceId = searchParams.get("id") || "s1";
-  const service = servicesData[serviceId] || servicesData.s1;
-  
+  const params = useParams();
+  const serviceId = (params.id as string) || "s1";
+  const service = getServiceById(serviceId);
+
   const { addItem } = useCartStore();
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
@@ -115,168 +23,242 @@ function ServiceDetailContent() {
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [adding, setAdding] = useState(false);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = useCallback(() => {
+    if (!service) return;
     setAdding(true);
-    addItem({
-      id: `service-${service.id}`,
-      name: service.name,
-      price: service.price,
-      image_url: service.image,
-      vendor_name: "MIIAM Services",
-      vendor_id: SERVICES_VENDOR_ID,
-      menu_item_id: service.id,
-    }, 1);
+    const schedulingNote = [selectedDate, selectedTime].filter(Boolean).join(" | ");
+    addItem(
+      {
+        id: `service-${service.id}`,
+        name: service.name,
+        price: service.price,
+        image_url: service.image,
+        vendor_name: "MIIAM Services",
+        vendor_id: SERVICES_VENDOR_ID,
+        menu_item_id: service.id,
+        special_notes: schedulingNote || undefined,
+      },
+      1,
+    );
     setTimeout(() => {
       setAdding(false);
       router.push("/app/cart");
     }, 500);
-  };
+  }, [service, selectedDate, selectedTime, addItem, router]);
 
-  const [dates, setDates] = useState<Date[]>([]);
+  const dates = useMemo(
+    () =>
+      Array.from({ length: 7 }, (_, i) => {
+        const date = new Date();
+        date.setDate(date.getDate() + i);
+        return date;
+      }),
+    [],
+  );
 
-  useEffect(() => {
-    setDates(Array.from({ length: 7 }, (_, i) => {
-      const date = new Date();
-      date.setDate(date.getDate() + i);
-      return date;
-    }));
-  }, []);
+  // Fallback if service not found
+  if (!service) {
+    return (
+      <div className="min-h-screen bg-surface flex flex-col items-center justify-center gap-4 px-4">
+        <span className="material-symbols-outlined text-outline text-5xl">search_off</span>
+        <h1 className="text-xl font-bold text-on-surface">{t.services.serviceNotFound || "Service not found"}</h1>
+        <p className="text-on-surface-variant text-sm text-center">
+          {t.services.serviceNotFoundDesc || "The service you're looking for doesn't exist or has been removed."}
+        </p>
+        <button
+          onClick={() => router.push("/app/services")}
+          className="mt-4 px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:scale-[1.02] active:scale-95 transition-all"
+        >
+          {t.services.browseServices || "Browse Services"}
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-white pb-24">
-      <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-4 py-4 bg-[var(--color-surface-container-lowest)]/80 backdrop-blur-2xl border-b border-gray-100">
-        <button onClick={() => router.back()} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100">
-          <span className="material-symbols-outlined text-gray-700">arrow_back</span>
+    <div className="min-h-screen bg-surface pb-24">
+      <nav
+        className="fixed top-0 w-full z-50 flex justify-between items-center px-4 py-3 bg-surface/90 backdrop-blur-2xl shadow-[0px_4px_20px_rgba(77,33,42,0.06)]"
+        style={{ paddingTop: "calc(0.75rem + env(safe-area-inset-top, 0px))" }}
+      >
+        <button
+          onClick={() => router.back()}
+          aria-label="Go back"
+          className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-colors"
+        >
+          <span className="material-symbols-outlined text-on-surface text-[22px]">arrow_back</span>
         </button>
-        <span className="text-xl font-black text-gray-800">MIIAM</span>
+        <span className="text-xl font-extrabold tracking-tighter text-primary">MIIAM</span>
         <div className="w-10" />
       </nav>
 
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: t.services.homeServices, href: '/app/services' }, { label: service.name }]} />
+      <Breadcrumbs
+        items={[
+          { label: "Home", href: "/app/explore" },
+          { label: t.services.homeServices, href: "/app/services" },
+          { label: service.name },
+        ]}
+      />
 
-      <div className="pt-16">
-        <BlurImage src={service.image} alt={service.name} fill className="w-full h-64" sizes="100vw" />
+      <div className="relative w-full h-64">
+        <BlurImage src={service.image} alt={service.name} fill className="object-cover" sizes="100vw" />
+        <div className="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent" />
       </div>
 
-      <div className="p-4">
+      <div className="p-4 -mt-8 relative z-10">
         {service.badge && (
-          <span className="inline-block text-xs font-bold text-[#5b31fc] bg-purple-100 px-3 py-1 rounded-full mb-3">
+          <span className="inline-block text-xs font-bold text-primary bg-primary/10 px-3 py-1 rounded-full mb-3">
             {t.services[service.badge as keyof typeof t.services] || service.badge}
           </span>
         )}
-        
-        <h1 className="text-2xl font-black text-gray-800 mb-2">{service.name}</h1>
-        
+
+        <h1 className="text-2xl font-black text-on-surface mb-2">{service.name}</h1>
+
         <div className="flex items-center gap-2 mb-4">
-          <div className="flex items-center gap-1 bg-green-100 px-2 py-1 rounded">
+          <div className="flex items-center gap-1 bg-green-100 px-2 py-1 rounded-lg">
             <span className="text-xs font-bold text-green-700">{service.rating}</span>
             <span className="text-green-700 text-xs">★</span>
           </div>
-          <span className="text-sm text-gray-500">{service.reviews.toLocaleString()} {t.services.reviews}</span>
-          <span className="text-gray-300">•</span>
-          <span className="text-sm text-gray-500">{service.duration}</span>
+          <span className="text-sm text-on-surface-variant">
+            {service.reviews.toLocaleString()} {t.services.reviews}
+          </span>
+          <span className="text-on-surface-variant/40">•</span>
+          <span className="text-sm text-on-surface-variant">{service.duration}</span>
         </div>
 
-        <p className="text-gray-600 mb-6">{service.description}</p>
+        <p className="text-on-surface-variant mb-6 leading-relaxed">{service.description}</p>
 
-        <div className="bg-gray-50 rounded-xl p-4 mb-6">
-          <h3 className="font-bold text-gray-800 mb-3">{t.services.whatIncluded}</h3>
+        <div className="bg-surface-container-low rounded-xl p-4 mb-6">
+          <h3 className="font-bold text-on-surface mb-3">{t.services.whatIncluded}</h3>
           <div className="space-y-2">
-            {service.included?.map((item: string, i: number) => (
+            {service.included.map((item, i) => (
               <div key={i} className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-green-600 text-sm">check_circle</span>
-                <span className="text-sm text-gray-600">{item}</span>
+                <span className="material-symbols-outlined text-green-500 text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>
+                  check_circle
+                </span>
+                <span className="text-sm text-on-surface-variant">{item}</span>
               </div>
             ))}
           </div>
-          <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-200">
-            <span className="material-symbols-outlined text-blue-600 text-sm">verified</span>
-            
+          <div className="flex items-center gap-2 mt-3 pt-3 border-t border-outline-variant/20">
+            <span className="material-symbols-outlined text-primary text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>
+              verified
+            </span>
+            <span className="text-xs text-on-surface-variant">
+              {t.services.warrantyDays?.replace("{days}", String(service.warranty_days)) || `${service.warranty_days}-day warranty`}
+            </span>
           </div>
         </div>
 
+        {/* Date & Time Selection */}
         <div className="mb-6">
-          <h3 className="font-bold text-gray-800 mb-3">{t.services.selectDate}</h3>
-          
+          <h3 className="font-bold text-on-surface mb-3">{t.services.selectDate}</h3>
+
           <div className="mb-3">
-            <button 
+            <button
               onClick={() => setShowDatePicker(!showDatePicker)}
-              className="w-full p-3 border border-gray-200 rounded-xl flex items-center justify-between"
+              aria-expanded={showDatePicker}
+              aria-haspopup="listbox"
+              className="w-full p-3 border-2 border-outline rounded-xl flex items-center justify-between hover:border-primary/50 transition-colors"
             >
-              <span className={selectedDate ? "text-gray-800" : "text-gray-400"}>
+              <span className={selectedDate ? "text-on-surface font-medium" : "text-on-surface-variant"}>
                 {selectedDate || t.services.selectDate}
               </span>
-              <span className="material-symbols-outlined text-gray-400">calendar_today</span>
+              <span className="material-symbols-outlined text-on-surface-variant">calendar_today</span>
             </button>
-            
+
             {showDatePicker && (
-              <div className="mt-2 p-3 border border-gray-200 rounded-xl bg-white">
-                <div className="flex gap-2 overflow-x-auto">
-                  {dates.map((date, i) => (
-                    <button
-                      key={i}
-                      onClick={() => {
-                        setSelectedDate(date.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' }));
-                        setShowDatePicker(false);
-                      }}
-                      className="flex-shrink-0 p-2 rounded-lg text-sm hover:bg-gray-100"
-                    >
-                      {date.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric' })}
-                    </button>
-                  ))}
+              <div className="mt-2 p-3 border-2 border-outline rounded-xl bg-surface-container-lowest" role="listbox" aria-label="Select date">
+                <div className="flex gap-2 overflow-x-auto no-scrollbar">
+                  {dates.map((date, i) => {
+                    const dateStr = date.toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" });
+                    const isSelected = selectedDate === dateStr;
+                    return (
+                      <button
+                        key={i}
+                        role="option"
+                        aria-selected={isSelected}
+                        onClick={() => {
+                          setSelectedDate(dateStr);
+                          setShowDatePicker(false);
+                        }}
+                        className={`flex-shrink-0 p-2 rounded-lg text-sm font-medium transition-all ${
+                          isSelected ? "bg-primary text-white" : "hover:bg-surface-container"
+                        }`}
+                      >
+                        {date.toLocaleDateString("en-IN", { weekday: "short", day: "numeric" })}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}
           </div>
 
           <div>
-            <button 
+            <button
               onClick={() => setShowTimePicker(!showTimePicker)}
-              className="w-full p-3 border border-gray-200 rounded-xl flex items-center justify-between"
+              aria-expanded={showTimePicker}
+              aria-haspopup="listbox"
+              className="w-full p-3 border-2 border-outline rounded-xl flex items-center justify-between hover:border-primary/50 transition-colors"
             >
-              <span className={selectedTime ? "text-gray-800" : "text-gray-400"}>
+              <span className={selectedTime ? "text-on-surface font-medium" : "text-on-surface-variant"}>
                 {selectedTime || t.services.selectTimeSlot}
               </span>
-              <span className="material-symbols-outlined text-gray-400">schedule</span>
+              <span className="material-symbols-outlined text-on-surface-variant">schedule</span>
             </button>
-            
+
             {showTimePicker && (
-              <div className="mt-2 p-3 border border-gray-200 rounded-xl bg-white">
+              <div className="mt-2 p-3 border-2 border-outline rounded-xl bg-surface-container-lowest" role="listbox" aria-label="Select time slot">
                 <div className="grid grid-cols-2 gap-2">
-                  {timeSlots.map((slot, i) => (
-                    <button
-                      key={i}
-                      onClick={() => {
-                        setSelectedTime(slot);
-                        setShowTimePicker(false);
-                      }}
-                      className={`p-2 rounded-lg text-sm ${selectedTime === slot ? 'bg-[#5b31fc] text-white' : 'hover:bg-gray-100'}`}
-                    >
-                      {slot}
-                    </button>
-                  ))}
+                  {SERVICE_TIME_SLOTS.map((slot) => {
+                    const isSelected = selectedTime === slot;
+                    return (
+                      <button
+                        key={slot}
+                        role="option"
+                        aria-selected={isSelected}
+                        onClick={() => {
+                          setSelectedTime(slot);
+                          setShowTimePicker(false);
+                        }}
+                        className={`p-2 rounded-lg text-sm font-medium transition-all ${
+                          isSelected ? "bg-primary text-white" : "hover:bg-surface-container"
+                        }`}
+                      >
+                        {slot}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}
           </div>
         </div>
 
-        <div className="flex items-center justify-between mb-6 p-4 bg-gray-50 rounded-xl">
+        {/* Price */}
+        <div className="flex items-center justify-between mb-6 p-4 bg-surface-container-low rounded-xl">
           <div>
-            <span className="text-2xl font-black text-gray-800">₹{service.price}</span>
+            <span className="text-2xl font-black text-on-surface">₹{service.price}</span>
             {service.originalPrice && (
-              <span className="text-sm text-gray-400 line-through ml-2">₹{service.originalPrice}</span>
+              <span className="text-sm text-on-surface-variant/60 line-through ml-2">₹{service.originalPrice}</span>
             )}
           </div>
-          <span className="text-xs text-gray-500">{t.checkout.incTaxes}</span>
+          <span className="text-xs text-on-surface-variant">{t.checkout.incTaxes}</span>
         </div>
 
+        {/* CTA */}
         <button
           onClick={handleAddToCart}
           disabled={adding}
-          className="fixed bottom-6 left-4 right-4 bg-[#5b31fc] text-white py-4 rounded-xl font-bold text-lg shadow-lg active:scale-95 transition-transform z-50"
+          className="fixed bottom-6 left-4 right-4 bg-primary text-white py-4 rounded-2xl font-bold text-lg shadow-lg shadow-primary/20 active:scale-95 transition-all z-50 flex items-center justify-center gap-2"
           style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}
         >
+          {adding ? (
+            <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+          ) : (
+            <span className="material-symbols-outlined text-[20px]">shopping_cart</span>
+          )}
           {adding ? t.common.loading : t.services.bookNow}
         </button>
       </div>
@@ -286,8 +268,8 @@ function ServiceDetailContent() {
 
 function LoadingFallback() {
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="w-8 h-8 border-4 border-[#5b31fc] border-t-transparent rounded-full animate-spin" />
+    <div className="min-h-screen flex items-center justify-center bg-surface">
+      <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
     </div>
   );
 }

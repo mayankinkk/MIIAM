@@ -581,6 +581,13 @@ const en = {
     homeServices: "Home Services",
     notAvailableArea: "Home services are not yet available in your area. We're expanding fast!",
     providingServices: "Providing doorstep home services to",
+    serviceNotFound: "Service not found",
+    serviceNotFoundDesc: "The service you're looking for doesn't exist or has been removed.",
+    browseServices: "Browse Services",
+    warrantyDays: "{days}-day warranty",
+    noServices: "No services found",
+    tryDifferentCategory: "Try selecting a different category",
+    showAll: "Show All Services",
   },
   grocery: {
     title: "Grocery",

@@ -583,6 +583,13 @@ const hi: Translations = {
     homeServices: "घर की सेवाएं",
     notAvailableArea: "घर की सेवाएं अभी आपके क्षेत्र में उपलब्ध नहीं हैं। हम तेज़ी से बढ़ रहे हैं!",
     providingServices: "दरवाजे पर घर की सेवाएं प्रदान कर रहे हैं",
+    serviceNotFound: "सेवा नहीं मिली",
+    serviceNotFoundDesc: "आप जो सेवा खोज रहे हैं वह मौजूद नहीं है या हटा दी गई है।",
+    browseServices: "सेवाएं देखें",
+    warrantyDays: "{days}-दिन की वारंटी",
+    noServices: "कोई सेवा नहीं मिली",
+    tryDifferentCategory: "एक अलग श्रेणी चुनने का प्रयास करें",
+    showAll: "सभी सेवाएं दिखाएं",
   },
   grocery: {
     title: "किराना",

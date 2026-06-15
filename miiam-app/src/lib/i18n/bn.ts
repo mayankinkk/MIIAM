@@ -583,6 +583,13 @@ const bn: Translations = {
     homeServices: "বাড়ির সেবা",
     notAvailableArea: "বাড়ির সেবা এখনো আপনার এলাকায় পাওয়া যায় না। আমরা দ্রুত বিস্তার করছি!",
     providingServices: "দোরগোড়ায় সেবা প্রদান করছি",
+    serviceNotFound: "সেবা পাওয়া যায়নি",
+    serviceNotFoundDesc: "আপনি যে সেবা খুঁজছেন তা বিদ্যমান নেই বা সরিয়ে ফেলা হয়েছে।",
+    browseServices: "সেবা ব্রাউজ করুন",
+    warrantyDays: "{days}-দিনের ওয়ারেন্টি",
+    noServices: "কোনো সেবা পাওয়া যায়নি",
+    tryDifferentCategory: "একটি ভিন্ন বিভাগ নির্বাচন করার চেষ্টা করুন",
+    showAll: "সব সেবা দেখান",
   },
   grocery: {
     title: "মুদি",
