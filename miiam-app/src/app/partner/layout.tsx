@@ -69,7 +69,7 @@ export default function PartnerLayout({
       {/* Sidebar */}
       <aside className="w-64 bg-[var(--color-surface-container-lowest)] border-r border-[var(--color-border-subtle)] fixed h-full z-20 flex-col hidden md:flex">
         <div className="p-6 border-b border-[var(--color-border-subtle)] flex items-center justify-center">
-          <Link href="/partner/dashboard" className="text-2xl font-extrabold tracking-tighter text-[#ba001c]">
+          <Link href="/partner/dashboard" className="text-2xl font-extrabold tracking-tighter text-[var(--color-primary)]">
             MIIAM <span className="text-[var(--color-on-surface)] text-sm tracking-normal ml-1">Partner</span>
           </Link>
         </div>
@@ -83,7 +83,7 @@ export default function PartnerLayout({
                 href={link.href}
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors ${
                   isActive
-                    ? "bg-[#ffe1e4] text-[#ba001c] font-bold"
+                    ? "bg-[var(--color-surface-container)] text-[var(--color-primary)] font-bold"
                     : "text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-subtle)]"
                 }`}
               >
@@ -96,7 +96,7 @@ export default function PartnerLayout({
 
         <div className="p-4 border-t border-[var(--color-border-subtle)]">
           <div className="bg-[var(--color-surface-subtle)] p-4 rounded-xl flex items-center gap-3 mb-4 border border-[var(--color-border-subtle)]">
-            <div className="w-10 h-10 bg-[#ba001c] rounded-full text-white flex items-center justify-center font-bold text-sm flex-shrink-0">
+            <div className="w-10 h-10 bg-[var(--color-primary)] rounded-full text-white flex items-center justify-center font-bold text-sm flex-shrink-0">
               {initials}
             </div>
             <div className="overflow-hidden min-w-0">
@@ -122,7 +122,7 @@ export default function PartnerLayout({
       {/* Main Content */}
       <main className="flex-1 md:ml-64 relative">
         <header className="md:hidden bg-[var(--color-surface-container-lowest)] border-b border-[var(--color-border-subtle)] px-4 py-3 flex items-center justify-between sticky top-0 z-30">
-          <Link href="/partner/dashboard" className="text-xl font-extrabold tracking-tighter text-[#ba001c]">
+          <Link href="/partner/dashboard" className="text-xl font-extrabold tracking-tighter text-[var(--color-primary)]">
             MIIAM <span className="text-[var(--color-on-surface)] text-xs tracking-normal ml-1">Partner</span>
           </Link>
           <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="text-[var(--color-on-surface)] p-1">
@@ -133,7 +133,7 @@ export default function PartnerLayout({
         {mobileMenuOpen && (
           <div className="md:hidden bg-[var(--color-surface-container-lowest)] border-b border-[var(--color-border-subtle)] px-4 py-2 relative z-20">
             <div className="flex items-center gap-3 px-4 py-3 mb-2 bg-[var(--color-surface-subtle)] rounded-xl">
-              <div className="w-8 h-8 bg-[#ba001c] rounded-full text-white flex items-center justify-center font-bold text-xs flex-shrink-0">
+              <div className="w-8 h-8 bg-[var(--color-primary)] rounded-full text-white flex items-center justify-center font-bold text-xs flex-shrink-0">
                 {initials}
               </div>
               <div className="overflow-hidden min-w-0">
@@ -150,7 +150,7 @@ export default function PartnerLayout({
                   onClick={() => setMobileMenuOpen(false)}
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors ${
                     isActive
-                      ? "bg-[#ffe1e4] text-[#ba001c] font-bold"
+                      ? "bg-[var(--color-surface-container)] text-[var(--color-primary)] font-bold"
                       : "text-[var(--color-on-surface-variant)]"
                   }`}
                 >

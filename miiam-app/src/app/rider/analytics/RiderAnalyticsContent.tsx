@@ -90,7 +90,7 @@ export default function RiderAnalyticsPage() {
   const chartMax = Math.max(...weeklyData.map(d => d.earnings), 1);
 
   return (
-    <div className="min-h-screen bg-[#fff4f4]">
+    <div className="min-h-screen bg-[var(--color-surface-container-lowest)]">
       <header className="bg-gradient-to-br from-[#0b50d5] to-[#0044bf] text-white p-6 pb-12">
         <div className="flex items-center gap-4">
           <Link href="/rider/dashboard" className="text-white">

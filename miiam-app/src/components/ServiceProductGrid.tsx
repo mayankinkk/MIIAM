@@ -254,14 +254,14 @@ export default function ServiceProductGrid({
             addToCart(product);
             if (navigator.vibrate) navigator.vibrate([20, 10, 20]);
           }}
-          className="w-11 h-11 bg-[#ba001c] text-white rounded-full flex items-center justify-center hover:scale-110 active:scale-90 transition-all animate-glow-pulse"
+          className="w-11 h-11 bg-[var(--color-primary)] text-white rounded-full flex items-center justify-center hover:scale-110 active:scale-90 transition-all animate-glow-pulse"
         >
           <span className="material-symbols-outlined text-lg">add</span>
         </button>
       );
     }
     return (
-      <div className="flex items-center gap-2 bg-[#ba001c] rounded-full px-2 animate-cart-pop">
+      <div className="flex items-center gap-2 bg-[var(--color-primary)] rounded-full px-2 animate-cart-pop">
         <button
           onClick={() => {
             updateQuantity(product.id, quantity - 1);
@@ -313,7 +313,7 @@ export default function ServiceProductGrid({
           >
             <span className="material-symbols-outlined">shopping_cart</span>
             {totalItems() > 0 && (
-              <span className="absolute -top-1 -right-1 w-5 h-5 bg-[#ba001c] text-white text-xs rounded-full flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 w-5 h-5 bg-[var(--color-primary)] text-white text-xs rounded-full flex items-center justify-center">
                 {totalItems()}
               </span>
             )}
@@ -382,7 +382,7 @@ export default function ServiceProductGrid({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={`Search ${serviceName.toLowerCase()}...`}
-            className="w-full h-12 pl-11 pr-4 bg-surface-container rounded-2xl text-sm font-medium text-on-surface placeholder:text-on-surface-variant/60 focus:outline-none focus:ring-2 focus:ring-[#ba001c]/30 transition-shadow"
+            className="w-full h-12 pl-11 pr-4 bg-surface-container rounded-2xl text-sm font-medium text-on-surface placeholder:text-on-surface-variant/60 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/30 transition-shadow"
           />
           {searchQuery && (
             <button
@@ -401,7 +401,7 @@ export default function ServiceProductGrid({
             }}
             className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap ${
               selectedCategory === "all"
-                ? "bg-[#ba001c] text-white"
+                ? "bg-[var(--color-primary)] text-white"
                 : "bg-surface-container text-on-surface-variant"
             } active:scale-95 transition-all`}
           >
@@ -416,7 +416,7 @@ export default function ServiceProductGrid({
               }}
               className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap flex items-center gap-2 ${
                 selectedCategory === filterTransform(cat.id)
-                  ? "bg-[#ba001c] text-white"
+                  ? "bg-[var(--color-primary)] text-white"
                   : "bg-surface-container text-on-surface-variant"
               } active:scale-95 transition-all animate-category-slide`}
               style={{ animationDelay: `${i * 50}ms` }}
@@ -452,7 +452,7 @@ export default function ServiceProductGrid({
                     key={opt.value}
                     onClick={() => { setSortBy(opt.value); setShowSort(false); }}
                     className={`w-full text-left px-4 py-3 text-sm font-semibold hover:bg-surface-container transition-colors ${
-                      sortBy === opt.value ? "text-[#ba001c] bg-[#ffe1e4]" : "text-on-surface"
+                      sortBy === opt.value ? "text-[var(--color-primary)] bg-[var(--color-surface-container)]" : "text-on-surface"
                     }`}
                   >
                     {opt.label}
@@ -468,7 +468,7 @@ export default function ServiceProductGrid({
             onClick={() => setInStockOnly(!inStockOnly)}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${
               inStockOnly
-                ? "bg-[#ba001c] text-white"
+                ? "bg-[var(--color-primary)] text-white"
                 : "bg-surface-container-lowest text-on-surface hover:bg-surface-container"
             }`}
           >
@@ -488,14 +488,14 @@ export default function ServiceProductGrid({
           </div>
         ) : locationRequired ? (
           <div className="text-center py-16 bg-surface-container-lowest rounded-3xl shadow-sm border border-outline-variant mx-2 animate-reveal-up">
-            <div className="w-20 h-20 bg-[#ba001c]/10 rounded-full flex items-center justify-center mx-auto mb-4 animate-glow-pulse">
-              <span className="material-symbols-outlined text-4xl text-[#ba001c]">location_on</span>
+            <div className="w-20 h-20 bg-[var(--color-primary)]/10 rounded-full flex items-center justify-center mx-auto mb-4 animate-glow-pulse">
+              <span className="material-symbols-outlined text-4xl text-[var(--color-primary)]">location_on</span>
             </div>
             <h3 className="text-lg font-black text-on-surface">Location Required</h3>
             <p className="text-on-surface-variant text-sm mt-2 max-w-[240px] mx-auto">Please set your delivery location to view available products in your area.</p>
             <button 
               onClick={() => { router.push("/app/home?selectLocation=true"); }}
-              className="mt-6 px-6 py-2.5 bg-[#ba001c] text-white rounded-full font-bold text-sm hover:bg-[#a00018] active:scale-95 transition-all shadow-md"
+              className="mt-6 px-6 py-2.5 bg-[var(--color-primary)] text-white rounded-full font-bold text-sm hover:bg-[#a00018] active:scale-95 transition-all shadow-md"
             >
               Set Location
             </button>
@@ -521,7 +521,7 @@ export default function ServiceProductGrid({
             <p className="text-on-surface-variant text-sm mt-2 max-w-[200px] mx-auto">{emptyDescription}</p>
             <button 
               onClick={() => setSelectedCategory("all")}
-              className="mt-6 px-6 py-2 bg-[#ba001c] text-white rounded-full font-bold text-sm hover:bg-[#a40017] transition-colors"
+              className="mt-6 px-6 py-2 bg-[var(--color-primary)] text-white rounded-full font-bold text-sm hover:bg-[#a40017] transition-colors"
             >
               {emptyActionLabel}
             </button>
@@ -557,7 +557,7 @@ export default function ServiceProductGrid({
                     {product.category || product.description || ""}
                   </p>
                   <div className="flex items-center justify-between mt-2">
-                    <span className="font-black text-[#ba001c]">
+                    <span className="font-black text-[var(--color-primary)]">
                       {priceLabel}
                       {product.price}
                     </span>
@@ -582,13 +582,13 @@ export default function ServiceProductGrid({
           }}
           className={`fixed bottom-6 left-4 right-4 z-50 flex items-center justify-between text-white px-5 py-4 rounded-2xl shadow-2xl active:scale-[0.98] transition-transform animate-slide-reveal ${
             isServiceable
-              ? "bg-[#ba001c] shadow-primary/40"
+              ? "bg-[var(--color-primary)] shadow-primary/40"
               : "bg-outline cursor-not-allowed shadow-none"
           }`}
           style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}
         >
           <div className="flex items-center gap-3">
-            <span className="bg-surface-container-lowest text-[#ba001c] font-black text-xs px-2 py-0.5 rounded-full">
+            <span className="bg-surface-container-lowest text-[var(--color-primary)] font-black text-xs px-2 py-0.5 rounded-full">
               {totalItems()}
             </span>
             <span className="font-bold">View Cart</span>

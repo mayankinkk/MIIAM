@@ -41,14 +41,14 @@ export default function PartnerLanding() {
     <div className="min-h-screen bg-white">
       {/* Navigation */}
       <nav className="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto">
-        <Link href="/" className="text-2xl font-extrabold tracking-tighter text-[#ba001c]">MIIAM</Link>
+        <Link href="/" className="text-2xl font-extrabold tracking-tighter text-[var(--color-primary)]">MIIAM</Link>
         <div className="flex items-center gap-4">
           <Link href="/auth/login?redirect=/partner/dashboard" className="text-[var(--color-on-surface-variant)] font-medium text-sm hover:text-[var(--color-on-surface)]">
             Sign In
           </Link>
           <Link
             href="/partner/register"
-            className="bg-[#ba001c] text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-[#a40017] transition-colors"
+            className="bg-[var(--color-primary)] text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-[#a40017] transition-colors"
           >
             Get Started
           </Link>
@@ -59,12 +59,12 @@ export default function PartnerLanding() {
       <section className="max-w-7xl mx-auto px-6 pt-16 pb-20 md:pt-24 md:pb-28">
         <div className="flex flex-col md:flex-row items-center gap-12">
           <div className="flex-1 text-center md:text-left">
-            <div className="inline-flex items-center gap-2 bg-[#ffe1e4] text-[#ba001c] px-4 py-2 rounded-full text-sm font-bold mb-6">
+            <div className="inline-flex items-center gap-2 bg-[var(--color-surface-container)] text-[var(--color-primary)] px-4 py-2 rounded-full text-sm font-bold mb-6">
               <span className="material-symbols-outlined text-[18px]">storefront</span>
               Join {vendorCount > 0 ? `${vendorCount}+` : "Our"} Partners
             </div>
             <h1 className="text-4xl md:text-6xl font-extrabold text-[var(--color-on-surface)] tracking-tight leading-tight mb-6">
-              Partner with <span className="text-[#ba001c]">MIIAM</span>
+              Partner with <span className="text-[var(--color-primary)]">MIIAM</span>
               <br />
               <span className="text-[var(--color-on-surface-variant)]">and grow your business</span>
             </h1>
@@ -74,7 +74,7 @@ export default function PartnerLanding() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
               <Link
                 href="/partner/register"
-                className="bg-[#ba001c] text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-[#a40017] transition-colors shadow-xl shadow-[#ba001c]/20 text-center"
+                className="bg-[var(--color-primary)] text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-[#a40017] transition-colors shadow-xl shadow-[var(--color-primary)]/20 text-center"
               >
                 Register Your Store
               </Link>
@@ -86,21 +86,21 @@ export default function PartnerLanding() {
               </Link>
             </div>
           </div>
-          <div className="flex-1 bg-gradient-to-br from-[#ba001c]/10 to-[#ba001c]/5 rounded-3xl p-8 md:p-12 text-center">
-            <span className="material-symbols-outlined text-8xl text-[#ba001c] mb-4" style={{ fontVariationSettings: "'FILL' 1" }}>storefront</span>
+          <div className="flex-1 bg-gradient-to-br from-[var(--color-primary)]/10 to-[var(--color-primary)]/5 rounded-3xl p-8 md:p-12 text-center">
+            <span className="material-symbols-outlined text-8xl text-[var(--color-primary)] mb-4" style={{ fontVariationSettings: "'FILL' 1" }}>storefront</span>
             <p className="text-2xl font-extrabold text-[var(--color-on-surface)]">{vendorCount > 0 ? `${vendorCount}+` : "Growing"}</p>
             <p className="text-[var(--color-outline)]">Active Restaurant Partners</p>
             <div className="grid grid-cols-3 gap-4 mt-8">
               <div>
-                <p className="text-xl font-black text-[#ba001c]">50+</p>
+                <p className="text-xl font-black text-[var(--color-primary)]">50+</p>
                 <p className="text-xs text-[var(--color-outline)]">Cities</p>
               </div>
               <div>
-                <p className="text-xl font-black text-[#ba001c]">15%</p>
+                <p className="text-xl font-black text-[var(--color-primary)]">15%</p>
                 <p className="text-xs text-[var(--color-outline)]">Commission</p>
               </div>
               <div>
-                <p className="text-xl font-black text-[#ba001c]">24hr</p>
+                <p className="text-xl font-black text-[var(--color-primary)]">24hr</p>
                 <p className="text-xs text-[var(--color-outline)]">Verification</p>
               </div>
             </div>
@@ -116,8 +116,8 @@ export default function PartnerLanding() {
           <div className="grid md:grid-cols-3 gap-6">
             {benefits.map((b) => (
               <div key={b.title} className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl border border-[var(--color-border-subtle)] hover:shadow-lg transition-shadow">
-                <div className="w-12 h-12 bg-[#ffe1e4] rounded-xl flex items-center justify-center mb-4">
-                  <span className="material-symbols-outlined text-[#ba001c]">{b.icon}</span>
+                <div className="w-12 h-12 bg-[var(--color-surface-container)] rounded-xl flex items-center justify-center mb-4">
+                  <span className="material-symbols-outlined text-[var(--color-primary)]">{b.icon}</span>
                 </div>
                 <h3 className="text-lg font-bold text-[var(--color-on-surface)] mb-2">{b.title}</h3>
                 <p className="text-sm text-[var(--color-outline)]">{b.desc}</p>
@@ -134,7 +134,7 @@ export default function PartnerLanding() {
         <div className="grid md:grid-cols-4 gap-8">
           {steps.map((s) => (
             <div key={s.num} className="text-center">
-              <div className="w-16 h-16 bg-[#ba001c] text-white rounded-2xl flex items-center justify-center text-2xl font-black mx-auto mb-4">
+              <div className="w-16 h-16 bg-[var(--color-primary)] text-white rounded-2xl flex items-center justify-center text-2xl font-black mx-auto mb-4">
                 {s.num}
               </div>
               <h3 className="font-bold text-[var(--color-on-surface)] mb-2">{s.title}</h3>
@@ -145,7 +145,7 @@ export default function PartnerLanding() {
         <div className="text-center mt-12">
           <Link
             href="/partner/register"
-            className="inline-block bg-[#ba001c] text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-[#a40017] transition-colors shadow-xl shadow-[#ba001c]/20"
+            className="inline-block bg-[var(--color-primary)] text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-[#a40017] transition-colors shadow-xl shadow-[var(--color-primary)]/20"
           >
             Start Registration
           </Link>
@@ -177,7 +177,7 @@ export default function PartnerLanding() {
           <p className="text-[var(--color-outline)] mb-8">Join thousands of partners already growing with MIIAM.</p>
           <Link
             href="/partner/register"
-            className="inline-block bg-[#ba001c] text-white px-10 py-4 rounded-2xl font-bold text-xl hover:bg-[#a40017] transition-colors shadow-xl shadow-[#ba001c]/20"
+            className="inline-block bg-[var(--color-primary)] text-white px-10 py-4 rounded-2xl font-bold text-xl hover:bg-[#a40017] transition-colors shadow-xl shadow-[var(--color-primary)]/20"
           >
             Register Now — It&apos;s Free
           </Link>

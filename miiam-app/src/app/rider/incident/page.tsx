@@ -105,7 +105,7 @@ export default function RiderIncidentPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fff4f4]">
+    <div className="min-h-screen bg-[var(--color-surface-container-lowest)]">
       <header className="bg-gradient-to-br from-red-500 to-red-700 text-white p-6 pb-8 rounded-b-[3rem]">
         <div className="flex justify-between items-center">
           <Link href="/rider/dashboard" className="text-3xl font-black tracking-tighter">MIIAM</Link>
@@ -134,7 +134,7 @@ export default function RiderIncidentPage() {
 
         {/* One-Tap Emergency Button */}
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg text-center">
-          <h3 className="font-bold text-[#4d212a] mb-4">One-Tap Emergency</h3>
+          <h3 className="font-bold text-[var(--color-on-surface)] mb-4">One-Tap Emergency</h3>
           <button
             onClick={() => handleQuickReport("emergency")}
             className="w-32 h-32 bg-gradient-to-br from-red-500 to-red-600 rounded-full flex flex-col items-center justify-center mx-auto shadow-lg animate-pulse"
@@ -147,7 +147,7 @@ export default function RiderIncidentPage() {
 
         {/* Quick Report Types */}
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-lg">
-          <h3 className="font-bold text-[#4d212a] mb-4">What happened?</h3>
+          <h3 className="font-bold text-[var(--color-on-surface)] mb-4">What happened?</h3>
           <div className="grid grid-cols-2 gap-3">
             {incidentTypes.map((type) => (
               <button
@@ -164,7 +164,7 @@ export default function RiderIncidentPage() {
 
         {/* Emergency Contacts */}
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-lg">
-          <h3 className="font-bold text-[#4d212a] mb-4">Quick Contacts</h3>
+          <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Quick Contacts</h3>
           <div className="space-y-3">
             {emergencyContacts.map((contact, i) => (
               <a 
@@ -189,7 +189,7 @@ export default function RiderIncidentPage() {
 
         {/* Recent Incidents */}
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-lg">
-          <h3 className="font-bold text-[#4d212a] mb-4">Recent Reports</h3>
+          <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Recent Reports</h3>
           <div className="space-y-3">
             {recentIncidents.length > 0 ? recentIncidents.map((report, i) => (
               <div key={i} className="flex items-center justify-between p-3 border-b border-[var(--color-border-subtle)]">

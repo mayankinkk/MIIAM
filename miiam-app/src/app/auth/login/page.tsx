@@ -66,7 +66,7 @@ function LoginContent() {
   return (
     <div className="min-h-screen flex">
       {/* Left Side - Lifestyle Imagery (Desktop only) */}
-      <section className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-[#281716]">
+      <section className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-[var(--color-on-surface)]">
         <div className="absolute inset-0 bg-gradient-to-tr from-[#ffdad7]/40 to-transparent z-10" />
         <img
           className="absolute inset-0 w-full h-full object-cover"
@@ -74,7 +74,7 @@ function LoginContent() {
           alt="Artisanal pizza"
         />
         <div className="relative z-20 mt-auto p-16 max-w-xl">
-          <div className="bg-[#ba001c] px-4 py-1 inline-block mb-6 rounded-sm">
+          <div className="bg-[var(--color-primary)] px-4 py-1 inline-block mb-6 rounded-sm">
             <span className="text-white text-[10px] tracking-[0.3em] font-bold">PREMIUM SELECTION</span>
           </div>
           <h1 className="text-white text-[4.5rem] leading-[0.9] tracking-[-0.05em] font-extrabold mb-6" style={{ fontFamily: 'Plus Jakarta Sans' }}>
@@ -87,13 +87,13 @@ function LoginContent() {
       </section>
 
       {/* Right Side - Auth Card */}
-      <section className="w-full lg:w-1/2 flex items-center justify-center p-6 md:p-12 lg:p-24 bg-[#fff0ef]">
+      <section className="w-full lg:w-1/2 flex items-center justify-center p-6 md:p-12 lg:p-24 bg-[var(--color-surface-container-lowest)]">
         <div className="w-full max-w-md space-y-8 bg-[var(--color-surface-container-lowest)] p-8 md:p-12 rounded-xl" style={{ boxShadow: '0 20px 40px rgba(77, 33, 42, 0.06)' }}>
           {/* Header */}
           <div className="space-y-2">
             <div className="text-3xl font-black tracking-tighter text-red-700 mb-8">MIIAM</div>
-            <h2 className="text-[3rem] leading-[1] tracking-[-0.02em] font-extrabold text-[#281716]" style={{ fontFamily: 'Plus Jakarta Sans' }}>Welcome Back</h2>
-            <p className="text-[#5c403d] font-medium">Enter your email to sign in to your account.</p>
+            <h2 className="text-[3rem] leading-[1] tracking-[-0.02em] font-extrabold text-[var(--color-on-surface)]" style={{ fontFamily: 'Plus Jakarta Sans' }}>Welcome Back</h2>
+            <p className="text-[var(--color-on-surface)] font-medium">Enter your email to sign in to your account.</p>
           </div>
 
           {resetSuccess && (
@@ -106,36 +106,36 @@ function LoginContent() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
               <div className="space-y-1">
-                <label className="text-[10px] tracking-[0.3em] font-bold text-[#5c403d]" htmlFor="email">EMAIL ADDRESS</label>
+                <label className="text-[10px] tracking-[0.3em] font-bold text-[var(--color-on-surface)]" htmlFor="email">EMAIL ADDRESS</label>
                 <input
                   id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.com"
-                  className="w-full px-4 py-4 bg-[#fbdbd8] border-none rounded-xl focus:ring-2 focus:ring-[#ba001c] text-[#281716] font-medium transition-all placeholder:text-[#5c403d]/50"
+                  className="w-full px-4 py-4 bg-[var(--color-surface-container)] border-none rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] text-[var(--color-on-surface)] font-medium transition-all placeholder:text-[var(--color-on-surface)]/50"
                 />
               </div>
               <div className="space-y-1">
-                <label className="text-[10px] tracking-[0.3em] font-bold text-[#5c403d]" htmlFor="password">PASSWORD</label>
+                <label className="text-[10px] tracking-[0.3em] font-bold text-[var(--color-on-surface)]" htmlFor="password">PASSWORD</label>
                 <input
                   id="password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full px-4 py-4 bg-[#fbdbd8] border-none rounded-xl focus:ring-2 focus:ring-[#ba001c] text-[#281716] font-medium transition-all placeholder:text-[#5c403d]/50"
+                  className="w-full px-4 py-4 bg-[var(--color-surface-container)] border-none rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] text-[var(--color-on-surface)] font-medium transition-all placeholder:text-[var(--color-on-surface)]/50"
                 />
               </div>
               <div className="space-y-1 text-right">
-                <Link href="/auth/forgot-password" className="text-xs text-[#ba001c] font-bold hover:underline">Forgot Password?</Link>
+                <Link href="/auth/forgot-password" className="text-xs text-[var(--color-primary)] font-bold hover:underline">Forgot Password?</Link>
               </div>
             </div>
             {error && <p className="text-red-500 text-sm">{error}</p>}
             <button
               type="submit"
               disabled={!email.includes("@") || !password || isLoading}
-              className="w-full bg-[#ba001c] text-white text-[1.5rem] leading-[1.2] font-extrabold py-5 rounded-full shadow-lg shadow-[#ba001c]/20 hover:scale-[1.02] active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-[var(--color-primary)] text-white text-[1.5rem] leading-[1.2] font-extrabold py-5 rounded-full shadow-lg shadow-[var(--color-primary)]/20 hover:scale-[1.02] active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               style={{ fontFamily: 'Plus Jakarta Sans' }}
             >
               {isLoading ? "Signing in..." : "Sign In"}
@@ -149,10 +149,10 @@ function LoginContent() {
             type="button"
             onClick={handleGoogleLogin}
             disabled={isGoogleLoading}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-[#e5bdba] rounded-full hover:bg-[#fbdbd8] transition-colors active:scale-95 disabled:opacity-50"
+            className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-[var(--color-outline-variant)] rounded-full hover:bg-[var(--color-surface-container)] transition-colors active:scale-95 disabled:opacity-50"
           >
             {isGoogleLoading ? (
-              <div className="w-5 h-5 border-2 border-[#5c403d] border-t-transparent rounded-full animate-spin" />
+              <div className="w-5 h-5 border-2 border-[var(--color-on-surface)] border-t-transparent rounded-full animate-spin" />
             ) : (
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -161,14 +161,14 @@ function LoginContent() {
                 <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
               </svg>
             )}
-            <span className="font-bold text-sm text-[#281716]">Continue with Google</span>
+            <span className="font-bold text-sm text-[var(--color-on-surface)]">Continue with Google</span>
           </button>
 
-          <p className="text-center text-[#5c403d] font-medium">
-            Don't have an account? <Link href="/auth/signup" className="text-[#ba001c] font-extrabold hover:underline underline-offset-4">Create Account</Link>
+          <p className="text-center text-[var(--color-on-surface)] font-medium">
+            Don't have an account? <Link href="/auth/signup" className="text-[var(--color-primary)] font-extrabold hover:underline underline-offset-4">Create Account</Link>
           </p>
 
-          <p className="text-center text-xs text-[#5c403d]/60">
+          <p className="text-center text-xs text-[var(--color-on-surface)]/60">
             By continuing, you agree to MIIAM's <Link href="/terms" className="underline">Terms</Link> and <Link href="/privacy" className="underline">Privacy Policy</Link>
           </p>
         </div>
@@ -176,7 +176,7 @@ function LoginContent() {
 
       {/* Footer */}
       <footer className="fixed bottom-0 right-0 p-6 z-40">
-        <p className="text-[10px] tracking-[0.3em] text-[#5c403d]/60">© 2026 MIIAM INC. ALL RIGHTS RESERVED.</p>
+        <p className="text-[10px] tracking-[0.3em] text-[var(--color-on-surface)]/60">© 2026 MIIAM INC. ALL RIGHTS RESERVED.</p>
       </footer>
     </div>
   );
@@ -184,8 +184,8 @@ function LoginContent() {
 
 function Loading() {
   return (
-    <div className="min-h-screen bg-[#fff8f7] flex items-center justify-center">
-      <div className="w-8 h-8 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin" />
+    <div className="min-h-screen bg-[var(--color-surface-container-lowest)] flex items-center justify-center">
+      <div className="w-8 h-8 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
     </div>
   );
 }

@@ -123,14 +123,14 @@ export default function EnhancedServicesDashboard() {
               const a = document.createElement("a"); a.href = url; a.download = "service-bookings.csv"; a.click();
               URL.revokeObjectURL(url);
             }}
-            className="px-4 py-2 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl font-bold text-sm flex items-center gap-2 hover:border-[#ba001c]"
+            className="px-4 py-2 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl font-bold text-sm flex items-center gap-2 hover:border-[var(--color-primary)]"
           >
             <span className="material-symbols-outlined text-sm">download</span>
             Export
           </button>
           <button
             onClick={() => setActiveTab("settings")}
-            className="px-4 py-2 bg-[#ba001c] text-white rounded-xl font-bold text-sm flex items-center gap-2"
+            className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm flex items-center gap-2"
           >
             <span className="material-symbols-outlined text-sm">add</span>
             Add Service
@@ -145,7 +145,7 @@ export default function EnhancedServicesDashboard() {
             onClick={() => setActiveTab(tab)}
             className={`px-4 py-2 rounded-lg text-sm font-bold capitalize transition-colors ${
               activeTab === tab
-                ? "bg-[#ba001c] text-white"
+                ? "bg-[var(--color-primary)] text-white"
                 : "text-[var(--color-outline)] hover:bg-[var(--color-surface-subtle)]"
             }`}
           >
@@ -202,7 +202,7 @@ export default function EnhancedServicesDashboard() {
                     <Link
                       key={service.id}
                       href={`/admin/services/${service.id}`}
-                      className="bg-[var(--color-surface-subtle)] rounded-2xl p-4 hover:bg-[#ffecee] transition-colors group border border-transparent hover:border-[#ba001c]"
+                      className="bg-[var(--color-surface-subtle)] rounded-2xl p-4 hover:bg-[#ffecee] transition-colors group border border-transparent hover:border-[var(--color-primary)]"
                     >
                       <div className={`w-12 h-12 rounded-xl ${service.bg} flex items-center justify-center mb-3`}>
                         <span className={`material-symbols-outlined ${service.color}`} style={{ fontVariationSettings: "'FILL' 1" }}>{service.icon}</span>
@@ -268,7 +268,7 @@ export default function EnhancedServicesDashboard() {
               <h2 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm">Recent Bookings</h2>
               <button
                 onClick={() => setActiveTab("bookings")}
-                className="text-sm font-bold text-[#ba001c] hover:underline"
+                className="text-sm font-bold text-[var(--color-primary)] hover:underline"
               >
                 View All
               </button>
@@ -329,7 +329,7 @@ export default function EnhancedServicesDashboard() {
                   onClick={() => setStatusFilter(status)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-bold capitalize ${
                     statusFilter === status
-                      ? "bg-[#ba001c] text-white"
+                      ? "bg-[var(--color-primary)] text-white"
                       : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]"
                   }`}
                 >
@@ -401,7 +401,7 @@ export default function EnhancedServicesDashboard() {
                     <td className="p-4">
                       <Link
                         href={`/admin/services/${booking.service_type}`}
-                        className="text-[#ba001c] hover:underline text-xs font-bold"
+                        className="text-[var(--color-primary)] hover:underline text-xs font-bold"
                       >
                         View
                       </Link>
@@ -427,7 +427,7 @@ export default function EnhancedServicesDashboard() {
             <h2 className="text-xl font-black text-[var(--color-on-surface)]">Service Providers</h2>
             <button
               onClick={() => setShowProviderModal(true)}
-              className="px-4 py-2 bg-[#ba001c] text-white rounded-xl font-bold text-sm flex items-center gap-2"
+              className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm flex items-center gap-2"
             >
               <span className="material-symbols-outlined text-sm">add</span>
               Add Provider
@@ -454,7 +454,7 @@ export default function EnhancedServicesDashboard() {
                   </div>
                   <Link
                     href="/admin/services-settings"
-                    className="text-xs font-bold text-[#ba001c] hover:underline"
+                    className="text-xs font-bold text-[var(--color-primary)] hover:underline"
                   >
                     Configure
                   </Link>
@@ -463,7 +463,7 @@ export default function EnhancedServicesDashboard() {
             </div>
             <button
               onClick={() => setShowCategoryModal(true)}
-              className="w-full mt-4 py-3 border-2 border-dashed border-[var(--color-border-subtle)] rounded-xl text-[var(--color-outline)] font-bold text-sm hover:border-[#ba001c] hover:text-[#ba001c] transition-colors"
+              className="w-full mt-4 py-3 border-2 border-dashed border-[var(--color-border-subtle)] rounded-xl text-[var(--color-outline)] font-bold text-sm hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-colors"
             >
               + Add New Category
             </button>
@@ -481,7 +481,7 @@ export default function EnhancedServicesDashboard() {
                     max={100}
                     defaultValue={15}
                     id="svc_commission"
-                    className="w-16 text-right font-black text-[var(--color-on-surface)] bg-transparent border-b-2 border-transparent focus:border-[#ba001c] outline-none"
+                    className="w-16 text-right font-black text-[var(--color-on-surface)] bg-transparent border-b-2 border-transparent focus:border-[var(--color-primary)] outline-none"
                   />
                   <span className="font-bold text-[var(--color-outline)]">%</span>
                 </div>
@@ -495,7 +495,7 @@ export default function EnhancedServicesDashboard() {
                     min={0}
                     defaultValue={199}
                     id="svc_min_order"
-                    className="w-20 text-right font-black text-[var(--color-on-surface)] bg-transparent border-b-2 border-transparent focus:border-[#ba001c] outline-none"
+                    className="w-20 text-right font-black text-[var(--color-on-surface)] bg-transparent border-b-2 border-transparent focus:border-[var(--color-primary)] outline-none"
                   />
                 </div>
               </div>
@@ -507,7 +507,7 @@ export default function EnhancedServicesDashboard() {
                     min={0}
                     defaultValue={2}
                     id="svc_cancel_window"
-                    className="w-16 text-right font-black text-[var(--color-on-surface)] bg-transparent border-b-2 border-transparent focus:border-[#ba001c] outline-none"
+                    className="w-16 text-right font-black text-[var(--color-on-surface)] bg-transparent border-b-2 border-transparent focus:border-[var(--color-primary)] outline-none"
                   />
                   <span className="font-bold text-[var(--color-outline)]">hrs</span>
                 </div>
@@ -531,7 +531,7 @@ export default function EnhancedServicesDashboard() {
                 });
                 alert("Pricing settings saved");
               }}
-              className="w-full mt-4 py-3 bg-[#ba001c] text-white rounded-xl font-bold text-sm"
+              className="w-full mt-4 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm"
             >
               Update Settings
             </button>
@@ -567,7 +567,7 @@ export default function EnhancedServicesDashboard() {
                   setShowProviderModal(false);
                   setProviderForm({ name: "", phone: "", email: "", service_type: "beauty", experience: "" });
                 }}
-                className="flex-1 py-3 bg-[#ba001c] text-white rounded-xl font-bold text-sm"
+                className="flex-1 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm"
               >
                 Register
               </button>
@@ -599,7 +599,7 @@ export default function EnhancedServicesDashboard() {
                   setShowCategoryModal(false);
                   setCategoryForm({ name: "", icon: "home_repair_service", description: "" });
                 }}
-                className="flex-1 py-3 bg-[#ba001c] text-white rounded-xl font-bold text-sm"
+                className="flex-1 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm"
               >
                 Create
               </button>

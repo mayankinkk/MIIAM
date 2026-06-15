@@ -102,7 +102,7 @@ export default function AdminApplicationsPage() {
         <h1 className="text-3xl font-black text-[var(--color-on-surface)]">Job Applications</h1>
         <button 
           onClick={loadApplications}
-          className="text-sm font-bold text-[#ba001c] hover:underline"
+          className="text-sm font-bold text-[var(--color-primary)] hover:underline"
         >
           Refresh
         </button>
@@ -132,7 +132,7 @@ export default function AdminApplicationsPage() {
             onClick={() => setFilter(status)}
             className={`px-4 py-2 rounded-full font-bold text-sm capitalize ${
               filter === status 
-                ? "bg-[#ba001c] text-white" 
+                ? "bg-[var(--color-primary)] text-white" 
                 : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]"
             }`}
           >
@@ -209,7 +209,7 @@ export default function AdminApplicationsPage() {
                       <div className="flex gap-2">
                         <button
                           onClick={() => setSelectedApp(app)}
-                          className="text-xs font-bold text-[#ba001c] hover:underline"
+                          className="text-xs font-bold text-[var(--color-primary)] hover:underline"
                         >
                           View
                         </button>
@@ -262,7 +262,7 @@ export default function AdminApplicationsPage() {
                   <div>
                     <p className="text-xs text-[var(--color-outline-variant)]">Passport Picture</p>
                     {selectedApp.passport_picture ? (
-                      <a href={selectedApp.passport_picture} target="_blank" className="text-[#ba001c] text-sm underline">View</a>
+                      <a href={selectedApp.passport_picture} target="_blank" className="text-[var(--color-primary)] text-sm underline">View</a>
                     ) : <span className="text-[var(--color-outline-variant)]">Not uploaded</span>}
                   </div>
                 </div>
@@ -310,7 +310,7 @@ export default function AdminApplicationsPage() {
                   <div>
                     <p className="text-xs text-[var(--color-outline-variant)]">License</p>
                     {selectedApp.driving_license_url ? (
-                      <a href={selectedApp.driving_license_url} target="_blank" className="text-[#ba001c] text-sm underline">View</a>
+                      <a href={selectedApp.driving_license_url} target="_blank" className="text-[var(--color-primary)] text-sm underline">View</a>
                     ) : <span className="text-[var(--color-outline-variant)]">Not uploaded</span>}
                   </div>
                 </div>
@@ -368,7 +368,7 @@ export default function AdminApplicationsPage() {
                 <div>
                   <p className="text-xs text-[var(--color-outline-variant)]">Aadhaar Card</p>
                   {selectedApp.aadhaar_card_url ? (
-                    <a href={selectedApp.aadhaar_card_url} target="_blank" className="text-[#ba001c] text-sm underline">View</a>
+                    <a href={selectedApp.aadhaar_card_url} target="_blank" className="text-[var(--color-primary)] text-sm underline">View</a>
                   ) : <span className="text-[var(--color-outline-variant)]">Not uploaded</span>}
                 </div>
               </div>

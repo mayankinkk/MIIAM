@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center p-6">
+    <div className="min-h-screen bg-[var(--color-surface-container-lowest)] flex items-center justify-center p-6">
       <div className="text-center">
         <span className="material-symbols-outlined text-6xl text-[var(--color-outline-variant)]/60">question_mark</span>
         <h1 className="text-2xl font-black text-[var(--color-on-surface)] mt-4">Page Not Found</h1>

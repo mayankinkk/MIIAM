@@ -80,7 +80,7 @@ export default function NotificationCenter() {
         </div>
         <button 
           onClick={() => setShowSend(true)}
-          className="bg-[#ba001c] text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-red-900/10 hover:scale-105 active:scale-95 transition-all"
+          className="bg-[var(--color-primary)] text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-red-900/10 hover:scale-105 active:scale-95 transition-all"
         >
           + Send Notification
         </button>
@@ -109,7 +109,7 @@ export default function NotificationCenter() {
       {unreadCount > 0 && (
         <button 
           onClick={markAllAsRead}
-          className="text-sm font-bold text-[#ba001c] hover:underline"
+          className="text-sm font-bold text-[var(--color-primary)] hover:underline"
         >
           Mark all as read
         </button>
@@ -138,7 +138,7 @@ export default function NotificationCenter() {
                 <div className="flex items-center gap-2">
                   <p className="font-bold text-[var(--color-on-surface)]">{notification.title}</p>
                   {!notification.is_read && (
-                    <span className="w-2 h-2 bg-[#ba001c] rounded-full"></span>
+                    <span className="w-2 h-2 bg-[var(--color-primary)] rounded-full"></span>
                   )}
                 </div>
                 <p className="text-sm text-[var(--color-outline)] truncate">{notification.body}</p>
@@ -150,7 +150,7 @@ export default function NotificationCenter() {
                 {!notification.is_read && (
                   <button 
                     onClick={() => markAsRead(notification.id)}
-                    className="text-[var(--color-outline-variant)] hover:text-[#ba001c] p-2"
+                    className="text-[var(--color-outline-variant)] hover:text-[var(--color-primary)] p-2"
                   >
                     <span className="material-symbols-outlined text-sm">check</span>
                   </button>
@@ -189,7 +189,7 @@ export default function NotificationCenter() {
                   type="text"
                   value={newNotification.title}
                   onChange={(e) => setNewNotification({ ...newNotification, title: e.target.value })}
-                  className="w-full bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#ba001c]/10"
+                  className="w-full bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/10"
                   placeholder="Notification title"
                 />
               </div>
@@ -198,7 +198,7 @@ export default function NotificationCenter() {
                 <textarea
                   value={newNotification.body}
                   onChange={(e) => setNewNotification({ ...newNotification, body: e.target.value })}
-                  className="w-full bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#ba001c]/10"
+                  className="w-full bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/10"
                   rows={3}
                   placeholder="Notification message"
                 />
@@ -208,7 +208,7 @@ export default function NotificationCenter() {
                 <select
                   value={newNotification.type}
                   onChange={(e) => setNewNotification({ ...newNotification, type: e.target.value as any })}
-                  className="w-full bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#ba001c]/10"
+                  className="w-full bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/10"
                 >
                   <option value="system">System</option>
                   <option value="order">Order</option>
@@ -217,7 +217,7 @@ export default function NotificationCenter() {
               </div>
               <button
                 onClick={sendNotification}
-                className="w-full py-3 bg-[#ba001c] text-white rounded-xl font-bold hover:bg-[#a00018]"
+                className="w-full py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold hover:bg-[#a00018]"
               >
                 Send to All Users
               </button>

@@ -216,7 +216,7 @@ export default function PartnerPOS() {
       <div className="grid grid-cols-1 sm:grid-cols-5 gap-4">
         <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-[var(--color-border-subtle)]">
           <p className="text-[var(--color-outline)] text-sm font-bold uppercase tracking-wider mb-1">Active</p>
-          <p className="text-4xl font-black text-[#ba001c]">{activeOrders.length}</p>
+          <p className="text-4xl font-black text-[var(--color-primary)]">{activeOrders.length}</p>
         </div>
         <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-[var(--color-border-subtle)]">
           <p className="text-[var(--color-outline)] text-sm font-bold uppercase tracking-wider mb-1">Pending</p>
@@ -295,7 +295,7 @@ export default function PartnerPOS() {
             <button
               onClick={() => { setBatchMode(!batchMode); setBatchSelected(new Set()); }}
               className={`text-xs font-bold px-3 py-1.5 rounded-lg border transition-colors ${
-                batchMode ? "bg-[#ba001c] text-white border-[#ba001c]" : "bg-[var(--color-surface-container-lowest)] text-[var(--color-outline)] border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]"
+                batchMode ? "bg-[var(--color-primary)] text-white border-[var(--color-primary)]" : "bg-[var(--color-surface-container-lowest)] text-[var(--color-outline)] border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]"
               }`}
             >
               Batch
@@ -364,7 +364,7 @@ export default function PartnerPOS() {
                 <div
                   key={order.id}
                   className={`bg-[var(--color-surface-container-lowest)] rounded-3xl p-6 shadow-sm border transition-all ${
-                    batchSelected.has(order.id) ? "border-[#ba001c] ring-2 ring-[#ba001c]/20" : "border-[var(--color-border-subtle)] hover:shadow-md"
+                    batchSelected.has(order.id) ? "border-[var(--color-primary)] ring-2 ring-[var(--color-primary)]/20" : "border-[var(--color-border-subtle)] hover:shadow-md"
                   }`}
                 >
                   {batchMode && (
@@ -377,7 +377,7 @@ export default function PartnerPOS() {
                           if (next.has(order.id)) next.delete(order.id); else next.add(order.id);
                           setBatchSelected(next);
                         }}
-                        className="w-4 h-4 accent-[#ba001c]"
+                        className="w-4 h-4 accent-[var(--color-primary)]"
                       />
                       <span className="text-xs text-[var(--color-outline)]">Select</span>
                     </div>
@@ -411,7 +411,7 @@ export default function PartnerPOS() {
                                 .limit(10);
                               setCustHistoryModal({ userId: order.user_id, orders: pastOrders || [] });
                             }}
-                            className="text-[10px] text-[#ba001c] font-bold hover:underline"
+                            className="text-[10px] text-[var(--color-primary)] font-bold hover:underline"
                           >
                             View customer history
                           </button>
@@ -431,7 +431,7 @@ export default function PartnerPOS() {
                       )}
                     </div>
                     <div className="text-right">
-                      <p className="text-2xl font-black text-[#ba001c]">₹{order.total_amount.toFixed(2)}</p>
+                      <p className="text-2xl font-black text-[var(--color-primary)]">₹{order.total_amount.toFixed(2)}</p>
                       {order.delivery_address && (
                         <p className="text-[10px] text-[var(--color-outline-variant)] mt-1 max-w-[160px] truncate">{order.delivery_address}</p>
                       )}
@@ -760,7 +760,7 @@ export default function PartnerPOS() {
               </div>
               <button
                 onClick={() => setCallMaskModal(null)}
-                className="block w-full py-3 bg-[#ba001c] text-white font-bold rounded-xl hover:bg-[#a40017] transition-colors"
+                className="block w-full py-3 bg-[var(--color-primary)] text-white font-bold rounded-xl hover:bg-[#a40017] transition-colors"
               >
                 Done
               </button>

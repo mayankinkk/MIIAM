@@ -594,10 +594,10 @@ export default function RiderOrdersPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center p-4">
+      <div className="min-h-screen bg-[var(--color-surface-container-lowest)] flex items-center justify-center p-4">
         <div className="text-center max-w-sm">
           <span className="material-symbols-outlined text-5xl text-red-400 mb-4 block">wifi_off</span>
-          <h2 className="text-xl font-bold text-[#4d212a] mb-2">Something went wrong</h2>
+          <h2 className="text-xl font-bold text-[var(--color-on-surface)] mb-2">Something went wrong</h2>
           <p className="text-[var(--color-outline)] mb-6">{error}</p>
           <button
             onClick={() => loadOrders()}
@@ -612,7 +612,7 @@ export default function RiderOrdersPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center">
+      <div className="min-h-screen bg-[var(--color-surface-container-lowest)] flex items-center justify-center">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-[#0b50d5] border-t-transparent rounded-full animate-spin mx-auto" />
           <p className="mt-4 text-[var(--color-outline)] font-medium">Loading orders...</p>
@@ -624,7 +624,7 @@ export default function RiderOrdersPage() {
   return (
     <>
     <PullToRefresh onRefresh={loadOrders}>
-    <div className="min-h-screen bg-[#fff4f4]">
+    <div className="min-h-screen bg-[var(--color-surface-container-lowest)]">
       <header className="bg-[#0b50d5] text-white p-4 pb-6 rounded-b-[3rem]">
         <div className="flex justify-between items-center mb-4">
           <Link href="/rider/dashboard" className="text-2xl font-black tracking-tighter">MIIAM</Link>
@@ -808,7 +808,7 @@ export default function RiderOrdersPage() {
         {activeTab === "history" && (
           <>
             <div className="bg-[var(--color-surface-container-lowest)] rounded-xl p-4 shadow-sm">
-              <h3 className="font-bold text-[#4d212a] mb-3">📊 Performance Stats</h3>
+              <h3 className="font-bold text-[var(--color-on-surface)] mb-3">📊 Performance Stats</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div className="text-center p-3 bg-[var(--color-surface-subtle)] rounded-xl">
                   <p className="text-2xl font-black text-[#0b50d5]">{orders.length}</p>
@@ -914,7 +914,7 @@ function OrderCard({ order, onAccept, isSelected, onToggleSelect }: { order: Ord
           </button>
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="font-bold text-[#4d212a]">{order.vendor?.name}</h3>
+              <h3 className="font-bold text-[var(--color-on-surface)]">{order.vendor?.name}</h3>
               <span className="text-[10px] font-bold text-[#0b50d5] bg-[#c4d0ff]/50 px-2 py-0.5 rounded-full">For {order.customer_name || "Customer"}</span>
             </div>
             <p className="text-xs text-[var(--color-outline-variant)] flex items-center gap-1">
@@ -1041,7 +1041,7 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
 
       // Destination marker colour/emoji by phase
       const isPickup = phase === "pickup";
-      const destColor = isPickup ? "#16a34a" : "#ba001c";
+      const destColor = isPickup ? "#16a34a" : "var(--color-primary)";
       const destEmoji = isPickup ? "🏪" : "🏠";
       const destLabel = isPickup ? "Pick up here" : "Deliver here";
       const destAddr = isPickup ? vendorAddress : deliveryAddress;
@@ -1216,7 +1216,7 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
             <div className="flex justify-between items-start">
               <div className="flex-1 min-w-0">
                 <p className="text-xs text-[var(--color-outline-variant)] truncate">{order.vendor?.address}</p>
-                <p className="text-[10px] text-[#ba001c] font-semibold flex items-center gap-1 mt-0.5">
+                <p className="text-[10px] text-[var(--color-primary)] font-semibold flex items-center gap-1 mt-0.5">
                   <span className="material-symbols-outlined text-[10px]">location_on</span>
                   <span className="truncate">{deliveryAddress}</span>
                 </p>
@@ -1325,7 +1325,7 @@ function CompletedCard({ order }: { order: Order }) {
     <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-lg">
       <div className="flex justify-between items-start">
         <div>
-          <h3 className="font-bold text-[#4d212a]">{order.vendor?.name}</h3>
+          <h3 className="font-bold text-[var(--color-on-surface)]">{order.vendor?.name}</h3>
           <p className="text-xs text-[var(--color-outline-variant)]">{new Date(order.delivered_at || "").toLocaleString()}</p>
         </div>
         <div className="text-right">

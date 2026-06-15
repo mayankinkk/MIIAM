@@ -120,15 +120,15 @@ function SetPasswordContent() {
   return (
     <div className="min-h-screen flex items-stretch overflow-hidden">
       {/* Left Side - Form */}
-      <section className="flex-1 flex flex-col justify-center items-center px-6 md:px-16 lg:px-24 bg-[#fff8f7] relative z-10">
+      <section className="flex-1 flex flex-col justify-center items-center px-6 md:px-16 lg:px-24 bg-[var(--color-surface-container-lowest)] relative z-10">
         <div className="w-full max-w-md space-y-8">
           <div className="flex flex-col items-start gap-4">
-            <span className="text-2xl font-black tracking-tighter text-[#8d0013]">MIIAM</span>
+            <span className="text-2xl font-black tracking-tighter text-[var(--color-primary-dark)]">MIIAM</span>
             <div className="space-y-2">
-              <h1 className="text-[3rem] leading-[1] tracking-[-0.02em] font-extrabold text-[#281716]">
+              <h1 className="text-[3rem] leading-[1] tracking-[-0.02em] font-extrabold text-[var(--color-on-surface)]">
                 {isPasswordReset ? "Set New Password" : "Set Your Password"}
               </h1>
-              <p className="text-[#5c403d] font-medium">
+              <p className="text-[var(--color-on-surface)] font-medium">
                 {isPasswordReset ? "Create a new password for your account" : "Create a password to secure your account"}
               </p>
             </div>
@@ -137,14 +137,14 @@ function SetPasswordContent() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
               <div className="space-y-1">
-                <label className="text-[10px] tracking-[0.3em] font-bold text-[#5c403d]" htmlFor="password">PASSWORD</label>
+                <label className="text-[10px] tracking-[0.3em] font-bold text-[var(--color-on-surface)]" htmlFor="password">PASSWORD</label>
                 <input
                   id="password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-[#fff0ef] border-none rounded-xl px-6 py-4 focus:ring-2 focus:ring-[#ba001c] transition-all placeholder:text-[#5c403d]/40"
+                  className="w-full bg-[var(--color-surface-container-lowest)] border-none rounded-xl px-6 py-4 focus:ring-2 focus:ring-[var(--color-primary)] transition-all placeholder:text-[var(--color-on-surface)]/40"
                 />
                 {password && (
                   <div className="mt-2 space-y-2">
@@ -160,14 +160,14 @@ function SetPasswordContent() {
                 )}
               </div>
               <div className="space-y-1">
-                <label className="text-[10px] tracking-[0.3em] font-bold text-[#5c403d]" htmlFor="confirmPassword">CONFIRM PASSWORD</label>
+                <label className="text-[10px] tracking-[0.3em] font-bold text-[var(--color-on-surface)]" htmlFor="confirmPassword">CONFIRM PASSWORD</label>
                 <input
                   id="confirmPassword"
                   type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-[#fff0ef] border-none rounded-xl px-6 py-4 focus:ring-2 focus:ring-[#ba001c] transition-all placeholder:text-[#5c403d]/40"
+                  className="w-full bg-[var(--color-surface-container-lowest)] border-none rounded-xl px-6 py-4 focus:ring-2 focus:ring-[var(--color-primary)] transition-all placeholder:text-[var(--color-on-surface)]/40"
                 />
               </div>
             </div>
@@ -175,7 +175,7 @@ function SetPasswordContent() {
             <button
               type="submit"
               disabled={!password || !confirmPassword || isLoading || getStrength() < 3}
-              className="w-full bg-[#ba001c] text-white text-[1.5rem] leading-[1.2] font-extrabold py-6 rounded-xl active:scale-95 transition-transform duration-200 disabled:opacity-50"
+              className="w-full bg-[var(--color-primary)] text-white text-[1.5rem] leading-[1.2] font-extrabold py-6 rounded-xl active:scale-95 transition-transform duration-200 disabled:opacity-50"
               style={{ boxShadow: '0 20px 40px rgba(77, 33, 42, 0.06)' }}
             >
               {isLoading ? isPasswordReset ? "Updating..." : "Creating Account..." : isPasswordReset ? "Update Password" : "Create Account"}
@@ -196,7 +196,7 @@ function SetPasswordContent() {
         </div>
         <div className="relative z-10 bg-[var(--color-surface-container-lowest)]/70 backdrop-blur-xl p-10 rounded-lg max-w-lg" style={{ boxShadow: '0 20px 40px rgba(77, 33, 42, 0.06)' }}>
           <h2 className="text-[3rem] leading-tight tracking-[-0.02em] font-extrabold text-[#00174c]">Welcome to MIIAM</h2>
-          <p className="text-[#5c403d] mt-4">Your journey to premium experiences starts here.</p>
+          <p className="text-[var(--color-on-surface)] mt-4">Your journey to premium experiences starts here.</p>
         </div>
       </section>
     </div>
@@ -205,8 +205,8 @@ function SetPasswordContent() {
 
 function Loading() {
   return (
-    <div className="min-h-screen bg-[#fff8f7] flex items-center justify-center">
-      <div className="w-8 h-8 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin" />
+    <div className="min-h-screen bg-[var(--color-surface-container-lowest)] flex items-center justify-center">
+      <div className="w-8 h-8 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
     </div>
   );
 }

@@ -66,7 +66,7 @@ export default function PhoneInput({ purpose = "signup", onSuccess }: PhoneInput
               setPhone(val);
             }}
             placeholder="Enter 10-digit number"
-            className="flex-1 px-4 py-3 rounded-xl border-2 border-[var(--color-border-subtle)] focus:border-[#ba001c] focus:ring-2 focus:ring-[#ba001c]/20 outline-none font-bold"
+            className="flex-1 px-4 py-3 rounded-xl border-2 border-[var(--color-border-subtle)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 outline-none font-bold"
             maxLength={10}
           />
         </div>
@@ -78,7 +78,7 @@ export default function PhoneInput({ purpose = "signup", onSuccess }: PhoneInput
         disabled={phone.length !== 10 || isLoading}
         className={`w-full py-4 rounded-xl font-bold text-lg transition-all ${
           phone.length === 10 && !isLoading
-            ? "bg-[#ba001c] text-white hover:bg-[#a40017]"
+            ? "bg-[var(--color-primary)] text-white hover:bg-[#a40017]"
             : "bg-[var(--color-surface-container-high)] text-[var(--color-outline-variant)] cursor-not-allowed"
         }`}
       >

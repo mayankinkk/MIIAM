@@ -234,7 +234,7 @@ export default function AdvancedAnalytics() {
   if (loading) {
     return (
       <div className="px-8 py-12 flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin" />
+        <div className="w-12 h-12 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -252,7 +252,7 @@ export default function AdvancedAnalytics() {
               key={p}
               onClick={() => setPeriod(p)}
               className={`px-4 py-2 rounded-lg text-xs font-bold transition-colors ${
-                period === p ? "bg-[var(--color-surface-container-lowest)] text-[#ba001c] shadow-sm" : "text-[var(--color-outline)]"
+                period === p ? "bg-[var(--color-surface-container-lowest)] text-[var(--color-primary)] shadow-sm" : "text-[var(--color-outline)]"
               }`}
             >
               {p === "7d" ? "7 Days" : p === "30d" ? "30 Days" : "90 Days"}
@@ -268,7 +268,7 @@ export default function AdvancedAnalytics() {
             onClick={() => setActiveTab(tab)}
             className={`px-4 py-2 rounded-lg text-sm font-bold capitalize transition-colors ${
               activeTab === tab
-                ? "bg-[#ba001c] text-white"
+                ? "bg-[var(--color-primary)] text-white"
                 : "text-[var(--color-outline)] hover:bg-[var(--color-surface-subtle)]"
             }`}
           >
@@ -364,7 +364,7 @@ export default function AdvancedAnalytics() {
                   <div className="w-32 font-bold text-[var(--color-on-surface)] capitalize">{name}</div>
                   <div className="flex-1 bg-[var(--color-surface-container)] rounded-full h-4 overflow-hidden">
                     <div
-                      className="h-full bg-gradient-to-r from-[#ba001c] to-pink-500 rounded-full"
+                      className="h-full bg-gradient-to-r from-[var(--color-primary)] to-pink-500 rounded-full"
                       style={{ width: `${(stats.revenue / maxCategoryRevenue) * 100}%` }}
                     />
                   </div>
@@ -398,7 +398,7 @@ export default function AdvancedAnalytics() {
                   const a = document.createElement("a"); a.href = url; a.download = "revenue-report.csv"; a.click();
                   URL.revokeObjectURL(url);
                 }}
-                className="p-4 border-2 border-[var(--color-border-subtle)] rounded-xl hover:border-[#ba001c] hover:bg-pink-50 transition-all flex items-center gap-4"
+                className="p-4 border-2 border-[var(--color-border-subtle)] rounded-xl hover:border-[var(--color-primary)] hover:bg-pink-50 transition-all flex items-center gap-4"
               >
                 <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
                   <span className="material-symbols-outlined text-green-600">description</span>
@@ -420,7 +420,7 @@ export default function AdvancedAnalytics() {
                   const a = document.createElement("a"); a.href = url; a.download = "user-analytics.csv"; a.click();
                   URL.revokeObjectURL(url);
                 }}
-                className="p-4 border-2 border-[var(--color-border-subtle)] rounded-xl hover:border-[#ba001c] hover:bg-pink-50 transition-all flex items-center gap-4"
+                className="p-4 border-2 border-[var(--color-border-subtle)] rounded-xl hover:border-[var(--color-primary)] hover:bg-pink-50 transition-all flex items-center gap-4"
               >
                 <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
                   <span className="material-symbols-outlined text-blue-600">group</span>
@@ -444,7 +444,7 @@ export default function AdvancedAnalytics() {
                   const a = document.createElement("a"); a.href = url; a.download = "performance-report.csv"; a.click();
                   URL.revokeObjectURL(url);
                 }}
-                className="p-4 border-2 border-[var(--color-border-subtle)] rounded-xl hover:border-[#ba001c] hover:bg-pink-50 transition-all flex items-center gap-4"
+                className="p-4 border-2 border-[var(--color-border-subtle)] rounded-xl hover:border-[var(--color-primary)] hover:bg-pink-50 transition-all flex items-center gap-4"
               >
                 <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
                   <span className="material-symbols-outlined text-purple-600">trending_up</span>
@@ -507,12 +507,12 @@ export default function AdvancedAnalytics() {
                 ) : (
                   chartData.map(([date, revenue], i) => (
                     <div key={i} className="flex-1 flex flex-col items-center gap-2">
-                      <div className="w-full bg-gradient-to-t from-[#ba001c] to-[#ff7670] rounded-t-lg transition-all hover:opacity-80 relative group">
+                      <div className="w-full bg-gradient-to-t from-[var(--color-primary)] to-[#ff7670] rounded-t-lg transition-all hover:opacity-80 relative group">
                         <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
                           ₹{revenue.toLocaleString()}
                         </div>
                         <div
-                          className="w-full bg-[#ba001c] rounded-t-lg"
+                          className="w-full bg-[var(--color-primary)] rounded-t-lg"
                           style={{ height: `${Math.max((revenue / maxRevenue) * 100, 5)}%` }}
                         />
                       </div>
@@ -558,7 +558,7 @@ export default function AdvancedAnalytics() {
               <div className="space-y-4">
                 {topVendors.map(([vendor, data], i) => (
                   <div key={vendor} className="flex items-center gap-4">
-                    <span className="w-6 h-6 bg-[#ba001c] text-white rounded-full flex items-center justify-center text-xs font-bold">
+                    <span className="w-6 h-6 bg-[var(--color-primary)] text-white rounded-full flex items-center justify-center text-xs font-bold">
                       {i + 1}
                     </span>
                     <div className="flex-1">
@@ -572,7 +572,7 @@ export default function AdvancedAnalytics() {
                       </div>
                       <div className="h-2 bg-[var(--color-surface-container)] rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-[#ba001c] to-[#ff7670]"
+                          className="h-full bg-gradient-to-r from-[var(--color-primary)] to-[#ff7670]"
                           style={{ width: `${topVendors[0] ? (data.revenue / topVendors[0][1].revenue) * 100 : 0}%` }}
                         />
                       </div>
@@ -639,7 +639,7 @@ export default function AdvancedAnalytics() {
                 const a = document.createElement("a"); a.href = url; a.download = "orders-report.csv"; a.click();
                 URL.revokeObjectURL(url);
               }}
-              className="px-4 py-2 bg-[#ba001c] text-white rounded-lg text-sm font-bold flex items-center gap-2"
+              className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg text-sm font-bold flex items-center gap-2"
             >
               <span className="material-symbols-outlined text-sm">download</span>
               Export CSV

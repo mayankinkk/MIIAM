@@ -438,7 +438,7 @@ export default function PartnerMenuPage() {
               resetNewItem();
               setShowAddModal(true);
             }}
-            className="bg-[#ba001c] text-white px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 cursor-pointer"
+            className="bg-[var(--color-primary)] text-white px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 cursor-pointer"
           >
             <span className="material-symbols-outlined text-lg">add</span>
             Add {vendorKey === "food" ? "Item" : vendorKey === "grocery" ? "Product" : vendorKey === "pharmacy" ? "Medicine" : "Item"}
@@ -446,7 +446,7 @@ export default function PartnerMenuPage() {
           <button
             onClick={() => { setBulkMode(!bulkMode); setSelectedItems(new Set()); }}
             className={`px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 border transition-colors ${
-              bulkMode ? "bg-[#ba001c] text-white border-[#ba001c]" : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface)] border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]"
+              bulkMode ? "bg-[var(--color-primary)] text-white border-[var(--color-primary)]" : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface)] border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]"
             }`}
           >
             <span className="material-symbols-outlined text-lg">select_all</span>
@@ -464,7 +464,7 @@ export default function PartnerMenuPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search items..."
-            className="w-full pl-10 pr-4 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:outline-none focus:border-[#ba001c]"
+            className="w-full pl-10 pr-4 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:outline-none focus:border-[var(--color-primary)]"
           />
         </div>
         <select
@@ -510,7 +510,7 @@ export default function PartnerMenuPage() {
           {/* Optimization Suggestions */}
           <div className="lg:col-span-2 bg-gradient-to-br from-[#fef7f8] to-white rounded-2xl border border-[#f5d0d6] p-5">
             <div className="flex items-center gap-2 mb-3">
-              <span className="material-symbols-outlined text-[#ba001c]">insights</span>
+              <span className="material-symbols-outlined text-[var(--color-primary)]">insights</span>
               <h3 className="font-extrabold text-[var(--color-on-surface)] text-sm">Menu Intelligence</h3>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
@@ -528,7 +528,7 @@ export default function PartnerMenuPage() {
                 return suggestions;
               })().map((s, i) => (
                 <div key={i} className="bg-[var(--color-surface-container-lowest)] rounded-xl p-3 border border-[var(--color-border-subtle)] flex items-start gap-2">
-                  <span className="material-symbols-outlined text-[#ba001c] text-lg shrink-0">lightbulb</span>
+                  <span className="material-symbols-outlined text-[var(--color-primary)] text-lg shrink-0">lightbulb</span>
                   <span className="text-[var(--color-on-surface)]">{s}</span>
                 </div>
               ))}
@@ -539,7 +539,7 @@ export default function PartnerMenuPage() {
             <span className="material-symbols-outlined text-3xl text-[var(--color-outline-variant)] mb-2">file_upload</span>
             <p className="font-bold text-[var(--color-on-surface)] text-sm">Bulk Import Items</p>
             <p className="text-xs text-[var(--color-outline-variant)] mt-1 mb-3">CSV upload</p>
-            <label className="cursor-pointer px-4 py-2 bg-[#ba001c] text-white text-xs font-bold rounded-xl hover:bg-[#a40017]">
+            <label className="cursor-pointer px-4 py-2 bg-[var(--color-primary)] text-white text-xs font-bold rounded-xl hover:bg-[#a40017]">
               Upload CSV
               <input
                 type="file"
@@ -591,14 +591,14 @@ export default function PartnerMenuPage() {
               const a = document.createElement('a');
               a.href = url; a.download = 'menu_template.csv'; a.click();
               URL.revokeObjectURL(url);
-            }} className="text-[10px] text-[#ba001c] font-semibold mt-2 hover:underline">Download template</a>
+            }} className="text-[10px] text-[var(--color-primary)] font-semibold mt-2 hover:underline">Download template</a>
           </div>
         </div>
       )}
 
       {/* Bulk Actions Toolbar */}
       {bulkMode && selectedItems.size > 0 && (
-        <div className="bg-[#ba001c]/5 border border-[#ba001c]/20 rounded-2xl p-4 flex items-center gap-4 flex-wrap">
+        <div className="bg-[var(--color-primary)]/5 border border-[var(--color-primary)]/20 rounded-2xl p-4 flex items-center gap-4 flex-wrap">
           <span className="text-sm font-bold text-[var(--color-on-surface)]">{selectedItems.size} selected</span>
           <select
             value={bulkAction}
@@ -690,7 +690,7 @@ export default function PartnerMenuPage() {
                     setBulkValue("");
                   }
                 }}
-                className="px-4 py-2 bg-[#ba001c] text-white font-bold rounded-xl text-sm"
+                className="px-4 py-2 bg-[var(--color-primary)] text-white font-bold rounded-xl text-sm"
               >
                 Apply
               </button>
@@ -717,7 +717,7 @@ export default function PartnerMenuPage() {
             <p className="text-[var(--color-outline-variant)] font-medium">No {pageTitle.toLowerCase()} found</p>
             <button
               onClick={() => { resetNewItem(); setShowAddModal(true); }}
-              className="mt-4 text-[#ba001c] font-bold text-sm hover:underline"
+              className="mt-4 text-[var(--color-primary)] font-bold text-sm hover:underline"
             >
               Add your first {vendorKey === "pharmacy" ? "medicine" : vendorKey === "grocery" ? "product" : "item"}
             </button>
@@ -738,7 +738,7 @@ export default function PartnerMenuPage() {
                           setSelectedItems(new Set(filteredItems.map(i => i.id)));
                         }
                       }}
-                      className="w-4 h-4 accent-[#ba001c]"
+                      className="w-4 h-4 accent-[var(--color-primary)]"
                     />
                   </th>
                 )}
@@ -765,7 +765,7 @@ export default function PartnerMenuPage() {
             </thead>
             <tbody className="divide-y divide-[var(--color-border-subtle)]">
               {filteredItems.map((item) => (
-                <tr key={item.id} className={`hover:bg-[var(--color-surface-subtle)] transition-colors ${selectedItems.has(item.id) ? "bg-[#ba001c]/5" : ""}`}>
+                <tr key={item.id} className={`hover:bg-[var(--color-surface-subtle)] transition-colors ${selectedItems.has(item.id) ? "bg-[var(--color-primary)]/5" : ""}`}>
                   {bulkMode && (
                     <td className="p-4 w-10">
                       <input
@@ -776,7 +776,7 @@ export default function PartnerMenuPage() {
                           if (next.has(item.id)) next.delete(item.id); else next.add(item.id);
                           setSelectedItems(next);
                         }}
-                        className="w-4 h-4 accent-[#ba001c]"
+                        className="w-4 h-4 accent-[var(--color-primary)]"
                       />
                     </td>
                   )}
@@ -934,7 +934,7 @@ export default function PartnerMenuPage() {
                   value={newItem.name}
                   onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
                   placeholder={vendorKey === "food" ? "e.g., Butter Chicken" : vendorKey === "grocery" ? "e.g., Organic Apples" : vendorKey === "pharmacy" ? "e.g., Paracetamol" : "e.g., Rose Bouquet"}
-                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
+                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
                 />
               </div>
               <div>
@@ -946,7 +946,7 @@ export default function PartnerMenuPage() {
                   value={newItem.price}
                   onChange={(e) => setNewItem({ ...newItem, price: e.target.value })}
                   placeholder="e.g., 280"
-                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
+                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
                 />
               </div>
               <div>
@@ -954,7 +954,7 @@ export default function PartnerMenuPage() {
                 <select
                   value={newItem.category || categories[0]}
                   onChange={(e) => setNewItem({ ...newItem, category: e.target.value })}
-                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
+                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
                 >
                   {categories.map(cat => (
                     <option key={cat} value={cat}>{cat}</option>
@@ -969,7 +969,7 @@ export default function PartnerMenuPage() {
                     onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
                     placeholder="Brief description"
                     rows={2}
-                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c] resize-none"
+                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)] resize-none"
                   />
                 </div>
               )}
@@ -982,7 +982,7 @@ export default function PartnerMenuPage() {
                     value={newItem.stock}
                     onChange={(e) => setNewItem({ ...newItem, stock: e.target.value })}
                     placeholder="e.g., 100"
-                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
+                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
                   />
                 </div>
               )}
@@ -995,7 +995,7 @@ export default function PartnerMenuPage() {
                     value={newItem.stock}
                     onChange={(e) => setNewItem({ ...newItem, stock: e.target.value })}
                     placeholder="e.g., 50"
-                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
+                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
                   />
                 </div>
               )}
@@ -1006,7 +1006,7 @@ export default function PartnerMenuPage() {
                       type="checkbox"
                       checked={newItem.has_discount}
                       onChange={(e) => setNewItem({ ...newItem, has_discount: e.target.checked })}
-                      className="w-5 h-5 accent-[#ba001c]"
+                      className="w-5 h-5 accent-[var(--color-primary)]"
                     />
                     <span className="text-sm font-bold text-red-700">Put on Sale</span>
                   </label>
@@ -1020,7 +1020,7 @@ export default function PartnerMenuPage() {
                             onClick={() => setNewItem({ ...newItem, discount_percent: p })}
                             className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${
                               newItem.discount_percent === p
-                                ? "bg-[#ba001c] text-white shadow-md"
+                                ? "bg-[var(--color-primary)] text-white shadow-md"
                                 : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface-variant)] border border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]"
                             }`}
                           >
@@ -1049,7 +1049,7 @@ export default function PartnerMenuPage() {
                         type="radio"
                         checked={newItem.is_veg}
                         onChange={() => setNewItem({ ...newItem, is_veg: true })}
-                        className="accent-[#ba001c]"
+                        className="accent-[var(--color-primary)]"
                       />
                       <span className="flex items-center gap-1 text-sm font-medium text-green-700">
                         <span className="w-3 h-3 bg-green-500 rounded-sm"></span> Veg
@@ -1060,7 +1060,7 @@ export default function PartnerMenuPage() {
                         type="radio"
                         checked={!newItem.is_veg}
                         onChange={() => setNewItem({ ...newItem, is_veg: false })}
-                        className="accent-[#ba001c]"
+                        className="accent-[var(--color-primary)]"
                       />
                       <span className="flex items-center gap-1 text-sm font-medium text-red-700">
                         <span className="w-3 h-3 bg-red-500 rounded-sm"></span> Non-Veg
@@ -1075,7 +1075,7 @@ export default function PartnerMenuPage() {
                   <select
                     value={newItem.menu_slot || "all_day"}
                     onChange={(e) => setNewItem({ ...newItem, menu_slot: e.target.value })}
-                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
+                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
                   >
                     <option value="all_day">All Day</option>
                     <option value="breakfast">Breakfast (6 AM – 11 AM)</option>
@@ -1091,7 +1091,7 @@ export default function PartnerMenuPage() {
                       type="checkbox"
                       checked={newItem.is_featured}
                       onChange={(e) => setNewItem({ ...newItem, is_featured: e.target.checked })}
-                      className="w-5 h-5 accent-[#ba001c]"
+                      className="w-5 h-5 accent-[var(--color-primary)]"
                     />
                     <span className="text-sm font-bold text-amber-700">Promote as Featured</span>
                   </label>
@@ -1105,7 +1105,7 @@ export default function PartnerMenuPage() {
                       type="checkbox"
                       checked={newItem.requires_prescription}
                       onChange={(e) => setNewItem({ ...newItem, requires_prescription: e.target.checked })}
-                      className="w-5 h-5 accent-[#ba001c]"
+                      className="w-5 h-5 accent-[var(--color-primary)]"
                     />
                     <span className="text-sm font-semibold text-[var(--color-on-surface)]">Requires Prescription</span>
                   </label>
@@ -1122,7 +1122,7 @@ export default function PartnerMenuPage() {
                     setNewItem({ ...newItem, imageFiles: [...(newItem.imageFiles || []), ...files] });
                     e.target.value = "";
                   }}
-                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] text-sm file:mr-3 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-[#ba001c] file:text-white file:font-bold file:text-xs hover:file:bg-[#a40017]"
+                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] text-sm file:mr-3 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-[var(--color-primary)] file:text-white file:font-bold file:text-xs hover:file:bg-[#a40017]"
                 />
                 {newItem.imageFiles?.length > 0 && (
                   <div className="flex flex-wrap gap-2 mt-3">
@@ -1146,7 +1146,7 @@ export default function PartnerMenuPage() {
                   <button
                     type="button"
                     onClick={() => setNewItem({ ...newItem, showUrlInput: !newItem.showUrlInput })}
-                    className="text-xs font-bold text-[#ba001c] hover:underline"
+                    className="text-xs font-bold text-[var(--color-primary)] hover:underline"
                   >
                     {newItem.showUrlInput ? "Hide URL input" : "Or enter image URL instead"}
                   </button>
@@ -1156,7 +1156,7 @@ export default function PartnerMenuPage() {
                       value={newItem.image_url}
                       onChange={(e) => setNewItem({ ...newItem, image_url: e.target.value, imageFiles: [] })}
                       placeholder="https://example.com/image.jpg"
-                      className="mt-2 w-full px-4 py-3 bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl text-sm focus:outline-none focus:border-[#ba001c]"
+                      className="mt-2 w-full px-4 py-3 bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl text-sm focus:outline-none focus:border-[var(--color-primary)]"
                     />
                   )}
                 </div>
@@ -1164,7 +1164,7 @@ export default function PartnerMenuPage() {
               <button
                 onClick={handleAddItem}
                 disabled={uploading}
-                className="w-full py-4 bg-[#ba001c] text-white font-extrabold rounded-2xl mt-4 hover:bg-[#a40017] transition-colors disabled:opacity-50"
+                className="w-full py-4 bg-[var(--color-primary)] text-white font-extrabold rounded-2xl mt-4 hover:bg-[#a40017] transition-colors disabled:opacity-50"
               >
                 {uploading ? "Uploading..." : `Add ${vendorKey === "pharmacy" ? "Medicine" : vendorKey === "grocery" ? "Product" : "Item"}`}
               </button>
@@ -1190,7 +1190,7 @@ export default function PartnerMenuPage() {
                   type="text"
                   value={editingItem.name}
                   onChange={(e) => setEditingItem({ ...editingItem, name: e.target.value })}
-                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
+                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
                 />
               </div>
               <div>
@@ -1201,7 +1201,7 @@ export default function PartnerMenuPage() {
                   step="0.5"
                   value={editingItem.price}
                   onChange={(e) => setEditingItem({ ...editingItem, price: parseFloat(e.target.value) })}
-                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
+                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
                 />
               </div>
               <div>
@@ -1209,7 +1209,7 @@ export default function PartnerMenuPage() {
                 <select
                   value={editingItem.category}
                   onChange={(e) => setEditingItem({ ...editingItem, category: e.target.value })}
-                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
+                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
                 >
                   {categories.map(cat => (
                     <option key={cat} value={cat}>{cat}</option>
@@ -1223,7 +1223,7 @@ export default function PartnerMenuPage() {
                     value={(editingItem as MenuItem).description || ""}
                     onChange={(e) => setEditingItem({ ...editingItem, description: e.target.value })}
                     rows={2}
-                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c] resize-none"
+                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)] resize-none"
                   />
                 </div>
               )}
@@ -1235,7 +1235,7 @@ export default function PartnerMenuPage() {
                     min="0"
                     value={(editingItem as any).stock}
                     onChange={(e) => setEditingItem({ ...editingItem, stock: parseInt(e.target.value) || 0 })}
-                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
+                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
                   />
                 </div>
               )}
@@ -1252,7 +1252,7 @@ export default function PartnerMenuPage() {
                           setEditingItem({ ...editingItem, discount_percent: 0 } as AnyItem);
                         }
                       }}
-                      className="w-5 h-5 accent-[#ba001c]"
+                      className="w-5 h-5 accent-[var(--color-primary)]"
                     />
                     <span className="text-sm font-bold text-red-700">On Sale</span>
                   </label>
@@ -1266,7 +1266,7 @@ export default function PartnerMenuPage() {
                             onClick={() => setEditingItem({ ...editingItem, discount_percent: p } as AnyItem)}
                             className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${
                               (editingItem as any).discount_percent === p
-                                ? "bg-[#ba001c] text-white shadow-md"
+                                ? "bg-[var(--color-primary)] text-white shadow-md"
                                 : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface-variant)] border border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]"
                             }`}
                           >
@@ -1291,7 +1291,7 @@ export default function PartnerMenuPage() {
                       type="checkbox"
                       checked={!!(editingItem as any).is_featured}
                       onChange={(e) => setEditingItem({ ...editingItem, is_featured: e.target.checked } as any)}
-                      className="w-5 h-5 accent-[#ba001c]"
+                      className="w-5 h-5 accent-[var(--color-primary)]"
                     />
                     <span className="text-sm font-bold text-amber-700">Promote as Featured</span>
                   </label>
@@ -1307,7 +1307,7 @@ export default function PartnerMenuPage() {
                         type="radio"
                         checked={(editingItem as MenuItem).is_veg}
                         onChange={() => setEditingItem({ ...editingItem, is_veg: true })}
-                        className="accent-[#ba001c]"
+                        className="accent-[var(--color-primary)]"
                       />
                       <span className="flex items-center gap-1 text-sm font-medium text-green-700">
                         <span className="w-3 h-3 bg-green-500 rounded-sm"></span> Veg
@@ -1318,7 +1318,7 @@ export default function PartnerMenuPage() {
                         type="radio"
                         checked={!(editingItem as MenuItem).is_veg}
                         onChange={() => setEditingItem({ ...editingItem, is_veg: false })}
-                        className="accent-[#ba001c]"
+                        className="accent-[var(--color-primary)]"
                       />
                       <span className="flex items-center gap-1 text-sm font-medium text-red-700">
                         <span className="w-3 h-3 bg-red-500 rounded-sm"></span> Non-Veg
@@ -1333,7 +1333,7 @@ export default function PartnerMenuPage() {
                   <select
                     value={(editingItem as any).menu_slot || "all_day"}
                     onChange={(e) => setEditingItem({ ...editingItem, menu_slot: e.target.value })}
-                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
+                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
                   >
                     <option value="all_day">All Day</option>
                     <option value="breakfast">Breakfast (6 AM – 11 AM)</option>
@@ -1349,7 +1349,7 @@ export default function PartnerMenuPage() {
                       type="checkbox"
                       checked={(editingItem as PharmacyItem).requires_prescription}
                       onChange={(e) => setEditingItem({ ...editingItem, requires_prescription: e.target.checked })}
-                      className="w-5 h-5 accent-[#ba001c]"
+                      className="w-5 h-5 accent-[var(--color-primary)]"
                     />
                     <span className="text-sm font-semibold text-[var(--color-on-surface)]">Requires Prescription</span>
                   </label>
@@ -1398,13 +1398,13 @@ export default function PartnerMenuPage() {
                     }
                     e.target.value = "";
                   }}
-                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] text-sm file:mr-3 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-[#ba001c] file:text-white file:font-bold file:text-xs hover:file:bg-[#a40017]"
+                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] text-sm file:mr-3 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-[var(--color-primary)] file:text-white file:font-bold file:text-xs hover:file:bg-[#a40017]"
                 />
                 <div className="mt-2">
                   <button
                     type="button"
                     onClick={() => setEditingItem({ ...(editingItem as any), _showUrlInput: !(editingItem as any)._showUrlInput })}
-                    className="text-xs font-bold text-[#ba001c] hover:underline"
+                    className="text-xs font-bold text-[var(--color-primary)] hover:underline"
                   >
                     {(editingItem as any)._showUrlInput ? "Hide URL input" : "Or enter URL instead"}
                   </button>
@@ -1414,7 +1414,7 @@ export default function PartnerMenuPage() {
                       value={(editingItem as any).image_url || ""}
                       onChange={(e) => setEditingItem({ ...(editingItem as any), image_url: e.target.value })}
                       placeholder="https://example.com/image.jpg"
-                      className="mt-2 w-full px-4 py-3 bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl text-sm focus:outline-none focus:border-[#ba001c]"
+                      className="mt-2 w-full px-4 py-3 bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl text-sm focus:outline-none focus:border-[var(--color-primary)]"
                     />
                   )}
                 </div>
@@ -1429,7 +1429,7 @@ export default function PartnerMenuPage() {
                 <button
                   onClick={handleUpdateItem}
                   disabled={uploading}
-                  className="flex-1 py-4 bg-[#ba001c] text-white font-extrabold rounded-2xl hover:bg-[#a40017] transition-colors disabled:opacity-50"
+                  className="flex-1 py-4 bg-[var(--color-primary)] text-white font-extrabold rounded-2xl hover:bg-[#a40017] transition-colors disabled:opacity-50"
                 >
                   {uploading ? "Uploading..." : "Save Changes"}
                 </button>
@@ -1464,7 +1464,7 @@ export default function PartnerMenuPage() {
                         }
                         if (e.key === "Escape") setEditingCategory(null);
                       }}
-                      className="flex-1 px-3 py-2 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] text-sm focus:outline-none focus:border-[#ba001c]"
+                      className="flex-1 px-3 py-2 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] text-sm focus:outline-none focus:border-[var(--color-primary)]"
                       autoFocus
                     />
                   ) : (
@@ -1505,7 +1505,7 @@ export default function PartnerMenuPage() {
                   }
                 }}
                 placeholder="New category name..."
-                className="flex-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] text-sm focus:outline-none focus:border-[#ba001c]"
+                className="flex-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] text-sm focus:outline-none focus:border-[var(--color-primary)]"
               />
               <button
                 onClick={() => {
@@ -1514,7 +1514,7 @@ export default function PartnerMenuPage() {
                     setNewCategoryName("");
                   }
                 }}
-                className="px-5 py-3 bg-[#ba001c] text-white font-bold rounded-xl text-sm hover:bg-[#a40017]"
+                className="px-5 py-3 bg-[var(--color-primary)] text-white font-bold rounded-xl text-sm hover:bg-[#a40017]"
               >
                 Add
               </button>
@@ -1552,7 +1552,7 @@ export default function PartnerMenuPage() {
                   if (qr) link.href = qr.src;
                   link.click();
                 }}
-                className="flex-1 py-3 bg-[#ba001c] text-white font-bold rounded-xl text-sm hover:bg-[#a40017]"
+                className="flex-1 py-3 bg-[var(--color-primary)] text-white font-bold rounded-xl text-sm hover:bg-[#a40017]"
               >
                 Download
               </button>

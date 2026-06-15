@@ -108,7 +108,7 @@ export default function SettingsPage() {
             onClick={() => setActiveTab(tab)}
             className={`px-4 py-2 rounded-lg text-sm font-bold uppercase ${
               activeTab === tab
-                ? "bg-[#ba001c] text-white"
+                ? "bg-[var(--color-primary)] text-white"
                 : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface-variant)] border border-[var(--color-border-subtle)]"
             }`}
           >
@@ -128,7 +128,7 @@ export default function SettingsPage() {
                   type="text"
                   value={settings.platform_name || ""}
                   onChange={(e) => handleChange("platform_name", e.target.value)}
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                 />
               </div>
               <div>
@@ -137,7 +137,7 @@ export default function SettingsPage() {
                   type="email"
                   value={settings.support_email || ""}
                   onChange={(e) => handleChange("support_email", e.target.value)}
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                 />
               </div>
               <div>
@@ -146,7 +146,7 @@ export default function SettingsPage() {
                   type="tel"
                   value={settings.support_phone || ""}
                   onChange={(e) => handleChange("support_phone", e.target.value)}
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                 />
               </div>
               <div>
@@ -155,7 +155,7 @@ export default function SettingsPage() {
                   type="url"
                   value={settings.platform_url || ""}
                   onChange={(e) => handleChange("platform_url", e.target.value)}
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                 />
               </div>
             </div>
@@ -215,7 +215,7 @@ export default function SettingsPage() {
                 type="number"
                 value={settings.default_delivery_fee || ""}
                 onChange={(e) => handleChange("default_delivery_fee", e.target.value)}
-                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
               />
             </div>
             <div>
@@ -224,7 +224,7 @@ export default function SettingsPage() {
                 type="number"
                 value={settings.free_delivery_above || ""}
                 onChange={(e) => handleChange("free_delivery_above", e.target.value)}
-                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
               />
             </div>
             <div>
@@ -233,7 +233,7 @@ export default function SettingsPage() {
                 type="number"
                 value={settings.max_delivery_radius || ""}
                 onChange={(e) => handleChange("max_delivery_radius", e.target.value)}
-                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
               />
             </div>
             <div>
@@ -242,7 +242,7 @@ export default function SettingsPage() {
                 type="number"
                 value={settings.max_order_value || ""}
                 onChange={(e) => handleChange("max_order_value", e.target.value)}
-                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
               />
             </div>
             <div>
@@ -251,7 +251,7 @@ export default function SettingsPage() {
                 type="number"
                 value={settings.cancellation_grace_period || ""}
                 onChange={(e) => handleChange("cancellation_grace_period", e.target.value)}
-                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
               />
             </div>
             <div>
@@ -259,7 +259,7 @@ export default function SettingsPage() {
               <select
                 value={settings.auto_accept_orders || "true"}
                 onChange={(e) => handleChange("auto_accept_orders", e.target.value)}
-                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
               >
                 <option value="true">Enabled</option>
                 <option value="false">Disabled</option>
@@ -279,7 +279,7 @@ export default function SettingsPage() {
                 type="number"
                 value={settings.platform_commission || ""}
                 onChange={(e) => handleChange("platform_commission", e.target.value)}
-                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
               />
             </div>
             <div>
@@ -288,7 +288,7 @@ export default function SettingsPage() {
                 type="number"
                 value={settings.payment_gateway_fee || ""}
                 onChange={(e) => handleChange("payment_gateway_fee", e.target.value)}
-                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
               />
             </div>
             <div>
@@ -296,7 +296,7 @@ export default function SettingsPage() {
               <select
                 value={settings.payout_frequency || "daily"}
                 onChange={(e) => handleChange("payout_frequency", e.target.value)}
-                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
               >
                 <option value="daily">Daily</option>
                 <option value="weekly">Weekly</option>
@@ -309,7 +309,7 @@ export default function SettingsPage() {
                 type="number"
                 value={settings.min_payout_amount || ""}
                 onChange={(e) => handleChange("min_payout_amount", e.target.value)}
-                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
               />
             </div>
           </div>
@@ -372,7 +372,7 @@ export default function SettingsPage() {
                   value={settings.support_phone || ""}
                   onChange={(e) => handleChange("support_phone", e.target.value)}
                   placeholder="+9118001234567"
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                 />
               </div>
               <div>
@@ -382,7 +382,7 @@ export default function SettingsPage() {
                   value={settings.support_phone_label || ""}
                   onChange={(e) => handleChange("support_phone_label", e.target.value)}
                   placeholder="1800-123-4567 (Toll free)"
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                 />
               </div>
               <div>
@@ -392,7 +392,7 @@ export default function SettingsPage() {
                   value={settings.support_email || ""}
                   onChange={(e) => handleChange("support_email", e.target.value)}
                   placeholder="support@miiam.in"
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                 />
               </div>
               <div>
@@ -402,7 +402,7 @@ export default function SettingsPage() {
                   value={settings.support_whatsapp || ""}
                   onChange={(e) => handleChange("support_whatsapp", e.target.value)}
                   placeholder="+9118001234567"
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                 />
               </div>
               <div>
@@ -412,7 +412,7 @@ export default function SettingsPage() {
                   value={settings.support_response_time || ""}
                   onChange={(e) => handleChange("support_response_time", e.target.value)}
                   placeholder="2 mins"
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                 />
               </div>
               <div>
@@ -422,7 +422,7 @@ export default function SettingsPage() {
                   value={settings.support_email_response_time || ""}
                   onChange={(e) => handleChange("support_email_response_time", e.target.value)}
                   placeholder="24 hours"
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                 />
               </div>
             </div>
@@ -438,7 +438,7 @@ export default function SettingsPage() {
                   value={settings.support_twitter || ""}
                   onChange={(e) => handleChange("support_twitter", e.target.value)}
                   placeholder="https://twitter.com/miiam_in"
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                 />
               </div>
               <div>
@@ -448,7 +448,7 @@ export default function SettingsPage() {
                   value={settings.support_instagram || ""}
                   onChange={(e) => handleChange("support_instagram", e.target.value)}
                   placeholder="https://instagram.com/miiam_in"
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                 />
               </div>
               <div>
@@ -458,7 +458,7 @@ export default function SettingsPage() {
                   value={settings.support_facebook || ""}
                   onChange={(e) => handleChange("support_facebook", e.target.value)}
                   placeholder="https://facebook.com/miiam.in"
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                 />
               </div>
               <div>
@@ -468,7 +468,7 @@ export default function SettingsPage() {
                   value={settings.support_linkedin || ""}
                   onChange={(e) => handleChange("support_linkedin", e.target.value)}
                   placeholder="https://linkedin.com/company/miiam"
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                 />
               </div>
               <div>
@@ -478,7 +478,7 @@ export default function SettingsPage() {
                   value={settings.support_youtube || ""}
                   onChange={(e) => handleChange("support_youtube", e.target.value)}
                   placeholder="https://youtube.com/@miiam"
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                 />
               </div>
             </div>
@@ -510,7 +510,7 @@ export default function SettingsPage() {
                   type="email"
                   value={settings.support_email || ""}
                   onChange={(e) => handleChange("support_email", e.target.value)}
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                 />
               </div>
               <div>
@@ -519,7 +519,7 @@ export default function SettingsPage() {
                   type="tel"
                   value={settings.support_phone || ""}
                   onChange={(e) => handleChange("support_phone", e.target.value)}
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                 />
               </div>
               <div>
@@ -528,7 +528,7 @@ export default function SettingsPage() {
                   type="email"
                   value={settings.grievance_email || ""}
                   onChange={(e) => handleChange("grievance_email", e.target.value)}
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                 />
               </div>
               <div>
@@ -537,7 +537,7 @@ export default function SettingsPage() {
                   type="text"
                   value={settings.business_address || ""}
                   onChange={(e) => handleChange("business_address", e.target.value)}
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                 />
               </div>
               <div>
@@ -546,7 +546,7 @@ export default function SettingsPage() {
                   type="text"
                   value={settings.city || ""}
                   onChange={(e) => handleChange("city", e.target.value)}
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                 />
               </div>
               <div>
@@ -555,7 +555,7 @@ export default function SettingsPage() {
                   type="text"
                   value={settings.state || ""}
                   onChange={(e) => handleChange("state", e.target.value)}
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                 />
               </div>
               <div>
@@ -564,7 +564,7 @@ export default function SettingsPage() {
                   type="text"
                   value={settings.pincode || ""}
                   onChange={(e) => handleChange("pincode", e.target.value)}
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                 />
               </div>
             </div>
@@ -578,15 +578,15 @@ export default function SettingsPage() {
               </p>
               <div className="grid grid-cols-3 gap-4">
                 <a href="/terms" target="_blank" className="p-4 bg-[var(--color-surface-subtle)] rounded-xl text-center hover:bg-[var(--color-surface-container)]">
-                  <span className="material-symbols-outlined text-[#ba001c]">description</span>
+                  <span className="material-symbols-outlined text-[var(--color-primary)]">description</span>
                   <p className="font-bold text-[var(--color-on-surface)] text-sm mt-2">Terms of Service</p>
                 </a>
                 <a href="/privacy" target="_blank" className="p-4 bg-[var(--color-surface-subtle)] rounded-xl text-center hover:bg-[var(--color-surface-container)]">
-                  <span className="material-symbols-outlined text-[#ba001c]">privacy_tip</span>
+                  <span className="material-symbols-outlined text-[var(--color-primary)]">privacy_tip</span>
                   <p className="font-bold text-[var(--color-on-surface)] text-sm mt-2">Privacy Policy</p>
                 </a>
                 <a href="/terms#refund" target="_blank" className="p-4 bg-[var(--color-surface-subtle)] rounded-xl text-center hover:bg-[var(--color-surface-container)]">
-                  <span className="material-symbols-outlined text-[#ba001c]">attach_money</span>
+                  <span className="material-symbols-outlined text-[var(--color-primary)]">attach_money</span>
                   <p className="font-bold text-[var(--color-on-surface)] text-sm mt-2">Refund Policy</p>
                 </a>
               </div>
@@ -606,7 +606,7 @@ export default function SettingsPage() {
         <button
           onClick={saveSettings}
           disabled={loading}
-          className="px-8 py-4 bg-[#ba001c] text-white rounded-xl font-bold hover:opacity-90 disabled:opacity-50"
+          className="px-8 py-4 bg-[var(--color-primary)] text-white rounded-xl font-bold hover:opacity-90 disabled:opacity-50"
         >
           {loading ? "Saving..." : "Save Changes"}
         </button>

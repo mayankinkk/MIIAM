@@ -64,7 +64,7 @@ function RateCustomerContent() {
 
   if (!authChecked) {
     return (
-      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center">
+      <div className="min-h-screen bg-[var(--color-surface-container-lowest)] flex items-center justify-center">
         <div className="w-12 h-12 border-4 border-[#0b50d5] border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -72,12 +72,12 @@ function RateCustomerContent() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center p-6">
+      <div className="min-h-screen bg-[var(--color-surface-container-lowest)] flex items-center justify-center p-6">
         <div className="text-center">
           <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <span className="material-symbols-outlined text-green-600 text-5xl">check_circle</span>
           </div>
-          <h2 className="text-2xl font-black text-[#4d212a] mb-2">Thank You!</h2>
+          <h2 className="text-2xl font-black text-[var(--color-on-surface)] mb-2">Thank You!</h2>
           <p className="text-[var(--color-outline)]">Your feedback has been submitted</p>
         </div>
       </div>
@@ -85,7 +85,7 @@ function RateCustomerContent() {
   }
 
   return (
-    <div className="min-h-screen bg-[#fff4f4]">
+    <div className="min-h-screen bg-[var(--color-surface-container-lowest)]">
       <header className="bg-[#0b50d5] text-white p-6 pb-12">
         <div className="flex items-center gap-4">
           <Link href="/rider/dashboard" className="text-white">
@@ -102,7 +102,7 @@ function RateCustomerContent() {
               {customerName[0]}
             </div>
             <div>
-              <h2 className="text-xl font-bold text-[#4d212a]">{customerName}</h2>
+              <h2 className="text-xl font-bold text-[var(--color-on-surface)]">{customerName}</h2>
               <p className="text-sm text-[var(--color-outline-variant)]">Order #{orderId}</p>
             </div>
           </div>
@@ -125,7 +125,7 @@ function RateCustomerContent() {
                 </button>
               ))}
             </div>
-            <p className="mt-2 font-bold text-[#4d212a]">
+            <p className="mt-2 font-bold text-[var(--color-on-surface)]">
               {selectedRating === 5 ? "Excellent" : 
                selectedRating === 4 ? "Good" : 
                selectedRating === 3 ? "Average" : 
@@ -136,7 +136,7 @@ function RateCustomerContent() {
         </div>
 
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg">
-          <h3 className="font-bold text-[#4d212a] mb-4">Quick Feedback</h3>
+          <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Quick Feedback</h3>
           <div className="space-y-3">
             <label className="flex items-center justify-between p-3 bg-[var(--color-surface-subtle)] rounded-xl cursor-pointer">
               <span className="flex items-center gap-3">
@@ -178,7 +178,7 @@ function RateCustomerContent() {
         </div>
 
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg">
-          <h3 className="font-bold text-[#4d212a] mb-4">Additional Comments (Optional)</h3>
+          <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Additional Comments (Optional)</h3>
           <textarea 
             value={additionalComment}
             onChange={(e) => setAdditionalComment(e.target.value)}
@@ -207,7 +207,7 @@ function RateCustomerContent() {
 
 function LoadingFallback() {
   return (
-    <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center">
+    <div className="min-h-screen bg-[var(--color-surface-container-lowest)] flex items-center justify-center">
       <div className="text-center">
         <span className="material-symbols-outlined text-4xl text-[#0b50d5] animate-spin">sync</span>
         <p className="mt-4 text-[var(--color-outline)]">Loading...</p>

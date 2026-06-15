@@ -130,7 +130,7 @@ function OTPVerificationContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#fff4f4] to-white flex flex-col">
+    <div className="min-h-screen bg-gradient-to-b from-[var(--color-surface-container-lowest)] to-white flex flex-col">
       <div className="p-6">
         <button
           onClick={() => router.back()}
@@ -141,16 +141,16 @@ function OTPVerificationContent() {
       </div>
 
       <div className="flex-1 flex flex-col items-center justify-center px-6">
-        <div className="w-20 h-20 bg-[#ba001c]/10 rounded-full flex items-center justify-center mb-8">
-          <span className="material-symbols-outlined text-[#ba001c] text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>
+        <div className="w-20 h-20 bg-[var(--color-primary)]/10 rounded-full flex items-center justify-center mb-8">
+          <span className="material-symbols-outlined text-[var(--color-primary)] text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>
             sms
           </span>
         </div>
 
-        <h1 className="text-2xl font-black text-[#4d212a] mb-2">Verify Your Number</h1>
+        <h1 className="text-2xl font-black text-[var(--color-on-surface)] mb-2">Verify Your Number</h1>
         <p className="text-[var(--color-outline)] text-center mb-8">
           We sent a 6-digit OTP to<br />
-          <span className="font-bold text-[#ba001c]">{formatPhone(phone)}</span>
+          <span className="font-bold text-[var(--color-primary)]">{formatPhone(phone)}</span>
         </p>
 
         <div className="w-full max-w-sm">
@@ -169,9 +169,9 @@ function OTPVerificationContent() {
                   error
                     ? "border-red-300 bg-red-50"
                     : digit
-                    ? "border-[#ba001c] bg-[#ba001c]/5"
+                    ? "border-[var(--color-primary)] bg-[var(--color-primary)]/5"
                     : "border-[var(--color-border-subtle)] bg-white"
-                } focus:border-[#ba001c] focus:outline-none`}
+                } focus:border-[var(--color-primary)] focus:outline-none`}
               />
             ))}
           </div>
@@ -183,12 +183,12 @@ function OTPVerificationContent() {
         <div className="text-center">
           {resendTimer > 0 ? (
             <p className="text-[var(--color-outline-variant)] text-sm">
-              Resend OTP in <span className="font-bold text-[#ba001c]">{resendTimer}s</span>
+              Resend OTP in <span className="font-bold text-[var(--color-primary)]">{resendTimer}s</span>
             </p>
           ) : (
             <button
               onClick={resendOTP}
-              className="text-[#ba001c] font-bold text-sm hover:underline"
+              className="text-[var(--color-primary)] font-bold text-sm hover:underline"
             >
               {resent ? "OTP Sent!" : "Resend OTP"}
             </button>
@@ -206,8 +206,8 @@ function OTPVerificationContent() {
 
 function Loading() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#fff4f4] to-white flex items-center justify-center">
-      <div className="w-8 h-8 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin" />
+    <div className="min-h-screen bg-gradient-to-b from-[var(--color-surface-container-lowest)] to-white flex items-center justify-center">
+      <div className="w-8 h-8 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
     </div>
   );
 }

@@ -153,7 +153,7 @@ export function SearchAutocomplete({ onSelect, className = "" }: SearchAutocompl
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => query.trim() && setShowDropdown(true)}
           placeholder="Search for dishes, cuisines, restaurants..."
-          className="w-full pl-12 pr-4 py-3 bg-[var(--color-surface-container)] rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-[#ba001c] focus:bg-white transition-all"
+          className="w-full pl-12 pr-4 py-3 bg-[var(--color-surface-container)] rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:bg-white transition-all"
         />
         {query && (
           <button
@@ -192,7 +192,7 @@ export function SearchAutocomplete({ onSelect, className = "" }: SearchAutocompl
               ))}
               <button
                 onClick={() => handleSearch(query)}
-                className="w-full flex items-center gap-3 px-3 py-2.5 bg-[#ba001c]/5 hover:bg-[#ba001c]/10 rounded-lg text-[#ba001c] font-bold mt-2"
+                className="w-full flex items-center gap-3 px-3 py-2.5 bg-[var(--color-primary)]/5 hover:bg-[var(--color-primary)]/10 rounded-lg text-[var(--color-primary)] font-bold mt-2"
               >
                 <span className="material-symbols-outlined text-lg">arrow_forward</span>
                 Search for "{query}"
@@ -204,7 +204,7 @@ export function SearchAutocomplete({ onSelect, className = "" }: SearchAutocompl
             <div className="p-2">
               <div className="flex items-center justify-between px-3 py-2">
                 <div className="text-xs font-bold text-[var(--color-outline-variant)] uppercase">Recent Searches</div>
-                <button onClick={clearRecentSearches} className="text-xs text-[#ba001c] font-medium">
+                <button onClick={clearRecentSearches} className="text-xs text-[var(--color-primary)] font-medium">
                   Clear all
                 </button>
               </div>

@@ -28,25 +28,25 @@ export default function RefundsPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#fff4f4]">
+    <div className="min-h-screen bg-[var(--color-surface-container-lowest)]">
       {/* Header */}
       <header className="bg-[var(--color-surface-container-lowest)] border-b border-[var(--color-border-subtle)] sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <Link href="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[#ba001c] rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-[var(--color-primary)] rounded-xl flex items-center justify-center">
                 <span className="material-symbols-outlined text-white text-xl">M</span>
               </div>
-              <span className="text-xl font-black text-[#4d212a]">MIIAM</span>
+              <span className="text-xl font-black text-[var(--color-on-surface)]">MIIAM</span>
             </Link>
             <div className="flex items-center gap-4">
-              <Link href="/terms" className="text-sm font-medium text-[var(--color-on-surface-variant)] hover:text-[#ba001c]">
+              <Link href="/terms" className="text-sm font-medium text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary)]">
                 Terms of Service
               </Link>
-              <Link href="/privacy" className="text-sm font-medium text-[var(--color-on-surface-variant)] hover:text-[#ba001c]">
+              <Link href="/privacy" className="text-sm font-medium text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary)]">
                 Privacy Policy
               </Link>
-              <Link href="/" className="px-4 py-2 bg-[#ba001c] text-white rounded-lg text-sm font-bold hover:opacity-90">
+              <Link href="/" className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg text-sm font-bold hover:opacity-90">
                 Back to Home
               </Link>
             </div>
@@ -66,7 +66,7 @@ export default function RefundsPage() {
                     onClick={() => scrollToSection(section.id)}
                     className={`w-full text-left px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                       activeSection === section.id
-                        ? "bg-[#ba001c] text-white"
+                        ? "bg-[var(--color-primary)] text-white"
                         : "text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container)]"
                     }`}
                   >
@@ -81,9 +81,9 @@ export default function RefundsPage() {
           <main className="lg:col-span-9 mt-8 lg:mt-0">
             <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl shadow-sm p-6 sm:p-8 lg:p-10">
               <div className="flex items-center gap-3 mb-8">
-                <span className="material-symbols-outlined text-4xl text-[#ba001c]">attach_money</span>
+                <span className="material-symbols-outlined text-4xl text-[var(--color-primary)]">attach_money</span>
                 <div>
-                  <h1 className="text-2xl sm:text-3xl font-black text-[#4d212a]">Refund Policy</h1>
+                  <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-on-surface)]">Refund Policy</h1>
                   <p className="text-[var(--color-outline)] text-sm mt-1">Last updated: May 2026</p>
                 </div>
               </div>
@@ -99,7 +99,7 @@ export default function RefundsPage() {
 
                 {/* Food & Grocery Orders */}
                 <section id="food">
-                  <h2 className="text-xl font-bold text-[#ba001c] mb-4">2. Food & Grocery Orders</h2>
+                  <h2 className="text-xl font-bold text-[var(--color-primary)] mb-4">2. Food & Grocery Orders</h2>
                   <div className="space-y-4 text-[var(--color-on-surface-variant)]">
                     <p><strong className="text-[var(--color-on-surface)]">2.1 Eligible for full refund:</strong></p>
                     <ul className="list-disc pl-6 space-y-1">
@@ -128,7 +128,7 @@ export default function RefundsPage() {
 
                 {/* Home Services */}
                 <section id="services">
-                  <h2 className="text-xl font-bold text-[#ba001c] mb-4">3. Home Services</h2>
+                  <h2 className="text-xl font-bold text-[var(--color-primary)] mb-4">3. Home Services</h2>
                   <div className="space-y-4 text-[var(--color-on-surface-variant)]">
                     <p><strong className="text-[var(--color-on-surface)]">3.1 Eligible for full refund:</strong></p>
                     <ul className="list-disc pl-6 space-y-1">
@@ -154,23 +154,23 @@ export default function RefundsPage() {
 
                 {/* Cancellation Timing */}
                 <section id="timing">
-                  <h2 className="text-xl font-bold text-[#ba001c] mb-4">4. Cancellation Timing & Refunds</h2>
+                  <h2 className="text-xl font-bold text-[var(--color-primary)] mb-4">4. Cancellation Timing & Refunds</h2>
                   <div className="overflow-x-auto">
-                    <table className="min-w-full border border-[#ba001c]/20 text-sm">
-                      <thead className="bg-[#ba001c]">
+                    <table className="min-w-full border border-[var(--color-primary)]/20 text-sm">
+                      <thead className="bg-[var(--color-primary)]">
                         <tr>
                           <th className="p-3 text-left text-white font-bold">Scenario</th>
                           <th className="p-3 text-left text-white font-bold">Refund</th>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr><td className="p-3 border-b border-[#ba001c]/10">Before restaurant accepts</td><td className="p-3 border-b border-[#ba001c]/10 font-bold text-green-600">100%</td></tr>
-                        <tr><td className="p-3 border-b border-[#ba001c]/10">After acceptance, before preparation</td><td className="p-3 border-b border-[#ba001c]/10 font-bold text-green-600">100%</td></tr>
-                        <tr><td className="p-3 border-b border-[#ba001c]/10">After preparation began</td><td className="p-3 border-b border-[#ba001c]/10 font-bold text-red-600">No refund</td></tr>
-                        <tr><td className="p-3 border-b border-[#ba001c]/10">After rider picked up</td><td className="p-3 border-b border-[#ba001c]/10 font-bold text-red-600">No refund</td></tr>
-                        <tr><td className="p-3 border-b border-[#ba001c]/10">Service — 2+ hours before</td><td className="p-3 border-b border-[#ba001c]/10 font-bold text-green-600">100%</td></tr>
-                        <tr><td className="p-3 border-b border-[#ba001c]/10">Service — 1-2 hours before</td><td className="p-3 border-b border-[#ba001c]/10 font-bold text-amber-600">50%</td></tr>
-                        <tr><td className="p-3 border-b border-[#ba001c]/10">Service — under 1 hour</td><td className="p-3 border-b border-[#ba001c]/10 font-bold text-red-600">No refund</td></tr>
+                        <tr><td className="p-3 border-b border-[var(--color-primary)]/10">Before restaurant accepts</td><td className="p-3 border-b border-[var(--color-primary)]/10 font-bold text-green-600">100%</td></tr>
+                        <tr><td className="p-3 border-b border-[var(--color-primary)]/10">After acceptance, before preparation</td><td className="p-3 border-b border-[var(--color-primary)]/10 font-bold text-green-600">100%</td></tr>
+                        <tr><td className="p-3 border-b border-[var(--color-primary)]/10">After preparation began</td><td className="p-3 border-b border-[var(--color-primary)]/10 font-bold text-red-600">No refund</td></tr>
+                        <tr><td className="p-3 border-b border-[var(--color-primary)]/10">After rider picked up</td><td className="p-3 border-b border-[var(--color-primary)]/10 font-bold text-red-600">No refund</td></tr>
+                        <tr><td className="p-3 border-b border-[var(--color-primary)]/10">Service — 2+ hours before</td><td className="p-3 border-b border-[var(--color-primary)]/10 font-bold text-green-600">100%</td></tr>
+                        <tr><td className="p-3 border-b border-[var(--color-primary)]/10">Service — 1-2 hours before</td><td className="p-3 border-b border-[var(--color-primary)]/10 font-bold text-amber-600">50%</td></tr>
+                        <tr><td className="p-3 border-b border-[var(--color-primary)]/10">Service — under 1 hour</td><td className="p-3 border-b border-[var(--color-primary)]/10 font-bold text-red-600">No refund</td></tr>
                       </tbody>
                     </table>
                   </div>
@@ -253,13 +253,13 @@ export default function RefundsPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-[#ba001c]">M</span>
+              <span className="material-symbols-outlined text-[var(--color-primary)]">M</span>
               <span className="font-bold text-[var(--color-on-surface-variant)]">MIIAM Technologies Pvt. Ltd.</span>
             </div>
             <div className="flex gap-6">
-              <Link href="/terms" className="text-sm text-[var(--color-outline)] hover:text-[#ba001c]">Terms of Service</Link>
-              <Link href="/privacy" className="text-sm text-[var(--color-outline)] hover:text-[#ba001c]">Privacy Policy</Link>
-              <Link href="/refunds" className="text-sm text-[var(--color-outline)] hover:text-[#ba001c]">Refund Policy</Link>
+              <Link href="/terms" className="text-sm text-[var(--color-outline)] hover:text-[var(--color-primary)]">Terms of Service</Link>
+              <Link href="/privacy" className="text-sm text-[var(--color-outline)] hover:text-[var(--color-primary)]">Privacy Policy</Link>
+              <Link href="/refunds" className="text-sm text-[var(--color-outline)] hover:text-[var(--color-primary)]">Refund Policy</Link>
             </div>
             <p className="text-sm text-[var(--color-outline-variant)]">© 2026 MIIAM. All rights reserved.</p>
           </div>

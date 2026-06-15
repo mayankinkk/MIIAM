@@ -30,14 +30,14 @@ export default function SignOutPage() {
   }, [isLoading, router]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#fff4f4]">
+    <div className="min-h-screen flex items-center justify-center bg-[var(--color-surface-container-lowest)]">
       <div className="text-center">
         {isLoading ? (
-          <span className="material-symbols-outlined text-6xl text-[#ba001c] animate-spin">sync</span>
+          <span className="material-symbols-outlined text-6xl text-[var(--color-primary)] animate-spin">sync</span>
         ) : (
           <span className="material-symbols-outlined text-6xl text-green-500">check_circle</span>
         )}
-        <p className="mt-4 text-[#814c55] font-bold">{isLoading ? "Signing out..." : "Redirecting..."}</p>
+        <p className="mt-4 text-[var(--color-on-surface-variant)] font-bold">{isLoading ? "Signing out..." : "Redirecting..."}</p>
       </div>
     </div>
   );

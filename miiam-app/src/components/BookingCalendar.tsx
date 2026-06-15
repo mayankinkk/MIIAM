@@ -168,7 +168,7 @@ export default function BookingCalendar({
 
   return (
     <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl shadow-lg p-6">
-      <h3 className="text-lg font-black text-[#4d212a] mb-4">Book Appointment</h3>
+      <h3 className="text-lg font-black text-[var(--color-on-surface)] mb-4">Book Appointment</h3>
 
       <div className="flex items-center justify-between mb-4">
         <button 
@@ -208,7 +208,7 @@ export default function BookingCalendar({
                 p-3 text-sm font-bold rounded-lg transition-colors min-w-[44px]
                 ${!day.isCurrentMonth ? "text-[var(--color-outline-variant)]/60" : ""}
                 ${isPast ? "text-[var(--color-outline-variant)]/60 cursor-not-allowed" : ""}
-                ${selected ? "bg-[#ba001c] text-white" : ""}
+                ${selected ? "bg-[var(--color-primary)] text-white" : ""}
                 ${selectable && !selected ? "hover:bg-[var(--color-surface-container)] text-[var(--color-on-surface)]" : ""}
                 ${!selectable && day.isCurrentMonth ? "bg-red-50 text-red-300 line-through" : ""}
               `}
@@ -231,7 +231,7 @@ export default function BookingCalendar({
 
           {loading ? (
             <div className="flex justify-center py-8">
-              <div className="w-8 h-8 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin" />
+              <div className="w-8 h-8 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
             </div>
           ) : (
             <div className="grid grid-cols-3 gap-2">
@@ -243,7 +243,7 @@ export default function BookingCalendar({
                   className={`
                     py-3 rounded-lg text-sm font-bold transition-colors
                     ${selectedTime === slot.time 
-                      ? "bg-[#ba001c] text-white" 
+                      ? "bg-[var(--color-primary)] text-white" 
                       : slot.available 
                         ? "bg-[var(--color-surface-container)] text-[var(--color-on-surface)] hover:bg-[var(--color-surface-container-high)]" 
                         : "bg-[var(--color-surface-subtle)] text-[var(--color-outline-variant)]/60 cursor-not-allowed line-through"
@@ -275,12 +275,12 @@ export default function BookingCalendar({
                 })} at {selectedTime}
               </p>
             </div>
-            <p className="text-xl font-black text-[#ba001c]">₹{price}</p>
+            <p className="text-xl font-black text-[var(--color-primary)]">₹{price}</p>
           </div>
           <button
             onClick={handleBook}
             disabled={booking}
-            className="w-full py-4 bg-[#ba001c] text-white rounded-xl font-bold disabled:opacity-50"
+            className="w-full py-4 bg-[var(--color-primary)] text-white rounded-xl font-bold disabled:opacity-50"
           >
             {booking ? "Booking..." : "Confirm Booking"}
           </button>
@@ -293,13 +293,13 @@ export default function BookingCalendar({
             <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <span className="material-symbols-outlined text-green-600 text-4xl">check_circle</span>
             </div>
-            <h3 className="text-xl font-black text-[#4d212a] mb-2">Booking Confirmed!</h3>
+            <h3 className="text-xl font-black text-[var(--color-on-surface)] mb-2">Booking Confirmed!</h3>
             <p className="text-[var(--color-on-surface-variant)] mb-6">
               Your appointment for {serviceName} on {new Date(selectedDate!).toLocaleDateString()} at {selectedTime} has been confirmed.
             </p>
             <button
               onClick={() => setShowConfirmation(false)}
-              className="w-full py-4 bg-[#ba001c] text-white rounded-xl font-bold"
+              className="w-full py-4 bg-[var(--color-primary)] text-white rounded-xl font-bold"
             >
               Done
             </button>

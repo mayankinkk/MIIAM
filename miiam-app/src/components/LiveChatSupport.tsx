@@ -77,7 +77,7 @@ export function LiveChatSupport({ orderId, onClose }: LiveChatProps) {
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-4">
       <div className="bg-white w-full max-w-md rounded-2xl overflow-hidden flex flex-col max-h-[80vh]">
-        <div className="bg-[#ba001c] text-white p-4 flex items-center justify-between">
+        <div className="bg-[var(--color-primary)] text-white p-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
               <span className="material-symbols-outlined">support_agent</span>
@@ -101,7 +101,7 @@ export function LiveChatSupport({ orderId, onClose }: LiveChatProps) {
               <div
                 className={`max-w-[80%] px-4 py-2 rounded-2xl ${
                   msg.role === "user"
-                    ? "bg-[#ba001c] text-white rounded-br-md"
+                    ? "bg-[var(--color-primary)] text-white rounded-br-md"
                     : msg.role === "system"
                     ? "bg-yellow-100 text-yellow-800 text-sm"
                     : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface)] rounded-bl-md shadow-sm"
@@ -154,12 +154,12 @@ export function LiveChatSupport({ orderId, onClose }: LiveChatProps) {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && sendMessage(input)}
               placeholder="Type your message..."
-              className="flex-1 px-4 py-2 bg-[var(--color-surface-container)] rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-[#ba001c]"
+              className="flex-1 px-4 py-2 bg-[var(--color-surface-container)] rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
             />
             <button
               onClick={() => sendMessage(input)}
               disabled={!input.trim()}
-              className="w-10 h-10 bg-[#ba001c] text-white rounded-full flex items-center justify-center disabled:opacity-50"
+              className="w-10 h-10 bg-[var(--color-primary)] text-white rounded-full flex items-center justify-center disabled:opacity-50"
             >
               <span className="material-symbols-outlined">send</span>
             </button>
@@ -177,7 +177,7 @@ export function SupportButton() {
     <>
       <button
         onClick={() => setShowChat(true)}
-        className="fixed bottom-24 right-4 w-14 h-14 bg-[#ba001c] text-white rounded-full shadow-lg flex items-center justify-center hover:scale-105 transition-transform z-30"
+        className="fixed bottom-24 right-4 w-14 h-14 bg-[var(--color-primary)] text-white rounded-full shadow-lg flex items-center justify-center hover:scale-105 transition-transform z-30"
         style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}
       >
         <span className="material-symbols-outlined text-2xl">chat</span>

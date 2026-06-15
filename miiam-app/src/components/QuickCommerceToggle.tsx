@@ -36,7 +36,7 @@ export function QuickCommerceToggle({ onToggle }: QuickCommerceToggleProps) {
       onClick={handleToggle}
       className={`flex items-center gap-2 px-4 py-2 rounded-full font-bold text-sm transition-all ${
         isQuickMode 
-          ? "bg-[#ba001c] text-white shadow-lg shadow-[#ba001c]/20" 
+          ? "bg-[var(--color-primary)] text-white shadow-lg shadow-[var(--color-primary)]/20" 
           : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface)] border border-[var(--color-border-subtle)]"
       }`}
     >
@@ -59,7 +59,7 @@ export function QuickCommerceBadge() {
   if (!isQuickMode) return null;
 
   return (
-    <div className="fixed bottom-20 left-1/2 -translate-x-1/2 bg-[#ba001c] text-white px-4 py-2 rounded-full font-bold text-sm shadow-lg flex items-center gap-2 z-40"
+    <div className="fixed bottom-20 left-1/2 -translate-x-1/2 bg-[var(--color-primary)] text-white px-4 py-2 rounded-full font-bold text-sm shadow-lg flex items-center gap-2 z-40"
       style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}>
       <span className="material-symbols-outlined text-lg animate-pulse">flash_on</span>
       <span>10-min delivery</span>

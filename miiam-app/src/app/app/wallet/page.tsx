@@ -216,7 +216,7 @@ export default function WalletPage() {
                       import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast(`₹${amt} added to wallet!`, "success"));
                       setShowAddMoney(false); setAddAmount("");
                     },
-                    theme: { color: "#ba001c" },
+                    theme: { color: "var(--color-primary)" },
                   });
                   rzp.open();
                 };

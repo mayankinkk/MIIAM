@@ -241,7 +241,7 @@ export default function OrderManagement() {
                 placeholder="Search order ID..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#ba001c]/10"
+                className="bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/10"
               />
             </div>
             <select
@@ -292,7 +292,7 @@ export default function OrderManagement() {
                     type="checkbox"
                     checked={selectedIds.size === filteredOrders.length && filteredOrders.length > 0}
                     onChange={toggleSelectAll}
-                    className="w-4 h-4 accent-[#ba001c]"
+                    className="w-4 h-4 accent-[var(--color-primary)]"
                   />
                 </th>
                 <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Order ID</th>
@@ -311,11 +311,11 @@ export default function OrderManagement() {
                       type="checkbox"
                       checked={selectedIds.has(order.id)}
                       onChange={() => toggleSelect(order.id)}
-                      className="w-4 h-4 accent-[#ba001c]"
+                      className="w-4 h-4 accent-[var(--color-primary)]"
                     />
                   </td>
                   <td className="p-4">
-                    <button onClick={() => setSelectedOrder(order)} className="font-mono text-xs font-bold text-[#ba001c] hover:underline">
+                    <button onClick={() => setSelectedOrder(order)} className="font-mono text-xs font-bold text-[var(--color-primary)] hover:underline">
                       #{order.id.slice(0, 8)}
                     </button>
                   </td>
@@ -332,7 +332,7 @@ export default function OrderManagement() {
                   <td className="p-4 text-right">
                     <button
                       onClick={() => setSelectedOrder(order)}
-                      className="text-[var(--color-outline-variant)] hover:text-[#ba001c] p-2"
+                      className="text-[var(--color-outline-variant)] hover:text-[var(--color-primary)] p-2"
                     >
                       <span className="material-symbols-outlined">visibility</span>
                     </button>

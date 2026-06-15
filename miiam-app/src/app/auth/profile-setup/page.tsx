@@ -167,7 +167,7 @@ function ProfileSetupContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#fff4f4] to-white p-6">
+    <div className="min-h-screen bg-gradient-to-b from-[var(--color-surface-container-lowest)] to-white p-6">
       <div className="max-w-md mx-auto">
         {avatarUrl && (
           <div className="flex justify-center mb-6">
@@ -178,7 +178,7 @@ function ProfileSetupContent() {
             />
           </div>
         )}
-        <h1 className="text-2xl font-black text-[#4d212a] mb-1">Complete Your Profile</h1>
+        <h1 className="text-2xl font-black text-[var(--color-on-surface)] mb-1">Complete Your Profile</h1>
         <p className="text-[var(--color-outline)] mb-4">Step {step} of 3</p>
 
         {/* Incentive Banner */}
@@ -197,7 +197,7 @@ function ProfileSetupContent() {
               <div
                 key={s}
                 className={`h-2 flex-1 rounded-full transition-all ${
-                  s <= step ? "bg-[#ba001c]" : "bg-[var(--color-surface-container-high)]"
+                  s <= step ? "bg-[var(--color-primary)]" : "bg-[var(--color-surface-container-high)]"
                 }`}
               />
             ))}
@@ -215,7 +215,7 @@ function ProfileSetupContent() {
                 value={formData.full_name}
                 onChange={(e) => updateField("full_name", e.target.value)}
                 placeholder="e.g. John Doe"
-                className="w-full px-4 py-3 rounded-xl border-2 border-[var(--color-border-subtle)] focus:border-[#ba001c] focus:ring-2 focus:ring-[#ba001c]/20 outline-none"
+                className="w-full px-4 py-3 rounded-xl border-2 border-[var(--color-border-subtle)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 outline-none"
               />
               <p className="text-xs text-[var(--color-outline-variant)] mt-1 ml-1">Enter your full name as you'd like it shown on your profile</p>
             </div>
@@ -226,7 +226,7 @@ function ProfileSetupContent() {
                 value={formData.phone}
                 onChange={(e) => updateField("phone", e.target.value)}
                 placeholder="e.g. 9876543210"
-                className="w-full px-4 py-3 rounded-xl border-2 border-[var(--color-border-subtle)] focus:border-[#ba001c] focus:ring-2 focus:ring-[#ba001c]/20 outline-none"
+                className="w-full px-4 py-3 rounded-xl border-2 border-[var(--color-border-subtle)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 outline-none"
               />
               <p className="text-xs text-[var(--color-outline-variant)] mt-1 ml-1">Used for order updates and delivery coordination</p>
             </div>
@@ -245,7 +245,7 @@ function ProfileSetupContent() {
               onClick={() => setStep(2)}
               disabled={!canProceed()}
               className={`w-full py-4 rounded-xl font-bold text-lg transition-all ${
-                canProceed() ? "bg-[#ba001c] text-white hover:bg-[#a40017]" : "bg-[var(--color-surface-container-high)] text-[var(--color-outline-variant)]"
+                canProceed() ? "bg-[var(--color-primary)] text-white hover:bg-[#a40017]" : "bg-[var(--color-surface-container-high)] text-[var(--color-outline-variant)]"
               }`}
             >
               Continue
@@ -269,8 +269,8 @@ function ProfileSetupContent() {
                     }}
                     className={`py-3 px-4 rounded-xl font-bold text-sm transition-all ${
                       formData.state === state
-                        ? "bg-[#ba001c] text-white"
-                        : "bg-[var(--color-surface-container-lowest)] border-2 border-[var(--color-border-subtle)] text-[var(--color-on-surface-variant)] hover:border-[#ba001c]"
+                        ? "bg-[var(--color-primary)] text-white"
+                        : "bg-[var(--color-surface-container-lowest)] border-2 border-[var(--color-border-subtle)] text-[var(--color-on-surface-variant)] hover:border-[var(--color-primary)]"
                     }`}
                   >
                     {state}
@@ -281,7 +281,7 @@ function ProfileSetupContent() {
             <div className="flex gap-3">
               <button
                 onClick={() => setStep(1)}
-                className="flex-1 py-4 border-2 border-[var(--color-border-subtle)] rounded-xl font-bold text-[var(--color-on-surface-variant)] hover:border-[#ba001c]"
+                className="flex-1 py-4 border-2 border-[var(--color-border-subtle)] rounded-xl font-bold text-[var(--color-on-surface-variant)] hover:border-[var(--color-primary)]"
               >
                 Back
               </button>
@@ -290,14 +290,14 @@ function ProfileSetupContent() {
                   setSkipProfile(true);
                   handleComplete();
                 }}
-                className="flex-1 py-4 border-2 border-[var(--color-border-subtle)] rounded-xl font-bold text-[var(--color-on-surface-variant)] hover:border-[#ba001c]"
+                className="flex-1 py-4 border-2 border-[var(--color-border-subtle)] rounded-xl font-bold text-[var(--color-on-surface-variant)] hover:border-[var(--color-primary)]"
               >
                 Skip for now
               </button>
               <button
                 onClick={() => setStep(3)}
                 disabled={!formData.state}
-                className="flex-1 py-4 bg-[#ba001c] text-white rounded-xl font-bold hover:bg-[#a00018] transition-all disabled:opacity-50"
+                className="flex-1 py-4 bg-[var(--color-primary)] text-white rounded-xl font-bold hover:bg-[#a00018] transition-all disabled:opacity-50"
               >
                 Next
               </button>
@@ -320,8 +320,8 @@ function ProfileSetupContent() {
                       onClick={() => updateField("city", city)}
                       className={`py-3 px-4 rounded-xl font-bold text-sm transition-all ${
                         formData.city === city
-                          ? "bg-[#ba001c] text-white"
-                          : "bg-[var(--color-surface-container-lowest)] border-2 border-[var(--color-border-subtle)] text-[var(--color-on-surface-variant)] hover:border-[#ba001c]"
+                          ? "bg-[var(--color-primary)] text-white"
+                          : "bg-[var(--color-surface-container-lowest)] border-2 border-[var(--color-border-subtle)] text-[var(--color-on-surface-variant)] hover:border-[var(--color-primary)]"
                       }`}
                     >
                       {city}
@@ -339,7 +339,7 @@ function ProfileSetupContent() {
             <div className="flex gap-3">
               <button
                 onClick={() => setStep(2)}
-                className="flex-1 py-4 border-2 border-[var(--color-border-subtle)] rounded-xl font-bold text-[var(--color-on-surface-variant)] hover:border-[#ba001c]"
+                className="flex-1 py-4 border-2 border-[var(--color-border-subtle)] rounded-xl font-bold text-[var(--color-on-surface-variant)] hover:border-[var(--color-primary)]"
               >
                 Back
               </button>
@@ -348,14 +348,14 @@ function ProfileSetupContent() {
                   setSkipProfile(true);
                   handleComplete();
                 }}
-                className="flex-1 py-4 border-2 border-[var(--color-border-subtle)] rounded-xl font-bold text-[var(--color-on-surface-variant)] hover:border-[#ba001c]"
+                className="flex-1 py-4 border-2 border-[var(--color-border-subtle)] rounded-xl font-bold text-[var(--color-on-surface-variant)] hover:border-[var(--color-primary)]"
               >
                 Skip for now
               </button>
               <button
                 onClick={handleComplete}
                 disabled={loading || !canProceed()}
-                className="flex-1 py-4 bg-[#ba001c] text-white rounded-xl font-bold hover:bg-[#a00018] transition-all disabled:opacity-50"
+                className="flex-1 py-4 bg-[var(--color-primary)] text-white rounded-xl font-bold hover:bg-[#a00018] transition-all disabled:opacity-50"
               >
                 {loading ? "Saving..." : "Complete Setup"}
               </button>
@@ -368,9 +368,9 @@ function ProfileSetupContent() {
           <div className="fixed inset-0 bg-[var(--color-surface-container-lowest)]/80 backdrop-blur-sm flex items-center justify-center z-50">
             <div className="text-center animate-fade-in">
               <div className="text-6xl mb-4">🎉</div>
-              <p className="text-xl font-black text-[#4d212a]">Welcome to MIIAM!</p>
+              <p className="text-xl font-black text-[var(--color-on-surface)]">Welcome to MIIAM!</p>
               <p className="text-sm text-[var(--color-outline)] mt-2">Your 10% off coupon is waiting...</p>
-              <div className="mt-4 w-8 h-8 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin mx-auto" />
+              <div className="mt-4 w-8 h-8 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin mx-auto" />
             </div>
           </div>
         )}
@@ -381,8 +381,8 @@ function ProfileSetupContent() {
 
 function Loading() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#fff4f4] to-white flex items-center justify-center">
-      <div className="w-8 h-8 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin" />
+    <div className="min-h-screen bg-gradient-to-b from-[var(--color-surface-container-lowest)] to-white flex items-center justify-center">
+      <div className="w-8 h-8 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
     </div>
   );
 }

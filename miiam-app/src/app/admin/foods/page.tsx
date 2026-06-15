@@ -191,7 +191,7 @@ export default function AdminFoodsDashboard() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
           { label: "Total GMV", value: `₹${totalGMV.toLocaleString()}`, icon: "payments", color: "text-green-600" },
-          { label: "Active Orders", value: activeOrders, icon: "shopping_cart", color: "text-[#ba001c]" },
+          { label: "Active Orders", value: activeOrders, icon: "shopping_cart", color: "text-[var(--color-primary)]" },
           { label: "Pending", value: pendingOrders, icon: "schedule", color: "text-yellow-600" },
           { label: "Delivered", value: orders.filter(o => o.status === "delivered").length, icon: "check_circle", color: "text-green-600" },
         ].map((kpi, idx) => (
@@ -224,13 +224,13 @@ export default function AdminFoodsDashboard() {
                   onClick={() => setShowFilters(!showFilters)}
                   className={`px-4 py-2 rounded-xl text-sm font-bold border flex items-center gap-2 ${
                     showFilters || hasActiveFilters
-                      ? "bg-[#ba001c] text-white border-[#ba001c]"
+                      ? "bg-[var(--color-primary)] text-white border-[var(--color-primary)]"
                       : "border-[var(--color-border-subtle)]"
                   }`}
                 >
                   <span className="material-symbols-outlined text-sm">filter_list</span>
                   Filters
-                  {hasActiveFilters && <span className="bg-[var(--color-surface-container-lowest)] text-[#ba001c] rounded-full w-5 h-5 text-xs flex items-center justify-center">!</span>}
+                  {hasActiveFilters && <span className="bg-[var(--color-surface-container-lowest)] text-[var(--color-primary)] rounded-full w-5 h-5 text-xs flex items-center justify-center">!</span>}
                 </button>
                 <select
                   value={sortBy}
@@ -335,9 +335,9 @@ export default function AdminFoodsDashboard() {
         </div>
         
         {selectedOrders.length > 0 && (
-          <div className="p-4 bg-[#ba001c]/10 border-b border-[#ba001c]/20 flex items-center justify-between gap-4">
+          <div className="p-4 bg-[var(--color-primary)]/10 border-b border-[var(--color-primary)]/20 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <span className="bg-[#ba001c] text-white w-8 h-8 rounded-full flex items-center justify-center font-black text-sm">
+              <span className="bg-[var(--color-primary)] text-white w-8 h-8 rounded-full flex items-center justify-center font-black text-sm">
                 {selectedOrders.length}
               </span>
               <span className="font-bold text-[var(--color-on-surface)]">orders selected</span>
@@ -404,7 +404,7 @@ export default function AdminFoodsDashboard() {
                 </tr>
               ) : (
                 filteredOrders.map((order) => (
-                  <tr key={order.id} className={`hover:bg-[var(--color-surface-subtle)] transition-colors ${selectedOrders.includes(order.id) ? "bg-[#ba001c]/5" : ""}`}>
+                  <tr key={order.id} className={`hover:bg-[var(--color-surface-subtle)] transition-colors ${selectedOrders.includes(order.id) ? "bg-[var(--color-primary)]/5" : ""}`}>
                     <td className="p-4">
                       <input
                         type="checkbox"
@@ -440,7 +440,7 @@ export default function AdminFoodsDashboard() {
                     <td className="p-4">
                       <button
                         onClick={() => setSelectedOrder(order)}
-                        className="text-[#ba001c] font-bold hover:underline"
+                        className="text-[var(--color-primary)] font-bold hover:underline"
                       >
                         View
                       </button>

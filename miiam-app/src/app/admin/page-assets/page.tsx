@@ -109,7 +109,7 @@ export default function PageAssetsPage() {
   if (loading) {
     return (
       <div className="px-8 flex items-center justify-center py-24">
-        <div className="w-10 h-10 border-4 border-[#ba001c]/20 border-t-[#ba001c] rounded-full animate-spin" />
+        <div className="w-10 h-10 border-4 border-[var(--color-primary)]/20 border-t-[var(--color-primary)] rounded-full animate-spin" />
       </div>
     );
   }
@@ -124,7 +124,7 @@ export default function PageAssetsPage() {
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="bg-[#ba001c] text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-red-900/10 hover:scale-105 active:scale-95 transition-all"
+          className="bg-[var(--color-primary)] text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-red-900/10 hover:scale-105 active:scale-95 transition-all"
         >
           + Add Section
         </button>
@@ -219,7 +219,7 @@ export default function PageAssetsPage() {
                   <div className="flex gap-3 mt-4">
                     <button
                       onClick={() => handleEdit(asset)}
-                      className="flex-1 py-2.5 bg-[#ba001c] text-white rounded-xl font-bold text-sm hover:bg-[#a00018] active:scale-95 transition-all flex items-center justify-center gap-2"
+                      className="flex-1 py-2.5 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm hover:bg-[#a00018] active:scale-95 transition-all flex items-center justify-center gap-2"
                     >
                       <span className="material-symbols-outlined text-sm">edit</span>
                       Edit
@@ -297,7 +297,7 @@ export default function PageAssetsPage() {
                   <input
                     value={editForm.title}
                     onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
-                    className="w-full px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                    className="w-full px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                     placeholder="e.g. Gourmet Selection"
                   />
                 </div>
@@ -306,7 +306,7 @@ export default function PageAssetsPage() {
                   <input
                     value={editForm.subtitle}
                     onChange={(e) => setEditForm({ ...editForm, subtitle: e.target.value })}
-                    className="w-full px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                    className="w-full px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                     placeholder="e.g. Order from top restaurants"
                   />
                 </div>
@@ -332,7 +332,7 @@ export default function PageAssetsPage() {
               <button
                 onClick={handleSave}
                 disabled={saving || !editForm.image_url}
-                className="flex-1 py-3 bg-[#ba001c] text-white rounded-xl font-bold text-sm hover:bg-[#a00018] disabled:opacity-50 transition-all"
+                className="flex-1 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm hover:bg-[#a00018] disabled:opacity-50 transition-all"
               >
                 {saving ? "Saving..." : "Save Changes"}
               </button>
@@ -357,7 +357,7 @@ export default function PageAssetsPage() {
                 <input
                   value={newForm.section}
                   onChange={(e) => setNewForm({ ...newForm, section: e.target.value })}
-                  className="w-full px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                   placeholder="e.g. food_hero, home_hero"
                 />
                 <p className="text-[10px] text-[var(--color-outline-variant)] mt-1">Use snake_case. Existing keys will be updated.</p>
@@ -376,7 +376,7 @@ export default function PageAssetsPage() {
                   <input
                     value={newForm.title}
                     onChange={(e) => setNewForm({ ...newForm, title: e.target.value })}
-                    className="w-full px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                    className="w-full px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                     placeholder="Optional"
                   />
                 </div>
@@ -385,7 +385,7 @@ export default function PageAssetsPage() {
                   <input
                     value={newForm.subtitle}
                     onChange={(e) => setNewForm({ ...newForm, subtitle: e.target.value })}
-                    className="w-full px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                    className="w-full px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                     placeholder="Optional"
                   />
                 </div>
@@ -401,7 +401,7 @@ export default function PageAssetsPage() {
               <button
                 onClick={handleAdd}
                 disabled={saving || !newForm.section || !newForm.image_url}
-                className="flex-1 py-3 bg-[#ba001c] text-white rounded-xl font-bold text-sm hover:bg-[#a00018] disabled:opacity-50 transition-all"
+                className="flex-1 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm hover:bg-[#a00018] disabled:opacity-50 transition-all"
               >
                 {saving ? "Saving..." : "Add Section"}
               </button>

@@ -97,7 +97,7 @@ export default function RiderVehiclePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center">
+      <div className="min-h-screen bg-[var(--color-surface-container-lowest)] flex items-center justify-center">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-[#0b50d5] border-t-transparent rounded-full animate-spin mx-auto" />
           <p className="mt-4 text-[var(--color-outline)] font-medium">Loading vehicle info...</p>
@@ -107,7 +107,7 @@ export default function RiderVehiclePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#fff4f4]">
+    <div className="min-h-screen bg-[var(--color-surface-container-lowest)]">
       <header className="bg-gradient-to-br from-slate-700 to-slate-900 text-white p-6 pb-8 rounded-b-[3rem]">
         <div className="flex justify-between items-center">
           <Link href="/rider/dashboard" className="text-3xl font-black tracking-tighter">MIIAM</Link>
@@ -143,7 +143,7 @@ export default function RiderVehiclePage() {
         {/* Current Vehicle */}
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-lg">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-bold text-[#4d212a]">Current Vehicle</h3>
+            <h3 className="font-bold text-[var(--color-on-surface)]">Current Vehicle</h3>
             <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">Active</span>
           </div>
           
@@ -214,7 +214,7 @@ export default function RiderVehiclePage() {
                       {vehicle.type === "car" ? "🚗" : vehicle.type === "bike" ? "🏍️" : "🛵"}
                     </div>
                     <div>
-                      <p className="font-bold text-[#4d212a]">{vehicle.name}</p>
+                      <p className="font-bold text-[var(--color-on-surface)]">{vehicle.name}</p>
                       <p className="text-xs text-[var(--color-outline-variant)]">{vehicle.number}</p>
                     </div>
                   </div>
@@ -240,7 +240,7 @@ export default function RiderVehiclePage() {
             {maintenanceRecords.length > 0 && (
               <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-sm">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-bold text-[#4d212a]">Service History</h3>
+                  <h3 className="font-bold text-[var(--color-on-surface)]">Service History</h3>
                 </div>
                 <div className="space-y-3">
                   {maintenanceRecords.map((record, i) => (
@@ -281,7 +281,7 @@ export default function RiderVehiclePage() {
             </div>
 
             <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-sm">
-              <h3 className="font-bold text-[#4d212a] mb-4">Fuel Log</h3>
+              <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Fuel Log</h3>
               <div className="space-y-3">
                 {fuelLog.map((log, i) => (
                   <div key={i} className="flex items-center justify-between p-3 bg-[var(--color-surface-subtle)] rounded-xl">

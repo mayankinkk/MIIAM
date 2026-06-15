@@ -98,11 +98,11 @@ export default function PartnerChatPage() {
                 <button
                   key={oid}
                   onClick={() => setActiveOrder(oid)}
-                  className={`w-full p-4 text-left hover:bg-[var(--color-surface-subtle)] transition-colors ${activeOrder === oid ? "bg-[var(--color-surface-subtle)] ring-1 ring-[#ba001c]" : ""}`}
+                  className={`w-full p-4 text-left hover:bg-[var(--color-surface-subtle)] transition-colors ${activeOrder === oid ? "bg-[var(--color-surface-subtle)] ring-1 ring-[var(--color-primary)]" : ""}`}
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-bold text-sm text-[var(--color-on-surface)]">Order #{oid.slice(0, 8)}</span>
-                    {unread > 0 && <span className="bg-[#ba001c] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{unread}</span>}
+                    {unread > 0 && <span className="bg-[var(--color-primary)] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{unread}</span>}
                   </div>
                   <p className="text-xs text-[var(--color-outline-variant)] mt-1 truncate">{last.message}</p>
                 </button>
@@ -121,7 +121,7 @@ export default function PartnerChatPage() {
                 <div className="flex-1 p-4 space-y-3 max-h-[60vh] overflow-y-auto">
                   {(grouped[activeOrder] || []).slice().reverse().map((m) => (
                     <div key={m.id} className={`flex ${m.sender === "vendor" ? "justify-end" : "justify-start"}`}>
-                      <div className={`max-w-[75%] rounded-2xl px-4 py-2.5 text-sm ${m.sender === "vendor" ? "bg-[#ba001c] text-white" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface)]"}`}>
+                      <div className={`max-w-[75%] rounded-2xl px-4 py-2.5 text-sm ${m.sender === "vendor" ? "bg-[var(--color-primary)] text-white" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface)]"}`}>
                         <p>{m.message}</p>
                         <p className={`text-[10px] mt-1 ${m.sender === "vendor" ? "text-white/60" : "text-[var(--color-outline-variant)]"}`}>
                           {new Date(m.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
@@ -137,12 +137,12 @@ export default function PartnerChatPage() {
                     onChange={(e) => setReply(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && sendReply()}
                     placeholder="Type your reply..."
-                    className="flex-1 px-4 py-2.5 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] text-sm focus:outline-none focus:border-[#ba001c]"
+                    className="flex-1 px-4 py-2.5 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] text-sm focus:outline-none focus:border-[var(--color-primary)]"
                   />
                   <button
                     onClick={sendReply}
                     disabled={sending || !reply.trim()}
-                    className="px-5 py-2.5 bg-[#ba001c] text-white font-bold rounded-xl text-sm hover:bg-[#a40017] disabled:opacity-50"
+                    className="px-5 py-2.5 bg-[var(--color-primary)] text-white font-bold rounded-xl text-sm hover:bg-[#a40017] disabled:opacity-50"
                   >
                     Send
                   </button>

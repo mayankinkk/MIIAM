@@ -31,18 +31,18 @@ export default function ForgotPasswordPage() {
 
   if (emailSent) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#fff8f7] p-6">
+      <div className="min-h-screen flex items-center justify-center bg-[var(--color-surface-container-lowest)] p-6">
         <div className="max-w-md text-center space-y-6">
           <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto">
             <span className="material-symbols-outlined text-green-600 text-4xl">check_circle</span>
           </div>
-          <h1 className="text-2xl font-black text-[#281716]">Check Your Email</h1>
-          <p className="text-[#5c403d]">
+          <h1 className="text-2xl font-black text-[var(--color-on-surface)]">Check Your Email</h1>
+          <p className="text-[var(--color-on-surface)]">
             We sent a verification code to <span className="font-bold">{email}</span>
           </p>
           <Link 
             href={`/auth/email-verify?email=${encodeURIComponent(email)}&purpose=password_reset`}
-            className="block w-full bg-[#ba001c] text-white font-bold py-4 rounded-xl hover:bg-[#a00017]"
+            className="block w-full bg-[var(--color-primary)] text-white font-bold py-4 rounded-xl hover:bg-[var(--color-primary-dim)]"
           >
             Enter Verification Code
           </Link>
@@ -53,29 +53,29 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className="min-h-screen flex items-stretch overflow-hidden">
-      <section className="flex-1 flex flex-col justify-center items-center px-6 md:px-16 lg:px-24 bg-[#fff8f7] relative z-10">
+      <section className="flex-1 flex flex-col justify-center items-center px-6 md:px-16 lg:px-24 bg-[var(--color-surface-container-lowest)] relative z-10">
         <div className="w-full max-w-md space-y-8">
           <div className="flex flex-col items-start gap-4">
-            <Link href="/auth/login" className="text-[#5c403d] hover:text-[#ba001c]">
+            <Link href="/auth/login" className="text-[var(--color-on-surface)] hover:text-[var(--color-primary)]">
               <span className="material-symbols-outlined">arrow_back</span>
             </Link>
-            <span className="text-2xl font-black tracking-tighter text-[#8d0013]">MIIAM</span>
+            <span className="text-2xl font-black tracking-tighter text-[var(--color-primary-dark)]">MIIAM</span>
             <div className="space-y-2">
-              <h1 className="text-[3rem] leading-[1] tracking-[-0.02em] font-extrabold text-[#281716]">Reset Password</h1>
-              <p className="text-[#5c403d] font-medium">Enter your email to verify your identity</p>
+              <h1 className="text-[3rem] leading-[1] tracking-[-0.02em] font-extrabold text-[var(--color-on-surface)]">Reset Password</h1>
+              <p className="text-[var(--color-on-surface)] font-medium">Enter your email to verify your identity</p>
             </div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
               <div className="relative">
-                <label className="text-[10px] tracking-[0.3em] font-bold text-[#5c403d] mb-2 block uppercase">Email Address</label>
+                <label className="text-[10px] tracking-[0.3em] font-bold text-[var(--color-on-surface)] mb-2 block uppercase">Email Address</label>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="hello@miiam.com"
-                  className="w-full bg-[#fff0ef] border-none rounded-xl px-6 py-4 focus:ring-2 focus:ring-[#ba001c] transition-all placeholder:text-[#5c403d]/40"
+                  className="w-full bg-[var(--color-surface-container-lowest)] border-none rounded-xl px-6 py-4 focus:ring-2 focus:ring-[var(--color-primary)] transition-all placeholder:text-[var(--color-on-surface)]/40"
                 />
               </div>
             </div>
@@ -83,7 +83,7 @@ export default function ForgotPasswordPage() {
             <button
               type="submit"
               disabled={!email.includes("@") || isLoading}
-              className="w-full bg-[#ba001c] text-white text-[1.5rem] leading-[1.2] font-extrabold py-6 rounded-xl active:scale-95 transition-transform duration-200 disabled:opacity-50"
+              className="w-full bg-[var(--color-primary)] text-white text-[1.5rem] leading-[1.2] font-extrabold py-6 rounded-xl active:scale-95 transition-transform duration-200 disabled:opacity-50"
             >
               {isLoading ? "Sending..." : "Continue"}
             </button>
@@ -102,7 +102,7 @@ export default function ForgotPasswordPage() {
         </div>
         <div className="relative z-10 bg-[var(--color-surface-container-lowest)]/70 backdrop-blur-xl p-10 rounded-lg max-w-lg">
           <h2 className="text-[3rem] leading-tight tracking-[-0.02em] font-extrabold text-[#00174c]">Forgot Password?</h2>
-          <p className="text-[#5c403d] mt-4">No worries, we'll help you recover your account.</p>
+          <p className="text-[var(--color-on-surface)] mt-4">No worries, we'll help you recover your account.</p>
         </div>
       </section>
     </div>

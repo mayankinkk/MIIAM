@@ -18,7 +18,7 @@ interface QuickActionsFABProps {
 
 const defaultActions: QuickAction[] = [
   { id: "food", icon: "restaurant", label: "Food", href: "/app/food", color: "bg-orange-500" },
-  { id: "cart", icon: "shopping_cart", label: "Cart", href: "/app/cart", color: "bg-[#ba001c]" },
+  { id: "cart", icon: "shopping_cart", label: "Cart", href: "/app/cart", color: "bg-[var(--color-primary)]" },
   { id: "orders", icon: "receipt_long", label: "Orders", href: "/app/orders", color: "bg-blue-500" },
   { id: "support", icon: "support_agent", label: "Support", href: "/app/support", color: "bg-green-500" },
 ];
@@ -70,7 +70,7 @@ export default function QuickActionsFAB({ actions = defaultActions }: QuickActio
         {/* Main FAB */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className={`w-14 h-14 bg-gradient-to-br from-[#ba001c] to-[#ff7670] rounded-full flex items-center justify-center shadow-2xl shadow-[#ba001c]/30 active:scale-90 transition-all duration-300 ${
+          className={`w-14 h-14 bg-gradient-to-br from-[var(--color-primary)] to-[#ff7670] rounded-full flex items-center justify-center shadow-2xl shadow-[var(--color-primary)]/30 active:scale-90 transition-all duration-300 ${
             isOpen ? "rotate-45" : ""
           }`}
           aria-label="Quick actions"
@@ -82,7 +82,7 @@ export default function QuickActionsFAB({ actions = defaultActions }: QuickActio
 
         {/* Pulse effect when closed */}
         {!isOpen && (
-          <div className="absolute inset-0 w-14 h-14 rounded-full bg-[#ba001c]/30 animate-ping -z-10" />
+          <div className="absolute inset-0 w-14 h-14 rounded-full bg-[var(--color-primary)]/30 animate-ping -z-10" />
         )}
       </div>
 
@@ -105,7 +105,7 @@ export function MiniFAB() {
       style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-12 h-12 bg-[#ba001c] rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform"
+        className="w-12 h-12 bg-[var(--color-primary)] rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform"
       >
         <span className="material-symbols-outlined text-white text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>
           {isOpen ? "close" : "menu"}

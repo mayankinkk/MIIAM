@@ -149,11 +149,11 @@ export default function IncomingOrderCard({
             </div>
             
             <div className="flex items-start gap-3">
-              <div className="z-10 bg-[#4d212a] w-5 h-5 rounded-full flex items-center justify-center">
+              <div className="z-10 bg-[var(--color-on-surface)] w-5 h-5 rounded-full flex items-center justify-center">
                 <span className="material-symbols-outlined text-white text-xs">home</span>
               </div>
               <div className="flex-1">
-                <p className="text-[9px] text-[#4d212a] font-bold">{t.rider.order.drop}</p>
+                <p className="text-[9px] text-[var(--color-on-surface)] font-bold">{t.rider.order.drop}</p>
                 <p className="font-bold text-sm">{order.customer}</p>
                 <p className="text-[10px] text-[var(--color-outline)]">{order.customerAddress}</p>
                 <p className="text-[9px] text-[var(--color-outline-variant)] mt-1">📍 {order.landmark}</p>

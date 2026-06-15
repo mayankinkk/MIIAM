@@ -195,7 +195,7 @@ export default function GroceryInventoryPage() {
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="px-4 py-2 bg-[#ba001c] text-white rounded-lg font-bold text-sm hover:bg-[#a00018]"
+          className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg font-bold text-sm hover:bg-[#a00018]"
         >
           + Add Product
         </button>
@@ -228,13 +228,13 @@ export default function GroceryInventoryPage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search by product name..."
-            className="w-full pl-10 pr-4 py-3 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:border-[#ba001c]"
+            className="w-full pl-10 pr-4 py-3 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:border-[var(--color-primary)]"
           />
         </div>
         <select
           value={categoryFilter}
           onChange={(e) => setCategoryFilter(e.target.value)}
-          className="px-4 py-3 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:border-[#ba001c]"
+          className="px-4 py-3 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:border-[var(--color-primary)]"
         >
           <option value="all">All Categories</option>
           {groceryCategories.map(cat => (
@@ -244,7 +244,7 @@ export default function GroceryInventoryPage() {
         <select
           value={vendorFilter}
           onChange={(e) => setVendorFilter(e.target.value)}
-          className="px-4 py-3 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:border-[#ba001c]"
+          className="px-4 py-3 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:border-[var(--color-primary)]"
         >
           <option value="all">All Vendors</option>
           {vendors.map(v => (
@@ -284,7 +284,7 @@ export default function GroceryInventoryPage() {
                 )}
               </div>
               <div className="p-4">
-                <p className="text-xs font-bold text-[#ba001c] uppercase">{product.category}</p>
+                <p className="text-xs font-bold text-[var(--color-primary)] uppercase">{product.category}</p>
                 <p className="text-xs text-[var(--color-outline)] mb-1">{vendors.find(v => v.id === product.vendor_id)?.shop_name || "Unknown Vendor"}</p>
                 <p className="font-bold text-[var(--color-on-surface)]">{product.name}</p>
                 <div className="flex justify-between items-center mt-3">
@@ -347,7 +347,7 @@ export default function GroceryInventoryPage() {
                   type="text"
                   value={newProduct.name}
                   onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
-                  className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                  className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                   placeholder="Enter product name"
                 />
               </div>
@@ -356,7 +356,7 @@ export default function GroceryInventoryPage() {
                 <select
                   value={newProduct.vendor_id}
                   onChange={(e) => setNewProduct({ ...newProduct, vendor_id: e.target.value })}
-                  className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                  className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                 >
                   <option value="">Select Vendor</option>
                   {vendors.map(v => (
@@ -369,7 +369,7 @@ export default function GroceryInventoryPage() {
                 <select
                   value={newProduct.category}
                   onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}
-                  className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                  className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                 >
                   {groceryCategories.map(cat => (
                     <option key={cat} value={cat}>{cat}</option>
@@ -383,7 +383,7 @@ export default function GroceryInventoryPage() {
                     type="number"
                     value={newProduct.price}
                     onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
-                    className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                    className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                     placeholder="0"
                   />
                 </div>
@@ -393,7 +393,7 @@ export default function GroceryInventoryPage() {
                     type="number"
                     value={newProduct.stock}
                     onChange={(e) => setNewProduct({ ...newProduct, stock: e.target.value })}
-                    className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                    className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                     placeholder="100"
                   />
                 </div>
@@ -415,7 +415,7 @@ export default function GroceryInventoryPage() {
               <button
                 onClick={handleSaveProduct}
                 disabled={saving}
-                className="flex-1 py-3 bg-[#ba001c] text-white rounded-xl font-bold text-sm hover:bg-[#a00018] disabled:opacity-50"
+                className="flex-1 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm hover:bg-[#a00018] disabled:opacity-50"
               >
                 {saving ? "Saving..." : editingProduct ? "Update" : "Add Product"}
               </button>

@@ -26,7 +26,7 @@ export default async function RiderDashboardPage() {
     .limit(5);
 
   return (
-    <div className="bg-[#fff4f4] min-h-screen">
+    <div className="bg-[var(--color-surface-container-lowest)] min-h-screen">
       <header className="bg-[var(--color-secondary)] text-white p-6 pb-12 rounded-b-[3rem] shadow-[0px_20px_40px_rgba(11,80,213,0.2)]">
         <div className="flex justify-between items-center mb-8">
           <span className="text-3xl font-black tracking-tighter">MIIAM</span>
@@ -72,7 +72,7 @@ export default async function RiderDashboardPage() {
           {orders && orders.length > 0 ? orders.map((order: any) => (
             <div
               key={order.id}
-              className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-[0px_10px_30px_rgba(77,33,42,0.04)] border border-[#dd9ca6]/10 relative overflow-hidden"
+              className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-[0px_10px_30px_rgba(77,33,42,0.04)] border border-[var(--color-outline-variant)]/10 relative overflow-hidden"
             >
               <div className="absolute top-0 right-0 w-24 h-24 bg-[var(--color-secondary)]/5 rounded-bl-full" />
               <div className="flex justify-between items-start mb-4 relative z-10">

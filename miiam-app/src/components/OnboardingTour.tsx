@@ -90,7 +90,7 @@ export default function OnboardingTour({ onComplete }: OnboardingTourProps) {
               <div
                 key={i}
                 className={`h-1.5 flex-1 rounded-full transition-all ${
-                  i <= currentStep ? "bg-[#ba001c]" : "bg-[var(--color-surface-container-high)]"
+                  i <= currentStep ? "bg-[var(--color-primary)]" : "bg-[var(--color-surface-container-high)]"
                 }`}
               />
             ))}
@@ -98,11 +98,11 @@ export default function OnboardingTour({ onComplete }: OnboardingTourProps) {
 
           {/* Step content */}
           <div className="flex items-start gap-4 mb-6">
-            <div className="w-12 h-12 bg-[#ba001c]/10 rounded-xl flex items-center justify-center flex-shrink-0">
-              <span className="material-symbols-outlined text-2xl text-[#ba001c]">{step.icon}</span>
+            <div className="w-12 h-12 bg-[var(--color-primary)]/10 rounded-xl flex items-center justify-center flex-shrink-0">
+              <span className="material-symbols-outlined text-2xl text-[var(--color-primary)]">{step.icon}</span>
             </div>
             <div className="flex-1 pt-1">
-              <h3 className="text-lg font-black text-[#4d212a]">{step.title}</h3>
+              <h3 className="text-lg font-black text-[var(--color-on-surface)]">{step.title}</h3>
               <p className="text-sm text-[var(--color-outline)] mt-1">{step.description}</p>
             </div>
           </div>
@@ -126,7 +126,7 @@ export default function OnboardingTour({ onComplete }: OnboardingTourProps) {
               )}
               <button
                 onClick={next}
-                className="px-6 py-2 bg-[#ba001c] text-white rounded-xl font-bold text-sm hover:bg-[#a40017] transition-colors"
+                className="px-6 py-2 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm hover:bg-[#a40017] transition-colors"
               >
                 {currentStep < steps.length - 1 ? "Next" : "Get Started"}
               </button>

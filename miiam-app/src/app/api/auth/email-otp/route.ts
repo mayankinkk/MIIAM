@@ -32,14 +32,14 @@ async function sendEmail(email: string, otp: string, purpose?: string): Promise<
       subject,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <div style="background: linear-gradient(135deg, #ba001c, #8a0014); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+          <div style="background: linear-gradient(135deg, var(--color-primary), #8a0014); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
             <h1 style="color: white; margin: 0;">MIIAM</h1>
           </div>
-          <div style="background: #fff4f4; padding: 30px; border-radius: 0 0 10px 10px; text-align: center;">
-            <h2 style="color: #4d212a; margin-bottom: 20px;">Verify Your Email</h2>
+          <div style="background: var(--color-surface-container-lowest); padding: 30px; border-radius: 0 0 10px 10px; text-align: center;">
+            <h2 style="color: var(--color-on-surface); margin-bottom: 20px;">Verify Your Email</h2>
             <p style="color: #666; margin-bottom: 25px;">Use this code to verify your MIIAM account:</p>
             <div style="background: white; padding: 20px; border-radius: 10px; display: inline-block;">
-              <span style="font-size: 36px; font-weight: bold; color: #ba001c; letter-spacing: 8px;">${otp}</span>
+              <span style="font-size: 36px; font-weight: bold; color: var(--color-primary); letter-spacing: 8px;">${otp}</span>
             </div>
             <p style="color: #999; font-size: 12px; margin-top: 20px;">This code expires in 10 minutes.</p>
           </div>

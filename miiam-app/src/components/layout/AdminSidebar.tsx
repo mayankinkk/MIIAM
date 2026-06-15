@@ -103,10 +103,10 @@ export default function AdminSidebar() {
   const fullPath = pathname + (searchParams.toString() ? `?${searchParams.toString()}` : "");
 
   return (
-    <aside className="w-64 bg-[var(--color-surface-container-lowest)] border-r border-[#ba001c]/10 fixed h-full z-20 flex flex-col hidden md:flex shadow-2xl shadow-red-900/5 overflow-y-auto custom-scrollbar">
+    <aside className="w-64 bg-[var(--color-surface-container-lowest)] border-r border-[var(--color-primary)]/10 fixed h-full z-20 flex flex-col hidden md:flex shadow-2xl shadow-red-900/5 overflow-y-auto custom-scrollbar">
       <div className="p-6 border-b border-slate-50 flex items-center gap-3">
-        <div className="w-8 h-8 bg-[#ba001c] rounded-lg flex items-center justify-center text-white font-black">M</div>
-        <Link href="/admin" className="text-xl font-black tracking-tighter text-[#ba001c]">
+        <div className="w-8 h-8 bg-[var(--color-primary)] rounded-lg flex items-center justify-center text-white font-black">M</div>
+        <Link href="/admin" className="text-xl font-black tracking-tighter text-[var(--color-primary)]">
           MIIAM <span className="text-[var(--color-outline-variant)] text-xs tracking-normal">Staff</span>
         </Link>
       </div>
@@ -125,13 +125,13 @@ export default function AdminSidebar() {
                   href={item.href}
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all duration-200 group ${
                     isActive
-                      ? "bg-[#ba001c] text-white shadow-lg shadow-red-900/20"
+                      ? "bg-[var(--color-primary)] text-white shadow-lg shadow-red-900/20"
                       : "text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-subtle)]"
                   }`}
                 >
                   <span
                     className={`material-symbols-outlined text-[20px] ${
-                      isActive ? "" : "group-hover:text-[#ba001c]"
+                      isActive ? "" : "group-hover:text-[var(--color-primary)]"
                     }`}
                     style={{ fontVariationSettings: isActive ? "'FILL' 1" : "'FILL' 0" }}
                   >

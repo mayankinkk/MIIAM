@@ -195,7 +195,7 @@ export default function PharmacyMedicinesPage() {
           <h1 className="text-2xl font-black text-[var(--color-on-surface)]">Pharmacy Medicines</h1>
           <p className="text-[var(--color-outline)] text-sm">Manage medicine inventory and stock</p>
         </div>
-        <button onClick={() => setShowAddModal(true)} className="px-4 py-2 bg-[#ba001c] text-white rounded-lg font-bold text-sm hover:bg-[#a00018]">
+        <button onClick={() => setShowAddModal(true)} className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg font-bold text-sm hover:bg-[#a00018]">
           + Add Medicine
         </button>
       </div>
@@ -227,14 +227,14 @@ export default function PharmacyMedicinesPage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search by medicine name..."
-            className="w-full pl-10 pr-4 py-3 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:border-[#ba001c]"
+            className="w-full pl-10 pr-4 py-3 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:border-[var(--color-primary)]"
           />
         </div>
-        <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} className="px-4 py-3 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:border-[#ba001c]">
+        <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} className="px-4 py-3 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:border-[var(--color-primary)]">
           <option value="all">All Categories</option>
           {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
         </select>
-        <select value={vendorFilter} onChange={(e) => setVendorFilter(e.target.value)} className="px-4 py-3 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:border-[#ba001c]">
+        <select value={vendorFilter} onChange={(e) => setVendorFilter(e.target.value)} className="px-4 py-3 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:border-[var(--color-primary)]">
           <option value="all">All Vendors</option>
           {vendors.map(v => <option key={v.id} value={v.id}>{v.shop_name}</option>)}
         </select>
@@ -308,29 +308,29 @@ export default function PharmacyMedicinesPage() {
             <div className="p-6 space-y-4">
               <div>
                 <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Medicine Name *</label>
-                <input type="text" value={newMedicine.name} onChange={(e) => setNewMedicine({ ...newMedicine, name: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="Enter medicine name" />
+                <input type="text" value={newMedicine.name} onChange={(e) => setNewMedicine({ ...newMedicine, name: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none" placeholder="Enter medicine name" />
               </div>
               <div>
                 <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Vendor *</label>
-                <select value={newMedicine.vendor_id} onChange={(e) => setNewMedicine({ ...newMedicine, vendor_id: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none">
+                <select value={newMedicine.vendor_id} onChange={(e) => setNewMedicine({ ...newMedicine, vendor_id: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none">
                   <option value="">Select Vendor</option>
                   {vendors.map(v => <option key={v.id} value={v.id}>{v.shop_name}</option>)}
                 </select>
               </div>
               <div>
                 <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Category *</label>
-                <select value={newMedicine.category} onChange={(e) => setNewMedicine({ ...newMedicine, category: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none">
+                <select value={newMedicine.category} onChange={(e) => setNewMedicine({ ...newMedicine, category: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none">
                   {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
                 </select>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Price (₹) *</label>
-                  <input type="number" value={newMedicine.price} onChange={(e) => setNewMedicine({ ...newMedicine, price: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="0" />
+                  <input type="number" value={newMedicine.price} onChange={(e) => setNewMedicine({ ...newMedicine, price: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none" placeholder="0" />
                 </div>
                 <div>
                   <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Stock</label>
-                  <input type="number" value={newMedicine.stock} onChange={(e) => setNewMedicine({ ...newMedicine, stock: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="100" />
+                  <input type="number" value={newMedicine.stock} onChange={(e) => setNewMedicine({ ...newMedicine, stock: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none" placeholder="100" />
                 </div>
               </div>
               <ImageUpload
@@ -348,7 +348,7 @@ export default function PharmacyMedicinesPage() {
             </div>
             <div className="p-6 border-t flex gap-4">
               <button onClick={resetModal} className="flex-1 py-3 border border-[var(--color-border-subtle)] rounded-xl font-bold text-sm hover:bg-[var(--color-surface-subtle)]">Cancel</button>
-              <button onClick={handleSave} disabled={saving} className="flex-1 py-3 bg-[#ba001c] text-white rounded-xl font-bold text-sm hover:bg-[#a00018] disabled:opacity-50">
+              <button onClick={handleSave} disabled={saving} className="flex-1 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm hover:bg-[#a00018] disabled:opacity-50">
                 {saving ? "Saving..." : editingMedicine ? "Update" : "Add Medicine"}
               </button>
             </div>

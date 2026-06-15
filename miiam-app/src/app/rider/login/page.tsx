@@ -68,17 +68,17 @@ function RiderLoginContent() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fff4f4] flex flex-col md:flex-row">
+    <div className="min-h-screen bg-[var(--color-surface-container-lowest)] flex flex-col md:flex-row">
       <div className="md:w-1/2 p-12 md:p-24 flex flex-col justify-center relative bg-white">
-        <Link href="/" className="absolute top-8 left-8 text-3xl font-black text-[#ba001c] tracking-tighter">
+        <Link href="/" className="absolute top-8 left-8 text-3xl font-black text-[var(--color-primary)] tracking-tighter">
           MIIAM
         </Link>
         <div className="max-w-md w-full mx-auto">
           <span className="text-[#0b50d5] font-bold text-sm tracking-widest uppercase mb-4 block">Fleet Network</span>
-          <h1 className="text-4xl md:text-5xl font-extrabold text-[#4d212a] mb-4 tracking-tight">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-[var(--color-on-surface)] mb-4 tracking-tight">
             Ride with <br/> purpose.
           </h1>
-          <p className="text-[#814c55] text-lg mb-12">Sign in to your rider account to start accepting orders and earning.</p>
+          <p className="text-[var(--color-on-surface-variant)] text-lg mb-12">Sign in to your rider account to start accepting orders and earning.</p>
 
           {error && (
             <div className="mb-6 p-4 bg-[#f95630]/10 border border-[#f95630]/30 rounded-xl text-[#b02500] text-sm font-medium">
@@ -88,9 +88,9 @@ function RiderLoginContent() {
 
           <form onSubmit={handleLogin} className="space-y-6">
             <div>
-              <label className="block text-sm font-bold text-[#4d212a] mb-3 uppercase tracking-widest px-1">Email Address</label>
-              <div className="flex bg-[#ffecee] rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-[#ba001c]/40 transition-all border border-[#dd9ca6]/30">
-                <span className="px-5 py-4 font-bold text-[#814c55] border-r border-[#dd9ca6]/30">
+              <label className="block text-sm font-bold text-[var(--color-on-surface)] mb-3 uppercase tracking-widest px-1">Email Address</label>
+              <div className="flex bg-[#ffecee] rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-[var(--color-primary)]/40 transition-all border border-[var(--color-outline-variant)]/30">
+                <span className="px-5 py-4 font-bold text-[var(--color-on-surface-variant)] border-r border-[var(--color-outline-variant)]/30">
                   <span className="material-symbols-outlined">mail</span>
                 </span>
                 <input
@@ -98,19 +98,19 @@ function RiderLoginContent() {
                   required
                   value={email}
                   onChange={(e) => { setEmail(e.target.value); setError(null); }}
-                  className="w-full bg-transparent border-none px-5 py-4 text-lg font-semibold focus:outline-none placeholder:text-[#814c55]/40 text-[#4d212a]"
+                  className="w-full bg-transparent border-none px-5 py-4 text-lg font-semibold focus:outline-none placeholder:text-[var(--color-on-surface-variant)]/40 text-[var(--color-on-surface)]"
                   placeholder="your@email.com"
                 />
               </div>
             </div>
             <div>
-              <label className="block text-sm font-bold text-[#4d212a] mb-3 uppercase tracking-widest px-1">Password</label>
+              <label className="block text-sm font-bold text-[var(--color-on-surface)] mb-3 uppercase tracking-widest px-1">Password</label>
               <input
                 type="password"
                 required
                 value={password}
                   onChange={(e) => { setPassword(e.target.value); setError(null); }}
-                className="w-full bg-[#ffecee] border border-[#dd9ca6]/30 rounded-xl px-5 py-4 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-[#ba001c]/40 transition-all text-[#4d212a]"
+                className="w-full bg-[#ffecee] border border-[var(--color-outline-variant)]/30 rounded-xl px-5 py-4 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/40 transition-all text-[var(--color-on-surface)]"
                 placeholder="Enter your password"
               />
               <button
@@ -135,9 +135,9 @@ function RiderLoginContent() {
             </button>
           </form>
 
-          <div className="mt-12 text-center text-sm font-medium text-[#814c55]">
+          <div className="mt-12 text-center text-sm font-medium text-[var(--color-on-surface-variant)]">
             Want to become a rider?{" "}
-            <Link href="/rider/apply" className="text-[#ba001c] font-bold hover:underline">
+            <Link href="/rider/apply" className="text-[var(--color-primary)] font-bold hover:underline">
               Apply now
             </Link>
           </div>
@@ -208,13 +208,13 @@ function RiderLoginContent() {
                 )}
                 <form onSubmit={handleForgotPassword} className="space-y-4">
                   <div>
-                    <label className="block text-sm font-bold text-[#4d212a] mb-2">Email Address</label>
+                    <label className="block text-sm font-bold text-[var(--color-on-surface)] mb-2">Email Address</label>
                     <input
                       type="email"
                       required
                       value={resetEmail}
                       onChange={(e) => setResetEmail(e.target.value)}
-                      className="w-full bg-[#ffecee] border border-[#dd9ca6]/30 rounded-xl px-4 py-3 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-[#ba001c]/40 text-[#4d212a]"
+                      className="w-full bg-[#ffecee] border border-[var(--color-outline-variant)]/30 rounded-xl px-4 py-3 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/40 text-[var(--color-on-surface)]"
                       placeholder="your@email.com"
                     />
                   </div>

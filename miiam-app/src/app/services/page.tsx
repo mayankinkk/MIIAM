@@ -107,13 +107,13 @@ export default function ServicesLandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#fff4f4] to-white overflow-x-hidden">
+    <div className="min-h-screen bg-gradient-to-b from-[var(--color-surface-container-lowest)] to-white overflow-x-hidden">
 
 
       {/* Services Grid */}
       <div className="relative max-w-7xl mx-auto px-6 pt-16 pb-20">
         <div className={`text-center mb-12 transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <h2 className="text-3xl md:text-4xl font-black text-[#4d212a] mb-3">Choose Your Service</h2>
+          <h2 className="text-3xl md:text-4xl font-black text-[var(--color-on-surface)] mb-3">Choose Your Service</h2>
           <p className="text-[var(--color-outline)]">Tap a card to explore and book</p>
         </div>
 
@@ -171,11 +171,11 @@ export default function ServicesLandingPage() {
                 {/* Content Section */}
                 <div className="p-5">
                   <div className="mb-2">
-                    <span className="text-xs font-medium text-[#ba001c] uppercase tracking-wider">
+                    <span className="text-xs font-medium text-[var(--color-primary)] uppercase tracking-wider">
                       {category.subtitle}
                     </span>
                   </div>
-                  <h3 className="text-xl font-black text-[#4d212a] mb-2">{category.title}</h3>
+                  <h3 className="text-xl font-black text-[var(--color-on-surface)] mb-2">{category.title}</h3>
                   <p className="text-sm text-[var(--color-outline)] mb-4">{category.description}</p>
                   
                   {/* Tags */}
@@ -197,7 +197,7 @@ export default function ServicesLandingPage() {
 
                   {/* CTA */}
                   <div className={`flex items-center gap-2 text-sm font-bold transition-all duration-300
-                    ${hoveredCard === index ? 'text-[#ba001c]' : 'text-[var(--color-outline-variant)]'}
+                    ${hoveredCard === index ? 'text-[var(--color-primary)]' : 'text-[var(--color-outline-variant)]'}
                   `}>
                     <span>Explore</span>
                     <span className={`material-symbols-outlined transition-transform duration-300 ${hoveredCard === index ? 'translate-x-1' : ''}`}>
@@ -208,7 +208,7 @@ export default function ServicesLandingPage() {
 
                 {/* Hover Border Effect */}
                 <div className={`absolute inset-0 rounded-3xl border-2 border-transparent transition-all duration-500 pointer-events-none
-                  ${hoveredCard === index ? 'border-[#ba001c]/30' : ''}
+                  ${hoveredCard === index ? 'border-[var(--color-primary)]/30' : ''}
                 `} />
               </div>
             </div>
@@ -220,19 +220,19 @@ export default function ServicesLandingPage() {
       <div className="bg-[var(--color-surface-container-lowest)] py-16">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-black text-[#4d212a] mb-3">Why MIIAM?</h2>
+            <h2 className="text-3xl font-black text-[var(--color-on-surface)] mb-3">Why MIIAM?</h2>
             <p className="text-[var(--color-outline)]">We bring the best service experience to your home</p>
           </div>
 
           <div className="grid md:grid-cols-4 gap-6">
             {whyChooseUs.map((item, i) => (
-              <div key={i} className="text-center p-6 rounded-2xl hover:bg-[#fff4f4] transition-colors">
+              <div key={i} className="text-center p-6 rounded-2xl hover:bg-[var(--color-surface-container-lowest)] transition-colors">
                 <div className={`w-16 h-16 mx-auto rounded-2xl flex items-center justify-center mb-4 ${item.color}`}>
                   <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>
                     {item.icon}
                   </span>
                 </div>
-                <h3 className="font-bold text-[#4d212a] mb-2">{item.title}</h3>
+                <h3 className="font-bold text-[var(--color-on-surface)] mb-2">{item.title}</h3>
                 <p className="text-sm text-[var(--color-outline)]">{item.desc}</p>
               </div>
             ))}
@@ -245,7 +245,7 @@ export default function ServicesLandingPage() {
         <div className="max-w-4xl mx-auto">
           <div className="relative p-12 rounded-3xl overflow-hidden text-center">
             {/* Background */}
-            <div className="absolute inset-0 bg-gradient-to-r from-[#ba001c] to-[#8a0014]" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-primary)] to-[#8a0014]" />
             <div className="absolute inset-0 opacity-20">
               <div className="absolute top-0 right-0 w-64 h-64 border border-white/20 rounded-full" />
               <div className="absolute bottom-0 left-0 w-48 h-48 border border-white/20 rounded-full" />
@@ -263,7 +263,7 @@ export default function ServicesLandingPage() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link 
                   href="/app/services"
-                  className="px-8 py-4 bg-[var(--color-surface-container-lowest)] text-[#ba001c] rounded-2xl font-bold hover:bg-[var(--color-surface-container-lowest)]/90 transition-all hover:scale-105"
+                  className="px-8 py-4 bg-[var(--color-surface-container-lowest)] text-[var(--color-primary)] rounded-2xl font-bold hover:bg-[var(--color-surface-container-lowest)]/90 transition-all hover:scale-105"
                 >
                   Browse All Services
                 </Link>

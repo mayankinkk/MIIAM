@@ -26,7 +26,7 @@ export default function RiderSupportPage() {
   }, [supabase, router]);
 
   return (
-    <div className="min-h-screen bg-[#fff4f4]">
+    <div className="min-h-screen bg-[var(--color-surface-container-lowest)]">
       <header className="bg-[#0b50d5] text-white p-6 pb-8 rounded-b-[3rem]">
         <div className="flex items-center gap-4">
           <Link href="/rider/account" className="text-white">
@@ -38,7 +38,7 @@ export default function RiderSupportPage() {
 
       <main className="p-6 space-y-6 pb-32">
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg">
-          <h2 className="font-bold text-[#4d212a] mb-4">Contact Us</h2>
+          <h2 className="font-bold text-[var(--color-on-surface)] mb-4">Contact Us</h2>
           <div className="space-y-3">
             <a href={`tel:${support.support_phone}`} className="w-full flex items-center gap-3 p-4 bg-[var(--color-surface-subtle)] rounded-xl">
               <span className="material-symbols-outlined text-[#0b50d5]">call</span>
@@ -59,7 +59,7 @@ export default function RiderSupportPage() {
         </div>
 
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg">
-          <h2 className="font-bold text-[#4d212a] mb-4">Frequently Asked Questions</h2>
+          <h2 className="font-bold text-[var(--color-on-surface)] mb-4">Frequently Asked Questions</h2>
           <div className="space-y-3">
             {faqs.map((faq, i) => (
               <div key={i} className="border-b border-[var(--color-border-subtle)] pb-3">
@@ -67,7 +67,7 @@ export default function RiderSupportPage() {
                   onClick={() => setExpanded(expanded === i ? null : i)}
                   className="w-full flex items-center justify-between text-left"
                 >
-                  <span className="font-bold text-[#4d212a]">{faq.q}</span>
+                  <span className="font-bold text-[var(--color-on-surface)]">{faq.q}</span>
                   <span className="material-symbols-outlined text-[var(--color-outline-variant)]">
                     {expanded === i ? "expand_less" : "expand_more"}
                   </span>

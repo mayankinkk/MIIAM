@@ -50,7 +50,7 @@ export function FoodGallery({ images, name }: FoodGalleryProps) {
                 key={img.id}
                 onClick={() => setSelectedIndex(idx)}
                 className={`relative flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
-                  idx === selectedIndex ? "border-[#ba001c]" : "border-transparent opacity-70 hover:opacity-100"
+                  idx === selectedIndex ? "border-[var(--color-primary)]" : "border-transparent opacity-70 hover:opacity-100"
                 }`}
               >
                 <Image
@@ -93,7 +93,7 @@ export function FoodGallery({ images, name }: FoodGalleryProps) {
                     key={img.id}
                     onClick={() => setSelectedIndex(idx)}
                     className={`relative w-20 h-20 rounded-lg overflow-hidden border-2 flex-shrink-0 ${
-                      idx === selectedIndex ? "border-[#ba001c]" : "border-white/30"
+                      idx === selectedIndex ? "border-[var(--color-primary)]" : "border-white/30"
                     }`}
                   >
                     <Image

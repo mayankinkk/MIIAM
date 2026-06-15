@@ -81,7 +81,7 @@ export default function BannerManagement() {
         </div>
         <button 
           onClick={() => setShowAdd(true)}
-          className="bg-[#ba001c] text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-red-900/10 hover:scale-105 active:scale-95 transition-all"
+          className="bg-[var(--color-primary)] text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-red-900/10 hover:scale-105 active:scale-95 transition-all"
         >
           + Add Banner
         </button>
@@ -213,7 +213,7 @@ export default function BannerManagement() {
                   type="text"
                   value={newBanner.title}
                   onChange={(e) => setNewBanner({ ...newBanner, title: e.target.value })}
-                  className="w-full bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#ba001c]/10"
+                  className="w-full bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/10"
                   placeholder="Banner title"
                 />
               </div>
@@ -231,13 +231,13 @@ export default function BannerManagement() {
                   type="text"
                   value={newBanner.link_url}
                   onChange={(e) => setNewBanner({ ...newBanner, link_url: e.target.value })}
-                  className="w-full bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#ba001c]/10"
+                  className="w-full bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/10"
                   placeholder="/app/vendor/123"
                 />
               </div>
               <button
                 onClick={addBanner}
-                className="w-full py-3 bg-[#ba001c] text-white rounded-xl font-bold hover:bg-[#a00018]"
+                className="w-full py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold hover:bg-[#a00018]"
               >
                 Add Banner
               </button>

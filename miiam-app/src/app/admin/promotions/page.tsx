@@ -74,7 +74,7 @@ export default function PromotionsPage() {
           <h1 className="text-3xl font-black text-[var(--color-on-surface)]">Promotions</h1>
           <p className="text-[var(--color-outline-variant)] text-sm">Manage discount codes and promotions</p>
         </div>
-        <button onClick={() => setShowCreate(!showCreate)} className="px-4 py-2 bg-[#ba001c] text-white rounded-lg text-sm font-bold hover:opacity-90 flex items-center gap-2">
+        <button onClick={() => setShowCreate(!showCreate)} className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg text-sm font-bold hover:opacity-90 flex items-center gap-2">
           <span className="material-symbols-outlined text-base">add</span> Create Promotion
         </button>
       </div>
@@ -115,7 +115,7 @@ export default function PromotionsPage() {
             </div>
           </div>
           <div className="flex gap-2">
-            <button onClick={createPromo} className="px-4 py-2 bg-[#ba001c] text-white rounded-lg text-sm font-bold">Create</button>
+            <button onClick={createPromo} className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg text-sm font-bold">Create</button>
             <button onClick={() => setShowCreate(false)} className="px-4 py-2 bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] rounded-lg text-sm font-bold">Cancel</button>
           </div>
         </div>
@@ -123,7 +123,7 @@ export default function PromotionsPage() {
 
       <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)] overflow-hidden shadow-sm">
         {loading ? (
-          <div className="flex items-center justify-center py-12"><div className="w-8 h-8 border-4 border-[#ba001c]/20 border-t-[#ba001c] rounded-full animate-spin" /></div>
+          <div className="flex items-center justify-center py-12"><div className="w-8 h-8 border-4 border-[var(--color-primary)]/20 border-t-[var(--color-primary)] rounded-full animate-spin" /></div>
         ) : promos.length === 0 ? (
           <div className="py-12 text-center text-[var(--color-outline-variant)]">No promotions yet</div>
         ) : (

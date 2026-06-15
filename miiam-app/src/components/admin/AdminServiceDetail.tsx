@@ -144,7 +144,7 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
           <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm">Recent Bookings</h3>
         </div>
         {loading ? (
-          <div className="flex items-center justify-center py-12"><div className="w-8 h-8 border-4 border-[#ba001c]/20 border-t-[#ba001c] rounded-full animate-spin" /></div>
+          <div className="flex items-center justify-center py-12"><div className="w-8 h-8 border-4 border-[var(--color-primary)]/20 border-t-[var(--color-primary)] rounded-full animate-spin" /></div>
         ) : bookings.length === 0 ? (
           <div className="py-12 text-center text-[var(--color-outline-variant)]">No bookings found</div>
         ) : (

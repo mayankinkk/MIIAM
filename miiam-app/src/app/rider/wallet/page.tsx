@@ -233,10 +233,10 @@ export default function RiderWalletPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center p-4">
+      <div className="min-h-screen bg-[var(--color-surface-container-lowest)] flex items-center justify-center p-4">
         <div className="text-center max-w-sm">
           <span className="material-symbols-outlined text-5xl text-red-400 mb-4 block">wifi_off</span>
-          <h2 className="text-xl font-bold text-[#4d212a] mb-2">Something went wrong</h2>
+          <h2 className="text-xl font-bold text-[var(--color-on-surface)] mb-2">Something went wrong</h2>
           <p className="text-[var(--color-outline)] mb-6">{error}</p>
           <button
             onClick={() => loadWalletData()}
@@ -251,7 +251,7 @@ export default function RiderWalletPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center">
+      <div className="min-h-screen bg-[var(--color-surface-container-lowest)] flex items-center justify-center">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-[#0b50d5] border-t-transparent rounded-full animate-spin mx-auto" />
           <p className="mt-4 text-[var(--color-outline)] font-medium">Loading wallet...</p>
@@ -263,7 +263,7 @@ export default function RiderWalletPage() {
   return (
     <>
     <PullToRefresh onRefresh={loadWalletData}>
-    <div className="min-h-screen bg-[#fff4f4]">
+    <div className="min-h-screen bg-[var(--color-surface-container-lowest)]">
       <header className="bg-gradient-to-br from-[#0b50d5] to-[#0044bf] text-white p-6 pb-12 rounded-b-[3rem]">
         <div className="flex justify-between items-center">
           <Link href="/rider/dashboard" className="text-3xl font-black tracking-tighter">MIIAM</Link>
@@ -350,7 +350,7 @@ export default function RiderWalletPage() {
               </div>
             </div>
 
-            <h2 className="text-lg font-bold text-[#4d212a]">Recent Transactions</h2>
+            <h2 className="text-lg font-bold text-[var(--color-on-surface)]">Recent Transactions</h2>
             
             <div className="space-y-3">
               {displayTxns.map((txn) => (
@@ -372,7 +372,7 @@ export default function RiderWalletPage() {
                       </span>
                     </div>
                     <div>
-                      <p className="font-medium text-[#4d212a]">{txn.description}</p>
+                      <p className="font-medium text-[var(--color-on-surface)]">{txn.description}</p>
                       <p className="text-xs text-[var(--color-outline-variant)]">
                         {new Date(txn.created_at).toLocaleString()}
                       </p>

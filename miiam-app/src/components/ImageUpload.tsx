@@ -73,7 +73,7 @@ export default function ImageUpload({
         )}
         {uploading && (
           <div className="absolute inset-0 bg-[var(--color-surface-container-lowest)]/70 flex items-center justify-center">
-            <span className="material-symbols-outlined text-[#ba001c] animate-spin">progress_activity</span>
+            <span className="material-symbols-outlined text-[var(--color-primary)] animate-spin">progress_activity</span>
           </div>
         )}
         <input
@@ -100,7 +100,7 @@ export default function ImageUpload({
             setUseUrl(!useUrl);
             if (!useUrl) onChange("");
           }}
-          className="text-xs font-bold text-[#ba001c] hover:underline"
+          className="text-xs font-bold text-[var(--color-primary)] hover:underline"
         >
           {useUrl ? "Upload file instead" : "Or enter URL instead"}
         </button>
@@ -116,7 +116,7 @@ export default function ImageUpload({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder="https://example.com/image.jpg"
-          className="mt-2 w-full bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ba001c]/10"
+          className="mt-2 w-full bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/10"
         />
       )}
     </div>

@@ -119,7 +119,7 @@ export default function UserRegistry() {
            </div>
             <button
               onClick={() => { setSearchQuery(""); setPage(1); }}
-              className={`p-3 rounded-xl transition-colors ${searchQuery ? "bg-[#ba001c] text-white" : "bg-[var(--color-surface-subtle)] text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]"}`}
+              className={`p-3 rounded-xl transition-colors ${searchQuery ? "bg-[var(--color-primary)] text-white" : "bg-[var(--color-surface-subtle)] text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]"}`}
             >
               <span className="material-symbols-outlined">filter_list</span>
             </button>
@@ -140,7 +140,7 @@ export default function UserRegistry() {
                 <tr key={profile.id} className="hover:bg-[var(--color-surface-subtle)]/50 transition-colors">
                   <td className="p-6">
                     <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-full bg-[#ffe1e4] flex items-center justify-center text-[#ba001c] font-black overflow-hidden shadow-sm">
+                      <div className="w-10 h-10 rounded-full bg-[var(--color-surface-container)] flex items-center justify-center text-[var(--color-primary)] font-black overflow-hidden shadow-sm">
                         {profile.avatar_url ? <img src={profile.avatar_url} alt={`${profile.full_name || 'User'}'s avatar`} className="w-full h-full object-cover" /> : profile.full_name?.[0] || "?"}
                       </div>
                       <div>
@@ -151,7 +151,7 @@ export default function UserRegistry() {
                 </td>
                   <td className="p-6">
                     <span className={`text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest ${
-                      profile.role === 'admin' ? 'bg-[#ba001c] text-white' :
+                      profile.role === 'admin' ? 'bg-[var(--color-primary)] text-white' :
                       profile.role === 'rider' ? 'bg-amber-100 text-amber-700' :
                       'bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]'
                     }`}>
@@ -164,7 +164,7 @@ export default function UserRegistry() {
                   <td className="p-6 text-right relative">
                     <button 
                       onClick={(e) => toggleMenu(profile.id, e)}
-                      className="text-[var(--color-outline-variant)] hover:text-[#ba001c] transition-colors p-2 rounded hover:bg-[var(--color-surface-container)]"
+                      className="text-[var(--color-outline-variant)] hover:text-[var(--color-primary)] transition-colors p-2 rounded hover:bg-[var(--color-surface-container)]"
                     >
                       <span className="material-symbols-outlined text-[20px]">more_vert</span>
                     </button>
@@ -239,7 +239,7 @@ export default function UserRegistry() {
               <div className="flex justify-between"><span className="text-[var(--color-outline)]">Joined</span><span className="font-bold">{selectedProfile.created_at ? new Date(selectedProfile.created_at).toLocaleDateString("en-IN") : "—"}</span></div>
               <div className="flex justify-between"><span className="text-[var(--color-outline)]">ID</span><span className="font-bold text-xs">{selectedProfile.id}</span></div>
             </div>
-            <button onClick={() => setShowDetailModal(false)} className="w-full mt-6 py-3 bg-[#ba001c] text-white font-bold rounded-xl">Close</button>
+            <button onClick={() => setShowDetailModal(false)} className="w-full mt-6 py-3 bg-[var(--color-primary)] text-white font-bold rounded-xl">Close</button>
           </div>
         </div>
       )}
@@ -254,7 +254,7 @@ export default function UserRegistry() {
                 <button
                   key={role}
                   onClick={() => setNewRole(role)}
-                  className={`w-full p-3 rounded-xl text-left font-bold capitalize transition-colors ${newRole === role ? "bg-[#ba001c] text-white" : "bg-[var(--color-surface-subtle)] hover:bg-[var(--color-surface-container)]"}`}
+                  className={`w-full p-3 rounded-xl text-left font-bold capitalize transition-colors ${newRole === role ? "bg-[var(--color-primary)] text-white" : "bg-[var(--color-surface-subtle)] hover:bg-[var(--color-surface-container)]"}`}
                 >
                   {role}
                 </button>
@@ -271,7 +271,7 @@ export default function UserRegistry() {
                   setShowRoleModal(false);
                 }}
                 disabled={!newRole || newRole === selectedProfile.role}
-                className="flex-1 py-3 bg-[#ba001c] text-white font-bold rounded-xl disabled:opacity-50"
+                className="flex-1 py-3 bg-[var(--color-primary)] text-white font-bold rounded-xl disabled:opacity-50"
               >
                 Save
               </button>

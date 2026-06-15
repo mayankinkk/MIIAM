@@ -111,7 +111,7 @@ export default function VendorProfilePage() {
           className={`px-6 py-3 rounded-xl font-bold text-sm transition-all ${
             saved
               ? "bg-green-100 text-green-700"
-              : "bg-[#ba001c] text-white hover:bg-[#a40017]"
+              : "bg-[var(--color-primary)] text-white hover:bg-[#a40017]"
           }`}
         >
           {saving ? "Saving..." : saved ? "Saved!" : "Save Changes"}
@@ -129,7 +129,7 @@ export default function VendorProfilePage() {
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-bold transition-all ${
-              activeTab === tab.id ? "bg-[#ffe1e4] text-[#ba001c]" : "text-[var(--color-outline)] hover:text-[var(--color-on-surface)]"
+              activeTab === tab.id ? "bg-[var(--color-surface-container)] text-[var(--color-primary)]" : "text-[var(--color-outline)] hover:text-[var(--color-on-surface)]"
             }`}
           >
             <span className="material-symbols-outlined text-lg">{tab.icon}</span>
@@ -168,7 +168,7 @@ export default function VendorProfilePage() {
               </label>
               {uploading && (
                 <div className="absolute inset-0 bg-white/60 flex items-center justify-center rounded-2xl">
-                  <span className="material-symbols-outlined text-[#ba001c] animate-spin">progress_activity</span>
+                  <span className="material-symbols-outlined text-[var(--color-primary)] animate-spin">progress_activity</span>
                 </div>
               )}
             </div>
@@ -176,7 +176,7 @@ export default function VendorProfilePage() {
               <button
                 type="button"
                 onClick={() => setShowUrlInput(showUrlInput === "cover" ? null : "cover")}
-                className="text-xs font-bold text-[#ba001c] hover:underline text-left"
+                className="text-xs font-bold text-[var(--color-primary)] hover:underline text-left"
               >
                 {showUrlInput === "cover" ? "Hide URL input" : "Or enter image URL"}
               </button>
@@ -186,7 +186,7 @@ export default function VendorProfilePage() {
                   value={form.cover_image_url || ""}
                   onChange={(e) => setForm({ ...form, cover_image_url: e.target.value })}
                   placeholder="https://example.com/image.jpg"
-                  className="w-full px-3 py-2 bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl text-sm focus:outline-none focus:border-[#ba001c]"
+                  className="w-full px-3 py-2 bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl text-sm focus:outline-none focus:border-[var(--color-primary)]"
                 />
               )}
             </div>
@@ -228,14 +228,14 @@ export default function VendorProfilePage() {
               </label>
               {uploading && (
                 <div className="absolute inset-0 bg-white/60 flex items-center justify-center rounded-2xl">
-                  <span className="material-symbols-outlined text-[#ba001c] animate-spin">progress_activity</span>
+                  <span className="material-symbols-outlined text-[var(--color-primary)] animate-spin">progress_activity</span>
                 </div>
               )}
             </div>
             <button
               type="button"
               onClick={() => setShowUrlInput(showUrlInput === "banner" ? null : "banner")}
-              className="text-xs font-bold text-[#ba001c] hover:underline mt-2"
+              className="text-xs font-bold text-[var(--color-primary)] hover:underline mt-2"
             >
               {showUrlInput === "banner" ? "Hide URL input" : "Or enter image URL"}
             </button>
@@ -245,7 +245,7 @@ export default function VendorProfilePage() {
                 value={form.banner_url || ""}
                 onChange={(e) => setForm({ ...form, banner_url: e.target.value })}
                 placeholder="https://example.com/banner.jpg"
-                className="mt-2 w-full px-4 py-3 bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl text-sm focus:outline-none focus:border-[#ba001c]"
+                className="mt-2 w-full px-4 py-3 bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl text-sm focus:outline-none focus:border-[var(--color-primary)]"
               />
             )}
             <p className="text-xs text-[var(--color-outline-variant)] mt-1">Recommended: 1200×400px. Shows at the top of your store page.</p>
@@ -258,7 +258,7 @@ export default function VendorProfilePage() {
                 type="text"
                 value={form.shop_name || ""}
                 onChange={(e) => setForm({ ...form, shop_name: e.target.value })}
-                className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
+                className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
               />
             </div>
             <div>
@@ -266,7 +266,7 @@ export default function VendorProfilePage() {
               <select
                 value={form.type || "food"}
                 onChange={(e) => setForm({ ...form, type: e.target.value })}
-                className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
+                className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
               >
                 <option value="food">Food & Restaurant</option>
                 <option value="grocery">Grocery</option>
@@ -279,7 +279,7 @@ export default function VendorProfilePage() {
                 type="text"
                 value={form.owner_name || ""}
                 onChange={(e) => setForm({ ...form, owner_name: e.target.value })}
-                className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
+                className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
               />
             </div>
             <div>
@@ -289,7 +289,7 @@ export default function VendorProfilePage() {
                 value={form.cuisine || ""}
                 onChange={(e) => setForm({ ...form, cuisine: e.target.value })}
                 placeholder="e.g., Indian, Chinese, Italian"
-                className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
+                className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
               />
             </div>
             <div className="sm:col-span-2">
@@ -299,7 +299,7 @@ export default function VendorProfilePage() {
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
                 rows={3}
                 placeholder="Tell customers about your store..."
-                className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c] resize-none"
+                className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)] resize-none"
               />
             </div>
             <div className="sm:col-span-2">
@@ -308,7 +308,7 @@ export default function VendorProfilePage() {
                 type="text"
                 value={form.address || ""}
                 onChange={(e) => setForm({ ...form, address: e.target.value })}
-                className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
+                className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
               />
             </div>
             <div>
@@ -317,7 +317,7 @@ export default function VendorProfilePage() {
                 type="text"
                 value={form.city || ""}
                 onChange={(e) => setForm({ ...form, city: e.target.value })}
-                className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
+                className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
               />
             </div>
             <div>
@@ -326,7 +326,7 @@ export default function VendorProfilePage() {
                 type="text"
                 value={form.state || ""}
                 onChange={(e) => setForm({ ...form, state: e.target.value })}
-                className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
+                className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
               />
             </div>
             <div>
@@ -335,7 +335,7 @@ export default function VendorProfilePage() {
                 type="text"
                 value={form.pincode || ""}
                 onChange={(e) => setForm({ ...form, pincode: e.target.value })}
-                className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
+                className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
               />
             </div>
             <div>
@@ -345,7 +345,7 @@ export default function VendorProfilePage() {
                 value={form.opening_hours || ""}
                 onChange={(e) => setForm({ ...form, opening_hours: e.target.value })}
                 placeholder="e.g., 9:00 AM - 10:00 PM"
-                className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
+                className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
               />
             </div>
             <div>
@@ -354,7 +354,7 @@ export default function VendorProfilePage() {
                   type="checkbox"
                   checked={form.is_pure_veg || false}
                   onChange={(e) => setForm({ ...form, is_pure_veg: e.target.checked })}
-                  className="w-5 h-5 accent-[#ba001c]"
+                  className="w-5 h-5 accent-[var(--color-primary)]"
                 />
                 <span className="text-sm font-semibold text-[var(--color-on-surface)]">Pure Vegetarian Store</span>
               </label>
@@ -374,7 +374,7 @@ export default function VendorProfilePage() {
                 type="text"
                 value={form.phone || ""}
                 onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
+                className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
               />
             </div>
             <div>
@@ -383,7 +383,7 @@ export default function VendorProfilePage() {
                 type="email"
                 value={form.email || ""}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
+                className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
               />
             </div>
             <div>
@@ -393,7 +393,7 @@ export default function VendorProfilePage() {
                 value={form.gst_number || ""}
                 onChange={(e) => setForm({ ...form, gst_number: e.target.value })}
                 placeholder="e.g., 22AAAAA0000A1Z5"
-                className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
+                className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
               />
             </div>
             <div>
@@ -403,7 +403,7 @@ export default function VendorProfilePage() {
                 value={form.fssai_number || ""}
                 onChange={(e) => setForm({ ...form, fssai_number: e.target.value })}
                 placeholder="e.g., 12345678901234"
-                className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
+                className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
               />
             </div>
             <div>
@@ -413,7 +413,7 @@ export default function VendorProfilePage() {
                 value={form.pan_number || ""}
                 onChange={(e) => setForm({ ...form, pan_number: e.target.value })}
                 placeholder="e.g., ABCDE1234F"
-                className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
+                className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
               />
             </div>
           </div>
@@ -431,7 +431,7 @@ export default function VendorProfilePage() {
                   type="number"
                   value={form.min_order_amount || 0}
                   onChange={(e) => setForm({ ...form, min_order_amount: parseFloat(e.target.value) || 0 })}
-                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
+                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
                 />
               </div>
               <div>
@@ -440,7 +440,7 @@ export default function VendorProfilePage() {
                   type="number"
                   value={form.delivery_charge || 0}
                   onChange={(e) => setForm({ ...form, delivery_charge: parseFloat(e.target.value) || 0 })}
-                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
+                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
                 />
               </div>
               <div>
@@ -449,7 +449,7 @@ export default function VendorProfilePage() {
                   type="number"
                   value={form.delivery_time_min || 0}
                   onChange={(e) => setForm({ ...form, delivery_time_min: parseInt(e.target.value) || 0 })}
-                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
+                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
                 />
               </div>
               <div>
@@ -458,7 +458,7 @@ export default function VendorProfilePage() {
                   type="number"
                   value={form.delivery_time_max || 0}
                   onChange={(e) => setForm({ ...form, delivery_time_max: parseInt(e.target.value) || 0 })}
-                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
+                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
                 />
               </div>
             </div>
@@ -467,7 +467,7 @@ export default function VendorProfilePage() {
           {/* Delivery Zones */}
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-[var(--color-border-subtle)] space-y-4">
             <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-[#ba001c]">location_on</span>
+              <span className="material-symbols-outlined text-[var(--color-primary)]">location_on</span>
               <h3 className="font-extrabold text-[var(--color-on-surface)] text-lg">Delivery Zones</h3>
             </div>
             <p className="text-sm text-[var(--color-outline)]">Enter pincodes you deliver to (comma separated)</p>
@@ -476,7 +476,7 @@ export default function VendorProfilePage() {
               value={(form.delivery_zones || []).join(", ")}
               onChange={(e) => setForm({ ...form, delivery_zones: e.target.value.split(",").map(s => s.trim()).filter(Boolean) })}
               placeholder="e.g., 110001, 110002, 110003, 110004"
-              className="w-full px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c] font-mono"
+              className="w-full px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)] font-mono"
             />
             {(form.delivery_zones || []).length > 0 && (
               <div className="flex flex-wrap gap-2">
@@ -496,7 +496,7 @@ export default function VendorProfilePage() {
           {/* Cancellation Policy */}
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-[var(--color-border-subtle)] space-y-4">
             <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-[#ba001c]">cancel_schedule_send</span>
+              <span className="material-symbols-outlined text-[var(--color-primary)]">cancel_schedule_send</span>
               <h3 className="font-extrabold text-[var(--color-on-surface)] text-lg">Cancellation Policy</h3>
             </div>
             <textarea
@@ -504,7 +504,7 @@ export default function VendorProfilePage() {
               onChange={(e) => setForm({ ...form, cancellation_policy: e.target.value })}
               placeholder="e.g., Orders can be cancelled within 5 minutes of placing. Full refund will be issued."
               rows={4}
-              className="w-full px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c] resize-none text-sm"
+              className="w-full px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)] resize-none text-sm"
             />
           </div>
         </div>

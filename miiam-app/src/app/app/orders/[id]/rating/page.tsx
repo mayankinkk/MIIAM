@@ -77,7 +77,7 @@ function Confetti() {
       left: Math.random() * 100,
       delay: Math.random() * 0.5,
       size: Math.random() * 8 + 4,
-      color: ["#ba001c", "#ff7670", "#ffd200", "#0b50d5", "#38ef7d"][i % 5],
+      color: ["var(--color-primary)", "#ff7670", "#ffd200", "#0b50d5", "#38ef7d"][i % 5],
     }))
   );
 

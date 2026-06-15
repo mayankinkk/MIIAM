@@ -55,12 +55,12 @@ export function RiderTipSelector({ orderAmount, onTipSelect, onSkip }: RiderTipP
               onClick={() => handleSelect(percent)}
               className={`p-3 rounded-xl border-2 text-center transition-all ${
                 isSelected
-                  ? "border-[#ba001c] bg-red-50"
+                  ? "border-[var(--color-primary)] bg-red-50"
                   : "border-[var(--color-border-subtle)] hover:border-[var(--color-outline-variant)]"
               }`}
             >
               <div className="text-sm font-bold text-[var(--color-on-surface)]">{label}</div>
-              {amount > 0 && <div className="text-xs text-[#ba001c]">₹{amount}</div>}
+              {amount > 0 && <div className="text-xs text-[var(--color-primary)]">₹{amount}</div>}
             </button>
           );
         })}
@@ -76,12 +76,12 @@ export function RiderTipSelector({ orderAmount, onTipSelect, onSkip }: RiderTipP
               value={customAmount}
               onChange={(e) => setCustomAmount(e.target.value)}
               placeholder="Enter amount"
-              className="w-full pl-8 pr-4 py-2 border border-[var(--color-border-subtle)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ba001c]"
+              className="w-full pl-8 pr-4 py-2 border border-[var(--color-border-subtle)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
             />
           </div>
           <button
             onClick={handleCustomTip}
-            className="px-4 py-2 bg-[#ba001c] text-white rounded-lg font-bold"
+            className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg font-bold"
           >
             Add
           </button>
@@ -98,7 +98,7 @@ export function RiderTipSelector({ orderAmount, onTipSelect, onSkip }: RiderTipP
         <button
           onClick={() => selectedTip !== null && handleSelect(selectedTip)}
           disabled={selectedTip === null}
-          className="flex-1 py-3 bg-[#ba001c] text-white font-bold rounded-xl disabled:opacity-50"
+          className="flex-1 py-3 bg-[var(--color-primary)] text-white font-bold rounded-xl disabled:opacity-50"
         >
           Add ₹{selectedTip !== null && selectedTip >= 0 ? calculateTip(selectedTip) : selectedTip === -1 ? customAmount : 0} Tip
         </button>

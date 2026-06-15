@@ -350,7 +350,7 @@ export default function RiderDashboard() {
         const pickupIcon = L.divIcon({ className: '', html: `<div style="display:flex;flex-direction:column;align-items:center;"><div style="width:44px;height:44px;background:white;border-radius:50%;border:3px solid #0b50d5;box-shadow:0 3px 10px rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:center;"><span style="font-size:20px;">🍽️</span></div><span style="margin-top:2px;padding:2px 6px;background:white;border-radius:6px;font-size:10px;font-weight:bold;box-shadow:0 1px 4px rgba(0,0,0,0.15);white-space:nowrap;">${currentOrder.vendor}</span></div>`, iconSize: [44, 64], iconAnchor: [22, 64] });
         markers.push(L.marker([currentOrder.vendorLat, currentOrder.vendorLng], { icon: pickupIcon }).addTo(map));
         if (deliveryStep === "delivering" && currentOrder.customerLat && currentOrder.customerLng) {
-          const deliveryIcon = L.divIcon({ className: '', html: `<div style="display:flex;flex-direction:column;align-items:center;"><div style="width:44px;height:44px;background:white;border-radius:50%;border:3px solid #ba001c;box-shadow:0 3px 10px rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:center;"><span style="font-size:20px;">🏠</span></div><span style="margin-top:2px;padding:2px 6px;background:white;border-radius:6px;font-size:10px;font-weight:bold;box-shadow:0 1px 4px rgba(0,0,0,0.15);white-space:nowrap;">${currentOrder.customer}</span></div>`, iconSize: [44, 64], iconAnchor: [22, 64] });
+          const deliveryIcon = L.divIcon({ className: '', html: `<div style="display:flex;flex-direction:column;align-items:center;"><div style="width:44px;height:44px;background:white;border-radius:50%;border:3px solid var(--color-primary);box-shadow:0 3px 10px rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:center;"><span style="font-size:20px;">🏠</span></div><span style="margin-top:2px;padding:2px 6px;background:white;border-radius:6px;font-size:10px;font-weight:bold;box-shadow:0 1px 4px rgba(0,0,0,0.15);white-space:nowrap;">${currentOrder.customer}</span></div>`, iconSize: [44, 64], iconAnchor: [22, 64] });
           markers.push(L.marker([currentOrder.customerLat, currentOrder.customerLng], { icon: deliveryIcon }).addTo(map));
         }
       }
@@ -520,12 +520,12 @@ export default function RiderDashboard() {
   if (error) {
     const isNotRider = error === "You don't have a rider account yet.";
     return (
-      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center p-4">
+      <div className="min-h-screen bg-[var(--color-surface-container-lowest)] flex items-center justify-center p-4">
         <div className="text-center max-w-sm">
           {isNotRider ? (
             <>
               <span className="material-symbols-outlined text-5xl text-amber-400 mb-4 block">motorcycle</span>
-              <h2 className="text-xl font-bold text-[#4d212a] mb-2">{t.rider.errors.notRiderYet}</h2>
+              <h2 className="text-xl font-bold text-[var(--color-on-surface)] mb-2">{t.rider.errors.notRiderYet}</h2>
               <p className="text-[var(--color-outline)] mb-2">{t.rider.errors.notRiderDesc}</p>
               <p className="text-[var(--color-outline)] mb-6">{t.rider.errors.notRiderCta}</p>
               <Link href="/rider/apply" className="inline-block px-6 py-3 bg-[#0b50d5] text-white rounded-xl font-bold">{t.rider.errors.applyToRider}</Link>
@@ -533,7 +533,7 @@ export default function RiderDashboard() {
           ) : (
             <>
               <span className="material-symbols-outlined text-5xl text-red-400 mb-4 block">wifi_off</span>
-              <h2 className="text-xl font-bold text-[#4d212a] mb-2">{t.rider.errors.unableToLoad}</h2>
+              <h2 className="text-xl font-bold text-[var(--color-on-surface)] mb-2">{t.rider.errors.unableToLoad}</h2>
               <p className="text-[var(--color-outline)] mb-6">{error}</p>
               <button onClick={() => window.location.reload()} className="px-6 py-3 bg-[#0b50d5] text-white rounded-xl font-bold">{t.rider.errors.tryAgain}</button>
             </>

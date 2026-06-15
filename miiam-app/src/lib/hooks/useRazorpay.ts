@@ -92,7 +92,7 @@ export function useRazorpay() {
           contact: userPhone || "",
         },
         theme: {
-          color: "#ba001c",
+          color: "var(--color-primary)",
         },
         handler: async (response: any) => {
           try {

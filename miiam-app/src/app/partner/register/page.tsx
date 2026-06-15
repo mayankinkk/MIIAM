@@ -109,13 +109,13 @@ export default function VendorRegister() {
 
   const update = (field: string, value: any) => setForm({ ...form, [field]: value });
 
-  const inputClass = "w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]";
+  const inputClass = "w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]";
   const labelClass = "text-sm font-semibold text-[var(--color-on-surface)]";
 
   // ── Success screen ─────────────────────────────────────────────────────────
   if (submitted) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#ba001c]/5 to-white flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-b from-[var(--color-primary)]/5 to-white flex items-center justify-center p-4">
         <div className="w-full max-w-lg text-center">
           <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-10 shadow-lg border border-[var(--color-border-subtle)] space-y-6">
             {/* Animated checkmark */}
@@ -150,7 +150,7 @@ export default function VendorRegister() {
             </div>
             <button
               onClick={() => router.push("/")}
-              className="w-full py-3 bg-[#ba001c] text-white rounded-xl font-bold hover:bg-[#a40017] transition-colors"
+              className="w-full py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold hover:bg-[#a40017] transition-colors"
             >
               Go to Home
             </button>
@@ -161,11 +161,11 @@ export default function VendorRegister() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#ba001c]/5 to-white flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-b from-[var(--color-primary)]/5 to-white flex items-center justify-center p-4">
       <div className="w-full max-w-2xl">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-extrabold text-[var(--color-on-surface)] tracking-tight">
-            Partner with <span className="text-[#ba001c]">MIIAM</span>
+            Partner with <span className="text-[var(--color-primary)]">MIIAM</span>
           </h1>
           <p className="text-[var(--color-outline)] mt-2">List your business and reach thousands of customers</p>
         </div>
@@ -176,7 +176,7 @@ export default function VendorRegister() {
             <div key={s.num} className="flex items-center gap-2">
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
                 step > s.num ? "bg-green-500 text-white" :
-                step === s.num ? "bg-[#ba001c] text-white" :
+                step === s.num ? "bg-[var(--color-primary)] text-white" :
                 "bg-[var(--color-surface-container-high)] text-[var(--color-outline)]"
               }`}>
                 {step > s.num ? "✓" : s.num}
@@ -250,7 +250,7 @@ export default function VendorRegister() {
                 </div>
               </div>
               <label className="flex items-center gap-3 cursor-pointer">
-                <input type="checkbox" checked={form.is_pure_veg} onChange={(e) => update("is_pure_veg", e.target.checked)} className="w-5 h-5 accent-[#ba001c]" />
+                <input type="checkbox" checked={form.is_pure_veg} onChange={(e) => update("is_pure_veg", e.target.checked)} className="w-5 h-5 accent-[var(--color-primary)]" />
                 <span className={labelClass}>Pure Vegetarian Store</span>
               </label>
             </div>
@@ -327,7 +327,7 @@ export default function VendorRegister() {
               </button>
             ) : <div />}
             {step < 4 ? (
-              <button onClick={() => setStep(step + 1)} className="px-8 py-3 bg-[#ba001c] text-white rounded-xl font-bold hover:bg-[#a40017] transition-colors">
+              <button onClick={() => setStep(step + 1)} className="px-8 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold hover:bg-[#a40017] transition-colors">
                 Continue
               </button>
             ) : (

@@ -97,7 +97,7 @@ export default function RiderAccountPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center">
+      <div className="min-h-screen bg-[var(--color-surface-container-lowest)] flex items-center justify-center">
         <div className="animate-pulse text-center">
           <div className="w-20 h-20 bg-[var(--color-surface-container-high)] rounded-full mx-auto mb-4" />
           <div className="h-6 bg-[var(--color-surface-container-high)] rounded w-32 mx-auto mb-2" />
@@ -109,7 +109,7 @@ export default function RiderAccountPage() {
 
   if (!displayRider) {
     return (
-      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center p-6">
+      <div className="min-h-screen bg-[var(--color-surface-container-lowest)] flex items-center justify-center p-6">
         <div className="text-center">
           <span className="material-symbols-outlined text-6xl text-[var(--color-outline-variant)]/60">person_off</span>
           <p className="text-[var(--color-outline)] mt-4">Rider profile not found</p>
@@ -146,7 +146,7 @@ export default function RiderAccountPage() {
 
   return (
     <PullToRefresh onRefresh={async () => { setDataError(null); setLoading(true); await loadRider(); }}>
-    <div className="min-h-screen bg-[#fff4f4]">
+    <div className="min-h-screen bg-[var(--color-surface-container-lowest)]">
       {dataError && (
         <div className="fixed top-4 left-4 right-4 z-50 bg-red-50 border border-red-200 p-4 rounded-xl flex items-center gap-3">
           <span className="material-symbols-outlined text-red-600">wifi_off</span>
@@ -174,7 +174,7 @@ export default function RiderAccountPage() {
               {displayRider.name?.[0] || "R"}
             </div>
             <div className="flex-1">
-              <h1 className="text-2xl font-bold text-[#4d212a]">{displayRider.name}</h1>
+              <h1 className="text-2xl font-bold text-[var(--color-on-surface)]">{displayRider.name}</h1>
               <p className="text-sm text-[var(--color-outline-variant)]">{displayRider.phone}</p>
               <div className="flex items-center gap-1 mt-1">
                 <span className="material-symbols-outlined text-amber-500 text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
@@ -223,7 +223,7 @@ export default function RiderAccountPage() {
               <span className="material-symbols-outlined text-purple-600">schedule</span>
             </div>
             <div className="text-left">
-              <p className="font-bold text-[#4d212a]">My Schedule</p>
+              <p className="font-bold text-[var(--color-on-surface)]">My Schedule</p>
               <p className="text-xs text-[var(--color-outline)]">Set your availability</p>
             </div>
           </div>
@@ -249,10 +249,10 @@ export default function RiderAccountPage() {
         {/* Rating Info */}
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-sm">
           <div className="flex items-center justify-between mb-2">
-            <p className="font-bold text-[#4d212a]">Your Rating</p>
+            <p className="font-bold text-[var(--color-on-surface)]">Your Rating</p>
             <div className="flex items-center gap-1">
               <span className="material-symbols-outlined text-yellow-400" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-              <span className="font-bold text-lg text-[#4d212a]">{(displayRider?.rating || 5).toFixed(1)}</span>
+              <span className="font-bold text-lg text-[var(--color-on-surface)]">{(displayRider?.rating || 5).toFixed(1)}</span>
               <span className="text-[var(--color-outline-variant)] text-sm">/ 5.0</span>
             </div>
           </div>
@@ -278,27 +278,27 @@ export default function RiderAccountPage() {
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl overflow-hidden shadow-lg">
           <Link href="/rider/orders" className="flex items-center gap-3 p-4 border-b border-[var(--color-border-subtle)]">
             <span className="material-symbols-outlined text-[#0b50d5]">receipt_long</span>
-            <span className="flex-1 font-bold text-[#4d212a]">My Orders</span>
+            <span className="flex-1 font-bold text-[var(--color-on-surface)]">My Orders</span>
             <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
           </Link>
           <Link href="/rider/wallet" className="flex items-center gap-3 p-4 border-b border-[var(--color-border-subtle)]">
             <span className="material-symbols-outlined text-[#0b50d5]">account_balance_wallet</span>
-            <span className="flex-1 font-bold text-[#4d212a]">Wallet & Earnings</span>
+            <span className="flex-1 font-bold text-[var(--color-on-surface)]">Wallet & Earnings</span>
             <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
           </Link>
           <Link href="/rider/analytics" className="flex items-center gap-3 p-4 border-b border-[var(--color-border-subtle)]">
             <span className="material-symbols-outlined text-[#0b50d5]">insights</span>
-            <span className="flex-1 font-bold text-[#4d212a]">Analytics</span>
+            <span className="flex-1 font-bold text-[var(--color-on-surface)]">Analytics</span>
             <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
           </Link>
           <Link href="/rider/vehicle" className="flex items-center gap-3 p-4 border-b border-[var(--color-border-subtle)]">
             <span className="material-symbols-outlined text-[#0b50d5]">two_wheeler</span>
-            <span className="flex-1 font-bold text-[#4d212a]">My Vehicle</span>
+            <span className="flex-1 font-bold text-[var(--color-on-surface)]">My Vehicle</span>
             <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
           </Link>
           <Link href="/rider/training" className="flex items-center gap-3 p-4 border-b border-[var(--color-border-subtle)]">
             <span className="material-symbols-outlined text-[#0b50d5]">school</span>
-            <span className="flex-1 font-bold text-[#4d212a]">Training Center</span>
+            <span className="flex-1 font-bold text-[var(--color-on-surface)]">Training Center</span>
             <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
           </Link>
           <Link href="/rider/incident" className="flex items-center gap-3 p-4 border-b border-[var(--color-border-subtle)]">
@@ -308,27 +308,27 @@ export default function RiderAccountPage() {
           </Link>
           <Link href="/rider/notifications" className="flex items-center gap-3 p-4 border-b border-[var(--color-border-subtle)]">
             <span className="material-symbols-outlined text-[#0b50d5]">notifications</span>
-            <span className="flex-1 font-bold text-[#4d212a]">Notifications</span>
+            <span className="flex-1 font-bold text-[var(--color-on-surface)]">Notifications</span>
             <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
           </Link>
           <Link href="/rider/support" className="flex items-center gap-3 p-4 border-b border-[var(--color-border-subtle)]">
             <span className="material-symbols-outlined text-[#0b50d5]">help</span>
-            <span className="flex-1 font-bold text-[#4d212a]">Help & Support</span>
+            <span className="flex-1 font-bold text-[var(--color-on-surface)]">Help & Support</span>
             <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
           </Link>
           <Link href="/rider/documents" className="flex items-center gap-3 p-4 border-b border-[var(--color-border-subtle)]">
             <span className="material-symbols-outlined text-[#0b50d5]">description</span>
-            <span className="flex-1 font-bold text-[#4d212a]">Documents</span>
+            <span className="flex-1 font-bold text-[var(--color-on-surface)]">Documents</span>
             <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
           </Link>
           <Link href="/rider/rate" className="flex items-center gap-3 p-4 border-b border-[var(--color-border-subtle)]">
             <span className="material-symbols-outlined text-[#0b50d5]">rate_review</span>
-            <span className="flex-1 font-bold text-[#4d212a]">Rate Customers</span>
+            <span className="flex-1 font-bold text-[var(--color-on-surface)]">Rate Customers</span>
             <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
           </Link>
           <Link href="/rider/settings" className="flex items-center gap-3 p-4 border-b border-[var(--color-border-subtle)]">
             <span className="material-symbols-outlined text-[#0b50d5]">settings</span>
-            <span className="flex-1 font-bold text-[#4d212a]">Settings</span>
+            <span className="flex-1 font-bold text-[var(--color-on-surface)]">Settings</span>
             <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
           </Link>
           <button onClick={handleSignOut} className="flex items-center gap-3 p-4 w-full text-left text-red-500">
@@ -344,7 +344,7 @@ export default function RiderAccountPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">language</span>
-              <span className="font-bold text-[#4d212a]">Language</span>
+              <span className="font-bold text-[var(--color-on-surface)]">Language</span>
             </div>
             <select className="bg-[var(--color-surface-subtle)] rounded-lg px-3 py-2 text-sm font-bold">
               <option>English</option>
@@ -381,7 +381,7 @@ export default function RiderAccountPage() {
                   }`}
                 >
                   <div className="text-left">
-                    <p className="font-bold text-[#4d212a]">{shift.name}</p>
+                    <p className="font-bold text-[var(--color-on-surface)]">{shift.name}</p>
                     <p className="text-xs text-[var(--color-outline)]">{shift.hours}</p>
                   </div>
                   <div className={`w-6 h-6 rounded-full flex items-center justify-center ${

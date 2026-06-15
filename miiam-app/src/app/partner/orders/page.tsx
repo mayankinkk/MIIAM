@@ -87,7 +87,7 @@ export default function VendorOrders() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {([
           { key: "all", label: "Total", color: "text-[var(--color-on-surface)]" },
-          { key: "active", label: "Active", color: "text-[#ba001c]" },
+          { key: "active", label: "Active", color: "text-[var(--color-primary)]" },
           { key: "delivered", label: "Delivered", color: "text-green-600" },
           { key: "cancelled", label: "Cancelled", color: "text-red-600" },
         ] as const).map((s) => (
@@ -95,7 +95,7 @@ export default function VendorOrders() {
             key={s.key}
             onClick={() => setFilter(s.key)}
             className={`bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border text-left transition-all ${
-              filter === s.key ? "border-[#ba001c] shadow-sm" : "border-[var(--color-border-subtle)] hover:border-[var(--color-outline-variant)]"
+              filter === s.key ? "border-[var(--color-primary)] shadow-sm" : "border-[var(--color-border-subtle)] hover:border-[var(--color-outline-variant)]"
             }`}
           >
             <p className="text-sm text-[var(--color-outline)] font-medium">{s.label}</p>
@@ -113,7 +113,7 @@ export default function VendorOrders() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by order ID or address..."
-            className="w-full pl-10 pr-4 py-2.5 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:outline-none focus:border-[#ba001c]"
+            className="w-full pl-10 pr-4 py-2.5 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:outline-none focus:border-[var(--color-primary)]"
           />
         </div>
         <div className="flex gap-2">
@@ -122,7 +122,7 @@ export default function VendorOrders() {
               key={f}
               onClick={() => setFilter(f)}
               className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${
-                filter === f ? "bg-[#ba001c] text-white" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]"
+                filter === f ? "bg-[var(--color-primary)] text-white" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]"
               }`}
             >
               {f.charAt(0).toUpperCase() + f.slice(1)}
@@ -180,7 +180,7 @@ export default function VendorOrders() {
                 </div>
                 <div className="flex items-center gap-3 sm:text-right">
                   <div>
-                    <p className="text-xl font-black text-[#ba001c]">₹{order.total_amount.toFixed(2)}</p>
+                    <p className="text-xl font-black text-[var(--color-primary)]">₹{order.total_amount.toFixed(2)}</p>
                     <p className="text-xs text-[var(--color-outline-variant)]">{order.payment_method}</p>
                   </div>
                   <button
@@ -222,7 +222,7 @@ export default function VendorOrders() {
                         ))}
                         <div className="flex justify-between text-sm pt-2 border-t border-[var(--color-border-subtle)]">
                           <span className="font-bold text-[var(--color-on-surface)]">Total</span>
-                          <span className="font-bold text-[#ba001c]">₹{order.total_amount.toFixed(2)}</span>
+                          <span className="font-bold text-[var(--color-primary)]">₹{order.total_amount.toFixed(2)}</span>
                         </div>
                       </div>
                     </div>

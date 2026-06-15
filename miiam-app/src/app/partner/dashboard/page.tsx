@@ -200,7 +200,7 @@ export default function VendorDashboard() {
         <p className="text-[var(--color-outline)] mb-6">You don&apos;t have a vendor account yet. Register to start selling.</p>
         <Link
           href="/partner/register"
-          className="bg-[#ba001c] text-white px-8 py-4 rounded-2xl font-bold hover:bg-[#a40017] transition-colors"
+          className="bg-[var(--color-primary)] text-white px-8 py-4 rounded-2xl font-bold hover:bg-[#a40017] transition-colors"
         >
           Register Your Store
         </Link>
@@ -214,7 +214,7 @@ export default function VendorDashboard() {
 
       {/* New Order Alert Banner */}
       {newOrderAlert && (
-        <div className="fixed top-4 left-4 right-4 z-50 bg-gradient-to-r from-[#ba001c] to-[#ff4444] text-white p-4 rounded-2xl shadow-2xl animate-bounce">
+        <div className="fixed top-4 left-4 right-4 z-50 bg-gradient-to-r from-[var(--color-primary)] to-[#ff4444] text-white p-4 rounded-2xl shadow-2xl animate-bounce">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <span className="material-symbols-outlined animate-bounce">notification_important</span>
@@ -289,7 +289,7 @@ export default function VendorDashboard() {
           <p className="text-sm text-[var(--color-outline)] font-medium mt-1">Items Sold Today</p>
         </div>
 
-        <div className="bg-gradient-to-br from-[#ba001c] to-[#ff4444] p-6 rounded-2xl shadow-sm text-white">
+        <div className="bg-gradient-to-br from-[var(--color-primary)] to-[#ff4444] p-6 rounded-2xl shadow-sm text-white">
           <div className="flex items-center justify-between mb-3">
             <span className="material-symbols-outlined text-white/80">trending_up</span>
             <span className="text-xs text-white/70 font-medium">7 days</span>
@@ -307,10 +307,10 @@ export default function VendorDashboard() {
               <span className="w-2 h-2 bg-red-500 rounded-full animate-ping"></span>
               Pending Orders
               {pendingOrders.length > 0 && (
-                <span className="bg-[#ba001c] text-white text-xs px-2 py-0.5 rounded-full">{pendingOrders.length}</span>
+                <span className="bg-[var(--color-primary)] text-white text-xs px-2 py-0.5 rounded-full">{pendingOrders.length}</span>
               )}
             </h2>
-            <Link href="/partner/orders" className="text-sm font-bold text-[#ba001c] hover:underline">
+            <Link href="/partner/orders" className="text-sm font-bold text-[var(--color-primary)] hover:underline">
               View All
             </Link>
           </div>
@@ -324,7 +324,7 @@ export default function VendorDashboard() {
           ) : (
             <div className="space-y-4">
               {pendingOrders.slice(0, 5).map((order) => (
-                <div key={order.id} className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-sm border border-[var(--color-border-subtle)] border-l-4 border-l-[#ba001c]">
+                <div key={order.id} className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-sm border border-[var(--color-border-subtle)] border-l-4 border-l-[var(--color-primary)]">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                       <span className="font-extrabold text-[var(--color-on-surface)]">#{order.id.slice(0, 8).toUpperCase()}</span>
@@ -348,7 +348,7 @@ export default function VendorDashboard() {
                     )}
                   </div>
                   <div className="flex items-center justify-between pt-3 border-t border-[var(--color-border-subtle)]">
-                    <p className="font-extrabold text-lg text-[#ba001c]">₹{order.total_amount.toFixed(2)}</p>
+                    <p className="font-extrabold text-lg text-[var(--color-primary)]">₹{order.total_amount.toFixed(2)}</p>
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleCancelOrder(order.id)}
@@ -425,31 +425,31 @@ export default function VendorDashboard() {
             <div className="grid grid-cols-2 gap-3">
               <Link
                 href="/partner/menu"
-                className="bg-[var(--color-surface-subtle)] p-4 rounded-xl text-center hover:bg-[#ffe1e4] transition-colors group"
+                className="bg-[var(--color-surface-subtle)] p-4 rounded-xl text-center hover:bg-[var(--color-surface-container)] transition-colors group"
               >
-                <span className="material-symbols-outlined text-2xl text-[var(--color-outline-variant)] group-hover:text-[#ba001c]">restaurant_menu</span>
-                <p className="text-xs font-bold text-[var(--color-on-surface-variant)] group-hover:text-[#ba001c] mt-1">Manage Menu</p>
+                <span className="material-symbols-outlined text-2xl text-[var(--color-outline-variant)] group-hover:text-[var(--color-primary)]">restaurant_menu</span>
+                <p className="text-xs font-bold text-[var(--color-on-surface-variant)] group-hover:text-[var(--color-primary)] mt-1">Manage Menu</p>
               </Link>
               <Link
                 href="/partner/analytics"
-                className="bg-[var(--color-surface-subtle)] p-4 rounded-xl text-center hover:bg-[#ffe1e4] transition-colors group"
+                className="bg-[var(--color-surface-subtle)] p-4 rounded-xl text-center hover:bg-[var(--color-surface-container)] transition-colors group"
               >
-                <span className="material-symbols-outlined text-2xl text-[var(--color-outline-variant)] group-hover:text-[#ba001c]">analytics</span>
-                <p className="text-xs font-bold text-[var(--color-on-surface-variant)] group-hover:text-[#ba001c] mt-1">View Analytics</p>
+                <span className="material-symbols-outlined text-2xl text-[var(--color-outline-variant)] group-hover:text-[var(--color-primary)]">analytics</span>
+                <p className="text-xs font-bold text-[var(--color-on-surface-variant)] group-hover:text-[var(--color-primary)] mt-1">View Analytics</p>
               </Link>
               <Link
                 href="/partner/wallet"
-                className="bg-[var(--color-surface-subtle)] p-4 rounded-xl text-center hover:bg-[#ffe1e4] transition-colors group"
+                className="bg-[var(--color-surface-subtle)] p-4 rounded-xl text-center hover:bg-[var(--color-surface-container)] transition-colors group"
               >
-                <span className="material-symbols-outlined text-2xl text-[var(--color-outline-variant)] group-hover:text-[#ba001c]">account_balance_wallet</span>
-                <p className="text-xs font-bold text-[var(--color-on-surface-variant)] group-hover:text-[#ba001c] mt-1">Wallet</p>
+                <span className="material-symbols-outlined text-2xl text-[var(--color-outline-variant)] group-hover:text-[var(--color-primary)]">account_balance_wallet</span>
+                <p className="text-xs font-bold text-[var(--color-on-surface-variant)] group-hover:text-[var(--color-primary)] mt-1">Wallet</p>
               </Link>
               <Link
                 href="/partner/profile"
-                className="bg-[var(--color-surface-subtle)] p-4 rounded-xl text-center hover:bg-[#ffe1e4] transition-colors group"
+                className="bg-[var(--color-surface-subtle)] p-4 rounded-xl text-center hover:bg-[var(--color-surface-container)] transition-colors group"
               >
-                <span className="material-symbols-outlined text-2xl text-[var(--color-outline-variant)] group-hover:text-[#ba001c]">store</span>
-                <p className="text-xs font-bold text-[var(--color-on-surface-variant)] group-hover:text-[#ba001c] mt-1">Store Settings</p>
+                <span className="material-symbols-outlined text-2xl text-[var(--color-outline-variant)] group-hover:text-[var(--color-primary)]">store</span>
+                <p className="text-xs font-bold text-[var(--color-on-surface-variant)] group-hover:text-[var(--color-primary)] mt-1">Store Settings</p>
               </Link>
             </div>
           </div>
@@ -458,7 +458,7 @@ export default function VendorDashboard() {
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-[var(--color-border-subtle)]">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-bold text-[var(--color-on-surface)]">Recent Orders</h3>
-              <Link href="/partner/orders" className="text-xs font-bold text-[#ba001c]">See All</Link>
+              <Link href="/partner/orders" className="text-xs font-bold text-[var(--color-primary)]">See All</Link>
             </div>
             <div className="space-y-3">
               {recentOrders.length === 0 ? (

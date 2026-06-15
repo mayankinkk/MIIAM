@@ -18,14 +18,14 @@ export default function GlobalError({
 
   return (
     <html>
-      <body className="bg-[#fff4f4] min-h-screen">
+      <body className="bg-[var(--color-surface-container-lowest)] min-h-screen">
         <div className="min-h-screen flex flex-col items-center justify-center p-6">
           <div className="max-w-md w-full text-center">
             <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <span className="material-symbols-outlined text-5xl text-red-600">error</span>
             </div>
-            <h1 className="text-2xl font-black text-[#4d212a] mb-2">Something went wrong</h1>
-            <p className="text-[#814c55] mb-2">
+            <h1 className="text-2xl font-black text-[var(--color-on-surface)] mb-2">Something went wrong</h1>
+            <p className="text-[var(--color-on-surface-variant)] mb-2">
               An unexpected error occurred. Our team has been notified.
             </p>
             
@@ -44,7 +44,7 @@ export default function GlobalError({
             <div className="flex flex-col gap-3">
               <button
                 onClick={() => reset()}
-                className="px-6 py-3 bg-[#ba001c] text-white rounded-xl font-bold hover:opacity-90 transition-opacity"
+                className="px-6 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold hover:opacity-90 transition-opacity"
               >
                 Try Again
               </button>
@@ -56,7 +56,7 @@ export default function GlobalError({
               </button>
               <Link
                 href="/"
-                className="text-sm text-[#ba001c] font-bold hover:underline"
+                className="text-sm text-[var(--color-primary)] font-bold hover:underline"
               >
                 Go to Home
               </Link>

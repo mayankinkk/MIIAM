@@ -67,7 +67,7 @@ export function MenuItemCustomizationCard({
               key={option.id}
               className={`flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-all ${
                 isSelected 
-                  ? "border-[#ba001c] bg-red-50" 
+                  ? "border-[var(--color-primary)] bg-red-50" 
                   : "border-[var(--color-border-subtle)] hover:border-[var(--color-outline-variant)]"
               }`}
             >
@@ -80,7 +80,7 @@ export function MenuItemCustomizationCard({
                   className="sr-only"
                 />
                 <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                  isSelected ? "border-[#ba001c] bg-[#ba001c]" : "border-[var(--color-outline-variant)]"
+                  isSelected ? "border-[var(--color-primary)] bg-[var(--color-primary)]" : "border-[var(--color-outline-variant)]"
                 }`}>
                   {isSelected && <div className="w-2 h-2 bg-[var(--color-surface-container-lowest)] rounded-full" />}
                 </div>
@@ -89,7 +89,7 @@ export function MenuItemCustomizationCard({
                 </span>
               </div>
               {option.price > 0 && (
-                <span className="text-sm font-bold text-[#ba001c]">+₹{option.price}</span>
+                <span className="text-sm font-bold text-[var(--color-primary)]">+₹{option.price}</span>
               )}
             </label>
           );
@@ -123,7 +123,7 @@ export function CustomizationSummary({ customizations, selections }: Customizati
   return (
     <div className="text-xs text-[var(--color-outline)] mt-2">
       {selectedNames.join(" • ")}
-      <span className="font-bold text-[#ba001c] ml-1">+₹{total}</span>
+      <span className="font-bold text-[var(--color-primary)] ml-1">+₹{total}</span>
     </div>
   );
 }

@@ -22,7 +22,7 @@ function Confetti() {
   const [pieces, setPieces] = useState<ConfettiPiece[]>([]);
   
   useEffect(() => {
-    const colors = ["#ba001c", "#ff7670", "#ffc371", "#0b50d5", "#38ef7d", "#ffd200", "#ff6a00"];
+    const colors = ["var(--color-primary)", "#ff7670", "#ffc371", "#0b50d5", "#38ef7d", "#ffd200", "#ff6a00"];
     const confetti = Array.from({ length: 50 }, (_, i) => ({
       id: i,
       x: Math.random() * 100,

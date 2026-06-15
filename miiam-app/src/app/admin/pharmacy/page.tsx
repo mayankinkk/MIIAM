@@ -84,47 +84,47 @@ export default function PharmacyAdmin() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Link href="/admin/pharmacy/orders" className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl border border-[var(--color-border-subtle)] hover:border-[#ba001c] hover:shadow-lg transition-all group">
+          <Link href="/admin/pharmacy/orders" className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl border border-[var(--color-border-subtle)] hover:border-[var(--color-primary)] hover:shadow-lg transition-all group">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-[#ba001c]/10 rounded-xl flex items-center justify-center">
-                <span className="material-symbols-outlined text-2xl text-[#ba001c]">receipt_long</span>
+              <div className="w-12 h-12 bg-[var(--color-primary)]/10 rounded-xl flex items-center justify-center">
+                <span className="material-symbols-outlined text-2xl text-[var(--color-primary)]">receipt_long</span>
               </div>
               <div>
-                <h3 className="font-bold text-[var(--color-on-surface)] group-hover:text-[#ba001c]">Orders</h3>
+                <h3 className="font-bold text-[var(--color-on-surface)] group-hover:text-[var(--color-primary)]">Orders</h3>
                 <p className="text-sm text-[var(--color-outline)]">Manage pharmacy orders</p>
               </div>
             </div>
-            <div className="mt-4 flex items-center text-[#ba001c] text-sm font-bold">
+            <div className="mt-4 flex items-center text-[var(--color-primary)] text-sm font-bold">
               Go to Orders <span className="material-symbols-outlined text-lg ml-1">arrow_forward</span>
             </div>
           </Link>
 
-          <Link href="/admin/pharmacy/medicines" className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl border border-[var(--color-border-subtle)] hover:border-[#ba001c] hover:shadow-lg transition-all group">
+          <Link href="/admin/pharmacy/medicines" className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl border border-[var(--color-border-subtle)] hover:border-[var(--color-primary)] hover:shadow-lg transition-all group">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
                 <span className="material-symbols-outlined text-2xl text-blue-600">medication</span>
               </div>
               <div>
-                <h3 className="font-bold text-[var(--color-on-surface)] group-hover:text-[#ba001c]">Medicines</h3>
+                <h3 className="font-bold text-[var(--color-on-surface)] group-hover:text-[var(--color-primary)]">Medicines</h3>
                 <p className="text-sm text-[var(--color-outline)]">Manage medicine inventory</p>
               </div>
             </div>
-            <div className="mt-4 flex items-center text-[#ba001c] text-sm font-bold">
+            <div className="mt-4 flex items-center text-[var(--color-primary)] text-sm font-bold">
               Go to Medicines <span className="material-symbols-outlined text-lg ml-1">arrow_forward</span>
             </div>
           </Link>
 
-          <Link href="/admin/pharmacy/partners" className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl border border-[var(--color-border-subtle)] hover:border-[#ba001c] hover:shadow-lg transition-all group">
+          <Link href="/admin/pharmacy/partners" className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl border border-[var(--color-border-subtle)] hover:border-[var(--color-primary)] hover:shadow-lg transition-all group">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
                 <span className="material-symbols-outlined text-2xl text-green-600">store</span>
               </div>
               <div>
-                <h3 className="font-bold text-[var(--color-on-surface)] group-hover:text-[#ba001c]">Partners</h3>
+                <h3 className="font-bold text-[var(--color-on-surface)] group-hover:text-[var(--color-primary)]">Partners</h3>
                 <p className="text-sm text-[var(--color-outline)]">Manage store partners</p>
               </div>
             </div>
-            <div className="mt-4 flex items-center text-[#ba001c] text-sm font-bold">
+            <div className="mt-4 flex items-center text-[var(--color-primary)] text-sm font-bold">
               Go to Partners <span className="material-symbols-outlined text-lg ml-1">arrow_forward</span>
             </div>
           </Link>

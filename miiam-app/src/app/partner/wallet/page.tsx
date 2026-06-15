@@ -100,7 +100,7 @@ export default function VendorWalletPage() {
       </div>
 
       {/* Balance Card */}
-      <div className="bg-gradient-to-br from-[#ba001c] to-[#6b0011] text-white rounded-3xl p-8 shadow-lg">
+      <div className="bg-gradient-to-br from-[var(--color-primary)] to-[#6b0011] text-white rounded-3xl p-8 shadow-lg">
         <div className="flex items-center justify-between mb-8">
           <div>
             <p className="text-white/60 text-sm font-medium">Available Balance</p>
@@ -124,7 +124,7 @@ export default function VendorWalletPage() {
         </div>
         <button
           onClick={() => setShowRequestPayout(true)}
-          className="w-full mt-6 bg-[var(--color-surface-container-lowest)] text-[#ba001c] py-4 rounded-2xl font-extrabold text-lg hover:bg-[var(--color-surface-container-lowest)]/90 transition-colors"
+          className="w-full mt-6 bg-[var(--color-surface-container-lowest)] text-[var(--color-primary)] py-4 rounded-2xl font-extrabold text-lg hover:bg-[var(--color-surface-container-lowest)]/90 transition-colors"
         >
           Request Payout
         </button>
@@ -222,7 +222,7 @@ export default function VendorWalletPage() {
             <div className="space-y-4">
               <div>
                 <label className="text-sm font-semibold text-[var(--color-on-surface)]">Available Balance</label>
-                <p className="text-2xl font-black text-[#ba001c]">₹{wallet.balance.toFixed(2)}</p>
+                <p className="text-2xl font-black text-[var(--color-primary)]">₹{wallet.balance.toFixed(2)}</p>
               </div>
               <div>
                 <label className="text-sm font-semibold text-[var(--color-on-surface)]">Withdrawal Amount (₹)</label>
@@ -232,7 +232,7 @@ export default function VendorWalletPage() {
                   onChange={(e) => setPayoutAmount(e.target.value)}
                   placeholder="Enter amount"
                   max={wallet.balance}
-                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c] text-lg font-bold"
+                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)] text-lg font-bold"
                 />
                 <div className="flex gap-2 mt-2">
                   {[500, 1000, 2000, 5000].filter((a) => a <= wallet.balance).map((amount) => (
@@ -255,7 +255,7 @@ export default function VendorWalletPage() {
               <button
                 onClick={handleRequestPayout}
                 disabled={!payoutAmount || parseFloat(payoutAmount) <= 0 || parseFloat(payoutAmount) > wallet.balance}
-                className="w-full py-4 bg-[#ba001c] text-white font-extrabold rounded-2xl hover:bg-[#a40017] transition-colors disabled:opacity-50"
+                className="w-full py-4 bg-[var(--color-primary)] text-white font-extrabold rounded-2xl hover:bg-[#a40017] transition-colors disabled:opacity-50"
               >
                 Request ₹{parseFloat(payoutAmount || "0").toFixed(2)}
               </button>

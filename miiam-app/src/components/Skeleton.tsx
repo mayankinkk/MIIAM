@@ -157,7 +157,7 @@ export function StatsCardSkeleton() {
 
 export function RiderDashboardSkeleton() {
   return (
-    <div className="min-h-screen bg-[#fff4f4] p-4 space-y-4">
+    <div className="min-h-screen bg-[var(--color-surface-container-lowest)] p-4 space-y-4">
       {/* Header */}
       <div className="flex justify-between items-center">
         <Skeleton className="h-8 w-24" />
@@ -193,7 +193,7 @@ export function CardSkeleton() {
 
 export function HomeSkeleton() {
   return (
-    <div className="min-h-screen bg-[#fff8f7] pb-24">
+    <div className="min-h-screen bg-[var(--color-surface-container-lowest)] pb-24">
       {/* Header skeleton */}
       <div className="bg-[var(--color-surface-container-lowest)] shadow-sm px-4 pt-4 pb-4">
         <Skeleton className="h-4 w-24 mb-2" />

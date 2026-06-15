@@ -77,22 +77,22 @@ function CallbackContent() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#fff4f4]">
+      <div className="min-h-screen flex items-center justify-center bg-[var(--color-surface-container-lowest)]">
         <div className="text-center max-w-md p-8">
           <span className="material-symbols-outlined text-6xl text-red-500">error</span>
-          <p className="mt-4 text-[#4d212a] font-medium">Sign-in failed</p>
-          <p className="mt-2 text-sm text-[#5c403d]/60">{error}</p>
-          <p className="mt-4 text-sm text-[#5c403d]/60">Redirecting to login...</p>
+          <p className="mt-4 text-[var(--color-on-surface)] font-medium">Sign-in failed</p>
+          <p className="mt-2 text-sm text-[var(--color-on-surface)]/60">{error}</p>
+          <p className="mt-4 text-sm text-[var(--color-on-surface)]/60">Redirecting to login...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#fff4f4]">
+    <div className="min-h-screen flex items-center justify-center bg-[var(--color-surface-container-lowest)]">
       <div className="text-center">
-        <span className="material-symbols-outlined text-6xl text-[#ba001c] animate-spin">sync</span>
-        <p className="mt-4 text-[#4d212a] font-medium">Signing you in...</p>
+        <span className="material-symbols-outlined text-6xl text-[var(--color-primary)] animate-spin">sync</span>
+        <p className="mt-4 text-[var(--color-on-surface)] font-medium">Signing you in...</p>
       </div>
     </div>
   );
@@ -101,8 +101,8 @@ function CallbackContent() {
 export default function AuthCallback() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-[#fff4f4]">
-        <div className="w-8 h-8 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center bg-[var(--color-surface-container-lowest)]">
+        <div className="w-8 h-8 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
       </div>
     }>
       <CallbackContent />

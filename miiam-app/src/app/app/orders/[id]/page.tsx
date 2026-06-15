@@ -138,9 +138,9 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                 {trackingInfo && (
                   <div className="absolute top-4 right-4 bg-[var(--color-surface-container-lowest)]/90 backdrop-blur rounded-full px-4 py-3 shadow-lg flex items-center gap-2" style={{ zIndex: 10 }}>
                     <div className="text-center">
-                      <p className="text-[10px] text-[#5c403d] font-bold uppercase tracking-wider">{t.orders.eta}</p>
+                      <p className="text-[10px] text-[var(--color-on-surface)] font-bold uppercase tracking-wider">{t.orders.eta}</p>
                       <p className="text-xl font-black text-primary leading-none">{trackingInfo.eta} <span className="text-xs">{t.orders.minsUnit}</span></p>
-                      <p className="text-[10px] text-[#5c403d] font-medium">{trackingInfo.distance} km · {trackingInfo.leg === "to_pickup" ? t.orders.toPickup : t.orders.toYou}</p>
+                      <p className="text-[10px] text-[var(--color-on-surface)] font-medium">{trackingInfo.distance} km · {trackingInfo.leg === "to_pickup" ? t.orders.toPickup : t.orders.toYou}</p>
                     </div>
                   </div>
                 )}

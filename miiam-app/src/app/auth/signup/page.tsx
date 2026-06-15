@@ -59,14 +59,14 @@ function SignupContent() {
   return (
     <div className="min-h-screen flex items-stretch overflow-hidden">
       {/* Left Side - Form Section */}
-      <section className="flex-1 flex flex-col justify-center items-center px-6 md:px-16 lg:px-24 bg-[#fff8f7] relative z-10">
+      <section className="flex-1 flex flex-col justify-center items-center px-6 md:px-16 lg:px-24 bg-[var(--color-surface-container-lowest)] relative z-10">
         <div className="w-full max-w-md space-y-12">
           {/* Brand Anchor */}
           <div className="flex flex-col items-start gap-4">
-            <span className="text-2xl font-black tracking-tighter text-[#8d0013]">MIIAM</span>
+            <span className="text-2xl font-black tracking-tighter text-[var(--color-primary-dark)]">MIIAM</span>
             <div className="space-y-2">
-              <h1 className="text-[3rem] leading-[1] tracking-[-0.02em] font-extrabold text-[#281716]" style={{ fontFamily: 'Plus Jakarta Sans' }}>Create Account</h1>
-              <p className="text-[#5c403d] font-medium">Join the urban elite. Experience hyper-local excellence at your fingertips.</p>
+              <h1 className="text-[3rem] leading-[1] tracking-[-0.02em] font-extrabold text-[var(--color-on-surface)]" style={{ fontFamily: 'Plus Jakarta Sans' }}>Create Account</h1>
+              <p className="text-[var(--color-on-surface)] font-medium">Join the urban elite. Experience hyper-local excellence at your fingertips.</p>
             </div>
           </div>
 
@@ -74,13 +74,13 @@ function SignupContent() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
               <div className="relative">
-                <label className="text-[10px] tracking-[0.3em] font-bold text-[#5c403d] mb-2 block uppercase">Email Address</label>
+                <label className="text-[10px] tracking-[0.3em] font-bold text-[var(--color-on-surface)] mb-2 block uppercase">Email Address</label>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="hello@miiam.com"
-                  className="w-full bg-[#fff0ef] border-none rounded-xl px-6 py-4 focus:ring-2 focus:ring-[#ba001c] transition-all placeholder:text-[#5c403d]/40"
+                  className="w-full bg-[var(--color-surface-container-lowest)] border-none rounded-xl px-6 py-4 focus:ring-2 focus:ring-[var(--color-primary)] transition-all placeholder:text-[var(--color-on-surface)]/40"
                 />
               </div>
             </div>
@@ -88,7 +88,7 @@ function SignupContent() {
             <button
               type="submit"
               disabled={!email.includes("@") || isLoading}
-              className="w-full bg-[#ba001c] text-white text-[1.5rem] leading-[1.2] font-extrabold py-6 rounded-xl active:scale-95 transition-transform duration-200"
+              className="w-full bg-[var(--color-primary)] text-white text-[1.5rem] leading-[1.2] font-extrabold py-6 rounded-xl active:scale-95 transition-transform duration-200"
               style={{ boxShadow: '0 20px 40px rgba(77, 33, 42, 0.06)' }}
             >
               {isLoading ? "Sending..." : "Continue"}
@@ -97,9 +97,9 @@ function SignupContent() {
 
           {/* Divider */}
           <div className="flex items-center gap-4">
-            <div className="flex-1 h-px bg-[#e5bdba]" />
-            <span className="text-[10px] tracking-[0.3em] font-bold text-[#5c403d]/60">OR</span>
-            <div className="flex-1 h-px bg-[#e5bdba]" />
+            <div className="flex-1 h-px bg-[var(--color-outline-variant)]" />
+            <span className="text-[10px] tracking-[0.3em] font-bold text-[var(--color-on-surface)]/60">OR</span>
+            <div className="flex-1 h-px bg-[var(--color-outline-variant)]" />
           </div>
 
           {/* Google Login */}
@@ -107,10 +107,10 @@ function SignupContent() {
             type="button"
             onClick={handleGoogleLogin}
             disabled={isGoogleLoading}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-[#e5bdba] rounded-full hover:bg-[#fbdbd8] transition-colors active:scale-95 disabled:opacity-50"
+            className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-[var(--color-outline-variant)] rounded-full hover:bg-[var(--color-surface-container)] transition-colors active:scale-95 disabled:opacity-50"
           >
             {isGoogleLoading ? (
-              <div className="w-5 h-5 border-2 border-[#5c403d] border-t-transparent rounded-full animate-spin" />
+              <div className="w-5 h-5 border-2 border-[var(--color-on-surface)] border-t-transparent rounded-full animate-spin" />
             ) : (
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -119,21 +119,21 @@ function SignupContent() {
                 <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
               </svg>
             )}
-            <span className="font-bold text-sm text-[#281716]">Continue with Google</span>
+            <span className="font-bold text-sm text-[var(--color-on-surface)]">Continue with Google</span>
           </button>
 
           {/* Footer Link */}
           <div className="text-center">
-            <p className="text-[#5c403d] font-medium">
+            <p className="text-[var(--color-on-surface)] font-medium">
               Already have an account? 
-              <Link href="/auth/login" className="text-[#ba001c] font-bold hover:underline underline-offset-4 transition-all"> Log In</Link>
+              <Link href="/auth/login" className="text-[var(--color-primary)] font-bold hover:underline underline-offset-4 transition-all"> Log In</Link>
             </p>
           </div>
         </div>
 
         {/* Branding Accent */}
         <div className="absolute bottom-8 left-8 hidden lg:block">
-          <span className="text-[10px] tracking-[0.5em] text-[#5c403d]/20">MIIAM SUPER-APP ECOSYSTEM ©2026</span>
+          <span className="text-[10px] tracking-[0.5em] text-[var(--color-on-surface)]/20">MIIAM SUPER-APP ECOSYSTEM ©2026</span>
         </div>
       </section>
 
@@ -153,7 +153,7 @@ function SignupContent() {
         {/* Content Overlay */}
         <div className="relative z-10 bg-[var(--color-surface-container-lowest)]/70 backdrop-blur-xl p-10 rounded-lg max-w-lg" style={{ boxShadow: '0 20px 40px rgba(77, 33, 42, 0.06)', border: '1px solid rgba(255, 255, 255, 0.3)' }}>
           <div className="space-y-6">
-            <span className="inline-block bg-[#ba001c] text-white px-4 py-1 rounded-full text-[10px] tracking-[0.3em] font-bold">PREMIUM SERVICES</span>
+            <span className="inline-block bg-[var(--color-primary)] text-white px-4 py-1 rounded-full text-[10px] tracking-[0.3em] font-bold">PREMIUM SERVICES</span>
             <h2 className="text-[3rem] leading-tight tracking-[-0.02em] font-extrabold text-[#00174c]" style={{ fontFamily: 'Plus Jakarta Sans' }}>Expert care for your urban lifestyle.</h2>
             <p className="text-[1.25rem] leading-[1.6] font-semibold text-[#00497d]">From artisan meal prep to high-end home maintenance, MIIAM connects you with the city's finest professionals instantly.</p>
             <div className="flex items-center gap-6 pt-4">
@@ -170,7 +170,7 @@ function SignupContent() {
 
         {/* Decorative Elements */}
         <div className="absolute top-12 right-12 flex gap-4">
-          <div className="w-3 h-3 rounded-full bg-[#ba001c] shadow-lg animate-pulse" />
+          <div className="w-3 h-3 rounded-full bg-[var(--color-primary)] shadow-lg animate-pulse" />
           <div className="w-3 h-3 rounded-full bg-[var(--color-surface-container-lowest)]/40" />
           <div className="w-3 h-3 rounded-full bg-[var(--color-surface-container-lowest)]/20" />
         </div>
@@ -182,8 +182,8 @@ function SignupContent() {
 function Loading() {
   return (
     <div className="min-h-screen flex items-stretch overflow-hidden">
-      <section className="flex-1 flex flex-col justify-center items-center px-6 md:px-16 lg:px-24 bg-[#fff8f7]">
-        <div className="w-12 h-12 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin" />
+      <section className="flex-1 flex flex-col justify-center items-center px-6 md:px-16 lg:px-24 bg-[var(--color-surface-container-lowest)]">
+        <div className="w-12 h-12 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
       </section>
     </div>
   );

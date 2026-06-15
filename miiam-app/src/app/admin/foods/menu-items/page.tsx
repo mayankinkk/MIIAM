@@ -152,7 +152,7 @@ export default function AdminMenuItemsPage() {
         <h1 className="text-3xl font-black text-[var(--color-on-surface)]">Menu Items</h1>
         <button
           onClick={() => setShowAddModal(true)}
-          className="bg-[#ba001c] text-white px-6 py-3 rounded-xl font-bold text-sm"
+          className="bg-[var(--color-primary)] text-white px-6 py-3 rounded-xl font-bold text-sm"
         >
           + Add Item
         </button>
@@ -250,7 +250,7 @@ export default function AdminMenuItemsPage() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => setEditingItem(item)}
-                        className="text-[#ba001c] font-bold hover:underline"
+                        className="text-[var(--color-primary)] font-bold hover:underline"
                       >
                         Edit
                       </button>
@@ -342,7 +342,7 @@ export default function AdminMenuItemsPage() {
               <button
                 onClick={handleAddItem}
                 disabled={loading}
-                className="w-full py-3 bg-[#ba001c] text-white rounded-xl font-bold disabled:opacity-50"
+                className="w-full py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold disabled:opacity-50"
               >
                 {loading ? "Adding..." : "Add Item"}
               </button>
@@ -418,7 +418,7 @@ export default function AdminMenuItemsPage() {
               <button
                 onClick={handleUpdateItem}
                 disabled={loading}
-                className="w-full py-3 bg-[#ba001c] text-white rounded-xl font-bold disabled:opacity-50"
+                className="w-full py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold disabled:opacity-50"
               >
                 {loading ? "Updating..." : "Update Item"}
               </button>

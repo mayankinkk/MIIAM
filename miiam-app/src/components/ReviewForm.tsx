@@ -95,14 +95,14 @@ export default function ReviewForm({ vendorId, orderId, onSuccess }: ReviewFormP
         value={comment}
         onChange={(e) => setComment(e.target.value)}
         placeholder="Share your experience (optional)"
-        className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none mb-4"
+        className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none mb-4"
         rows={3}
       />
 
       <button
         type="submit"
         disabled={loading || rating === 0}
-        className="w-full py-3 bg-[#ba001c] text-white font-bold rounded-xl hover:bg-[#a00018] transition-all disabled:opacity-50"
+        className="w-full py-3 bg-[var(--color-primary)] text-white font-bold rounded-xl hover:bg-[#a00018] transition-all disabled:opacity-50"
       >
         {loading ? "Submitting..." : "Submit Review"}
       </button>

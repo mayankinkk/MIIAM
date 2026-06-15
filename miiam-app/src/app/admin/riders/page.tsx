@@ -117,7 +117,7 @@ function RidersPage() {
           <h1 className="text-3xl font-black text-[var(--color-on-surface)]">Riders</h1>
           <p className="text-[var(--color-outline-variant)]">Manage delivery riders</p>
         </div>
-        <button onClick={() => setShowAddModal(true)} className="bg-[#ba001c] text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2">
+        <button onClick={() => setShowAddModal(true)} className="bg-[var(--color-primary)] text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2">
           <span className="material-symbols-outlined">add</span> Add Rider
         </button>
       </div>
@@ -144,7 +144,7 @@ function RidersPage() {
           <div className="p-4 border-b border-[var(--color-border-subtle)]">
             <div className="flex gap-2">
               {(["all", "online", "offline"] as const).map(f => (
-                <button key={f} onClick={() => setFilter(f)} className={`flex-1 py-2 rounded-lg text-xs font-bold ${filter === f ? "bg-[#ba001c] text-white" : "bg-[var(--color-surface-subtle)] text-[var(--color-outline)]"}`}>{f.charAt(0).toUpperCase() + f.slice(1)}</button>
+                <button key={f} onClick={() => setFilter(f)} className={`flex-1 py-2 rounded-lg text-xs font-bold ${filter === f ? "bg-[var(--color-primary)] text-white" : "bg-[var(--color-surface-subtle)] text-[var(--color-outline)]"}`}>{f.charAt(0).toUpperCase() + f.slice(1)}</button>
               ))}
             </div>
           </div>
@@ -152,7 +152,7 @@ function RidersPage() {
             {filteredRiders.map(rider => (
               <div key={rider.id} className="p-4 border-b border-slate-50 hover:bg-[var(--color-surface-subtle)] cursor-pointer" onClick={() => setSelectedRider(rider)}>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#ba001c] text-white flex items-center justify-center font-bold overflow-hidden shadow-inner">
+                  <div className="w-10 h-10 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center font-bold overflow-hidden shadow-inner">
                     {rider.profile?.avatar_url ? (
 <img 
   src={rider.profile.avatar_url} 
@@ -198,7 +198,7 @@ function RidersPage() {
           <div className="bg-white w-full max-w-lg h-full shadow-2xl flex flex-col">
             <div className="p-8 border-b border-[var(--color-border-subtle)] flex justify-between items-center bg-[var(--color-surface-subtle)]/50">
               <div className="flex items-center gap-5">
-                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#ba001c] to-[#ff7670] text-white text-3xl font-black flex items-center justify-center overflow-hidden">
+                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[#ff7670] text-white text-3xl font-black flex items-center justify-center overflow-hidden">
                   {selectedRider.profile?.avatar_url ? (
                     <img src={selectedRider.profile.avatar_url} alt={`${selectedRider.name || 'Selected rider'}'s avatar`} className="w-full h-full object-cover" />
                   ) : (
@@ -213,7 +213,7 @@ function RidersPage() {
               <button onClick={() => setSelectedRider(null)} className="w-10 h-10 flex items-center justify-center rounded-full bg-[var(--color-surface-container)] text-[var(--color-outline-variant)]"><span className="material-symbols-outlined">close</span></button>
             </div>
             <div className="flex px-8 border-b border-[var(--color-border-subtle)]">
-              {(["overview", "earnings", "orders", "docs"] as const).map(tab => (<button key={tab} onClick={() => setActiveTab(tab)} className={`py-4 px-4 text-xs font-black uppercase border-b-2 ${activeTab === tab ? "border-[#ba001c] text-[#ba001c]" : "border-transparent text-[var(--color-outline-variant)]"}`}>{tab}</button>))}
+              {(["overview", "earnings", "orders", "docs"] as const).map(tab => (<button key={tab} onClick={() => setActiveTab(tab)} className={`py-4 px-4 text-xs font-black uppercase border-b-2 ${activeTab === tab ? "border-[var(--color-primary)] text-[var(--color-primary)]" : "border-transparent text-[var(--color-outline-variant)]"}`}>{tab}</button>))}
             </div>
             <div className="flex-1 overflow-y-auto p-8 space-y-6">
               {activeTab === "overview" && (
@@ -223,9 +223,9 @@ function RidersPage() {
                       <p className="text-[10px] font-black text-green-600 uppercase mb-1">Total Deliveries</p>
                       <p className="text-xl font-black text-green-700">{selectedRider.total_deliveries || 0}</p>
                     </div>
-                    <div className="bg-[#ba001c]/5 p-4 rounded-2xl">
-                      <p className="text-[10px] font-black text-[#ba001c] uppercase mb-1">Total Earnings</p>
-                      <p className="text-xl font-black text-[#ba001c]">₹{selectedRider.total_earnings || 0}</p>
+                    <div className="bg-[var(--color-primary)]/5 p-4 rounded-2xl">
+                      <p className="text-[10px] font-black text-[var(--color-primary)] uppercase mb-1">Total Earnings</p>
+                      <p className="text-xl font-black text-[var(--color-primary)]">₹{selectedRider.total_earnings || 0}</p>
                     </div>
                     <div className="bg-[var(--color-surface-subtle)] p-4 rounded-2xl">
                       <p className="text-[10px] font-black text-[var(--color-outline-variant)] uppercase mb-1">Rating</p>
@@ -237,7 +237,7 @@ function RidersPage() {
                       <p className="text-[10px] font-black text-[var(--color-outline-variant)] uppercase mb-1">Vehicle</p>
                       <p className="text-lg font-black capitalize">{selectedRider.vehicle_type}</p>
                       {selectedRider.vehicle_number && (
-                        <p className="text-xs font-bold text-[#ba001c] mt-1 uppercase tracking-tighter bg-red-50 inline-block px-2 py-0.5 rounded-md">
+                        <p className="text-xs font-bold text-[var(--color-primary)] mt-1 uppercase tracking-tighter bg-red-50 inline-block px-2 py-0.5 rounded-md">
                           {selectedRider.vehicle_number}
                         </p>
                       )}
@@ -295,7 +295,7 @@ function RidersPage() {
                         <p className="text-[10px] font-black uppercase text-green-500">Uploaded</p>
                       </div>
                     </div>
-                    {selectedRider.profile?.avatar_url && <a href={selectedRider.profile.avatar_url} target="_blank" className="text-xs font-black text-[#ba001c] uppercase">View</a>}
+                    {selectedRider.profile?.avatar_url && <a href={selectedRider.profile.avatar_url} target="_blank" className="text-xs font-black text-[var(--color-primary)] uppercase">View</a>}
                   </div>
                   <div className="p-5 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-2xl flex items-center justify-between group">
                     <div className="flex items-center gap-4">
@@ -307,7 +307,7 @@ function RidersPage() {
                         <p className={`text-[10px] font-black uppercase ${selectedRider.id_proof_image ? "text-green-500" : "text-amber-500"}`}>{selectedRider.id_proof_image ? "Uploaded" : "Missing"}</p>
                       </div>
                     </div>
-                    {selectedRider.id_proof_image && <a href={selectedRider.id_proof_image} target="_blank" className="text-xs font-black text-[#ba001c] uppercase">View</a>}
+                    {selectedRider.id_proof_image && <a href={selectedRider.id_proof_image} target="_blank" className="text-xs font-black text-[var(--color-primary)] uppercase">View</a>}
                   </div>
                 </div>
               )}
@@ -332,7 +332,7 @@ function RidersPage() {
               {newRider.id_proof_type && <div><label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Upload {newRider.id_proof_type}</label><input type="file" accept="image/*" onChange={e => setNewRider({ ...newRider, id_proof_image: e.target.files?.[0] || null })} className="w-full p-4 rounded-xl border border-[var(--color-border-subtle)]" required /></div>}
               <div><label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Vehicle</label><select value={newRider.vehicle_type} onChange={e => setNewRider({ ...newRider, vehicle_type: e.target.value, vehicle_number: "" })} className="w-full p-4 rounded-xl border border-[var(--color-border-subtle)] font-bold"><option value="motorcycle">Motorcycle</option><option value="scooty">Scooty</option><option value="bicycle">Bicycle</option></select></div>
               {(newRider.vehicle_type === "motorcycle" || newRider.vehicle_type === "scooty") && <div><label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Vehicle Number</label><input type="text" value={newRider.vehicle_number} onChange={e => setNewRider({ ...newRider, vehicle_number: e.target.value })} className="w-full p-4 rounded-xl border border-[var(--color-border-subtle)] font-bold" placeholder="Number" /></div>}
-              <button type="submit" disabled={saving} className="w-full bg-[#ba001c] text-white px-6 py-4 rounded-xl font-bold hover:bg-[#a00019] disabled:opacity-50">
+              <button type="submit" disabled={saving} className="w-full bg-[var(--color-primary)] text-white px-6 py-4 rounded-xl font-bold hover:bg-[#a00019] disabled:opacity-50">
                 {saving ? "Saving..." : isEditing ? "Save Changes" : "Add Rider"}
               </button>
               {isEditing && (

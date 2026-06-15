@@ -235,7 +235,7 @@ export default function VendorAnalytics() {
         <div className="flex gap-2">
           {(["week", "month", "all"] as const).map((p) => (
             <button key={p} onClick={() => setPeriod(p)}
-              className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${period === p ? "bg-[#ba001c] text-white" : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface-variant)] border border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]"}`}>
+              className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${period === p ? "bg-[var(--color-primary)] text-white" : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface-variant)] border border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]"}`}>
               {p === "week" ? "This Week" : p === "month" ? "This Month" : "All Time"}
             </button>
           ))}
@@ -247,7 +247,7 @@ export default function VendorAnalytics() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-gradient-to-br from-[#ba001c] to-[#6b0011] text-white rounded-2xl p-6">
+        <div className="bg-gradient-to-br from-[var(--color-primary)] to-[#6b0011] text-white rounded-2xl p-6">
           <p className="text-white/70 text-sm font-medium">Total Revenue</p>
           <p className="text-3xl font-black mt-1">₹{totalRevenue.toFixed(0)}</p>
           <p className="text-white/50 text-xs mt-1">{deliveredOrders.length} orders</p>
@@ -284,7 +284,7 @@ export default function VendorAnalytics() {
                   <div key={d.date} className="flex items-center gap-3">
                     <span className="text-xs text-[var(--color-outline)] w-24 font-medium">{d.date}</span>
                     <div className="flex-1 h-7 bg-[var(--color-surface-subtle)] rounded-lg overflow-hidden">
-                      <div className="h-full bg-gradient-to-r from-[#ba001c] to-[#e83350] rounded-lg flex items-center justify-end pr-2 transition-all" style={{ width: `${Math.max(pct, 5)}%` }}>
+                      <div className="h-full bg-gradient-to-r from-[var(--color-primary)] to-[#e83350] rounded-lg flex items-center justify-end pr-2 transition-all" style={{ width: `${Math.max(pct, 5)}%` }}>
                         <span className="text-[10px] text-white font-bold">₹{d.revenue.toFixed(0)}</span>
                       </div>
                     </div>

@@ -135,7 +135,7 @@ export default function RiderDocumentsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center">
+      <div className="min-h-screen bg-[var(--color-surface-container-lowest)] flex items-center justify-center">
         <div className="w-12 h-12 border-4 border-[#0b50d5] border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -143,7 +143,7 @@ export default function RiderDocumentsPage() {
 
   return (
     <PullToRefresh onRefresh={async () => { setDataError(null); setLoading(true); await loadRiderAndDocuments(); }}>
-    <div className="min-h-screen bg-[#fff4f4]">
+    <div className="min-h-screen bg-[var(--color-surface-container-lowest)]">
       {dataError && (
         <div className="fixed top-4 left-4 right-4 z-50 bg-red-50 border border-red-200 p-4 rounded-xl flex items-center gap-3 shadow-lg">
           <span className="material-symbols-outlined text-red-600">wifi_off</span>
@@ -173,7 +173,7 @@ export default function RiderDocumentsPage() {
         )}
 
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg">
-          <h2 className="font-bold text-[#4d212a] mb-4">Required Documents</h2>
+          <h2 className="font-bold text-[var(--color-on-surface)] mb-4">Required Documents</h2>
           <div className="space-y-3">
             {documentTypes.map(doc => {
               const { status, doc: existingDoc } = getDocStatus(doc.type);
@@ -188,7 +188,7 @@ export default function RiderDocumentsPage() {
                       }`}>{doc.icon}</span>
                     </div>
                     <div>
-                      <p className="font-bold text-[#4d212a]">{doc.name}</p>
+                      <p className="font-bold text-[var(--color-on-surface)]">{doc.name}</p>
                       {existingDoc?.document_number && (
                         <p className="text-xs text-[var(--color-outline)]">{existingDoc.document_number}</p>
                       )}
@@ -215,7 +215,7 @@ export default function RiderDocumentsPage() {
 
         {documents.length > 0 && (
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg">
-            <h2 className="font-bold text-[#4d212a] mb-4">Recently Uploaded</h2>
+            <h2 className="font-bold text-[var(--color-on-surface)] mb-4">Recently Uploaded</h2>
             <div className="space-y-2">
               {documents.slice(0, 5).map(doc => (
                 <a
@@ -226,7 +226,7 @@ export default function RiderDocumentsPage() {
                 >
                   <span className="material-symbols-outlined text-[var(--color-outline-variant)]">description</span>
                   <div className="flex-1">
-                    <p className="text-sm font-bold text-[#4d212a]">{doc.doc_type.replace("_", " ")}</p>
+                    <p className="text-sm font-bold text-[var(--color-on-surface)]">{doc.doc_type.replace("_", " ")}</p>
                     <p className="text-xs text-[var(--color-outline)]">{new Date(doc.created_at).toLocaleDateString("en-IN")}</p>
                   </div>
                   <span className={`px-2 py-1 rounded text-xs font-bold ${getStatusColor(doc.status)}`}>
@@ -269,7 +269,7 @@ export default function RiderDocumentsPage() {
         <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center">
           <div className="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl p-6 max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-black text-[#4d212a]">Upload Document</h3>
+              <h3 className="text-xl font-black text-[var(--color-on-surface)]">Upload Document</h3>
               <button onClick={() => { setShowUploadModal(false); resetForm(); }} className="p-2">
                 <span className="material-symbols-outlined">close</span>
               </button>

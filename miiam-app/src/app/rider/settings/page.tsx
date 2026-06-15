@@ -86,7 +86,7 @@ export default function RiderSettingsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fff4f4]">
+    <div className="min-h-screen bg-[var(--color-surface-container-lowest)]">
       <header className="bg-[#0b50d5] text-white p-6 pb-8 rounded-b-[3rem]">
         <div className="flex justify-between items-center">
           <Link href="/rider/dashboard" className="text-3xl font-black tracking-tighter">MIIAM</Link>
@@ -98,7 +98,7 @@ export default function RiderSettingsPage() {
       <main className="px-6 -mt-4 space-y-6 pb-32">
         {/* Account Section */}
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-lg">
-          <h3 className="font-bold text-[#4d212a] mb-4">Account</h3>
+          <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Account</h3>
           <div className="space-y-3">
             <Link href="/rider/account" className="flex items-center justify-between p-3 bg-[var(--color-surface-subtle)] rounded-xl">
               <div className="flex items-center gap-3">
@@ -126,7 +126,7 @@ export default function RiderSettingsPage() {
 
         {/* Order Preferences */}
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-lg">
-          <h3 className="font-bold text-[#4d212a] mb-4">Order Preferences</h3>
+          <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Order Preferences</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -178,7 +178,7 @@ export default function RiderSettingsPage() {
 
         {/* Notifications */}
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-lg">
-          <h3 className="font-bold text-[#4d212a] mb-4">Notifications</h3>
+          <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Notifications</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -231,7 +231,7 @@ export default function RiderSettingsPage() {
 
         {/* Appearance */}
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-lg">
-          <h3 className="font-bold text-[#4d212a] mb-4">Appearance</h3>
+          <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Appearance</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -264,7 +264,7 @@ export default function RiderSettingsPage() {
 
         {/* Support */}
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-lg">
-          <h3 className="font-bold text-[#4d212a] mb-4">Support</h3>
+          <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Support</h3>
           <div className="space-y-3">
             <Link href="/rider/support" className="flex items-center justify-between p-3 bg-[var(--color-surface-subtle)] rounded-xl">
               <div className="flex items-center gap-3">
@@ -292,7 +292,7 @@ export default function RiderSettingsPage() {
 
         {/* Privacy & Legal */}
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-lg">
-          <h3 className="font-bold text-[#4d212a] mb-4">Privacy & Legal</h3>
+          <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Privacy & Legal</h3>
           <div className="space-y-3">
             <Link href="/privacy" className="flex items-center justify-between p-3 bg-[var(--color-surface-subtle)] rounded-xl">
               <span className="font-bold">Privacy Policy</span>

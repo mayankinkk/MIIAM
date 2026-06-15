@@ -158,13 +158,13 @@ export default function GroceryOrdersPage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search by order ID or customer name..."
-            className="w-full pl-10 pr-4 py-3 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:border-[#ba001c]"
+            className="w-full pl-10 pr-4 py-3 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:border-[var(--color-primary)]"
           />
         </div>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="px-4 py-3 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:border-[#ba001c]"
+          className="px-4 py-3 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:border-[var(--color-primary)]"
         >
           <option value="all">All Status</option>
           {statusOptions.map(opt => (
@@ -215,7 +215,7 @@ export default function GroceryOrdersPage() {
                   <td className="p-4">
                     <button
                       onClick={() => setSelectedOrder(order)}
-                      className="text-[#ba001c] font-bold text-sm hover:underline"
+                      className="text-[var(--color-primary)] font-bold text-sm hover:underline"
                     >
                       View Details
                     </button>
@@ -251,7 +251,7 @@ export default function GroceryOrdersPage() {
                 </div>
                 <div className="bg-[var(--color-surface-subtle)] p-4 rounded-xl">
                   <p className="text-xs text-[var(--color-outline)] mb-1">Total Amount</p>
-                  <p className="text-2xl font-black text-[#ba001c]">₹{selectedOrder.total_amount?.toFixed(0)}</p>
+                  <p className="text-2xl font-black text-[var(--color-primary)]">₹{selectedOrder.total_amount?.toFixed(0)}</p>
                 </div>
               </div>
 
@@ -269,7 +269,7 @@ export default function GroceryOrdersPage() {
                       onClick={() => updateOrderStatus(selectedOrder.id, opt.value)}
                       className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${
                         selectedOrder.status === opt.value
-                          ? "bg-[#ba001c] text-white"
+                          ? "bg-[var(--color-primary)] text-white"
                           : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]"
                       }`}
                     >

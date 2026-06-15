@@ -112,7 +112,7 @@ function bearing(a: [number, number], b: [number, number]) {
 const homeIconHtml = `
   <div style="position:relative;width:44px;height:44px">
     <div style="position:absolute;inset:0;background:rgba(186,0,28,0.15);border-radius:50%;animation:pulse-ring 1.4s ease-out infinite"></div>
-    <div style="position:absolute;inset:4px;background:#ba001c;border-radius:50%;border:3px solid white;box-shadow:0 3px 10px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:18px;">🏠</div>
+    <div style="position:absolute;inset:4px;background:var(--color-primary);border-radius:50%;border:3px solid white;box-shadow:0 3px 10px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:18px;">🏠</div>
   </div>`;
 
 const vendorIconHtml = `
@@ -284,7 +284,7 @@ export default function RiderMap({
         const r = await routeBetween(from, to);
         if (cancelled || !r || !mapInstanceRef.current) return;
         const m = mapInstanceRef.current;
-        const baseColor = opts.leg === "to_pickup" ? "#0b50d5" : "#ba001c";
+        const baseColor = opts.leg === "to_pickup" ? "#0b50d5" : "var(--color-primary)";
         const shadow = L.polyline(r.coords, {
           color: `${baseColor}33`,
           weight: 10,

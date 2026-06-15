@@ -42,7 +42,7 @@ export default function ActiveDeliveryView({
   onSetPickedItems,
 }: ActiveDeliveryViewProps) {
   const { t } = useTranslation();
-  const headerBg = deliveryStep === "shopping" ? "bg-purple-600" : deliveryStep === "picking_up" ? "bg-[#0b50d5]" : deliveryStep === "delivering" ? "bg-[#4d212a]" : "bg-green-600";
+  const headerBg = deliveryStep === "shopping" ? "bg-purple-600" : deliveryStep === "picking_up" ? "bg-[#0b50d5]" : deliveryStep === "delivering" ? "bg-[var(--color-on-surface)]" : "bg-green-600";
 
   return (
     <div className="absolute inset-0 z-10 flex items-end justify-center pb-24 px-4">
@@ -117,7 +117,7 @@ export default function ActiveDeliveryView({
                 </div>
                 <div className="flex-1 h-0.5 bg-white/30 mx-2"><div className={`h-full bg-white ${deliveryStep !== "picking_up" ? "w-full" : "w-0"}`}></div></div>
                 <div className={`flex flex-col items-center ${deliveryStep === "delivering" || deliveryStep === "arrived" ? "text-white" : "text-white/50"}`}>
-                  <div className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${deliveryStep === "delivering" || deliveryStep === "arrived" ? "bg-[var(--color-surface-container-lowest)] text-[#4d212a]" : "bg-white/30"}`}>2</div>
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${deliveryStep === "delivering" || deliveryStep === "arrived" ? "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface)]" : "bg-white/30"}`}>2</div>
                   <span>{t.rider.delivery.deliveriesStep}</span>
                 </div>
                 <div className="flex-1 h-0.5 bg-white/30 mx-2"><div className={`h-full bg-white ${deliveryStep === "arrived" ? "w-full" : "w-0"}`}></div></div>

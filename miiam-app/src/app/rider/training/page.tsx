@@ -97,7 +97,7 @@ export default function RiderTrainingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fff4f4]">
+    <div className="min-h-screen bg-[var(--color-surface-container-lowest)]">
       <header className="bg-gradient-to-br from-blue-500 to-cyan-500 text-white p-6 pb-8 rounded-b-[3rem]">
         <div className="flex justify-between items-center">
           <Link href="/rider/dashboard" className="text-3xl font-black tracking-tighter">MIIAM</Link>
@@ -110,7 +110,7 @@ export default function RiderTrainingPage() {
         {/* Progress */}
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-lg">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="font-bold text-[#4d212a]">Your Progress</h3>
+            <h3 className="font-bold text-[var(--color-on-surface)]">Your Progress</h3>
             <span className="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full">
               {watchedCount}/{videos.length} completed
             </span>
@@ -158,7 +158,7 @@ export default function RiderTrainingPage() {
                   {video.duration}
                 </div>
               </div>
-              <h3 className="font-bold text-sm text-[#4d212a] line-clamp-1">{video.title}</h3>
+              <h3 className="font-bold text-sm text-[var(--color-on-surface)] line-clamp-1">{video.title}</h3>
               <p className="text-xs text-[var(--color-outline-variant)] line-clamp-1">{video.description}</p>
               <span className="text-[10px] bg-[var(--color-surface-container)] text-[var(--color-outline)] px-2 py-0.5 rounded mt-1 inline-block">
                 {video.category}
@@ -184,7 +184,7 @@ export default function RiderTrainingPage() {
 
         {/* Quick Tips */}
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-lg">
-          <h3 className="font-bold text-[#4d212a] mb-4">💡 Quick Tips</h3>
+          <h3 className="font-bold text-[var(--color-on-surface)] mb-4">💡 Quick Tips</h3>
           <div className="space-y-3">
             {[
               { tip: "Always check order details before accepting", icon: "📋" },
@@ -208,7 +208,7 @@ export default function RiderTrainingPage() {
           <button onClick={() => {
             if (watchedCount === videos.length) {
               // Generate certificate as downloadable HTML
-              const certHtml = `<!DOCTYPE html><html><head><style>body{font-family:Arial,sans-serif;text-align:center;padding:60px;background:#fff}h1{color:#ba001c;font-size:36px}h2{color:#333;margin-top:30px}p{color:#666;font-size:16px}.border{border:4px solid #ba001c;padding:40px;margin:20px}.date{margin-top:20px;color:#999}</style></head><body><div class="border"><h1>MIIAM</h1><p style="font-size:14px;letter-spacing:3px;text-transform:uppercase;color:#ba001c">Certificate of Completion</p><h2>Rider Training Program</h2><p>Congratulations! You have successfully completed all ${videos.length} training modules.</p><p class="date">Issued on ${new Date().toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}</p></div></body></html>`;
+              const certHtml = `<!DOCTYPE html><html><head><style>body{font-family:Arial,sans-serif;text-align:center;padding:60px;background:#fff}h1{color:var(--color-primary);font-size:36px}h2{color:#333;margin-top:30px}p{color:#666;font-size:16px}.border{border:4px solid var(--color-primary);padding:40px;margin:20px}.date{margin-top:20px;color:#999}</style></head><body><div class="border"><h1>MIIAM</h1><p style="font-size:14px;letter-spacing:3px;text-transform:uppercase;color:var(--color-primary)">Certificate of Completion</p><h2>Rider Training Program</h2><p>Congratulations! You have successfully completed all ${videos.length} training modules.</p><p class="date">Issued on ${new Date().toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}</p></div></body></html>`;
               const blob = new Blob([certHtml], { type: "text/html" });
               const url = URL.createObjectURL(blob);
               const a = document.createElement("a");

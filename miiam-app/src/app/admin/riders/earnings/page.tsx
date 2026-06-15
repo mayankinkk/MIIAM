@@ -104,7 +104,7 @@ export default function RiderEarningsPage() {
   if (loading) {
     return (
       <div className="px-8 py-12 flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin" />
+        <div className="w-12 h-12 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -122,7 +122,7 @@ export default function RiderEarningsPage() {
               key={p}
               onClick={() => setPeriod(p)}
               className={`px-4 py-2 rounded-lg text-xs font-bold transition-colors ${
-                period === p ? "bg-[var(--color-surface-container-lowest)] text-[#ba001c] shadow-sm" : "text-[var(--color-outline)]"
+                period === p ? "bg-[var(--color-surface-container-lowest)] text-[var(--color-primary)] shadow-sm" : "text-[var(--color-outline)]"
               }`}
             >
               {p === "week" ? "This Week" : p === "month" ? "This Month" : "All Time"}
@@ -178,7 +178,7 @@ export default function RiderEarningsPage() {
                 onClick={() => setSortBy(s)}
                 className={`px-3 py-1 rounded-lg text-xs font-bold transition-colors ${
                   sortBy === s 
-                    ? "bg-[#ba001c] text-white" 
+                    ? "bg-[var(--color-primary)] text-white" 
                     : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]"
                 }`}
               >
@@ -207,7 +207,7 @@ export default function RiderEarningsPage() {
                 <tr key={rider.rider_id} className="border-b border-slate-50 hover:bg-[var(--color-surface-subtle)]">
                   <td className="py-3">
                     <div className="flex items-center gap-3">
-                      <span className="w-6 h-6 bg-[#ba001c] text-white rounded-full flex items-center justify-center text-xs font-bold">
+                      <span className="w-6 h-6 bg-[var(--color-primary)] text-white rounded-full flex items-center justify-center text-xs font-bold">
                         {index + 1}
                       </span>
                       <span className="font-bold text-[var(--color-on-surface)]">{rider.rider_name}</span>

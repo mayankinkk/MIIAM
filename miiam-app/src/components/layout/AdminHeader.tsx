@@ -70,7 +70,7 @@ export default function AdminHeader() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Global Search..."
-            className="bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-full pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#ba001c]/10 w-64"
+            className="bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-full pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/10 w-64"
           />
         </form>
         <div className="w-10 h-10 rounded-full bg-[var(--color-surface-container)] border border-[var(--color-border-subtle)] overflow-hidden relative">

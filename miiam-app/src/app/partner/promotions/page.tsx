@@ -159,7 +159,7 @@ export default function VendorPromotions() {
         </div>
         <button
           onClick={() => { generateCode(); setShowCreate(true); }}
-          className="bg-[#ba001c] text-white px-5 py-3 rounded-xl font-bold text-sm flex items-center gap-2 hover:bg-[#a40017] transition-colors"
+          className="bg-[var(--color-primary)] text-white px-5 py-3 rounded-xl font-bold text-sm flex items-center gap-2 hover:bg-[#a40017] transition-colors"
         >
           <span className="material-symbols-outlined text-lg">add</span>
           Create Offer
@@ -213,7 +213,7 @@ export default function VendorPromotions() {
               >
                 <div className="flex items-start justify-between mb-4">
                   <div>
-                    <p className="text-2xl font-black tracking-wider text-[#ba001c]">{promo.code}</p>
+                    <p className="text-2xl font-black tracking-wider text-[var(--color-primary)]">{promo.code}</p>
                     <p className="text-sm text-[var(--color-outline)] mt-1">
                       {promo.discount_value}% off{promo.max_discount ? ` • Up to ₹${promo.max_discount}` : ""}
                     </p>
@@ -260,7 +260,7 @@ export default function VendorPromotions() {
                 {/* Usage Bar */}
                 <div className="mt-4 h-1.5 bg-[var(--color-surface-container)] rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-[#ba001c] rounded-full transition-all"
+                    className="h-full bg-[var(--color-primary)] rounded-full transition-all"
                     style={{ width: `${promo.usage_limit ? Math.min(((promo.used_count || 0) / promo.usage_limit) * 100, 100) : 0}%` }}
                   />
                 </div>
@@ -289,7 +289,7 @@ export default function VendorPromotions() {
                     value={newPromo.code}
                     onChange={(e) => setNewPromo({ ...newPromo, code: e.target.value.toUpperCase() })}
                     placeholder="e.g., MIIAM30"
-                    className="flex-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c] uppercase font-bold tracking-wider"
+                    className="flex-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)] uppercase font-bold tracking-wider"
                   />
                   <button onClick={generateCode} className="px-3 py-2 bg-[var(--color-surface-container)] rounded-xl text-xs font-bold text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]">
                     Generate
@@ -305,7 +305,7 @@ export default function VendorPromotions() {
                     max="100"
                     value={newPromo.discount_value}
                     onChange={(e) => setNewPromo({ ...newPromo, discount_value: parseInt(e.target.value) || 0 })}
-                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
+                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
                   />
                 </div>
                 <div>
@@ -315,7 +315,7 @@ export default function VendorPromotions() {
                     min="0"
                     value={newPromo.max_discount}
                     onChange={(e) => setNewPromo({ ...newPromo, max_discount: parseInt(e.target.value) || 0 })}
-                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
+                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
                   />
                 </div>
               </div>
@@ -326,7 +326,7 @@ export default function VendorPromotions() {
                     min="0"
                     value={newPromo.min_order_amount}
                     onChange={(e) => setNewPromo({ ...newPromo, min_order_amount: parseInt(e.target.value) || 0 })}
-                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
+                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
                   />
               </div>
               <div>
@@ -336,7 +336,7 @@ export default function VendorPromotions() {
                   min="1"
                   value={newPromo.usage_limit}
                   onChange={(e) => setNewPromo({ ...newPromo, usage_limit: parseInt(e.target.value) || 1 })}
-                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
+                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
                 />
               </div>
               <div>
@@ -346,12 +346,12 @@ export default function VendorPromotions() {
                   value={newPromo.valid_until}
                   onChange={(e) => setNewPromo({ ...newPromo, valid_until: e.target.value })}
                   min={new Date().toISOString().split("T")[0]}
-                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
+                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
                 />
               </div>
               <button
                 onClick={handleCreate}
-                className="w-full py-4 bg-[#ba001c] text-white font-extrabold rounded-2xl hover:bg-[#a40017] transition-colors"
+                className="w-full py-4 bg-[var(--color-primary)] text-white font-extrabold rounded-2xl hover:bg-[#a40017] transition-colors"
               >
                 Create Promotion
               </button>

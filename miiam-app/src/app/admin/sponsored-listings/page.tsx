@@ -139,7 +139,7 @@ export default function SponsoredListingsPage() {
         </div>
         <button
           onClick={openCreateModal}
-          className="bg-[#ba001c] text-white px-6 py-3 rounded-xl font-bold text-sm flex items-center gap-2"
+          className="bg-[var(--color-primary)] text-white px-6 py-3 rounded-xl font-bold text-sm flex items-center gap-2"
         >
           <span className="material-symbols-outlined text-sm">add</span>
           New Listing
@@ -152,7 +152,7 @@ export default function SponsoredListingsPage() {
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-12 text-center border border-[var(--color-border-subtle)]">
           <span className="material-symbols-outlined text-5xl text-[var(--color-outline-variant)]/60">campaign</span>
           <p className="text-[var(--color-outline-variant)] font-medium mt-3">No sponsored listings yet</p>
-          <button onClick={openCreateModal} className="mt-4 text-[#ba001c] font-bold text-sm hover:underline">
+          <button onClick={openCreateModal} className="mt-4 text-[var(--color-primary)] font-bold text-sm hover:underline">
             Create your first listing
           </button>
         </div>
@@ -199,7 +199,7 @@ export default function SponsoredListingsPage() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => openEditModal(item)}
-                        className="text-xs font-bold text-[#ba001c] hover:underline"
+                        className="text-xs font-bold text-[var(--color-primary)] hover:underline"
                       >
                         Edit
                       </button>
@@ -261,7 +261,7 @@ export default function SponsoredListingsPage() {
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="w-full py-3 bg-[#ba001c] text-white rounded-xl font-bold disabled:opacity-50"
+                className="w-full py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold disabled:opacity-50"
               >
                 {saving ? "Saving..." : editingItem ? "Update Listing" : "Create Listing"}
               </button>

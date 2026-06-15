@@ -69,9 +69,9 @@ export function HapticToggle({
     >
       <div className="flex items-center gap-3">
         <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
-          isEnabled ? "bg-[#ba001c]/10" : "bg-[var(--color-surface-container)]"
+          isEnabled ? "bg-[var(--color-primary)]/10" : "bg-[var(--color-surface-container)]"
         }`}>
-          <span className={`material-symbols-outlined ${isEnabled ? "text-[#ba001c]" : "text-[var(--color-outline-variant)]"}`}>
+          <span className={`material-symbols-outlined ${isEnabled ? "text-[var(--color-primary)]" : "text-[var(--color-outline-variant)]"}`}>
             vibration
           </span>
         </div>
@@ -81,7 +81,7 @@ export function HapticToggle({
         </div>
       </div>
       <div className={`w-12 h-7 rounded-full relative transition-colors ${
-        isEnabled ? "bg-[#ba001c]" : "bg-slate-300"
+        isEnabled ? "bg-[var(--color-primary)]" : "bg-slate-300"
       }`}>
         <div className={`absolute top-1 w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full shadow-md transition-all ${
           isEnabled ? "left-6" : "left-1"

@@ -63,18 +63,18 @@ export default function RiderApplyPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center p-6">
+      <div className="min-h-screen bg-[var(--color-surface-container-lowest)] flex items-center justify-center p-6">
         <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-12 max-w-lg w-full text-center shadow-xl">
           <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <span className="material-symbols-outlined text-green-600 text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
           </div>
-          <h1 className="text-3xl font-black text-[#4d212a] mb-4">Application Submitted!</h1>
-          <p className="text-[#814c55] mb-8">
+          <h1 className="text-3xl font-black text-[var(--color-on-surface)] mb-4">Application Submitted!</h1>
+          <p className="text-[var(--color-on-surface-variant)] mb-8">
             Thank you for applying to join MIIAM Fleet. We'll review your application and get back to you within 24-48 hours.
           </p>
           <Link 
             href="/rider/login" 
-            className="block w-full bg-[#ba001c] text-white py-4 rounded-xl font-bold text-center hover:bg-[#a00019] transition-all"
+            className="block w-full bg-[var(--color-primary)] text-white py-4 rounded-xl font-bold text-center hover:bg-[#a00019] transition-all"
           >
             Back to Login
           </Link>
@@ -84,20 +84,20 @@ export default function RiderApplyPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#fff4f4] flex flex-col md:flex-row">
+    <div className="min-h-screen bg-[var(--color-surface-container-lowest)] flex flex-col md:flex-row">
       <div className="md:w-1/2 p-12 md:p-24 flex flex-col justify-center relative bg-white">
-        <Link href="/" className="absolute top-8 left-8 text-3xl font-black text-[#ba001c] tracking-tighter">
+        <Link href="/" className="absolute top-8 left-8 text-3xl font-black text-[var(--color-primary)] tracking-tighter">
           MIIAM
         </Link>
-        <Link href="/rider/login" className="absolute top-8 right-8 text-sm font-bold text-[#814c55] hover:text-[#ba001c]">
+        <Link href="/rider/login" className="absolute top-8 right-8 text-sm font-bold text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary)]">
           Already have an account? Login
         </Link>
         <div className="max-w-md w-full mx-auto">
           <span className="text-[#0b50d5] font-bold text-sm tracking-widest uppercase mb-4 block">Fleet Network</span>
-          <h1 className="text-4xl md:text-5xl font-extrabold text-[#4d212a] mb-4 tracking-tight">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-[var(--color-on-surface)] mb-4 tracking-tight">
             Join the <br/> fleet.
           </h1>
-          <p className="text-[#814c55] text-lg mb-8">Complete the form below to apply as a MIIAM rider.</p>
+          <p className="text-[var(--color-on-surface-variant)] text-lg mb-8">Complete the form below to apply as a MIIAM rider.</p>
 
           {/* Progress Steps */}
           <div className="flex gap-2 mb-8">
@@ -105,8 +105,8 @@ export default function RiderApplyPage() {
               <div 
                 key={s} 
                 className={`flex-1 h-2 rounded-full transition-all ${
-                  step === s ? "bg-[#ba001c]" : 
-                  (step === "docs" && s === "details") || (step === "vehicle" && s !== "vehicle") ? "bg-[#dd9ca6]" : "bg-[#f0d0d4]"
+                  step === s ? "bg-[var(--color-primary)]" : 
+                  (step === "docs" && s === "details") || (step === "vehicle" && s !== "vehicle") ? "bg-[var(--color-outline-variant)]" : "bg-[#f0d0d4]"
                 }`}
               />
             ))}
@@ -122,35 +122,35 @@ export default function RiderApplyPage() {
             {step === "details" && (
               <div className="space-y-5 animate-[slideUp_0.3s_ease-out]">
                 <div>
-                  <label className="block text-xs font-bold text-[#4d212a] mb-2 uppercase tracking-widest px-1">Full Name</label>
+                  <label className="block text-xs font-bold text-[var(--color-on-surface)] mb-2 uppercase tracking-widest px-1">Full Name</label>
                   <input
                     type="text"
                     required
                     value={formData.full_name}
                     onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-                    className="w-full bg-[#ffecee] border border-[#dd9ca6]/30 rounded-xl px-5 py-4 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-[#ba001c]/40 transition-all text-[#4d212a]"
+                    className="w-full bg-[#ffecee] border border-[var(--color-outline-variant)]/30 rounded-xl px-5 py-4 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/40 transition-all text-[var(--color-on-surface)]"
                     placeholder="Enter your full name"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[#4d212a] mb-2 uppercase tracking-widest px-1">Email Address</label>
+                  <label className="block text-xs font-bold text-[var(--color-on-surface)] mb-2 uppercase tracking-widest px-1">Email Address</label>
                   <input
                     type="email"
                     required
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full bg-[#ffecee] border border-[#dd9ca6]/30 rounded-xl px-5 py-4 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-[#ba001c]/40 transition-all text-[#4d212a]"
+                    className="w-full bg-[#ffecee] border border-[var(--color-outline-variant)]/30 rounded-xl px-5 py-4 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/40 transition-all text-[var(--color-on-surface)]"
                     placeholder="your@email.com"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[#4d212a] mb-2 uppercase tracking-widest px-1">Phone Number</label>
+                  <label className="block text-xs font-bold text-[var(--color-on-surface)] mb-2 uppercase tracking-widest px-1">Phone Number</label>
                   <input
                     type="tel"
                     required
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full bg-[#ffecee] border border-[#dd9ca6]/30 rounded-xl px-5 py-4 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-[#ba001c]/40 transition-all text-[#4d212a]"
+                    className="w-full bg-[#ffecee] border border-[var(--color-outline-variant)]/30 rounded-xl px-5 py-4 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/40 transition-all text-[var(--color-on-surface)]"
                     placeholder="+91XXXXXXXXXX"
                   />
                 </div>
@@ -168,8 +168,8 @@ export default function RiderApplyPage() {
             {step === "docs" && (
               <div className="space-y-5 animate-[slideUp_0.3s_ease-out]">
                 <div>
-                  <label className="block text-xs font-bold text-[#4d212a] mb-2 uppercase tracking-widest px-1">Profile Photo</label>
-                  <div className="border-2 border-dashed border-[#dd9ca6] rounded-xl p-6 text-center hover:bg-[#fff8f7] transition-colors">
+                  <label className="block text-xs font-bold text-[var(--color-on-surface)] mb-2 uppercase tracking-widest px-1">Profile Photo</label>
+                  <div className="border-2 border-dashed border-[var(--color-outline-variant)] rounded-xl p-6 text-center hover:bg-[var(--color-surface-container-lowest)] transition-colors">
                     <input
                       type="file"
                       accept="image/*"
@@ -181,24 +181,24 @@ export default function RiderApplyPage() {
                       {formData.profile_photo ? (
                         <div className="flex items-center justify-center gap-3">
                           <span className="material-symbols-outlined text-green-600">check_circle</span>
-                          <span className="font-bold text-[#4d212a]">{formData.profile_photo.name}</span>
+                          <span className="font-bold text-[var(--color-on-surface)]">{formData.profile_photo.name}</span>
                         </div>
                       ) : (
                         <div>
-                          <span className="material-symbols-outlined text-4xl text-[#dd9ca6]">add_a_photo</span>
-                          <p className="text-sm text-[#814c55] mt-2">Tap to upload photo</p>
+                          <span className="material-symbols-outlined text-4xl text-[var(--color-outline-variant)]">add_a_photo</span>
+                          <p className="text-sm text-[var(--color-on-surface-variant)] mt-2">Tap to upload photo</p>
                         </div>
                       )}
                     </label>
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[#4d212a] mb-2 uppercase tracking-widest px-1">ID Proof Type</label>
+                  <label className="block text-xs font-bold text-[var(--color-on-surface)] mb-2 uppercase tracking-widest px-1">ID Proof Type</label>
                   <select
                     required
                     value={formData.id_proof_type}
                     onChange={(e) => setFormData({ ...formData, id_proof_type: e.target.value, id_proof_image: null })}
-                    className="w-full bg-[#ffecee] border border-[#dd9ca6]/30 rounded-xl px-5 py-4 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-[#ba001c]/40 transition-all text-[#4d212a]"
+                    className="w-full bg-[#ffecee] border border-[var(--color-outline-variant)]/30 rounded-xl px-5 py-4 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/40 transition-all text-[var(--color-on-surface)]"
                   >
                     <option value="">Select ID type</option>
                     <option value="aadhar">Aadhar Card</option>
@@ -209,8 +209,8 @@ export default function RiderApplyPage() {
                 </div>
                 {formData.id_proof_type && (
                   <div>
-                    <label className="block text-xs font-bold text-[#4d212a] mb-2 uppercase tracking-widest px-1">Upload {formData.id_proof_type.toUpperCase()}</label>
-                    <div className="border-2 border-dashed border-[#dd9ca6] rounded-xl p-6 text-center hover:bg-[#fff8f7] transition-colors">
+                    <label className="block text-xs font-bold text-[var(--color-on-surface)] mb-2 uppercase tracking-widest px-1">Upload {formData.id_proof_type.toUpperCase()}</label>
+                    <div className="border-2 border-dashed border-[var(--color-outline-variant)] rounded-xl p-6 text-center hover:bg-[var(--color-surface-container-lowest)] transition-colors">
                       <input
                         type="file"
                         accept="image/*"
@@ -222,12 +222,12 @@ export default function RiderApplyPage() {
                         {formData.id_proof_image ? (
                           <div className="flex items-center justify-center gap-3">
                             <span className="material-symbols-outlined text-green-600">check_circle</span>
-                            <span className="font-bold text-[#4d212a]">{formData.id_proof_image.name}</span>
+                            <span className="font-bold text-[var(--color-on-surface)]">{formData.id_proof_image.name}</span>
                           </div>
                         ) : (
                           <div>
-                            <span className="material-symbols-outlined text-4xl text-[#dd9ca6]">badge</span>
-                            <p className="text-sm text-[#814c55] mt-2">Tap to upload ID document</p>
+                            <span className="material-symbols-outlined text-4xl text-[var(--color-outline-variant)]">badge</span>
+                            <p className="text-sm text-[var(--color-on-surface-variant)] mt-2">Tap to upload ID document</p>
                           </div>
                         )}
                       </label>
@@ -238,7 +238,7 @@ export default function RiderApplyPage() {
                   <button
                     type="button"
                     onClick={() => setStep("details")}
-                    className="flex-1 py-5 bg-[#f0d0d4] text-[#4d212a] rounded-xl font-bold hover:bg-[#dd9ca6] transition-all"
+                    className="flex-1 py-5 bg-[#f0d0d4] text-[var(--color-on-surface)] rounded-xl font-bold hover:bg-[var(--color-outline-variant)] transition-all"
                   >
                     Back
                   </button>
@@ -257,12 +257,12 @@ export default function RiderApplyPage() {
             {step === "vehicle" && (
               <div className="space-y-5 animate-[slideUp_0.3s_ease-out]">
                 <div>
-                  <label className="block text-xs font-bold text-[#4d212a] mb-2 uppercase tracking-widest px-1">Vehicle Type</label>
+                  <label className="block text-xs font-bold text-[var(--color-on-surface)] mb-2 uppercase tracking-widest px-1">Vehicle Type</label>
                   <select
                     required
                     value={formData.vehicle_type}
                     onChange={(e) => setFormData({ ...formData, vehicle_type: e.target.value, vehicle_number: "" })}
-                    className="w-full bg-[#ffecee] border border-[#dd9ca6]/30 rounded-xl px-5 py-4 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-[#ba001c]/40 transition-all text-[#4d212a]"
+                    className="w-full bg-[#ffecee] border border-[var(--color-outline-variant)]/30 rounded-xl px-5 py-4 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/40 transition-all text-[var(--color-on-surface)]"
                   >
                     <option value="motorcycle">Motorcycle</option>
                     <option value="scooty">Scooty</option>
@@ -271,13 +271,13 @@ export default function RiderApplyPage() {
                 </div>
                 {(formData.vehicle_type === "motorcycle" || formData.vehicle_type === "scooty") && (
                   <div>
-                    <label className="block text-xs font-bold text-[#4d212a] mb-2 uppercase tracking-widest px-1">Vehicle Number</label>
+                    <label className="block text-xs font-bold text-[var(--color-on-surface)] mb-2 uppercase tracking-widest px-1">Vehicle Number</label>
                     <input
                       type="text"
                       required
                       value={formData.vehicle_number}
                       onChange={(e) => setFormData({ ...formData, vehicle_number: e.target.value.toUpperCase() })}
-                      className="w-full bg-[#ffecee] border border-[#dd9ca6]/30 rounded-xl px-5 py-4 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-[#ba001c]/40 transition-all text-[#4d212a]"
+                      className="w-full bg-[#ffecee] border border-[var(--color-outline-variant)]/30 rounded-xl px-5 py-4 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/40 transition-all text-[var(--color-on-surface)]"
                       placeholder="AS 01 AB 1234"
                     />
                   </div>
@@ -286,14 +286,14 @@ export default function RiderApplyPage() {
                   <button
                     type="button"
                     onClick={() => setStep("docs")}
-                    className="flex-1 py-5 bg-[#f0d0d4] text-[#4d212a] rounded-xl font-bold hover:bg-[#dd9ca6] transition-all"
+                    className="flex-1 py-5 bg-[#f0d0d4] text-[var(--color-on-surface)] rounded-xl font-bold hover:bg-[var(--color-outline-variant)] transition-all"
                   >
                     Back
                   </button>
                   <button
                     type="submit"
                     disabled={loading || (formData.vehicle_type !== "bicycle" && !formData.vehicle_number)}
-                    className="flex-1 bento-gradient-red text-white rounded-xl py-5 text-lg font-bold shadow-lg shadow-[#ba001c]/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-70 disabled:pointer-events-none"
+                    className="flex-1 bento-gradient-red text-white rounded-xl py-5 text-lg font-bold shadow-lg shadow-[var(--color-primary)]/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-70 disabled:pointer-events-none"
                   >
                     {loading ? "Submitting..." : "Submit Application"}
                   </button>
@@ -303,7 +303,7 @@ export default function RiderApplyPage() {
           </form>
         </div>
       </div>
-      <div className="hidden md:block md:w-1/2 bg-[#ba001c] relative overflow-hidden">
+      <div className="hidden md:block md:w-1/2 bg-[var(--color-primary)] relative overflow-hidden">
         <div className="absolute inset-0 opacity-30 mix-blend-overlay">
           <img
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMs7iF1l6q72X44B4k_1288bT7cR8iT6ApejS0e_P22k1uYx9YI9zTXXP7Z8T39H5Q0A9f_2WbI6Qe9q8A1D3Yt_E1yZtBqZ2W5TfO27vC-w4m12yX_Y1239O9U2I97Y3yI6C6O28c4w09o5IqD9Z288Q3oU2D1G375_C1P31Z_pP7Y78I6T_7oA_XW2X8t3oGZ"

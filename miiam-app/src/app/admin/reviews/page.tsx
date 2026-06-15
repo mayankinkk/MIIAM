@@ -107,7 +107,7 @@ export default function ReviewsPage() {
               key={f}
               onClick={() => setFilter(f)}
               className={`px-4 py-2 rounded-xl text-sm font-bold ${
-                filter === f ? "bg-[#ba001c] text-white" : "bg-[var(--color-surface-subtle)] text-[var(--color-outline)]"
+                filter === f ? "bg-[var(--color-primary)] text-white" : "bg-[var(--color-surface-subtle)] text-[var(--color-outline)]"
               }`}
             >
               {f.charAt(0).toUpperCase() + f.slice(1)} Reviews

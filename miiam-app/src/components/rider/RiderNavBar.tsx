@@ -65,7 +65,7 @@ export default function RiderNavBar({ active }: RiderNavBarProps) {
           key={item.name}
           href={item.href}
           className={`flex flex-col items-center p-2 ${
-            active === item.name.toLowerCase() ? "text-[#0b50d5]" : "text-[#814c55]"
+            active === item.name.toLowerCase() ? "text-[#0b50d5]" : "text-[var(--color-on-surface-variant)]"
           }`}
         >
           <span className="material-symbols-outlined text-3xl" style={{ fontVariationSettings: active === item.name.toLowerCase() ? "'FILL' 1" : "'FILL' 0" }}>

@@ -83,7 +83,7 @@ export default function ChatPage() {
   return (
     <div className="bg-surface text-on-surface min-h-screen flex flex-col">
       {/* Header */}
-      <header className="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-[#fff4f4]/80 backdrop-blur-xl shadow-[0_20px_40px_rgba(77,33,42,0.06)]">
+      <header className="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-[var(--color-surface-container-lowest)]/80 backdrop-blur-xl shadow-[0_20px_40px_rgba(77,33,42,0.06)]">
         <div className="flex items-center gap-4">
           <Link href={`/app/orders/${orderId}`} className="text-secondary hover:bg-surface-container rounded-full p-2 transition-colors active:scale-95 duration-200">
             <span className="material-symbols-outlined">arrow_back</span>
@@ -105,7 +105,7 @@ export default function ChatPage() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <a href="tel:+9118001234567" className="w-10 h-10 flex items-center justify-center text-primary hover:bg-[#ffe1e4] rounded-full transition-colors active:scale-95 duration-200">
+          <a href="tel:+9118001234567" className="w-10 h-10 flex items-center justify-center text-primary hover:bg-[var(--color-surface-container)] rounded-full transition-colors active:scale-95 duration-200">
             <span className="material-symbols-outlined">phone</span>
           </a>
         </div>

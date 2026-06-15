@@ -151,7 +151,7 @@ export default function CustomizationModal({ item, vendor_id, vendor_name, onClo
               {item.description && (
                 <p className="text-xs text-[var(--color-outline)] mt-1 line-clamp-2">{item.description}</p>
               )}
-              <p className="text-base font-extrabold text-[#ba001c] mt-1">₹{item.price}</p>
+              <p className="text-base font-extrabold text-[var(--color-primary)] mt-1">₹{item.price}</p>
             </div>
           </div>
 
@@ -161,16 +161,16 @@ export default function CustomizationModal({ item, vendor_id, vendor_name, onClo
             <div className="flex items-center gap-4 bg-[var(--color-surface-subtle)] rounded-2xl p-2 w-fit">
               <button
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="w-10 h-10 rounded-xl bg-[var(--color-surface-container-lowest)] shadow flex items-center justify-center hover:bg-[#ffe1e4] transition-colors"
+                className="w-10 h-10 rounded-xl bg-[var(--color-surface-container-lowest)] shadow flex items-center justify-center hover:bg-[var(--color-surface-container)] transition-colors"
               >
-                <span className="material-symbols-outlined text-[#ba001c]">remove</span>
+                <span className="material-symbols-outlined text-[var(--color-primary)]">remove</span>
               </button>
               <span className="text-xl font-extrabold text-[var(--color-on-surface)] w-8 text-center">{quantity}</span>
               <button
                 onClick={() => setQuantity(quantity + 1)}
-                className="w-10 h-10 rounded-xl bg-[var(--color-surface-container-lowest)] shadow flex items-center justify-center hover:bg-[#ffe1e4] transition-colors"
+                className="w-10 h-10 rounded-xl bg-[var(--color-surface-container-lowest)] shadow flex items-center justify-center hover:bg-[var(--color-surface-container)] transition-colors"
               >
-                <span className="material-symbols-outlined text-[#ba001c]">add</span>
+                <span className="material-symbols-outlined text-[var(--color-primary)]">add</span>
               </button>
             </div>
           </div>
@@ -180,7 +180,7 @@ export default function CustomizationModal({ item, vendor_id, vendor_name, onClo
         <div className="bg-[var(--color-surface-container-lowest)] border-t border-[var(--color-border-subtle)] px-6 py-4 pb-[env(safe-area-inset-bottom)]">
           <button
             onClick={handleAddToCart}
-            className="w-full py-4 bg-[#ba001c] text-white font-extrabold rounded-2xl flex items-center justify-center gap-3 hover:bg-[#a40017] active:scale-95 transition-all shadow-lg shadow-[#ba001c]/30"
+            className="w-full py-4 bg-[var(--color-primary)] text-white font-extrabold rounded-2xl flex items-center justify-center gap-3 hover:bg-[#a40017] active:scale-95 transition-all shadow-lg shadow-[var(--color-primary)]/30"
           >
             <span className="material-symbols-outlined">add_shopping_cart</span>
             <span>Add to Cart</span>

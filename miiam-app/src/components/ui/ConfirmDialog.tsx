@@ -97,7 +97,7 @@ export function ConfirmProvider({ children }: { children: ReactNode }) {
                 className={`flex-1 py-3 rounded-xl font-bold text-sm text-white transition-colors ${
                   state.variant === "danger"
                     ? "bg-red-600 hover:bg-red-700"
-                    : "bg-[#ba001c] hover:bg-[#a00018]"
+                    : "bg-[var(--color-primary)] hover:bg-[#a00018]"
                 }`}
               >
                 {state.confirmText || "Confirm"}

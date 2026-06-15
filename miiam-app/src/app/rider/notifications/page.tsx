@@ -55,10 +55,10 @@ export default function RiderNotificationsPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center p-4">
+      <div className="min-h-screen bg-[var(--color-surface-container-lowest)] flex items-center justify-center p-4">
         <div className="text-center max-w-sm">
           <span className="material-symbols-outlined text-5xl text-red-400 mb-4 block">wifi_off</span>
-          <h2 className="text-xl font-bold text-[#4d212a] mb-2">Something went wrong</h2>
+          <h2 className="text-xl font-bold text-[var(--color-on-surface)] mb-2">Something went wrong</h2>
           <p className="text-[var(--color-outline)] mb-6">{error}</p>
           <button
             onClick={() => loadNotifications()}
@@ -72,7 +72,7 @@ export default function RiderNotificationsPage() {
   }
 
   if (loading) return (
-    <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center">
+    <div className="min-h-screen bg-[var(--color-surface-container-lowest)] flex items-center justify-center">
       <div className="w-12 h-12 border-4 border-[#0b50d5] border-t-transparent rounded-full animate-spin" />
     </div>
   );
@@ -80,7 +80,7 @@ export default function RiderNotificationsPage() {
   return (
     <>
     <PullToRefresh onRefresh={loadNotifications}>
-    <div className="min-h-screen bg-[#fff4f4]">
+    <div className="min-h-screen bg-[var(--color-surface-container-lowest)]">
       <header className="bg-[#0b50d5] text-white p-6 pb-8 rounded-b-[3rem]">
         <div className="flex items-center justify-between">
           <Link href="/rider/account" className="text-white">
@@ -114,7 +114,7 @@ export default function RiderNotificationsPage() {
                 <span className="w-3 h-3 bg-[#0b50d5] rounded-full mt-2"></span>
               )}
               <div className="flex-1">
-                <h3 className="font-bold text-[#4d212a]">{notif.title}</h3>
+                <h3 className="font-bold text-[var(--color-on-surface)]">{notif.title}</h3>
                 <p className="text-sm text-[var(--color-outline)] mt-1">{notif.message}</p>
                 <p className="text-xs text-[var(--color-outline-variant)] mt-2">{new Date(notif.created_at).toLocaleString()}</p>
               </div>

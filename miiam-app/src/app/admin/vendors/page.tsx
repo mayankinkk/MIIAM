@@ -449,7 +449,7 @@ export default function AdminVendorsPage() {
         <h1 className="text-3xl font-black text-[var(--color-on-surface)]">Vendors</h1>
         <button
           onClick={() => setShowAddVendor(true)}
-          className="bg-[#ba001c] text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-[#a00018] transition-all"
+          className="bg-[var(--color-primary)] text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-[#a00018] transition-all"
         >
           + Add Vendor
         </button>
@@ -479,7 +479,7 @@ export default function AdminVendorsPage() {
                       required
                       value={vendorForm.ownerName}
                       onChange={(e) => setVendorForm({ ...vendorForm, ownerName: e.target.value })}
-                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                       placeholder="Enter owner name"
                     />
                   </div>
@@ -490,7 +490,7 @@ export default function AdminVendorsPage() {
                       required
                       value={vendorForm.phone}
                       onChange={(e) => setVendorForm({ ...vendorForm, phone: e.target.value })}
-                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                       placeholder="Enter phone number"
                     />
                   </div>
@@ -500,7 +500,7 @@ export default function AdminVendorsPage() {
                       type="email"
                       value={vendorForm.email}
                       onChange={(e) => setVendorForm({ ...vendorForm, email: e.target.value })}
-                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                       placeholder="Enter email address"
                     />
                   </div>
@@ -517,7 +517,7 @@ export default function AdminVendorsPage() {
                       required
                       value={vendorForm.shopName}
                       onChange={(e) => setVendorForm({ ...vendorForm, shopName: e.target.value })}
-                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                       placeholder="Enter restaurant/shop name"
                     />
                   </div>
@@ -527,7 +527,7 @@ export default function AdminVendorsPage() {
                       required
                       value={vendorForm.address}
                       onChange={(e) => setVendorForm({ ...vendorForm, address: e.target.value })}
-                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                       placeholder="House/Flat No., Building, Street, Area"
                       rows={2}
                     />
@@ -539,7 +539,7 @@ export default function AdminVendorsPage() {
                       type="text"
                       value={vendorForm.city}
                       onChange={(e) => setVendorForm({ ...vendorForm, city: e.target.value })}
-                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                       placeholder="e.g. Delhi, Mumbai"
                     />
                   </div>
@@ -549,7 +549,7 @@ export default function AdminVendorsPage() {
                       type="text"
                       value={vendorForm.state}
                       onChange={(e) => setVendorForm({ ...vendorForm, state: e.target.value })}
-                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                       placeholder="e.g. Delhi, Maharashtra"
                     />
                   </div>
@@ -562,7 +562,7 @@ export default function AdminVendorsPage() {
                       maxLength={6}
                       value={vendorForm.pincode}
                       onChange={(e) => setVendorForm({ ...vendorForm, pincode: e.target.value.replace(/\D/g, "") })}
-                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                       placeholder="e.g. 110001"
                     />
                   </div>
@@ -572,7 +572,7 @@ export default function AdminVendorsPage() {
                       type="text"
                       value={vendorForm.landmark}
                       onChange={(e) => setVendorForm({ ...vendorForm, landmark: e.target.value })}
-                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                       placeholder="e.g. Near Metro Station"
                     />
                   </div>
@@ -583,7 +583,7 @@ export default function AdminVendorsPage() {
                       step="any"
                       value={vendorForm.latitude}
                       onChange={(e) => setVendorForm({ ...vendorForm, latitude: e.target.value })}
-                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                       placeholder="e.g. 28.6139"
                     />
                   </div>
@@ -594,7 +594,7 @@ export default function AdminVendorsPage() {
                       step="any"
                       value={vendorForm.longitude}
                       onChange={(e) => setVendorForm({ ...vendorForm, longitude: e.target.value })}
-                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                       placeholder="e.g. 77.2090"
                     />
                   </div>
@@ -605,7 +605,7 @@ export default function AdminVendorsPage() {
                       required
                       value={vendorForm.cuisine}
                       onChange={(e) => setVendorForm({ ...vendorForm, cuisine: e.target.value })}
-                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                       placeholder="e.g. North Indian, Chinese, Italian"
                     />
                   </div>
@@ -632,7 +632,7 @@ export default function AdminVendorsPage() {
                       type="text"
                       value={vendorForm.gstNumber}
                       onChange={(e) => setVendorForm({ ...vendorForm, gstNumber: e.target.value })}
-                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none uppercase"
+                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none uppercase"
                       placeholder="22AAAAA0000A1Z5"
                     />
                   </div>
@@ -642,7 +642,7 @@ export default function AdminVendorsPage() {
                       type="text"
                       value={vendorForm.panNumber}
                       onChange={(e) => setVendorForm({ ...vendorForm, panNumber: e.target.value.toUpperCase() })}
-                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none uppercase"
+                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none uppercase"
                       placeholder="ABCDE1234F"
                       maxLength={10}
                     />
@@ -653,7 +653,7 @@ export default function AdminVendorsPage() {
                       type="text"
                       value={vendorForm.fssaiNumber}
                       onChange={(e) => setVendorForm({ ...vendorForm, fssaiNumber: e.target.value })}
-                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                       placeholder="12345678901234"
                     />
                   </div>
@@ -671,7 +671,7 @@ export default function AdminVendorsPage() {
                         type="number"
                         value={vendorForm.minOrderAmount}
                         onChange={(e) => setVendorForm({ ...vendorForm, minOrderAmount: e.target.value })}
-                        className="w-full p-3 pl-7 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                        className="w-full p-3 pl-7 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                         placeholder="0"
                       />
                     </div>
@@ -684,7 +684,7 @@ export default function AdminVendorsPage() {
                         type="number"
                         value={vendorForm.deliveryCharge}
                         onChange={(e) => setVendorForm({ ...vendorForm, deliveryCharge: e.target.value })}
-                        className="w-full p-3 pl-7 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                        className="w-full p-3 pl-7 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                         placeholder="0"
                       />
                     </div>
@@ -695,7 +695,7 @@ export default function AdminVendorsPage() {
                       type="number"
                       value={vendorForm.deliveryTimeMin}
                       onChange={(e) => setVendorForm({ ...vendorForm, deliveryTimeMin: e.target.value })}
-                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                       placeholder="20"
                     />
                   </div>
@@ -705,7 +705,7 @@ export default function AdminVendorsPage() {
                       type="number"
                       value={vendorForm.deliveryTimeMax}
                       onChange={(e) => setVendorForm({ ...vendorForm, deliveryTimeMax: e.target.value })}
-                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                       placeholder="45"
                     />
                   </div>
@@ -718,7 +718,7 @@ export default function AdminVendorsPage() {
                   <button
                     type="button"
                     onClick={handleAddMenuItem}
-                    className="text-[#ba001c] text-xs font-bold hover:underline"
+                    className="text-[var(--color-primary)] text-xs font-bold hover:underline"
                   >
                     + Add Item
                   </button>
@@ -729,7 +729,7 @@ export default function AdminVendorsPage() {
                       <select
                         value={item.category}
                         onChange={(e) => handleMenuChange(index, "category", e.target.value)}
-                        className="p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                        className="p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                       >
                         <option value="Main Course">Main Course</option>
                         <option value="Starters">Starters</option>
@@ -740,7 +740,7 @@ export default function AdminVendorsPage() {
                         type="text"
                         value={item.name}
                         onChange={(e) => handleMenuChange(index, "name", e.target.value)}
-                        className="flex-1 p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                        className="flex-1 p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                         placeholder="Item name"
                       />
                       <div className="relative">
@@ -749,7 +749,7 @@ export default function AdminVendorsPage() {
                           type="number"
                           value={item.price}
                           onChange={(e) => handleMenuChange(index, "price", e.target.value)}
-                          className="w-24 p-3 pl-7 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                          className="w-24 p-3 pl-7 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                           placeholder="0"
                         />
                       </div>
@@ -778,7 +778,7 @@ export default function AdminVendorsPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 py-3 bg-[#ba001c] text-white rounded-xl font-bold text-sm hover:bg-[#a00018] transition-all disabled:opacity-50"
+                  className="flex-1 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm hover:bg-[#a00018] transition-all disabled:opacity-50"
                 >
                   {loading ? "Creating..." : "Create Vendor"}
                 </button>
@@ -812,7 +812,7 @@ export default function AdminVendorsPage() {
                       required
                       value={editForm.ownerName}
                       onChange={(e) => setEditForm({ ...editForm, ownerName: e.target.value })}
-                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                     />
                   </div>
                   <div>
@@ -822,7 +822,7 @@ export default function AdminVendorsPage() {
                       required
                       value={editForm.phone}
                       onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
-                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                     />
                   </div>
                   <div>
@@ -831,7 +831,7 @@ export default function AdminVendorsPage() {
                       type="email"
                       value={editForm.email}
                       onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
-                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                     />
                   </div>
                 </div>
@@ -847,7 +847,7 @@ export default function AdminVendorsPage() {
                       required
                       value={editForm.shopName}
                       onChange={(e) => setEditForm({ ...editForm, shopName: e.target.value })}
-                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                     />
                   </div>
                   <div>
@@ -856,7 +856,7 @@ export default function AdminVendorsPage() {
                       type="text"
                       value={editForm.cuisine}
                       onChange={(e) => setEditForm({ ...editForm, cuisine: e.target.value })}
-                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                     />
                   </div>
                   <div className="md:col-span-2">
@@ -865,7 +865,7 @@ export default function AdminVendorsPage() {
                       required
                       value={editForm.address}
                       onChange={(e) => setEditForm({ ...editForm, address: e.target.value })}
-                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                       rows={2}
                     />
                   </div>
@@ -876,7 +876,7 @@ export default function AdminVendorsPage() {
                       type="text"
                       value={editForm.city}
                       onChange={(e) => setEditForm({ ...editForm, city: e.target.value })}
-                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                       placeholder="e.g. Delhi, Mumbai"
                     />
                   </div>
@@ -889,7 +889,7 @@ export default function AdminVendorsPage() {
                       maxLength={6}
                       value={editForm.pincode}
                       onChange={(e) => setEditForm({ ...editForm, pincode: e.target.value.replace(/\D/g, "") })}
-                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                       placeholder="e.g. 110001"
                     />
                   </div>
@@ -899,7 +899,7 @@ export default function AdminVendorsPage() {
                       type="text"
                       value={editForm.gstNumber}
                       onChange={(e) => setEditForm({ ...editForm, gstNumber: e.target.value })}
-                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                     />
                   </div>
                   <div>
@@ -908,7 +908,7 @@ export default function AdminVendorsPage() {
                       type="number"
                       value={editForm.minOrderAmount}
                       onChange={(e) => setEditForm({ ...editForm, minOrderAmount: Number(e.target.value) })}
-                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                     />
                   </div>
                   <div>
@@ -919,7 +919,7 @@ export default function AdminVendorsPage() {
                         type="number"
                         value={editForm.deliveryCharge}
                         onChange={(e) => setEditForm({ ...editForm, deliveryCharge: e.target.value })}
-                        className="w-full p-3 pl-7 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                        className="w-full p-3 pl-7 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                       />
                     </div>
                   </div>
@@ -929,7 +929,7 @@ export default function AdminVendorsPage() {
                       type="number"
                       value={editForm.deliveryTimeMin}
                       onChange={(e) => setEditForm({ ...editForm, deliveryTimeMin: e.target.value })}
-                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                       placeholder="e.g. 20"
                     />
                   </div>
@@ -939,7 +939,7 @@ export default function AdminVendorsPage() {
                       type="number"
                       value={editForm.deliveryTimeMax}
                       onChange={(e) => setEditForm({ ...editForm, deliveryTimeMax: e.target.value })}
-                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                       placeholder="e.g. 45"
                     />
                   </div>
@@ -958,7 +958,7 @@ export default function AdminVendorsPage() {
                     <textarea
                       value={editForm.description}
                       onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
-                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                       placeholder="Brief description of the restaurant..."
                       rows={2}
                     />
@@ -969,7 +969,7 @@ export default function AdminVendorsPage() {
                       type="text"
                       value={editForm.openingHours}
                       onChange={(e) => setEditForm({ ...editForm, openingHours: e.target.value })}
-                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                       placeholder="e.g. 10:00 AM – 11:00 PM"
                     />
                   </div>
@@ -978,7 +978,7 @@ export default function AdminVendorsPage() {
                     <select
                       value={editForm.status}
                       onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
-                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                      className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                     >
                       <option value="pending">Pending</option>
                       <option value="active">Active</option>
@@ -1089,7 +1089,7 @@ export default function AdminVendorsPage() {
                         <button
                           type="button"
                           onClick={() => setEditingMenuItem(item)}
-                          className="p-1.5 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-lg hover:border-[#ba001c] hover:text-[#ba001c] transition-all flex items-center justify-center"
+                          className="p-1.5 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-lg hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-all flex items-center justify-center"
                           title="Edit details"
                         >
                           <span className="material-symbols-outlined text-xs">edit</span>
@@ -1115,7 +1115,7 @@ export default function AdminVendorsPage() {
                         type="text"
                         value={newMenuItem.name}
                         onChange={(e) => setNewMenuItem({ ...newMenuItem, name: e.target.value })}
-                        className="w-full p-2.5 border border-[var(--color-border-subtle)] rounded-lg text-sm focus:border-[#ba001c] focus:outline-none"
+                        className="w-full p-2.5 border border-[var(--color-border-subtle)] rounded-lg text-sm focus:border-[var(--color-primary)] focus:outline-none"
                         placeholder="Item name *"
                       />
                       <div className="relative">
@@ -1124,7 +1124,7 @@ export default function AdminVendorsPage() {
                           type="number"
                           value={newMenuItem.price}
                           onChange={(e) => setNewMenuItem({ ...newMenuItem, price: e.target.value })}
-                          className="w-full pl-6 p-2.5 border border-[var(--color-border-subtle)] rounded-lg text-sm focus:border-[#ba001c] focus:outline-none"
+                          className="w-full pl-6 p-2.5 border border-[var(--color-border-subtle)] rounded-lg text-sm focus:border-[var(--color-primary)] focus:outline-none"
                           placeholder="Price *"
                         />
                       </div>
@@ -1134,7 +1134,7 @@ export default function AdminVendorsPage() {
                       <select
                         value={newMenuItem.category}
                         onChange={(e) => setNewMenuItem({ ...newMenuItem, category: e.target.value })}
-                        className="p-2.5 border border-[var(--color-border-subtle)] rounded-lg text-sm focus:border-[#ba001c] focus:outline-none h-[42px]"
+                        className="p-2.5 border border-[var(--color-border-subtle)] rounded-lg text-sm focus:border-[var(--color-primary)] focus:outline-none h-[42px]"
                       >
                         <option value="Main Course">Main Course</option>
                         <option value="Starters">Starters</option>
@@ -1143,7 +1143,7 @@ export default function AdminVendorsPage() {
                       </select>
 
                       <div>
-                        <label className="bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] hover:border-[#ba001c] hover:bg-[var(--color-surface-subtle)] transition-all text-[var(--color-on-surface-variant)] font-bold px-3 py-2.5 rounded-lg cursor-pointer text-xs flex items-center justify-center gap-1.5 h-[42px] min-w-0">
+                        <label className="bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] hover:border-[var(--color-primary)] hover:bg-[var(--color-surface-subtle)] transition-all text-[var(--color-on-surface-variant)] font-bold px-3 py-2.5 rounded-lg cursor-pointer text-xs flex items-center justify-center gap-1.5 h-[42px] min-w-0">
                           <span className="material-symbols-outlined text-sm flex-shrink-0">upload</span>
                           <span className="truncate">{newMenuItem.image_url ? "Image Selected" : "Upload Image"}</span>
                           <input
@@ -1164,7 +1164,7 @@ export default function AdminVendorsPage() {
                       <button
                         type="button"
                         onClick={() => setNewMenuItem({ ...(newMenuItem as any), _showUrl: !(newMenuItem as any)._showUrl })}
-                        className="text-xs font-bold text-[#ba001c] hover:underline"
+                        className="text-xs font-bold text-[var(--color-primary)] hover:underline"
                       >
                         {(newMenuItem as any)._showUrl ? "Hide URL" : "Or enter URL"}
                       </button>
@@ -1174,7 +1174,7 @@ export default function AdminVendorsPage() {
                           value={newMenuItem.image_url}
                           onChange={(e) => setNewMenuItem({ ...(newMenuItem as any), image_url: e.target.value })}
                           placeholder="https://example.com/image.jpg"
-                          className="mt-1 w-full p-2.5 border border-[var(--color-border-subtle)] rounded-lg text-sm focus:border-[#ba001c] focus:outline-none"
+                          className="mt-1 w-full p-2.5 border border-[var(--color-border-subtle)] rounded-lg text-sm focus:border-[var(--color-primary)] focus:outline-none"
                         />
                       )}
                     </div>
@@ -1183,7 +1183,7 @@ export default function AdminVendorsPage() {
                       type="text"
                       value={newMenuItem.description || ""}
                       onChange={(e) => setNewMenuItem({ ...newMenuItem, description: e.target.value })}
-                      className="w-full p-2.5 border border-[var(--color-border-subtle)] rounded-lg text-sm focus:border-[#ba001c] focus:outline-none"
+                      className="w-full p-2.5 border border-[var(--color-border-subtle)] rounded-lg text-sm focus:border-[var(--color-primary)] focus:outline-none"
                       placeholder="Brief description / ingredients"
                     />
 
@@ -1193,7 +1193,7 @@ export default function AdminVendorsPage() {
                           type="checkbox"
                           checked={newMenuItem.is_veg ?? true}
                           onChange={(e) => setNewMenuItem({ ...newMenuItem, is_veg: e.target.checked })}
-                          className="rounded text-[#ba001c] focus:ring-[#ba001c]"
+                          className="rounded text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                         />
                         <span className="text-xs font-bold text-[var(--color-on-surface-variant)]">Veg / Green Badge</span>
                       </label>
@@ -1214,7 +1214,7 @@ export default function AdminVendorsPage() {
                     type="button"
                     onClick={handleAddNewMenuItem}
                     disabled={loading || !newMenuItem.name || !newMenuItem.price}
-                    className="w-full py-2.5 bg-[#ba001c] text-white rounded-lg text-sm font-bold hover:bg-[#a00018] disabled:opacity-50 transition-all"
+                    className="w-full py-2.5 bg-[var(--color-primary)] text-white rounded-lg text-sm font-bold hover:bg-[#a00018] disabled:opacity-50 transition-all"
                   >
                     {loading ? "Adding..." : "Add Menu Item"}
                   </button>
@@ -1232,7 +1232,7 @@ export default function AdminVendorsPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 py-3 bg-[#ba001c] text-white rounded-xl font-bold text-sm hover:bg-[#a00018] transition-all disabled:opacity-50"
+                  className="flex-1 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm hover:bg-[#a00018] transition-all disabled:opacity-50"
                 >
                   {loading ? "Updating..." : "Update Vendor"}
                 </button>
@@ -1286,7 +1286,7 @@ export default function AdminVendorsPage() {
                       <div className="flex items-center gap-3">
                         <button 
                           onClick={() => handleEditClick(vendor)}
-                          className="text-[#ba001c] font-bold hover:underline text-xs"
+                          className="text-[var(--color-primary)] font-bold hover:underline text-xs"
                         >
                           Edit
                         </button>
@@ -1330,7 +1330,7 @@ export default function AdminVendorsPage() {
                     required
                     value={editingMenuItem.name}
                     onChange={(e) => setEditingMenuItem({ ...editingMenuItem, name: e.target.value })}
-                    className="w-full p-2.5 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                    className="w-full p-2.5 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                   />
                 </div>
                 <div>
@@ -1340,7 +1340,7 @@ export default function AdminVendorsPage() {
                     required
                     value={editingMenuItem.price}
                     onChange={(e) => setEditingMenuItem({ ...editingMenuItem, price: e.target.value })}
-                    className="w-full p-2.5 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                    className="w-full p-2.5 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                   />
                 </div>
               </div>
@@ -1351,7 +1351,7 @@ export default function AdminVendorsPage() {
                   <select
                     value={editingMenuItem.category}
                     onChange={(e) => setEditingMenuItem({ ...editingMenuItem, category: e.target.value })}
-                    className="w-full p-2.5 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                    className="w-full p-2.5 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                   >
                     <option value="Main Course">Main Course</option>
                     <option value="Starters">Starters</option>
@@ -1374,7 +1374,7 @@ export default function AdminVendorsPage() {
                 <textarea
                   value={editingMenuItem.description || ""}
                   onChange={(e) => setEditingMenuItem({ ...editingMenuItem, description: e.target.value })}
-                  className="w-full p-2.5 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                  className="w-full p-2.5 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
                   placeholder="Ingredients, specs, portion size..."
                   rows={2}
                 />
@@ -1386,7 +1386,7 @@ export default function AdminVendorsPage() {
                     type="checkbox"
                     checked={editingMenuItem.is_veg ?? true}
                     onChange={(e) => setEditingMenuItem({ ...editingMenuItem, is_veg: e.target.checked })}
-                    className="rounded text-[#ba001c] focus:ring-[#ba001c]"
+                    className="rounded text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                   />
                   <span className="text-xs font-bold text-[var(--color-on-surface-variant)]">Veg / Green Badge</span>
                 </label>
@@ -1413,7 +1413,7 @@ export default function AdminVendorsPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 py-2.5 bg-[#ba001c] text-white rounded-xl font-bold text-sm hover:bg-[#a00018] transition-all disabled:opacity-50"
+                  className="flex-1 py-2.5 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm hover:bg-[#a00018] transition-all disabled:opacity-50"
                 >
                   {loading ? "Saving..." : "Save Changes"}
                 </button>

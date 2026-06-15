@@ -11,14 +11,14 @@ const baseStyles = `
 `;
 
 const headerStyles = `
-  background: linear-gradient(135deg, #ba001c, #8a0014);
+  background: linear-gradient(135deg, var(--color-primary), #8a0014);
   padding: 30px;
   text-align: center;
   border-radius: 10px 10px 0 0;
 `;
 
 const contentStyles = `
-  background: #fff4f4;
+  background: var(--color-surface-container-lowest);
   padding: 30px;
   border-radius: 0 0 10px 10px;
 `;
@@ -90,7 +90,7 @@ export async function sendOrderConfirmationEmail(data: OrderEmailData): Promise<
             <p style="color: rgba(255,255,255,0.8); margin: 10px 0 0 0;">Order Confirmed</p>
           </div>
           <div style="${contentStyles}">
-            <h2 style="color: #4d212a; margin-bottom: 20px;">Hi ${data.customerName}! 👋</h2>
+            <h2 style="color: var(--color-on-surface); margin-bottom: 20px;">Hi ${data.customerName}! 👋</h2>
             <p style="color: #666; margin-bottom: 25px;">Your order has been confirmed and is being prepared.</p>
             
             <div style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
@@ -107,16 +107,16 @@ export async function sendOrderConfirmationEmail(data: OrderEmailData): Promise<
                 </tbody>
               </table>
               <div style="border-top: 1px solid #eee; margin-top: 10px; padding-top: 10px;">
-                <p style="margin: 5px 0; color: #666;">Subtotal: <span style="float: right; color: #4d212a;">₹${data.subtotal.toFixed(2)}</span></p>
-                <p style="margin: 5px 0; color: #666;">Delivery: <span style="float: right; color: #4d212a;">₹${data.deliveryFee.toFixed(2)}</span></p>
-                ${data.tip ? `<p style="margin: 5px 0; color: #666;">Tip: <span style="float: right; color: #4d212a;">₹${data.tip.toFixed(2)}</span></p>` : ""}
-                <p style="margin: 10px 0 0 0; font-weight: bold; font-size: 18px; color: #ba001c;">Total: <span style="float: right;">₹${data.total.toFixed(2)}</span></p>
+                <p style="margin: 5px 0; color: #666;">Subtotal: <span style="float: right; color: var(--color-on-surface);">₹${data.subtotal.toFixed(2)}</span></p>
+                <p style="margin: 5px 0; color: #666;">Delivery: <span style="float: right; color: var(--color-on-surface);">₹${data.deliveryFee.toFixed(2)}</span></p>
+                ${data.tip ? `<p style="margin: 5px 0; color: #666;">Tip: <span style="float: right; color: var(--color-on-surface);">₹${data.tip.toFixed(2)}</span></p>` : ""}
+                <p style="margin: 10px 0 0 0; font-weight: bold; font-size: 18px; color: var(--color-primary);">Total: <span style="float: right;">₹${data.total.toFixed(2)}</span></p>
               </div>
             </div>
             
             <div style="background: white; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
               <p style="margin: 0; color: #666; font-size: 14px;"><strong>Delivery Address:</strong></p>
-              <p style="margin: 5px 0 0 0; color: #4d212a;">${data.deliveryAddress}</p>
+              <p style="margin: 5px 0 0 0; color: var(--color-on-surface);">${data.deliveryAddress}</p>
             </div>
             
             <p style="color: #999; font-size: 12px;">Order ID: ${data.orderId}</p>
@@ -188,17 +188,17 @@ export async function sendOrderStatusUpdateEmail(data: OrderStatusEmailData): Pr
             <p style="color: rgba(255,255,255,0.8); margin: 10px 0 0 0;">Order Update</p>
           </div>
           <div style="${contentStyles}">
-            <h2 style="color: #4d212a; margin-bottom: 20px;">Hi ${data.customerName}! 👋</h2>
+            <h2 style="color: var(--color-on-surface); margin-bottom: 20px;">Hi ${data.customerName}! 👋</h2>
             <p style="color: #666; margin-bottom: 25px;">${statusInfo.message}</p>
             
             <div style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; text-align: center;">
-              <p style="color: #ba001c; font-size: 24px; font-weight: bold; margin: 0;">${statusInfo.title}</p>
+              <p style="color: var(--color-primary); font-size: 24px; font-weight: bold; margin: 0;">${statusInfo.title}</p>
             </div>
             
             ${data.riderName ? `
             <div style="background: white; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
               <p style="margin: 0 0 10px 0; color: #666; font-size: 14px;"><strong>Rider Details:</strong></p>
-              <p style="margin: 0; color: #4d212a;">${data.riderName}</p>
+              <p style="margin: 0; color: var(--color-on-surface);">${data.riderName}</p>
               ${data.riderPhone ? `<p style="margin: 5px 0 0 0; color: #0b50d5;">📞 ${data.riderPhone}</p>` : ""}
             </div>
             ` : ""}
@@ -243,12 +243,12 @@ export async function sendRefundNotificationEmail(data: RefundEmailData): Promis
             <p style="color: rgba(255,255,255,0.8); margin: 10px 0 0 0;">Refund Processed</p>
           </div>
           <div style="${contentStyles}">
-            <h2 style="color: #4d212a; margin-bottom: 20px;">Hi ${data.customerName}! 👋</h2>
+            <h2 style="color: var(--color-on-surface); margin-bottom: 20px;">Hi ${data.customerName}! 👋</h2>
             <p style="color: #666; margin-bottom: 25px;">Your refund has been processed successfully.</p>
             
             <div style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; text-align: center;">
               <p style="color: #666; margin: 0;">Refund Amount</p>
-              <p style="color: #ba001c; font-size: 32px; font-weight: bold; margin: 10px 0 0 0;">₹${data.amount.toFixed(2)}</p>
+              <p style="color: var(--color-primary); font-size: 32px; font-weight: bold; margin: 10px 0 0 0;">₹${data.amount.toFixed(2)}</p>
             </div>
             
             ${data.reason ? `<p style="color: #666; margin-bottom: 20px;">Reason: ${data.reason}</p>` : ""}
@@ -290,11 +290,11 @@ export async function sendWelcomeEmail(name: string, email: string): Promise<{ s
             <p style="color: rgba(255,255,255,0.8); margin: 10px 0 0 0;">Welcome!</p>
           </div>
           <div style="${contentStyles}">
-            <h2 style="color: #4d212a; margin-bottom: 20px;">Hi ${name}! 👋</h2>
+            <h2 style="color: var(--color-on-surface); margin-bottom: 20px;">Hi ${name}! 👋</h2>
             <p style="color: #666; margin-bottom: 25px;">Welcome to MIIAM - your one-stop superapp for food, groceries, beauty, pharmacy, and more!</p>
             
             <div style="text-align: center; margin-bottom: 20px;">
-              <a href="https://miiam.in/app/home" style="background: #ba001c; color: white; padding: 15px 30px; border-radius: 10px; text-decoration: none; font-weight: bold; display: inline-block;">Start Ordering</a>
+              <a href="https://miiam.in/app/home" style="background: var(--color-primary); color: white; padding: 15px 30px; border-radius: 10px; text-decoration: none; font-weight: bold; display: inline-block;">Start Ordering</a>
             </div>
             
             <p style="color: #999; font-size: 12px;">With MIIAM, you can:</p>
@@ -351,7 +351,7 @@ export async function sendBookingConfirmationEmail(data: BookingEmailData): Prom
             <p style="color: rgba(255,255,255,0.8); margin: 10px 0 0 0;">Booking Confirmed</p>
           </div>
           <div style="${contentStyles}">
-            <h2 style="color: #4d212a; margin-bottom: 20px;">Hi ${data.customerName}!</h2>
+            <h2 style="color: var(--color-on-surface); margin-bottom: 20px;">Hi ${data.customerName}!</h2>
             <p style="color: #666; margin-bottom: 25px;">Your booking has been confirmed. Here are the details:</p>
             
             <div style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px;">

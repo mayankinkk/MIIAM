@@ -118,7 +118,7 @@ export default function CouponsAdminPage() {
   return (
     <div className="min-h-screen bg-[var(--color-surface-subtle)]">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#ba001c] to-[#8a0014] text-white p-6">
+      <div className="bg-gradient-to-r from-[var(--color-primary)] to-[#8a0014] text-white p-6">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-black">Coupons & Promotions</h1>
@@ -126,7 +126,7 @@ export default function CouponsAdminPage() {
           </div>
           <button
             onClick={() => setShowModal(true)}
-            className="bg-[var(--color-surface-container-lowest)] text-[#ba001c] px-6 py-3 rounded-xl font-bold hover:bg-[var(--color-surface-container-lowest)]/90 transition-all flex items-center gap-2"
+            className="bg-[var(--color-surface-container-lowest)] text-[var(--color-primary)] px-6 py-3 rounded-xl font-bold hover:bg-[var(--color-surface-container-lowest)]/90 transition-all flex items-center gap-2"
           >
             <span className="material-symbols-outlined">add</span>
             Create Coupon
@@ -152,7 +152,7 @@ export default function CouponsAdminPage() {
         </div>
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-lg">
           <div className="text-sm text-[var(--color-outline)] mb-1">Total Discount Given</div>
-          <div className="text-2xl font-black text-[#ba001c]">₹{totalDiscount.toLocaleString()}</div>
+          <div className="text-2xl font-black text-[var(--color-primary)]">₹{totalDiscount.toLocaleString()}</div>
         </div>
       </div>
 
@@ -165,7 +165,7 @@ export default function CouponsAdminPage() {
               onClick={() => setFilter(f as any)}
               className={`px-4 py-2 rounded-full font-bold text-sm capitalize transition-colors ${
                 filter === f
-                  ? "bg-[#ba001c] text-white"
+                  ? "bg-[var(--color-primary)] text-white"
                   : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface-variant)] border border-[var(--color-border-subtle)]"
               }`}
             >
@@ -214,7 +214,7 @@ export default function CouponsAdminPage() {
                   <td className="p-4">
                     <div className="w-24 bg-[var(--color-surface-container)] rounded-full h-2 mb-1">
                       <div
-                        className="bg-[#ba001c] h-2 rounded-full"
+                        className="bg-[var(--color-primary)] h-2 rounded-full"
                         style={{
                           width: `${(coupon.used_count / coupon.usage_limit) * 100}%`,
                         }}
@@ -247,7 +247,7 @@ export default function CouponsAdminPage() {
                         setFormData(coupon);
                         setShowModal(true);
                       }}
-                      className="text-[#ba001c] font-bold text-sm hover:underline mr-3"
+                      className="text-[var(--color-primary)] font-bold text-sm hover:underline mr-3"
                     >
                       Edit
                     </button>
@@ -295,7 +295,7 @@ export default function CouponsAdminPage() {
                   onChange={(e) =>
                     setFormData({ ...formData, code: e.target.value.toUpperCase() })
                   }
-                  className="w-full p-3 rounded-xl border border-[var(--color-border-subtle)] focus:border-[#ba001c] focus:ring-2 focus:ring-[#ba001c]/20 outline-none"
+                  className="w-full p-3 rounded-xl border border-[var(--color-border-subtle)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 outline-none"
                   placeholder="e.g. SUMMER20"
                   required
                 />
@@ -311,7 +311,7 @@ export default function CouponsAdminPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, type: e.target.value as any })
                     }
-                    className="w-full p-3 rounded-xl border border-[var(--color-border-subtle)] focus:border-[#ba001c] outline-none"
+                    className="w-full p-3 rounded-xl border border-[var(--color-border-subtle)] focus:border-[var(--color-primary)] outline-none"
                   >
                     <option value="percentage">Percentage (%)</option>
                     <option value="fixed">Fixed Amount (₹)</option>
@@ -327,7 +327,7 @@ export default function CouponsAdminPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, value: parseInt(e.target.value) })
                     }
-                    className="w-full p-3 rounded-xl border border-[var(--color-border-subtle)] focus:border-[#ba001c] outline-none"
+                    className="w-full p-3 rounded-xl border border-[var(--color-border-subtle)] focus:border-[var(--color-primary)] outline-none"
                     required
                   />
                 </div>
@@ -344,7 +344,7 @@ export default function CouponsAdminPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, min_order: parseInt(e.target.value) })
                     }
-                    className="w-full p-3 rounded-xl border border-[var(--color-border-subtle)] focus:border-[#ba001c] outline-none"
+                    className="w-full p-3 rounded-xl border border-[var(--color-border-subtle)] focus:border-[var(--color-primary)] outline-none"
                   />
                 </div>
                 <div>
@@ -357,7 +357,7 @@ export default function CouponsAdminPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, max_discount: parseInt(e.target.value) })
                     }
-                    className="w-full p-3 rounded-xl border border-[var(--color-border-subtle)] focus:border-[#ba001c] outline-none"
+                    className="w-full p-3 rounded-xl border border-[var(--color-border-subtle)] focus:border-[var(--color-primary)] outline-none"
                   />
                 </div>
               </div>
@@ -373,7 +373,7 @@ export default function CouponsAdminPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, valid_from: e.target.value })
                     }
-                    className="w-full p-3 rounded-xl border border-[var(--color-border-subtle)] focus:border-[#ba001c] outline-none"
+                    className="w-full p-3 rounded-xl border border-[var(--color-border-subtle)] focus:border-[var(--color-primary)] outline-none"
                     required
                   />
                 </div>
@@ -387,7 +387,7 @@ export default function CouponsAdminPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, valid_until: e.target.value })
                     }
-                    className="w-full p-3 rounded-xl border border-[var(--color-border-subtle)] focus:border-[#ba001c] outline-none"
+                    className="w-full p-3 rounded-xl border border-[var(--color-border-subtle)] focus:border-[var(--color-primary)] outline-none"
                     required
                   />
                 </div>
@@ -403,7 +403,7 @@ export default function CouponsAdminPage() {
                   onChange={(e) =>
                     setFormData({ ...formData, usage_limit: parseInt(e.target.value) })
                   }
-                  className="w-full p-3 rounded-xl border border-[var(--color-border-subtle)] focus:border-[#ba001c] outline-none"
+                  className="w-full p-3 rounded-xl border border-[var(--color-border-subtle)] focus:border-[var(--color-primary)] outline-none"
                   required
                 />
               </div>
@@ -417,7 +417,7 @@ export default function CouponsAdminPage() {
                   onChange={(e) =>
                     setFormData({ ...formData, service_type: e.target.value })
                   }
-                  className="w-full p-3 rounded-xl border border-[var(--color-border-subtle)] focus:border-[#ba001c] outline-none"
+                  className="w-full p-3 rounded-xl border border-[var(--color-border-subtle)] focus:border-[var(--color-primary)] outline-none"
                 >
                   <option value="all">All Services</option>
                   <option value="beauty">Beauty & Wellness</option>
@@ -430,7 +430,7 @@ export default function CouponsAdminPage() {
 
               <button
                 type="submit"
-                className="w-full py-4 bg-[#ba001c] text-white rounded-xl font-bold hover:bg-[#a40017] transition-all"
+                className="w-full py-4 bg-[var(--color-primary)] text-white rounded-xl font-bold hover:bg-[#a40017] transition-all"
               >
                 {editingCoupon ? "Update Coupon" : "Create Coupon"}
               </button>

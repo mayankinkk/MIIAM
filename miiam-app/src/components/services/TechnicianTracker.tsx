@@ -134,10 +134,10 @@ export default function TechnicianTracker({ orderId, customerLat = 26.1465, cust
 
     const techIcon = L.divIcon({
       html: `<div class="relative">
-        <div class="w-12 h-12 bg-[#ba001c] rounded-full flex items-center justify-center shadow-lg border-4 border-white">
+        <div class="w-12 h-12 bg-[var(--color-primary)] rounded-full flex items-center justify-center shadow-lg border-4 border-white">
           <span class="material-symbols-outlined text-white text-lg" style="font-variation-settings:'FILL'1">person</span>
         </div>
-        <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-4 bg-[#ba001c] rotate-45"></div>
+        <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-4 bg-[var(--color-primary)] rotate-45"></div>
       </div>`,
       className: "technician-marker",
       iconSize: [48, 60],
@@ -162,7 +162,7 @@ export default function TechnicianTracker({ orderId, customerLat = 26.1465, cust
         [technician.customer_location.lat, technician.customer_location.lng],
         [technician.location.lat, technician.location.lng],
       ];
-      L.polyline(points, { color: "#ba001c", weight: 3, opacity: 0.7, dashArray: "10,10" }).addTo(map);
+      L.polyline(points, { color: "var(--color-primary)", weight: 3, opacity: 0.7, dashArray: "10,10" }).addTo(map);
     }
 
     return () => {
@@ -236,7 +236,7 @@ export default function TechnicianTracker({ orderId, customerLat = 26.1465, cust
       <div className="relative rounded-xl overflow-hidden border border-[var(--color-border-subtle)]">
         <div ref={mapRef} className="h-48 w-full" />
         <div className="absolute top-3 left-3 bg-[var(--color-surface-container-lowest)]/90 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-md flex items-center gap-2">
-          <div className="w-2 h-2 bg-[#ba001c] rounded-full animate-pulse" />
+          <div className="w-2 h-2 bg-[var(--color-primary)] rounded-full animate-pulse" />
           <span className="text-xs font-bold text-[var(--color-on-surface)]">Live</span>
         </div>
         <div className="absolute top-3 right-3 bg-[var(--color-surface-container-lowest)]/90 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-md flex items-center gap-1.5">
@@ -248,7 +248,7 @@ export default function TechnicianTracker({ orderId, customerLat = 26.1465, cust
       {/* ETA Progress Bar */}
       <div className="relative bg-[var(--color-surface-container)] rounded-full h-2 overflow-hidden">
         <div 
-          className="absolute left-0 top-0 h-full bg-gradient-to-r from-[#ba001c] to-[#ff7670] transition-all duration-1000 rounded-full"
+          className="absolute left-0 top-0 h-full bg-gradient-to-r from-[var(--color-primary)] to-[#ff7670] transition-all duration-1000 rounded-full"
           style={{ width: `${Math.max(10, 100 - (technician.eta_minutes * 7))}%` }}
         />
       </div>
@@ -263,7 +263,7 @@ export default function TechnicianTracker({ orderId, customerLat = 26.1465, cust
           <img 
             src={technician.technician_photo} 
             alt={technician.technician_name} 
-            className="w-14 h-14 rounded-full object-cover border-2 border-[#ba001c]"
+            className="w-14 h-14 rounded-full object-cover border-2 border-[var(--color-primary)]"
           />
           <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center border-2 border-white">
             <span className="material-symbols-outlined text-white text-xs" style={{ fontVariationSettings: "'FILL' 1" }}>check</span>
@@ -300,23 +300,23 @@ export default function TechnicianTracker({ orderId, customerLat = 26.1465, cust
       {/* Status Steps */}
       <div className="relative pt-2">
         <div className="absolute top-5 left-4 right-4 h-0.5 bg-[var(--color-surface-container)]" />
-        <div className="absolute top-5 left-4 h-0.5 bg-[#ba001c] transition-all duration-500" 
+        <div className="absolute top-5 left-4 h-0.5 bg-[var(--color-primary)] transition-all duration-500" 
              style={{ width: `${(currentStepIndex / (statusSteps.length - 1)) * 100}%` }} />
         <div className="flex justify-between relative z-10">
           {statusSteps.map((step, index) => (
             <div key={step.key} className="flex flex-col items-center">
               <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
                 index < currentStepIndex 
-                  ? "bg-[#ba001c] text-white shadow-lg shadow-[#ba001c]/30" 
+                  ? "bg-[var(--color-primary)] text-white shadow-lg shadow-[var(--color-primary)]/30" 
                   : index === currentStepIndex
-                  ? "bg-[#ba001c] text-white shadow-lg shadow-[#ba001c]/30 ring-4 ring-[#ba001c]/20"
+                  ? "bg-[var(--color-primary)] text-white shadow-lg shadow-[var(--color-primary)]/30 ring-4 ring-[var(--color-primary)]/20"
                   : "bg-[var(--color-surface-container)] text-[var(--color-outline-variant)]"
               }`}>
                 <span className="material-symbols-outlined text-base" style={{ fontVariationSettings: index <= currentStepIndex ? "'FILL' 1" : "'FILL' 0" }}>
                   {index < currentStepIndex ? "check" : step.icon}
                 </span>
               </div>
-              <span className={`text-[10px] mt-2 font-bold ${index <= currentStepIndex ? "text-[#ba001c]" : "text-[var(--color-outline-variant)]"}`}>
+              <span className={`text-[10px] mt-2 font-bold ${index <= currentStepIndex ? "text-[var(--color-primary)]" : "text-[var(--color-outline-variant)]"}`}>
                 {step.label}
               </span>
             </div>
@@ -335,7 +335,7 @@ export default function TechnicianTracker({ orderId, customerLat = 26.1465, cust
           <span className="material-symbols-outlined text-lg">directions</span>
           Directions
         </a>
-        <button className="flex-1 py-3 bg-[#ba001c] rounded-xl font-bold text-sm text-white hover:bg-[#a40017] active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-sm">
+        <button className="flex-1 py-3 bg-[var(--color-primary)] rounded-xl font-bold text-sm text-white hover:bg-[#a40017] active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-sm">
           <span className="material-symbols-outlined text-lg">support_agent</span>
           Support
         </button>

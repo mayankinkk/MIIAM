@@ -5,14 +5,14 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 const modules = [
-  { id: "foods", title: "Foods", icon: "restaurant", color: "bg-[#ba001c]/10 text-[#ba001c]", route: "/admin/foods", type: "food" },
+  { id: "foods", title: "Foods", icon: "restaurant", color: "bg-[var(--color-primary)]/10 text-[var(--color-primary)]", route: "/admin/foods", type: "food" },
   { id: "grocery", title: "Grocery", icon: "shopping_basket", color: "bg-green-50 text-green-600", route: "/admin/grocery", type: "grocery" },
   { id: "printing", title: "Printing", icon: "print", color: "bg-indigo-50 text-indigo-600", route: "/admin/printing", type: "printing" },
   { id: "services", title: "Services", icon: "home_repair_service", color: "bg-blue-50 text-blue-600", route: "/admin/services", type: "services" },
 ];
 
 const categoryColors: Record<string, string> = {
-  food: "bg-[#ba001c]",
+  food: "bg-[var(--color-primary)]",
   grocery: "bg-green-500",
   printing: "bg-indigo-500",
   services: "bg-blue-500",
@@ -131,13 +131,13 @@ export default function AdminDashboard() {
 
       {loading ? (
         <div className="flex items-center justify-center py-24">
-          <div className="w-10 h-10 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin" />
+          <div className="w-10 h-10 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
         </div>
       ) : (
         <>
           {/* KPI Cards */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            <div className="bg-gradient-to-br from-[#ba001c] to-[#ff7670] text-white p-5 rounded-2xl shadow-lg shadow-red-900/20 col-span-2">
+            <div className="bg-gradient-to-br from-[var(--color-primary)] to-[#ff7670] text-white p-5 rounded-2xl shadow-lg shadow-red-900/20 col-span-2">
               <p className="text-xs font-bold opacity-80 uppercase tracking-wider">Total Revenue</p>
               <p className="text-3xl font-black mt-2">₹{stats.totalRevenue.toLocaleString()}</p>
               <p className="text-xs opacity-60 mt-1">{stats.totalOrders} total orders</p>
@@ -265,7 +265,7 @@ export default function AdminDashboard() {
             <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)] p-6 shadow-sm">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-black text-[var(--color-on-surface)]">Recent Orders</h2>
-                <button onClick={() => router.push("/admin/orders")} className="text-sm font-bold text-[#ba001c]">View All →</button>
+                <button onClick={() => router.push("/admin/orders")} className="text-sm font-bold text-[var(--color-primary)]">View All →</button>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
@@ -303,7 +303,7 @@ export default function AdminDashboard() {
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)] p-6 shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-black text-[var(--color-on-surface)]">Recent Vendors</h2>
-              <button onClick={() => router.push("/admin/vendors")} className="text-sm font-bold text-[#ba001c]">View All →</button>
+              <button onClick={() => router.push("/admin/vendors")} className="text-sm font-bold text-[var(--color-primary)]">View All →</button>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -353,7 +353,7 @@ export default function AdminDashboard() {
                 <button
                   key={item.id}
                   onClick={() => router.push(item.route)}
-                  className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl border-2 border-[var(--color-border-subtle)] shadow-sm hover:border-[#ba001c] hover:shadow-lg transition-all text-left group"
+                  className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl border-2 border-[var(--color-border-subtle)] shadow-sm hover:border-[var(--color-primary)] hover:shadow-lg transition-all text-left group"
                 >
                   <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-3 ${item.color}`}>
                     <span className="material-symbols-outlined text-2xl">{item.icon}</span>

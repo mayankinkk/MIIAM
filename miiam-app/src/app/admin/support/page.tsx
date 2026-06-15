@@ -131,7 +131,7 @@ export default function LiveChatSupport() {
                   key={chat.orderId}
                   onClick={() => setSelectedChat(chat.orderId)}
                   className={`w-full p-4 text-left border-b border-slate-50 hover:bg-[var(--color-surface-subtle)] transition-colors ${
-                    selectedChat === chat.orderId ? "bg-[#ba001c]/5 border-l-4 border-l-[#ba001c]" : ""
+                    selectedChat === chat.orderId ? "bg-[var(--color-primary)]/5 border-l-4 border-l-[var(--color-primary)]" : ""
                   }`}
                 >
                   <div className="flex items-center gap-2 mb-1">
@@ -177,7 +177,7 @@ export default function LiveChatSupport() {
                     <div
                       className={`max-w-[75%] p-3 rounded-2xl ${
                         msg.sender_type === "support"
-                          ? "bg-[#ba001c] text-white rounded-br-md"
+                          ? "bg-[var(--color-primary)] text-white rounded-br-md"
                           : "bg-[var(--color-surface-container)] text-[var(--color-on-surface)] rounded-bl-md"
                       }`}
                     >
@@ -198,11 +198,11 @@ export default function LiveChatSupport() {
                     onChange={(e) => setNewMessage(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && sendMessage()}
                     placeholder="Type a message..."
-                    className="flex-1 bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#ba001c]/10"
+                    className="flex-1 bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/10"
                   />
                   <button
                     onClick={sendMessage}
-                    className="px-4 bg-[#ba001c] text-white rounded-xl hover:bg-[#a00018]"
+                    className="px-4 bg-[var(--color-primary)] text-white rounded-xl hover:bg-[#a00018]"
                   >
                     <span className="material-symbols-outlined">send</span>
                   </button>
