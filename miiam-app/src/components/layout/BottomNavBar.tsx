@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCartStore } from "@/lib/store/cartStore";
@@ -8,8 +7,7 @@ import { useTranslation } from "@/lib/i18n/useTranslation";
 
 export default function BottomNavBar() {
   const pathname = usePathname();
-  const totalItems = useCartStore((s) => s.totalItems());
-  const [isMounted, setIsMounted] = useState(false);
+  const totalItems = useCartStore((s) => Array.isArray(s.items) ? s.items.reduce((sum, i) => sum + i.quantity, 0) : 0);
   const { t } = useTranslation();
 
   const hideOnRoutes = ["/app/checkout", "/app/payment", "/app/vendor-failure", "/app/support/chat"];
@@ -22,10 +20,6 @@ export default function BottomNavBar() {
     { href: "/app/cart", icon: "shopping_cart", label: t.nav.cart },
     { href: "/app/profile", icon: "person", label: t.nav.profile },
   ];
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   return (
     <nav aria-label="Main navigation"
@@ -61,8 +55,8 @@ export default function BottomNavBar() {
                   {item.icon}
                 </span>
 
-                {isMounted && isCart && totalItems > 0 && (
-                  <span key={totalItems} className="absolute -top-1.5 -right-2 w-4.5 h-4.5 bg-primary rounded-full text-on-primary text-[9px] font-black flex items-center justify-center shadow-md border-2 border-surface-container-lowest animate-badge-bounce">
+                {isCart && totalItems > 0 && (
+                  <span suppressHydrationWarning key={totalItems} className="absolute -top-1.5 -right-2 w-4.5 h-4.5 bg-primary rounded-full text-on-primary text-[9px] font-black flex items-center justify-center shadow-md border-2 border-surface-container-lowest animate-badge-bounce">
                     {totalItems > 9 ? "9+" : totalItems}
                   </span>
                 )}

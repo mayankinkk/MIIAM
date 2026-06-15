@@ -17,7 +17,13 @@ import { useTranslation } from "@/lib/i18n/useTranslation";
 export default function CartPage() {
   const { t } = useTranslation();
   const supabase = useMemo(() => createClient(), []);
-  const { items, updateQuantity, removeItem, totalPrice, subtotalByVendor, clearCart, addItem } = useCartStore();
+  const items = useCartStore((s) => s.items);
+  const updateQuantity = useCartStore((s) => s.updateQuantity);
+  const removeItem = useCartStore((s) => s.removeItem);
+  const totalPrice = useCartStore((s) => s.totalPrice);
+  const subtotalByVendor = useCartStore((s) => s.subtotalByVendor);
+  const clearCart = useCartStore((s) => s.clearCart);
+  const addItem = useCartStore((s) => s.addItem);
   const [pastOrders, setPastOrders] = useState<any[]>([]);
   const [showReorderModal, setShowReorderModal] = useState(false);
   const [reordering, setReordering] = useState(false);
@@ -25,15 +31,15 @@ export default function CartPage() {
   const router = useRouter();
   const { addToast } = useToastStore();
 
-  const [hydrated, setHydrated] = useState(false);
+  const [hydrated, setHydrated] = useState(() => useCartStore.persist.hasHydrated());
   const [vendorDeliveryCharges, setVendorDeliveryCharges] = useState<Record<string, number>>({});
   const [serviceCharge, setServiceCharge] = useState(8);
 
   useEffect(() => {
+    if (hydrated) return;
     const unsub = useCartStore.persist.onFinishHydration(() => setHydrated(true));
-    if (useCartStore.persist.hasHydrated()) setHydrated(true);
     return unsub;
-  }, []);
+  }, [hydrated]);
 
   useEffect(() => {
     async function loadServiceCharge() {

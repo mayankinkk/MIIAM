@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import { notify } from "@/lib/store/notificationStore";
 
 export default function NotificationPermission() {
-  const supabase = createClient();
-  const { addToast } = useToastStore();
+  const supabase = useMemo(() => createClient(), []);
+  const addToast = useToastStore((s) => s.addToast);
 
   useEffect(() => {
     // 1. Request standard browser notification permission

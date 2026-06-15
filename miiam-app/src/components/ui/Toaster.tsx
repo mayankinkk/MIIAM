@@ -2,10 +2,10 @@
 
 import { useEffect } from "react";
 import { useToastStore } from "@/lib/store/toastStore";
-import { VisuallyHidden } from "@/lib/accessibility";
 
 export default function Toaster() {
-  const { toasts, removeToast } = useToastStore();
+  const toasts = useToastStore((s) => s.toasts);
+  const removeToast = useToastStore((s) => s.removeToast);
 
   useEffect(() => {
     if (toasts.length > 0) {
