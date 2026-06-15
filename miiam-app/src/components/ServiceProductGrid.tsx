@@ -534,7 +534,7 @@ export default function ServiceProductGrid({
                 className="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm card-lift animate-in fade-in slide-in-from-bottom-4 duration-500"
                 style={{ animationDelay: `${Math.min(index * 50, 500)}ms` }}
               >
-                <div className="relative w-full h-32 bg-slate-100">
+                <div className="relative w-full h-32 bg-[var(--color-surface-container)]">
                   {product.image_url || product.image ? (
                     <BlurImage
                       src={product.image_url || product.image}

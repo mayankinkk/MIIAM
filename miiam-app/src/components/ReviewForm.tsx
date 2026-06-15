@@ -63,7 +63,7 @@ export default function ReviewForm({ vendorId, orderId, onSuccess }: ReviewFormP
 
   return (
     <form onSubmit={handleSubmit} className="bg-[var(--color-surface-container-lowest)] rounded-xl p-6 shadow-sm">
-      <h3 className="font-bold text-slate-800 mb-4">Rate your experience</h3>
+      <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Rate your experience</h3>
       
       <div className="flex items-center gap-1 mb-4">
         {[1, 2, 3, 4, 5].map((star) => (
@@ -86,7 +86,7 @@ export default function ReviewForm({ vendorId, orderId, onSuccess }: ReviewFormP
             </span>
           </button>
         ))}
-        <span className="ml-2 text-slate-600 font-medium">
+        <span className="ml-2 text-[var(--color-on-surface-variant)] font-medium">
           {rating > 0 ? `${rating}/5` : "Tap to rate"}
         </span>
       </div>
@@ -95,7 +95,7 @@ export default function ReviewForm({ vendorId, orderId, onSuccess }: ReviewFormP
         value={comment}
         onChange={(e) => setComment(e.target.value)}
         placeholder="Share your experience (optional)"
-        className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none mb-4"
+        className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none mb-4"
         rows={3}
       />
 

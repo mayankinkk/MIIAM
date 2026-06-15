@@ -712,7 +712,7 @@ export default function HomePage() {
             <p className="text-sm font-bold text-primary mb-4">
               {locationStore.displayAddress} ({locationStore.pincode})
             </p>
-            <p className="text-xs text-slate-400 mb-5">
+            <p className="text-xs text-[var(--color-outline-variant)] mb-5">
               {t.home.expanding}
             </p>
             <button
@@ -745,7 +745,7 @@ export default function HomePage() {
 
             {/* Pincode Entry */}
             <div className="mb-4">
-              <label className="text-xs font-bold text-slate-500 mb-1 block">{t.home.pincode}</label>
+              <label className="text-xs font-bold text-[var(--color-outline)] mb-1 block">{t.home.pincode}</label>
               <input
                 type="tel"
                 inputMode="numeric"

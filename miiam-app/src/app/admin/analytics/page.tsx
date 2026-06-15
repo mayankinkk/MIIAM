@@ -243,16 +243,16 @@ export default function AdvancedAnalytics() {
     <div className="px-8 space-y-8">
       <div className="flex justify-between items-end flex-wrap gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight mb-2">Advanced Analytics</h1>
-          <p className="text-slate-500">Comprehensive platform insights and reporting</p>
+          <h1 className="text-3xl font-extrabold text-[var(--color-on-surface)] tracking-tight mb-2">Advanced Analytics</h1>
+          <p className="text-[var(--color-outline)]">Comprehensive platform insights and reporting</p>
         </div>
-        <div className="flex gap-2 bg-slate-100 p-1 rounded-xl">
+        <div className="flex gap-2 bg-[var(--color-surface-container)] p-1 rounded-xl">
           {(["7d", "30d", "90d"] as const).map((p) => (
             <button
               key={p}
               onClick={() => setPeriod(p)}
               className={`px-4 py-2 rounded-lg text-xs font-bold transition-colors ${
-                period === p ? "bg-[var(--color-surface-container-lowest)] text-[#ba001c] shadow-sm" : "text-slate-500"
+                period === p ? "bg-[var(--color-surface-container-lowest)] text-[#ba001c] shadow-sm" : "text-[var(--color-outline)]"
               }`}
             >
               {p === "7d" ? "7 Days" : p === "30d" ? "30 Days" : "90 Days"}
@@ -261,7 +261,7 @@ export default function AdvancedAnalytics() {
         </div>
       </div>
 
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-100 p-1 inline-flex">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] p-1 inline-flex">
         {(["overview", "orders", "users", "vendors", "riders", "reports"] as const).map((tab) => (
           <button
             key={tab}
@@ -269,7 +269,7 @@ export default function AdvancedAnalytics() {
             className={`px-4 py-2 rounded-lg text-sm font-bold capitalize transition-colors ${
               activeTab === tab
                 ? "bg-[#ba001c] text-white"
-                : "text-slate-500 hover:bg-slate-50"
+                : "text-[var(--color-outline)] hover:bg-[var(--color-surface-subtle)]"
             }`}
           >
             {tab}
@@ -282,33 +282,33 @@ export default function AdvancedAnalytics() {
           {/* Quick Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-lg">
-              <p className="text-sm text-slate-500 mb-1">Customer Retention</p>
+              <p className="text-sm text-[var(--color-outline)] mb-1">Customer Retention</p>
               <p className="text-3xl font-black text-green-600">{customerRetention}%</p>
               <p className="text-xs text-green-500 mt-1">{uniqueUsersWithOrders} customers, {usersWithRepeatOrders} returning</p>
             </div>
             <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-lg">
-              <p className="text-sm text-slate-500 mb-1">Repeat Orders</p>
+              <p className="text-sm text-[var(--color-outline)] mb-1">Repeat Orders</p>
               <p className="text-3xl font-black text-blue-600">{repeatOrderPct}%</p>
-              <p className="text-xs text-slate-400 mt-1">Avg {avgOrdersPerCustomer} orders/customer</p>
+              <p className="text-xs text-[var(--color-outline-variant)] mt-1">Avg {avgOrdersPerCustomer} orders/customer</p>
             </div>
             <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-lg">
-              <p className="text-sm text-slate-500 mb-1">Avg Delivery Time</p>
+              <p className="text-sm text-[var(--color-outline)] mb-1">Avg Delivery Time</p>
               <p className="text-3xl font-black text-purple-600">{avgDeliveryMinutes} min</p>
-              <p className="text-xs text-slate-400 mt-1">Across {ordersWithDeliveryTime.length} deliveries</p>
+              <p className="text-xs text-[var(--color-outline-variant)] mt-1">Across {ordersWithDeliveryTime.length} deliveries</p>
             </div>
             <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-lg">
-              <p className="text-sm text-slate-500 mb-1">CSAT Score</p>
+              <p className="text-sm text-[var(--color-outline)] mb-1">CSAT Score</p>
               <p className="text-3xl font-black text-amber-600">{avgRating.toFixed(1)}/5</p>
-              <p className="text-xs text-slate-400 mt-1">Based on {totalReviews.toLocaleString()} reviews</p>
+              <p className="text-xs text-[var(--color-outline-variant)] mt-1">Based on {totalReviews.toLocaleString()} reviews</p>
             </div>
           </div>
 
           {/* Order Heatmap by Hour & Day */}
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-lg font-black text-slate-800">Order Heatmap</h3>
+              <h3 className="text-lg font-black text-[var(--color-on-surface)]">Order Heatmap</h3>
               <div className="flex gap-2">
-                <span className="text-xs text-slate-400">Low</span>
+                <span className="text-xs text-[var(--color-outline-variant)]">Low</span>
                 <div className="flex gap-1">
                   {[0, 1, 2, 3, 4].map((i) => (
                     <div
@@ -323,17 +323,17 @@ export default function AdvancedAnalytics() {
                     />
                   ))}
                 </div>
-                <span className="text-xs text-slate-400">High</span>
+                <span className="text-xs text-[var(--color-outline-variant)]">High</span>
               </div>
             </div>
             <div className="grid grid-cols-8 gap-1 text-xs">
               <div />
               {daysOfWeek.map((day) => (
-                <div key={day} className="text-center font-bold text-slate-500 py-2">{day}</div>
+                <div key={day} className="text-center font-bold text-[var(--color-outline)] py-2">{day}</div>
               ))}
               {heatmapData.map((hours, hour) => (
                 <div key={`row-${hour}`} className="contents">
-                  <div className="text-slate-400 text-right pr-2 py-1">{hour}:00</div>
+                  <div className="text-[var(--color-outline-variant)] text-right pr-2 py-1">{hour}:00</div>
                   {hours.map((count, dayIndex) => {
                     const intensity = maxHeatmapValue > 0 ? Math.floor((count / maxHeatmapValue) * 4) : 0;
                     return (
@@ -357,34 +357,34 @@ export default function AdvancedAnalytics() {
 
           {/* Service Category Performance */}
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg">
-            <h3 className="text-lg font-black text-slate-800 mb-6">Service Category Performance</h3>
+            <h3 className="text-lg font-black text-[var(--color-on-surface)] mb-6">Service Category Performance</h3>
             <div className="space-y-4">
               {topCategories.map(([name, stats]) => (
                 <div key={name} className="flex items-center gap-4">
-                  <div className="w-32 font-bold text-slate-700 capitalize">{name}</div>
-                  <div className="flex-1 bg-slate-100 rounded-full h-4 overflow-hidden">
+                  <div className="w-32 font-bold text-[var(--color-on-surface)] capitalize">{name}</div>
+                  <div className="flex-1 bg-[var(--color-surface-container)] rounded-full h-4 overflow-hidden">
                     <div
                       className="h-full bg-gradient-to-r from-[#ba001c] to-pink-500 rounded-full"
                       style={{ width: `${(stats.revenue / maxCategoryRevenue) * 100}%` }}
                     />
                   </div>
                   <div className="w-24 text-right">
-                    <span className="font-bold text-slate-800">₹{stats.revenue.toLocaleString()}</span>
+                    <span className="font-bold text-[var(--color-on-surface)]">₹{stats.revenue.toLocaleString()}</span>
                   </div>
                   <div className="w-16 text-right">
-                    <span className="text-sm text-slate-500">{stats.orders} orders</span>
+                    <span className="text-sm text-[var(--color-outline)]">{stats.orders} orders</span>
                   </div>
                 </div>
               ))}
               {topCategories.length === 0 && (
-                <p className="text-slate-400 text-center py-4">No order data available for this period</p>
+                <p className="text-[var(--color-outline-variant)] text-center py-4">No order data available for this period</p>
               )}
             </div>
           </div>
 
           {/* Export Options */}
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg">
-            <h3 className="text-lg font-black text-slate-800 mb-6">Export Reports</h3>
+            <h3 className="text-lg font-black text-[var(--color-on-surface)] mb-6">Export Reports</h3>
             <div className="grid md:grid-cols-3 gap-4">
               <button
                 onClick={() => {
@@ -398,14 +398,14 @@ export default function AdvancedAnalytics() {
                   const a = document.createElement("a"); a.href = url; a.download = "revenue-report.csv"; a.click();
                   URL.revokeObjectURL(url);
                 }}
-                className="p-4 border-2 border-slate-200 rounded-xl hover:border-[#ba001c] hover:bg-pink-50 transition-all flex items-center gap-4"
+                className="p-4 border-2 border-[var(--color-border-subtle)] rounded-xl hover:border-[#ba001c] hover:bg-pink-50 transition-all flex items-center gap-4"
               >
                 <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
                   <span className="material-symbols-outlined text-green-600">description</span>
                 </div>
                 <div className="text-left">
-                  <p className="font-bold text-slate-800">Revenue Report</p>
-                  <p className="text-xs text-slate-500">Last 30 days</p>
+                  <p className="font-bold text-[var(--color-on-surface)]">Revenue Report</p>
+                  <p className="text-xs text-[var(--color-outline)]">Last 30 days</p>
                 </div>
               </button>
               <button
@@ -420,14 +420,14 @@ export default function AdvancedAnalytics() {
                   const a = document.createElement("a"); a.href = url; a.download = "user-analytics.csv"; a.click();
                   URL.revokeObjectURL(url);
                 }}
-                className="p-4 border-2 border-slate-200 rounded-xl hover:border-[#ba001c] hover:bg-pink-50 transition-all flex items-center gap-4"
+                className="p-4 border-2 border-[var(--color-border-subtle)] rounded-xl hover:border-[#ba001c] hover:bg-pink-50 transition-all flex items-center gap-4"
               >
                 <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
                   <span className="material-symbols-outlined text-blue-600">group</span>
                 </div>
                 <div className="text-left">
-                  <p className="font-bold text-slate-800">User Analytics</p>
-                  <p className="text-xs text-slate-500">Growth metrics</p>
+                  <p className="font-bold text-[var(--color-on-surface)]">User Analytics</p>
+                  <p className="text-xs text-[var(--color-outline)]">Growth metrics</p>
                 </div>
               </button>
               <button
@@ -444,14 +444,14 @@ export default function AdvancedAnalytics() {
                   const a = document.createElement("a"); a.href = url; a.download = "performance-report.csv"; a.click();
                   URL.revokeObjectURL(url);
                 }}
-                className="p-4 border-2 border-slate-200 rounded-xl hover:border-[#ba001c] hover:bg-pink-50 transition-all flex items-center gap-4"
+                className="p-4 border-2 border-[var(--color-border-subtle)] rounded-xl hover:border-[#ba001c] hover:bg-pink-50 transition-all flex items-center gap-4"
               >
                 <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
                   <span className="material-symbols-outlined text-purple-600">trending_up</span>
                 </div>
                 <div className="text-left">
-                  <p className="font-bold text-slate-800">Performance</p>
-                  <p className="text-xs text-slate-500">Service metrics</p>
+                  <p className="font-bold text-[var(--color-on-surface)]">Performance</p>
+                  <p className="text-xs text-[var(--color-outline)]">Service metrics</p>
                 </div>
               </button>
             </div>
@@ -470,38 +470,38 @@ export default function AdvancedAnalytics() {
               <p className="text-4xl font-black">₹{totalRevenue.toLocaleString()}</p>
               <p className="text-xs text-white/60 mt-2">{orderCount} orders</p>
             </div>
-            <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-slate-100 shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-[var(--color-border-subtle)] shadow-sm">
               <div className="flex items-center gap-2 mb-2">
-                <span className="material-symbols-outlined text-slate-400">shopping_cart</span>
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Avg Order</span>
+                <span className="material-symbols-outlined text-[var(--color-outline-variant)]">shopping_cart</span>
+                <span className="text-xs font-bold text-[var(--color-outline-variant)] uppercase tracking-widest">Avg Order</span>
               </div>
-              <p className="text-3xl font-black text-slate-800">₹{Math.round(avgOrderValue)}</p>
+              <p className="text-3xl font-black text-[var(--color-on-surface)]">₹{Math.round(avgOrderValue)}</p>
               <p className="text-xs text-green-500 mt-2">per order</p>
             </div>
-            <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-slate-100 shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-[var(--color-border-subtle)] shadow-sm">
               <div className="flex items-center gap-2 mb-2">
-                <span className="material-symbols-outlined text-slate-400">group</span>
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">New Users</span>
+                <span className="material-symbols-outlined text-[var(--color-outline-variant)]">group</span>
+                <span className="text-xs font-bold text-[var(--color-outline-variant)] uppercase tracking-widest">New Users</span>
               </div>
-              <p className="text-3xl font-black text-slate-800">{newUsersCount}</p>
+              <p className="text-3xl font-black text-[var(--color-on-surface)]">{newUsersCount}</p>
               <p className="text-xs text-green-500 mt-2">this period</p>
             </div>
-            <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-slate-100 shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-[var(--color-border-subtle)] shadow-sm">
               <div className="flex items-center gap-2 mb-2">
-                <span className="material-symbols-outlined text-slate-400">local_shipping</span>
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Peak Hours</span>
+                <span className="material-symbols-outlined text-[var(--color-outline-variant)]">local_shipping</span>
+                <span className="text-xs font-bold text-[var(--color-outline-variant)] uppercase tracking-widest">Peak Hours</span>
               </div>
-              <p className="text-xl font-black text-slate-800">{peakHours.join(", ")}</p>
-              <p className="text-xs text-slate-400 mt-2">most orders</p>
+              <p className="text-xl font-black text-[var(--color-on-surface)]">{peakHours.join(", ")}</p>
+              <p className="text-xs text-[var(--color-outline-variant)] mt-2">most orders</p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-6 shadow-sm">
-              <h2 className="text-lg font-black text-slate-800 mb-6">Revenue Trend</h2>
+            <div className="lg:col-span-2 bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-6 shadow-sm">
+              <h2 className="text-lg font-black text-[var(--color-on-surface)] mb-6">Revenue Trend</h2>
               <div className="h-64 flex items-end gap-2">
                 {chartData.length === 0 ? (
-                  <div className="w-full h-full flex items-center justify-center text-slate-400">
+                  <div className="w-full h-full flex items-center justify-center text-[var(--color-outline-variant)]">
                     No data available
                   </div>
                 ) : (
@@ -516,23 +516,23 @@ export default function AdvancedAnalytics() {
                           style={{ height: `${Math.max((revenue / maxRevenue) * 100, 5)}%` }}
                         />
                       </div>
-                      <span className="text-[10px] text-slate-400 truncate w-full text-center">{date}</span>
+                      <span className="text-[10px] text-[var(--color-outline-variant)] truncate w-full text-center">{date}</span>
                     </div>
                   ))
                 )}
               </div>
             </div>
 
-            <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-6 shadow-sm">
-              <h2 className="text-lg font-black text-slate-800 mb-6">Order Status</h2>
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-6 shadow-sm">
+              <h2 className="text-lg font-black text-[var(--color-on-surface)] mb-6">Order Status</h2>
               <div className="space-y-4">
                 {statusDistribution.map((item) => (
                   <div key={item.status}>
                     <div className="flex justify-between mb-1">
-                      <span className="text-sm font-bold text-slate-600">{item.label}</span>
-                      <span className="text-sm font-black text-slate-800">{item.count}</span>
+                      <span className="text-sm font-bold text-[var(--color-on-surface-variant)]">{item.label}</span>
+                      <span className="text-sm font-black text-[var(--color-on-surface)]">{item.count}</span>
                     </div>
-                    <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                    <div className="h-2 bg-[var(--color-surface-container)] rounded-full overflow-hidden">
                       <div
                         className={`h-full ${item.color} rounded-full`}
                         style={{ width: `${orderCount ? (item.count / orderCount) * 100 : 0}%` }}
@@ -541,9 +541,9 @@ export default function AdvancedAnalytics() {
                   </div>
                 ))}
               </div>
-              <div className="mt-6 pt-4 border-t border-slate-100">
+              <div className="mt-6 pt-4 border-t border-[var(--color-border-subtle)]">
                 <div className="flex justify-between text-sm">
-                  <span className="text-slate-500">Success Rate</span>
+                  <span className="text-[var(--color-outline)]">Success Rate</span>
                   <span className="font-bold text-green-600">
                     {orderCount ? Math.round((deliveredOrders / orderCount) * 100) : 0}%
                   </span>
@@ -553,8 +553,8 @@ export default function AdvancedAnalytics() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-6 shadow-sm">
-              <h2 className="text-lg font-black text-slate-800 mb-6">Top Vendors by Revenue</h2>
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-6 shadow-sm">
+              <h2 className="text-lg font-black text-[var(--color-on-surface)] mb-6">Top Vendors by Revenue</h2>
               <div className="space-y-4">
                 {topVendors.map(([vendor, data], i) => (
                   <div key={vendor} className="flex items-center gap-4">
@@ -563,14 +563,14 @@ export default function AdvancedAnalytics() {
                     </span>
                     <div className="flex-1">
                       <div className="flex justify-between mb-1">
-                        <span className="font-bold text-slate-800">{vendor}</span>
-                        <span className="font-black text-slate-800">₹{data.revenue.toLocaleString()}</span>
+                        <span className="font-bold text-[var(--color-on-surface)]">{vendor}</span>
+                        <span className="font-black text-[var(--color-on-surface)]">₹{data.revenue.toLocaleString()}</span>
                       </div>
-                      <div className="flex justify-between text-xs text-slate-500 mb-1">
+                      <div className="flex justify-between text-xs text-[var(--color-outline)] mb-1">
                         <span>{data.orders} orders</span>
                         <span>₹{Math.round(data.revenue / data.orders)}/order</span>
                       </div>
-                      <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                      <div className="h-2 bg-[var(--color-surface-container)] rounded-full overflow-hidden">
                         <div
                           className="h-full bg-gradient-to-r from-[#ba001c] to-[#ff7670]"
                           style={{ width: `${topVendors[0] ? (data.revenue / topVendors[0][1].revenue) * 100 : 0}%` }}
@@ -582,40 +582,40 @@ export default function AdvancedAnalytics() {
               </div>
             </div>
 
-            <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-6 shadow-sm">
-              <h2 className="text-lg font-black text-slate-800 mb-6">Operations Metrics</h2>
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-6 shadow-sm">
+              <h2 className="text-lg font-black text-[var(--color-on-surface)] mb-6">Operations Metrics</h2>
               <div className="grid grid-cols-2 gap-4">
                 <div className="p-4 bg-green-50 rounded-xl">
                   <span className="material-symbols-outlined text-green-600 text-2xl">store</span>
-                  <p className="text-2xl font-black text-slate-800 mt-2">{activeVendors}</p>
-                  <p className="text-xs text-slate-500">Active Vendors</p>
+                  <p className="text-2xl font-black text-[var(--color-on-surface)] mt-2">{activeVendors}</p>
+                  <p className="text-xs text-[var(--color-outline)]">Active Vendors</p>
                 </div>
                 <div className="p-4 bg-blue-50 rounded-xl">
                   <span className="material-symbols-outlined text-blue-600 text-2xl">two_wheeler</span>
-                  <p className="text-2xl font-black text-slate-800 mt-2">{onlineRiders}</p>
-                  <p className="text-xs text-slate-500">Online Riders</p>
+                  <p className="text-2xl font-black text-[var(--color-on-surface)] mt-2">{onlineRiders}</p>
+                  <p className="text-xs text-[var(--color-outline)]">Online Riders</p>
                 </div>
                 <div className="p-4 bg-purple-50 rounded-xl">
                   <span className="material-symbols-outlined text-purple-600 text-2xl">timer</span>
-                  <p className="text-2xl font-black text-slate-800 mt-2">{avgDeliveryMinutes > 0 ? `${avgDeliveryMinutes}m` : "N/A"}</p>
-                  <p className="text-xs text-slate-500">Avg Delivery Time</p>
+                  <p className="text-2xl font-black text-[var(--color-on-surface)] mt-2">{avgDeliveryMinutes > 0 ? `${avgDeliveryMinutes}m` : "N/A"}</p>
+                  <p className="text-xs text-[var(--color-outline)]">Avg Delivery Time</p>
                 </div>
                 <div className="p-4 bg-amber-50 rounded-xl">
                   <span className="material-symbols-outlined text-amber-600 text-2xl">percent</span>
-                  <p className="text-2xl font-black text-slate-800 mt-2">{riderUtilization}%</p>
-                  <p className="text-xs text-slate-500">Rider Utilization</p>
+                  <p className="text-2xl font-black text-[var(--color-on-surface)] mt-2">{riderUtilization}%</p>
+                  <p className="text-xs text-[var(--color-outline)]">Rider Utilization</p>
                 </div>
                 <div className="p-4 bg-rose-50 rounded-xl">
                   <span className="material-symbols-outlined text-rose-600 text-2xl">trending_up</span>
-                  <p className="text-2xl font-black text-slate-800 mt-2">
+                  <p className="text-2xl font-black text-[var(--color-on-surface)] mt-2">
                     {orderCount ? Math.round((deliveredOrders / orderCount) * 100) : 0}%
                   </p>
-                  <p className="text-xs text-slate-500">Success Rate</p>
+                  <p className="text-xs text-[var(--color-outline)]">Success Rate</p>
                 </div>
                 <div className="p-4 bg-cyan-50 rounded-xl">
                   <span className="material-symbols-outlined text-cyan-600 text-2xl">person</span>
-                  <p className="text-2xl font-black text-slate-800 mt-2">{newUsersCount}</p>
-                  <p className="text-xs text-slate-500">New Users</p>
+                  <p className="text-2xl font-black text-[var(--color-on-surface)] mt-2">{newUsersCount}</p>
+                  <p className="text-xs text-[var(--color-outline)]">New Users</p>
                 </div>
               </div>
             </div>
@@ -624,9 +624,9 @@ export default function AdvancedAnalytics() {
       )}
 
       {activeTab === "orders" && (
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-6 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-6 shadow-sm">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-lg font-black text-slate-800">Orders Report</h2>
+            <h2 className="text-lg font-black text-[var(--color-on-surface)]">Orders Report</h2>
             <button
               onClick={() => {
                 const rows = [["Order ID", "Amount", "Status", "Date"]];
@@ -648,20 +648,20 @@ export default function AdvancedAnalytics() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-100">
-                  <th className="text-left py-3 text-xs font-bold text-slate-500 uppercase">Order ID</th>
-                  <th className="text-left py-3 text-xs font-bold text-slate-500 uppercase">Vendor</th>
-                  <th className="text-left py-3 text-xs font-bold text-slate-500 uppercase">Amount</th>
-                  <th className="text-left py-3 text-xs font-bold text-slate-500 uppercase">Status</th>
-                  <th className="text-left py-3 text-xs font-bold text-slate-500 uppercase">Date</th>
+                <tr className="border-b border-[var(--color-border-subtle)]">
+                  <th className="text-left py-3 text-xs font-bold text-[var(--color-outline)] uppercase">Order ID</th>
+                  <th className="text-left py-3 text-xs font-bold text-[var(--color-outline)] uppercase">Vendor</th>
+                  <th className="text-left py-3 text-xs font-bold text-[var(--color-outline)] uppercase">Amount</th>
+                  <th className="text-left py-3 text-xs font-bold text-[var(--color-outline)] uppercase">Status</th>
+                  <th className="text-left py-3 text-xs font-bold text-[var(--color-outline)] uppercase">Date</th>
                 </tr>
               </thead>
               <tbody>
                 {orders.slice(0, 20).map((order) => (
-                  <tr key={order.id} className="border-b border-slate-50 hover:bg-slate-50">
-                    <td className="py-3 font-bold text-slate-800">{order.id.slice(0, 8).toUpperCase()}</td>
-                    <td className="py-3 text-slate-600">{order.vendor?.name || "Unknown"}</td>
-                    <td className="py-3 font-bold text-slate-800">₹{order.total_amount?.toFixed(2)}</td>
+                  <tr key={order.id} className="border-b border-slate-50 hover:bg-[var(--color-surface-subtle)]">
+                    <td className="py-3 font-bold text-[var(--color-on-surface)]">{order.id.slice(0, 8).toUpperCase()}</td>
+                    <td className="py-3 text-[var(--color-on-surface-variant)]">{order.vendor?.name || "Unknown"}</td>
+                    <td className="py-3 font-bold text-[var(--color-on-surface)]">₹{order.total_amount?.toFixed(2)}</td>
                     <td className="py-3">
                       <span className={`px-2 py-1 rounded-full text-xs font-bold ${
                         order.status === "delivered" ? "bg-green-100 text-green-700" :
@@ -671,7 +671,7 @@ export default function AdvancedAnalytics() {
                         {order.status}
                       </span>
                     </td>
-                    <td className="py-3 text-slate-500 text-sm">
+                    <td className="py-3 text-[var(--color-outline)] text-sm">
                       {new Date(order.placed_at).toLocaleDateString()}
                     </td>
                   </tr>
@@ -683,20 +683,20 @@ export default function AdvancedAnalytics() {
       )}
 
       {activeTab === "users" && (
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-6 shadow-sm">
-          <h2 className="text-lg font-black text-slate-800 mb-6">User Analytics</h2>
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-6 shadow-sm">
+          <h2 className="text-lg font-black text-[var(--color-on-surface)] mb-6">User Analytics</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="p-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl text-white">
               <p className="text-xs font-bold opacity-80">Total Users</p>
               <p className="text-4xl font-black mt-2">{users.length}</p>
             </div>
-            <div className="p-6 bg-[var(--color-surface-container-lowest)] border border-slate-100 rounded-2xl">
-              <p className="text-xs font-bold text-slate-400">New This Period</p>
-              <p className="text-4xl font-black text-slate-800 mt-2">{newUsersCount}</p>
+            <div className="p-6 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-2xl">
+              <p className="text-xs font-bold text-[var(--color-outline-variant)]">New This Period</p>
+              <p className="text-4xl font-black text-[var(--color-on-surface)] mt-2">{newUsersCount}</p>
             </div>
-            <div className="p-6 bg-[var(--color-surface-container-lowest)] border border-slate-100 rounded-2xl">
-              <p className="text-xs font-bold text-slate-400">Conversion Rate</p>
-              <p className="text-4xl font-black text-slate-800 mt-2">
+            <div className="p-6 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-2xl">
+              <p className="text-xs font-bold text-[var(--color-outline-variant)]">Conversion Rate</p>
+              <p className="text-4xl font-black text-[var(--color-on-surface)] mt-2">
                 {users.length ? Math.round((orderCount / users.length) * 100) : 0}%
               </p>
             </div>
@@ -705,49 +705,49 @@ export default function AdvancedAnalytics() {
       )}
 
       {activeTab === "vendors" && (
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-6 shadow-sm">
-          <h2 className="text-lg font-black text-slate-800 mb-6">Vendor Analytics</h2>
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-6 shadow-sm">
+          <h2 className="text-lg font-black text-[var(--color-on-surface)] mb-6">Vendor Analytics</h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <div className="p-4 bg-green-50 rounded-xl text-center">
               <p className="text-3xl font-black text-green-600">{activeVendors}</p>
-              <p className="text-xs text-slate-500">Active</p>
+              <p className="text-xs text-[var(--color-outline)]">Active</p>
             </div>
-            <div className="p-4 bg-slate-50 rounded-xl text-center">
-              <p className="text-3xl font-black text-slate-600">{vendors.length - activeVendors}</p>
-              <p className="text-xs text-slate-500">Inactive</p>
+            <div className="p-4 bg-[var(--color-surface-subtle)] rounded-xl text-center">
+              <p className="text-3xl font-black text-[var(--color-on-surface-variant)]">{vendors.length - activeVendors}</p>
+              <p className="text-xs text-[var(--color-outline)]">Inactive</p>
             </div>
             <div className="p-4 bg-blue-50 rounded-xl text-center">
               <p className="text-3xl font-black text-blue-600">{topVendors.length}</p>
-              <p className="text-xs text-slate-500">With Orders</p>
+              <p className="text-xs text-[var(--color-outline)]">With Orders</p>
             </div>
             <div className="p-4 bg-purple-50 rounded-xl text-center">
               <p className="text-3xl font-black text-purple-600">
                 ₹{topVendors[0] ? Math.round(topVendors[0][1].revenue / topVendors[0][1].orders) : 0}
               </p>
-              <p className="text-xs text-slate-500">Top Avg Order</p>
+              <p className="text-xs text-[var(--color-outline)]">Top Avg Order</p>
             </div>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-100">
-                  <th className="text-left py-3 text-xs font-bold text-slate-500 uppercase">Vendor</th>
-                  <th className="text-left py-3 text-xs font-bold text-slate-500 uppercase">Status</th>
-                  <th className="text-left py-3 text-xs font-bold text-slate-500 uppercase">Revenue</th>
-                  <th className="text-left py-3 text-xs font-bold text-slate-500 uppercase">Orders</th>
+                <tr className="border-b border-[var(--color-border-subtle)]">
+                  <th className="text-left py-3 text-xs font-bold text-[var(--color-outline)] uppercase">Vendor</th>
+                  <th className="text-left py-3 text-xs font-bold text-[var(--color-outline)] uppercase">Status</th>
+                  <th className="text-left py-3 text-xs font-bold text-[var(--color-outline)] uppercase">Revenue</th>
+                  <th className="text-left py-3 text-xs font-bold text-[var(--color-outline)] uppercase">Orders</th>
                 </tr>
               </thead>
               <tbody>
                 {topVendors.map(([vendor, data]) => (
                   <tr key={vendor} className="border-b border-slate-50">
-                    <td className="py-3 font-bold text-slate-800">{vendor}</td>
+                    <td className="py-3 font-bold text-[var(--color-on-surface)]">{vendor}</td>
                     <td className="py-3">
                       <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold">
                         Active
                       </span>
                     </td>
-                    <td className="py-3 font-bold text-slate-800">₹{data.revenue.toLocaleString()}</td>
-                    <td className="py-3 text-slate-600">{data.orders}</td>
+                    <td className="py-3 font-bold text-[var(--color-on-surface)]">₹{data.revenue.toLocaleString()}</td>
+                    <td className="py-3 text-[var(--color-on-surface-variant)]">{data.orders}</td>
                   </tr>
                 ))}
               </tbody>
@@ -757,8 +757,8 @@ export default function AdvancedAnalytics() {
       )}
 
       {activeTab === "riders" && (
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-6 shadow-sm">
-          <h2 className="text-lg font-black text-slate-800 mb-6">Rider Analytics</h2>
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-6 shadow-sm">
+          <h2 className="text-lg font-black text-[var(--color-on-surface)] mb-6">Rider Analytics</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="p-6 bg-gradient-to-br from-amber-500 to-amber-600 rounded-2xl text-white">
               <p className="text-xs font-bold opacity-80">Total Riders</p>
@@ -768,9 +768,9 @@ export default function AdvancedAnalytics() {
               <p className="text-xs font-bold text-green-600">Online Now</p>
               <p className="text-4xl font-black text-green-600 mt-2">{onlineRiders}</p>
             </div>
-            <div className="p-6 bg-[var(--color-surface-container-lowest)] border border-slate-100 rounded-2xl">
-              <p className="text-xs font-bold text-slate-400">Total Earnings</p>
-              <p className="text-4xl font-black text-slate-800 mt-2">
+            <div className="p-6 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-2xl">
+              <p className="text-xs font-bold text-[var(--color-outline-variant)]">Total Earnings</p>
+              <p className="text-4xl font-black text-[var(--color-on-surface)] mt-2">
                 ₹{riders.reduce((s, r) => s + (r.total_earnings || 0), 0).toLocaleString()}
               </p>
             </div>

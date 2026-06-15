@@ -114,7 +114,7 @@ export default function ServicesLandingPage() {
       <div className="relative max-w-7xl mx-auto px-6 pt-16 pb-20">
         <div className={`text-center mb-12 transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           <h2 className="text-3xl md:text-4xl font-black text-[#4d212a] mb-3">Choose Your Service</h2>
-          <p className="text-slate-500">Tap a card to explore and book</p>
+          <p className="text-[var(--color-outline)]">Tap a card to explore and book</p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -176,20 +176,20 @@ export default function ServicesLandingPage() {
                     </span>
                   </div>
                   <h3 className="text-xl font-black text-[#4d212a] mb-2">{category.title}</h3>
-                  <p className="text-sm text-slate-500 mb-4">{category.description}</p>
+                  <p className="text-sm text-[var(--color-outline)] mb-4">{category.description}</p>
                   
                   {/* Tags */}
                   <div className="flex flex-wrap gap-2 mb-4">
                     {category.services.slice(0, 3).map((service, i) => (
                       <span 
                         key={i} 
-                        className="text-xs font-medium text-slate-600 bg-slate-100 px-3 py-1 rounded-full"
+                        className="text-xs font-medium text-[var(--color-on-surface-variant)] bg-[var(--color-surface-container)] px-3 py-1 rounded-full"
                       >
                         {service}
                       </span>
                     ))}
                     {category.services.length > 3 && (
-                      <span className="text-xs font-medium text-slate-400 bg-slate-100 px-3 py-1 rounded-full">
+                      <span className="text-xs font-medium text-[var(--color-outline-variant)] bg-[var(--color-surface-container)] px-3 py-1 rounded-full">
                         +{category.services.length - 3}
                       </span>
                     )}
@@ -197,7 +197,7 @@ export default function ServicesLandingPage() {
 
                   {/* CTA */}
                   <div className={`flex items-center gap-2 text-sm font-bold transition-all duration-300
-                    ${hoveredCard === index ? 'text-[#ba001c]' : 'text-slate-400'}
+                    ${hoveredCard === index ? 'text-[#ba001c]' : 'text-[var(--color-outline-variant)]'}
                   `}>
                     <span>Explore</span>
                     <span className={`material-symbols-outlined transition-transform duration-300 ${hoveredCard === index ? 'translate-x-1' : ''}`}>
@@ -221,7 +221,7 @@ export default function ServicesLandingPage() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-black text-[#4d212a] mb-3">Why MIIAM?</h2>
-            <p className="text-slate-500">We bring the best service experience to your home</p>
+            <p className="text-[var(--color-outline)]">We bring the best service experience to your home</p>
           </div>
 
           <div className="grid md:grid-cols-4 gap-6">
@@ -233,7 +233,7 @@ export default function ServicesLandingPage() {
                   </span>
                 </div>
                 <h3 className="font-bold text-[#4d212a] mb-2">{item.title}</h3>
-                <p className="text-sm text-slate-500">{item.desc}</p>
+                <p className="text-sm text-[var(--color-outline)]">{item.desc}</p>
               </div>
             ))}
           </div>

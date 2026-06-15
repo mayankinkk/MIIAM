@@ -121,7 +121,7 @@ const sortedItems = [...filteredItems].sort((a, b) => (((b as any).is_featured |
     return (
       <div className="min-h-screen bg-[#f8f8f8] flex items-center justify-center">
         <div className="text-center">
-          <p className="text-slate-600">Vendor not found</p>
+          <p className="text-[var(--color-on-surface-variant)]">Vendor not found</p>
           <Link href="/app/food" className="text-primary font-bold mt-4 block">Go Back</Link>
         </div>
       </div>
@@ -149,13 +149,13 @@ const sortedItems = [...filteredItems].sort((a, b) => (((b as any).is_featured |
       <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: vendor.shop_name }]} />
 
       {/* Restaurant Info Bar */}
-      <div className="bg-[var(--color-surface-container-lowest)] border-b border-slate-100 px-4 py-3">
+      <div className="bg-[var(--color-surface-container-lowest)] border-b border-[var(--color-border-subtle)] px-4 py-3">
         <div className="flex items-center gap-4 overflow-x-auto no-scrollbar">
           <div className="flex items-center gap-2 bg-green-100 text-green-700 px-3 py-1.5 rounded-lg text-sm font-bold">
             <span className="material-symbols-outlined text-sm">star</span>
             {vendor.rating || 4.5}
           </div>
-          <div className="flex items-center gap-2 text-slate-600 text-sm font-semibold">
+          <div className="flex items-center gap-2 text-[var(--color-on-surface-variant)] text-sm font-semibold">
             <span className="material-symbols-outlined text-sm">schedule</span>
             {vendor.delivery_time_min || 30}-{vendor.delivery_time_max || 45} min • ₹{vendor.min_order_amount} for two
           </div>
@@ -173,28 +173,28 @@ const sortedItems = [...filteredItems].sort((a, b) => (((b as any).is_featured |
 
       {/* Reviews Section */}
       {reviews.length > 0 && (
-        <div className="bg-[var(--color-surface-container-lowest)] border-b border-slate-100 px-4 py-4">
+        <div className="bg-[var(--color-surface-container-lowest)] border-b border-[var(--color-border-subtle)] px-4 py-4">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-slate-800">Customer Reviews</h2>
+            <h2 className="text-lg font-bold text-[var(--color-on-surface)]">Customer Reviews</h2>
             <Link href={`/app/vendor/${vendorId}/reviews`} className="text-sm text-primary font-bold">
               See All
             </Link>
           </div>
           <div className="space-y-3">
             {reviews.slice(0, 3).map((review: any) => (
-              <div key={review.id} className="bg-slate-50 rounded-xl p-3">
+              <div key={review.id} className="bg-[var(--color-surface-subtle)] rounded-xl p-3">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-xs font-bold">
                     {review.profile?.full_name?.[0] || "U"}
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-slate-800">{review.profile?.full_name || "User"}</p>
+                    <p className="text-sm font-bold text-[var(--color-on-surface)]">{review.profile?.full_name || "User"}</p>
                     <div className="flex items-center gap-1">
                       {[1, 2, 3, 4, 5].map((star) => (
                         <span
                           key={star}
                           className={`material-symbols-outlined text-sm ${
-                            star <= review.rating ? "text-primary" : "text-slate-300"
+                            star <= review.rating ? "text-primary" : "text-[var(--color-outline-variant)]/60"
                           }`}
                           style={{ fontVariationSettings: `'FILL' ${star <= review.rating ? 1 : 0}` }}
                         >
@@ -203,17 +203,17 @@ const sortedItems = [...filteredItems].sort((a, b) => (((b as any).is_featured |
                       ))}
                     </div>
                   </div>
-                  <span className="text-xs text-slate-400 ml-auto">
+                  <span className="text-xs text-[var(--color-outline-variant)] ml-auto">
                     {new Date(review.created_at).toLocaleDateString()}
                   </span>
                 </div>
                 {review.review_text && (
-                  <p className="text-sm text-slate-600">{review.review_text}</p>
+                  <p className="text-sm text-[var(--color-on-surface-variant)]">{review.review_text}</p>
                 )}
                 {review.tags && review.tags.length > 0 && (
                   <div className="flex gap-2 mt-2">
                     {review.tags.map((tag: string) => (
-                      <span key={tag} className="text-xs bg-slate-200 text-slate-600 px-2 py-1 rounded-full">
+                      <span key={tag} className="text-xs bg-[var(--color-surface-container-high)] text-[var(--color-on-surface-variant)] px-2 py-1 rounded-full">
                         {tag}
                       </span>
                     ))}
@@ -226,19 +226,19 @@ const sortedItems = [...filteredItems].sort((a, b) => (((b as any).is_featured |
       )}
 
       {/* Restaurant Details */}
-      <div className="bg-[var(--color-surface-container-lowest)] border-b border-slate-100 px-4 py-4">
+      <div className="bg-[var(--color-surface-container-lowest)] border-b border-[var(--color-border-subtle)] px-4 py-4">
         <div className="flex items-start gap-3 mb-3">
           <span className="material-symbols-outlined text-primary">location_on</span>
           <div>
-            <p className="font-semibold text-slate-800 text-sm">{vendor.address || "Address not available"}</p>
-            <p className="text-xs text-slate-500 mt-1">Live tracking not available for this restaurant</p>
+            <p className="font-semibold text-[var(--color-on-surface)] text-sm">{vendor.address || "Address not available"}</p>
+            <p className="text-xs text-[var(--color-outline)] mt-1">Live tracking not available for this restaurant</p>
           </div>
         </div>
         <div className="flex items-center gap-3 text-sm">
           <span className="material-symbols-outlined text-primary">access_time</span>
           <div>
-            <p className="font-semibold text-slate-800">Open now</p>
-            <p className="text-xs text-slate-500">9:00 AM - 10:00 PM (Today)</p>
+            <p className="font-semibold text-[var(--color-on-surface)]">Open now</p>
+            <p className="text-xs text-[var(--color-outline)]">9:00 AM - 10:00 PM (Today)</p>
           </div>
         </div>
       </div>
@@ -250,7 +250,7 @@ const sortedItems = [...filteredItems].sort((a, b) => (((b as any).is_featured |
               key={cat}
               onClick={() => setActiveCategory(cat)}
               className={`px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap ${
-                activeCategory === cat ? "bg-primary text-white" : "bg-slate-100 text-slate-600"
+                activeCategory === cat ? "bg-primary text-white" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
               }`}
             >
               {cat}
@@ -259,7 +259,7 @@ const sortedItems = [...filteredItems].sort((a, b) => (((b as any).is_featured |
         </div>
         {(!vendor || vendor.type === "food" || vendor.type === "restaurant" || vendor.cuisine) && (
           <div className="flex gap-2 px-4 pb-3">
-            <button onClick={() => setVegFilter("all")} className={`px-4 py-2.5 rounded-full text-xs font-bold ${vegFilter === "all" ? "bg-slate-800 text-white" : "bg-slate-100 text-slate-600"}`}>
+            <button onClick={() => setVegFilter("all")} className={`px-4 py-2.5 rounded-full text-xs font-bold ${vegFilter === "all" ? "bg-slate-800 text-white" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"}`}>
               {t.food.all}
             </button>
             <button onClick={() => setVegFilter("veg")} className={`px-4 py-2.5 rounded-full text-xs font-bold flex items-center gap-1.5 ${vegFilter === "veg" ? "bg-green-600 text-white" : "bg-green-100 text-green-700"}`}>
@@ -273,15 +273,15 @@ const sortedItems = [...filteredItems].sort((a, b) => (((b as any).is_featured |
       </div>
 
       <div className="p-4 space-y-4">
-        <h2 className="text-xl font-black text-slate-800">Menu</h2>
+        <h2 className="text-xl font-black text-[var(--color-on-surface)]">Menu</h2>
         {filteredItems.length === 0 ? (
-          <p className="text-slate-400 text-center py-8">No menu items available</p>
+          <p className="text-[var(--color-outline-variant)] text-center py-8">No menu items available</p>
         ) : (
           sortedItems.map((item) => {
             const qty = getQty(item.id);
             return (
               <div key={item.id} className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 flex gap-4 shadow-sm">
-                <div className="w-24 h-24 rounded-xl overflow-hidden flex-shrink-0 bg-slate-100 relative cursor-pointer" onClick={() => {
+                <div className="w-24 h-24 rounded-xl overflow-hidden flex-shrink-0 bg-[var(--color-surface-container)] relative cursor-pointer" onClick={() => {
                   const imgs = item.images?.filter(Boolean) || (item.image_url ? [item.image_url] : []);
                   if (imgs.length > 1) {
                     setImageIndex((prev: Record<string, number>) => ({
@@ -298,7 +298,7 @@ const sortedItems = [...filteredItems].sort((a, b) => (((b as any).is_featured |
                       <BlurImage key={idx} src={src} alt={item.name} fill className="w-full h-full" sizes="(max-width: 768px) 50vw, 25vw" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
-                        <span className="material-symbols-outlined text-slate-300">restaurant</span>
+                        <span className="material-symbols-outlined text-[var(--color-outline-variant)]/60">restaurant</span>
                       </div>
                     );
                   })()}
@@ -320,7 +320,7 @@ const sortedItems = [...filteredItems].sort((a, b) => (((b as any).is_featured |
                         <span className={`w-1.5 h-1.5 ${item.is_veg ? "bg-green-600" : "bg-red-600"} rounded-full`}></span>
                       </span>
                     )}
-                    <h3 className="font-bold text-slate-800">{item.name}</h3>
+                    <h3 className="font-bold text-[var(--color-on-surface)]">{item.name}</h3>
                     {((item as any).is_featured || (item as any).featured) && (
                       <span className="text-[10px] font-bold px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded-full">★ Featured</span>
                     )}
@@ -328,12 +328,12 @@ const sortedItems = [...filteredItems].sort((a, b) => (((b as any).is_featured |
                       <span className="text-[10px] font-bold px-1.5 py-0.5 bg-red-100 text-red-700 rounded-full">-{item.discount_percent}%</span>
                     )}
                   </div>
-                  <p className="text-xs text-slate-500 mt-1">{item.category}</p>
+                  <p className="text-xs text-[var(--color-outline)] mt-1">{item.category}</p>
                   <div className="flex items-center justify-between mt-2">
-                    <span className="font-black text-slate-800">
+                    <span className="font-black text-[var(--color-on-surface)]">
                       {item.original_price ? (
                         <>
-                          <span className="line-through text-slate-400 text-xs mr-1">₹{item.original_price}</span>
+                          <span className="line-through text-[var(--color-outline-variant)] text-xs mr-1">₹{item.original_price}</span>
                           ₹{item.price}
                         </>
                       ) : (

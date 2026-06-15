@@ -149,7 +149,7 @@ export default function AdminMenuItemsPage() {
   return (
     <div className="px-8 space-y-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-black text-slate-800">Menu Items</h1>
+        <h1 className="text-3xl font-black text-[var(--color-on-surface)]">Menu Items</h1>
         <button
           onClick={() => setShowAddModal(true)}
           className="bg-[#ba001c] text-white px-6 py-3 rounded-xl font-bold text-sm"
@@ -158,22 +158,22 @@ export default function AdminMenuItemsPage() {
         </button>
       </div>
 
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-100 overflow-hidden shadow-sm">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)] overflow-hidden shadow-sm">
         <div className="p-4 border-b flex items-center gap-4 flex-wrap">
           <div className="relative flex-1 min-w-[200px]">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-outline-variant)]">search</span>
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search items..."
-              className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-xl text-sm"
+              className="w-full pl-10 pr-4 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm"
             />
           </div>
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="px-4 py-2 border border-slate-200 rounded-xl text-sm font-bold"
+            className="px-4 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold"
           >
             <option value="all">All Categories</option>
             {categories.map(cat => (
@@ -183,7 +183,7 @@ export default function AdminMenuItemsPage() {
           <select
             value={vendorFilter}
             onChange={(e) => setVendorFilter(e.target.value)}
-            className="px-4 py-2 border border-slate-200 rounded-xl text-sm font-bold"
+            className="px-4 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold"
           >
             <option value="all">All Vendors</option>
             {vendors.map(v => (
@@ -192,44 +192,44 @@ export default function AdminMenuItemsPage() {
           </select>
         </div>
         <table className="w-full text-left">
-          <thead className="bg-slate-50">
+          <thead className="bg-[var(--color-surface-subtle)]">
             <tr>
-              <th className="p-4 text-[10px] font-black text-slate-400 uppercase">Item</th>
-              <th className="p-4 text-[10px] font-black text-slate-400 uppercase">Vendor</th>
-              <th className="p-4 text-[10px] font-black text-slate-400 uppercase">Category</th>
-              <th className="p-4 text-[10px] font-black text-slate-400 uppercase">Status</th>
-              <th className="p-4 text-[10px] font-black text-slate-400 uppercase text-right">Price</th>
-              <th className="p-4 text-[10px] font-black text-slate-400 uppercase">Actions</th>
+              <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Item</th>
+              <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Vendor</th>
+              <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Category</th>
+              <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Status</th>
+              <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase text-right">Price</th>
+              <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-50 text-xs">
             {filteredItems.length === 0 ? (
               <tr>
-                <td colSpan={6} className="p-8 text-center text-slate-400">No items found</td>
+                <td colSpan={6} className="p-8 text-center text-[var(--color-outline-variant)]">No items found</td>
               </tr>
             ) : (
               filteredItems.map((item) => (
                 <tr key={item.id} className={item.available ? "" : "opacity-50"}>
                   <td className="p-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-slate-100 rounded-lg overflow-hidden">
+                      <div className="w-10 h-10 bg-[var(--color-surface-container)] rounded-lg overflow-hidden">
                         {item.image_url ? (
                           <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-slate-300">
+                          <div className="w-full h-full flex items-center justify-center text-[var(--color-outline-variant)]/60">
                             <span className="material-symbols-outlined">restaurant</span>
                           </div>
                         )}
                       </div>
-                      <span className="font-bold text-slate-800">{item.name}</span>
+                      <span className="font-bold text-[var(--color-on-surface)]">{item.name}</span>
                     </div>
                   </td>
-                  <td className="p-4 text-slate-500">
+                  <td className="p-4 text-[var(--color-outline)]">
                     {vendors.find(v => v.id === item.vendor_id)?.shop_name || 
                      vendors.find(v => v.id === item.vendor_id)?.name || "-"}
                   </td>
                   <td className="p-4">
-                    <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded-lg text-[10px] font-bold">
+                    <span className="bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] px-2 py-1 rounded-lg text-[10px] font-bold">
                       {item.category}
                     </span>
                   </td>
@@ -245,7 +245,7 @@ export default function AdminMenuItemsPage() {
                       {item.available ? "Available" : "Unavailable"}
                     </button>
                   </td>
-                  <td className="p-4 text-right font-black text-slate-800">₹{item.price}</td>
+                  <td className="p-4 text-right font-black text-[var(--color-on-surface)]">₹{item.price}</td>
                   <td className="p-4">
                     <div className="flex gap-2">
                       <button
@@ -274,27 +274,27 @@ export default function AdminMenuItemsPage() {
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl max-w-md w-full p-6">
             <div className="flex justify-between items-center mb-4">
               <h2 className="font-black text-lg">Add Menu Item</h2>
-              <button onClick={() => setShowAddModal(false)} className="text-slate-400">
+              <button onClick={() => setShowAddModal(false)} className="text-[var(--color-outline-variant)]">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
             <div className="space-y-4">
               <div>
-                <label className="text-xs font-bold text-slate-600 block mb-1">Item Name *</label>
+                <label className="text-xs font-bold text-[var(--color-on-surface-variant)] block mb-1">Item Name *</label>
                 <input
                   type="text"
                   value={newItem.name}
                   onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
-                  className="w-full p-3 border border-slate-200 rounded-xl text-sm"
+                  className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm"
                   placeholder="Item name"
                 />
               </div>
               <div>
-                <label className="text-xs font-bold text-slate-600 block mb-1">Vendor *</label>
+                <label className="text-xs font-bold text-[var(--color-on-surface-variant)] block mb-1">Vendor *</label>
                 <select
                   value={newItem.vendor_id}
                   onChange={(e) => setNewItem({ ...newItem, vendor_id: e.target.value })}
-                  className="w-full p-3 border border-slate-200 rounded-xl text-sm"
+                  className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm"
                 >
                   <option value="">Select Vendor</option>
                   {vendors.map(v => (
@@ -304,11 +304,11 @@ export default function AdminMenuItemsPage() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-bold text-slate-600 block mb-1">Category</label>
+                  <label className="text-xs font-bold text-[var(--color-on-surface-variant)] block mb-1">Category</label>
                   <select
                     value={newItem.category}
                     onChange={(e) => setNewItem({ ...newItem, category: e.target.value })}
-                    className="w-full p-3 border border-slate-200 rounded-xl text-sm"
+                    className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm"
                   >
                     <option value="Main Course">Main Course</option>
                     <option value="Starters">Starters</option>
@@ -318,14 +318,14 @@ export default function AdminMenuItemsPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-slate-600 block mb-1">Price *</label>
+                  <label className="text-xs font-bold text-[var(--color-on-surface-variant)] block mb-1">Price *</label>
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">₹</span>
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-outline-variant)]">₹</span>
                     <input
                       type="number"
                       value={newItem.price}
                       onChange={(e) => setNewItem({ ...newItem, price: e.target.value })}
-                      className="w-full pl-7 p-3 border border-slate-200 rounded-xl text-sm"
+                      className="w-full pl-7 p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm"
                       placeholder="0"
                     />
                   </div>
@@ -356,27 +356,27 @@ export default function AdminMenuItemsPage() {
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl max-w-md w-full p-6">
             <div className="flex justify-between items-center mb-4">
               <h2 className="font-black text-lg">Edit Menu Item</h2>
-              <button onClick={() => setEditingItem(null)} className="text-slate-400">
+              <button onClick={() => setEditingItem(null)} className="text-[var(--color-outline-variant)]">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
             <div className="space-y-4">
               <div>
-                <label className="text-xs font-bold text-slate-600 block mb-1">Item Name</label>
+                <label className="text-xs font-bold text-[var(--color-on-surface-variant)] block mb-1">Item Name</label>
                 <input
                   type="text"
                   value={editingItem.name}
                   onChange={(e) => setEditingItem({ ...editingItem, name: e.target.value })}
-                  className="w-full p-3 border border-slate-200 rounded-xl text-sm"
+                  className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-bold text-slate-600 block mb-1">Category</label>
+                  <label className="text-xs font-bold text-[var(--color-on-surface-variant)] block mb-1">Category</label>
                   <select
                     value={editingItem.category}
                     onChange={(e) => setEditingItem({ ...editingItem, category: e.target.value })}
-                    className="w-full p-3 border border-slate-200 rounded-xl text-sm"
+                    className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm"
                   >
                     <option value="Main Course">Main Course</option>
                     <option value="Starters">Starters</option>
@@ -385,14 +385,14 @@ export default function AdminMenuItemsPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-slate-600 block mb-1">Price</label>
+                  <label className="text-xs font-bold text-[var(--color-on-surface-variant)] block mb-1">Price</label>
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">₹</span>
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-outline-variant)]">₹</span>
                     <input
                       type="number"
                       value={editingItem.price}
                       onChange={(e) => setEditingItem({ ...editingItem, price: parseFloat(e.target.value) })}
-                      className="w-full pl-7 p-3 border border-slate-200 rounded-xl text-sm"
+                      className="w-full pl-7 p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm"
                     />
                   </div>
                 </div>

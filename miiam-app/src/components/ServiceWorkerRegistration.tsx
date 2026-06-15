@@ -48,7 +48,7 @@ export function ServiceWorkerRegistration() {
         <span className="material-symbols-outlined text-2xl text-green-400">system_update</span>
         <div className="flex-1">
           <p className="text-sm font-bold">New version available</p>
-          <p className="text-xs text-slate-300">Refresh to get the latest update</p>
+          <p className="text-xs text-[var(--color-outline-variant)]/60">Refresh to get the latest update</p>
         </div>
         <button
           onClick={handleUpdate}

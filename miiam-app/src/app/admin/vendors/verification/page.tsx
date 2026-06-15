@@ -87,7 +87,7 @@ export default function VerificationPage() {
   const statusColors: Record<string, string> = {
     pending: "bg-yellow-100 text-yellow-700",
     active: "bg-green-100 text-green-700",
-    inactive: "bg-slate-100 text-slate-700",
+    inactive: "bg-[var(--color-surface-container)] text-[var(--color-on-surface)]",
     suspended: "bg-red-100 text-red-700",
   };
 
@@ -97,26 +97,26 @@ export default function VerificationPage() {
     <div className="px-8 space-y-8">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-black text-slate-800">Vendor Verifications</h1>
-          <p className="text-slate-400 text-sm">Review and approve partner applications</p>
+          <h1 className="text-3xl font-black text-[var(--color-on-surface)]">Vendor Verifications</h1>
+          <p className="text-[var(--color-outline-variant)] text-sm">Review and approve partner applications</p>
         </div>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-slate-100 shadow-sm">
-          <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Pending Review</p>
+        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-[var(--color-border-subtle)] shadow-sm">
+          <p className="text-[10px] font-bold text-[var(--color-outline-variant)] uppercase mb-1">Pending Review</p>
           <p className="text-3xl font-black text-yellow-600">{pendingCount}</p>
         </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-slate-100 shadow-sm">
-          <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Active Partners</p>
+        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-[var(--color-border-subtle)] shadow-sm">
+          <p className="text-[10px] font-bold text-[var(--color-outline-variant)] uppercase mb-1">Active Partners</p>
           <p className="text-3xl font-black text-green-600">{approvedToday}</p>
         </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-slate-100 shadow-sm">
-          <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Total Vendors</p>
-          <p className="text-3xl font-black text-slate-800">{vendors.length}</p>
+        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-[var(--color-border-subtle)] shadow-sm">
+          <p className="text-[10px] font-bold text-[var(--color-outline-variant)] uppercase mb-1">Total Vendors</p>
+          <p className="text-3xl font-black text-[var(--color-on-surface)]">{vendors.length}</p>
         </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-slate-100 shadow-sm">
-          <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Suspended</p>
+        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-[var(--color-border-subtle)] shadow-sm">
+          <p className="text-[10px] font-bold text-[var(--color-outline-variant)] uppercase mb-1">Suspended</p>
           <p className="text-3xl font-black text-red-600">{vendors.filter(v => v.status === "suspended").length}</p>
         </div>
       </div>
@@ -129,7 +129,7 @@ export default function VerificationPage() {
             className={`px-4 py-2 rounded-lg text-xs font-bold uppercase ${
               filter === status
                 ? "bg-[#ba001c] text-white"
-                : "bg-[var(--color-surface-container-lowest)] text-slate-600 border border-slate-200"
+                : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface-variant)] border border-[var(--color-border-subtle)]"
             }`}
           >
             {status === "all" ? "All" : status}
@@ -137,43 +137,43 @@ export default function VerificationPage() {
         ))}
       </div>
 
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-100 overflow-hidden shadow-sm">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)] overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
-            <thead className="bg-slate-50">
+            <thead className="bg-[var(--color-surface-subtle)]">
               <tr>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase">Shop</th>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase">Owner</th>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase">Contact</th>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase">Cuisine</th>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase">Status</th>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase">Date</th>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase">Actions</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Shop</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Owner</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Contact</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Cuisine</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Status</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Date</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50 text-xs">
               {filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="p-8 text-center text-slate-400">
+                  <td colSpan={7} className="p-8 text-center text-[var(--color-outline-variant)]">
                     No vendors found
                   </td>
                 </tr>
               ) : (
                 filtered.map((vendor) => (
-                  <tr key={vendor.id} className="hover:bg-slate-50">
+                  <tr key={vendor.id} className="hover:bg-[var(--color-surface-subtle)]">
                     <td className="p-4">
-                      <p className="font-bold text-slate-800">{vendor.shop_name}</p>
-                      <p className="text-[10px] text-slate-400">{vendor.id.slice(0, 8)}</p>
+                      <p className="font-bold text-[var(--color-on-surface)]">{vendor.shop_name}</p>
+                      <p className="text-[10px] text-[var(--color-outline-variant)]">{vendor.id.slice(0, 8)}</p>
                     </td>
                     <td className="p-4">
-                      <p className="font-bold text-slate-700">{vendor.owner_name}</p>
+                      <p className="font-bold text-[var(--color-on-surface)]">{vendor.owner_name}</p>
                     </td>
                     <td className="p-4">
-                      <p className="text-slate-600">{vendor.phone}</p>
-                      <p className="text-[10px] text-slate-400">{vendor.email}</p>
+                      <p className="text-[var(--color-on-surface-variant)]">{vendor.phone}</p>
+                      <p className="text-[10px] text-[var(--color-outline-variant)]">{vendor.email}</p>
                     </td>
                     <td className="p-4">
-                      <span className="bg-slate-100 px-2 py-1 rounded text-[10px] font-bold">
+                      <span className="bg-[var(--color-surface-container)] px-2 py-1 rounded text-[10px] font-bold">
                         {vendor.cuisine || "Not set"}
                       </span>
                     </td>
@@ -182,7 +182,7 @@ export default function VerificationPage() {
                         {vendor.status}
                       </span>
                     </td>
-                    <td className="p-4 text-slate-400">
+                    <td className="p-4 text-[var(--color-outline-variant)]">
                       {vendor.created_at ? new Date(vendor.created_at).toLocaleDateString() : "-"}
                     </td>
                     <td className="p-4">
@@ -205,7 +205,7 @@ export default function VerificationPage() {
                         )}
                         <button
                           onClick={() => setSelectedVendor(vendor)}
-                          className="px-3 py-1 bg-slate-100 text-slate-600 rounded-lg font-bold hover:bg-slate-200"
+                          className="px-3 py-1 bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] rounded-lg font-bold hover:bg-[var(--color-surface-container-high)]"
                         >
                           View
                         </button>
@@ -224,40 +224,40 @@ export default function VerificationPage() {
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl max-w-lg w-full max-h-[80vh] overflow-y-auto">
             <div className="p-6 border-b flex items-center justify-between sticky top-0 bg-white">
               <h2 className="font-black text-lg">Vendor Details</h2>
-              <button onClick={() => setSelectedVendor(null)} className="text-slate-400">
+              <button onClick={() => setSelectedVendor(null)} className="text-[var(--color-outline-variant)]">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
             <div className="p-6 space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-[10px] text-slate-400 uppercase">Shop Name</p>
+                  <p className="text-[10px] text-[var(--color-outline-variant)] uppercase">Shop Name</p>
                   <p className="font-bold">{selectedVendor.shop_name}</p>
                 </div>
                 <div>
-                  <p className="text-[10px] text-slate-400 uppercase">Owner</p>
+                  <p className="text-[10px] text-[var(--color-outline-variant)] uppercase">Owner</p>
                   <p className="font-bold">{selectedVendor.owner_name}</p>
                 </div>
                 <div>
-                  <p className="text-[10px] text-slate-400 uppercase">Phone</p>
+                  <p className="text-[10px] text-[var(--color-outline-variant)] uppercase">Phone</p>
                   <p className="font-bold">{selectedVendor.phone}</p>
                 </div>
                 <div>
-                  <p className="text-[10px] text-slate-400 uppercase">Email</p>
+                  <p className="text-[10px] text-[var(--color-outline-variant)] uppercase">Email</p>
                   <p className="font-bold text-sm">{selectedVendor.email || "Not provided"}</p>
                 </div>
               </div>
               <div>
-                <p className="text-[10px] text-slate-400 uppercase">Address</p>
+                <p className="text-[10px] text-[var(--color-outline-variant)] uppercase">Address</p>
                 <p className="text-sm">{selectedVendor.address}</p>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-[10px] text-slate-400 uppercase">Cuisine</p>
+                  <p className="text-[10px] text-[var(--color-outline-variant)] uppercase">Cuisine</p>
                   <p className="font-bold">{selectedVendor.cuisine || "Not set"}</p>
                 </div>
                 <div>
-                  <p className="text-[10px] text-slate-400 uppercase">Status</p>
+                  <p className="text-[10px] text-[var(--color-outline-variant)] uppercase">Status</p>
                   <span className={`text-xs font-black px-2 py-1 rounded-full uppercase ${statusColors[selectedVendor.status]}`}>
                     {selectedVendor.status}
                   </span>

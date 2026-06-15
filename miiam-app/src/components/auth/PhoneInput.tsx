@@ -51,11 +51,11 @@ export default function PhoneInput({ purpose = "signup", onSuccess }: PhoneInput
   return (
     <div className="space-y-6">
       <div>
-        <label className="block text-sm font-bold text-slate-700 mb-2">
+        <label className="block text-sm font-bold text-[var(--color-on-surface)] mb-2">
           Mobile Number
         </label>
         <div className="flex gap-2">
-          <div className="px-4 py-3 bg-slate-100 rounded-xl font-bold text-slate-600">
+          <div className="px-4 py-3 bg-[var(--color-surface-container)] rounded-xl font-bold text-[var(--color-on-surface-variant)]">
             +91
           </div>
           <input
@@ -66,7 +66,7 @@ export default function PhoneInput({ purpose = "signup", onSuccess }: PhoneInput
               setPhone(val);
             }}
             placeholder="Enter 10-digit number"
-            className="flex-1 px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-[#ba001c] focus:ring-2 focus:ring-[#ba001c]/20 outline-none font-bold"
+            className="flex-1 px-4 py-3 rounded-xl border-2 border-[var(--color-border-subtle)] focus:border-[#ba001c] focus:ring-2 focus:ring-[#ba001c]/20 outline-none font-bold"
             maxLength={10}
           />
         </div>
@@ -79,13 +79,13 @@ export default function PhoneInput({ purpose = "signup", onSuccess }: PhoneInput
         className={`w-full py-4 rounded-xl font-bold text-lg transition-all ${
           phone.length === 10 && !isLoading
             ? "bg-[#ba001c] text-white hover:bg-[#a40017]"
-            : "bg-slate-200 text-slate-400 cursor-not-allowed"
+            : "bg-[var(--color-surface-container-high)] text-[var(--color-outline-variant)] cursor-not-allowed"
         }`}
       >
         {isLoading ? "Sending..." : "Send OTP"}
       </button>
 
-      <p className="text-center text-xs text-slate-400">
+      <p className="text-center text-xs text-[var(--color-outline-variant)]">
         By continuing, you agree to our Terms of Service and Privacy Policy
       </p>
     </div>

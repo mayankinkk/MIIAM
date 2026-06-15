@@ -65,19 +65,19 @@ export function HapticToggle({
   return (
     <button
       onClick={() => updateSetting(settingKey, !isEnabled)}
-      className="w-full flex items-center justify-between py-4 border-b border-slate-100 hover:bg-slate-50 transition-colors"
+      className="w-full flex items-center justify-between py-4 border-b border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)] transition-colors"
     >
       <div className="flex items-center gap-3">
         <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
-          isEnabled ? "bg-[#ba001c]/10" : "bg-slate-100"
+          isEnabled ? "bg-[#ba001c]/10" : "bg-[var(--color-surface-container)]"
         }`}>
-          <span className={`material-symbols-outlined ${isEnabled ? "text-[#ba001c]" : "text-slate-400"}`}>
+          <span className={`material-symbols-outlined ${isEnabled ? "text-[#ba001c]" : "text-[var(--color-outline-variant)]"}`}>
             vibration
           </span>
         </div>
         <div className="text-left">
-          <p className="font-semibold text-slate-800">{label}</p>
-          {description && <p className="text-xs text-slate-500">{description}</p>}
+          <p className="font-semibold text-[var(--color-on-surface)]">{label}</p>
+          {description && <p className="text-xs text-[var(--color-outline)]">{description}</p>}
         </div>
       </div>
       <div className={`w-12 h-7 rounded-full relative transition-colors ${

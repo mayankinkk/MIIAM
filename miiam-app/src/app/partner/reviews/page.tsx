@@ -73,7 +73,7 @@ export default function PartnerReviewsPage() {
   if (loading) {
     return (
       <div className="p-8 flex items-center justify-center min-h-[60vh]">
-        <div className="text-slate-400 font-medium animate-pulse">Loading reviews...</div>
+        <div className="text-[var(--color-outline-variant)] font-medium animate-pulse">Loading reviews...</div>
       </div>
     );
   }
@@ -81,9 +81,9 @@ export default function PartnerReviewsPage() {
   if (!vendor) {
     return (
       <div className="p-8 flex flex-col items-center justify-center min-h-[60vh] text-center">
-        <span className="material-symbols-outlined text-6xl text-slate-300 mb-4">storefront</span>
-        <h2 className="text-2xl font-extrabold text-slate-800 mb-2">No Vendor Found</h2>
-        <p className="text-slate-500">Register your store first.</p>
+        <span className="material-symbols-outlined text-6xl text-[var(--color-outline-variant)]/60 mb-4">storefront</span>
+        <h2 className="text-2xl font-extrabold text-[var(--color-on-surface)] mb-2">No Vendor Found</h2>
+        <p className="text-[var(--color-outline)]">Register your store first.</p>
       </div>
     );
   }
@@ -92,65 +92,65 @@ export default function PartnerReviewsPage() {
     <div className="p-4 md:p-8 space-y-6 max-w-4xl">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-extrabold text-slate-900">Reviews</h1>
-          <p className="text-slate-500 text-sm mt-1">Respond to customer reviews</p>
+          <h1 className="text-2xl font-extrabold text-[var(--color-on-surface)]">Reviews</h1>
+          <p className="text-[var(--color-outline)] text-sm mt-1">Respond to customer reviews</p>
         </div>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-4 gap-4">
-        <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-slate-200 text-center">
-          <p className="text-2xl font-black text-slate-900">{stats.total}</p>
-          <p className="text-xs text-slate-500 mt-1">Total</p>
+        <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-[var(--color-border-subtle)] text-center">
+          <p className="text-2xl font-black text-[var(--color-on-surface)]">{stats.total}</p>
+          <p className="text-xs text-[var(--color-outline)] mt-1">Total</p>
         </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-slate-200 text-center">
+        <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-[var(--color-border-subtle)] text-center">
           <p className="text-2xl font-black text-amber-500">{stats.average}</p>
-          <p className="text-xs text-slate-500 mt-1">Avg Rating</p>
+          <p className="text-xs text-[var(--color-outline)] mt-1">Avg Rating</p>
         </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-slate-200 text-center">
+        <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-[var(--color-border-subtle)] text-center">
           <p className="text-2xl font-black text-green-600">{stats.withReplies}</p>
-          <p className="text-xs text-slate-500 mt-1">Replied</p>
+          <p className="text-xs text-[var(--color-outline)] mt-1">Replied</p>
         </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-slate-200 text-center">
-          <p className="text-2xl font-black text-slate-900">{stats.unreplied}</p>
-          <p className="text-xs text-slate-500 mt-1">Awaiting Reply</p>
+        <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-[var(--color-border-subtle)] text-center">
+          <p className="text-2xl font-black text-[var(--color-on-surface)]">{stats.unreplied}</p>
+          <p className="text-xs text-[var(--color-outline)] mt-1">Awaiting Reply</p>
         </div>
       </div>
 
       {/* Reviews List */}
       <div className="space-y-4">
         {reviews.length === 0 ? (
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-xl p-12 text-center border border-slate-200">
-            <span className="material-symbols-outlined text-5xl text-slate-300">reviews</span>
-            <p className="text-slate-500 mt-3">No reviews yet</p>
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-xl p-12 text-center border border-[var(--color-border-subtle)]">
+            <span className="material-symbols-outlined text-5xl text-[var(--color-outline-variant)]/60">reviews</span>
+            <p className="text-[var(--color-outline)] mt-3">No reviews yet</p>
           </div>
         ) : (
           reviews.map((review) => (
-            <div key={review.id} className="bg-[var(--color-surface-container-lowest)] rounded-xl p-5 border border-slate-200">
+            <div key={review.id} className="bg-[var(--color-surface-container-lowest)] rounded-xl p-5 border border-[var(--color-border-subtle)]">
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm flex-shrink-0">
                   {review.profile?.full_name?.[0] || "U"}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2 flex-wrap">
-                    <p className="font-bold text-slate-800">{review.profile?.full_name || "User"}</p>
+                    <p className="font-bold text-[var(--color-on-surface)]">{review.profile?.full_name || "User"}</p>
                     <div className="flex items-center gap-1">
                       {[1, 2, 3, 4, 5].map((s) => (
-                        <span key={s} className={`material-symbols-outlined text-sm ${s <= review.rating ? "text-amber-400" : "text-slate-200"}`} style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                        <span key={s} className={`material-symbols-outlined text-sm ${s <= review.rating ? "text-amber-400" : "text-[var(--color-outline-variant)]/40"}`} style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
                       ))}
                     </div>
                   </div>
-                  <p className="text-xs text-slate-400 mt-0.5">{new Date(review.created_at).toLocaleDateString()}</p>
-                  {review.review_text && <p className="text-sm text-slate-600 mt-2">{review.review_text}</p>}
+                  <p className="text-xs text-[var(--color-outline-variant)] mt-0.5">{new Date(review.created_at).toLocaleDateString()}</p>
+                  {review.review_text && <p className="text-sm text-[var(--color-on-surface-variant)] mt-2">{review.review_text}</p>}
 
                   {/* Vendor Reply */}
                   {review.vendor_reply && (
                     <div className="mt-3 ml-4 pl-3 border-l-2 border-primary bg-primary/5 p-3 rounded-r-lg">
                       <p className="text-xs font-bold text-primary mb-1">Your Reply</p>
-                      <p className="text-sm text-slate-700">{review.vendor_reply}</p>
+                      <p className="text-sm text-[var(--color-on-surface)]">{review.vendor_reply}</p>
                       {review.vendor_reply_at && (
                         <div className="flex items-center gap-2 mt-1">
-                          <p className="text-[10px] text-slate-400">{new Date(review.vendor_reply_at).toLocaleDateString()}</p>
+                          <p className="text-[10px] text-[var(--color-outline-variant)]">{new Date(review.vendor_reply_at).toLocaleDateString()}</p>
                           <button onClick={() => deleteReply(review.id)} className="text-[10px] text-red-500 hover:underline">Remove</button>
                         </div>
                       )}
@@ -166,7 +166,7 @@ export default function PartnerReviewsPage() {
                         onChange={(e) => setReplyInputs(prev => ({ ...prev, [review.id]: e.target.value }))}
                         placeholder="Write a reply..."
                         maxLength={500}
-                        className="flex-1 px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30"
+                        className="flex-1 px-3 py-2 text-sm border border-[var(--color-border-subtle)] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30"
                       />
                       <button
                         onClick={() => saveReply(review.id)}

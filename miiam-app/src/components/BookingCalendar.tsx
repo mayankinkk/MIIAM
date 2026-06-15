@@ -173,14 +173,14 @@ export default function BookingCalendar({
       <div className="flex items-center justify-between mb-4">
         <button 
           onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1))}
-          className="p-3 hover:bg-slate-100 rounded-lg"
+          className="p-3 hover:bg-[var(--color-surface-container)] rounded-lg"
         >
           <span className="material-symbols-outlined">chevron_left</span>
         </button>
-        <span className="font-bold text-slate-800">{monthName}</span>
+        <span className="font-bold text-[var(--color-on-surface)]">{monthName}</span>
         <button 
           onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1))}
-          className="p-3 hover:bg-slate-100 rounded-lg"
+          className="p-3 hover:bg-[var(--color-surface-container)] rounded-lg"
         >
           <span className="material-symbols-outlined">chevron_right</span>
         </button>
@@ -188,7 +188,7 @@ export default function BookingCalendar({
 
       <div className="grid grid-cols-7 gap-1 mb-4 text-center">
         {["S", "M", "T", "W", "T", "F", "S"].map((d, i) => (
-          <div key={i} className="text-xs font-bold text-slate-400 py-2">{d}</div>
+          <div key={i} className="text-xs font-bold text-[var(--color-outline-variant)] py-2">{d}</div>
         ))}
       </div>
 
@@ -206,10 +206,10 @@ export default function BookingCalendar({
               disabled={!selectable}
               className={`
                 p-3 text-sm font-bold rounded-lg transition-colors min-w-[44px]
-                ${!day.isCurrentMonth ? "text-slate-300" : ""}
-                ${isPast ? "text-slate-300 cursor-not-allowed" : ""}
+                ${!day.isCurrentMonth ? "text-[var(--color-outline-variant)]/60" : ""}
+                ${isPast ? "text-[var(--color-outline-variant)]/60 cursor-not-allowed" : ""}
                 ${selected ? "bg-[#ba001c] text-white" : ""}
-                ${selectable && !selected ? "hover:bg-slate-100 text-slate-700" : ""}
+                ${selectable && !selected ? "hover:bg-[var(--color-surface-container)] text-[var(--color-on-surface)]" : ""}
                 ${!selectable && day.isCurrentMonth ? "bg-red-50 text-red-300 line-through" : ""}
               `}
             >
@@ -221,7 +221,7 @@ export default function BookingCalendar({
 
       {selectedDate && (
         <div className="mt-6">
-          <p className="text-sm font-bold text-slate-600 mb-3">
+          <p className="text-sm font-bold text-[var(--color-on-surface-variant)] mb-3">
             Available times for {new Date(selectedDate).toLocaleDateString("en-IN", { 
               weekday: "long", 
               month: "short", 
@@ -245,8 +245,8 @@ export default function BookingCalendar({
                     ${selectedTime === slot.time 
                       ? "bg-[#ba001c] text-white" 
                       : slot.available 
-                        ? "bg-slate-100 text-slate-700 hover:bg-slate-200" 
-                        : "bg-slate-50 text-slate-300 cursor-not-allowed line-through"
+                        ? "bg-[var(--color-surface-container)] text-[var(--color-on-surface)] hover:bg-[var(--color-surface-container-high)]" 
+                        : "bg-[var(--color-surface-subtle)] text-[var(--color-outline-variant)]/60 cursor-not-allowed line-through"
                     }
                   `}
                 >
@@ -263,11 +263,11 @@ export default function BookingCalendar({
       )}
 
       {selectedDate && selectedTime && (
-        <div className="mt-6 p-4 bg-slate-50 rounded-xl">
+        <div className="mt-6 p-4 bg-[var(--color-surface-subtle)] rounded-xl">
           <div className="flex justify-between items-center mb-4">
             <div>
-              <p className="font-bold text-slate-800">{serviceName}</p>
-              <p className="text-sm text-slate-500">
+              <p className="font-bold text-[var(--color-on-surface)]">{serviceName}</p>
+              <p className="text-sm text-[var(--color-outline)]">
                 {new Date(selectedDate).toLocaleDateString("en-IN", { 
                   weekday: "short", 
                   month: "short", 
@@ -294,7 +294,7 @@ export default function BookingCalendar({
               <span className="material-symbols-outlined text-green-600 text-4xl">check_circle</span>
             </div>
             <h3 className="text-xl font-black text-[#4d212a] mb-2">Booking Confirmed!</h3>
-            <p className="text-slate-600 mb-6">
+            <p className="text-[var(--color-on-surface-variant)] mb-6">
               Your appointment for {serviceName} on {new Date(selectedDate!).toLocaleDateString()} at {selectedTime} has been confirmed.
             </p>
             <button

@@ -113,7 +113,7 @@ export default function ChatModal({
         <div className="p-4 border-b flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button onClick={onClose}>
-              <span className="material-symbols-outlined text-slate-600">arrow_back</span>
+              <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">arrow_back</span>
             </button>
             <div className="w-10 h-10 bg-[#0b50d5]/10 rounded-full flex items-center justify-center">
               <span className="material-symbols-outlined text-[#0b50d5]">person</span>
@@ -132,14 +132,14 @@ export default function ChatModal({
               <span className="material-symbols-outlined">call</span>
             </button>
             <button onClick={onClose} aria-label="Close">
-              <span className="material-symbols-outlined text-slate-600">close</span>
+              <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">close</span>
             </button>
           </div>
         </div>
 
         <div className="flex-1 p-4 overflow-y-auto space-y-3">
           {messages.length === 0 && (
-            <div className="text-center text-slate-400 text-sm py-8">No messages yet. Start the conversation!</div>
+            <div className="text-center text-[var(--color-outline-variant)] text-sm py-8">No messages yet. Start the conversation!</div>
           )}
           {messages.map((msg) => {
             const isMe = msg.sender_id === currentUserId;
@@ -148,14 +148,14 @@ export default function ChatModal({
               : "";
             return (
               <div key={msg.id} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
-                <div className={`max-w-[80%] p-3 rounded-2xl ${isMe ? "bg-[#0b50d5] text-white" : "bg-slate-100"}`}>
+                <div className={`max-w-[80%] p-3 rounded-2xl ${isMe ? "bg-[#0b50d5] text-white" : "bg-[var(--color-surface-container)]"}`}>
                   {msg.type === "image" && msg.file_url ? (
                     <img src={msg.file_url} alt="Shared image" className="rounded-lg max-w-full mb-1" />
                   ) : msg.type === "audio" && msg.file_url ? (
                     <audio controls src={msg.file_url} className="max-w-full mb-1" />
                   ) : null}
                   {msg.message && <p className="text-sm">{msg.message}</p>}
-                  <p className={`text-[9px] ${isMe ? "text-white/70" : "text-slate-400"}`}>{msgTime}</p>
+                  <p className={`text-[9px] ${isMe ? "text-white/70" : "text-[var(--color-outline-variant)]"}`}>{msgTime}</p>
                 </div>
               </div>
             );
@@ -185,14 +185,14 @@ export default function ChatModal({
             <button
               onClick={() => fileInputRef.current?.click()}
               disabled={uploading}
-              className="p-2 text-slate-400 hover:text-[#0b50d5] hover:bg-slate-100 rounded-full disabled:opacity-50"
+              className="p-2 text-[var(--color-outline-variant)] hover:text-[#0b50d5] hover:bg-[var(--color-surface-container)] rounded-full disabled:opacity-50"
               title="Attach file"
             >
               <span className="material-symbols-outlined">{uploading ? "hourglass_top" : "attach_file"}</span>
             </button>
             <button
               onClick={toggleRecording}
-              className={`p-2 rounded-full ${isRecording ? "text-red-500 bg-red-50 animate-pulse" : "text-slate-400 hover:text-[#0b50d5] hover:bg-slate-100"}`}
+              className={`p-2 rounded-full ${isRecording ? "text-red-500 bg-red-50 animate-pulse" : "text-[var(--color-outline-variant)] hover:text-[#0b50d5] hover:bg-[var(--color-surface-container)]"}`}
               title={isRecording ? "Stop recording" : "Voice message"}
             >
               <span className="material-symbols-outlined">{isRecording ? "stop" : "mic"}</span>
@@ -203,7 +203,7 @@ export default function ChatModal({
               onChange={(e) => onChatMessageChange(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && onSend()}
               placeholder="Type a message..."
-              className="flex-1 bg-slate-100 rounded-full px-4 py-2 text-sm"
+              className="flex-1 bg-[var(--color-surface-container)] rounded-full px-4 py-2 text-sm"
             />
             <button
               onClick={onSend}

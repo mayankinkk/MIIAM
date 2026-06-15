@@ -99,9 +99,9 @@ export default function RiderAccountPage() {
     return (
       <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center">
         <div className="animate-pulse text-center">
-          <div className="w-20 h-20 bg-slate-200 rounded-full mx-auto mb-4" />
-          <div className="h-6 bg-slate-200 rounded w-32 mx-auto mb-2" />
-          <div className="h-4 bg-slate-200 rounded w-24 mx-auto" />
+          <div className="w-20 h-20 bg-[var(--color-surface-container-high)] rounded-full mx-auto mb-4" />
+          <div className="h-6 bg-[var(--color-surface-container-high)] rounded w-32 mx-auto mb-2" />
+          <div className="h-4 bg-[var(--color-surface-container-high)] rounded w-24 mx-auto" />
         </div>
       </div>
     );
@@ -111,8 +111,8 @@ export default function RiderAccountPage() {
     return (
       <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center p-6">
         <div className="text-center">
-          <span className="material-symbols-outlined text-6xl text-slate-300">person_off</span>
-          <p className="text-slate-500 mt-4">Rider profile not found</p>
+          <span className="material-symbols-outlined text-6xl text-[var(--color-outline-variant)]/60">person_off</span>
+          <p className="text-[var(--color-outline)] mt-4">Rider profile not found</p>
           <Link href="/rider/login" className="text-[#0b50d5] font-bold mt-2 block">Go to Login</Link>
         </div>
       </div>
@@ -175,15 +175,15 @@ export default function RiderAccountPage() {
             </div>
             <div className="flex-1">
               <h1 className="text-2xl font-bold text-[#4d212a]">{displayRider.name}</h1>
-              <p className="text-sm text-slate-400">{displayRider.phone}</p>
+              <p className="text-sm text-[var(--color-outline-variant)]">{displayRider.phone}</p>
               <div className="flex items-center gap-1 mt-1">
                 <span className="material-symbols-outlined text-amber-500 text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
                 <span className="font-bold text-sm">{displayRider.rating}</span>
-                <span className="text-slate-400 text-sm">• {displayRider.totalDeliveries} deliveries</span>
+                <span className="text-[var(--color-outline-variant)] text-sm">• {displayRider.totalDeliveries} deliveries</span>
               </div>
             </div>
-            <Link href="/rider/account" className="p-2 bg-slate-100 rounded-full">
-              <span className="material-symbols-outlined text-slate-600">edit</span>
+            <Link href="/rider/account" className="p-2 bg-[var(--color-surface-container)] rounded-full">
+              <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">edit</span>
             </Link>
           </div>
         </div>
@@ -224,25 +224,25 @@ export default function RiderAccountPage() {
             </div>
             <div className="text-left">
               <p className="font-bold text-[#4d212a]">My Schedule</p>
-              <p className="text-xs text-slate-500">Set your availability</p>
+              <p className="text-xs text-[var(--color-outline)]">Set your availability</p>
             </div>
           </div>
-          <span className="material-symbols-outlined text-slate-400">chevron_right</span>
+          <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
         </button>
 
         {/* Quick Stats */}
         <div className="grid grid-cols-3 gap-3">
           <div className="bg-[var(--color-surface-container-lowest)] p-3 rounded-2xl shadow-sm text-center">
             <p className="text-lg font-black text-[#0b50d5]">{displayRider?.totalDeliveries || 0}</p>
-            <p className="text-[9px] text-slate-400">Deliveries</p>
+            <p className="text-[9px] text-[var(--color-outline-variant)]">Deliveries</p>
           </div>
           <div className="bg-[var(--color-surface-container-lowest)] p-3 rounded-2xl shadow-sm text-center">
             <p className="text-lg font-black text-green-600">₹{displayRider?.totalEarnings || 0}</p>
-            <p className="text-[9px] text-slate-400">Earned</p>
+            <p className="text-[9px] text-[var(--color-outline-variant)]">Earned</p>
           </div>
           <div className="bg-[var(--color-surface-container-lowest)] p-3 rounded-2xl shadow-sm text-center">
             <p className="text-lg font-black text-[#0b50d5]">{(displayRider?.rating || 5).toFixed(1)}</p>
-            <p className="text-[9px] text-slate-400">Rating</p>
+            <p className="text-[9px] text-[var(--color-outline-variant)]">Rating</p>
           </div>
         </div>
 
@@ -253,13 +253,13 @@ export default function RiderAccountPage() {
             <div className="flex items-center gap-1">
               <span className="material-symbols-outlined text-yellow-400" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
               <span className="font-bold text-lg text-[#4d212a]">{(displayRider?.rating || 5).toFixed(1)}</span>
-              <span className="text-slate-400 text-sm">/ 5.0</span>
+              <span className="text-[var(--color-outline-variant)] text-sm">/ 5.0</span>
             </div>
           </div>
-          <div className="w-full bg-slate-100 rounded-full h-2">
+          <div className="w-full bg-[var(--color-surface-container)] rounded-full h-2">
             <div className="bg-green-500 h-2 rounded-full" style={{ width: `${((displayRider?.rating || 5) / 5) * 100}%` }}></div>
           </div>
-          <p className="text-xs text-slate-400 mt-2">Maintain 4.5+ to avoid suspension</p>
+          <p className="text-xs text-[var(--color-outline-variant)] mt-2">Maintain 4.5+ to avoid suspension</p>
         </div>
 
         {/* Quick Links */}
@@ -276,60 +276,60 @@ export default function RiderAccountPage() {
 
         {/* Menu */}
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl overflow-hidden shadow-lg">
-          <Link href="/rider/orders" className="flex items-center gap-3 p-4 border-b border-slate-100">
+          <Link href="/rider/orders" className="flex items-center gap-3 p-4 border-b border-[var(--color-border-subtle)]">
             <span className="material-symbols-outlined text-[#0b50d5]">receipt_long</span>
             <span className="flex-1 font-bold text-[#4d212a]">My Orders</span>
-            <span className="material-symbols-outlined text-slate-400">chevron_right</span>
+            <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
           </Link>
-          <Link href="/rider/wallet" className="flex items-center gap-3 p-4 border-b border-slate-100">
+          <Link href="/rider/wallet" className="flex items-center gap-3 p-4 border-b border-[var(--color-border-subtle)]">
             <span className="material-symbols-outlined text-[#0b50d5]">account_balance_wallet</span>
             <span className="flex-1 font-bold text-[#4d212a]">Wallet & Earnings</span>
-            <span className="material-symbols-outlined text-slate-400">chevron_right</span>
+            <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
           </Link>
-          <Link href="/rider/analytics" className="flex items-center gap-3 p-4 border-b border-slate-100">
+          <Link href="/rider/analytics" className="flex items-center gap-3 p-4 border-b border-[var(--color-border-subtle)]">
             <span className="material-symbols-outlined text-[#0b50d5]">insights</span>
             <span className="flex-1 font-bold text-[#4d212a]">Analytics</span>
-            <span className="material-symbols-outlined text-slate-400">chevron_right</span>
+            <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
           </Link>
-          <Link href="/rider/vehicle" className="flex items-center gap-3 p-4 border-b border-slate-100">
+          <Link href="/rider/vehicle" className="flex items-center gap-3 p-4 border-b border-[var(--color-border-subtle)]">
             <span className="material-symbols-outlined text-[#0b50d5]">two_wheeler</span>
             <span className="flex-1 font-bold text-[#4d212a]">My Vehicle</span>
-            <span className="material-symbols-outlined text-slate-400">chevron_right</span>
+            <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
           </Link>
-          <Link href="/rider/training" className="flex items-center gap-3 p-4 border-b border-slate-100">
+          <Link href="/rider/training" className="flex items-center gap-3 p-4 border-b border-[var(--color-border-subtle)]">
             <span className="material-symbols-outlined text-[#0b50d5]">school</span>
             <span className="flex-1 font-bold text-[#4d212a]">Training Center</span>
-            <span className="material-symbols-outlined text-slate-400">chevron_right</span>
+            <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
           </Link>
-          <Link href="/rider/incident" className="flex items-center gap-3 p-4 border-b border-slate-100">
+          <Link href="/rider/incident" className="flex items-center gap-3 p-4 border-b border-[var(--color-border-subtle)]">
             <span className="material-symbols-outlined text-red-500">emergency</span>
             <span className="flex-1 font-bold text-red-600">Report Incident</span>
-            <span className="material-symbols-outlined text-slate-400">chevron_right</span>
+            <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
           </Link>
-          <Link href="/rider/notifications" className="flex items-center gap-3 p-4 border-b border-slate-100">
+          <Link href="/rider/notifications" className="flex items-center gap-3 p-4 border-b border-[var(--color-border-subtle)]">
             <span className="material-symbols-outlined text-[#0b50d5]">notifications</span>
             <span className="flex-1 font-bold text-[#4d212a]">Notifications</span>
-            <span className="material-symbols-outlined text-slate-400">chevron_right</span>
+            <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
           </Link>
-          <Link href="/rider/support" className="flex items-center gap-3 p-4 border-b border-slate-100">
+          <Link href="/rider/support" className="flex items-center gap-3 p-4 border-b border-[var(--color-border-subtle)]">
             <span className="material-symbols-outlined text-[#0b50d5]">help</span>
             <span className="flex-1 font-bold text-[#4d212a]">Help & Support</span>
-            <span className="material-symbols-outlined text-slate-400">chevron_right</span>
+            <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
           </Link>
-          <Link href="/rider/documents" className="flex items-center gap-3 p-4 border-b border-slate-100">
+          <Link href="/rider/documents" className="flex items-center gap-3 p-4 border-b border-[var(--color-border-subtle)]">
             <span className="material-symbols-outlined text-[#0b50d5]">description</span>
             <span className="flex-1 font-bold text-[#4d212a]">Documents</span>
-            <span className="material-symbols-outlined text-slate-400">chevron_right</span>
+            <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
           </Link>
-          <Link href="/rider/rate" className="flex items-center gap-3 p-4 border-b border-slate-100">
+          <Link href="/rider/rate" className="flex items-center gap-3 p-4 border-b border-[var(--color-border-subtle)]">
             <span className="material-symbols-outlined text-[#0b50d5]">rate_review</span>
             <span className="flex-1 font-bold text-[#4d212a]">Rate Customers</span>
-            <span className="material-symbols-outlined text-slate-400">chevron_right</span>
+            <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
           </Link>
-          <Link href="/rider/settings" className="flex items-center gap-3 p-4 border-b border-slate-100">
+          <Link href="/rider/settings" className="flex items-center gap-3 p-4 border-b border-[var(--color-border-subtle)]">
             <span className="material-symbols-outlined text-[#0b50d5]">settings</span>
             <span className="flex-1 font-bold text-[#4d212a]">Settings</span>
-            <span className="material-symbols-outlined text-slate-400">chevron_right</span>
+            <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
           </Link>
           <button onClick={handleSignOut} className="flex items-center gap-3 p-4 w-full text-left text-red-500">
             <span className="material-symbols-outlined">logout</span>
@@ -343,17 +343,17 @@ export default function RiderAccountPage() {
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-sm">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <span className="material-symbols-outlined text-slate-600">language</span>
+              <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">language</span>
               <span className="font-bold text-[#4d212a]">Language</span>
             </div>
-            <select className="bg-slate-50 rounded-lg px-3 py-2 text-sm font-bold">
+            <select className="bg-[var(--color-surface-subtle)] rounded-lg px-3 py-2 text-sm font-bold">
               <option>English</option>
               <option>Hindi</option>
             </select>
           </div>
         </div>
 
-        <p className="text-center text-xs text-slate-400">
+        <p className="text-center text-xs text-[var(--color-outline-variant)]">
           MIIAM Rider v1.0 • {displayRider.joined}
         </p>
       </main>
@@ -369,7 +369,7 @@ export default function RiderAccountPage() {
               </button>
             </div>
 
-            <p className="text-sm text-slate-500 mb-4">Select your available time slots for this week</p>
+            <p className="text-sm text-[var(--color-outline)] mb-4">Select your available time slots for this week</p>
 
             <div className="space-y-3 mb-6">
               {shifts.map((shift) => (
@@ -377,15 +377,15 @@ export default function RiderAccountPage() {
                   key={shift.id}
                   onClick={() => toggleShift(shift.id)}
                   className={`w-full p-4 rounded-xl flex items-center justify-between border-2 transition-all ${
-                    shift.isSelected ? "border-[#0b50d5] bg-blue-50" : "border-slate-200"
+                    shift.isSelected ? "border-[#0b50d5] bg-blue-50" : "border-[var(--color-border-subtle)]"
                   }`}
                 >
                   <div className="text-left">
                     <p className="font-bold text-[#4d212a]">{shift.name}</p>
-                    <p className="text-xs text-slate-500">{shift.hours}</p>
+                    <p className="text-xs text-[var(--color-outline)]">{shift.hours}</p>
                   </div>
                   <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                    shift.isSelected ? "bg-[#0b50d5]" : "bg-slate-200"
+                    shift.isSelected ? "bg-[#0b50d5]" : "bg-[var(--color-surface-container-high)]"
                   }`}>
                     {shift.isSelected && <span className="material-symbols-outlined text-white text-sm">check</span>}
                   </div>

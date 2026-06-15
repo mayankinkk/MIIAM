@@ -174,12 +174,12 @@ export default function AdminFoodsDashboard() {
   return (
     <div className="px-8 space-y-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-black text-slate-800">Food Orders</h1>
+        <h1 className="text-3xl font-black text-[var(--color-on-surface)]">Food Orders</h1>
         <div className="flex gap-3">
           <select
             value={dateFilter}
             onChange={(e) => setDateFilter(e.target.value)}
-            className="px-4 py-2 border border-slate-200 rounded-xl text-sm font-bold"
+            className="px-4 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold"
           >
             <option value="today">Today</option>
             <option value="week">This Week</option>
@@ -195,21 +195,21 @@ export default function AdminFoodsDashboard() {
           { label: "Pending", value: pendingOrders, icon: "schedule", color: "text-yellow-600" },
           { label: "Delivered", value: orders.filter(o => o.status === "delivered").length, icon: "check_circle", color: "text-green-600" },
         ].map((kpi, idx) => (
-          <div key={idx} className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl shadow-sm border border-slate-100">
-            <div className={`w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center mb-3 ${kpi.color}`}>
+          <div key={idx} className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl shadow-sm border border-[var(--color-border-subtle)]">
+            <div className={`w-10 h-10 rounded-xl bg-[var(--color-surface-subtle)] flex items-center justify-center mb-3 ${kpi.color}`}>
               <span className="material-symbols-outlined text-lg">{kpi.icon}</span>
             </div>
-            <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">{kpi.label}</p>
-            <p className="text-xl font-black text-slate-800">{kpi.value}</p>
+            <p className="text-[var(--color-outline-variant)] text-[10px] font-bold uppercase tracking-widest">{kpi.label}</p>
+            <p className="text-xl font-black text-[var(--color-on-surface)]">{kpi.value}</p>
           </div>
         ))}
       </div>
 
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-100 overflow-hidden shadow-sm">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)] overflow-hidden shadow-sm">
         <div className="p-4 border-b border-slate-50">
           <div className="flex items-center justify-between gap-4 flex-wrap">
             <div className="flex items-center gap-3 flex-1">
-              <h2 className="font-black text-slate-800 uppercase tracking-widest text-sm">Orders ({filteredOrders.length})</h2>
+              <h2 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm">Orders ({filteredOrders.length})</h2>
               {hasActiveFilters && (
                 <button
                   onClick={clearFilters}
@@ -225,7 +225,7 @@ export default function AdminFoodsDashboard() {
                   className={`px-4 py-2 rounded-xl text-sm font-bold border flex items-center gap-2 ${
                     showFilters || hasActiveFilters
                       ? "bg-[#ba001c] text-white border-[#ba001c]"
-                      : "border-slate-200"
+                      : "border-[var(--color-border-subtle)]"
                   }`}
                 >
                   <span className="material-symbols-outlined text-sm">filter_list</span>
@@ -235,7 +235,7 @@ export default function AdminFoodsDashboard() {
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as any)}
-                  className="px-4 py-2 border border-slate-200 rounded-xl text-sm font-bold"
+                  className="px-4 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold"
                 >
                   <option value="date">Sort: Date</option>
                   <option value="amount_high">Amount: High to Low</option>
@@ -247,19 +247,19 @@ export default function AdminFoodsDashboard() {
           
           <div className="flex items-center gap-3 mt-4 flex-wrap">
             <div className="relative flex-1 min-w-[200px]">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-outline-variant)]">search</span>
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search order ID or vendor..."
-                className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-xl text-sm"
+                className="w-full pl-10 pr-4 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm"
               />
             </div>
             <select
               value={dateFilter}
               onChange={(e) => setDateFilter(e.target.value)}
-              className="px-4 py-2 border border-slate-200 rounded-xl text-sm font-bold"
+              className="px-4 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold"
             >
               <option value="today">Today</option>
               <option value="week">This Week</option>
@@ -269,7 +269,7 @@ export default function AdminFoodsDashboard() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-4 py-2 border border-slate-200 rounded-xl text-sm font-bold"
+              className="px-4 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold"
             >
               <option value="all">All Status</option>
               <option value="pending">Pending</option>
@@ -282,13 +282,13 @@ export default function AdminFoodsDashboard() {
           </div>
 
           {showFilters && (
-            <div className="mt-4 p-4 bg-slate-50 rounded-xl grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="mt-4 p-4 bg-[var(--color-surface-subtle)] rounded-xl grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
-                <label className="text-xs font-bold text-slate-500 block mb-1">Vendor</label>
+                <label className="text-xs font-bold text-[var(--color-outline)] block mb-1">Vendor</label>
                 <select
                   value={vendorFilter}
                   onChange={(e) => setVendorFilter(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm bg-white"
+                  className="w-full px-3 py-2 border border-[var(--color-border-subtle)] rounded-lg text-sm bg-white"
                 >
                   <option value="all">All Vendors</option>
                   {vendors.map(v => (
@@ -297,11 +297,11 @@ export default function AdminFoodsDashboard() {
                 </select>
               </div>
               <div>
-                <label className="text-xs font-bold text-slate-500 block mb-1">Payment Method</label>
+                <label className="text-xs font-bold text-[var(--color-outline)] block mb-1">Payment Method</label>
                 <select
                   value={paymentFilter}
                   onChange={(e) => setPaymentFilter(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm bg-white"
+                  className="w-full px-3 py-2 border border-[var(--color-border-subtle)] rounded-lg text-sm bg-white"
                 >
                   <option value="all">All Methods</option>
                   <option value="upi">UPI</option>
@@ -311,23 +311,23 @@ export default function AdminFoodsDashboard() {
                 </select>
               </div>
               <div>
-                <label className="text-xs font-bold text-slate-500 block mb-1">Min Amount (₹)</label>
+                <label className="text-xs font-bold text-[var(--color-outline)] block mb-1">Min Amount (₹)</label>
                 <input
                   type="number"
                   value={amountMin}
                   onChange={(e) => setAmountMin(e.target.value)}
                   placeholder="0"
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm bg-white"
+                  className="w-full px-3 py-2 border border-[var(--color-border-subtle)] rounded-lg text-sm bg-white"
                 />
               </div>
               <div>
-                <label className="text-xs font-bold text-slate-500 block mb-1">Max Amount (₹)</label>
+                <label className="text-xs font-bold text-[var(--color-outline)] block mb-1">Max Amount (₹)</label>
                 <input
                   type="number"
                   value={amountMax}
                   onChange={(e) => setAmountMax(e.target.value)}
                   placeholder="10000"
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm bg-white"
+                  className="w-full px-3 py-2 border border-[var(--color-border-subtle)] rounded-lg text-sm bg-white"
                 />
               </div>
             </div>
@@ -340,13 +340,13 @@ export default function AdminFoodsDashboard() {
               <span className="bg-[#ba001c] text-white w-8 h-8 rounded-full flex items-center justify-center font-black text-sm">
                 {selectedOrders.length}
               </span>
-              <span className="font-bold text-slate-800">orders selected</span>
+              <span className="font-bold text-[var(--color-on-surface)]">orders selected</span>
             </div>
             <div className="flex items-center gap-3">
               <select
                 value={bulkStatus}
                 onChange={(e) => setBulkStatus(e.target.value)}
-                className="px-4 py-2 border border-slate-200 rounded-xl text-sm font-bold bg-white"
+                className="px-4 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold bg-white"
               >
                 <option value="">Change Status</option>
                 <option value="pending">Pending</option>
@@ -365,7 +365,7 @@ export default function AdminFoodsDashboard() {
               </button>
               <button
                 onClick={() => setSelectedOrders([])}
-                className="px-4 py-2 bg-slate-200 text-slate-600 rounded-xl font-bold text-sm"
+                className="px-4 py-2 bg-[var(--color-surface-container-high)] text-[var(--color-on-surface-variant)] rounded-xl font-bold text-sm"
               >
                 Clear
               </button>
@@ -375,9 +375,9 @@ export default function AdminFoodsDashboard() {
         
         <div className="overflow-x-auto">
           <table className="w-full text-left">
-            <thead className="bg-slate-50">
+            <thead className="bg-[var(--color-surface-subtle)]">
               <tr>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest w-12">
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest w-12">
                   <input
                     type="checkbox"
                     checked={selectedOrders.length === filteredOrders.length && filteredOrders.length > 0}
@@ -385,26 +385,26 @@ export default function AdminFoodsDashboard() {
                     className="w-4 h-4 cursor-pointer"
                   />
                 </th>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Order ID</th>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Vendor</th>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Customer</th>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Items</th>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Total</th>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Date</th>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Actions</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Order ID</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Vendor</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Customer</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Status</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Items</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest text-right">Total</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Date</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50 text-xs font-medium">
               {filteredOrders.length === 0 ? (
                 <tr>
-                  <td colSpan={9} className="p-8 text-center text-slate-400">
+                  <td colSpan={9} className="p-8 text-center text-[var(--color-outline-variant)]">
                     No orders found
                   </td>
                 </tr>
               ) : (
                 filteredOrders.map((order) => (
-                  <tr key={order.id} className={`hover:bg-slate-50 transition-colors ${selectedOrders.includes(order.id) ? "bg-[#ba001c]/5" : ""}`}>
+                  <tr key={order.id} className={`hover:bg-[var(--color-surface-subtle)] transition-colors ${selectedOrders.includes(order.id) ? "bg-[#ba001c]/5" : ""}`}>
                     <td className="p-4">
                       <input
                         type="checkbox"
@@ -414,15 +414,15 @@ export default function AdminFoodsDashboard() {
                       />
                     </td>
                     <td className="p-4">
-                      <span className="font-black text-slate-800">#{order.id?.slice(0, 8).toUpperCase()}</span>
+                      <span className="font-black text-[var(--color-on-surface)]">#{order.id?.slice(0, 8).toUpperCase()}</span>
                     </td>
-                    <td className="p-4 text-slate-600">{(order.vendor as any)?.name || (order.vendor as any)?.shop_name || "Unknown"}</td>
-                    <td className="p-4 text-slate-500">{order.user_id?.slice(0, 8) || "Guest"}</td>
+                    <td className="p-4 text-[var(--color-on-surface-variant)]">{(order.vendor as any)?.name || (order.vendor as any)?.shop_name || "Unknown"}</td>
+                    <td className="p-4 text-[var(--color-outline)]">{order.user_id?.slice(0, 8) || "Guest"}</td>
                     <td className="p-4">
                       <select
                         value={order.status}
                         onChange={(e) => updateOrderStatus(order.id!, e.target.value)}
-                        className={`text-[10px] font-black px-2 py-1 rounded-full border-0 cursor-pointer ${statusColors[order.status] || "bg-slate-100"}`}
+                        className={`text-[10px] font-black px-2 py-1 rounded-full border-0 cursor-pointer ${statusColors[order.status] || "bg-[var(--color-surface-container)]"}`}
                       >
                         <option value="pending">Pending</option>
                         <option value="accepted">Accepted</option>
@@ -434,9 +434,9 @@ export default function AdminFoodsDashboard() {
                         <option value="cancelled">Cancelled</option>
                       </select>
                     </td>
-                    <td className="p-4 text-slate-500">{order.items?.length || 0}</td>
-                    <td className="p-4 text-right font-black text-slate-800">₹{(order.total_amount || 0).toFixed(0)}</td>
-                    <td className="p-4 text-slate-400">{order.placed_at ? new Date(order.placed_at).toLocaleDateString() : "-"}</td>
+                    <td className="p-4 text-[var(--color-outline)]">{order.items?.length || 0}</td>
+                    <td className="p-4 text-right font-black text-[var(--color-on-surface)]">₹{(order.total_amount || 0).toFixed(0)}</td>
+                    <td className="p-4 text-[var(--color-outline-variant)]">{order.placed_at ? new Date(order.placed_at).toLocaleDateString() : "-"}</td>
                     <td className="p-4">
                       <button
                         onClick={() => setSelectedOrder(order)}
@@ -458,36 +458,36 @@ export default function AdminFoodsDashboard() {
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl max-w-lg w-full max-h-[80vh] overflow-y-auto">
             <div className="p-6 border-b flex items-center justify-between">
               <h2 className="font-black text-lg">Order #{selectedOrder.id?.slice(0, 8).toUpperCase()}</h2>
-              <button onClick={() => setSelectedOrder(null)} className="text-slate-400">
+              <button onClick={() => setSelectedOrder(null)} className="text-[var(--color-outline-variant)]">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
             <div className="p-6 space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-[10px] text-slate-400 uppercase">Vendor</p>
+                  <p className="text-[10px] text-[var(--color-outline-variant)] uppercase">Vendor</p>
                   <p className="font-bold">{selectedOrder.vendor?.name || "Unknown"}</p>
                 </div>
                 <div>
-                  <p className="text-[10px] text-slate-400 uppercase">Status</p>
+                  <p className="text-[10px] text-[var(--color-outline-variant)] uppercase">Status</p>
                   <span className={`text-xs font-black px-2 py-1 rounded-full ${statusColors[selectedOrder.status] || ""}`}>
                     {selectedOrder.status}
                   </span>
                 </div>
                 <div>
-                  <p className="text-[10px] text-slate-400 uppercase">Total</p>
+                  <p className="text-[10px] text-[var(--color-outline-variant)] uppercase">Total</p>
                   <p className="font-black text-lg">₹{selectedOrder.total_amount?.toFixed(0)}</p>
                 </div>
                 <div>
-                  <p className="text-[10px] text-slate-400 uppercase">Delivery Fee</p>
+                  <p className="text-[10px] text-[var(--color-outline-variant)] uppercase">Delivery Fee</p>
                   <p className="font-bold">₹{selectedOrder.delivery_fee?.toFixed(0) || 0}</p>
                 </div>
               </div>
               <div>
-                <p className="text-[10px] text-slate-400 uppercase mb-2">Items</p>
+                <p className="text-[10px] text-[var(--color-outline-variant)] uppercase mb-2">Items</p>
                 <div className="space-y-2">
                   {selectedOrder.items?.map((item: any, idx: number) => (
-                    <div key={idx} className="flex justify-between text-sm bg-slate-50 p-2 rounded-lg">
+                    <div key={idx} className="flex justify-between text-sm bg-[var(--color-surface-subtle)] p-2 rounded-lg">
                       <span>{item.quantity}x {item.menu_item?.name || "Item"}</span>
                       <span className="font-bold">₹{(item.price * item.quantity).toFixed(0)}</span>
                     </div>

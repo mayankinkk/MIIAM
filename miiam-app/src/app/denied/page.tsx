@@ -30,7 +30,7 @@ function AccessDeniedContent() {
               </Link>
               <Link
                 href="/"
-                className="block w-full bg-[var(--color-surface-container-lowest)] text-[#4d212a] border-2 border-slate-100 rounded-xl py-4 font-bold hover:bg-slate-50 transition-all"
+                className="block w-full bg-[var(--color-surface-container-lowest)] text-[#4d212a] border-2 border-[var(--color-border-subtle)] rounded-xl py-4 font-bold hover:bg-[var(--color-surface-subtle)] transition-all"
               >
                 Back to Home
               </Link>
@@ -51,7 +51,7 @@ function AccessDeniedContent() {
               </Link>
               <Link
                 href="/auth/login"
-                className="block w-full bg-[var(--color-surface-container-lowest)] text-[#4d212a] border-2 border-slate-100 rounded-xl py-4 font-bold hover:bg-slate-50 transition-all"
+                className="block w-full bg-[var(--color-surface-container-lowest)] text-[#4d212a] border-2 border-[var(--color-border-subtle)] rounded-xl py-4 font-bold hover:bg-[var(--color-surface-subtle)] transition-all"
               >
                 Sign in with another account
               </Link>

@@ -95,32 +95,32 @@ export default function PublicPrintLanding() {
 
         {/* Features */}
         <section className="max-w-6xl mx-auto px-6 lg:px-8 py-16">
-          <h2 className="text-2xl font-black text-slate-800 text-center mb-10">Why print with MIIAM</h2>
+          <h2 className="text-2xl font-black text-[var(--color-on-surface)] text-center mb-10">Why print with MIIAM</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {features.map((f) => (
-              <div key={f.title} className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 border border-slate-100 shadow-sm">
+              <div key={f.title} className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 border border-[var(--color-border-subtle)] shadow-sm">
                 <div className="w-11 h-11 bg-[var(--color-primary)]/10 rounded-xl flex items-center justify-center mb-3">
                   <span className="material-symbols-outlined text-[var(--color-primary)]">{f.icon}</span>
                 </div>
-                <h3 className="font-bold text-slate-800 text-sm">{f.title}</h3>
-                <p className="text-xs text-slate-500 mt-1 leading-snug">{f.desc}</p>
+                <h3 className="font-bold text-[var(--color-on-surface)] text-sm">{f.title}</h3>
+                <p className="text-xs text-[var(--color-outline)] mt-1 leading-snug">{f.desc}</p>
               </div>
             ))}
           </div>
         </section>
 
         {/* Use cases */}
-        <section className="bg-slate-50 py-16">
+        <section className="bg-[var(--color-surface-subtle)] py-16">
           <div className="max-w-6xl mx-auto px-6 lg:px-8">
-            <h2 className="text-2xl font-black text-slate-800 text-center mb-10">Who prints with us</h2>
+            <h2 className="text-2xl font-black text-[var(--color-on-surface)] text-center mb-10">Who prints with us</h2>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {useCases.map((u) => (
-                <div key={u.label} className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 text-center border border-slate-100">
+                <div key={u.label} className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 text-center border border-[var(--color-border-subtle)]">
                   <div className="w-12 h-12 bg-[var(--color-primary)]/5 rounded-2xl flex items-center justify-center mx-auto mb-2">
                     <span className="material-symbols-outlined text-[var(--color-primary)] text-xl">{u.icon}</span>
                   </div>
-                  <p className="font-bold text-slate-800 text-sm">{u.label}</p>
-                  <p className="text-xs text-slate-500 mt-0.5">{u.desc}</p>
+                  <p className="font-bold text-[var(--color-on-surface)] text-sm">{u.label}</p>
+                  <p className="text-xs text-[var(--color-outline)] mt-0.5">{u.desc}</p>
                 </div>
               ))}
             </div>
@@ -129,14 +129,14 @@ export default function PublicPrintLanding() {
 
         {/* Pricing transparency */}
         <section className="max-w-5xl mx-auto px-6 lg:px-8 py-16">
-          <h2 className="text-2xl font-black text-slate-800 text-center mb-2">Transparent pricing</h2>
-          <p className="text-center text-slate-500 mb-10">No minimum, no hidden fees</p>
+          <h2 className="text-2xl font-black text-[var(--color-on-surface)] text-center mb-2">Transparent pricing</h2>
+          <p className="text-center text-[var(--color-outline)] mb-10">No minimum, no hidden fees</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 border-2 border-slate-100">
-              <p className="text-xs text-slate-500 font-black uppercase tracking-widest">Black &amp; White</p>
-              <p className="text-5xl font-black text-slate-800 mt-2">₹{pricing.bwPerPage}</p>
-              <p className="text-slate-500 text-sm mt-1">per page · single-sided A4</p>
-              <ul className="mt-4 space-y-1.5 text-sm text-slate-600">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 border-2 border-[var(--color-border-subtle)]">
+              <p className="text-xs text-[var(--color-outline)] font-black uppercase tracking-widest">Black &amp; White</p>
+              <p className="text-5xl font-black text-[var(--color-on-surface)] mt-2">₹{pricing.bwPerPage}</p>
+              <p className="text-[var(--color-outline)] text-sm mt-1">per page · single-sided A4</p>
+              <ul className="mt-4 space-y-1.5 text-sm text-[var(--color-on-surface-variant)]">
                 <li>• Notes, drafts, contracts</li>
                 <li>• No minimum pages</li>
                 <li>• Same-day delivery</li>
@@ -157,7 +157,7 @@ export default function PublicPrintLanding() {
 
         {/* FAQ-style */}
         <section className="max-w-3xl mx-auto px-6 lg:px-8 py-16">
-          <h2 className="text-2xl font-black text-slate-800 text-center mb-8">Frequently asked</h2>
+          <h2 className="text-2xl font-black text-[var(--color-on-surface)] text-center mb-8">Frequently asked</h2>
           <div className="space-y-3">
             {[
               { q: "What file types can I upload?", a: "PDF, JPG, and PNG files up to 50MB each, and up to 15 files per order." },
@@ -166,12 +166,12 @@ export default function PublicPrintLanding() {
               { q: "Can I print passport photos?", a: "Yes — we support passport, visa, and ID photos for 11 countries including India, US, Schengen, UK, Japan, China, Canada, and Australia." },
               { q: "Do you offer binding and lamination?", a: "Yes. We offer spiral, soft, and hard binding, plus A4 and ID-card lamination. Cover pages, hole-punching, and folding are also available." },
             ].map((item) => (
-              <details key={item.q} className="bg-[var(--color-surface-container-lowest)] border border-slate-100 rounded-2xl p-4 group">
-                <summary className="font-bold text-slate-800 cursor-pointer flex items-center justify-between text-sm">
+              <details key={item.q} className="bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-2xl p-4 group">
+                <summary className="font-bold text-[var(--color-on-surface)] cursor-pointer flex items-center justify-between text-sm">
                   {item.q}
-                  <span className="material-symbols-outlined text-slate-400 group-open:rotate-180 transition-transform">expand_more</span>
+                  <span className="material-symbols-outlined text-[var(--color-outline-variant)] group-open:rotate-180 transition-transform">expand_more</span>
                 </summary>
-                <p className="text-sm text-slate-600 mt-2 leading-relaxed">{item.a}</p>
+                <p className="text-sm text-[var(--color-on-surface-variant)] mt-2 leading-relaxed">{item.a}</p>
               </details>
             ))}
           </div>

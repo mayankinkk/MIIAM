@@ -132,7 +132,7 @@ export default function ExplorePage() {
   };
 
   const colorMap: Record<string, string> = {
-    all: "bg-slate-100 text-slate-600",
+    all: "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]",
     food: "bg-orange-100 text-orange-600",
     grocery: "bg-green-100 text-green-600",
     beauty: "bg-pink-100 text-pink-600",
@@ -370,7 +370,7 @@ export default function ExplorePage() {
           </h2>
           {filteredServices.length === 0 ? (
             <div className="text-center py-12">
-              <span className="material-symbols-outlined text-5xl text-slate-300">search_off</span>
+              <span className="material-symbols-outlined text-5xl text-[var(--color-outline-variant)]/60">search_off</span>
               <p className="text-on-surface-variant/70 mt-4">{t.common.noResults}</p>
               <button 
                 onClick={() => { setSearchQuery(""); setActiveCategory("all"); setPriceFilter("all"); setRatingFilter("all"); }}
@@ -453,7 +453,7 @@ export default function ExplorePage() {
             </div>
           </div>
           <p className="text-sm text-white/80 mb-4">Join 10,000+ restaurants and service providers earning with MIIAM.</p>
-          <a href="https://partner.miiam.in" target="_blank" rel="noopener noreferrer" className="block w-full py-3 bg-[var(--color-surface-container-lowest)] text-slate-900 font-bold rounded-xl hover:bg-slate-100 transition-colors text-center">
+          <a href="https://partner.miiam.in" target="_blank" rel="noopener noreferrer" className="block w-full py-3 bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface)] font-bold rounded-xl hover:bg-[var(--color-surface-container)] transition-colors text-center">
             Register Your Business
           </a>
         </div>

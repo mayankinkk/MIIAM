@@ -90,7 +90,7 @@ function EmailVerifyContent() {
     <div className="min-h-screen bg-gradient-to-b from-[#fff4f4] to-white flex flex-col">
       <div className="p-6">
         <button onClick={() => router.back()} className="w-10 h-10 bg-[var(--color-surface-container-lowest)] shadow-md rounded-full flex items-center justify-center">
-          <span className="material-symbols-outlined text-slate-600">arrow_back</span>
+          <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">arrow_back</span>
         </button>
       </div>
       <div className="flex-1 flex flex-col items-center justify-center px-6">
@@ -98,27 +98,27 @@ function EmailVerifyContent() {
           <span className="material-symbols-outlined text-[#ba001c] text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>email</span>
         </div>
         <h1 className="text-2xl font-black text-[#4d212a] mb-2">Verify Your Email</h1>
-        <p className="text-slate-500 text-center mb-8">We sent a 6-digit code to<br /><span className="font-bold text-[#ba001c]">{email}</span></p>
+        <p className="text-[var(--color-outline)] text-center mb-8">We sent a 6-digit code to<br /><span className="font-bold text-[#ba001c]">{email}</span></p>
         <div className="w-full max-w-sm">
           <div className="flex justify-center gap-2 mb-6">
             {otp.map((d, i) => (
               <input key={i} ref={(el) => { inputRefs.current[i] = el; }} type="text" inputMode="numeric" pattern="[0-9]*" maxLength={1} value={d} onChange={(e) => handleChange(i, e.target.value)}
-                className={`w-12 h-14 text-center text-xl font-bold rounded-xl border-2 ${error ? "border-red-300 bg-red-50" : d ? "border-[#ba001c] bg-[#ba001c]/5" : "border-slate-200 bg-white"} focus:border-[#ba001c] outline-none`} />
+                className={`w-12 h-14 text-center text-xl font-bold rounded-xl border-2 ${error ? "border-red-300 bg-red-50" : d ? "border-[#ba001c] bg-[#ba001c]/5" : "border-[var(--color-border-subtle)] bg-white"} focus:border-[#ba001c] outline-none`} />
             ))}
           </div>
           {error && <p className="text-center text-red-500 text-sm mb-4">{error}</p>}
-          {isLoading && <p className="text-center text-slate-500 text-sm mb-4">Verifying...</p>}
+          {isLoading && <p className="text-center text-[var(--color-outline)] text-sm mb-4">Verifying...</p>}
         </div>
         <div className="text-center">
           {resendTimer > 0 ? (
-            <p className="text-slate-400 text-sm">
+            <p className="text-[var(--color-outline-variant)] text-sm">
               Resend code in <span className="font-bold text-[#ba001c]">{resendTimer}</span> seconds
             </p>
           ) : (
             <button 
               onClick={resend} 
               disabled={resent}
-              className={`font-bold text-sm hover:underline ${resent ? "text-slate-400" : "text-[#ba001c]"}`}
+              className={`font-bold text-sm hover:underline ${resent ? "text-[var(--color-outline-variant)]" : "text-[#ba001c]"}`}
             >
               {resent ? "Code sent!" : "Resend Code"}
             </button>

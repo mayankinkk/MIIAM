@@ -83,12 +83,12 @@ export function ConfirmProvider({ children }: { children: ReactNode }) {
       {state.open && (
         <div className="fixed inset-0 z-[200] bg-black/50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="confirm-dialog-title">
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-sm shadow-2xl">
-            <h3 id="confirm-dialog-title" className="font-bold text-lg text-slate-900 mb-2">{state.title}</h3>
-            <p className="text-sm text-slate-600 mb-6">{state.message}</p>
+            <h3 id="confirm-dialog-title" className="font-bold text-lg text-[var(--color-on-surface)] mb-2">{state.title}</h3>
+            <p className="text-sm text-[var(--color-on-surface-variant)] mb-6">{state.message}</p>
             <div className="flex gap-3">
               <button
                 onClick={state.onCancel}
-                className="flex-1 py-3 rounded-xl font-bold text-sm text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors"
+                className="flex-1 py-3 rounded-xl font-bold text-sm text-[var(--color-on-surface-variant)] bg-[var(--color-surface-container)] hover:bg-[var(--color-surface-container-high)] transition-colors"
               >
                 {state.cancelText || "Cancel"}
               </button>

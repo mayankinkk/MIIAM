@@ -12,8 +12,8 @@ export default function ServiceUnavailable({ serviceName, message, icon }: Servi
   return (
     <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center p-6">
       <div className="text-center max-w-md">
-        <div className="w-24 h-24 mx-auto mb-6 bg-slate-100 rounded-full flex items-center justify-center">
-          <span className="material-symbols-outlined text-5xl text-slate-400">{icon}</span>
+        <div className="w-24 h-24 mx-auto mb-6 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center">
+          <span className="material-symbols-outlined text-5xl text-[var(--color-outline-variant)]">{icon}</span>
         </div>
         <h2 className="text-2xl font-black text-[#4d212a] mb-2">{serviceName}</h2>
         <p className="text-[#814c55] mb-6">{message}</p>

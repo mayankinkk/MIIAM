@@ -39,8 +39,8 @@ export function RiderTipSelector({ orderAmount, onTipSelect, onSkip }: RiderTipP
           <span className="material-symbols-outlined text-2xl text-[#0b50d5]">directions_bike</span>
         </div>
         <div>
-          <h3 className="font-bold text-slate-800">Tip your Rider</h3>
-          <p className="text-sm text-slate-500">100% goes to your delivery hero</p>
+          <h3 className="font-bold text-[var(--color-on-surface)]">Tip your Rider</h3>
+          <p className="text-sm text-[var(--color-outline)]">100% goes to your delivery hero</p>
         </div>
       </div>
 
@@ -56,10 +56,10 @@ export function RiderTipSelector({ orderAmount, onTipSelect, onSkip }: RiderTipP
               className={`p-3 rounded-xl border-2 text-center transition-all ${
                 isSelected
                   ? "border-[#ba001c] bg-red-50"
-                  : "border-slate-200 hover:border-slate-300"
+                  : "border-[var(--color-border-subtle)] hover:border-[var(--color-outline-variant)]"
               }`}
             >
-              <div className="text-sm font-bold text-slate-800">{label}</div>
+              <div className="text-sm font-bold text-[var(--color-on-surface)]">{label}</div>
               {amount > 0 && <div className="text-xs text-[#ba001c]">₹{amount}</div>}
             </button>
           );
@@ -67,16 +67,16 @@ export function RiderTipSelector({ orderAmount, onTipSelect, onSkip }: RiderTipP
       </div>
 
       <div className="mb-6">
-        <label className="text-sm text-slate-600 mb-2 block">Custom amount</label>
+        <label className="text-sm text-[var(--color-on-surface-variant)] mb-2 block">Custom amount</label>
         <div className="flex gap-2">
           <div className="flex-1 relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">₹</span>
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-outline)]">₹</span>
             <input
               type="number"
               value={customAmount}
               onChange={(e) => setCustomAmount(e.target.value)}
               placeholder="Enter amount"
-              className="w-full pl-8 pr-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ba001c]"
+              className="w-full pl-8 pr-4 py-2 border border-[var(--color-border-subtle)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ba001c]"
             />
           </div>
           <button
@@ -91,7 +91,7 @@ export function RiderTipSelector({ orderAmount, onTipSelect, onSkip }: RiderTipP
       <div className="flex gap-3">
         <button
           onClick={onSkip}
-          className="flex-1 py-3 text-slate-600 font-bold rounded-xl border border-slate-200"
+          className="flex-1 py-3 text-[var(--color-on-surface-variant)] font-bold rounded-xl border border-[var(--color-border-subtle)]"
         >
           Skip
         </button>

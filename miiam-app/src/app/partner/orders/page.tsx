@@ -79,14 +79,14 @@ export default function VendorOrders() {
   return (
     <div className="p-4 md:p-8 space-y-8">
       <div>
-        <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Order Management</h1>
-        <p className="text-slate-500 mt-1">View and manage all your orders</p>
+        <h1 className="text-3xl font-extrabold text-[var(--color-on-surface)] tracking-tight">Order Management</h1>
+        <p className="text-[var(--color-outline)] mt-1">View and manage all your orders</p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {([
-          { key: "all", label: "Total", color: "text-slate-900" },
+          { key: "all", label: "Total", color: "text-[var(--color-on-surface)]" },
           { key: "active", label: "Active", color: "text-[#ba001c]" },
           { key: "delivered", label: "Delivered", color: "text-green-600" },
           { key: "cancelled", label: "Cancelled", color: "text-red-600" },
@@ -95,25 +95,25 @@ export default function VendorOrders() {
             key={s.key}
             onClick={() => setFilter(s.key)}
             className={`bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border text-left transition-all ${
-              filter === s.key ? "border-[#ba001c] shadow-sm" : "border-slate-200 hover:border-slate-300"
+              filter === s.key ? "border-[#ba001c] shadow-sm" : "border-[var(--color-border-subtle)] hover:border-[var(--color-outline-variant)]"
             }`}
           >
-            <p className="text-sm text-slate-500 font-medium">{s.label}</p>
+            <p className="text-sm text-[var(--color-outline)] font-medium">{s.label}</p>
             <p className={`text-3xl font-black ${s.color} mt-1`}>{statusCounts[s.key]}</p>
           </button>
         ))}
       </div>
 
       {/* Search & Filter */}
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-200 p-4 flex items-center gap-4 flex-wrap">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)] p-4 flex items-center gap-4 flex-wrap">
         <div className="relative flex-1 min-w-[200px]">
-          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-outline-variant)] text-lg">search</span>
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by order ID or address..."
-            className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#ba001c]"
+            className="w-full pl-10 pr-4 py-2.5 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:outline-none focus:border-[#ba001c]"
           />
         </div>
         <div className="flex gap-2">
@@ -122,7 +122,7 @@ export default function VendorOrders() {
               key={f}
               onClick={() => setFilter(f)}
               className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${
-                filter === f ? "bg-[#ba001c] text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                filter === f ? "bg-[#ba001c] text-white" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]"
               }`}
             >
               {f.charAt(0).toUpperCase() + f.slice(1)}
@@ -134,22 +134,22 @@ export default function VendorOrders() {
       {/* Orders List */}
       <div className="space-y-4">
         {loading ? (
-          <div className="text-center py-12 text-slate-400 font-medium animate-pulse">Loading orders...</div>
+          <div className="text-center py-12 text-[var(--color-outline-variant)] font-medium animate-pulse">Loading orders...</div>
         ) : filteredOrders.length === 0 ? (
-          <div className="bg-[var(--color-surface-container-lowest)] border-2 border-dashed border-slate-200 rounded-3xl p-16 text-center">
-            <span className="material-symbols-outlined text-6xl text-slate-300 mb-4">receipt_long</span>
-            <p className="text-slate-400 font-medium text-lg">No orders found</p>
+          <div className="bg-[var(--color-surface-container-lowest)] border-2 border-dashed border-[var(--color-border-subtle)] rounded-3xl p-16 text-center">
+            <span className="material-symbols-outlined text-6xl text-[var(--color-outline-variant)]/60 mb-4">receipt_long</span>
+            <p className="text-[var(--color-outline-variant)] font-medium text-lg">No orders found</p>
           </div>
         ) : (
           filteredOrders.map((order) => (
             <div
               key={order.id}
-              className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-sm border border-slate-200 hover:shadow-md transition-shadow"
+              className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-sm border border-[var(--color-border-subtle)] hover:shadow-md transition-shadow"
             >
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
-                    <span className="font-extrabold text-slate-900">#{order.id.slice(0, 8).toUpperCase()}</span>
+                    <span className="font-extrabold text-[var(--color-on-surface)]">#{order.id.slice(0, 8).toUpperCase()}</span>
                     <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase ${
                       order.status === "pending" ? "bg-amber-100 text-amber-700" :
                       order.status === "accepted" ? "bg-blue-100 text-blue-700" :
@@ -157,35 +157,35 @@ export default function VendorOrders() {
                       order.status === "ready_for_pickup" ? "bg-purple-100 text-purple-700" :
                       order.status === "delivered" ? "bg-green-100 text-green-700" :
                       order.status === "cancelled" ? "bg-red-100 text-red-700" :
-                      "bg-slate-100 text-slate-600"
+                      "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
                     }`}>
                       {order.status.replace(/_/g, " ")}
                     </span>
                   </div>
-                  <div className="flex flex-wrap gap-4 text-sm text-slate-500">
+                  <div className="flex flex-wrap gap-4 text-sm text-[var(--color-outline)]">
                     <span>{order.items?.length || 0} items</span>
                     <span>{new Date(order.placed_at).toLocaleDateString()} {new Date(order.placed_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
                     {order.delivery_address && <span className="truncate max-w-[200px]">{order.delivery_address}</span>}
                   </div>
                   <div className="flex flex-wrap gap-2 mt-2">
                     {order.items?.slice(0, 4).map((item, i) => (
-                      <span key={i} className="text-xs bg-slate-50 px-2 py-1 rounded-full text-slate-600">
+                      <span key={i} className="text-xs bg-[var(--color-surface-subtle)] px-2 py-1 rounded-full text-[var(--color-on-surface-variant)]">
                         {item.quantity}x {menuItemNames.get(item.menu_item_id)?.name || "Item"}
                       </span>
                     ))}
                     {(order.items?.length || 0) > 4 && (
-                      <span className="text-xs text-slate-400">+{order.items!.length - 4} more</span>
+                      <span className="text-xs text-[var(--color-outline-variant)]">+{order.items!.length - 4} more</span>
                     )}
                   </div>
                 </div>
                 <div className="flex items-center gap-3 sm:text-right">
                   <div>
                     <p className="text-xl font-black text-[#ba001c]">₹{order.total_amount.toFixed(2)}</p>
-                    <p className="text-xs text-slate-400">{order.payment_method}</p>
+                    <p className="text-xs text-[var(--color-outline-variant)]">{order.payment_method}</p>
                   </div>
                   <button
                     onClick={() => setChatOrder(order)}
-                    className="relative px-3 py-2 border border-slate-200 rounded-xl text-sm font-bold text-secondary hover:bg-secondary/5 transition-colors flex items-center gap-1"
+                    className="relative px-3 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold text-secondary hover:bg-secondary/5 transition-colors flex items-center gap-1"
                     title="Chat with customer"
                   >
                     <span className="material-symbols-outlined text-base">chat_bubble</span>
@@ -197,7 +197,7 @@ export default function VendorOrders() {
                   </button>
                   <button
                     onClick={() => setSelectedOrder(selectedOrder?.id === order.id ? null : order)}
-                    className="px-4 py-2 border border-slate-200 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 transition-colors"
+                    className="px-4 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-subtle)] transition-colors"
                   >
                     {selectedOrder?.id === order.id ? "Close" : "Manage"}
                   </button>
@@ -206,22 +206,22 @@ export default function VendorOrders() {
 
               {/* Expanded Management Panel */}
               {selectedOrder?.id === order.id && (
-                <div className="mt-6 pt-6 border-t border-slate-100">
+                <div className="mt-6 pt-6 border-t border-[var(--color-border-subtle)]">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                     <div>
-                      <h4 className="text-sm font-bold text-slate-700 mb-2">Order Items</h4>
-                      <div className="space-y-2 bg-slate-50 p-4 rounded-xl">
+                      <h4 className="text-sm font-bold text-[var(--color-on-surface)] mb-2">Order Items</h4>
+                      <div className="space-y-2 bg-[var(--color-surface-subtle)] p-4 rounded-xl">
                         {order.items?.map((item, i) => (
                           <div key={i} className="flex justify-between text-sm">
-                            <span className="text-slate-700">
-                              <span className="text-slate-400 mr-1">{item.quantity}x</span>
+                            <span className="text-[var(--color-on-surface)]">
+                              <span className="text-[var(--color-outline-variant)] mr-1">{item.quantity}x</span>
                               {menuItemNames.get(item.menu_item_id)?.name || "Item"}
                             </span>
-                            <span className="font-bold text-slate-800">₹{(item.unit_price * item.quantity).toFixed(0)}</span>
+                            <span className="font-bold text-[var(--color-on-surface)]">₹{(item.unit_price * item.quantity).toFixed(0)}</span>
                           </div>
                         ))}
-                        <div className="flex justify-between text-sm pt-2 border-t border-slate-200">
-                          <span className="font-bold text-slate-700">Total</span>
+                        <div className="flex justify-between text-sm pt-2 border-t border-[var(--color-border-subtle)]">
+                          <span className="font-bold text-[var(--color-on-surface)]">Total</span>
                           <span className="font-bold text-[#ba001c]">₹{order.total_amount.toFixed(2)}</span>
                         </div>
                       </div>
@@ -229,14 +229,14 @@ export default function VendorOrders() {
                     <div>
                       {order.special_instructions && (
                         <div className="mb-4">
-                          <h4 className="text-sm font-bold text-slate-700 mb-1">Special Instructions</h4>
-                          <p className="text-sm text-slate-600 bg-slate-50 p-3 rounded-xl">{order.special_instructions}</p>
+                          <h4 className="text-sm font-bold text-[var(--color-on-surface)] mb-1">Special Instructions</h4>
+                          <p className="text-sm text-[var(--color-on-surface-variant)] bg-[var(--color-surface-subtle)] p-3 rounded-xl">{order.special_instructions}</p>
                         </div>
                       )}
                       {order.delivery_address && (
                         <div>
-                          <h4 className="text-sm font-bold text-slate-700 mb-1">Delivery Address</h4>
-                          <p className="text-sm text-slate-600 bg-slate-50 p-3 rounded-xl">{order.delivery_address}</p>
+                          <h4 className="text-sm font-bold text-[var(--color-on-surface)] mb-1">Delivery Address</h4>
+                          <p className="text-sm text-[var(--color-on-surface-variant)] bg-[var(--color-surface-subtle)] p-3 rounded-xl">{order.delivery_address}</p>
                         </div>
                       )}
                     </div>

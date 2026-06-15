@@ -119,8 +119,8 @@ export default function RiderAnalyticsPage() {
           <div className="space-y-3">
             {[1, 2, 3].map(i => (
               <div key={i} className="bg-[var(--color-surface-container-lowest)] rounded-xl p-4 animate-pulse">
-                <div className="h-20 bg-slate-200 rounded mb-2" />
-                <div className="h-4 bg-slate-200 rounded w-3/4" />
+                <div className="h-20 bg-[var(--color-surface-container-high)] rounded mb-2" />
+                <div className="h-4 bg-[var(--color-surface-container-high)] rounded w-3/4" />
               </div>
             ))}
           </div>
@@ -129,19 +129,19 @@ export default function RiderAnalyticsPage() {
             {/* Summary Cards */}
             <div className="grid grid-cols-2 gap-3">
               <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-sm">
-                <p className="text-xs text-slate-400">Total Deliveries</p>
+                <p className="text-xs text-[var(--color-outline-variant)]">Total Deliveries</p>
                 <p className="text-3xl font-black text-[#0b50d5] mt-1">{totalDeliveries}</p>
               </div>
               <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-sm">
-                <p className="text-xs text-slate-400">Total Earnings</p>
+                <p className="text-xs text-[var(--color-outline-variant)]">Total Earnings</p>
                 <p className="text-3xl font-black text-green-600">₹{totalEarnings}</p>
               </div>
               <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-sm">
-                <p className="text-xs text-slate-400">Avg Rating</p>
+                <p className="text-xs text-[var(--color-outline-variant)]">Avg Rating</p>
                 <p className="text-3xl font-black text-amber-500">{avgRating} ★</p>
               </div>
               <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-sm">
-                <p className="text-xs text-slate-400">Avg Earning/Delivery</p>
+                <p className="text-xs text-[var(--color-outline-variant)]">Avg Earning/Delivery</p>
                 <p className="text-3xl font-black text-[#0b50d5]">
                   {totalDeliveries > 0 ? `₹${Math.round(totalEarnings / totalDeliveries)}` : "₹0"}
                 </p>
@@ -150,9 +150,9 @@ export default function RiderAnalyticsPage() {
 
             {/* Earnings Chart */}
             <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-sm">
-              <h3 className="font-bold text-slate-800 mb-4">Earnings This {period.charAt(0).toUpperCase() + period.slice(1)}</h3>
+              <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Earnings This {period.charAt(0).toUpperCase() + period.slice(1)}</h3>
               {totalEarnings === 0 ? (
-                <div className="text-center py-8 text-slate-400">
+                <div className="text-center py-8 text-[var(--color-outline-variant)]">
                   <span className="material-symbols-outlined text-4xl">bar_chart</span>
                   <p className="text-sm mt-2">No deliveries yet this {period}</p>
                 </div>
@@ -172,7 +172,7 @@ export default function RiderAnalyticsPage() {
               )}
               <div className="flex justify-between mt-2">
                 {weeklyData.map((d, i) => (
-                  <span key={i} className="text-[10px] text-slate-400">{d.day}</span>
+                  <span key={i} className="text-[10px] text-[var(--color-outline-variant)]">{d.day}</span>
                 ))}
               </div>
             </div>
@@ -181,14 +181,14 @@ export default function RiderAnalyticsPage() {
             <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-sm space-y-3">
               
 
-              <div className="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+              <div className="flex items-center justify-between p-3 bg-[var(--color-surface-subtle)] rounded-xl">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
                     <span className="material-symbols-outlined text-green-600">route</span>
                   </div>
                   <div>
                     <p className="font-bold text-sm">Total Distance</p>
-                    <p className="text-xs text-slate-400">This {period}</p>
+                    <p className="text-xs text-[var(--color-outline-variant)]">This {period}</p>
                   </div>
                 </div>
                 <p className="font-black text-green-600">{totalDeliveries > 0 ? `${Math.round(totalDeliveries * 3)} km` : "0 km"}</p>
@@ -199,7 +199,7 @@ export default function RiderAnalyticsPage() {
 
             {/* Rating Breakdown */}
             <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-sm">
-              <h3 className="font-bold text-slate-800 mb-4">Rating Breakdown</h3>
+              <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Rating Breakdown</h3>
               <div className="flex items-center gap-4">
                 <div className="text-center">
                   <p className="text-4xl font-black text-amber-500">{avgRating}</p>
@@ -208,7 +208,7 @@ export default function RiderAnalyticsPage() {
                       <span key={n} className="material-symbols-outlined text-amber-400 text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
                     ))}
                   </div>
-                  <p className="text-xs text-slate-400 mt-1">{rider?.total_deliveries || 0} ratings</p>
+                  <p className="text-xs text-[var(--color-outline-variant)] mt-1">{rider?.total_deliveries || 0} ratings</p>
                 </div>
               </div>
             </div>

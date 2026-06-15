@@ -115,11 +115,11 @@ export default function RiderTrainingPage() {
               {watchedCount}/{videos.length} completed
             </span>
           </div>
-          <div className="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+          <div className="w-full bg-[var(--color-surface-container)] rounded-full h-3 overflow-hidden">
             <div className="h-full bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full" style={{ width: `${(watchedCount / videos.length) * 100}%` }} />
           </div>
           <div className="flex justify-between mt-2 text-xs">
-            <span className="text-slate-400">Keep learning!</span>
+            <span className="text-[var(--color-outline-variant)]">Keep learning!</span>
             <span className="text-blue-600 font-bold">{pointsEarned} points earned</span>
           </div>
         </div>
@@ -133,7 +133,7 @@ export default function RiderTrainingPage() {
               className={`flex-shrink-0 px-4 py-2 rounded-full text-xs font-bold transition-all ${
                 activeCategory === cat 
                   ? "bg-[#0b50d5] text-white" 
-                  : "bg-[var(--color-surface-container-lowest)] text-slate-500"
+                  : "bg-[var(--color-surface-container-lowest)] text-[var(--color-outline)]"
               }`}
             >
               {cat}
@@ -149,7 +149,7 @@ export default function RiderTrainingPage() {
               onClick={() => openVideo(video)}
               className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-sm cursor-pointer hover:shadow-lg transition-all"
             >
-              <div className="w-full h-24 bg-slate-100 rounded-xl flex items-center justify-center text-4xl mb-3 relative">
+              <div className="w-full h-24 bg-[var(--color-surface-container)] rounded-xl flex items-center justify-center text-4xl mb-3 relative">
                 {video.thumbnail}
                 {video.isWatched && (
                   <span className="absolute top-2 right-2 text-green-500">✓</span>
@@ -159,8 +159,8 @@ export default function RiderTrainingPage() {
                 </div>
               </div>
               <h3 className="font-bold text-sm text-[#4d212a] line-clamp-1">{video.title}</h3>
-              <p className="text-xs text-slate-400 line-clamp-1">{video.description}</p>
-              <span className="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded mt-1 inline-block">
+              <p className="text-xs text-[var(--color-outline-variant)] line-clamp-1">{video.description}</p>
+              <span className="text-[10px] bg-[var(--color-surface-container)] text-[var(--color-outline)] px-2 py-0.5 rounded mt-1 inline-block">
                 {video.category}
               </span>
             </div>
@@ -192,7 +192,7 @@ export default function RiderTrainingPage() {
               { tip: "Use shortcuts for faster delivery", icon: "⚡" },
               { tip: "Stay online during peak hours", icon: "🔥" },
             ].map((item, i) => (
-              <div key={i} className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl">
+              <div key={i} className="flex items-center gap-3 p-3 bg-[var(--color-surface-subtle)] rounded-xl">
                 <span className="text-xl">{item.icon}</span>
                 <p className="text-sm font-medium">{item.tip}</p>
               </div>
@@ -235,9 +235,9 @@ export default function RiderTrainingPage() {
             </div>
             <div className="p-5">
               <h3 className="font-bold text-xl mb-2">{selectedVideo.title}</h3>
-              <p className="text-sm text-slate-500 mb-4">{selectedVideo.description}</p>
+              <p className="text-sm text-[var(--color-outline)] mb-4">{selectedVideo.description}</p>
               <div className="flex items-center justify-between mb-4">
-                <span className="text-sm text-slate-400">{selectedVideo.duration}</span>
+                <span className="text-sm text-[var(--color-outline-variant)]">{selectedVideo.duration}</span>
                 <span className="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded">{selectedVideo.category}</span>
               </div>
               <button 
@@ -246,7 +246,7 @@ export default function RiderTrainingPage() {
               >
                 Mark as Complete
               </button>
-              <button onClick={() => setShowVideoModal(false)} className="w-full py-3 text-slate-500 font-bold mt-2">
+              <button onClick={() => setShowVideoModal(false)} className="w-full py-3 text-[var(--color-outline)] font-bold mt-2">
                 Close
               </button>
             </div>
@@ -282,14 +282,14 @@ export default function RiderTrainingPage() {
                         alert("Try again!");
                       }
                     }}
-                    className="w-full p-3 bg-slate-50 rounded-xl font-bold text-sm hover:bg-slate-100"
+                    className="w-full p-3 bg-[var(--color-surface-subtle)] rounded-xl font-bold text-sm hover:bg-[var(--color-surface-container)]"
                   >
                     {opt}
                   </button>
                 ))}
               </div>
             </div>
-            <button onClick={() => setShowQuiz(false)} className="w-full py-3 text-slate-500 font-bold">
+            <button onClick={() => setShowQuiz(false)} className="w-full py-3 text-[var(--color-outline)] font-bold">
               Close
             </button>
           </div>

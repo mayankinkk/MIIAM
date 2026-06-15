@@ -230,12 +230,12 @@ export default function AdminPrintingPage() {
   return (
     <div className="p-8">
       <div className="flex items-center gap-4 mb-6">
-        <Link href="/admin" className="text-slate-400 hover:text-slate-600">
+        <Link href="/admin" className="text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]">
           <span className="material-symbols-outlined text-3xl">arrow_back</span>
         </Link>
         <div className="flex-1">
-          <h1 className="text-2xl font-black text-slate-800">Print Store Orders</h1>
-          <p className="text-slate-500 text-sm">Manage print delivery orders</p>
+          <h1 className="text-2xl font-black text-[var(--color-on-surface)]">Print Store Orders</h1>
+          <p className="text-[var(--color-outline)] text-sm">Manage print delivery orders</p>
         </div>
         <div className="flex gap-2">
           <Link
@@ -257,22 +257,22 @@ export default function AdminPrintingPage() {
 
       {/* Pricing Settings */}
       <div className="mb-4">
-        <button onClick={() => setShowPricing(!showPricing)} className="flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-slate-800">
+        <button onClick={() => setShowPricing(!showPricing)} className="flex items-center gap-2 text-sm font-bold text-[var(--color-on-surface-variant)] hover:text-[var(--color-on-surface)]">
           <span className="material-symbols-outlined text-lg">payments</span>
           Pricing Settings
           <span className="material-symbols-outlined text-sm">{showPricing ? "expand_less" : "expand_more"}</span>
         </button>
         {showPricing && (
-          <div className="mt-2 bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-100 p-4 max-w-md space-y-3">
+          <div className="mt-2 bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] p-4 max-w-md space-y-3">
             {(["bwPerPage", "colorPerPage", "glossySurcharge", "a3Surcharge"] as const).map((key) => (
               <div key={key} className="flex items-center justify-between">
-                <label className="text-sm font-bold text-slate-600 capitalize">{key.replace(/([A-Z])/g, " $1")} (₹)</label>
-                <input type="number" value={pricing[key]} onChange={(e) => setPricing({ ...pricing, [key]: Math.max(0, parseInt(e.target.value) || 0) })} className="w-24 px-3 py-1.5 border border-slate-200 rounded-lg text-sm text-right" />
+                <label className="text-sm font-bold text-[var(--color-on-surface-variant)] capitalize">{key.replace(/([A-Z])/g, " $1")} (₹)</label>
+                <input type="number" value={pricing[key]} onChange={(e) => setPricing({ ...pricing, [key]: Math.max(0, parseInt(e.target.value) || 0) })} className="w-24 px-3 py-1.5 border border-[var(--color-border-subtle)] rounded-lg text-sm text-right" />
               </div>
             ))}
             <div className="flex gap-2 pt-2">
               <button onClick={handleSavePricing} className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-bold hover:bg-indigo-700">Save</button>
-              <button onClick={() => { setPricing(getPrintingPricing()); setShowPricing(false); }} className="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-sm font-bold">Cancel</button>
+              <button onClick={() => { setPricing(getPrintingPricing()); setShowPricing(false); }} className="px-4 py-2 bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] rounded-lg text-sm font-bold">Cancel</button>
             </div>
           </div>
         )}
@@ -280,47 +280,47 @@ export default function AdminPrintingPage() {
 
       {/* Add-on & Rush Pricing */}
       <div className="mb-4">
-        <button onClick={() => setShowAddons(!showAddons)} className="flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-slate-800">
+        <button onClick={() => setShowAddons(!showAddons)} className="flex items-center gap-2 text-sm font-bold text-[var(--color-on-surface-variant)] hover:text-[var(--color-on-surface)]">
           <span className="material-symbols-outlined text-lg">add_circle</span>
           Add-on & rush pricing
           <span className="material-symbols-outlined text-sm">{showAddons ? "expand_less" : "expand_more"}</span>
         </button>
         {showAddons && (
-          <div className="mt-2 bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-100 p-4 max-w-2xl space-y-4">
+          <div className="mt-2 bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] p-4 max-w-2xl space-y-4">
             <div>
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Rush tier multipliers</p>
+              <p className="text-xs font-bold text-[var(--color-outline)] uppercase tracking-widest mb-2">Rush tier multipliers</p>
               <div className="grid grid-cols-2 gap-2">
                 <div className="flex items-center justify-between">
-                  <label className="text-sm text-slate-600">Rush 30-min (×)</label>
+                  <label className="text-sm text-[var(--color-on-surface-variant)]">Rush 30-min (×)</label>
                   <input
                     type="number"
                     step="0.05"
                     min={1}
                     value={addOnPricing.rush30Multiplier}
                     onChange={(e) => setAddOnPricing({ ...addOnPricing, rush30Multiplier: Math.max(1, parseFloat(e.target.value) || 1) })}
-                    className="w-24 px-3 py-1.5 border border-slate-200 rounded-lg text-sm text-right"
+                    className="w-24 px-3 py-1.5 border border-[var(--color-border-subtle)] rounded-lg text-sm text-right"
                   />
                 </div>
                 <div className="flex items-center justify-between">
-                  <label className="text-sm text-slate-600">Rush 15-min (×)</label>
+                  <label className="text-sm text-[var(--color-on-surface-variant)]">Rush 15-min (×)</label>
                   <input
                     type="number"
                     step="0.05"
                     min={1}
                     value={addOnPricing.rush15Multiplier}
                     onChange={(e) => setAddOnPricing({ ...addOnPricing, rush15Multiplier: Math.max(1, parseFloat(e.target.value) || 1) })}
-                    className="w-24 px-3 py-1.5 border border-slate-200 rounded-lg text-sm text-right"
+                    className="w-24 px-3 py-1.5 border border-[var(--color-border-subtle)] rounded-lg text-sm text-right"
                   />
                 </div>
               </div>
             </div>
 
             <div>
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Add-on prices (₹)</p>
+              <p className="text-xs font-bold text-[var(--color-outline)] uppercase tracking-widest mb-2">Add-on prices (₹)</p>
               <div className="grid grid-cols-2 gap-2">
                 {ADDON_CATALOG.map((a) => (
                   <div key={a.id} className="flex items-center justify-between">
-                    <label className="text-xs text-slate-600 truncate pr-2">{a.label} {a.unitLabel}</label>
+                    <label className="text-xs text-[var(--color-on-surface-variant)] truncate pr-2">{a.label} {a.unitLabel}</label>
                     <input
                       type="number"
                       step="0.5"
@@ -332,7 +332,7 @@ export default function AdminPrintingPage() {
                           [a.pricingKey]: Math.max(0, parseFloat(e.target.value) || 0),
                         })
                       }
-                      className="w-20 px-2 py-1 border border-slate-200 rounded-lg text-xs text-right"
+                      className="w-20 px-2 py-1 border border-[var(--color-border-subtle)] rounded-lg text-xs text-right"
                     />
                   </div>
                 ))}
@@ -341,7 +341,7 @@ export default function AdminPrintingPage() {
 
             <div className="flex gap-2 pt-2">
               <button onClick={handleSaveAddons} className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-bold hover:bg-indigo-700">Save</button>
-              <button onClick={() => { setAddOnPricing(getAddOnPricing()); setShowAddons(false); }} className="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-sm font-bold">Cancel</button>
+              <button onClick={() => { setAddOnPricing(getAddOnPricing()); setShowAddons(false); }} className="px-4 py-2 bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] rounded-lg text-sm font-bold">Cancel</button>
               <button
                 onClick={() => setAddOnPricing(DEFAULT_ADDON_PRICING)}
                 className="px-4 py-2 bg-amber-50 text-amber-700 rounded-lg text-sm font-bold"
@@ -355,7 +355,7 @@ export default function AdminPrintingPage() {
 
       {/* Services Catalog */}
       <div className="mb-4">
-        <button onClick={() => setShowServicesCatalog(!showServicesCatalog)} className="flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-slate-800">
+        <button onClick={() => setShowServicesCatalog(!showServicesCatalog)} className="flex items-center gap-2 text-sm font-bold text-[var(--color-on-surface-variant)] hover:text-[var(--color-on-surface)]">
           <span className="material-symbols-outlined text-lg">dashboard_customize</span>
           Services catalog
           <span className="material-symbols-outlined text-sm">{showServicesCatalog ? "expand_less" : "expand_more"}</span>
@@ -364,9 +364,9 @@ export default function AdminPrintingPage() {
       </div>
 
       <div className="grid grid-cols-4 gap-4 mb-4">
-        <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-slate-100">
-          <p className="text-slate-400 text-xs font-bold">TOTAL</p>
-          <p className="text-2xl font-black text-slate-800 mt-1">{stats.total}</p>
+        <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-[var(--color-border-subtle)]">
+          <p className="text-[var(--color-outline-variant)] text-xs font-bold">TOTAL</p>
+          <p className="text-2xl font-black text-[var(--color-on-surface)] mt-1">{stats.total}</p>
         </div>
         <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-200">
           <p className="text-yellow-600 text-xs font-bold">PENDING</p>
@@ -387,39 +387,39 @@ export default function AdminPrintingPage() {
           <p className="text-indigo-500 text-[10px] font-bold">TODAY</p>
           <p className="text-xl font-black text-indigo-700">{stats.today}</p>
         </div>
-        <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
-          <p className="text-slate-400 text-[10px] font-bold">B&W</p>
-          <p className="text-xl font-black text-slate-700">{stats.bw}</p>
+        <div className="bg-[var(--color-surface-subtle)] p-3 rounded-xl border border-[var(--color-border-subtle)]">
+          <p className="text-[var(--color-outline-variant)] text-[10px] font-bold">B&W</p>
+          <p className="text-xl font-black text-[var(--color-on-surface)]">{stats.bw}</p>
         </div>
-        <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
-          <p className="text-slate-400 text-[10px] font-bold">COLOR</p>
-          <p className="text-xl font-black text-slate-700">{stats.color}</p>
+        <div className="bg-[var(--color-surface-subtle)] p-3 rounded-xl border border-[var(--color-border-subtle)]">
+          <p className="text-[var(--color-outline-variant)] text-[10px] font-bold">COLOR</p>
+          <p className="text-xl font-black text-[var(--color-on-surface)]">{stats.color}</p>
         </div>
-        <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
-          <p className="text-slate-400 text-[10px] font-bold">A4/A3</p>
-          <p className="text-xl font-black text-slate-700">{stats.a4}/{stats.a3}</p>
+        <div className="bg-[var(--color-surface-subtle)] p-3 rounded-xl border border-[var(--color-border-subtle)]">
+          <p className="text-[var(--color-outline-variant)] text-[10px] font-bold">A4/A3</p>
+          <p className="text-xl font-black text-[var(--color-on-surface)]">{stats.a4}/{stats.a3}</p>
         </div>
-        <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
-          <p className="text-slate-400 text-[10px] font-bold">AVG ORDER</p>
-          <p className="text-xl font-black text-slate-700">₹{stats.avgOrderValue}</p>
+        <div className="bg-[var(--color-surface-subtle)] p-3 rounded-xl border border-[var(--color-border-subtle)]">
+          <p className="text-[var(--color-outline-variant)] text-[10px] font-bold">AVG ORDER</p>
+          <p className="text-xl font-black text-[var(--color-on-surface)]">₹{stats.avgOrderValue}</p>
         </div>
       </div>
 
       <div className="flex gap-4 mb-6">
         <div className="flex-1 relative">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined">search</span>
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-outline-variant)] material-symbols-outlined">search</span>
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search by order ID..."
-            className="w-full pl-10 pr-4 py-3 bg-[var(--color-surface-container-lowest)] border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500"
+            className="w-full pl-10 pr-4 py-3 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:border-indigo-500"
           />
         </div>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="px-4 py-3 bg-[var(--color-surface-container-lowest)] border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500"
+          className="px-4 py-3 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:border-indigo-500"
         >
           <option value="all">All Status</option>
           <option value="pending">Pending</option>
@@ -432,24 +432,24 @@ export default function AdminPrintingPage() {
       </div>
 
       {filteredOrders.length === 0 ? (
-        <div className="text-center py-12 text-slate-500 bg-[var(--color-surface-container-lowest)] rounded-xl">
-          <span className="material-symbols-outlined text-5xl text-slate-300">print</span>
+        <div className="text-center py-12 text-[var(--color-outline)] bg-[var(--color-surface-container-lowest)] rounded-xl">
+          <span className="material-symbols-outlined text-5xl text-[var(--color-outline-variant)]/60">print</span>
           <p className="mt-4 font-bold">No print orders yet</p>
         </div>
       ) : (
         <>
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-100 overflow-hidden">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] overflow-hidden">
           <table className="w-full">
-            <thead className="bg-slate-50">
+            <thead className="bg-[var(--color-surface-subtle)]">
               <tr>
-                <th className="text-left p-4 font-bold text-slate-600 text-sm">Priority</th>
-                <th className="text-left p-4 font-bold text-slate-600 text-sm">Order ID</th>
-                <th className="text-left p-4 font-bold text-slate-600 text-sm">Items</th>
-                <th className="text-left p-4 font-bold text-slate-600 text-sm">Print Settings</th>
-                <th className="text-left p-4 font-bold text-slate-600 text-sm">Total</th>
-                <th className="text-left p-4 font-bold text-slate-600 text-sm">Status</th>
-                <th className="text-left p-4 font-bold text-slate-600 text-sm">Date</th>
-                <th className="text-left p-4 font-bold text-slate-600 text-sm">Action</th>
+                <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Priority</th>
+                <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Order ID</th>
+                <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Items</th>
+                <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Print Settings</th>
+                <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Total</th>
+                <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Status</th>
+                <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Date</th>
+                <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -458,21 +458,21 @@ export default function AdminPrintingPage() {
                 let settings: Record<string, any> = {};
     try { if (item?.special_notes) settings = JSON.parse(item.special_notes); } catch { /* corrupted data, ignore */ }
                 return (
-                  <tr key={order.id} className={`border-t border-slate-100 hover:bg-slate-50 ${order.priority > 0 ? "bg-amber-50/50" : ""}`}>
+                  <tr key={order.id} className={`border-t border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)] ${order.priority > 0 ? "bg-amber-50/50" : ""}`}>
                     <td className="p-4">
                       <button onClick={async () => {
                         const newPriority = order.priority > 0 ? 0 : 1;
                         await supabase.from("orders").update({ priority: newPriority }).eq("id", order.id);
                         loadOrders();
-                      }} className={`w-10 h-10 rounded-full flex items-center justify-center ${order.priority > 0 ? "bg-amber-200 text-amber-700" : "bg-slate-100 text-slate-400 hover:bg-amber-100"}`}>
+                      }} className={`w-10 h-10 rounded-full flex items-center justify-center ${order.priority > 0 ? "bg-amber-200 text-amber-700" : "bg-[var(--color-surface-container)] text-[var(--color-outline-variant)] hover:bg-amber-100"}`}>
                         <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
                       </button>
                     </td>
-                    <td className="p-4 font-bold text-slate-800 text-sm">{order.id.slice(0, 8)}...</td>
-                    <td className="p-4 text-slate-600 text-sm">
+                    <td className="p-4 font-bold text-[var(--color-on-surface)] text-sm">{order.id.slice(0, 8)}...</td>
+                    <td className="p-4 text-[var(--color-on-surface-variant)] text-sm">
                       {item?.name || "-"}
                     </td>
-                    <td className="p-4 text-slate-600 text-sm">
+                    <td className="p-4 text-[var(--color-on-surface-variant)] text-sm">
                       <div className="flex flex-wrap gap-1">
                         {settings.pages && <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded text-xs font-semibold">{settings.pages}pg</span>}
                         {settings.copies && <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded text-xs font-semibold">{settings.copies}cp</span>}
@@ -485,10 +485,10 @@ export default function AdminPrintingPage() {
                             const printed = settings.fileStatuses?.[fi];
                             return (
                               <div key={fi} className="flex items-center gap-1">
-                                <button onClick={() => toggleFilePrinted(order.id, fi, settings)} className={`w-3.5 h-3.5 rounded border flex items-center justify-center ${printed ? "bg-green-500 border-green-500" : "border-slate-300"}`}>
+                                <button onClick={() => toggleFilePrinted(order.id, fi, settings)} className={`w-3.5 h-3.5 rounded border flex items-center justify-center ${printed ? "bg-green-500 border-green-500" : "border-[var(--color-outline-variant)]"}`}>
                                   {printed && <span className="material-symbols-outlined text-white text-[10px]" style={{ fontVariationSettings: "'FILL' 1" }}>check</span>}
                                 </button>
-                                <span className={`text-xs truncate block max-w-[180px] ${printed ? "text-green-600 line-through" : "text-slate-600"}`}>
+                                <span className={`text-xs truncate block max-w-[180px] ${printed ? "text-green-600 line-through" : "text-[var(--color-on-surface-variant)]"}`}>
                                   {name}
                                 </span>
                               </div>
@@ -497,13 +497,13 @@ export default function AdminPrintingPage() {
                         </div>
                       )}
                     </td>
-                    <td className="p-4 font-bold text-slate-800">₹{order.total_amount}</td>
+                    <td className="p-4 font-bold text-[var(--color-on-surface)]">₹{order.total_amount}</td>
                     <td className="p-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-bold capitalize ${statusColors[order.status] || "bg-slate-100 text-slate-700"}`}>
+                      <span className={`px-3 py-1 rounded-full text-xs font-bold capitalize ${statusColors[order.status] || "bg-[var(--color-surface-container)] text-[var(--color-on-surface)]"}`}>
                         {order.status.replace(/_/g, " ")}
                       </span>
                     </td>
-                    <td className="p-4 text-slate-500 text-sm">{new Date(order.placed_at).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</td>
+                    <td className="p-4 text-[var(--color-outline)] text-sm">{new Date(order.placed_at).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</td>
                     <td className="p-4">
                       <button
                         onClick={() => handleSelectOrder(order)}
@@ -519,15 +519,15 @@ export default function AdminPrintingPage() {
           </table>
         </div>
         {totalPages > 1 && (
-          <div className="flex items-center justify-between mt-4 bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-100 p-3">
-            <p className="text-xs text-slate-500">
+          <div className="flex items-center justify-between mt-4 bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] p-3">
+            <p className="text-xs text-[var(--color-outline)]">
               Showing {((page - 1) * PAGE_SIZE) + 1}–{Math.min(page * PAGE_SIZE, filteredOrders.length)} of {filteredOrders.length}
             </p>
             <div className="flex gap-1">
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className="px-3 py-1 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 disabled:opacity-40"
+                className="px-3 py-1 text-xs font-bold rounded-lg bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] disabled:opacity-40"
               >
                 Prev
               </button>
@@ -538,7 +538,7 @@ export default function AdminPrintingPage() {
                   <button
                     key={pageNum}
                     onClick={() => setPage(pageNum)}
-                    className={`w-10 h-10 text-xs font-bold rounded-lg ${pageNum === page ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-600"}`}
+                    className={`w-10 h-10 text-xs font-bold rounded-lg ${pageNum === page ? "bg-indigo-600 text-white" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"}`}
                   >
                     {pageNum}
                   </button>
@@ -547,7 +547,7 @@ export default function AdminPrintingPage() {
               <button
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
-                className="px-3 py-1 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 disabled:opacity-40"
+                className="px-3 py-1 text-xs font-bold rounded-lg bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] disabled:opacity-40"
               >
                 Next
               </button>
@@ -577,26 +577,26 @@ export default function AdminPrintingPage() {
               <div className="flex items-center justify-between p-6 pb-0">
                 <div>
                   <h3 className="font-bold text-lg">Order Details</h3>
-                  <p className="text-sm text-slate-500">#{selectedOrder.id.slice(0, 8)} · {new Date(selectedOrder.placed_at).toLocaleString("en-IN")}</p>
+                  <p className="text-sm text-[var(--color-outline)]">#{selectedOrder.id.slice(0, 8)} · {new Date(selectedOrder.placed_at).toLocaleString("en-IN")}</p>
                 </div>
-                <button onClick={() => setSelectedOrder(null)} className="w-11 h-11 bg-slate-100 rounded-full flex items-center justify-center shrink-0">
+                <button onClick={() => setSelectedOrder(null)} className="w-11 h-11 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center shrink-0">
                   <span className="material-symbols-outlined text-sm">close</span>
                 </button>
               </div>
 
               <div className="p-6 space-y-4">
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                  <div className="bg-slate-50 rounded-xl p-3">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total</p>
-                    <p className="text-lg font-black text-slate-800">₹{selectedOrder.total_amount}</p>
+                  <div className="bg-[var(--color-surface-subtle)] rounded-xl p-3">
+                    <p className="text-[10px] font-bold text-[var(--color-outline-variant)] uppercase tracking-wider">Total</p>
+                    <p className="text-lg font-black text-[var(--color-on-surface)]">₹{selectedOrder.total_amount}</p>
                   </div>
-                  <div className="bg-slate-50 rounded-xl p-3">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Payment</p>
-                    <p className="text-sm font-bold text-slate-800 uppercase">{selectedOrder.payment_method || "N/A"}</p>
+                  <div className="bg-[var(--color-surface-subtle)] rounded-xl p-3">
+                    <p className="text-[10px] font-bold text-[var(--color-outline-variant)] uppercase tracking-wider">Payment</p>
+                    <p className="text-sm font-bold text-[var(--color-on-surface)] uppercase">{selectedOrder.payment_method || "N/A"}</p>
                   </div>
-                  <div className="bg-slate-50 rounded-xl p-3">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Address</p>
-                    <p className="text-sm font-medium text-slate-700 truncate">{selectedOrder.delivery_address || "N/A"}</p>
+                  <div className="bg-[var(--color-surface-subtle)] rounded-xl p-3">
+                    <p className="text-[10px] font-bold text-[var(--color-outline-variant)] uppercase tracking-wider">Address</p>
+                    <p className="text-sm font-medium text-[var(--color-on-surface)] truncate">{selectedOrder.delivery_address || "N/A"}</p>
                   </div>
                 </div>
 
@@ -636,7 +636,7 @@ export default function AdminPrintingPage() {
                 {hasAnyFiles && (
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider">Customer Files ({selFileNames.length})</h4>
+                      <h4 className="text-xs font-bold text-[var(--color-outline)] uppercase tracking-wider">Customer Files ({selFileNames.length})</h4>
                       <div className="flex items-center gap-2">
                         {signingUrls && <span className="text-[10px] text-indigo-500 font-bold animate-pulse">Generating access links...</span>}
                         {selFileStatuses.length > 0 && (
@@ -644,7 +644,7 @@ export default function AdminPrintingPage() {
                         )}
                       </div>
                     </div>
-                    <div className="divide-y divide-slate-100 border border-slate-100 rounded-xl overflow-hidden">
+                    <div className="divide-y divide-[var(--color-border-subtle)] border border-[var(--color-border-subtle)] rounded-xl overflow-hidden">
                       {selFileNames.map((name: string, fi: number) => {
                         const printed = selFileStatuses[fi];
                         const originalUrl = selFileUrls[fi] || "";
@@ -655,13 +655,13 @@ export default function AdminPrintingPage() {
                           <div key={fi} className={`flex items-center gap-3 p-3 ${printed ? "bg-emerald-50/50" : "bg-white"}`}>
                             <button
                               onClick={() => toggleFilePrinted(selectedOrder.id, fi, selSettings)}
-                              className={`w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 ${printed ? "bg-emerald-500 border-emerald-500" : "border-slate-300 hover:border-indigo-400"}`}
+                              className={`w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 ${printed ? "bg-emerald-500 border-emerald-500" : "border-[var(--color-outline-variant)] hover:border-indigo-400"}`}
                             >
                               {printed && <span className="material-symbols-outlined text-white text-xs" style={{ fontVariationSettings: "'FILL' 1" }}>check</span>}
                             </button>
                             <div className="min-w-0 flex-1">
-                              <p className={`text-sm font-bold truncate ${printed ? "text-emerald-700 line-through" : "text-slate-800"}`}>{name}</p>
-                              <p className="text-[10px] text-slate-400">{isPdf ? "PDF" : isImage ? "Image" : "File"}</p>
+                              <p className={`text-sm font-bold truncate ${printed ? "text-emerald-700 line-through" : "text-[var(--color-on-surface)]"}`}>{name}</p>
+                              <p className="text-[10px] text-[var(--color-outline-variant)]">{isPdf ? "PDF" : isImage ? "Image" : "File"}</p>
                             </div>
                             <div className="flex items-center gap-1 shrink-0">
                               {accessibleUrl && (
@@ -677,7 +677,7 @@ export default function AdminPrintingPage() {
                                 <a
                                   href={accessibleUrl}
                                   download={name}
-                                  className="w-10 h-10 rounded-lg bg-slate-50 text-slate-600 flex items-center justify-center hover:bg-slate-100 transition-colors"
+                                  className="w-10 h-10 rounded-lg bg-[var(--color-surface-subtle)] text-[var(--color-on-surface-variant)] flex items-center justify-center hover:bg-[var(--color-surface-container)] transition-colors"
                                   title="Download"
                                 >
                                   <span className="material-symbols-outlined text-base">download</span>
@@ -703,7 +703,7 @@ export default function AdminPrintingPage() {
                 )}
 
                 <div className="pt-2">
-                  <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Update Status</h4>
+                  <h4 className="text-xs font-bold text-[var(--color-outline)] uppercase tracking-wider mb-2">Update Status</h4>
                   <div className="flex flex-wrap gap-2">
                     {["pending", "processing", "ready_for_pickup", "on_the_way", "delivered", "cancelled"].map((status) => (
                       <button
@@ -717,7 +717,7 @@ export default function AdminPrintingPage() {
                         className={`px-4 py-2 rounded-lg text-sm font-bold capitalize ${
                           selectedOrder.status === status
                             ? "bg-indigo-600 text-white"
-                            : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                            : "bg-[var(--color-surface-container)] text-[var(--color-on-surface)] hover:bg-[var(--color-surface-container-high)]"
                         }`}
                       >
                         {status.replace(/_/g, " ")}
@@ -754,29 +754,29 @@ export default function AdminPrintingPage() {
       {previewFile && (
         <div className="fixed inset-0 z-[70] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setPreviewFile(null)}>
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between p-4 border-b border-slate-100">
+            <div className="flex items-center justify-between p-4 border-b border-[var(--color-border-subtle)]">
               <div className="flex-1 min-w-0 pr-2">
-                <h3 className="font-bold text-slate-800 truncate">{previewFile.name}</h3>
-                <p className="text-xs text-slate-500">{previewFile.type}</p>
+                <h3 className="font-bold text-[var(--color-on-surface)] truncate">{previewFile.name}</h3>
+                <p className="text-xs text-[var(--color-outline)]">{previewFile.type}</p>
               </div>
-              <button onClick={() => setPreviewFile(null)} className="w-11 h-11 bg-slate-100 rounded-full flex items-center justify-center hover:bg-slate-200">
-                <span className="material-symbols-outlined text-slate-600">close</span>
+              <button onClick={() => setPreviewFile(null)} className="w-11 h-11 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center hover:bg-[var(--color-surface-container-high)]">
+                <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">close</span>
               </button>
             </div>
-            <div className="flex-1 overflow-auto bg-slate-50 p-4 flex items-center justify-center min-h-[400px]">
+            <div className="flex-1 overflow-auto bg-[var(--color-surface-subtle)] p-4 flex items-center justify-center min-h-[400px]">
               {previewFile.type.startsWith("image/") ? (
                 <img src={previewFile.url} alt={previewFile.name} className="max-w-full max-h-[75vh] object-contain rounded-lg shadow-md" />
               ) : previewFile.type === "application/pdf" || previewFile.name.toLowerCase().endsWith(".pdf") ? (
                 <iframe src={previewFile.url} title={previewFile.name} className="w-full h-[75vh] bg-[var(--color-surface-container-lowest)] rounded-lg shadow-md border-0" />
               ) : (
-                <div className="text-slate-500">Preview not available for this file type</div>
+                <div className="text-[var(--color-outline)]">Preview not available for this file type</div>
               )}
             </div>
-            <div className="flex gap-2 p-4 border-t border-slate-100">
+            <div className="flex gap-2 p-4 border-t border-[var(--color-border-subtle)]">
               <a href={previewFile.url} target="_blank" rel="noopener noreferrer" className="flex-1 py-2 bg-indigo-600 text-white rounded-lg text-sm font-bold text-center hover:bg-indigo-700">
                 Open in new tab
               </a>
-              <a href={previewFile.url} download={previewFile.name} className="flex-1 py-2 bg-slate-100 text-slate-700 rounded-lg text-sm font-bold text-center hover:bg-slate-200">
+              <a href={previewFile.url} download={previewFile.name} className="flex-1 py-2 bg-[var(--color-surface-container)] text-[var(--color-on-surface)] rounded-lg text-sm font-bold text-center hover:bg-[var(--color-surface-container-high)]">
                 Download
               </a>
             </div>

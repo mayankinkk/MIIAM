@@ -123,33 +123,33 @@ export default function CustomizationModal({ item, vendor_id, vendor_name, onClo
 
       <div className="relative w-full max-w-sm bg-[var(--color-surface-container-lowest)] rounded-t-3xl sm:rounded-3xl flex flex-col animate-slide-up">
         {/* Header */}
-        <div className="bg-white z-10 border-b border-slate-100 px-6 py-4 flex items-center justify-between rounded-t-3xl sm:rounded-t-3xl">
+        <div className="bg-white z-10 border-b border-[var(--color-border-subtle)] px-6 py-4 flex items-center justify-between rounded-t-3xl sm:rounded-t-3xl">
           <div>
-            <h2 className="text-lg font-extrabold text-slate-900">Add to Cart</h2>
-            <p className="text-sm text-slate-500">{item.name}</p>
+            <h2 className="text-lg font-extrabold text-[var(--color-on-surface)]">Add to Cart</h2>
+            <p className="text-sm text-[var(--color-outline)]">{item.name}</p>
           </div>
-          <button onClick={onClose} aria-label="Close" className="w-11 h-11 rounded-full bg-slate-100 flex items-center justify-center">
-            <span className="material-symbols-outlined text-slate-600 text-[18px]">close</span>
+          <button onClick={onClose} aria-label="Close" className="w-11 h-11 rounded-full bg-[var(--color-surface-container)] flex items-center justify-center">
+            <span className="material-symbols-outlined text-[var(--color-on-surface-variant)] text-[18px]">close</span>
           </button>
         </div>
 
         {/* Content */}
         <div className="px-6 py-5 space-y-5">
           {/* Item Preview */}
-          <div className="flex gap-4 bg-slate-50 rounded-2xl p-4">
-            <div className="w-16 h-16 rounded-xl overflow-hidden bg-slate-200 flex-shrink-0">
+          <div className="flex gap-4 bg-[var(--color-surface-subtle)] rounded-2xl p-4">
+            <div className="w-16 h-16 rounded-xl overflow-hidden bg-[var(--color-surface-container-high)] flex-shrink-0">
               {item.image_url ? (
                 <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
-                  <span className="material-symbols-outlined text-slate-400">restaurant</span>
+                  <span className="material-symbols-outlined text-[var(--color-outline-variant)]">restaurant</span>
                 </div>
               )}
             </div>
             <div className="flex-1">
-              <h3 className="font-extrabold text-slate-900">{item.name}</h3>
+              <h3 className="font-extrabold text-[var(--color-on-surface)]">{item.name}</h3>
               {item.description && (
-                <p className="text-xs text-slate-500 mt-1 line-clamp-2">{item.description}</p>
+                <p className="text-xs text-[var(--color-outline)] mt-1 line-clamp-2">{item.description}</p>
               )}
               <p className="text-base font-extrabold text-[#ba001c] mt-1">₹{item.price}</p>
             </div>
@@ -157,15 +157,15 @@ export default function CustomizationModal({ item, vendor_id, vendor_name, onClo
 
           {/* Quantity */}
           <div>
-            <h3 className="font-bold text-slate-800 mb-3">Quantity</h3>
-            <div className="flex items-center gap-4 bg-slate-50 rounded-2xl p-2 w-fit">
+            <h3 className="font-bold text-[var(--color-on-surface)] mb-3">Quantity</h3>
+            <div className="flex items-center gap-4 bg-[var(--color-surface-subtle)] rounded-2xl p-2 w-fit">
               <button
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
                 className="w-10 h-10 rounded-xl bg-[var(--color-surface-container-lowest)] shadow flex items-center justify-center hover:bg-[#ffe1e4] transition-colors"
               >
                 <span className="material-symbols-outlined text-[#ba001c]">remove</span>
               </button>
-              <span className="text-xl font-extrabold text-slate-900 w-8 text-center">{quantity}</span>
+              <span className="text-xl font-extrabold text-[var(--color-on-surface)] w-8 text-center">{quantity}</span>
               <button
                 onClick={() => setQuantity(quantity + 1)}
                 className="w-10 h-10 rounded-xl bg-[var(--color-surface-container-lowest)] shadow flex items-center justify-center hover:bg-[#ffe1e4] transition-colors"
@@ -177,7 +177,7 @@ export default function CustomizationModal({ item, vendor_id, vendor_name, onClo
         </div>
 
         {/* Footer */}
-        <div className="bg-[var(--color-surface-container-lowest)] border-t border-slate-100 px-6 py-4 pb-[env(safe-area-inset-bottom)]">
+        <div className="bg-[var(--color-surface-container-lowest)] border-t border-[var(--color-border-subtle)] px-6 py-4 pb-[env(safe-area-inset-bottom)]">
           <button
             onClick={handleAddToCart}
             className="w-full py-4 bg-[#ba001c] text-white font-extrabold rounded-2xl flex items-center justify-center gap-3 hover:bg-[#a40017] active:scale-95 transition-all shadow-lg shadow-[#ba001c]/30"

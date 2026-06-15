@@ -16,7 +16,7 @@ export default function SignOutButton() {
   return (
     <button
       onClick={handleSignOut}
-      className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-red-600 transition-colors font-bold text-sm w-full"
+      className="flex items-center gap-3 px-4 py-3 rounded-xl text-[var(--color-outline-variant)] hover:text-red-600 transition-colors font-bold text-sm w-full"
     >
       <span className="material-symbols-outlined text-[18px]">power_settings_new</span>
       Sign Out

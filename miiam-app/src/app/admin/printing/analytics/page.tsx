@@ -173,17 +173,17 @@ export default function AdminPrintingAnalytics() {
   return (
     <div className="px-4 md:px-8 py-6">
       <div className="flex items-center gap-3 mb-6">
-        <Link href="/admin/printing" className="w-10 h-10 bg-[var(--color-surface-container-lowest)] border border-slate-200 rounded-xl flex items-center justify-center">
-          <span className="material-symbols-outlined text-slate-600">arrow_back</span>
+        <Link href="/admin/printing" className="w-10 h-10 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl flex items-center justify-center">
+          <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">arrow_back</span>
         </Link>
         <div className="flex-1">
-          <h1 className="text-2xl font-black text-slate-800">Print Analytics</h1>
-          <p className="text-slate-500 text-sm">Revenue, customers & page trends</p>
+          <h1 className="text-2xl font-black text-[var(--color-on-surface)]">Print Analytics</h1>
+          <p className="text-[var(--color-outline)] text-sm">Revenue, customers & page trends</p>
         </div>
         <select
           value={days}
           onChange={(e) => setDays(parseInt(e.target.value, 10))}
-          className="px-3 py-2 bg-[var(--color-surface-container-lowest)] border border-slate-200 rounded-lg text-sm font-bold"
+          className="px-3 py-2 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-lg text-sm font-bold"
         >
           <option value={7}>Last 7 days</option>
           <option value={14}>Last 14 days</option>
@@ -192,7 +192,7 @@ export default function AdminPrintingAnalytics() {
       </div>
 
       {loading || !data ? (
-        <div className="text-center py-12 text-slate-500">Loading…</div>
+        <div className="text-center py-12 text-[var(--color-outline)]">Loading…</div>
       ) : (
         <div className="space-y-4">
           {/* Headline numbers */}
@@ -204,8 +204,8 @@ export default function AdminPrintingAnalytics() {
           </div>
 
           {/* Daily chart */}
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-100 p-5">
-            <h3 className="font-bold text-slate-800 mb-3 flex items-center gap-2">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)] p-5">
+            <h3 className="font-bold text-[var(--color-on-surface)] mb-3 flex items-center gap-2">
               <span className="material-symbols-outlined text-primary">bar_chart</span>
               Daily revenue
             </h3>
@@ -219,7 +219,7 @@ export default function AdminPrintingAnalytics() {
                       style={{ height: `${Math.max(2, heightPct)}%` }}
                       title={`${d.date}: ₹${d.revenue} · ${d.orders} orders`}
                     />
-                    <span className="text-[8px] text-slate-400 -rotate-45 origin-top-left whitespace-nowrap">
+                    <span className="text-[8px] text-[var(--color-outline-variant)] -rotate-45 origin-top-left whitespace-nowrap">
                       {d.date.slice(5)}
                     </span>
                   </div>
@@ -230,8 +230,8 @@ export default function AdminPrintingAnalytics() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Color split */}
-            <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-100 p-5">
-              <h3 className="font-bold text-slate-800 mb-3 flex items-center gap-2">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)] p-5">
+              <h3 className="font-bold text-[var(--color-on-surface)] mb-3 flex items-center gap-2">
                 <span className="material-symbols-outlined text-primary">palette</span>
                 Color split
               </h3>
@@ -242,8 +242,8 @@ export default function AdminPrintingAnalytics() {
             </div>
 
             {/* Revenue breakdown */}
-            <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-100 p-5">
-              <h3 className="font-bold text-slate-800 mb-3 flex items-center gap-2">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)] p-5">
+              <h3 className="font-bold text-[var(--color-on-surface)] mb-3 flex items-center gap-2">
                 <span className="material-symbols-outlined text-primary">payments</span>
                 Revenue breakdown
               </h3>
@@ -251,7 +251,7 @@ export default function AdminPrintingAnalytics() {
                 <Row label="Base prints" value={`₹${Math.max(0, data.totalRevenue - data.addOnsRevenue - data.rushRevenue).toLocaleString()}`} />
                 <Row label="Add-ons (est.)" value={`₹${data.addOnsRevenue.toLocaleString()}`} />
                 <Row label="Rush surcharge (est.)" value={`₹${data.rushRevenue.toLocaleString()}`} />
-                <div className="pt-2 border-t border-slate-100 flex justify-between font-black">
+                <div className="pt-2 border-t border-[var(--color-border-subtle)] flex justify-between font-black">
                   <span>Total</span>
                   <span className="text-primary">₹{data.totalRevenue.toLocaleString()}</span>
                 </div>
@@ -260,25 +260,25 @@ export default function AdminPrintingAnalytics() {
           </div>
 
           {/* Top customers */}
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-100 p-5">
-            <h3 className="font-bold text-slate-800 mb-3 flex items-center gap-2">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)] p-5">
+            <h3 className="font-bold text-[var(--color-on-surface)] mb-3 flex items-center gap-2">
               <span className="material-symbols-outlined text-primary">group</span>
               Top customers
             </h3>
             {data.topCustomers.length === 0 ? (
-              <p className="text-sm text-slate-500">No customers in range yet</p>
+              <p className="text-sm text-[var(--color-outline)]">No customers in range yet</p>
             ) : (
               <div className="space-y-2">
                 {data.topCustomers.map((c, idx) => (
-                  <div key={c.id} className="flex items-center gap-3 p-2 bg-slate-50 rounded-lg">
+                  <div key={c.id} className="flex items-center gap-3 p-2 bg-[var(--color-surface-subtle)] rounded-lg">
                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white text-xs font-black flex items-center justify-center">
                       {idx + 1}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-bold text-slate-800 truncate">{c.name}</p>
-                      <p className="text-xs text-slate-500">{c.orders} order{c.orders > 1 ? "s" : ""}</p>
+                      <p className="text-sm font-bold text-[var(--color-on-surface)] truncate">{c.name}</p>
+                      <p className="text-xs text-[var(--color-outline)]">{c.orders} order{c.orders > 1 ? "s" : ""}</p>
                     </div>
-                    <p className="text-sm font-black text-slate-800">₹{c.total.toLocaleString()}</p>
+                    <p className="text-sm font-black text-[var(--color-on-surface)]">₹{c.total.toLocaleString()}</p>
                   </div>
                 ))}
               </div>
@@ -292,7 +292,7 @@ export default function AdminPrintingAnalytics() {
 
 function Stat({ label, value, sub, color }: { label: string; value: string; sub: string; color: string }) {
   return (
-    <div className={`rounded-2xl p-4 border border-slate-100 ${color}`}>
+    <div className={`rounded-2xl p-4 border border-[var(--color-border-subtle)] ${color}`}>
       <p className="text-[10px] font-black uppercase tracking-wider opacity-80">{label}</p>
       <p className="text-2xl font-black mt-1">{value}</p>
       <p className="text-[11px] opacity-70 mt-0.5">{sub}</p>
@@ -305,10 +305,10 @@ function SplitBar({ label, count, total, color }: { label: string; count: number
   return (
     <div>
       <div className="flex items-center justify-between text-xs mb-1">
-        <span className="font-bold text-slate-700">{label}</span>
-        <span className="text-slate-500">{count} ({pct}%)</span>
+        <span className="font-bold text-[var(--color-on-surface)]">{label}</span>
+        <span className="text-[var(--color-outline)]">{count} ({pct}%)</span>
       </div>
-      <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+      <div className="h-2 bg-[var(--color-surface-container)] rounded-full overflow-hidden">
         <div className={`h-full ${color} rounded-full transition-all`} style={{ width: `${pct}%` }} />
       </div>
     </div>
@@ -318,8 +318,8 @@ function SplitBar({ label, count, total, color }: { label: string; count: number
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between">
-      <span className="text-slate-600">{label}</span>
-      <span className="font-bold text-slate-800">{value}</span>
+      <span className="text-[var(--color-on-surface-variant)]">{label}</span>
+      <span className="font-bold text-[var(--color-on-surface)]">{value}</span>
     </div>
   );
 }

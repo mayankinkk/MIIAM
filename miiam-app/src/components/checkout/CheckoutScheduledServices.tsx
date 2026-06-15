@@ -21,7 +21,7 @@ export default function CheckoutScheduledServices({ items }: CheckoutScheduledSe
       </div>
       <div className="space-y-4">
         {serviceItems.map(item => (
-          <div key={item.id} className="p-4 rounded-lg border border-outline-variant/20 bg-slate-50 flex justify-between items-center">
+          <div key={item.id} className="p-4 rounded-lg border border-outline-variant/20 bg-[var(--color-surface-subtle)] flex justify-between items-center">
             <div>
               <h3 className="font-bold">{item.name.split(' (')[0]}</h3>
               <p className="text-sm text-secondary flex items-center gap-1 font-semibold mt-1">

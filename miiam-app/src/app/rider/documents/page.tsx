@@ -129,7 +129,7 @@ export default function RiderDocumentsPage() {
       case "verified": return "bg-green-100 text-green-700";
       case "pending": return "bg-amber-100 text-amber-700";
       case "rejected": return "bg-red-100 text-red-700";
-      default: return "bg-slate-100 text-slate-500";
+      default: return "bg-[var(--color-surface-container)] text-[var(--color-outline)]";
     }
   }
 
@@ -178,19 +178,19 @@ export default function RiderDocumentsPage() {
             {documentTypes.map(doc => {
               const { status, doc: existingDoc } = getDocStatus(doc.type);
               return (
-                <div key={doc.type} className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+                <div key={doc.type} className="flex items-center justify-between p-4 bg-[var(--color-surface-subtle)] rounded-xl">
                   <div className="flex items-center gap-3">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                      status === "verified" ? "bg-green-100" : status === "pending" ? "bg-amber-100" : "bg-slate-200"
+                      status === "verified" ? "bg-green-100" : status === "pending" ? "bg-amber-100" : "bg-[var(--color-surface-container-high)]"
                     }`}>
                       <span className={`material-symbols-outlined ${
-                        status === "verified" ? "text-green-600" : status === "pending" ? "text-amber-600" : "text-slate-500"
+                        status === "verified" ? "text-green-600" : status === "pending" ? "text-amber-600" : "text-[var(--color-outline)]"
                       }`}>{doc.icon}</span>
                     </div>
                     <div>
                       <p className="font-bold text-[#4d212a]">{doc.name}</p>
                       {existingDoc?.document_number && (
-                        <p className="text-xs text-slate-500">{existingDoc.document_number}</p>
+                        <p className="text-xs text-[var(--color-outline)]">{existingDoc.document_number}</p>
                       )}
                     </div>
                   </div>
@@ -222,12 +222,12 @@ export default function RiderDocumentsPage() {
                   key={doc.id}
                   href={doc.document_url || "#"}
                   target="_blank"
-                  className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl hover:bg-slate-100"
+                  className="flex items-center gap-3 p-3 bg-[var(--color-surface-subtle)] rounded-xl hover:bg-[var(--color-surface-container)]"
                 >
-                  <span className="material-symbols-outlined text-slate-400">description</span>
+                  <span className="material-symbols-outlined text-[var(--color-outline-variant)]">description</span>
                   <div className="flex-1">
                     <p className="text-sm font-bold text-[#4d212a]">{doc.doc_type.replace("_", " ")}</p>
-                    <p className="text-xs text-slate-500">{new Date(doc.created_at).toLocaleDateString("en-IN")}</p>
+                    <p className="text-xs text-[var(--color-outline)]">{new Date(doc.created_at).toLocaleDateString("en-IN")}</p>
                   </div>
                   <span className={`px-2 py-1 rounded text-xs font-bold ${getStatusColor(doc.status)}`}>
                     {doc.status}
@@ -281,11 +281,11 @@ export default function RiderDocumentsPage() {
 
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-bold text-slate-700 mb-2 block">Document Type *</label>
+                <label className="text-sm font-bold text-[var(--color-on-surface)] mb-2 block">Document Type *</label>
                 <select
                   value={selectedDocType}
                   onChange={(e) => setSelectedDocType(e.target.value)}
-                  className="w-full p-4 bg-slate-100 rounded-xl font-bold"
+                  className="w-full p-4 bg-[var(--color-surface-container)] rounded-xl font-bold"
                 >
                   <option value="">Select document type</option>
                   {documentTypes.map(doc => (
@@ -295,44 +295,44 @@ export default function RiderDocumentsPage() {
               </div>
 
               <div>
-                <label className="text-sm font-bold text-slate-700 mb-2 block">Document Number *</label>
+                <label className="text-sm font-bold text-[var(--color-on-surface)] mb-2 block">Document Number *</label>
                 <input
                   type="text"
                   value={docNumber}
                   onChange={(e) => setDocNumber(e.target.value)}
                   placeholder="Enter document number"
-                  className="w-full p-4 bg-slate-100 rounded-xl font-bold"
+                  className="w-full p-4 bg-[var(--color-surface-container)] rounded-xl font-bold"
                 />
               </div>
 
               {selectedDocType !== "aadhaar" && selectedDocType !== "pan" && (
                 <div>
-                  <label className="text-sm font-bold text-slate-700 mb-2 block">Expiry Date</label>
+                  <label className="text-sm font-bold text-[var(--color-on-surface)] mb-2 block">Expiry Date</label>
                   <input
                     type="date"
                     value={expiryDate}
                     onChange={(e) => setExpiryDate(e.target.value)}
-                    className="w-full p-4 bg-slate-100 rounded-xl font-bold"
+                    className="w-full p-4 bg-[var(--color-surface-container)] rounded-xl font-bold"
                   />
                 </div>
               )}
 
               <div>
-                <label className="text-sm font-bold text-slate-700 mb-2 block">Upload Document *</label>
+                <label className="text-sm font-bold text-[var(--color-on-surface)] mb-2 block">Upload Document *</label>
                 <div
                   onClick={() => fileInputRef.current?.click()}
-                  className="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center cursor-pointer hover:border-[#0b50d5]"
+                  className="border-2 border-dashed border-[var(--color-outline-variant)] rounded-xl p-8 text-center cursor-pointer hover:border-[#0b50d5]"
                 >
                   {selectedFile ? (
                     <div className="flex items-center justify-center gap-2">
                       <span className="material-symbols-outlined text-green-600">check_circle</span>
-                      <span className="font-bold text-slate-700">{selectedFile.name}</span>
+                      <span className="font-bold text-[var(--color-on-surface)]">{selectedFile.name}</span>
                     </div>
                   ) : (
                     <>
-                      <span className="material-symbols-outlined text-4xl text-slate-400">upload_file</span>
-                      <p className="text-sm text-slate-500 mt-2">Tap to upload (JPEG, PNG, PDF)</p>
-                      <p className="text-xs text-slate-400 mt-1">Max 5MB</p>
+                      <span className="material-symbols-outlined text-4xl text-[var(--color-outline-variant)]">upload_file</span>
+                      <p className="text-sm text-[var(--color-outline)] mt-2">Tap to upload (JPEG, PNG, PDF)</p>
+                      <p className="text-xs text-[var(--color-outline-variant)] mt-1">Max 5MB</p>
                     </>
                   )}
                 </div>

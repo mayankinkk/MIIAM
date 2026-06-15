@@ -87,18 +87,18 @@ export default function LandingPage() {
 
         {/* ── Quick Services Grid ── */}
         <section className="relative z-20 -mt-16 max-w-5xl mx-auto px-6 lg:px-8">
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl shadow-[0_8px_40px_rgba(0,0,0,0.08)] border border-slate-100 p-6 sm:p-8">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl shadow-[0_8px_40px_rgba(0,0,0,0.08)] border border-[var(--color-border-subtle)] p-6 sm:p-8">
             <div className="grid grid-cols-3 sm:grid-cols-6 gap-4">
               {quickServices.map((svc) => (
                 <Link
                   key={svc.label}
                   href={svc.href}
-                  className="group flex flex-col items-center gap-2.5 py-3 rounded-2xl hover:bg-slate-50 transition-colors duration-200"
+                  className="group flex flex-col items-center gap-2.5 py-3 rounded-2xl hover:bg-[var(--color-surface-subtle)] transition-colors duration-200"
                 >
                   <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${svc.color} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
                     <span className="material-symbols-outlined text-white text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>{svc.icon}</span>
                   </div>
-                  <span className="text-xs font-bold text-slate-600 group-hover:text-[var(--color-primary)] transition-colors">{svc.label}</span>
+                  <span className="text-xs font-bold text-[var(--color-on-surface-variant)] group-hover:text-[var(--color-primary)] transition-colors">{svc.label}</span>
                 </Link>
               ))}
             </div>
@@ -119,8 +119,8 @@ export default function LandingPage() {
                   <span className="material-symbols-outlined text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>{item.icon}</span>
                 </div>
                 <div>
-                  <p className="font-bold text-slate-800 text-sm leading-tight">{item.label}</p>
-                  <p className="text-xs text-slate-400 mt-0.5">{item.sub}</p>
+                  <p className="font-bold text-[var(--color-on-surface)] text-sm leading-tight">{item.label}</p>
+                  <p className="text-xs text-[var(--color-outline-variant)] mt-0.5">{item.sub}</p>
                 </div>
               </div>
             ))}
@@ -131,8 +131,8 @@ export default function LandingPage() {
         <section className="max-w-7xl mx-auto px-6 lg:px-8 pb-20">
           <div className="flex justify-between items-end mb-10">
             <div>
-              <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-800">{t.popularNearYou}</h2>
-              <p className="text-slate-400 font-medium mt-1.5">{t.popularDesc}</p>
+              <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-[var(--color-on-surface)]">{t.popularNearYou}</h2>
+              <p className="text-[var(--color-outline-variant)] font-medium mt-1.5">{t.popularDesc}</p>
             </div>
             <Link href="/app/explore" className="text-[var(--color-primary)] font-bold text-sm flex items-center gap-1.5 hover:gap-3 transition-all duration-200">
               {t.viewAll} <span className="material-symbols-outlined text-lg">arrow_forward</span>
@@ -141,7 +141,7 @@ export default function LandingPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Food Card - Links to Pizza Paradise */}
-            <Link href="/app/vendor/r2" className="md:col-span-2 group relative overflow-hidden rounded-2xl bg-[var(--color-surface-container-lowest)] shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-slate-100 hover:shadow-[0_8px_40px_rgba(0,0,0,0.1)] transition-shadow duration-500">
+            <Link href="/app/vendor/r2" className="md:col-span-2 group relative overflow-hidden rounded-2xl bg-[var(--color-surface-container-lowest)] shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-[var(--color-border-subtle)] hover:shadow-[0_8px_40px_rgba(0,0,0,0.1)] transition-shadow duration-500">
               <div className="aspect-[16/9] overflow-hidden">
                 <img
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
@@ -153,15 +153,15 @@ export default function LandingPage() {
                 <div className="flex justify-between items-start">
                   <div>
                     <span className="bg-[var(--color-primary)]/10 text-[var(--color-primary)] text-[10px] font-black px-3 py-1 rounded-full mb-3 inline-block uppercase tracking-wider">{t.trendingFood}</span>
-                    <h3 className="text-xl font-bold text-slate-800">Pizza Paradise</h3>
-                    <div className="flex items-center gap-2 mt-1.5 text-slate-500 text-sm font-medium">
+                    <h3 className="text-xl font-bold text-[var(--color-on-surface)]">Pizza Paradise</h3>
+                    <div className="flex items-center gap-2 mt-1.5 text-[var(--color-outline)] text-sm font-medium">
                       <span className="flex items-center gap-1 text-green-600 font-bold">
                         <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
                         4.9
                       </span>
-                      <span className="text-slate-300">•</span>
+                      <span className="text-[var(--color-outline-variant)]/60">•</span>
                       <span>2k+ reviews</span>
-                      <span className="text-slate-300">•</span>
+                      <span className="text-[var(--color-outline-variant)]/60">•</span>
                       <span>15-20 mins</span>
                     </div>
                   </div>
@@ -173,7 +173,7 @@ export default function LandingPage() {
             </Link>
 
             {/* Service Card */}
-            <div className="group relative overflow-hidden rounded-2xl bg-[var(--color-surface-container-lowest)] shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-slate-100 flex flex-col hover:shadow-[0_8px_40px_rgba(0,0,0,0.1)] transition-shadow duration-500">
+            <div className="group relative overflow-hidden rounded-2xl bg-[var(--color-surface-container-lowest)] shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-[var(--color-border-subtle)] flex flex-col hover:shadow-[0_8px_40px_rgba(0,0,0,0.1)] transition-shadow duration-500">
               <div className="aspect-square overflow-hidden">
                 <img
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
@@ -184,10 +184,10 @@ export default function LandingPage() {
               </div>
               <div className="p-6 flex-1 flex flex-col">
                 <span className="bg-[var(--color-secondary)]/10 text-[var(--color-secondary)] text-[10px] font-black px-3 py-1 rounded-full mb-3 self-start uppercase tracking-wider">Service Pro</span>
-                <h3 className="text-xl font-bold text-slate-800">PureHome Cleaning</h3>
+                <h3 className="text-xl font-bold text-[var(--color-on-surface)]">PureHome Cleaning</h3>
                 <div className="mt-auto pt-4 flex justify-between items-center">
-                  <span className="text-slate-500 font-bold text-sm">From ₹29/hr</span>
-                  <span className="flex items-center gap-1.5 font-bold text-sm text-slate-700">
+                  <span className="text-[var(--color-outline)] font-bold text-sm">From ₹29/hr</span>
+                  <span className="flex items-center gap-1.5 font-bold text-sm text-[var(--color-on-surface)]">
                     <span className="material-symbols-outlined text-[var(--color-secondary)] text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
                     Elite
                   </span>

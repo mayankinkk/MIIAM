@@ -100,7 +100,7 @@ export default function RiderVehiclePage() {
       <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-[#0b50d5] border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="mt-4 text-slate-500 font-medium">Loading vehicle info...</p>
+          <p className="mt-4 text-[var(--color-outline)] font-medium">Loading vehicle info...</p>
         </div>
       </div>
     );
@@ -150,24 +150,24 @@ export default function RiderVehiclePage() {
           {selectedVehicle ? (
             <>
               <div className="flex items-center gap-4 mb-4">
-                <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center text-3xl">
+                <div className="w-16 h-16 bg-[var(--color-surface-container)] rounded-2xl flex items-center justify-center text-3xl">
                   🛵
                 </div>
                 <div>
                   <h4 className="font-bold text-lg">{selectedVehicle.name}</h4>
-                  <p className="text-sm text-slate-500">{selectedVehicle.model} • {selectedVehicle.number}</p>
+                  <p className="text-sm text-[var(--color-outline)]">{selectedVehicle.model} • {selectedVehicle.number}</p>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
-                <div className="bg-slate-50 p-3 rounded-xl">
-                  <p className="text-[10px] text-slate-400">Insurance Valid</p>
+                <div className="bg-[var(--color-surface-subtle)] p-3 rounded-xl">
+                  <p className="text-[10px] text-[var(--color-outline-variant)]">Insurance Valid</p>
                   <p className={`font-bold ${daysUntilInsurance < 30 ? "text-red-500" : "text-green-600"}`}>
                     {daysUntilInsurance} days
                   </p>
                 </div>
-                <div className="bg-slate-50 p-3 rounded-xl">
-                  <p className="text-[10px] text-slate-400">License Valid</p>
+                <div className="bg-[var(--color-surface-subtle)] p-3 rounded-xl">
+                  <p className="text-[10px] text-[var(--color-outline-variant)]">License Valid</p>
                   <p className={`font-bold ${daysUntilLicense < 60 ? "text-amber-500" : "text-green-600"}`}>
                     {daysUntilLicense} days
                   </p>
@@ -175,7 +175,7 @@ export default function RiderVehiclePage() {
               </div>
             </>
           ) : (
-            <div className="text-center py-6 text-slate-400">
+            <div className="text-center py-6 text-[var(--color-outline-variant)]">
               <span className="material-symbols-outlined text-4xl">two_wheeler</span>
               <p className="mt-2 font-medium">No vehicle added yet</p>
               <p className="text-xs mt-1">Click + to add your vehicle</p>
@@ -190,7 +190,7 @@ export default function RiderVehiclePage() {
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`flex-1 py-2 rounded-lg text-xs font-bold capitalize transition-all ${
-                activeTab === tab ? "bg-[#0b50d5] text-white" : "text-slate-500"
+                activeTab === tab ? "bg-[#0b50d5] text-white" : "text-[var(--color-outline)]"
               }`}
             >
               {tab === "vehicles" ? "Vehicles" : tab === "maintenance" ? "Service" : "Fuel"}
@@ -210,12 +210,12 @@ export default function RiderVehiclePage() {
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center text-2xl">
+                    <div className="w-12 h-12 bg-[var(--color-surface-container)] rounded-xl flex items-center justify-center text-2xl">
                       {vehicle.type === "car" ? "🚗" : vehicle.type === "bike" ? "🏍️" : "🛵"}
                     </div>
                     <div>
                       <p className="font-bold text-[#4d212a]">{vehicle.name}</p>
-                      <p className="text-xs text-slate-400">{vehicle.number}</p>
+                      <p className="text-xs text-[var(--color-outline-variant)]">{vehicle.number}</p>
                     </div>
                   </div>
                   {vehicle.isDefault && (
@@ -227,7 +227,7 @@ export default function RiderVehiclePage() {
 
             <button 
               onClick={() => setShowAddVehicle(true)}
-              className="w-full py-4 border-2 border-dashed border-slate-300 rounded-2xl text-slate-500 font-bold flex items-center justify-center gap-2"
+              className="w-full py-4 border-2 border-dashed border-[var(--color-outline-variant)] rounded-2xl text-[var(--color-outline)] font-bold flex items-center justify-center gap-2"
             >
               <span className="material-symbols-outlined">add</span>
               Add New Vehicle
@@ -244,20 +244,20 @@ export default function RiderVehiclePage() {
                 </div>
                 <div className="space-y-3">
                   {maintenanceRecords.map((record, i) => (
-                    <div key={i} className="flex items-center justify-between p-3 border-b border-slate-100">
+                    <div key={i} className="flex items-center justify-between p-3 border-b border-[var(--color-border-subtle)]">
                       <div>
                         <p className="font-bold text-sm">{record.type}</p>
-                        <p className="text-xs text-slate-400">{record.date} • {record.odometer} km</p>
+                        <p className="text-xs text-[var(--color-outline-variant)]">{record.date} • {record.odometer} km</p>
                       </div>
                       <p className="font-bold">₹{record.cost}</p>
                     </div>
                   ))}
                 </div>
-                <p className="text-center text-xs text-slate-400 mt-4">Total: ₹{maintenanceRecords.reduce((s, r) => s + r.cost, 0)}</p>
+                <p className="text-center text-xs text-[var(--color-outline-variant)] mt-4">Total: ₹{maintenanceRecords.reduce((s, r) => s + r.cost, 0)}</p>
               </div>
             )}
             {maintenanceRecords.length === 0 && (
-              <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-sm text-center py-8 text-slate-400">
+              <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-sm text-center py-8 text-[var(--color-outline-variant)]">
                 <span className="material-symbols-outlined text-4xl">build</span>
                 <p className="mt-2 font-medium">No service records yet</p>
               </div>
@@ -284,10 +284,10 @@ export default function RiderVehiclePage() {
               <h3 className="font-bold text-[#4d212a] mb-4">Fuel Log</h3>
               <div className="space-y-3">
                 {fuelLog.map((log, i) => (
-                  <div key={i} className="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+                  <div key={i} className="flex items-center justify-between p-3 bg-[var(--color-surface-subtle)] rounded-xl">
                     <div>
                       <p className="font-bold text-sm">{log.liters}L filled</p>
-                      <p className="text-xs text-slate-400">{log.date} • {log.odometer} km</p>
+                      <p className="text-xs text-[var(--color-outline-variant)]">{log.date} • {log.odometer} km</p>
                     </div>
                     <p className="font-bold text-green-600">₹{log.cost}</p>
                   </div>
@@ -297,7 +297,7 @@ export default function RiderVehiclePage() {
 
             <button
               onClick={() => setShowAddFuelModal(true)}
-              className="w-full py-4 bg-[var(--color-surface-container-lowest)] border-2 border-slate-200 rounded-2xl font-bold text-slate-600 flex items-center justify-center gap-2"
+              className="w-full py-4 bg-[var(--color-surface-container-lowest)] border-2 border-[var(--color-border-subtle)] rounded-2xl font-bold text-[var(--color-on-surface-variant)] flex items-center justify-center gap-2"
             >
               <span className="material-symbols-outlined">local_gas_station</span>
               Add Fuel Entry
@@ -370,13 +370,13 @@ export default function RiderVehiclePage() {
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-md p-6">
             <h3 className="font-bold text-lg mb-4">Add Fuel Entry</h3>
             <div className="space-y-3">
-              <input type="date" value={fuelForm.date} onChange={(e) => setFuelForm({ ...fuelForm, date: e.target.value })} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm" />
-              <input type="number" placeholder="Liters" value={fuelForm.liters} onChange={(e) => setFuelForm({ ...fuelForm, liters: e.target.value })} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm" />
-              <input type="number" placeholder="Cost (₹)" value={fuelForm.cost} onChange={(e) => setFuelForm({ ...fuelForm, cost: e.target.value })} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm" />
-              <input type="number" placeholder="Odometer (km)" value={fuelForm.odometer} onChange={(e) => setFuelForm({ ...fuelForm, odometer: e.target.value })} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm" />
+              <input type="date" value={fuelForm.date} onChange={(e) => setFuelForm({ ...fuelForm, date: e.target.value })} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm" />
+              <input type="number" placeholder="Liters" value={fuelForm.liters} onChange={(e) => setFuelForm({ ...fuelForm, liters: e.target.value })} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm" />
+              <input type="number" placeholder="Cost (₹)" value={fuelForm.cost} onChange={(e) => setFuelForm({ ...fuelForm, cost: e.target.value })} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm" />
+              <input type="number" placeholder="Odometer (km)" value={fuelForm.odometer} onChange={(e) => setFuelForm({ ...fuelForm, odometer: e.target.value })} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm" />
             </div>
             <div className="flex gap-3 mt-6">
-              <button onClick={() => setShowAddFuelModal(false)} className="flex-1 py-3 border border-slate-200 rounded-xl font-bold text-sm">Cancel</button>
+              <button onClick={() => setShowAddFuelModal(false)} className="flex-1 py-3 border border-[var(--color-border-subtle)] rounded-xl font-bold text-sm">Cancel</button>
               <button
                 onClick={async () => {
                   if (!fuelForm.liters || !fuelForm.cost || !riderId) {
@@ -444,21 +444,21 @@ function AddVehicleModal({ riderId, onClose, onSaved }: { riderId: string | null
       <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-sm">
         <h3 className="font-bold text-xl mb-4">Add New Vehicle</h3>
         <div className="space-y-3">
-          <select value={type} onChange={(e) => setType(e.target.value as any)} className="w-full p-3 border-2 border-slate-200 rounded-xl">
+          <select value={type} onChange={(e) => setType(e.target.value as any)} className="w-full p-3 border-2 border-[var(--color-border-subtle)] rounded-xl">
             <option value="scooter">Scooter</option>
             <option value="bike">Bike</option>
             <option value="car">Car</option>
           </select>
-          <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Vehicle Name (e.g., Honda Activa)" className="w-full p-3 border-2 border-slate-200 rounded-xl" />
-          <input value={model} onChange={(e) => setModel(e.target.value)} placeholder="Model (e.g., Activa 5G)" className="w-full p-3 border-2 border-slate-200 rounded-xl" />
-          <input value={number} onChange={(e) => setNumber(e.target.value)} placeholder="Vehicle Number (e.g., DL 01 AB 1234)" className="w-full p-3 border-2 border-slate-200 rounded-xl" />
-          <input type="date" value={insuranceExpiry} onChange={(e) => setInsuranceExpiry(e.target.value)} placeholder="Insurance Expiry" className="w-full p-3 border-2 border-slate-200 rounded-xl" />
-          <input type="date" value={licenseExpiry} onChange={(e) => setLicenseExpiry(e.target.value)} placeholder="License Expiry" className="w-full p-3 border-2 border-slate-200 rounded-xl" />
+          <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Vehicle Name (e.g., Honda Activa)" className="w-full p-3 border-2 border-[var(--color-border-subtle)] rounded-xl" />
+          <input value={model} onChange={(e) => setModel(e.target.value)} placeholder="Model (e.g., Activa 5G)" className="w-full p-3 border-2 border-[var(--color-border-subtle)] rounded-xl" />
+          <input value={number} onChange={(e) => setNumber(e.target.value)} placeholder="Vehicle Number (e.g., DL 01 AB 1234)" className="w-full p-3 border-2 border-[var(--color-border-subtle)] rounded-xl" />
+          <input type="date" value={insuranceExpiry} onChange={(e) => setInsuranceExpiry(e.target.value)} placeholder="Insurance Expiry" className="w-full p-3 border-2 border-[var(--color-border-subtle)] rounded-xl" />
+          <input type="date" value={licenseExpiry} onChange={(e) => setLicenseExpiry(e.target.value)} placeholder="License Expiry" className="w-full p-3 border-2 border-[var(--color-border-subtle)] rounded-xl" />
         </div>
         <button onClick={handleSave} disabled={saving || !name.trim()} className="w-full py-4 bg-[#0b50d5] text-white font-bold rounded-xl mt-4 disabled:opacity-50">
           {saving ? "Saving..." : "Add Vehicle"}
         </button>
-        <button onClick={onClose} className="w-full py-3 text-slate-500 font-bold mt-2">Cancel</button>
+        <button onClick={onClose} className="w-full py-3 text-[var(--color-outline)] font-bold mt-2">Cancel</button>
       </div>
     </div>
   );

@@ -31,7 +31,7 @@ export default async function RiderDashboardPage() {
         <div className="flex justify-between items-center mb-8">
           <span className="text-3xl font-black tracking-tighter">MIIAM</span>
           <div className={`px-3 py-1 rounded-full text-xs font-bold flex items-center gap-2 ${
-            rider?.is_online ? "bg-green-500/20 text-green-100 border border-green-400/30" : "bg-slate-500/20 text-slate-100 border border-slate-400/30"
+            rider?.is_online ? "bg-green-500/20 text-green-100 border border-green-400/30" : "bg-[var(--color-surface-subtle)]0/20 text-slate-100 border border-slate-400/30"
           }`}>
             <span className={`w-2 h-2 rounded-full ${rider?.is_online ? "bg-green-400 animate-pulse" : "bg-slate-400"}`} />
             {rider?.is_online ? "Online" : "Offline"}
@@ -99,9 +99,9 @@ export default async function RiderDashboardPage() {
             </div>
           )) : (
             <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-8 text-center">
-              <span className="material-symbols-outlined text-4xl text-slate-300">shopping_bag</span>
-              <p className="text-slate-400 mt-2">No orders available right now</p>
-              <p className="text-xs text-slate-400 mt-1">Check back soon!</p>
+              <span className="material-symbols-outlined text-4xl text-[var(--color-outline-variant)]/60">shopping_bag</span>
+              <p className="text-[var(--color-outline-variant)] mt-2">No orders available right now</p>
+              <p className="text-xs text-[var(--color-outline-variant)] mt-1">Check back soon!</p>
             </div>
           )}
         </div>

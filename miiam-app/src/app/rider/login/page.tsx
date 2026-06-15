@@ -180,8 +180,8 @@ function RiderLoginContent() {
               <div className="text-center">
                 <span className="text-5xl block mb-4">📧</span>
                 <h3 className="font-bold text-xl mb-2">Check Your Email</h3>
-                <p className="text-sm text-slate-500 mb-6">
-                  We&apos;ve sent a password reset link to <strong className="text-slate-700">{resetEmail}</strong>
+                <p className="text-sm text-[var(--color-outline)] mb-6">
+                  We&apos;ve sent a password reset link to <strong className="text-[var(--color-on-surface)]">{resetEmail}</strong>
                 </p>
                 <button
                   onClick={() => { setShowForgotPassword(false); setResetSent(false); setResetEmail(""); }}
@@ -195,10 +195,10 @@ function RiderLoginContent() {
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-bold text-xl">Reset Password</h3>
                   <button onClick={() => setShowForgotPassword(false)}>
-                    <span className="material-symbols-outlined text-slate-400">close</span>
+                    <span className="material-symbols-outlined text-[var(--color-outline-variant)]">close</span>
                   </button>
                 </div>
-                <p className="text-sm text-slate-500 mb-6">
+                <p className="text-sm text-[var(--color-outline)] mb-6">
                   Enter your email address and we&apos;ll send you a link to reset your password.
                 </p>
                 {resetError && (

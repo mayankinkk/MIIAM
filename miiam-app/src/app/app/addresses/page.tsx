@@ -21,7 +21,7 @@ function AddressCard({ address, onSelect, onEdit, onDelete, onSetDefault }: Addr
   const labelColors = {
     Home: { bg: "bg-blue-100", text: "text-blue-700", accent: "from-blue-500 to-blue-600" },
     Office: { bg: "bg-purple-100", text: "text-purple-700", accent: "from-purple-500 to-purple-600" },
-    Other: { bg: "bg-slate-100", text: "text-slate-700", accent: "from-slate-500 to-slate-600" },
+    Other: { bg: "bg-[var(--color-surface-container)]", text: "text-[var(--color-on-surface)]", accent: "from-slate-500 to-slate-600" },
   };
   
   const colors = labelColors[address.label as keyof typeof labelColors] || labelColors.Other;
@@ -69,7 +69,7 @@ function AddressCard({ address, onSelect, onEdit, onDelete, onSetDefault }: Addr
           {/* Gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-white/80 to-transparent" />
           {/* Coordinates badge */}
-          <div className="absolute top-2 right-2 bg-[var(--color-surface-container-lowest)]/90 backdrop-blur-sm px-2 py-1 rounded-lg text-[10px] font-bold text-slate-600 flex items-center gap-1">
+          <div className="absolute top-2 right-2 bg-[var(--color-surface-container-lowest)]/90 backdrop-blur-sm px-2 py-1 rounded-lg text-[10px] font-bold text-[var(--color-on-surface-variant)] flex items-center gap-1">
             <span className="material-symbols-outlined text-xs">pin_drop</span>
             Guwahati
           </div>
@@ -85,20 +85,20 @@ function AddressCard({ address, onSelect, onEdit, onDelete, onSetDefault }: Addr
 
           <div className="flex-1">
             <div className="flex items-center gap-2">
-              <h3 className="font-bold text-slate-900">{address.label}</h3>
+              <h3 className="font-bold text-[var(--color-on-surface)]">{address.label}</h3>
               {address.is_default && (
                 <span className="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
                   Default
                 </span>
               )}
             </div>
-            <p className="text-sm text-slate-800 mt-1">{address.name}</p>
-            <p className="text-sm text-slate-600 mt-0.5 line-clamp-2">
+            <p className="text-sm text-[var(--color-on-surface)] mt-1">{address.name}</p>
+            <p className="text-sm text-[var(--color-on-surface-variant)] mt-0.5 line-clamp-2">
               {address.street}, {address.city}
             </p>
-            <p className="text-xs text-slate-500">{address.state} - {address.postal_code}</p>
+            <p className="text-xs text-[var(--color-outline)]">{address.state} - {address.postal_code}</p>
             {address.instructions && (
-              <p className="text-xs text-slate-400 mt-2 flex items-center gap-1 bg-amber-50 px-2 py-1 rounded-lg">
+              <p className="text-xs text-[var(--color-outline-variant)] mt-2 flex items-center gap-1 bg-amber-50 px-2 py-1 rounded-lg">
                 <span className="material-symbols-outlined text-sm text-amber-600">info</span>
                 {address.instructions}
               </p>
@@ -108,22 +108,22 @@ function AddressCard({ address, onSelect, onEdit, onDelete, onSetDefault }: Addr
       </div>
 
       {/* Action Buttons */}
-      <div className="border-t border-slate-100 flex">
+      <div className="border-t border-[var(--color-border-subtle)] flex">
         <button
           onClick={onSelect}
-          className="flex-1 py-3 text-primary font-bold text-sm border-r border-slate-100 hover:bg-surface transition-colors"
+          className="flex-1 py-3 text-primary font-bold text-sm border-r border-[var(--color-border-subtle)] hover:bg-surface transition-colors"
         >
           Select for Delivery
         </button>
         {!address.is_default && (
           <button
             onClick={onSetDefault}
-            className="flex-1 py-3 text-blue-600 font-bold text-sm border-r border-slate-100 hover:bg-blue-50 transition-colors"
+            className="flex-1 py-3 text-blue-600 font-bold text-sm border-r border-[var(--color-border-subtle)] hover:bg-blue-50 transition-colors"
           >
             Set as Default
           </button>
         )}
-        <button onClick={onEdit} className="py-3 px-4 text-slate-600 hover:bg-slate-50 transition-colors">
+        <button onClick={onEdit} className="py-3 px-4 text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-subtle)] transition-colors">
           <span className="material-symbols-outlined">edit</span>
           {t.common.change}
         </button>
@@ -139,7 +139,7 @@ function AddressCard({ address, onSelect, onEdit, onDelete, onSetDefault }: Addr
 const addressTypes = [
   { id: "home", icon: "home", label: "Home", color: "bg-blue-100 text-blue-700" },
   { id: "office", icon: "business", label: "Office", color: "bg-purple-100 text-purple-700" },
-  { id: "other", icon: "place", label: "Other", color: "bg-slate-100 text-slate-700" },
+  { id: "other", icon: "place", label: "Other", color: "bg-[var(--color-surface-container)] text-[var(--color-on-surface)]" },
 ];
 
 const defaultAddresses = [
@@ -353,7 +353,7 @@ export default function AddressBookPage() {
           <Link href="/app/profile" className="text-2xl font-black text-primary tracking-tighter">
             MIIAM
           </Link>
-          <Link href="/app/profile" className="text-sm font-bold text-slate-600 hover:text-primary">
+          <Link href="/app/profile" className="text-sm font-bold text-[var(--color-on-surface-variant)] hover:text-primary">
             Cancel
           </Link>
         </div>
@@ -364,15 +364,15 @@ export default function AddressBookPage() {
       {/* Content */}
       <main className="max-w-2xl mx-auto px-4 py-6">
         <section className="mb-8">
-          <h1 className="text-3xl font-extrabold text-slate-900 mb-2">My Addresses</h1>
-          <p className="text-slate-500">Manage your delivery addresses</p>
+          <h1 className="text-3xl font-extrabold text-[var(--color-on-surface)] mb-2">My Addresses</h1>
+          <p className="text-[var(--color-outline)]">Manage your delivery addresses</p>
         </section>
 
         {/* Saved Addresses */}
         <section className="mb-8">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-slate-800">Saved Addresses</h2>
-            <span className="text-xs text-slate-500">{addresses.length} addresses</span>
+            <h2 className="text-lg font-bold text-[var(--color-on-surface)]">Saved Addresses</h2>
+            <span className="text-xs text-[var(--color-outline)]">{addresses.length} addresses</span>
           </div>
 
           <div className="space-y-4">
@@ -446,12 +446,12 @@ export default function AddressBookPage() {
           }} />
 
           <div className="relative bg-white w-full max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-white z-10 border-b border-slate-100 px-6 py-4 flex items-center justify-between">
+            <div className="sticky top-0 bg-white z-10 border-b border-[var(--color-border-subtle)] px-6 py-4 flex items-center justify-between">
               <div>
-                <h2 className="text-xl font-extrabold text-slate-900">
+                <h2 className="text-xl font-extrabold text-[var(--color-on-surface)]">
                   {editingAddress ? "Edit Address" : "Add New Address"}
                 </h2>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-[var(--color-outline)]">
                   {editingAddress ? "Update your address details" : "Enter your delivery address"}
                 </p>
               </div>
@@ -460,7 +460,7 @@ export default function AddressBookPage() {
                   setShowAddAddress(false);
                   setEditingAddress(null);
                 }}
-                className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center"
+                className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center"
               >
                 <span className="material-symbols-outlined">close</span>
               </button>
@@ -469,7 +469,7 @@ export default function AddressBookPage() {
             <div className="p-6 space-y-5">
               {/* Address Type */}
               <div>
-                <label className="text-sm font-semibold text-slate-700 block mb-3">Address Type</label>
+                <label className="text-sm font-semibold text-[var(--color-on-surface)] block mb-3">Address Type</label>
                 <div className="grid grid-cols-3 gap-3">
                   {addressTypes.map((type) => (
                     <button
@@ -478,11 +478,11 @@ export default function AddressBookPage() {
                       className={`py-4 rounded-xl flex flex-col items-center gap-2 border-2 transition-all ${
                         newAddress.label === type.id
                           ? `${type.color} border-transparent`
-                          : "border-slate-200 hover:border-slate-300"
+                          : "border-[var(--color-border-subtle)] hover:border-[var(--color-outline-variant)]"
                       }`}
                     >
                       <span className={`material-symbols-outlined text-xl ${
-                        newAddress.label === type.id ? "" : "text-slate-400"
+                        newAddress.label === type.id ? "" : "text-[var(--color-outline-variant)]"
                       }`}>
                         {type.icon}
                       </span>
@@ -494,37 +494,37 @@ export default function AddressBookPage() {
 
               {/* Name */}
               <div>
-                <label className="text-sm font-semibold text-slate-700">Full Name *</label>
+                <label className="text-sm font-semibold text-[var(--color-on-surface)]">Full Name *</label>
                 <input
                   type="text"
                   value={newAddress.name}
                   onChange={(e) => setNewAddress({ ...newAddress, name: e.target.value })}
                   placeholder="Enter your full name"
-                  className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
                 />
               </div>
 
               {/* Phone */}
               <div>
-                <label className="text-sm font-semibold text-slate-700">Phone Number *</label>
+                <label className="text-sm font-semibold text-[var(--color-on-surface)]">Phone Number *</label>
                 <input
                   type="tel"
                   value={newAddress.phone}
                   onChange={(e) => setNewAddress({ ...newAddress, phone: e.target.value })}
                   placeholder="10-digit mobile number"
-                  className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
                 />
               </div>
 
               {/* Street Address */}
               <div>
-                <label className="text-sm font-semibold text-slate-700">Street Address *</label>
+                <label className="text-sm font-semibold text-[var(--color-on-surface)]">Street Address *</label>
                 <input
                   type="text"
                   value={newAddress.street}
                   onChange={(e) => setNewAddress({ ...newAddress, street: e.target.value })}
                   placeholder="House/Flat/Building name, Street"
-                  className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
                 />
               </div>
 
@@ -544,49 +544,49 @@ export default function AddressBookPage() {
               {/* City & State */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-sm font-semibold text-slate-700">City *</label>
+                  <label className="text-sm font-semibold text-[var(--color-on-surface)]">City *</label>
                   <input
                     type="text"
                     value={newAddress.city}
                     onChange={(e) => setNewAddress({ ...newAddress, city: e.target.value })}
                     placeholder="City"
-                    className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-semibold text-slate-700">State *</label>
+                  <label className="text-sm font-semibold text-[var(--color-on-surface)]">State *</label>
                   <input
                     type="text"
                     value={newAddress.state}
                     onChange={(e) => setNewAddress({ ...newAddress, state: e.target.value })}
                     placeholder="State"
-                    className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
               </div>
 
               {/* Postal Code */}
               <div>
-                <label className="text-sm font-semibold text-slate-700">PIN Code *</label>
+                <label className="text-sm font-semibold text-[var(--color-on-surface)]">PIN Code *</label>
                 <input
                   type="text"
                   value={newAddress.postal_code}
                   onChange={(e) => setNewAddress({ ...newAddress, postal_code: e.target.value })}
                   placeholder="6-digit PIN code"
-                  className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
                 />
               </div>
 
               {/* Delivery Instructions */}
               <div>
-                <label className="text-sm font-semibold text-slate-700">Delivery Instructions (Optional)</label>
+                <label className="text-sm font-semibold text-[var(--color-on-surface)]">Delivery Instructions (Optional)</label>
                 <textarea
                   value={newAddress.instructions}
                   onChange={(e) => setNewAddress({ ...newAddress, instructions: e.target.value })}
                   placeholder="E.g., Ring bell, call on arrival, near park"
-                  className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 resize-none h-20"
+                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 resize-none h-20"
                 />
-                <p className="text-xs text-slate-400 mt-1">Max 150 characters</p>
+                <p className="text-xs text-[var(--color-outline-variant)] mt-1">Max 150 characters</p>
               </div>
 
               {/* Save Button */}

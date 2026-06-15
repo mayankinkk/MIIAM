@@ -92,7 +92,7 @@ export function LiveChatSupport({ orderId, onClose }: LiveChatProps) {
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50">
+        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[var(--color-surface-subtle)]">
           {messages.map((msg) => (
             <div
               key={msg.id}
@@ -104,12 +104,12 @@ export function LiveChatSupport({ orderId, onClose }: LiveChatProps) {
                     ? "bg-[#ba001c] text-white rounded-br-md"
                     : msg.role === "system"
                     ? "bg-yellow-100 text-yellow-800 text-sm"
-                    : "bg-[var(--color-surface-container-lowest)] text-slate-800 rounded-bl-md shadow-sm"
+                    : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface)] rounded-bl-md shadow-sm"
                 }`}
               >
                 <p className="text-sm">{msg.message}</p>
                 <p className={`text-xs mt-1 ${
-                  msg.role === "user" ? "text-white/60" : "text-slate-400"
+                  msg.role === "user" ? "text-white/60" : "text-[var(--color-outline-variant)]"
                 }`}>
                   {msg.timestamp.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                 </p>
@@ -138,7 +138,7 @@ export function LiveChatSupport({ orderId, onClose }: LiveChatProps) {
               <button
                 key={reply}
                 onClick={() => sendMessage(reply)}
-                className="text-xs bg-slate-100 hover:bg-slate-200 px-3 py-2 rounded-full text-slate-600 transition-colors"
+                className="text-xs bg-[var(--color-surface-container)] hover:bg-[var(--color-surface-container-high)] px-3 py-2 rounded-full text-[var(--color-on-surface-variant)] transition-colors"
               >
                 {reply}
               </button>
@@ -154,7 +154,7 @@ export function LiveChatSupport({ orderId, onClose }: LiveChatProps) {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && sendMessage(input)}
               placeholder="Type your message..."
-              className="flex-1 px-4 py-2 bg-slate-100 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-[#ba001c]"
+              className="flex-1 px-4 py-2 bg-[var(--color-surface-container)] rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-[#ba001c]"
             />
             <button
               onClick={() => sendMessage(input)}

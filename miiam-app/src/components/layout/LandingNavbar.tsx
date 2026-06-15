@@ -57,7 +57,7 @@ export function LandingNavbar({
   const linkColor = variant === "indigo" ? "text-indigo-600" : "text-[var(--color-primary)]";
 
   return (
-    <nav className="fixed top-0 w-full z-50 bg-[var(--color-surface-container-lowest)]/80 backdrop-blur-2xl border-b border-slate-100/80 transition-all duration-500">
+    <nav className="fixed top-0 w-full z-50 bg-[var(--color-surface-container-lowest)]/80 backdrop-blur-2xl border-b border-[var(--color-border-subtle)]/80 transition-all duration-500">
       <div className="flex justify-between items-center max-w-7xl mx-auto px-6 lg:px-8 py-4">
         <Link href="/" className={`text-3xl font-black ${brandColor} tracking-tighter select-none`}>
           MIIAM
@@ -67,7 +67,7 @@ export function LandingNavbar({
             <Link
               key={item.href}
               href={item.href}
-              className={`text-slate-600 font-semibold text-sm ${hoverColor} transition-colors duration-200 relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 ${afterBg} after:transition-all after:duration-300 hover:after:w-full`}
+              className={`text-[var(--color-on-surface-variant)] font-semibold text-sm ${hoverColor} transition-colors duration-200 relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 ${afterBg} after:transition-all after:duration-300 hover:after:w-full`}
             >
               {item.label}
             </Link>
@@ -80,12 +80,12 @@ export function LandingNavbar({
             mounted && user ? (
               <Link
                 href="/app/profile"
-                className="flex items-center gap-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 px-4 py-2 rounded-full transition-all duration-200 group"
+                className="flex items-center gap-2.5 bg-[var(--color-surface-subtle)] hover:bg-[var(--color-surface-container)] border border-[var(--color-border-subtle)] px-4 py-2 rounded-full transition-all duration-200 group"
               >
                 <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-light)] text-white flex items-center justify-center font-bold text-xs">
                   {user.email?.[0].toUpperCase()}
                 </div>
-                <span className={`text-sm font-semibold text-slate-700 ${linkColor} hidden sm:block`}>
+                <span className={`text-sm font-semibold text-[var(--color-on-surface)] ${linkColor} hidden sm:block`}>
                   My Account
                 </span>
               </Link>
@@ -119,20 +119,20 @@ export function LandingFooter() {
       <div className="flex flex-col md:flex-row justify-between items-center gap-10 max-w-7xl mx-auto">
         <div className="text-2xl font-black text-white tracking-tighter">MIIAM</div>
         <div className="flex flex-wrap gap-8 justify-center">
-          <Link href="/terms" className="text-slate-500 text-xs uppercase tracking-widest font-semibold hover:text-white transition-colors duration-200">
+          <Link href="/terms" className="text-[var(--color-outline)] text-xs uppercase tracking-widest font-semibold hover:text-white transition-colors duration-200">
             Terms
           </Link>
-          <Link href="/privacy" className="text-slate-500 text-xs uppercase tracking-widest font-semibold hover:text-white transition-colors duration-200">
+          <Link href="/privacy" className="text-[var(--color-outline)] text-xs uppercase tracking-widest font-semibold hover:text-white transition-colors duration-200">
             Privacy
           </Link>
-          <Link href="/refunds" className="text-slate-500 text-xs uppercase tracking-widest font-semibold hover:text-white transition-colors duration-200">
+          <Link href="/refunds" className="text-[var(--color-outline)] text-xs uppercase tracking-widest font-semibold hover:text-white transition-colors duration-200">
             Refunds
           </Link>
-          <Link href="/app/support" className="text-slate-500 text-xs uppercase tracking-widest font-semibold hover:text-white transition-colors duration-200">
+          <Link href="/app/support" className="text-[var(--color-outline)] text-xs uppercase tracking-widest font-semibold hover:text-white transition-colors duration-200">
             Contact Us
           </Link>
         </div>
-        <div className="text-slate-600 text-xs font-medium">
+        <div className="text-[var(--color-on-surface-variant)] text-xs font-medium">
           {t.footerRights}
         </div>
       </div>

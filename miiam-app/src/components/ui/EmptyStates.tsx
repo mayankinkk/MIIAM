@@ -50,8 +50,8 @@ export function EmptyState({
       animation: mounted ? "animate-wiggle" : ""
     },
     default: { 
-      bg: "bg-slate-50", 
-      icon: "text-slate-500",
+      bg: "bg-[var(--color-surface-subtle)]", 
+      icon: "text-[var(--color-outline)]",
       animation: ""
     },
   };

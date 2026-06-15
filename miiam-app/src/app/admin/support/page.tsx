@@ -111,17 +111,17 @@ export default function LiveChatSupport() {
 
   return (
     <div className="px-8">
-      <div className="text-3xl font-extrabold text-slate-900 tracking-tight mb-8">Live Chat Support</div>
+      <div className="text-3xl font-extrabold text-[var(--color-on-surface)] tracking-tight mb-8">Live Chat Support</div>
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-200px)]">
         {/* Chat List */}
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
-          <div className="p-4 border-b border-slate-100">
-            <h2 className="font-black text-slate-800 uppercase tracking-widest text-sm">Active Chats</h2>
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] overflow-hidden shadow-sm">
+          <div className="p-4 border-b border-[var(--color-border-subtle)]">
+            <h2 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm">Active Chats</h2>
           </div>
           <div className="overflow-y-auto h-full">
             {chats.length === 0 ? (
-              <div className="p-8 text-center text-slate-400">
+              <div className="p-8 text-center text-[var(--color-outline-variant)]">
                 <span className="material-symbols-outlined text-4xl mb-2">chat</span>
                 <p>No active chats</p>
               </div>
@@ -130,16 +130,16 @@ export default function LiveChatSupport() {
                 <button
                   key={chat.orderId}
                   onClick={() => setSelectedChat(chat.orderId)}
-                  className={`w-full p-4 text-left border-b border-slate-50 hover:bg-slate-50 transition-colors ${
+                  className={`w-full p-4 text-left border-b border-slate-50 hover:bg-[var(--color-surface-subtle)] transition-colors ${
                     selectedChat === chat.orderId ? "bg-[#ba001c]/5 border-l-4 border-l-[#ba001c]" : ""
                   }`}
                 >
                   <div className="flex items-center gap-2 mb-1">
                     <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                    <span className="font-bold text-slate-800">Order #{chat.orderId.slice(0, 8)}</span>
+                    <span className="font-bold text-[var(--color-on-surface)]">Order #{chat.orderId.slice(0, 8)}</span>
                   </div>
-                  <p className="text-sm text-slate-500 truncate">{chat.lastMessage}</p>
-                  <p className="text-xs text-slate-400 mt-1">
+                  <p className="text-sm text-[var(--color-outline)] truncate">{chat.lastMessage}</p>
+                  <p className="text-xs text-[var(--color-outline-variant)] mt-1">
                     {new Date(chat.lastMessageAt).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}
                   </p>
                 </button>
@@ -149,20 +149,20 @@ export default function LiveChatSupport() {
         </div>
 
         {/* Chat Window */}
-        <div className="lg:col-span-2 bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 overflow-hidden shadow-sm flex flex-col">
+        <div className="lg:col-span-2 bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] overflow-hidden shadow-sm flex flex-col">
           {selectedChat ? (
             <>
-              <div className="p-4 border-b border-slate-100 flex justify-between items-center">
+              <div className="p-4 border-b border-[var(--color-border-subtle)] flex justify-between items-center">
                 <div>
-                  <h2 className="font-black text-slate-800">Order #{selectedChat.slice(0, 8)}</h2>
+                  <h2 className="font-black text-[var(--color-on-surface)]">Order #{selectedChat.slice(0, 8)}</h2>
                   <div className="flex items-center gap-1">
                     <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                    <span className="text-xs text-slate-400">Online</span>
+                    <span className="text-xs text-[var(--color-outline-variant)]">Online</span>
                   </div>
                 </div>
                 <button
                   onClick={() => setSelectedChat(null)}
-                  className="p-2 text-slate-400 hover:text-slate-600"
+                  className="p-2 text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]"
                   title="Close chat"
                 >
                   <span className="material-symbols-outlined">close</span>
@@ -178,11 +178,11 @@ export default function LiveChatSupport() {
                       className={`max-w-[75%] p-3 rounded-2xl ${
                         msg.sender_type === "support"
                           ? "bg-[#ba001c] text-white rounded-br-md"
-                          : "bg-slate-100 text-slate-800 rounded-bl-md"
+                          : "bg-[var(--color-surface-container)] text-[var(--color-on-surface)] rounded-bl-md"
                       }`}
                     >
                       <p className="text-sm">{msg.message}</p>
-                      <p className={`text-[10px] mt-1 ${msg.sender_type === "support" ? "text-white/60" : "text-slate-400"}`}>
+                      <p className={`text-[10px] mt-1 ${msg.sender_type === "support" ? "text-white/60" : "text-[var(--color-outline-variant)]"}`}>
                         {new Date(msg.created_at).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}
                       </p>
                     </div>
@@ -190,7 +190,7 @@ export default function LiveChatSupport() {
                 ))}
                 <div ref={messagesEndRef} />
               </div>
-              <div className="p-4 border-t border-slate-100">
+              <div className="p-4 border-t border-[var(--color-border-subtle)]">
                 <div className="flex gap-2">
                   <input
                     type="text"
@@ -198,7 +198,7 @@ export default function LiveChatSupport() {
                     onChange={(e) => setNewMessage(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && sendMessage()}
                     placeholder="Type a message..."
-                    className="flex-1 bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#ba001c]/10"
+                    className="flex-1 bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#ba001c]/10"
                   />
                   <button
                     onClick={sendMessage}
@@ -210,7 +210,7 @@ export default function LiveChatSupport() {
               </div>
             </>
           ) : (
-            <div className="flex-1 flex items-center justify-center text-slate-400">
+            <div className="flex-1 flex items-center justify-center text-[var(--color-outline-variant)]">
               <div className="text-center">
                 <span className="material-symbols-outlined text-6xl mb-2">forum</span>
                 <p>Select a chat to start</p>

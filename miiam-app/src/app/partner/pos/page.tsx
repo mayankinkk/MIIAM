@@ -178,15 +178,15 @@ export default function PartnerPOS() {
   const terminalStatuses = ["delivered", "cancelled", "refunded"];
 
   if (loading) {
-    return <div className="p-8 text-center text-slate-400 font-medium animate-pulse">Loading POS...</div>;
+    return <div className="p-8 text-center text-[var(--color-outline-variant)] font-medium animate-pulse">Loading POS...</div>;
   }
 
   if (error) {
     return (
       <div className="p-8 flex flex-col items-center justify-center min-h-[60vh] text-center">
         <span className="material-symbols-outlined text-6xl text-red-300 mb-4">error</span>
-        <h2 className="text-2xl font-extrabold text-slate-800 mb-2">Something went wrong</h2>
-        <p className="text-slate-500">{error}</p>
+        <h2 className="text-2xl font-extrabold text-[var(--color-on-surface)] mb-2">Something went wrong</h2>
+        <p className="text-[var(--color-outline)]">{error}</p>
       </div>
     );
   }
@@ -194,9 +194,9 @@ export default function PartnerPOS() {
   if (!vendorId) {
     return (
       <div className="p-8 flex flex-col items-center justify-center min-h-[60vh] text-center">
-        <span className="material-symbols-outlined text-6xl text-slate-300 mb-4">storefront</span>
-        <h2 className="text-2xl font-extrabold text-slate-800 mb-2">No Vendor Account</h2>
-        <p className="text-slate-500">Register your store to start receiving orders.</p>
+        <span className="material-symbols-outlined text-6xl text-[var(--color-outline-variant)]/60 mb-4">storefront</span>
+        <h2 className="text-2xl font-extrabold text-[var(--color-on-surface)] mb-2">No Vendor Account</h2>
+        <p className="text-[var(--color-outline)]">Register your store to start receiving orders.</p>
       </div>
     );
   }
@@ -208,30 +208,30 @@ export default function PartnerPOS() {
     <>
     <div className="p-4 md:p-8 space-y-8">
       <div>
-        <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight mb-2">Live Order POS</h1>
-        <p className="text-slate-500">Manage real-time incoming orders — your job ends when order is ready for pickup</p>
+        <h1 className="text-3xl font-extrabold text-[var(--color-on-surface)] tracking-tight mb-2">Live Order POS</h1>
+        <p className="text-[var(--color-outline)]">Manage real-time incoming orders — your job ends when order is ready for pickup</p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-5 gap-4">
-        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-slate-200">
-          <p className="text-slate-500 text-sm font-bold uppercase tracking-wider mb-1">Active</p>
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-[var(--color-border-subtle)]">
+          <p className="text-[var(--color-outline)] text-sm font-bold uppercase tracking-wider mb-1">Active</p>
           <p className="text-4xl font-black text-[#ba001c]">{activeOrders.length}</p>
         </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-slate-200">
-          <p className="text-slate-500 text-sm font-bold uppercase tracking-wider mb-1">Pending</p>
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-[var(--color-border-subtle)]">
+          <p className="text-[var(--color-outline)] text-sm font-bold uppercase tracking-wider mb-1">Pending</p>
           <p className="text-4xl font-black text-amber-600">{orders.filter((o) => o.status === "pending").length}</p>
         </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-slate-200">
-          <p className="text-slate-500 text-sm font-bold uppercase tracking-wider mb-1">Ready for Pickup</p>
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-[var(--color-border-subtle)]">
+          <p className="text-[var(--color-outline)] text-sm font-bold uppercase tracking-wider mb-1">Ready for Pickup</p>
           <p className="text-4xl font-black text-purple-600">{orders.filter((o) => o.status === "ready_for_pickup").length}</p>
         </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-slate-200">
-          <p className="text-slate-500 text-sm font-bold uppercase tracking-wider mb-1">Delivered</p>
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-[var(--color-border-subtle)]">
+          <p className="text-[var(--color-outline)] text-sm font-bold uppercase tracking-wider mb-1">Delivered</p>
           <p className="text-4xl font-black text-green-600">{orders.filter((o) => o.status === "delivered").length}</p>
         </div>
-        <button onClick={() => setShowScheduled(!showScheduled)} className={`p-6 rounded-2xl shadow-sm border text-left transition-colors ${showScheduled ? "bg-indigo-50 border-indigo-300" : "bg-[var(--color-surface-container-lowest)] border-slate-200 hover:bg-slate-50"}`}>
-          <p className="text-slate-500 text-sm font-bold uppercase tracking-wider mb-1">Scheduled</p>
+        <button onClick={() => setShowScheduled(!showScheduled)} className={`p-6 rounded-2xl shadow-sm border text-left transition-colors ${showScheduled ? "bg-indigo-50 border-indigo-300" : "bg-[var(--color-surface-container-lowest)] border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]"}`}>
+          <p className="text-[var(--color-outline)] text-sm font-bold uppercase tracking-wider mb-1">Scheduled</p>
           <p className="text-4xl font-black text-indigo-600">{scheduledOrders.length}</p>
         </button>
       </div>
@@ -240,16 +240,16 @@ export default function PartnerPOS() {
       {showScheduled && (
         <section>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+            <h2 className="text-xl font-bold text-[var(--color-on-surface)] flex items-center gap-2">
               <span className="material-symbols-outlined text-indigo-500">calendar_month</span>
               Scheduled Orders
             </h2>
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Upcoming</span>
+            <span className="text-xs font-bold text-[var(--color-outline-variant)] uppercase tracking-widest">Upcoming</span>
           </div>
           {scheduledOrders.length === 0 ? (
-            <div className="bg-[var(--color-surface-container-lowest)] border-2 border-dashed border-slate-200 rounded-3xl p-12 text-center">
-              <span className="material-symbols-outlined text-5xl text-slate-300 mb-3">calendar_month</span>
-              <p className="text-slate-400 font-medium">No scheduled orders</p>
+            <div className="bg-[var(--color-surface-container-lowest)] border-2 border-dashed border-[var(--color-border-subtle)] rounded-3xl p-12 text-center">
+              <span className="material-symbols-outlined text-5xl text-[var(--color-outline-variant)]/60 mb-3">calendar_month</span>
+              <p className="text-[var(--color-outline-variant)] font-medium">No scheduled orders</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
@@ -257,7 +257,7 @@ export default function PartnerPOS() {
                 <div key={order.id} className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-5 shadow-sm border border-indigo-100 border-l-4 border-l-indigo-500">
                   <div className="flex justify-between items-start mb-3">
                     <div>
-                      <span className="text-lg font-black text-slate-900">#{order.id.slice(0, 8).toUpperCase()}</span>
+                      <span className="text-lg font-black text-[var(--color-on-surface)]">#{order.id.slice(0, 8).toUpperCase()}</span>
                       <div className="flex items-center gap-2 mt-1">
                         <span className="material-symbols-outlined text-sm text-indigo-500">schedule</span>
                         <span className="text-sm font-bold text-indigo-600">
@@ -272,7 +272,7 @@ export default function PartnerPOS() {
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {order.items?.map((item: any, idx: number) => (
-                      <span key={idx} className="text-xs bg-slate-100 px-2 py-1 rounded-lg font-medium text-slate-600">
+                      <span key={idx} className="text-xs bg-[var(--color-surface-container)] px-2 py-1 rounded-lg font-medium text-[var(--color-on-surface-variant)]">
                         {item.quantity}x {menuItemNames.get(item.menu_item_id)?.name || "Item"}
                       </span>
                     ))}
@@ -288,14 +288,14 @@ export default function PartnerPOS() {
       <section>
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+            <h2 className="text-xl font-bold text-[var(--color-on-surface)] flex items-center gap-2">
               <span className="w-2 h-2 bg-red-500 rounded-full animate-ping"></span>
               Active Orders
             </h2>
             <button
               onClick={() => { setBatchMode(!batchMode); setBatchSelected(new Set()); }}
               className={`text-xs font-bold px-3 py-1.5 rounded-lg border transition-colors ${
-                batchMode ? "bg-[#ba001c] text-white border-[#ba001c]" : "bg-[var(--color-surface-container-lowest)] text-slate-500 border-slate-200 hover:bg-slate-50"
+                batchMode ? "bg-[#ba001c] text-white border-[#ba001c]" : "bg-[var(--color-surface-container-lowest)] text-[var(--color-outline)] border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]"
               }`}
             >
               Batch
@@ -304,7 +304,7 @@ export default function PartnerPOS() {
           <div className="flex items-center gap-2">
             {batchMode && batchSelected.size > 0 && (
               <>
-                <span className="text-xs text-slate-500">{batchSelected.size} selected</span>
+                <span className="text-xs text-[var(--color-outline)]">{batchSelected.size} selected</span>
                 {activeOrders.some(o => o.status === "pending" && batchSelected.has(o.id)) && (
                   <button
                     onClick={async () => {
@@ -346,15 +346,15 @@ export default function PartnerPOS() {
                 )}
               </>
             )}
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Real-time</span>
+            <span className="text-xs font-bold text-[var(--color-outline-variant)] uppercase tracking-widest">Real-time</span>
           </div>
         </div>
 
         {activeOrders.length === 0 ? (
-          <div className="bg-[var(--color-surface-container-lowest)] border-2 border-dashed border-slate-200 rounded-3xl p-16 text-center">
-            <span className="material-symbols-outlined text-6xl text-slate-300 mb-4">check_circle</span>
-            <p className="text-slate-400 font-medium text-lg">All caught up!</p>
-            <p className="text-slate-300 text-sm mt-1">Waiting for new orders...</p>
+          <div className="bg-[var(--color-surface-container-lowest)] border-2 border-dashed border-[var(--color-border-subtle)] rounded-3xl p-16 text-center">
+            <span className="material-symbols-outlined text-6xl text-[var(--color-outline-variant)]/60 mb-4">check_circle</span>
+            <p className="text-[var(--color-outline-variant)] font-medium text-lg">All caught up!</p>
+            <p className="text-[var(--color-outline-variant)]/60 text-sm mt-1">Waiting for new orders...</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
@@ -364,7 +364,7 @@ export default function PartnerPOS() {
                 <div
                   key={order.id}
                   className={`bg-[var(--color-surface-container-lowest)] rounded-3xl p-6 shadow-sm border transition-all ${
-                    batchSelected.has(order.id) ? "border-[#ba001c] ring-2 ring-[#ba001c]/20" : "border-slate-200 hover:shadow-md"
+                    batchSelected.has(order.id) ? "border-[#ba001c] ring-2 ring-[#ba001c]/20" : "border-[var(--color-border-subtle)] hover:shadow-md"
                   }`}
                 >
                   {batchMode && (
@@ -379,20 +379,20 @@ export default function PartnerPOS() {
                         }}
                         className="w-4 h-4 accent-[#ba001c]"
                       />
-                      <span className="text-xs text-slate-500">Select</span>
+                      <span className="text-xs text-[var(--color-outline)]">Select</span>
                     </div>
                   )}
                   <div className="flex justify-between items-start mb-4">
                     <div>
                       <div className="flex items-center gap-3 mb-1">
-                        <span className="text-lg font-black text-slate-900">
+                        <span className="text-lg font-black text-[var(--color-on-surface)]">
                           #{order.id.slice(0, 8).toUpperCase()}
                         </span>
-                        <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${statusBadge[order.status] || "bg-slate-100 text-slate-600"}`}>
+                        <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${statusBadge[order.status] || "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"}`}>
                           {order.status.replace(/_/g, " ")}
                         </span>
                       </div>
-                      <p className="text-slate-400 text-xs font-medium">
+                      <p className="text-[var(--color-outline-variant)] text-xs font-medium">
                         {new Date(order.placed_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                         {" • "}
                         {order.payment_method === "wallet" ? "Wallet" : "Online"}
@@ -415,7 +415,7 @@ export default function PartnerPOS() {
                           >
                             View customer history
                           </button>
-                          <span className="text-slate-300">|</span>
+                          <span className="text-[var(--color-outline-variant)]/60">|</span>
                           <button
                             onClick={() => {
                               const masked = `+1-800-MIIAM-${order.id.slice(-4).toUpperCase()}`;
@@ -433,20 +433,20 @@ export default function PartnerPOS() {
                     <div className="text-right">
                       <p className="text-2xl font-black text-[#ba001c]">₹{order.total_amount.toFixed(2)}</p>
                       {order.delivery_address && (
-                        <p className="text-[10px] text-slate-400 mt-1 max-w-[160px] truncate">{order.delivery_address}</p>
+                        <p className="text-[10px] text-[var(--color-outline-variant)] mt-1 max-w-[160px] truncate">{order.delivery_address}</p>
                       )}
                     </div>
                   </div>
 
-                  <div className="space-y-2 mb-6 bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                  <div className="space-y-2 mb-6 bg-[var(--color-surface-subtle)] p-4 rounded-2xl border border-[var(--color-border-subtle)]">
                     {order.items?.map((item, idx) => (
                       <div key={idx}>
                         <div className="flex justify-between items-center text-sm">
-                          <p className="text-slate-700 font-bold">
-                            <span className="text-slate-400 mr-2">{item.quantity}x</span>
+                          <p className="text-[var(--color-on-surface)] font-bold">
+                            <span className="text-[var(--color-outline-variant)] mr-2">{item.quantity}x</span>
                             {menuItemNames.get(item.menu_item_id)?.name || "Unknown Item"}
                           </p>
-                          <p className="text-slate-500 font-medium">
+                          <p className="text-[var(--color-outline)] font-medium">
                             ₹{(item.unit_price * item.quantity).toFixed(0)}
                           </p>
                         </div>
@@ -456,8 +456,8 @@ export default function PartnerPOS() {
                       </div>
                     ))}
                     {order.special_instructions && (
-                      <div className="mt-3 pt-3 border-t border-slate-200">
-                        <p className="text-xs text-slate-500">
+                      <div className="mt-3 pt-3 border-t border-[var(--color-border-subtle)]">
+                        <p className="text-xs text-[var(--color-outline)]">
                           <span className="font-bold">Note: </span>{order.special_instructions}
                         </p>
                       </div>
@@ -523,41 +523,41 @@ export default function PartnerPOS() {
 
       {/* Past Orders */}
       <section className="pt-4">
-        <h2 className="text-xl font-bold text-slate-800 mb-6">Completed / Cancelled</h2>
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl overflow-hidden shadow-sm border border-slate-200">
+        <h2 className="text-xl font-bold text-[var(--color-on-surface)] mb-6">Completed / Cancelled</h2>
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl overflow-hidden shadow-sm border border-[var(--color-border-subtle)]">
           <div className="overflow-x-auto">
             <table className="w-full text-left">
-              <thead className="bg-slate-50 border-b border-slate-100">
+              <thead className="bg-[var(--color-surface-subtle)] border-b border-[var(--color-border-subtle)]">
                 <tr>
-                  <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Order</th>
-                  <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Items</th>
-                  <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
-                  <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Amount</th>
-                  <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Time</th>
+                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Order</th>
+                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Items</th>
+                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Status</th>
+                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest text-right">Amount</th>
+                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest text-right">Time</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-[var(--color-border-subtle)]">
                 {pastOrders.slice(0, 15).map((order) => (
-                  <tr key={order.id} className="hover:bg-slate-50 transition-colors">
-                    <td className="p-4 text-xs font-bold text-slate-700">
+                  <tr key={order.id} className="hover:bg-[var(--color-surface-subtle)] transition-colors">
+                    <td className="p-4 text-xs font-bold text-[var(--color-on-surface)]">
                       #{order.id.slice(0, 8).toUpperCase()}
                     </td>
-                    <td className="p-4 text-xs text-slate-500 font-medium">
+                    <td className="p-4 text-xs text-[var(--color-outline)] font-medium">
                       {order.items?.length || 0} items
                     </td>
                     <td className="p-4">
                       <span className={`text-[10px] font-black px-2 py-1 rounded-full uppercase ${
                         order.status === "delivered" ? "bg-green-100 text-green-700" :
                         order.status === "cancelled" ? "bg-red-100 text-red-700" :
-                        "bg-slate-100 text-slate-600"
+                        "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
                       }`}>
                         {order.status}
                       </span>
                     </td>
-                    <td className="p-4 text-xs font-black text-slate-700 text-right">
+                    <td className="p-4 text-xs font-black text-[var(--color-on-surface)] text-right">
                       ₹{order.total_amount.toFixed(0)}
                     </td>
-                    <td className="p-4 text-xs text-slate-400 text-right">
+                    <td className="p-4 text-xs text-[var(--color-outline-variant)] text-right">
                       {new Date(order.placed_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                     </td>
                   </tr>
@@ -576,13 +576,13 @@ export default function PartnerPOS() {
             <div className="flex items-center gap-3 mb-4">
               <span className="material-symbols-outlined text-3xl text-orange-500">schedule</span>
               <div>
-                <h3 className="text-lg font-extrabold text-slate-900">Notify Delay</h3>
-                <p className="text-xs text-slate-500">Inform customer about the delay</p>
+                <h3 className="text-lg font-extrabold text-[var(--color-on-surface)]">Notify Delay</h3>
+                <p className="text-xs text-[var(--color-outline)]">Inform customer about the delay</p>
               </div>
             </div>
             <div className="space-y-4">
               <div>
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider block mb-1">Delay (minutes)</label>
+                <label className="text-xs font-bold text-[var(--color-on-surface-variant)] uppercase tracking-wider block mb-1">Delay (minutes)</label>
                 <div className="flex gap-2">
                   {[5, 10, 15, 20, 30].map((m) => (
                     <button
@@ -591,7 +591,7 @@ export default function PartnerPOS() {
                       className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all ${
                         delayMinutes === m
                           ? "bg-orange-500 text-white shadow-md"
-                          : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                          : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]"
                       }`}
                     >
                       {m}m
@@ -600,7 +600,7 @@ export default function PartnerPOS() {
                 </div>
               </div>
               <div>
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider block mb-1">Reason (optional)</label>
+                <label className="text-xs font-bold text-[var(--color-on-surface-variant)] uppercase tracking-wider block mb-1">Reason (optional)</label>
                 <div className="flex flex-wrap gap-2 mb-2">
                   {["High order volume", "Staff shortage", "Ingredient unavailable", "Equipment issue"].map((r) => (
                     <button
@@ -609,7 +609,7 @@ export default function PartnerPOS() {
                       className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${
                         delayReason === r
                           ? "bg-orange-100 text-orange-700 border border-orange-300"
-                          : "bg-slate-100 text-slate-500 border border-slate-200 hover:bg-slate-200"
+                          : "bg-[var(--color-surface-container)] text-[var(--color-outline)] border border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-container-high)]"
                       }`}
                     >
                       {r}
@@ -621,13 +621,13 @@ export default function PartnerPOS() {
                   placeholder="Or type a custom reason..."
                   value={delayReason}
                   onChange={(e) => setDelayReason(e.target.value)}
-                  className="w-full p-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300"
+                  className="w-full p-3 rounded-xl border border-[var(--color-border-subtle)] text-sm focus:outline-none focus:ring-2 focus:ring-orange-300"
                 />
               </div>
               <div className="flex gap-3 pt-2">
                 <button
                   onClick={() => setDelayModal(null)}
-                  className="flex-1 py-3 rounded-xl border border-slate-200 text-slate-600 font-bold text-sm hover:bg-slate-50 transition-all"
+                  className="flex-1 py-3 rounded-xl border border-[var(--color-border-subtle)] text-[var(--color-on-surface-variant)] font-bold text-sm hover:bg-[var(--color-surface-subtle)] transition-all"
                 >
                   Cancel
                 </button>
@@ -650,13 +650,13 @@ export default function PartnerPOS() {
             <div className="flex items-center gap-3 mb-4">
               <span className="material-symbols-outlined text-3xl text-amber-500">timer</span>
               <div>
-                <h3 className="text-lg font-extrabold text-slate-900">Set Preparation Time</h3>
-                <p className="text-xs text-slate-500">How long will this order take to prepare?</p>
+                <h3 className="text-lg font-extrabold text-[var(--color-on-surface)]">Set Preparation Time</h3>
+                <p className="text-xs text-[var(--color-outline)]">How long will this order take to prepare?</p>
               </div>
             </div>
             <div className="space-y-4">
               <div>
-                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider block mb-3">Estimated time</label>
+                <label className="text-xs font-bold text-[var(--color-on-surface-variant)] uppercase tracking-wider block mb-3">Estimated time</label>
                 <div className="flex gap-2">
                   {[5, 10, 15, 20, 25, 30, 45, 60].map((m) => (
                     <button
@@ -665,7 +665,7 @@ export default function PartnerPOS() {
                       className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all ${
                         prepTime === m
                           ? "bg-amber-500 text-white shadow-md"
-                          : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                          : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]"
                       }`}
                     >
                       {m < 60 ? `${m}m` : `${Math.floor(m/60)}h`}
@@ -680,7 +680,7 @@ export default function PartnerPOS() {
               <div className="flex gap-3 pt-2">
                 <button
                   onClick={() => setPrepTimeModal(null)}
-                  className="flex-1 py-3 rounded-xl border border-slate-200 text-slate-600 font-bold text-sm hover:bg-slate-50 transition-all"
+                  className="flex-1 py-3 rounded-xl border border-[var(--color-border-subtle)] text-[var(--color-on-surface-variant)] font-bold text-sm hover:bg-[var(--color-surface-subtle)] transition-all"
                 >
                   Cancel
                 </button>
@@ -705,24 +705,24 @@ export default function PartnerPOS() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setCustHistoryModal(null)}>
           <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-6 max-w-lg w-full shadow-2xl max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-extrabold text-slate-900">Customer Order History</h3>
-              <button onClick={() => setCustHistoryModal(null)} className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
+              <h3 className="text-lg font-extrabold text-[var(--color-on-surface)]">Customer Order History</h3>
+              <button onClick={() => setCustHistoryModal(null)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center">
                 <span className="material-symbols-outlined text-sm">close</span>
               </button>
             </div>
             {custHistoryModal.orders.length === 0 ? (
-              <p className="text-slate-400 text-sm text-center py-8">No previous orders from this customer</p>
+              <p className="text-[var(--color-outline-variant)] text-sm text-center py-8">No previous orders from this customer</p>
             ) : (
               <div className="space-y-3">
                 {custHistoryModal.orders.map((o: any) => (
-                  <div key={o.id} className="bg-slate-50 rounded-xl p-4 border border-slate-100">
+                  <div key={o.id} className="bg-[var(--color-surface-subtle)] rounded-xl p-4 border border-[var(--color-border-subtle)]">
                     <div className="flex justify-between items-start mb-2">
-                      <span className="text-xs font-bold text-slate-700">#{o.id.slice(0, 8).toUpperCase()}</span>
+                      <span className="text-xs font-bold text-[var(--color-on-surface)]">#{o.id.slice(0, 8).toUpperCase()}</span>
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                        o.status === "delivered" ? "bg-green-100 text-green-700" : o.status === "cancelled" ? "bg-red-100 text-red-700" : "bg-slate-100 text-slate-600"
+                        o.status === "delivered" ? "bg-green-100 text-green-700" : o.status === "cancelled" ? "bg-red-100 text-red-700" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
                       }`}>{o.status}</span>
                     </div>
-                    <div className="text-xs text-slate-500">
+                    <div className="text-xs text-[var(--color-outline)]">
                       {new Date(o.placed_at).toLocaleDateString()} • ₹{o.total_amount.toFixed(2)} • {o.items?.length || 0} items
                     </div>
                   </div>
@@ -738,8 +738,8 @@ export default function PartnerPOS() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setCallMaskModal(null)}>
           <div className="bg-white w-full max-w-sm rounded-3xl p-6" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
-              <h3 className="font-extrabold text-slate-900">Connect Call</h3>
-              <button onClick={() => setCallMaskModal(null)} className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
+              <h3 className="font-extrabold text-[var(--color-on-surface)]">Connect Call</h3>
+              <button onClick={() => setCallMaskModal(null)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center">
                 <span className="material-symbols-outlined text-sm">close</span>
               </button>
             </div>
@@ -748,10 +748,10 @@ export default function PartnerPOS() {
                 <span className="material-symbols-outlined text-3xl text-green-600" style={{ fontVariationSettings: "'FILL' 1" }}>call</span>
               </div>
               <div>
-                <p className="text-sm text-slate-500">Masked Number</p>
-                <p className="text-xl font-black text-slate-900 tracking-wider">{callMaskModal.maskedNumber}</p>
+                <p className="text-sm text-[var(--color-outline)]">Masked Number</p>
+                <p className="text-xl font-black text-[var(--color-on-surface)] tracking-wider">{callMaskModal.maskedNumber}</p>
               </div>
-              <p className="text-xs text-slate-400">This masked number connects you to the customer without revealing either party&apos;s real number. Number copied to clipboard.</p>
+              <p className="text-xs text-[var(--color-outline-variant)]">This masked number connects you to the customer without revealing either party&apos;s real number. Number copied to clipboard.</p>
               <div className="bg-amber-50 rounded-xl p-3 border border-amber-200">
                 <p className="text-xs text-amber-700 flex items-center gap-1">
                   <span className="material-symbols-outlined text-sm">info</span>

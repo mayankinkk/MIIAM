@@ -34,13 +34,13 @@ export default function EmailInput({ purpose = "signup" }: EmailInputProps) {
   return (
     <div className="space-y-6">
       <div>
-        <label className="block text-sm font-bold text-slate-700 mb-2">Email Address</label>
+        <label className="block text-sm font-bold text-[var(--color-on-surface)] mb-2">Email Address</label>
         <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@example.com" className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-[#ba001c] focus:ring-2 focus:ring-[#ba001c]/20 outline-none font-bold" />
+          placeholder="you@example.com" className="w-full px-4 py-3 rounded-xl border-2 border-[var(--color-border-subtle)] focus:border-[#ba001c] focus:ring-2 focus:ring-[#ba001c]/20 outline-none font-bold" />
         {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
       </div>
       <button onClick={handleSubmit} disabled={!email.includes("@") || isLoading}
-        className={`w-full py-4 rounded-xl font-bold text-lg transition-all ${email.includes("@") && !isLoading ? "bg-[#ba001c] text-white hover:bg-[#a40017]" : "bg-slate-200 text-slate-400 cursor-not-allowed"}`}>
+        className={`w-full py-4 rounded-xl font-bold text-lg transition-all ${email.includes("@") && !isLoading ? "bg-[#ba001c] text-white hover:bg-[#a40017]" : "bg-[var(--color-surface-container-high)] text-[var(--color-outline-variant)] cursor-not-allowed"}`}>
         {isLoading ? "Sending..." : "Send Verification Code"}
       </button>
     </div>

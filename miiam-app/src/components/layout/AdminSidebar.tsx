@@ -107,14 +107,14 @@ export default function AdminSidebar() {
       <div className="p-6 border-b border-slate-50 flex items-center gap-3">
         <div className="w-8 h-8 bg-[#ba001c] rounded-lg flex items-center justify-center text-white font-black">M</div>
         <Link href="/admin" className="text-xl font-black tracking-tighter text-[#ba001c]">
-          MIIAM <span className="text-slate-400 text-xs tracking-normal">Staff</span>
+          MIIAM <span className="text-[var(--color-outline-variant)] text-xs tracking-normal">Staff</span>
         </Link>
       </div>
       
       <nav className="flex-1 p-4 space-y-1">
         {menuGroups.map((group) => (
           <div key={group.title}>
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[2px] px-4 py-3 mt-4 first:mt-0">
+            <p className="text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-[2px] px-4 py-3 mt-4 first:mt-0">
               {group.title}
             </p>
             {group.items.map((item) => {
@@ -126,7 +126,7 @@ export default function AdminSidebar() {
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all duration-200 group ${
                     isActive
                       ? "bg-[#ba001c] text-white shadow-lg shadow-red-900/20"
-                      : "text-slate-600 hover:bg-slate-50"
+                      : "text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-subtle)]"
                   }`}
                 >
                   <span

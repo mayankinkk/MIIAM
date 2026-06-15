@@ -50,17 +50,17 @@ export default function VendorReviews({ vendorId }: VendorReviewsProps) {
     loadReviews();
   }, [vendorId, supabase]);
 
-  if (loading) return <div className="text-center py-4 text-slate-400">Loading reviews...</div>;
+  if (loading) return <div className="text-center py-4 text-[var(--color-outline-variant)]">Loading reviews...</div>;
 
   return (
     <div className="space-y-4">
       {reviews.length === 0 ? (
-        <p className="text-slate-400 text-center py-4">No reviews yet</p>
+        <p className="text-[var(--color-outline-variant)] text-center py-4">No reviews yet</p>
       ) : (
         <>
-          <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-xl">
+          <div className="flex items-center gap-4 p-4 bg-[var(--color-surface-subtle)] rounded-xl">
             <div className="text-center">
-              <span className="text-4xl font-black text-slate-800">{avgRating.toFixed(1)}</span>
+              <span className="text-4xl font-black text-[var(--color-on-surface)]">{avgRating.toFixed(1)}</span>
               <div className="flex gap-0.5 justify-center mt-1">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <span
@@ -75,7 +75,7 @@ export default function VendorReviews({ vendorId }: VendorReviewsProps) {
                   </span>
                 ))}
               </div>
-              <p className="text-xs text-slate-500 mt-1">{reviews.length} reviews</p>
+              <p className="text-xs text-[var(--color-outline)] mt-1">{reviews.length} reviews</p>
             </div>
             <div className="flex-1 space-y-1">
               {[5, 4, 3, 2, 1].map((star) => {
@@ -83,14 +83,14 @@ export default function VendorReviews({ vendorId }: VendorReviewsProps) {
                 const pct = reviews.length > 0 ? (count / reviews.length) * 100 : 0;
                 return (
                   <div key={star} className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-slate-600 w-3">{star}</span>
-                    <div className="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
+                    <span className="text-xs font-bold text-[var(--color-on-surface-variant)] w-3">{star}</span>
+                    <div className="flex-1 h-2 bg-[var(--color-surface-container-high)] rounded-full overflow-hidden">
                       <div 
                         className="h-full bg-[#ffd700] rounded-full" 
                         style={{ width: `${pct}%` }} 
                       />
                     </div>
-                    <span className="text-xs text-slate-400 w-6">{count}</span>
+                    <span className="text-xs text-[var(--color-outline-variant)] w-6">{count}</span>
                   </div>
                 );
               })}
@@ -99,14 +99,14 @@ export default function VendorReviews({ vendorId }: VendorReviewsProps) {
 
           <div className="space-y-3">
             {reviews.map((review) => (
-              <div key={review.id} className="p-4 bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-100">
+              <div key={review.id} className="p-4 bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)]">
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-full bg-[#ba001c] flex items-center justify-center text-white font-bold text-sm">
                       {review.user?.full_name?.[0] || "U"}
                     </div>
                     <div>
-                      <p className="font-bold text-slate-800 text-sm">{review.user?.full_name || "User"}</p>
+                      <p className="font-bold text-[var(--color-on-surface)] text-sm">{review.user?.full_name || "User"}</p>
                       <div className="flex gap-0.5">
                         {[1, 2, 3, 4, 5].map((star) => (
                           <span
@@ -123,12 +123,12 @@ export default function VendorReviews({ vendorId }: VendorReviewsProps) {
                       </div>
                     </div>
                   </div>
-                  <span className="text-xs text-slate-400">
+                  <span className="text-xs text-[var(--color-outline-variant)]">
                     {new Date(review.created_at).toLocaleDateString()}
                   </span>
                 </div>
                 {review.comment && (
-                  <p className="text-sm text-slate-600 mt-2">{review.comment}</p>
+                  <p className="text-sm text-[var(--color-on-surface-variant)] mt-2">{review.comment}</p>
                 )}
                 {review.vendor_reply && (
                   <div className="mt-2 ml-2 pl-3 border-l-2 border-green-400 bg-green-50 p-2 rounded-r-lg">

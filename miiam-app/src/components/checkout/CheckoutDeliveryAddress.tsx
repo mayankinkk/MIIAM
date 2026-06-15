@@ -49,7 +49,7 @@ export default function CheckoutDeliveryAddress({ deliveryAddress, onChangeAddre
               {[deliveryAddress.flat, deliveryAddress.street, deliveryAddress.city, deliveryAddress.state].filter(Boolean).join(", ")}
             </p>
             {deliveryAddress.landmark && (
-              <p className="text-xs text-slate-400 mt-1 break-words">📍 Near {deliveryAddress.landmark}</p>
+              <p className="text-xs text-[var(--color-outline-variant)] mt-1 break-words">📍 Near {deliveryAddress.landmark}</p>
             )}
           </div>
           <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center flex-shrink-0">

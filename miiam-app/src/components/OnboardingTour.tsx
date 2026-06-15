@@ -90,7 +90,7 @@ export default function OnboardingTour({ onComplete }: OnboardingTourProps) {
               <div
                 key={i}
                 className={`h-1.5 flex-1 rounded-full transition-all ${
-                  i <= currentStep ? "bg-[#ba001c]" : "bg-slate-200"
+                  i <= currentStep ? "bg-[#ba001c]" : "bg-[var(--color-surface-container-high)]"
                 }`}
               />
             ))}
@@ -103,7 +103,7 @@ export default function OnboardingTour({ onComplete }: OnboardingTourProps) {
             </div>
             <div className="flex-1 pt-1">
               <h3 className="text-lg font-black text-[#4d212a]">{step.title}</h3>
-              <p className="text-sm text-slate-500 mt-1">{step.description}</p>
+              <p className="text-sm text-[var(--color-outline)] mt-1">{step.description}</p>
             </div>
           </div>
 
@@ -111,7 +111,7 @@ export default function OnboardingTour({ onComplete }: OnboardingTourProps) {
           <div className="flex items-center justify-between">
             <button
               onClick={dismiss}
-              className="text-xs font-bold text-slate-400 hover:text-slate-600 transition-colors min-h-11 px-3 py-2"
+              className="text-xs font-bold text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)] transition-colors min-h-11 px-3 py-2"
             >
               Skip all
             </button>
@@ -119,7 +119,7 @@ export default function OnboardingTour({ onComplete }: OnboardingTourProps) {
               {currentStep > 0 && (
                 <button
                   onClick={prev}
-                  className="px-4 py-2 border border-slate-200 rounded-xl font-bold text-sm text-slate-600 hover:bg-slate-50 transition-colors"
+                  className="px-4 py-2 border border-[var(--color-border-subtle)] rounded-xl font-bold text-sm text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-subtle)] transition-colors"
                 >
                   Back
                 </button>

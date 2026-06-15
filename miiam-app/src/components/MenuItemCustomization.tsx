@@ -45,11 +45,11 @@ export function MenuItemCustomizationCard({
   };
 
   return (
-    <div className="bg-[var(--color-surface-container-lowest)] rounded-xl p-4 border border-slate-100">
+    <div className="bg-[var(--color-surface-container-lowest)] rounded-xl p-4 border border-[var(--color-border-subtle)]">
       <div className="flex items-center justify-between mb-3">
         <div>
-          <h4 className="font-bold text-slate-800">{customization.name}</h4>
-          <p className="text-xs text-slate-500">
+          <h4 className="font-bold text-[var(--color-on-surface)]">{customization.name}</h4>
+          <p className="text-xs text-[var(--color-outline)]">
             {customization.required ? "Required" : "Optional"}
             {customization.type === "multi" && customization.maxSelect && ` • Max ${customization.maxSelect}`}
           </p>
@@ -68,7 +68,7 @@ export function MenuItemCustomizationCard({
               className={`flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-all ${
                 isSelected 
                   ? "border-[#ba001c] bg-red-50" 
-                  : "border-slate-200 hover:border-slate-300"
+                  : "border-[var(--color-border-subtle)] hover:border-[var(--color-outline-variant)]"
               }`}
             >
               <div className="flex items-center gap-3">
@@ -80,11 +80,11 @@ export function MenuItemCustomizationCard({
                   className="sr-only"
                 />
                 <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                  isSelected ? "border-[#ba001c] bg-[#ba001c]" : "border-slate-300"
+                  isSelected ? "border-[#ba001c] bg-[#ba001c]" : "border-[var(--color-outline-variant)]"
                 }`}>
                   {isSelected && <div className="w-2 h-2 bg-[var(--color-surface-container-lowest)] rounded-full" />}
                 </div>
-                <span className={`font-medium ${isSelected ? "text-slate-800" : "text-slate-600"}`}>
+                <span className={`font-medium ${isSelected ? "text-[var(--color-on-surface)]" : "text-[var(--color-on-surface-variant)]"}`}>
                   {option.name}
                 </span>
               </div>
@@ -121,7 +121,7 @@ export function CustomizationSummary({ customizations, selections }: Customizati
   );
 
   return (
-    <div className="text-xs text-slate-500 mt-2">
+    <div className="text-xs text-[var(--color-outline)] mt-2">
       {selectedNames.join(" • ")}
       <span className="font-bold text-[#ba001c] ml-1">+₹{total}</span>
     </div>

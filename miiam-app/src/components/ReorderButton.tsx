@@ -107,10 +107,10 @@ export function OrderHistoryCard({ order }: OrderHistoryCardProps) {
     <div className="bg-[var(--color-surface-container-lowest)] rounded-xl p-4 shadow-sm">
       <div className="flex justify-between items-start mb-3">
         <div>
-          <Link href={`/app/vendor/${order.vendor_id}`} className="font-bold text-slate-800 hover:text-[#ba001c]">
+          <Link href={`/app/vendor/${order.vendor_id}`} className="font-bold text-[var(--color-on-surface)] hover:text-[#ba001c]">
             {order.vendor_name}
           </Link>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-[var(--color-outline)]">
             {date.toLocaleDateString()} • {date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
           </p>
         </div>
@@ -127,22 +127,22 @@ export function OrderHistoryCard({ order }: OrderHistoryCardProps) {
 
       <div className="space-y-1 mb-4">
         {order.items.slice(0, 3).map((item, idx) => (
-          <p key={idx} className="text-sm text-slate-600">
+          <p key={idx} className="text-sm text-[var(--color-on-surface-variant)]">
             {item.quantity}x {item.name}
           </p>
         ))}
         {order.items.length > 3 && (
-          <p className="text-sm text-slate-500">+{order.items.length - 3} more items</p>
+          <p className="text-sm text-[var(--color-outline)]">+{order.items.length - 3} more items</p>
         )}
       </div>
 
-      <div className="flex items-center justify-between pt-3 border-t border-slate-100">
+      <div className="flex items-center justify-between pt-3 border-t border-[var(--color-border-subtle)]">
         <span className="font-bold text-[#ba001c]">₹{order.total_amount.toFixed(0)}</span>
         <div className="flex gap-2">
           <ReorderButton order={order} />
           <Link 
             href={`/app/orders/${order.id}`}
-            className="px-4 py-2 border border-slate-200 rounded-xl font-bold text-sm hover:bg-slate-50"
+            className="px-4 py-2 border border-[var(--color-border-subtle)] rounded-xl font-bold text-sm hover:bg-[var(--color-surface-subtle)]"
           >
             Details
           </Link>

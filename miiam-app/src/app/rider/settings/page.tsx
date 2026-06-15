@@ -100,26 +100,26 @@ export default function RiderSettingsPage() {
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-lg">
           <h3 className="font-bold text-[#4d212a] mb-4">Account</h3>
           <div className="space-y-3">
-            <Link href="/rider/account" className="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+            <Link href="/rider/account" className="flex items-center justify-between p-3 bg-[var(--color-surface-subtle)] rounded-xl">
               <div className="flex items-center gap-3">
-                <span className="material-symbols-outlined text-slate-600">person</span>
+                <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">person</span>
                 <span className="font-bold">Profile</span>
               </div>
-              <span className="material-symbols-outlined text-slate-400">chevron_right</span>
+              <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
             </Link>
-            <Link href="/rider/documents" className="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+            <Link href="/rider/documents" className="flex items-center justify-between p-3 bg-[var(--color-surface-subtle)] rounded-xl">
               <div className="flex items-center gap-3">
-                <span className="material-symbols-outlined text-slate-600">badge</span>
+                <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">badge</span>
                 <span className="font-bold">Documents</span>
               </div>
-              <span className="material-symbols-outlined text-slate-400">chevron_right</span>
+              <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
             </Link>
-            <Link href="/rider/vehicle" className="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+            <Link href="/rider/vehicle" className="flex items-center justify-between p-3 bg-[var(--color-surface-subtle)] rounded-xl">
               <div className="flex items-center gap-3">
-                <span className="material-symbols-outlined text-slate-600">two_wheeler</span>
+                <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">two_wheeler</span>
                 <span className="font-bold">My Vehicle</span>
               </div>
-              <span className="material-symbols-outlined text-slate-400">chevron_right</span>
+              <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
             </Link>
           </div>
         </div>
@@ -130,12 +130,12 @@ export default function RiderSettingsPage() {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <span className="material-symbols-outlined text-slate-600">autorenew</span>
+                <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">autorenew</span>
                 <span className="font-bold">Auto-Accept Orders</span>
               </div>
               <button 
                 onClick={() => { setAutoAccept(!autoAccept); saveSetting({ auto_accept: !autoAccept }); }}
-                className={`w-12 h-6 rounded-full transition-colors ${autoAccept ? "bg-green-500" : "bg-slate-200"}`}
+                className={`w-12 h-6 rounded-full transition-colors ${autoAccept ? "bg-green-500" : "bg-[var(--color-surface-container-high)]"}`}
               >
                 <div className={`w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full shadow transition-transform ${autoAccept ? "translate-x-6" : "translate-x-0.5"}`} />
               </button>
@@ -143,12 +143,12 @@ export default function RiderSettingsPage() {
             
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <span className="material-symbols-outlined text-slate-600">trending_up</span>
+                <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">trending_up</span>
                 <span className="font-bold">Only High Earnings</span>
               </div>
               <button 
                 onClick={() => { setOnlyHighEarnings(!onlyHighEarnings); saveSetting({ only_high_earnings: !onlyHighEarnings }); }}
-                className={`w-12 h-6 rounded-full transition-colors ${onlyHighEarnings ? "bg-green-500" : "bg-slate-200"}`}
+                className={`w-12 h-6 rounded-full transition-colors ${onlyHighEarnings ? "bg-green-500" : "bg-[var(--color-surface-container-high)]"}`}
               >
                 <div className={`w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full shadow transition-transform ${onlyHighEarnings ? "translate-x-6" : "translate-x-0.5"}`} />
               </button>
@@ -164,7 +164,7 @@ export default function RiderSettingsPage() {
                     className={`p-3 rounded-xl flex items-center gap-2 transition-all ${
                       preferredOrderTypes.includes(type.id)
                         ? "bg-[#0b50d5] text-white"
-                        : "bg-slate-50 text-slate-600"
+                        : "bg-[var(--color-surface-subtle)] text-[var(--color-on-surface-variant)]"
                     }`}
                   >
                     <span>{type.icon}</span>
@@ -182,12 +182,12 @@ export default function RiderSettingsPage() {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <span className="material-symbols-outlined text-slate-600">volume_up</span>
+                <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">volume_up</span>
                 <span className="font-bold">Sound</span>
               </div>
               <button 
                 onClick={() => { setSoundEnabled(!soundEnabled); saveSetting({ sound_enabled: !soundEnabled }); }}
-                className={`w-12 h-6 rounded-full transition-colors ${soundEnabled ? "bg-green-500" : "bg-slate-200"}`}
+                className={`w-12 h-6 rounded-full transition-colors ${soundEnabled ? "bg-green-500" : "bg-[var(--color-surface-container-high)]"}`}
               >
                 <div className={`w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full shadow transition-transform ${soundEnabled ? "translate-x-6" : "translate-x-0.5"}`} />
               </button>
@@ -195,12 +195,12 @@ export default function RiderSettingsPage() {
             
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <span className="material-symbols-outlined text-slate-600">vibration</span>
+                <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">vibration</span>
                 <span className="font-bold">Vibration</span>
               </div>
               <button 
                 onClick={() => { setVibrationEnabled(!vibrationEnabled); saveSetting({ vibration_enabled: !vibrationEnabled }); }}
-                className={`w-12 h-6 rounded-full transition-colors ${vibrationEnabled ? "bg-green-500" : "bg-slate-200"}`}
+                className={`w-12 h-6 rounded-full transition-colors ${vibrationEnabled ? "bg-green-500" : "bg-[var(--color-surface-container-high)]"}`}
               >
                 <div className={`w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full shadow transition-transform ${vibrationEnabled ? "translate-x-6" : "translate-x-0.5"}`} />
               </button>
@@ -208,12 +208,12 @@ export default function RiderSettingsPage() {
 
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <span className="material-symbols-outlined text-slate-600">do_not_disturb</span>
+                <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">do_not_disturb</span>
                 <span className="font-bold">Do Not Disturb</span>
               </div>
               <button 
                 onClick={() => { setDndMode(!dndMode); saveSetting({ dnd_mode: !dndMode }); }}
-                className={`w-12 h-6 rounded-full transition-colors ${dndMode ? "bg-red-500" : "bg-slate-200"}`}
+                className={`w-12 h-6 rounded-full transition-colors ${dndMode ? "bg-red-500" : "bg-[var(--color-surface-container-high)]"}`}
               >
                 <div className={`w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full shadow transition-transform ${dndMode ? "translate-x-6" : "translate-x-0.5"}`} />
               </button>
@@ -221,10 +221,10 @@ export default function RiderSettingsPage() {
 
             <Link href="/rider/notifications" className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <span className="material-symbols-outlined text-slate-600">notifications</span>
+                <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">notifications</span>
                 <span className="font-bold">Notification History</span>
               </div>
-              <span className="material-symbols-outlined text-slate-400">chevron_right</span>
+              <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
             </Link>
           </div>
         </div>
@@ -235,12 +235,12 @@ export default function RiderSettingsPage() {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <span className="material-symbols-outlined text-slate-600">dark_mode</span>
+                <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">dark_mode</span>
                 <span className="font-bold">Dark Mode</span>
               </div>
               <button 
                 onClick={() => { setDarkMode(!darkMode); saveSetting({ dark_mode: !darkMode }); }}
-                className={`w-12 h-6 rounded-full transition-colors ${darkMode ? "bg-green-500" : "bg-slate-200"}`}
+                className={`w-12 h-6 rounded-full transition-colors ${darkMode ? "bg-green-500" : "bg-[var(--color-surface-container-high)]"}`}
               >
                 <div className={`w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full shadow transition-transform ${darkMode ? "translate-x-6" : "translate-x-0.5"}`} />
               </button>
@@ -251,12 +251,12 @@ export default function RiderSettingsPage() {
               className="flex items-center justify-between w-full"
             >
               <div className="flex items-center gap-3">
-                <span className="material-symbols-outlined text-slate-600">language</span>
+                <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">language</span>
                 <span className="font-bold">Language</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-slate-500">{language}</span>
-                <span className="material-symbols-outlined text-slate-400">chevron_right</span>
+                <span className="text-[var(--color-outline)]">{language}</span>
+                <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
               </div>
             </button>
           </div>
@@ -266,26 +266,26 @@ export default function RiderSettingsPage() {
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-lg">
           <h3 className="font-bold text-[#4d212a] mb-4">Support</h3>
           <div className="space-y-3">
-            <Link href="/rider/support" className="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+            <Link href="/rider/support" className="flex items-center justify-between p-3 bg-[var(--color-surface-subtle)] rounded-xl">
               <div className="flex items-center gap-3">
-                <span className="material-symbols-outlined text-slate-600">help</span>
+                <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">help</span>
                 <span className="font-bold">Help Center</span>
               </div>
-              <span className="material-symbols-outlined text-slate-400">chevron_right</span>
+              <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
             </Link>
-            <Link href="/rider/incident" className="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+            <Link href="/rider/incident" className="flex items-center justify-between p-3 bg-[var(--color-surface-subtle)] rounded-xl">
               <div className="flex items-center gap-3">
                 <span className="material-symbols-outlined text-red-500">emergency</span>
                 <span className="font-bold text-red-600">Report Incident</span>
               </div>
-              <span className="material-symbols-outlined text-slate-400">chevron_right</span>
+              <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
             </Link>
-            <Link href="/rider/training" className="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+            <Link href="/rider/training" className="flex items-center justify-between p-3 bg-[var(--color-surface-subtle)] rounded-xl">
               <div className="flex items-center gap-3">
-                <span className="material-symbols-outlined text-slate-600">school</span>
+                <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">school</span>
                 <span className="font-bold">Training</span>
               </div>
-              <span className="material-symbols-outlined text-slate-400">chevron_right</span>
+              <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
             </Link>
           </div>
         </div>
@@ -294,23 +294,23 @@ export default function RiderSettingsPage() {
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-lg">
           <h3 className="font-bold text-[#4d212a] mb-4">Privacy & Legal</h3>
           <div className="space-y-3">
-            <Link href="/privacy" className="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+            <Link href="/privacy" className="flex items-center justify-between p-3 bg-[var(--color-surface-subtle)] rounded-xl">
               <span className="font-bold">Privacy Policy</span>
-              <span className="material-symbols-outlined text-slate-400">chevron_right</span>
+              <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
             </Link>
-            <Link href="/terms" className="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+            <Link href="/terms" className="flex items-center justify-between p-3 bg-[var(--color-surface-subtle)] rounded-xl">
               <span className="font-bold">Terms of Service</span>
-              <span className="material-symbols-outlined text-slate-400">chevron_right</span>
+              <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
             </Link>
-            <Link href="/privacy" className="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+            <Link href="/privacy" className="flex items-center justify-between p-3 bg-[var(--color-surface-subtle)] rounded-xl">
               <span className="font-bold">Data & Privacy</span>
-              <span className="material-symbols-outlined text-slate-400">chevron_right</span>
+              <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
             </Link>
           </div>
         </div>
 
         {/* Version */}
-        <p className="text-center text-xs text-slate-400">MIIAM Rider v1.0.0 • Made with ❤️</p>
+        <p className="text-center text-xs text-[var(--color-outline-variant)]">MIIAM Rider v1.0.0 • Made with ❤️</p>
       </main>
 
       {/* Language Modal */}
@@ -326,14 +326,14 @@ export default function RiderSettingsPage() {
                   className={`w-full p-4 rounded-xl font-bold text-left transition-all ${
                     language === lang 
                       ? "bg-[#0b50d5] text-white" 
-                      : "bg-slate-50 hover:bg-slate-100"
+                      : "bg-[var(--color-surface-subtle)] hover:bg-[var(--color-surface-container)]"
                   }`}
                 >
                   {lang}
                 </button>
               ))}
             </div>
-            <button onClick={() => setShowLanguageModal(false)} className="w-full py-3 text-slate-500 font-bold mt-4">
+            <button onClick={() => setShowLanguageModal(false)} className="w-full py-3 text-[var(--color-outline)] font-bold mt-4">
               Cancel
             </button>
           </div>

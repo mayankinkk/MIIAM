@@ -161,12 +161,12 @@ export default function FlowersItemsPage() {
   return (
     <div className="p-8">
       <div className="flex items-center gap-4 mb-6">
-        <Link href="/admin/flowers" className="text-slate-400 hover:text-slate-600">
+        <Link href="/admin/flowers" className="text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]">
           <span className="material-symbols-outlined text-3xl">arrow_back</span>
         </Link>
         <div className="flex-1">
-          <h1 className="text-2xl font-black text-slate-800">Flowers Items</h1>
-          <p className="text-slate-500 text-sm">Manage flower products and catalog</p>
+          <h1 className="text-2xl font-black text-[var(--color-on-surface)]">Flowers Items</h1>
+          <p className="text-[var(--color-outline)] text-sm">Manage flower products and catalog</p>
         </div>
         <button onClick={() => setShowAddModal(true)} className="px-4 py-2 bg-[#ba001c] text-white rounded-lg font-bold text-sm hover:bg-[#a00018]">
           + Add Item
@@ -174,9 +174,9 @@ export default function FlowersItemsPage() {
       </div>
 
       <div className="grid grid-cols-4 gap-4 mb-6">
-        <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-slate-100">
-          <p className="text-slate-400 text-xs font-bold">TOTAL ITEMS</p>
-          <p className="text-2xl font-black text-slate-800 mt-1">{stats.total}</p>
+        <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-[var(--color-border-subtle)]">
+          <p className="text-[var(--color-outline-variant)] text-xs font-bold">TOTAL ITEMS</p>
+          <p className="text-2xl font-black text-[var(--color-on-surface)] mt-1">{stats.total}</p>
         </div>
         <div className="bg-purple-50 p-4 rounded-xl border border-purple-200">
           <p className="text-purple-600 text-xs font-bold">CATEGORIES</p>
@@ -194,55 +194,55 @@ export default function FlowersItemsPage() {
 
       <div className="flex gap-4 mb-6">
         <div className="flex-1 relative">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined">search</span>
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-outline-variant)] material-symbols-outlined">search</span>
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search by item name..."
-            className="w-full pl-10 pr-4 py-3 bg-[var(--color-surface-container-lowest)] border border-slate-200 rounded-xl focus:outline-none focus:border-[#ba001c]"
+            className="w-full pl-10 pr-4 py-3 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:border-[#ba001c]"
           />
         </div>
-        <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} className="px-4 py-3 bg-[var(--color-surface-container-lowest)] border border-slate-200 rounded-xl focus:outline-none focus:border-[#ba001c]">
+        <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} className="px-4 py-3 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:border-[#ba001c]">
           <option value="all">All Categories</option>
           {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
         </select>
-        <select value={vendorFilter} onChange={(e) => setVendorFilter(e.target.value)} className="px-4 py-3 bg-[var(--color-surface-container-lowest)] border border-slate-200 rounded-xl focus:outline-none focus:border-[#ba001c]">
+        <select value={vendorFilter} onChange={(e) => setVendorFilter(e.target.value)} className="px-4 py-3 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:border-[#ba001c]">
           <option value="all">All Vendors</option>
           {vendors.map(v => <option key={v.id} value={v.id}>{v.shop_name}</option>)}
         </select>
       </div>
 
       {loading ? (
-        <div className="text-center py-12 text-slate-500">Loading items...</div>
+        <div className="text-center py-12 text-[var(--color-outline)]">Loading items...</div>
       ) : filteredItems.length === 0 ? (
-        <div className="text-center py-12 text-slate-500 bg-[var(--color-surface-container-lowest)] rounded-xl">
-          <span className="material-symbols-outlined text-5xl text-slate-300">local_florist</span>
+        <div className="text-center py-12 text-[var(--color-outline)] bg-[var(--color-surface-container-lowest)] rounded-xl">
+          <span className="material-symbols-outlined text-5xl text-[var(--color-outline-variant)]/60">local_florist</span>
           <p className="mt-4 font-bold">No items found</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredItems.map((item) => (
-            <div key={item.id} className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-100 overflow-hidden hover:shadow-lg transition-shadow">
-              <div className="h-40 bg-slate-100 relative">
+            <div key={item.id} className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)] overflow-hidden hover:shadow-lg transition-shadow">
+              <div className="h-40 bg-[var(--color-surface-container)] relative">
                 {item.image_url ? (
                   <Image src={item.image_url} alt={item.name} fill className="object-cover" />
                 ) : (
                   <div className="flex items-center justify-center h-full">
-                    <span className="material-symbols-outlined text-4xl text-slate-300">local_florist</span>
+                    <span className="material-symbols-outlined text-4xl text-[var(--color-outline-variant)]/60">local_florist</span>
                   </div>
                 )}
               </div>
               <div className="p-4">
                 <span className="px-3 py-1 bg-rose-100 text-rose-700 rounded-full text-xs font-bold">{item.category}</span>
-                <p className="text-xs text-slate-500 mt-1">{vendors.find(v => v.id === item.vendor_id)?.shop_name || "Unknown Vendor"}</p>
-                <p className="font-bold text-slate-800 mt-1">{item.name}</p>
-                <p className="text-sm text-slate-500 mt-1 line-clamp-2">{item.description || "No description"}</p>
+                <p className="text-xs text-[var(--color-outline)] mt-1">{vendors.find(v => v.id === item.vendor_id)?.shop_name || "Unknown Vendor"}</p>
+                <p className="font-bold text-[var(--color-on-surface)] mt-1">{item.name}</p>
+                <p className="text-sm text-[var(--color-outline)] mt-1 line-clamp-2">{item.description || "No description"}</p>
                 <div className="flex justify-between items-center mt-3">
-                  <p className="text-xl font-black text-slate-800">₹{item.price}</p>
+                  <p className="text-xl font-black text-[var(--color-on-surface)]">₹{item.price}</p>
                 </div>
                 <div className="flex gap-2 mt-3">
-                  <button onClick={() => openEditModal(item)} className="flex-1 py-2 bg-slate-100 text-slate-600 rounded-lg font-bold text-xs hover:bg-slate-200">Edit</button>
+                  <button onClick={() => openEditModal(item)} className="flex-1 py-2 bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] rounded-lg font-bold text-xs hover:bg-[var(--color-surface-container-high)]">Edit</button>
                   <button onClick={() => handleDelete(item.id)} className="flex-1 py-2 bg-red-50 text-red-600 rounded-lg font-bold text-xs hover:bg-red-100">Delete</button>
                 </div>
               </div>
@@ -256,37 +256,37 @@ export default function FlowersItemsPage() {
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b sticky top-0 bg-white">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-black text-slate-800">{editingItem ? "Edit Item" : "Add Item"}</h2>
-                <button onClick={resetModal} className="text-slate-400 hover:text-slate-600">
+                <h2 className="text-xl font-black text-[var(--color-on-surface)]">{editingItem ? "Edit Item" : "Add Item"}</h2>
+                <button onClick={resetModal} className="text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]">
                   <span className="material-symbols-outlined text-3xl">close</span>
                 </button>
               </div>
             </div>
             <div className="p-6 space-y-4">
               <div>
-                <label className="text-xs font-bold text-slate-600 mb-1 block">Item Name *</label>
-                <input type="text" value={newItem.name} onChange={(e) => setNewItem({ ...newItem, name: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="Enter item name" />
+                <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Item Name *</label>
+                <input type="text" value={newItem.name} onChange={(e) => setNewItem({ ...newItem, name: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="Enter item name" />
               </div>
               <div>
-                <label className="text-xs font-bold text-slate-600 mb-1 block">Vendor *</label>
-                <select value={newItem.vendor_id} onChange={(e) => setNewItem({ ...newItem, vendor_id: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none">
+                <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Vendor *</label>
+                <select value={newItem.vendor_id} onChange={(e) => setNewItem({ ...newItem, vendor_id: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none">
                   <option value="">Select Vendor</option>
                   {vendors.map(v => <option key={v.id} value={v.id}>{v.shop_name}</option>)}
                 </select>
               </div>
               <div>
-                <label className="text-xs font-bold text-slate-600 mb-1 block">Category *</label>
-                <select value={newItem.category} onChange={(e) => setNewItem({ ...newItem, category: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none">
+                <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Category *</label>
+                <select value={newItem.category} onChange={(e) => setNewItem({ ...newItem, category: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none">
                   {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
                 </select>
               </div>
               <div>
-                <label className="text-xs font-bold text-slate-600 mb-1 block">Price (₹) *</label>
-                <input type="number" value={newItem.price} onChange={(e) => setNewItem({ ...newItem, price: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="0" />
+                <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Price (₹) *</label>
+                <input type="number" value={newItem.price} onChange={(e) => setNewItem({ ...newItem, price: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="0" />
               </div>
               <div>
-                <label className="text-xs font-bold text-slate-600 mb-1 block">Description</label>
-                <textarea value={newItem.description} onChange={(e) => setNewItem({ ...newItem, description: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="Enter description" rows={3} />
+                <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Description</label>
+                <textarea value={newItem.description} onChange={(e) => setNewItem({ ...newItem, description: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="Enter description" rows={3} />
               </div>
               <ImageUpload
                 value={newItem.image_url}
@@ -298,7 +298,7 @@ export default function FlowersItemsPage() {
               />
             </div>
             <div className="p-6 border-t flex gap-4">
-              <button onClick={resetModal} className="flex-1 py-3 border border-slate-200 rounded-xl font-bold text-sm hover:bg-slate-50">Cancel</button>
+              <button onClick={resetModal} className="flex-1 py-3 border border-[var(--color-border-subtle)] rounded-xl font-bold text-sm hover:bg-[var(--color-surface-subtle)]">Cancel</button>
               <button onClick={handleSave} disabled={saving} className="flex-1 py-3 bg-[#ba001c] text-white rounded-xl font-bold text-sm hover:bg-[#a00018] disabled:opacity-50">
                 {saving ? "Saving..." : editingItem ? "Update" : "Add Item"}
               </button>

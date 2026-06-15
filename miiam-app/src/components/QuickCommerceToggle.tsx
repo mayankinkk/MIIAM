@@ -37,7 +37,7 @@ export function QuickCommerceToggle({ onToggle }: QuickCommerceToggleProps) {
       className={`flex items-center gap-2 px-4 py-2 rounded-full font-bold text-sm transition-all ${
         isQuickMode 
           ? "bg-[#ba001c] text-white shadow-lg shadow-[#ba001c]/20" 
-          : "bg-[var(--color-surface-container-lowest)] text-slate-700 border border-slate-200"
+          : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface)] border border-[var(--color-border-subtle)]"
       }`}
     >
       <span className={`material-symbols-outlined text-lg ${isQuickMode ? "animate-pulse" : ""}`}>

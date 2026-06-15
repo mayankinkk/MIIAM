@@ -103,7 +103,7 @@ function VendorFailureContent() {
             >
               <div className="flex items-center gap-4">
                 <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                  selectedOption === option.id ? "bg-primary" : "bg-slate-100"
+                  selectedOption === option.id ? "bg-primary" : "bg-[var(--color-surface-container)]"
                 }`}>
                   <span className={`material-symbols-outlined ${
                     selectedOption === option.id ? "text-white" : "text-on-surface-variant"
@@ -179,8 +179,8 @@ function Loading() {
   return (
     <div className="min-h-screen bg-surface flex items-center justify-center">
       <div className="animate-pulse flex flex-col items-center">
-        <div className="w-16 h-16 bg-slate-200 rounded-full mb-4"></div>
-        <div className="h-4 bg-slate-200 rounded w-48"></div>
+        <div className="w-16 h-16 bg-[var(--color-surface-container-high)] rounded-full mb-4"></div>
+        <div className="h-4 bg-[var(--color-surface-container-high)] rounded w-48"></div>
       </div>
     </div>
   );

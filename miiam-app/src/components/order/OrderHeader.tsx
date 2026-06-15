@@ -20,10 +20,10 @@ export default function OrderHeader({ orderId, isRefreshing, onRefresh }: OrderH
           <span className="text-2xl font-extrabold tracking-tighter text-primary">MIIAM</span>
         </div>
         <div className="flex items-center gap-4">
-          <button onClick={onRefresh} className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-high hover:bg-slate-200 transition-all" title="Refresh Order">
+          <button onClick={onRefresh} className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-high hover:bg-[var(--color-surface-container-high)] transition-all" title="Refresh Order">
             <span className={`material-symbols-outlined text-on-surface ${isRefreshing ? "animate-spin" : ""}`}>refresh</span>
           </button>
-          <Link href="/app/notifications" className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-high hover:bg-slate-200 transition-all">
+          <Link href="/app/notifications" className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-high hover:bg-[var(--color-surface-container-high)] transition-all">
             <span className="material-symbols-outlined text-on-surface">notifications</span>
           </Link>
           <span className="material-symbols-outlined text-on-surface cursor-pointer hover:opacity-80 transition-opacity">account_circle</span>

@@ -30,12 +30,12 @@ export default function GlobalError({
             </p>
             
             {error.digest && (
-              <p className="text-xs text-slate-400 mb-4">Error ID: {error.digest}</p>
+              <p className="text-xs text-[var(--color-outline-variant)] mb-4">Error ID: {error.digest}</p>
             )}
             
             {showDetails && (
-              <div className="bg-slate-100 p-4 rounded-xl text-left mb-4 overflow-auto max-h-32">
-                <p className="text-xs text-slate-600 font-mono break-words">
+              <div className="bg-[var(--color-surface-container)] p-4 rounded-xl text-left mb-4 overflow-auto max-h-32">
+                <p className="text-xs text-[var(--color-on-surface-variant)] font-mono break-words">
                   {error.message || "Unknown error"}
                 </p>
               </div>
@@ -50,7 +50,7 @@ export default function GlobalError({
               </button>
               <button
                 onClick={() => setShowDetails(!showDetails)}
-                className="text-sm text-slate-500 hover:text-slate-700"
+                className="text-sm text-[var(--color-outline)] hover:text-[var(--color-on-surface)]"
               >
                 {showDetails ? "Hide Details" : "Show Details"}
               </button>

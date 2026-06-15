@@ -78,7 +78,7 @@ function RateCustomerContent() {
             <span className="material-symbols-outlined text-green-600 text-5xl">check_circle</span>
           </div>
           <h2 className="text-2xl font-black text-[#4d212a] mb-2">Thank You!</h2>
-          <p className="text-slate-500">Your feedback has been submitted</p>
+          <p className="text-[var(--color-outline)]">Your feedback has been submitted</p>
         </div>
       </div>
     );
@@ -103,12 +103,12 @@ function RateCustomerContent() {
             </div>
             <div>
               <h2 className="text-xl font-bold text-[#4d212a]">{customerName}</h2>
-              <p className="text-sm text-slate-400">Order #{orderId}</p>
+              <p className="text-sm text-[var(--color-outline-variant)]">Order #{orderId}</p>
             </div>
           </div>
 
           <div className="text-center mb-6">
-            <p className="text-sm text-slate-500 mb-4">How was your experience?</p>
+            <p className="text-sm text-[var(--color-outline)] mb-4">How was your experience?</p>
             <div className="flex justify-center gap-2">
               {[1, 2, 3, 4, 5].map((star) => (
                 <button
@@ -117,7 +117,7 @@ function RateCustomerContent() {
                   className="p-2 transition-transform hover:scale-110"
                 >
                   <span 
-                    className={`text-4xl ${star <= (selectedRating || 0) ? "text-yellow-400" : "text-slate-300"}`}
+                    className={`text-4xl ${star <= (selectedRating || 0) ? "text-yellow-400" : "text-[var(--color-outline-variant)]/60"}`}
                     style={{ fontVariationSettings: "'FILL' 1" }}
                   >
                     star
@@ -138,7 +138,7 @@ function RateCustomerContent() {
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg">
           <h3 className="font-bold text-[#4d212a] mb-4">Quick Feedback</h3>
           <div className="space-y-3">
-            <label className="flex items-center justify-between p-3 bg-slate-50 rounded-xl cursor-pointer">
+            <label className="flex items-center justify-between p-3 bg-[var(--color-surface-subtle)] rounded-xl cursor-pointer">
               <span className="flex items-center gap-3">
                 <span className="material-symbols-outlined text-green-600">check_circle</span>
                 <span className="font-medium">Address was accurate</span>
@@ -150,7 +150,7 @@ function RateCustomerContent() {
                 className="w-5 h-5 accent-green-500"
               />
             </label>
-            <label className="flex items-center justify-between p-3 bg-slate-50 rounded-xl cursor-pointer">
+            <label className="flex items-center justify-between p-3 bg-[var(--color-surface-subtle)] rounded-xl cursor-pointer">
               <span className="flex items-center gap-3">
                 <span className="material-symbols-outlined text-green-600">sentiment_satisfied</span>
                 <span className="font-medium">Customer was friendly</span>
@@ -162,7 +162,7 @@ function RateCustomerContent() {
                 className="w-5 h-5 accent-green-500"
               />
             </label>
-            <label className="flex items-center justify-between p-3 bg-slate-50 rounded-xl cursor-pointer">
+            <label className="flex items-center justify-between p-3 bg-[var(--color-surface-subtle)] rounded-xl cursor-pointer">
               <span className="flex items-center gap-3">
                 <span className="material-symbols-outlined text-amber-600">volunteer_activism</span>
                 <span className="font-medium">Received tip</span>
@@ -183,7 +183,7 @@ function RateCustomerContent() {
             value={additionalComment}
             onChange={(e) => setAdditionalComment(e.target.value)}
             placeholder="Share more about your experience..."
-            className="w-full p-4 bg-slate-50 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#0b50d5]"
+            className="w-full p-4 bg-[var(--color-surface-subtle)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#0b50d5]"
             rows={3}
           />
         </div>
@@ -195,7 +195,7 @@ function RateCustomerContent() {
           Submit Feedback
         </button>
 
-        <p className="text-center text-xs text-slate-400">
+        <p className="text-center text-xs text-[var(--color-outline-variant)]">
           Your feedback helps improve the delivery experience
         </p>
       </main>
@@ -210,7 +210,7 @@ function LoadingFallback() {
     <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center">
       <div className="text-center">
         <span className="material-symbols-outlined text-4xl text-[#0b50d5] animate-spin">sync</span>
-        <p className="mt-4 text-slate-500">Loading...</p>
+        <p className="mt-4 text-[var(--color-outline)]">Loading...</p>
       </div>
     </div>
   );

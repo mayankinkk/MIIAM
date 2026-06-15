@@ -35,7 +35,7 @@ function SetPasswordContent() {
     if (errors <= 2) return 3;
     return 2;
   };
-  const strengthColors = ["bg-slate-200", "bg-red-500", "bg-orange-500", "bg-yellow-500", "bg-green-500"];
+  const strengthColors = ["bg-[var(--color-surface-container-high)]", "bg-red-500", "bg-orange-500", "bg-yellow-500", "bg-green-500"];
   const strengthLabels = ["", "Weak", "Fair", "Good", "Strong"];
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -150,7 +150,7 @@ function SetPasswordContent() {
                   <div className="mt-2 space-y-2">
                     <div className="flex gap-1">
                       {[1,2,3,4].map(i => (
-                        <div key={i} className={`h-1 flex-1 rounded-full ${i <= getStrength() ? strengthColors[getStrength()] : 'bg-slate-200'}`} />
+                        <div key={i} className={`h-1 flex-1 rounded-full ${i <= getStrength() ? strengthColors[getStrength()] : 'bg-[var(--color-surface-container-high)]'}`} />
                       ))}
                     </div>
                     <p className={`text-xs font-medium ${getStrength() >= 3 ? 'text-green-600' : getStrength() >= 2 ? 'text-orange-600' : 'text-red-500'}`}>

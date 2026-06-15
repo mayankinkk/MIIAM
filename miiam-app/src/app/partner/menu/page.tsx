@@ -414,14 +414,14 @@ export default function PartnerMenuPage() {
     <div className="p-4 md:p-8 space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Menu & Inventory</h1>
-          <p className="text-slate-500 text-sm mt-1">{pageTitle}</p>
+          <h1 className="text-3xl font-extrabold text-[var(--color-on-surface)] tracking-tight">Menu & Inventory</h1>
+          <p className="text-[var(--color-outline)] text-sm mt-1">{pageTitle}</p>
         </div>
         <div className="flex items-center gap-3">
           <select
             value={selectedVendorId}
             onChange={(e) => setSelectedVendorId(e.target.value)}
-            className="px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-bold bg-white"
+            className="px-4 py-2.5 border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold bg-white"
           >
             {vendors.map(v => (
               <option key={v.id} value={v.id}>
@@ -446,7 +446,7 @@ export default function PartnerMenuPage() {
           <button
             onClick={() => { setBulkMode(!bulkMode); setSelectedItems(new Set()); }}
             className={`px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 border transition-colors ${
-              bulkMode ? "bg-[#ba001c] text-white border-[#ba001c]" : "bg-[var(--color-surface-container-lowest)] text-slate-700 border-slate-200 hover:bg-slate-50"
+              bulkMode ? "bg-[#ba001c] text-white border-[#ba001c]" : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface)] border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]"
             }`}
           >
             <span className="material-symbols-outlined text-lg">select_all</span>
@@ -456,21 +456,21 @@ export default function PartnerMenuPage() {
       </div>
 
       {/* Filters */}
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-200 p-4 flex items-center gap-4 flex-wrap">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)] p-4 flex items-center gap-4 flex-wrap">
         <div className="relative flex-1 min-w-[200px]">
-          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-outline-variant)] text-lg">search</span>
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search items..."
-            className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#ba001c]"
+            className="w-full pl-10 pr-4 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:outline-none focus:border-[#ba001c]"
           />
         </div>
         <select
           value={categoryFilter}
           onChange={(e) => setCategoryFilter(e.target.value)}
-          className="px-4 py-2 border border-slate-200 rounded-xl text-sm font-bold focus:outline-none"
+          className="px-4 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold focus:outline-none"
         >
           <option value="all">All Categories</option>
           {categories.map(cat => (
@@ -479,7 +479,7 @@ export default function PartnerMenuPage() {
         </select>
         <button
           onClick={() => setShowCategoryModal(true)}
-          className="px-4 py-2 border border-slate-200 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-slate-50"
+          className="px-4 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-[var(--color-surface-subtle)]"
         >
           <span className="material-symbols-outlined text-lg">edit</span>
           Manage Categories
@@ -488,14 +488,14 @@ export default function PartnerMenuPage() {
           <>
             <button
               onClick={() => setShowQRModal(true)}
-              className="px-4 py-2 border border-slate-200 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-slate-50"
+              className="px-4 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-[var(--color-surface-subtle)]"
             >
               <span className="material-symbols-outlined text-lg">qr_code</span>
               QR Code
             </button>
             <button
               onClick={() => window.print()}
-              className="px-4 py-2 border border-slate-200 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-slate-50"
+              className="px-4 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-[var(--color-surface-subtle)]"
             >
               <span className="material-symbols-outlined text-lg">print</span>
               Print Menu
@@ -511,7 +511,7 @@ export default function PartnerMenuPage() {
           <div className="lg:col-span-2 bg-gradient-to-br from-[#fef7f8] to-white rounded-2xl border border-[#f5d0d6] p-5">
             <div className="flex items-center gap-2 mb-3">
               <span className="material-symbols-outlined text-[#ba001c]">insights</span>
-              <h3 className="font-extrabold text-slate-900 text-sm">Menu Intelligence</h3>
+              <h3 className="font-extrabold text-[var(--color-on-surface)] text-sm">Menu Intelligence</h3>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
               {(() => {
@@ -527,18 +527,18 @@ export default function PartnerMenuPage() {
                 if (noImg === 0 && noDesc === 0 && outOfStock === 0 && total >= 10) suggestions.push(`Your menu looks great! Continue adding seasonal specials.`);
                 return suggestions;
               })().map((s, i) => (
-                <div key={i} className="bg-[var(--color-surface-container-lowest)] rounded-xl p-3 border border-slate-100 flex items-start gap-2">
+                <div key={i} className="bg-[var(--color-surface-container-lowest)] rounded-xl p-3 border border-[var(--color-border-subtle)] flex items-start gap-2">
                   <span className="material-symbols-outlined text-[#ba001c] text-lg shrink-0">lightbulb</span>
-                  <span className="text-slate-700">{s}</span>
+                  <span className="text-[var(--color-on-surface)]">{s}</span>
                 </div>
               ))}
             </div>
           </div>
           {/* Bulk Import Card */}
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-200 p-5 flex flex-col items-center justify-center text-center">
-            <span className="material-symbols-outlined text-3xl text-slate-400 mb-2">file_upload</span>
-            <p className="font-bold text-slate-800 text-sm">Bulk Import Items</p>
-            <p className="text-xs text-slate-400 mt-1 mb-3">CSV upload</p>
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)] p-5 flex flex-col items-center justify-center text-center">
+            <span className="material-symbols-outlined text-3xl text-[var(--color-outline-variant)] mb-2">file_upload</span>
+            <p className="font-bold text-[var(--color-on-surface)] text-sm">Bulk Import Items</p>
+            <p className="text-xs text-[var(--color-outline-variant)] mt-1 mb-3">CSV upload</p>
             <label className="cursor-pointer px-4 py-2 bg-[#ba001c] text-white text-xs font-bold rounded-xl hover:bg-[#a40017]">
               Upload CSV
               <input
@@ -599,11 +599,11 @@ export default function PartnerMenuPage() {
       {/* Bulk Actions Toolbar */}
       {bulkMode && selectedItems.size > 0 && (
         <div className="bg-[#ba001c]/5 border border-[#ba001c]/20 rounded-2xl p-4 flex items-center gap-4 flex-wrap">
-          <span className="text-sm font-bold text-slate-700">{selectedItems.size} selected</span>
+          <span className="text-sm font-bold text-[var(--color-on-surface)]">{selectedItems.size} selected</span>
           <select
             value={bulkAction}
             onChange={(e) => setBulkAction(e.target.value)}
-            className="px-3 py-2 border border-slate-200 rounded-xl text-sm font-bold bg-white"
+            className="px-3 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold bg-white"
           >
             <option value="">Select action...</option>
             {vendorKey === "food" && (
@@ -624,7 +624,7 @@ export default function PartnerMenuPage() {
                 <select
                   value={bulkValue}
                   onChange={(e) => setBulkValue(e.target.value)}
-                  className="px-3 py-2 border border-slate-200 rounded-xl text-sm font-bold bg-white"
+                  className="px-3 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold bg-white"
                 >
                   <option value="all_day">All Day</option>
                   <option value="breakfast">Breakfast</option>
@@ -635,7 +635,7 @@ export default function PartnerMenuPage() {
                 <select
                   value={bulkValue}
                   onChange={(e) => setBulkValue(e.target.value)}
-                  className="px-3 py-2 border border-slate-200 rounded-xl text-sm font-bold bg-white"
+                  className="px-3 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold bg-white"
                 >
                   <option value="">Select category...</option>
                   {categories.map(c => <option key={c} value={c}>{c}</option>)}
@@ -646,7 +646,7 @@ export default function PartnerMenuPage() {
                   value={bulkValue}
                   onChange={(e) => setBulkValue(e.target.value)}
                   placeholder={bulkAction === "price_percent" ? "+/- %" : "Value"}
-                  className="w-24 px-3 py-2 border border-slate-200 rounded-xl text-sm"
+                  className="w-24 px-3 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm"
                 />
               )}
               <button
@@ -698,7 +698,7 @@ export default function PartnerMenuPage() {
           )}
           <button
             onClick={() => { setSelectedItems(new Set()); setBulkAction(""); setBulkValue(""); }}
-            className="px-4 py-2 border border-slate-200 text-slate-500 font-bold rounded-xl text-sm hover:bg-slate-50"
+            className="px-4 py-2 border border-[var(--color-border-subtle)] text-[var(--color-outline)] font-bold rounded-xl text-sm hover:bg-[var(--color-surface-subtle)]"
           >
             Clear
           </button>
@@ -706,15 +706,15 @@ export default function PartnerMenuPage() {
       )}
 
       {/* Items Table */}
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-200 overflow-hidden">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)] overflow-hidden">
         {loading ? (
-          <div className="p-12 text-center text-slate-400 font-medium">Loading items...</div>
+          <div className="p-12 text-center text-[var(--color-outline-variant)] font-medium">Loading items...</div>
         ) : filteredItems.length === 0 ? (
           <div className="p-12 text-center">
-            <span className="material-symbols-outlined text-5xl text-slate-300 mb-3">
+            <span className="material-symbols-outlined text-5xl text-[var(--color-outline-variant)]/60 mb-3">
               {vendorKey === "grocery" ? "shopping_cart" : vendorKey === "pharmacy" ? "medication" : vendorKey === "flowers" ? "local_florist" : "restaurant_menu"}
             </span>
-            <p className="text-slate-400 font-medium">No {pageTitle.toLowerCase()} found</p>
+            <p className="text-[var(--color-outline-variant)] font-medium">No {pageTitle.toLowerCase()} found</p>
             <button
               onClick={() => { resetNewItem(); setShowAddModal(true); }}
               className="mt-4 text-[#ba001c] font-bold text-sm hover:underline"
@@ -724,7 +724,7 @@ export default function PartnerMenuPage() {
           </div>
         ) : (
           <table className="w-full text-left">
-            <thead className="bg-slate-50 border-b border-slate-100">
+            <thead className="bg-[var(--color-surface-subtle)] border-b border-[var(--color-border-subtle)]">
               <tr>
                 {bulkMode && (
                   <th className="p-4 w-10">
@@ -742,30 +742,30 @@ export default function PartnerMenuPage() {
                     />
                   </th>
                 )}
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Item</th>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Category</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Item</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Category</th>
                 {vendorKey === "food" && (
-                  <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Type</th>
+                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Type</th>
                 )}
                 {(vendorKey === "food" || vendorKey === "grocery" || vendorKey === "pharmacy") && (
-                  <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Stock</th>
+                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Stock</th>
                 )}
                 {vendorKey === "pharmacy" && (
-                  <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Rx</th>
+                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Rx</th>
                 )}
                 {vendorKey === "food" && (
-                  <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
+                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Status</th>
                 )}
                 {vendorKey === "food" && (
-                  <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Featured</th>
+                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Featured</th>
                 )}
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Price</th>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest text-right">Price</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-[var(--color-border-subtle)]">
               {filteredItems.map((item) => (
-                <tr key={item.id} className={`hover:bg-slate-50 transition-colors ${selectedItems.has(item.id) ? "bg-[#ba001c]/5" : ""}`}>
+                <tr key={item.id} className={`hover:bg-[var(--color-surface-subtle)] transition-colors ${selectedItems.has(item.id) ? "bg-[#ba001c]/5" : ""}`}>
                   {bulkMode && (
                     <td className="p-4 w-10">
                       <input
@@ -782,7 +782,7 @@ export default function PartnerMenuPage() {
                   )}
                   <td className="p-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center overflow-hidden">
+                      <div className="w-10 h-10 bg-[var(--color-surface-container)] rounded-xl flex items-center justify-center overflow-hidden">
                         {item.image_url ? (
                           <img
                             src={item.image_url}
@@ -795,20 +795,20 @@ export default function PartnerMenuPage() {
                             }}
                           />
                         ) : null}
-                        <span className="mi-fallback material-symbols-outlined text-slate-400" style={{ display: item.image_url ? "none" : "flex" }}>
+                        <span className="mi-fallback material-symbols-outlined text-[var(--color-outline-variant)]" style={{ display: item.image_url ? "none" : "flex" }}>
                           {vendorKey === "grocery" ? "shopping_cart" : vendorKey === "pharmacy" ? "medication" : vendorKey === "flowers" ? "local_florist" : "restaurant"}
                         </span>
                       </div>
                       <div>
-                        <p className="font-bold text-slate-800">{item.name}</p>
+                        <p className="font-bold text-[var(--color-on-surface)]">{item.name}</p>
                         {'description' in item && (item as any).description && (
-                          <p className="text-xs text-slate-400 mt-0.5">{(item as any).description}</p>
+                          <p className="text-xs text-[var(--color-outline-variant)] mt-0.5">{(item as any).description}</p>
                         )}
                       </div>
                     </div>
                   </td>
                   <td className="p-4">
-                    <span className="text-xs font-semibold text-slate-500">{item.category}</span>
+                    <span className="text-xs font-semibold text-[var(--color-outline)]">{item.category}</span>
                   </td>
                   {vendorKey === "food" && (
                     <td className="p-4">
@@ -825,14 +825,14 @@ export default function PartnerMenuPage() {
                           <>
                             <button
                               onClick={() => handleStockChange(item, -1)}
-                              className="w-11 h-11 bg-slate-100 rounded-lg flex items-center justify-center hover:bg-slate-200 text-sm font-bold"
+                              className="w-11 h-11 bg-[var(--color-surface-container)] rounded-lg flex items-center justify-center hover:bg-[var(--color-surface-container-high)] text-sm font-bold"
                             >−</button>
-                            <span className={`text-sm font-bold min-w-[2ch] text-center ${(item as any).stock === 0 ? 'text-red-600' : (item as any).stock < 10 ? 'text-amber-600' : 'text-slate-800'}`}>
+                            <span className={`text-sm font-bold min-w-[2ch] text-center ${(item as any).stock === 0 ? 'text-red-600' : (item as any).stock < 10 ? 'text-amber-600' : 'text-[var(--color-on-surface)]'}`}>
                               {(item as any).stock}
                             </span>
                             <button
                               onClick={() => handleStockChange(item, 1)}
-                              className="w-11 h-11 bg-slate-100 rounded-lg flex items-center justify-center hover:bg-slate-200 text-sm font-bold"
+                              className="w-11 h-11 bg-[var(--color-surface-container)] rounded-lg flex items-center justify-center hover:bg-[var(--color-surface-container-high)] text-sm font-bold"
                             >+</button>
                           </>
                         )}
@@ -867,7 +867,7 @@ export default function PartnerMenuPage() {
                         className={`text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider ${
                           (item as any).is_featured
                             ? "bg-amber-100 text-amber-700"
-                            : "bg-slate-100 text-slate-500"
+                            : "bg-[var(--color-surface-container)] text-[var(--color-outline)]"
                         }`}
                       >
                         {(item as any).is_featured ? "Featured" : "Promote"}
@@ -879,10 +879,10 @@ export default function PartnerMenuPage() {
                       {(item as any).discount_percent > 0 && (
                         <span className="text-[10px] font-bold px-1.5 py-0.5 bg-red-100 text-red-700 rounded-full">-{(item as any).discount_percent}%</span>
                       )}
-                      <p className="font-extrabold text-slate-800">
+                      <p className="font-extrabold text-[var(--color-on-surface)]">
                         {(item as any).original_price ? (
                           <>
-                            <span className="line-through text-slate-400 text-xs mr-1">₹{(item as any).original_price}</span>
+                            <span className="line-through text-[var(--color-outline-variant)] text-xs mr-1">₹{(item as any).original_price}</span>
                             ₹{item.price}
                           </>
                         ) : (
@@ -895,13 +895,13 @@ export default function PartnerMenuPage() {
                     <div className="flex items-center justify-end gap-2">
                       <button
                         onClick={() => setEditingItem(item)}
-                        className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center hover:bg-slate-200 transition-colors"
+                        className="w-10 h-10 bg-[var(--color-surface-container)] rounded-lg flex items-center justify-center hover:bg-[var(--color-surface-container-high)] transition-colors"
                       >
-                        <span className="material-symbols-outlined text-slate-600 text-sm">edit</span>
+                        <span className="material-symbols-outlined text-[var(--color-on-surface-variant)] text-sm">edit</span>
                       </button>
                       <button
                         onClick={() => handleDeleteItem(item.id)}
-                        className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center hover:bg-red-100 transition-colors"
+                        className="w-10 h-10 bg-[var(--color-surface-container)] rounded-lg flex items-center justify-center hover:bg-red-100 transition-colors"
                       >
                         <span className="material-symbols-outlined text-red-500 text-sm">delete</span>
                       </button>
@@ -919,26 +919,26 @@ export default function PartnerMenuPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowAddModal(false)}>
           <div className="bg-white w-full max-w-lg rounded-3xl p-6 m-4" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-extrabold text-slate-900">
+              <h2 className="text-xl font-extrabold text-[var(--color-on-surface)]">
                 Add {vendorKey === "food" ? "Menu Item" : vendorKey === "grocery" ? "Product" : vendorKey === "pharmacy" ? "Medicine" : "Item"}
               </h2>
-              <button onClick={() => setShowAddModal(false)} className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
+              <button onClick={() => setShowAddModal(false)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-semibold text-slate-700">Name *</label>
+                <label className="text-sm font-semibold text-[var(--color-on-surface)]">Name *</label>
                 <input
                   type="text"
                   value={newItem.name}
                   onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
                   placeholder={vendorKey === "food" ? "e.g., Butter Chicken" : vendorKey === "grocery" ? "e.g., Organic Apples" : vendorKey === "pharmacy" ? "e.g., Paracetamol" : "e.g., Rose Bouquet"}
-                  className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]"
+                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
                 />
               </div>
               <div>
-                <label className="text-sm font-semibold text-slate-700">Price (₹) *</label>
+                <label className="text-sm font-semibold text-[var(--color-on-surface)]">Price (₹) *</label>
                 <input
                   type="number"
                   min="0"
@@ -946,15 +946,15 @@ export default function PartnerMenuPage() {
                   value={newItem.price}
                   onChange={(e) => setNewItem({ ...newItem, price: e.target.value })}
                   placeholder="e.g., 280"
-                  className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]"
+                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
                 />
               </div>
               <div>
-                <label className="text-sm font-semibold text-slate-700">Category</label>
+                <label className="text-sm font-semibold text-[var(--color-on-surface)]">Category</label>
                 <select
                   value={newItem.category || categories[0]}
                   onChange={(e) => setNewItem({ ...newItem, category: e.target.value })}
-                  className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]"
+                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
                 >
                   {categories.map(cat => (
                     <option key={cat} value={cat}>{cat}</option>
@@ -963,39 +963,39 @@ export default function PartnerMenuPage() {
               </div>
               {(vendorKey === "food" || vendorKey === "flowers") && (
                 <div>
-                  <label className="text-sm font-semibold text-slate-700">Description</label>
+                  <label className="text-sm font-semibold text-[var(--color-on-surface)]">Description</label>
                   <textarea
                     value={newItem.description}
                     onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
                     placeholder="Brief description"
                     rows={2}
-                    className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c] resize-none"
+                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c] resize-none"
                   />
                 </div>
               )}
               {(vendorKey === "grocery" || vendorKey === "pharmacy") && (
                 <div>
-                  <label className="text-sm font-semibold text-slate-700">Stock Quantity</label>
+                  <label className="text-sm font-semibold text-[var(--color-on-surface)]">Stock Quantity</label>
                   <input
                     type="number"
                     min="0"
                     value={newItem.stock}
                     onChange={(e) => setNewItem({ ...newItem, stock: e.target.value })}
                     placeholder="e.g., 100"
-                    className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]"
+                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
                   />
                 </div>
               )}
               {(vendorKey === "food") && (
                 <div>
-                  <label className="text-sm font-semibold text-slate-700">Stock Quantity</label>
+                  <label className="text-sm font-semibold text-[var(--color-on-surface)]">Stock Quantity</label>
                   <input
                     type="number"
                     min="0"
                     value={newItem.stock}
                     onChange={(e) => setNewItem({ ...newItem, stock: e.target.value })}
                     placeholder="e.g., 50"
-                    className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]"
+                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
                   />
                 </div>
               )}
@@ -1012,7 +1012,7 @@ export default function PartnerMenuPage() {
                   </label>
                   {newItem.has_discount && (
                     <div>
-                      <label className="text-xs font-semibold text-slate-700 mb-2 block">Discount %</label>
+                      <label className="text-xs font-semibold text-[var(--color-on-surface)] mb-2 block">Discount %</label>
                       <div className="flex gap-2">
                         {[10, 15, 20, 25, 30, 40, 50].map((p) => (
                           <button
@@ -1021,7 +1021,7 @@ export default function PartnerMenuPage() {
                             className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${
                               newItem.discount_percent === p
                                 ? "bg-[#ba001c] text-white shadow-md"
-                                : "bg-[var(--color-surface-container-lowest)] text-slate-600 border border-slate-200 hover:bg-slate-50"
+                                : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface-variant)] border border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]"
                             }`}
                           >
                             {p}%
@@ -1029,7 +1029,7 @@ export default function PartnerMenuPage() {
                         ))}
                       </div>
                       {newItem.price && (
-                        <p className="text-xs text-slate-500 mt-2">
+                        <p className="text-xs text-[var(--color-outline)] mt-2">
                           Original: ₹{parseFloat(newItem.price).toFixed(2)} →{" "}
                           <span className="font-bold text-red-600">
                             ₹{(parseFloat(newItem.price) * (1 - newItem.discount_percent / 100)).toFixed(2)}
@@ -1042,7 +1042,7 @@ export default function PartnerMenuPage() {
               )}
               {vendorKey === "food" && (
                 <div>
-                  <label className="text-sm font-semibold text-slate-700">Type</label>
+                  <label className="text-sm font-semibold text-[var(--color-on-surface)]">Type</label>
                   <div className="flex gap-4 mt-2">
                     <label className="flex items-center gap-2 cursor-pointer">
                       <input
@@ -1071,11 +1071,11 @@ export default function PartnerMenuPage() {
               )}
               {vendorKey === "food" && (
                 <div>
-                  <label className="text-sm font-semibold text-slate-700">Available For</label>
+                  <label className="text-sm font-semibold text-[var(--color-on-surface)]">Available For</label>
                   <select
                     value={newItem.menu_slot || "all_day"}
                     onChange={(e) => setNewItem({ ...newItem, menu_slot: e.target.value })}
-                    className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]"
+                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
                   >
                     <option value="all_day">All Day</option>
                     <option value="breakfast">Breakfast (6 AM – 11 AM)</option>
@@ -1107,12 +1107,12 @@ export default function PartnerMenuPage() {
                       onChange={(e) => setNewItem({ ...newItem, requires_prescription: e.target.checked })}
                       className="w-5 h-5 accent-[#ba001c]"
                     />
-                    <span className="text-sm font-semibold text-slate-700">Requires Prescription</span>
+                    <span className="text-sm font-semibold text-[var(--color-on-surface)]">Requires Prescription</span>
                   </label>
                 </div>
               )}
               <div>
-                <label className="text-sm font-semibold text-slate-700">Images</label>
+                <label className="text-sm font-semibold text-[var(--color-on-surface)]">Images</label>
                 <input
                   type="file"
                   multiple
@@ -1122,12 +1122,12 @@ export default function PartnerMenuPage() {
                     setNewItem({ ...newItem, imageFiles: [...(newItem.imageFiles || []), ...files] });
                     e.target.value = "";
                   }}
-                  className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 text-sm file:mr-3 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-[#ba001c] file:text-white file:font-bold file:text-xs hover:file:bg-[#a40017]"
+                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] text-sm file:mr-3 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-[#ba001c] file:text-white file:font-bold file:text-xs hover:file:bg-[#a40017]"
                 />
                 {newItem.imageFiles?.length > 0 && (
                   <div className="flex flex-wrap gap-2 mt-3">
                     {newItem.imageFiles.map((file: File, idx: number) => (
-                      <div key={idx} className="relative w-16 h-16 rounded-xl overflow-hidden border border-slate-200 group">
+                      <div key={idx} className="relative w-16 h-16 rounded-xl overflow-hidden border border-[var(--color-border-subtle)] group">
                         <img src={URL.createObjectURL(file)} alt="" className="w-full h-full object-cover" />
                         <button
                           onClick={() => setNewItem({
@@ -1156,7 +1156,7 @@ export default function PartnerMenuPage() {
                       value={newItem.image_url}
                       onChange={(e) => setNewItem({ ...newItem, image_url: e.target.value, imageFiles: [] })}
                       placeholder="https://example.com/image.jpg"
-                      className="mt-2 w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#ba001c]"
+                      className="mt-2 w-full px-4 py-3 bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl text-sm focus:outline-none focus:border-[#ba001c]"
                     />
                   )}
                 </div>
@@ -1178,38 +1178,38 @@ export default function PartnerMenuPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setEditingItem(null)}>
           <div className="bg-white w-full max-w-lg rounded-3xl p-6 m-4" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-extrabold text-slate-900">Edit Item</h2>
-              <button onClick={() => setEditingItem(null)} className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
+              <h2 className="text-xl font-extrabold text-[var(--color-on-surface)]">Edit Item</h2>
+              <button onClick={() => setEditingItem(null)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-semibold text-slate-700">Name</label>
+                <label className="text-sm font-semibold text-[var(--color-on-surface)]">Name</label>
                 <input
                   type="text"
                   value={editingItem.name}
                   onChange={(e) => setEditingItem({ ...editingItem, name: e.target.value })}
-                  className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]"
+                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
                 />
               </div>
               <div>
-                <label className="text-sm font-semibold text-slate-700">Price (₹)</label>
+                <label className="text-sm font-semibold text-[var(--color-on-surface)]">Price (₹)</label>
                 <input
                   type="number"
                   min="0"
                   step="0.5"
                   value={editingItem.price}
                   onChange={(e) => setEditingItem({ ...editingItem, price: parseFloat(e.target.value) })}
-                  className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]"
+                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
                 />
               </div>
               <div>
-                <label className="text-sm font-semibold text-slate-700">Category</label>
+                <label className="text-sm font-semibold text-[var(--color-on-surface)]">Category</label>
                 <select
                   value={editingItem.category}
                   onChange={(e) => setEditingItem({ ...editingItem, category: e.target.value })}
-                  className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]"
+                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
                 >
                   {categories.map(cat => (
                     <option key={cat} value={cat}>{cat}</option>
@@ -1218,24 +1218,24 @@ export default function PartnerMenuPage() {
               </div>
               {(vendorKey === "food" || vendorKey === "flowers") && (
                 <div>
-                  <label className="text-sm font-semibold text-slate-700">Description</label>
+                  <label className="text-sm font-semibold text-[var(--color-on-surface)]">Description</label>
                   <textarea
                     value={(editingItem as MenuItem).description || ""}
                     onChange={(e) => setEditingItem({ ...editingItem, description: e.target.value })}
                     rows={2}
-                    className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c] resize-none"
+                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c] resize-none"
                   />
                 </div>
               )}
               {(vendorKey === "food" || vendorKey === "grocery" || vendorKey === "pharmacy") && (
                 <div>
-                  <label className="text-sm font-semibold text-slate-700">Stock Quantity</label>
+                  <label className="text-sm font-semibold text-[var(--color-on-surface)]">Stock Quantity</label>
                   <input
                     type="number"
                     min="0"
                     value={(editingItem as any).stock}
                     onChange={(e) => setEditingItem({ ...editingItem, stock: parseInt(e.target.value) || 0 })}
-                    className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]"
+                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
                   />
                 </div>
               )}
@@ -1258,7 +1258,7 @@ export default function PartnerMenuPage() {
                   </label>
                   {(editingItem as any).discount_percent > 0 && (
                     <div>
-                      <label className="text-xs font-semibold text-slate-700 mb-2 block">Discount %</label>
+                      <label className="text-xs font-semibold text-[var(--color-on-surface)] mb-2 block">Discount %</label>
                       <div className="flex gap-2">
                         {[10, 15, 20, 25, 30, 40, 50].map((p) => (
                           <button
@@ -1267,14 +1267,14 @@ export default function PartnerMenuPage() {
                             className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${
                               (editingItem as any).discount_percent === p
                                 ? "bg-[#ba001c] text-white shadow-md"
-                                : "bg-[var(--color-surface-container-lowest)] text-slate-600 border border-slate-200 hover:bg-slate-50"
+                                : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface-variant)] border border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]"
                             }`}
                           >
                             {p}%
                           </button>
                         ))}
                       </div>
-                      <p className="text-xs text-slate-500 mt-2">
+                      <p className="text-xs text-[var(--color-outline)] mt-2">
                         Original: ₹{((editingItem as any).original_price || editingItem.price).toFixed(2)} →{" "}
                         <span className="font-bold text-red-600">
                           ₹{Math.round(((editingItem as any).original_price || editingItem.price) * (1 - ((editingItem as any).discount_percent || 0) / 100) * 100) / 100}
@@ -1300,7 +1300,7 @@ export default function PartnerMenuPage() {
               )}
               {vendorKey === "food" && (
                 <div>
-                  <label className="text-sm font-semibold text-slate-700">Type</label>
+                  <label className="text-sm font-semibold text-[var(--color-on-surface)]">Type</label>
                   <div className="flex gap-4 mt-2">
                     <label className="flex items-center gap-2 cursor-pointer">
                       <input
@@ -1329,11 +1329,11 @@ export default function PartnerMenuPage() {
               )}
               {vendorKey === "food" && (
                 <div>
-                  <label className="text-sm font-semibold text-slate-700">Available For</label>
+                  <label className="text-sm font-semibold text-[var(--color-on-surface)]">Available For</label>
                   <select
                     value={(editingItem as any).menu_slot || "all_day"}
                     onChange={(e) => setEditingItem({ ...editingItem, menu_slot: e.target.value })}
-                    className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]"
+                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
                   >
                     <option value="all_day">All Day</option>
                     <option value="breakfast">Breakfast (6 AM – 11 AM)</option>
@@ -1351,16 +1351,16 @@ export default function PartnerMenuPage() {
                       onChange={(e) => setEditingItem({ ...editingItem, requires_prescription: e.target.checked })}
                       className="w-5 h-5 accent-[#ba001c]"
                     />
-                    <span className="text-sm font-semibold text-slate-700">Requires Prescription</span>
+                    <span className="text-sm font-semibold text-[var(--color-on-surface)]">Requires Prescription</span>
                   </label>
                 </div>
               )}
               {editingItem && ((editingItem as any).images?.length > 0 || (editingItem as any).image_url) && (
                 <div>
-                  <label className="text-sm font-semibold text-slate-700 block mb-2">Current Images</label>
+                  <label className="text-sm font-semibold text-[var(--color-on-surface)] block mb-2">Current Images</label>
                   <div className="flex flex-wrap gap-2">
                     {((editingItem as any).images?.length > 0 ? (editingItem as any).images : [(editingItem as any).image_url]).map((url: string, idx: number) => (
-                      <div key={idx} className="relative w-16 h-16 rounded-xl overflow-hidden border border-slate-200 group">
+                      <div key={idx} className="relative w-16 h-16 rounded-xl overflow-hidden border border-[var(--color-border-subtle)] group">
                         <img src={url} alt="" className="w-full h-full object-cover" />
                         <button
                           onClick={() => {
@@ -1377,7 +1377,7 @@ export default function PartnerMenuPage() {
                 </div>
               )}
               <div>
-                <label className="text-sm font-semibold text-slate-700">Add Images</label>
+                <label className="text-sm font-semibold text-[var(--color-on-surface)]">Add Images</label>
                 <input
                   type="file"
                   multiple
@@ -1398,7 +1398,7 @@ export default function PartnerMenuPage() {
                     }
                     e.target.value = "";
                   }}
-                  className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 text-sm file:mr-3 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-[#ba001c] file:text-white file:font-bold file:text-xs hover:file:bg-[#a40017]"
+                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] text-sm file:mr-3 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-[#ba001c] file:text-white file:font-bold file:text-xs hover:file:bg-[#a40017]"
                 />
                 <div className="mt-2">
                   <button
@@ -1414,7 +1414,7 @@ export default function PartnerMenuPage() {
                       value={(editingItem as any).image_url || ""}
                       onChange={(e) => setEditingItem({ ...(editingItem as any), image_url: e.target.value })}
                       placeholder="https://example.com/image.jpg"
-                      className="mt-2 w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#ba001c]"
+                      className="mt-2 w-full px-4 py-3 bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl text-sm focus:outline-none focus:border-[#ba001c]"
                     />
                   )}
                 </div>
@@ -1422,7 +1422,7 @@ export default function PartnerMenuPage() {
               <div className="flex gap-3">
                 <button
                   onClick={() => setEditingItem(null)}
-                  className="flex-1 py-4 border border-slate-200 text-slate-600 font-bold rounded-2xl hover:bg-slate-50 transition-colors"
+                  className="flex-1 py-4 border border-[var(--color-border-subtle)] text-[var(--color-on-surface-variant)] font-bold rounded-2xl hover:bg-[var(--color-surface-subtle)] transition-colors"
                 >
                   Cancel
                 </button>
@@ -1443,8 +1443,8 @@ export default function PartnerMenuPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowCategoryModal(false)}>
           <div className="bg-white w-full max-w-lg rounded-3xl p-6 m-4" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-extrabold text-slate-900">Manage Categories</h2>
-              <button onClick={() => setShowCategoryModal(false)} className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
+              <h2 className="text-xl font-extrabold text-[var(--color-on-surface)]">Manage Categories</h2>
+              <button onClick={() => setShowCategoryModal(false)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
@@ -1464,7 +1464,7 @@ export default function PartnerMenuPage() {
                         }
                         if (e.key === "Escape") setEditingCategory(null);
                       }}
-                      className="flex-1 px-3 py-2 bg-slate-50 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-[#ba001c]"
+                      className="flex-1 px-3 py-2 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] text-sm focus:outline-none focus:border-[#ba001c]"
                       autoFocus
                     />
                   ) : (
@@ -1474,9 +1474,9 @@ export default function PartnerMenuPage() {
                     <>
                       <button
                         onClick={() => setEditingCategory({ oldName: cat, newName: cat })}
-                        className="p-2 hover:bg-slate-100 rounded-lg"
+                        className="p-2 hover:bg-[var(--color-surface-container)] rounded-lg"
                       >
-                        <span className="material-symbols-outlined text-lg text-slate-500">edit</span>
+                        <span className="material-symbols-outlined text-lg text-[var(--color-outline)]">edit</span>
                       </button>
                       <button
                         onClick={async () => {
@@ -1493,7 +1493,7 @@ export default function PartnerMenuPage() {
                 </div>
               ))}
             </div>
-            <div className="flex items-center gap-2 border-t border-slate-100 pt-4">
+            <div className="flex items-center gap-2 border-t border-[var(--color-border-subtle)] pt-4">
               <input
                 type="text"
                 value={newCategoryName}
@@ -1505,7 +1505,7 @@ export default function PartnerMenuPage() {
                   }
                 }}
                 placeholder="New category name..."
-                className="flex-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-[#ba001c]"
+                className="flex-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] text-sm focus:outline-none focus:border-[#ba001c]"
               />
               <button
                 onClick={() => {
@@ -1527,9 +1527,9 @@ export default function PartnerMenuPage() {
       {showQRModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowQRModal(false)}>
           <div className="bg-white w-full max-w-sm rounded-3xl p-8 m-4 text-center" onClick={e => e.stopPropagation()}>
-            <span className="material-symbols-outlined text-6xl text-slate-800 mb-4">qr_code_scanner</span>
-            <h2 className="text-xl font-extrabold text-slate-900 mb-2">Menu QR Code</h2>
-            <p className="text-sm text-slate-500 mb-6">Scan to view {selectedVendor?.shop_name || "store"}'s menu</p>
+            <span className="material-symbols-outlined text-6xl text-[var(--color-on-surface)] mb-4">qr_code_scanner</span>
+            <h2 className="text-xl font-extrabold text-[var(--color-on-surface)] mb-2">Menu QR Code</h2>
+            <p className="text-sm text-[var(--color-outline)] mb-6">Scan to view {selectedVendor?.shop_name || "store"}'s menu</p>
             {selectedVendorId && (
               <img
                 src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(`${window.location.origin}/app/vendor/${selectedVendorId}`)}`}
@@ -1540,7 +1540,7 @@ export default function PartnerMenuPage() {
             <div className="flex gap-3">
               <button
                 onClick={() => setShowQRModal(false)}
-                className="flex-1 py-3 border border-slate-200 text-slate-600 font-bold rounded-xl text-sm hover:bg-slate-50"
+                className="flex-1 py-3 border border-[var(--color-border-subtle)] text-[var(--color-on-surface-variant)] font-bold rounded-xl text-sm hover:bg-[var(--color-surface-subtle)]"
               >
                 Close
               </button>

@@ -13,7 +13,7 @@ const quickActions = [
   { id: "refund", icon: "currency_exchange", label: "Request refund", color: "bg-amber-100 text-amber-700" },
   { id: "report", icon: "report_problem", label: "Report an issue", color: "bg-purple-100 text-purple-700" },
   { id: "review", icon: "star", label: "Write a review", color: "bg-green-100 text-green-700" },
-  { id: "more", icon: "more_horiz", label: "More help", color: "bg-slate-100 text-slate-700" },
+  { id: "more", icon: "more_horiz", label: "More help", color: "bg-[var(--color-surface-container)] text-[var(--color-on-surface)]" },
 ];
 
 const faqs = [
@@ -145,7 +145,7 @@ export default function SupportPage() {
       <Breadcrumbs items={[{ label: t.common.home, href: '/app/explore' }, { label: t.settings.helpCenter }]} />
 
       {/* Tabs */}
-      <div className="bg-surface-container-lowest border-b border-slate-100 px-4 shrink-0">
+      <div className="bg-surface-container-lowest border-b border-[var(--color-border-subtle)] px-4 shrink-0">
         <div className="max-w-2xl mx-auto flex">
           {(["home", "chat", "tickets", "faqs"] as const).map((tabKey) => (
             <button
@@ -187,9 +187,9 @@ export default function SupportPage() {
               <section>
                 <h2 className="text-lg font-bold text-on-surface mb-4">Select Order (Optional)</h2>
                 <div className="space-y-2">
-                  <div className="h-14 w-full bg-slate-100 rounded-xl animate-pulse" />
-                  <div className="h-16 w-full bg-slate-100 rounded-xl animate-pulse" />
-                  <div className="h-16 w-full bg-slate-100 rounded-xl animate-pulse" />
+                  <div className="h-14 w-full bg-[var(--color-surface-container)] rounded-xl animate-pulse" />
+                  <div className="h-16 w-full bg-[var(--color-surface-container)] rounded-xl animate-pulse" />
+                  <div className="h-16 w-full bg-[var(--color-surface-container)] rounded-xl animate-pulse" />
                 </div>
               </section>
             ) : userOrders.length > 0 && (
@@ -200,7 +200,7 @@ export default function SupportPage() {
                     onClick={() => { setSelectedOrder(null); setTab("chat"); }}
                     className={`w-full text-left p-4 rounded-xl border-2 transition-all ${!selectedOrder ? "border-primary bg-surface-container" : "border-outline-variant/20 hover:border-primary"}`}
                   >
-                    <p className="font-semibold text-slate-700">General Query</p>
+                    <p className="font-semibold text-[var(--color-on-surface)]">General Query</p>
                     <p className="text-xs text-on-surface-variant">Not related to a specific order</p>
                   </button>
                   {userOrders.map((order) => (
@@ -211,12 +211,12 @@ export default function SupportPage() {
                     >
                       <div className="flex justify-between items-start">
                         <div>
-                          <p className="font-semibold text-slate-700">{order.vendor?.name || "Order"}</p>
+                          <p className="font-semibold text-[var(--color-on-surface)]">{order.vendor?.name || "Order"}</p>
                           <p className="text-xs text-on-surface-variant">#{order.id.slice(0, 8).toUpperCase()}</p>
                         </div>
                         <div className="text-right">
                           <p className="font-bold text-primary">₹{order.total_amount}</p>
-                          <span className="text-[10px] px-2 py-0.5 bg-slate-100 rounded-full">{order.status}</span>
+                          <span className="text-[10px] px-2 py-0.5 bg-[var(--color-surface-container)] rounded-full">{order.status}</span>
                         </div>
                       </div>
                     </button>
@@ -319,7 +319,7 @@ export default function SupportPage() {
                       : "bg-surface-container-lowest text-on-surface shadow-sm rounded-bl-md"
                   }`}>
                     <p className="text-sm leading-relaxed">{msg.text}</p>
-                    <p className={`text-xs mt-2 ${msg.from === "user" ? "text-white/50" : "text-slate-400"}`}>{msg.time}</p>
+                    <p className={`text-xs mt-2 ${msg.from === "user" ? "text-white/50" : "text-[var(--color-outline-variant)]"}`}>{msg.time}</p>
                   </div>
                 </div>
               ))}
@@ -414,7 +414,7 @@ export default function SupportPage() {
           <div className="space-y-6">
             {/* Search */}
             <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-outline-variant)]">search</span>
               <input
                 type="text"
                 value={faqSearch}
@@ -462,9 +462,9 @@ export default function SupportPage() {
                       <details key={i} className="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm group">
                         <summary className="flex items-center justify-between px-5 py-4 cursor-pointer hover:bg-surface-container transition-colors list-none">
                           <span className="font-semibold text-on-surface pr-4">{faq.q}</span>
-                          <span className="material-symbols-outlined text-slate-400 group-open:rotate-180 transition-transform">expand_more</span>
+                          <span className="material-symbols-outlined text-[var(--color-outline-variant)] group-open:rotate-180 transition-transform">expand_more</span>
                         </summary>
-                        <div className="px-5 pb-4 text-on-surface-variant text-sm leading-relaxed border-t border-slate-100 pt-4">
+                        <div className="px-5 pb-4 text-on-surface-variant text-sm leading-relaxed border-t border-[var(--color-border-subtle)] pt-4">
                           {faq.a}
                         </div>
                       </details>

@@ -90,7 +90,7 @@ export default function RiderChatPage() {
           </div>
         ) : messages.length === 0 ? (
           <div className="text-center py-12">
-            <span className="material-symbols-outlined text-6xl text-slate-300">chat</span>
+            <span className="material-symbols-outlined text-6xl text-[var(--color-outline-variant)]/60">chat</span>
             <p className="text-on-surface-variant mt-4">No messages yet</p>
           </div>
         ) : (

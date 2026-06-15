@@ -64,7 +64,7 @@ export default function OrderCancelModal({ open, onClose, onCancel }: OrderCance
                 className={`w-full text-left p-3 rounded-xl font-medium text-sm transition-all ${
                   cancelReason === reason
                     ? "bg-red-50 text-red-700 border border-red-200"
-                    : "bg-slate-50 text-slate-700 hover:bg-surface-container-high"
+                    : "bg-[var(--color-surface-subtle)] text-[var(--color-on-surface)] hover:bg-surface-container-high"
                 }`}
               >
                 {reason}
@@ -76,7 +76,7 @@ export default function OrderCancelModal({ open, onClose, onCancel }: OrderCance
                     value={cancelOtherReason}
                     onChange={(e) => setCancelOtherReason(e.target.value)}
                     placeholder="Describe your reason..."
-                    className="flex-1 bg-slate-50 border border-outline-variant/20 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-300"
+                    className="flex-1 bg-[var(--color-surface-subtle)] border border-outline-variant/20 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-300"
                     autoFocus
                   />
                   <button

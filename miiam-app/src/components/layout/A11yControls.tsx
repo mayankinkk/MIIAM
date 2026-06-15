@@ -20,14 +20,14 @@ export default function A11yControls() {
   if (!mounted) return null;
 
   return (
-    <div className="bg-[var(--color-surface-container-lowest)] border border-slate-200 rounded-2xl p-4 space-y-3 text-sm">
+    <div className="bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-2xl p-4 space-y-3 text-sm">
       <div className="flex items-center gap-2 mb-1">
-        <span className="material-symbols-outlined text-base text-slate-600">accessibility_new</span>
-        <p className="font-bold text-slate-800">Accessibility</p>
+        <span className="material-symbols-outlined text-base text-[var(--color-on-surface-variant)]">accessibility_new</span>
+        <p className="font-bold text-[var(--color-on-surface)]">Accessibility</p>
       </div>
 
       <div>
-        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Theme</label>
+        <label className="text-[10px] font-black text-[var(--color-outline)] uppercase tracking-widest">Theme</label>
         <div className="grid grid-cols-3 gap-1.5 mt-1">
           {(["light", "dark", "system"] as ThemeMode[]).map((t) => (
             <button
@@ -36,7 +36,7 @@ export default function A11yControls() {
               onClick={() => setTheme(t)}
               aria-pressed={theme === t}
               className={`py-2.5 text-xs font-bold rounded-lg border ${
-                theme === t ? "bg-indigo-600 text-white border-indigo-600" : "border-slate-200 text-slate-700 hover:bg-slate-50"
+                theme === t ? "bg-indigo-600 text-white border-indigo-600" : "border-[var(--color-border-subtle)] text-[var(--color-on-surface)] hover:bg-[var(--color-surface-subtle)]"
               }`}
             >
               {t === "light" ? "☀" : t === "dark" ? "🌙" : "Auto"}
@@ -46,7 +46,7 @@ export default function A11yControls() {
       </div>
 
       <div>
-        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Contrast</label>
+        <label className="text-[10px] font-black text-[var(--color-outline)] uppercase tracking-widest">Contrast</label>
         <div className="grid grid-cols-2 gap-1.5 mt-1">
           {(["normal", "high"] as ContrastMode[]).map((c) => (
             <button
@@ -55,7 +55,7 @@ export default function A11yControls() {
               onClick={() => setContrast(c)}
               aria-pressed={contrast === c}
               className={`py-2.5 text-xs font-bold rounded-lg border ${
-                contrast === c ? "bg-indigo-600 text-white border-indigo-600" : "border-slate-200 text-slate-700 hover:bg-slate-50"
+                contrast === c ? "bg-indigo-600 text-white border-indigo-600" : "border-[var(--color-border-subtle)] text-[var(--color-on-surface)] hover:bg-[var(--color-surface-subtle)]"
               }`}
             >
               {c === "normal" ? "Normal" : "High contrast"}
@@ -64,7 +64,7 @@ export default function A11yControls() {
         </div>
       </div>
 
-      <label className="flex items-center gap-2 text-xs text-slate-700 cursor-pointer">
+      <label className="flex items-center gap-2 text-xs text-[var(--color-on-surface)] cursor-pointer">
         <input
           type="checkbox"
           checked={reducedMotion}

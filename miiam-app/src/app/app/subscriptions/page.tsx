@@ -158,7 +158,7 @@ export default function SubscriptionsPage() {
                       ? "border-green-500"
                       : schedule.status === "paused"
                       ? "border-amber-400"
-                      : "border-slate-300"
+                      : "border-[var(--color-outline-variant)]"
                   }`}
                 >
                   <div className="flex items-start justify-between mb-3">

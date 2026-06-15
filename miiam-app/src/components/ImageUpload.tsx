@@ -52,8 +52,8 @@ export default function ImageUpload({
 
   return (
     <div>
-      <label className="text-xs font-bold text-slate-400 uppercase mb-1 block">{label}</label>
-      <div className={`relative ${previewHeight} bg-slate-50 rounded-xl border-2 border-dashed border-slate-200 overflow-hidden group`}>
+      <label className="text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-1 block">{label}</label>
+      <div className={`relative ${previewHeight} bg-[var(--color-surface-subtle)] rounded-xl border-2 border-dashed border-[var(--color-border-subtle)] overflow-hidden group`}>
         {value ? (
           <div className="relative w-full h-full">
             <img src={value} alt={label} className="w-full h-full object-cover" />
@@ -66,7 +66,7 @@ export default function ImageUpload({
             </button>
           </div>
         ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center text-slate-300">
+          <div className="w-full h-full flex flex-col items-center justify-center text-[var(--color-outline-variant)]/60">
             <span className="material-symbols-outlined text-4xl">add_photo_alternate</span>
             <span className="text-xs mt-1">Click to upload</span>
           </div>
@@ -116,7 +116,7 @@ export default function ImageUpload({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder="https://example.com/image.jpg"
-          className="mt-2 w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ba001c]/10"
+          className="mt-2 w-full bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ba001c]/10"
         />
       )}
     </div>

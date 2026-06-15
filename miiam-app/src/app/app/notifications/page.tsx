@@ -109,7 +109,7 @@ export default function NotificationsPage() {
                 </div>
               </div>
               <div className="space-y-3">
-                <label className="flex items-center justify-between p-4 bg-slate-50 rounded-xl cursor-pointer">
+                <label className="flex items-center justify-between p-4 bg-[var(--color-surface-subtle)] rounded-xl cursor-pointer">
                   <div>
                     <p className="font-bold text-on-surface">Order Updates</p>
                     <p className="text-xs text-on-surface-variant">Get notified when order status changes</p>
@@ -121,7 +121,7 @@ export default function NotificationsPage() {
                     className="w-5 h-5 accent-primary"
                   />
                 </label>
-                <label className="flex items-center justify-between p-4 bg-slate-50 rounded-xl cursor-pointer">
+                <label className="flex items-center justify-between p-4 bg-[var(--color-surface-subtle)] rounded-xl cursor-pointer">
                   <div>
                     <p className="font-bold text-on-surface">Promotions & Offers</p>
                     <p className="text-xs text-on-surface-variant">Receive deals and discounts</p>
@@ -198,7 +198,7 @@ export default function NotificationsPage() {
                       <div className="flex-1">
                         <p className="font-bold text-on-surface">{notification.title}</p>
                         <p className="text-sm text-on-surface-variant mt-1">{notification.body}</p>
-                        <p className="text-xs text-slate-400 mt-2">
+                        <p className="text-xs text-[var(--color-outline-variant)] mt-2">
                           {new Date(notification.created_at).toLocaleDateString("en-IN", {
                             day: "numeric",
                             month: "short",

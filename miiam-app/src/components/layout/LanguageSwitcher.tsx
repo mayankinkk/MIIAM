@@ -30,7 +30,7 @@ export default function LanguageSwitcher() {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1 text-slate-800 font-bold hover:text-[#ba001c] transition-colors py-2.5 px-4 rounded-lg hover:bg-slate-100 min-h-[44px]"
+        className="flex items-center gap-1 text-[var(--color-on-surface)] font-bold hover:text-[#ba001c] transition-colors py-2.5 px-4 rounded-lg hover:bg-[var(--color-surface-container)] min-h-[44px]"
       >
         <span className="material-symbols-outlined text-[20px]">language</span>
         <span className="uppercase text-sm">{language}</span>
@@ -40,7 +40,7 @@ export default function LanguageSwitcher() {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-[var(--color-surface-container-lowest)] rounded-xl shadow-lg border border-slate-100 py-2 z-50 animate-in fade-in zoom-in-95 duration-200">
+        <div className="absolute right-0 mt-2 w-48 bg-[var(--color-surface-container-lowest)] rounded-xl shadow-lg border border-[var(--color-border-subtle)] py-2 z-50 animate-in fade-in zoom-in-95 duration-200">
           {languages.map((lang) => (
             <button
               key={lang.code}
@@ -51,7 +51,7 @@ export default function LanguageSwitcher() {
               className={`w-full text-left px-4 py-2 text-sm font-semibold transition-colors ${
                 language === lang.code
                   ? 'bg-[#ffe1e4] text-[#ba001c]'
-                  : 'text-slate-700 hover:bg-slate-50'
+                  : 'text-[var(--color-on-surface)] hover:bg-[var(--color-surface-subtle)]'
               }`}
             >
               {lang.label}

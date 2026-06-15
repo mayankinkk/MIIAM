@@ -332,9 +332,9 @@ function Loading() {
         <div className="w-full max-w-md">
         <div className="bg-surface-container-lowest rounded-2xl p-8 shadow-sm">
           <div className="animate-pulse">
-            <div className="w-24 h-24 mx-auto rounded-full bg-slate-200 mb-6"></div>
-            <div className="h-6 bg-slate-200 rounded w-48 mx-auto mb-2"></div>
-            <div className="h-4 bg-slate-200 rounded w-64 mx-auto"></div>
+            <div className="w-24 h-24 mx-auto rounded-full bg-[var(--color-surface-container-high)] mb-6"></div>
+            <div className="h-6 bg-[var(--color-surface-container-high)] rounded w-48 mx-auto mb-2"></div>
+            <div className="h-4 bg-[var(--color-surface-container-high)] rounded w-64 mx-auto"></div>
           </div>
         </div>
       </div>

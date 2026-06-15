@@ -62,11 +62,11 @@ export default function IncomingOrderCard({
                 {order.stops?.length} {t.rider.order.stops}
               </span>
             ) : (
-              <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded-full text-[10px] font-bold">
+              <span className="bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] px-2 py-1 rounded-full text-[10px] font-bold">
                 {t.rider.order.foodDelivery}
               </span>
             )}
-            <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded-full text-[10px] font-bold">
+            <span className="bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] px-2 py-1 rounded-full text-[10px] font-bold">
               {order.items} {t.rider.order.items}
             </span>
             {order.priority === "high" && (
@@ -94,7 +94,7 @@ export default function IncomingOrderCard({
                   <div key={i} className="flex items-center justify-between text-xs">
                     <div className="flex items-center gap-2">
                       <span className="w-5 h-5 bg-purple-200 rounded-full flex items-center justify-center text-purple-700 font-bold text-[8px]">{i + 1}</span>
-                      <span className="text-slate-600">{stop.name}</span>
+                      <span className="text-[var(--color-on-surface-variant)]">{stop.name}</span>
                     </div>
                     <span className="text-purple-600 font-bold">{stop.distance} km</span>
                   </div>
@@ -108,17 +108,17 @@ export default function IncomingOrderCard({
             <p className="text-[10px] text-green-600 font-bold mb-2">{t.rider.order.earningsBreakdown}</p>
             <div className="grid grid-cols-2 gap-2 text-xs">
               <div className="flex justify-between">
-                <span className="text-slate-500">{t.rider.order.baseFare}</span>
+                <span className="text-[var(--color-outline)]">{t.rider.order.baseFare}</span>
                 <span className="font-bold">₹40</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">{t.rider.order.distance} ({order.totalDistance} km)</span>
+                <span className="text-[var(--color-outline)]">{t.rider.order.distance} ({order.totalDistance} km)</span>
                 <span className="font-bold">₹{order.totalDistance * 8}</span>
               </div>
               {order.peakMultiplier > 1 && (
                 <>
                   <div className="flex justify-between">
-                    <span className="text-slate-500">{t.rider.order.peakBonus}</span>
+                    <span className="text-[var(--color-outline)]">{t.rider.order.peakBonus}</span>
                     <span className="font-bold text-green-600">+₹{Math.round(40 + order.totalDistance * 8) * (order.peakMultiplier - 1)}</span>
                   </div>
                   <div className="flex justify-between border-t pt-1 mt-1">
@@ -131,7 +131,7 @@ export default function IncomingOrderCard({
           </div>
 
           <div className="space-y-4 relative">
-            <div className="absolute left-[10px] top-4 bottom-4 w-0.5 border-l-2 border-dashed border-slate-300"></div>
+            <div className="absolute left-[10px] top-4 bottom-4 w-0.5 border-l-2 border-dashed border-[var(--color-outline-variant)]"></div>
             
             <div className="flex items-start gap-3">
               <div className="z-10 bg-[#0b50d5] w-5 h-5 rounded-full flex items-center justify-center">
@@ -140,11 +140,11 @@ export default function IncomingOrderCard({
               <div className="flex-1">
                 <p className="text-[9px] text-[#0b50d5] font-bold">{t.rider.order.pickup}</p>
                 <p className="font-bold text-sm">{order.vendor}</p>
-                <p className="text-[10px] text-slate-500">{order.vendorAddress}</p>
+                <p className="text-[10px] text-[var(--color-outline)]">{order.vendorAddress}</p>
               </div>
               <div className="text-right">
                 <p className="font-bold text-sm">{order.distance} km</p>
-                <p className="text-[9px] text-slate-400">{order.time}</p>
+                <p className="text-[9px] text-[var(--color-outline-variant)]">{order.time}</p>
               </div>
             </div>
             
@@ -155,12 +155,12 @@ export default function IncomingOrderCard({
               <div className="flex-1">
                 <p className="text-[9px] text-[#4d212a] font-bold">{t.rider.order.drop}</p>
                 <p className="font-bold text-sm">{order.customer}</p>
-                <p className="text-[10px] text-slate-500">{order.customerAddress}</p>
-                <p className="text-[9px] text-slate-400 mt-1">📍 {order.landmark}</p>
+                <p className="text-[10px] text-[var(--color-outline)]">{order.customerAddress}</p>
+                <p className="text-[9px] text-[var(--color-outline-variant)] mt-1">📍 {order.landmark}</p>
               </div>
               <div className="text-right">
                 <p className="font-bold text-sm">{order.distance2} km</p>
-                <p className="text-[9px] text-slate-400">{order.time2}</p>
+                <p className="text-[9px] text-[var(--color-outline-variant)]">{order.time2}</p>
               </div>
             </div>
           </div>
@@ -172,22 +172,22 @@ export default function IncomingOrderCard({
             </div>
           )}
 
-          <div className="mt-4 grid grid-cols-2 gap-3 bg-slate-50 p-3 rounded-xl">
+          <div className="mt-4 grid grid-cols-2 gap-3 bg-[var(--color-surface-subtle)] p-3 rounded-xl">
             <div>
-              <p className="text-[9px] text-slate-400">{t.rider.order.totalDistance}</p>
+              <p className="text-[9px] text-[var(--color-outline-variant)]">{t.rider.order.totalDistance}</p>
               <p className="font-bold">{order.totalDistance} km</p>
             </div>
             <div>
-              <p className="text-[9px] text-slate-400">{t.rider.order.estTime}</p>
+              <p className="text-[9px] text-[var(--color-outline-variant)]">{t.rider.order.estTime}</p>
               <p className="font-bold">{order.estCompletion} min</p>
             </div>
           </div>
         </div>
 
-        <div className="p-4 border-t bg-slate-50 flex gap-3">
+        <div className="p-4 border-t bg-[var(--color-surface-subtle)] flex gap-3">
           <button 
             onClick={onDecline}
-            className="flex-1 py-3 bg-slate-200 text-slate-600 font-bold rounded-xl text-sm"
+            className="flex-1 py-3 bg-[var(--color-surface-container-high)] text-[var(--color-on-surface-variant)] font-bold rounded-xl text-sm"
           >
 {t.rider.order.decline}
           </button>
@@ -204,7 +204,7 @@ export default function IncomingOrderCard({
             <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 text-center max-w-xs mx-4">
               <span className="material-symbols-outlined text-red-500 text-5xl">error</span>
               <p className="font-bold text-lg mt-3">{t.rider.order.orderTaken}</p>
-              <p className="text-sm text-slate-500 mt-1">{t.rider.order.orderTakenDesc}</p>
+              <p className="text-sm text-[var(--color-outline)] mt-1">{t.rider.order.orderTakenDesc}</p>
             </div>
           </div>
         )}

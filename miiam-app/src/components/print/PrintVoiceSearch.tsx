@@ -93,14 +93,14 @@ export default function PrintVoiceSearch({ onResult, language = "en", placeholde
       aria-label={listening ? "Stop voice search" : "Start voice search"}
       aria-pressed={listening}
       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors ${
-        listening ? "bg-rose-100 border-rose-300 text-rose-700" : "bg-[var(--color-surface-container-lowest)] border-slate-200 text-slate-700 hover:bg-slate-50"
+        listening ? "bg-rose-100 border-rose-300 text-rose-700" : "bg-[var(--color-surface-container-lowest)] border-[var(--color-border-subtle)] text-[var(--color-on-surface)] hover:bg-[var(--color-surface-subtle)]"
       }`}
     >
       <span className="material-symbols-outlined text-base" style={{ fontVariationSettings: "'FILL' 1" }}>
         {listening ? "mic_off" : "mic"}
       </span>
       {listening ? "Listening…" : placeholder || "Voice search"}
-      {transcript && <span className="text-slate-500 italic max-w-[160px] truncate">"{transcript}"</span>}
+      {transcript && <span className="text-[var(--color-outline)] italic max-w-[160px] truncate">"{transcript}"</span>}
       {error && <span className="text-rose-500 text-[10px]">({error})</span>}
     </button>
   );

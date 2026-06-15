@@ -78,18 +78,18 @@ export default function PartnerChatPage() {
   return (
     <div className="p-4 md:p-8 space-y-6">
       <div>
-        <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Chat Support</h1>
-        <p className="text-slate-500 text-sm mt-1">Respond to customer messages</p>
+        <h1 className="text-3xl font-extrabold text-[var(--color-on-surface)] tracking-tight">Chat Support</h1>
+        <p className="text-[var(--color-outline)] text-sm mt-1">Respond to customer messages</p>
       </div>
 
       {orderIds.length === 0 ? (
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-12 text-center border border-slate-200">
-          <span className="material-symbols-outlined text-5xl text-slate-300">chat</span>
-          <p className="text-slate-400 font-medium mt-3">No messages yet</p>
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-12 text-center border border-[var(--color-border-subtle)]">
+          <span className="material-symbols-outlined text-5xl text-[var(--color-outline-variant)]/60">chat</span>
+          <p className="text-[var(--color-outline-variant)] font-medium mt-3">No messages yet</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-1 bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-200 divide-y divide-slate-100">
+          <div className="lg:col-span-1 bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)] divide-y divide-[var(--color-border-subtle)]">
             {orderIds.map((oid) => {
               const msgs = grouped[oid];
               const last = msgs[0];
@@ -98,46 +98,46 @@ export default function PartnerChatPage() {
                 <button
                   key={oid}
                   onClick={() => setActiveOrder(oid)}
-                  className={`w-full p-4 text-left hover:bg-slate-50 transition-colors ${activeOrder === oid ? "bg-slate-50 ring-1 ring-[#ba001c]" : ""}`}
+                  className={`w-full p-4 text-left hover:bg-[var(--color-surface-subtle)] transition-colors ${activeOrder === oid ? "bg-[var(--color-surface-subtle)] ring-1 ring-[#ba001c]" : ""}`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-sm text-slate-800">Order #{oid.slice(0, 8)}</span>
+                    <span className="font-bold text-sm text-[var(--color-on-surface)]">Order #{oid.slice(0, 8)}</span>
                     {unread > 0 && <span className="bg-[#ba001c] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{unread}</span>}
                   </div>
-                  <p className="text-xs text-slate-400 mt-1 truncate">{last.message}</p>
+                  <p className="text-xs text-[var(--color-outline-variant)] mt-1 truncate">{last.message}</p>
                 </button>
               );
             })}
           </div>
 
-          <div className="lg:col-span-2 bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-200 flex flex-col">
+          <div className="lg:col-span-2 bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)] flex flex-col">
             {!activeOrder ? (
-              <div className="p-12 text-center text-slate-400 font-medium">Select a conversation</div>
+              <div className="p-12 text-center text-[var(--color-outline-variant)] font-medium">Select a conversation</div>
             ) : (
               <>
-                <div className="p-4 border-b border-slate-100 font-bold text-sm text-slate-800">
+                <div className="p-4 border-b border-[var(--color-border-subtle)] font-bold text-sm text-[var(--color-on-surface)]">
                   Order #{activeOrder.slice(0, 8)}
                 </div>
                 <div className="flex-1 p-4 space-y-3 max-h-[60vh] overflow-y-auto">
                   {(grouped[activeOrder] || []).slice().reverse().map((m) => (
                     <div key={m.id} className={`flex ${m.sender === "vendor" ? "justify-end" : "justify-start"}`}>
-                      <div className={`max-w-[75%] rounded-2xl px-4 py-2.5 text-sm ${m.sender === "vendor" ? "bg-[#ba001c] text-white" : "bg-slate-100 text-slate-800"}`}>
+                      <div className={`max-w-[75%] rounded-2xl px-4 py-2.5 text-sm ${m.sender === "vendor" ? "bg-[#ba001c] text-white" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface)]"}`}>
                         <p>{m.message}</p>
-                        <p className={`text-[10px] mt-1 ${m.sender === "vendor" ? "text-white/60" : "text-slate-400"}`}>
+                        <p className={`text-[10px] mt-1 ${m.sender === "vendor" ? "text-white/60" : "text-[var(--color-outline-variant)]"}`}>
                           {new Date(m.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                         </p>
                       </div>
                     </div>
                   ))}
                 </div>
-                <div className="p-4 border-t border-slate-100 flex gap-2">
+                <div className="p-4 border-t border-[var(--color-border-subtle)] flex gap-2">
                   <input
                     type="text"
                     value={reply}
                     onChange={(e) => setReply(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && sendReply()}
                     placeholder="Type your reply..."
-                    className="flex-1 px-4 py-2.5 bg-slate-50 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-[#ba001c]"
+                    className="flex-1 px-4 py-2.5 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] text-sm focus:outline-none focus:border-[#ba001c]"
                   />
                   <button
                     onClick={sendReply}

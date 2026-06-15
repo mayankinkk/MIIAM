@@ -201,16 +201,16 @@ export default function AdminRiderMap({ riders, onRiderClick }: Props) {
         </div>
       )}
       {locatedRiders.length === 0 && !fetchError && (
-        <div className="absolute inset-0 flex items-center justify-center bg-slate-50/80 pointer-events-none z-[999]">
+        <div className="absolute inset-0 flex items-center justify-center bg-[var(--color-surface-subtle)]/80 pointer-events-none z-[999]">
           <div className="text-center">
-            <span className="material-symbols-outlined text-4xl text-slate-300 mb-2">location_off</span>
-            <p className="text-sm font-bold text-slate-400">No rider locations yet</p>
-            <p className="text-xs text-slate-300">Riders will appear here when they start delivering</p>
+            <span className="material-symbols-outlined text-4xl text-[var(--color-outline-variant)]/60 mb-2">location_off</span>
+            <p className="text-sm font-bold text-[var(--color-outline-variant)]">No rider locations yet</p>
+            <p className="text-xs text-[var(--color-outline-variant)]/60">Riders will appear here when they start delivering</p>
           </div>
         </div>
       )}
       {fetchError && (
-        <div className="absolute inset-0 flex items-center justify-center bg-slate-50/80 pointer-events-none z-[998]">
+        <div className="absolute inset-0 flex items-center justify-center bg-[var(--color-surface-subtle)]/80 pointer-events-none z-[998]">
           <div className="text-center">
             <span className="material-symbols-outlined text-4xl text-red-300 mb-2">error</span>
             <p className="text-sm font-bold text-red-400">Failed to load rider locations</p>

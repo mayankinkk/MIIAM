@@ -142,7 +142,7 @@ export default function RiderIncidentPage() {
             <span className="text-4xl mb-1">🆘</span>
             <span className="text-white font-bold text-sm">SOS</span>
           </button>
-          <p className="text-xs text-slate-400 mt-3">Press to alert support instantly</p>
+          <p className="text-xs text-[var(--color-outline-variant)] mt-3">Press to alert support instantly</p>
         </div>
 
         {/* Quick Report Types */}
@@ -170,7 +170,7 @@ export default function RiderIncidentPage() {
               <a 
                 key={i}
                 href={`tel:${contact.number}`}
-                className="flex items-center justify-between p-3 bg-slate-50 rounded-xl hover:bg-slate-100"
+                className="flex items-center justify-between p-3 bg-[var(--color-surface-subtle)] rounded-xl hover:bg-[var(--color-surface-container)]"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
@@ -178,7 +178,7 @@ export default function RiderIncidentPage() {
                   </div>
                   <div>
                     <p className="font-bold text-sm">{contact.name}</p>
-                    <p className="text-xs text-slate-400">{contact.number}</p>
+                    <p className="text-xs text-[var(--color-outline-variant)]">{contact.number}</p>
                   </div>
                 </div>
                 <span className="material-symbols-outlined text-green-600">call</span>
@@ -192,17 +192,17 @@ export default function RiderIncidentPage() {
           <h3 className="font-bold text-[#4d212a] mb-4">Recent Reports</h3>
           <div className="space-y-3">
             {recentIncidents.length > 0 ? recentIncidents.map((report, i) => (
-              <div key={i} className="flex items-center justify-between p-3 border-b border-slate-100">
+              <div key={i} className="flex items-center justify-between p-3 border-b border-[var(--color-border-subtle)]">
                 <div>
                   <p className="font-bold text-sm capitalize">{report.type.replace("_", " ")}</p>
-                  <p className="text-xs text-slate-400">{report.date}</p>
+                  <p className="text-xs text-[var(--color-outline-variant)]">{report.date}</p>
                 </div>
                 <span className={`text-xs px-2 py-1 rounded-full ${report.status === "resolved" ? "bg-green-100 text-green-600" : "bg-amber-100 text-amber-600"}`}>
                   {report.status}
                 </span>
               </div>
             )) : (
-              <p className="text-center text-xs text-slate-400 mt-4">No recent issues</p>
+              <p className="text-center text-xs text-[var(--color-outline-variant)] mt-4">No recent issues</p>
             )}
           </div>
         </div>
@@ -230,7 +230,7 @@ export default function RiderIncidentPage() {
                 </span>
               </div>
               <h3 className="font-bold text-xl">Report {selectedType?.replace("_", " ")}</h3>
-              <p className="text-sm text-slate-500 mt-1">We'll help you right away</p>
+              <p className="text-sm text-[var(--color-outline)] mt-1">We'll help you right away</p>
             </div>
 
             <div className="space-y-3 mb-4">
@@ -238,18 +238,18 @@ export default function RiderIncidentPage() {
                 placeholder="Brief description of the incident"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full p-3 border-2 border-slate-200 rounded-xl text-sm"
+                className="w-full p-3 border-2 border-[var(--color-border-subtle)] rounded-xl text-sm"
               />
               <input 
                 placeholder="Your current location"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                className="w-full p-3 border-2 border-slate-200 rounded-xl text-sm"
+                className="w-full p-3 border-2 border-[var(--color-border-subtle)] rounded-xl text-sm"
               />
             </div>
 
-            <div className="bg-slate-50 p-3 rounded-xl mb-4">
-              <p className="text-xs text-slate-500">Support will contact you within 5 minutes</p>
+            <div className="bg-[var(--color-surface-subtle)] p-3 rounded-xl mb-4">
+              <p className="text-xs text-[var(--color-outline)]">Support will contact you within 5 minutes</p>
             </div>
 
             <button 
@@ -269,7 +269,7 @@ export default function RiderIncidentPage() {
                 </>
               )}
             </button>
-            <button onClick={() => setShowConfirm(false)} className="w-full py-3 text-slate-500 font-bold mt-2">
+            <button onClick={() => setShowConfirm(false)} className="w-full py-3 text-[var(--color-outline)] font-bold mt-2">
               Cancel
             </button>
           </div>

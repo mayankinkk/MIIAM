@@ -113,16 +113,16 @@ export default function RiderEarningsPage() {
     <div className="px-8 space-y-8">
       <div className="flex justify-between items-end flex-wrap gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight mb-2">Rider Earnings</h1>
-          <p className="text-slate-500">Track rider performance and payout reports</p>
+          <h1 className="text-3xl font-extrabold text-[var(--color-on-surface)] tracking-tight mb-2">Rider Earnings</h1>
+          <p className="text-[var(--color-outline)]">Track rider performance and payout reports</p>
         </div>
-        <div className="flex gap-2 bg-slate-100 p-1 rounded-xl">
+        <div className="flex gap-2 bg-[var(--color-surface-container)] p-1 rounded-xl">
           {(["week", "month", "all"] as const).map((p) => (
             <button
               key={p}
               onClick={() => setPeriod(p)}
               className={`px-4 py-2 rounded-lg text-xs font-bold transition-colors ${
-                period === p ? "bg-[var(--color-surface-container-lowest)] text-[#ba001c] shadow-sm" : "text-slate-500"
+                period === p ? "bg-[var(--color-surface-container-lowest)] text-[#ba001c] shadow-sm" : "text-[var(--color-outline)]"
               }`}
             >
               {p === "week" ? "This Week" : p === "month" ? "This Month" : "All Time"}
@@ -140,37 +140,37 @@ export default function RiderEarningsPage() {
           <p className="text-4xl font-black">₹{totalEarnings.toLocaleString()}</p>
           <p className="text-xs text-white/60 mt-2">{totalDeliveries} deliveries</p>
         </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-slate-100 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-[var(--color-border-subtle)] shadow-sm">
           <div className="flex items-center gap-2 mb-2">
-            <span className="material-symbols-outlined text-slate-400">two_wheeler</span>
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Active Riders</span>
+            <span className="material-symbols-outlined text-[var(--color-outline-variant)]">two_wheeler</span>
+            <span className="text-xs font-bold text-[var(--color-outline-variant)] uppercase tracking-widest">Active Riders</span>
           </div>
-          <p className="text-3xl font-black text-slate-800">{onlineRiders}</p>
+          <p className="text-3xl font-black text-[var(--color-on-surface)]">{onlineRiders}</p>
           <p className="text-xs text-green-500 mt-2">online now</p>
         </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-slate-100 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-[var(--color-border-subtle)] shadow-sm">
           <div className="flex items-center gap-2 mb-2">
-            <span className="material-symbols-outlined text-slate-400">inventory_2</span>
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Avg Deliveries</span>
+            <span className="material-symbols-outlined text-[var(--color-outline-variant)]">inventory_2</span>
+            <span className="text-xs font-bold text-[var(--color-outline-variant)] uppercase tracking-widest">Avg Deliveries</span>
           </div>
-          <p className="text-3xl font-black text-slate-800">
+          <p className="text-3xl font-black text-[var(--color-on-surface)]">
             {riders.length ? Math.round(totalDeliveries / riders.length) : 0}
           </p>
-          <p className="text-xs text-slate-400 mt-2">per rider</p>
+          <p className="text-xs text-[var(--color-outline-variant)] mt-2">per rider</p>
         </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-slate-100 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-[var(--color-border-subtle)] shadow-sm">
           <div className="flex items-center gap-2 mb-2">
             <span className="material-symbols-outlined text-amber-500">star</span>
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Avg Rating</span>
+            <span className="text-xs font-bold text-[var(--color-outline-variant)] uppercase tracking-widest">Avg Rating</span>
           </div>
-          <p className="text-3xl font-black text-slate-800">{avgRating.toFixed(1)}</p>
+          <p className="text-3xl font-black text-[var(--color-on-surface)]">{avgRating.toFixed(1)}</p>
           <p className="text-xs text-green-500 mt-2">out of 5.0</p>
         </div>
       </div>
 
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-6 shadow-sm">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-6 shadow-sm">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-lg font-black text-slate-800">Rider Performance</h2>
+          <h2 className="text-lg font-black text-[var(--color-on-surface)]">Rider Performance</h2>
           <div className="flex gap-2">
             {(["earnings", "deliveries", "rating"] as const).map((s) => (
               <button
@@ -179,7 +179,7 @@ export default function RiderEarningsPage() {
                 className={`px-3 py-1 rounded-lg text-xs font-bold transition-colors ${
                   sortBy === s 
                     ? "bg-[#ba001c] text-white" 
-                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                    : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]"
                 }`}
               >
                 {s.charAt(0).toUpperCase() + s.slice(1)}
@@ -191,40 +191,40 @@ export default function RiderEarningsPage() {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-100">
-                <th className="text-left py-3 text-xs font-bold text-slate-500 uppercase">Rider</th>
-                <th className="text-left py-3 text-xs font-bold text-slate-500 uppercase">Status</th>
-                <th className="text-right py-3 text-xs font-bold text-slate-500 uppercase">Deliveries</th>
-                <th className="text-right py-3 text-xs font-bold text-slate-500 uppercase">Earnings</th>
-                <th className="text-right py-3 text-xs font-bold text-slate-500 uppercase">Avg/Order</th>
-                <th className="text-right py-3 text-xs font-bold text-slate-500 uppercase">This Week</th>
-                <th className="text-right py-3 text-xs font-bold text-slate-500 uppercase">This Month</th>
-                <th className="text-right py-3 text-xs font-bold text-slate-500 uppercase">Rating</th>
+              <tr className="border-b border-[var(--color-border-subtle)]">
+                <th className="text-left py-3 text-xs font-bold text-[var(--color-outline)] uppercase">Rider</th>
+                <th className="text-left py-3 text-xs font-bold text-[var(--color-outline)] uppercase">Status</th>
+                <th className="text-right py-3 text-xs font-bold text-[var(--color-outline)] uppercase">Deliveries</th>
+                <th className="text-right py-3 text-xs font-bold text-[var(--color-outline)] uppercase">Earnings</th>
+                <th className="text-right py-3 text-xs font-bold text-[var(--color-outline)] uppercase">Avg/Order</th>
+                <th className="text-right py-3 text-xs font-bold text-[var(--color-outline)] uppercase">This Week</th>
+                <th className="text-right py-3 text-xs font-bold text-[var(--color-outline)] uppercase">This Month</th>
+                <th className="text-right py-3 text-xs font-bold text-[var(--color-outline)] uppercase">Rating</th>
               </tr>
             </thead>
             <tbody>
               {sortedRiders.slice(0, 20).map((rider, index) => (
-                <tr key={rider.rider_id} className="border-b border-slate-50 hover:bg-slate-50">
+                <tr key={rider.rider_id} className="border-b border-slate-50 hover:bg-[var(--color-surface-subtle)]">
                   <td className="py-3">
                     <div className="flex items-center gap-3">
                       <span className="w-6 h-6 bg-[#ba001c] text-white rounded-full flex items-center justify-center text-xs font-bold">
                         {index + 1}
                       </span>
-                      <span className="font-bold text-slate-800">{rider.rider_name}</span>
+                      <span className="font-bold text-[var(--color-on-surface)]">{rider.rider_name}</span>
                     </div>
                   </td>
                   <td className="py-3">
                     <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                      rider.is_online ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-500"
+                      rider.is_online ? "bg-green-100 text-green-700" : "bg-[var(--color-surface-container)] text-[var(--color-outline)]"
                     }`}>
                       {rider.is_online ? "Online" : "Offline"}
                     </span>
                   </td>
-                  <td className="py-3 text-right font-bold text-slate-800">{rider.total_deliveries}</td>
+                  <td className="py-3 text-right font-bold text-[var(--color-on-surface)]">{rider.total_deliveries}</td>
                   <td className="py-3 text-right font-bold text-green-600">₹{rider.total_earnings.toFixed(0)}</td>
-                  <td className="py-3 text-right text-slate-600">₹{rider.avg_per_delivery.toFixed(0)}</td>
-                  <td className="py-3 text-right font-bold text-slate-800">₹{rider.this_week.toFixed(0)}</td>
-                  <td className="py-3 text-right font-bold text-slate-800">₹{rider.this_month.toFixed(0)}</td>
+                  <td className="py-3 text-right text-[var(--color-on-surface-variant)]">₹{rider.avg_per_delivery.toFixed(0)}</td>
+                  <td className="py-3 text-right font-bold text-[var(--color-on-surface)]">₹{rider.this_week.toFixed(0)}</td>
+                  <td className="py-3 text-right font-bold text-[var(--color-on-surface)]">₹{rider.this_month.toFixed(0)}</td>
                   <td className="py-3 text-right">
                     <span className="flex items-center justify-end gap-1 text-amber-500 font-bold">
                       <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>
@@ -241,8 +241,8 @@ export default function RiderEarningsPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-6 shadow-sm">
-          <h3 className="text-lg font-black text-slate-800 mb-6">Top Earners This Month</h3>
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-6 shadow-sm">
+          <h3 className="text-lg font-black text-[var(--color-on-surface)] mb-6">Top Earners This Month</h3>
           <div className="space-y-4">
             {sortedRiders.slice(0, 5).map((rider, index) => (
               <div key={rider.rider_id} className="flex items-center gap-4">
@@ -251,10 +251,10 @@ export default function RiderEarningsPage() {
                 </span>
                 <div className="flex-1">
                   <div className="flex justify-between mb-1">
-                    <span className="font-bold text-slate-800">{rider.rider_name}</span>
+                    <span className="font-bold text-[var(--color-on-surface)]">{rider.rider_name}</span>
                     <span className="font-black text-green-600">₹{rider.this_month.toFixed(0)}</span>
                   </div>
-                  <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div className="h-2 bg-[var(--color-surface-container)] rounded-full overflow-hidden">
                     <div
                       className="h-full bg-gradient-to-r from-green-500 to-green-400"
                       style={{ width: `${(rider.this_month / (sortedRiders[0]?.this_month || 1)) * 100}%` }}
@@ -266,29 +266,29 @@ export default function RiderEarningsPage() {
           </div>
         </div>
 
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-6 shadow-sm">
-          <h3 className="text-lg font-black text-slate-800 mb-6">Payout Summary</h3>
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-6 shadow-sm">
+          <h3 className="text-lg font-black text-[var(--color-on-surface)] mb-6">Payout Summary</h3>
           <div className="space-y-4">
-            <div className="flex justify-between items-center p-4 bg-slate-50 rounded-xl">
+            <div className="flex justify-between items-center p-4 bg-[var(--color-surface-subtle)] rounded-xl">
               <div className="flex items-center gap-3">
                 <span className="material-symbols-outlined text-green-600">account_balance</span>
-                <span className="font-bold text-slate-800">Bank Transfers</span>
+                <span className="font-bold text-[var(--color-on-surface)]">Bank Transfers</span>
               </div>
-              <span className="font-black text-slate-800">₹{(totalEarnings * 0.7).toFixed(0)}</span>
+              <span className="font-black text-[var(--color-on-surface)]">₹{(totalEarnings * 0.7).toFixed(0)}</span>
             </div>
-            <div className="flex justify-between items-center p-4 bg-slate-50 rounded-xl">
+            <div className="flex justify-between items-center p-4 bg-[var(--color-surface-subtle)] rounded-xl">
               <div className="flex items-center gap-3">
                 <span className="material-symbols-outlined text-blue-600">payments</span>
-                <span className="font-bold text-slate-800">UPI Transfers</span>
+                <span className="font-bold text-[var(--color-on-surface)]">UPI Transfers</span>
               </div>
-              <span className="font-black text-slate-800">₹{(totalEarnings * 0.2).toFixed(0)}</span>
+              <span className="font-black text-[var(--color-on-surface)]">₹{(totalEarnings * 0.2).toFixed(0)}</span>
             </div>
-            <div className="flex justify-between items-center p-4 bg-slate-50 rounded-xl">
+            <div className="flex justify-between items-center p-4 bg-[var(--color-surface-subtle)] rounded-xl">
               <div className="flex items-center gap-3">
                 <span className="material-symbols-outlined text-purple-600">wallet</span>
-                <span className="font-bold text-slate-800">Wallet Balance</span>
+                <span className="font-bold text-[var(--color-on-surface)]">Wallet Balance</span>
               </div>
-              <span className="font-black text-slate-800">₹{(totalEarnings * 0.1).toFixed(0)}</span>
+              <span className="font-black text-[var(--color-on-surface)]">₹{(totalEarnings * 0.1).toFixed(0)}</span>
             </div>
           </div>
         </div>

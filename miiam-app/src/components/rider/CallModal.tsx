@@ -26,7 +26,7 @@ export default function CallModal({ open, onClose, name, phone }: CallModalProps
             <span className="material-symbols-outlined text-[#0b50d5] text-3xl">person</span>
           </div>
           <p className="font-bold mb-1">{name || "{t.rider.callModal.vendor}"}</p>
-          <p className="text-sm text-slate-500">{phone}</p>
+          <p className="text-sm text-[var(--color-outline)]">{phone}</p>
         </div>
         <a
           href={`tel:${phone}`}

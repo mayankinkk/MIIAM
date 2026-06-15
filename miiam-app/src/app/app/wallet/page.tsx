@@ -130,14 +130,14 @@ export default function WalletPage() {
             <div className="space-y-3">
               {[1, 2, 3].map(i => (
                 <div key={i} className="bg-surface-container-lowest rounded-2xl p-4 animate-pulse">
-                  <div className="h-4 bg-slate-200 rounded w-48 mb-2" />
-                  <div className="h-3 bg-slate-200 rounded w-24" />
+                  <div className="h-4 bg-[var(--color-surface-container-high)] rounded w-48 mb-2" />
+                  <div className="h-3 bg-[var(--color-surface-container-high)] rounded w-24" />
                 </div>
               ))}
             </div>
           ) : transactions.length === 0 ? (
             <div className="bg-surface-container-lowest rounded-2xl p-8 text-center">
-              <span className="material-symbols-outlined text-4xl text-slate-300">receipt_long</span>
+              <span className="material-symbols-outlined text-4xl text-[var(--color-outline-variant)]/60">receipt_long</span>
               <p className="text-sm text-on-surface-variant mt-2">{t.home.noNotifications}</p>
             </div>
           ) : (
@@ -152,7 +152,7 @@ export default function WalletPage() {
                     </div>
                     <div>
                       <p className="font-bold text-on-surface text-sm">{txn.title}</p>
-                      <p className="text-xs text-slate-400">{txn.date}</p>
+                      <p className="text-xs text-[var(--color-outline-variant)]">{txn.date}</p>
                     </div>
                   </div>
                   <p className={`font-black text-base ${txn.sign === "+" ? "text-green-600" : "text-on-surface"}`}>
@@ -173,15 +173,15 @@ export default function WalletPage() {
           <div className="space-y-3">
             <div className="flex gap-2">
               {[100, 200, 500, 1000].map((amt) => (
-                <button key={amt} onClick={() => setAddAmount(String(amt))} className="flex-1 py-2 border border-slate-200 rounded-lg font-bold text-sm hover:border-primary">
+                <button key={amt} onClick={() => setAddAmount(String(amt))} className="flex-1 py-2 border border-[var(--color-border-subtle)] rounded-lg font-bold text-sm hover:border-primary">
                   ₹{amt}
                 </button>
               ))}
             </div>
-            <input type="number" placeholder="Enter amount" value={addAmount} onChange={(e) => setAddAmount(e.target.value)} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm" />
+            <input type="number" placeholder="Enter amount" value={addAmount} onChange={(e) => setAddAmount(e.target.value)} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm" />
           </div>
           <div className="flex gap-3 mt-6">
-            <button onClick={() => { setShowAddMoney(false); setAddAmount(""); }} className="flex-1 py-3 border border-slate-200 rounded-xl font-bold text-sm">Cancel</button>
+            <button onClick={() => { setShowAddMoney(false); setAddAmount(""); }} className="flex-1 py-3 border border-[var(--color-border-subtle)] rounded-xl font-bold text-sm">Cancel</button>
             <button
               onClick={() => {
                 const amt = Number(addAmount);
@@ -236,17 +236,17 @@ export default function WalletPage() {
       <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-md p-6">
           <h3 className="font-bold text-lg mb-4">Withdraw to Bank</h3>
-          <p className="text-sm text-slate-500 mb-4">Available: <span className="font-bold text-primary">₹{balance.toFixed(2)}</span></p>
+          <p className="text-sm text-[var(--color-outline)] mb-4">Available: <span className="font-bold text-primary">₹{balance.toFixed(2)}</span></p>
           <div className="space-y-3">
             {[100, 200, 500].filter(a => a <= balance).map((amt) => (
-              <button key={amt} onClick={() => setWithdrawAmount(String(amt))} className="w-full py-3 border border-slate-200 rounded-xl font-bold text-sm hover:border-primary text-left px-4">
+              <button key={amt} onClick={() => setWithdrawAmount(String(amt))} className="w-full py-3 border border-[var(--color-border-subtle)] rounded-xl font-bold text-sm hover:border-primary text-left px-4">
                 ₹{amt}
               </button>
             ))}
-            <input type="number" placeholder="Enter amount" value={withdrawAmount} onChange={(e) => setWithdrawAmount(e.target.value)} max={balance} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm" />
+            <input type="number" placeholder="Enter amount" value={withdrawAmount} onChange={(e) => setWithdrawAmount(e.target.value)} max={balance} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm" />
           </div>
           <div className="flex gap-3 mt-6">
-            <button onClick={() => { setShowWithdraw(false); setWithdrawAmount(""); }} className="flex-1 py-3 border border-slate-200 rounded-xl font-bold text-sm">Cancel</button>
+            <button onClick={() => { setShowWithdraw(false); setWithdrawAmount(""); }} className="flex-1 py-3 border border-[var(--color-border-subtle)] rounded-xl font-bold text-sm">Cancel</button>
             <button
               onClick={async () => {
                 const amt = Number(withdrawAmount);

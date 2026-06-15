@@ -200,12 +200,12 @@ export default function PharmacyPartnersPage() {
   return (
     <div className="p-8">
       <div className="flex items-center gap-4 mb-6">
-        <Link href="/admin/pharmacy" className="text-slate-400 hover:text-slate-600">
+        <Link href="/admin/pharmacy" className="text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]">
           <span className="material-symbols-outlined text-3xl">arrow_back</span>
         </Link>
         <div className="flex-1">
-          <h1 className="text-2xl font-black text-slate-800">Pharmacy Partners</h1>
-          <p className="text-slate-500 text-sm">Manage pharmacy store partners</p>
+          <h1 className="text-2xl font-black text-[var(--color-on-surface)]">Pharmacy Partners</h1>
+          <p className="text-[var(--color-outline)] text-sm">Manage pharmacy store partners</p>
         </div>
         <button onClick={() => setShowAddModal(true)} className="px-4 py-2 bg-[#ba001c] text-white rounded-lg font-bold text-sm hover:bg-[#a00018]">
           + Add Partner
@@ -213,9 +213,9 @@ export default function PharmacyPartnersPage() {
       </div>
 
       <div className="grid grid-cols-4 gap-4 mb-6">
-        <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-slate-100">
-          <p className="text-slate-400 text-xs font-bold">TOTAL PARTNERS</p>
-          <p className="text-2xl font-black text-slate-800 mt-1">{stats.total}</p>
+        <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-[var(--color-border-subtle)]">
+          <p className="text-[var(--color-outline-variant)] text-xs font-bold">TOTAL PARTNERS</p>
+          <p className="text-2xl font-black text-[var(--color-on-surface)] mt-1">{stats.total}</p>
         </div>
         <div className="bg-green-50 p-4 rounded-xl border border-green-200">
           <p className="text-green-600 text-xs font-bold">ACTIVE</p>
@@ -233,10 +233,10 @@ export default function PharmacyPartnersPage() {
 
       <div className="flex gap-4 mb-6">
         <div className="flex-1 relative">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined">search</span>
-          <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search by shop name or owner..." className="w-full pl-10 pr-4 py-3 bg-[var(--color-surface-container-lowest)] border border-slate-200 rounded-xl focus:outline-none focus:border-[#ba001c]" />
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-outline-variant)] material-symbols-outlined">search</span>
+          <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search by shop name or owner..." className="w-full pl-10 pr-4 py-3 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:border-[#ba001c]" />
         </div>
-        <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="px-4 py-3 bg-[var(--color-surface-container-lowest)] border border-slate-200 rounded-xl focus:outline-none focus:border-[#ba001c]">
+        <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="px-4 py-3 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:border-[#ba001c]">
           <option value="all">All Status</option>
           <option value="active">Active</option>
           <option value="inactive">Inactive</option>
@@ -245,42 +245,42 @@ export default function PharmacyPartnersPage() {
       </div>
 
       {loading ? (
-        <div className="text-center py-12 text-slate-500">Loading partners...</div>
+        <div className="text-center py-12 text-[var(--color-outline)]">Loading partners...</div>
       ) : filteredPartners.length === 0 ? (
-        <div className="text-center py-12 text-slate-500 bg-[var(--color-surface-container-lowest)] rounded-xl">
-          <span className="material-symbols-outlined text-5xl text-slate-300">store</span>
+        <div className="text-center py-12 text-[var(--color-outline)] bg-[var(--color-surface-container-lowest)] rounded-xl">
+          <span className="material-symbols-outlined text-5xl text-[var(--color-outline-variant)]/60">store</span>
           <p className="mt-4 font-bold">No partners found</p>
         </div>
       ) : (
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-100 overflow-hidden">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] overflow-hidden">
           <table className="w-full">
-            <thead className="bg-slate-50">
+            <thead className="bg-[var(--color-surface-subtle)]">
               <tr>
-                <th className="text-left p-4 font-bold text-slate-600 text-sm">Shop Name</th>
-                <th className="text-left p-4 font-bold text-slate-600 text-sm">Owner</th>
-                <th className="text-left p-4 font-bold text-slate-600 text-sm">Contact</th>
-                <th className="text-left p-4 font-bold text-slate-600 text-sm">PIN Code</th>
-                <th className="text-left p-4 font-bold text-slate-600 text-sm">Orders</th>
-                <th className="text-left p-4 font-bold text-slate-600 text-sm">Status</th>
-                <th className="text-left p-4 font-bold text-slate-600 text-sm">Action</th>
+                <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Shop Name</th>
+                <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Owner</th>
+                <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Contact</th>
+                <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">PIN Code</th>
+                <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Orders</th>
+                <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Status</th>
+                <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Action</th>
               </tr>
             </thead>
             <tbody>
               {filteredPartners.map((partner) => (
-                <tr key={partner.id} className="border-t border-slate-100 hover:bg-slate-50">
+                <tr key={partner.id} className="border-t border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]">
                   <td className="p-4">
-                    <div className="font-bold text-slate-800">{partner.shop_name}</div>
-                    <div className="text-xs text-slate-500">Pharmacy</div>
+                    <div className="font-bold text-[var(--color-on-surface)]">{partner.shop_name}</div>
+                    <div className="text-xs text-[var(--color-outline)]">Pharmacy</div>
                   </td>
-                  <td className="p-4 text-slate-600">{partner.owner_name}</td>
+                  <td className="p-4 text-[var(--color-on-surface-variant)]">{partner.owner_name}</td>
                   <td className="p-4">
-                    <div className="text-slate-800">{partner.phone}</div>
-                    <div className="text-xs text-slate-500">{partner.email || ""}</div>
+                    <div className="text-[var(--color-on-surface)]">{partner.phone}</div>
+                    <div className="text-xs text-[var(--color-outline)]">{partner.email || ""}</div>
                   </td>
                   <td className="p-4">
                     <span className="text-xs font-bold bg-blue-50 text-blue-700 px-2 py-1 rounded-full">{partner.pincode || "—"}</span>
                   </td>
-                  <td className="p-4 font-bold text-slate-800">{partner.total_orders || 0}</td>
+                  <td className="p-4 font-bold text-[var(--color-on-surface)]">{partner.total_orders || 0}</td>
                   <td className="p-4">
                     <select
                       value={partner.status}
@@ -307,31 +307,31 @@ export default function PharmacyPartnersPage() {
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-lg mx-4 my-auto">
             <div className="p-6 border-b">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-black text-slate-800">{editingPartner ? "Edit Partner" : "Add Pharmacy Partner"}</h2>
-                <button onClick={resetModal} className="text-slate-400 hover:text-slate-600">
+                <h2 className="text-xl font-black text-[var(--color-on-surface)]">{editingPartner ? "Edit Partner" : "Add Pharmacy Partner"}</h2>
+                <button onClick={resetModal} className="text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]">
                   <span className="material-symbols-outlined text-3xl">close</span>
                 </button>
               </div>
-              <p className="text-slate-500 text-sm mt-1">Fields marked * are required</p>
+              <p className="text-[var(--color-outline)] text-sm mt-1">Fields marked * are required</p>
             </div>
 
             <div className="p-6 space-y-5 max-h-[70vh] overflow-y-auto">
               {/* Owner Details */}
               <div>
-                <h3 className="text-xs font-black text-slate-500 uppercase tracking-widest mb-3">Owner Details</h3>
+                <h3 className="text-xs font-black text-[var(--color-outline)] uppercase tracking-widest mb-3">Owner Details</h3>
                 <div className="space-y-3">
                   <div>
-                    <label className="text-xs font-bold text-slate-600 mb-1 block">Owner Name *</label>
-                    <input type="text" value={newPartner.owner_name} onChange={(e) => setNewPartner({ ...newPartner, owner_name: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="Enter owner name" />
+                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Owner Name *</label>
+                    <input type="text" value={newPartner.owner_name} onChange={(e) => setNewPartner({ ...newPartner, owner_name: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="Enter owner name" />
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="text-xs font-bold text-slate-600 mb-1 block">Phone *</label>
-                      <input type="tel" value={newPartner.phone} onChange={(e) => setNewPartner({ ...newPartner, phone: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="1800-123-4567" />
+                      <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Phone *</label>
+                      <input type="tel" value={newPartner.phone} onChange={(e) => setNewPartner({ ...newPartner, phone: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="1800-123-4567" />
                     </div>
                     <div>
-                      <label className="text-xs font-bold text-slate-600 mb-1 block">Email</label>
-                      <input type="email" value={newPartner.email} onChange={(e) => setNewPartner({ ...newPartner, email: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="owner@email.com" />
+                      <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Email</label>
+                      <input type="email" value={newPartner.email} onChange={(e) => setNewPartner({ ...newPartner, email: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="owner@email.com" />
                     </div>
                   </div>
                 </div>
@@ -339,42 +339,42 @@ export default function PharmacyPartnersPage() {
 
               {/* Shop Details */}
               <div>
-                <h3 className="text-xs font-black text-slate-500 uppercase tracking-widest mb-3">Shop Details</h3>
+                <h3 className="text-xs font-black text-[var(--color-outline)] uppercase tracking-widest mb-3">Shop Details</h3>
                 <div className="space-y-3">
                   <div>
-                    <label className="text-xs font-bold text-slate-600 mb-1 block">Pharmacy Name *</label>
-                    <input type="text" value={newPartner.shop_name} onChange={(e) => setNewPartner({ ...newPartner, shop_name: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="e.g. City Pharmacy, MedPlus" />
+                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Pharmacy Name *</label>
+                    <input type="text" value={newPartner.shop_name} onChange={(e) => setNewPartner({ ...newPartner, shop_name: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="e.g. City Pharmacy, MedPlus" />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-slate-600 mb-1 block">Full Address</label>
-                    <textarea value={newPartner.address} onChange={(e) => setNewPartner({ ...newPartner, address: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="Shop No., Street, Area" rows={2} />
+                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Full Address</label>
+                    <textarea value={newPartner.address} onChange={(e) => setNewPartner({ ...newPartner, address: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="Shop No., Street, Area" rows={2} />
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="text-xs font-bold text-slate-600 mb-1 block">City *</label>
-                      <input type="text" value={newPartner.city} onChange={(e) => setNewPartner({ ...newPartner, city: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="e.g. Gauripur, Delhi" />
+                      <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">City *</label>
+                      <input type="text" value={newPartner.city} onChange={(e) => setNewPartner({ ...newPartner, city: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="e.g. Gauripur, Delhi" />
                     </div>
                     <div>
-                      <label className="text-xs font-bold text-slate-600 mb-1 block">State</label>
-                      <input type="text" value={newPartner.state} onChange={(e) => setNewPartner({ ...newPartner, state: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="e.g. Assam" />
+                      <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">State</label>
+                      <input type="text" value={newPartner.state} onChange={(e) => setNewPartner({ ...newPartner, state: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="e.g. Assam" />
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="text-xs font-bold text-slate-600 mb-1 block">PIN Code *</label>
+                      <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">PIN Code *</label>
                       <input
                         type="tel"
                         inputMode="numeric"
                         maxLength={6}
                         value={newPartner.pincode}
                         onChange={(e) => setNewPartner({ ...newPartner, pincode: e.target.value.replace(/\D/g, "") })}
-                        className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
+                        className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none"
                         placeholder="e.g. 783331"
                       />
                     </div>
                     <div>
-                      <label className="text-xs font-bold text-slate-600 mb-1 block">Landmark</label>
-                      <input type="text" value={newPartner.landmark} onChange={(e) => setNewPartner({ ...newPartner, landmark: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="Near Hospital, Market" />
+                      <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Landmark</label>
+                      <input type="text" value={newPartner.landmark} onChange={(e) => setNewPartner({ ...newPartner, landmark: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="Near Hospital, Market" />
                     </div>
                   </div>
                 </div>
@@ -382,29 +382,29 @@ export default function PharmacyPartnersPage() {
 
               {/* License */}
               <div>
-                <h3 className="text-xs font-black text-slate-500 uppercase tracking-widest mb-3">License & Compliance</h3>
+                <h3 className="text-xs font-black text-[var(--color-outline)] uppercase tracking-widest mb-3">License & Compliance</h3>
                 <div>
-                  <label className="text-xs font-bold text-slate-600 mb-1 block">Drug License Number</label>
-                  <input type="text" value={newPartner.drug_license} onChange={(e) => setNewPartner({ ...newPartner, drug_license: e.target.value.toUpperCase() })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none uppercase" placeholder="e.g. DL-AS-012345" />
+                  <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Drug License Number</label>
+                  <input type="text" value={newPartner.drug_license} onChange={(e) => setNewPartner({ ...newPartner, drug_license: e.target.value.toUpperCase() })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none uppercase" placeholder="e.g. DL-AS-012345" />
                 </div>
               </div>
 
               {/* Delivery Settings */}
               <div>
-                <h3 className="text-xs font-black text-slate-500 uppercase tracking-widest mb-3">Delivery Settings</h3>
+                <h3 className="text-xs font-black text-[var(--color-outline)] uppercase tracking-widest mb-3">Delivery Settings</h3>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-xs font-bold text-slate-600 mb-1 block">Delivery Charge (₹)</label>
+                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Delivery Charge (₹)</label>
                     <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">₹</span>
-                      <input type="number" min="0" value={newPartner.delivery_charge} onChange={(e) => setNewPartner({ ...newPartner, delivery_charge: e.target.value })} className="w-full p-3 pl-7 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="0" />
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-outline-variant)]">₹</span>
+                      <input type="number" min="0" value={newPartner.delivery_charge} onChange={(e) => setNewPartner({ ...newPartner, delivery_charge: e.target.value })} className="w-full p-3 pl-7 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="0" />
                     </div>
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-slate-600 mb-1 block">Min Order Amount (₹)</label>
+                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Min Order Amount (₹)</label>
                     <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">₹</span>
-                      <input type="number" min="0" value={newPartner.min_order_amount} onChange={(e) => setNewPartner({ ...newPartner, min_order_amount: e.target.value })} className="w-full p-3 pl-7 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="0" />
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-outline-variant)]">₹</span>
+                      <input type="number" min="0" value={newPartner.min_order_amount} onChange={(e) => setNewPartner({ ...newPartner, min_order_amount: e.target.value })} className="w-full p-3 pl-7 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="0" />
                     </div>
                   </div>
                 </div>
@@ -412,7 +412,7 @@ export default function PharmacyPartnersPage() {
             </div>
 
             <div className="p-6 border-t flex gap-4">
-              <button onClick={resetModal} className="flex-1 py-3 border border-slate-200 rounded-xl font-bold text-sm hover:bg-slate-50">Cancel</button>
+              <button onClick={resetModal} className="flex-1 py-3 border border-[var(--color-border-subtle)] rounded-xl font-bold text-sm hover:bg-[var(--color-surface-subtle)]">Cancel</button>
               <button onClick={handleSavePartner} disabled={saving} className="flex-1 py-3 bg-[#ba001c] text-white rounded-xl font-bold text-sm hover:bg-[#a00018] disabled:opacity-50">
                 {saving ? "Saving..." : editingPartner ? "Update Partner" : "Add Partner"}
               </button>

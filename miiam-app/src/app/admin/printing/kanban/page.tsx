@@ -125,17 +125,17 @@ export default function AdminPrintingKanban() {
   return (
     <div className="px-4 md:px-8 py-6">
       <div className="flex items-center gap-3 mb-6">
-        <Link href="/admin/printing" className="w-10 h-10 bg-[var(--color-surface-container-lowest)] border border-slate-200 rounded-xl flex items-center justify-center">
-          <span className="material-symbols-outlined text-slate-600">arrow_back</span>
+        <Link href="/admin/printing" className="w-10 h-10 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl flex items-center justify-center">
+          <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">arrow_back</span>
         </Link>
         <div className="flex-1">
-          <h1 className="text-2xl font-black text-slate-800">Print Pipeline (Kanban)</h1>
-          <p className="text-slate-500 text-sm">Drag cards between columns to update status</p>
+          <h1 className="text-2xl font-black text-[var(--color-on-surface)]">Print Pipeline (Kanban)</h1>
+          <p className="text-[var(--color-outline)] text-sm">Drag cards between columns to update status</p>
         </div>
       </div>
 
       {loading ? (
-        <div className="text-center py-12 text-slate-500">Loading…</div>
+        <div className="text-center py-12 text-[var(--color-outline)]">Loading…</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-3">
           {KANBAN_COLUMNS.map((col) => (
@@ -149,11 +149,11 @@ export default function AdminPrintingKanban() {
               }`}
             >
               <div className="flex items-center justify-between mb-3 px-1">
-                <h3 className="font-bold text-sm flex items-center gap-1.5 text-slate-700">
+                <h3 className="font-bold text-sm flex items-center gap-1.5 text-[var(--color-on-surface)]">
                   <span className="material-symbols-outlined text-base">{col.icon}</span>
                   {col.label}
                 </h3>
-                <span className="text-xs bg-[var(--color-surface-container-lowest)]/70 px-2 py-0.5 rounded-full font-bold text-slate-700">
+                <span className="text-xs bg-[var(--color-surface-container-lowest)]/70 px-2 py-0.5 rounded-full font-bold text-[var(--color-on-surface)]">
                   {byColumn[col.id].length}
                 </span>
               </div>
@@ -172,37 +172,37 @@ export default function AdminPrintingKanban() {
                       draggable
                       onDragStart={(e) => handleDragStart(e, order.id)}
                       onClick={() => setSelectedOrder(order)}
-                      className={`bg-[var(--color-surface-container-lowest)] rounded-xl p-3 shadow-sm border border-slate-100 cursor-move hover:shadow-md transition-shadow ${
+                      className={`bg-[var(--color-surface-container-lowest)] rounded-xl p-3 shadow-sm border border-[var(--color-border-subtle)] cursor-move hover:shadow-md transition-shadow ${
                         draggingId === order.id ? "opacity-50" : ""
                       } ${order.priority > 0 ? "ring-2 ring-amber-300" : ""}`}
                     >
                       <div className="flex items-center justify-between mb-1">
-                        <span className="font-black text-xs text-slate-800">#{order.id.slice(0, 6)}</span>
+                        <span className="font-black text-xs text-[var(--color-on-surface)]">#{order.id.slice(0, 6)}</span>
                         {order.priority > 0 && (
                           <span className="material-symbols-outlined text-amber-500 text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
                         )}
                       </div>
-                      <p className="text-sm font-bold text-slate-700 truncate">{item?.name || "Print order"}</p>
+                      <p className="text-sm font-bold text-[var(--color-on-surface)] truncate">{item?.name || "Print order"}</p>
                       <div className="flex flex-wrap gap-1 mt-1.5">
-                        <span className="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-bold">{fileCount} file{fileCount > 1 ? "s" : ""}</span>
-                        <span className="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-bold">{pageCount} pg</span>
+                        <span className="text-[10px] bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] px-1.5 py-0.5 rounded font-bold">{fileCount} file{fileCount > 1 ? "s" : ""}</span>
+                        <span className="text-[10px] bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] px-1.5 py-0.5 rounded font-bold">{pageCount} pg</span>
                         {settings.colorMode && (
-                          <span className="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-bold">
+                          <span className="text-[10px] bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] px-1.5 py-0.5 rounded font-bold">
                             {settings.colorMode === "bw" ? "B&W" : "Color"}
                           </span>
                         )}
                       </div>
-                      <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-100">
-                        <span className="text-xs text-slate-500">
+                      <div className="flex items-center justify-between mt-2 pt-2 border-t border-[var(--color-border-subtle)]">
+                        <span className="text-xs text-[var(--color-outline)]">
                           {new Date(order.placed_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                         </span>
-                        <span className="text-sm font-black text-slate-800">₹{order.total_amount}</span>
+                        <span className="text-sm font-black text-[var(--color-on-surface)]">₹{order.total_amount}</span>
                       </div>
                     </div>
                   );
                 })}
                 {byColumn[col.id].length === 0 && (
-                  <div className="text-center text-xs text-slate-400 py-4 italic">Drop orders here</div>
+                  <div className="text-center text-xs text-[var(--color-outline-variant)] py-4 italic">Drop orders here</div>
                 )}
               </div>
             </div>
@@ -228,9 +228,9 @@ export default function AdminPrintingKanban() {
               <div className="flex items-center justify-between p-5 pb-0">
                 <div>
                   <h3 className="font-bold text-lg">Order #{selectedOrder.id.slice(0, 8)}</h3>
-                  <p className="text-sm text-slate-500">{new Date(selectedOrder.placed_at).toLocaleString("en-IN")} · ₹{selectedOrder.total_amount}</p>
+                  <p className="text-sm text-[var(--color-outline)]">{new Date(selectedOrder.placed_at).toLocaleString("en-IN")} · ₹{selectedOrder.total_amount}</p>
                 </div>
-                <button onClick={() => setSelectedOrder(null)} className="w-11 h-11 bg-slate-100 rounded-full flex items-center justify-center shrink-0">
+                <button onClick={() => setSelectedOrder(null)} className="w-11 h-11 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center shrink-0">
                   <span className="material-symbols-outlined text-sm">close</span>
                 </button>
               </div>
@@ -247,21 +247,21 @@ export default function AdminPrintingKanban() {
 
                 {selFileNames.length > 0 && (
                   <div className="space-y-1.5">
-                    <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider">Files</h4>
-                    <div className="divide-y divide-slate-100 border border-slate-100 rounded-xl overflow-hidden">
+                    <h4 className="text-xs font-bold text-[var(--color-outline)] uppercase tracking-wider">Files</h4>
+                    <div className="divide-y divide-[var(--color-border-subtle)] border border-[var(--color-border-subtle)] rounded-xl overflow-hidden">
                       {selFileNames.map((name: string, fi: number) => {
                         const url = selFileUrls[fi] || "";
                         return (
                           <div key={fi} className="flex items-center gap-2 p-2.5 bg-white">
                             <span className="material-symbols-outlined text-indigo-500 text-base shrink-0">description</span>
-                            <span className="text-sm font-medium text-slate-700 truncate flex-1 min-w-0">{name}</span>
+                            <span className="text-sm font-medium text-[var(--color-on-surface)] truncate flex-1 min-w-0">{name}</span>
                             {url && (
                               <a href={url} target="_blank" rel="noopener noreferrer" className="shrink-0 w-10 h-10 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center hover:bg-indigo-100">
                                 <span className="material-symbols-outlined text-sm">open_in_new</span>
                               </a>
                             )}
                             {url && (
-                              <a href={url} download={name} className="shrink-0 w-10 h-10 rounded-lg bg-slate-50 text-slate-600 flex items-center justify-center hover:bg-slate-100">
+                              <a href={url} download={name} className="shrink-0 w-10 h-10 rounded-lg bg-[var(--color-surface-subtle)] text-[var(--color-on-surface-variant)] flex items-center justify-center hover:bg-[var(--color-surface-container)]">
                                 <span className="material-symbols-outlined text-sm">download</span>
                               </a>
                             )}
@@ -280,9 +280,9 @@ export default function AdminPrintingKanban() {
                 )}
 
                 {selectedOrder.delivery_address && (
-                  <div className="bg-slate-50 rounded-xl p-3">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Delivery</p>
-                    <p className="text-sm text-slate-700">{selectedOrder.delivery_address}</p>
+                  <div className="bg-[var(--color-surface-subtle)] rounded-xl p-3">
+                    <p className="text-[10px] font-bold text-[var(--color-outline-variant)] uppercase tracking-wider mb-0.5">Delivery</p>
+                    <p className="text-sm text-[var(--color-on-surface)]">{selectedOrder.delivery_address}</p>
                   </div>
                 )}
               </div>

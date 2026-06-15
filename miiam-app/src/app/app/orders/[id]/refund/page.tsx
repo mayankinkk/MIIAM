@@ -166,12 +166,12 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
         <div className="bg-[var(--color-surface-container-lowest)] rounded-xl p-6 shadow-sm mb-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-bold text-on-surface">{t.refund.orderDetails}</h2>
-            <span className="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded-full font-bold">
+            <span className="text-xs bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] px-2 py-1 rounded-full font-bold">
               #{id.slice(0, 8).toUpperCase()}
             </span>
           </div>
           
-          <div className="space-y-3 pb-4 border-b border-slate-100">
+          <div className="space-y-3 pb-4 border-b border-[var(--color-border-subtle)]">
             <div className="flex justify-between">
               <span className="text-on-surface-variant">{t.refund.restaurant}</span>
               <span className="font-bold text-on-surface">{order.vendor?.name || "Unknown"}</span>
@@ -213,7 +213,7 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
                   className={`flex items-center gap-3 p-3 rounded-lg border-2 cursor-pointer transition-all ${
                     cancelReason === reason
                       ? "border-primary bg-surface-container-low"
-                      : "border-slate-100 hover:border-slate-200"
+                      : "border-[var(--color-border-subtle)] hover:border-[var(--color-border-subtle)]"
                   }`}
                 >
                   <input
@@ -231,7 +231,7 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
             <div className="flex gap-3 mt-4">
               <button
                 onClick={() => setShowCancelForm(false)}
-                className="flex-1 py-3 border-2 border-slate-200 rounded-xl font-bold text-on-surface"
+                className="flex-1 py-3 border-2 border-[var(--color-border-subtle)] rounded-xl font-bold text-on-surface"
               >
                 {t.refund.goBack}
               </button>
@@ -254,14 +254,14 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
         <div className="bg-[var(--color-surface-container-lowest)] rounded-xl p-6 shadow-sm">
           <h3 className="font-bold text-on-surface mb-4">{t.refund.refundStatus}</h3>
           <div className="space-y-4 relative">
-            <div className="absolute left-[19px] top-4 bottom-4 w-0.5 bg-slate-100" />
+            <div className="absolute left-[19px] top-4 bottom-4 w-0.5 bg-[var(--color-surface-container)]" />
             
             {refundTimeline.map((step, index) => (
               <div key={step.status} className={`relative flex items-start gap-4 ${!step.completed ? "opacity-40" : ""}`}>
                 <div className={`relative z-10 w-10 h-10 rounded-full flex items-center justify-center ${
                   step.completed 
                     ? "bg-primary text-white" 
-                    : "bg-slate-100 text-slate-400"
+                    : "bg-[var(--color-surface-container)] text-[var(--color-outline-variant)]"
                 }`}>
                   {step.completed ? (
                     <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>check</span>
@@ -270,7 +270,7 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
                   )}
                 </div>
                 <div className="flex-1 pt-2">
-                  <h4 className={`font-bold ${step.completed ? "text-on-surface" : "text-slate-400"}`}>
+                  <h4 className={`font-bold ${step.completed ? "text-on-surface" : "text-[var(--color-outline-variant)]"}`}>
                     {step.label}
                   </h4>
                   <p className="text-xs text-on-surface-variant">{step.time}</p>
@@ -295,13 +295,13 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
         <div className="mt-4 flex gap-3">
           <Link 
             href="/app/orders"
-            className="flex-1 text-center py-4 border-2 border-slate-200 rounded-xl font-bold text-on-surface hover:border-primary transition-colors"
+            className="flex-1 text-center py-4 border-2 border-[var(--color-border-subtle)] rounded-xl font-bold text-on-surface hover:border-primary transition-colors"
           >
             {t.orders.viewAllOrders}
           </Link>
           <Link 
             href="/app/support"
-            className="flex-1 text-center py-4 border-2 border-slate-200 rounded-xl font-bold text-on-surface hover:border-primary transition-colors"
+            className="flex-1 text-center py-4 border-2 border-[var(--color-border-subtle)] rounded-xl font-bold text-on-surface hover:border-primary transition-colors"
           >
             {t.refund.contactSupport}
           </Link>

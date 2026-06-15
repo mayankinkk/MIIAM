@@ -93,7 +93,7 @@ function FeedbackContent() {
             </span>
           </div>
           <h1 className="text-2xl font-black text-on-surface mb-2">{t.rating.thanksForRating}</h1>
-          <p className="text-slate-600 mb-8">
+          <p className="text-[var(--color-on-surface-variant)] mb-8">
             Your feedback helps us improve our service.
           </p>
           <div className="space-y-3">
@@ -119,7 +119,7 @@ function FeedbackContent() {
     <div className="min-h-screen bg-gradient-to-b from-surface to-white">
       {/* Header */}
       <div className="bg-[var(--color-surface-container-lowest)] p-6 border-b border-pink-100">
-        <Link href="/app/home" className="flex items-center gap-2 text-slate-600 hover:text-primary">
+        <Link href="/app/home" className="flex items-center gap-2 text-[var(--color-on-surface-variant)] hover:text-primary">
           <span className="material-symbols-outlined">arrow_back</span>
           <span className="font-bold">Back</span>
         </Link>
@@ -131,9 +131,9 @@ function FeedbackContent() {
         {/* Service Info */}
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg mb-6">
           <h2 className="text-lg font-bold text-on-surface mb-1">{serviceName}</h2>
-          <p className="text-sm text-slate-500 mb-4">by {providerName}</p>
+          <p className="text-sm text-[var(--color-outline)] mb-4">by {providerName}</p>
           <div className="flex items-center justify-between">
-            <span className="text-sm text-slate-500">Amount Paid</span>
+            <span className="text-sm text-[var(--color-outline)]">Amount Paid</span>
             <span className="text-xl font-black text-primary">₹{price}</span>
           </div>
         </div>
@@ -164,7 +164,7 @@ function FeedbackContent() {
               </button>
             ))}
           </div>
-          <p className="text-center text-slate-500">
+          <p className="text-center text-[var(--color-outline)]">
             {rating === 0 && "Tap to rate"}
             {rating === 1 && t.rating.okay}
             {rating === 2 && t.rating.good}
@@ -186,7 +186,7 @@ function FeedbackContent() {
                   className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                     selectedTags.includes(tag)
                       ? "bg-primary text-white"
-                      : "bg-pink-50 text-slate-600 border border-pink-200 hover:border-primary"
+                      : "bg-pink-50 text-[var(--color-on-surface-variant)] border border-pink-200 hover:border-primary"
                   }`}
                 >
                   {tag}
@@ -219,7 +219,7 @@ function FeedbackContent() {
           className={`w-full py-4 rounded-xl font-bold text-lg transition-all ${
             rating > 0
               ? "bg-primary text-white hover:bg-primary-dim"
-              : "bg-slate-200 text-slate-400 cursor-not-allowed"
+              : "bg-[var(--color-surface-container-high)] text-[var(--color-outline-variant)] cursor-not-allowed"
           }`}
         >
           {isSubmitting ? (

@@ -188,12 +188,12 @@ export default function PharmacyMedicinesPage() {
   return (
     <div className="p-8">
       <div className="flex items-center gap-4 mb-6">
-        <Link href="/admin/pharmacy" className="text-slate-400 hover:text-slate-600">
+        <Link href="/admin/pharmacy" className="text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]">
           <span className="material-symbols-outlined text-3xl">arrow_back</span>
         </Link>
         <div className="flex-1">
-          <h1 className="text-2xl font-black text-slate-800">Pharmacy Medicines</h1>
-          <p className="text-slate-500 text-sm">Manage medicine inventory and stock</p>
+          <h1 className="text-2xl font-black text-[var(--color-on-surface)]">Pharmacy Medicines</h1>
+          <p className="text-[var(--color-outline)] text-sm">Manage medicine inventory and stock</p>
         </div>
         <button onClick={() => setShowAddModal(true)} className="px-4 py-2 bg-[#ba001c] text-white rounded-lg font-bold text-sm hover:bg-[#a00018]">
           + Add Medicine
@@ -201,9 +201,9 @@ export default function PharmacyMedicinesPage() {
       </div>
 
       <div className="grid grid-cols-4 gap-4 mb-6">
-        <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-slate-100">
-          <p className="text-slate-400 text-xs font-bold">TOTAL MEDICINES</p>
-          <p className="text-2xl font-black text-slate-800 mt-1">{stats.total}</p>
+        <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-[var(--color-border-subtle)]">
+          <p className="text-[var(--color-outline-variant)] text-xs font-bold">TOTAL MEDICINES</p>
+          <p className="text-2xl font-black text-[var(--color-on-surface)] mt-1">{stats.total}</p>
         </div>
         <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-200">
           <p className="text-yellow-600 text-xs font-bold">LOW STOCK</p>
@@ -221,42 +221,42 @@ export default function PharmacyMedicinesPage() {
 
       <div className="flex gap-4 mb-6">
         <div className="flex-1 relative">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined">search</span>
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-outline-variant)] material-symbols-outlined">search</span>
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search by medicine name..."
-            className="w-full pl-10 pr-4 py-3 bg-[var(--color-surface-container-lowest)] border border-slate-200 rounded-xl focus:outline-none focus:border-[#ba001c]"
+            className="w-full pl-10 pr-4 py-3 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:border-[#ba001c]"
           />
         </div>
-        <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} className="px-4 py-3 bg-[var(--color-surface-container-lowest)] border border-slate-200 rounded-xl focus:outline-none focus:border-[#ba001c]">
+        <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} className="px-4 py-3 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:border-[#ba001c]">
           <option value="all">All Categories</option>
           {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
         </select>
-        <select value={vendorFilter} onChange={(e) => setVendorFilter(e.target.value)} className="px-4 py-3 bg-[var(--color-surface-container-lowest)] border border-slate-200 rounded-xl focus:outline-none focus:border-[#ba001c]">
+        <select value={vendorFilter} onChange={(e) => setVendorFilter(e.target.value)} className="px-4 py-3 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:border-[#ba001c]">
           <option value="all">All Vendors</option>
           {vendors.map(v => <option key={v.id} value={v.id}>{v.shop_name}</option>)}
         </select>
       </div>
 
       {loading ? (
-        <div className="text-center py-12 text-slate-500">Loading medicines...</div>
+        <div className="text-center py-12 text-[var(--color-outline)]">Loading medicines...</div>
       ) : filteredMedicines.length === 0 ? (
-        <div className="text-center py-12 text-slate-500 bg-[var(--color-surface-container-lowest)] rounded-xl">
-          <span className="material-symbols-outlined text-5xl text-slate-300">medication</span>
+        <div className="text-center py-12 text-[var(--color-outline)] bg-[var(--color-surface-container-lowest)] rounded-xl">
+          <span className="material-symbols-outlined text-5xl text-[var(--color-outline-variant)]/60">medication</span>
           <p className="mt-4 font-bold">No medicines found</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredMedicines.map((medicine) => (
-            <div key={medicine.id} className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-100 overflow-hidden hover:shadow-lg transition-shadow">
-              <div className="h-40 bg-slate-100 relative">
+            <div key={medicine.id} className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)] overflow-hidden hover:shadow-lg transition-shadow">
+              <div className="h-40 bg-[var(--color-surface-container)] relative">
                 {medicine.image_url ? (
                   <Image src={medicine.image_url} alt={medicine.name} fill className="object-cover" />
                 ) : (
                   <div className="flex items-center justify-center h-full">
-                    <span className="material-symbols-outlined text-4xl text-slate-300">medication</span>
+                    <span className="material-symbols-outlined text-4xl text-[var(--color-outline-variant)]/60">medication</span>
                   </div>
                 )}
                 {medicine.requires_prescription && (
@@ -271,21 +271,21 @@ export default function PharmacyMedicinesPage() {
               </div>
               <div className="p-4">
                 <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold">{medicine.category}</span>
-                <p className="text-xs text-slate-500 mt-1">{vendors.find(v => v.id === medicine.vendor_id)?.shop_name || "Unknown Vendor"}</p>
-                <p className="font-bold text-slate-800 mt-1">{medicine.name}</p>
+                <p className="text-xs text-[var(--color-outline)] mt-1">{vendors.find(v => v.id === medicine.vendor_id)?.shop_name || "Unknown Vendor"}</p>
+                <p className="font-bold text-[var(--color-on-surface)] mt-1">{medicine.name}</p>
                 <div className="flex justify-between items-center mt-3">
-                  <p className="text-xl font-black text-slate-800">₹{medicine.price}</p>
-                  <span className={`text-xs ${medicine.stock === 0 ? "text-red-600 font-bold" : medicine.stock < 10 ? "text-yellow-600 font-bold" : "text-slate-400"}`}>
+                  <p className="text-xl font-black text-[var(--color-on-surface)]">₹{medicine.price}</p>
+                  <span className={`text-xs ${medicine.stock === 0 ? "text-red-600 font-bold" : medicine.stock < 10 ? "text-yellow-600 font-bold" : "text-[var(--color-outline-variant)]"}`}>
                     Stock: {medicine.stock}
                   </span>
                 </div>
                 <div className="flex items-center gap-2 mt-3">
-                  <button onClick={() => updateStock(medicine.id, Math.max(0, medicine.stock - 1))} className="w-10 h-10 bg-slate-100 text-slate-600 rounded-lg font-bold hover:bg-slate-200">-</button>
-                  <span className="flex-1 text-center font-bold text-slate-800">{medicine.stock}</span>
-                  <button onClick={() => updateStock(medicine.id, medicine.stock + 1)} className="w-10 h-10 bg-slate-100 text-slate-600 rounded-lg font-bold hover:bg-slate-200">+</button>
+                  <button onClick={() => updateStock(medicine.id, Math.max(0, medicine.stock - 1))} className="w-10 h-10 bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] rounded-lg font-bold hover:bg-[var(--color-surface-container-high)]">-</button>
+                  <span className="flex-1 text-center font-bold text-[var(--color-on-surface)]">{medicine.stock}</span>
+                  <button onClick={() => updateStock(medicine.id, medicine.stock + 1)} className="w-10 h-10 bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] rounded-lg font-bold hover:bg-[var(--color-surface-container-high)]">+</button>
                 </div>
                 <div className="flex gap-2 mt-3">
-                  <button onClick={() => openEditModal(medicine)} className="flex-1 py-2 bg-slate-100 text-slate-600 rounded-lg font-bold text-xs hover:bg-slate-200">Edit</button>
+                  <button onClick={() => openEditModal(medicine)} className="flex-1 py-2 bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] rounded-lg font-bold text-xs hover:bg-[var(--color-surface-container-high)]">Edit</button>
                   <button onClick={() => handleDelete(medicine.id)} className="flex-1 py-2 bg-red-50 text-red-600 rounded-lg font-bold text-xs hover:bg-red-100">Delete</button>
                 </div>
               </div>
@@ -299,38 +299,38 @@ export default function PharmacyMedicinesPage() {
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b sticky top-0 bg-white">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-black text-slate-800">{editingMedicine ? "Edit Medicine" : "Add Medicine"}</h2>
-                <button onClick={resetModal} className="text-slate-400 hover:text-slate-600">
+                <h2 className="text-xl font-black text-[var(--color-on-surface)]">{editingMedicine ? "Edit Medicine" : "Add Medicine"}</h2>
+                <button onClick={resetModal} className="text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]">
                   <span className="material-symbols-outlined text-3xl">close</span>
                 </button>
               </div>
             </div>
             <div className="p-6 space-y-4">
               <div>
-                <label className="text-xs font-bold text-slate-600 mb-1 block">Medicine Name *</label>
-                <input type="text" value={newMedicine.name} onChange={(e) => setNewMedicine({ ...newMedicine, name: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="Enter medicine name" />
+                <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Medicine Name *</label>
+                <input type="text" value={newMedicine.name} onChange={(e) => setNewMedicine({ ...newMedicine, name: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="Enter medicine name" />
               </div>
               <div>
-                <label className="text-xs font-bold text-slate-600 mb-1 block">Vendor *</label>
-                <select value={newMedicine.vendor_id} onChange={(e) => setNewMedicine({ ...newMedicine, vendor_id: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none">
+                <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Vendor *</label>
+                <select value={newMedicine.vendor_id} onChange={(e) => setNewMedicine({ ...newMedicine, vendor_id: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none">
                   <option value="">Select Vendor</option>
                   {vendors.map(v => <option key={v.id} value={v.id}>{v.shop_name}</option>)}
                 </select>
               </div>
               <div>
-                <label className="text-xs font-bold text-slate-600 mb-1 block">Category *</label>
-                <select value={newMedicine.category} onChange={(e) => setNewMedicine({ ...newMedicine, category: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none">
+                <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Category *</label>
+                <select value={newMedicine.category} onChange={(e) => setNewMedicine({ ...newMedicine, category: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none">
                   {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
                 </select>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-bold text-slate-600 mb-1 block">Price (₹) *</label>
-                  <input type="number" value={newMedicine.price} onChange={(e) => setNewMedicine({ ...newMedicine, price: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="0" />
+                  <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Price (₹) *</label>
+                  <input type="number" value={newMedicine.price} onChange={(e) => setNewMedicine({ ...newMedicine, price: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="0" />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-slate-600 mb-1 block">Stock</label>
-                  <input type="number" value={newMedicine.stock} onChange={(e) => setNewMedicine({ ...newMedicine, stock: e.target.value })} className="w-full p-3 border border-slate-200 rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="100" />
+                  <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Stock</label>
+                  <input type="number" value={newMedicine.stock} onChange={(e) => setNewMedicine({ ...newMedicine, stock: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[#ba001c] focus:outline-none" placeholder="100" />
                 </div>
               </div>
               <ImageUpload
@@ -343,11 +343,11 @@ export default function PharmacyMedicinesPage() {
               />
               <div className="flex items-center gap-2">
                 <input type="checkbox" id="prescription" checked={newMedicine.requires_prescription} onChange={(e) => setNewMedicine({ ...newMedicine, requires_prescription: e.target.checked })} className="w-4 h-4" />
-                <label htmlFor="prescription" className="text-sm text-slate-600">Requires Prescription</label>
+                <label htmlFor="prescription" className="text-sm text-[var(--color-on-surface-variant)]">Requires Prescription</label>
               </div>
             </div>
             <div className="p-6 border-t flex gap-4">
-              <button onClick={resetModal} className="flex-1 py-3 border border-slate-200 rounded-xl font-bold text-sm hover:bg-slate-50">Cancel</button>
+              <button onClick={resetModal} className="flex-1 py-3 border border-[var(--color-border-subtle)] rounded-xl font-bold text-sm hover:bg-[var(--color-surface-subtle)]">Cancel</button>
               <button onClick={handleSave} disabled={saving} className="flex-1 py-3 bg-[#ba001c] text-white rounded-xl font-bold text-sm hover:bg-[#a00018] disabled:opacity-50">
                 {saving ? "Saving..." : editingMedicine ? "Update" : "Add Medicine"}
               </button>

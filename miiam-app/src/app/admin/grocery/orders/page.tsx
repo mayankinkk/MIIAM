@@ -122,19 +122,19 @@ export default function GroceryOrdersPage() {
   return (
     <div className="p-8">
       <div className="flex items-center gap-4 mb-6">
-        <Link href="/admin/grocery" className="text-slate-400 hover:text-slate-600">
+        <Link href="/admin/grocery" className="text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]">
           <span className="material-symbols-outlined text-3xl">arrow_back</span>
         </Link>
         <div>
-          <h1 className="text-2xl font-black text-slate-800">Grocery Orders</h1>
-          <p className="text-slate-500 text-sm">Manage and track all grocery delivery orders</p>
+          <h1 className="text-2xl font-black text-[var(--color-on-surface)]">Grocery Orders</h1>
+          <p className="text-[var(--color-outline)] text-sm">Manage and track all grocery delivery orders</p>
         </div>
       </div>
 
       <div className="grid grid-cols-4 gap-4 mb-6">
-        <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-slate-100">
-          <p className="text-slate-400 text-xs font-bold">TOTAL ORDERS</p>
-          <p className="text-2xl font-black text-slate-800 mt-1">{stats.total}</p>
+        <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-[var(--color-border-subtle)]">
+          <p className="text-[var(--color-outline-variant)] text-xs font-bold">TOTAL ORDERS</p>
+          <p className="text-2xl font-black text-[var(--color-on-surface)] mt-1">{stats.total}</p>
         </div>
         <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-200">
           <p className="text-yellow-600 text-xs font-bold">PENDING</p>
@@ -152,19 +152,19 @@ export default function GroceryOrdersPage() {
 
       <div className="flex gap-4 mb-6">
         <div className="flex-1 relative">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined">search</span>
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-outline-variant)] material-symbols-outlined">search</span>
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search by order ID or customer name..."
-            className="w-full pl-10 pr-4 py-3 bg-[var(--color-surface-container-lowest)] border border-slate-200 rounded-xl focus:outline-none focus:border-[#ba001c]"
+            className="w-full pl-10 pr-4 py-3 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:border-[#ba001c]"
           />
         </div>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="px-4 py-3 bg-[var(--color-surface-container-lowest)] border border-slate-200 rounded-xl focus:outline-none focus:border-[#ba001c]"
+          className="px-4 py-3 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:border-[#ba001c]"
         >
           <option value="all">All Status</option>
           {statusOptions.map(opt => (
@@ -174,44 +174,44 @@ export default function GroceryOrdersPage() {
       </div>
 
       {loading ? (
-        <div className="text-center py-12 text-slate-500">Loading orders...</div>
+        <div className="text-center py-12 text-[var(--color-outline)]">Loading orders...</div>
       ) : filteredOrders.length === 0 ? (
-        <div className="text-center py-12 text-slate-500 bg-[var(--color-surface-container-lowest)] rounded-xl">
-          <span className="material-symbols-outlined text-5xl text-slate-300">receipt_long</span>
+        <div className="text-center py-12 text-[var(--color-outline)] bg-[var(--color-surface-container-lowest)] rounded-xl">
+          <span className="material-symbols-outlined text-5xl text-[var(--color-outline-variant)]/60">receipt_long</span>
           <p className="mt-4 font-bold">No orders found</p>
         </div>
       ) : (
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-100 overflow-hidden">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] overflow-hidden">
           <table className="w-full">
-            <thead className="bg-slate-50">
+            <thead className="bg-[var(--color-surface-subtle)]">
               <tr>
-                <th className="text-left p-4 font-bold text-slate-600 text-sm">Order ID</th>
-                <th className="text-left p-4 font-bold text-slate-600 text-sm">Customer</th>
-                <th className="text-left p-4 font-bold text-slate-600 text-sm">Items</th>
-                <th className="text-left p-4 font-bold text-slate-600 text-sm">Total</th>
-                <th className="text-left p-4 font-bold text-slate-600 text-sm">Status</th>
-                <th className="text-left p-4 font-bold text-slate-600 text-sm">Date</th>
-                <th className="text-left p-4 font-bold text-slate-600 text-sm">Action</th>
+                <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Order ID</th>
+                <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Customer</th>
+                <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Items</th>
+                <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Total</th>
+                <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Status</th>
+                <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Date</th>
+                <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Action</th>
               </tr>
             </thead>
             <tbody>
               {filteredOrders.map((order) => (
-                <tr key={order.id} className="border-t border-slate-100 hover:bg-slate-50">
-                  <td className="p-4 font-bold text-slate-800">{order.id.slice(0, 8).toUpperCase()}</td>
+                <tr key={order.id} className="border-t border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]">
+                  <td className="p-4 font-bold text-[var(--color-on-surface)]">{order.id.slice(0, 8).toUpperCase()}</td>
                   <td className="p-4">
-                    <div className="font-medium text-slate-800">{order.profile?.full_name || "Customer"}</div>
-                    <div className="text-xs text-slate-500">{order.profile?.phone || "N/A"}</div>
+                    <div className="font-medium text-[var(--color-on-surface)]">{order.profile?.full_name || "Customer"}</div>
+                    <div className="text-xs text-[var(--color-outline)]">{order.profile?.phone || "N/A"}</div>
                   </td>
-                  <td className="p-4 text-slate-600">
+                  <td className="p-4 text-[var(--color-on-surface-variant)]">
                     {order.order_items?.length || 0} items
                   </td>
-                  <td className="p-4 font-bold text-slate-800">₹{order.total_amount?.toFixed(0)}</td>
+                  <td className="p-4 font-bold text-[var(--color-on-surface)]">₹{order.total_amount?.toFixed(0)}</td>
                   <td className="p-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-bold ${statusColors[order.status]}`}>
                       {order.status}
                     </span>
                   </td>
-                  <td className="p-4 text-slate-500 text-sm">{formatDate(order.placed_at || order.created_at)}</td>
+                  <td className="p-4 text-[var(--color-outline)] text-sm">{formatDate(order.placed_at || order.created_at)}</td>
                   <td className="p-4">
                     <button
                       onClick={() => setSelectedOrder(order)}
@@ -233,10 +233,10 @@ export default function GroceryOrdersPage() {
             <div className="p-6 border-b sticky top-0 bg-white">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-xl font-black text-slate-800">Order Details</h2>
-                  <p className="text-slate-500 text-sm">#{selectedOrder.id.slice(0, 8).toUpperCase()}</p>
+                  <h2 className="text-xl font-black text-[var(--color-on-surface)]">Order Details</h2>
+                  <p className="text-[var(--color-outline)] text-sm">#{selectedOrder.id.slice(0, 8).toUpperCase()}</p>
                 </div>
-                <button onClick={() => setSelectedOrder(null)} className="text-slate-400 hover:text-slate-600">
+                <button onClick={() => setSelectedOrder(null)} className="text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]">
                   <span className="material-symbols-outlined text-3xl">close</span>
                 </button>
               </div>
@@ -244,24 +244,24 @@ export default function GroceryOrdersPage() {
             
             <div className="p-6 space-y-6">
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-slate-50 p-4 rounded-xl">
-                  <p className="text-xs text-slate-500 mb-1">Customer</p>
-                  <p className="font-bold text-slate-800">{selectedOrder.profile?.full_name || "N/A"}</p>
-                  <p className="text-sm text-slate-600">{selectedOrder.profile?.phone || "N/A"}</p>
+                <div className="bg-[var(--color-surface-subtle)] p-4 rounded-xl">
+                  <p className="text-xs text-[var(--color-outline)] mb-1">Customer</p>
+                  <p className="font-bold text-[var(--color-on-surface)]">{selectedOrder.profile?.full_name || "N/A"}</p>
+                  <p className="text-sm text-[var(--color-on-surface-variant)]">{selectedOrder.profile?.phone || "N/A"}</p>
                 </div>
-                <div className="bg-slate-50 p-4 rounded-xl">
-                  <p className="text-xs text-slate-500 mb-1">Total Amount</p>
+                <div className="bg-[var(--color-surface-subtle)] p-4 rounded-xl">
+                  <p className="text-xs text-[var(--color-outline)] mb-1">Total Amount</p>
                   <p className="text-2xl font-black text-[#ba001c]">₹{selectedOrder.total_amount?.toFixed(0)}</p>
                 </div>
               </div>
 
-              <div className="bg-slate-50 p-4 rounded-xl">
-                <p className="text-xs text-slate-500 mb-1">Delivery Address</p>
-                <p className="font-medium text-slate-800">{selectedOrder.delivery_address || "N/A"}</p>
+              <div className="bg-[var(--color-surface-subtle)] p-4 rounded-xl">
+                <p className="text-xs text-[var(--color-outline)] mb-1">Delivery Address</p>
+                <p className="font-medium text-[var(--color-on-surface)]">{selectedOrder.delivery_address || "N/A"}</p>
               </div>
 
               <div>
-                <p className="font-bold text-slate-800 mb-3">Update Status</p>
+                <p className="font-bold text-[var(--color-on-surface)] mb-3">Update Status</p>
                 <div className="flex flex-wrap gap-2">
                   {statusOptions.map(opt => (
                     <button
@@ -270,7 +270,7 @@ export default function GroceryOrdersPage() {
                       className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${
                         selectedOrder.status === opt.value
                           ? "bg-[#ba001c] text-white"
-                          : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                          : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]"
                       }`}
                     >
                       {opt.label}
@@ -280,15 +280,15 @@ export default function GroceryOrdersPage() {
               </div>
 
               <div>
-                <p className="font-bold text-slate-800 mb-3">Order Items</p>
+                <p className="font-bold text-[var(--color-on-surface)] mb-3">Order Items</p>
                 <div className="space-y-2">
                   {selectedOrder.order_items?.map((item: any, idx: number) => (
-                    <div key={idx} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                    <div key={idx} className="flex items-center justify-between p-3 bg-[var(--color-surface-subtle)] rounded-lg">
                       <div>
-                        <p className="font-medium text-slate-800">{item.name || "Item"}</p>
-                        <p className="text-sm text-slate-500">Qty: {item.quantity}</p>
+                        <p className="font-medium text-[var(--color-on-surface)]">{item.name || "Item"}</p>
+                        <p className="text-sm text-[var(--color-outline)]">Qty: {item.quantity}</p>
                       </div>
-                      <p className="font-bold text-slate-800">₹{item.price?.toFixed(0)}</p>
+                      <p className="font-bold text-[var(--color-on-surface)]">₹{item.price?.toFixed(0)}</p>
                     </div>
                   ))}
                 </div>

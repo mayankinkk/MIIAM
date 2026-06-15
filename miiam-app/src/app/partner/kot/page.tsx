@@ -42,38 +42,38 @@ export default function PartnerKOTPage() {
     setOrders(prev => prev.filter(o => o.id !== orderId));
   }
 
-  if (loading) return <div className="p-8 text-center text-slate-400 font-medium animate-pulse">Loading tickets...</div>;
+  if (loading) return <div className="p-8 text-center text-[var(--color-outline-variant)] font-medium animate-pulse">Loading tickets...</div>;
 
   return (
     <div className="p-4 md:p-8 space-y-6">
       <div>
-        <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">KOT</h1>
-        <p className="text-slate-500 text-sm mt-1">Kitchen Order Tickets — pending preparation</p>
+        <h1 className="text-3xl font-extrabold text-[var(--color-on-surface)] tracking-tight">KOT</h1>
+        <p className="text-[var(--color-outline)] text-sm mt-1">Kitchen Order Tickets — pending preparation</p>
       </div>
 
       {orders.length === 0 ? (
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-12 text-center border border-slate-200">
-          <span className="material-symbols-outlined text-5xl text-slate-300">restaurant</span>
-          <p className="text-slate-400 font-medium mt-3">No pending tickets</p>
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-12 text-center border border-[var(--color-border-subtle)]">
+          <span className="material-symbols-outlined text-5xl text-[var(--color-outline-variant)]/60">restaurant</span>
+          <p className="text-[var(--color-outline-variant)] font-medium mt-3">No pending tickets</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {orders.map((order) => (
-            <div key={order.id} className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-200 p-5 space-y-3 shadow-sm">
+            <div key={order.id} className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)] p-5 space-y-3 shadow-sm">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-xs font-bold text-slate-400">#{order.id.slice(0, 8).toUpperCase()}</p>
-                  <p className="text-lg font-extrabold text-slate-900 mt-0.5">{order.customer_name || "Guest"}</p>
+                  <p className="text-xs font-bold text-[var(--color-outline-variant)]">#{order.id.slice(0, 8).toUpperCase()}</p>
+                  <p className="text-lg font-extrabold text-[var(--color-on-surface)] mt-0.5">{order.customer_name || "Guest"}</p>
                 </div>
                 <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase ${order.status === ("confirmed" as OrderStatus) ? "bg-amber-100 text-amber-700" : "bg-blue-100 text-blue-700"}`}>
                   {order.status}
                 </span>
               </div>
-              <div className="border-t border-slate-100 pt-3 space-y-2">
+              <div className="border-t border-[var(--color-border-subtle)] pt-3 space-y-2">
                 {order.items?.map((item: any, i: number) => (
                   <div key={i}>
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-slate-700">
+                      <span className="text-[var(--color-on-surface)]">
                         <span className="font-bold mr-2">×{item.quantity}</span>
                         {item.name || "Unknown"}
                       </span>
@@ -90,7 +90,7 @@ export default function PartnerKOTPage() {
                   <p className="text-xs text-amber-800">{order.special_instructions}</p>
                 </div>
               )}
-              <div className="text-xs text-slate-400">
+              <div className="text-xs text-[var(--color-outline-variant)]">
                 {new Date(order.placed_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
               </div>
               <div className="flex gap-2 pt-1">

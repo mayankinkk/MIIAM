@@ -37,12 +37,12 @@ export default function AlertSettingsModal({
         </div>
         
         <div className="space-y-4">
-          <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+          <div className="flex items-center justify-between p-4 bg-[var(--color-surface-subtle)] rounded-xl">
             <div className="flex items-center gap-3">
               <span className="material-symbols-outlined text-[#0b50d5]">volume_up</span>
               <div>
                 <p className="font-bold">{t.rider.modals.soundAlert}</p>
-                <p className="text-xs text-slate-500">{t.rider.modals.soundAlertDesc}</p>
+                <p className="text-xs text-[var(--color-outline)]">{t.rider.modals.soundAlertDesc}</p>
               </div>
             </div>
             <button 
@@ -53,12 +53,12 @@ export default function AlertSettingsModal({
             </button>
           </div>
 
-          <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+          <div className="flex items-center justify-between p-4 bg-[var(--color-surface-subtle)] rounded-xl">
             <div className="flex items-center gap-3">
               <span className="material-symbols-outlined text-[#0b50d5]">vibration</span>
               <div>
                 <p className="font-bold">{t.rider.modals.vibration}</p>
-                <p className="text-xs text-slate-500">{t.rider.modals.vibrationDesc}</p>
+                <p className="text-xs text-[var(--color-outline)]">{t.rider.modals.vibrationDesc}</p>
               </div>
             </div>
             <button 
@@ -78,8 +78,8 @@ export default function AlertSettingsModal({
             </div>
           </div>
 
-          <div className="pt-4 border-t border-slate-100">
-            <p className="text-[10px] font-black text-slate-400 uppercase mb-3">{t.rider.modals.developerTools}</p>
+          <div className="pt-4 border-t border-[var(--color-border-subtle)]">
+            <p className="text-[10px] font-black text-[var(--color-outline-variant)] uppercase mb-3">{t.rider.modals.developerTools}</p>
             <button 
               onClick={onClearOrders}
               className="w-full py-3 rounded-xl bg-red-50 text-red-600 font-bold text-xs flex items-center justify-center gap-2 hover:bg-red-100 transition-colors"
@@ -87,7 +87,7 @@ export default function AlertSettingsModal({
               <span className="material-symbols-outlined text-sm">delete_sweep</span>
               {t.rider.modals.clearPendingOrders}
             </button>
-            <p className="text-[10px] text-slate-400 mt-2 text-center italic">{t.rider.modals.clearPendingDesc}</p>
+            <p className="text-[10px] text-[var(--color-outline-variant)] mt-2 text-center italic">{t.rider.modals.clearPendingDesc}</p>
           </div>
         </div>
 

@@ -73,12 +73,12 @@ export default function RiderShifts() {
   }));
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-24">
-      <div className="bg-[var(--color-surface-container-lowest)] px-5 pt-6 pb-4 sticky top-0 z-10 border-b border-slate-100">
+    <div className="min-h-screen bg-[var(--color-surface-subtle)] pb-24">
+      <div className="bg-[var(--color-surface-container-lowest)] px-5 pt-6 pb-4 sticky top-0 z-10 border-b border-[var(--color-border-subtle)]">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-extrabold text-slate-900">Work Shifts</h1>
-            <p className="text-sm text-slate-500 mt-0.5">Set your weekly availability schedule</p>
+            <h1 className="text-2xl font-extrabold text-[var(--color-on-surface)]">Work Shifts</h1>
+            <p className="text-sm text-[var(--color-outline)] mt-0.5">Set your weekly availability schedule</p>
           </div>
           <button onClick={() => setShowAdd(true)} className="w-10 h-10 bg-[#0b50d5] rounded-full flex items-center justify-center shadow-lg">
             <span className="material-symbols-outlined text-white">add</span>
@@ -88,30 +88,30 @@ export default function RiderShifts() {
 
       <div className="p-5 space-y-4">
         {loading ? (
-          <div className="text-center py-12 text-slate-400 animate-pulse">Loading shifts...</div>
+          <div className="text-center py-12 text-[var(--color-outline-variant)] animate-pulse">Loading shifts...</div>
         ) : (
           groupedShifts.map((g) => {
             const isToday = g.day === new Date().getDay();
             return (
-              <div key={g.day} className={`bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 border ${isToday ? "border-[#0b50d5]/30 ring-1 ring-[#0b50d5]/10" : "border-slate-200"}`}>
+              <div key={g.day} className={`bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 border ${isToday ? "border-[#0b50d5]/30 ring-1 ring-[#0b50d5]/10" : "border-[var(--color-border-subtle)]"}`}>
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <span className={`font-bold text-sm ${isToday ? "text-[#0b50d5]" : "text-slate-700"}`}>{g.label}</span>
+                    <span className={`font-bold text-sm ${isToday ? "text-[#0b50d5]" : "text-[var(--color-on-surface)]"}`}>{g.label}</span>
                     {isToday && <span className="text-[10px] font-bold px-2 py-0.5 bg-[#0b50d5]/10 text-[#0b50d5] rounded-full">Today</span>}
                   </div>
-                  <span className="text-xs text-slate-400">{g.shifts.length} shift{g.shifts.length !== 1 ? "s" : ""}</span>
+                  <span className="text-xs text-[var(--color-outline-variant)]">{g.shifts.length} shift{g.shifts.length !== 1 ? "s" : ""}</span>
                 </div>
                 {g.shifts.length === 0 ? (
-                  <p className="text-xs text-slate-400 py-2 text-center">No shifts scheduled</p>
+                  <p className="text-xs text-[var(--color-outline-variant)] py-2 text-center">No shifts scheduled</p>
                 ) : (
                   <div className="space-y-2">
                     {g.shifts.map((shift) => (
-                      <div key={shift.id} className="flex items-center justify-between bg-slate-50 rounded-xl p-3">
+                      <div key={shift.id} className="flex items-center justify-between bg-[var(--color-surface-subtle)] rounded-xl p-3">
                         <div className="flex items-center gap-3">
-                          <span className="material-symbols-outlined text-slate-400 text-lg">schedule</span>
+                          <span className="material-symbols-outlined text-[var(--color-outline-variant)] text-lg">schedule</span>
                           <div>
-                            <p className="text-sm font-bold text-slate-700">{shift.start_time.slice(0, 5)} - {shift.end_time.slice(0, 5)}</p>
-                            <p className="text-[10px] text-slate-400">{(() => { const diff = new Date(`2000-01-01T${shift.end_time}`).getTime() - new Date(`2000-01-01T${shift.start_time}`).getTime(); return Math.round((diff < 0 ? diff + 86400000 : diff) / 3600000); })()} hrs</p>
+                            <p className="text-sm font-bold text-[var(--color-on-surface)]">{shift.start_time.slice(0, 5)} - {shift.end_time.slice(0, 5)}</p>
+                            <p className="text-[10px] text-[var(--color-outline-variant)]">{(() => { const diff = new Date(`2000-01-01T${shift.end_time}`).getTime() - new Date(`2000-01-01T${shift.start_time}`).getTime(); return Math.round((diff < 0 ? diff + 86400000 : diff) / 3600000); })()} hrs</p>
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
@@ -135,22 +135,22 @@ export default function RiderShifts() {
       {showAdd && (
         <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4" onClick={() => setShowAdd(false)}>
           <div className="bg-white w-full max-w-sm rounded-3xl p-6" onClick={e => e.stopPropagation()}>
-            <h2 className="text-lg font-extrabold text-slate-900 mb-4">Add Shift</h2>
+            <h2 className="text-lg font-extrabold text-[var(--color-on-surface)] mb-4">Add Shift</h2>
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-semibold text-slate-700">Day</label>
-                <select value={newShift.day_of_week} onChange={(e) => setNewShift({ ...newShift, day_of_week: parseInt(e.target.value) })} className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200">
+                <label className="text-sm font-semibold text-[var(--color-on-surface)]">Day</label>
+                <select value={newShift.day_of_week} onChange={(e) => setNewShift({ ...newShift, day_of_week: parseInt(e.target.value) })} className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)]">
                   {DAYS.map((d, i) => <option key={i} value={i}>{d}</option>)}
                 </select>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-semibold text-slate-700">Start Time</label>
-                  <input type="time" value={newShift.start_time} onChange={(e) => setNewShift({ ...newShift, start_time: e.target.value })} className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200" />
+                  <label className="text-sm font-semibold text-[var(--color-on-surface)]">Start Time</label>
+                  <input type="time" value={newShift.start_time} onChange={(e) => setNewShift({ ...newShift, start_time: e.target.value })} className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)]" />
                 </div>
                 <div>
-                  <label className="text-sm font-semibold text-slate-700">End Time</label>
-                  <input type="time" value={newShift.end_time} onChange={(e) => setNewShift({ ...newShift, end_time: e.target.value })} className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200" />
+                  <label className="text-sm font-semibold text-[var(--color-on-surface)]">End Time</label>
+                  <input type="time" value={newShift.end_time} onChange={(e) => setNewShift({ ...newShift, end_time: e.target.value })} className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)]" />
                 </div>
               </div>
               <button onClick={handleAdd} className="w-full py-3 bg-[#0b50d5] text-white font-bold rounded-xl">Add Shift</button>

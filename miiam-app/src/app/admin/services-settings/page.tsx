@@ -52,19 +52,19 @@ export default function ServiceSettingsPage() {
   return (
     <div className="px-8 py-6 space-y-6">
       <div>
-        <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Service Settings</h1>
-        <p className="text-slate-500 mt-1">Control which services are available to users</p>
+        <h1 className="text-3xl font-extrabold text-[var(--color-on-surface)] tracking-tight">Service Settings</h1>
+        <p className="text-[var(--color-outline)] mt-1">Control which services are available to users</p>
       </div>
       <button
         onClick={handleReset}
-        className="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-sm font-bold hover:bg-slate-200"
+        className="px-4 py-2 bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] rounded-lg text-sm font-bold hover:bg-[var(--color-surface-container-high)]"
       >
         Reset to Defaults
       </button>
 
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-        <div className="p-4 border-b border-slate-100 bg-slate-50">
-          <div className="grid grid-cols-12 gap-4 text-xs font-bold text-slate-500 uppercase tracking-widest">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)] shadow-sm overflow-hidden">
+        <div className="p-4 border-b border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)]">
+          <div className="grid grid-cols-12 gap-4 text-xs font-bold text-[var(--color-outline)] uppercase tracking-widest">
             <div className="col-span-3">Service</div>
             <div className="col-span-1">Status</div>
             <div className="col-span-2">Hours</div>
@@ -75,16 +75,16 @@ export default function ServiceSettingsPage() {
 
         <div className="divide-y divide-slate-50">
           {settings.map((service) => (
-            <div key={service.id} className="p-4 grid grid-cols-12 gap-4 items-center hover:bg-slate-50">
+            <div key={service.id} className="p-4 grid grid-cols-12 gap-4 items-center hover:bg-[var(--color-surface-subtle)]">
               <div className="col-span-3 flex items-center gap-3">
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                  service.isEnabled ? "bg-green-100 text-green-600" : "bg-slate-100 text-slate-400"
+                  service.isEnabled ? "bg-green-100 text-green-600" : "bg-[var(--color-surface-container)] text-[var(--color-outline-variant)]"
                 }`}>
                   <span className="material-symbols-outlined">{service.icon}</span>
                 </div>
                 <div>
-                  <p className="font-bold text-slate-800">{service.name}</p>
-                  <p className="text-xs text-slate-400">{service.id}</p>
+                  <p className="font-bold text-[var(--color-on-surface)]">{service.name}</p>
+                  <p className="text-xs text-[var(--color-outline-variant)]">{service.id}</p>
                 </div>
               </div>
 
@@ -101,7 +101,7 @@ export default function ServiceSettingsPage() {
                     }`}
                   />
                   <span className={`absolute right-1.5 top-1 text-[10px] font-bold ${
-                    service.isEnabled ? "text-white" : "text-slate-600"
+                    service.isEnabled ? "text-white" : "text-[var(--color-on-surface-variant)]"
                   }`}>
                     {service.isEnabled ? "ON" : "OFF"}
                   </span>
@@ -111,7 +111,7 @@ export default function ServiceSettingsPage() {
               <div className="col-span-2">
                 {editingHoursId === service.id ? (
                   <div className="flex flex-col gap-1">
-                    <label className="flex items-center gap-1 text-[11px] text-slate-500">
+                    <label className="flex items-center gap-1 text-[11px] text-[var(--color-outline)]">
                       <input
                         type="checkbox"
                         checked={tempIs247}
@@ -126,15 +126,15 @@ export default function ServiceSettingsPage() {
                         value={tempOpen}
                         onChange={(e) => setTempOpen(e.target.value)}
                         disabled={tempIs247}
-                        className="px-1.5 py-1 border border-slate-200 rounded text-xs w-[72px] disabled:opacity-40"
+                        className="px-1.5 py-1 border border-[var(--color-border-subtle)] rounded text-xs w-[72px] disabled:opacity-40"
                       />
-                      <span className="text-xs text-slate-400">–</span>
+                      <span className="text-xs text-[var(--color-outline-variant)]">–</span>
                       <input
                         type="time"
                         value={tempClose}
                         onChange={(e) => setTempClose(e.target.value)}
                         disabled={tempIs247}
-                        className="px-1.5 py-1 border border-slate-200 rounded text-xs w-[72px] disabled:opacity-40"
+                        className="px-1.5 py-1 border border-[var(--color-border-subtle)] rounded text-xs w-[72px] disabled:opacity-40"
                       />
                     </div>
                     <div className="flex gap-1">
@@ -146,7 +146,7 @@ export default function ServiceSettingsPage() {
                       </button>
                       <button
                         onClick={() => setEditingHoursId(null)}
-                        className="px-2 py-1 bg-slate-100 text-slate-600 rounded text-[11px] font-bold"
+                        className="px-2 py-1 bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] rounded text-[11px] font-bold"
                       >
                         Cancel
                       </button>
@@ -187,7 +187,7 @@ export default function ServiceSettingsPage() {
                       type="text"
                       value={tempMessage}
                       onChange={(e) => setTempMessage(e.target.value)}
-                      className="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm"
+                      className="flex-1 px-3 py-2 border border-[var(--color-border-subtle)] rounded-lg text-sm"
                       placeholder="Enter custom message..."
                     />
                     <button
@@ -198,13 +198,13 @@ export default function ServiceSettingsPage() {
                     </button>
                     <button
                       onClick={() => setEditingId(null)}
-                      className="px-3 py-2 bg-slate-100 text-slate-600 rounded-lg text-sm font-bold"
+                      className="px-3 py-2 bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] rounded-lg text-sm font-bold"
                     >
                       Cancel
                     </button>
                   </div>
                 ) : (
-                  <p className="text-sm text-slate-600">{service.message}</p>
+                  <p className="text-sm text-[var(--color-on-surface-variant)]">{service.message}</p>
                 )}
               </div>
 

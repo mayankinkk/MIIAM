@@ -43,7 +43,7 @@ export default function PartnerLanding() {
       <nav className="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto">
         <Link href="/" className="text-2xl font-extrabold tracking-tighter text-[#ba001c]">MIIAM</Link>
         <div className="flex items-center gap-4">
-          <Link href="/auth/login?redirect=/partner/dashboard" className="text-slate-600 font-medium text-sm hover:text-slate-900">
+          <Link href="/auth/login?redirect=/partner/dashboard" className="text-[var(--color-on-surface-variant)] font-medium text-sm hover:text-[var(--color-on-surface)]">
             Sign In
           </Link>
           <Link
@@ -63,12 +63,12 @@ export default function PartnerLanding() {
               <span className="material-symbols-outlined text-[18px]">storefront</span>
               Join {vendorCount > 0 ? `${vendorCount}+` : "Our"} Partners
             </div>
-            <h1 className="text-4xl md:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight mb-6">
+            <h1 className="text-4xl md:text-6xl font-extrabold text-[var(--color-on-surface)] tracking-tight leading-tight mb-6">
               Partner with <span className="text-[#ba001c]">MIIAM</span>
               <br />
-              <span className="text-slate-600">and grow your business</span>
+              <span className="text-[var(--color-on-surface-variant)]">and grow your business</span>
             </h1>
-            <p className="text-lg text-slate-500 mb-8 max-w-lg mx-auto md:mx-0">
+            <p className="text-lg text-[var(--color-outline)] mb-8 max-w-lg mx-auto md:mx-0">
               List your restaurant or store on India&apos;s fastest-growing delivery platform. Reach more customers, earn more revenue.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
@@ -80,7 +80,7 @@ export default function PartnerLanding() {
               </Link>
               <Link
                 href="#how-it-works"
-                className="border-2 border-slate-200 text-slate-700 px-8 py-4 rounded-2xl font-bold text-lg hover:border-slate-300 transition-colors text-center"
+                className="border-2 border-[var(--color-border-subtle)] text-[var(--color-on-surface)] px-8 py-4 rounded-2xl font-bold text-lg hover:border-[var(--color-outline-variant)] transition-colors text-center"
               >
                 How It Works
               </Link>
@@ -88,20 +88,20 @@ export default function PartnerLanding() {
           </div>
           <div className="flex-1 bg-gradient-to-br from-[#ba001c]/10 to-[#ba001c]/5 rounded-3xl p-8 md:p-12 text-center">
             <span className="material-symbols-outlined text-8xl text-[#ba001c] mb-4" style={{ fontVariationSettings: "'FILL' 1" }}>storefront</span>
-            <p className="text-2xl font-extrabold text-slate-900">{vendorCount > 0 ? `${vendorCount}+` : "Growing"}</p>
-            <p className="text-slate-500">Active Restaurant Partners</p>
+            <p className="text-2xl font-extrabold text-[var(--color-on-surface)]">{vendorCount > 0 ? `${vendorCount}+` : "Growing"}</p>
+            <p className="text-[var(--color-outline)]">Active Restaurant Partners</p>
             <div className="grid grid-cols-3 gap-4 mt-8">
               <div>
                 <p className="text-xl font-black text-[#ba001c]">50+</p>
-                <p className="text-xs text-slate-500">Cities</p>
+                <p className="text-xs text-[var(--color-outline)]">Cities</p>
               </div>
               <div>
                 <p className="text-xl font-black text-[#ba001c]">15%</p>
-                <p className="text-xs text-slate-500">Commission</p>
+                <p className="text-xs text-[var(--color-outline)]">Commission</p>
               </div>
               <div>
                 <p className="text-xl font-black text-[#ba001c]">24hr</p>
-                <p className="text-xs text-slate-500">Verification</p>
+                <p className="text-xs text-[var(--color-outline)]">Verification</p>
               </div>
             </div>
           </div>
@@ -109,18 +109,18 @@ export default function PartnerLanding() {
       </section>
 
       {/* Benefits */}
-      <section className="bg-slate-50 py-20">
+      <section className="bg-[var(--color-surface-subtle)] py-20">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 text-center mb-4">Why Partner with MIIAM?</h2>
-          <p className="text-slate-500 text-center mb-12 max-w-2xl mx-auto">Everything you need to run and grow your delivery business</p>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-[var(--color-on-surface)] text-center mb-4">Why Partner with MIIAM?</h2>
+          <p className="text-[var(--color-outline)] text-center mb-12 max-w-2xl mx-auto">Everything you need to run and grow your delivery business</p>
           <div className="grid md:grid-cols-3 gap-6">
             {benefits.map((b) => (
-              <div key={b.title} className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl border border-slate-200 hover:shadow-lg transition-shadow">
+              <div key={b.title} className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl border border-[var(--color-border-subtle)] hover:shadow-lg transition-shadow">
                 <div className="w-12 h-12 bg-[#ffe1e4] rounded-xl flex items-center justify-center mb-4">
                   <span className="material-symbols-outlined text-[#ba001c]">{b.icon}</span>
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 mb-2">{b.title}</h3>
-                <p className="text-sm text-slate-500">{b.desc}</p>
+                <h3 className="text-lg font-bold text-[var(--color-on-surface)] mb-2">{b.title}</h3>
+                <p className="text-sm text-[var(--color-outline)]">{b.desc}</p>
               </div>
             ))}
           </div>
@@ -129,16 +129,16 @@ export default function PartnerLanding() {
 
       {/* How It Works */}
       <section id="how-it-works" className="py-20 max-w-6xl mx-auto px-6">
-        <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 text-center mb-4">How It Works</h2>
-        <p className="text-slate-500 text-center mb-12">Get started in 4 simple steps</p>
+        <h2 className="text-3xl md:text-4xl font-extrabold text-[var(--color-on-surface)] text-center mb-4">How It Works</h2>
+        <p className="text-[var(--color-outline)] text-center mb-12">Get started in 4 simple steps</p>
         <div className="grid md:grid-cols-4 gap-8">
           {steps.map((s) => (
             <div key={s.num} className="text-center">
               <div className="w-16 h-16 bg-[#ba001c] text-white rounded-2xl flex items-center justify-center text-2xl font-black mx-auto mb-4">
                 {s.num}
               </div>
-              <h3 className="font-bold text-slate-900 mb-2">{s.title}</h3>
-              <p className="text-sm text-slate-500">{s.desc}</p>
+              <h3 className="font-bold text-[var(--color-on-surface)] mb-2">{s.title}</h3>
+              <p className="text-sm text-[var(--color-outline)]">{s.desc}</p>
             </div>
           ))}
         </div>
@@ -153,17 +153,17 @@ export default function PartnerLanding() {
       </section>
 
       {/* FAQ */}
-      <section className="bg-slate-50 py-20">
+      <section className="bg-[var(--color-surface-subtle)] py-20">
         <div className="max-w-3xl mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 text-center mb-12">Frequently Asked Questions</h2>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-[var(--color-on-surface)] text-center mb-12">Frequently Asked Questions</h2>
           <div className="space-y-4">
             {faqs.map((f) => (
-              <details key={f.q} className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-200 group">
-                <summary className="px-6 py-5 font-bold text-slate-800 cursor-pointer flex items-center justify-between list-none">
+              <details key={f.q} className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)] group">
+                <summary className="px-6 py-5 font-bold text-[var(--color-on-surface)] cursor-pointer flex items-center justify-between list-none">
                   {f.q}
-                  <span className="material-symbols-outlined text-slate-400 group-open:rotate-180 transition-transform">expand_more</span>
+                  <span className="material-symbols-outlined text-[var(--color-outline-variant)] group-open:rotate-180 transition-transform">expand_more</span>
                 </summary>
-                <div className="px-6 pb-5 text-sm text-slate-500">{f.a}</div>
+                <div className="px-6 pb-5 text-sm text-[var(--color-outline)]">{f.a}</div>
               </details>
             ))}
           </div>
@@ -173,24 +173,24 @@ export default function PartnerLanding() {
       {/* CTA */}
       <section className="py-20 text-center">
         <div className="max-w-2xl mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4">Ready to Get Started?</h2>
-          <p className="text-slate-500 mb-8">Join thousands of partners already growing with MIIAM.</p>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-[var(--color-on-surface)] mb-4">Ready to Get Started?</h2>
+          <p className="text-[var(--color-outline)] mb-8">Join thousands of partners already growing with MIIAM.</p>
           <Link
             href="/partner/register"
             className="inline-block bg-[#ba001c] text-white px-10 py-4 rounded-2xl font-bold text-xl hover:bg-[#a40017] transition-colors shadow-xl shadow-[#ba001c]/20"
           >
             Register Now — It&apos;s Free
           </Link>
-          <p className="text-xs text-slate-400 mt-4">No commitment required. Cancel anytime.</p>
+          <p className="text-xs text-[var(--color-outline-variant)] mt-4">No commitment required. Cancel anytime.</p>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-slate-200 py-8 text-center text-sm text-slate-400">
+      <footer className="border-t border-[var(--color-border-subtle)] py-8 text-center text-sm text-[var(--color-outline-variant)]">
         <div className="flex justify-center gap-6 mb-3">
-          <Link href="/terms" className="hover:text-slate-600 transition-colors">Terms</Link>
-          <Link href="/privacy" className="hover:text-slate-600 transition-colors">Privacy</Link>
-          <Link href="/refunds" className="hover:text-slate-600 transition-colors">Refund Policy</Link>
+          <Link href="/terms" className="hover:text-[var(--color-on-surface-variant)] transition-colors">Terms</Link>
+          <Link href="/privacy" className="hover:text-[var(--color-on-surface-variant)] transition-colors">Privacy</Link>
+          <Link href="/refunds" className="hover:text-[var(--color-on-surface-variant)] transition-colors">Refund Policy</Link>
         </div>
         <p>&copy; {new Date().getFullYear()} MIIAM. All rights reserved.</p>
       </footer>

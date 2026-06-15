@@ -107,8 +107,8 @@ export default function EnhancedServicesDashboard() {
     <div className="px-8 space-y-8">
       <div className="flex justify-between items-end flex-wrap gap-4">
         <div>
-          <h1 className="text-3xl font-black text-slate-900">Services Dashboard</h1>
-          <p className="text-slate-500">Manage all home services bookings</p>
+          <h1 className="text-3xl font-black text-[var(--color-on-surface)]">Services Dashboard</h1>
+          <p className="text-[var(--color-outline)]">Manage all home services bookings</p>
         </div>
         <div className="flex gap-3">
           <button
@@ -123,7 +123,7 @@ export default function EnhancedServicesDashboard() {
               const a = document.createElement("a"); a.href = url; a.download = "service-bookings.csv"; a.click();
               URL.revokeObjectURL(url);
             }}
-            className="px-4 py-2 bg-[var(--color-surface-container-lowest)] border border-slate-200 rounded-xl font-bold text-sm flex items-center gap-2 hover:border-[#ba001c]"
+            className="px-4 py-2 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl font-bold text-sm flex items-center gap-2 hover:border-[#ba001c]"
           >
             <span className="material-symbols-outlined text-sm">download</span>
             Export
@@ -138,7 +138,7 @@ export default function EnhancedServicesDashboard() {
         </div>
       </div>
 
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-100 p-1 inline-flex">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] p-1 inline-flex">
         {(["dashboard", "bookings", "providers", "settings"] as const).map((tab) => (
           <button
             key={tab}
@@ -146,7 +146,7 @@ export default function EnhancedServicesDashboard() {
             className={`px-4 py-2 rounded-lg text-sm font-bold capitalize transition-colors ${
               activeTab === tab
                 ? "bg-[#ba001c] text-white"
-                : "text-slate-500 hover:bg-slate-50"
+                : "text-[var(--color-outline)] hover:bg-[var(--color-surface-subtle)]"
             }`}
           >
             {tab === "dashboard" ? "Overview" : tab === "providers" ? "Providers" : tab}
@@ -165,56 +165,56 @@ export default function EnhancedServicesDashboard() {
               <p className="text-4xl font-black">₹{stats.totalGMV.toLocaleString()}</p>
               <p className="text-xs text-white/60 mt-2">from {stats.completedBookings} completed bookings</p>
             </div>
-            <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-slate-100 shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-[var(--color-border-subtle)] shadow-sm">
               <div className="flex items-center gap-2 mb-2">
                 <span className="material-symbols-outlined text-blue-500">calendar_month</span>
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Active Bookings</span>
+                <span className="text-xs font-bold text-[var(--color-outline-variant)] uppercase tracking-widest">Active Bookings</span>
               </div>
-              <p className="text-3xl font-black text-slate-800">{stats.activeBookings}</p>
+              <p className="text-3xl font-black text-[var(--color-on-surface)]">{stats.activeBookings}</p>
               <p className="text-xs text-green-500 mt-2">Live tracking</p>
             </div>
-            <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-slate-100 shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-[var(--color-border-subtle)] shadow-sm">
               <div className="flex items-center gap-2 mb-2">
                 <span className="material-symbols-outlined text-purple-500">receipt_long</span>
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Total Bookings</span>
+                <span className="text-xs font-bold text-[var(--color-outline-variant)] uppercase tracking-widest">Total Bookings</span>
               </div>
-              <p className="text-3xl font-black text-slate-800">{stats.totalBookings}</p>
-              <p className="text-xs text-slate-400 mt-2">All time</p>
+              <p className="text-3xl font-black text-[var(--color-on-surface)]">{stats.totalBookings}</p>
+              <p className="text-xs text-[var(--color-outline-variant)] mt-2">All time</p>
             </div>
-            <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-slate-100 shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-[var(--color-border-subtle)] shadow-sm">
               <div className="flex items-center gap-2 mb-2">
                 <span className="material-symbols-outlined text-amber-500">check_circle</span>
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Completed</span>
+                <span className="text-xs font-bold text-[var(--color-outline-variant)] uppercase tracking-widest">Completed</span>
               </div>
               <p className="text-3xl font-black text-green-600">{stats.completedBookings}</p>
-              <p className="text-xs text-slate-400 mt-2">Successfully delivered</p>
+              <p className="text-xs text-[var(--color-outline-variant)] mt-2">Successfully delivered</p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
-              <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
+              <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] overflow-hidden shadow-sm">
                 <div className="p-6 border-b border-slate-50 flex justify-between items-center">
-                  <h2 className="font-black text-slate-800 uppercase tracking-widest text-sm">Service Overview</h2>
+                  <h2 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm">Service Overview</h2>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-6">
                   {serviceStats.map((service) => (
                     <Link
                       key={service.id}
                       href={`/admin/services/${service.id}`}
-                      className="bg-slate-50 rounded-2xl p-4 hover:bg-[#ffecee] transition-colors group border border-transparent hover:border-[#ba001c]"
+                      className="bg-[var(--color-surface-subtle)] rounded-2xl p-4 hover:bg-[#ffecee] transition-colors group border border-transparent hover:border-[#ba001c]"
                     >
                       <div className={`w-12 h-12 rounded-xl ${service.bg} flex items-center justify-center mb-3`}>
                         <span className={`material-symbols-outlined ${service.color}`} style={{ fontVariationSettings: "'FILL' 1" }}>{service.icon}</span>
                       </div>
-                      <p className="font-bold text-slate-800 text-sm mb-2">{service.label}</p>
+                      <p className="font-bold text-[var(--color-on-surface)] text-sm mb-2">{service.label}</p>
                       <div className="space-y-1">
                         <div className="flex justify-between text-xs">
-                          <span className="text-slate-500">Orders</span>
-                          <span className="font-bold text-slate-700">{service.orders}</span>
+                          <span className="text-[var(--color-outline)]">Orders</span>
+                          <span className="font-bold text-[var(--color-on-surface)]">{service.orders}</span>
                         </div>
                         <div className="flex justify-between text-xs">
-                          <span className="text-slate-500">Revenue</span>
+                          <span className="text-[var(--color-outline)]">Revenue</span>
                           <span className="font-bold text-green-600">₹{service.revenue.toLocaleString()}</span>
                         </div>
                       </div>
@@ -249,13 +249,13 @@ export default function EnhancedServicesDashboard() {
                 </div>
               </div>
 
-              <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-6 border border-slate-100 shadow-sm">
-                <h3 className="font-black text-slate-800 uppercase tracking-widest text-xs mb-4">Bookings by Status</h3>
+              <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-6 border border-[var(--color-border-subtle)] shadow-sm">
+                <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-xs mb-4">Bookings by Status</h3>
                 <div className="space-y-3">
                   {Object.entries(statusCounts).map(([status, count]) => (
                     <div key={status} className="flex items-center justify-between">
-                      <span className="text-sm font-bold text-slate-600 capitalize">{status.replace("_", " ")}</span>
-                      <span className="font-black text-slate-800">{count}</span>
+                      <span className="text-sm font-bold text-[var(--color-on-surface-variant)] capitalize">{status.replace("_", " ")}</span>
+                      <span className="font-black text-[var(--color-on-surface)]">{count}</span>
                     </div>
                   ))}
                 </div>
@@ -263,9 +263,9 @@ export default function EnhancedServicesDashboard() {
             </div>
           </div>
 
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] overflow-hidden shadow-sm">
             <div className="p-6 border-b border-slate-50 flex justify-between items-center">
-              <h2 className="font-black text-slate-800 uppercase tracking-widest text-sm">Recent Bookings</h2>
+              <h2 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm">Recent Bookings</h2>
               <button
                 onClick={() => setActiveTab("bookings")}
                 className="text-sm font-bold text-[#ba001c] hover:underline"
@@ -275,23 +275,23 @@ export default function EnhancedServicesDashboard() {
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-left">
-                <thead className="bg-slate-50">
+                <thead className="bg-[var(--color-surface-subtle)]">
                   <tr>
-                    <th className="p-4 text-[10px] font-black text-slate-400 uppercase">ID</th>
-                    <th className="p-4 text-[10px] font-black text-slate-400 uppercase">Service</th>
-                    <th className="p-4 text-[10px] font-black text-slate-400 uppercase">Customer</th>
-                    <th className="p-4 text-[10px] font-black text-slate-400 uppercase">Date</th>
-                    <th className="p-4 text-[10px] font-black text-slate-400 uppercase">Status</th>
-                    <th className="p-4 text-[10px] font-black text-slate-400 uppercase text-right">Amount</th>
+                    <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">ID</th>
+                    <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Service</th>
+                    <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Customer</th>
+                    <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Date</th>
+                    <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Status</th>
+                    <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase text-right">Amount</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50 text-sm">
                   {bookings.slice(0, 5).map((booking) => (
-                    <tr key={booking.id} className="hover:bg-slate-50">
-                      <td className="p-4 font-bold text-slate-800">#{booking.id.slice(0, 8)}</td>
-                      <td className="p-4 text-slate-600 capitalize">{booking.service_type}</td>
-                      <td className="p-4 text-slate-600">{booking.user_name}</td>
-                      <td className="p-4 text-slate-500">{booking.scheduled_date}</td>
+                    <tr key={booking.id} className="hover:bg-[var(--color-surface-subtle)]">
+                      <td className="p-4 font-bold text-[var(--color-on-surface)]">#{booking.id.slice(0, 8)}</td>
+                      <td className="p-4 text-[var(--color-on-surface-variant)] capitalize">{booking.service_type}</td>
+                      <td className="p-4 text-[var(--color-on-surface-variant)]">{booking.user_name}</td>
+                      <td className="p-4 text-[var(--color-outline)]">{booking.scheduled_date}</td>
                       <td className="p-4">
                         <span className={`text-[10px] font-black px-2 py-1 rounded-full uppercase ${
                           booking.status === "completed" ? "bg-green-100 text-green-700" :
@@ -302,12 +302,12 @@ export default function EnhancedServicesDashboard() {
                           {booking.status.replace("_", " ")}
                         </span>
                       </td>
-                      <td className="p-4 text-right font-black text-slate-800">₹{booking.amount}</td>
+                      <td className="p-4 text-right font-black text-[var(--color-on-surface)]">₹{booking.amount}</td>
                     </tr>
                   ))}
                   {bookings.length === 0 && (
                     <tr>
-                      <td colSpan={6} className="p-8 text-center text-slate-400">
+                      <td colSpan={6} className="p-8 text-center text-[var(--color-outline-variant)]">
                         No bookings found
                       </td>
                     </tr>
@@ -320,7 +320,7 @@ export default function EnhancedServicesDashboard() {
       )}
 
       {activeTab === "bookings" && (
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] overflow-hidden shadow-sm">
           <div className="p-6 border-b border-slate-50 flex flex-wrap gap-4 items-center">
             <div className="flex gap-2">
               {(["all", "pending", "in_progress", "completed", "cancelled"] as const).map((status) => (
@@ -330,7 +330,7 @@ export default function EnhancedServicesDashboard() {
                   className={`px-3 py-1.5 rounded-lg text-xs font-bold capitalize ${
                     statusFilter === status
                       ? "bg-[#ba001c] text-white"
-                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                      : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]"
                   }`}
                 >
                   {status === "all" ? "All" : status.replace("_", " ")}
@@ -340,7 +340,7 @@ export default function EnhancedServicesDashboard() {
             <select
               value={serviceFilter}
               onChange={(e) => setServiceFilter(e.target.value)}
-              className="ml-auto px-4 py-2 bg-slate-50 rounded-lg text-sm font-bold"
+              className="ml-auto px-4 py-2 bg-[var(--color-surface-subtle)] rounded-lg text-sm font-bold"
             >
               <option value="all">All Services</option>
               {serviceOptions.map(s => (
@@ -350,34 +350,34 @@ export default function EnhancedServicesDashboard() {
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-left">
-              <thead className="bg-slate-50">
+              <thead className="bg-[var(--color-surface-subtle)]">
                 <tr>
-                  <th className="p-4 text-[10px] font-black text-slate-400 uppercase">Booking ID</th>
-                  <th className="p-4 text-[10px] font-black text-slate-400 uppercase">Service</th>
-                  <th className="p-4 text-[10px] font-black text-slate-400 uppercase">Customer</th>
-                  <th className="p-4 text-[10px] font-black text-slate-400 uppercase">Phone</th>
-                  <th className="p-4 text-[10px] font-black text-slate-400 uppercase">Address</th>
-                  <th className="p-4 text-[10px] font-black text-slate-400 uppercase">Schedule</th>
-                  <th className="p-4 text-[10px] font-black text-slate-400 uppercase">Provider</th>
-                  <th className="p-4 text-[10px] font-black text-slate-400 uppercase">Status</th>
-                  <th className="p-4 text-[10px] font-black text-slate-400 uppercase text-right">Amount</th>
-                  <th className="p-4 text-[10px] font-black text-slate-400 uppercase">Actions</th>
+                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Booking ID</th>
+                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Service</th>
+                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Customer</th>
+                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Phone</th>
+                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Address</th>
+                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Schedule</th>
+                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Provider</th>
+                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Status</th>
+                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase text-right">Amount</th>
+                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50 text-sm">
                 {bookings.map((booking) => (
-                  <tr key={booking.id} className="hover:bg-slate-50">
-                    <td className="p-4 font-bold text-slate-800">#{booking.id.slice(0, 8)}</td>
-                    <td className="p-4 text-slate-600 capitalize">{booking.service_type}</td>
-                    <td className="p-4 text-slate-600">{booking.user_name}</td>
-                    <td className="p-4 text-slate-500">{booking.user_phone}</td>
-                    <td className="p-4 text-slate-500 max-w-[200px] truncate">{booking.address}</td>
-                    <td className="p-4 text-slate-500">
+                  <tr key={booking.id} className="hover:bg-[var(--color-surface-subtle)]">
+                    <td className="p-4 font-bold text-[var(--color-on-surface)]">#{booking.id.slice(0, 8)}</td>
+                    <td className="p-4 text-[var(--color-on-surface-variant)] capitalize">{booking.service_type}</td>
+                    <td className="p-4 text-[var(--color-on-surface-variant)]">{booking.user_name}</td>
+                    <td className="p-4 text-[var(--color-outline)]">{booking.user_phone}</td>
+                    <td className="p-4 text-[var(--color-outline)] max-w-[200px] truncate">{booking.address}</td>
+                    <td className="p-4 text-[var(--color-outline)]">
                       <div>{booking.scheduled_date}</div>
                       <div className="text-xs">{booking.scheduled_time}</div>
                     </td>
-                    <td className="p-4 text-slate-600">
-                      {booking.provider_name || <span className="text-slate-400">Unassigned</span>}
+                    <td className="p-4 text-[var(--color-on-surface-variant)]">
+                      {booking.provider_name || <span className="text-[var(--color-outline-variant)]">Unassigned</span>}
                     </td>
                     <td className="p-4">
                       <select
@@ -397,7 +397,7 @@ export default function EnhancedServicesDashboard() {
                         <option value="cancelled">Cancelled</option>
                       </select>
                     </td>
-                    <td className="p-4 text-right font-black text-slate-800">₹{booking.amount}</td>
+                    <td className="p-4 text-right font-black text-[var(--color-on-surface)]">₹{booking.amount}</td>
                     <td className="p-4">
                       <Link
                         href={`/admin/services/${booking.service_type}`}
@@ -410,7 +410,7 @@ export default function EnhancedServicesDashboard() {
                 ))}
                 {bookings.length === 0 && (
                   <tr>
-                    <td colSpan={10} className="p-8 text-center text-slate-400">
+                    <td colSpan={10} className="p-8 text-center text-[var(--color-outline-variant)]">
                       No bookings found for the selected filters
                     </td>
                   </tr>
@@ -422,9 +422,9 @@ export default function EnhancedServicesDashboard() {
       )}
 
       {activeTab === "providers" && (
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-6 shadow-sm">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-6 shadow-sm">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-black text-slate-800">Service Providers</h2>
+            <h2 className="text-xl font-black text-[var(--color-on-surface)]">Service Providers</h2>
             <button
               onClick={() => setShowProviderModal(true)}
               className="px-4 py-2 bg-[#ba001c] text-white rounded-xl font-bold text-sm flex items-center gap-2"
@@ -433,8 +433,8 @@ export default function EnhancedServicesDashboard() {
               Add Provider
             </button>
           </div>
-          <div className="text-center py-12 text-slate-400">
-            <span className="material-symbols-outlined text-5xl text-slate-300">people</span>
+          <div className="text-center py-12 text-[var(--color-outline-variant)]">
+            <span className="material-symbols-outlined text-5xl text-[var(--color-outline-variant)]/60">people</span>
             <p className="mt-4 font-bold">No providers yet</p>
             <p className="text-sm mt-1">Add service providers to get started</p>
           </div>
@@ -443,14 +443,14 @@ export default function EnhancedServicesDashboard() {
 
       {activeTab === "settings" && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-6 shadow-sm">
-            <h2 className="text-lg font-black text-slate-800 mb-6">Service Categories</h2>
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-6 shadow-sm">
+            <h2 className="text-lg font-black text-[var(--color-on-surface)] mb-6">Service Categories</h2>
             <div className="space-y-3">
               {serviceOptions.map((service) => (
-                <div key={service.id} className="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+                <div key={service.id} className="flex items-center justify-between p-3 bg-[var(--color-surface-subtle)] rounded-xl">
                   <div className="flex items-center gap-3">
                     <span className={`material-symbols-outlined ${service.color}`}>{service.icon}</span>
-                    <span className="font-bold text-slate-700">{service.label}</span>
+                    <span className="font-bold text-[var(--color-on-surface)]">{service.label}</span>
                   </div>
                   <Link
                     href="/admin/services-settings"
@@ -463,17 +463,17 @@ export default function EnhancedServicesDashboard() {
             </div>
             <button
               onClick={() => setShowCategoryModal(true)}
-              className="w-full mt-4 py-3 border-2 border-dashed border-slate-200 rounded-xl text-slate-500 font-bold text-sm hover:border-[#ba001c] hover:text-[#ba001c] transition-colors"
+              className="w-full mt-4 py-3 border-2 border-dashed border-[var(--color-border-subtle)] rounded-xl text-[var(--color-outline)] font-bold text-sm hover:border-[#ba001c] hover:text-[#ba001c] transition-colors"
             >
               + Add New Category
             </button>
           </div>
 
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-6 shadow-sm">
-            <h2 className="text-lg font-black text-slate-800 mb-6">Pricing & Commission</h2>
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-6 shadow-sm">
+            <h2 className="text-lg font-black text-[var(--color-on-surface)] mb-6">Pricing & Commission</h2>
             <div className="space-y-4">
-              <div className="flex justify-between items-center p-3 bg-slate-50 rounded-xl">
-                <span className="font-bold text-slate-700">Platform Commission</span>
+              <div className="flex justify-between items-center p-3 bg-[var(--color-surface-subtle)] rounded-xl">
+                <span className="font-bold text-[var(--color-on-surface)]">Platform Commission</span>
                 <div className="flex items-center gap-1">
                   <input
                     type="number"
@@ -481,35 +481,35 @@ export default function EnhancedServicesDashboard() {
                     max={100}
                     defaultValue={15}
                     id="svc_commission"
-                    className="w-16 text-right font-black text-slate-800 bg-transparent border-b-2 border-transparent focus:border-[#ba001c] outline-none"
+                    className="w-16 text-right font-black text-[var(--color-on-surface)] bg-transparent border-b-2 border-transparent focus:border-[#ba001c] outline-none"
                   />
-                  <span className="font-bold text-slate-500">%</span>
+                  <span className="font-bold text-[var(--color-outline)]">%</span>
                 </div>
               </div>
-              <div className="flex justify-between items-center p-3 bg-slate-50 rounded-xl">
-                <span className="font-bold text-slate-700">Minimum Order Value</span>
+              <div className="flex justify-between items-center p-3 bg-[var(--color-surface-subtle)] rounded-xl">
+                <span className="font-bold text-[var(--color-on-surface)]">Minimum Order Value</span>
                 <div className="flex items-center gap-1">
-                  <span className="font-bold text-slate-500">₹</span>
+                  <span className="font-bold text-[var(--color-outline)]">₹</span>
                   <input
                     type="number"
                     min={0}
                     defaultValue={199}
                     id="svc_min_order"
-                    className="w-20 text-right font-black text-slate-800 bg-transparent border-b-2 border-transparent focus:border-[#ba001c] outline-none"
+                    className="w-20 text-right font-black text-[var(--color-on-surface)] bg-transparent border-b-2 border-transparent focus:border-[#ba001c] outline-none"
                   />
                 </div>
               </div>
-              <div className="flex justify-between items-center p-3 bg-slate-50 rounded-xl">
-                <span className="font-bold text-slate-700">Cancellation Window</span>
+              <div className="flex justify-between items-center p-3 bg-[var(--color-surface-subtle)] rounded-xl">
+                <span className="font-bold text-[var(--color-on-surface)]">Cancellation Window</span>
                 <div className="flex items-center gap-1">
                   <input
                     type="number"
                     min={0}
                     defaultValue={2}
                     id="svc_cancel_window"
-                    className="w-16 text-right font-black text-slate-800 bg-transparent border-b-2 border-transparent focus:border-[#ba001c] outline-none"
+                    className="w-16 text-right font-black text-[var(--color-on-surface)] bg-transparent border-b-2 border-transparent focus:border-[#ba001c] outline-none"
                   />
-                  <span className="font-bold text-slate-500">hrs</span>
+                  <span className="font-bold text-[var(--color-outline)]">hrs</span>
                 </div>
               </div>
             </div>
@@ -545,16 +545,16 @@ export default function EnhancedServicesDashboard() {
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-md p-6">
             <h3 className="font-bold text-lg mb-4">Register Service Provider</h3>
             <div className="space-y-3">
-              <input type="text" placeholder="Full Name" value={providerForm.name} onChange={(e) => setProviderForm({ ...providerForm, name: e.target.value })} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm" />
-              <input type="tel" placeholder="Phone Number" value={providerForm.phone} onChange={(e) => setProviderForm({ ...providerForm, phone: e.target.value })} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm" />
-              <input type="email" placeholder="Email" value={providerForm.email} onChange={(e) => setProviderForm({ ...providerForm, email: e.target.value })} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm" />
-              <select value={providerForm.service_type} onChange={(e) => setProviderForm({ ...providerForm, service_type: e.target.value })} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm">
+              <input type="text" placeholder="Full Name" value={providerForm.name} onChange={(e) => setProviderForm({ ...providerForm, name: e.target.value })} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm" />
+              <input type="tel" placeholder="Phone Number" value={providerForm.phone} onChange={(e) => setProviderForm({ ...providerForm, phone: e.target.value })} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm" />
+              <input type="email" placeholder="Email" value={providerForm.email} onChange={(e) => setProviderForm({ ...providerForm, email: e.target.value })} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm" />
+              <select value={providerForm.service_type} onChange={(e) => setProviderForm({ ...providerForm, service_type: e.target.value })} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm">
                 {serviceOptions.map(s => <option key={s.id} value={s.id}>{s.label}</option>)}
               </select>
-              <input type="text" placeholder="Years of experience" value={providerForm.experience} onChange={(e) => setProviderForm({ ...providerForm, experience: e.target.value })} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm" />
+              <input type="text" placeholder="Years of experience" value={providerForm.experience} onChange={(e) => setProviderForm({ ...providerForm, experience: e.target.value })} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm" />
             </div>
             <div className="flex gap-3 mt-6">
-              <button onClick={() => setShowProviderModal(false)} className="flex-1 py-3 border border-slate-200 rounded-xl font-bold text-sm">Cancel</button>
+              <button onClick={() => setShowProviderModal(false)} className="flex-1 py-3 border border-[var(--color-border-subtle)] rounded-xl font-bold text-sm">Cancel</button>
               <button
                 onClick={async () => {
                   if (!providerForm.name || !providerForm.phone) { alert("Name and phone are required"); return; }
@@ -582,12 +582,12 @@ export default function EnhancedServicesDashboard() {
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-md p-6">
             <h3 className="font-bold text-lg mb-4">Add Service Category</h3>
             <div className="space-y-3">
-              <input type="text" placeholder="Category Name" value={categoryForm.name} onChange={(e) => setCategoryForm({ ...categoryForm, name: e.target.value })} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm" />
-              <input type="text" placeholder="Icon name (e.g., construction, clean_hands)" value={categoryForm.icon} onChange={(e) => setCategoryForm({ ...categoryForm, icon: e.target.value })} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm" />
-              <textarea placeholder="Description (optional)" value={categoryForm.description} onChange={(e) => setCategoryForm({ ...categoryForm, description: e.target.value })} className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm h-20 resize-none" />
+              <input type="text" placeholder="Category Name" value={categoryForm.name} onChange={(e) => setCategoryForm({ ...categoryForm, name: e.target.value })} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm" />
+              <input type="text" placeholder="Icon name (e.g., construction, clean_hands)" value={categoryForm.icon} onChange={(e) => setCategoryForm({ ...categoryForm, icon: e.target.value })} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm" />
+              <textarea placeholder="Description (optional)" value={categoryForm.description} onChange={(e) => setCategoryForm({ ...categoryForm, description: e.target.value })} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm h-20 resize-none" />
             </div>
             <div className="flex gap-3 mt-6">
-              <button onClick={() => setShowCategoryModal(false)} className="flex-1 py-3 border border-slate-200 rounded-xl font-bold text-sm">Cancel</button>
+              <button onClick={() => setShowCategoryModal(false)} className="flex-1 py-3 border border-[var(--color-border-subtle)] rounded-xl font-bold text-sm">Cancel</button>
               <button
                 onClick={async () => {
                   if (!categoryForm.name) { alert("Category name is required"); return; }

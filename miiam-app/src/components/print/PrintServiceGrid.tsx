@@ -27,7 +27,7 @@ interface ServiceMeta {
 }
 
 const SERVICE_META: Record<ServicePresetId, ServiceMeta> = {
-  bw: { icon: "description", titleKey: "bwTitle", descKey: "bwDesc", accent: "from-slate-700 to-slate-900", ring: "ring-slate-200 hover:ring-slate-400" },
+  bw: { icon: "description", titleKey: "bwTitle", descKey: "bwDesc", accent: "from-slate-700 to-slate-900", ring: "ring-[var(--color-border-subtle)] hover:ring-slate-400" },
   color: { icon: "palette", titleKey: "colorTitle", descKey: "colorDesc", accent: "from-indigo-500 to-purple-600", ring: "ring-indigo-200 hover:ring-indigo-400" },
   passport: { icon: "face", titleKey: "passportTitle", descKey: "passportDesc", accent: "from-pink-500 to-rose-600", ring: "ring-pink-200 hover:ring-pink-400", href: "/app/printing/passport" },
   spiral: { icon: "auto_stories", titleKey: "spiralTitle", descKey: "spiralDesc", accent: "from-amber-500 to-orange-600", ring: "ring-amber-200 hover:ring-amber-400" },
@@ -76,7 +76,7 @@ export default function PrintServiceGrid({ activePreset, onSelect }: Props) {
               className={`relative group rounded-2xl bg-[var(--color-surface-container-lowest)] p-3 sm:p-4 border-2 transition-all cursor-pointer active:scale-95 ${
                 isActive
                   ? "border-indigo-500 shadow-lg shadow-indigo-500/20 ring-2 ring-indigo-200"
-                  : `border-slate-100 ring-1 ${meta.ring} hover:shadow-md hover:-translate-y-0.5`
+                  : `border-[var(--color-border-subtle)] ring-1 ${meta.ring} hover:shadow-md hover:-translate-y-0.5`
               }`}
             >
               {svc.badge && (
@@ -87,11 +87,11 @@ export default function PrintServiceGrid({ activePreset, onSelect }: Props) {
               <div className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br ${meta.accent} flex items-center justify-center shadow-md mb-2`}>
                 <span className="material-symbols-outlined text-white text-lg sm:text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>{meta.icon}</span>
               </div>
-              <p className="text-xs sm:text-sm font-black text-slate-800 leading-tight line-clamp-2">{t[meta.titleKey]}</p>
-              <p className="text-[10px] sm:text-[11px] text-slate-500 mt-1 line-clamp-2 leading-snug hidden sm:block">{t[meta.descKey]}</p>
+              <p className="text-xs sm:text-sm font-black text-[var(--color-on-surface)] leading-tight line-clamp-2">{t[meta.titleKey]}</p>
+              <p className="text-[10px] sm:text-[11px] text-[var(--color-outline)] mt-1 line-clamp-2 leading-snug hidden sm:block">{t[meta.descKey]}</p>
               <div className="flex items-baseline gap-1 mt-1.5">
                 <span className="text-[10px] sm:text-xs font-black text-indigo-600">{svc.price}</span>
-                <span className="text-[9px] sm:text-[10px] text-slate-400 ml-auto">· {svc.eta}</span>
+                <span className="text-[9px] sm:text-[10px] text-[var(--color-outline-variant)] ml-auto">· {svc.eta}</span>
               </div>
             </div>
           );

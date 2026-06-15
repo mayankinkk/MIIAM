@@ -48,8 +48,8 @@ export default function ActiveDeliveryView({
     <div className="absolute inset-0 z-10 flex items-end justify-center pb-24 px-4">
       <div className="max-w-md w-full bg-[var(--color-surface-container-lowest)] rounded-2xl overflow-hidden shadow-2xl">
         {activeOrders.length > 1 && (
-          <div className="bg-slate-50 border-b border-slate-200 px-3 py-2 flex items-center gap-1 overflow-x-auto">
-            <span className="material-symbols-outlined text-slate-400 text-sm">stack</span>
+          <div className="bg-[var(--color-surface-subtle)] border-b border-[var(--color-border-subtle)] px-3 py-2 flex items-center gap-1 overflow-x-auto">
+            <span className="material-symbols-outlined text-[var(--color-outline-variant)] text-sm">stack</span>
             {activeOrders.map((ao) => (
               <button
                 key={ao.id}
@@ -57,7 +57,7 @@ export default function ActiveDeliveryView({
                 className={`flex-shrink-0 px-3 py-1 rounded-full text-[10px] font-bold transition-all ${
                   currentOrder?.id === ao.id
                     ? "bg-[#0b50d5] text-white"
-                    : "bg-[var(--color-surface-container-lowest)] text-slate-500 border border-slate-200"
+                    : "bg-[var(--color-surface-container-lowest)] text-[var(--color-outline)] border border-[var(--color-border-subtle)]"
                 }`}
               >
                 #{ao.id.slice(-4).toUpperCase()}
@@ -152,9 +152,9 @@ export default function ActiveDeliveryView({
             <>
               <div className="mb-4">
                 <p className="text-[10px] text-purple-600 font-bold mb-2">{t.rider.delivery.shoppingMode}</p>
-                <p className="text-[10px] text-slate-400">{t.rider.delivery.goToStore}</p>
+                <p className="text-[10px] text-[var(--color-outline-variant)]">{t.rider.delivery.goToStore}</p>
                 <p className="font-bold text-lg mt-2">{currentOrder.vendor}</p>
-                <p className="text-sm text-slate-500">{currentOrder.vendorAddress}</p>
+                <p className="text-sm text-[var(--color-outline)]">{currentOrder.vendorAddress}</p>
               </div>
               
               <div className="bg-purple-50 p-4 rounded-xl mb-4">
@@ -162,7 +162,7 @@ export default function ActiveDeliveryView({
                 <div className="space-y-2">
                   {currentOrder.itemsList.map((item: string, i: number) => (
                     <div key={i} className="flex items-center justify-between p-2 bg-[var(--color-surface-container-lowest)] rounded-lg">
-                      <span className="text-sm font-medium text-slate-700">• {item}</span>
+                      <span className="text-sm font-medium text-[var(--color-on-surface)]">• {item}</span>
                       <button
                         onClick={() => onSetPickedItems(prev => {
                           const next = new Set(prev);
@@ -185,18 +185,18 @@ export default function ActiveDeliveryView({
                 </div>
               )}
 
-              <div className="bg-slate-50 p-3 rounded-xl mb-4">
-                <p className="text-[10px] text-slate-400 mb-2">{t.rider.delivery.deliverTo}</p>
+              <div className="bg-[var(--color-surface-subtle)] p-3 rounded-xl mb-4">
+                <p className="text-[10px] text-[var(--color-outline-variant)] mb-2">{t.rider.delivery.deliverTo}</p>
                 <p className="font-bold">{currentOrder.customer}</p>
-                <p className="text-sm text-slate-500">{currentOrder.customerAddress}</p>
-                <p className="text-xs text-slate-400">📍 {currentOrder.landmark}</p>
+                <p className="text-sm text-[var(--color-outline)]">{currentOrder.customerAddress}</p>
+                <p className="text-xs text-[var(--color-outline-variant)]">📍 {currentOrder.landmark}</p>
               </div>
 
               <div className="flex gap-3">
-                <button onClick={onCallCustomer} className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl flex items-center justify-center gap-2">
+                <button onClick={onCallCustomer} className="flex-1 py-3 bg-[var(--color-surface-container)] text-[var(--color-on-surface)] font-bold rounded-xl flex items-center justify-center gap-2">
                   <span className="material-symbols-outlined">call</span>{t.rider.delivery.callCustomer}
                 </button>
-                <button onClick={onStartChat} className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl flex items-center justify-center gap-2 relative">
+                <button onClick={onStartChat} className="flex-1 py-3 bg-[var(--color-surface-container)] text-[var(--color-on-surface)] font-bold rounded-xl flex items-center justify-center gap-2 relative">
                   <span className="material-symbols-outlined">chat</span>{t.rider.delivery.chat}
                   {unreadCount > 0 && (
                     <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
@@ -219,22 +219,22 @@ export default function ActiveDeliveryView({
           {deliveryStep === "picking_up" && (
             <>
               <div className="mb-4">
-                <p className="text-[10px] text-slate-400">{t.rider.delivery.pickupFrom}</p>
+                <p className="text-[10px] text-[var(--color-outline-variant)]">{t.rider.delivery.pickupFrom}</p>
                 <p className="font-bold text-lg">{currentOrder.vendor}</p>
-                <p className="text-sm text-slate-500">{currentOrder.vendorAddress}</p>
+                <p className="text-sm text-[var(--color-outline)]">{currentOrder.vendorAddress}</p>
               </div>
-              <div className="bg-slate-50 p-3 rounded-xl mb-4">
-                <p className="text-[10px] text-slate-400 mb-2">{t.rider.delivery.orderItems}</p>
+              <div className="bg-[var(--color-surface-subtle)] p-3 rounded-xl mb-4">
+                <p className="text-[10px] text-[var(--color-outline-variant)] mb-2">{t.rider.delivery.orderItems}</p>
                 {currentOrder.itemsList.map((item, i) => (
-                  <p key={i} className="text-sm text-slate-600">• {item}</p>
+                  <p key={i} className="text-sm text-[var(--color-on-surface-variant)]">• {item}</p>
                 ))}
               </div>
               {currentOrder.type === "multi_stop" && currentOrder.stops && (
                 <div className="bg-purple-50 p-3 rounded-xl mb-4">
                   <p className="text-[10px] text-purple-600 font-bold mb-2">{t.rider.delivery.deliveryStops}</p>
                   {currentOrder.stops.map((stop, i) => (
-                    <div key={i} className={`flex items-center gap-2 text-sm py-1 ${i === currentStopIndex ? "text-purple-700 font-bold" : i < currentStopIndex ? "text-green-600 line-through" : "text-slate-500"}`}>
-                      <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${i === currentStopIndex ? "bg-purple-500 text-white" : i < currentStopIndex ? "bg-green-500 text-white" : "bg-slate-200"}`}>
+                    <div key={i} className={`flex items-center gap-2 text-sm py-1 ${i === currentStopIndex ? "text-purple-700 font-bold" : i < currentStopIndex ? "text-green-600 line-through" : "text-[var(--color-outline)]"}`}>
+                      <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${i === currentStopIndex ? "bg-purple-500 text-white" : i < currentStopIndex ? "bg-green-500 text-white" : "bg-[var(--color-surface-container-high)]"}`}>
                         {i < currentStopIndex ? "✓" : i + 1}
                       </span>
                       {stop.name}
@@ -243,10 +243,10 @@ export default function ActiveDeliveryView({
                 </div>
               )}
               <div className="flex gap-3">
-                <button onClick={onCallCustomer} className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl flex items-center justify-center gap-2">
+                <button onClick={onCallCustomer} className="flex-1 py-3 bg-[var(--color-surface-container)] text-[var(--color-on-surface)] font-bold rounded-xl flex items-center justify-center gap-2">
                   <span className="material-symbols-outlined">call</span>{t.rider.delivery.callVendor}
                 </button>
-                <button onClick={onStartChat} className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl flex items-center justify-center gap-2 relative">
+                <button onClick={onStartChat} className="flex-1 py-3 bg-[var(--color-surface-container)] text-[var(--color-on-surface)] font-bold rounded-xl flex items-center justify-center gap-2 relative">
                   <span className="material-symbols-outlined">chat</span>{t.rider.delivery.chat}
                   {unreadCount > 0 && (
                     <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
@@ -268,26 +268,26 @@ export default function ActiveDeliveryView({
                   <span className="bg-purple-100 text-purple-700 px-2 py-1 rounded-full text-[10px] font-bold">
                     {t.rider.delivery.stop} {currentStopIndex + 1} {t.rider.delivery.of} {currentOrder.stops.length}
                   </span>
-                  <span className="text-xs text-slate-400">{currentOrder.stops[currentStopIndex].time}</span>
+                  <span className="text-xs text-[var(--color-outline-variant)]">{currentOrder.stops[currentStopIndex].time}</span>
                 </div>
                 <p className="font-bold text-lg">{currentOrder.stops[currentStopIndex].name}</p>
-                <p className="text-sm text-slate-500">{currentOrder.stops[currentStopIndex].address}</p>
-                <p className="text-xs text-slate-400 mt-1">📍 {currentOrder.stops[currentStopIndex].landmark}</p>
+                <p className="text-sm text-[var(--color-outline)]">{currentOrder.stops[currentStopIndex].address}</p>
+                <p className="text-xs text-[var(--color-outline-variant)] mt-1">📍 {currentOrder.stops[currentStopIndex].landmark}</p>
               </div>
-              <div className="bg-slate-50 p-3 rounded-xl mb-4">
-                <p className="text-[10px] text-slate-400 mb-2">{t.rider.delivery.upcomingStops}</p>
+              <div className="bg-[var(--color-surface-subtle)] p-3 rounded-xl mb-4">
+                <p className="text-[10px] text-[var(--color-outline-variant)] mb-2">{t.rider.delivery.upcomingStops}</p>
                 {currentOrder.stops.slice(currentStopIndex + 1).map((stop, i) => (
-                  <div key={i} className="flex items-center gap-2 text-sm text-slate-500 py-1">
-                    <span className="w-5 h-5 bg-slate-200 rounded-full flex items-center justify-center text-[10px]">{currentStopIndex + i + 2}</span>
+                  <div key={i} className="flex items-center gap-2 text-sm text-[var(--color-outline)] py-1">
+                    <span className="w-5 h-5 bg-[var(--color-surface-container-high)] rounded-full flex items-center justify-center text-[10px]">{currentStopIndex + i + 2}</span>
                     {stop.name} - {stop.distance}km
                   </div>
                 ))}
               </div>
               <div className="flex gap-3">
-                <button onClick={onCallCustomer} className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl flex items-center justify-center gap-2">
+                <button onClick={onCallCustomer} className="flex-1 py-3 bg-[var(--color-surface-container)] text-[var(--color-on-surface)] font-bold rounded-xl flex items-center justify-center gap-2">
                   <span className="material-symbols-outlined">call</span>Call Customer
                 </button>
-                <button onClick={onStartChat} className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl flex items-center justify-center gap-2 relative">
+                <button onClick={onStartChat} className="flex-1 py-3 bg-[var(--color-surface-container)] text-[var(--color-on-surface)] font-bold rounded-xl flex items-center justify-center gap-2 relative">
                   <span className="material-symbols-outlined">chat</span>Chat
                   {unreadCount > 0 && (
                     <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
@@ -327,16 +327,16 @@ export default function ActiveDeliveryView({
           ) : deliveryStep === "delivering" ? (
             <>
               <div className="mb-4">
-                <p className="text-[10px] text-slate-400">{t.rider.delivery.deliverTo}</p>
+                <p className="text-[10px] text-[var(--color-outline-variant)]">{t.rider.delivery.deliverTo}</p>
                 <p className="font-bold text-lg">{currentOrder.customer}</p>
-                <p className="text-sm text-slate-500">{currentOrder.customerAddress}</p>
-                <p className="text-xs text-slate-400 mt-1">📍 {currentOrder.landmark}</p>
+                <p className="text-sm text-[var(--color-outline)]">{currentOrder.customerAddress}</p>
+                <p className="text-xs text-[var(--color-outline-variant)] mt-1">📍 {currentOrder.landmark}</p>
               </div>
               <div className="flex gap-3">
-                <button onClick={onCallCustomer} className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl flex items-center justify-center gap-2">
+                <button onClick={onCallCustomer} className="flex-1 py-3 bg-[var(--color-surface-container)] text-[var(--color-on-surface)] font-bold rounded-xl flex items-center justify-center gap-2">
                   <span className="material-symbols-outlined">call</span>{t.rider.delivery.callCustomer}
                 </button>
-                <button onClick={onStartChat} className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl flex items-center justify-center gap-2 relative">
+                <button onClick={onStartChat} className="flex-1 py-3 bg-[var(--color-surface-container)] text-[var(--color-on-surface)] font-bold rounded-xl flex items-center justify-center gap-2 relative">
                   <span className="material-symbols-outlined">chat</span>{t.rider.delivery.chat}
                   {unreadCount > 0 && (
                     <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
@@ -381,7 +381,7 @@ export default function ActiveDeliveryView({
                 <span className="material-symbols-outlined text-green-600 text-5xl">location_on</span>
               </div>
               <p className="font-bold text-xl mb-2">{t.rider.delivery.youveArrived}</p>
-              <p className="text-sm text-slate-500 mb-4">{t.rider.delivery.readyToComplete}</p>
+              <p className="text-sm text-[var(--color-outline)] mb-4">{t.rider.delivery.readyToComplete}</p>
               <button onClick={onComplete} className="w-full py-4 bg-green-500 text-white font-black rounded-xl">
                 {t.rider.delivery.completeDelivery}
               </button>

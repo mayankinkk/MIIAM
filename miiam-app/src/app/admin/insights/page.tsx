@@ -107,7 +107,7 @@ export default function AdminCustomerInsights() {
   if (loading) {
     return (
       <div className="p-8 flex items-center justify-center min-h-[60vh]">
-        <div className="text-slate-400 animate-pulse font-medium">Loading insights...</div>
+        <div className="text-[var(--color-outline-variant)] animate-pulse font-medium">Loading insights...</div>
       </div>
     );
   }
@@ -116,13 +116,13 @@ export default function AdminCustomerInsights() {
     <div className="p-4 md:p-8 space-y-6 max-w-7xl">
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-slate-900">Customer Insights</h1>
-          <p className="text-slate-500 text-sm mt-1">Platform-wide customer behavior analytics</p>
+          <h1 className="text-2xl font-extrabold text-[var(--color-on-surface)]">Customer Insights</h1>
+          <p className="text-[var(--color-outline)] text-sm mt-1">Platform-wide customer behavior analytics</p>
         </div>
-        <div className="flex gap-2 bg-slate-100 p-1 rounded-xl">
+        <div className="flex gap-2 bg-[var(--color-surface-container)] p-1 rounded-xl">
           {(["7d", "30d", "90d"] as const).map((p) => (
             <button key={p} onClick={() => setPeriod(p)}
-              className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors ${period === p ? "bg-[var(--color-surface-container-lowest)] text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}>
+              className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors ${period === p ? "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface)] shadow-sm" : "text-[var(--color-outline)] hover:text-[var(--color-on-surface)]"}`}>
               {p === "7d" ? "7 Days" : p === "30d" ? "30 Days" : "90 Days"}
             </button>
           ))}
@@ -135,25 +135,25 @@ export default function AdminCustomerInsights() {
         <MetricCard title="New Users" value={insights.newUsers} icon="person_add" color="text-green-600" />
         <MetricCard title="Repeat Customers" value={insights.repeatCustomers} icon="repeat" color="text-purple-600" />
         <MetricCard title="Repeat Rate" value={`${insights.repeatRate}%`} icon="trending_up" color="text-amber-600" />
-        <MetricCard title="Total Orders" value={insights.totalOrders} icon="receipt_long" color="text-slate-600" />
+        <MetricCard title="Total Orders" value={insights.totalOrders} icon="receipt_long" color="text-[var(--color-on-surface-variant)]" />
         <MetricCard title="Avg Order Value" value={`₹${insights.avgOrderValue}`} icon="payments" color="text-green-600" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Top Vendors by Orders */}
-        <div className="lg:col-span-2 bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-200 p-5">
-          <h3 className="font-bold text-slate-800 mb-4">Top Vendors by Orders</h3>
+        <div className="lg:col-span-2 bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] p-5">
+          <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Top Vendors by Orders</h3>
           <div className="space-y-3">
             {insights.topVendors.map((v: any, i: number) => (
               <div key={v.id} className="flex items-center gap-3 py-2 border-b border-slate-50 last:border-0">
-                <span className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-500">#{i + 1}</span>
+                <span className="w-6 h-6 rounded-full bg-[var(--color-surface-container)] flex items-center justify-center text-xs font-bold text-[var(--color-outline)]">#{i + 1}</span>
                 <div className="flex-1">
-                  <p className="font-bold text-slate-800 text-sm">{v.shop_name}</p>
-                  <p className="text-xs text-slate-400">Type: {v.type || "food"}</p>
+                  <p className="font-bold text-[var(--color-on-surface)] text-sm">{v.shop_name}</p>
+                  <p className="text-xs text-[var(--color-outline-variant)]">Type: {v.type || "food"}</p>
                 </div>
                 <div className="text-right">
-                  <p className="font-bold text-slate-900">{v.orderCount}</p>
-                  <p className="text-[10px] text-slate-400">orders</p>
+                  <p className="font-bold text-[var(--color-on-surface)]">{v.orderCount}</p>
+                  <p className="text-[10px] text-[var(--color-outline-variant)]">orders</p>
                 </div>
               </div>
             ))}
@@ -161,14 +161,14 @@ export default function AdminCustomerInsights() {
         </div>
 
         {/* Top Rated Vendors */}
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-200 p-5">
-          <h3 className="font-bold text-slate-800 mb-4">Top Rated Vendors</h3>
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] p-5">
+          <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Top Rated Vendors</h3>
           <div className="space-y-3">
             {insights.topRatedVendors.slice(0, 8).map((v: any, i: number) => (
               <div key={v.id} className="flex items-center gap-2 py-1.5 border-b border-slate-50 last:border-0">
                 <span className="text-amber-400 text-sm">★</span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-slate-800 truncate">{v.shop_name}</p>
+                  <p className="text-sm font-bold text-[var(--color-on-surface)] truncate">{v.shop_name}</p>
                 </div>
                 <span className="text-sm font-bold text-amber-600">{v.avgRating}</span>
               </div>
@@ -179,24 +179,24 @@ export default function AdminCustomerInsights() {
 
       {/* Peak Days / Order Health */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-200 p-5">
-          <h3 className="font-bold text-slate-800 mb-4">Peak Order Days</h3>
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] p-5">
+          <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Peak Order Days</h3>
           <div className="space-y-2">
             {insights.peakDays.map(([day, count]: [string, number], i: number) => (
               <div key={day} className="flex items-center gap-3">
-                <span className="text-xs font-bold text-slate-400 w-4">{i + 1}</span>
-                <span className="text-sm text-slate-700 w-32">{day}</span>
-                <div className="flex-1 h-5 bg-slate-100 rounded-full overflow-hidden">
+                <span className="text-xs font-bold text-[var(--color-outline-variant)] w-4">{i + 1}</span>
+                <span className="text-sm text-[var(--color-on-surface)] w-32">{day}</span>
+                <div className="flex-1 h-5 bg-[var(--color-surface-container)] rounded-full overflow-hidden">
                   <div className="h-full bg-primary rounded-full" style={{ width: `${(count / Math.max(...insights.peakDays.map(([_, c]: [string, number]) => c))) * 100}%` }} />
                 </div>
-                <span className="text-sm font-bold text-slate-700 w-12 text-right">{count}</span>
+                <span className="text-sm font-bold text-[var(--color-on-surface)] w-12 text-right">{count}</span>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-200 p-5">
-          <h3 className="font-bold text-slate-800 mb-4">Order Health</h3>
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] p-5">
+          <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Order Health</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between p-4 bg-green-50 rounded-xl">
               <div>
@@ -228,12 +228,12 @@ export default function AdminCustomerInsights() {
 
 function MetricCard({ title, value, icon, color }: { title: string; value: string | number; icon: string; color: string }) {
   return (
-    <div className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-200 p-4">
+    <div className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] p-4">
       <div className="flex items-center gap-2 mb-2">
         <span className={`material-symbols-outlined text-lg ${color}`}>{icon}</span>
-        <p className="text-xs text-slate-500 font-medium">{title}</p>
+        <p className="text-xs text-[var(--color-outline)] font-medium">{title}</p>
       </div>
-      <p className="text-2xl font-black text-slate-900">{value}</p>
+      <p className="text-2xl font-black text-[var(--color-on-surface)]">{value}</p>
     </div>
   );
 }

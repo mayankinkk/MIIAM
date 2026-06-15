@@ -22,28 +22,28 @@ export default function NotFound() {
           </Link>
           <Link
             href="/app/home"
-            className="block w-full px-6 py-3 bg-[var(--color-surface-container-lowest)] border-2 border-slate-200 text-slate-700 rounded-xl font-bold hover:border-[#ba001c] transition-colors"
+            className="block w-full px-6 py-3 bg-[var(--color-surface-container-lowest)] border-2 border-[var(--color-border-subtle)] text-[var(--color-on-surface)] rounded-xl font-bold hover:border-[#ba001c] transition-colors"
           >
             Open App
           </Link>
         </div>
 
-        <div className="mt-8 pt-6 border-t border-slate-200">
-          <p className="text-sm text-slate-500 mb-3">Quick Links</p>
+        <div className="mt-8 pt-6 border-t border-[var(--color-border-subtle)]">
+          <p className="text-sm text-[var(--color-outline)] mb-3">Quick Links</p>
           <div className="flex flex-wrap justify-center gap-2">
-            <Link href="/app/food" className="text-xs px-3 py-1 bg-slate-100 rounded-full text-slate-600 hover:bg-slate-200">
+            <Link href="/app/food" className="text-xs px-3 py-1 bg-[var(--color-surface-container)] rounded-full text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]">
               Food
             </Link>
-            <Link href="/app/grocery" className="text-xs px-3 py-1 bg-slate-100 rounded-full text-slate-600 hover:bg-slate-200">
+            <Link href="/app/grocery" className="text-xs px-3 py-1 bg-[var(--color-surface-container)] rounded-full text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]">
               Grocery
             </Link>
-            <Link href="/app/pharmacy" className="text-xs px-3 py-1 bg-slate-100 rounded-full text-slate-600 hover:bg-slate-200">
+            <Link href="/app/pharmacy" className="text-xs px-3 py-1 bg-[var(--color-surface-container)] rounded-full text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]">
               Pharmacy
             </Link>
-            <Link href="/app/services" className="text-xs px-3 py-1 bg-slate-100 rounded-full text-slate-600 hover:bg-slate-200">
+            <Link href="/app/services" className="text-xs px-3 py-1 bg-[var(--color-surface-container)] rounded-full text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]">
               Services
             </Link>
-            <Link href="/partner" className="text-xs px-3 py-1 bg-slate-100 rounded-full text-slate-600 hover:bg-slate-200">
+            <Link href="/partner" className="text-xs px-3 py-1 bg-[var(--color-surface-container)] rounded-full text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]">
               Become a Partner
             </Link>
           </div>

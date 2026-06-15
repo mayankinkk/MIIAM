@@ -56,24 +56,24 @@ export default function AdminHeader() {
   }
 
   return (
-    <header className="fixed top-0 right-0 left-0 md:left-64 bg-[var(--color-surface-container-lowest)]/80 backdrop-blur-md border-b border-slate-100 px-8 py-4 flex items-center justify-between z-10">
-      <div className="flex items-center gap-2 text-slate-400 font-bold text-sm">
+    <header className="fixed top-0 right-0 left-0 md:left-64 bg-[var(--color-surface-container-lowest)]/80 backdrop-blur-md border-b border-[var(--color-border-subtle)] px-8 py-4 flex items-center justify-between z-10">
+      <div className="flex items-center gap-2 text-[var(--color-outline-variant)] font-bold text-sm">
         <span>Pages</span>
         <span>/</span>
-        <span className="text-slate-800">{currentPage}</span>
+        <span className="text-[var(--color-on-surface)]">{currentPage}</span>
       </div>
       <div className="flex items-center gap-6">
         <form onSubmit={handleSearch} className="relative hidden sm:block">
-          <span className="material-symbols-outlined absolute left-3 top-2.5 text-slate-400 text-sm">search</span>
+          <span className="material-symbols-outlined absolute left-3 top-2.5 text-[var(--color-outline-variant)] text-sm">search</span>
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Global Search..."
-            className="bg-slate-50 border border-slate-100 rounded-full pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#ba001c]/10 w-64"
+            className="bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-full pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#ba001c]/10 w-64"
           />
         </form>
-        <div className="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 overflow-hidden relative">
+        <div className="w-10 h-10 rounded-full bg-[var(--color-surface-container)] border border-[var(--color-border-subtle)] overflow-hidden relative">
            <Image 
              src={`https://ui-avatars.com/api/?name=Admin+Staff&background=ba001c&color=fff`} 
              alt="Admin" 

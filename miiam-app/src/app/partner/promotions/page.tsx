@@ -154,8 +154,8 @@ export default function VendorPromotions() {
     <div className="p-4 md:p-8 space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Promotions & Offers</h1>
-          <p className="text-slate-500 mt-1">Create discount codes to attract more customers</p>
+          <h1 className="text-3xl font-extrabold text-[var(--color-on-surface)] tracking-tight">Promotions & Offers</h1>
+          <p className="text-[var(--color-outline)] mt-1">Create discount codes to attract more customers</p>
         </div>
         <button
           onClick={() => { generateCode(); setShowCreate(true); }}
@@ -170,21 +170,21 @@ export default function VendorPromotions() {
       {segments.length > 0 && (
         <div>
           <div className="flex items-center gap-2 mb-4">
-            <span className="material-symbols-outlined text-slate-500">campaign</span>
-            <h2 className="text-lg font-extrabold text-slate-800">Targeted Offers</h2>
-            <span className="text-[10px] text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">Send offers to segments</span>
+            <span className="material-symbols-outlined text-[var(--color-outline)]">campaign</span>
+            <h2 className="text-lg font-extrabold text-[var(--color-on-surface)]">Targeted Offers</h2>
+            <span className="text-[10px] text-[var(--color-outline-variant)] bg-[var(--color-surface-container)] px-2 py-0.5 rounded-full">Send offers to segments</span>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {segments.map((seg) => (
-              <div key={seg.key} className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 border border-slate-200 hover:shadow-sm transition-shadow">
+              <div key={seg.key} className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 border border-[var(--color-border-subtle)] hover:shadow-sm transition-shadow">
                 <div className="flex items-center justify-between mb-3">
-                  <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center">
-                    <span className="material-symbols-outlined text-slate-600">{seg.icon}</span>
+                  <div className="w-10 h-10 bg-[var(--color-surface-container)] rounded-xl flex items-center justify-center">
+                    <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">{seg.icon}</span>
                   </div>
-                  <span className="text-2xl font-black text-slate-900">{seg.count}</span>
+                  <span className="text-2xl font-black text-[var(--color-on-surface)]">{seg.count}</span>
                 </div>
-                <p className="font-bold text-slate-800 text-sm">{seg.label}</p>
-                <p className="text-[10px] text-slate-500 mt-1">{seg.description}</p>
+                <p className="font-bold text-[var(--color-on-surface)] text-sm">{seg.label}</p>
+                <p className="text-[10px] text-[var(--color-outline)] mt-1">{seg.description}</p>
               </div>
             ))}
           </div>
@@ -194,12 +194,12 @@ export default function VendorPromotions() {
       {/* Active Promos */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {loading ? (
-          <div className="col-span-full text-center py-12 text-slate-400 animate-pulse">Loading promotions...</div>
+          <div className="col-span-full text-center py-12 text-[var(--color-outline-variant)] animate-pulse">Loading promotions...</div>
         ) : promoCodes.length === 0 ? (
-          <div className="col-span-full bg-[var(--color-surface-container-lowest)] border-2 border-dashed border-slate-200 rounded-3xl p-16 text-center">
-            <span className="material-symbols-outlined text-6xl text-slate-300 mb-4">local_offer</span>
-            <p className="text-slate-400 font-medium text-lg">No promotions yet</p>
-            <p className="text-slate-300 text-sm mt-1">Create your first offer to attract more customers</p>
+          <div className="col-span-full bg-[var(--color-surface-container-lowest)] border-2 border-dashed border-[var(--color-border-subtle)] rounded-3xl p-16 text-center">
+            <span className="material-symbols-outlined text-6xl text-[var(--color-outline-variant)]/60 mb-4">local_offer</span>
+            <p className="text-[var(--color-outline-variant)] font-medium text-lg">No promotions yet</p>
+            <p className="text-[var(--color-outline-variant)]/60 text-sm mt-1">Create your first offer to attract more customers</p>
           </div>
         ) : (
           promoCodes.map((promo) => {
@@ -208,13 +208,13 @@ export default function VendorPromotions() {
               <div
                 key={promo.id}
                 className={`bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border transition-all ${
-                  expired ? "border-slate-200 opacity-60" : "border-slate-200 hover:shadow-md"
+                  expired ? "border-[var(--color-border-subtle)] opacity-60" : "border-[var(--color-border-subtle)] hover:shadow-md"
                 }`}
               >
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <p className="text-2xl font-black tracking-wider text-[#ba001c]">{promo.code}</p>
-                    <p className="text-sm text-slate-500 mt-1">
+                    <p className="text-sm text-[var(--color-outline)] mt-1">
                       {promo.discount_value}% off{promo.max_discount ? ` • Up to ₹${promo.max_discount}` : ""}
                     </p>
                   </div>
@@ -225,7 +225,7 @@ export default function VendorPromotions() {
                       className={`text-xs font-bold px-2 py-1 rounded-full ${
                         promo.is_active && !expired
                           ? "bg-green-100 text-green-700"
-                          : "bg-slate-100 text-slate-500"
+                          : "bg-[var(--color-surface-container)] text-[var(--color-outline)]"
                       }`}
                     >
                       {promo.is_active && !expired ? "Active" : expired ? "Expired" : "Paused"}
@@ -242,23 +242,23 @@ export default function VendorPromotions() {
 
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-slate-500">Min Order</span>
-                    <span className="font-bold text-slate-700">₹{promo.min_order_amount || 0}</span>
+                    <span className="text-[var(--color-outline)]">Min Order</span>
+                    <span className="font-bold text-[var(--color-on-surface)]">₹{promo.min_order_amount || 0}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-500">Usage</span>
-                    <span className="font-bold text-slate-700">{promo.used_count || 0}/{promo.usage_limit || "∞"}</span>
+                    <span className="text-[var(--color-outline)]">Usage</span>
+                    <span className="font-bold text-[var(--color-on-surface)]">{promo.used_count || 0}/{promo.usage_limit || "∞"}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-500">Valid Until</span>
-                    <span className={`font-bold ${expired ? "text-red-500" : "text-slate-700"}`}>
+                    <span className="text-[var(--color-outline)]">Valid Until</span>
+                    <span className={`font-bold ${expired ? "text-red-500" : "text-[var(--color-on-surface)]"}`}>
                       {new Date(promo.valid_until).toLocaleDateString()}
                     </span>
                   </div>
                 </div>
 
                 {/* Usage Bar */}
-                <div className="mt-4 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                <div className="mt-4 h-1.5 bg-[var(--color-surface-container)] rounded-full overflow-hidden">
                   <div
                     className="h-full bg-[#ba001c] rounded-full transition-all"
                     style={{ width: `${promo.usage_limit ? Math.min(((promo.used_count || 0) / promo.usage_limit) * 100, 100) : 0}%` }}
@@ -275,78 +275,78 @@ export default function VendorPromotions() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowCreate(false)}>
           <div className="bg-white w-full max-w-md rounded-3xl p-6 m-4" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-extrabold text-slate-900">Create Promotion</h2>
-              <button onClick={() => setShowCreate(false)} className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
+              <h2 className="text-xl font-extrabold text-[var(--color-on-surface)]">Create Promotion</h2>
+              <button onClick={() => setShowCreate(false)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-semibold text-slate-700">Promo Code</label>
+                <label className="text-sm font-semibold text-[var(--color-on-surface)]">Promo Code</label>
                 <div className="flex gap-2 mt-1">
                   <input
                     type="text"
                     value={newPromo.code}
                     onChange={(e) => setNewPromo({ ...newPromo, code: e.target.value.toUpperCase() })}
                     placeholder="e.g., MIIAM30"
-                    className="flex-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c] uppercase font-bold tracking-wider"
+                    className="flex-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c] uppercase font-bold tracking-wider"
                   />
-                  <button onClick={generateCode} className="px-3 py-2 bg-slate-100 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-200">
+                  <button onClick={generateCode} className="px-3 py-2 bg-[var(--color-surface-container)] rounded-xl text-xs font-bold text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]">
                     Generate
                   </button>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-semibold text-slate-700">Discount %</label>
+                  <label className="text-sm font-semibold text-[var(--color-on-surface)]">Discount %</label>
                   <input
                     type="number"
                     min="1"
                     max="100"
                     value={newPromo.discount_value}
                     onChange={(e) => setNewPromo({ ...newPromo, discount_value: parseInt(e.target.value) || 0 })}
-                    className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]"
+                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-semibold text-slate-700">Max Discount (₹)</label>
+                  <label className="text-sm font-semibold text-[var(--color-on-surface)]">Max Discount (₹)</label>
                   <input
                     type="number"
                     min="0"
                     value={newPromo.max_discount}
                     onChange={(e) => setNewPromo({ ...newPromo, max_discount: parseInt(e.target.value) || 0 })}
-                    className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]"
+                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
                   />
                 </div>
               </div>
               <div>
-                  <label className="text-sm font-semibold text-slate-700">Min Order Amount (₹)</label>
+                  <label className="text-sm font-semibold text-[var(--color-on-surface)]">Min Order Amount (₹)</label>
                   <input
                     type="number"
                     min="0"
                     value={newPromo.min_order_amount}
                     onChange={(e) => setNewPromo({ ...newPromo, min_order_amount: parseInt(e.target.value) || 0 })}
-                    className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]"
+                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
                   />
               </div>
               <div>
-                <label className="text-sm font-semibold text-slate-700">Usage Limit</label>
+                <label className="text-sm font-semibold text-[var(--color-on-surface)]">Usage Limit</label>
                 <input
                   type="number"
                   min="1"
                   value={newPromo.usage_limit}
                   onChange={(e) => setNewPromo({ ...newPromo, usage_limit: parseInt(e.target.value) || 1 })}
-                  className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]"
+                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
                 />
               </div>
               <div>
-                <label className="text-sm font-semibold text-slate-700">Valid Until</label>
+                <label className="text-sm font-semibold text-[var(--color-on-surface)]">Valid Until</label>
                 <input
                   type="date"
                   value={newPromo.valid_until}
                   onChange={(e) => setNewPromo({ ...newPromo, valid_until: e.target.value })}
                   min={new Date().toISOString().split("T")[0]}
-                  className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]"
+                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]"
                 />
               </div>
               <button

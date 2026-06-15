@@ -198,7 +198,7 @@ export default function ReportsPage() {
   const statusColors: Record<string, string> = {
     delivered: "bg-green-100 text-green-700",
     cancelled: "bg-red-100 text-red-700",
-    refunded: "bg-slate-100 text-slate-700",
+    refunded: "bg-[var(--color-surface-container)] text-[var(--color-on-surface)]",
     pending: "bg-yellow-100 text-yellow-700",
     processing: "bg-indigo-100 text-indigo-700",
     on_the_way: "bg-cyan-100 text-cyan-700",
@@ -207,8 +207,8 @@ export default function ReportsPage() {
   return (
     <div className="px-8 space-y-8">
       <div>
-        <h1 className="text-3xl font-black text-slate-800">Reports</h1>
-        <p className="text-slate-400 text-sm">Generate and export platform reports</p>
+        <h1 className="text-3xl font-black text-[var(--color-on-surface)]">Reports</h1>
+        <p className="text-[var(--color-outline-variant)] text-sm">Generate and export platform reports</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
@@ -219,30 +219,30 @@ export default function ReportsPage() {
             className={`p-6 rounded-2xl text-left transition-all ${
               reportType === type.id
                 ? "bg-[#ba001c] text-white shadow-lg shadow-red-900/20"
-                : "bg-[var(--color-surface-container-lowest)] border border-slate-100 hover:border-slate-200"
+                : "bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] hover:border-[var(--color-border-subtle)]"
             }`}
           >
-            <span className={`material-symbols-outlined text-2xl mb-3 ${reportType === type.id ? "text-white" : "text-slate-400"}`}>{type.icon}</span>
+            <span className={`material-symbols-outlined text-2xl mb-3 ${reportType === type.id ? "text-white" : "text-[var(--color-outline-variant)]"}`}>{type.icon}</span>
             <p className="font-bold">{type.label}</p>
-            <p className={`text-xs ${reportType === type.id ? "text-white/70" : "text-slate-400"}`}>{type.description}</p>
+            <p className={`text-xs ${reportType === type.id ? "text-white/70" : "text-[var(--color-outline-variant)]"}`}>{type.description}</p>
           </button>
         ))}
       </div>
 
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-8 shadow-sm">
-        <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm mb-6">Date Range</h3>
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-8 shadow-sm">
+        <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm mb-6">Date Range</h3>
         <div className="flex flex-wrap gap-4 items-end">
           <div>
-            <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Start Date</label>
-            <input type="date" value={dateRange.start} onChange={(e) => setDateRange({ ...dateRange, start: e.target.value })} className="p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20" />
+            <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Start Date</label>
+            <input type="date" value={dateRange.start} onChange={(e) => setDateRange({ ...dateRange, start: e.target.value })} className="p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20" />
           </div>
           <div>
-            <label className="block text-xs font-bold text-slate-400 uppercase mb-2">End Date</label>
-            <input type="date" value={dateRange.end} onChange={(e) => setDateRange({ ...dateRange, end: e.target.value })} className="p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20" />
+            <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">End Date</label>
+            <input type="date" value={dateRange.end} onChange={(e) => setDateRange({ ...dateRange, end: e.target.value })} className="p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20" />
           </div>
           <div className="flex gap-2">
             {[{ label: "Today", days: 0 }, { label: "7D", days: 7 }, { label: "30D", days: 30 }, { label: "90D", days: 90 }].map((preset) => (
-              <button key={preset.label} onClick={() => { const end = new Date(); const start = new Date(); start.setDate(start.getDate() - preset.days); setDateRange({ start: start.toISOString().split("T")[0], end: end.toISOString().split("T")[0] }); }} className="px-4 py-2 bg-slate-100 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-200">
+              <button key={preset.label} onClick={() => { const end = new Date(); const start = new Date(); start.setDate(start.getDate() - preset.days); setDateRange({ start: start.toISOString().split("T")[0], end: end.toISOString().split("T")[0] }); }} className="px-4 py-2 bg-[var(--color-surface-container)] rounded-lg text-xs font-bold text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]">
                 {preset.label}
               </button>
             ))}
@@ -257,72 +257,72 @@ export default function ReportsPage() {
       ) : (
         <>
           {reportType === "orders" && (
-            <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] overflow-hidden shadow-sm">
               <div className="p-6 border-b border-slate-50 flex justify-between items-center">
-                <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm">Orders Report</h3>
+                <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm">Orders Report</h3>
                 <button onClick={exportCsv} className="px-4 py-2 bg-[#ba001c] rounded-lg text-xs font-bold text-white flex items-center gap-1 hover:opacity-90">
                   <span className="material-symbols-outlined text-sm">download</span> Export CSV
                 </button>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-left">
-                  <thead className="bg-slate-50">
+                  <thead className="bg-[var(--color-surface-subtle)]">
                     <tr>
-                      <th className="p-4 text-xs font-black text-slate-400 uppercase">Order ID</th>
-                      <th className="p-4 text-xs font-black text-slate-400 uppercase">Vendor</th>
-                      <th className="p-4 text-xs font-black text-slate-400 uppercase">Customer</th>
-                      <th className="p-4 text-xs font-black text-slate-400 uppercase">Status</th>
-                      <th className="p-4 text-xs font-black text-slate-400 uppercase">Total</th>
-                      <th className="p-4 text-xs font-black text-slate-400 uppercase">Date</th>
+                      <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">Order ID</th>
+                      <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">Vendor</th>
+                      <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">Customer</th>
+                      <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">Status</th>
+                      <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">Total</th>
+                      <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">Date</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-50">
                     {orders.length === 0 ? (
-                      <tr><td colSpan={6} className="p-8 text-center text-slate-400">No orders found for this date range</td></tr>
+                      <tr><td colSpan={6} className="p-8 text-center text-[var(--color-outline-variant)]">No orders found for this date range</td></tr>
                     ) : orders.map((order) => (
                       <tr key={order.id}>
-                        <td className="p-4 font-bold text-slate-800">{order.id}</td>
-                        <td className="p-4 text-sm text-slate-600">{order.vendor_name}</td>
-                        <td className="p-4 text-sm text-slate-600">{order.customer_name}</td>
+                        <td className="p-4 font-bold text-[var(--color-on-surface)]">{order.id}</td>
+                        <td className="p-4 text-sm text-[var(--color-on-surface-variant)]">{order.vendor_name}</td>
+                        <td className="p-4 text-sm text-[var(--color-on-surface-variant)]">{order.customer_name}</td>
                         <td className="p-4">
-                          <span className={`text-xs font-bold px-3 py-1 rounded-full ${statusColors[order.status] || "bg-slate-100 text-slate-700"}`}>
+                          <span className={`text-xs font-bold px-3 py-1 rounded-full ${statusColors[order.status] || "bg-[var(--color-surface-container)] text-[var(--color-on-surface)]"}`}>
                             {order.status.replace(/_/g, " ")}
                           </span>
                         </td>
-                        <td className="p-4 font-bold text-slate-800">₹{order.total_amount.toLocaleString("en-IN")}</td>
-                        <td className="p-4 text-sm text-slate-600">{new Date(order.placed_at).toLocaleDateString("en-IN")}</td>
+                        <td className="p-4 font-bold text-[var(--color-on-surface)]">₹{order.total_amount.toLocaleString("en-IN")}</td>
+                        <td className="p-4 text-sm text-[var(--color-on-surface-variant)]">{new Date(order.placed_at).toLocaleDateString("en-IN")}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
-              <div className="p-4 bg-slate-50 text-center text-xs text-slate-400">Showing {orders.length} orders</div>
+              <div className="p-4 bg-[var(--color-surface-subtle)] text-center text-xs text-[var(--color-outline-variant)]">Showing {orders.length} orders</div>
             </div>
           )}
 
           {reportType === "revenue" && (
-            <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-8 shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-8 shadow-sm">
               <div className="flex justify-between items-center mb-6">
-                <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm">Revenue Report</h3>
+                <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm">Revenue Report</h3>
                 <button onClick={exportCsv} className="px-4 py-2 bg-[#ba001c] rounded-lg text-xs font-bold text-white flex items-center gap-1 hover:opacity-90">
                   <span className="material-symbols-outlined text-sm">download</span> Export CSV
                 </button>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                <div className="p-6 bg-slate-50 rounded-2xl">
-                  <p className="text-xs font-bold text-slate-400 uppercase">Gross Revenue</p>
-                  <p className="text-2xl font-black text-slate-800 mt-2">₹{revenue.gross.toLocaleString("en-IN")}</p>
+                <div className="p-6 bg-[var(--color-surface-subtle)] rounded-2xl">
+                  <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase">Gross Revenue</p>
+                  <p className="text-2xl font-black text-[var(--color-on-surface)] mt-2">₹{revenue.gross.toLocaleString("en-IN")}</p>
                 </div>
-                <div className="p-6 bg-slate-50 rounded-2xl">
-                  <p className="text-xs font-bold text-slate-400 uppercase">Net Revenue</p>
-                  <p className="text-2xl font-black text-slate-800 mt-2">₹{revenue.net.toLocaleString("en-IN")}</p>
+                <div className="p-6 bg-[var(--color-surface-subtle)] rounded-2xl">
+                  <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase">Net Revenue</p>
+                  <p className="text-2xl font-black text-[var(--color-on-surface)] mt-2">₹{revenue.net.toLocaleString("en-IN")}</p>
                 </div>
-                <div className="p-6 bg-slate-50 rounded-2xl">
-                  <p className="text-xs font-bold text-slate-400 uppercase">Platform Fee (15%)</p>
-                  <p className="text-2xl font-black text-slate-800 mt-2">₹{revenue.platformFee.toLocaleString("en-IN")}</p>
+                <div className="p-6 bg-[var(--color-surface-subtle)] rounded-2xl">
+                  <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase">Platform Fee (15%)</p>
+                  <p className="text-2xl font-black text-[var(--color-on-surface)] mt-2">₹{revenue.platformFee.toLocaleString("en-IN")}</p>
                 </div>
-                <div className="p-6 bg-slate-50 rounded-2xl">
-                  <p className="text-xs font-bold text-slate-400 uppercase">Refunds</p>
+                <div className="p-6 bg-[var(--color-surface-subtle)] rounded-2xl">
+                  <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase">Refunds</p>
                   <p className="text-2xl font-black text-red-600 mt-2">₹{revenue.refunds.toLocaleString("en-IN")}</p>
                 </div>
               </div>
@@ -330,31 +330,31 @@ export default function ReportsPage() {
           )}
 
           {reportType === "vendors" && (
-            <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] overflow-hidden shadow-sm">
               <div className="p-6 border-b border-slate-50 flex justify-between items-center">
-                <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm">Vendor Performance Report</h3>
+                <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm">Vendor Performance Report</h3>
                 <button onClick={exportCsv} className="px-4 py-2 bg-[#ba001c] rounded-lg text-xs font-bold text-white flex items-center gap-1 hover:opacity-90">
                   <span className="material-symbols-outlined text-sm">download</span> Export CSV
                 </button>
               </div>
               <table className="w-full text-left">
-                <thead className="bg-slate-50">
+                <thead className="bg-[var(--color-surface-subtle)]">
                   <tr>
-                    <th className="p-4 text-xs font-black text-slate-400 uppercase">Vendor</th>
-                    <th className="p-4 text-xs font-black text-slate-400 uppercase">Orders</th>
-                    <th className="p-4 text-xs font-black text-slate-400 uppercase">Revenue</th>
-                    <th className="p-4 text-xs font-black text-slate-400 uppercase">Avg Order</th>
+                    <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">Vendor</th>
+                    <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">Orders</th>
+                    <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">Revenue</th>
+                    <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">Avg Order</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50">
                   {vendors.length === 0 ? (
-                    <tr><td colSpan={4} className="p-8 text-center text-slate-400">No vendor data for this date range</td></tr>
+                    <tr><td colSpan={4} className="p-8 text-center text-[var(--color-outline-variant)]">No vendor data for this date range</td></tr>
                   ) : vendors.map((vendor) => (
                     <tr key={vendor.name}>
-                      <td className="p-4 font-bold text-slate-800">{vendor.name}</td>
-                      <td className="p-4 text-sm text-slate-600">{vendor.orders}</td>
-                      <td className="p-4 font-bold text-slate-800">₹{vendor.revenue.toLocaleString("en-IN")}</td>
-                      <td className="p-4 text-sm text-slate-600">₹{vendor.orders > 0 ? Math.round(vendor.revenue / vendor.orders).toLocaleString("en-IN") : 0}</td>
+                      <td className="p-4 font-bold text-[var(--color-on-surface)]">{vendor.name}</td>
+                      <td className="p-4 text-sm text-[var(--color-on-surface-variant)]">{vendor.orders}</td>
+                      <td className="p-4 font-bold text-[var(--color-on-surface)]">₹{vendor.revenue.toLocaleString("en-IN")}</td>
+                      <td className="p-4 text-sm text-[var(--color-on-surface-variant)]">₹{vendor.orders > 0 ? Math.round(vendor.revenue / vendor.orders).toLocaleString("en-IN") : 0}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -363,31 +363,31 @@ export default function ReportsPage() {
           )}
 
           {reportType === "riders" && (
-            <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] overflow-hidden shadow-sm">
               <div className="p-6 border-b border-slate-50 flex justify-between items-center">
-                <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm">Rider Performance Report</h3>
+                <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm">Rider Performance Report</h3>
                 <button onClick={exportCsv} className="px-4 py-2 bg-[#ba001c] rounded-lg text-xs font-bold text-white flex items-center gap-1 hover:opacity-90">
                   <span className="material-symbols-outlined text-sm">download</span> Export CSV
                 </button>
               </div>
               <table className="w-full text-left">
-                <thead className="bg-slate-50">
+                <thead className="bg-[var(--color-surface-subtle)]">
                   <tr>
-                    <th className="p-4 text-xs font-black text-slate-400 uppercase">Rider</th>
-                    <th className="p-4 text-xs font-black text-slate-400 uppercase">Deliveries</th>
-                    <th className="p-4 text-xs font-black text-slate-400 uppercase">Earnings</th>
-                    <th className="p-4 text-xs font-black text-slate-400 uppercase">Avg per Delivery</th>
+                    <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">Rider</th>
+                    <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">Deliveries</th>
+                    <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">Earnings</th>
+                    <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">Avg per Delivery</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50">
                   {riders.length === 0 ? (
-                    <tr><td colSpan={4} className="p-8 text-center text-slate-400">No rider data for this date range</td></tr>
+                    <tr><td colSpan={4} className="p-8 text-center text-[var(--color-outline-variant)]">No rider data for this date range</td></tr>
                   ) : riders.map((rider) => (
                     <tr key={rider.name}>
-                      <td className="p-4 font-bold text-slate-800">{rider.name}</td>
-                      <td className="p-4 text-sm text-slate-600">{rider.deliveries}</td>
-                      <td className="p-4 font-bold text-slate-800">₹{rider.earnings.toLocaleString("en-IN")}</td>
-                      <td className="p-4 text-sm text-slate-600">₹{rider.deliveries > 0 ? Math.round(rider.earnings / rider.deliveries).toLocaleString("en-IN") : 0}</td>
+                      <td className="p-4 font-bold text-[var(--color-on-surface)]">{rider.name}</td>
+                      <td className="p-4 text-sm text-[var(--color-on-surface-variant)]">{rider.deliveries}</td>
+                      <td className="p-4 font-bold text-[var(--color-on-surface)]">₹{rider.earnings.toLocaleString("en-IN")}</td>
+                      <td className="p-4 text-sm text-[var(--color-on-surface-variant)]">₹{rider.deliveries > 0 ? Math.round(rider.earnings / rider.deliveries).toLocaleString("en-IN") : 0}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -396,25 +396,25 @@ export default function ReportsPage() {
           )}
 
           {reportType === "users" && (
-            <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-8 shadow-sm">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-8 shadow-sm">
               <div className="flex justify-between items-center mb-6">
-                <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm">User Analytics Report</h3>
+                <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm">User Analytics Report</h3>
                 <button onClick={exportCsv} className="px-4 py-2 bg-[#ba001c] rounded-lg text-xs font-bold text-white flex items-center gap-1 hover:opacity-90">
                   <span className="material-symbols-outlined text-sm">download</span> Export CSV
                 </button>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-                <div className="p-6 bg-slate-50 rounded-2xl">
-                  <p className="text-xs font-bold text-slate-400 uppercase">Total Users</p>
-                  <p className="text-2xl font-black text-slate-800 mt-2">{userStats.total.toLocaleString("en-IN")}</p>
+                <div className="p-6 bg-[var(--color-surface-subtle)] rounded-2xl">
+                  <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase">Total Users</p>
+                  <p className="text-2xl font-black text-[var(--color-on-surface)] mt-2">{userStats.total.toLocaleString("en-IN")}</p>
                 </div>
-                <div className="p-6 bg-slate-50 rounded-2xl">
-                  <p className="text-xs font-bold text-slate-400 uppercase">New This Month</p>
-                  <p className="text-2xl font-black text-slate-800 mt-2">{userStats.newThisMonth.toLocaleString("en-IN")}</p>
+                <div className="p-6 bg-[var(--color-surface-subtle)] rounded-2xl">
+                  <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase">New This Month</p>
+                  <p className="text-2xl font-black text-[var(--color-on-surface)] mt-2">{userStats.newThisMonth.toLocaleString("en-IN")}</p>
                 </div>
-                <div className="p-6 bg-slate-50 rounded-2xl">
-                  <p className="text-xs font-bold text-slate-400 uppercase">Active (30d)</p>
-                  <p className="text-2xl font-black text-slate-800 mt-2">{userStats.active.toLocaleString("en-IN")}</p>
+                <div className="p-6 bg-[var(--color-surface-subtle)] rounded-2xl">
+                  <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase">Active (30d)</p>
+                  <p className="text-2xl font-black text-[var(--color-on-surface)] mt-2">{userStats.active.toLocaleString("en-IN")}</p>
                 </div>
               </div>
             </div>

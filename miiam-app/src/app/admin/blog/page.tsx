@@ -149,7 +149,7 @@ export default function BlogAdminPage() {
   const publishedCount = posts.filter(p => p.published).length;
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-[var(--color-surface-subtle)]">
       <div className="bg-gradient-to-r from-green-600 to-emerald-500 text-white p-6">
         <div className="flex items-center justify-between">
           <div>
@@ -168,20 +168,20 @@ export default function BlogAdminPage() {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-6 -mt-8">
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-lg">
-          <div className="text-sm text-slate-500 mb-1">Total Articles</div>
-          <div className="text-2xl font-black text-slate-800">{posts.length}</div>
+          <div className="text-sm text-[var(--color-outline)] mb-1">Total Articles</div>
+          <div className="text-2xl font-black text-[var(--color-on-surface)]">{posts.length}</div>
         </div>
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-lg">
-          <div className="text-sm text-slate-500 mb-1">Published</div>
+          <div className="text-sm text-[var(--color-outline)] mb-1">Published</div>
           <div className="text-2xl font-black text-green-600">{publishedCount}</div>
         </div>
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-lg">
-          <div className="text-sm text-slate-500 mb-1">Total Views</div>
-          <div className="text-2xl font-black text-slate-800">{totalViews.toLocaleString()}</div>
+          <div className="text-sm text-[var(--color-outline)] mb-1">Total Views</div>
+          <div className="text-2xl font-black text-[var(--color-on-surface)]">{totalViews.toLocaleString()}</div>
         </div>
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-lg">
-          <div className="text-sm text-slate-500 mb-1">Avg Views</div>
-          <div className="text-2xl font-black text-slate-800">
+          <div className="text-sm text-[var(--color-outline)] mb-1">Avg Views</div>
+          <div className="text-2xl font-black text-[var(--color-on-surface)]">
             {posts.length > 0 ? Math.round(totalViews / posts.length).toLocaleString() : "0"}
           </div>
         </div>
@@ -197,7 +197,7 @@ export default function BlogAdminPage() {
                 className={`px-4 py-2 rounded-full font-bold text-sm whitespace-nowrap transition-colors ${
                   activeCategory === cat
                     ? "bg-green-600 text-white"
-                    : "bg-[var(--color-surface-container-lowest)] text-slate-600 border border-slate-200"
+                    : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface-variant)] border border-[var(--color-border-subtle)]"
                 }`}
               >
                 {cat}
@@ -205,13 +205,13 @@ export default function BlogAdminPage() {
             ))}
           </div>
           <div className="relative">
-            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-outline-variant)]">search</span>
             <input
               type="text"
               placeholder="Search articles..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className="pl-10 pr-4 py-2 rounded-xl border border-slate-200 focus:outline-none focus:border-green-500 w-full md:w-64"
+              className="pl-10 pr-4 py-2 rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-green-500 w-full md:w-64"
             />
           </div>
         </div>
@@ -224,8 +224,8 @@ export default function BlogAdminPage() {
           </div>
         ) : filteredPosts.length === 0 ? (
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-12 text-center">
-            <span className="material-symbols-outlined text-5xl text-slate-300">article</span>
-            <p className="text-slate-400 font-medium mt-3">No articles yet</p>
+            <span className="material-symbols-outlined text-5xl text-[var(--color-outline-variant)]/60">article</span>
+            <p className="text-[var(--color-outline-variant)] font-medium mt-3">No articles yet</p>
             <button onClick={openCreateModal} className="mt-4 text-green-600 font-bold text-sm hover:underline">
               Create your first article
             </button>
@@ -243,7 +243,7 @@ export default function BlogAdminPage() {
                     </div>
                   )}
                   <div className="absolute top-3 left-3">
-                    <span className="bg-[var(--color-surface-container-lowest)]/90 backdrop-blur px-2 py-1 rounded-full text-xs font-bold text-slate-700">
+                    <span className="bg-[var(--color-surface-container-lowest)]/90 backdrop-blur px-2 py-1 rounded-full text-xs font-bold text-[var(--color-on-surface)]">
                       {post.category}
                     </span>
                   </div>
@@ -251,7 +251,7 @@ export default function BlogAdminPage() {
                     <button
                       onClick={() => togglePublish(post)}
                       className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                        post.published ? "bg-green-500 text-white" : "bg-slate-200 text-slate-500"
+                        post.published ? "bg-green-500 text-white" : "bg-[var(--color-surface-container-high)] text-[var(--color-outline)]"
                       }`}
                     >
                       <span className="material-symbols-outlined text-sm">
@@ -262,10 +262,10 @@ export default function BlogAdminPage() {
                 </div>
 
                 <div className="p-4">
-                  <h3 className="font-bold text-slate-800 mb-2 line-clamp-2">{post.title}</h3>
-                  <p className="text-sm text-slate-500 mb-3 line-clamp-2">{post.excerpt}</p>
+                  <h3 className="font-bold text-[var(--color-on-surface)] mb-2 line-clamp-2">{post.title}</h3>
+                  <p className="text-sm text-[var(--color-outline)] mb-3 line-clamp-2">{post.excerpt}</p>
 
-                  <div className="flex items-center justify-between text-xs text-slate-400">
+                  <div className="flex items-center justify-between text-xs text-[var(--color-outline-variant)]">
                     <div className="flex items-center gap-2">
                       <span className="material-symbols-outlined text-sm">schedule</span>
                       {post.read_time || 5} min read
@@ -276,7 +276,7 @@ export default function BlogAdminPage() {
                     </div>
                   </div>
 
-                  <div className="flex gap-2 mt-4 pt-4 border-t border-slate-100">
+                  <div className="flex gap-2 mt-4 pt-4 border-t border-[var(--color-border-subtle)]">
                     <button
                       onClick={() => openEditModal(post)}
                       className="flex-1 text-green-600 font-bold text-sm hover:underline"
@@ -300,38 +300,38 @@ export default function BlogAdminPage() {
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
           <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-slate-100">
+            <div className="p-6 border-b border-[var(--color-border-subtle)]">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-black text-slate-800">
+                <h2 className="text-xl font-black text-[var(--color-on-surface)]">
                   {editingPost ? "Edit Article" : "Create New Article"}
                 </h2>
                 <button
                   onClick={() => setShowModal(false)}
-                  className="w-10 h-10 rounded-full hover:bg-slate-100 flex items-center justify-center"
+                  className="w-10 h-10 rounded-full hover:bg-[var(--color-surface-container)] flex items-center justify-center"
                 >
-                  <span className="material-symbols-outlined text-slate-400">close</span>
+                  <span className="material-symbols-outlined text-[var(--color-outline-variant)]">close</span>
                 </button>
               </div>
             </div>
 
             <div className="p-6 space-y-4">
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-1">Title</label>
+                <label className="block text-sm font-bold text-[var(--color-on-surface)] mb-1">Title</label>
                 <input
                   type="text"
                   value={formTitle}
                   onChange={e => setFormTitle(e.target.value)}
-                  className="w-full p-3 rounded-xl border border-slate-200 focus:border-green-500 outline-none"
+                  className="w-full p-3 rounded-xl border border-[var(--color-border-subtle)] focus:border-green-500 outline-none"
                   placeholder="Enter article title"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-1">Category</label>
+                <label className="block text-sm font-bold text-[var(--color-on-surface)] mb-1">Category</label>
                 <select
                   value={formCategory}
                   onChange={e => setFormCategory(e.target.value)}
-                  className="w-full p-3 rounded-xl border border-slate-200 focus:border-green-500 outline-none"
+                  className="w-full p-3 rounded-xl border border-[var(--color-border-subtle)] focus:border-green-500 outline-none"
                 >
                   {categories.filter(c => c !== "All").map(cat => (
                     <option key={cat} value={cat}>{cat}</option>
@@ -340,45 +340,45 @@ export default function BlogAdminPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-1">Excerpt</label>
+                <label className="block text-sm font-bold text-[var(--color-on-surface)] mb-1">Excerpt</label>
                 <textarea
                   value={formExcerpt}
                   onChange={e => setFormExcerpt(e.target.value)}
-                  className="w-full p-3 rounded-xl border border-slate-200 focus:border-green-500 outline-none resize-none"
+                  className="w-full p-3 rounded-xl border border-[var(--color-border-subtle)] focus:border-green-500 outline-none resize-none"
                   rows={3}
                   placeholder="Short description..."
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-1">Content</label>
+                <label className="block text-sm font-bold text-[var(--color-on-surface)] mb-1">Content</label>
                 <textarea
                   value={formContent}
                   onChange={e => setFormContent(e.target.value)}
-                  className="w-full p-3 rounded-xl border border-slate-200 focus:border-green-500 outline-none resize-none"
+                  className="w-full p-3 rounded-xl border border-[var(--color-border-subtle)] focus:border-green-500 outline-none resize-none"
                   rows={6}
                   placeholder="Full article content..."
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-1">Featured Image URL</label>
+                <label className="block text-sm font-bold text-[var(--color-on-surface)] mb-1">Featured Image URL</label>
                 <input
                   type="text"
                   value={formImage}
                   onChange={e => setFormImage(e.target.value)}
-                  className="w-full p-3 rounded-xl border border-slate-200 focus:border-green-500 outline-none"
+                  className="w-full p-3 rounded-xl border border-[var(--color-border-subtle)] focus:border-green-500 outline-none"
                   placeholder="https://..."
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-1">Author</label>
+                <label className="block text-sm font-bold text-[var(--color-on-surface)] mb-1">Author</label>
                 <input
                   type="text"
                   value={formAuthor}
                   onChange={e => setFormAuthor(e.target.value)}
-                  className="w-full p-3 rounded-xl border border-slate-200 focus:border-green-500 outline-none"
+                  className="w-full p-3 rounded-xl border border-[var(--color-border-subtle)] focus:border-green-500 outline-none"
                   placeholder="Author name"
                 />
               </div>

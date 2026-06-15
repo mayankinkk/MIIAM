@@ -97,8 +97,8 @@ export default function SettingsPage() {
   return (
     <div className="px-8 space-y-8">
       <div>
-        <h1 className="text-3xl font-black text-slate-800">Settings</h1>
-        <p className="text-slate-400 text-sm">Platform configuration and preferences</p>
+        <h1 className="text-3xl font-black text-[var(--color-on-surface)]">Settings</h1>
+        <p className="text-[var(--color-outline-variant)] text-sm">Platform configuration and preferences</p>
       </div>
 
       <div className="flex gap-4">
@@ -109,7 +109,7 @@ export default function SettingsPage() {
             className={`px-4 py-2 rounded-lg text-sm font-bold uppercase ${
               activeTab === tab
                 ? "bg-[#ba001c] text-white"
-                : "bg-[var(--color-surface-container-lowest)] text-slate-600 border border-slate-200"
+                : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface-variant)] border border-[var(--color-border-subtle)]"
             }`}
           >
             {tab}
@@ -119,83 +119,83 @@ export default function SettingsPage() {
 
       {activeTab === "general" && (
         <div className="space-y-6">
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-8 shadow-sm">
-            <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm mb-6">Platform Details</h3>
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-8 shadow-sm">
+            <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm mb-6">Platform Details</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Platform Name</label>
+                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Platform Name</label>
                 <input
                   type="text"
                   value={settings.platform_name || ""}
                   onChange={(e) => handleChange("platform_name", e.target.value)}
-                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Support Email</label>
+                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Support Email</label>
                 <input
                   type="email"
                   value={settings.support_email || ""}
                   onChange={(e) => handleChange("support_email", e.target.value)}
-                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Support Phone</label>
+                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Support Phone</label>
                 <input
                   type="tel"
                   value={settings.support_phone || ""}
                   onChange={(e) => handleChange("support_phone", e.target.value)}
-                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Platform URL</label>
+                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Platform URL</label>
                 <input
                   type="url"
                   value={settings.platform_url || ""}
                   onChange={(e) => handleChange("platform_url", e.target.value)}
-                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
                 />
               </div>
             </div>
           </div>
 
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-8 shadow-sm">
-            <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm mb-6">Business Configuration</h3>
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-8 shadow-sm">
+            <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm mb-6">Business Configuration</h3>
             <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 border border-slate-100 rounded-xl">
+              <div className="flex items-center justify-between p-4 border border-[var(--color-border-subtle)] rounded-xl">
                 <div>
-                  <p className="font-bold text-slate-800">Maintenance Mode</p>
-                  <p className="text-xs text-slate-400">Disable platform for maintenance</p>
+                  <p className="font-bold text-[var(--color-on-surface)]">Maintenance Mode</p>
+                  <p className="text-xs text-[var(--color-outline-variant)]">Disable platform for maintenance</p>
                 </div>
                 <button
                   onClick={() => toggleKey("maintenance_mode")}
-                  className={`w-12 h-6 rounded-full relative transition-colors ${isOn("maintenance_mode") ? "bg-red-500" : "bg-slate-200"}`}
+                  className={`w-12 h-6 rounded-full relative transition-colors ${isOn("maintenance_mode") ? "bg-red-500" : "bg-[var(--color-surface-container-high)]"}`}
                 >
                   <span className={`absolute top-1 w-4 h-4 bg-[var(--color-surface-container-lowest)] rounded-full transition-all ${isOn("maintenance_mode") ? "right-1" : "left-1"}`} />
                 </button>
               </div>
-              <div className="flex items-center justify-between p-4 border border-slate-100 rounded-xl">
+              <div className="flex items-center justify-between p-4 border border-[var(--color-border-subtle)] rounded-xl">
                 <div>
-                  <p className="font-bold text-slate-800">New User Registration</p>
-                  <p className="text-xs text-slate-400">Allow new users to sign up</p>
+                  <p className="font-bold text-[var(--color-on-surface)]">New User Registration</p>
+                  <p className="text-xs text-[var(--color-outline-variant)]">Allow new users to sign up</p>
                 </div>
                 <button
                   onClick={() => toggleKey("new_user_registration")}
-                  className={`w-12 h-6 rounded-full relative transition-colors ${isOn("new_user_registration") ? "bg-green-500" : "bg-slate-200"}`}
+                  className={`w-12 h-6 rounded-full relative transition-colors ${isOn("new_user_registration") ? "bg-green-500" : "bg-[var(--color-surface-container-high)]"}`}
                 >
                   <span className={`absolute top-1 w-4 h-4 bg-[var(--color-surface-container-lowest)] rounded-full transition-all ${isOn("new_user_registration") ? "right-1" : "left-1"}`} />
                 </button>
               </div>
-              <div className="flex items-center justify-between p-4 border border-slate-100 rounded-xl">
+              <div className="flex items-center justify-between p-4 border border-[var(--color-border-subtle)] rounded-xl">
                 <div>
-                  <p className="font-bold text-slate-800">Partner Onboarding</p>
-                  <p className="text-xs text-slate-400">Allow new vendors to apply</p>
+                  <p className="font-bold text-[var(--color-on-surface)]">Partner Onboarding</p>
+                  <p className="text-xs text-[var(--color-outline-variant)]">Allow new vendors to apply</p>
                 </div>
                 <button
                   onClick={() => toggleKey("partner_onboarding")}
-                  className={`w-12 h-6 rounded-full relative transition-colors ${isOn("partner_onboarding") ? "bg-green-500" : "bg-slate-200"}`}
+                  className={`w-12 h-6 rounded-full relative transition-colors ${isOn("partner_onboarding") ? "bg-green-500" : "bg-[var(--color-surface-container-high)]"}`}
                 >
                   <span className={`absolute top-1 w-4 h-4 bg-[var(--color-surface-container-lowest)] rounded-full transition-all ${isOn("partner_onboarding") ? "right-1" : "left-1"}`} />
                 </button>
@@ -206,60 +206,60 @@ export default function SettingsPage() {
       )}
 
       {activeTab === "delivery" && (
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-8 shadow-sm">
-          <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm mb-6">Delivery Settings</h3>
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-8 shadow-sm">
+          <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm mb-6">Delivery Settings</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Default Delivery Fee (₹)</label>
+              <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Default Delivery Fee (₹)</label>
               <input
                 type="number"
                 value={settings.default_delivery_fee || ""}
                 onChange={(e) => handleChange("default_delivery_fee", e.target.value)}
-                className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Free Delivery Above (₹)</label>
+              <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Free Delivery Above (₹)</label>
               <input
                 type="number"
                 value={settings.free_delivery_above || ""}
                 onChange={(e) => handleChange("free_delivery_above", e.target.value)}
-                className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Max Delivery Radius (km)</label>
+              <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Max Delivery Radius (km)</label>
               <input
                 type="number"
                 value={settings.max_delivery_radius || ""}
                 onChange={(e) => handleChange("max_delivery_radius", e.target.value)}
-                className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Max Order Value (₹)</label>
+              <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Max Order Value (₹)</label>
               <input
                 type="number"
                 value={settings.max_order_value || ""}
                 onChange={(e) => handleChange("max_order_value", e.target.value)}
-                className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Cancellation Grace Period (seconds)</label>
+              <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Cancellation Grace Period (seconds)</label>
               <input
                 type="number"
                 value={settings.cancellation_grace_period || ""}
                 onChange={(e) => handleChange("cancellation_grace_period", e.target.value)}
-                className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Auto-Accept Orders</label>
+              <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Auto-Accept Orders</label>
               <select
                 value={settings.auto_accept_orders || "true"}
                 onChange={(e) => handleChange("auto_accept_orders", e.target.value)}
-                className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
               >
                 <option value="true">Enabled</option>
                 <option value="false">Disabled</option>
@@ -270,33 +270,33 @@ export default function SettingsPage() {
       )}
 
       {activeTab === "payments" && (
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-8 shadow-sm">
-          <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm mb-6">Payment Settings</h3>
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-8 shadow-sm">
+          <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm mb-6">Payment Settings</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Platform Commission (%)</label>
+              <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Platform Commission (%)</label>
               <input
                 type="number"
                 value={settings.platform_commission || ""}
                 onChange={(e) => handleChange("platform_commission", e.target.value)}
-                className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Payment Gateway Fee (%)</label>
+              <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Payment Gateway Fee (%)</label>
               <input
                 type="number"
                 value={settings.payment_gateway_fee || ""}
                 onChange={(e) => handleChange("payment_gateway_fee", e.target.value)}
-                className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Payout Frequency</label>
+              <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Payout Frequency</label>
               <select
                 value={settings.payout_frequency || "daily"}
                 onChange={(e) => handleChange("payout_frequency", e.target.value)}
-                className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
               >
                 <option value="daily">Daily</option>
                 <option value="weekly">Weekly</option>
@@ -304,12 +304,12 @@ export default function SettingsPage() {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Min Payout Amount (₹)</label>
+              <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Min Payout Amount (₹)</label>
               <input
                 type="number"
                 value={settings.min_payout_amount || ""}
                 onChange={(e) => handleChange("min_payout_amount", e.target.value)}
-                className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
               />
             </div>
           </div>
@@ -317,41 +317,41 @@ export default function SettingsPage() {
       )}
 
       {activeTab === "notifications" && (
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-8 shadow-sm">
-          <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm mb-6">Notification Settings</h3>
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-8 shadow-sm">
+          <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm mb-6">Notification Settings</h3>
           <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 border border-slate-100 rounded-xl">
+            <div className="flex items-center justify-between p-4 border border-[var(--color-border-subtle)] rounded-xl">
               <div>
-                <p className="font-bold text-slate-800">Order Updates</p>
-                <p className="text-xs text-slate-400">Send push notifications for order status changes</p>
+                <p className="font-bold text-[var(--color-on-surface)]">Order Updates</p>
+                <p className="text-xs text-[var(--color-outline-variant)]">Send push notifications for order status changes</p>
               </div>
               <button
                 onClick={() => toggleKey("notif_order_updates")}
-                className={`w-12 h-6 rounded-full relative transition-colors ${isOn("notif_order_updates") ? "bg-green-500" : "bg-slate-200"}`}
+                className={`w-12 h-6 rounded-full relative transition-colors ${isOn("notif_order_updates") ? "bg-green-500" : "bg-[var(--color-surface-container-high)]"}`}
               >
                 <span className={`absolute top-1 w-4 h-4 bg-[var(--color-surface-container-lowest)] rounded-full transition-all ${isOn("notif_order_updates") ? "right-1" : "left-1"}`} />
               </button>
             </div>
-            <div className="flex items-center justify-between p-4 border border-slate-100 rounded-xl">
+            <div className="flex items-center justify-between p-4 border border-[var(--color-border-subtle)] rounded-xl">
               <div>
-                <p className="font-bold text-slate-800">Promotional Notifications</p>
-                <p className="text-xs text-slate-400">Send offers and deals to users</p>
+                <p className="font-bold text-[var(--color-on-surface)]">Promotional Notifications</p>
+                <p className="text-xs text-[var(--color-outline-variant)]">Send offers and deals to users</p>
               </div>
               <button
                 onClick={() => toggleKey("notif_promotions")}
-                className={`w-12 h-6 rounded-full relative transition-colors ${isOn("notif_promotions") ? "bg-green-500" : "bg-slate-200"}`}
+                className={`w-12 h-6 rounded-full relative transition-colors ${isOn("notif_promotions") ? "bg-green-500" : "bg-[var(--color-surface-container-high)]"}`}
               >
                 <span className={`absolute top-1 w-4 h-4 bg-[var(--color-surface-container-lowest)] rounded-full transition-all ${isOn("notif_promotions") ? "right-1" : "left-1"}`} />
               </button>
             </div>
-            <div className="flex items-center justify-between p-4 border border-slate-100 rounded-xl">
+            <div className="flex items-center justify-between p-4 border border-[var(--color-border-subtle)] rounded-xl">
               <div>
-                <p className="font-bold text-slate-800">SMS Notifications</p>
-                <p className="text-xs text-slate-400">Send SMS for critical updates</p>
+                <p className="font-bold text-[var(--color-on-surface)]">SMS Notifications</p>
+                <p className="text-xs text-[var(--color-outline-variant)]">Send SMS for critical updates</p>
               </div>
               <button
                 onClick={() => toggleKey("notif_sms")}
-                className={`w-12 h-6 rounded-full relative transition-colors ${isOn("notif_sms") ? "bg-green-500" : "bg-slate-200"}`}
+                className={`w-12 h-6 rounded-full relative transition-colors ${isOn("notif_sms") ? "bg-green-500" : "bg-[var(--color-surface-container-high)]"}`}
               >
                 <span className={`absolute top-1 w-4 h-4 bg-[var(--color-surface-container-lowest)] rounded-full transition-all ${isOn("notif_sms") ? "right-1" : "left-1"}`} />
               </button>
@@ -362,123 +362,123 @@ export default function SettingsPage() {
 
       {activeTab === "support" && (
         <div className="space-y-6">
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-8 shadow-sm">
-            <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm mb-6">Contact Information</h3>
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-8 shadow-sm">
+            <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm mb-6">Contact Information</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Support Phone Number</label>
+                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Support Phone Number</label>
                 <input
                   type="tel"
                   value={settings.support_phone || ""}
                   onChange={(e) => handleChange("support_phone", e.target.value)}
                   placeholder="+9118001234567"
-                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Phone Display Label</label>
+                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Phone Display Label</label>
                 <input
                   type="text"
                   value={settings.support_phone_label || ""}
                   onChange={(e) => handleChange("support_phone_label", e.target.value)}
                   placeholder="1800-123-4567 (Toll free)"
-                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Support Email</label>
+                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Support Email</label>
                 <input
                   type="email"
                   value={settings.support_email || ""}
                   onChange={(e) => handleChange("support_email", e.target.value)}
                   placeholder="support@miiam.in"
-                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase mb-2">WhatsApp Number</label>
+                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">WhatsApp Number</label>
                 <input
                   type="tel"
                   value={settings.support_whatsapp || ""}
                   onChange={(e) => handleChange("support_whatsapp", e.target.value)}
                   placeholder="+9118001234567"
-                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Chat Response Time</label>
+                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Chat Response Time</label>
                 <input
                   type="text"
                   value={settings.support_response_time || ""}
                   onChange={(e) => handleChange("support_response_time", e.target.value)}
                   placeholder="2 mins"
-                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Email Response Time</label>
+                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Email Response Time</label>
                 <input
                   type="text"
                   value={settings.support_email_response_time || ""}
                   onChange={(e) => handleChange("support_email_response_time", e.target.value)}
                   placeholder="24 hours"
-                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
                 />
               </div>
             </div>
           </div>
 
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-8 shadow-sm">
-            <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm mb-6">Social Media Links</h3>
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-8 shadow-sm">
+            <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm mb-6">Social Media Links</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Twitter / X</label>
+                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Twitter / X</label>
                 <input
                   type="url"
                   value={settings.support_twitter || ""}
                   onChange={(e) => handleChange("support_twitter", e.target.value)}
                   placeholder="https://twitter.com/miiam_in"
-                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Instagram</label>
+                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Instagram</label>
                 <input
                   type="url"
                   value={settings.support_instagram || ""}
                   onChange={(e) => handleChange("support_instagram", e.target.value)}
                   placeholder="https://instagram.com/miiam_in"
-                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Facebook</label>
+                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Facebook</label>
                 <input
                   type="url"
                   value={settings.support_facebook || ""}
                   onChange={(e) => handleChange("support_facebook", e.target.value)}
                   placeholder="https://facebook.com/miiam.in"
-                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase mb-2">LinkedIn</label>
+                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">LinkedIn</label>
                 <input
                   type="url"
                   value={settings.support_linkedin || ""}
                   onChange={(e) => handleChange("support_linkedin", e.target.value)}
                   placeholder="https://linkedin.com/company/miiam"
-                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase mb-2">YouTube</label>
+                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">YouTube</label>
                 <input
                   type="url"
                   value={settings.support_youtube || ""}
                   onChange={(e) => handleChange("support_youtube", e.target.value)}
                   placeholder="https://youtube.com/@miiam"
-                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
                 />
               </div>
             </div>
@@ -501,93 +501,93 @@ export default function SettingsPage() {
 
       {activeTab === "legal" && (
         <div className="space-y-6">
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-8 shadow-sm">
-            <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm mb-6">Contact Information</h3>
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-8 shadow-sm">
+            <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm mb-6">Contact Information</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Support Email</label>
+                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Support Email</label>
                 <input
                   type="email"
                   value={settings.support_email || ""}
                   onChange={(e) => handleChange("support_email", e.target.value)}
-                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Support Phone</label>
+                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Support Phone</label>
                 <input
                   type="tel"
                   value={settings.support_phone || ""}
                   onChange={(e) => handleChange("support_phone", e.target.value)}
-                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Grievance Email</label>
+                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Grievance Email</label>
                 <input
                   type="email"
                   value={settings.grievance_email || ""}
                   onChange={(e) => handleChange("grievance_email", e.target.value)}
-                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Business Address</label>
+                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Business Address</label>
                 <input
                   type="text"
                   value={settings.business_address || ""}
                   onChange={(e) => handleChange("business_address", e.target.value)}
-                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase mb-2">City</label>
+                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">City</label>
                 <input
                   type="text"
                   value={settings.city || ""}
                   onChange={(e) => handleChange("city", e.target.value)}
-                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase mb-2">State</label>
+                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">State</label>
                 <input
                   type="text"
                   value={settings.state || ""}
                   onChange={(e) => handleChange("state", e.target.value)}
-                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Pincode</label>
+                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Pincode</label>
                 <input
                   type="text"
                   value={settings.pincode || ""}
                   onChange={(e) => handleChange("pincode", e.target.value)}
-                  className="w-full p-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
+                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ba001c]/20"
                 />
               </div>
             </div>
           </div>
 
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-8 shadow-sm">
-            <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm mb-6">Policy Pages</h3>
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-8 shadow-sm">
+            <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm mb-6">Policy Pages</h3>
             <div className="space-y-4">
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-[var(--color-outline)]">
                 Policy content is managed in the Terms of Service page. Updates to contacts above will reflect automatically on the site.
               </p>
               <div className="grid grid-cols-3 gap-4">
-                <a href="/terms" target="_blank" className="p-4 bg-slate-50 rounded-xl text-center hover:bg-slate-100">
+                <a href="/terms" target="_blank" className="p-4 bg-[var(--color-surface-subtle)] rounded-xl text-center hover:bg-[var(--color-surface-container)]">
                   <span className="material-symbols-outlined text-[#ba001c]">description</span>
-                  <p className="font-bold text-slate-700 text-sm mt-2">Terms of Service</p>
+                  <p className="font-bold text-[var(--color-on-surface)] text-sm mt-2">Terms of Service</p>
                 </a>
-                <a href="/privacy" target="_blank" className="p-4 bg-slate-50 rounded-xl text-center hover:bg-slate-100">
+                <a href="/privacy" target="_blank" className="p-4 bg-[var(--color-surface-subtle)] rounded-xl text-center hover:bg-[var(--color-surface-container)]">
                   <span className="material-symbols-outlined text-[#ba001c]">privacy_tip</span>
-                  <p className="font-bold text-slate-700 text-sm mt-2">Privacy Policy</p>
+                  <p className="font-bold text-[var(--color-on-surface)] text-sm mt-2">Privacy Policy</p>
                 </a>
-                <a href="/terms#refund" target="_blank" className="p-4 bg-slate-50 rounded-xl text-center hover:bg-slate-100">
+                <a href="/terms#refund" target="_blank" className="p-4 bg-[var(--color-surface-subtle)] rounded-xl text-center hover:bg-[var(--color-surface-container)]">
                   <span className="material-symbols-outlined text-[#ba001c]">attach_money</span>
-                  <p className="font-bold text-slate-700 text-sm mt-2">Refund Policy</p>
+                  <p className="font-bold text-[var(--color-on-surface)] text-sm mt-2">Refund Policy</p>
                 </a>
               </div>
             </div>

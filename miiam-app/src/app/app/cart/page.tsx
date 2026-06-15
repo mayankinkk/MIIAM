@@ -179,7 +179,7 @@ export default function CartPage() {
           <div className="flex items-center justify-between gap-2">
             <div className="min-w-0">
               <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-primary">{t.cart.title}</h1>
-              <p className="text-slate-600 text-xs mt-0.5">{t.cart.subtitle}</p>
+              <p className="text-[var(--color-on-surface-variant)] text-xs mt-0.5">{t.cart.subtitle}</p>
             </div>
             <button
               onClick={async () => {
@@ -360,7 +360,7 @@ export default function CartPage() {
         >
           <div className="max-w-2xl mx-auto px-3 sm:px-4 py-3 flex items-center gap-3 sm:gap-4">
             <div className="flex-1 min-w-0">
-              <p className="text-[10px] text-slate-600 font-semibold uppercase tracking-wider">{t.cart.total}</p>
+              <p className="text-[10px] text-[var(--color-on-surface-variant)] font-semibold uppercase tracking-wider">{t.cart.total}</p>
               <p className="text-xl sm:text-2xl font-extrabold text-primary truncate">₹{grandTotal.toFixed(2)}</p>
             </div>
             <Link

@@ -40,20 +40,20 @@ export default function RiderSupportPage() {
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg">
           <h2 className="font-bold text-[#4d212a] mb-4">Contact Us</h2>
           <div className="space-y-3">
-            <a href={`tel:${support.support_phone}`} className="w-full flex items-center gap-3 p-4 bg-slate-50 rounded-xl">
+            <a href={`tel:${support.support_phone}`} className="w-full flex items-center gap-3 p-4 bg-[var(--color-surface-subtle)] rounded-xl">
               <span className="material-symbols-outlined text-[#0b50d5]">call</span>
               <span className="flex-1 text-left font-bold">Call Support</span>
-              <span className="material-symbols-outlined text-slate-400">chevron_right</span>
+              <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
             </a>
-            <a href={`mailto:${support.support_email}`} className="w-full flex items-center gap-3 p-4 bg-slate-50 rounded-xl">
+            <a href={`mailto:${support.support_email}`} className="w-full flex items-center gap-3 p-4 bg-[var(--color-surface-subtle)] rounded-xl">
               <span className="material-symbols-outlined text-[#0b50d5]">chat</span>
               <span className="flex-1 text-left font-bold">Chat with Us</span>
-              <span className="material-symbols-outlined text-slate-400">chevron_right</span>
+              <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
             </a>
-            <a href={`mailto:${support.support_email}`} className="w-full flex items-center gap-3 p-4 bg-slate-50 rounded-xl">
+            <a href={`mailto:${support.support_email}`} className="w-full flex items-center gap-3 p-4 bg-[var(--color-surface-subtle)] rounded-xl">
               <span className="material-symbols-outlined text-[#0b50d5]">email</span>
               <span className="flex-1 text-left font-bold">Email Support</span>
-              <span className="material-symbols-outlined text-slate-400">chevron_right</span>
+              <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
             </a>
           </div>
         </div>
@@ -62,18 +62,18 @@ export default function RiderSupportPage() {
           <h2 className="font-bold text-[#4d212a] mb-4">Frequently Asked Questions</h2>
           <div className="space-y-3">
             {faqs.map((faq, i) => (
-              <div key={i} className="border-b border-slate-100 pb-3">
+              <div key={i} className="border-b border-[var(--color-border-subtle)] pb-3">
                 <button
                   onClick={() => setExpanded(expanded === i ? null : i)}
                   className="w-full flex items-center justify-between text-left"
                 >
                   <span className="font-bold text-[#4d212a]">{faq.q}</span>
-                  <span className="material-symbols-outlined text-slate-400">
+                  <span className="material-symbols-outlined text-[var(--color-outline-variant)]">
                     {expanded === i ? "expand_less" : "expand_more"}
                   </span>
                 </button>
                 {expanded === i && (
-                  <p className="text-sm text-slate-500 mt-2">{faq.a}</p>
+                  <p className="text-sm text-[var(--color-outline)] mt-2">{faq.a}</p>
                 )}
               </div>
             ))}

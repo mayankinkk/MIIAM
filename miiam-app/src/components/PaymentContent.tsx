@@ -45,15 +45,15 @@ export default function PaymentContent() {
 
         {loading ? (
           <div className="space-y-3">
-            {[1, 2].map(i => <div key={i} className="h-20 bg-slate-100 rounded-2xl animate-pulse" />)}
+            {[1, 2].map(i => <div key={i} className="h-20 bg-[var(--color-surface-container)] rounded-2xl animate-pulse" />)}
           </div>
         ) : paymentMethods.length === 0 ? (
           <div className="text-center py-16">
-            <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="material-symbols-outlined text-4xl text-slate-300">credit_card</span>
+            <div className="w-20 h-20 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center mx-auto mb-4">
+              <span className="material-symbols-outlined text-4xl text-[var(--color-outline-variant)]/60">credit_card</span>
             </div>
-            <h2 className="text-xl font-bold text-slate-600 mb-2">No saved payment methods</h2>
-            <p className="text-sm text-slate-400 mb-6">Payment methods will appear here after your first online payment via Razorpay.</p>
+            <h2 className="text-xl font-bold text-[var(--color-on-surface-variant)] mb-2">No saved payment methods</h2>
+            <p className="text-sm text-[var(--color-outline-variant)] mb-6">Payment methods will appear here after your first online payment via Razorpay.</p>
             <Link href="/app/food" className="inline-block px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm">
               Browse Menu
             </Link>
@@ -63,12 +63,12 @@ export default function PaymentContent() {
             {paymentMethods.map((pm) => (
               <div key={pm.id} className="bg-surface-container-lowest p-4 rounded-2xl flex items-center justify-between shadow-sm">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
-                    <span className="material-symbols-outlined text-slate-600">credit_card</span>
+                  <div className="w-12 h-12 bg-[var(--color-surface-container)] rounded-xl flex items-center justify-center">
+                    <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">credit_card</span>
                   </div>
                   <div>
                     <p className="font-bold text-sm">{pm.brand} •••• {pm.last4}</p>
-                    <p className="text-xs text-slate-400">{pm.type}</p>
+                    <p className="text-xs text-[var(--color-outline-variant)]">{pm.type}</p>
                   </div>
                 </div>
                 {pm.isDefault && (
@@ -79,8 +79,8 @@ export default function PaymentContent() {
           </div>
         )}
 
-        <div className="mt-8 p-4 bg-slate-50 rounded-2xl">
-          <p className="text-xs text-slate-500 text-center">
+        <div className="mt-8 p-4 bg-[var(--color-surface-subtle)] rounded-2xl">
+          <p className="text-xs text-[var(--color-outline)] text-center">
             Payments are securely processed via Razorpay. Your card details are never stored on our servers.
           </p>
         </div>

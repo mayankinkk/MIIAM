@@ -17,11 +17,11 @@ export default function SkipOrderModal({ open, onConfirm, onCancel }: SkipOrderM
     <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
       <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-sm">
         <h3 className="font-bold text-xl text-center mb-2">{t.rider.modals.skipOrder}</h3>
-        <p className="text-sm text-slate-500 text-center mb-6">{t.rider.modals.skipOrderDesc}</p>
+        <p className="text-sm text-[var(--color-outline)] text-center mb-6">{t.rider.modals.skipOrderDesc}</p>
         <div className="flex gap-3">
           <button 
             onClick={onCancel}
-            className="flex-1 py-3 bg-slate-200 text-slate-600 font-bold rounded-xl"
+            className="flex-1 py-3 bg-[var(--color-surface-container-high)] text-[var(--color-on-surface-variant)] font-bold rounded-xl"
           >
 {t.common.cancel}
           </button>

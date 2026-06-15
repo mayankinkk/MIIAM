@@ -526,15 +526,15 @@ export default function RiderDashboard() {
             <>
               <span className="material-symbols-outlined text-5xl text-amber-400 mb-4 block">motorcycle</span>
               <h2 className="text-xl font-bold text-[#4d212a] mb-2">{t.rider.errors.notRiderYet}</h2>
-              <p className="text-slate-500 mb-2">{t.rider.errors.notRiderDesc}</p>
-              <p className="text-slate-500 mb-6">{t.rider.errors.notRiderCta}</p>
+              <p className="text-[var(--color-outline)] mb-2">{t.rider.errors.notRiderDesc}</p>
+              <p className="text-[var(--color-outline)] mb-6">{t.rider.errors.notRiderCta}</p>
               <Link href="/rider/apply" className="inline-block px-6 py-3 bg-[#0b50d5] text-white rounded-xl font-bold">{t.rider.errors.applyToRider}</Link>
             </>
           ) : (
             <>
               <span className="material-symbols-outlined text-5xl text-red-400 mb-4 block">wifi_off</span>
               <h2 className="text-xl font-bold text-[#4d212a] mb-2">{t.rider.errors.unableToLoad}</h2>
-              <p className="text-slate-500 mb-6">{error}</p>
+              <p className="text-[var(--color-outline)] mb-6">{error}</p>
               <button onClick={() => window.location.reload()} className="px-6 py-3 bg-[#0b50d5] text-white rounded-xl font-bold">{t.rider.errors.tryAgain}</button>
             </>
           )}

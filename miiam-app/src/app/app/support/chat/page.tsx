@@ -71,14 +71,14 @@ export default function SupportChatPage() {
 
   return (
     <div className="min-h-screen bg-surface flex flex-col">
-      <header className="bg-[var(--color-surface-container-lowest)] px-4 py-4 sticky top-0 z-10 shadow-sm border-b border-slate-100">
+      <header className="bg-[var(--color-surface-container-lowest)] px-4 py-4 sticky top-0 z-10 shadow-sm border-b border-[var(--color-border-subtle)]">
         <div className="flex items-center gap-3">
-          <Link href="/app/support" className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
+          <Link href="/app/support" className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center">
             <span className="material-symbols-outlined">arrow_back</span>
           </Link>
           <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary-container rounded-full flex items-center justify-center text-white font-black text-sm">M</div>
           <div className="flex-1">
-            <p className="font-bold text-slate-800">MIIAM Support</p>
+            <p className="font-bold text-[var(--color-on-surface)]">MIIAM Support</p>
             <div className="flex items-center gap-1">
               <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
               <span className="text-xs text-green-600 font-medium">Online · Usually replies instantly</span>
@@ -99,10 +99,10 @@ export default function SupportChatPage() {
             <div className={`max-w-[78%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${
               msg.role === "user"
                 ? "bg-primary text-white rounded-br-sm"
-                : "bg-[var(--color-surface-container-lowest)] text-slate-800 shadow-sm rounded-bl-sm"
+                : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface)] shadow-sm rounded-bl-sm"
             }`}>
               {msg.text}
-              <p className={`text-[9px] mt-1 ${msg.role === "user" ? "text-white/60" : "text-slate-400"}`}>
+              <p className={`text-[9px] mt-1 ${msg.role === "user" ? "text-white/60" : "text-[var(--color-outline-variant)]"}`}>
                 {msg.time.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}
               </p>
             </div>
@@ -138,19 +138,19 @@ export default function SupportChatPage() {
       </div>
 
       {/* Input */}
-      <div className="fixed bottom-0 left-0 right-0 bg-[var(--color-surface-container-lowest)] border-t border-slate-100 px-4 py-3 flex gap-2 items-end" style={{ paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))" }}>
+      <div className="fixed bottom-0 left-0 right-0 bg-[var(--color-surface-container-lowest)] border-t border-[var(--color-border-subtle)] px-4 py-3 flex gap-2 items-end" style={{ paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))" }}>
         <textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }}}
           placeholder="Type a message..."
           rows={1}
-          className="flex-1 px-4 py-3 bg-slate-50 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 resize-none max-h-24"
+          className="flex-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 resize-none max-h-24"
         />
         <button
           onClick={sendMessage}
           disabled={!input.trim()}
-          className="w-11 h-11 bg-primary disabled:bg-slate-200 text-white rounded-2xl flex items-center justify-center transition-all active:scale-90"
+          className="w-11 h-11 bg-primary disabled:bg-[var(--color-surface-container-high)] text-white rounded-2xl flex items-center justify-center transition-all active:scale-90"
         >
           <span className="material-symbols-outlined">send</span>
         </button>

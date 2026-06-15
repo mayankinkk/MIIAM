@@ -347,7 +347,7 @@ export default function BeautyPage() {
                     <span className="text-sm opacity-80 line-through ml-2">₹{pkg.original}</span>
                   </div>
                 </div>
-                <button onClick={() => { if (navigator.vibrate) navigator.vibrate(10); }} className="w-full mt-4 bg-surface-container-lowest text-slate-900 font-bold py-2 rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all">
+                <button onClick={() => { if (navigator.vibrate) navigator.vibrate(10); }} className="w-full mt-4 bg-surface-container-lowest text-[var(--color-on-surface)] font-bold py-2 rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all">
                   View Details
                 </button>
               </div>

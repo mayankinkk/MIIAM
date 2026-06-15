@@ -20,7 +20,7 @@ export default function DashboardHeader({ isOnline, streakDays, onToggleOnline, 
         <button
           onClick={onToggleOnline}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold transition-all ${
-            isOnline ? "bg-green-100 text-green-700" : "bg-slate-200 text-slate-500"
+            isOnline ? "bg-green-100 text-green-700" : "bg-[var(--color-surface-container-high)] text-[var(--color-outline)]"
           }`}
         >
           <span className={`w-2 h-2 rounded-full ${isOnline ? "bg-green-500" : "bg-slate-400"}`} />
@@ -51,7 +51,7 @@ export default function DashboardHeader({ isOnline, streakDays, onToggleOnline, 
           <span className="material-symbols-outlined text-blue-600">insights</span>
         </Link>
         <Link href="/rider/account" className="p-2">
-          <span className="material-symbols-outlined text-slate-600">person</span>
+          <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">person</span>
         </Link>
       </div>
     </header>

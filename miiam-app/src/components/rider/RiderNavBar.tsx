@@ -53,10 +53,10 @@ export default function RiderNavBar({ active }: RiderNavBarProps) {
         className="flex flex-col items-center p-2"
         title={isOnline ? "Go Offline" : "Go Online"}
       >
-        <span className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${isOnline ? "bg-green-500 border-green-500" : "bg-slate-200 border-slate-300"}`}>
+        <span className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${isOnline ? "bg-green-500 border-green-500" : "bg-[var(--color-surface-container-high)] border-[var(--color-outline-variant)]"}`}>
           <span className={`w-2 h-2 rounded-full ${isOnline ? "bg-[var(--color-surface-container-lowest)]" : "bg-slate-400"}`} />
         </span>
-        <span className={`text-[8px] font-bold mt-0.5 ${isOnline ? "text-green-600" : "text-slate-400"}`}>
+        <span className={`text-[8px] font-bold mt-0.5 ${isOnline ? "text-green-600" : "text-[var(--color-outline-variant)]"}`}>
           {isOnline ? "ONLINE" : "OFF"}
         </span>
       </button>

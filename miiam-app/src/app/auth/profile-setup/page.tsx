@@ -179,7 +179,7 @@ function ProfileSetupContent() {
           </div>
         )}
         <h1 className="text-2xl font-black text-[#4d212a] mb-1">Complete Your Profile</h1>
-        <p className="text-slate-500 mb-4">Step {step} of 3</p>
+        <p className="text-[var(--color-outline)] mb-4">Step {step} of 3</p>
 
         {/* Incentive Banner */}
         <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl px-4 py-3 mb-6 flex items-center gap-3">
@@ -197,47 +197,47 @@ function ProfileSetupContent() {
               <div
                 key={s}
                 className={`h-2 flex-1 rounded-full transition-all ${
-                  s <= step ? "bg-[#ba001c]" : "bg-slate-200"
+                  s <= step ? "bg-[#ba001c]" : "bg-[var(--color-surface-container-high)]"
                 }`}
               />
             ))}
           </div>
-          <p className="text-xs text-slate-400 text-right">{Math.round((step / 3) * 100)}% complete</p>
+          <p className="text-xs text-[var(--color-outline-variant)] text-right">{Math.round((step / 3) * 100)}% complete</p>
         </div>
 
         {/* Step 1: Basic Info */}
         {step === 1 && (
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2">Full Name</label>
+              <label className="block text-sm font-bold text-[var(--color-on-surface)] mb-2">Full Name</label>
               <input
                 type="text"
                 value={formData.full_name}
                 onChange={(e) => updateField("full_name", e.target.value)}
                 placeholder="e.g. John Doe"
-                className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-[#ba001c] focus:ring-2 focus:ring-[#ba001c]/20 outline-none"
+                className="w-full px-4 py-3 rounded-xl border-2 border-[var(--color-border-subtle)] focus:border-[#ba001c] focus:ring-2 focus:ring-[#ba001c]/20 outline-none"
               />
-              <p className="text-xs text-slate-400 mt-1 ml-1">Enter your full name as you'd like it shown on your profile</p>
+              <p className="text-xs text-[var(--color-outline-variant)] mt-1 ml-1">Enter your full name as you'd like it shown on your profile</p>
             </div>
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2">Phone Number</label>
+              <label className="block text-sm font-bold text-[var(--color-on-surface)] mb-2">Phone Number</label>
               <input
                 type="tel"
                 value={formData.phone}
                 onChange={(e) => updateField("phone", e.target.value)}
                 placeholder="e.g. 9876543210"
-                className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-[#ba001c] focus:ring-2 focus:ring-[#ba001c]/20 outline-none"
+                className="w-full px-4 py-3 rounded-xl border-2 border-[var(--color-border-subtle)] focus:border-[#ba001c] focus:ring-2 focus:ring-[#ba001c]/20 outline-none"
               />
-              <p className="text-xs text-slate-400 mt-1 ml-1">Used for order updates and delivery coordination</p>
+              <p className="text-xs text-[var(--color-outline-variant)] mt-1 ml-1">Used for order updates and delivery coordination</p>
             </div>
             {emailFromVerify && (
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-2">Email</label>
+                <label className="block text-sm font-bold text-[var(--color-on-surface)] mb-2">Email</label>
                 <input
                   type="email"
                   value={formData.email}
                   readOnly
-                  className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 bg-slate-100"
+                  className="w-full px-4 py-3 rounded-xl border-2 border-[var(--color-border-subtle)] bg-[var(--color-surface-container)]"
                 />
               </div>
             )}
@@ -245,7 +245,7 @@ function ProfileSetupContent() {
               onClick={() => setStep(2)}
               disabled={!canProceed()}
               className={`w-full py-4 rounded-xl font-bold text-lg transition-all ${
-                canProceed() ? "bg-[#ba001c] text-white hover:bg-[#a40017]" : "bg-slate-200 text-slate-400"
+                canProceed() ? "bg-[#ba001c] text-white hover:bg-[#a40017]" : "bg-[var(--color-surface-container-high)] text-[var(--color-outline-variant)]"
               }`}
             >
               Continue
@@ -257,8 +257,8 @@ function ProfileSetupContent() {
         {step === 2 && (
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2">Select State</label>
-              <p className="text-xs text-slate-400 mb-3">Select your state to find services near you, or skip for now.</p>
+              <label className="block text-sm font-bold text-[var(--color-on-surface)] mb-2">Select State</label>
+              <p className="text-xs text-[var(--color-outline-variant)] mb-3">Select your state to find services near you, or skip for now.</p>
               <div className="grid grid-cols-2 gap-2 max-h-[50vh] overflow-y-auto">
                 {INDIAN_STATES.map((state) => (
                   <button
@@ -270,7 +270,7 @@ function ProfileSetupContent() {
                     className={`py-3 px-4 rounded-xl font-bold text-sm transition-all ${
                       formData.state === state
                         ? "bg-[#ba001c] text-white"
-                        : "bg-[var(--color-surface-container-lowest)] border-2 border-slate-200 text-slate-600 hover:border-[#ba001c]"
+                        : "bg-[var(--color-surface-container-lowest)] border-2 border-[var(--color-border-subtle)] text-[var(--color-on-surface-variant)] hover:border-[#ba001c]"
                     }`}
                   >
                     {state}
@@ -281,7 +281,7 @@ function ProfileSetupContent() {
             <div className="flex gap-3">
               <button
                 onClick={() => setStep(1)}
-                className="flex-1 py-4 border-2 border-slate-200 rounded-xl font-bold text-slate-600 hover:border-[#ba001c]"
+                className="flex-1 py-4 border-2 border-[var(--color-border-subtle)] rounded-xl font-bold text-[var(--color-on-surface-variant)] hover:border-[#ba001c]"
               >
                 Back
               </button>
@@ -290,7 +290,7 @@ function ProfileSetupContent() {
                   setSkipProfile(true);
                   handleComplete();
                 }}
-                className="flex-1 py-4 border-2 border-slate-200 rounded-xl font-bold text-slate-600 hover:border-[#ba001c]"
+                className="flex-1 py-4 border-2 border-[var(--color-border-subtle)] rounded-xl font-bold text-[var(--color-on-surface-variant)] hover:border-[#ba001c]"
               >
                 Skip for now
               </button>
@@ -309,9 +309,9 @@ function ProfileSetupContent() {
         {step === 3 && (
           <div className="space-y-4">
             <div>
-              <p className="text-sm text-slate-500 mb-2">Selected: <span className="font-bold text-slate-700">{formData.state}</span></p>
-              <label className="block text-sm font-bold text-slate-700 mb-2">Select City</label>
-              <p className="text-xs text-slate-400 mb-3">Choose your city to discover nearby services, or skip for now.</p>
+              <p className="text-sm text-[var(--color-outline)] mb-2">Selected: <span className="font-bold text-[var(--color-on-surface)]">{formData.state}</span></p>
+              <label className="block text-sm font-bold text-[var(--color-on-surface)] mb-2">Select City</label>
+              <p className="text-xs text-[var(--color-outline-variant)] mb-3">Choose your city to discover nearby services, or skip for now.</p>
               {(CITIES_BY_STATE[formData.state] || []).length > 0 ? (
                 <div className="grid grid-cols-2 gap-2 max-h-[45vh] overflow-y-auto">
                   {(CITIES_BY_STATE[formData.state] || []).map((city) => (
@@ -321,7 +321,7 @@ function ProfileSetupContent() {
                       className={`py-3 px-4 rounded-xl font-bold text-sm transition-all ${
                         formData.city === city
                           ? "bg-[#ba001c] text-white"
-                          : "bg-[var(--color-surface-container-lowest)] border-2 border-slate-200 text-slate-600 hover:border-[#ba001c]"
+                          : "bg-[var(--color-surface-container-lowest)] border-2 border-[var(--color-border-subtle)] text-[var(--color-on-surface-variant)] hover:border-[#ba001c]"
                       }`}
                     >
                       {city}
@@ -329,17 +329,17 @@ function ProfileSetupContent() {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-8 bg-slate-50 rounded-xl">
-                  <span className="material-symbols-outlined text-3xl text-slate-300">location_city</span>
-                  <p className="text-sm text-slate-400 mt-2">No cities listed yet for this state</p>
-                  <p className="text-xs text-slate-300 mt-1">You can skip this step and set it later</p>
+                <div className="text-center py-8 bg-[var(--color-surface-subtle)] rounded-xl">
+                  <span className="material-symbols-outlined text-3xl text-[var(--color-outline-variant)]/60">location_city</span>
+                  <p className="text-sm text-[var(--color-outline-variant)] mt-2">No cities listed yet for this state</p>
+                  <p className="text-xs text-[var(--color-outline-variant)]/60 mt-1">You can skip this step and set it later</p>
                 </div>
               )}
             </div>
             <div className="flex gap-3">
               <button
                 onClick={() => setStep(2)}
-                className="flex-1 py-4 border-2 border-slate-200 rounded-xl font-bold text-slate-600 hover:border-[#ba001c]"
+                className="flex-1 py-4 border-2 border-[var(--color-border-subtle)] rounded-xl font-bold text-[var(--color-on-surface-variant)] hover:border-[#ba001c]"
               >
                 Back
               </button>
@@ -348,7 +348,7 @@ function ProfileSetupContent() {
                   setSkipProfile(true);
                   handleComplete();
                 }}
-                className="flex-1 py-4 border-2 border-slate-200 rounded-xl font-bold text-slate-600 hover:border-[#ba001c]"
+                className="flex-1 py-4 border-2 border-[var(--color-border-subtle)] rounded-xl font-bold text-[var(--color-on-surface-variant)] hover:border-[#ba001c]"
               >
                 Skip for now
               </button>
@@ -369,7 +369,7 @@ function ProfileSetupContent() {
             <div className="text-center animate-fade-in">
               <div className="text-6xl mb-4">🎉</div>
               <p className="text-xl font-black text-[#4d212a]">Welcome to MIIAM!</p>
-              <p className="text-sm text-slate-500 mt-2">Your 10% off coupon is waiting...</p>
+              <p className="text-sm text-[var(--color-outline)] mt-2">Your 10% off coupon is waiting...</p>
               <div className="mt-4 w-8 h-8 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin mx-auto" />
             </div>
           </div>

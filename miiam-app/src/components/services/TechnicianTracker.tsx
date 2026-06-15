@@ -189,12 +189,12 @@ export default function TechnicianTracker({ orderId, customerLat = 26.1465, cust
 
   if (loading) {
     return (
-      <div className="p-4 bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-100">
+      <div className="p-4 bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)]">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-slate-100 rounded-full animate-pulse" />
+          <div className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full animate-pulse" />
           <div className="flex-1">
-            <div className="h-4 bg-slate-100 rounded w-24 mb-2" />
-            <div className="h-3 bg-slate-100 rounded w-32" />
+            <div className="h-4 bg-[var(--color-surface-container)] rounded w-24 mb-2" />
+            <div className="h-3 bg-[var(--color-surface-container)] rounded w-32" />
           </div>
         </div>
       </div>
@@ -203,8 +203,8 @@ export default function TechnicianTracker({ orderId, customerLat = 26.1465, cust
 
   if (!technician) {
     return (
-      <div className="p-4 bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-100">
-        <p className="text-sm text-slate-500 text-center">Technician not assigned yet</p>
+      <div className="p-4 bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)]">
+        <p className="text-sm text-[var(--color-outline)] text-center">Technician not assigned yet</p>
       </div>
     );
   }
@@ -219,12 +219,12 @@ export default function TechnicianTracker({ orderId, customerLat = 26.1465, cust
   const currentStepIndex = statusSteps.findIndex(s => s.key === technician.status);
 
   return (
-    <div className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-100 p-4 space-y-4">
+    <div className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] p-4 space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-          <h4 className="font-bold text-slate-800">Live Tracking</h4>
+          <h4 className="font-bold text-[var(--color-on-surface)]">Live Tracking</h4>
         </div>
         <div className="flex items-center gap-2 bg-green-50 px-3 py-1.5 rounded-full">
           <span className="material-symbols-outlined text-green-600 text-lg animate-pulse" style={{ fontVariationSettings: "'FILL' 1" }}>schedule</span>
@@ -233,32 +233,32 @@ export default function TechnicianTracker({ orderId, customerLat = 26.1465, cust
       </div>
 
       {/* Map */}
-      <div className="relative rounded-xl overflow-hidden border border-slate-100">
+      <div className="relative rounded-xl overflow-hidden border border-[var(--color-border-subtle)]">
         <div ref={mapRef} className="h-48 w-full" />
         <div className="absolute top-3 left-3 bg-[var(--color-surface-container-lowest)]/90 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-md flex items-center gap-2">
           <div className="w-2 h-2 bg-[#ba001c] rounded-full animate-pulse" />
-          <span className="text-xs font-bold text-slate-700">Live</span>
+          <span className="text-xs font-bold text-[var(--color-on-surface)]">Live</span>
         </div>
         <div className="absolute top-3 right-3 bg-[var(--color-surface-container-lowest)]/90 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-md flex items-center gap-1.5">
           <span className="material-symbols-outlined text-blue-500 text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>home</span>
-          <span className="text-xs font-bold text-slate-700">Your Location</span>
+          <span className="text-xs font-bold text-[var(--color-on-surface)]">Your Location</span>
         </div>
       </div>
 
       {/* ETA Progress Bar */}
-      <div className="relative bg-slate-100 rounded-full h-2 overflow-hidden">
+      <div className="relative bg-[var(--color-surface-container)] rounded-full h-2 overflow-hidden">
         <div 
           className="absolute left-0 top-0 h-full bg-gradient-to-r from-[#ba001c] to-[#ff7670] transition-all duration-1000 rounded-full"
           style={{ width: `${Math.max(10, 100 - (technician.eta_minutes * 7))}%` }}
         />
       </div>
-      <div className="flex justify-between text-xs text-slate-500">
+      <div className="flex justify-between text-xs text-[var(--color-outline)]">
         <span>Technician left</span>
         <span>Almost there!</span>
       </div>
 
       {/* Technician Info */}
-      <div className="flex items-center gap-4 p-3 bg-gradient-to-r from-slate-50 to-red-50 rounded-xl border border-slate-100">
+      <div className="flex items-center gap-4 p-3 bg-gradient-to-r from-slate-50 to-red-50 rounded-xl border border-[var(--color-border-subtle)]">
         <div className="relative">
           <img 
             src={technician.technician_photo} 
@@ -271,14 +271,14 @@ export default function TechnicianTracker({ orderId, customerLat = 26.1465, cust
         </div>
         <div className="flex-1">
           <div className="flex items-center gap-2">
-            <p className="font-bold text-slate-800">{technician.technician_name}</p>
+            <p className="font-bold text-[var(--color-on-surface)]">{technician.technician_name}</p>
             <span className="material-symbols-outlined text-blue-500 text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
           </div>
-          <p className="text-xs text-slate-500">Expert Technician • 8+ yrs exp</p>
+          <p className="text-xs text-[var(--color-outline)]">Expert Technician • 8+ yrs exp</p>
           <div className="flex items-center gap-1 mt-1">
             <span className="material-symbols-outlined text-amber-500 text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-            <span className="text-xs font-bold text-slate-700">4.9</span>
-            <span className="text-xs text-slate-400">(342 reviews)</span>
+            <span className="text-xs font-bold text-[var(--color-on-surface)]">4.9</span>
+            <span className="text-xs text-[var(--color-outline-variant)]">(342 reviews)</span>
           </div>
         </div>
         <div className="flex gap-2">
@@ -299,7 +299,7 @@ export default function TechnicianTracker({ orderId, customerLat = 26.1465, cust
 
       {/* Status Steps */}
       <div className="relative pt-2">
-        <div className="absolute top-5 left-4 right-4 h-0.5 bg-slate-100" />
+        <div className="absolute top-5 left-4 right-4 h-0.5 bg-[var(--color-surface-container)]" />
         <div className="absolute top-5 left-4 h-0.5 bg-[#ba001c] transition-all duration-500" 
              style={{ width: `${(currentStepIndex / (statusSteps.length - 1)) * 100}%` }} />
         <div className="flex justify-between relative z-10">
@@ -310,13 +310,13 @@ export default function TechnicianTracker({ orderId, customerLat = 26.1465, cust
                   ? "bg-[#ba001c] text-white shadow-lg shadow-[#ba001c]/30" 
                   : index === currentStepIndex
                   ? "bg-[#ba001c] text-white shadow-lg shadow-[#ba001c]/30 ring-4 ring-[#ba001c]/20"
-                  : "bg-slate-100 text-slate-400"
+                  : "bg-[var(--color-surface-container)] text-[var(--color-outline-variant)]"
               }`}>
                 <span className="material-symbols-outlined text-base" style={{ fontVariationSettings: index <= currentStepIndex ? "'FILL' 1" : "'FILL' 0" }}>
                   {index < currentStepIndex ? "check" : step.icon}
                 </span>
               </div>
-              <span className={`text-[10px] mt-2 font-bold ${index <= currentStepIndex ? "text-[#ba001c]" : "text-slate-400"}`}>
+              <span className={`text-[10px] mt-2 font-bold ${index <= currentStepIndex ? "text-[#ba001c]" : "text-[var(--color-outline-variant)]"}`}>
                 {step.label}
               </span>
             </div>
@@ -330,7 +330,7 @@ export default function TechnicianTracker({ orderId, customerLat = 26.1465, cust
           href={`https://www.google.com/maps/dir/?api=1&destination=${technician.location.lat},${technician.location.lng}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 py-3 border-2 border-slate-200 rounded-xl font-bold text-sm text-slate-700 hover:border-slate-300 hover:bg-slate-50 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+          className="flex-1 py-3 border-2 border-[var(--color-border-subtle)] rounded-xl font-bold text-sm text-[var(--color-on-surface)] hover:border-[var(--color-outline-variant)] hover:bg-[var(--color-surface-subtle)] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
         >
           <span className="material-symbols-outlined text-lg">directions</span>
           Directions

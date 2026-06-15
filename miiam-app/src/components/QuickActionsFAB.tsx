@@ -52,7 +52,7 @@ export default function QuickActionsFAB({ actions = defaultActions }: QuickActio
                 }}
                 className="flex items-center gap-3 group"
               >
-                <span className="bg-[var(--color-surface-container-lowest)] text-slate-700 px-3 py-1.5 rounded-lg text-sm font-semibold shadow-lg opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-200 whitespace-nowrap">
+                <span className="bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface)] px-3 py-1.5 rounded-lg text-sm font-semibold shadow-lg opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-200 whitespace-nowrap">
                   {action.label}
                 </span>
                 <div

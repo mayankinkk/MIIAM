@@ -108,69 +108,69 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <Link href="/admin/services" className="text-slate-400 hover:text-slate-600">
+        <Link href="/admin/services" className="text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]">
           <span className="material-symbols-outlined">arrow_back</span>
         </Link>
         <div className={`w-10 h-10 rounded-xl ${service.bg} flex items-center justify-center`}>
           <span className={`material-symbols-outlined text-xl ${TEXT_COLOR[service.color]}`}>{service.icon}</span>
         </div>
         <div>
-          <h2 className="text-xl font-black text-slate-800">{service.name}</h2>
-          <p className="text-xs text-slate-400">Manage bookings and providers</p>
+          <h2 className="text-xl font-black text-[var(--color-on-surface)]">{service.name}</h2>
+          <p className="text-xs text-[var(--color-outline-variant)]">Manage bookings and providers</p>
         </div>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-slate-100 shadow-sm">
-          <p className="text-xs font-bold text-slate-400 uppercase">Total Bookings</p>
-          <p className="text-2xl font-black text-slate-800 mt-1">{loading ? "—" : totalBookings}</p>
+        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-[var(--color-border-subtle)] shadow-sm">
+          <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase">Total Bookings</p>
+          <p className="text-2xl font-black text-[var(--color-on-surface)] mt-1">{loading ? "—" : totalBookings}</p>
         </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-slate-100 shadow-sm">
-          <p className="text-xs font-bold text-slate-400 uppercase">Revenue</p>
-          <p className="text-2xl font-black text-slate-800 mt-1">{loading ? "—" : `₹${totalRevenue.toLocaleString("en-IN")}`}</p>
+        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-[var(--color-border-subtle)] shadow-sm">
+          <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase">Revenue</p>
+          <p className="text-2xl font-black text-[var(--color-on-surface)] mt-1">{loading ? "—" : `₹${totalRevenue.toLocaleString("en-IN")}`}</p>
         </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-slate-100 shadow-sm">
-          <p className="text-xs font-bold text-slate-400 uppercase">Completed</p>
-          <p className="text-2xl font-black text-slate-800 mt-1">{loading ? "—" : completedCount}</p>
+        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-[var(--color-border-subtle)] shadow-sm">
+          <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase">Completed</p>
+          <p className="text-2xl font-black text-[var(--color-on-surface)] mt-1">{loading ? "—" : completedCount}</p>
         </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-slate-100 shadow-sm">
-          <p className="text-xs font-bold text-slate-400 uppercase">Completion Rate</p>
-          <p className="text-2xl font-black text-slate-800 mt-1">{loading ? "—" : `${completionRate}%`}</p>
+        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-[var(--color-border-subtle)] shadow-sm">
+          <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase">Completion Rate</p>
+          <p className="text-2xl font-black text-[var(--color-on-surface)] mt-1">{loading ? "—" : `${completionRate}%`}</p>
         </div>
       </div>
 
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-100 overflow-hidden shadow-sm">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)] overflow-hidden shadow-sm">
         <div className="p-5 border-b border-slate-50">
-          <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm">Recent Bookings</h3>
+          <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm">Recent Bookings</h3>
         </div>
         {loading ? (
           <div className="flex items-center justify-center py-12"><div className="w-8 h-8 border-4 border-[#ba001c]/20 border-t-[#ba001c] rounded-full animate-spin" /></div>
         ) : bookings.length === 0 ? (
-          <div className="py-12 text-center text-slate-400">No bookings found</div>
+          <div className="py-12 text-center text-[var(--color-outline-variant)]">No bookings found</div>
         ) : (
           <table className="w-full text-left">
-            <thead className="bg-slate-50">
+            <thead className="bg-[var(--color-surface-subtle)]">
               <tr>
-                <th className="p-4 text-xs font-black text-slate-400 uppercase">Customer</th>
-                <th className="p-4 text-xs font-black text-slate-400 uppercase">Address</th>
-                <th className="p-4 text-xs font-black text-slate-400 uppercase">Amount</th>
-                <th className="p-4 text-xs font-black text-slate-400 uppercase">Status</th>
-                <th className="p-4 text-xs font-black text-slate-400 uppercase">Date</th>
-                <th className="p-4 text-xs font-black text-slate-400 uppercase text-right">Actions</th>
+                <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">Customer</th>
+                <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">Address</th>
+                <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">Amount</th>
+                <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">Status</th>
+                <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">Date</th>
+                <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
               {bookings.map((b: any) => (
                 <tr key={b.id}>
-                  <td className="p-4 font-bold text-slate-800">{b.customer_name || "—"}</td>
-                  <td className="p-4 text-sm text-slate-600 truncate max-w-[200px]">{b.address || "—"}</td>
-                  <td className="p-4 font-bold text-slate-800">₹{(b.total_amount || 0).toLocaleString("en-IN")}</td>
+                  <td className="p-4 font-bold text-[var(--color-on-surface)]">{b.customer_name || "—"}</td>
+                  <td className="p-4 text-sm text-[var(--color-on-surface-variant)] truncate max-w-[200px]">{b.address || "—"}</td>
+                  <td className="p-4 font-bold text-[var(--color-on-surface)]">₹{(b.total_amount || 0).toLocaleString("en-IN")}</td>
                   <td className="p-4">
                     <select
                       value={b.status || "pending"}
                       disabled={updatingId === b.id}
                       onChange={(e) => handleStatusChange(b.id, e.target.value)}
-                      className={`text-xs font-bold px-3 py-1.5 rounded-full border-0 cursor-pointer disabled:opacity-50 ${statusColors[b.status] || "bg-slate-100 text-slate-700"}`}
+                      className={`text-xs font-bold px-3 py-1.5 rounded-full border-0 cursor-pointer disabled:opacity-50 ${statusColors[b.status] || "bg-[var(--color-surface-container)] text-[var(--color-on-surface)]"}`}
                     >
                       <option value="pending">Pending</option>
                       <option value="confirmed">Confirmed</option>
@@ -179,11 +179,11 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
                       <option value="cancelled">Cancelled</option>
                     </select>
                   </td>
-                  <td className="p-4 text-sm text-slate-600">{b.created_at ? new Date(b.created_at).toLocaleDateString("en-IN") : "—"}</td>
+                  <td className="p-4 text-sm text-[var(--color-on-surface-variant)]">{b.created_at ? new Date(b.created_at).toLocaleDateString("en-IN") : "—"}</td>
                   <td className="p-4 text-right">
                     <button
                       onClick={() => handleDelete(b.id)}
-                      className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      className="p-1.5 text-[var(--color-outline-variant)] hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                       title="Delete booking"
                     >
                       <span className="material-symbols-outlined text-sm">delete</span>

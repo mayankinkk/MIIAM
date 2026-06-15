@@ -80,8 +80,8 @@ export default function AuditLogs() {
     <div className="px-8 space-y-8">
       <div className="flex justify-between items-end">
         <div>
-          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight mb-2">Audit Logs</h1>
-          <p className="text-slate-500">Track all admin actions and platform changes.</p>
+          <h1 className="text-3xl font-extrabold text-[var(--color-on-surface)] tracking-tight mb-2">Audit Logs</h1>
+          <p className="text-[var(--color-outline)]">Track all admin actions and platform changes.</p>
         </div>
         <button 
           onClick={exportLogs}
@@ -95,20 +95,20 @@ export default function AuditLogs() {
       {/* Action Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
         {Object.entries(actionStats).map(([action, count]) => (
-          <div key={action} className="bg-[var(--color-surface-container-lowest)] p-4 rounded-2xl border border-slate-100 shadow-sm">
-            <p className="text-xs font-black text-slate-400 uppercase truncate">{action}</p>
-            <p className="text-2xl font-black text-slate-800">{count}</p>
+          <div key={action} className="bg-[var(--color-surface-container-lowest)] p-4 rounded-2xl border border-[var(--color-border-subtle)] shadow-sm">
+            <p className="text-xs font-black text-[var(--color-outline-variant)] uppercase truncate">{action}</p>
+            <p className="text-2xl font-black text-[var(--color-on-surface)]">{count}</p>
           </div>
         ))}
       </div>
 
       {/* Filters */}
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-4 shadow-sm">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-4 shadow-sm">
         <div className="flex gap-4 flex-wrap">
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            className="bg-slate-50 border border-slate-100 rounded-xl px-4 py-2 text-sm focus:outline-none"
+            className="bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2 text-sm focus:outline-none"
           >
             <option value="all">All Actions</option>
             <option value="create">Create</option>
@@ -118,58 +118,58 @@ export default function AuditLogs() {
             <option value="logout">Logout</option>
           </select>
           <div className="relative flex-1 min-w-[200px]">
-            <span className="material-symbols-outlined absolute left-3 top-2.5 text-slate-400 text-sm">search</span>
+            <span className="material-symbols-outlined absolute left-3 top-2.5 text-[var(--color-outline-variant)] text-sm">search</span>
             <input
               type="text"
               placeholder="Search logs..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-100 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#ba001c]/10"
+              className="w-full bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#ba001c]/10"
             />
           </div>
         </div>
       </div>
 
       {/* Logs Table */}
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
-            <thead className="bg-slate-50 border-b border-slate-100">
+            <thead className="bg-[var(--color-surface-subtle)] border-b border-[var(--color-border-subtle)]">
               <tr>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Timestamp</th>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Admin</th>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Action</th>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Target</th>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Details</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Timestamp</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Admin</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Action</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Target</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Details</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
               {filteredLogs.map(log => (
-                <tr key={log.id} className="hover:bg-slate-50/50">
-                  <td className="p-4 text-xs text-slate-500 whitespace-nowrap">
+                <tr key={log.id} className="hover:bg-[var(--color-surface-subtle)]/50">
+                  <td className="p-4 text-xs text-[var(--color-outline)] whitespace-nowrap">
                     {new Date(log.created_at).toLocaleString("en-IN", { 
                       month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" 
                     })}
                   </td>
                   <td className="p-4">
-                    <span className="font-mono text-xs text-slate-600">{log.admin_id?.slice(0, 8) || "system"}</span>
+                    <span className="font-mono text-xs text-[var(--color-on-surface-variant)]">{log.admin_id?.slice(0, 8) || "system"}</span>
                   </td>
                   <td className="p-4">
                     <span className={`text-[10px] font-black px-2 py-1 rounded-full uppercase ${
                       log.action === "create" ? "bg-green-100 text-green-700" :
                       log.action === "update" ? "bg-blue-100 text-blue-700" :
                       log.action === "delete" ? "bg-red-100 text-red-700" :
-                      "bg-slate-100 text-slate-600"
+                      "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
                     }`}>
                       {log.action}
                     </span>
                   </td>
                   <td className="p-4">
-                    <span className="text-xs font-bold text-slate-800">{log.target_type}</span>
-                    <span className="font-mono text-xs text-slate-400 ml-2">{log.target_id?.slice(0, 8)}</span>
+                    <span className="text-xs font-bold text-[var(--color-on-surface)]">{log.target_type}</span>
+                    <span className="font-mono text-xs text-[var(--color-outline-variant)] ml-2">{log.target_id?.slice(0, 8)}</span>
                   </td>
                   <td className="p-4 max-w-xs">
-                    <span className="text-xs text-slate-500 truncate block">
+                    <span className="text-xs text-[var(--color-outline)] truncate block">
                       {JSON.stringify(log.details || {}).slice(0, 50)}...
                     </span>
                   </td>
@@ -179,7 +179,7 @@ export default function AuditLogs() {
           </table>
         </div>
         {filteredLogs.length === 0 && (
-          <div className="p-8 text-center text-slate-400">
+          <div className="p-8 text-center text-[var(--color-outline-variant)]">
             No audit logs found
           </div>
         )}

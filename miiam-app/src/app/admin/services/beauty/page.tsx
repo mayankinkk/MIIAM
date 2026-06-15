@@ -53,7 +53,7 @@ export default function BeautyServicesAdmin() {
   });
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-[var(--color-surface-subtle)]">
       {/* Header */}
       <div className="bg-gradient-to-r from-pink-600 to-rose-500 text-white p-6">
         <div className="flex items-center justify-between">
@@ -81,8 +81,8 @@ export default function BeautyServicesAdmin() {
               <span className="material-symbols-outlined text-pink-600">spa</span>
             </div>
             <div>
-              <div className="text-2xl font-black text-slate-800">{bookings.length}</div>
-              <div className="text-xs text-slate-500">Total Bookings</div>
+              <div className="text-2xl font-black text-[var(--color-on-surface)]">{bookings.length}</div>
+              <div className="text-xs text-[var(--color-outline)]">Total Bookings</div>
             </div>
           </div>
         </div>
@@ -92,8 +92,8 @@ export default function BeautyServicesAdmin() {
               <span className="material-symbols-outlined text-purple-600">event</span>
             </div>
             <div>
-              <div className="text-2xl font-black text-slate-800">{todaysBookings}</div>
-              <div className="text-xs text-slate-500">Today's Bookings</div>
+              <div className="text-2xl font-black text-[var(--color-on-surface)]">{todaysBookings}</div>
+              <div className="text-xs text-[var(--color-outline)]">Today's Bookings</div>
             </div>
           </div>
         </div>
@@ -103,8 +103,8 @@ export default function BeautyServicesAdmin() {
               <span className="material-symbols-outlined text-amber-600">people</span>
             </div>
             <div>
-              <div className="text-2xl font-black text-slate-800">{providers.length}</div>
-              <div className="text-xs text-slate-500">Active Pros</div>
+              <div className="text-2xl font-black text-[var(--color-on-surface)]">{providers.length}</div>
+              <div className="text-xs text-[var(--color-outline)]">Active Pros</div>
             </div>
           </div>
         </div>
@@ -114,8 +114,8 @@ export default function BeautyServicesAdmin() {
               <span className="material-symbols-outlined text-green-600">check_circle</span>
             </div>
             <div>
-              <div className="text-2xl font-black text-slate-800">{bookings.filter(b => b.status === "completed").length}</div>
-              <div className="text-xs text-slate-500">Completed</div>
+              <div className="text-2xl font-black text-[var(--color-on-surface)]">{bookings.filter(b => b.status === "completed").length}</div>
+              <div className="text-xs text-[var(--color-outline)]">Completed</div>
             </div>
           </div>
         </div>
@@ -123,7 +123,7 @@ export default function BeautyServicesAdmin() {
 
       {/* Tabs */}
       <div className="px-6">
-        <div className="flex gap-2 border-b border-slate-200">
+        <div className="flex gap-2 border-b border-[var(--color-border-subtle)]">
           {["overview", "bookings", "professionals"].map((tab) => (
             <button
               key={tab}
@@ -131,7 +131,7 @@ export default function BeautyServicesAdmin() {
               className={`px-4 py-3 font-bold text-sm capitalize transition-colors ${
                 activeTab === tab
                   ? "text-pink-600 border-b-2 border-pink-600"
-                  : "text-slate-500 hover:text-slate-700"
+                  : "text-[var(--color-outline)] hover:text-[var(--color-on-surface)]"
               }`}
             >
               {tab}
@@ -143,26 +143,26 @@ export default function BeautyServicesAdmin() {
       {/* Content */}
       <div className="p-6">
         {loading ? (
-          <div className="text-center py-12 text-slate-500">Loading...</div>
+          <div className="text-center py-12 text-[var(--color-outline)]">Loading...</div>
         ) : (
           <>
             {activeTab === "overview" && (
               <div className="space-y-6">
                 <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg">
-                  <h2 className="text-lg font-bold text-slate-800 mb-4">Categories</h2>
+                  <h2 className="text-lg font-bold text-[var(--color-on-surface)] mb-4">Categories</h2>
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {categoryStats.map((cat) => (
-                      <div key={cat.id} className="p-4 border border-slate-100 rounded-xl hover:border-pink-200 hover:bg-pink-50/30 transition-colors cursor-pointer">
+                      <div key={cat.id} className="p-4 border border-[var(--color-border-subtle)] rounded-xl hover:border-pink-200 hover:bg-pink-50/30 transition-colors cursor-pointer">
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center gap-3">
                             <div className={`w-10 h-10 bg-${cat.color}-100 rounded-xl flex items-center justify-center`}>
                               <span className={`material-symbols-outlined text-${cat.color}-600`}>{cat.icon}</span>
                             </div>
-                            <span className="font-bold text-slate-800">{cat.label}</span>
+                            <span className="font-bold text-[var(--color-on-surface)]">{cat.label}</span>
                           </div>
                         </div>
                         <div className="flex justify-between text-sm">
-                          <span className="text-slate-500">{cat.bookings} bookings</span>
+                          <span className="text-[var(--color-outline)]">{cat.bookings} bookings</span>
                           <span className="font-bold text-pink-600">₹{cat.revenue.toLocaleString()}</span>
                         </div>
                       </div>
@@ -172,32 +172,32 @@ export default function BeautyServicesAdmin() {
 
                 <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg">
                   <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-lg font-bold text-slate-800">Recent Bookings</h2>
+                    <h2 className="text-lg font-bold text-[var(--color-on-surface)]">Recent Bookings</h2>
                     <button onClick={() => setActiveTab("bookings")} className="text-sm font-bold text-pink-600 hover:underline">
                       View All
                     </button>
                   </div>
                   {bookings.length === 0 ? (
-                    <p className="text-slate-400 text-center py-8">No bookings yet</p>
+                    <p className="text-[var(--color-outline-variant)] text-center py-8">No bookings yet</p>
                   ) : (
                     <div className="space-y-3">
                       {bookings.slice(0, 3).map((booking) => (
-                        <div key={booking.id} className="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+                        <div key={booking.id} className="flex items-center justify-between p-3 bg-[var(--color-surface-subtle)] rounded-xl">
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 bg-pink-100 rounded-xl flex items-center justify-center">
                               <span className="material-symbols-outlined text-pink-600 text-lg">spa</span>
                             </div>
                             <div>
-                              <div className="font-bold text-slate-800">{booking.service_type}</div>
-                              <div className="text-xs text-slate-500">{booking.user_name} • {booking.scheduled_date}</div>
+                              <div className="font-bold text-[var(--color-on-surface)]">{booking.service_type}</div>
+                              <div className="text-xs text-[var(--color-outline)]">{booking.user_name} • {booking.scheduled_date}</div>
                             </div>
                           </div>
                           <div className="text-right">
-                            <div className="font-bold text-slate-800">₹{booking.amount}</div>
+                            <div className="font-bold text-[var(--color-on-surface)]">₹{booking.amount}</div>
                             <span className={`text-xs px-2 py-0.5 rounded-full ${
                               booking.status === "completed" ? "bg-green-100 text-green-600" :
                               booking.status === "pending" ? "bg-amber-100 text-amber-600" :
-                              "bg-slate-100 text-slate-600"
+                              "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
                             }`}>
                               {booking.status}
                             </span>
@@ -213,39 +213,39 @@ export default function BeautyServicesAdmin() {
             {activeTab === "bookings" && (
               <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl shadow-lg overflow-hidden">
                 {bookings.length === 0 ? (
-                  <div className="text-center py-12 text-slate-400">
-                    <span className="material-symbols-outlined text-5xl text-slate-300">event_busy</span>
+                  <div className="text-center py-12 text-[var(--color-outline-variant)]">
+                    <span className="material-symbols-outlined text-5xl text-[var(--color-outline-variant)]/60">event_busy</span>
                     <p className="mt-4 font-bold">No bookings yet</p>
                   </div>
                 ) : (
                   <table className="w-full">
-                    <thead className="bg-slate-50 border-b border-slate-100">
+                    <thead className="bg-[var(--color-surface-subtle)] border-b border-[var(--color-border-subtle)]">
                       <tr>
-                        <th className="text-left p-4 font-bold text-slate-600 text-sm">Service</th>
-                        <th className="text-left p-4 font-bold text-slate-600 text-sm">Customer</th>
-                        <th className="text-left p-4 font-bold text-slate-600 text-sm">Date/Time</th>
-                        <th className="text-left p-4 font-bold text-slate-600 text-sm">Amount</th>
-                        <th className="text-left p-4 font-bold text-slate-600 text-sm">Status</th>
+                        <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Service</th>
+                        <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Customer</th>
+                        <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Date/Time</th>
+                        <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Amount</th>
+                        <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Status</th>
                       </tr>
                     </thead>
                     <tbody>
                       {bookings.map((booking) => (
                         <tr key={booking.id} className="border-b border-slate-50 hover:bg-pink-50/30">
-                          <td className="p-4 font-bold text-slate-800">{booking.service_type}</td>
+                          <td className="p-4 font-bold text-[var(--color-on-surface)]">{booking.service_type}</td>
                           <td className="p-4">
-                            <div className="font-medium text-slate-700">{booking.user_name}</div>
-                            <div className="text-xs text-slate-500">{booking.user_phone}</div>
+                            <div className="font-medium text-[var(--color-on-surface)]">{booking.user_name}</div>
+                            <div className="text-xs text-[var(--color-outline)]">{booking.user_phone}</div>
                           </td>
                           <td className="p-4">
-                            <div className="text-sm text-slate-700">{booking.scheduled_date}</div>
-                            <div className="text-xs text-slate-500">{booking.scheduled_time}</div>
+                            <div className="text-sm text-[var(--color-on-surface)]">{booking.scheduled_date}</div>
+                            <div className="text-xs text-[var(--color-outline)]">{booking.scheduled_time}</div>
                           </td>
-                          <td className="p-4 font-bold text-slate-800">₹{booking.amount}</td>
+                          <td className="p-4 font-bold text-[var(--color-on-surface)]">₹{booking.amount}</td>
                           <td className="p-4">
                             <span className={`text-xs px-2 py-1 rounded-full font-bold ${
                               booking.status === "completed" ? "bg-green-100 text-green-700" :
                               booking.status === "pending" ? "bg-amber-100 text-amber-700" :
-                              "bg-slate-100 text-slate-700"
+                              "bg-[var(--color-surface-container)] text-[var(--color-on-surface)]"
                             }`}>
                               {booking.status}
                             </span>
@@ -261,18 +261,18 @@ export default function BeautyServicesAdmin() {
             {activeTab === "professionals" && (
               <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl shadow-lg overflow-hidden">
                 {providers.length === 0 ? (
-                  <div className="text-center py-12 text-slate-400">
-                    <span className="material-symbols-outlined text-5xl text-slate-300">people</span>
+                  <div className="text-center py-12 text-[var(--color-outline-variant)]">
+                    <span className="material-symbols-outlined text-5xl text-[var(--color-outline-variant)]/60">people</span>
                     <p className="mt-4 font-bold">No providers yet</p>
                   </div>
                 ) : (
                   <table className="w-full">
-                    <thead className="bg-slate-50 border-b border-slate-100">
+                    <thead className="bg-[var(--color-surface-subtle)] border-b border-[var(--color-border-subtle)]">
                       <tr>
-                        <th className="text-left p-4 font-bold text-slate-600 text-sm">Professional</th>
-                        <th className="text-left p-4 font-bold text-slate-600 text-sm">Status</th>
-                        <th className="text-left p-4 font-bold text-slate-600 text-sm">Phone</th>
-                        <th className="text-left p-4 font-bold text-slate-600 text-sm">Action</th>
+                        <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Professional</th>
+                        <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Status</th>
+                        <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Phone</th>
+                        <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Action</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -283,18 +283,18 @@ export default function BeautyServicesAdmin() {
                               <div className="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center">
                                 <span className="text-pink-600 font-bold">{(pro.name || pro.full_name || "?")[0]}</span>
                               </div>
-                              <span className="font-bold text-slate-800">{pro.name || pro.full_name}</span>
+                              <span className="font-bold text-[var(--color-on-surface)]">{pro.name || pro.full_name}</span>
                             </div>
                           </td>
                           <td className="p-4">
                             <span className={`text-xs px-2 py-1 rounded-full font-bold ${
                               pro.status === "active" ? "bg-green-100 text-green-700" :
-                              "bg-slate-100 text-slate-600"
+                              "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
                             }`}>
                               {pro.status || "active"}
                             </span>
                           </td>
-                          <td className="p-4 text-slate-600">{pro.phone || "—"}</td>
+                          <td className="p-4 text-[var(--color-on-surface-variant)]">{pro.phone || "—"}</td>
                           <td className="p-4">
                             <button
                               onClick={() => alert(`Provider: ${pro.name}\nPhone: ${pro.phone || "—"}\nStatus: ${pro.status || "active"}\nSpecialties: ${pro.specialties?.join(", ") || "—"}`)}

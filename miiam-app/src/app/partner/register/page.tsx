@@ -109,42 +109,42 @@ export default function VendorRegister() {
 
   const update = (field: string, value: any) => setForm({ ...form, [field]: value });
 
-  const inputClass = "w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c]";
-  const labelClass = "text-sm font-semibold text-slate-700";
+  const inputClass = "w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c]";
+  const labelClass = "text-sm font-semibold text-[var(--color-on-surface)]";
 
   // ── Success screen ─────────────────────────────────────────────────────────
   if (submitted) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#ba001c]/5 to-white flex items-center justify-center p-4">
         <div className="w-full max-w-lg text-center">
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-10 shadow-lg border border-slate-200 space-y-6">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-10 shadow-lg border border-[var(--color-border-subtle)] space-y-6">
             {/* Animated checkmark */}
             <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto">
               <span className="material-symbols-outlined text-green-600 text-5xl">check_circle</span>
             </div>
             <div className="space-y-2">
-              <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
+              <h1 className="text-3xl font-extrabold text-[var(--color-on-surface)] tracking-tight">
                 Application Submitted!
               </h1>
-              <p className="text-slate-500 text-base leading-relaxed">
+              <p className="text-[var(--color-outline)] text-base leading-relaxed">
                 Thanks for registering,{" "}
-                <span className="font-semibold text-slate-700">{form.owner_name || "partner"}</span>!<br />
+                <span className="font-semibold text-[var(--color-on-surface)]">{form.owner_name || "partner"}</span>!<br />
                 Kindly wait — your application is currently under review.<br />
                 Our team will verify your details and get back to you shortly.
               </p>
             </div>
-            <div className="bg-slate-50 rounded-2xl p-4 text-left space-y-2">
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Submission Summary</p>
+            <div className="bg-[var(--color-surface-subtle)] rounded-2xl p-4 text-left space-y-2">
+              <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase tracking-widest mb-3">Submission Summary</p>
               <div className="flex justify-between text-sm">
-                <span className="text-slate-500">Store</span>
-                <span className="font-bold text-slate-800">{form.shop_name || "-"}</span>
+                <span className="text-[var(--color-outline)]">Store</span>
+                <span className="font-bold text-[var(--color-on-surface)]">{form.shop_name || "-"}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-slate-500">Type</span>
-                <span className="font-bold text-slate-800 capitalize">{form.type}</span>
+                <span className="text-[var(--color-outline)]">Type</span>
+                <span className="font-bold text-[var(--color-on-surface)] capitalize">{form.type}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-slate-500">Status</span>
+                <span className="text-[var(--color-outline)]">Status</span>
                 <span className="font-bold text-yellow-600">⏳ Pending Review</span>
               </div>
             </div>
@@ -164,10 +164,10 @@ export default function VendorRegister() {
     <div className="min-h-screen bg-gradient-to-b from-[#ba001c]/5 to-white flex items-center justify-center p-4">
       <div className="w-full max-w-2xl">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">
+          <h1 className="text-4xl font-extrabold text-[var(--color-on-surface)] tracking-tight">
             Partner with <span className="text-[#ba001c]">MIIAM</span>
           </h1>
-          <p className="text-slate-500 mt-2">List your business and reach thousands of customers</p>
+          <p className="text-[var(--color-outline)] mt-2">List your business and reach thousands of customers</p>
         </div>
 
         {/* Steps Indicator */}
@@ -177,23 +177,23 @@ export default function VendorRegister() {
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
                 step > s.num ? "bg-green-500 text-white" :
                 step === s.num ? "bg-[#ba001c] text-white" :
-                "bg-slate-200 text-slate-500"
+                "bg-[var(--color-surface-container-high)] text-[var(--color-outline)]"
               }`}>
                 {step > s.num ? "✓" : s.num}
               </div>
-              <span className={`text-sm font-medium ${step === s.num ? "text-slate-800" : "text-slate-400"}`}>
+              <span className={`text-sm font-medium ${step === s.num ? "text-[var(--color-on-surface)]" : "text-[var(--color-outline-variant)]"}`}>
                 {s.label}
               </span>
-              {i < steps.length - 1 && <div className={`w-12 h-0.5 ${step > s.num ? "bg-green-500" : "bg-slate-200"}`} />}
+              {i < steps.length - 1 && <div className={`w-12 h-0.5 ${step > s.num ? "bg-green-500" : "bg-[var(--color-surface-container-high)]"}`} />}
             </div>
           ))}
         </div>
 
         {/* Form Card */}
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-8 shadow-lg border border-slate-200">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-8 shadow-lg border border-[var(--color-border-subtle)]">
           {step === 1 && (
             <div className="space-y-5">
-              <h2 className="text-xl font-extrabold text-slate-900">Owner Details</h2>
+              <h2 className="text-xl font-extrabold text-[var(--color-on-surface)]">Owner Details</h2>
               <div>
                 <label className={labelClass}>Full Name *</label>
                 <input type="text" value={form.owner_name} onChange={(e) => update("owner_name", e.target.value)} placeholder="Your full name" className={inputClass} />
@@ -211,7 +211,7 @@ export default function VendorRegister() {
 
           {step === 2 && (
             <div className="space-y-5">
-              <h2 className="text-xl font-extrabold text-slate-900">Shop Details</h2>
+              <h2 className="text-xl font-extrabold text-[var(--color-on-surface)]">Shop Details</h2>
               <div>
                 <label className={labelClass}>Shop Name *</label>
                 <input type="text" value={form.shop_name} onChange={(e) => update("shop_name", e.target.value)} placeholder="e.g., The Burger Alchemist" className={inputClass} />
@@ -258,8 +258,8 @@ export default function VendorRegister() {
 
           {step === 3 && (
             <div className="space-y-5">
-              <h2 className="text-xl font-extrabold text-slate-900">Business Documents</h2>
-              <p className="text-sm text-slate-500">Provide your business documents for verification.</p>
+              <h2 className="text-xl font-extrabold text-[var(--color-on-surface)]">Business Documents</h2>
+              <p className="text-sm text-[var(--color-outline)]">Provide your business documents for verification.</p>
               <div>
                 <label className={labelClass}>GST Number</label>
                 <input type="text" value={form.gst_number} onChange={(e) => update("gst_number", e.target.value)} placeholder="22AAAAA0000A1Z5" className={inputClass} />
@@ -277,8 +277,8 @@ export default function VendorRegister() {
 
           {step === 4 && (
             <div className="space-y-5">
-              <h2 className="text-xl font-extrabold text-slate-900">Delivery Settings</h2>
-              <p className="text-sm text-slate-500">Configure your delivery preferences.</p>
+              <h2 className="text-xl font-extrabold text-[var(--color-on-surface)]">Delivery Settings</h2>
+              <p className="text-sm text-[var(--color-outline)]">Configure your delivery preferences.</p>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className={labelClass}>Min Order Amount (₹)</label>
@@ -301,14 +301,14 @@ export default function VendorRegister() {
               </div>
 
               {/* Summary */}
-              <div className="bg-slate-50 rounded-2xl p-6 mt-6">
-                <h3 className="font-bold text-slate-800 mb-3">Summary</h3>
+              <div className="bg-[var(--color-surface-subtle)] rounded-2xl p-6 mt-6">
+                <h3 className="font-bold text-[var(--color-on-surface)] mb-3">Summary</h3>
                 <div className="space-y-2 text-sm">
-                  <div className="flex justify-between"><span className="text-slate-500">Owner</span><span className="font-bold text-slate-700">{form.owner_name || "-"}</span></div>
-                  <div className="flex justify-between"><span className="text-slate-500">Store</span><span className="font-bold text-slate-700">{form.shop_name || "-"}</span></div>
-                  <div className="flex justify-between"><span className="text-slate-500">Type</span><span className="font-bold text-slate-700">{form.type}</span></div>
-                  <div className="flex justify-between"><span className="text-slate-500">Location</span><span className="font-bold text-slate-700">{[form.city, form.state].filter(Boolean).join(", ") || "-"}</span></div>
-                  <div className="flex justify-between"><span className="text-slate-500">Documents</span><span className="font-bold text-slate-700">{form.gst_number ? "GST ✓" : "No GST"}{form.fssai_number ? " • FSSAI ✓" : ""}</span></div>
+                  <div className="flex justify-between"><span className="text-[var(--color-outline)]">Owner</span><span className="font-bold text-[var(--color-on-surface)]">{form.owner_name || "-"}</span></div>
+                  <div className="flex justify-between"><span className="text-[var(--color-outline)]">Store</span><span className="font-bold text-[var(--color-on-surface)]">{form.shop_name || "-"}</span></div>
+                  <div className="flex justify-between"><span className="text-[var(--color-outline)]">Type</span><span className="font-bold text-[var(--color-on-surface)]">{form.type}</span></div>
+                  <div className="flex justify-between"><span className="text-[var(--color-outline)]">Location</span><span className="font-bold text-[var(--color-on-surface)]">{[form.city, form.state].filter(Boolean).join(", ") || "-"}</span></div>
+                  <div className="flex justify-between"><span className="text-[var(--color-outline)]">Documents</span><span className="font-bold text-[var(--color-on-surface)]">{form.gst_number ? "GST ✓" : "No GST"}{form.fssai_number ? " • FSSAI ✓" : ""}</span></div>
                 </div>
               </div>
             </div>
@@ -322,7 +322,7 @@ export default function VendorRegister() {
           )}
           <div className="flex justify-between mt-8">
             {step > 1 ? (
-              <button onClick={() => setStep(step - 1)} className="px-6 py-3 border border-slate-200 text-slate-600 rounded-xl font-bold hover:bg-slate-50 transition-colors">
+              <button onClick={() => setStep(step - 1)} className="px-6 py-3 border border-[var(--color-border-subtle)] text-[var(--color-on-surface-variant)] rounded-xl font-bold hover:bg-[var(--color-surface-subtle)] transition-colors">
                 Back
               </button>
             ) : <div />}

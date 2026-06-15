@@ -59,7 +59,7 @@ export default function RiderNotificationsPage() {
         <div className="text-center max-w-sm">
           <span className="material-symbols-outlined text-5xl text-red-400 mb-4 block">wifi_off</span>
           <h2 className="text-xl font-bold text-[#4d212a] mb-2">Something went wrong</h2>
-          <p className="text-slate-500 mb-6">{error}</p>
+          <p className="text-[var(--color-outline)] mb-6">{error}</p>
           <button
             onClick={() => loadNotifications()}
             className="px-6 py-3 bg-[#0b50d5] text-white rounded-xl font-bold"
@@ -100,8 +100,8 @@ export default function RiderNotificationsPage() {
 
       <main className="p-6 space-y-4 pb-32">
         {notifications.length === 0 ? (
-          <div className="text-center py-8 text-slate-500">
-            <span className="material-symbols-outlined text-6xl text-slate-300">notifications_off</span>
+          <div className="text-center py-8 text-[var(--color-outline)]">
+            <span className="material-symbols-outlined text-6xl text-[var(--color-outline-variant)]/60">notifications_off</span>
             <p className="mt-4">No notifications yet</p>
           </div>
         ) : notifications.map((notif) => (
@@ -115,8 +115,8 @@ export default function RiderNotificationsPage() {
               )}
               <div className="flex-1">
                 <h3 className="font-bold text-[#4d212a]">{notif.title}</h3>
-                <p className="text-sm text-slate-500 mt-1">{notif.message}</p>
-                <p className="text-xs text-slate-400 mt-2">{new Date(notif.created_at).toLocaleString()}</p>
+                <p className="text-sm text-[var(--color-outline)] mt-1">{notif.message}</p>
+                <p className="text-xs text-[var(--color-outline-variant)] mt-2">{new Date(notif.created_at).toLocaleString()}</p>
               </div>
             </div>
           </div>

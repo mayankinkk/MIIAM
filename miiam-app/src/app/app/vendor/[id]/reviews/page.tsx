@@ -61,34 +61,34 @@ export default function VendorReviewsPage() {
 
   return (
     <div className="min-h-screen bg-[#f8f8f8] pb-24">
-      <header className="bg-[var(--color-surface-container-lowest)] border-b border-slate-100 px-4 py-4 sticky top-0 z-10">
+      <header className="bg-[var(--color-surface-container-lowest)] border-b border-[var(--color-border-subtle)] px-4 py-4 sticky top-0 z-10">
         <div className="flex items-center gap-3">
-          <button onClick={() => router.back()} className="p-2 -ml-2 hover:bg-slate-100 rounded-full">
+          <button onClick={() => router.back()} className="p-2 -ml-2 hover:bg-[var(--color-surface-container)] rounded-full">
             <span className="material-symbols-outlined">arrow_back</span>
           </button>
           <div>
-            <h1 className="text-xl font-black text-slate-800">{vendor?.shop_name}</h1>
-            <p className="text-sm text-slate-500">{t.food.all} {t.food.reviews}</p>
+            <h1 className="text-xl font-black text-[var(--color-on-surface)]">{vendor?.shop_name}</h1>
+            <p className="text-sm text-[var(--color-outline)]">{t.food.all} {t.food.reviews}</p>
           </div>
         </div>
       </header>
       <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Reviews' }]} />
       {/* Rating Summary */}
-      <div className="bg-[var(--color-surface-container-lowest)] border-b border-slate-100 p-4">
+      <div className="bg-[var(--color-surface-container-lowest)] border-b border-[var(--color-border-subtle)] p-4">
         <div className="flex items-center gap-6">
           <div className="text-center">
-            <p className="text-4xl font-black text-slate-800">{vendor?.rating || "4.5"}</p>
-            <p className="text-xs text-slate-500">{reviews.length} reviews</p>
+            <p className="text-4xl font-black text-[var(--color-on-surface)]">{vendor?.rating || "4.5"}</p>
+            <p className="text-xs text-[var(--color-outline)]">{reviews.length} reviews</p>
           </div>
           <div className="flex-1 space-y-1">
             {ratingCounts.map(({ star, count, percent }) => (
               <div key={star} className="flex items-center gap-2">
-                <span className="text-xs text-slate-600 w-3">{star}</span>
+                <span className="text-xs text-[var(--color-on-surface-variant)] w-3">{star}</span>
                 <span className="material-symbols-outlined text-primary text-sm">star</span>
-                <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
+                <div className="flex-1 h-2 bg-[var(--color-surface-container)] rounded-full overflow-hidden">
                   <div className="h-full bg-primary rounded-full" style={{ width: `${percent}%` }} />
                 </div>
-                <span className="text-xs text-slate-400 w-8">{count}</span>
+                <span className="text-xs text-[var(--color-outline-variant)] w-8">{count}</span>
               </div>
             ))}
           </div>
@@ -96,14 +96,14 @@ export default function VendorReviewsPage() {
       </div>
 
       {/* Filter */}
-      <div className="bg-[var(--color-surface-container-lowest)] border-b border-slate-100 px-4 py-3 overflow-x-auto">
+      <div className="bg-[var(--color-surface-container-lowest)] border-b border-[var(--color-border-subtle)] px-4 py-3 overflow-x-auto">
         <div className="flex gap-2">
           {(["all", "5", "4", "3", "2", "1"] as const).map((f) => (
             <button
               key={f}
               onClick={() => setFilter(f)}
               className={`px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap ${
-                filter === f ? "bg-primary text-white" : "bg-slate-100 text-slate-600"
+                filter === f ? "bg-primary text-white" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
               }`}
             >
               {f === "all" ? t.food.all : `${f} ★`}
@@ -125,8 +125,8 @@ export default function VendorReviewsPage() {
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
-                    <p className="font-bold text-slate-800">{review.profile?.full_name || "User"}</p>
-                    <span className="text-xs text-slate-400">
+                    <p className="font-bold text-[var(--color-on-surface)]">{review.profile?.full_name || "User"}</p>
+                    <span className="text-xs text-[var(--color-outline-variant)]">
                       {new Date(review.created_at).toLocaleDateString()}
                     </span>
                   </div>
@@ -135,7 +135,7 @@ export default function VendorReviewsPage() {
                       <span
                         key={star}
                         className={`material-symbols-outlined text-sm ${
-                          star <= review.rating ? "text-primary" : "text-slate-300"
+                          star <= review.rating ? "text-primary" : "text-[var(--color-outline-variant)]/60"
                         }`}
                         style={{ fontVariationSettings: `'FILL' ${star <= review.rating ? 1 : 0}` }}
                       >
@@ -144,12 +144,12 @@ export default function VendorReviewsPage() {
                     ))}
                   </div>
                   {review.review_text && (
-                    <p className="text-sm text-slate-600 mt-2">{review.review_text}</p>
+                    <p className="text-sm text-[var(--color-on-surface-variant)] mt-2">{review.review_text}</p>
                   )}
                   {review.tags && review.tags.length > 0 && (
                     <div className="flex gap-2 mt-2 flex-wrap">
                       {review.tags.map((tag: string) => (
-                        <span key={tag} className="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded-full">
+                        <span key={tag} className="text-xs bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] px-2 py-1 rounded-full">
                           {tag}
                         </span>
                       ))}

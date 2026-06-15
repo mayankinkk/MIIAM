@@ -237,7 +237,7 @@ export default function RiderWalletPage() {
         <div className="text-center max-w-sm">
           <span className="material-symbols-outlined text-5xl text-red-400 mb-4 block">wifi_off</span>
           <h2 className="text-xl font-bold text-[#4d212a] mb-2">Something went wrong</h2>
-          <p className="text-slate-500 mb-6">{error}</p>
+          <p className="text-[var(--color-outline)] mb-6">{error}</p>
           <button
             onClick={() => loadWalletData()}
             className="px-6 py-3 bg-[#0b50d5] text-white rounded-xl font-bold"
@@ -254,7 +254,7 @@ export default function RiderWalletPage() {
       <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-[#0b50d5] border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="mt-4 text-slate-500 font-medium">Loading wallet...</p>
+          <p className="mt-4 text-[var(--color-outline)] font-medium">Loading wallet...</p>
         </div>
       </div>
     );
@@ -304,7 +304,7 @@ export default function RiderWalletPage() {
               className={`flex-1 py-3 rounded-xl text-sm font-bold capitalize transition-all ${
                 activeTab === tab
                   ? "bg-[#0b50d5] text-white"
-                  : "text-slate-500 hover:bg-slate-50"
+                  : "text-[var(--color-outline)] hover:bg-[var(--color-surface-subtle)]"
               }`}
             >
               {tab}
@@ -316,16 +316,16 @@ export default function RiderWalletPage() {
           <>
             <div className="grid grid-cols-3 gap-3">
               <div className="bg-[var(--color-surface-container-lowest)] p-3 rounded-2xl shadow-lg text-center">
-                <p className="text-[9px] text-slate-400 uppercase">Total Earned</p>
+                <p className="text-[9px] text-[var(--color-outline-variant)] uppercase">Total Earned</p>
                 <p className="text-lg font-black text-green-600">₹{walletData.totalEarnings}</p>
               </div>
               <div className="bg-[var(--color-surface-container-lowest)] p-3 rounded-2xl shadow-lg text-center">
-                <p className="text-[9px] text-slate-400 uppercase">Advance Used</p>
+                <p className="text-[9px] text-[var(--color-outline-variant)] uppercase">Advance Used</p>
                 <p className="text-lg font-black text-amber-600">₹{walletData.advanceUsed}</p>
               </div>
               <div className="bg-[var(--color-surface-container-lowest)] p-3 rounded-2xl shadow-lg text-center">
-                <p className="text-[9px] text-slate-400 uppercase">Pending</p>
-                <p className="text-lg font-black text-slate-400">₹{walletData.pendingPayout}</p>
+                <p className="text-[9px] text-[var(--color-outline-variant)] uppercase">Pending</p>
+                <p className="text-lg font-black text-[var(--color-outline-variant)]">₹{walletData.pendingPayout}</p>
               </div>
             </div>
 
@@ -337,15 +337,15 @@ export default function RiderWalletPage() {
               <div className="grid grid-cols-3 gap-2 text-center">
                 <div>
                   <p className="text-2xl font-black text-green-600">₹{todayEarnings}</p>
-                  <p className="text-[9px] text-slate-500">Earned</p>
+                  <p className="text-[9px] text-[var(--color-outline)]">Earned</p>
                 </div>
                 <div>
                   <p className="text-2xl font-black text-blue-600">{todayDeliveries}</p>
-                  <p className="text-[9px] text-slate-500">Deliveries</p>
+                  <p className="text-[9px] text-[var(--color-outline)]">Deliveries</p>
                 </div>
                 <div>
                   <p className="text-2xl font-black text-amber-600">₹{todayDeliveries > 0 ? Math.round(todayEarnings / todayDeliveries * 10) / 10 : 0}</p>
-                  <p className="text-[9px] text-slate-500">Avg/Order</p>
+                  <p className="text-[9px] text-[var(--color-outline)]">Avg/Order</p>
                 </div>
               </div>
             </div>
@@ -373,7 +373,7 @@ export default function RiderWalletPage() {
                     </div>
                     <div>
                       <p className="font-medium text-[#4d212a]">{txn.description}</p>
-                      <p className="text-xs text-slate-400">
+                      <p className="text-xs text-[var(--color-outline-variant)]">
                         {new Date(txn.created_at).toLocaleString()}
                       </p>
                     </div>
@@ -389,13 +389,13 @@ export default function RiderWalletPage() {
 
         {activeTab === "earnings" && (
           <>
-            <div className="flex gap-2 bg-slate-100 p-1 rounded-xl">
+            <div className="flex gap-2 bg-[var(--color-surface-container)] p-1 rounded-xl">
               {(["today", "week", "month"] as const).map((p) => (
                 <button
                   key={p}
                   onClick={() => setPeriod(p)}
                   className={`flex-1 py-2 rounded-lg text-xs font-bold transition-colors ${
-                    period === p ? "bg-[var(--color-surface-container-lowest)] text-[#0b50d5] shadow-sm" : "text-slate-500"
+                    period === p ? "bg-[var(--color-surface-container-lowest)] text-[#0b50d5] shadow-sm" : "text-[var(--color-outline)]"
                   }`}
                 >
                   {p === "today" ? "Today" : p === "week" ? "This Week" : "This Month"}
@@ -409,9 +409,9 @@ export default function RiderWalletPage() {
                 <p className="text-3xl font-black mt-2">₹{totalWeekEarnings}</p>
                 <p className="text-xs opacity-80 mt-1">{period === "week" ? "This Week" : period === "today" ? "Today" : "This Month"}</p>
               </div>
-              <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl border border-slate-100">
-                <p className="text-xs font-bold text-slate-400">Total Deliveries</p>
-                <p className="text-3xl font-black text-slate-800 mt-2">{totalDeliveries}</p>
+              <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl border border-[var(--color-border-subtle)]">
+                <p className="text-xs font-bold text-[var(--color-outline-variant)]">Total Deliveries</p>
+                <p className="text-3xl font-black text-[var(--color-on-surface)] mt-2">{totalDeliveries}</p>
                 <p className="text-xs text-green-500 mt-1">{totalDeliveries > 0 ? `₹${Math.round(totalWeekEarnings / totalDeliveries)}/delivery` : "No deliveries yet"}</p>
               </div>
             </div>
@@ -439,7 +439,7 @@ export default function RiderWalletPage() {
             </div>
 
             <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm">
-              <h3 className="font-bold text-slate-800 mb-4">Daily Breakdown</h3>
+              <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Daily Breakdown</h3>
               <div className="space-y-3">
                 {(weeklyEarnings.length > 0 ? weeklyEarnings : [
                   { date: "Mon", deliveries: 0, earnings: 0, avgPerDelivery: 0 },
@@ -450,16 +450,16 @@ export default function RiderWalletPage() {
                   { date: "Sat", deliveries: 0, earnings: 0, avgPerDelivery: 0 },
                   { date: "Sun", deliveries: 0, earnings: 0, avgPerDelivery: 0 },
                 ]).map((day) => (
-                  <div key={day.date} className="flex items-center justify-between p-2 hover:bg-slate-50 rounded-lg">
+                  <div key={day.date} className="flex items-center justify-between p-2 hover:bg-[var(--color-surface-subtle)] rounded-lg">
                     <div className="flex items-center gap-3">
-                      <span className="text-sm font-bold text-slate-600 w-8">{day.date}</span>
+                      <span className="text-sm font-bold text-[var(--color-on-surface-variant)] w-8">{day.date}</span>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs text-slate-400">{day.deliveries} deliveries</span>
+                        <span className="text-xs text-[var(--color-outline-variant)]">{day.deliveries} deliveries</span>
                       </div>
                     </div>
                     <div className="text-right">
                       <p className="font-bold text-green-600">₹{day.earnings}</p>
-                      <p className="text-xs text-slate-400">₹{day.avgPerDelivery}/order</p>
+                      <p className="text-xs text-[var(--color-outline-variant)]">₹{day.avgPerDelivery}/order</p>
                     </div>
                   </div>
                 ))}
@@ -467,7 +467,7 @@ export default function RiderWalletPage() {
             </div>
 
             <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm">
-              <h3 className="font-bold text-slate-800 mb-4">Earnings Chart</h3>
+              <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Earnings Chart</h3>
               <div className="h-40 flex items-end gap-2">
                 {(weeklyEarnings.length > 0 ? weeklyEarnings : [
                   { date: "Mon", deliveries: 0, earnings: 0, avgPerDelivery: 0 },
@@ -483,7 +483,7 @@ export default function RiderWalletPage() {
                       className="w-full bg-gradient-to-t from-[#0b50d5] to-blue-400 rounded-t-lg"
                       style={{ height: `${(day.earnings / 1100) * 100}%`, minHeight: "8px" }}
                     />
-                    <span className="text-[10px] text-slate-400">{day.date}</span>
+                    <span className="text-[10px] text-[var(--color-outline-variant)]">{day.date}</span>
                   </div>
                 ))}
               </div>
@@ -500,7 +500,7 @@ export default function RiderWalletPage() {
                 const a = document.createElement("a"); a.href = url; a.download = "earnings-report.csv"; a.click();
                 URL.revokeObjectURL(url);
               }}
-              className="w-full py-4 bg-[var(--color-surface-container-lowest)] border-2 border-slate-200 rounded-2xl font-bold text-slate-600 flex items-center justify-center gap-2"
+              className="w-full py-4 bg-[var(--color-surface-container-lowest)] border-2 border-[var(--color-border-subtle)] rounded-2xl font-bold text-[var(--color-on-surface-variant)] flex items-center justify-center gap-2"
             >
               <span className="material-symbols-outlined">download</span>
               Download Report
@@ -511,15 +511,15 @@ export default function RiderWalletPage() {
         {activeTab === "payouts" && (
           <>
               <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm">
-              <h3 className="font-bold text-slate-800 mb-4">Bank Details</h3>
-              <div className="bg-slate-50 p-4 rounded-xl flex items-center justify-between">
+              <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Bank Details</h3>
+              <div className="bg-[var(--color-surface-subtle)] p-4 rounded-xl flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
                     <span className="material-symbols-outlined text-blue-600">account_balance</span>
                   </div>
                   <div>
                     <p className="font-bold">Primary Account</p>
-                    <p className="text-xs text-slate-500">Primary Account</p>
+                    <p className="text-xs text-[var(--color-outline)]">Primary Account</p>
                   </div>
                 </div>
                 <button
@@ -531,7 +531,7 @@ export default function RiderWalletPage() {
               </div>
               <button
                 onClick={() => setShowBankModal(true)}
-                className="w-full mt-3 py-3 border-2 border-dashed border-slate-300 rounded-xl text-slate-500 font-bold flex items-center justify-center gap-2"
+                className="w-full mt-3 py-3 border-2 border-dashed border-[var(--color-outline-variant)] rounded-xl text-[var(--color-outline)] font-bold flex items-center justify-center gap-2"
               >
                 <span className="material-symbols-outlined">add</span>
                 Add New Bank Account
@@ -539,13 +539,13 @@ export default function RiderWalletPage() {
             </div>
 
             <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm">
-              <h3 className="font-bold text-slate-800 mb-4">Payout History</h3>
+              <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Payout History</h3>
               <div className="space-y-3">
                 {payoutHistory.length > 0 ? payoutHistory.map((payout, i) => (
-                  <div key={i} className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+                  <div key={i} className="flex items-center justify-between p-4 bg-[var(--color-surface-subtle)] rounded-xl">
                     <div>
-                      <p className="font-bold text-slate-800">₹{payout.amount}</p>
-                      <p className="text-xs text-slate-500">{payout.date} • {payout.method}</p>
+                      <p className="font-bold text-[var(--color-on-surface)]">₹{payout.amount}</p>
+                      <p className="text-xs text-[var(--color-outline)]">{payout.date} • {payout.method}</p>
                     </div>
                     <span className={`px-2 py-1 rounded-full text-xs font-bold ${
                       payout.status === "completed" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"
@@ -554,19 +554,19 @@ export default function RiderWalletPage() {
                     </span>
                   </div>
                 )) : (
-                  <p className="text-center text-slate-400 text-sm py-4">No payout history yet</p>
+                  <p className="text-center text-[var(--color-outline-variant)] text-sm py-4">No payout history yet</p>
                 )}
               </div>
             </div>
 
             <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm">
-              <h3 className="font-bold text-slate-800 mb-4">Request Payout</h3>
+              <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Request Payout</h3>
               <div className="flex gap-3 mb-4">
                 {[500, 1000, 2000].map((amount) => (
                   <button
                     key={amount}
                     onClick={() => requestPayout(amount)}
-                    className="flex-1 py-3 border-2 border-slate-200 rounded-xl font-bold text-slate-600 hover:border-[#0b50d5] hover:text-[#0b50d5] transition-colors"
+                    className="flex-1 py-3 border-2 border-[var(--color-border-subtle)] rounded-xl font-bold text-[var(--color-on-surface-variant)] hover:border-[#0b50d5] hover:text-[#0b50d5] transition-colors"
                   >
                     ₹{amount}
                   </button>
@@ -578,7 +578,7 @@ export default function RiderWalletPage() {
               >
                 Withdraw Full Balance (₹{walletData.balance})
               </button>
-              <p className="text-xs text-slate-400 text-center mt-2">Standard payout: 24-48 hours • Free</p>
+              <p className="text-xs text-[var(--color-outline-variant)] text-center mt-2">Standard payout: 24-48 hours • Free</p>
             </div>
           </>
         )}
@@ -604,24 +604,24 @@ export default function RiderWalletPage() {
             </div>
 
             <div className="mb-4">
-              <label className="text-sm font-bold text-slate-600 mb-2 block">Enter Amount</label>
+              <label className="text-sm font-bold text-[var(--color-on-surface-variant)] mb-2 block">Enter Amount</label>
               <input 
                 type="number"
                 value={instantPayoutAmount}
                 onChange={(e) => setInstantPayoutAmount(e.target.value)}
                 placeholder="Min: ₹100"
-                className="w-full border-2 border-slate-200 rounded-xl p-4 text-xl font-bold focus:outline-none focus:border-[#0b50d5]"
+                className="w-full border-2 border-[var(--color-border-subtle)] rounded-xl p-4 text-xl font-bold focus:outline-none focus:border-[#0b50d5]"
               />
             </div>
 
             {instantPayoutAmount && parseInt(instantPayoutAmount) >= 100 && (
-              <div className="bg-slate-50 p-3 rounded-xl mb-4">
+              <div className="bg-[var(--color-surface-subtle)] p-3 rounded-xl mb-4">
                 <div className="flex justify-between text-sm">
-                  <span className="text-slate-500">Amount</span>
+                  <span className="text-[var(--color-outline)]">Amount</span>
                   <span className="font-bold">₹{instantPayoutAmount}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-slate-500">Fee (2%)</span>
+                  <span className="text-[var(--color-outline)]">Fee (2%)</span>
                   <span className="font-bold text-red-500">-₹{Math.round(parseInt(instantPayoutAmount) * 0.02)}</span>
                 </div>
                 <div className="flex justify-between text-sm border-t pt-2 mt-2">
@@ -666,34 +666,34 @@ export default function RiderWalletPage() {
               placeholder="Account Holder Name"
               value={bankForm.account_holder}
               onChange={(e) => setBankForm({ ...bankForm, account_holder: e.target.value })}
-              className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm"
+              className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm"
             />
             <input
               type="text"
               placeholder="Account Number"
               value={bankForm.account_number}
               onChange={(e) => setBankForm({ ...bankForm, account_number: e.target.value })}
-              className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm"
+              className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm"
             />
             <input
               type="text"
               placeholder="IFSC Code"
               value={bankForm.ifsc_code}
               onChange={(e) => setBankForm({ ...bankForm, ifsc_code: e.target.value.toUpperCase() })}
-              className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm"
+              className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm"
             />
             <input
               type="text"
               placeholder="Bank Name"
               value={bankForm.bank_name}
               onChange={(e) => setBankForm({ ...bankForm, bank_name: e.target.value })}
-              className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm"
+              className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm"
             />
           </div>
           <div className="flex gap-3 mt-6">
             <button
               onClick={() => setShowBankModal(false)}
-              className="flex-1 py-3 border border-slate-200 rounded-xl font-bold text-sm"
+              className="flex-1 py-3 border border-[var(--color-border-subtle)] rounded-xl font-bold text-sm"
             >
               Cancel
             </button>

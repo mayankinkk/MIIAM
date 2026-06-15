@@ -29,7 +29,7 @@ export default function AboutUsPage() {
           <Link href="/" className="text-2xl font-black text-[#ba001c] tracking-tighter">
             MIIAM
           </Link>
-          <Link href="/" className="text-sm font-bold text-slate-500 hover:text-[#ba001c] transition-colors">
+          <Link href="/" className="text-sm font-bold text-[var(--color-outline)] hover:text-[#ba001c] transition-colors">
             ← Back to Home
           </Link>
         </div>
@@ -41,7 +41,7 @@ export default function AboutUsPage() {
           <span className="inline-block px-4 py-1.5 bg-[#ba001c]/10 text-[#ba001c] rounded-full text-xs font-black uppercase tracking-widest mb-6">
             Our Story
           </span>
-          <h1 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter leading-none mb-8">
+          <h1 className="text-5xl md:text-7xl font-black text-[var(--color-on-surface)] tracking-tighter leading-none mb-8">
             Reimagining the <br />
             <span className="text-[#ba001c]">Hyper-Local Economy.</span>
           </h1>
@@ -60,7 +60,7 @@ export default function AboutUsPage() {
                 <div className="w-14 h-14 bg-[#ba001c] text-white rounded-2xl flex items-center justify-center shadow-lg shadow-red-900/20">
                   <span className="material-symbols-outlined text-3xl">{item.icon}</span>
                 </div>
-                <h2 className="text-2xl font-black text-slate-900">{item.title}</h2>
+                <h2 className="text-2xl font-black text-[var(--color-on-surface)]">{item.title}</h2>
                 <p className="text-[#814c55] leading-relaxed">
                   {item.content}
                 </p>
@@ -72,12 +72,12 @@ export default function AboutUsPage() {
 
       {/* CTA */}
       <section className="py-20 text-center px-6">
-        <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-8 tracking-tight">Ready to join the movement?</h2>
+        <h2 className="text-3xl md:text-4xl font-black text-[var(--color-on-surface)] mb-8 tracking-tight">Ready to join the movement?</h2>
         <div className="flex flex-wrap gap-4 justify-center">
           <Link href="/auth/signup" className="px-10 py-5 bg-[#ba001c] text-white font-bold rounded-2xl hover:scale-105 transition-all shadow-xl shadow-red-900/20">
             Join as a Customer
           </Link>
-          <Link href="/careers" className="px-10 py-5 bg-[var(--color-surface-container-lowest)] border-2 border-slate-100 text-slate-900 font-bold rounded-2xl hover:bg-slate-50 transition-all">
+          <Link href="/careers" className="px-10 py-5 bg-[var(--color-surface-container-lowest)] border-2 border-[var(--color-border-subtle)] text-[var(--color-on-surface)] font-bold rounded-2xl hover:bg-[var(--color-surface-subtle)] transition-all">
             Join the Fleet
           </Link>
         </div>
@@ -86,11 +86,11 @@ export default function AboutUsPage() {
       {/* Footer */}
       <footer className="py-12 border-t border-[#ba001c]/10 text-center">
         <div className="flex justify-center gap-6 mb-4">
-          <Link href="/terms" className="text-slate-400 text-sm hover:text-[#ba001c] transition-colors">Terms</Link>
-          <Link href="/privacy" className="text-slate-400 text-sm hover:text-[#ba001c] transition-colors">Privacy</Link>
-          <Link href="/refunds" className="text-slate-400 text-sm hover:text-[#ba001c] transition-colors">Refund Policy</Link>
+          <Link href="/terms" className="text-[var(--color-outline-variant)] text-sm hover:text-[#ba001c] transition-colors">Terms</Link>
+          <Link href="/privacy" className="text-[var(--color-outline-variant)] text-sm hover:text-[#ba001c] transition-colors">Privacy</Link>
+          <Link href="/refunds" className="text-[var(--color-outline-variant)] text-sm hover:text-[#ba001c] transition-colors">Refund Policy</Link>
         </div>
-        <p className="text-slate-400 font-bold text-sm">© 2026 MIIAM. Built with ❤️ in Guwahati.</p>
+        <p className="text-[var(--color-outline-variant)] font-bold text-sm">© 2026 MIIAM. Built with ❤️ in Guwahati.</p>
       </footer>
     </div>
   );

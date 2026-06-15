@@ -192,7 +192,7 @@ export default function VendorAnalytics() {
   if (loading) {
     return (
       <div className="p-8 flex items-center justify-center min-h-[60vh]">
-        <div className="text-slate-400 font-medium animate-pulse">Loading analytics...</div>
+        <div className="text-[var(--color-outline-variant)] font-medium animate-pulse">Loading analytics...</div>
       </div>
     );
   }
@@ -218,9 +218,9 @@ export default function VendorAnalytics() {
   if (!vendorId) {
     return (
       <div className="p-8 flex flex-col items-center justify-center min-h-[60vh] text-center">
-        <span className="material-symbols-outlined text-6xl text-slate-300 mb-4">analytics</span>
-        <h2 className="text-2xl font-extrabold text-slate-800 mb-2">No Vendor Found</h2>
-        <p className="text-slate-500">Register your store to see analytics.</p>
+        <span className="material-symbols-outlined text-6xl text-[var(--color-outline-variant)]/60 mb-4">analytics</span>
+        <h2 className="text-2xl font-extrabold text-[var(--color-on-surface)] mb-2">No Vendor Found</h2>
+        <p className="text-[var(--color-outline)]">Register your store to see analytics.</p>
       </div>
     );
   }
@@ -229,17 +229,17 @@ export default function VendorAnalytics() {
     <div className="p-4 md:p-8 space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Analytics</h1>
-          <p className="text-slate-500 mt-1">Sales performance, competitor insights & demand forecast</p>
+          <h1 className="text-3xl font-extrabold text-[var(--color-on-surface)] tracking-tight">Analytics</h1>
+          <p className="text-[var(--color-outline)] mt-1">Sales performance, competitor insights & demand forecast</p>
         </div>
         <div className="flex gap-2">
           {(["week", "month", "all"] as const).map((p) => (
             <button key={p} onClick={() => setPeriod(p)}
-              className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${period === p ? "bg-[#ba001c] text-white" : "bg-[var(--color-surface-container-lowest)] text-slate-600 border border-slate-200 hover:bg-slate-50"}`}>
+              className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${period === p ? "bg-[#ba001c] text-white" : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface-variant)] border border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]"}`}>
               {p === "week" ? "This Week" : p === "month" ? "This Month" : "All Time"}
             </button>
           ))}
-          <button onClick={exportCSV} className="px-4 py-2 rounded-xl text-sm font-bold bg-[var(--color-surface-container-lowest)] text-slate-600 border border-slate-200 hover:bg-slate-50 flex items-center gap-1">
+          <button onClick={exportCSV} className="px-4 py-2 rounded-xl text-sm font-bold bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface-variant)] border border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)] flex items-center gap-1">
             <span className="material-symbols-outlined text-base">download</span> Export
           </button>
         </div>
@@ -252,18 +252,18 @@ export default function VendorAnalytics() {
           <p className="text-3xl font-black mt-1">₹{totalRevenue.toFixed(0)}</p>
           <p className="text-white/50 text-xs mt-1">{deliveredOrders.length} orders</p>
         </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-slate-200">
-          <p className="text-slate-500 text-sm font-medium">Orders</p>
-          <p className="text-3xl font-black text-slate-900 mt-1">{totalOrders}</p>
-          <p className="text-slate-400 text-xs mt-1">{deliveredOrders.length} delivered</p>
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-[var(--color-border-subtle)]">
+          <p className="text-[var(--color-outline)] text-sm font-medium">Orders</p>
+          <p className="text-3xl font-black text-[var(--color-on-surface)] mt-1">{totalOrders}</p>
+          <p className="text-[var(--color-outline-variant)] text-xs mt-1">{deliveredOrders.length} delivered</p>
         </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-slate-200">
-          <p className="text-slate-500 text-sm font-medium">Avg. Order Value</p>
-          <p className="text-3xl font-black text-slate-900 mt-1">₹{avgOrderValue.toFixed(0)}</p>
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-[var(--color-border-subtle)]">
+          <p className="text-[var(--color-outline)] text-sm font-medium">Avg. Order Value</p>
+          <p className="text-3xl font-black text-[var(--color-on-surface)] mt-1">₹{avgOrderValue.toFixed(0)}</p>
         </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-slate-200">
-          <p className="text-slate-500 text-sm font-medium">Items Sold</p>
-          <p className="text-3xl font-black text-slate-900 mt-1">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-[var(--color-border-subtle)]">
+          <p className="text-[var(--color-outline)] text-sm font-medium">Items Sold</p>
+          <p className="text-3xl font-black text-[var(--color-on-surface)] mt-1">
             {deliveredOrders.reduce((s, o) => s + (o.items?.reduce((si, i) => si + i.quantity, 0) || 0), 0)}
           </p>
         </div>
@@ -271,10 +271,10 @@ export default function VendorAnalytics() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Revenue Chart */}
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-slate-200">
-          <h3 className="font-bold text-slate-800 mb-4">Daily Revenue</h3>
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-[var(--color-border-subtle)]">
+          <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Daily Revenue</h3>
           {dailyRevenue.length === 0 ? (
-            <p className="text-slate-400 text-sm text-center py-8">No data for this period</p>
+            <p className="text-[var(--color-outline-variant)] text-sm text-center py-8">No data for this period</p>
           ) : (
             <div className="space-y-3">
               {dailyRevenue.map((d) => {
@@ -282,13 +282,13 @@ export default function VendorAnalytics() {
                 const pct = (d.revenue / maxRev) * 100;
                 return (
                   <div key={d.date} className="flex items-center gap-3">
-                    <span className="text-xs text-slate-500 w-24 font-medium">{d.date}</span>
-                    <div className="flex-1 h-7 bg-slate-50 rounded-lg overflow-hidden">
+                    <span className="text-xs text-[var(--color-outline)] w-24 font-medium">{d.date}</span>
+                    <div className="flex-1 h-7 bg-[var(--color-surface-subtle)] rounded-lg overflow-hidden">
                       <div className="h-full bg-gradient-to-r from-[#ba001c] to-[#e83350] rounded-lg flex items-center justify-end pr-2 transition-all" style={{ width: `${Math.max(pct, 5)}%` }}>
                         <span className="text-[10px] text-white font-bold">₹{d.revenue.toFixed(0)}</span>
                       </div>
                     </div>
-                    <span className="text-xs text-slate-400 w-8 text-right">{d.orders}</span>
+                    <span className="text-xs text-[var(--color-outline-variant)] w-8 text-right">{d.orders}</span>
                   </div>
                 );
               })}
@@ -297,20 +297,20 @@ export default function VendorAnalytics() {
         </div>
 
         {/* Peak Hours */}
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-slate-200">
-          <h3 className="font-bold text-slate-800 mb-4">Peak Hours</h3>
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-[var(--color-border-subtle)]">
+          <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Peak Hours</h3>
           <div className="space-y-2">
             {peakHours.map((h) => {
               const pct = (h.orders / maxOrders) * 100;
               const label = h.hour === 0 ? "12 AM" : h.hour < 12 ? `${h.hour} AM` : h.hour === 12 ? "12 PM" : `${h.hour - 12} PM`;
               return (
                 <div key={h.hour} className="flex items-center gap-3">
-                  <span className="text-xs text-slate-500 w-12 font-medium">{label}</span>
-                  <div className="flex-1 h-5 bg-slate-50 rounded-lg overflow-hidden">
+                  <span className="text-xs text-[var(--color-outline)] w-12 font-medium">{label}</span>
+                  <div className="flex-1 h-5 bg-[var(--color-surface-subtle)] rounded-lg overflow-hidden">
                     <div className="h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-lg transition-all" style={{ width: `${Math.max(pct, 2)}%` }} />
                   </div>
-                  <span className="text-xs text-slate-500 w-16 text-right font-medium">{h.orders} orders</span>
-                  <span className="text-xs text-slate-400 w-16 text-right">₹{h.revenue.toFixed(0)}</span>
+                  <span className="text-xs text-[var(--color-outline)] w-16 text-right font-medium">{h.orders} orders</span>
+                  <span className="text-xs text-[var(--color-outline-variant)] w-16 text-right">₹{h.revenue.toFixed(0)}</span>
                 </div>
               );
             })}
@@ -340,10 +340,10 @@ export default function VendorAnalytics() {
           ? Math.round((prepTimes.filter(t => t <= 45).length / prepTimes.length) * 100)
           : null;
         return (
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-slate-200">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-[var(--color-border-subtle)]">
             <div className="flex items-center gap-2 mb-4">
               <span className="material-symbols-outlined text-emerald-500">speed</span>
-              <h3 className="font-bold text-slate-800">Performance & Staffing</h3>
+              <h3 className="font-bold text-[var(--color-on-surface)]">Performance & Staffing</h3>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="p-4 bg-emerald-50 rounded-xl">
@@ -379,11 +379,11 @@ export default function VendorAnalytics() {
 
       {/* Rating Breakdown */}
       {dimRatings && (
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-slate-200">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-[var(--color-border-subtle)]">
           <div className="flex items-center gap-2 mb-4">
             <span className="material-symbols-outlined text-amber-500">star</span>
-            <h3 className="font-bold text-slate-800">Rating Breakdown</h3>
-            <span className="text-[10px] text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">Detailed scores</span>
+            <h3 className="font-bold text-[var(--color-on-surface)]">Rating Breakdown</h3>
+            <span className="text-[10px] text-[var(--color-outline-variant)] bg-[var(--color-surface-container)] px-2 py-0.5 rounded-full">Detailed scores</span>
           </div>
           <div className="grid grid-cols-3 gap-4">
             {[
@@ -391,17 +391,17 @@ export default function VendorAnalytics() {
               { label: "Packaging", field: dimRatings.packaging, icon: "inventory_2" },
               { label: "Delivery Time", field: dimRatings.delivery_time, icon: "schedule" },
             ].map((dim) => (
-              <div key={dim.label} className="p-4 bg-slate-50 rounded-xl text-center">
+              <div key={dim.label} className="p-4 bg-[var(--color-surface-subtle)] rounded-xl text-center">
                 <div className="flex justify-center mb-2">
                   <span className="material-symbols-outlined text-2xl text-amber-500">{dim.icon}</span>
                 </div>
-                <p className="text-3xl font-black text-slate-900">{dim.field.toFixed(1)}</p>
+                <p className="text-3xl font-black text-[var(--color-on-surface)]">{dim.field.toFixed(1)}</p>
                 <div className="flex justify-center gap-0.5 mt-1">
                   {[1, 2, 3, 4, 5].map((s) => (
-                    <span key={s} className={`material-symbols-outlined text-sm ${s <= Math.round(dim.field) ? "text-amber-500" : "text-slate-200"}`} style={{ fontVariationSettings: `'FILL' ${s <= Math.round(dim.field) ? 1 : 0}` }}>star</span>
+                    <span key={s} className={`material-symbols-outlined text-sm ${s <= Math.round(dim.field) ? "text-amber-500" : "text-[var(--color-outline-variant)]/40"}`} style={{ fontVariationSettings: `'FILL' ${s <= Math.round(dim.field) ? 1 : 0}` }}>star</span>
                   ))}
                 </div>
-                <p className="text-xs text-slate-500 mt-1">{dim.label}</p>
+                <p className="text-xs text-[var(--color-outline)] mt-1">{dim.label}</p>
               </div>
             ))}
           </div>
@@ -410,53 +410,53 @@ export default function VendorAnalytics() {
 
       {/* Competitor Benchmarking */}
       {competitors.length > 0 && (
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-slate-200">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-[var(--color-border-subtle)]">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-bold text-slate-800">Competitor Benchmarking</h3>
-            <span className="text-xs text-slate-400 bg-slate-100 px-2 py-1 rounded-full">{competitorCount} similar vendors</span>
+            <h3 className="font-bold text-[var(--color-on-surface)]">Competitor Benchmarking</h3>
+            <span className="text-xs text-[var(--color-outline-variant)] bg-[var(--color-surface-container)] px-2 py-1 rounded-full">{competitorCount} similar vendors</span>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-            <div className="p-4 bg-slate-50 rounded-xl text-center">
-              <p className="text-xs text-slate-500 mb-1">Your Rating</p>
+            <div className="p-4 bg-[var(--color-surface-subtle)] rounded-xl text-center">
+              <p className="text-xs text-[var(--color-outline)] mb-1">Your Rating</p>
               <p className="text-2xl font-black text-amber-500">{vendor?.rating?.toFixed(1) || "0.0"}</p>
-              <p className="text-[10px] text-slate-400 mt-1">vs avg {avgCompetitorRating}</p>
+              <p className="text-[10px] text-[var(--color-outline-variant)] mt-1">vs avg {avgCompetitorRating}</p>
             </div>
-            <div className="p-4 bg-slate-50 rounded-xl text-center">
-              <p className="text-xs text-slate-500 mb-1">Delivery Time</p>
+            <div className="p-4 bg-[var(--color-surface-subtle)] rounded-xl text-center">
+              <p className="text-xs text-[var(--color-outline)] mb-1">Delivery Time</p>
               <p className="text-2xl font-black text-blue-600">
                 {vendor?.delivery_time_min || vendor?.delivery_time_minutes || "30"} min
               </p>
-              <p className="text-[10px] text-slate-400 mt-1">vs avg {avgCompetitorDeliveryMin} min</p>
+              <p className="text-[10px] text-[var(--color-outline-variant)] mt-1">vs avg {avgCompetitorDeliveryMin} min</p>
             </div>
-            <div className="p-4 bg-slate-50 rounded-xl text-center">
-              <p className="text-xs text-slate-500 mb-1">Min Order</p>
+            <div className="p-4 bg-[var(--color-surface-subtle)] rounded-xl text-center">
+              <p className="text-xs text-[var(--color-outline)] mb-1">Min Order</p>
               <p className="text-2xl font-black text-green-600">₹{vendor?.min_order_amount || 0}</p>
             </div>
-            <div className="p-4 bg-slate-50 rounded-xl text-center">
-              <p className="text-xs text-slate-500 mb-1">Reviews</p>
+            <div className="p-4 bg-[var(--color-surface-subtle)] rounded-xl text-center">
+              <p className="text-xs text-[var(--color-outline)] mb-1">Reviews</p>
               <p className="text-2xl font-black text-purple-600">{vendor?.review_count || 0}</p>
-              <p className="text-[10px] text-slate-400 mt-1">competitors in area</p>
+              <p className="text-[10px] text-[var(--color-outline-variant)] mt-1">competitors in area</p>
             </div>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50 rounded-xl">
+              <thead className="bg-[var(--color-surface-subtle)] rounded-xl">
                 <tr>
-                  <th className="p-3 text-[10px] font-black text-slate-400 uppercase">Vendor</th>
-                  <th className="p-3 text-[10px] font-black text-slate-400 uppercase">Rating</th>
-                  <th className="p-3 text-[10px] font-black text-slate-400 uppercase">Reviews</th>
-                  <th className="p-3 text-[10px] font-black text-slate-400 uppercase">Delivery</th>
-                  <th className="p-3 text-[10px] font-black text-slate-400 uppercase">Min Order</th>
+                  <th className="p-3 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Vendor</th>
+                  <th className="p-3 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Rating</th>
+                  <th className="p-3 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Reviews</th>
+                  <th className="p-3 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Delivery</th>
+                  <th className="p-3 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Min Order</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-[var(--color-border-subtle)]">
                 {competitors.slice(0, 5).map((c: any) => (
-                  <tr key={c.id || c.shop_name} className="hover:bg-slate-50">
-                    <td className="p-3 font-bold text-slate-800">{c.shop_name}</td>
+                  <tr key={c.id || c.shop_name} className="hover:bg-[var(--color-surface-subtle)]">
+                    <td className="p-3 font-bold text-[var(--color-on-surface)]">{c.shop_name}</td>
                     <td className="p-3"><span className="text-amber-500">★</span> {c.rating?.toFixed(1) || "N/A"}</td>
-                    <td className="p-3 text-slate-600">{c.review_count || 0}</td>
-                    <td className="p-3 text-slate-600">{c.delivery_time_min || c.delivery_time_minutes || "N/A"} min</td>
-                    <td className="p-3 text-slate-600">₹{c.min_order_amount || 0}</td>
+                    <td className="p-3 text-[var(--color-on-surface-variant)]">{c.review_count || 0}</td>
+                    <td className="p-3 text-[var(--color-on-surface-variant)]">{c.delivery_time_min || c.delivery_time_minutes || "N/A"} min</td>
+                    <td className="p-3 text-[var(--color-on-surface-variant)]">₹{c.min_order_amount || 0}</td>
                   </tr>
                 ))}
               </tbody>
@@ -467,11 +467,11 @@ export default function VendorAnalytics() {
 
       {/* Demand Forecasting */}
       {forecast && (
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-slate-200">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-[var(--color-border-subtle)]">
           <div className="flex items-center gap-2 mb-4">
             <span className="material-symbols-outlined text-purple-500">trending_up</span>
-            <h3 className="font-bold text-slate-800">Demand Forecast</h3>
-            <span className="text-[10px] text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">Based on last 90 days</span>
+            <h3 className="font-bold text-[var(--color-on-surface)]">Demand Forecast</h3>
+            <span className="text-[10px] text-[var(--color-outline-variant)] bg-[var(--color-surface-container)] px-2 py-0.5 rounded-full">Based on last 90 days</span>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
             <div className="p-4 bg-purple-50 rounded-xl text-center">
@@ -499,11 +499,11 @@ export default function VendorAnalytics() {
               const maxOrders = Math.max(...forecast.dayOfWeek.map((x: any) => x.orders), 1);
               return (
                 <div key={d.day} className="flex flex-col items-center gap-2 min-w-[60px]">
-                  <span className="text-xs font-bold text-slate-500">{d.day}</span>
-                  <div className="w-8 h-24 bg-slate-100 rounded-lg overflow-hidden relative">
+                  <span className="text-xs font-bold text-[var(--color-outline)]">{d.day}</span>
+                  <div className="w-8 h-24 bg-[var(--color-surface-container)] rounded-lg overflow-hidden relative">
                     <div className="absolute bottom-0 w-full bg-gradient-to-t from-purple-500 to-purple-300 rounded-lg transition-all" style={{ height: `${(d.orders / maxOrders) * 100}%` }} />
                   </div>
-                  <span className="text-[10px] font-bold text-slate-600">{d.orders}</span>
+                  <span className="text-[10px] font-bold text-[var(--color-on-surface-variant)]">{d.orders}</span>
                 </div>
               );
             })}
@@ -512,31 +512,31 @@ export default function VendorAnalytics() {
       )}
 
       {/* Popular Items */}
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-slate-200">
-        <h3 className="font-bold text-slate-800 mb-4">Popular Items</h3>
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-[var(--color-border-subtle)]">
+        <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Popular Items</h3>
         {popularItems.length === 0 ? (
-          <p className="text-slate-400 text-sm text-center py-8">No items sold yet</p>
+          <p className="text-[var(--color-outline-variant)] text-sm text-center py-8">No items sold yet</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left">
-              <thead className="bg-slate-50 rounded-xl">
+              <thead className="bg-[var(--color-surface-subtle)] rounded-xl">
                 <tr>
-                  <th className="p-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">#</th>
-                  <th className="p-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">Item</th>
-                  <th className="p-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">Category</th>
-                  <th className="p-3 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Sold</th>
-                  <th className="p-3 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Orders</th>
-                  <th className="p-3 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Revenue</th>
+                  <th className="p-3 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">#</th>
+                  <th className="p-3 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Item</th>
+                  <th className="p-3 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Category</th>
+                  <th className="p-3 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest text-right">Sold</th>
+                  <th className="p-3 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest text-right">Orders</th>
+                  <th className="p-3 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest text-right">Revenue</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-[var(--color-border-subtle)]">
                 {popularItems.map((item, i) => (
-                  <tr key={item.name} className="hover:bg-slate-50 transition-colors">
-                    <td className="p-3 text-sm font-bold text-slate-400">{i + 1}</td>
-                    <td className="p-3 text-sm font-bold text-slate-800">{item.name}</td>
-                    <td className="p-3 text-xs text-slate-500">{item.category}</td>
-                    <td className="p-3 text-sm font-bold text-slate-900 text-right">{item.total_qty}</td>
-                    <td className="p-3 text-sm text-slate-600 text-right">{item.order_count}</td>
+                  <tr key={item.name} className="hover:bg-[var(--color-surface-subtle)] transition-colors">
+                    <td className="p-3 text-sm font-bold text-[var(--color-outline-variant)]">{i + 1}</td>
+                    <td className="p-3 text-sm font-bold text-[var(--color-on-surface)]">{item.name}</td>
+                    <td className="p-3 text-xs text-[var(--color-outline)]">{item.category}</td>
+                    <td className="p-3 text-sm font-bold text-[var(--color-on-surface)] text-right">{item.total_qty}</td>
+                    <td className="p-3 text-sm text-[var(--color-on-surface-variant)] text-right">{item.order_count}</td>
                     <td className="p-3 text-sm font-extrabold text-green-600 text-right">₹{item.total_revenue.toFixed(0)}</td>
                   </tr>
                 ))}
@@ -576,29 +576,29 @@ export default function VendorAnalytics() {
           .sort((a, b) => b.reorderRate - a.reorderRate)
           .slice(0, 10);
         return reorderItems.length > 0 ? (
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-slate-200">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-[var(--color-border-subtle)]">
             <div className="flex items-center gap-2 mb-4">
               <span className="material-symbols-outlined text-indigo-500">replay</span>
-              <h3 className="font-bold text-slate-800">Re-order Analysis</h3>
-              <span className="text-[10px] text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">Customer favorites</span>
+              <h3 className="font-bold text-[var(--color-on-surface)]">Re-order Analysis</h3>
+              <span className="text-[10px] text-[var(--color-outline-variant)] bg-[var(--color-surface-container)] px-2 py-0.5 rounded-full">Customer favorites</span>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-left">
-                <thead className="bg-slate-50 rounded-xl">
+                <thead className="bg-[var(--color-surface-subtle)] rounded-xl">
                   <tr>
-                    <th className="p-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">Item</th>
-                    <th className="p-3 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Repeat Customers</th>
-                    <th className="p-3 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Re-order Rate</th>
+                    <th className="p-3 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Item</th>
+                    <th className="p-3 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest text-right">Repeat Customers</th>
+                    <th className="p-3 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest text-right">Re-order Rate</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-[var(--color-border-subtle)]">
                   {reorderItems.map((item) => (
-                    <tr key={item.name} className="hover:bg-slate-50 transition-colors">
-                      <td className="p-3 text-sm font-bold text-slate-800">{item.name}</td>
+                    <tr key={item.name} className="hover:bg-[var(--color-surface-subtle)] transition-colors">
+                      <td className="p-3 text-sm font-bold text-[var(--color-on-surface)]">{item.name}</td>
                       <td className="p-3 text-sm font-bold text-indigo-600 text-right">{item.repeatCustomers}/{item.totalCustomers}</td>
                       <td className="p-3 text-right">
                         <span className={`text-xs font-bold px-2 py-1 rounded-full ${
-                          item.reorderRate >= 50 ? "bg-green-100 text-green-700" : item.reorderRate >= 25 ? "bg-amber-100 text-amber-700" : "bg-slate-100 text-slate-600"
+                          item.reorderRate >= 50 ? "bg-green-100 text-green-700" : item.reorderRate >= 25 ? "bg-amber-100 text-amber-700" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
                         }`}>
                           {item.reorderRate}%
                         </span>
@@ -613,8 +613,8 @@ export default function VendorAnalytics() {
       })()}
 
       {/* Order Status Breakdown */}
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-slate-200">
-        <h3 className="font-bold text-slate-800 mb-4">Order Status Breakdown</h3>
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-[var(--color-border-subtle)]">
+        <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Order Status Breakdown</h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {([
             { status: "delivered", label: "Delivered", color: "green" },
@@ -627,8 +627,8 @@ export default function VendorAnalytics() {
             return (
               <div key={s.status} className="text-center">
                 <div className={`text-3xl font-black text-${s.color}-600`}>{count}</div>
-                <div className="text-sm text-slate-500 font-medium">{s.label}</div>
-                <div className="text-xs text-slate-400">{pct.toFixed(0)}%</div>
+                <div className="text-sm text-[var(--color-outline)] font-medium">{s.label}</div>
+                <div className="text-xs text-[var(--color-outline-variant)]">{pct.toFixed(0)}%</div>
               </div>
             );
           })}

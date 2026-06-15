@@ -27,7 +27,7 @@ export default function EnhancedProfilePage() {
     { id: "favorites", icon: "favorite", label: t.profile.favorites, sub: t.profile.yourSavedItems, color: "text-red-500", bg: "bg-red-50" },
     { id: "payment", icon: "payment", label: t.profile.paymentMethods, sub: t.profile.cardsUpiWallets, color: "text-purple-500", bg: "bg-purple-50" },
     { id: "support", icon: "support_agent", label: t.profile.helpSupport, sub: t.profile.twentyFourSevenSupport, color: "text-indigo-500", bg: "bg-indigo-50" },
-    { id: "settings", icon: "settings", label: t.profile.settings, sub: t.profile.appPreferences, color: "text-slate-500", bg: "bg-slate-50" },
+    { id: "settings", icon: "settings", label: t.profile.settings, sub: t.profile.appPreferences, color: "text-[var(--color-outline)]", bg: "bg-[var(--color-surface-subtle)]" },
     { id: "haptic", icon: "vibration", label: t.profile.hapticFeedback, sub: t.profile.vibrationSettings, color: "text-cyan-500", bg: "bg-cyan-50", special: true },
   ];
 
@@ -134,10 +134,10 @@ export default function EnhancedProfilePage() {
                 <span className={`material-symbols-outlined ${item.color}`}>{item.icon}</span>
               </div>
               <div className="flex-1">
-                <p className="font-bold text-slate-800">{item.label}</p>
-                <p className="text-xs text-slate-500">{item.sub}</p>
+                <p className="font-bold text-[var(--color-on-surface)]">{item.label}</p>
+                <p className="text-xs text-[var(--color-outline)]">{item.sub}</p>
               </div>
-              <span className="material-symbols-outlined text-slate-300">chevron_right</span>
+              <span className="material-symbols-outlined text-[var(--color-outline-variant)]/60">chevron_right</span>
             </Link>
           ))}
         </div>
@@ -150,10 +150,10 @@ export default function EnhancedProfilePage() {
                 <span className={`material-symbols-outlined ${item.color}`}>{item.icon}</span>
               </div>
               <div className="flex-1">
-                <p className="font-bold text-slate-800">{item.label}</p>
-                <p className="text-xs text-slate-500">{item.sub}</p>
+                <p className="font-bold text-[var(--color-on-surface)]">{item.label}</p>
+                <p className="text-xs text-[var(--color-outline)]">{item.sub}</p>
               </div>
-              <span className="material-symbols-outlined text-slate-300">chevron_right</span>
+              <span className="material-symbols-outlined text-[var(--color-outline-variant)]/60">chevron_right</span>
             </Link>
           ))}
         </div>
@@ -174,10 +174,10 @@ export default function EnhancedProfilePage() {
                   <span className={`material-symbols-outlined ${item.color}`}>{item.icon}</span>
                 </div>
                 <div className="flex-1 text-left">
-                  <p className="font-bold text-slate-800">{item.label}</p>
-                  <p className="text-xs text-slate-500">{item.sub}</p>
+                  <p className="font-bold text-[var(--color-on-surface)]">{item.label}</p>
+                  <p className="text-xs text-[var(--color-outline)]">{item.sub}</p>
                 </div>
-                <span className={`material-symbols-outlined text-slate-300 transition-transform ${showHapticSettings ? "rotate-180" : ""}`}>expand_more</span>
+                <span className={`material-symbols-outlined text-[var(--color-outline-variant)]/60 transition-transform ${showHapticSettings ? "rotate-180" : ""}`}>expand_more</span>
               </button>
             ) : (
               <Link key={item.id} href={`/app/${item.id}`} className="block bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 flex items-center gap-4 hover:shadow-md transition-shadow">
@@ -185,10 +185,10 @@ export default function EnhancedProfilePage() {
                   <span className={`material-symbols-outlined ${item.color}`}>{item.icon}</span>
                 </div>
                 <div className="flex-1">
-                  <p className="font-bold text-slate-800">{item.label}</p>
-                  <p className="text-xs text-slate-500">{item.sub}</p>
+                  <p className="font-bold text-[var(--color-on-surface)]">{item.label}</p>
+                  <p className="text-xs text-[var(--color-outline)]">{item.sub}</p>
                 </div>
-                <span className="material-symbols-outlined text-slate-300">chevron_right</span>
+                <span className="material-symbols-outlined text-[var(--color-outline-variant)]/60">chevron_right</span>
               </Link>
             )
           ))}
@@ -197,22 +197,22 @@ export default function EnhancedProfilePage() {
         {/* Haptic Feedback Settings Panel */}
         {showHapticSettings && (
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 space-y-2 animate-fade-in">
-            <div className="flex items-center gap-3 mb-4 pb-3 border-b border-slate-100">
+            <div className="flex items-center gap-3 mb-4 pb-3 border-b border-[var(--color-border-subtle)]">
               <span className="material-symbols-outlined text-primary">vibration</span>
-              <p className="font-bold text-slate-800">{t.profile.hapticFeedbackSettings}</p>
+              <p className="font-bold text-[var(--color-on-surface)]">{t.profile.hapticFeedbackSettings}</p>
             </div>
             
             <button
               onClick={() => updateSetting("enabled", !settings.enabled)}
-              className="w-full flex items-center justify-between py-3 hover:bg-slate-50 rounded-xl px-2 transition-colors"
+              className="w-full flex items-center justify-between py-3 hover:bg-[var(--color-surface-subtle)] rounded-xl px-2 transition-colors"
             >
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-cyan-50 flex items-center justify-center">
                   <span className="material-symbols-outlined text-cyan-500">power_settings_new</span>
                 </div>
                 <div className="text-left">
-                  <p className="font-semibold text-slate-800">{t.profile.enableHaptics}</p>
-                  <p className="text-xs text-slate-500">{t.profile.masterToggle}</p>
+                  <p className="font-semibold text-[var(--color-on-surface)]">{t.profile.enableHaptics}</p>
+                  <p className="text-xs text-[var(--color-outline)]">{t.profile.masterToggle}</p>
                 </div>
               </div>
               <div className={`w-12 h-7 rounded-full relative transition-colors ${settings.enabled ? "bg-primary" : "bg-slate-300"}`}>
@@ -226,15 +226,15 @@ export default function EnhancedProfilePage() {
                 triggerHaptic("light");
                 updateSetting("light", !settings.light);
               }}
-              className={`w-full flex items-center justify-between py-3 hover:bg-slate-50 rounded-xl px-2 transition-colors ${!settings.enabled ? "opacity-50" : ""}`}
+              className={`w-full flex items-center justify-between py-3 hover:bg-[var(--color-surface-subtle)] rounded-xl px-2 transition-colors ${!settings.enabled ? "opacity-50" : ""}`}
             >
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center">
                   <span className="material-symbols-outlined text-green-500 text-lg">circle</span>
                 </div>
                 <div className="text-left">
-                  <p className="font-semibold text-slate-800">{t.profile.lightTap}</p>
-                  <p className="text-xs text-slate-500">{t.profile.briefFeedback}</p>
+                  <p className="font-semibold text-[var(--color-on-surface)]">{t.profile.lightTap}</p>
+                  <p className="text-xs text-[var(--color-outline)]">{t.profile.briefFeedback}</p>
                 </div>
               </div>
               <div className={`w-12 h-7 rounded-full relative transition-colors ${settings.light ? "bg-primary" : "bg-slate-300"}`}>
@@ -248,15 +248,15 @@ export default function EnhancedProfilePage() {
                 triggerHaptic("medium");
                 updateSetting("medium", !settings.medium);
               }}
-              className={`w-full flex items-center justify-between py-3 hover:bg-slate-50 rounded-xl px-2 transition-colors ${!settings.enabled ? "opacity-50" : ""}`}
+              className={`w-full flex items-center justify-between py-3 hover:bg-[var(--color-surface-subtle)] rounded-xl px-2 transition-colors ${!settings.enabled ? "opacity-50" : ""}`}
             >
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center">
                   <span className="material-symbols-outlined text-amber-500 text-lg">radio_button_checked</span>
                 </div>
                 <div className="text-left">
-                  <p className="font-semibold text-slate-800">{t.profile.mediumTap}</p>
-                  <p className="text-xs text-slate-500">{t.profile.standardFeedback}</p>
+                  <p className="font-semibold text-[var(--color-on-surface)]">{t.profile.mediumTap}</p>
+                  <p className="text-xs text-[var(--color-outline)]">{t.profile.standardFeedback}</p>
                 </div>
               </div>
               <div className={`w-12 h-7 rounded-full relative transition-colors ${settings.medium ? "bg-primary" : "bg-slate-300"}`}>
@@ -270,15 +270,15 @@ export default function EnhancedProfilePage() {
                 triggerHaptic("heavy");
                 updateSetting("heavy", !settings.heavy);
               }}
-              className={`w-full flex items-center justify-between py-3 hover:bg-slate-50 rounded-xl px-2 transition-colors ${!settings.enabled ? "opacity-50" : ""}`}
+              className={`w-full flex items-center justify-between py-3 hover:bg-[var(--color-surface-subtle)] rounded-xl px-2 transition-colors ${!settings.enabled ? "opacity-50" : ""}`}
             >
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center">
                   <span className="material-symbols-outlined text-red-500 text-lg">lens</span>
                 </div>
                 <div className="text-left">
-                  <p className="font-semibold text-slate-800">{t.profile.heavyTap}</p>
-                  <p className="text-xs text-slate-500">{t.profile.strongFeedback}</p>
+                  <p className="font-semibold text-[var(--color-on-surface)]">{t.profile.heavyTap}</p>
+                  <p className="text-xs text-[var(--color-outline)]">{t.profile.strongFeedback}</p>
                 </div>
               </div>
               <div className={`w-12 h-7 rounded-full relative transition-colors ${settings.heavy ? "bg-primary" : "bg-slate-300"}`}>
@@ -298,12 +298,12 @@ export default function EnhancedProfilePage() {
           </div>
           <div className="flex-1">
             <p className="font-bold text-red-600">{t.profile.logOut}</p>
-            <p className="text-xs text-slate-500">{t.profile.signOutAccount}</p>
+            <p className="text-xs text-[var(--color-outline)]">{t.profile.signOutAccount}</p>
           </div>
         </button>
 
         {/* App Version */}
-        <p className="text-center text-xs text-slate-400 py-6">
+        <p className="text-center text-xs text-[var(--color-outline-variant)] py-6">
           MIIAM v2.5.0 • {t.profile.madeWithLove}
         </p>
       </main>

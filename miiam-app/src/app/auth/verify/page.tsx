@@ -136,7 +136,7 @@ function OTPVerificationContent() {
           onClick={() => router.back()}
           className="w-10 h-10 flex items-center justify-center rounded-full bg-[var(--color-surface-container-lowest)] shadow-md"
         >
-          <span className="material-symbols-outlined text-slate-600">arrow_back</span>
+          <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">arrow_back</span>
         </button>
       </div>
 
@@ -148,7 +148,7 @@ function OTPVerificationContent() {
         </div>
 
         <h1 className="text-2xl font-black text-[#4d212a] mb-2">Verify Your Number</h1>
-        <p className="text-slate-500 text-center mb-8">
+        <p className="text-[var(--color-outline)] text-center mb-8">
           We sent a 6-digit OTP to<br />
           <span className="font-bold text-[#ba001c]">{formatPhone(phone)}</span>
         </p>
@@ -170,19 +170,19 @@ function OTPVerificationContent() {
                     ? "border-red-300 bg-red-50"
                     : digit
                     ? "border-[#ba001c] bg-[#ba001c]/5"
-                    : "border-slate-200 bg-white"
+                    : "border-[var(--color-border-subtle)] bg-white"
                 } focus:border-[#ba001c] focus:outline-none`}
               />
             ))}
           </div>
 
           {error && <p className="text-center text-red-500 text-sm mb-4">{error}</p>}
-          {isLoading && <p className="text-center text-slate-500 text-sm mb-4">Verifying...</p>}
+          {isLoading && <p className="text-center text-[var(--color-outline)] text-sm mb-4">Verifying...</p>}
         </div>
 
         <div className="text-center">
           {resendTimer > 0 ? (
-            <p className="text-slate-400 text-sm">
+            <p className="text-[var(--color-outline-variant)] text-sm">
               Resend OTP in <span className="font-bold text-[#ba001c]">{resendTimer}s</span>
             </p>
           ) : (
@@ -195,7 +195,7 @@ function OTPVerificationContent() {
           )}
         </div>
 
-        <div className="mt-8 text-center text-slate-400 text-xs">
+        <div className="mt-8 text-center text-[var(--color-outline-variant)] text-xs">
           <p>Didn't receive the code?</p>
           <p className="mt-1">Check your phone signal and try again</p>
         </div>

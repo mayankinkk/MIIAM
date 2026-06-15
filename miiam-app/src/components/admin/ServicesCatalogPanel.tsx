@@ -32,9 +32,9 @@ export default function ServicesCatalogPanel({ open, onClose }: Props) {
   if (!open) return null;
 
   return (
-    <div className="mt-2 bg-[var(--color-surface-container-lowest)] rounded-xl border border-slate-100 p-4 max-w-2xl space-y-3">
+    <div className="mt-2 bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] p-4 max-w-2xl space-y-3">
       <div className="flex items-center justify-between">
-        <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">
+        <p className="text-xs font-bold text-[var(--color-outline)] uppercase tracking-widest">
           Services catalog ({services.filter((s) => s.enabled).length}/{services.length} visible)
         </p>
         <button
@@ -50,7 +50,7 @@ export default function ServicesCatalogPanel({ open, onClose }: Props) {
       </div>
 
       {!hydrated ? (
-        <p className="text-xs text-slate-400 italic">Loading saved services…</p>
+        <p className="text-xs text-[var(--color-outline-variant)] italic">Loading saved services…</p>
       ) : (
         <div className="space-y-2 max-h-[480px] overflow-y-auto">
           {services.map((svc, idx) => {
@@ -61,21 +61,21 @@ export default function ServicesCatalogPanel({ open, onClose }: Props) {
               <div
                 key={svc.id}
                 className={`flex items-center gap-2 p-2.5 rounded-lg border transition-colors ${
-                  svc.enabled ? "bg-[var(--color-surface-container-lowest)] border-slate-200" : "bg-slate-50 border-slate-100 opacity-60"
+                  svc.enabled ? "bg-[var(--color-surface-container-lowest)] border-[var(--color-border-subtle)]" : "bg-[var(--color-surface-subtle)] border-[var(--color-border-subtle)] opacity-60"
                 }`}
               >
                 <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${meta.accent} flex items-center justify-center shrink-0`}>
                   <span className="material-symbols-outlined text-white text-base" style={{ fontVariationSettings: "'FILL' 1" }}>{meta.icon}</span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-slate-800 truncate">{meta.titleKey.replace("Title", "").toUpperCase()}</p>
+                  <p className="text-sm font-bold text-[var(--color-on-surface)] truncate">{meta.titleKey.replace("Title", "").toUpperCase()}</p>
                   <div className="flex flex-wrap items-center gap-1.5 mt-1">
                     <input
                       type="text"
                       value={svc.price}
                       onChange={(e) => setService(svc.id, { price: e.target.value })}
                       placeholder="from ₹2/pg"
-                      className="w-24 px-2 py-0.5 border border-slate-200 rounded text-xs"
+                      className="w-24 px-2 py-0.5 border border-[var(--color-border-subtle)] rounded text-xs"
                       aria-label="Price label"
                     />
                     <input
@@ -83,7 +83,7 @@ export default function ServicesCatalogPanel({ open, onClose }: Props) {
                       value={svc.eta}
                       onChange={(e) => setService(svc.id, { eta: e.target.value })}
                       placeholder="30 min"
-                      className="w-20 px-2 py-0.5 border border-slate-200 rounded text-xs"
+                      className="w-20 px-2 py-0.5 border border-[var(--color-border-subtle)] rounded text-xs"
                       aria-label="ETA"
                     />
                     <input
@@ -91,7 +91,7 @@ export default function ServicesCatalogPanel({ open, onClose }: Props) {
                       value={svc.badge ?? ""}
                       onChange={(e) => setService(svc.id, { badge: e.target.value.trim() || null })}
                       placeholder="Badge (optional)"
-                      className="w-28 px-2 py-0.5 border border-slate-200 rounded text-xs"
+                      className="w-28 px-2 py-0.5 border border-[var(--color-border-subtle)] rounded text-xs"
                       aria-label="Badge"
                     />
                     {meta.href && (
@@ -105,7 +105,7 @@ export default function ServicesCatalogPanel({ open, onClose }: Props) {
                   <button
                     onClick={() => move(svc.id, "up")}
                     disabled={isFirst}
-                    className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-700 disabled:opacity-30"
+                    className="w-10 h-10 flex items-center justify-center text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface)] disabled:opacity-30"
                     aria-label="Move up"
                   >
                     <span className="material-symbols-outlined text-sm">arrow_drop_up</span>
@@ -113,7 +113,7 @@ export default function ServicesCatalogPanel({ open, onClose }: Props) {
                   <button
                     onClick={() => move(svc.id, "down")}
                     disabled={isLast}
-                    className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-700 disabled:opacity-30"
+                    className="w-10 h-10 flex items-center justify-center text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface)] disabled:opacity-30"
                     aria-label="Move down"
                   >
                     <span className="material-symbols-outlined text-sm">arrow_drop_down</span>
@@ -139,13 +139,13 @@ export default function ServicesCatalogPanel({ open, onClose }: Props) {
         </div>
       )}
 
-      <div className="flex justify-between items-center pt-2 border-t border-slate-100">
-        <p className="text-[11px] text-slate-500">
+      <div className="flex justify-between items-center pt-2 border-t border-[var(--color-border-subtle)]">
+        <p className="text-[11px] text-[var(--color-outline)]">
           Changes apply instantly. Hiding a service removes it from the user-facing grid; the preset still works if loaded from a deep link.
         </p>
         <button
           onClick={onClose}
-          className="px-3 py-1.5 bg-slate-100 text-slate-600 rounded-lg text-xs font-bold hover:bg-slate-200"
+          className="px-3 py-1.5 bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] rounded-lg text-xs font-bold hover:bg-[var(--color-surface-container-high)]"
         >
           Done
         </button>

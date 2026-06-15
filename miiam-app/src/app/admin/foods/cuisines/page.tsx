@@ -116,8 +116,8 @@ export default function AdminCuisinesPage() {
     <div className="px-8 space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-black text-slate-800">Cuisines</h1>
-          <p className="text-sm text-slate-500 mt-1">Manage food categories and cuisines</p>
+          <h1 className="text-3xl font-black text-[var(--color-on-surface)]">Cuisines</h1>
+          <p className="text-sm text-[var(--color-outline)] mt-1">Manage food categories and cuisines</p>
         </div>
         <button
           onClick={() => setShowAddModal(true)}
@@ -128,34 +128,34 @@ export default function AdminCuisinesPage() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-slate-100">
-          <p className="text-slate-400 text-[10px] font-bold uppercase">Total Cuisines</p>
-          <p className="text-2xl font-black text-slate-800">{cuisines.length}</p>
+        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-[var(--color-border-subtle)]">
+          <p className="text-[var(--color-outline-variant)] text-[10px] font-bold uppercase">Total Cuisines</p>
+          <p className="text-2xl font-black text-[var(--color-on-surface)]">{cuisines.length}</p>
         </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-slate-100">
-          <p className="text-slate-400 text-[10px] font-bold uppercase">Active</p>
+        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-[var(--color-border-subtle)]">
+          <p className="text-[var(--color-outline-variant)] text-[10px] font-bold uppercase">Active</p>
           <p className="text-2xl font-black text-green-600">{cuisines.filter(c => c.active).length}</p>
         </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-slate-100">
-          <p className="text-slate-400 text-[10px] font-bold uppercase">Total Items</p>
-          <p className="text-2xl font-black text-slate-800">{cuisines.reduce((acc, c) => acc + (c.item_count || 0), 0)}</p>
+        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-[var(--color-border-subtle)]">
+          <p className="text-[var(--color-outline-variant)] text-[10px] font-bold uppercase">Total Items</p>
+          <p className="text-2xl font-black text-[var(--color-on-surface)]">{cuisines.reduce((acc, c) => acc + (c.item_count || 0), 0)}</p>
         </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-slate-100">
-          <p className="text-slate-400 text-[10px] font-bold uppercase">Vendors</p>
-          <p className="text-2xl font-black text-slate-800">{cuisines.reduce((acc, c) => acc + (c.vendor_count || 0), 0)}</p>
+        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-[var(--color-border-subtle)]">
+          <p className="text-[var(--color-outline-variant)] text-[10px] font-bold uppercase">Vendors</p>
+          <p className="text-2xl font-black text-[var(--color-on-surface)]">{cuisines.reduce((acc, c) => acc + (c.vendor_count || 0), 0)}</p>
         </div>
       </div>
 
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-slate-100 overflow-hidden shadow-sm">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)] overflow-hidden shadow-sm">
         <div className="p-4 border-b">
           <div className="relative max-w-md">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-outline-variant)]">search</span>
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search cuisines..."
-              className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-xl text-sm"
+              className="w-full pl-10 pr-4 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm"
             />
           </div>
         </div>
@@ -164,7 +164,7 @@ export default function AdminCuisinesPage() {
             <div 
               key={cuisine.id} 
               className={`p-4 rounded-2xl border transition-all ${
-                cuisine.active ? "border-slate-100 bg-white" : "border-slate-200 bg-slate-50 opacity-60"
+                cuisine.active ? "border-[var(--color-border-subtle)] bg-white" : "border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] opacity-60"
               }`}
             >
               <div className="flex items-start justify-between mb-3">
@@ -182,13 +182,13 @@ export default function AdminCuisinesPage() {
                   {cuisine.active ? "Active" : "Inactive"}
                 </button>
               </div>
-              <h3 className="font-black text-slate-800 text-lg">{cuisine.name}</h3>
-              <div className="flex gap-4 mt-2 text-xs text-slate-500">
+              <h3 className="font-black text-[var(--color-on-surface)] text-lg">{cuisine.name}</h3>
+              <div className="flex gap-4 mt-2 text-xs text-[var(--color-outline)]">
                 <span>{cuisine.item_count || 0} items</span>
                 <span>•</span>
                 <span>{cuisine.vendor_count || 0} vendors</span>
               </div>
-              <div className="flex gap-2 mt-4 pt-3 border-t border-slate-100">
+              <div className="flex gap-2 mt-4 pt-3 border-t border-[var(--color-border-subtle)]">
                 <button
                   onClick={() => setEditingCuisine(cuisine)}
                   className="flex-1 py-2 text-[#ba001c] font-bold text-sm border border-[#ba001c] rounded-lg hover:bg-[#ba001c] hover:text-white transition-all"
@@ -212,28 +212,28 @@ export default function AdminCuisinesPage() {
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl max-w-md w-full p-6">
             <div className="flex justify-between items-center mb-4">
               <h2 className="font-black text-lg">Add New Cuisine</h2>
-              <button onClick={() => setShowAddModal(false)} className="text-slate-400">
+              <button onClick={() => setShowAddModal(false)} className="text-[var(--color-outline-variant)]">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
             <div className="space-y-4">
               <div>
-                <label className="text-xs font-bold text-slate-600 block mb-1">Cuisine Name *</label>
+                <label className="text-xs font-bold text-[var(--color-on-surface-variant)] block mb-1">Cuisine Name *</label>
                 <input
                   type="text"
                   value={newCuisine.name}
                   onChange={(e) => setNewCuisine({ ...newCuisine, name: e.target.value })}
-                  className="w-full p-3 border border-slate-200 rounded-xl text-sm"
+                  className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm"
                   placeholder="e.g., Mexican, Thai"
                 />
               </div>
               <div>
-                <label className="text-xs font-bold text-slate-600 block mb-1">Image URL (optional)</label>
+                <label className="text-xs font-bold text-[var(--color-on-surface-variant)] block mb-1">Image URL (optional)</label>
                 <input
                   type="text"
                   value={newCuisine.image_url}
                   onChange={(e) => setNewCuisine({ ...newCuisine, image_url: e.target.value })}
-                  className="w-full p-3 border border-slate-200 rounded-xl text-sm"
+                  className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm"
                   placeholder="https://..."
                 />
               </div>
@@ -254,18 +254,18 @@ export default function AdminCuisinesPage() {
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl max-w-md w-full p-6">
             <div className="flex justify-between items-center mb-4">
               <h2 className="font-black text-lg">Edit Cuisine</h2>
-              <button onClick={() => setEditingCuisine(null)} className="text-slate-400">
+              <button onClick={() => setEditingCuisine(null)} className="text-[var(--color-outline-variant)]">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
             <div className="space-y-4">
               <div>
-                <label className="text-xs font-bold text-slate-600 block mb-1">Cuisine Name</label>
+                <label className="text-xs font-bold text-[var(--color-on-surface-variant)] block mb-1">Cuisine Name</label>
                 <input
                   type="text"
                   value={editingCuisine.name}
                   onChange={(e) => setEditingCuisine({ ...editingCuisine, name: e.target.value })}
-                  className="w-full p-3 border border-slate-200 rounded-xl text-sm"
+                  className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm"
                 />
               </div>
               <div className="flex items-center gap-3">

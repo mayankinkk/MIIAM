@@ -76,18 +76,18 @@ export default function UserRegistry() {
     <div className="px-8 space-y-8">
       <div className="flex justify-between items-end">
         <div>
-          <div className="h-10 w-48 bg-slate-200 rounded animate-pulse mb-2" />
-          <div className="h-5 w-72 bg-slate-200 rounded animate-pulse" />
+          <div className="h-10 w-48 bg-[var(--color-surface-container-high)] rounded animate-pulse mb-2" />
+          <div className="h-5 w-72 bg-[var(--color-surface-container-high)] rounded animate-pulse" />
         </div>
       </div>
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-6">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-6">
         <div className="space-y-4">
           {[1,2,3,4,5].map(i => (
             <div key={i} className="flex items-center gap-4 p-4">
-              <div className="h-10 w-10 rounded-full bg-slate-200 animate-pulse" />
+              <div className="h-10 w-10 rounded-full bg-[var(--color-surface-container-high)] animate-pulse" />
               <div className="flex-1 space-y-2">
-                <div className="h-4 w-32 bg-slate-200 rounded animate-pulse" />
-                <div className="h-3 w-48 bg-slate-200 rounded animate-pulse" />
+                <div className="h-4 w-32 bg-[var(--color-surface-container-high)] rounded animate-pulse" />
+                <div className="h-3 w-48 bg-[var(--color-surface-container-high)] rounded animate-pulse" />
               </div>
             </div>
           ))}
@@ -100,15 +100,15 @@ export default function UserRegistry() {
     <div className="px-8 space-y-8">
       <div className="flex justify-between items-end">
         <div>
-          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight mb-2">User Registry</h1>
-          <p className="text-slate-500">Manage all customer and staff accounts across MIIAM.</p>
+          <h1 className="text-3xl font-extrabold text-[var(--color-on-surface)] tracking-tight mb-2">User Registry</h1>
+          <p className="text-[var(--color-outline)]">Manage all customer and staff accounts across MIIAM.</p>
         </div>
       </div>
 
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] overflow-hidden shadow-sm">
         <div className="p-6 border-b border-slate-50 flex items-center gap-4">
-           <div className="bg-slate-50 border border-slate-100 rounded-xl px-4 py-2 flex items-center gap-2 flex-1 max-w-sm">
-             <span className="material-symbols-outlined text-slate-400 text-sm">search</span>
+           <div className="bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2 flex items-center gap-2 flex-1 max-w-sm">
+             <span className="material-symbols-outlined text-[var(--color-outline-variant)] text-sm">search</span>
              <input
                type="text"
                value={searchQuery}
@@ -119,7 +119,7 @@ export default function UserRegistry() {
            </div>
             <button
               onClick={() => { setSearchQuery(""); setPage(1); }}
-              className={`p-3 rounded-xl transition-colors ${searchQuery ? "bg-[#ba001c] text-white" : "bg-slate-50 text-slate-400 hover:text-slate-600"}`}
+              className={`p-3 rounded-xl transition-colors ${searchQuery ? "bg-[#ba001c] text-white" : "bg-[var(--color-surface-subtle)] text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]"}`}
             >
               <span className="material-symbols-outlined">filter_list</span>
             </button>
@@ -127,25 +127,25 @@ export default function UserRegistry() {
         
         <div className="overflow-x-auto" onClick={() => setOpenMenuId(null)}>
           <table className="w-full text-left">
-            <thead className="bg-slate-50 border-b border-slate-100">
+            <thead className="bg-[var(--color-surface-subtle)] border-b border-[var(--color-border-subtle)]">
               <tr>
-                <th className="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Profile</th>
-                <th className="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Role</th>
-                <th className="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Join Date</th>
-                <th className="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
+                <th className="p-6 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Profile</th>
+                <th className="p-6 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Role</th>
+                <th className="p-6 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest text-center">Join Date</th>
+                <th className="p-6 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-[var(--color-border-subtle)]">
               {filteredProfiles.map((profile) => (
-                <tr key={profile.id} className="hover:bg-slate-50/50 transition-colors">
+                <tr key={profile.id} className="hover:bg-[var(--color-surface-subtle)]/50 transition-colors">
                   <td className="p-6">
                     <div className="flex items-center gap-4">
                       <div className="w-10 h-10 rounded-full bg-[#ffe1e4] flex items-center justify-center text-[#ba001c] font-black overflow-hidden shadow-sm">
                         {profile.avatar_url ? <img src={profile.avatar_url} alt={`${profile.full_name || 'User'}'s avatar`} className="w-full h-full object-cover" /> : profile.full_name?.[0] || "?"}
                       </div>
                       <div>
-                        <p className="text-sm font-bold text-slate-800">{profile.full_name || "Unknown"}</p>
-                        <p className="text-[11px] text-slate-400 font-medium">{profile.email || "No email"}</p>
+                        <p className="text-sm font-bold text-[var(--color-on-surface)]">{profile.full_name || "Unknown"}</p>
+                        <p className="text-[11px] text-[var(--color-outline-variant)] font-medium">{profile.email || "No email"}</p>
                     </div>
                   </div>
                 </td>
@@ -153,33 +153,33 @@ export default function UserRegistry() {
                     <span className={`text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest ${
                       profile.role === 'admin' ? 'bg-[#ba001c] text-white' :
                       profile.role === 'rider' ? 'bg-amber-100 text-amber-700' :
-                      'bg-slate-100 text-slate-600'
+                      'bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]'
                     }`}>
                       {profile.role}
                     </span>
                   </td>
                   <td className="p-6 text-center">
-                    <p className="text-xs text-slate-500 font-bold">{profile.created_at ? new Date(profile.created_at).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' }) : "N/A"}</p>
+                    <p className="text-xs text-[var(--color-outline)] font-bold">{profile.created_at ? new Date(profile.created_at).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' }) : "N/A"}</p>
                   </td>
                   <td className="p-6 text-right relative">
                     <button 
                       onClick={(e) => toggleMenu(profile.id, e)}
-                      className="text-slate-400 hover:text-[#ba001c] transition-colors p-2 rounded hover:bg-slate-100"
+                      className="text-[var(--color-outline-variant)] hover:text-[#ba001c] transition-colors p-2 rounded hover:bg-[var(--color-surface-container)]"
                     >
                       <span className="material-symbols-outlined text-[20px]">more_vert</span>
                     </button>
                     {openMenuId === profile.id && (
-                      <div className="absolute right-6 top-10 bg-[var(--color-surface-container-lowest)] border border-slate-200 rounded-xl shadow-lg py-2 z-50 min-w-[140px]">
+                      <div className="absolute right-6 top-10 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl shadow-lg py-2 z-50 min-w-[140px]">
                         <button 
                           onClick={() => handleAction("view", profile)}
-                          className="w-full px-4 py-2 text-left text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2"
+                          className="w-full px-4 py-2 text-left text-sm text-[var(--color-on-surface)] hover:bg-[var(--color-surface-subtle)] flex items-center gap-2"
                         >
                           <span className="material-symbols-outlined text-lg">visibility</span>
                           View Details
                         </button>
                         <button 
                           onClick={() => handleAction("edit", profile)}
-                          className="w-full px-4 py-2 text-left text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2"
+                          className="w-full px-4 py-2 text-left text-sm text-[var(--color-on-surface)] hover:bg-[var(--color-surface-subtle)] flex items-center gap-2"
                         >
                           <span className="material-symbols-outlined text-lg">edit</span>
                           Change Role
@@ -200,21 +200,21 @@ export default function UserRegistry() {
           </table>
         </div>
         
-        <div className="p-6 border-t border-slate-50 flex items-center justify-between text-xs font-bold text-slate-400">
+        <div className="p-6 border-t border-slate-50 flex items-center justify-between text-xs font-bold text-[var(--color-outline-variant)]">
           <p>Showing {(page - 1) * PAGE_SIZE + 1}-{Math.min(page * PAGE_SIZE, totalCount)} of {totalCount} users</p>
           <div className="flex gap-2">
              <button 
                onClick={() => setPage(p => Math.max(1, p - 1))}
                disabled={page === 1}
-               className="px-4 py-2 rounded-lg border border-slate-100 hover:bg-slate-50 transition-colors disabled:opacity-50"
+               className="px-4 py-2 rounded-lg border border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)] transition-colors disabled:opacity-50"
              >
                Previous
              </button>
-             <span className="px-4 py-2 text-slate-600">Page {page} of {totalPages || 1}</span>
+             <span className="px-4 py-2 text-[var(--color-on-surface-variant)]">Page {page} of {totalPages || 1}</span>
              <button 
                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                disabled={page >= totalPages}
-               className="px-4 py-2 rounded-lg border border-slate-100 hover:bg-slate-50 transition-colors disabled:opacity-50"
+               className="px-4 py-2 rounded-lg border border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)] transition-colors disabled:opacity-50"
              >
                Next
              </button>
@@ -227,17 +227,17 @@ export default function UserRegistry() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-md mx-4">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-black text-slate-800">User Details</h3>
-              <button onClick={() => setShowDetailModal(false)} className="p-1 hover:bg-slate-100 rounded-full">
+              <h3 className="text-lg font-black text-[var(--color-on-surface)]">User Details</h3>
+              <button onClick={() => setShowDetailModal(false)} className="p-1 hover:bg-[var(--color-surface-container)] rounded-full">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
             <div className="space-y-3">
-              <div className="flex justify-between"><span className="text-slate-500">Name</span><span className="font-bold">{selectedProfile.full_name || "—"}</span></div>
-              <div className="flex justify-between"><span className="text-slate-500">Email</span><span className="font-bold">{selectedProfile.email || "—"}</span></div>
-              <div className="flex justify-between"><span className="text-slate-500">Role</span><span className="font-bold capitalize">{selectedProfile.role}</span></div>
-              <div className="flex justify-between"><span className="text-slate-500">Joined</span><span className="font-bold">{selectedProfile.created_at ? new Date(selectedProfile.created_at).toLocaleDateString("en-IN") : "—"}</span></div>
-              <div className="flex justify-between"><span className="text-slate-500">ID</span><span className="font-bold text-xs">{selectedProfile.id}</span></div>
+              <div className="flex justify-between"><span className="text-[var(--color-outline)]">Name</span><span className="font-bold">{selectedProfile.full_name || "—"}</span></div>
+              <div className="flex justify-between"><span className="text-[var(--color-outline)]">Email</span><span className="font-bold">{selectedProfile.email || "—"}</span></div>
+              <div className="flex justify-between"><span className="text-[var(--color-outline)]">Role</span><span className="font-bold capitalize">{selectedProfile.role}</span></div>
+              <div className="flex justify-between"><span className="text-[var(--color-outline)]">Joined</span><span className="font-bold">{selectedProfile.created_at ? new Date(selectedProfile.created_at).toLocaleDateString("en-IN") : "—"}</span></div>
+              <div className="flex justify-between"><span className="text-[var(--color-outline)]">ID</span><span className="font-bold text-xs">{selectedProfile.id}</span></div>
             </div>
             <button onClick={() => setShowDetailModal(false)} className="w-full mt-6 py-3 bg-[#ba001c] text-white font-bold rounded-xl">Close</button>
           </div>
@@ -248,20 +248,20 @@ export default function UserRegistry() {
       {showRoleModal && selectedProfile && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-sm mx-4">
-            <h3 className="text-lg font-black text-slate-800 mb-4">Change Role — {selectedProfile.full_name}</h3>
+            <h3 className="text-lg font-black text-[var(--color-on-surface)] mb-4">Change Role — {selectedProfile.full_name}</h3>
             <div className="space-y-2">
               {["customer", "admin", "rider"].map(role => (
                 <button
                   key={role}
                   onClick={() => setNewRole(role)}
-                  className={`w-full p-3 rounded-xl text-left font-bold capitalize transition-colors ${newRole === role ? "bg-[#ba001c] text-white" : "bg-slate-50 hover:bg-slate-100"}`}
+                  className={`w-full p-3 rounded-xl text-left font-bold capitalize transition-colors ${newRole === role ? "bg-[#ba001c] text-white" : "bg-[var(--color-surface-subtle)] hover:bg-[var(--color-surface-container)]"}`}
                 >
                   {role}
                 </button>
               ))}
             </div>
             <div className="flex gap-3 mt-6">
-              <button onClick={() => setShowRoleModal(false)} className="flex-1 py-3 border border-slate-200 font-bold rounded-xl">Cancel</button>
+              <button onClick={() => setShowRoleModal(false)} className="flex-1 py-3 border border-[var(--color-border-subtle)] font-bold rounded-xl">Cancel</button>
               <button
                 onClick={async () => {
                   if (newRole && newRole !== selectedProfile.role) {

@@ -168,16 +168,16 @@ export default function RiderEarningsGoalsPage() {
         {/* Daily Goal */}
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-sm">
           <div className="flex justify-between items-center mb-3">
-            <h3 className="font-bold text-slate-800">Daily Goal</h3>
+            <h3 className="font-bold text-[var(--color-on-surface)]">Daily Goal</h3>
             <button onClick={() => { setGoalType("daily"); setShowSetGoal(true); }} className="text-xs text-[#0b50d5] font-bold">Edit</button>
           </div>
           <p className="text-3xl font-black text-[#0b50d5]">₹{todayEarnings}</p>
-          <p className="text-xs text-slate-400">of ₹{dailyTarget}</p>
-          <div className="w-full bg-slate-100 rounded-full h-3 mt-3 overflow-hidden">
+          <p className="text-xs text-[var(--color-outline-variant)]">of ₹{dailyTarget}</p>
+          <div className="w-full bg-[var(--color-surface-container)] rounded-full h-3 mt-3 overflow-hidden">
             <div className="h-full bg-gradient-to-r from-[#0b50d5] to-green-500 rounded-full transition-all" style={{ width: `${dailyProgress}%` }} />
           </div>
           <div className="flex justify-between mt-2 text-xs">
-            <span className="text-slate-500">{todayDeliveries} deliveries</span>
+            <span className="text-[var(--color-outline)]">{todayDeliveries} deliveries</span>
             <span className="text-[#0b50d5] font-bold">{Math.round(dailyProgress)}%</span>
           </div>
         </div>
@@ -185,46 +185,46 @@ export default function RiderEarningsGoalsPage() {
         {/* Weekly Goal */}
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-sm">
           <div className="flex justify-between items-center mb-3">
-            <h3 className="font-bold text-slate-800">Weekly Goal</h3>
+            <h3 className="font-bold text-[var(--color-on-surface)]">Weekly Goal</h3>
             <button onClick={() => { setGoalType("weekly"); setShowSetGoal(true); }} className="text-xs text-[#0b50d5] font-bold">Edit</button>
           </div>
           <p className="text-3xl font-black text-green-600">₹{weeklyEarnings}</p>
-          <p className="text-xs text-slate-400">of ₹{weeklyTarget}</p>
-          <div className="w-full bg-slate-100 rounded-full h-3 mt-3 overflow-hidden">
+          <p className="text-xs text-[var(--color-outline-variant)]">of ₹{weeklyTarget}</p>
+          <div className="w-full bg-[var(--color-surface-container)] rounded-full h-3 mt-3 overflow-hidden">
             <div className="h-full bg-gradient-to-r from-green-500 to-amber-400 rounded-full transition-all" style={{ width: `${weeklyProgress}%` }} />
           </div>
           <div className="flex justify-between mt-2 text-xs">
-            <span className="text-slate-500">{weeklyDeliveries} deliveries</span>
+            <span className="text-[var(--color-outline)]">{weeklyDeliveries} deliveries</span>
             <span className="text-green-600 font-bold">{Math.round(weeklyProgress)}%</span>
           </div>
         </div>
 
         {/* Earnings Breakdown */}
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-sm">
-          <h3 className="font-bold text-slate-800 mb-3">Earnings Breakdown</h3>
+          <h3 className="font-bold text-[var(--color-on-surface)] mb-3">Earnings Breakdown</h3>
           <div className="grid grid-cols-3 gap-3">
-            <div className="bg-slate-50 p-3 rounded-xl text-center">
+            <div className="bg-[var(--color-surface-subtle)] p-3 rounded-xl text-center">
               <p className="text-2xl font-black text-[#0b50d5]">{todayDeliveries}</p>
-              <p className="text-xs text-slate-400">Today</p>
+              <p className="text-xs text-[var(--color-outline-variant)]">Today</p>
             </div>
-            <div className="bg-slate-50 p-3 rounded-xl text-center">
+            <div className="bg-[var(--color-surface-subtle)] p-3 rounded-xl text-center">
               <p className="text-2xl font-black text-green-600">{weeklyDeliveries}</p>
-              <p className="text-xs text-slate-400">This Week</p>
+              <p className="text-xs text-[var(--color-outline-variant)]">This Week</p>
             </div>
-            <div className="bg-slate-50 p-3 rounded-xl text-center">
+            <div className="bg-[var(--color-surface-subtle)] p-3 rounded-xl text-center">
               <p className="text-2xl font-black text-amber-600">
                 {todayDeliveries > 0 ? `₹${Math.round(todayEarnings / todayDeliveries)}` : "₹0"}
               </p>
-              <p className="text-xs text-slate-400">Avg/Delivery</p>
+              <p className="text-xs text-[var(--color-outline-variant)]">Avg/Delivery</p>
             </div>
           </div>
         </div>
 
         {/* Last 7 Days Chart */}
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-sm">
-          <h3 className="font-bold text-slate-800 mb-4">Last 7 Days</h3>
+          <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Last 7 Days</h3>
           {dailyData.length === 0 ? (
-            <div className="text-center py-8 text-slate-400">
+            <div className="text-center py-8 text-[var(--color-outline-variant)]">
               <span className="material-symbols-outlined text-4xl">bar_chart</span>
               <p className="text-sm mt-2">No deliveries yet</p>
             </div>
@@ -244,7 +244,7 @@ export default function RiderEarningsGoalsPage() {
               </div>
               <div className="flex justify-between mt-2">
                 {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d, i) => (
-                  <span key={i} className="text-[10px] text-slate-400">{d}</span>
+                  <span key={i} className="text-[10px] text-[var(--color-outline-variant)]">{d}</span>
                 ))}
               </div>
             </>
@@ -253,16 +253,16 @@ export default function RiderEarningsGoalsPage() {
 
         {/* Recent Deliveries */}
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-sm">
-          <h3 className="font-bold text-slate-800 mb-4">Recent Deliveries</h3>
+          <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Recent Deliveries</h3>
           {recentDeliveries.length === 0 ? (
-            <p className="text-sm text-slate-400 text-center py-4">No deliveries yet</p>
+            <p className="text-sm text-[var(--color-outline-variant)] text-center py-4">No deliveries yet</p>
           ) : (
             <div className="space-y-3">
               {recentDeliveries.map((d) => (
                 <div key={d.id} className="flex items-center justify-between py-2 border-b border-slate-50 last:border-0">
                   <div>
-                    <p className="text-sm font-bold text-slate-700">#{d.order_id.slice(0, 6).toUpperCase()}</p>
-                    <p className="text-xs text-slate-400">{new Date(d.time).toLocaleDateString()} {new Date(d.time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</p>
+                    <p className="text-sm font-bold text-[var(--color-on-surface)]">#{d.order_id.slice(0, 6).toUpperCase()}</p>
+                    <p className="text-xs text-[var(--color-outline-variant)]">{new Date(d.time).toLocaleDateString()} {new Date(d.time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</p>
                   </div>
                   <p className="text-sm font-bold text-green-600">+₹{d.amount}</p>
                 </div>
@@ -284,7 +284,7 @@ export default function RiderEarningsGoalsPage() {
                     key={amount}
                     onClick={() => setDailyTarget(amount)}
                     className={`w-full py-3 rounded-xl font-bold text-sm ${
-                      dailyTarget === amount ? "bg-[#0b50d5] text-white" : "bg-slate-100 text-slate-700"
+                      dailyTarget === amount ? "bg-[#0b50d5] text-white" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface)]"
                     }`}
                   >
                     ₹{amount.toLocaleString()}
@@ -296,7 +296,7 @@ export default function RiderEarningsGoalsPage() {
                     key={amount}
                     onClick={() => setWeeklyTarget(amount)}
                     className={`w-full py-3 rounded-xl font-bold text-sm ${
-                      weeklyTarget === amount ? "bg-[#0b50d5] text-white" : "bg-slate-100 text-slate-700"
+                      weeklyTarget === amount ? "bg-[#0b50d5] text-white" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface)]"
                     }`}
                   >
                     ₹{amount.toLocaleString()}
@@ -311,7 +311,7 @@ export default function RiderEarningsGoalsPage() {
             >
               {savingGoal ? "Saving..." : "Save Goal"}
             </button>
-            <button onClick={() => setShowSetGoal(false)} className="w-full mt-2 py-3 text-slate-500 font-bold text-sm rounded-xl">
+            <button onClick={() => setShowSetGoal(false)} className="w-full mt-2 py-3 text-[var(--color-outline)] font-bold text-sm rounded-xl">
               Cancel
             </button>
           </div>

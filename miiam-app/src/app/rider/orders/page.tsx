@@ -598,7 +598,7 @@ export default function RiderOrdersPage() {
         <div className="text-center max-w-sm">
           <span className="material-symbols-outlined text-5xl text-red-400 mb-4 block">wifi_off</span>
           <h2 className="text-xl font-bold text-[#4d212a] mb-2">Something went wrong</h2>
-          <p className="text-slate-500 mb-6">{error}</p>
+          <p className="text-[var(--color-outline)] mb-6">{error}</p>
           <button
             onClick={() => loadOrders()}
             className="px-6 py-3 bg-[#0b50d5] text-white rounded-xl font-bold"
@@ -615,7 +615,7 @@ export default function RiderOrdersPage() {
       <div className="min-h-screen bg-[#fff4f4] flex items-center justify-center">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-[#0b50d5] border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="mt-4 text-slate-500 font-medium">Loading orders...</p>
+          <p className="mt-4 text-[var(--color-outline)] font-medium">Loading orders...</p>
         </div>
       </div>
     );
@@ -647,13 +647,13 @@ export default function RiderOrdersPage() {
 
         {/* Search */}
         <div className="relative mb-3">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-outline-variant)]">search</span>
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search order ID or customer..."
-            className="w-full pl-10 pr-4 py-2 rounded-xl text-sm text-slate-800"
+            className="w-full pl-10 pr-4 py-2 rounded-xl text-sm text-[var(--color-on-surface)]"
           />
         </div>
 
@@ -690,17 +690,17 @@ export default function RiderOrdersPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="font-bold text-sm">Auto-Skip Orders</p>
-              <p className="text-xs text-slate-500">Decline after {autoSkipTime} seconds</p>
+              <p className="text-xs text-[var(--color-outline)]">Decline after {autoSkipTime} seconds</p>
             </div>
             <div className="flex items-center gap-2">
-              <button onClick={() => setAutoSkipTime(Math.max(10, autoSkipTime - 5))} className="w-10 h-10 bg-slate-100 rounded-full font-bold">-</button>
+              <button onClick={() => setAutoSkipTime(Math.max(10, autoSkipTime - 5))} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full font-bold">-</button>
               <span className="font-bold w-8 text-center">{autoSkipTime}s</span>
-              <button onClick={() => setAutoSkipTime(Math.min(60, autoSkipTime + 5))} className="w-10 h-10 bg-slate-100 rounded-full font-bold">+</button>
+              <button onClick={() => setAutoSkipTime(Math.min(60, autoSkipTime + 5))} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full font-bold">+</button>
             </div>
           </div>
           <div className="flex items-center gap-2 mt-2">
             <span className={`w-2 h-2 rounded-full ${autoSkipTime > 0 ? "bg-green-500" : "bg-slate-300"}`}></span>
-            <span className="text-xs text-slate-500">{autoSkipTime > 0 ? "Auto-skip enabled" : "Disabled"}</span>
+            <span className="text-xs text-[var(--color-outline)]">{autoSkipTime > 0 ? "Auto-skip enabled" : "Disabled"}</span>
           </div>
         </div>
       )}
@@ -708,15 +708,15 @@ export default function RiderOrdersPage() {
       {/* Quick Stats */}
       <div className="px-4 py-3 flex gap-3 overflow-x-auto no-scrollbar">
         <div className="bg-[var(--color-surface-container-lowest)] px-4 py-2 rounded-xl shadow-sm min-w-[90px] shrink-0">
-          <p className="text-[10px] text-slate-400">TODAY'S EARNINGS</p>
+          <p className="text-[10px] text-[var(--color-outline-variant)]">TODAY'S EARNINGS</p>
           <p className="font-black text-green-600 text-sm">₹{todayEarnings}</p>
         </div>
         <div className="bg-[var(--color-surface-container-lowest)] px-4 py-2 rounded-xl shadow-sm min-w-[80px] shrink-0">
-          <p className="text-[10px] text-slate-400">COMPLETED</p>
+          <p className="text-[10px] text-[var(--color-outline-variant)]">COMPLETED</p>
           <p className="font-black text-[#0b50d5] text-sm">{completedOrders.length}</p>
         </div>
         <div className="bg-[var(--color-surface-container-lowest)] px-4 py-2 rounded-xl shadow-sm min-w-[90px] shrink-0">
-          <p className="text-[10px] text-slate-400">IN PROGRESS</p>
+          <p className="text-[10px] text-[var(--color-outline-variant)]">IN PROGRESS</p>
           <p className="font-black text-purple-600 text-sm">{shoppingOrders.length}</p>
         </div>
       </div>
@@ -729,7 +729,7 @@ export default function RiderOrdersPage() {
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`flex-1 py-2 rounded-lg text-xs font-bold capitalize ${
-                activeTab === tab ? "bg-[#0b50d5] text-white" : "text-slate-500"
+                activeTab === tab ? "bg-[#0b50d5] text-white" : "text-[var(--color-outline)]"
               }`}
             >
               {tab} {tab === "available" ? `(${availableOrders.length})` : tab === "shopping" ? `(${shoppingOrders.length})` : tab === "completed" ? `(${completedOrders.length})` : ""}
@@ -760,7 +760,7 @@ export default function RiderOrdersPage() {
               />
             ))}
             {availableOrders.length === 0 && (
-              <div className="text-center py-12 text-slate-400">
+              <div className="text-center py-12 text-[var(--color-outline-variant)]">
                 <span className="material-symbols-outlined text-4xl">shopping_bag</span>
                 <p className="mt-2">No orders available</p>
               </div>
@@ -783,7 +783,7 @@ export default function RiderOrdersPage() {
               />
             ))}
             {shoppingOrders.length === 0 && (
-              <div className="text-center py-12 text-slate-400">
+              <div className="text-center py-12 text-[var(--color-outline-variant)]">
                 <span className="material-symbols-outlined text-4xl">check_circle</span>
                 <p className="mt-2">No active shopping</p>
               </div>
@@ -797,7 +797,7 @@ export default function RiderOrdersPage() {
               <CompletedCard key={order.id} order={order} />
             ))}
             {completedOrders.length === 0 && (
-              <div className="text-center py-12 text-slate-400">
+              <div className="text-center py-12 text-[var(--color-outline-variant)]">
                 <span className="material-symbols-outlined text-4xl">history</span>
                 <p className="mt-2">No completed orders</p>
               </div>
@@ -810,13 +810,13 @@ export default function RiderOrdersPage() {
             <div className="bg-[var(--color-surface-container-lowest)] rounded-xl p-4 shadow-sm">
               <h3 className="font-bold text-[#4d212a] mb-3">📊 Performance Stats</h3>
               <div className="grid grid-cols-2 gap-4">
-                <div className="text-center p-3 bg-slate-50 rounded-xl">
+                <div className="text-center p-3 bg-[var(--color-surface-subtle)] rounded-xl">
                   <p className="text-2xl font-black text-[#0b50d5]">{orders.length}</p>
-                  <p className="text-xs text-slate-400">Total Orders</p>
+                  <p className="text-xs text-[var(--color-outline-variant)]">Total Orders</p>
                 </div>
-                <div className="text-center p-3 bg-slate-50 rounded-xl">
+                <div className="text-center p-3 bg-[var(--color-surface-subtle)] rounded-xl">
                   <p className="text-2xl font-black text-green-600">₹{todayEarnings}</p>
-                  <p className="text-xs text-slate-400">Today&apos;s Earnings</p>
+                  <p className="text-xs text-[var(--color-outline-variant)]">Today&apos;s Earnings</p>
                 </div>
               </div>
             </div>
@@ -842,11 +842,11 @@ export default function RiderOrdersPage() {
               <p className="text-3xl font-black text-green-600">₹{cashToCollect}</p>
             </div>
             <div className="space-y-2 mb-4">
-              <button onClick={() => setCashToCollect(cashToCollect + 10)} className="w-full py-2 border border-slate-200 rounded-lg font-bold">+₹10</button>
-              <button onClick={() => setCashToCollect(cashToCollect + 50)} className="w-full py-2 border border-slate-200 rounded-lg font-bold">+₹50</button>
+              <button onClick={() => setCashToCollect(cashToCollect + 10)} className="w-full py-2 border border-[var(--color-border-subtle)] rounded-lg font-bold">+₹10</button>
+              <button onClick={() => setCashToCollect(cashToCollect + 50)} className="w-full py-2 border border-[var(--color-border-subtle)] rounded-lg font-bold">+₹50</button>
             </div>
             <div className="flex gap-3">
-              <button onClick={() => setShowCashCollectModal(false)} className="flex-1 py-3 bg-slate-200 text-slate-600 font-bold rounded-xl">Cancel</button>
+              <button onClick={() => setShowCashCollectModal(false)} className="flex-1 py-3 bg-[var(--color-surface-container-high)] text-[var(--color-on-surface-variant)] font-bold rounded-xl">Cancel</button>
               <button onClick={confirmDelivery} className="flex-1 py-3 bg-green-500 text-white font-bold rounded-xl">Confirm & Complete</button>
             </div>
           </div>
@@ -883,13 +883,13 @@ export default function RiderOrdersPage() {
                     }
                     setShowIssueModal(false);
                   }}
-                  className="w-full p-3 text-left bg-slate-50 rounded-xl font-bold hover:bg-slate-100"
+                  className="w-full p-3 text-left bg-[var(--color-surface-subtle)] rounded-xl font-bold hover:bg-[var(--color-surface-container)]"
                 >
                   {issue}
                 </button>
               ))}
             </div>
-            <button onClick={() => setShowIssueModal(false)} className="w-full mt-4 py-3 text-slate-500 font-bold">Cancel</button>
+            <button onClick={() => setShowIssueModal(false)} className="w-full mt-4 py-3 text-[var(--color-outline)] font-bold">Cancel</button>
           </div>
         </div>
       )}
@@ -909,7 +909,7 @@ function OrderCard({ order, onAccept, isSelected, onToggleSelect }: { order: Ord
     <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-lg border-2 border-transparent hover:border-[#0b50d5]/30">
       <div className="flex justify-between items-start mb-2">
         <div className="flex items-start gap-3">
-          <button onClick={onToggleSelect} className={`mt-1 w-10 h-10 rounded-full border-2 flex items-center justify-center ${isSelected ? "bg-[#0b50d5] border-[#0b50d5]" : "border-slate-300"}`}>
+          <button onClick={onToggleSelect} className={`mt-1 w-10 h-10 rounded-full border-2 flex items-center justify-center ${isSelected ? "bg-[#0b50d5] border-[#0b50d5]" : "border-[var(--color-outline-variant)]"}`}>
             {isSelected && <span className="material-symbols-outlined text-white text-sm">check</span>}
           </button>
           <div>
@@ -917,7 +917,7 @@ function OrderCard({ order, onAccept, isSelected, onToggleSelect }: { order: Ord
               <h3 className="font-bold text-[#4d212a]">{order.vendor?.name}</h3>
               <span className="text-[10px] font-bold text-[#0b50d5] bg-[#c4d0ff]/50 px-2 py-0.5 rounded-full">For {order.customer_name || "Customer"}</span>
             </div>
-            <p className="text-xs text-slate-400 flex items-center gap-1">
+            <p className="text-xs text-[var(--color-outline-variant)] flex items-center gap-1">
               <span className="material-symbols-outlined text-xs">store</span>
               {order.vendor?.address}
             </p>
@@ -925,12 +925,12 @@ function OrderCard({ order, onAccept, isSelected, onToggleSelect }: { order: Ord
         </div>
         <div className="text-right">
           <p className="text-xl font-black text-green-600">₹{estimatedEarning}</p>
-          <p className="text-[10px] text-slate-400">{totalItems} items</p>
+          <p className="text-[10px] text-[var(--color-outline-variant)]">{totalItems} items</p>
         </div>
       </div>
       
-      <div className="bg-slate-50 rounded-lg p-2 mb-3">
-        <p className="text-[10px] text-slate-400 mb-1">📍 DELIVER TO:</p>
+      <div className="bg-[var(--color-surface-subtle)] rounded-lg p-2 mb-3">
+        <p className="text-[10px] text-[var(--color-outline-variant)] mb-1">📍 DELIVER TO:</p>
         <p className="text-sm">{order.address?.street}</p>
       </div>
 
@@ -941,7 +941,7 @@ function OrderCard({ order, onAccept, isSelected, onToggleSelect }: { order: Ord
       )}
 
       <div className="flex gap-2">
-        <a href={`tel:${order.customer_phone}`} className="flex-1 py-2 bg-slate-100 text-slate-700 font-bold rounded-lg text-center text-sm flex items-center justify-center gap-1">
+        <a href={`tel:${order.customer_phone}`} className="flex-1 py-2 bg-[var(--color-surface-container)] text-[var(--color-on-surface)] font-bold rounded-lg text-center text-sm flex items-center justify-center gap-1">
           <span className="material-symbols-outlined text-sm">call</span>
           Call
         </a>
@@ -1165,19 +1165,19 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
         <div style={{ animation: 'slide-up 0.25s ease' }}>
           {/* ETA Strip */}
           {trackingInfo && (
-            <div className="flex border-b border-slate-100">
-              <div className={`flex-1 py-2 text-center border-r border-slate-100 ${phase === "pickup" ? "bg-green-50" : "bg-blue-50"}`}>
-                <p className="text-[9px] font-bold uppercase tracking-wide text-slate-400">ETA</p>
+            <div className="flex border-b border-[var(--color-border-subtle)]">
+              <div className={`flex-1 py-2 text-center border-r border-[var(--color-border-subtle)] ${phase === "pickup" ? "bg-green-50" : "bg-blue-50"}`}>
+                <p className="text-[9px] font-bold uppercase tracking-wide text-[var(--color-outline-variant)]">ETA</p>
                 <p className={`text-lg font-black ${phase === "pickup" ? "text-green-600" : "text-[#0b50d5]"}`}>
                   {trackingInfo.eta}<span className="text-xs font-normal ml-0.5">min</span>
                 </p>
               </div>
               <div className="flex-1 py-2 text-center">
-                <p className="text-[9px] font-bold uppercase tracking-wide text-slate-400">Distance</p>
-                <p className="text-lg font-black text-slate-700">{trackingInfo.distance}<span className="text-xs font-normal ml-0.5">km</span></p>
+                <p className="text-[9px] font-bold uppercase tracking-wide text-[var(--color-outline-variant)]">Distance</p>
+                <p className="text-lg font-black text-[var(--color-on-surface)]">{trackingInfo.distance}<span className="text-xs font-normal ml-0.5">km</span></p>
               </div>
-              <div className="flex-1 py-2 text-center border-l border-slate-100">
-                <p className="text-[9px] font-bold uppercase tracking-wide text-slate-400">GPS</p>
+              <div className="flex-1 py-2 text-center border-l border-[var(--color-border-subtle)]">
+                <p className="text-[9px] font-bold uppercase tracking-wide text-[var(--color-outline-variant)]">GPS</p>
                 <div className="flex items-center justify-center gap-1 mt-0.5">
                   <span style={{ width:7,height:7,borderRadius:'50%',background:'#22c55e',display:'inline-block',boxShadow:'0 0 0 2px rgba(34,197,94,0.25)'}}></span>
                   <span className="text-[10px] font-bold text-green-600">Live</span>
@@ -1194,7 +1194,7 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
                 <div className="absolute inset-0 bg-slate-900/20 flex items-center justify-center z-[400]">
                   <div className="bg-[var(--color-surface-container-lowest)] rounded-xl px-4 py-3 flex items-center gap-2 shadow-lg">
                     <div className="w-4 h-4 border-2 border-[#0b50d5] border-t-transparent rounded-full animate-spin"/>
-                    <span className="text-sm font-bold text-slate-700">Loading route...</span>
+                    <span className="text-sm font-bold text-[var(--color-on-surface)]">Loading route...</span>
                   </div>
                 </div>
               )}
@@ -1215,7 +1215,7 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
           <div className="px-4 py-2 space-y-1">
             <div className="flex justify-between items-start">
               <div className="flex-1 min-w-0">
-                <p className="text-xs text-slate-400 truncate">{order.vendor?.address}</p>
+                <p className="text-xs text-[var(--color-outline-variant)] truncate">{order.vendor?.address}</p>
                 <p className="text-[10px] text-[#ba001c] font-semibold flex items-center gap-1 mt-0.5">
                   <span className="material-symbols-outlined text-[10px]">location_on</span>
                   <span className="truncate">{deliveryAddress}</span>
@@ -1229,18 +1229,18 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
               </div>
             </div>
             {/* Progress */}
-            <div className="bg-slate-50 rounded-lg p-2">
-              <div className="bg-slate-200 rounded-full h-1.5 overflow-hidden">
+            <div className="bg-[var(--color-surface-subtle)] rounded-lg p-2">
+              <div className="bg-[var(--color-surface-container-high)] rounded-full h-1.5 overflow-hidden">
                 <div className="h-full bg-green-500 transition-all" style={{ width: `${items.length ? (pickedCount / items.length) * 100 : 0}%` }} />
               </div>
-              <p className="text-[10px] text-slate-500 mt-1">{pickedCount}/{items.length} items picked</p>
+              <p className="text-[10px] text-[var(--color-outline)] mt-1">{pickedCount}/{items.length} items picked</p>
             </div>
           </div>
 
           {/* Items List (compact) */}
           <div className="px-4 space-y-1 mb-2 max-h-40 overflow-y-auto">
             {items.map((item: any) => (
-              <div key={item.id} className="flex items-center gap-1.5 p-2 bg-slate-50 rounded-lg">
+              <div key={item.id} className="flex items-center gap-1.5 p-2 bg-[var(--color-surface-subtle)] rounded-lg">
                 <select
                   value={item.status || "pending"}
                   onChange={(e) => onUpdateItemStatus(item.id, e.target.value, item.actual_price)}
@@ -1248,7 +1248,7 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
                     item.status === "available" ? "bg-green-100 text-green-700" :
                     item.status === "unavailable" ? "bg-red-100 text-red-700" :
                     item.status === "different_brand" ? "bg-amber-100 text-amber-700" :
-                    "bg-slate-100 text-slate-500"
+                    "bg-[var(--color-surface-container)] text-[var(--color-outline)]"
                   }`}
                 >
                   <option value="pending">Pending</option>
@@ -1257,14 +1257,14 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
                   <option value="different_brand">🔄 Diff Brand</option>
                 </select>
                 <span className="flex-1 text-[11px] font-medium truncate">{item.quantity}x {item.menu_item?.name || item.name}</span>
-                <span className="text-[10px] text-slate-400 shrink-0">₹{item.unit_price}</span>
+                <span className="text-[10px] text-[var(--color-outline-variant)] shrink-0">₹{item.unit_price}</span>
                 {item.status === "available" && (
                   <input
                     type="number"
                     placeholder="Actual"
                     value={item.actual_price || ""}
                     onChange={(e) => onUpdateItemStatus(item.id, "available", parseFloat(e.target.value))}
-                    className="w-14 text-[10px] border border-slate-200 rounded px-1.5 py-1 bg-white"
+                    className="w-14 text-[10px] border border-[var(--color-border-subtle)] rounded px-1.5 py-1 bg-white"
                   />
                 )}
               </div>
@@ -1275,11 +1275,11 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
           <div className="px-4 mb-2">
             <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-2 rounded-lg">
               <div className="flex justify-between text-[11px]">
-                <span className="text-slate-500">Spent</span>
+                <span className="text-[var(--color-outline)]">Spent</span>
                 <span className="font-bold">₹{totalSpent.toFixed(0)}</span>
               </div>
               <div className="flex justify-between text-[11px]">
-                <span className="text-slate-500">Collect</span>
+                <span className="text-[var(--color-outline)]">Collect</span>
                 <span className="font-bold text-[#0b50d5]">₹{order.total_amount + (order.delivery_fee || 0)}</span>
               </div>
               <div className="flex justify-between text-[11px] border-t pt-0.5 mt-0.5">
@@ -1326,7 +1326,7 @@ function CompletedCard({ order }: { order: Order }) {
       <div className="flex justify-between items-start">
         <div>
           <h3 className="font-bold text-[#4d212a]">{order.vendor?.name}</h3>
-          <p className="text-xs text-slate-400">{new Date(order.delivered_at || "").toLocaleString()}</p>
+          <p className="text-xs text-[var(--color-outline-variant)]">{new Date(order.delivered_at || "").toLocaleString()}</p>
         </div>
         <div className="text-right">
           <p className="text-lg font-black text-green-600">₹{order.customer_collected || 0}</p>
@@ -1346,13 +1346,13 @@ function HistoryCard({ order }: { order: Order }) {
       <div className="flex justify-between items-center">
         <div>
           <p className="font-bold text-sm">{order.vendor?.name}</p>
-          <p className="text-xs text-slate-400">{new Date(order.placed_at).toLocaleDateString("en-IN")}</p>
+          <p className="text-xs text-[var(--color-outline-variant)]">{new Date(order.placed_at).toLocaleDateString("en-IN")}</p>
         </div>
         <div className="text-right">
           <p className={`font-bold ${earned >= 0 ? "text-green-600" : "text-red-500"}`}>
             {earned >= 0 ? "+" : ""}₹{earned}
           </p>
-          <p className="text-[9px] text-slate-400">{order.status}</p>
+          <p className="text-[9px] text-[var(--color-outline-variant)]">{order.status}</p>
         </div>
       </div>
     </div>

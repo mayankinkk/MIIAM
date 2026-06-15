@@ -95,8 +95,8 @@ export default function VendorWalletPage() {
   return (
     <div className="p-4 md:p-8 space-y-8">
       <div>
-        <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Wallet & Payouts</h1>
-        <p className="text-slate-500 mt-1">Track your earnings and manage withdrawals</p>
+        <h1 className="text-3xl font-extrabold text-[var(--color-on-surface)] tracking-tight">Wallet & Payouts</h1>
+        <p className="text-[var(--color-outline)] mt-1">Track your earnings and manage withdrawals</p>
       </div>
 
       {/* Balance Card */}
@@ -132,58 +132,58 @@ export default function VendorWalletPage() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-[var(--color-border-subtle)]">
           <span className="material-symbols-outlined text-green-500">trending_up</span>
-          <p className="text-2xl font-black text-slate-900 mt-2">₹{(wallet.total_earned * 0.85).toFixed(0)}</p>
-          <p className="text-sm text-slate-500 font-medium">Net Earnings (after 15% fee)</p>
+          <p className="text-2xl font-black text-[var(--color-on-surface)] mt-2">₹{(wallet.total_earned * 0.85).toFixed(0)}</p>
+          <p className="text-sm text-[var(--color-outline)] font-medium">Net Earnings (after 15% fee)</p>
         </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-[var(--color-border-subtle)]">
           <span className="material-symbols-outlined text-blue-500">receipt_long</span>
-          <p className="text-2xl font-black text-slate-900 mt-2">{deliveredOrders.length}</p>
-          <p className="text-sm text-slate-500 font-medium">Completed Orders</p>
+          <p className="text-2xl font-black text-[var(--color-on-surface)] mt-2">{deliveredOrders.length}</p>
+          <p className="text-sm text-[var(--color-outline)] font-medium">Completed Orders</p>
         </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-[var(--color-border-subtle)]">
           <span className="material-symbols-outlined text-amber-500">percent</span>
-          <p className="text-2xl font-black text-slate-900 mt-2">15%</p>
-          <p className="text-sm text-slate-500 font-medium">Platform Fee</p>
+          <p className="text-2xl font-black text-[var(--color-on-surface)] mt-2">15%</p>
+          <p className="text-sm text-[var(--color-outline)] font-medium">Platform Fee</p>
         </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-[var(--color-border-subtle)]">
           <span className="material-symbols-outlined text-purple-500">payments</span>
-          <p className="text-2xl font-black text-slate-900 mt-2">
+          <p className="text-2xl font-black text-[var(--color-on-surface)] mt-2">
             ₹{wallet.total_earned > 0 ? (wallet.total_earned / deliveredOrders.length).toFixed(0) : 0}
           </p>
-          <p className="text-sm text-slate-500 font-medium">Avg per Order</p>
+          <p className="text-sm text-[var(--color-outline)] font-medium">Avg per Order</p>
         </div>
       </div>
 
       {/* Recent Transactions */}
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl shadow-sm border border-[var(--color-border-subtle)] overflow-hidden">
         <div className="p-6 pb-4">
-          <h3 className="font-bold text-slate-800">Recent Transactions</h3>
+          <h3 className="font-bold text-[var(--color-on-surface)]">Recent Transactions</h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left">
-            <thead className="bg-slate-50 border-y border-slate-100">
+            <thead className="bg-[var(--color-surface-subtle)] border-y border-[var(--color-border-subtle)]">
               <tr>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Order</th>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Date</th>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Amount</th>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Net (est.)</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Order</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Date</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Status</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest text-right">Amount</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest text-right">Net (est.)</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-[var(--color-border-subtle)]">
               {recentTransactions.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="p-8 text-center text-slate-400">No transactions yet</td>
+                  <td colSpan={5} className="p-8 text-center text-[var(--color-outline-variant)]">No transactions yet</td>
                 </tr>
               ) : (
                 recentTransactions.map((order) => (
-                  <tr key={order.id} className="hover:bg-slate-50 transition-colors">
-                    <td className="p-4 text-xs font-bold text-slate-700">
+                  <tr key={order.id} className="hover:bg-[var(--color-surface-subtle)] transition-colors">
+                    <td className="p-4 text-xs font-bold text-[var(--color-on-surface)]">
                       #{order.id.slice(0, 8).toUpperCase()}
                     </td>
-                    <td className="p-4 text-xs text-slate-500">
+                    <td className="p-4 text-xs text-[var(--color-outline)]">
                       {new Date(order.placed_at).toLocaleDateString()}
                     </td>
                     <td className="p-4">
@@ -195,7 +195,7 @@ export default function VendorWalletPage() {
                         {order.status}
                       </span>
                     </td>
-                    <td className="p-4 text-xs font-bold text-slate-800 text-right">
+                    <td className="p-4 text-xs font-bold text-[var(--color-on-surface)] text-right">
                       +₹{order.total_amount.toFixed(2)}
                     </td>
                     <td className="p-4 text-xs font-bold text-green-600 text-right">
@@ -214,32 +214,32 @@ export default function VendorWalletPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowRequestPayout(false)}>
           <div className="bg-white w-full max-w-md rounded-3xl p-6 m-4" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-extrabold text-slate-900">Request Payout</h2>
-              <button onClick={() => setShowRequestPayout(false)} className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
+              <h2 className="text-xl font-extrabold text-[var(--color-on-surface)]">Request Payout</h2>
+              <button onClick={() => setShowRequestPayout(false)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-semibold text-slate-700">Available Balance</label>
+                <label className="text-sm font-semibold text-[var(--color-on-surface)]">Available Balance</label>
                 <p className="text-2xl font-black text-[#ba001c]">₹{wallet.balance.toFixed(2)}</p>
               </div>
               <div>
-                <label className="text-sm font-semibold text-slate-700">Withdrawal Amount (₹)</label>
+                <label className="text-sm font-semibold text-[var(--color-on-surface)]">Withdrawal Amount (₹)</label>
                 <input
                   type="number"
                   value={payoutAmount}
                   onChange={(e) => setPayoutAmount(e.target.value)}
                   placeholder="Enter amount"
                   max={wallet.balance}
-                  className="w-full mt-1 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:border-[#ba001c] text-lg font-bold"
+                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[#ba001c] text-lg font-bold"
                 />
                 <div className="flex gap-2 mt-2">
                   {[500, 1000, 2000, 5000].filter((a) => a <= wallet.balance).map((amount) => (
                     <button
                       key={amount}
                       onClick={() => setPayoutAmount(amount.toString())}
-                      className="px-3 py-1.5 bg-slate-100 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-200"
+                      className="px-3 py-1.5 bg-[var(--color-surface-container)] rounded-lg text-xs font-bold text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]"
                     >
                       ₹{amount}
                     </button>

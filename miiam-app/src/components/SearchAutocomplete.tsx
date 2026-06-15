@@ -143,7 +143,7 @@ export function SearchAutocomplete({ onSelect, className = "" }: SearchAutocompl
   return (
     <div ref={dropdownRef} className={`relative ${className}`}>
       <div className="relative">
-        <span className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400">
+        <span className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-[var(--color-outline-variant)]">
           search
         </span>
         <input
@@ -153,7 +153,7 @@ export function SearchAutocomplete({ onSelect, className = "" }: SearchAutocompl
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => query.trim() && setShowDropdown(true)}
           placeholder="Search for dishes, cuisines, restaurants..."
-          className="w-full pl-12 pr-4 py-3 bg-slate-100 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-[#ba001c] focus:bg-white transition-all"
+          className="w-full pl-12 pr-4 py-3 bg-[var(--color-surface-container)] rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-[#ba001c] focus:bg-white transition-all"
         />
         {query && (
           <button
@@ -166,9 +166,9 @@ export function SearchAutocomplete({ onSelect, className = "" }: SearchAutocompl
       </div>
 
       {showDropdown && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-[var(--color-surface-container-lowest)] rounded-2xl shadow-xl border border-slate-100 overflow-hidden z-50">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-[var(--color-surface-container-lowest)] rounded-2xl shadow-xl border border-[var(--color-border-subtle)] overflow-hidden z-50">
           {loading && (
-            <div className="p-4 text-center text-sm text-slate-500">
+            <div className="p-4 text-center text-sm text-[var(--color-outline)]">
               <span className="material-symbols-outlined animate-spin text-lg mr-2">progress_activity</span>
               Searching...
             </div>
@@ -176,17 +176,17 @@ export function SearchAutocomplete({ onSelect, className = "" }: SearchAutocompl
 
           {!loading && suggestions.length > 0 && (
             <div className="p-2">
-              <div className="text-xs font-bold text-slate-400 uppercase px-3 py-2">Suggestions</div>
+              <div className="text-xs font-bold text-[var(--color-outline-variant)] uppercase px-3 py-2">Suggestions</div>
               {suggestions.map((s) => (
                 <button
                   key={s.id}
                   onClick={() => handleSearch(s.text)}
-                  className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-50 rounded-lg transition-colors text-left"
+                  className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-[var(--color-surface-subtle)] rounded-lg transition-colors text-left"
                 >
-                  <span className="material-symbols-outlined text-slate-400 text-lg">
+                  <span className="material-symbols-outlined text-[var(--color-outline-variant)] text-lg">
                     {s.type === "dish" ? "restaurant" : s.type === "popular" ? "local_fire_department" : "search"}
                   </span>
-                  <span className="text-slate-700">{s.text}</span>
+                  <span className="text-[var(--color-on-surface)]">{s.text}</span>
                   {s.icon && <span className="ml-auto text-lg">{s.icon}</span>}
                 </button>
               ))}
@@ -203,7 +203,7 @@ export function SearchAutocomplete({ onSelect, className = "" }: SearchAutocompl
           {!loading && !query && recentSearches.length > 0 && (
             <div className="p-2">
               <div className="flex items-center justify-between px-3 py-2">
-                <div className="text-xs font-bold text-slate-400 uppercase">Recent Searches</div>
+                <div className="text-xs font-bold text-[var(--color-outline-variant)] uppercase">Recent Searches</div>
                 <button onClick={clearRecentSearches} className="text-xs text-[#ba001c] font-medium">
                   Clear all
                 </button>
@@ -212,10 +212,10 @@ export function SearchAutocomplete({ onSelect, className = "" }: SearchAutocompl
                 <button
                   key={term}
                   onClick={() => handleSearch(term)}
-                  className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-50 rounded-lg transition-colors text-left"
+                  className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-[var(--color-surface-subtle)] rounded-lg transition-colors text-left"
                 >
-                  <span className="material-symbols-outlined text-slate-400">history</span>
-                  <span className="text-slate-700">{term}</span>
+                  <span className="material-symbols-outlined text-[var(--color-outline-variant)]">history</span>
+                  <span className="text-[var(--color-on-surface)]">{term}</span>
                 </button>
               ))}
             </div>
@@ -223,13 +223,13 @@ export function SearchAutocomplete({ onSelect, className = "" }: SearchAutocompl
 
           {!loading && !query && (
             <div className="p-2 border-t">
-              <div className="text-xs font-bold text-slate-400 uppercase px-3 py-2">Popular Searches</div>
+              <div className="text-xs font-bold text-[var(--color-outline-variant)] uppercase px-3 py-2">Popular Searches</div>
               <div className="flex flex-wrap gap-2 px-3 py-2">
                 {popularSearches.map((term) => (
                   <button
                     key={term}
                     onClick={() => handleSearch(term)}
-                    className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 rounded-full text-sm text-slate-600 transition-colors"
+                    className="px-4 py-2.5 bg-[var(--color-surface-container)] hover:bg-[var(--color-surface-container-high)] rounded-full text-sm text-[var(--color-on-surface-variant)] transition-colors"
                   >
                     {term}
                   </button>

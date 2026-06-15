@@ -20,7 +20,7 @@ const STATUS_COLORS: Record<OrderStatus, string> = {
   arrived: "bg-teal-100 text-teal-700",
   delivered: "bg-green-100 text-green-700",
   cancelled: "bg-red-100 text-red-700",
-  refunded: "bg-slate-100 text-slate-700",
+  refunded: "bg-[var(--color-surface-container)] text-[var(--color-on-surface)]",
   no_rider_available: "bg-amber-100 text-amber-700",
 };
 
@@ -212,42 +212,42 @@ export default function OrderManagement() {
     <div className="px-8 space-y-8">
       {/* Top Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl shadow-sm border border-slate-100">
-          <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Total Orders</p>
-          <p className="text-3xl font-black text-slate-800">{orders.length}</p>
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl shadow-sm border border-[var(--color-border-subtle)]">
+          <p className="text-xs font-black text-[var(--color-outline-variant)] uppercase tracking-widest mb-1">Total Orders</p>
+          <p className="text-3xl font-black text-[var(--color-on-surface)]">{orders.length}</p>
         </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl shadow-sm border border-slate-100">
-          <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Revenue</p>
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl shadow-sm border border-[var(--color-border-subtle)]">
+          <p className="text-xs font-black text-[var(--color-outline-variant)] uppercase tracking-widest mb-1">Revenue</p>
           <p className="text-3xl font-black text-green-600">₹{totalRevenue.toLocaleString()}</p>
         </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl shadow-sm border border-slate-100">
-          <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Pending</p>
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl shadow-sm border border-[var(--color-border-subtle)]">
+          <p className="text-xs font-black text-[var(--color-outline-variant)] uppercase tracking-widest mb-1">Pending</p>
           <p className="text-3xl font-black text-yellow-600">{pendingOrders}</p>
         </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl shadow-sm border border-slate-100">
-          <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Avg Order</p>
-          <p className="text-3xl font-black text-slate-800">₹{orders.length ? Math.round(totalRevenue / orders.filter(o => o.status === "delivered").length) : 0}</p>
+        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl shadow-sm border border-[var(--color-border-subtle)]">
+          <p className="text-xs font-black text-[var(--color-outline-variant)] uppercase tracking-widest mb-1">Avg Order</p>
+          <p className="text-3xl font-black text-[var(--color-on-surface)]">₹{orders.length ? Math.round(totalRevenue / orders.filter(o => o.status === "delivered").length) : 0}</p>
         </div>
       </div>
 
       {/* Filters & Actions */}
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 p-6 shadow-sm">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-6 shadow-sm">
         <div className="flex flex-wrap gap-4 items-center justify-between">
           <div className="flex gap-4 items-center flex-wrap">
             <div className="relative">
-              <span className="material-symbols-outlined absolute left-3 top-3 text-slate-400 text-sm">search</span>
+              <span className="material-symbols-outlined absolute left-3 top-3 text-[var(--color-outline-variant)] text-sm">search</span>
               <input
                 type="text"
                 placeholder="Search order ID..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="bg-slate-50 border border-slate-100 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#ba001c]/10"
+                className="bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#ba001c]/10"
               />
             </div>
             <select
               value={filter}
               onChange={(e) => setFilter(e.target.value as OrderStatus | "all")}
-              className="bg-slate-50 border border-slate-100 rounded-xl px-4 py-2 text-sm focus:outline-none"
+              className="bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2 text-sm focus:outline-none"
             >
               <option value="all">All Status</option>
               {STATUS_OPTIONS.map(s => (
@@ -258,12 +258,12 @@ export default function OrderManagement() {
           <div className="flex gap-2">
             {selectedIds.size > 0 && (
               <>
-                <span className="text-xs font-bold text-slate-400 self-center">{selectedIds.size} selected</span>
+                <span className="text-xs font-bold text-[var(--color-outline-variant)] self-center">{selectedIds.size} selected</span>
                 {["accepted", "cancelled"].map(s => (
                   <button
                     key={s}
                     onClick={() => bulkUpdateStatus(s as OrderStatus)}
-                    className="px-4 py-2 bg-slate-100 text-slate-600 rounded-xl text-xs font-bold hover:bg-slate-200"
+                    className="px-4 py-2 bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] rounded-xl text-xs font-bold hover:bg-[var(--color-surface-container-high)]"
                   >
                     Mark {s}
                   </button>
@@ -282,10 +282,10 @@ export default function OrderManagement() {
       </div>
 
       {/* Orders Table */}
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
-            <thead className="bg-slate-50 border-b border-slate-100">
+            <thead className="bg-[var(--color-surface-subtle)] border-b border-[var(--color-border-subtle)]">
               <tr>
                 <th className="p-4">
                   <input
@@ -295,17 +295,17 @@ export default function OrderManagement() {
                     className="w-4 h-4 accent-[#ba001c]"
                   />
                 </th>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Order ID</th>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Vendor</th>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Total</th>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Placed</th>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Order ID</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Vendor</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Status</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest text-right">Total</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest text-right">Placed</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-[var(--color-border-subtle)]">
               {filteredOrders.map((order) => (
-                <tr key={order.id} className="hover:bg-slate-50/50 transition-colors">
+                <tr key={order.id} className="hover:bg-[var(--color-surface-subtle)]/50 transition-colors">
                   <td className="p-4">
                     <input
                       type="checkbox"
@@ -319,20 +319,20 @@ export default function OrderManagement() {
                       #{order.id.slice(0, 8)}
                     </button>
                   </td>
-                  <td className="p-4 text-sm font-medium text-slate-600">{order.vendor?.name || "Unknown"}</td>
+                  <td className="p-4 text-sm font-medium text-[var(--color-on-surface-variant)]">{order.vendor?.name || "Unknown"}</td>
                   <td className="p-4">
                     <span className={`text-[10px] font-black px-3 py-1 rounded-full uppercase ${STATUS_COLORS[order.status]}`}>
                       {order.status.replace("_", " ")}
                     </span>
                   </td>
-                  <td className="p-4 text-right font-black text-slate-800">₹{order.total_amount}</td>
-                  <td className="p-4 text-right text-xs text-slate-400">
+                  <td className="p-4 text-right font-black text-[var(--color-on-surface)]">₹{order.total_amount}</td>
+                  <td className="p-4 text-right text-xs text-[var(--color-outline-variant)]">
                     {new Date(order.placed_at).toLocaleDateString("en-IN", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
                   </td>
                   <td className="p-4 text-right">
                     <button
                       onClick={() => setSelectedOrder(order)}
-                      className="text-slate-400 hover:text-[#ba001c] p-2"
+                      className="text-[var(--color-outline-variant)] hover:text-[#ba001c] p-2"
                     >
                       <span className="material-symbols-outlined">visibility</span>
                     </button>
@@ -342,7 +342,7 @@ export default function OrderManagement() {
             </tbody>
           </table>
         </div>
-        <div className="p-4 border-t border-slate-50 text-xs text-slate-400">
+        <div className="p-4 border-t border-slate-50 text-xs text-[var(--color-outline-variant)]">
           Showing {filteredOrders.length} of {orders.length} orders
         </div>
       </div>
@@ -351,35 +351,35 @@ export default function OrderManagement() {
       {selectedOrder && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-slate-100 flex justify-between items-center sticky top-0 bg-white">
+            <div className="p-6 border-b border-[var(--color-border-subtle)] flex justify-between items-center sticky top-0 bg-white">
               <div>
-                <h2 className="text-xl font-black text-slate-800">Order #{selectedOrder.id.slice(0, 8)}</h2>
-                <p className="text-xs text-slate-400">{new Date(selectedOrder.placed_at).toLocaleString()}</p>
+                <h2 className="text-xl font-black text-[var(--color-on-surface)]">Order #{selectedOrder.id.slice(0, 8)}</h2>
+                <p className="text-xs text-[var(--color-outline-variant)]">{new Date(selectedOrder.placed_at).toLocaleString()}</p>
               </div>
-              <button onClick={() => setSelectedOrder(null)} className="text-slate-400 hover:text-slate-600 p-2">
+              <button onClick={() => setSelectedOrder(null)} className="text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)] p-2">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
             <div className="p-6 space-y-6">
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-slate-50 p-4 rounded-xl">
-                  <p className="text-[10px] font-black text-slate-400 uppercase mb-1">Vendor</p>
-                  <p className="font-bold text-slate-800">{selectedOrder.vendor?.name}</p>
+                <div className="bg-[var(--color-surface-subtle)] p-4 rounded-xl">
+                  <p className="text-[10px] font-black text-[var(--color-outline-variant)] uppercase mb-1">Vendor</p>
+                  <p className="font-bold text-[var(--color-on-surface)]">{selectedOrder.vendor?.name}</p>
                 </div>
-                <div className="bg-slate-50 p-4 rounded-xl">
-                  <p className="text-[10px] font-black text-slate-400 uppercase mb-1">Rider</p>
-                  <p className="font-bold text-slate-800">{selectedOrder.rider?.name || "Not Assigned"}</p>
-                  {selectedOrder.rider?.phone && <p className="text-xs text-slate-500">{selectedOrder.rider.phone}</p>}
+                <div className="bg-[var(--color-surface-subtle)] p-4 rounded-xl">
+                  <p className="text-[10px] font-black text-[var(--color-outline-variant)] uppercase mb-1">Rider</p>
+                  <p className="font-bold text-[var(--color-on-surface)]">{selectedOrder.rider?.name || "Not Assigned"}</p>
+                  {selectedOrder.rider?.phone && <p className="text-xs text-[var(--color-outline)]">{selectedOrder.rider.phone}</p>}
                 </div>
               </div>
-              <div className="bg-slate-50 p-4 rounded-xl space-y-2">
-                <p className="text-[10px] font-black text-slate-400 uppercase">Order Summary</p>
+              <div className="bg-[var(--color-surface-subtle)] p-4 rounded-xl space-y-2">
+                <p className="text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Order Summary</p>
                 <div className="flex justify-between">
-                  <span className="text-sm text-slate-600">Subtotal</span>
+                  <span className="text-sm text-[var(--color-on-surface-variant)]">Subtotal</span>
                   <span className="text-sm font-bold">₹{selectedOrder.total_amount - selectedOrder.delivery_fee}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm text-slate-600">Delivery Fee</span>
+                  <span className="text-sm text-[var(--color-on-surface-variant)]">Delivery Fee</span>
                   <span className="text-sm font-bold">₹{selectedOrder.delivery_fee}</span>
                 </div>
                 {selectedOrder.discount_amount > 0 && (
@@ -388,14 +388,14 @@ export default function OrderManagement() {
                     <span className="text-sm font-bold">-₹{selectedOrder.discount_amount}</span>
                   </div>
                 )}
-                <div className="flex justify-between border-t border-slate-200 pt-2">
-                  <span className="font-bold text-slate-800">Total</span>
+                <div className="flex justify-between border-t border-[var(--color-border-subtle)] pt-2">
+                  <span className="font-bold text-[var(--color-on-surface)]">Total</span>
                   <span className="font-black text-lg">₹{selectedOrder.total_amount}</span>
                 </div>
               </div>
               {/* Status Management */}
-              <div className="bg-slate-50 p-4 rounded-xl">
-                <p className="text-[10px] font-black text-slate-400 uppercase mb-3">Update Status</p>
+              <div className="bg-[var(--color-surface-subtle)] p-4 rounded-xl">
+                <p className="text-[10px] font-black text-[var(--color-outline-variant)] uppercase mb-3">Update Status</p>
                 <div className="flex flex-wrap gap-2">
                   {STATUS_OPTIONS.filter(s => s !== selectedOrder.status && s !== "refunded").map(s => (
                     <button
