@@ -31,6 +31,7 @@ model Profile {
    recurringSchedules    RecurringSchedule[]
 
   @@map("profiles")
+  @@index([role])
 }
 
 model Vendor {
@@ -53,6 +54,7 @@ model Vendor {
   reviews     Review[]
 
   @@map("vendors")
+  @@index([status])
 }
 
 model MenuItem {
@@ -68,6 +70,7 @@ model MenuItem {
   orderItems  OrderItem[]
 
   @@map("menu_items")
+  @@index([vendorId])
 }
 
 model Order {
@@ -99,6 +102,11 @@ model Order {
   orderChats          OrderChat[]
 
   @@map("orders")
+  @@index([userId])
+  @@index([vendorId])
+  @@index([riderId])
+  @@index([status])
+  @@index([placedAt])
 }
 
 model OrderItem {
@@ -173,6 +181,7 @@ model Review {
   createdAt   DateTime? @default(now()) @map("created_at")
 
   @@map("reviews")
+  @@index([vendorId])
 }
 
 model PromoCode {
@@ -199,6 +208,7 @@ model AuditLog {
   createdAt   DateTime? @default(now()) @map("created_at")
 
   @@map("audit_logs")
+  @@index([userId])
 }
 
 model ChatMessage {
@@ -213,6 +223,7 @@ model ChatMessage {
   createdAt   DateTime? @default(now()) @map("created_at")
 
   @@map("chat_messages")
+  @@index([orderId])
 }
 
 model OrderChat {
@@ -241,6 +252,8 @@ model Notification {
   createdAt   DateTime? @default(now()) @map("created_at")
 
   @@map("notifications")
+  @@index([userId])
+  @@index([userId, isRead])
 }
 
 model GroceryProduct {
@@ -317,6 +330,9 @@ model RecurringSchedule {
   updatedAt           DateTime? @default(now()) @map("updated_at")
 
   @@map("recurring_schedules")
+  @@index([userId])
+  @@index([status])
+  @@index([nextDeliveryDate])
 }
 
 model UserPrescription {
@@ -345,4 +361,6 @@ model ServiceBooking {
   updatedAt       DateTime? @default(now()) @map("updated_at")
 
   @@map("service_bookings")
+  @@index([userId])
+  @@index([scheduledDate])
 }
