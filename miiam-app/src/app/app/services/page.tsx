@@ -237,7 +237,7 @@ const serviceCategories = [
   { id: "electrical", name: "Electrical", icon: "electrical_services", count: 3, color: "bg-yellow-100 text-yellow-600" },
   { id: "beauty", name: "Beauty & Spa", icon: "spa", count: 6, color: "bg-pink-100 text-pink-600" },
   { id: "pest", name: "Pest Control", icon: "pest_control", count: 3, color: "bg-red-100 text-red-600" },
-  { id: "car", name: "Car Care", icon: " directions_car", count: 3, color: "bg-purple-100 text-purple-600" },
+  { id: "car", name: "Car Care", icon: "directions_car", count: 3, color: "bg-purple-100 text-purple-600" },
   { id: "appliance", name: "Appliances", icon: "kitchen", count: 4, color: "bg-orange-100 text-orange-600" },
 ];
 
