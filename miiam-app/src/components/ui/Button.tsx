@@ -32,7 +32,7 @@ const variantStyles: Record<ButtonVariant, string> = {
   primary:
     "bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-dim)] shadow-lg shadow-[var(--color-primary)]/20 hover:shadow-[var(--color-primary)]/30 active:scale-95",
   secondary:
-    "bg-white/10 backdrop-blur-md text-white border border-white/20 hover:bg-white/15 active:scale-95",
+    "bg-[var(--color-surface-container)] text-[var(--color-on-surface)] border border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-container-high)] active:scale-95",
   tertiary:
     "bg-[var(--color-secondary)] text-white hover:bg-[var(--color-secondary-dim)] shadow-lg shadow-[var(--color-secondary)]/20 active:scale-95",
   ghost:
