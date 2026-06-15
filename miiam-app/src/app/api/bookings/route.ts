@@ -76,7 +76,13 @@ export async function POST(request: NextRequest) {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error("Supabase insert error:", error.message, error.code, error.details);
+      if (error.code === "42P01" || error.message?.includes("does not exist")) {
+        return NextResponse.json({ error: "Service bookings not available yet. Please try again later." }, { status: 503 });
+      }
+      throw error;
+    }
 
     // Send booking confirmation email (best-effort)
     try {
