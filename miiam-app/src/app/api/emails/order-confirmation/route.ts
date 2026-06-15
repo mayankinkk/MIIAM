@@ -1,8 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/server";
 import { sendOrderConfirmationEmail } from "@/lib/email";
+import { requireCronAuth } from "@/lib/security";
 
 export async function POST(request: NextRequest) {
+  if (!(await requireCronAuth(request))) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const supabase = createAdminClient();
 
   try {
