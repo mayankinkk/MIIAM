@@ -10,6 +10,7 @@ interface EmptyStateProps {
   description: string;
   actionLabel?: string;
   actionHref?: string;
+  onAction?: () => void;
   type?: "cart" | "orders" | "favorites" | "search" | "default";
 }
 
@@ -20,6 +21,7 @@ export function EmptyState({
   description, 
   actionLabel, 
   actionHref,
+  onAction,
   type = "default" 
 }: EmptyStateProps) {
   const [mounted, setMounted] = useState(false);
@@ -102,6 +104,20 @@ export function EmptyState({
             </span>
           </span>
         </Link>
+      )}
+      {actionLabel && onAction && !actionHref && (
+        <button
+          onClick={onAction}
+          className={`group relative px-6 py-3 bg-[var(--color-primary)] text-white font-bold rounded-xl overflow-hidden transition-all duration-300 hover:bg-[var(--color-primary-dim)] hover:scale-105 active:scale-95 ${mounted ? "animate-fade-up-delay-2" : ""}`}
+        >
+          <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+          <span className="relative flex items-center gap-2">
+            {actionLabel}
+            <span className="material-symbols-outlined text-lg group-hover:translate-x-1 transition-transform">
+              arrow_forward
+            </span>
+          </span>
+        </button>
       )}
     </div>
   );
