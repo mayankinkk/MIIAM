@@ -53,6 +53,7 @@ export function usePlaceOrder(supabase: SupabaseClient) {
     isRecurring,
     recurringFrequency,
     recurringDayOfWeek,
+    phone,
     paymentDetails,
   }: {
     deliveryAddress: any;
@@ -66,6 +67,7 @@ export function usePlaceOrder(supabase: SupabaseClient) {
     isRecurring: boolean;
     recurringFrequency: string;
     recurringDayOfWeek: number;
+    phone: string;
     paymentDetails?: PaymentDetails;
   }) => {
     if (!validateCheckout(deliveryAddress)) return false;
@@ -129,6 +131,7 @@ export function usePlaceOrder(supabase: SupabaseClient) {
           delivery_address: finalAddress,
           scheduled_delivery: scheduledIso,
           special_instructions: specialInstructions || null,
+          customer_phone: phone || null,
           placed_at: new Date().toISOString(),
         };
 

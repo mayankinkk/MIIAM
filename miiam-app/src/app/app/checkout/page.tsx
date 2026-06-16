@@ -38,6 +38,7 @@ export default function CheckoutPage() {
   const [deliveryAddress, setDeliveryAddress] = useState<SelectedAddress | null>(null);
   const [savedAddresses, setSavedAddresses] = useState<SelectedAddress[]>([]);
   const [showAddressPicker, setShowAddressPicker] = useState(false);
+  const [phone, setPhone] = useState("");
   const [serviceCharge, setServiceCharge] = useState(8);
   const [promoCodesRaw, setPromoCodesRaw] = useState<any[]>([]);
   const [hydrated, setHydrated] = useState(false);
@@ -175,6 +176,27 @@ export default function CheckoutPage() {
               deliveryAddress={deliveryAddress}
               onChangeAddress={() => setShowAddressPicker(true)}
             />
+            <section className="bg-surface-container-lowest p-4 sm:p-6 rounded-2xl shadow-sm">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
+                  <span className="material-symbols-outlined text-primary">phone</span>
+                </div>
+                <div className="flex-1">
+                  <h2 className="text-lg font-extrabold text-on-surface">{t.services.phoneNumber || "Phone Number"}</h2>
+                  <p className="text-xs text-on-surface-variant">{t.services.phonePlaceholder || "For rider to contact you"}</p>
+                </div>
+              </div>
+              <input
+                type="tel"
+                className="w-full border-2 border-outline rounded-xl p-3 text-sm focus:border-primary focus:outline-none"
+                placeholder={t.services.phonePlaceholder || "Enter your phone number"}
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                aria-label={t.services.phoneNumber || "Phone Number"}
+                inputMode="numeric"
+                maxLength={15}
+              />
+            </section>
             <CheckoutScheduledServices items={items} />
             <CheckoutPrintOrderSummary items={items} />
             {!items.some(i => i.vendor_id === SERVICES_VENDOR_ID) && (
@@ -232,6 +254,10 @@ export default function CheckoutPage() {
 
               <button
                 onClick={() => {
+                  if (!phone.trim()) {
+                    alert(t.services.pleaseEnterPhone || "Please enter your phone number");
+                    return;
+                  }
                   setPlacing(true);
 
                   const orderArgs = {
@@ -246,6 +272,7 @@ export default function CheckoutPage() {
                     isRecurring,
                     recurringFrequency,
                     recurringDayOfWeek,
+                    phone: phone.trim(),
                   };
 
                   if (paymentMethod === "upi" || paymentMethod === "card") {
@@ -262,7 +289,7 @@ export default function CheckoutPage() {
                     placeOrder(orderArgs).finally(() => setPlacing(false));
                   }
                 }}
-                disabled={placing || razorpayLoading || items.length === 0 || !deliveryAddress}
+                disabled={placing || razorpayLoading || items.length === 0 || !deliveryAddress || !phone.trim()}
                 className="w-full bg-gradient-to-r from-primary to-primary-container text-white py-4 sm:py-5 rounded-xl text-base sm:text-lg font-extrabold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 sm:gap-3 disabled:opacity-60"
               >
                 {(placing || razorpayLoading) ? (
