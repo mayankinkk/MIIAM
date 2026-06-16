@@ -51,10 +51,10 @@ export default function AdminDashboard() {
       today.setHours(0, 0, 0, 0);
 
       const [ordersRes, vendorsRes, ridersRes, usersRes] = await Promise.all([
-        supabase.from("orders").select("id, total_amount, status, placed_at, vendor_id").order("placed_at", { ascending: false }),
+        supabase.from("orders").select("id, total_amount, status, placed_at, vendor_id").order("placed_at", { ascending: false }).limit(500),
         supabase.from("vendors").select("id, shop_name, owner_name, type, status, created_at").order("created_at", { ascending: false }).limit(8),
-        supabase.from("riders").select("id, status"),
-        supabase.from("profiles").select("id, created_at"),
+        supabase.from("riders").select("id, status").limit(200),
+        supabase.from("profiles").select("id, created_at").limit(1000),
       ]);
 
       const orders = ordersRes.data || [];
