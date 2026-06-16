@@ -9,6 +9,7 @@ interface CheckoutOrderSummaryProps {
   items: CartItem[];
   subtotal: number;
   discount: number;
+  totalDeliveryFee: number;
   vendorIds: string[];
   serviceCharge: number;
   grand: number;
@@ -21,7 +22,7 @@ interface CheckoutOrderSummaryProps {
 }
 
 export default function CheckoutOrderSummary({
-  items, subtotal, discount, vendorIds, serviceCharge, grand,
+  items, subtotal, discount, totalDeliveryFee, vendorIds, serviceCharge, grand,
   showTipSelector, tipAmount, onTipSelect, onSkipTip, onEditTip,
 }: CheckoutOrderSummaryProps) {
   const { t } = useTranslation();
@@ -43,7 +44,9 @@ export default function CheckoutOrderSummary({
         )}
         <div className="flex justify-between text-on-surface-variant">
           <span>Delivery Fee</span>
-          <span className="font-semibold text-green-600">FREE</span>
+          <span className={`font-semibold ${totalDeliveryFee === 0 ? "text-green-600" : "text-on-surface"}`}>
+            {totalDeliveryFee === 0 ? "FREE" : `₹${totalDeliveryFee.toFixed(2)}`}
+          </span>
         </div>
         <div className="flex justify-between text-on-surface-variant">
           <span>Service Charge</span>

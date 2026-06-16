@@ -25,19 +25,21 @@ export function calculateOrderTotals({
   serviceVendorIds,
   tipAmount,
   serviceCharge,
+  vendorDeliveryCharges,
 }: {
   subtotal: number;
   promoApplied: { code: string; discount: number; type: "percent" | "flat" } | null;
   serviceVendorIds: string[];
   tipAmount: number;
   serviceCharge: number;
+  vendorDeliveryCharges?: Record<string, number>;
 }) {
   const discount = promoApplied
     ? promoApplied.type === "percent"
       ? +(subtotal * (promoApplied.discount / 100)).toFixed(2)
       : promoApplied.discount
     : 0;
-  const totalDeliveryFee = 0;
+  const totalDeliveryFee = serviceVendorIds.reduce((sum, vid) => sum + (vendorDeliveryCharges?.[vid] || 0), 0);
   const grand = Math.max(0, +(subtotal - discount + totalDeliveryFee + (serviceVendorIds.length * serviceCharge) + tipAmount).toFixed(2));
   return { discount, totalDeliveryFee, grand };
 }
