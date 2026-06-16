@@ -198,6 +198,18 @@ export default function BookingsPage() {
                     </div>
                   )}
 
+                  {booking.status === "in_progress" && (
+                    <div className="flex gap-2">
+                      <Link
+                        href={`/app/bookings/${booking.id}/track`}
+                        className="flex-1 py-2 bg-primary text-white rounded-lg text-xs font-bold text-center hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-1"
+                      >
+                        <span className="material-symbols-outlined text-[14px]">location_on</span>
+                        Track Technician
+                      </Link>
+                    </div>
+                  )}
+
                   {booking.status === "confirmed" && (
                     <div className="flex gap-2">
                       <button
