@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -41,8 +41,10 @@ export function SearchAutocomplete({ onSelect, className = "" }: SearchAutocompl
   const [showDropdown, setShowDropdown] = useState(false);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(-1);
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const listboxId = useRef(`search-listbox-${Math.random().toString(36).slice(2, 9)}`);
   const router = useRouter();
   const supabase = createClient();
 
@@ -126,11 +128,16 @@ export function SearchAutocomplete({ onSelect, className = "" }: SearchAutocompl
     return () => clearTimeout(timer);
   }, [query]);
 
+  const allItems = showDropdown && !query && recentSearches.length > 0
+    ? recentSearches.map(t => ({ id: `recent-${t}`, text: t, type: "recent" as const }))
+    : suggestions;
+
   const handleSearch = (term: string) => {
     if (!term.trim()) return;
     saveRecentSearch(term);
     setShowDropdown(false);
     setQuery("");
+    setActiveIndex(-1);
     onSelect?.(term);
     router.push(`/app/search?q=${encodeURIComponent(term)}`);
   };
@@ -140,36 +147,79 @@ export function SearchAutocomplete({ onSelect, className = "" }: SearchAutocompl
     localStorage.removeItem("miiam-recent-searches");
   };
 
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (!showDropdown) return;
+
+    const items = allItems;
+
+    switch (e.key) {
+      case "ArrowDown":
+        e.preventDefault();
+        setActiveIndex(prev => (prev < items.length - 1 ? prev + 1 : 0));
+        break;
+      case "ArrowUp":
+        e.preventDefault();
+        setActiveIndex(prev => (prev > 0 ? prev - 1 : items.length - 1));
+        break;
+      case "Enter":
+        e.preventDefault();
+        if (activeIndex >= 0 && activeIndex < items.length) {
+          handleSearch(items[activeIndex].text);
+        } else if (query.trim()) {
+          handleSearch(query);
+        }
+        break;
+      case "Escape":
+        e.preventDefault();
+        setShowDropdown(false);
+        setActiveIndex(-1);
+        break;
+    }
+  }, [showDropdown, allItems, activeIndex, query]);
+
   return (
     <div ref={dropdownRef} className={`relative ${className}`}>
       <div className="relative">
-        <span className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-[var(--color-outline-variant)]">
+        <span className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-[var(--color-outline-variant)]" aria-hidden="true">
           search
         </span>
         <input
           ref={inputRef}
           type="text"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => { setQuery(e.target.value); setActiveIndex(-1); }}
           onFocus={() => query.trim() && setShowDropdown(true)}
+          onKeyDown={handleKeyDown}
           placeholder="Search for dishes, cuisines, restaurants..."
+          aria-label="Search restaurants and dishes"
+          role="combobox"
+          aria-expanded={showDropdown}
+          aria-controls={listboxId.current}
+          aria-activedescendant={activeIndex >= 0 ? `${listboxId.current}-option-${activeIndex}` : undefined}
+          aria-autocomplete="list"
           className="w-full pl-12 pr-4 py-3 bg-[var(--color-surface-container)] rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:bg-white transition-all"
         />
         {query && (
           <button
-            onClick={() => setQuery("")}
+            onClick={() => { setQuery(""); setActiveIndex(-1); }}
+            aria-label="Clear search"
             className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-slate-300 rounded-full flex items-center justify-center hover:bg-slate-400 transition-colors"
           >
-            <span className="material-symbols-outlined text-sm">close</span>
+            <span className="material-symbols-outlined text-sm" aria-hidden="true">close</span>
           </button>
         )}
       </div>
 
       {showDropdown && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-[var(--color-surface-container-lowest)] rounded-2xl shadow-xl border border-[var(--color-border-subtle)] overflow-hidden z-50">
+        <div
+          id={listboxId.current}
+          role="listbox"
+          aria-label="Search suggestions"
+          className="absolute top-full left-0 right-0 mt-2 bg-[var(--color-surface-container-lowest)] rounded-2xl shadow-xl border border-[var(--color-border-subtle)] overflow-hidden z-50"
+        >
           {loading && (
-            <div className="p-4 text-center text-sm text-[var(--color-outline)]">
-              <span className="material-symbols-outlined animate-spin text-lg mr-2">progress_activity</span>
+            <div className="p-4 text-center text-sm text-[var(--color-outline)]" role="status">
+              <span className="material-symbols-outlined animate-spin text-lg mr-2" aria-hidden="true">progress_activity</span>
               Searching...
             </div>
           )}
@@ -177,25 +227,28 @@ export function SearchAutocomplete({ onSelect, className = "" }: SearchAutocompl
           {!loading && suggestions.length > 0 && (
             <div className="p-2">
               <div className="text-xs font-bold text-[var(--color-outline-variant)] uppercase px-3 py-2">Suggestions</div>
-              {suggestions.map((s) => (
+              {suggestions.map((s, i) => (
                 <button
                   key={s.id}
+                  id={`${listboxId.current}-option-${i}`}
+                  role="option"
+                  aria-selected={activeIndex === i}
                   onClick={() => handleSearch(s.text)}
-                  className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-[var(--color-surface-subtle)] rounded-lg transition-colors text-left"
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-left ${activeIndex === i ? "bg-[var(--color-primary)]/10" : "hover:bg-[var(--color-surface-subtle)]"}`}
                 >
-                  <span className="material-symbols-outlined text-[var(--color-outline-variant)] text-lg">
+                  <span className="material-symbols-outlined text-[var(--color-outline-variant)] text-lg" aria-hidden="true">
                     {s.type === "dish" ? "restaurant" : s.type === "popular" ? "local_fire_department" : "search"}
                   </span>
                   <span className="text-[var(--color-on-surface)]">{s.text}</span>
-                  {s.icon && <span className="ml-auto text-lg">{s.icon}</span>}
+                  {s.icon && <span className="ml-auto text-lg" aria-hidden="true">{s.icon}</span>}
                 </button>
               ))}
               <button
                 onClick={() => handleSearch(query)}
                 className="w-full flex items-center gap-3 px-3 py-2.5 bg-[var(--color-primary)]/5 hover:bg-[var(--color-primary)]/10 rounded-lg text-[var(--color-primary)] font-bold mt-2"
               >
-                <span className="material-symbols-outlined text-lg">arrow_forward</span>
-                Search for "{query}"
+                <span className="material-symbols-outlined text-lg" aria-hidden="true">arrow_forward</span>
+                Search for &quot;{query}&quot;
               </button>
             </div>
           )}
@@ -208,13 +261,16 @@ export function SearchAutocomplete({ onSelect, className = "" }: SearchAutocompl
                   Clear all
                 </button>
               </div>
-              {recentSearches.map((term) => (
+              {recentSearches.map((term, i) => (
                 <button
                   key={term}
+                  id={`${listboxId.current}-option-${i}`}
+                  role="option"
+                  aria-selected={activeIndex === i}
                   onClick={() => handleSearch(term)}
-                  className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-[var(--color-surface-subtle)] rounded-lg transition-colors text-left"
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-left ${activeIndex === i ? "bg-[var(--color-primary)]/10" : "hover:bg-[var(--color-surface-subtle)]"}`}
                 >
-                  <span className="material-symbols-outlined text-[var(--color-outline-variant)]">history</span>
+                  <span className="material-symbols-outlined text-[var(--color-outline-variant)]" aria-hidden="true">history</span>
                   <span className="text-[var(--color-on-surface)]">{term}</span>
                 </button>
               ))}
