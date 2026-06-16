@@ -309,13 +309,10 @@ export default function BookingsPage() {
 
                   {booking.status === "in_progress" && (
                     <div className="flex gap-2">
-                      <Link
-                        href={`/app/bookings/${booking.id}/track`}
-                        className="flex-1 py-2 bg-primary text-white rounded-lg text-xs font-bold text-center hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-1"
-                      >
-                        <span className="material-symbols-outlined text-[14px]">location_on</span>
-                        Track Technician
-                      </Link>
+                      <div className="flex-1 py-2 bg-indigo-100 text-indigo-700 rounded-lg text-xs font-bold text-center flex items-center justify-center gap-1">
+                        <span className="material-symbols-outlined text-[14px]">engineering</span>
+                        Technician On The Way
+                      </div>
                     </div>
                   )}
 

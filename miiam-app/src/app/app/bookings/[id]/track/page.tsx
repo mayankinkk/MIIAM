@@ -4,7 +4,6 @@ import { useState, useEffect, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import TechnicianTracker from "@/components/services/TechnicianTracker";
 
 export default function BookingTrackPage() {
   const params = useParams();
@@ -47,6 +46,41 @@ export default function BookingTrackPage() {
     );
   }
 
+  const statusConfig: Record<string, { icon: string; iconColor: string; title: string; message: string }> = {
+    in_progress: {
+      icon: "engineering",
+      iconColor: "text-blue-500",
+      title: "Technician On The Way",
+      message: "Your service technician is on the way to your location.",
+    },
+    confirmed: {
+      icon: "check_circle",
+      iconColor: "text-blue-500",
+      title: "Booking Confirmed",
+      message: "Your booking is confirmed. A technician will be assigned soon.",
+    },
+    pending: {
+      icon: "hourglass_empty",
+      iconColor: "text-amber-500",
+      title: "Awaiting Confirmation",
+      message: "Your booking is pending confirmation. A technician will be assigned after confirmation.",
+    },
+    completed: {
+      icon: "task_alt",
+      iconColor: "text-green-500",
+      title: "Service Completed",
+      message: "Your service has been completed.",
+    },
+    cancelled: {
+      icon: "cancel",
+      iconColor: "text-red-500",
+      title: "Booking Cancelled",
+      message: "This booking has been cancelled.",
+    },
+  };
+
+  const config = statusConfig[booking.status] || statusConfig.pending;
+
   return (
     <div className="min-h-screen bg-surface pb-24">
       <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-4 py-3 bg-surface/90 backdrop-blur-2xl shadow-[0px_4px_20px_rgba(77,33,42,0.06)]"
@@ -63,33 +97,16 @@ export default function BookingTrackPage() {
 
       <main className="pt-20 max-w-2xl mx-auto px-4">
         <div className="mb-6">
-          <h1 className="text-2xl font-extrabold tracking-tight text-primary">Track Technician</h1>
+          <h1 className="text-2xl font-extrabold tracking-tight text-primary">Track Service</h1>
           <p className="text-on-surface-variant text-sm mt-1">{booking.sub_service || booking.service_type}</p>
         </div>
 
-        {booking.status === "in_progress" ? (
-          <TechnicianTracker orderId={booking.id} />
-        ) : booking.status === "confirmed" ? (
-          <div className="bg-surface-container-lowest rounded-2xl p-6 text-center border border-outline-variant/10">
-            <span className="material-symbols-outlined text-5xl text-blue-500 mb-3 block">engineering</span>
-            <h2 className="text-lg font-bold text-on-surface mb-2">Technician not yet dispatched</h2>
-            <p className="text-on-surface-variant text-sm">Your booking is confirmed. A technician will be assigned and you can track them once they are on the way.</p>
-          </div>
-        ) : booking.status === "pending" ? (
-          <div className="bg-surface-container-lowest rounded-2xl p-6 text-center border border-outline-variant/10">
-            <span className="material-symbols-outlined text-5xl text-amber-500 mb-3 block">hourglass_empty</span>
-            <h2 className="text-lg font-bold text-on-surface mb-2">Awaiting confirmation</h2>
-            <p className="text-on-surface-variant text-sm">Your booking is pending confirmation. You&apos;ll be able to track once a technician is assigned.</p>
-          </div>
-        ) : (
-          <div className="bg-surface-container-lowest rounded-2xl p-6 text-center border border-outline-variant/10">
-            <span className="material-symbols-outlined text-5xl text-outline-variant/40 mb-3 block">info</span>
-            <h2 className="text-lg font-bold text-on-surface mb-2">Tracking not available</h2>
-            <p className="text-on-surface-variant text-sm">Tracking is only available for active service bookings.</p>
-          </div>
-        )}
+        <div className="bg-surface-container-lowest rounded-2xl p-6 text-center border border-outline-variant/10">
+          <span className={`material-symbols-outlined text-5xl ${config.iconColor} mb-3 block`}>{config.icon}</span>
+          <h2 className="text-lg font-bold text-on-surface mb-2">{config.title}</h2>
+          <p className="text-on-surface-variant text-sm">{config.message}</p>
+        </div>
 
-        {/* Booking details */}
         <div className="mt-6 bg-surface-container-lowest rounded-2xl p-4 border border-outline-variant/10">
           <h3 className="font-bold text-on-surface text-sm mb-3">Booking Details</h3>
           <div className="space-y-2 text-sm">
