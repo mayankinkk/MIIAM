@@ -27,7 +27,7 @@ export function useConfirm() {
   return useContext(ConfirmContext);
 }
 
-function FocusTrap({ onClose }: { onClose: () => void }) {
+function useFocusTrap(onClose: () => void) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -118,7 +118,7 @@ export function ConfirmProvider({ children }: { children: ReactNode }) {
 }
 
 function ConfirmDialogInner({ state }: { state: ConfirmState }) {
-  const containerRef = FocusTrap({ onClose: state.onCancel });
+  const containerRef = useFocusTrap(state.onCancel);
 
   return (
     <div

@@ -111,7 +111,7 @@ export default function AdvancedAnalytics() {
           .select("*, vendor:vendors(name), rider:riders(name, total_deliveries, total_earnings)")
           .gte("placed_at", startDate.toISOString())
           .order("placed_at", { ascending: true })
-          .then((res: { data: Record<string, unknown>[] | null }) => { if (res.data) setOrders(res.data); });
+          .then((res: { data: AnalyticsOrder[] | null }) => { if (res.data) setOrders(res.data); });
       })
       .subscribe();
 
