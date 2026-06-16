@@ -1,121 +1,217 @@
 "use client";
 
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { useDiningStore } from "@/lib/store/diningStore";
-import { useConfirm } from "@/components/ui/ConfirmDialog";
+import { createClient } from "@/lib/supabase/client";
+import { useToastStore } from "@/lib/store/toastStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 
+interface ServiceBooking {
+  id: string;
+  service_type: string;
+  sub_service: string | null;
+  user_name: string;
+  user_phone: string;
+  address: string;
+  scheduled_date: string;
+  scheduled_time: string;
+  status: string;
+  amount: number;
+  notes: string | null;
+  created_at: string;
+}
+
+const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; icon: string }> = {
+  pending: { label: "Pending", color: "text-amber-700", bg: "bg-amber-100", icon: "hourglass_empty" },
+  confirmed: { label: "Confirmed", color: "text-blue-700", bg: "bg-blue-100", icon: "check_circle" },
+  in_progress: { label: "In Progress", color: "text-indigo-700", bg: "bg-indigo-100", icon: "engineering" },
+  completed: { label: "Completed", color: "text-green-700", bg: "bg-green-100", icon: "task_alt" },
+  cancelled: { label: "Cancelled", color: "text-red-700", bg: "bg-red-100", icon: "cancel" },
+};
+
+const SERVICE_ICONS: Record<string, string> = {
+  ac: "ac_unit",
+  plumbing: "plumbing",
+  electrical: "electrical_services",
+  cleaning: "cleaning_services",
+  appliance: "home_repair_service",
+  pest: "bug_report",
+  beauty: "spa",
+};
+
 export default function BookingsPage() {
-  const { bookings, cancelBooking } = useDiningStore();
-  const { confirm } = useConfirm();
   const { t } = useTranslation();
+  const { addToast } = useToastStore();
+  const supabase = useMemo(() => createClient(), []);
+  const [bookings, setBookings] = useState<ServiceBooking[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<"upcoming" | "past">("upcoming");
+
+  useEffect(() => {
+    async function loadBookings() {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) { setLoading(false); return; }
+
+        const { data } = await supabase
+          .from("service_bookings")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false });
+
+        setBookings(data || []);
+      } catch (err) {
+        console.error("Failed to load bookings:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadBookings();
+  }, [supabase]);
+
+  const upcoming = bookings.filter(b => ["pending", "confirmed", "in_progress"].includes(b.status));
+  const past = bookings.filter(b => ["completed", "cancelled"].includes(b.status));
+  const displayBookings = activeTab === "upcoming" ? upcoming : past;
+
+  async function handleCancel(bookingId: string) {
+    try {
+      const { error } = await supabase
+        .from("service_bookings")
+        .update({ status: "cancelled" })
+        .eq("id", bookingId);
+      if (error) throw error;
+      setBookings(prev => prev.map(b => b.id === bookingId ? { ...b, status: "cancelled" } : b));
+      addToast("Booking cancelled", "success");
+    } catch {
+      addToast("Failed to cancel booking", "error");
+    }
+  }
 
   return (
     <div className="min-h-screen bg-surface pb-24">
-      <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-surface/80 backdrop-blur-2xl shadow-sm">
-        <div className="flex items-center gap-4">
-          <Link href="/app/profile" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-all">
-            <span className="material-symbols-outlined text-primary">arrow_back</span>
+      <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-4 py-3 bg-surface/90 backdrop-blur-2xl shadow-[0px_4px_20px_rgba(77,33,42,0.06)]"
+        style={{ paddingTop: "calc(0.75rem + env(safe-area-inset-top, 0px))" }}
+      >
+        <div className="flex items-center gap-3">
+          <Link href="/app/profile" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-all" aria-label="Back">
+            <span className="material-symbols-outlined text-on-surface text-[22px]">arrow_back</span>
           </Link>
-          <span className="text-2xl font-extrabold tracking-tighter text-primary">MIIAM</span>
+          <span className="text-xl font-extrabold tracking-tighter text-primary">MIIAM</span>
         </div>
-        <span className="text-on-surface font-bold hidden md:block">{t.profile.bookings}</span>
+        <span className="text-on-surface font-semibold hidden md:block">{t.profile.bookings}</span>
       </nav>
 
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'My Bookings' }]} />
+      <Breadcrumbs items={[{ label: "Home", href: "/app/explore" }, { label: t.profile.bookings }]} />
 
-      <main className="pt-24 max-w-4xl mx-auto px-6">
-        <section className="mb-10">
-          <h1 className="text-3xl font-extrabold tracking-tight leading-none mb-2 text-on-surface">{t.profile.bookings}</h1>
-          <p className="text-on-surface-variant text-lg">Manage your upcoming dining experiences.</p>
+      <main className="pt-20 max-w-2xl mx-auto px-4">
+        <section className="mb-6">
+          <h1 className="text-2xl font-extrabold tracking-tight text-primary">{t.profile.bookings}</h1>
+          <p className="text-on-surface-variant text-sm mt-1">{t.profile.serviceAppointments}</p>
         </section>
 
-        {bookings.length === 0 ? (
-          <div className="text-center py-24">
-            <div className="text-8xl mb-6">🍽️</div>
-            <h2 className="text-2xl font-bold text-on-surface mb-3">{t.shared.noBookings}</h2>
-            <p className="text-on-surface-variant mb-8">{t.shared.noBookingsDesc}</p>
-            <Link href="/app/explore" className="bg-secondary text-white px-10 py-4 rounded-xl font-bold inline-block hover:bg-on-secondary-container transition-colors shadow-lg shadow-secondary/30">
-              {t.shared.discoverRestaurants}
-            </Link>
+        {/* Tabs */}
+        <div className="flex gap-2 bg-surface-container rounded-xl p-1 mb-6">
+          <button
+            onClick={() => setActiveTab("upcoming")}
+            className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all ${
+              activeTab === "upcoming" ? "bg-primary text-white" : "text-on-surface-variant"
+            }`}
+          >
+            Upcoming ({upcoming.length})
+          </button>
+          <button
+            onClick={() => setActiveTab("past")}
+            className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all ${
+              activeTab === "past" ? "bg-primary text-white" : "text-on-surface-variant"
+            }`}
+          >
+            Past ({past.length})
+          </button>
+        </div>
+
+        {loading ? (
+          <div className="flex items-center justify-center py-20">
+            <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+          </div>
+        ) : displayBookings.length === 0 ? (
+          <div className="text-center py-20">
+            <span className="material-symbols-outlined text-6xl text-outline-variant/40 mb-4 block">calendar_month</span>
+            <h2 className="text-xl font-bold text-on-surface mb-2">No {activeTab} bookings</h2>
+            <p className="text-on-surface-variant text-sm mb-6">
+              {activeTab === "upcoming" ? "Book a service to get started" : "Your completed bookings will appear here"}
+            </p>
+            {activeTab === "upcoming" && (
+              <Link href="/app/services" className="px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:scale-[1.02] active:scale-95 transition-all inline-block">
+                Browse Services
+              </Link>
+            )}
           </div>
         ) : (
-          <div className="space-y-6">
-            {bookings.map((booking) => {
-              const d = new Date(booking.date);
-              const isPast = booking.status === 'confirmed' && d < new Date() && booking.time < new Date().toTimeString().substring(0, 5); // simplified check
+          <div className="space-y-4">
+            {displayBookings.map((booking) => {
+              const st = STATUS_CONFIG[booking.status] || STATUS_CONFIG.pending;
+              const serviceIcon = SERVICE_ICONS[booking.service_type] || "home_repair_service";
+              const dateStr = booking.scheduled_date
+                ? new Date(booking.scheduled_date + "T00:00:00").toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" })
+                : "—";
 
               return (
-                <div key={booking.id} className="bg-surface-container-lowest rounded-2xl p-6 shadow-sm border border-outline-variant/10 relative overflow-hidden">
-                  {booking.status === 'cancelled' && (
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full" />
-                  )}
-                  {booking.status === 'confirmed' && !isPast && (
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/5 rounded-bl-full" />
-                  )}
-                  
-                  <div className="flex justify-between items-start mb-6 relative z-10">
-                    <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 rounded-full bg-surface-container flex items-center justify-center text-primary shadow-sm">
-                        <span className="material-symbols-outlined text-2xl">restaurant</span>
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-extrabold text-on-surface">{booking.vendorName}</h3>
-                        <p className="text-on-surface-variant text-sm font-medium mt-1">Booking ID: {booking.id.split('_')[2].toUpperCase()}</p>
-                      </div>
+                <div key={booking.id} className="bg-surface-container-lowest rounded-2xl p-4 shadow-sm border border-outline-variant/10">
+                  <div className="flex items-start gap-3 mb-3">
+                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                      <span className="material-symbols-outlined text-primary text-xl">{serviceIcon}</span>
                     </div>
-                    <div className="text-right">
-                      {booking.status === 'cancelled' ? (
-                        <span className="bg-error-container/10 text-error text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-widest">
-                          {t.orders.statusCancelled}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <h3 className="font-bold text-on-surface text-sm">{booking.sub_service || booking.service_type}</h3>
+                          <p className="text-xs text-on-surface-variant mt-0.5">ID: {booking.id.slice(0, 8)}</p>
+                        </div>
+                        <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shrink-0 ${st.color} ${st.bg}`}>
+                          <span className="material-symbols-outlined text-[12px]">{st.icon}</span>
+                          {st.label}
                         </span>
-                      ) : (
-                        <span className="bg-[#cce4ff] text-[#003dac] text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-widest">
-                          {t.orders.statusAccepted}
-                        </span>
-                      )}
+                      </div>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-4 mb-6 relative z-10">
-                    <div className="bg-surface p-4 rounded-xl border border-primary/10">
-                      <span className="material-symbols-outlined text-on-surface-variant mb-2">calendar_today</span>
-                      <p className="text-on-surface font-bold">{d.toLocaleDateString('en-IN', { weekday: 'short', month: 'short', day: 'numeric' })}</p>
+                  <div className="grid grid-cols-3 gap-2 mb-3">
+                    <div className="bg-surface rounded-lg p-2 text-center">
+                      <span className="material-symbols-outlined text-on-surface-variant text-sm">calendar_today</span>
+                      <p className="text-xs font-bold text-on-surface mt-1">{dateStr}</p>
                     </div>
-                    <div className="bg-surface p-4 rounded-xl border border-primary/10">
-                      <span className="material-symbols-outlined text-on-surface-variant mb-2">schedule</span>
-                      <p className="text-on-surface font-bold">{booking.time}</p>
+                    <div className="bg-surface rounded-lg p-2 text-center">
+                      <span className="material-symbols-outlined text-on-surface-variant text-sm">schedule</span>
+                      <p className="text-xs font-bold text-on-surface mt-1">{booking.scheduled_time || "—"}</p>
                     </div>
-                    <div className="bg-surface p-4 rounded-xl border border-primary/10">
-                      <span className="material-symbols-outlined text-on-surface-variant mb-2">group</span>
-                      <p className="text-on-surface font-bold">{booking.guests} Guests</p>
+                    <div className="bg-surface rounded-lg p-2 text-center">
+                      <span className="material-symbols-outlined text-on-surface-variant text-sm">payments</span>
+                      <p className="text-xs font-bold text-on-surface mt-1">₹{booking.amount || 0}</p>
                     </div>
                   </div>
 
-                  <div className="flex justify-between items-center relative z-10">
-                    <div className="flex items-center gap-2 bg-green-50 text-green-700 px-4 py-2 rounded-lg text-sm font-bold">
-                      <span className="material-symbols-outlined text-[18px]">local_activity</span>
-                      MIIAM Dine-out: 15% off applied
+                  {booking.address && (
+                    <div className="flex items-center gap-2 text-xs text-on-surface-variant mb-3 bg-surface rounded-lg px-3 py-2">
+                      <span className="material-symbols-outlined text-sm">location_on</span>
+                      <span className="truncate">{booking.address}</span>
                     </div>
-                    {booking.status === 'confirmed' && (
-                      <div className="flex gap-3">
-                        <Link href={`/app/vendor/${booking.vendorId}`} className="text-secondary hover:bg-secondary/10 px-4 py-2 rounded-lg font-bold text-sm transition-colors">
-                          View Restaurant
-                        </Link>
-                        <button 
-                          onClick={async () => {
-                            if (await confirm({ title: "Cancel Booking", message: "Are you sure you want to cancel this booking?", variant: "danger" })) {
-                              cancelBooking(booking.id);
-                            }
-                          }}
-                          className="text-primary hover:bg-primary/10 px-4 py-2 rounded-lg font-bold text-sm transition-colors"
-                        >
-                          {t.orders.cancelOrder}
-                        </button>
-                      </div>
-                    )}
-                  </div>
+                  )}
+
+                  {booking.status === "confirmed" && (
+                    <div className="flex gap-2">
+                      <button
+                        onClick={async () => {
+                          if (window.confirm("Cancel this booking?")) {
+                            handleCancel(booking.id);
+                          }
+                        }}
+                        className="flex-1 py-2 border border-outline-variant rounded-lg text-xs font-bold text-on-surface-variant hover:bg-surface transition-colors"
+                      >
+                        Cancel Booking
+                      </button>
+                    </div>
+                  )}
                 </div>
               );
             })}
