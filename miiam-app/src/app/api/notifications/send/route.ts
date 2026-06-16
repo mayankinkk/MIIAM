@@ -1,27 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { getClientIp, checkIpRateLimit } from "@/lib/security";
-import webpush from "web-push";
 
 const VAPID_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
 const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY;
 
-if (VAPID_PUBLIC_KEY && VAPID_PRIVATE_KEY) {
-  webpush.setVapidDetails(
-    "mailto:admin@miiam.in",
-    VAPID_PUBLIC_KEY,
-    VAPID_PRIVATE_KEY
-  );
+async function getWebPush() {
+  const webpush = await import("web-push");
+  if (VAPID_PUBLIC_KEY && VAPID_PRIVATE_KEY) {
+    webpush.default.setVapidDetails(
+      "mailto:admin@miiam.in",
+      VAPID_PUBLIC_KEY,
+      VAPID_PRIVATE_KEY
+    );
+  }
+  return webpush.default;
 }
 
-async function sendWebPush(subscription: webpush.PushSubscription, payload: string) {
+async function sendWebPush(subscription: { endpoint: string; keys?: { p256dh: string; auth: string } }, payload: string) {
   if (!VAPID_PUBLIC_KEY || !VAPID_PRIVATE_KEY) return;
+  const webpush = await getWebPush();
   try {
-    await webpush.sendNotification(subscription, payload);
+    await webpush.sendNotification(subscription as Parameters<typeof webpush.sendNotification>[0], payload);
   } catch (err: unknown) {
     const statusCode = (err as { statusCode?: number }).statusCode;
     if (statusCode === 404 || statusCode === 410) {
-      // Subscription expired or unsubscribed — will be cleaned up by caller
       throw err;
     }
     console.error("Push send error:", err);
