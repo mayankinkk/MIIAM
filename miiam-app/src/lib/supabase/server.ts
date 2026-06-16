@@ -34,6 +34,9 @@ export async function createClient() {
 }
 
 export function createAdminClient() {
+  if (typeof window !== "undefined") {
+    throw new Error("[MIIAM] createAdminClient() must only be called server-side. SERVICE_ROLE_KEY would leak to the client bundle.");
+  }
   return createSupabaseClient(
     getRequiredEnv('NEXT_PUBLIC_SUPABASE_URL'),
     getRequiredEnv('SUPABASE_SERVICE_ROLE_KEY'),
