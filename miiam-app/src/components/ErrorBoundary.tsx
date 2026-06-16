@@ -1,46 +1,69 @@
 "use client";
 
-import { useEffect } from "react";
+import React from "react";
 
 interface ErrorBoundaryProps {
-  error: Error & { digest?: string };
-  reset: () => void;
+  children?: React.ReactNode;
+  fallback?: React.ReactNode;
+  error?: Error & { digest?: string };
+  reset?: () => void;
   title?: string;
-  description?: string;
   icon?: string;
 }
 
-export default function ErrorBoundary({
-  error,
-  reset,
-  title = "Something went wrong",
-  description = "We encountered an error loading this page. Please try again.",
-  icon = "error_outline",
-}: ErrorBoundaryProps) {
-  useEffect(() => {
-    console.error("Page error:", error);
-  }, [error]);
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error: Error | null;
+}
 
-  return (
-    <div className="min-h-screen flex items-center justify-center px-6 bg-background">
-      <div className="text-center max-w-md">
-        <span className="material-symbols-outlined text-6xl text-primary mb-4 block">
-          {icon}
-        </span>
-        <h1 className="text-2xl font-black text-on-surface mb-2">{title}</h1>
-        <p className="text-on-surface-variant mb-6">{description}</p>
-        {error.digest && (
-          <p className="text-xs text-on-surface-variant/50 mb-4 font-mono">
-            Error ID: {error.digest}
+export default class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error("[ErrorBoundary]", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError || this.props.error) {
+      if (this.props.fallback) return this.props.fallback;
+
+      const error = this.state.error || this.props.error;
+      const title = this.props.title || "Something went wrong";
+      const icon = this.props.icon || "error";
+
+      return (
+        <div className="min-h-[400px] flex flex-col items-center justify-center p-6 text-center">
+          <span className="material-symbols-outlined text-5xl text-amber-500 mb-3">{icon}</span>
+          <h2 className="text-lg font-bold text-on-surface mb-2">{title}</h2>
+          <p className="text-on-surface-variant text-sm mb-4 max-w-sm">
+            {error?.message || "An unexpected error occurred. Please try refreshing the page."}
           </p>
-        )}
-        <button
-          onClick={reset}
-          className="bg-primary text-white px-8 py-3 rounded-xl font-bold hover:bg-primary-dim transition-all"
-        >
-          Try Again
-        </button>
-      </div>
-    </div>
-  );
+          {this.props.reset ? (
+            <button
+              onClick={this.props.reset}
+              className="px-6 py-2.5 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 active:scale-95 transition-all"
+            >
+              Try Again
+            </button>
+          ) : (
+            <button
+              onClick={() => window.location.reload()}
+              className="px-6 py-2.5 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 active:scale-95 transition-all"
+            >
+              Refresh Page
+            </button>
+          )}
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
 }

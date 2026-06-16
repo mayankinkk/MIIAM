@@ -6,3 +6,38 @@ export const NOMINATIM_REVERSE_URL = "https://nominatim.openstreetmap.org/revers
 export const NOMINATIM_SEARCH_URL = "https://nominatim.openstreetmap.org/search?format=json";
 
 export const OSM_TILE_URL = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+
+// Rate limiting
+export const LOGIN_RATE_LIMIT_MAX = 5;
+export const LOGIN_RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
+export const API_RATE_LIMIT_MAX = 30;
+export const API_RATE_LIMIT_WINDOW_MS = 60 * 1000;
+export const PAYMENT_RATE_LIMIT_MAX = 10;
+export const PAYMENT_RATE_LIMIT_WINDOW_MS = 60 * 1000;
+
+// Cart
+export const MAX_CART_ITEM_QTY = 99;
+export const MIN_CART_ITEM_QTY = 1;
+
+// Orders
+export const ORDER_EXPIRY_HOURS = 24;
+export const DELIVERY_FEE_DEFAULT = 0;
+export const SERVICE_CHARGE_DEFAULT = 8;
+export const TIP_OPTIONS = [0, 20, 30, 50, 100];
+
+// Services
+export const SERVICE_TIME_SLOTS = [
+  "07:00 AM - 09:00 AM",
+  "09:00 AM - 11:00 AM",
+  "11:00 AM - 01:00 PM",
+  "01:00 PM - 03:00 PM",
+  "03:00 PM - 05:00 PM",
+  "05:00 PM - 07:00 PM",
+];
+
+// Notifications
+export const NOTIFICATION_RETENTION_DAYS = 90;
+
+// OTP
+export const OTP_LENGTH = 6;
+export const OTP_EXPIRY_MINUTES = 5;
