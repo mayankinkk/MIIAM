@@ -63,8 +63,16 @@ CREATE INDEX IF NOT EXISTS idx_service_bookings_scheduled_date ON service_bookin
 CREATE INDEX IF NOT EXISTS idx_service_providers_user_id ON service_providers(user_id);
 CREATE INDEX IF NOT EXISTS idx_service_providers_service_type ON service_providers(service_type);
 
--- Enable Realtime for service_bookings
-ALTER PUBLICATION supabase_realtime ADD TABLE service_bookings;
+-- Enable Realtime for service_bookings (only if not already added)
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_publication_tables WHERE pubname = 'supabase_realtime' AND tablename = 'service_bookings'
+  ) THEN
+    ALTER PUBLICATION supabase_realtime ADD TABLE service_bookings;
+  END IF;
+END
+$$;
 
 -- RLS Policies
 ALTER TABLE service_bookings ENABLE ROW LEVEL SECURITY;
