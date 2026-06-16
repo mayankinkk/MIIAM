@@ -26,6 +26,7 @@ function BookingModal({ service, onClose }: { service: ServiceData; onClose: () 
   const [selectedSlot, setSelectedSlot] = useState("");
   const prefilledAddress = locationStore.displayAddress !== "Select Location" ? locationStore.displayAddress : "";
   const [address, setAddress] = useState(prefilledAddress);
+  const [phone, setPhone] = useState("");
 
   const dateOptions = useMemo(() => {
     return [0, 1, 2, 3, 4].map((d) => {
@@ -43,12 +44,16 @@ function BookingModal({ service, onClose }: { service: ServiceData; onClose: () 
     });
   }, [t]);
 
-  const canProceed = selectedDate && selectedSlot && address.trim();
+  const canProceed = selectedDate && selectedSlot && address.trim() && phone.trim();
 
   const handleConfirmBooking = useCallback(async () => {
     if (booking) return;
     if (!address.trim()) {
       addToast(t.services.pleaseEnterAddress, "error");
+      return;
+    }
+    if (!phone.trim()) {
+      addToast(t.services.pleaseEnterPhone || "Please enter your phone number", "error");
       return;
     }
     setBooking(true);
@@ -69,7 +74,7 @@ function BookingModal({ service, onClose }: { service: ServiceData; onClose: () 
           service_type: service.category,
           sub_service: service.name,
           user_name: user.user_metadata?.full_name || user.email?.split("@")[0] || "Customer",
-          user_phone: user.user_metadata?.phone || "",
+          user_phone: phone.trim(),
           address,
           scheduled_date: selectedDate,
           scheduled_time: selectedSlot,
@@ -92,7 +97,7 @@ function BookingModal({ service, onClose }: { service: ServiceData; onClose: () 
       addToast("Network error. Please try again.", "error");
       setBooking(false);
     }
-  }, [booking, address, selectedDate, selectedSlot, service, supabase, addToast, t]);
+  }, [booking, address, phone, selectedDate, selectedSlot, service, supabase, addToast, t]);
 
   // Close on Escape
   useEffect(() => {
@@ -174,12 +179,24 @@ function BookingModal({ service, onClose }: { service: ServiceData; onClose: () 
 
             <p className="font-bold text-on-surface mb-2">{t.services.serviceAddress}</p>
             <textarea
-              className="w-full border-2 border-outline rounded-xl p-3 text-sm focus:border-primary focus:outline-none resize-none mb-5"
+              className="w-full border-2 border-outline rounded-xl p-3 text-sm focus:border-primary focus:outline-none resize-none mb-4"
               rows={2}
               placeholder={t.services.addressPlaceholder}
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               aria-label={t.services.serviceAddress}
+            />
+
+            <p className="font-bold text-on-surface mb-2">{t.services.phoneNumber || "Phone Number"}</p>
+            <input
+              type="tel"
+              className="w-full border-2 border-outline rounded-xl p-3 text-sm focus:border-primary focus:outline-none mb-5"
+              placeholder={t.services.phonePlaceholder || "Enter your phone number"}
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              aria-label={t.services.phoneNumber || "Phone Number"}
+              inputMode="numeric"
+              maxLength={15}
             />
 
             <button

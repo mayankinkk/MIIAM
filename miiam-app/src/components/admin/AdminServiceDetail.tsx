@@ -93,7 +93,7 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
   }
 
   const totalBookings = bookings.length;
-  const totalRevenue = bookings.reduce((s: number, b: any) => s + (b.total_amount || 0), 0);
+  const totalRevenue = bookings.reduce((s: number, b: any) => s + (b.amount || 0), 0);
   const completedCount = bookings.filter((b: any) => b.status === "completed").length;
   const completionRate = totalBookings > 0 ? Math.round((completedCount / totalBookings) * 100) : 0;
 
@@ -152,6 +152,7 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
             <thead className="bg-[var(--color-surface-subtle)]">
               <tr>
                 <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">Customer</th>
+                <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">Phone</th>
                 <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">Address</th>
                 <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">Amount</th>
                 <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">Status</th>
@@ -162,9 +163,10 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
             <tbody className="divide-y divide-slate-50">
               {bookings.map((b: any) => (
                 <tr key={b.id}>
-                  <td className="p-4 font-bold text-[var(--color-on-surface)]">{b.customer_name || "—"}</td>
+                  <td className="p-4 font-bold text-[var(--color-on-surface)]">{b.user_name || "—"}</td>
+                  <td className="p-4 text-sm text-[var(--color-on-surface-variant)]">{b.user_phone || "—"}</td>
                   <td className="p-4 text-sm text-[var(--color-on-surface-variant)] truncate max-w-[200px]">{b.address || "—"}</td>
-                  <td className="p-4 font-bold text-[var(--color-on-surface)]">₹{(b.total_amount || 0).toLocaleString("en-IN")}</td>
+                  <td className="p-4 font-bold text-[var(--color-on-surface)]">₹{(b.amount || 0).toLocaleString("en-IN")}</td>
                   <td className="p-4">
                     <select
                       value={b.status || "pending"}
