@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
+import { SERVICE_TIME_SLOTS } from "@/lib/data/services";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 
@@ -47,6 +48,10 @@ export default function BookingsPage() {
   const [bookings, setBookings] = useState<ServiceBooking[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"upcoming" | "past">("upcoming");
+  const [rescheduleBooking, setRescheduleBooking] = useState<ServiceBooking | null>(null);
+  const [rescheduleDate, setRescheduleDate] = useState("");
+  const [rescheduleTime, setRescheduleTime] = useState("");
+  const [rescheduling, setRescheduling] = useState(false);
 
   useEffect(() => {
     async function loadBookings() {
@@ -87,6 +92,38 @@ export default function BookingsPage() {
       addToast("Failed to cancel booking", "error");
     }
   }
+
+  async function handleReschedule() {
+    if (!rescheduleBooking || !rescheduleDate || !rescheduleTime) return;
+    setRescheduling(true);
+    try {
+      const { error } = await supabase
+        .from("service_bookings")
+        .update({ scheduled_date: rescheduleDate, scheduled_time: rescheduleTime })
+        .eq("id", rescheduleBooking.id);
+      if (error) throw error;
+      setBookings(prev => prev.map(b => b.id === rescheduleBooking.id ? { ...b, scheduled_date: rescheduleDate, scheduled_time: rescheduleTime } : b));
+      setRescheduleBooking(null);
+      setRescheduleDate("");
+      setRescheduleTime("");
+      addToast("Booking rescheduled", "success");
+    } catch {
+      addToast("Failed to reschedule", "error");
+    } finally {
+      setRescheduling(false);
+    }
+  }
+
+  const rescheduleDates = useMemo(() =>
+    Array.from({ length: 7 }, (_, i) => {
+      const d = new Date();
+      d.setDate(d.getDate() + i);
+      return {
+        value: d.toISOString().split("T")[0],
+        label: i === 0 ? "Today" : i === 1 ? "Tomorrow" : d.toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" }),
+      };
+    }), []
+  );
 
   return (
     <div className="min-h-screen bg-surface pb-24">
@@ -210,8 +247,19 @@ export default function BookingsPage() {
                     </div>
                   )}
 
-                  {booking.status === "confirmed" && (
+                  {(booking.status === "confirmed" || booking.status === "pending") && (
                     <div className="flex gap-2">
+                      <button
+                        onClick={() => {
+                          setRescheduleBooking(booking);
+                          setRescheduleDate(booking.scheduled_date || "");
+                          setRescheduleTime(booking.scheduled_time || "");
+                        }}
+                        className="flex-1 py-2 bg-primary/10 text-primary rounded-lg text-xs font-bold text-center hover:bg-primary/20 transition-colors flex items-center justify-center gap-1"
+                      >
+                        <span className="material-symbols-outlined text-[14px]">edit_calendar</span>
+                        Reschedule
+                      </button>
                       <button
                         onClick={async () => {
                           if (window.confirm("Cancel this booking?")) {
@@ -220,7 +268,7 @@ export default function BookingsPage() {
                         }}
                         className="flex-1 py-2 border border-outline-variant rounded-lg text-xs font-bold text-on-surface-variant hover:bg-surface transition-colors"
                       >
-                        Cancel Booking
+                        Cancel
                       </button>
                     </div>
                   )}
@@ -230,6 +278,68 @@ export default function BookingsPage() {
           </div>
         )}
       </main>
+
+      {/* Reschedule Modal */}
+      {rescheduleBooking && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end justify-center">
+          <div className="bg-surface-container-lowest w-full max-w-lg rounded-t-3xl shadow-2xl p-6 pb-10 animate-slide-reveal">
+            <div className="w-12 h-1.5 bg-surface-container-high rounded-full mx-auto mb-5" />
+            <h2 className="text-lg font-bold text-on-surface mb-1">Reschedule Booking</h2>
+            <p className="text-sm text-on-surface-variant mb-5">{rescheduleBooking.sub_service || rescheduleBooking.service_type}</p>
+
+            <p className="font-bold text-on-surface text-sm mb-2">Select Date</p>
+            <div className="flex gap-2 overflow-x-auto no-scrollbar mb-4">
+              {rescheduleDates.map((d) => (
+                <button
+                  key={d.value}
+                  onClick={() => setRescheduleDate(d.value)}
+                  className={`flex-shrink-0 px-4 py-2 rounded-xl text-xs font-bold border-2 transition-all ${
+                    rescheduleDate === d.value
+                      ? "bg-primary text-white border-primary"
+                      : "border-outline text-on-surface-variant hover:border-primary"
+                  }`}
+                >
+                  {d.label}
+                </button>
+              ))}
+            </div>
+
+            <p className="font-bold text-on-surface text-sm mb-2">Select Time</p>
+            <div className="grid grid-cols-2 gap-2 mb-6">
+              {SERVICE_TIME_SLOTS.map((slot) => (
+                <button
+                  key={slot}
+                  onClick={() => setRescheduleTime(slot)}
+                  className={`p-3 rounded-xl text-xs font-bold border-2 transition-all text-left ${
+                    rescheduleTime === slot
+                      ? "bg-primary text-white border-primary"
+                      : "border-outline text-on-surface-variant hover:border-primary"
+                  }`}
+                >
+                  {slot}
+                </button>
+              ))}
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => { setRescheduleBooking(null); setRescheduleDate(""); setRescheduleTime(""); }}
+                className="flex-1 py-3 bg-surface-container rounded-xl font-bold text-sm text-on-surface-variant"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleReschedule}
+                disabled={!rescheduleDate || !rescheduleTime || rescheduling}
+                className="flex-1 py-3 bg-primary text-white rounded-xl font-bold text-sm disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {rescheduling ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : null}
+                {rescheduling ? "Rescheduling..." : "Confirm"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
