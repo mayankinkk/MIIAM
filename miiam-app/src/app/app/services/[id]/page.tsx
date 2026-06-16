@@ -239,7 +239,15 @@ function ServiceDetailContent() {
         {/* Price */}
         <div className="flex items-center justify-between mb-6 p-4 bg-surface-container-low rounded-xl">
           <div>
-            <span className="text-2xl font-black text-on-surface">₹{service.price}</span>
+            {service.priceMin && service.priceMax ? (
+              <div className="flex items-baseline gap-1">
+                <span className="text-xs text-on-surface-variant">Starting at</span>
+                <span className="text-2xl font-black text-on-surface">₹{service.priceMin}</span>
+                <span className="text-sm text-on-surface-variant">– ₹{service.priceMax}</span>
+              </div>
+            ) : (
+              <span className="text-2xl font-black text-on-surface">₹{service.price}</span>
+            )}
             {service.originalPrice && (
               <span className="text-sm text-on-surface-variant/60 line-through ml-2">₹{service.originalPrice}</span>
             )}

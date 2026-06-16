@@ -7,6 +7,8 @@ export interface ServiceData {
   rating: number;
   reviews: number;
   price: number;
+  priceMin?: number;
+  priceMax?: number;
   originalPrice?: number;
   duration: string;
   image: string;
@@ -59,6 +61,8 @@ export const services: ServiceData[] = [
     rating: 4.8,
     reviews: 28450,
     price: 599,
+    priceMin: 499,
+    priceMax: 899,
     originalPrice: 799,
     duration: "90 mins",
     image: "https://images.unsplash.com/photo-1631564591547-4d46fe7c9c0a?w=400&q=80",
@@ -74,6 +78,8 @@ export const services: ServiceData[] = [
     rating: 4.7,
     reviews: 18200,
     price: 450,
+    priceMin: 350,
+    priceMax: 650,
     duration: "30 mins",
     image: "https://images.unsplash.com/photo-1631564591547-4d46fe7c9c0a?w=400&q=80",
     included: ["Gas refill", "Leak check", "Performance test"],

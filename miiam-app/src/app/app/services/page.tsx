@@ -128,7 +128,7 @@ function BookingModal({ service, onClose }: { service: ServiceData; onClose: () 
               <div>
                 <h2 id="booking-modal-title" className="font-black text-on-surface text-lg">{service.name}</h2>
                 <p className="text-primary font-bold">
-                  ₹{service.price} • {service.duration}
+                  {service.priceMin && service.priceMax ? `₹${service.priceMin} – ₹${service.priceMax}` : `₹${service.price}`} • {service.duration}
                 </p>
               </div>
             </div>
