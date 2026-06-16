@@ -327,6 +327,15 @@ export default function BookingsPage() {
                   )}
 
                   {(booking.status === "confirmed" || booking.status === "pending") && (
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="flex items-center gap-1.5 bg-blue-50 text-blue-700 px-3 py-1.5 rounded-full text-[10px] font-bold">
+                        <span className="material-symbols-outlined text-[12px]" style={{ fontVariationSettings: "'FILL' 1" }}>event</span>
+                        Scheduled {dateStr} {booking.scheduled_time ? `· ${booking.scheduled_time}` : ""}
+                      </div>
+                    </div>
+                  )}
+
+                  {(booking.status === "confirmed" || booking.status === "pending") && (
                     <div className="flex gap-2">
                       <button
                         onClick={() => {
