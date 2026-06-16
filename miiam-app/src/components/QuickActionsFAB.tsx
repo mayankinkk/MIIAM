@@ -105,6 +105,8 @@ export function MiniFAB() {
       style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}>
       <button
         onClick={() => setIsOpen(!isOpen)}
+        aria-label={isOpen ? "Close menu" : "Open quick actions"}
+        aria-expanded={isOpen}
         className="w-12 h-12 bg-[var(--color-primary)] rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform"
       >
         <span className="material-symbols-outlined text-white text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>
@@ -142,6 +144,7 @@ export function ChatFAB() {
   return (
     <Link
       href="/app/support/chat"
+      aria-label="Chat with support"
       className="fixed bottom-24 right-6 z-40 w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform animate-bounce-in"
       style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}
     >

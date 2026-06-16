@@ -65,11 +65,14 @@ export default function ReviewForm({ vendorId, orderId, onSuccess }: ReviewFormP
     <form onSubmit={handleSubmit} className="bg-[var(--color-surface-container-lowest)] rounded-xl p-6 shadow-sm">
       <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Rate your experience</h3>
       
-      <div className="flex items-center gap-1 mb-4">
+      <div className="flex items-center gap-1 mb-4" role="radiogroup" aria-label="Rating">
         {[1, 2, 3, 4, 5].map((star) => (
           <button
             key={star}
             type="button"
+            role="radio"
+            aria-checked={rating === star}
+            aria-label={`${star} star${star > 1 ? "s" : ""}`}
             onClick={() => setRating(star)}
             onMouseEnter={() => setHoverRating(star)}
             onMouseLeave={() => setHoverRating(0)}

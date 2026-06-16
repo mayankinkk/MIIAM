@@ -129,22 +129,70 @@ type SortOption = "rating" | "delivery_time" | "price_low" | "price_high";
 function SortDropdown({ sort, setSort }: { sort: SortOption; setSort: (s: SortOption) => void }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(-1);
   const options: { value: SortOption; label: string }[] = [
     { value: "rating", label: t.food.rating },
     { value: "delivery_time", label: t.food.deliveryTime },
     { value: "price_low", label: t.food.priceLowToHigh },
     { value: "price_high", label: t.food.priceHighToLow },
   ];
+  const listboxId = `sort-listbox-${Math.random().toString(36).slice(2, 9)}`;
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (!open) return;
+    switch (e.key) {
+      case "ArrowDown":
+        e.preventDefault();
+        setActiveIndex(prev => (prev < options.length - 1 ? prev + 1 : 0));
+        break;
+      case "ArrowUp":
+        e.preventDefault();
+        setActiveIndex(prev => (prev > 0 ? prev - 1 : options.length - 1));
+        break;
+      case "Enter":
+        e.preventDefault();
+        if (activeIndex >= 0 && activeIndex < options.length) {
+          setSort(options[activeIndex].value);
+          setOpen(false);
+          setActiveIndex(-1);
+        }
+        break;
+      case "Escape":
+        e.preventDefault();
+        setOpen(false);
+        setActiveIndex(-1);
+        break;
+    }
+  };
+
   return (
     <div className="relative">
-      <button onClick={() => { setOpen(!open); if (navigator.vibrate) navigator.vibrate(10); }} className="flex items-center gap-2 px-3 py-2 bg-surface-container rounded-full text-sm font-medium active:scale-95 transition-transform">
-        <span className="material-symbols-outlined text-sm">swap_vert</span>
+      <button
+        onClick={() => { setOpen(!open); setActiveIndex(-1); if (navigator.vibrate) navigator.vibrate(10); }}
+        onKeyDown={handleKeyDown}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        aria-label="Sort restaurants"
+        className="flex items-center gap-2 px-3 py-2 bg-surface-container rounded-full text-sm font-medium active:scale-95 transition-transform"
+      >
+        <span className="material-symbols-outlined text-sm" aria-hidden="true">swap_vert</span>
         {options.find(o => o.value === sort)?.label}
       </button>
       {open && (
-        <div className="absolute top-full right-0 mt-2 bg-surface-container-lowest rounded-xl shadow-lg border border-outline-variant z-20 min-w-[180px] animate-pop-in">
-          {options.map((opt) => (
-            <button key={opt.value} onClick={() => { setSort(opt.value); setOpen(false); }} className={`w-full text-left px-4 py-2.5 text-sm hover:bg-surface-container-low ${sort === opt.value ? "text-primary font-bold" : "text-on-surface-variant"}`}>
+        <div
+          id={listboxId}
+          role="listbox"
+          aria-label="Sort options"
+          className="absolute top-full right-0 mt-2 bg-surface-container-lowest rounded-xl shadow-lg border border-outline-variant z-20 min-w-[180px] animate-pop-in"
+        >
+          {options.map((opt, i) => (
+            <button
+              key={opt.value}
+              role="option"
+              aria-selected={sort === opt.value}
+              onClick={() => { setSort(opt.value); setOpen(false); setActiveIndex(-1); }}
+              className={`w-full text-left px-4 py-2.5 text-sm hover:bg-surface-container-low ${sort === opt.value ? "text-primary font-bold" : "text-on-surface-variant"} ${activeIndex === i ? "bg-surface-container-low" : ""}`}
+            >
               {opt.label}
             </button>
           ))}
