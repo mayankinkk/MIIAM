@@ -33,8 +33,8 @@ const nextConfig = {
     ],
   },
   experimental: {
-    bundleSizeHotswapThreshold: 250,
   },
+  serverExternalPackages: ["web-push"],
   async headers() {
     return [
       {
