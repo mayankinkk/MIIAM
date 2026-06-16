@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef, useCallback } from "react";
 
 interface BottomSheetProps {
   open: boolean;
@@ -12,25 +12,74 @@ interface BottomSheetProps {
 }
 
 export default function BottomSheet({ open, onClose, title, subtitle, children, actions }: BottomSheetProps) {
+  const sheetRef = useRef<HTMLDivElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+  const titleId = useRef(`bottomsheet-title-${Math.random().toString(36).slice(2, 9)}`);
+
   useEffect(() => {
     if (open) {
+      previousFocusRef.current = document.activeElement as HTMLElement;
       document.body.style.overflow = "hidden";
+      // Focus the sheet after animation
+      requestAnimationFrame(() => {
+        sheetRef.current?.focus();
+      });
     } else {
       document.body.style.overflow = "";
+      // Return focus to trigger element
+      previousFocusRef.current?.focus();
     }
     return () => { document.body.style.overflow = ""; };
   }, [open]);
 
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === "Escape") {
+      e.stopPropagation();
+      onClose();
+      return;
+    }
+    // Focus trap
+    if (e.key === "Tab" && sheetRef.current) {
+      const focusable = sheetRef.current.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    }
+  }, [onClose]);
+
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end justify-center" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end justify-center"
+      onClick={onClose}
+      role="presentation"
+    >
       <div
-        className="bg-surface-container-lowest w-full max-w-lg rounded-t-3xl shadow-2xl p-6 pb-10 animate-slide-reveal"
+        ref={sheetRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId.current}
+        tabIndex={-1}
+        className="bg-surface-container-lowest w-full max-w-lg rounded-t-3xl shadow-2xl p-6 pb-10 animate-slide-reveal outline-none"
         onClick={(e) => e.stopPropagation()}
+        onKeyDown={handleKeyDown}
       >
         <div className="w-12 h-1.5 bg-surface-container-high rounded-full mx-auto mb-5" />
-        <h2 className="text-lg font-bold text-on-surface mb-1">{title}</h2>
+        <h2 id={titleId.current} className="text-lg font-bold text-on-surface mb-1">{title}</h2>
         {subtitle && <p className="text-sm text-on-surface-variant mb-5">{subtitle}</p>}
 
         {children}
