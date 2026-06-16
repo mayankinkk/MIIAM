@@ -14,6 +14,7 @@ import { SkipLink } from "@/lib/accessibility";
 import CookieConsent from "@/components/CookieConsent";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import TopLoadingBar from "@/components/TopLoadingBar";
+import QueryProvider from "@/components/QueryProvider";
 
 const jakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -121,17 +122,19 @@ export default function RootLayout({
         <OfflineBanner />
         <ThemeProvider>
           <ConfirmProvider>
-            <SplashScreen />
-            <ServiceWorkerRegistration />
-            <AnalyticsTracker />
-            <TopLoadingBar />
-            <ErrorBoundary>
-              <div id="main-content">
-                <PageTransition>{children}</PageTransition>
-              </div>
-            </ErrorBoundary>
-            <Toaster />
-            <CookieConsent />
+            <QueryProvider>
+              <SplashScreen />
+              <ServiceWorkerRegistration />
+              <AnalyticsTracker />
+              <TopLoadingBar />
+              <ErrorBoundary>
+                <div id="main-content">
+                  <PageTransition>{children}</PageTransition>
+                </div>
+              </ErrorBoundary>
+              <Toaster />
+              <CookieConsent />
+            </QueryProvider>
           </ConfirmProvider>
         </ThemeProvider>
       </body>
