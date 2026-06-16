@@ -52,6 +52,12 @@ export default function BookingsPage() {
   const [rescheduleDate, setRescheduleDate] = useState("");
   const [rescheduleTime, setRescheduleTime] = useState("");
   const [rescheduling, setRescheduling] = useState(false);
+  const [ratingBooking, setRatingBooking] = useState<ServiceBooking | null>(null);
+  const [rating, setRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [reviewText, setReviewText] = useState("");
+  const [submittingRating, setSubmittingRating] = useState(false);
+  const [ratedBookings, setRatedBookings] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     async function loadBookings() {
@@ -124,6 +130,32 @@ export default function BookingsPage() {
       };
     }), []
   );
+
+  async function handleSubmitRating() {
+    if (!ratingBooking || rating === 0) return;
+    setSubmittingRating(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { error } = await supabase.from("reviews").insert({
+        user_id: user.id,
+        rating,
+        review_text: reviewText.trim() || null,
+        type: "service",
+        order_id: ratingBooking.id,
+      });
+      if (error) throw error;
+      setRatedBookings(prev => new Set(prev).add(ratingBooking.id));
+      setRatingBooking(null);
+      setRating(0);
+      setReviewText("");
+      addToast("Thank you for your review!", "success");
+    } catch {
+      addToast("Failed to submit review", "error");
+    } finally {
+      setSubmittingRating(false);
+    }
+  }
 
   return (
     <div className="min-h-screen bg-surface pb-24">
@@ -272,6 +304,32 @@ export default function BookingsPage() {
                       </button>
                     </div>
                   )}
+
+                  {booking.status === "completed" && !ratedBookings.has(booking.id) && (
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => { setRatingBooking(booking); setRating(0); setReviewText(""); }}
+                        className="flex-1 py-2 bg-amber-100 text-amber-700 rounded-lg text-xs font-bold text-center hover:bg-amber-200 transition-colors flex items-center justify-center gap-1"
+                      >
+                        <span className="material-symbols-outlined text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                        Rate Service
+                      </button>
+                      <Link
+                        href={`/app/bookings/${booking.id}/track`}
+                        className="flex-1 py-2 bg-primary/10 text-primary rounded-lg text-xs font-bold text-center hover:bg-primary/20 transition-colors flex items-center justify-center gap-1"
+                      >
+                        <span className="material-symbols-outlined text-[14px]">replay</span>
+                        Book Again
+                      </Link>
+                    </div>
+                  )}
+
+                  {booking.status === "completed" && ratedBookings.has(booking.id) && (
+                    <div className="flex items-center gap-2 text-green-600 text-xs font-bold">
+                      <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                      Reviewed
+                    </div>
+                  )}
                 </div>
               );
             })}
@@ -335,6 +393,69 @@ export default function BookingsPage() {
               >
                 {rescheduling ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : null}
                 {rescheduling ? "Rescheduling..." : "Confirm"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Rating Modal */}
+      {ratingBooking && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end justify-center">
+          <div className="bg-surface-container-lowest w-full max-w-lg rounded-t-3xl shadow-2xl p-6 pb-10 animate-slide-reveal">
+            <div className="w-12 h-1.5 bg-surface-container-high rounded-full mx-auto mb-5" />
+            <h2 className="text-lg font-bold text-on-surface mb-1">Rate Your Experience</h2>
+            <p className="text-sm text-on-surface-variant mb-5">{ratingBooking.sub_service || ratingBooking.service_type}</p>
+
+            <div className="flex items-center justify-center gap-2 mb-5">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  onClick={() => setRating(star)}
+                  onMouseEnter={() => setHoverRating(star)}
+                  onMouseLeave={() => setHoverRating(0)}
+                  className="p-2"
+                >
+                  <span
+                    className="material-symbols-outlined text-5xl transition-all"
+                    style={{
+                      fontVariationSettings: "'FILL' 1",
+                      color: star <= (hoverRating || rating) ? "#ffd700" : "#e5e7eb",
+                    }}
+                  >
+                    star
+                  </span>
+                </button>
+              ))}
+            </div>
+            {rating > 0 && (
+              <p className="text-center text-sm text-on-surface-variant mb-4">
+                {rating === 1 ? "Poor" : rating === 2 ? "Fair" : rating === 3 ? "Good" : rating === 4 ? "Very Good" : "Excellent"}
+              </p>
+            )}
+
+            <textarea
+              value={reviewText}
+              onChange={(e) => setReviewText(e.target.value)}
+              placeholder="Tell us about your experience (optional)"
+              className="w-full p-3 border-2 border-outline rounded-xl text-sm focus:border-primary focus:outline-none resize-none mb-5"
+              rows={3}
+            />
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => { setRatingBooking(null); setRating(0); setReviewText(""); }}
+                className="flex-1 py-3 bg-surface-container rounded-xl font-bold text-sm text-on-surface-variant"
+              >
+                Skip
+              </button>
+              <button
+                onClick={handleSubmitRating}
+                disabled={rating === 0 || submittingRating}
+                className="flex-1 py-3 bg-primary text-white rounded-xl font-bold text-sm disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {submittingRating ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : null}
+                {submittingRating ? "Submitting..." : "Submit"}
               </button>
             </div>
           </div>
