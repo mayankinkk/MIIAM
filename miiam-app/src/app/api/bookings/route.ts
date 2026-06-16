@@ -77,11 +77,14 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
-      console.error("Supabase insert error:", error.message, error.code, error.details);
+      console.error("Booking insert failed:", JSON.stringify({ code: error.code, message: error.message, details: error.details, hint: error.hint }));
+      if (error.code === "23503") {
+        return NextResponse.json({ error: "Your account profile is incomplete. Please contact support." }, { status: 400 });
+      }
       if (error.code === "42P01" || error.message?.includes("does not exist")) {
         return NextResponse.json({ error: "Service bookings not available yet. Please try again later." }, { status: 503 });
       }
-      throw error;
+      return NextResponse.json({ error: error.message || "Booking failed" }, { status: 500 });
     }
 
     // Send booking confirmation email (best-effort)
@@ -106,7 +109,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true, booking });
   } catch (error) {
-    console.error("Booking error:", error);
+    console.error("Booking route error:", error instanceof Error ? error.message : error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
