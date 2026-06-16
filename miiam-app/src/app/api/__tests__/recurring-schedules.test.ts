@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import { NextRequest } from "next/server";
 
 const mockSupabase = {
   from: vi.fn(),
@@ -32,14 +33,15 @@ describe("Recurring schedules API", () => {
   it("GET returns 401 when unauthenticated", async () => {
     mockSupabase.auth.getUser.mockResolvedValue({ data: { user: null }, error: { message: "No user" } });
     const { GET } = await import("@/app/api/recurring-schedules/route");
-    const res = await GET();
+    const req = new NextRequest("http://localhost:3000/api/recurring-schedules");
+    const res = await GET(req);
     expect(res.status).toBe(401);
   });
 
   it("POST validates required fields", async () => {
     mockSupabase.auth.getUser.mockResolvedValue({ data: { user: { id: "u1" } }, error: null });
     const { POST } = await import("@/app/api/recurring-schedules/route");
-    const res = await POST(new Request("http://localhost:3000/api/recurring-schedules", {
+    const res = await POST(new NextRequest("http://localhost:3000/api/recurring-schedules", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ vendor_id: "v1" }),
@@ -55,7 +57,7 @@ describe("Recurring schedules API", () => {
     mockSupabase.from.mockReturnValue(buildMockSupabase(mockData));
 
     const { POST } = await import("@/app/api/recurring-schedules/route");
-    const res = await POST(new Request("http://localhost:3000/api/recurring-schedules", {
+    const res = await POST(new NextRequest("http://localhost:3000/api/recurring-schedules", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -79,7 +81,7 @@ describe("Recurring schedules API", () => {
     mockSupabase.from.mockReturnValue(buildMockSupabase(mockData));
 
     const { PATCH } = await import("@/app/api/recurring-schedules/[id]/route");
-    const req = new Request("http://localhost:3000/api/recurring-schedules/s1", {
+    const req = new NextRequest("http://localhost:3000/api/recurring-schedules/s1", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status: "paused" }),
@@ -98,7 +100,7 @@ describe("Recurring schedules API", () => {
     });
 
     const { DELETE } = await import("@/app/api/recurring-schedules/[id]/route");
-    const req = new Request("http://localhost:3000/api/recurring-schedules/s1", { method: "DELETE" });
+    const req = new NextRequest("http://localhost:3000/api/recurring-schedules/s1", { method: "DELETE" });
     const res = await DELETE(req, { params: Promise.resolve({ id: "s1" }) });
     expect(res.status).toBe(200);
     const body = await res.json();

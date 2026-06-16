@@ -69,7 +69,7 @@ export default function CartPage() {
         .select("id")
         .in("id", vendorIds);
       if (data) {
-        const charges = data.reduce((acc, v) => {
+        const charges = data.reduce((acc: Record<string, number>, v: { id: string }) => {
           acc[v.id] = 0;
           return acc;
         }, {} as Record<string, number>);

@@ -117,7 +117,7 @@ export default function RiderDashboard() {
 
         let totalEarnings = 0;
         const { data: allDeliveredOrders } = await supabase.from("orders").select("rider_earning").eq("rider_id", riderIdVal).in("status", ["delivered", "completed"]);
-        totalEarnings = (allDeliveredOrders || []).reduce((s, o) => s + (Number(o.rider_earning) || 0), 0);
+        totalEarnings = (allDeliveredOrders || []).reduce((s: number, o: { rider_earning: number | null }) => s + (Number(o.rider_earning) || 0), 0);
         if (!totalEarnings) {
           const { data: walletFallback } = await supabase.from("rider_wallets").select("total_earnings").eq("rider_id", riderIdVal).maybeSingle();
           totalEarnings = Number(walletFallback?.total_earnings) || 0;
@@ -127,14 +127,14 @@ export default function RiderDashboard() {
         const todayStart = new Date(); todayStart.setHours(0, 0, 0, 0);
         let todayEarned = 0; let collected = 0;
         const { data: todayOrders } = await supabase.from("orders").select("rider_earning, customer_collected").eq("rider_id", riderIdVal).in("status", ["delivered", "completed"]).gte("placed_at", todayStart.toISOString());
-        todayEarned = (todayOrders || []).reduce((s, o) => s + (Number(o.rider_earning) || 0), 0);
+        todayEarned = (todayOrders || []).reduce((s: number, o: { rider_earning: number | null }) => s + (Number(o.rider_earning) || 0), 0);
         if (!todayEarned) {
           const weekStart = new Date(); weekStart.setHours(0, 0, 0, 0);
           const { data: todayTxns } = await supabase.from("rider_wallet").select("amount").eq("rider_id", riderIdVal).eq("type", "earning").gte("created_at", weekStart.toISOString());
-          todayEarned = (todayTxns || []).reduce((s, t) => s + Number(t.amount), 0);
+          todayEarned = (todayTxns || []).reduce((s: number, t: { amount: number }) => s + Number(t.amount), 0);
         }
         setTodayEarnings(todayEarned);
-        (todayOrders || []).forEach(o => { collected += Number(o.customer_collected) || 0; });
+        (todayOrders || []).forEach((o: { customer_collected: number | null }) => { collected += Number(o.customer_collected) || 0; });
         setCashCollected(collected); setCashPending(0);
 
         const { data: settings } = await supabase.from("rider_settings").select("dnd_mode, sound_enabled, vibration_enabled").eq("rider_id", riderIdVal).maybeSingle();
@@ -146,7 +146,7 @@ export default function RiderDashboard() {
 
         const { data: quests } = await supabase.from("rider_quest_progress").select("*").eq("rider_id", riderIdVal);
         if (quests && quests.length > 0) {
-          setDailyQuests(quests.map(q => ({
+          setDailyQuests(quests.map((q: { quest_id: number; current_progress: number; target: number; bonus: number }) => ({
             id: q.quest_id, title: q.quest_id === 1 ? questTitles.complete5 : q.quest_id === 2 ? questTitles.earn500 : questTitles.threeStar,
             current: q.current_progress, target: q.target, bonus: q.bonus,
           })));
@@ -247,7 +247,7 @@ export default function RiderDashboard() {
         const { data: dbOrders } = await supabase.from("orders").select("*").is("rider_id", null).in("status", ["ready_for_pickup"]).gte("placed_at", yesterday.toISOString()).order("placed_at", { ascending: false });
         if (!dbOrders || dbOrders.length === 0) { setPendingOrders([]); return; }
         const now = Date.now(); const expirationTime = now + (5 * 60 * 1000);
-        const mappedOrders: OrderWithTiming[] = await Promise.all(dbOrders.map(async (dbOrder) => {
+        const mappedOrders: OrderWithTiming[] = await Promise.all(dbOrders.map(async (dbOrder: Record<string, unknown>) => {
           const [vendorRes, itemsRes, profileRes] = await Promise.all([
             dbOrder.vendor_id ? supabase.from("vendors").select("*").eq("id", dbOrder.vendor_id).maybeSingle() : Promise.resolve({ data: null }),
             supabase.from("order_items").select("*").eq("order_id", dbOrder.id),
@@ -256,11 +256,11 @@ export default function RiderDashboard() {
           let itemsList: string[] = []; let itemsCount = 0;
           const items = itemsRes.data || [];
           if (items.length > 0) {
-            itemsCount = items.reduce((sum, item) => sum + item.quantity, 0);
-            const menuItemIds = items.map(i => i.menu_item_id).filter(Boolean);
+            itemsCount = items.reduce((sum: number, item: { quantity: number }) => sum + item.quantity, 0);
+            const menuItemIds = items.map((i: { menu_item_id: string | null }) => i.menu_item_id).filter(Boolean);
             if (menuItemIds.length > 0) {
               const { data: menuItems } = await supabase.from("menu_items").select("*").in("id", menuItemIds);
-              if (menuItems) itemsList = items.map((item: any) => { const menuItem = menuItems.find(mi => mi.id === item.menu_item_id); return `${item.quantity}x ${menuItem?.name || "Item"}`; });
+              if (menuItems) itemsList = items.map((item: { quantity: number; menu_item_id: string | null }) => { const menuItem = menuItems.find((mi: { id: string }) => mi.id === item.menu_item_id); return `${item.quantity}x ${menuItem?.name || "Item"}`; });
             }
           }
           return {
@@ -271,9 +271,9 @@ export default function RiderDashboard() {
             customerPhone: profileRes.data?.phone || dbOrder.customer_phone || "+91 88888 88888",
             customerAddress: dbOrder.delivery_address || "Customer Delivery Location", landmark: dbOrder.special_instructions || "N/A",
             distance: 0, distance2: 0, totalDistance: 0, earnings: calculateEarnings(0),
-            orderTotal: Math.round(dbOrder.total_amount || 0), items: itemsCount || 1,
+            orderTotal: Math.round(Number(dbOrder.total_amount) || 0), items: itemsCount || 1,
             itemsList: itemsList.length > 0 ? itemsList : ["Items hidden"], time: "Calculating...", time2: "Calculating...",
-            estCompletion: 0, priority: (dbOrder.total_amount > 500) ? "high" : "normal", peakMultiplier: 1.0,
+            estCompletion: 0, priority: (Number(dbOrder.total_amount) > 500) ? "high" : "normal", peakMultiplier: 1.0,
             specialInstructions: dbOrder.special_instructions || "", otp: dbOrder.otp || "", type: vendorRes.data?.type || "food",
             expiresAt: expirationTime, isSnoozed: false,
           } as OrderWithTiming;

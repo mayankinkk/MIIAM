@@ -58,10 +58,7 @@ export default function RiderVehiclePage() {
       // Load vehicles
       const { data: vdata } = await supabase.from("rider_vehicles").select("*").eq("rider_id", riderData.id);
       if (vdata && vdata.length > 0) {
-        const mapped: Vehicle[] = vdata.map(v => ({
-          id: v.id,
-          name: v.name,
-          type: v.type as Vehicle["type"],
+        const mapped: Vehicle[] = vdata.map((v: { id: string; name: string; type: string; model: string | null; number: string | null; insurance_expiry: string | null; license_expiry: string | null; is_default: boolean | null }) => ({
           model: v.model || "",
           number: v.number || "",
           insuranceExpiry: v.insurance_expiry || "",
@@ -75,10 +72,10 @@ export default function RiderVehiclePage() {
       // Load maintenance records for first vehicle
       if (vdata && vdata[0]) {
         const { data: mdata } = await supabase.from("rider_vehicle_maintenance").select("*").eq("vehicle_id", vdata[0].id).order("date", { ascending: false });
-        if (mdata) setMaintenanceRecords(mdata.map(m => ({ ...m, cost: Number(m.cost), date: m.date })));
+        if (mdata) setMaintenanceRecords(mdata.map((m: { id: string; vehicle_id: string; cost: number | string; date: string; [key: string]: unknown }) => ({ ...m, cost: Number(m.cost), date: m.date })));
 
         const { data: fdata } = await supabase.from("rider_vehicle_fuel").select("*").eq("vehicle_id", vdata[0].id).order("date", { ascending: false });
-        if (fdata) setFuelLog(fdata.map(f => ({ ...f, cost: Number(f.cost), liters: Number(f.liters) })));
+        if (fdata) setFuelLog(fdata.map((f: { id: string; vehicle_id: string; cost: number | string; liters: number | string; date: string; [key: string]: unknown }) => ({ ...f, cost: Number(f.cost), liters: Number(f.liters) })));
       }
 
       setHasInitialData(true);
@@ -346,10 +343,7 @@ export default function RiderVehiclePage() {
             if (riderId) {
               const { data: vdata } = await supabase.from("rider_vehicles").select("*").eq("rider_id", riderId);
               if (vdata) {
-                const mapped: Vehicle[] = vdata.map(v => ({
-                  id: v.id,
-                  name: v.name,
-                  type: v.type as Vehicle["type"],
+                const mapped: Vehicle[] = vdata.map((v: { id: string; name: string; type: string; model: string | null; number: string | null; insurance_expiry: string | null; license_expiry: string | null; is_default: boolean | null }) => ({
                   model: v.model || "",
                   number: v.number || "",
                   insuranceExpiry: v.insurance_expiry || "",

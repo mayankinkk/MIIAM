@@ -16,7 +16,7 @@ export default function RiderChatPage() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(({ data: { user } }: { data: { user: { id: string; email?: string } | null } }) => {
       if (user) setCurrentUserId(user.id);
       else router.push("/rider/login");
     });

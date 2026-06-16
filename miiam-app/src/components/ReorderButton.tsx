@@ -49,7 +49,7 @@ export function ReorderButton({ order }: ReorderButtonProps) {
       }
 
       for (const orderItem of order.items) {
-        const menuItem = menuItems.find(m => 
+        const menuItem = menuItems.find((m: { id: string; name: string; price: number; image_url: string; vendor_id: string }) =>
           m.name.toLowerCase() === orderItem.name.toLowerCase()
         );
         

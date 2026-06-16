@@ -182,10 +182,10 @@ export function useOrderTracking(orderId: string, supabaseClient?: SupabaseClien
           table: "orders",
           filter: `id=eq.${orderId}`,
         },
-        async (payload) => {
+        async (payload: Record<string, unknown>) => {
           if (!payload.new || typeof payload.new !== "object") return;
-          const newData = payload.new as any;
-          const newStatus = newData.status;
+          const newData = payload.new as Record<string, unknown>;
+          const newStatus = newData.status as string;
           const oldStatus = statusRef.current;
 
           let riderData = null;
@@ -193,7 +193,7 @@ export function useOrderTracking(orderId: string, supabaseClient?: SupabaseClien
             const { data } = await supabase
               .from("riders")
               .select("*")
-              .eq("id", newData.rider_id)
+              .eq("id", newData.rider_id as string)
               .maybeSingle();
             riderData = data;
           }

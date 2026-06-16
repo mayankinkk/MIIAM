@@ -25,15 +25,20 @@ export default function AdminCustomerInsights() {
       supabase.from("profiles").select("id, full_name, created_at"),
     ]);
 
-    const orders = ordersRes.data || [];
-    const vendors = vendorsRes.data || [];
-    const reviews = reviewsRes.data || [];
-    const profiles = profilesRes.data || [];
+    type OrderRow = { user_id: string; vendor_id: string; total_amount: number | null; status: string; placed_at: string };
+    type VendorRow = { id: string; shop_name: string; type: string | null; rating: number | null; review_count: number | null };
+    type ReviewRow = { user_id: string; vendor_id: string; rating: number; created_at: string };
+    type ProfileRow = { id: string; full_name: string; created_at: string };
 
-    const orderUsers = new Set(orders.map(o => o.user_id));
+    const orders: OrderRow[] = ordersRes.data || [];
+    const vendors: VendorRow[] = vendorsRes.data || [];
+    const reviews: ReviewRow[] = reviewsRes.data || [];
+    const profiles: ProfileRow[] = profilesRes.data || [];
+
+    const orderUsers = new Set(orders.map((o: OrderRow) => o.user_id));
     const repeatUserIds: string[] = [];
     const userOrderCounts: Record<string, number> = {};
-    orders.forEach(o => {
+    orders.forEach((o: OrderRow) => {
       userOrderCounts[o.user_id] = (userOrderCounts[o.user_id] || 0) + 1;
     });
     Object.entries(userOrderCounts).forEach(([uid, count]) => {
@@ -41,7 +46,7 @@ export default function AdminCustomerInsights() {
     });
 
     const vendorOrderCounts: Record<string, number> = {};
-    orders.forEach(o => {
+    orders.forEach((o: OrderRow) => {
       vendorOrderCounts[o.vendor_id] = (vendorOrderCounts[o.vendor_id] || 0) + 1;
     });
 
@@ -51,7 +56,7 @@ export default function AdminCustomerInsights() {
       .slice(0, 10);
 
     const vendorRatings: Record<string, { sum: number; count: number }> = {};
-    reviews.forEach(r => {
+    reviews.forEach((r: ReviewRow) => {
       if (!vendorRatings[r.vendor_id]) vendorRatings[r.vendor_id] = { sum: 0, count: 0 };
       vendorRatings[r.vendor_id].sum += r.rating;
       vendorRatings[r.vendor_id].count++;
@@ -66,21 +71,21 @@ export default function AdminCustomerInsights() {
       .sort((a, b) => parseFloat(b.avgRating) - parseFloat(a.avgRating))
       .slice(0, 10);
 
-    const newUsers = profiles.filter(p => new Date(p.created_at) >= new Date(since)).length;
-    const totalOrdersValue = orders.reduce((s, o) => s + (o.total_amount || 0), 0);
-    const deliveredOrders = orders.filter(o => o.status === "delivered").length;
-    const cancelledOrders = orders.filter(o => o.status === "cancelled").length;
+    const newUsers = profiles.filter((p: ProfileRow) => new Date(p.created_at) >= new Date(since)).length;
+    const totalOrdersValue = orders.reduce((s: number, o: OrderRow) => s + (o.total_amount || 0), 0);
+    const deliveredOrders = orders.filter((o: OrderRow) => o.status === "delivered").length;
+    const cancelledOrders = orders.filter((o: OrderRow) => o.status === "cancelled").length;
     const cancellRate = orders.length ? ((cancelledOrders / orders.length) * 100).toFixed(1) : "0";
 
     const ordersByDay: Record<string, number> = {};
-    orders.forEach(o => {
+    orders.forEach((o: OrderRow) => {
       const day = new Date(o.placed_at).toLocaleDateString();
       ordersByDay[day] = (ordersByDay[day] || 0) + 1;
     });
     const peakDays = Object.entries(ordersByDay).sort((a, b) => b[1] - a[1]).slice(0, 5);
 
     const customersPerVendor: Record<string, Set<string>> = {};
-    orders.forEach(o => {
+    orders.forEach((o: OrderRow) => {
       if (!customersPerVendor[o.vendor_id]) customersPerVendor[o.vendor_id] = new Set();
       customersPerVendor[o.vendor_id].add(o.user_id);
     });

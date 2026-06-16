@@ -96,7 +96,7 @@ export default function HomePage() {
 
         if (notifsResult.data) {
           setNotifications(notifsResult.data);
-          setUnreadCount(notifsResult.data.filter(n => !n.read).length);
+          setUnreadCount(notifsResult.data.filter((n: { read: boolean }) => !n.read).length);
         }
       }
 
@@ -172,7 +172,7 @@ export default function HomePage() {
 
       // Set up Realtime subscription to get live notification updates
     const channelRef = { current: null as any };
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(({ data: { user } }: { data: { user: { id: string } | null } }) => {
       if (!user) return;
       const channel = supabase
         .channel(`notifications-${user.id}`)
@@ -181,7 +181,7 @@ export default function HomePage() {
           schema: "public",
           table: "notifications",
           filter: `user_id=eq.${user.id}`,
-        }, (payload) => {
+        }, (payload: { new: Record<string, unknown> }) => {
           setNotifications(prev => [payload.new, ...prev]);
           setUnreadCount(prev => prev + 1);
         })

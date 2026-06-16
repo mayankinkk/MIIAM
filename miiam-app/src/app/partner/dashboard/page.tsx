@@ -35,8 +35,8 @@ export default function VendorDashboard() {
         schema: "public",
         table: "orders",
         filter: `vendor_id=eq.${vendor.id}`,
-      }, (payload) => {
-        const newOrder = payload.new as Order;
+      }, (payload: { new: Record<string, unknown> }) => {
+        const newOrder = payload.new as unknown as Order;
         setOrders((prev) => [newOrder, ...prev]);
         setNewOrderAlert(true);
         playNewOrderSound();
@@ -47,8 +47,8 @@ export default function VendorDashboard() {
         schema: "public",
         table: "orders",
         filter: `vendor_id=eq.${vendor.id}`,
-      }, (payload) => {
-        const updated = payload.new as Order;
+      }, (payload: { new: Record<string, unknown> }) => {
+        const updated = payload.new as unknown as Order;
         setOrders((prev) => prev.map((o) => (o.id === updated.id ? { ...o, ...updated } : o)));
       })
       .subscribe();
@@ -92,7 +92,7 @@ export default function VendorDashboard() {
       .gte("placed_at", weekAgo.toISOString())
       .in("status", ["delivered"]);
     if (data) {
-      setWeeklyRevenue(data.reduce((s, o) => s + (o.total_amount || 0), 0));
+      setWeeklyRevenue(data.reduce((s: number, o: { total_amount: number | null }) => s + (o.total_amount || 0), 0));
       setWeeklyOrders(data.length);
     }
   }

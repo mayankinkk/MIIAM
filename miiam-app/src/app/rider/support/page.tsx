@@ -20,7 +20,7 @@ export default function RiderSupportPage() {
   const support = useSupportSettings();
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(({ data: { user } }: { data: { user: { id: string; email?: string } | null } }) => {
       if (!user) router.push("/rider/login");
     });
   }, [supabase, router]);

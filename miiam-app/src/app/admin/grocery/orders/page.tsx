@@ -69,9 +69,9 @@ export default function GroceryOrdersPage() {
       
       const stats = {
         total: data?.length || 0,
-        pending: data?.filter(o => ["pending", "accepted", "preparing"].includes(o.status)).length || 0,
-        completed: data?.filter(o => o.status === "delivered").length || 0,
-        cancelled: data?.filter(o => o.status === "cancelled").length || 0,
+        pending: data?.filter((o: { status: string }) => ["pending", "accepted", "preparing"].includes(o.status)).length || 0,
+        completed: data?.filter((o: { status: string }) => o.status === "delivered").length || 0,
+        cancelled: data?.filter((o: { status: string }) => o.status === "cancelled").length || 0,
       };
       setStats(stats);
     } catch (error) {

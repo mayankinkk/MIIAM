@@ -89,13 +89,13 @@ export function SearchAutocomplete({ onSelect, className = "" }: SearchAutocompl
       .ilike("name", `%${search}%`)
       .limit(3);
 
-    const menuSuggestions: SearchSuggestion[] = (menuItems || []).map(item => ({
+    const menuSuggestions: SearchSuggestion[] = (menuItems || []).map((item: { name: string }) => ({
       id: `menu-${item.name}`,
       text: item.name,
       type: "dish" as const,
     }));
 
-    const vendorSuggestions: SearchSuggestion[] = (vendors || []).map(v => ({
+    const vendorSuggestions: SearchSuggestion[] = (vendors || []).map((v: { name: string }) => ({
       id: `vendor-${v.name}`,
       text: v.name,
       type: "popular" as const,

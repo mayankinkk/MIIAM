@@ -47,7 +47,7 @@ export default function RiderEarningsPage() {
 
       const riderMap: Record<string, RiderEarning> = {};
 
-      riderData.forEach((rider) => {
+      riderData.forEach((rider: { id: string; name: string | null; rating: number | null; is_online: boolean | null; earnings: number | null }) => {
         riderMap[rider.id] = {
           rider_id: rider.id,
           rider_name: rider.name || "Unknown",
@@ -61,7 +61,7 @@ export default function RiderEarningsPage() {
         };
       });
 
-      ordersData?.forEach((order) => {
+      ordersData?.forEach((order: { rider_id: string | null; total_amount: number; placed_at: string }) => {
         if (order.rider_id && riderMap[order.rider_id]) {
           const earning = order.total_amount * 0.15;
           riderMap[order.rider_id].total_deliveries += 1;

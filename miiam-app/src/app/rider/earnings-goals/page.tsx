@@ -71,7 +71,7 @@ export default function RiderEarningsGoalsPage() {
         const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
         const recent: DeliveryRecord[] = [];
 
-        orders.forEach(o => {
+        orders.forEach((o: { placed_at: string; rider_earning: number | null; id: string; status: string }) => {
           const d = new Date(o.placed_at);
           const earn = o.rider_earning || 0;
           totalE += earn;

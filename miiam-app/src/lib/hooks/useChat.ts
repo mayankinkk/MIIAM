@@ -52,7 +52,7 @@ export function useChat(
           table: "chat_messages",
           filter: `order_id=eq.${orderId}`,
         },
-        (payload) => {
+        (payload: Record<string, unknown>) => {
           const newMessage = payload.new as ChatMessage;
           if (participants && !participants.includes(newMessage.sender_type)) return;
           setMessages((prev) => {
@@ -73,7 +73,7 @@ export function useChat(
           table: "chat_messages",
           filter: `order_id=eq.${orderId}`,
         },
-        (payload) => {
+        (payload: Record<string, unknown>) => {
           const updatedMessage = payload.new as ChatMessage;
           if (participants && !participants.includes(updatedMessage.sender_type)) return;
           setMessages((prev) =>
@@ -167,11 +167,11 @@ export function useChat(
     const channel = supabase.channel(`typing-listeners-${orderId}`);
 
     channel.on("presence", { event: "sync" }, () => {
-      const state = channel.presenceState();
+      const state = channel.presenceState() as Record<string, Array<{ user_id: string; typing: boolean; presence_ref: string }>>;
       const typing: string[] = [];
       
       Object.entries(state).forEach(([key, presences]) => {
-        const presence = presences[0] as any;
+        const presence = presences[0] as { user_id: string; typing: boolean; presence_ref: string } | undefined;
         if (presence?.typing && key !== currentUserId) {
           typing.push(key);
         }
@@ -212,7 +212,7 @@ export function useChatList(userId: string) {
         .from("orders")
         .select("id")
         .eq("user_id", userId);
-      const orderIds = userOrders?.map(o => o.id) || [];
+      const orderIds = userOrders?.map((o: { id: string }) => o.id) || [];
       if (orderIds.length === 0) { setChats([]); setLoading(false); return; }
       const { data, error } = await supabase
         .from("chat_messages")
@@ -223,7 +223,7 @@ export function useChatList(userId: string) {
       if (!error && data) {
         const chatMap: Record<string, ChatRoom> = {};
         
-        data.forEach((msg) => {
+        data.forEach((msg: { order_id: string; sender_id: string; message: string; created_at: string }) => {
           if (!chatMap[msg.order_id]) {
             chatMap[msg.order_id] = {
               order_id: msg.order_id,

@@ -71,7 +71,7 @@ export default function PharmacyMedicinesPage() {
       setMedicines(data || []);
 
       // Extract unique categories from medicines
-      const uniqueCategories = [...new Set(data?.map((m: Medicine) => m.category).filter(Boolean))];
+      const uniqueCategories: string[] = [...new Set(((data ?? []) as Medicine[]).map((m) => m.category).filter(Boolean) ?? [])];
       if (uniqueCategories.length > 0) {
         setCategories([...new Set([...defaultCategories, ...uniqueCategories])]);
       }

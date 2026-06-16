@@ -87,7 +87,7 @@ export default function RiderWalletPage() {
         .order("created_at", { ascending: false })
         .limit(50);
       if (txns) {
-        setTransactions(txns.map(t => ({
+        setTransactions(txns.map((t: { id: string; amount: number | string; type: string; description: string | null; created_at: string; order_id: string | null }) => ({
           id: t.id,
           amount: Number(t.amount),
           type: t.type as Transaction["type"],
@@ -116,7 +116,7 @@ export default function RiderWalletPage() {
       let weekTotalEarnings = 0;
       let weekTotalDeliveries = 0;
 
-      (weekOrders || []).forEach(order => {
+      (weekOrders || []).forEach((order: { placed_at: string; rider_earning: number | null }) => {
         const date = new Date(order.placed_at);
         const dayKey = dayNames[date.getDay()];
         if (dailyMap[dayKey]) {
@@ -148,7 +148,7 @@ export default function RiderWalletPage() {
         .eq("rider_id", riderData.id)
         .in("status", ["delivered", "completed"])
         .gte("placed_at", todayStart.toISOString());
-      const todayEarn = (todayOrders || []).reduce((s, o) => s + (Number(o.rider_earning) || 0), 0);
+      const todayEarn = (todayOrders || []).reduce((s: number, o: { rider_earning: number | null }) => s + (Number(o.rider_earning) || 0), 0);
       setTodayEarnings(todayEarn);
       setTodayDeliveries(todayOrders?.length || 0);
 
@@ -161,7 +161,7 @@ export default function RiderWalletPage() {
         .order("created_at", { ascending: false })
         .limit(20);
       if (payoutTxns) {
-        setPayoutHistory(payoutTxns.map(t => ({
+        setPayoutHistory(payoutTxns.map((t: { created_at: string; amount: number | string; description: string | null }) => ({
           date: new Date(t.created_at).toLocaleDateString("en-IN"),
           amount: Number(t.amount),
           status: "completed",

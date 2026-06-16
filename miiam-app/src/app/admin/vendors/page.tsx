@@ -325,7 +325,7 @@ export default function AdminVendorsPage() {
       .from("menu_items")
       .select("*")
       .eq("vendor_id", vendorId);
-    if (data) setVendorMenuItems(data.map(item => ({ ...item, isNew: false })));
+    if (data) setVendorMenuItems(data.map((item: { id: string; vendor_id: string; name: string; price: number; category: string; image_url: string | null; description: string | null; is_veg: boolean | null; is_featured: boolean | null }) => ({ ...item, isNew: false })));
   };
 
   const handleEditClick = async (vendor: Vendor) => {

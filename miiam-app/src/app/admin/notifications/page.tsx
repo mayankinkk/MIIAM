@@ -35,7 +35,7 @@ export default function NotificationCenter() {
     const { data: users } = await supabase.from("profiles").select("id");
     
     if (users) {
-      const notifications = users.map(u => ({
+      const notifications = users.map((u: { id: string }) => ({
         user_id: u.id,
         title: newNotification.title,
         body: newNotification.body,

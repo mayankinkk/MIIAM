@@ -57,13 +57,13 @@ export default function RiderTrainingPage() {
         .select("*")
         .eq("rider_id", riderData.id);
 
-      const totalPoints = (progress || []).reduce((s, p) => s + (p.points_earned || 0), 0);
+      const totalPoints = (progress || []).reduce((s: number, p: { points_earned: number | null }) => s + (p.points_earned || 0), 0);
       setPointsEarned(totalPoints);
 
       if (progress && progress.length > 0) {
-        setVideos(videoDefs.map(v => ({
+        setVideos(videoDefs.map((v): Video => ({
           ...v,
-          isWatched: progress.some(p => p.video_id === v.id && p.is_watched),
+          isWatched: progress.some((p: { video_id: string; is_watched: boolean }) => p.video_id === v.id && p.is_watched),
         })));
       }
     }

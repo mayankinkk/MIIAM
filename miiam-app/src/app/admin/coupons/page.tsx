@@ -49,7 +49,19 @@ export default function CouponsAdminPage() {
   const loadCoupons = async () => {
     const { data } = await supabase.from("promo_codes").select("*");
     if (data) {
-      setCoupons(data.map(c => ({
+      setCoupons(data.map((c: {
+        id: string;
+        code: string;
+        discount_type: string;
+        discount_value: number | null;
+        min_order_amount: number | null;
+        max_discount: number | null;
+        usage_limit: number | null;
+        uses_count: number | null;
+        created_at: string;
+        is_active: boolean;
+        valid_until: string | null;
+      }) => ({
         id: c.id,
         code: c.code,
         type: c.discount_type === "percentage" ? "percentage" : "fixed",

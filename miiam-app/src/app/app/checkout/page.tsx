@@ -96,7 +96,7 @@ export default function CheckoutPage() {
           .select("id, delivery_charge")
           .in("id", vendorIds);
         if (data) {
-          const charges = data.reduce((acc, v) => {
+          const charges = data.reduce((acc: Record<string, number>, v: { id: string; delivery_charge: number | null }) => {
             acc[v.id] = v.delivery_charge || 0;
             return acc;
           }, {} as Record<string, number>);

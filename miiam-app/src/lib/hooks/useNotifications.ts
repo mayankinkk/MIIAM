@@ -35,7 +35,7 @@ export function useNotifications() {
     initializeNotifications();
 
     let channel: ReturnType<typeof supabase.channel> | null = null;
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(({ data: { user } }: { data: { user: { id: string; email?: string } | null } }) => {
       if (!user) return;
       channel = supabase
         .channel(`notifications-${user.id}`)
@@ -47,11 +47,11 @@ export function useNotifications() {
             table: "notifications",
             filter: `user_id=eq.${user.id}`,
           },
-          (payload) => {
-            const newNotification = payload.new as any;
+          (payload: Record<string, unknown>) => {
+            const newNotification = payload.new as { title: string; body?: string; icon_url?: string; type?: string; data?: Record<string, unknown>; action_url?: string };
             addNotification({
               title: newNotification.title,
-              body: newNotification.body,
+              body: newNotification.body ?? "",
               icon: newNotification.icon_url,
               tag: newNotification.type,
               data: newNotification.data,
@@ -72,7 +72,7 @@ export function useNotifications() {
   }, [supabase, addNotification, initializeNotifications]);
 
   const sendPushNotification = useCallback(
-    async (userId: string, title: string, body: string, data?: Record<string, any>) => {
+    async (userId: string, title: string, body: string, data?: Record<string, unknown>) => {
       const { data: result, error } = await supabase.functions.invoke(
         "send-notification",
         {
@@ -100,7 +100,7 @@ export function useNotifications() {
       title: string,
       body: string,
       scheduledAt: Date,
-      data?: Record<string, any>
+      data?: Record<string, unknown>
     ) => {
       const { error } = await supabase.from("scheduled_notifications").insert({
         user_id: userId,
@@ -148,9 +148,9 @@ export function useOrderNotifications(orderId: string) {
           table: "orders",
           filter: `id=eq.${orderId}`,
         },
-        (payload) => {
-          const order = payload.new as any;
-          const oldStatus = payload.old?.status;
+        (payload: Record<string, unknown>) => {
+          const order = payload.new as { status: string };
+          const oldStatus = (payload.old as { status?: string })?.status;
           const newStatus = order.status;
 
           const statusMessages: Record<string, { title: string; body: string }> = {
@@ -180,10 +180,10 @@ export function useOrderNotifications(orderId: string) {
             },
           };
 
-          if (statusMessages[newStatus]) {
+          if (statusMessages[newStatus as keyof typeof statusMessages]) {
             addNotification({
-              title: statusMessages[newStatus].title,
-              body: statusMessages[newStatus].body,
+              title: statusMessages[newStatus as keyof typeof statusMessages].title,
+              body: statusMessages[newStatus as keyof typeof statusMessages].body,
               tag: "order_update",
               actionUrl: `/app/orders/${orderId}`,
             });

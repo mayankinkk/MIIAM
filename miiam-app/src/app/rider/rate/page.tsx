@@ -23,7 +23,7 @@ function RateCustomerContent() {
   const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(({ data: { user } }: { data: { user: { id: string; email?: string } | null } }) => {
       if (!user) router.push("/rider/login");
       else setAuthChecked(true);
     });

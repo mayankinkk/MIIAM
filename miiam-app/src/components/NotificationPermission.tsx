@@ -56,8 +56,8 @@ export default function NotificationPermission() {
             table: "notifications",
             filter: `user_id=eq.${user.id}`,
           },
-          (payload) => {
-            const newNotif = payload.new as any;
+          (payload: Record<string, unknown>) => {
+            const newNotif = payload.new as { title: string; message?: string; body?: string };
             if (newNotif && isMounted) {
               playNotificationSound();
               // Show in-app animated toast
@@ -83,9 +83,9 @@ export default function NotificationPermission() {
             table: "orders",
             filter: `user_id=eq.${user.id}`,
           },
-          (payload) => {
-            const oldOrder = payload.old as any;
-            const newOrder = payload.new as any;
+          (payload: Record<string, unknown>) => {
+            const oldOrder = payload.old as { status: string };
+            const newOrder = payload.new as { status: string };
             
             if (newOrder && oldOrder && newOrder.status !== oldOrder.status && isMounted) {
               const statusTitles: Record<string, string> = {

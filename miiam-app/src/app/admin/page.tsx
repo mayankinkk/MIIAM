@@ -36,9 +36,9 @@ export default function AdminDashboard() {
     avgOrderValue: 0,
   });
   const [categoryRevenue, setCategoryRevenue] = useState<Record<string, { revenue: number; orders: number }>>({});
-  const [recentOrders, setRecentOrders] = useState<any[]>([]);
-  const [recentVendors, setRecentVendors] = useState<any[]>([]);
-  const [recentActivity, setRecentActivity] = useState<any[]>([]);
+  const [recentOrders, setRecentOrders] = useState<{ id: string; total_amount: number | null; status: string; placed_at: string; vendor_id: string }[]>([]);
+  const [recentVendors, setRecentVendors] = useState<{ id: string; shop_name: string; owner_name: string | null; type: string | null; status: string; created_at: string }[]>([]);
+  const [recentActivity, setRecentActivity] = useState<{ id: string; type: string; message: string; amount: number | null; time: string }[]>([]);
 
   useEffect(() => {
     loadDashboardData();
@@ -62,16 +62,16 @@ export default function AdminDashboard() {
       const riders = ridersRes.data || [];
       const users = usersRes.data || [];
 
-      const totalRevenue = orders.filter(o => o.status === "delivered").reduce((s: number, o: any) => s + (o.total_amount || 0), 0);
-      const ordersToday = orders.filter((o: any) => new Date(o.placed_at) >= today).length;
-      const pendingOrders = orders.filter((o: any) => ["pending", "accepted", "preparing", "ready_for_pickup", "on_the_way"].includes(o.status)).length;
-      const cancelledOrders = orders.filter((o: any) => o.status === "cancelled").length;
-      const activeVendors = vendors.filter((v: any) => v.status === "active").length;
-      const onlineRiders = riders.filter((r: any) => r.status === "active").length;
+      const totalRevenue = orders.filter((o: { status: string; total_amount: number | null }) => o.status === "delivered").reduce((s: number, o: { total_amount: number | null }) => s + (o.total_amount || 0), 0);
+      const ordersToday = orders.filter((o: { placed_at: string }) => new Date(o.placed_at) >= today).length;
+      const pendingOrders = orders.filter((o: { status: string }) => ["pending", "accepted", "preparing", "ready_for_pickup", "on_the_way"].includes(o.status)).length;
+      const cancelledOrders = orders.filter((o: { status: string }) => o.status === "cancelled").length;
+      const activeVendors = vendors.filter((v: { status: string }) => v.status === "active").length;
+      const onlineRiders = riders.filter((r: { status: string }) => r.status === "active").length;
       const totalUsers = users.length;
-      const newUsersToday = users.filter((u: any) => new Date(u.created_at) >= today).length;
-      const avgOrderValue = orders.filter((o: any) => o.status === "delivered").length > 0
-        ? totalRevenue / orders.filter((o: any) => o.status === "delivered").length
+      const newUsersToday = users.filter((u: { created_at: string }) => new Date(u.created_at) >= today).length;
+      const avgOrderValue = orders.filter((o: { status: string }) => o.status === "delivered").length > 0
+        ? totalRevenue / orders.filter((o: { status: string }) => o.status === "delivered").length
         : 0;
 
       setStats({ totalRevenue, ordersToday, totalOrders: orders.length, activeVendors, onlineRiders, pendingOrders, totalUsers, newUsersToday, cancelledOrders, avgOrderValue });
@@ -79,7 +79,7 @@ export default function AdminDashboard() {
       setRecentVendors(vendors.slice(0, 8));
 
       // Build activity feed from recent orders
-      const activity = orders.slice(0, 20).map((o: any) => ({
+      const activity = orders.slice(0, 20).map((o: { id: string; status: string; total_amount: number | null; placed_at: string }) => ({
         id: o.id,
         type: o.status,
         message: `Order #${o.id.slice(0, 6).toUpperCase()} ${o.status}`,
@@ -90,11 +90,11 @@ export default function AdminDashboard() {
 
       // Build vendor map for type lookup
       const vendorMap: Record<string, string> = {};
-      vendors.forEach((v: any) => { vendorMap[v.id] = v.type || "food"; });
+      vendors.forEach((v: { id: string; type: string | null }) => { vendorMap[v.id] = v.type || "food"; });
 
       // Calculate revenue by category
       const catRev: Record<string, { revenue: number; orders: number }> = {};
-      orders.forEach((o: any) => {
+      orders.forEach((o: { vendor_id: string; total_amount: number | null }) => {
         const type = vendorMap[o.vendor_id] || "food";
         if (!catRev[type]) catRev[type] = { revenue: 0, orders: 0 };
         catRev[type].revenue += o.total_amount || 0;

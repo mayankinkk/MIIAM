@@ -43,7 +43,7 @@ export default function RiderAnalyticsPage() {
         const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
         const dailyMap: Record<string, { deliveries: number; earnings: number; ratings: number[] }> = {};
         
-        orders.forEach(order => {
+        orders.forEach((order: { placed_at: string; rider_earning: number | null; delivery_fee: number | null; rating: number | null }) => {
           const date = new Date(order.placed_at);
           const dayKey = dayNames[date.getDay()];
           if (!dailyMap[dayKey]) {

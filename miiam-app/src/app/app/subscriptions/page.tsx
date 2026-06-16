@@ -60,12 +60,12 @@ export default function SubscriptionsPage() {
       addToast("Failed to load subscriptions", "error");
     } else {
       setSchedules(data || []);
-      const ids = [...new Set((data || []).map((s) => s.vendor_id).filter(Boolean))];
+      const ids = [...new Set((data || []).map((s: RecurringSchedule) => s.vendor_id).filter(Boolean))];
       if (ids.length > 0) {
         const { data: vendors } = await supabase.from("vendors").select("id, shop_name").in("id", ids);
         if (vendors) {
           const map: Record<string, string> = {};
-          vendors.forEach((v) => { map[v.id] = v.shop_name; });
+          vendors.forEach((v: { id: string; shop_name: string }) => { map[v.id] = v.shop_name; });
           setVendorNames(map);
         }
       }

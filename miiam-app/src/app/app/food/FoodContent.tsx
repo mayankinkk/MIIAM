@@ -450,7 +450,7 @@ export default function FoodPageContent() {
       }
 
       setRestaurants(filteredVendors);
-      const vendorIds = filteredVendors.map(v => v.id);
+      const vendorIds = filteredVendors.map((v: { id: string }) => v.id);
       if (vendorIds.length > 0) {
         const { data: itemsData, error: itemsError } = await supabase.from("menu_items").select("*").in("vendor_id", vendorIds).order("name");
         if (itemsError) {
@@ -475,10 +475,10 @@ export default function FoodPageContent() {
 
   useEffect(() => {
     fetchData(userPincode, userCity);
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(({ data: { user } }: { data: { user: { id: string } | null } }) => {
       if (user) {
-        supabase.from("favorites").select("vendor_id").eq("user_id", user.id).then(({ data }) => {
-          if (data) setFavorites(data.map(f => f.vendor_id));
+        supabase.from("favorites").select("vendor_id").eq("user_id", user.id).then(({ data }: { data: { vendor_id: string }[] | null }) => {
+          if (data) setFavorites(data.map((f: { vendor_id: string }) => f.vendor_id));
         });
       }
     });

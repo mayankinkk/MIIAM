@@ -50,8 +50,8 @@ export default function VendorWalletPage() {
       .order("placed_at", { ascending: false });
     if (data) setOrders(data);
 
-    const delivered = data?.filter((o) => o.status === "delivered") || [];
-    const total = delivered.reduce((s, o) => s + o.total_amount, 0);
+    const delivered = data?.filter((o: Order) => o.status === "delivered") || [];
+    const total = delivered.reduce((s: number, o: Order) => s + o.total_amount, 0);
     const platformFee = total * 0.15; // 15% platform commission
     const netEarnings = total - platformFee;
 
@@ -59,9 +59,9 @@ export default function VendorWalletPage() {
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
     const recentDelivered = delivered.filter(
-      (o) => new Date(o.placed_at) >= thirtyDaysAgo
+      (o: Order) => new Date(o.placed_at) >= thirtyDaysAgo
     );
-    const pendingAmount = recentDelivered.reduce((s, o) => s + o.total_amount, 0);
+    const pendingAmount = recentDelivered.reduce((s: number, o: Order) => s + o.total_amount, 0);
     const pendingNet = pendingAmount - pendingAmount * 0.15;
 
     setWallet({

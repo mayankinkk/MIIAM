@@ -32,7 +32,7 @@ export default function PartnerLanding() {
   const [vendorCount, setVendorCount] = useState(0);
 
   useEffect(() => {
-    createClient().from("vendors").select("*", { count: "exact", head: true }).then(({ count }) => {
+    createClient().from("vendors").select("*", { count: "exact", head: true }).then(({ count }: { count: number | null }) => {
       if (count) setVendorCount(count);
     });
   }, []);

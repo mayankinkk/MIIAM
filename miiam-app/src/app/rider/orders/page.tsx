@@ -118,13 +118,13 @@ export default function RiderOrdersPage() {
 
           let items = itemsRes.data || [];
           if (items.length > 0) {
-            const menuItemIds = items.map(i => i.menu_item_id).filter(Boolean);
+            const menuItemIds = items.map((i: OrderItem) => i.menu_item_id).filter(Boolean);
             if (menuItemIds.length > 0) {
               const { data: menuItems } = await supabase.from("menu_items").select("*").in("id", menuItemIds);
               if (menuItems) {
-                items = items.map(item => ({
+                items = items.map((item: OrderItem) => ({
                   ...item,
-                  menu_item: menuItems.find(mi => mi.id === item.menu_item_id) || null
+                  menu_item: menuItems.find((mi: { id: string; name: string }) => mi.id === item.menu_item_id) || null
                 }));
               }
             }
@@ -150,9 +150,9 @@ export default function RiderOrdersPage() {
   }
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(({ data: { user } }: { data: { user: { id: string; email?: string } | null } }) => {
       if (!user) return;
-      supabase.from("riders").select("id").eq("user_id", user.id).single().then(({ data }) => {
+      supabase.from("riders").select("id").eq("user_id", user.id).single().then(({ data }: { data: { id: string } | null }) => {
         if (data) {
           setRiderProfile(data);
           loadOrders(data.id);
@@ -186,7 +186,7 @@ export default function RiderOrdersPage() {
         event: 'INSERT',
         schema: 'public',
         table: 'orders',
-      }, (payload) => {
+      }, (payload: { new: Record<string, unknown> }) => {
         const newOrder = payload.new as { id?: string; status: string; total_amount: number };
         if (newOrder.status === 'ready_for_pickup') {
           setOrders(prev => [newOrder as Order, ...prev]);
@@ -204,7 +204,7 @@ export default function RiderOrdersPage() {
         event: 'UPDATE',
         schema: 'public',
         table: 'orders',
-      }, (payload) => {
+      }, (payload: { new: Record<string, unknown> }) => {
         const updatedOrder = payload.new as { id: string; status: string };
         setOrders(prev => prev.map(o => o.id === updatedOrder.id ? { ...o, status: updatedOrder.status } : o));
       })
@@ -212,7 +212,7 @@ export default function RiderOrdersPage() {
         event: 'DELETE',
         schema: 'public',
         table: 'orders',
-      }, (payload) => {
+      }, (payload: { old: Record<string, unknown> }) => {
         const deletedOrder = payload.old as { id: string };
         setOrders(prev => prev.filter(o => o.id !== deletedOrder.id));
       })

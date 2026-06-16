@@ -15,9 +15,9 @@ export default function RiderNavBar({ active }: RiderNavBarProps) {
   const [toggling, setToggling] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(({ data: { user } }: { data: { user: { id: string; email?: string } | null } }) => {
       if (!user) return;
-      supabase.from("riders").select("id, is_online").eq("user_id", user.id).maybeSingle().then(({ data }) => {
+      supabase.from("riders").select("id, is_online").eq("user_id", user.id).maybeSingle().then(({ data }: { data: { id: string; is_online: boolean | null } | null }) => {
         if (data) {
           setRiderId(data.id);
           setIsOnline(data.is_online ?? true);

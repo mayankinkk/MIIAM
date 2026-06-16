@@ -34,7 +34,7 @@ export default function VendorReviews({ vendorId }: VendorReviewsProps) {
 
       if (data) {
         setReviews(data);
-        const total = data.reduce((sum, r) => sum + r.rating, 0);
+        const total = data.reduce((sum: number, r: Review) => sum + r.rating, 0);
         const avg = data.length > 0 ? total / data.length : 0;
         setAvgRating(avg);
 

@@ -123,7 +123,7 @@ export default function VendorAnalytics() {
       .not("food_quality", "is", null);
     if (!data || data.length === 0) return;
     const sum = (field: "food_quality" | "packaging" | "delivery_time") =>
-      data.reduce((s, r: any) => s + (r[field] || 0), 0) / data.length;
+      data.reduce((s: number, r: { food_quality: number | null; packaging: number | null; delivery_time: number | null }) => s + (r[field] || 0), 0) / data.length;
     setDimRatings({
       food_quality: Math.round(sum("food_quality") * 10) / 10,
       packaging: Math.round(sum("packaging") * 10) / 10,

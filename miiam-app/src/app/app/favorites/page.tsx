@@ -33,7 +33,7 @@ export default function FavoritesPage() {
           .eq("user_id", user.id);
           
         if (userFavorites) {
-          vendorIds = userFavorites.map(f => f.vendor_id);
+          vendorIds = userFavorites.map((f: { vendor_id: string }) => f.vendor_id);
           setFavorites(vendorIds); // Sync to local store
         }
       }

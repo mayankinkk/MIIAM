@@ -51,7 +51,7 @@ export default function VendorRegister() {
 
   // Check auth on mount — redirect to login immediately if not signed in
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(({ data: { user } }: { data: { user: { id: string; email?: string } | null } }) => {
       if (!user) {
         sessionStorage.setItem(STORAGE_KEY, JSON.stringify(form));
         router.push("/auth/login?redirect=/partner/register");

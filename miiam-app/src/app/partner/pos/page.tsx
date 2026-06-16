@@ -93,7 +93,7 @@ export default function PartnerPOS() {
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "orders", filter: `vendor_id=eq.${vId}` },
-        async (payload) => {
+        async (payload: { eventType: string; new: Record<string, unknown>; old: Record<string, unknown> }) => {
           const prevCount = prevPendingCountRef.current;
           await loadOrders(vId);
           if (prevPendingCountRef.current > prevCount && payload.eventType === "INSERT") {

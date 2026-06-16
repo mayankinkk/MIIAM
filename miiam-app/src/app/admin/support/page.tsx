@@ -31,7 +31,7 @@ export default function LiveChatSupport() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(({ data: { user } }: { data: { user: { id: string } | null } }) => {
       if (user) setCurrentUserId(user.id);
     });
   }, [supabase]);
@@ -55,7 +55,7 @@ export default function LiveChatSupport() {
     
     if (data) {
       const uniqueChats = new Map<string, ActiveChat>();
-      data.forEach(msg => {
+      data.forEach((msg: { order_id: string; created_at: string; message: string }) => {
         if (!uniqueChats.has(msg.order_id)) {
           uniqueChats.set(msg.order_id, {
             orderId: msg.order_id,

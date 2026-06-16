@@ -152,21 +152,24 @@ describe("Settings API", () => {
   it("GET returns 403 when not admin", async () => {
     profileQueryResult = { data: { role: "user" }, error: null };
     const { GET } = await import("../settings/route");
-    const res = await GET();
+    const req = mockRequest("GET", "http://localhost:3000/api/settings");
+    const res = await GET(req);
     expect(res.status).toBe(403);
   });
 
   it("GET returns 401 when unauthenticated", async () => {
     mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
     const { GET } = await import("../settings/route");
-    const res = await GET();
+    const req = mockRequest("GET", "http://localhost:3000/api/settings");
+    const res = await GET(req);
     expect(res.status).toBe(401);
   });
 
   it("GET returns 200 when admin", async () => {
     profileQueryResult = { data: { role: "admin" }, error: null };
     const { GET } = await import("../settings/route");
-    const res = await GET();
+    const req = mockRequest("GET", "http://localhost:3000/api/settings");
+    const res = await GET(req);
     expect(res.status).toBe(200);
   });
 

@@ -44,7 +44,7 @@ export default function PartnerLayout({
       return;
     }
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data: { session } }: { data: { session: { user: { id: string; email?: string } } | null } }) => {
       if (!session) router.push("/auth/login?redirect=" + pathname);
     });
   }, [router, supabase, pathname, vendor]);

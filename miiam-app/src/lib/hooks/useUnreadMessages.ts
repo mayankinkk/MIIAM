@@ -21,7 +21,7 @@ export function useUnreadMessages(userId: string) {
 
       if (data) {
         const counts: Record<string, number> = {};
-        data.forEach((msg) => {
+        data.forEach((msg: { order_id: string }) => {
           counts[msg.order_id] = (counts[msg.order_id] || 0) + 1;
         });
         setUnreadByOrder(counts);
@@ -33,7 +33,7 @@ export function useUnreadMessages(userId: string) {
 
     async function setupChannel() {
       const { data: orders } = await supabase.from("orders").select("id").eq("user_id", userId);
-      const orderIds = (orders?.map(o => o.id) || []).filter((id): id is string => typeof id === "string" && /^[0-9a-f-]{36}$/.test(id));
+      const orderIds = (orders?.map((o: { id: string }) => o.id) || []).filter((id: string): id is string => typeof id === "string" && /^[0-9a-f-]{36}$/.test(id));
       const channel = supabase
         .channel(`unread-messages-${userId}`)
         .on("postgres_changes", { event: "INSERT", schema: "public", table: "chat_messages", filter: orderIds.length > 0 ? `order_id=in.(${orderIds.join(",")})` : undefined }, () => {

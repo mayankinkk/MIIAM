@@ -96,14 +96,14 @@ export default function OrdersPage() {
       
       // Fetch vendors separately
       if (ordersData && ordersData.length > 0) {
-        const vendorIds = [...new Set(ordersData.map(o => o.vendor_id).filter(Boolean))];
+        const vendorIds = [...new Set(ordersData.map((o: { vendor_id: string }) => o.vendor_id).filter(Boolean))];
         const { data: vendorsData } = await supabase
           .from("vendors")
           .select("id, name, cover_image_url")
           .in("id", vendorIds);
         
-        const vendorMap = new Map(vendorsData?.map(v => [v.id, v]) || []);
-        const ordersWithVendors = ordersData.map(order => ({
+        const vendorMap = new Map(vendorsData?.map((v: { id: string; name: string; cover_image_url: string | null }) => [v.id, v]) || []);
+        const ordersWithVendors = ordersData.map((order: Order) => ({
           ...order,
           vendor: vendorMap.get(order.vendor_id) || null
         }));
@@ -130,7 +130,7 @@ export default function OrdersPage() {
 
       if (orderItems && orderItems.length > 0) {
         const table = await getVendorMenuTable(order.vendor_id);
-        const ids = orderItems.map(i => i.menu_item_id);
+        const ids = orderItems.map((i: { menu_item_id: string }) => i.menu_item_id);
         const { data: menuItems } = await supabase
           .from(table)
           .select("id, name, image_url")

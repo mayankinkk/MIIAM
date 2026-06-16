@@ -52,7 +52,7 @@ export default function RiderIncidentPage() {
         setRiderId(rider.id);
         const { data: incidents } = await supabase.from("rider_incidents").select("*").eq("rider_id", rider.id).order("created_at", { ascending: false }).limit(5);
         if (incidents) {
-          setRecentIncidents(incidents.map(i => ({
+          setRecentIncidents(incidents.map((i: { id: string; type: string; created_at: string; status: string }) => ({
             id: i.id,
             type: i.type,
             date: new Date(i.created_at).toLocaleDateString("en-IN"),
@@ -84,7 +84,7 @@ export default function RiderIncidentPage() {
         // Reload incidents
         const { data: incidents } = await supabase.from("rider_incidents").select("*").eq("rider_id", riderId).order("created_at", { ascending: false }).limit(5);
         if (incidents) {
-          setRecentIncidents(incidents.map(i => ({
+          setRecentIncidents(incidents.map((i: { id: string; type: string; created_at: string; status: string }) => ({
             id: i.id,
             type: i.type,
             date: new Date(i.created_at).toLocaleDateString("en-IN"),

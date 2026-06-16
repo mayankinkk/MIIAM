@@ -57,7 +57,7 @@ export default function RiderAccountPage() {
           .eq("rider_id", riderData.id);
         if (savedShifts && savedShifts.length > 0) {
           setShifts(weeklyShifts.map(ws => {
-            const saved = savedShifts.find(s => s.shift_name === ws.name);
+            const saved = savedShifts.find((s: { shift_name: string; is_selected: boolean }) => s.shift_name === ws.name);
             return saved ? { ...ws, isSelected: saved.is_selected } : ws;
           }));
         }

@@ -21,7 +21,7 @@ function RiderLoginContent() {
   const redirectTo = searchParams.get("redirect") || "/rider/dashboard";
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(({ data: { user } }: { data: { user: { id: string; email?: string } | null } }) => {
       if (user) router.push(redirectTo);
     });
   }, [supabase, router, redirectTo]);
