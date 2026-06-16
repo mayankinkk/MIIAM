@@ -255,6 +255,25 @@ function ServiceDetailContent() {
           <span className="text-xs text-on-surface-variant">{t.checkout.incTaxes}</span>
         </div>
 
+        {/* Ratings Summary */}
+        {service.rating && (
+          <div className="flex items-center gap-3 mb-6 p-4 bg-surface-container-low rounded-xl">
+            <div className="flex items-center gap-1">
+              <span className="material-symbols-outlined text-amber-500 text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+              <span className="text-lg font-black text-on-surface">{service.rating}</span>
+            </div>
+            {service.reviews && (
+              <span className="text-sm text-on-surface-variant">({service.reviews} reviews)</span>
+            )}
+            {service.badge === "mostPopular" && (
+              <span className="text-[10px] font-bold bg-primary/10 text-primary px-2 py-0.5 rounded-full">Most Popular</span>
+            )}
+            {service.badge === "bestSeller" && (
+              <span className="text-[10px] font-bold bg-green-50 text-green-600 px-2 py-0.5 rounded-full">Best Seller</span>
+            )}
+          </div>
+        )}
+
         {/* CTA */}
         <button
           onClick={handleAddToCart}
