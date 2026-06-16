@@ -24,6 +24,10 @@ export default function CartPage() {
   const subtotalByVendor = useCartStore((s) => s.subtotalByVendor);
   const clearCart = useCartStore((s) => s.clearCart);
   const addItem = useCartStore((s) => s.addItem);
+  const saveForLater = useCartStore((s) => s.saveForLater);
+  const savedItems = useCartStore((s) => s.savedItems);
+  const moveToCart = useCartStore((s) => s.moveToCart);
+  const removeSaved = useCartStore((s) => s.removeSaved);
   const [pastOrders, setPastOrders] = useState<any[]>([]);
   const [showReorderModal, setShowReorderModal] = useState(false);
   const [reordering, setReordering] = useState(false);
@@ -276,12 +280,20 @@ export default function CartPage() {
                             <span className="material-symbols-outlined text-sm" aria-hidden="true">add</span>
                           </button>
                         </div>
-                        <button
-                          onClick={() => removeItem(item.id)}
-                          className="text-[9px] font-bold text-on-surface-variant hover:text-primary transition-colors uppercase tracking-wider"
-                        >
-                          {t.cart.remove}
-                        </button>
+                        <div className="flex items-center gap-3">
+                          <button
+                            onClick={() => saveForLater(item.id)}
+                            className="text-[9px] font-bold text-on-surface-variant hover:text-primary transition-colors uppercase tracking-wider"
+                          >
+                            Save Later
+                          </button>
+                          <button
+                            onClick={() => removeItem(item.id)}
+                            className="text-[9px] font-bold text-on-surface-variant hover:text-primary transition-colors uppercase tracking-wider"
+                          >
+                            {t.cart.remove}
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -292,6 +304,45 @@ export default function CartPage() {
                 </div>
               </div>
             ))}
+
+            {/* Saved for Later */}
+            {savedItems.length > 0 && (
+              <div className="bg-surface-container-lowest rounded-xl p-4 shadow-[0px_4px_20px_rgba(77,33,42,0.06)] border border-outline-variant/10">
+                <h3 className="text-sm font-bold mb-3 flex items-center gap-2">
+                  <span className="material-symbols-outlined text-sm">bookmark</span>
+                  Saved for Later ({savedItems.length})
+                </h3>
+                <div className="space-y-3">
+                  {savedItems.map((item) => (
+                    <div key={item.id} className="flex items-center gap-3 p-2 rounded-lg bg-surface/50">
+                      <BlurImage
+                        src={item.image_url || "https://ui-avatars.com/api/?name=" + encodeURIComponent(item.name) + "&background=f3f4f6&color=6b7280"}
+                        alt={item.name}
+                        width={40}
+                        height={40}
+                        className="w-10 h-10 rounded-lg object-cover"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-bold text-on-surface truncate">{item.name}</p>
+                        <p className="text-[10px] text-on-surface-variant">₹{item.price}</p>
+                      </div>
+                      <button
+                        onClick={() => moveToCart(item.id)}
+                        className="text-[9px] font-bold text-primary hover:underline uppercase tracking-wider"
+                      >
+                        Move to Cart
+                      </button>
+                      <button
+                        onClick={() => removeSaved(item.id)}
+                        className="text-on-surface-variant hover:text-red-500"
+                      >
+                        <span className="material-symbols-outlined text-sm">close</span>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Order Summary */}
             <section className="bg-surface-container-lowest rounded-xl p-4 shadow-[0px_4px_20px_rgba(77,33,42,0.06)] border border-outline-variant/10">

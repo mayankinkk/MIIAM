@@ -22,10 +22,14 @@ export interface CartItem {
 
 interface CartStore {
   items: CartItem[];
+  savedItems: CartItem[];
   addItem: (item: Omit<CartItem, "quantity">, quantity?: number, suppressToast?: boolean) => void;
   removeItem: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
+  saveForLater: (id: string) => void;
+  moveToCart: (id: string) => void;
+  removeSaved: (id: string) => void;
   totalItems: () => number;
   totalPrice: () => number;
   subtotalByVendor: (vendor_id: string) => number;
@@ -49,6 +53,7 @@ export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
       items: [],
+      savedItems: [],
 
       addItem: (item, quantity = 1, suppressToast = false) => {
         const currentItems = get().items;
@@ -99,6 +104,43 @@ export const useCartStore = create<CartStore>()(
 
       clearCart: () => set({ items: [] }),
 
+      saveForLater: (id) => {
+        const items = get().items;
+        const saved = get().savedItems;
+        const item = items.find((i) => i.id === id);
+        if (!item) return;
+        set({
+          items: items.filter((i) => i.id !== id),
+          savedItems: [...saved, item],
+        });
+        useToastStore.getState().addToast(`${item.name} saved for later`, "info");
+      },
+
+      moveToCart: (id) => {
+        const items = get().items;
+        const saved = get().savedItems;
+        const item = saved.find((i) => i.id === id);
+        if (!item) return;
+        const existing = items.find((i) => i.id === id);
+        if (existing) {
+          set({
+            items: items.map((i) => i.id === id ? { ...i, quantity: i.quantity + item.quantity } : i),
+            savedItems: saved.filter((i) => i.id !== id),
+          });
+        } else {
+          set({
+            items: [...items, item],
+            savedItems: saved.filter((i) => i.id !== id),
+          });
+        }
+        useToastStore.getState().addToast(`${item.name} moved to cart`, "success");
+      },
+
+      removeSaved: (id) => {
+        const saved = get().savedItems;
+        set({ savedItems: saved.filter((i) => i.id !== id) });
+      },
+
       totalItems: () => {
         const items = get().items;
         return Array.isArray(items) ? items.reduce((sum, i) => sum + i.quantity, 0) : 0;
@@ -121,19 +163,22 @@ export const useCartStore = create<CartStore>()(
     }),
     {
       name: "miiam-cart",
-      partialize: (state) => ({ items: state.items }),
+      partialize: (state) => ({ items: state.items, savedItems: state.savedItems }),
       merge: (persisted, current) => {
-        const p = persisted as { items?: unknown };
+        const p = persisted as { items?: unknown; savedItems?: unknown };
+        const result = { ...current };
         if (p && isCartItemArray(p.items)) {
-          const items = p.items.map((item) => {
+          result.items = p.items.map((item) => {
             if (item.vendor_id === "f1111111-1111-4000-8000-000000000000" && !UUID_RE.test(item.menu_item_id)) {
               return { ...item, menu_item_id: PRINT_MENU_ITEM_ID };
             }
             return item;
           });
-          return { ...current, items };
         }
-        return current;
+        if (p && isCartItemArray(p.savedItems)) {
+          result.savedItems = p.savedItems;
+        }
+        return result;
       },
     }
   )
