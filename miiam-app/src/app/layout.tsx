@@ -24,9 +24,32 @@ const jakartaSans = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   title: "MIIAM — Food & Services App",
   description:
-    "Order food, book home services - all in one app.",
-  keywords: ["food delivery", "home services", "super app", "MIIAM"],
+    "Order food, book home services - all in one app. Food delivery, grocery, pharmacy, printing, AC repair, plumbing, beauty services and more.",
+  keywords: ["food delivery", "home services", "super app", "MIIAM", "grocery delivery", "pharmacy", "printing", "AC repair", "plumbing", "beauty services"],
   manifest: "/manifest.json",
+  metadataBase: new URL("https://miiam.in"),
+  openGraph: {
+    title: "MIIAM — Food & Services App",
+    description: "Order food, book home services - all in one app.",
+    url: "https://miiam.in",
+    siteName: "MIIAM",
+    type: "website",
+    locale: "en_IN",
+    images: [
+      {
+        url: "/icons/icon-512.png",
+        width: 512,
+        height: 512,
+        alt: "MIIAM Logo",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "MIIAM — Food & Services App",
+    description: "Order food, book home services - all in one app.",
+    images: ["/icons/icon-512.png"],
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
@@ -40,6 +63,9 @@ export const metadata: Metadata = {
       { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
       { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
     ],
+  },
+  alternates: {
+    canonical: "https://miiam.in",
   },
 };
 
