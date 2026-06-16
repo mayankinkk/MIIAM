@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useToastStore } from "@/lib/store/toastStore";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 export interface OrderStatus {
   status: string;
@@ -34,93 +36,141 @@ export interface OrderTracking {
   isLive: boolean;
 }
 
-export function useOrderTracking(orderId: string, userId?: string) {
-  const supabaseRef = useRef(createClient());
+const STATUS_DESCRIPTIONS: Record<string, string> = {
+  pending: "Order placed, waiting for restaurant acceptance",
+  accepted: "Restaurant has accepted your order",
+  preparing: "Your order is being prepared",
+  ready: "Order is ready for pickup",
+  ready_for_pickup: "Order is ready for rider pickup",
+  picking_up: "Rider is picking up your order",
+  on_the_way: "Your order is on the way",
+  arrived: "Rider has arrived at your location",
+  delivered: "Order delivered successfully",
+  cancelled: "Order has been cancelled",
+  refunded: "Order has been refunded",
+  processing: "We're processing your order",
+  shopping: "Rider is shopping for your items",
+  no_rider_available: "No riders available",
+};
+
+const STATUS_MESSAGES: Record<string, string> = {
+  pending: "Order placed!",
+  accepted: "Rider accepted your order!",
+  processing: "We're processing your documents!",
+  preparing: "Restaurant is preparing your order",
+  ready_for_pickup: "Order is ready for rider pickup!",
+  shopping: "Rider is shopping for your items",
+  picking_up: "Rider is picking up your order",
+  on_the_way: "Rider is on the way!",
+  arrived: "Rider has arrived!",
+  delivered: "Order delivered!",
+  no_rider_available: "No riders available — please try again",
+};
+
+export function useOrderTracking(orderId: string, supabaseClient?: SupabaseClient) {
+  const supabaseRef = useRef(supabaseClient || createClient());
   const supabase = supabaseRef.current;
-  const [tracking, setTracking] = useState<OrderTracking | null>(null);
+  const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  const statusDescriptions: Record<string, string> = {
-    pending: "Order placed, waiting for restaurant acceptance",
-    accepted: "Restaurant has accepted your order",
-    preparing: "Your order is being prepared",
-    ready: "Order is ready for pickup",
-    picking_up: "Rider is picking up your order",
-    on_the_way: "Your order is on the way",
-    arrived: "Rider has arrived at your location",
-    delivered: "Order delivered successfully",
-    cancelled: "Order has been cancelled",
-    refunded: "Order has been refunded",
-  };
-
-  const fetchOrderData = useCallback(async () => {
-    try {
-      const query = supabase.from("orders").select("*").eq("id", orderId);
-      if (userId) query.eq("user_id", userId);
-      const { data: orderData, error: orderError } = await query.single();
-
-      if (orderError) throw orderError;
-
-      // Fetch related data sequentially
-      const [vendorRes, riderRes, itemsRes] = await Promise.all([
-        orderData.vendor_id ? supabase.from("vendors").select("name").eq("id", orderData.vendor_id).single() : Promise.resolve({ data: null }),
-        orderData.rider_id ? supabase.from("riders").select("name, phone").eq("id", orderData.rider_id).single() : Promise.resolve({ data: null }),
-        supabase.from("order_items").select("*").eq("order_id", orderId)
-      ]);
-
-      let items = itemsRes.data || [];
-      if (items.length > 0) {
-        const menuItemIds = items.map(i => i.menu_item_id).filter(Boolean);
-        if (menuItemIds.length > 0) {
-          const { data: menuItems } = await supabase.from("menu_items").select("*").in("id", menuItemIds);
-          if (menuItems) {
-            items = items.map((item: any) => ({
-              ...item,
-              menu_item: menuItems.find(mi => mi.id === item.menu_item_id) || null
-            }));
-          }
-        }
-      }
-
-      const order = {
-        ...orderData,
-        vendor: vendorRes.data,
-        rider: riderRes.data,
-        items
-      };
-
-      if (orderError) throw orderError;
-
-      const statusHistory: OrderStatus[] = [
-        {
-          status: order.status,
-          status_description: statusDescriptions[order.status] || "Unknown status",
-          timestamp: order.updated_at || order.created_at,
-        },
-      ];
-
-      const estimatedDeliveryTime = order.estimated_delivery
-        ? new Date(order.estimated_delivery)
-        : null;
-
-      setTracking({
-        orderId: order.id,
-        currentStatus: order.status,
-        statusHistory,
-        estimatedDeliveryTime,
-        riderLocation: null,
-        isLive: true,
-      });
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load order");
-    } finally {
-      setLoading(false);
-    }
-  }, [orderId, supabase]);
+  const [riderLocation, setRiderLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [trackingInfo, setTrackingInfo] = useState<{ eta: number; distance: string; leg: "to_pickup" | "to_drop" } | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState<string>("");
+  const statusRef = useRef(order?.status);
+  const { addToast } = useToastStore();
 
   useEffect(() => {
-    fetchOrderData();
+    statusRef.current = order?.status;
+  }, [order?.status]);
+
+  const fetchOrderData = useCallback(async (id: string) => {
+    const { data: orderData, error: orderError } = await supabase
+      .from("orders")
+      .select("*")
+      .eq("id", id)
+      .maybeSingle();
+
+    if (orderError || !orderData) return null;
+
+    const [vendorRes, riderRes, itemsRes, locationRes] = await Promise.all([
+      orderData.vendor_id
+        ? supabase.from("vendors").select("*").eq("id", orderData.vendor_id).single()
+        : Promise.resolve({ data: null }),
+      orderData.rider_id
+        ? supabase.from("riders").select("*").eq("id", orderData.rider_id).single()
+        : Promise.resolve({ data: null }),
+      supabase.from("order_items").select("*").eq("order_id", id),
+      supabase.from("rider_locations").select("lat, lng").eq("order_id", id).limit(1).maybeSingle(),
+    ]);
+
+    const items = itemsRes.data || [];
+
+    if (items.length > 0) {
+      const menuItemIds = items.map((i: any) => i.menu_item_id).filter(Boolean);
+      if (menuItemIds.length > 0) {
+        const { data: menuItems } = await supabase.from("menu_items").select("*").in("id", menuItemIds);
+        if (menuItems) {
+          items.forEach((item: any) => {
+            item.menu_item = menuItems.find((mi: any) => mi.id === item.menu_item_id) || null;
+          });
+        }
+      }
+    }
+
+    return {
+      ...orderData,
+      vendor: vendorRes.data,
+      rider: riderRes.data,
+      items,
+      _location: locationRes.data,
+    };
+  }, [supabase]);
+
+  const refreshOrder = useCallback(async () => {
+    setIsRefreshing(true);
+    try {
+      const data = await fetchOrderData(orderId);
+      if (data) {
+        const { _location, ...orderData } = data;
+        setOrder(orderData);
+        if (_location) setRiderLocation({ lat: _location.lat, lng: _location.lng });
+      }
+    } catch (err) {
+      console.error("Failed to refresh order:", err);
+    }
+    setIsRefreshing(false);
+  }, [orderId, fetchOrderData]);
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function loadData() {
+      try {
+        setLoading(true);
+
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user && mounted) setCurrentUserId(user.id);
+
+        const data = await fetchOrderData(orderId);
+        if (!mounted) return;
+        if (data) {
+          const { _location, ...orderData } = data;
+          setOrder(orderData);
+          if (_location) setRiderLocation({ lat: _location.lat, lng: _location.lng });
+        } else {
+          setOrder(null);
+        }
+      } catch (err) {
+        console.error("Failed to load order:", err);
+        if (!mounted) return;
+        setOrder(null);
+        setError(err instanceof Error ? err.message : "Failed to load order");
+      }
+      setLoading(false);
+    }
+
+    loadData();
 
     const channel = supabase
       .channel(`order-tracking-${orderId}`)
@@ -132,55 +182,97 @@ export function useOrderTracking(orderId: string, userId?: string) {
           table: "orders",
           filter: `id=eq.${orderId}`,
         },
-        (payload) => {
-          const newOrder = payload.new as any;
-          
-          setTracking((prev) => {
-            if (!prev) return prev;
-            
-            const newStatus: OrderStatus = {
-              status: newOrder.status,
-              status_description: statusDescriptions[newOrder.status] || "Unknown status",
-              timestamp: newOrder.updated_at,
-            };
+        async (payload) => {
+          if (!payload.new || typeof payload.new !== "object") return;
+          const newData = payload.new as any;
+          const newStatus = newData.status;
+          const oldStatus = statusRef.current;
 
-            return {
-              ...prev,
-              currentStatus: newOrder.status,
-              statusHistory: [newStatus, ...prev.statusHistory],
-              estimatedDeliveryTime: newOrder.estimated_delivery
-                ? new Date(newOrder.estimated_delivery)
-                : prev.estimatedDeliveryTime,
-            };
+          let riderData = null;
+          if (newData.rider_id) {
+            const { data } = await supabase
+              .from("riders")
+              .select("*")
+              .eq("id", newData.rider_id)
+              .maybeSingle();
+            riderData = data;
+          }
+
+          setOrder((prev: any) => {
+            if (!prev) return prev;
+            return { ...prev, ...newData, rider: riderData || prev?.rider };
           });
+
+          if (newStatus !== oldStatus && newStatus) {
+            const msg = STATUS_MESSAGES[newStatus];
+            if (msg) addToast(msg, "info");
+
+            const notifyStatuses = ["accepted", "on_the_way", "arrived", "delivered"];
+            if (
+              notifyStatuses.includes(newStatus) &&
+              typeof window !== "undefined" &&
+              "Notification" in window &&
+              Notification.permission === "granted"
+            ) {
+              new Notification("MIIAM", {
+                body: STATUS_MESSAGES[newStatus] || `Order status: ${newStatus}`,
+                icon: "/icons/icon-192.svg",
+                tag: `order-${orderId}`,
+              });
+            }
+          }
+        }
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "rider_locations",
+          filter: `order_id=eq.${orderId}`,
+        },
+        (payload: any) => {
+          if (payload.new?.lat && payload.new?.lng) {
+            setRiderLocation({ lat: payload.new.lat, lng: payload.new.lng });
+          }
         }
       )
       .subscribe();
 
     return () => {
+      mounted = false;
       supabase.removeChannel(channel);
     };
-  }, [orderId, supabase, fetchOrderData]);
+  }, [orderId, supabase, addToast, fetchOrderData]);
 
-  const refetch = useCallback(() => {
-    setLoading(true);
-    fetchOrderData();
-  }, [fetchOrderData]);
+  useEffect(() => {
+    const interval = setInterval(refreshOrder, 25000);
+    return () => clearInterval(interval);
+  }, [refreshOrder]);
 
   return {
-    tracking,
+    order,
+    setOrder,
     loading,
     error,
-    refetch,
+    riderLocation,
+    trackingInfo,
+    setTrackingInfo,
+    isRefreshing,
+    refreshOrder,
+    currentUserId,
+    statusDescriptions: STATUS_DESCRIPTIONS,
   };
 }
 
 export function useRiderLocation(orderId: string) {
   const supabaseRef = useRef(createClient());
   const supabase = supabaseRef.current;
-  const [location, setLocation] = useState<RiderLocation | null>(null);
+  const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
 
   useEffect(() => {
+    if (!orderId) return;
+
     const channel = supabase
       .channel(`rider-location-${orderId}`)
       .on(
@@ -191,16 +283,10 @@ export function useRiderLocation(orderId: string) {
           table: "rider_locations",
           filter: `order_id=eq.${orderId}`,
         },
-        (payload) => {
-          const newLocation = payload.new as any;
-          setLocation({
-            rider_id: newLocation.rider_id,
-            rider_name: newLocation.rider_name || "",
-            rider_phone: newLocation.rider_phone || "",
-            location: { lat: newLocation.lat, lng: newLocation.lng },
-            updated_at: newLocation.updated_at,
-            eta_minutes: newLocation.eta_minutes || 0,
-          });
+        (payload: any) => {
+          if (payload.new?.lat && payload.new?.lng) {
+            setLocation({ lat: payload.new.lat, lng: payload.new.lng });
+          }
         }
       )
       .subscribe();
@@ -225,7 +311,10 @@ export function useActiveOrders(userId: string) {
         .from("orders")
         .select("*, vendor:vendors(name)")
         .eq("user_id", userId)
-        .in("status", ["pending", "accepted", "preparing", "ready", "picking_up", "on_the_way", "arrived", "scheduled"])
+        .in("status", [
+          "pending", "accepted", "preparing", "ready",
+          "picking_up", "on_the_way", "arrived", "scheduled",
+        ])
         .order("created_at", { ascending: false });
 
       if (!error && data) {
@@ -246,7 +335,7 @@ export function useActiveOrders(userId: string) {
           table: "orders",
           filter: `user_id=eq.${userId}`,
         },
-        (payload) => {
+        () => {
           fetchActiveOrders();
         }
       )

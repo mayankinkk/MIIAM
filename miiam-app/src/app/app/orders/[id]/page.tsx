@@ -16,7 +16,7 @@ import OrderCancelModal from "@/components/order/OrderCancelModal";
 import RiderContactCard from "@/components/order/RiderContactCard";
 import OrderStatusBanner from "@/components/order/OrderStatusBanner";
 import PendingOrderCard from "@/components/order/PendingOrderCard";
-import { useOrderRealtime } from "@/lib/hooks/useOrderRealtime";
+import { useOrderTracking } from "@/lib/hooks/useOrderTracking";
 import { useUnreadMessages } from "@/lib/hooks/useUnreadMessages";
 
 function getFoodSteps(t: any) {
@@ -63,7 +63,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
     isRefreshing,
     refreshOrder,
     currentUserId,
-  } = useOrderRealtime(supabase, id);
+  } = useOrderTracking(id, supabase);
 
   const { unreadByOrder } = useUnreadMessages(currentUserId);
   const unreadCount = unreadByOrder[id] || 0;
