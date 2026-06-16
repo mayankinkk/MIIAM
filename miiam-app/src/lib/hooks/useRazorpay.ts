@@ -119,8 +119,8 @@ export function useRazorpay() {
             }
           } catch {
             addToast("Payment received but verification failed. Contact support.", "error");
-            // Payment was made but verification failed — order may still be pending
-            onSuccess?.(response.razorpay_payment_id, response.razorpay_order_id);
+            // Payment was made but verification failed — do NOT call onSuccess
+            onFailure?.("Payment verification failed — payment may have been received");
           }
         },
         modal: {
