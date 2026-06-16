@@ -34,7 +34,6 @@ const nextConfig = {
   },
   experimental: {
   },
-  serverExternalPackages: ["web-push"],
   async headers() {
     return [
       {
