@@ -107,6 +107,20 @@ export async function POST(request: NextRequest) {
       console.warn("Failed to send booking confirmation email:", emailErr);
     }
 
+    // Send in-app notification (best-effort)
+    try {
+      await supabase.from("notifications").insert({
+        user_id,
+        title: "Booking Confirmed ✓",
+        message: `Your ${sub_service || service_type} booking is confirmed for ${scheduled_date} at ${scheduled_time}.`,
+        type: "booking",
+        read: false,
+        created_at: new Date().toISOString(),
+      });
+    } catch (notifErr) {
+      console.warn("Failed to send booking notification:", notifErr);
+    }
+
     return NextResponse.json({ success: true, booking });
   } catch (error) {
     console.error("Booking route error:", error instanceof Error ? error.message : error);

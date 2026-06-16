@@ -64,11 +64,32 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
     const prev = bookings;
     setBookings(prev => prev.map(b => b.id === bookingId ? { ...b, status: newStatus } : b));
     try {
+      const booking = bookings.find(b => b.id === bookingId);
       const { error } = await supabase
         .from("service_bookings")
         .update({ status: newStatus })
         .eq("id", bookingId);
       if (error) throw error;
+
+      if (booking?.user_id) {
+        const statusMessages: Record<string, { title: string; message: string }> = {
+          confirmed: { title: "Booking Confirmed ✓", message: `Your ${booking.sub_service || booking.service_type} booking has been confirmed.` },
+          in_progress: { title: "Technician On The Way 🔧", message: `A technician is on the way for your ${booking.sub_service || booking.service_type} service.` },
+          completed: { title: "Service Completed ✓", message: `Your ${booking.sub_service || booking.service_type} service has been completed. Rate your experience!` },
+          cancelled: { title: "Booking Cancelled", message: `Your ${booking.sub_service || booking.service_type} booking has been cancelled.` },
+        };
+        const notif = statusMessages[newStatus];
+        if (notif) {
+          await supabase.from("notifications").insert({
+            user_id: booking.user_id,
+            title: notif.title,
+            message: notif.message,
+            type: "booking",
+            read: false,
+            created_at: new Date().toISOString(),
+          });
+        }
+      }
     } catch (e) {
       console.error("[AdminServiceDetail] Failed to update status:", e);
       setBookings(prev);
