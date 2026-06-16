@@ -44,6 +44,10 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
   const [loading, setLoading] = useState(true);
   const [bookings, setBookings] = useState<any[]>([]);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [assignBooking, setAssignBooking] = useState<any>(null);
+  const [techName, setTechName] = useState("");
+  const [techPhone, setTechPhone] = useState("");
+  const [assigning, setAssigning] = useState(false);
   const service = SERVICE_DETAILS[serviceKey] || SERVICE_DETAILS.plumbing;
 
   useEffect(() => { loadBookings(); }, []);
@@ -113,6 +117,35 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
     }
   }
 
+  async function handleAssignTechnician() {
+    if (!assignBooking || !techName.trim()) return;
+    setAssigning(true);
+    try {
+      const { error } = await supabase
+        .from("service_bookings")
+        .update({ technician_name: techName.trim(), technician_phone: techPhone.trim() })
+        .eq("id", assignBooking.id);
+      if (error) throw error;
+      setBookings(prev => prev.map(b => b.id === assignBooking.id ? { ...b, technician_name: techName.trim(), technician_phone: techPhone.trim() } : b));
+      if (assignBooking.user_id) {
+        await supabase.from("notifications").insert({
+          user_id: assignBooking.user_id,
+          title: "Technician Assigned ✓",
+          message: `${techName.trim()} has been assigned to your ${assignBooking.sub_service || assignBooking.service_type} service. Contact: ${techPhone.trim() || "N/A"}`,
+          type: "booking",
+          read: false,
+          created_at: new Date().toISOString(),
+        });
+      }
+      setAssignBooking(null);
+      setTechName("");
+      setTechPhone("");
+    } catch (e) {
+      console.error("[AdminServiceDetail] Failed to assign technician:", e);
+    }
+    setAssigning(false);
+  }
+
   const totalBookings = bookings.length;
   const totalRevenue = bookings.reduce((s: number, b: any) => s + (b.amount || 0), 0);
   const completedCount = bookings.filter((b: any) => b.status === "completed").length;
@@ -174,7 +207,7 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
               <tr>
                 <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">Customer</th>
                 <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">Phone</th>
-                <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">Address</th>
+                <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">Technician</th>
                 <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">Amount</th>
                 <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">Status</th>
                 <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">Date</th>
@@ -186,7 +219,22 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
                 <tr key={b.id}>
                   <td className="p-4 font-bold text-[var(--color-on-surface)]">{b.user_name || "—"}</td>
                   <td className="p-4 text-sm text-[var(--color-on-surface-variant)]">{b.user_phone || "—"}</td>
-                  <td className="p-4 text-sm text-[var(--color-on-surface-variant)] truncate max-w-[200px]">{b.address || "—"}</td>
+                  <td className="p-4">
+                    {b.technician_name ? (
+                      <div>
+                        <p className="text-sm font-bold text-[var(--color-on-surface)]">{b.technician_name}</p>
+                        {b.technician_phone && <p className="text-xs text-[var(--color-outline-variant)]">{b.technician_phone}</p>}
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => { setAssignBooking(b); setTechName(""); setTechPhone(""); }}
+                        className="text-xs font-bold text-[var(--color-primary)] hover:underline flex items-center gap-1"
+                      >
+                        <span className="material-symbols-outlined text-sm">person_add</span>
+                        Assign
+                      </button>
+                    )}
+                  </td>
                   <td className="p-4 font-bold text-[var(--color-on-surface)]">₹{(b.amount || 0).toLocaleString("en-IN")}</td>
                   <td className="p-4">
                     <select
@@ -218,6 +266,55 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
           </table>
         )}
       </div>
+
+      {assignBooking && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[var(--color-surface-container-lowest)] w-full max-w-md rounded-2xl shadow-2xl p-6">
+            <h3 className="text-lg font-black text-[var(--color-on-surface)] mb-1">Assign Technician</h3>
+            <p className="text-sm text-[var(--color-outline-variant)] mb-5">{assignBooking.sub_service || assignBooking.service_type} — {assignBooking.user_name || "Customer"}</p>
+
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs font-bold text-[var(--color-on-surface)] block mb-1.5">Technician Name *</label>
+                <input
+                  type="text"
+                  value={techName}
+                  onChange={(e) => setTechName(e.target.value)}
+                  placeholder="e.g. Rahul Sharma"
+                  className="w-full px-4 py-3 rounded-xl border-2 border-[var(--color-border-subtle)] text-sm font-bold text-[var(--color-on-surface)] focus:border-[var(--color-primary)] focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-[var(--color-on-surface)] block mb-1.5">Phone Number</label>
+                <input
+                  type="tel"
+                  value={techPhone}
+                  onChange={(e) => setTechPhone(e.target.value)}
+                  placeholder="e.g. +91 98765 43210"
+                  className="w-full px-4 py-3 rounded-xl border-2 border-[var(--color-border-subtle)] text-sm font-bold text-[var(--color-on-surface)] focus:border-[var(--color-primary)] focus:outline-none"
+                />
+              </div>
+            </div>
+
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={() => { setAssignBooking(null); setTechName(""); setTechPhone(""); }}
+                className="flex-1 py-3 bg-[var(--color-surface-container)] rounded-xl font-bold text-sm text-[var(--color-on-surface-variant)]"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAssignTechnician}
+                disabled={!techName.trim() || assigning}
+                className="flex-1 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {assigning ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : null}
+                {assigning ? "Assigning..." : "Assign Technician"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

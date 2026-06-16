@@ -21,6 +21,8 @@ interface ServiceBooking {
   amount: number;
   notes: string | null;
   created_at: string;
+  technician_name: string | null;
+  technician_phone: string | null;
 }
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; icon: string }> = {
@@ -309,10 +311,18 @@ export default function BookingsPage() {
 
                   {booking.status === "in_progress" && (
                     <div className="flex gap-2">
-                      <div className="flex-1 py-2 bg-indigo-100 text-indigo-700 rounded-lg text-xs font-bold text-center flex items-center justify-center gap-1">
-                        <span className="material-symbols-outlined text-[14px]">engineering</span>
-                        Technician On The Way
-                      </div>
+                      {booking.technician_name ? (
+                        <div className="flex-1 py-2 bg-green-50 rounded-lg text-xs font-bold text-green-700 flex items-center justify-center gap-2">
+                          <span className="material-symbols-outlined text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                          {booking.technician_name}
+                          {booking.technician_phone && <span className="text-green-600 font-normal">· {booking.technician_phone}</span>}
+                        </div>
+                      ) : (
+                        <div className="flex-1 py-2 bg-amber-50 text-amber-700 rounded-lg text-xs font-bold text-center flex items-center justify-center gap-1">
+                          <span className="material-symbols-outlined text-[14px]">person_off</span>
+                          Technician Not Assigned
+                        </div>
+                      )}
                     </div>
                   )}
 
