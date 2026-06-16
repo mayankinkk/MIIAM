@@ -58,6 +58,10 @@ export default function BookingsPage() {
   const [reviewText, setReviewText] = useState("");
   const [submittingRating, setSubmittingRating] = useState(false);
   const [ratedBookings, setRatedBookings] = useState<Set<string>>(new Set());
+  const [rebookBooking, setRebookBooking] = useState<ServiceBooking | null>(null);
+  const [rebookDate, setRebookDate] = useState("");
+  const [rebookTime, setRebookTime] = useState("");
+  const [rebooking, setRebooking] = useState(false);
 
   useEffect(() => {
     async function loadBookings() {
@@ -154,6 +158,42 @@ export default function BookingsPage() {
       addToast("Failed to submit review", "error");
     } finally {
       setSubmittingRating(false);
+    }
+  }
+
+  async function handleRebook() {
+    if (!rebookBooking || !rebookDate || !rebookTime) return;
+    setRebooking(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { addToast("Please log in", "error"); return; }
+      const { error } = await supabase.from("service_bookings").insert({
+        service_type: rebookBooking.service_type,
+        sub_service: rebookBooking.sub_service,
+        user_id: user.id,
+        user_name: rebookBooking.user_name,
+        user_phone: rebookBooking.user_phone,
+        address: rebookBooking.address,
+        scheduled_date: rebookDate,
+        scheduled_time: rebookTime,
+        amount: rebookBooking.amount,
+        status: "confirmed",
+      });
+      if (error) throw error;
+      setRebookBooking(null);
+      setRebookDate("");
+      setRebookTime("");
+      addToast("Booking confirmed!", "success");
+      const { data: updated } = await supabase
+        .from("service_bookings")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+      if (updated) setBookings(updated);
+    } catch {
+      addToast("Failed to create booking", "error");
+    } finally {
+      setRebooking(false);
     }
   }
 
@@ -314,20 +354,29 @@ export default function BookingsPage() {
                         <span className="material-symbols-outlined text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
                         Rate Service
                       </button>
-                      <Link
-                        href={`/app/bookings/${booking.id}/track`}
+                      <button
+                        onClick={() => { setRebookBooking(booking); setRebookDate(""); setRebookTime(""); }}
                         className="flex-1 py-2 bg-primary/10 text-primary rounded-lg text-xs font-bold text-center hover:bg-primary/20 transition-colors flex items-center justify-center gap-1"
                       >
                         <span className="material-symbols-outlined text-[14px]">replay</span>
                         Book Again
-                      </Link>
+                      </button>
                     </div>
                   )}
 
                   {booking.status === "completed" && ratedBookings.has(booking.id) && (
-                    <div className="flex items-center gap-2 text-green-600 text-xs font-bold">
-                      <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-                      Reviewed
+                    <div className="flex gap-2">
+                      <div className="flex items-center gap-2 text-green-600 text-xs font-bold">
+                        <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                        Reviewed
+                      </div>
+                      <button
+                        onClick={() => { setRebookBooking(booking); setRebookDate(""); setRebookTime(""); }}
+                        className="flex-1 py-2 bg-primary/10 text-primary rounded-lg text-xs font-bold text-center hover:bg-primary/20 transition-colors flex items-center justify-center gap-1"
+                      >
+                        <span className="material-symbols-outlined text-[14px]">replay</span>
+                        Book Again
+                      </button>
                     </div>
                   )}
                 </div>
@@ -456,6 +505,68 @@ export default function BookingsPage() {
               >
                 {submittingRating ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : null}
                 {submittingRating ? "Submitting..." : "Submit"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Rebook Modal */}
+      {rebookBooking && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end justify-center">
+          <div className="bg-surface-container-lowest w-full max-w-lg rounded-t-3xl shadow-2xl p-6 pb-10 animate-slide-reveal">
+            <div className="w-12 h-1.5 bg-surface-container-high rounded-full mx-auto mb-5" />
+            <h2 className="text-lg font-bold text-on-surface mb-1">Book Again</h2>
+            <p className="text-sm text-on-surface-variant mb-5">{rebookBooking.sub_service || rebookBooking.service_type} — ₹{rebookBooking.amount}</p>
+
+            <p className="font-bold text-on-surface text-sm mb-2">Select Date</p>
+            <div className="flex gap-2 overflow-x-auto no-scrollbar mb-4">
+              {rescheduleDates.map((d) => (
+                <button
+                  key={d.value}
+                  onClick={() => setRebookDate(d.value)}
+                  className={`flex-shrink-0 px-4 py-2 rounded-xl text-xs font-bold border-2 transition-all ${
+                    rebookDate === d.value
+                      ? "bg-primary text-white border-primary"
+                      : "border-outline text-on-surface-variant hover:border-primary"
+                  }`}
+                >
+                  {d.label}
+                </button>
+              ))}
+            </div>
+
+            <p className="font-bold text-on-surface text-sm mb-2">Select Time</p>
+            <div className="grid grid-cols-2 gap-2 mb-6">
+              {SERVICE_TIME_SLOTS.map((slot) => (
+                <button
+                  key={slot}
+                  onClick={() => setRebookTime(slot)}
+                  className={`p-3 rounded-xl text-xs font-bold border-2 transition-all text-left ${
+                    rebookTime === slot
+                      ? "bg-primary text-white border-primary"
+                      : "border-outline text-on-surface-variant hover:border-primary"
+                  }`}
+                >
+                  {slot}
+                </button>
+              ))}
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => { setRebookBooking(null); setRebookDate(""); setRebookTime(""); }}
+                className="flex-1 py-3 bg-surface-container rounded-xl font-bold text-sm text-on-surface-variant"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleRebook}
+                disabled={!rebookDate || !rebookTime || rebooking}
+                className="flex-1 py-3 bg-primary text-white rounded-xl font-bold text-sm disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {rebooking ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : null}
+                {rebooking ? "Booking..." : "Confirm Booking"}
               </button>
             </div>
           </div>
