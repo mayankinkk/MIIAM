@@ -32,6 +32,9 @@ const nextConfig = {
       },
     ],
   },
+  experimental: {
+    bundleSizeHotswapThreshold: 250,
+  },
   async headers() {
     return [
       {
@@ -44,7 +47,7 @@ const nextConfig = {
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(self)" },
           { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
-          { key: "Content-Security-Policy", value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' blob: https://checkout.razorpay.com https://js.stripe.com https://maps.googleapis.com; script-src-elem 'self' 'unsafe-eval' 'unsafe-inline' blob: https://checkout.razorpay.com https://js.stripe.com https://maps.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://checkout.razorpay.com https://api.whatsapp.com; worker-src 'self' blob:; frame-src 'self' https://checkout.razorpay.com https://js.stripe.com;" },
+          { key: "Content-Security-Policy", value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' blob: https://checkout.razorpay.com https://js.stripe.com https://maps.googleapis.com; script-src-elem 'self' 'unsafe-eval' 'unsafe-inline' blob: https://checkout.razorpay.com https://js.stripe.com https://maps.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://checkout.razorpay.com https://api.whatsapp.com; worker-src 'self' blob:; frame-src 'self' https://checkout.razorpay.com https://js.stripe.com; frame-ancestors 'none'; form-action 'self';" },
         ],
       },
       {
@@ -53,6 +56,15 @@ const nextConfig = {
           {
             key: "Cache-Control",
             value: "public, max-age=31536000, immutable"
+          },
+        ],
+      },
+      {
+        source: "/api/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-store, no-cache, must-revalidate"
           },
         ],
       },
