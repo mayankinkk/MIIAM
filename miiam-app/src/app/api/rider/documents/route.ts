@@ -1,8 +1,9 @@
 import { createAdminClient, createClient } from "@/lib/supabase/server";
 import { uploadFile } from "@/lib/storage";
 import { NextRequest, NextResponse } from "next/server";
+import { withRateLimit } from "@/lib/api-utils";
 
-export async function POST(request: NextRequest) {
+export const POST = withRateLimit(async function POST(request: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
@@ -92,9 +93,9 @@ export async function POST(request: NextRequest) {
     console.error("Document upload error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
-}
+});
 
-export async function GET(request: NextRequest) {
+export const GET = withRateLimit(async function GET(request: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
@@ -134,4 +135,4 @@ export async function GET(request: NextRequest) {
     .order("created_at", { ascending: false });
 
   return NextResponse.json({ documents: documents || [] });
-}
+});

@@ -1,8 +1,9 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import { checkCsrf } from "@/lib/security";
+import { withRateLimit } from "@/lib/api-utils";
 
-export async function POST(req: NextRequest) {
+export const POST = withRateLimit(async function POST(req: NextRequest) {
   if (!checkCsrf(req)) {
     return NextResponse.json({ error: "CSRF validation failed" }, { status: 403 });
   }
@@ -41,7 +42,7 @@ export async function POST(req: NextRequest) {
       status: "logged",
     });
     return NextResponse.json({ success: true });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+  } catch (err: unknown) {
+    return NextResponse.json({ error: (err instanceof Error ? err.message : "Internal error") }, { status: 500 });
   }
-}
+});

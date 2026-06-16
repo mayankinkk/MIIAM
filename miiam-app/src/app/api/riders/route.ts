@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
+import { withRateLimit } from "@/lib/api-utils";
 
 async function requireAdmin() {
   const supabase = await createClient();
@@ -10,7 +11,7 @@ async function requireAdmin() {
   return null;
 }
 
-export async function POST(request: Request) {
+export const POST = withRateLimit(async function POST(request: Request) {
   const authErr = await requireAdmin();
   if (authErr) return NextResponse.json(authErr, { status: authErr.error === "Unauthorized" ? 401 : 403 });
 
@@ -115,9 +116,9 @@ export async function POST(request: Request) {
       console.error("Profile error:", profileError);
       return NextResponse.json({ error: "Failed to update profile: " + profileError.message }, { status: 400 });
     }
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.error("Profile catch error:", e);
-    return NextResponse.json({ error: e.message }, { status: 400 });
+    return NextResponse.json({ error: (e instanceof Error ? e.message : "Unknown error") }, { status: 400 });
   }
   
   try {
@@ -140,14 +141,14 @@ export async function POST(request: Request) {
     if (riderError) {
       console.error("Rider error:", riderError);
     }
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.error("Rider catch error:", e);
   }
   
   return NextResponse.json({ success: true, userId: userId });
-}
+});
 
-export async function DELETE(request: Request) {
+export const DELETE = withRateLimit(async function DELETE(request: Request) {
   const authErr = await requireAdmin();
   if (authErr) return NextResponse.json(authErr, { status: authErr.error === "Unauthorized" ? 401 : 403 });
 
@@ -180,4 +181,4 @@ export async function DELETE(request: Request) {
   }
   
   return NextResponse.json({ success: true });
-}
+});

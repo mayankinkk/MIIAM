@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient, createClient } from "@/lib/supabase/server";
 import { checkCsrf } from "@/lib/security";
+import { withRateLimit } from "@/lib/api-utils";
 
 async function requireAdmin() {
   const supabase = await createClient();
@@ -10,7 +11,7 @@ async function requireAdmin() {
   return { user, isAdmin: profile?.role === "admin" };
 }
 
-export async function GET() {
+export const GET = withRateLimit(async function GET() {
   const { user, isAdmin } = await requireAdmin();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   if (!isAdmin) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
@@ -28,9 +29,9 @@ export async function GET() {
   });
 
   return NextResponse.json({ settings });
-}
+});
 
-export async function PUT(request: NextRequest) {
+export const PUT = withRateLimit(async function PUT(request: NextRequest) {
   const { user, isAdmin } = await requireAdmin();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   if (!isAdmin) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
@@ -78,9 +79,9 @@ export async function PUT(request: NextRequest) {
     console.error("Settings error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
-}
+});
 
-export async function POST(request: NextRequest) {
+export const POST = withRateLimit(async function POST(request: NextRequest) {
   const { user, isAdmin } = await requireAdmin();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   if (!isAdmin) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
@@ -129,4 +130,4 @@ export async function POST(request: NextRequest) {
     console.error("Settings bulk update error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
-}
+});

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { parseUserAgent } from "@/lib/device";
+import { withRateLimit } from "@/lib/api-utils";
 
 async function getRequestMeta(req: NextRequest) {
   const ua = req.headers.get("user-agent") || "";
@@ -10,7 +11,7 @@ async function getRequestMeta(req: NextRequest) {
   return { ua, ip, device };
 }
 
-export async function GET() {
+export const GET = withRateLimit(async function GET() {
   try {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
@@ -30,12 +31,12 @@ export async function GET() {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
     return NextResponse.json({ sessions: data || [] });
-  } catch (e: any) {
-    return NextResponse.json({ error: e?.message || "Internal error" }, { status: 500 });
+  } catch (e: unknown) {
+    return NextResponse.json({ error: (e as Error)?.message || "Internal error" }, { status: 500 });
   }
-}
+});
 
-export async function POST(req: NextRequest) {
+export const POST = withRateLimit(async function POST(req: NextRequest) {
   try {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
@@ -83,7 +84,7 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({ session: data });
-  } catch (e: any) {
-    return NextResponse.json({ error: e?.message || "Internal error" }, { status: 500 });
+  } catch (e: unknown) {
+    return NextResponse.json({ error: (e as Error)?.message || "Internal error" }, { status: 500 });
   }
-}
+});

@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { withRateLimit } from "@/lib/api-utils";
 
-export async function GET() {
+export const GET = withRateLimit(async function GET() {
   const supabase = await createClient();
   const { data: { user }, error: authError } = await supabase.auth.getUser();
   if (authError || !user) {
@@ -19,9 +20,9 @@ export async function GET() {
   }
 
   return NextResponse.json(data);
-}
+});
 
-export async function POST(request: Request) {
+export const POST = withRateLimit(async function POST(request: Request) {
   const supabase = await createClient();
   const { data: { user }, error: authError } = await supabase.auth.getUser();
   if (authError || !user) {
@@ -62,7 +63,7 @@ export async function POST(request: Request) {
   }
 
   return NextResponse.json(data, { status: 201 });
-}
+});
 
 function calculateNextDeliveryDate(
   frequency: string,

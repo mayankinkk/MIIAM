@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { generateInvoicePdf, GST_INVOICE_TAX_RATE, type InvoiceData, type InvoiceLine } from "@/lib/gst-invoice";
 import { PRINTING_VENDOR_ID } from "@/lib/constants";
+import { withRateLimit } from "@/lib/api-utils";
 
 const SELLER = {
   name: "MIIAM Print Services",
@@ -10,7 +11,7 @@ const SELLER = {
   state: "Karnataka (29)",
 };
 
-export async function GET(request: NextRequest) {
+export const GET = withRateLimit(async function GET(request: NextRequest) {
   try {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
@@ -90,8 +91,8 @@ export async function GET(request: NextRequest) {
         "Cache-Control": "private, max-age=3600",
       },
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("[invoice] error:", err);
-    return NextResponse.json({ error: err?.message || "Server error" }, { status: 500 });
+    return NextResponse.json({ error: (err instanceof Error ? err.message : "Server error") }, { status: 500 });
   }
-}
+});

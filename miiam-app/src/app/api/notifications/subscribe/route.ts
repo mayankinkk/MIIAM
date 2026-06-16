@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { checkCsrf } from "@/lib/security";
+import { withRateLimit } from "@/lib/api-utils";
 
-export async function POST(request: NextRequest) {
+export const POST = withRateLimit(async function POST(request: NextRequest) {
   if (!checkCsrf(request)) {
     return NextResponse.json({ error: "CSRF validation failed" }, { status: 403 });
   }
@@ -44,9 +45,9 @@ export async function POST(request: NextRequest) {
     console.error("Push subscription error:", error);
     return NextResponse.json({ error: "Internal error" }, { status: 500 });
   }
-}
+});
 
-export async function GET(request: NextRequest) {
+export const GET = withRateLimit(async function GET(request: NextRequest) {
   try {
     const supabase = await createClient();
     const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -63,4 +64,4 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     return NextResponse.json({ error: "Internal error" }, { status: 500 });
   }
-}
+});

@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
+import { withRateLimit } from "@/lib/api-utils";
 
-export async function GET() {
+export const GET = withRateLimit(async function GET() {
   const supabase = await createClient();
   const { data: { user }, error: authError } = await supabase.auth.getUser();
   if (authError || !user) {
@@ -27,4 +28,4 @@ export async function GET() {
   }
 
   return NextResponse.json(data);
-}
+});

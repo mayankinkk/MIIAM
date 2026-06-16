@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { notifyPrintEvent, type PrintJobEvent } from "@/lib/print-notify";
+import { withRateLimit } from "@/lib/api-utils";
 
 const VALID_EVENTS: ReadonlySet<PrintJobEvent> = new Set([
   "print_started",
@@ -10,7 +11,7 @@ const VALID_EVENTS: ReadonlySet<PrintJobEvent> = new Set([
   "print_failed",
 ]);
 
-export async function POST(req: NextRequest) {
+export const POST = withRateLimit(async function POST(req: NextRequest) {
   try {
     const supabase = await createClient();
     const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -40,8 +41,8 @@ export async function POST(req: NextRequest) {
 
     await notifyPrintEvent(user_id, event as PrintJobEvent, order_id);
     return NextResponse.json({ success: true });
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("[print-notify-api] error:", err);
-    return NextResponse.json({ error: err?.message || "Server error" }, { status: 500 });
+    return NextResponse.json({ error: (err instanceof Error ? err.message : "Server error") }, { status: 500 });
   }
-}
+});

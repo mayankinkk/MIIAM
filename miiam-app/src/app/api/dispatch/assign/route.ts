@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient, createClient } from "@/lib/supabase/server";
 import { checkCsrf } from "@/lib/security";
+import { withRateLimit } from "@/lib/api-utils";
 
 interface Order {
   id: string;
@@ -51,7 +52,7 @@ function calculateRiderScore(rider: Rider, order: Order): number {
   return Math.max(0, baseScore - distancePenalty);
 }
 
-export async function POST(request: NextRequest) {
+export const POST = withRateLimit(async function POST(request: NextRequest) {
   const supabaseAdmin = createAdminClient();
 
   // Verify the user is authenticated and is an admin
@@ -185,9 +186,9 @@ export async function POST(request: NextRequest) {
     console.error("Dispatch error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
-}
+});
 
-export async function GET() {
+export const GET = withRateLimit(async function GET() {
   const supabase = await createClient();
   const { data: { user }, error: authError } = await supabase.auth.getUser();
   if (authError || !user) {
@@ -217,4 +218,4 @@ export async function GET() {
     available_riders: availableRiders?.length || 0,
     timestamp: new Date().toISOString()
   });
-}
+});

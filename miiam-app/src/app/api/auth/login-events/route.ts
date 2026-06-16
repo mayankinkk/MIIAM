@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { withRateLimit } from "@/lib/api-utils";
 
-export async function GET() {
+export const GET = withRateLimit(async function GET() {
   try {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
@@ -20,7 +21,7 @@ export async function GET() {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
     return NextResponse.json({ events: data || [] });
-  } catch (e: any) {
-    return NextResponse.json({ error: e?.message || "Internal error" }, { status: 500 });
+  } catch (e: unknown) {
+    return NextResponse.json({ error: (e instanceof Error ? e.message : "Internal error") }, { status: 500 });
   }
-}
+});

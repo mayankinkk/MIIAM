@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient, createClient } from "@/lib/supabase/server";
+import { withRateLimit } from "@/lib/api-utils";
 
 async function requireAuth() {
   const supabase = await createClient();
@@ -17,7 +18,7 @@ function generateTimeSlots(startHour: number = 8, endHour: number = 20, interval
   return slots;
 }
 
-export async function GET(request: NextRequest) {
+export const GET = withRateLimit(async function GET(request: NextRequest) {
   const user = await requireAuth();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
@@ -101,9 +102,9 @@ export async function GET(request: NextRequest) {
   }
 
   return NextResponse.json({ error: "date or start_date/end_date required" }, { status: 400 });
-}
+});
 
-export async function POST(request: NextRequest) {
+export const POST = withRateLimit(async function POST(request: NextRequest) {
   const user = await requireAuth();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
@@ -172,4 +173,4 @@ export async function POST(request: NextRequest) {
     console.error("Availability error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
-}
+});

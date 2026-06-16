@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
+import { withRateLimit } from "@/lib/api-utils";
 
 const PRINT_BUCKET = "print-files";
 const LEGACY_BUCKET = "menu-images";
@@ -17,7 +18,7 @@ function extractBucketAndPath(url: string): { bucket: string; path: string } | n
   return null;
 }
 
-export async function POST(req: NextRequest) {
+export const POST = withRateLimit(async function POST(req: NextRequest) {
   try {
     const supabase = await createClient();
     const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -65,8 +66,8 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ urls: signedUrls });
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("[print-files] error:", err);
-    return NextResponse.json({ error: err?.message || "Server error" }, { status: 500 });
+    return NextResponse.json({ error: (err instanceof Error ? err.message : "Server error") }, { status: 500 });
   }
-}
+});
