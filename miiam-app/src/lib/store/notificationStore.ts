@@ -169,7 +169,7 @@ export function notify(title: string, options?: NotificationOptions) {
   if (Notification.permission === "granted") {
     new Notification(title, {
       icon: "/icons/icon-192.png",
-      badge: "/icons/badge.png",
+      badge: "/icons/icon-192.png",
       ...options,
     });
   }

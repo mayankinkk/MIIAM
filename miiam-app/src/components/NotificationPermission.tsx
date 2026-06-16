@@ -26,11 +26,18 @@ export default function NotificationPermission() {
     // Play a premium system notification sound
     const playNotificationSound = () => {
       try {
-        const audio = new Audio("https://assets.mixkit.co/active_storage/sfx/2869/2869-84.wav");
-        audio.volume = 0.5;
-        audio.play();
-      } catch (err) {
-        console.log("Audio play blocked by browser autoplay policy");
+        const ctx = new AudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.value = 880;
+        gain.gain.value = 0.15;
+        osc.start();
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+        osc.stop(ctx.currentTime + 0.3);
+      } catch {
+        // Autoplay blocked
       }
     };
 
