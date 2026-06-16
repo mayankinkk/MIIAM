@@ -202,16 +202,7 @@ export default function RefundsPage() {
                   </p>
                 </section>
 
-                {/* Wallet Credits */}
-                <section id="wallet">
-                  <h2 className="text-xl font-bold text-[var(--color-on-surface)] mb-4">7. MIIAM Wallet Credits</h2>
-                  <ul className="list-disc pl-6 space-y-2 text-[var(--color-on-surface-variant)]">
-                    <li>Valid for 90 days from the date of issue</li>
-                    <li>Can be used on any order or service booking on MIIAM</li>
-                    <li>Cannot be transferred or withdrawn as cash</li>
-                    <li>Are non-refundable once applied to an order</li>
-                  </ul>
-                </section>
+                {/* Final section */}
 
                 {/* Disputes */}
                 <section id="disputes">

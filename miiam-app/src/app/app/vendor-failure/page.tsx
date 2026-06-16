@@ -28,12 +28,6 @@ function VendorFailureContent() {
       title: "Try Another Restaurant",
       description: "Browse similar restaurants that are open",
     },
-    {
-      id: "credit",
-      icon: "stars",
-      title: "MIIAM Credit",
-      description: "Get bonus credits for your next order (10% extra)",
-    },
   ];
 
   const handleOptionSelect = (id: string) => {
@@ -133,13 +127,11 @@ function VendorFailureContent() {
                 import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Refund request submitted. You'll receive it within 3-5 business days.", "success"));
               } else if (selectedOption === "reorder") {
                 window.location.href = "/app/food";
-              } else {
-                import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Store credit added to your wallet.", "success"));
               }
             }}
             className="w-full bg-primary text-white py-4 rounded-xl font-bold hover:bg-primary-dim transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {t.common.confirm} {selectedOption === "refund" ? "Refund" : selectedOption === "reorder" ? "Browse Restaurants" : "Get Credit"}
+            {t.common.confirm} {selectedOption === "refund" ? "Refund" : "Browse Restaurants"}
           </button>
           
           <div className="flex gap-3">

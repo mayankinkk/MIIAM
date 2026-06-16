@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-export type PaymentMethod = "upi" | "card" | "wallet" | "cod";
+export type PaymentMethod = "upi" | "card" | "cod";
 
 interface PaymentOption {
   id: PaymentMethod;
@@ -14,7 +14,6 @@ interface PaymentOption {
 const paymentOptions: PaymentOption[] = [
   { id: "upi", name: "UPI", icon: "payments", subtitle: "GPay, PhonePe, Paytm" },
   { id: "card", name: "Credit/Debit Card", icon: "credit_card", subtitle: "Visa, Mastercard, RuPay" },
-  { id: "wallet", name: "MIIAM Wallet", icon: "account_balance_wallet", subtitle: "₹0 balance" },
   { id: "cod", name: "Cash on Delivery", icon: "money", subtitle: "Pay when you receive" },
 ];
 
@@ -22,10 +21,9 @@ interface PaymentOptionsProps {
   total: number;
   selected: PaymentMethod;
   onSelect: (method: PaymentMethod) => void;
-  walletBalance?: number;
 }
 
-export function PaymentOptions({ total, selected, onSelect, walletBalance = 0 }: PaymentOptionsProps) {
+export function PaymentOptions({ total: _total, selected, onSelect }: PaymentOptionsProps) {
   const [showAllUPI, setShowAllUPI] = useState(false);
 
   const upiApps = [
@@ -39,18 +37,14 @@ export function PaymentOptions({ total, selected, onSelect, walletBalance = 0 }:
     <div className="space-y-3">
       {paymentOptions.map((option) => {
         const isSelected = selected === option.id;
-        const isDisabled = option.id === "wallet" && walletBalance < total;
 
         return (
           <button
             key={option.id}
-            onClick={() => !isDisabled && onSelect(option.id)}
-            disabled={isDisabled}
+            onClick={() => onSelect(option.id)}
             className={`w-full flex items-center gap-4 p-4 rounded-xl border-2 transition-all ${
               isSelected
                 ? "border-[var(--color-primary)] bg-red-50"
-                : isDisabled
-                ? "border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] opacity-50 cursor-not-allowed"
                 : "border-[var(--color-border-subtle)] hover:border-[var(--color-outline-variant)]"
             }`}
           >

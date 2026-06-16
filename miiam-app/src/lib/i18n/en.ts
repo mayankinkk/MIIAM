@@ -644,7 +644,7 @@ const en = {
     favorites: "Favorites",
     yourSavedItems: "Your saved items",
     paymentMethods: "Payment Methods",
-    cardsUpiWallets: "Cards, UPI, wallets",
+    cardsUpiWallets: "Cards, UPI, COD",
     helpSupport: "Help & Support",
     twentyFourSevenSupport: "24/7 customer care",
     settings: "Settings",
