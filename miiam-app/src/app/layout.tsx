@@ -10,6 +10,7 @@ import { AnalyticsTracker } from "@/lib/analytics";
 import SplashScreen from "@/components/SplashScreen";
 import OfflineBanner from "@/components/OfflineBanner";
 import { SkipLink } from "@/lib/accessibility";
+import CookieConsent from "@/components/CookieConsent";
 
 const jakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -98,6 +99,7 @@ export default function RootLayout({
                 <PageTransition>{children}</PageTransition>
               </div>
             <Toaster />
+            <CookieConsent />
           </ConfirmProvider>
         </ThemeProvider>
       </body>
