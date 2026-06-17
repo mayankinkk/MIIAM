@@ -1,16 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
-const supabase = createClient();
+const supabase = useMemo(() => createClient(), []);
 
 const statusColors: Record<string, string> = {
-  delivered: "bg-green-100 text-green-700",
-  preparing: "bg-blue-100 text-blue-700",
+  delivered: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
+  preparing: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
   shipped: "bg-purple-100 text-purple-700",
-  cancelled: "bg-red-100 text-red-700",
+  cancelled: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
   pending: "bg-yellow-100 text-yellow-700",
 };
 
@@ -18,7 +18,7 @@ const typeColors: Record<string, string> = {
   bouquet: "bg-rose-100 text-rose-700",
   arrangement: "bg-purple-100 text-purple-700",
   combo: "bg-pink-100 text-pink-700",
-  hamper: "bg-amber-100 text-amber-700",
+  hamper: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
 };
 
 interface FlowerOrder {

@@ -370,10 +370,10 @@ export default function BeautyPage() {
       {/* Booking Modal */}
       {bookingService && (
         <div className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center animate-fade-in">
-          <div className="bg-surface-container-lowest w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl p-4 sm:p-6 max-h-[85vh] sm:max-h-[90vh] overflow-y-auto animate-slide-up">
+          <div className="bg-surface-container-lowest w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl p-4 sm:p-6 max-h-[85vh] sm:max-h-[90vh] overflow-y-auto animate-slide-up" role="dialog" aria-modal="true" aria-labelledby="booking-modal-title" onKeyDown={(e) => { if (e.key === "Escape") setBookingService(null); }}>
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-black text-on-surface">Book {bookingService.name}</h3>
-              <button onClick={() => { setBookingService(null); if (navigator.vibrate) navigator.vibrate(10); }} className="w-11 h-11 bg-surface-container rounded-full flex items-center justify-center hover:scale-110 active:scale-90 transition-transform">
+              <h3 id="booking-modal-title" className="text-xl font-black text-on-surface">Book {bookingService.name}</h3>
+              <button onClick={() => { setBookingService(null); if (navigator.vibrate) navigator.vibrate(10); }} aria-label="Close" className="w-11 h-11 bg-surface-container rounded-full flex items-center justify-center hover:scale-110 active:scale-90 transition-transform">
                 <span className="material-symbols-outlined text-sm">close</span>
               </button>
             </div>

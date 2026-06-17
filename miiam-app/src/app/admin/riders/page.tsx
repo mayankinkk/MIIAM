@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { useMemo, Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { createClient } from "@/lib/supabase/client";
@@ -13,7 +13,7 @@ const AdminRiderMap = dynamic(() => import("@/components/admin/AdminRiderMap"), 
 
 function RidersPage() {
   const { confirm } = useConfirm();
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [riders, setRiders] = useState<Rider[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "online" | "offline">("all");
@@ -192,7 +192,7 @@ function RidersPage() {
 
       {selectedRider && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-end z-50">
-          <div className="bg-white w-full max-w-lg h-full shadow-2xl flex flex-col">
+          <div className="bg-[var(--color-surface-container-lowest)] w-full max-w-lg h-full shadow-2xl flex flex-col">
             <div className="p-8 border-b border-[var(--color-border-subtle)] flex justify-between items-center bg-[var(--color-surface-subtle)]/50">
               <div className="flex items-center gap-5">
                 <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[#ff7670] text-white text-3xl font-black flex items-center justify-center overflow-hidden">
@@ -316,7 +316,7 @@ function RidersPage() {
       {showAddModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-[var(--color-border-subtle)] flex justify-between items-center sticky top-0 bg-white">
+            <div className="p-6 border-b border-[var(--color-border-subtle)] flex justify-between items-center sticky top-0 bg-[var(--color-surface-container-lowest)]">
               <h2 className="text-xl font-black text-[var(--color-on-surface)]">{isEditing ? "Edit Rider" : "Add Rider"}</h2>
               <button onClick={() => { setShowAddModal(false); setIsEditing(false); }} className="text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)] p-2"><span className="material-symbols-outlined">close</span></button>
             </div>
@@ -354,7 +354,7 @@ export default function RiderTracking() {
 }
 
 function RiderOrdersHistory({ riderId }: { riderId: string }) {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -391,7 +391,7 @@ function RiderOrdersHistory({ riderId }: { riderId: string }) {
               <p className="text-xs font-bold text-[var(--color-outline)]">#{order.id.slice(0, 8)}</p>
               <p className="text-xs text-[var(--color-outline-variant)]">{order.placed_at ? new Date(order.placed_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) : ""}</p>
             </div>
-            <span className={`text-[10px] font-black px-2 py-1 rounded-full ${order.status === "delivered" ? "bg-green-100 text-green-700" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"}`}>
+            <span className={`text-[10px] font-black px-2 py-1 rounded-full ${order.status === "delivered" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"}`}>
               {order.status?.toUpperCase()}
             </span>
           </div>

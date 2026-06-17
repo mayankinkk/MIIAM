@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 
@@ -17,7 +17,7 @@ interface VendorVerification {
 }
 
 export default function VerificationPage() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [vendors, setVendors] = useState<VendorVerification[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
@@ -87,9 +87,9 @@ export default function VerificationPage() {
 
   const statusColors: Record<string, string> = {
     pending: "bg-yellow-100 text-yellow-700",
-    active: "bg-green-100 text-green-700",
+    active: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
     inactive: "bg-[var(--color-surface-container)] text-[var(--color-on-surface)]",
-    suspended: "bg-red-100 text-red-700",
+    suspended: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
   };
 
   if (loading) return <div className="px-8">Loading verifications...</div>;
@@ -223,7 +223,7 @@ export default function VerificationPage() {
       {selectedVendor && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl max-w-lg w-full max-h-[80vh] overflow-y-auto">
-            <div className="p-6 border-b flex items-center justify-between sticky top-0 bg-white">
+            <div className="p-6 border-b flex items-center justify-between sticky top-0 bg-[var(--color-surface-container-lowest)]">
               <h2 className="font-black text-lg">Vendor Details</h2>
               <button onClick={() => setSelectedVendor(null)} className="text-[var(--color-outline-variant)]">
                 <span className="material-symbols-outlined">close</span>

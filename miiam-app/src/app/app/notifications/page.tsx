@@ -8,6 +8,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import PullToRefresh from "@/components/PullToRefresh";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
+import { useConfirm } from "@/components/ui/ConfirmDialog";
 import SwipeableRow from "@/components/SwipeableRow";
 
 export default function NotificationsPage() {
@@ -16,6 +17,7 @@ export default function NotificationsPage() {
   const [loading, setLoading] = useState(true);
   const supabase = useMemo(() => createClient(), []);
   const { addToast } = useToastStore();
+  const { confirm } = useConfirm();
 
   useEffect(() => {
     fetchNotifications();
@@ -68,7 +70,7 @@ export default function NotificationsPage() {
       <header className="fixed top-0 w-full z-50 bg-[var(--color-surface-container-lowest)] shadow-sm">
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-4">
-            <Link href="/app/explore" className="w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center">
+            <Link href="/app/explore" aria-label="Go back" className="w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center">
               <span className="material-symbols-outlined text-primary">arrow_back</span>
             </Link>
             <span className="text-2xl font-extrabold text-primary">MIIAM</span>
@@ -173,6 +175,7 @@ export default function NotificationsPage() {
                 <SwipeableRow
                   key={notification.id}
                   onSwipeLeft={async () => {
+                    if (!await confirm({ title: "Delete Notification", message: "Remove this notification?", variant: "danger" })) return;
                     try {
                       await supabase.from("notifications").delete().eq("id", notification.id);
                       setNotifications(prev => prev.filter(n => n.id !== notification.id));

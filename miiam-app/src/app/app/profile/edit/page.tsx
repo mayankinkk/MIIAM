@@ -146,7 +146,7 @@ export default function EditProfilePage() {
   return (
     <>
       <header className="fixed top-0 w-full z-50 flex items-center px-6 py-4 bg-surface/80 backdrop-blur-2xl shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
-        <Link href="/app/profile" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-all mr-4">
+        <Link href="/app/profile" aria-label="Go back" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-all mr-4">
           <span className="material-symbols-outlined text-primary">arrow_back</span>
         </Link>
         <span className="text-xl font-extrabold tracking-tight text-on-surface">{t.settings.editProfile}</span>
@@ -173,7 +173,7 @@ export default function EditProfilePage() {
                   formData.fullName?.charAt(0).toUpperCase() || "U"
                 )}
                 {uploading && (
-                  <div className="absolute inset-0 bg-white/60 flex items-center justify-center">
+                  <div className="absolute inset-0 bg-[var(--color-surface-container-lowest)]/60 flex items-center justify-center">
                     <span className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
                   </div>
                 )}

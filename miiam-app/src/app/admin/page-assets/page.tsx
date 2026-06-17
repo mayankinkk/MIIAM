@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import ImageUpload from "@/components/ImageUpload";
 import BlurImage from "@/components/BlurImage";
@@ -26,7 +26,7 @@ const SECTION_LABELS: Record<string, { label: string; icon: string; color: strin
 const DEFAULT_SECTIONS = Object.keys(SECTION_LABELS);
 
 export default function PageAssetsPage() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [assets, setAssets] = useState<PageAsset[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingAsset, setEditingAsset] = useState<PageAsset | null>(null);
@@ -191,7 +191,7 @@ export default function PageAssetsPage() {
                         <p className="font-black text-[var(--color-on-surface)]">{meta?.label || asset.section}</p>
                         <p className="text-xs text-[var(--color-outline-variant)] font-mono">{asset.section}</p>
                       </div>
-                      <div className={`ml-auto px-3 py-1 rounded-full text-xs font-bold ${asset.is_active ? "bg-green-100 text-green-700" : "bg-[var(--color-surface-container)] text-[var(--color-outline)]"}`}>
+                      <div className={`ml-auto px-3 py-1 rounded-full text-xs font-bold ${asset.is_active ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" : "bg-[var(--color-surface-container)] text-[var(--color-outline)]"}`}>
                         {asset.is_active ? "Active" : "Inactive"}
                       </div>
                     </div>
@@ -230,7 +230,7 @@ export default function PageAssetsPage() {
                       className={`px-4 py-2.5 rounded-xl font-bold text-sm active:scale-95 transition-all ${
                         asset.is_active
                           ? "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] hover:bg-red-50 hover:text-red-600"
-                          : "bg-green-100 text-green-700 hover:bg-green-200"
+                          : "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 hover:bg-green-200"
                       }`}
                     >
                       {asset.is_active ? "Deactivate" : "Activate"}

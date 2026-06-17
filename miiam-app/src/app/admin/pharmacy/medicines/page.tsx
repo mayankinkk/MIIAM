@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
@@ -8,7 +8,7 @@ import ImageUpload from "@/components/ImageUpload";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { useToastStore } from "@/lib/store/toastStore";
 
-const supabase = createClient();
+const supabase = useMemo(() => createClient(), []);
 
 const defaultCategories = ["Pain Relief", "Antibiotics", "Vitamins", "Diabetes", "Blood Pressure", "Heart Care", "Cold & Flu", "Skin Care", "Baby Care"];
 
@@ -270,7 +270,7 @@ export default function PharmacyMedicinesPage() {
                 )}
               </div>
               <div className="p-4">
-                <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold">{medicine.category}</span>
+                <span className="px-3 py-1 bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 rounded-full text-xs font-bold">{medicine.category}</span>
                 <p className="text-xs text-[var(--color-outline)] mt-1">{vendors.find(v => v.id === medicine.vendor_id)?.shop_name || "Unknown Vendor"}</p>
                 <p className="font-bold text-[var(--color-on-surface)] mt-1">{medicine.name}</p>
                 <div className="flex justify-between items-center mt-3">
@@ -297,7 +297,7 @@ export default function PharmacyMedicinesPage() {
       {showAddModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b sticky top-0 bg-white">
+            <div className="p-6 border-b sticky top-0 bg-[var(--color-surface-container-lowest)]">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-black text-[var(--color-on-surface)]">{editingMedicine ? "Edit Medicine" : "Add Medicine"}</h2>
                 <button onClick={resetModal} className="text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]">

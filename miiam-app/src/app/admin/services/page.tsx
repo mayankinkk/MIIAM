@@ -231,19 +231,19 @@ export default function EnhancedServicesDashboard() {
                 <div className="space-y-2">
                   <button
                     onClick={() => setActiveTab("settings")}
-                    className="w-full py-2 bg-[var(--color-surface-container-lowest)]/20 rounded-xl text-sm font-bold hover:bg-white/30 transition-colors text-left px-4"
+                    className="w-full py-2 bg-[var(--color-surface-container-lowest)]/20 rounded-xl text-sm font-bold hover:bg-[var(--color-surface-container-lowest)]/30 transition-colors text-left px-4"
                   >
                     + Add New Service
                   </button>
                   <button
                     onClick={() => setActiveTab("providers")}
-                    className="w-full py-2 bg-[var(--color-surface-container-lowest)]/20 rounded-xl text-sm font-bold hover:bg-white/30 transition-colors text-left px-4"
+                    className="w-full py-2 bg-[var(--color-surface-container-lowest)]/20 rounded-xl text-sm font-bold hover:bg-[var(--color-surface-container-lowest)]/30 transition-colors text-left px-4"
                   >
                     Manage Providers
                   </button>
                   <Link
                     href="/admin/analytics"
-                    className="block w-full py-2 bg-[var(--color-surface-container-lowest)]/20 rounded-xl text-sm font-bold hover:bg-white/30 transition-colors text-left px-4"
+                    className="block w-full py-2 bg-[var(--color-surface-container-lowest)]/20 rounded-xl text-sm font-bold hover:bg-[var(--color-surface-container-lowest)]/30 transition-colors text-left px-4"
                   >
                     View Analytics
                   </Link>
@@ -295,10 +295,10 @@ export default function EnhancedServicesDashboard() {
                       <td className="p-4 text-[var(--color-outline)]">{booking.scheduled_date}</td>
                       <td className="p-4">
                         <span className={`text-[10px] font-black px-2 py-1 rounded-full uppercase ${
-                          booking.status === "completed" ? "bg-green-100 text-green-700" :
-                          booking.status === "cancelled" ? "bg-red-100 text-red-700" :
-                          booking.status === "in_progress" ? "bg-blue-100 text-blue-700" :
-                          "bg-amber-100 text-amber-700"
+                          booking.status === "completed" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" :
+                          booking.status === "cancelled" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300" :
+                          booking.status === "in_progress" ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300" :
+                          "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300"
                         }`}>
                           {booking.status.replaceAll("_", " ")}
                         </span>
@@ -385,10 +385,10 @@ export default function EnhancedServicesDashboard() {
                         value={booking.status}
                         onChange={(e) => updateBookingStatus(booking.id, e.target.value as ServiceStatus)}
                         className={`text-[10px] font-black px-2 py-1 rounded-full border-0 cursor-pointer ${
-                          booking.status === "completed" ? "bg-green-100 text-green-700" :
-                          booking.status === "cancelled" ? "bg-red-100 text-red-700" :
-                          booking.status === "in_progress" ? "bg-blue-100 text-blue-700" :
-                          "bg-amber-100 text-amber-700"
+                          booking.status === "completed" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" :
+                          booking.status === "cancelled" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300" :
+                          booking.status === "in_progress" ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300" :
+                          "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300"
                         }`}
                       >
                         <option value="pending">Pending</option>

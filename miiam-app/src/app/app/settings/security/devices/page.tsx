@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -67,7 +67,7 @@ function eventLabel(ev: LoginEvent): { label: string; icon: string; tone: "ok" |
 }
 
 export default function DevicesPage() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const { t } = useTranslation();
   const router = useRouter();
   const { addToast } = useToastStore();
@@ -174,7 +174,7 @@ export default function DevicesPage() {
     <div className="min-h-screen bg-background text-on-background pb-24">
       <header className="bg-surface-container px-6 py-4 sticky top-0 z-10 shadow-sm border-b border-outline-variant/10">
         <div className="flex items-center gap-4">
-          <Link href="/app/settings/security" className="w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center">
+          <Link href="/app/settings/security" aria-label="Go back" className="w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center">
             <span className="material-symbols-outlined">arrow_back</span>
           </Link>
           <div className="flex-1">

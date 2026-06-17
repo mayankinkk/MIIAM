@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import ServiceProductGrid from "@/components/ServiceProductGrid";
@@ -18,7 +18,7 @@ export default function PharmacyPage() {
     { id: "skincare", name: t.pharmacy.skinCare, icon: "\uD83E\uDDF4", color: "bg-pink-100" },
     { id: "baby", name: t.pharmacy.babyCare, icon: "\uD83D\uDC76", color: "bg-blue-100" },
   ];
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [showPrescriptionModal, setShowPrescriptionModal] = useState(false);
   const [prescriptionFile, setPrescriptionFile] = useState<File | null>(null);
   const [prescriptionNotes, setPrescriptionNotes] = useState("");

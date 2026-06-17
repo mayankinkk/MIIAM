@@ -183,10 +183,10 @@ function ReviewModal({ vendorId, onClose, onSubmitted }: { vendorId: string; onC
 
   return (
     <div className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center animate-fade-in">
-      <div className="bg-surface-container-lowest w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl p-6 animate-slide-up">
+      <div className="bg-surface-container-lowest w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl p-6 animate-slide-up" role="dialog" aria-modal="true" aria-labelledby="review-modal-title" onKeyDown={(e) => { if (e.key === "Escape") onClose(); }}>
         <div className="flex justify-between items-center mb-5">
-          <h3 className="text-xl font-black text-on-surface">{t.food.writeReview}</h3>
-          <button onClick={onClose} className="w-11 h-11 bg-surface-container rounded-full flex items-center justify-center">
+          <h3 id="review-modal-title" className="text-xl font-black text-on-surface">{t.food.writeReview}</h3>
+          <button onClick={onClose} aria-label="Close" className="w-11 h-11 bg-surface-container rounded-full flex items-center justify-center">
             <span className="material-symbols-outlined text-sm">close</span>
           </button>
         </div>
@@ -402,6 +402,7 @@ export default function RestaurantProfilePage() {
         <div className="absolute top-0 left-0 right-0 flex justify-between items-center px-4 pt-12 sm:pt-4">
           <button
             onClick={() => router.back()}
+            aria-label="Go back"
             className="w-10 h-10 bg-black/40 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/60 transition-colors active:scale-90"
           >
             <span className="material-symbols-outlined">arrow_back</span>

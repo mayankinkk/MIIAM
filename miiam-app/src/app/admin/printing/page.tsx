@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
@@ -17,7 +17,7 @@ import {
 import ServicesCatalogPanel from "@/components/admin/ServicesCatalogPanel";
 import BlurImage from "@/components/BlurImage";
 
-const supabase = createClient();
+const supabase = useMemo(() => createClient(), []);
 
 const VALID_TRANSITIONS: Record<string, string[]> = {
   pending: ["processing", "cancelled"],
@@ -31,10 +31,10 @@ const VALID_TRANSITIONS: Record<string, string[]> = {
 const statusColors: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-700",
   processing: "bg-indigo-100 text-indigo-700",
-  ready_for_pickup: "bg-blue-100 text-blue-700",
+  ready_for_pickup: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
   on_the_way: "bg-cyan-100 text-cyan-700",
-  delivered: "bg-green-100 text-green-700",
-  cancelled: "bg-red-100 text-red-700",
+  delivered: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
+  cancelled: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
 };
 
 export default function AdminPrintingPage() {
@@ -654,7 +654,7 @@ export default function AdminPrintingPage() {
                         const isPdf = name.toLowerCase().endsWith(".pdf");
                         const isImage = /\.(jpg|jpeg|png|webp)$/i.test(name);
                         return (
-                          <div key={fi} className={`flex items-center gap-3 p-3 ${printed ? "bg-emerald-50/50" : "bg-white"}`}>
+                          <div key={fi} className={`flex items-center gap-3 p-3 ${printed ? "bg-emerald-50/50" : "bg-[var(--color-surface-container-lowest)]"}`}>
                             <button
                               onClick={() => toggleFilePrinted(selectedOrder.id, fi, selSettings)}
                               className={`w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 ${printed ? "bg-emerald-500 border-emerald-500" : "border-[var(--color-outline-variant)] hover:border-indigo-400"}`}

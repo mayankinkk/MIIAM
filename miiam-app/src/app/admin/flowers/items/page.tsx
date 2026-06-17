@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
@@ -8,7 +8,7 @@ import ImageUpload from "@/components/ImageUpload";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { useToastStore } from "@/lib/store/toastStore";
 
-const supabase = createClient();
+const supabase = useMemo(() => createClient(), []);
 
 const defaultCategories = ["Bouquets", "Arrangements", "Combos", "Hampers", "Sympathy", "Corporate"];
 
@@ -254,7 +254,7 @@ export default function FlowersItemsPage() {
       {showAddModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b sticky top-0 bg-white">
+            <div className="p-6 border-b sticky top-0 bg-[var(--color-surface-container-lowest)]">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-black text-[var(--color-on-surface)]">{editingItem ? "Edit Item" : "Add Item"}</h2>
                 <button onClick={resetModal} className="text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]">

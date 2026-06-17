@@ -1,16 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
-const supabase = createClient();
+const supabase = useMemo(() => createClient(), []);
 
 const statusColors: Record<string, string> = {
-  delivered: "bg-green-100 text-green-700",
-  preparing: "bg-blue-100 text-blue-700",
+  delivered: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
+  preparing: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
   shipped: "bg-purple-100 text-purple-700",
-  cancelled: "bg-red-100 text-red-700",
+  cancelled: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
   pending: "bg-yellow-100 text-yellow-700",
 };
 
@@ -156,7 +156,7 @@ export default function PharmacyOrdersPage() {
                   <td className="p-4 font-bold text-[var(--color-on-surface)]">₹{order.total}</td>
                   <td className="p-4">
                     {order.prescription && (
-                      <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold">Rx Required</span>
+                      <span className="px-3 py-1 bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 rounded-full text-xs font-bold">Rx Required</span>
                     )}
                   </td>
                   <td className="p-4">

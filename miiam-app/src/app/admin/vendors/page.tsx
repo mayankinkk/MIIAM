@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
@@ -53,7 +53,7 @@ interface MenuItem {
 }
 
 export default function AdminVendorsPage() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [loading, setLoading] = useState(false);
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [showAddVendor, setShowAddVendor] = useState(false);
@@ -1276,9 +1276,9 @@ export default function AdminVendorsPage() {
                     <td className="p-4 text-[var(--color-outline)]">₹{vendor.delivery_charge || 0}</td>
                     <td className="p-4">
                       <span className={`text-[10px] font-black px-2 py-1 rounded-full uppercase ${
-                        vendor.status === 'active' ? 'bg-green-100 text-green-700' :
+                        vendor.status === 'active' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' :
                         vendor.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
-                        vendor.status === 'suspended' ? 'bg-red-100 text-red-700' :
+                        vendor.status === 'suspended' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300' :
                         'bg-[var(--color-surface-container)] text-[var(--color-on-surface)]'
                       }`}>
                         {vendor.status}

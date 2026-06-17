@@ -445,10 +445,10 @@ export default function AddressBookPage() {
             setEditingAddress(null);
           }} />
 
-          <div className="relative bg-white w-full max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-white z-10 border-b border-[var(--color-border-subtle)] px-6 py-4 flex items-center justify-between">
+          <div className="relative bg-[var(--color-surface-container-lowest)] w-full max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[90vh] overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="address-modal-title" onKeyDown={(e) => { if (e.key === "Escape") { setShowAddAddress(false); setEditingAddress(null); } }}>
+            <div className="sticky top-0 bg-[var(--color-surface-container-lowest)] z-10 border-b border-[var(--color-border-subtle)] px-6 py-4 flex items-center justify-between">
               <div>
-                <h2 className="text-xl font-extrabold text-[var(--color-on-surface)]">
+                <h2 id="address-modal-title" className="text-xl font-extrabold text-[var(--color-on-surface)]">
                   {editingAddress ? "Edit Address" : "Add New Address"}
                 </h2>
                 <p className="text-xs text-[var(--color-outline)]">
@@ -460,6 +460,7 @@ export default function AddressBookPage() {
                   setShowAddAddress(false);
                   setEditingAddress(null);
                 }}
+                aria-label="Close"
                 className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center"
               >
                 <span className="material-symbols-outlined">close</span>

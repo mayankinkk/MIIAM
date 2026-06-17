@@ -137,7 +137,7 @@ const sortedItems = [...filteredItems].sort((a, b) => (((b as any).is_featured |
           <div className="w-full h-full bg-gradient-to-b from-slate-300 to-slate-100" />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-        <button onClick={() => router.back()} className="absolute top-4 left-4 bg-[var(--color-surface-container-lowest)]/90 p-2 rounded-full shadow-md">
+        <button onClick={() => router.back()} aria-label="Go back" className="absolute top-4 left-4 bg-[var(--color-surface-container-lowest)]/90 p-2 rounded-full shadow-md">
           <span className="material-symbols-outlined">arrow_back</span>
         </button>
         <div className="absolute bottom-4 left-4 right-4">
@@ -243,7 +243,7 @@ const sortedItems = [...filteredItems].sort((a, b) => (((b as any).is_featured |
         </div>
       </div>
 
-      <div className="sticky top-0 bg-white z-10 border-b overflow-x-auto">
+      <div className="sticky top-0 bg-[var(--color-surface-container-lowest)] z-10 border-b overflow-x-auto">
         <div className="flex gap-4 p-4 min-w-max">
           {categories.map((cat) => (
             <button

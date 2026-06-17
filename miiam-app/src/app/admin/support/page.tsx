@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useMemo, useEffect, useState, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 interface ChatMessage {
@@ -21,7 +21,7 @@ interface ActiveChat {
 }
 
 export default function LiveChatSupport() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [currentUserId, setCurrentUserId] = useState<string>("");
   const [chats, setChats] = useState<ActiveChat[]>([]);
   const [loading, setLoading] = useState(true);

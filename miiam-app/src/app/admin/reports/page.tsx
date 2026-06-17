@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useMemo, useState, useEffect, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 
-const supabase = createClient();
+const supabase = useMemo(() => createClient(), []);
 
 type ReportType = "orders" | "revenue" | "vendors" | "riders" | "users";
 
@@ -196,8 +196,8 @@ export default function ReportsPage() {
   ];
 
   const statusColors: Record<string, string> = {
-    delivered: "bg-green-100 text-green-700",
-    cancelled: "bg-red-100 text-red-700",
+    delivered: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
+    cancelled: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
     refunded: "bg-[var(--color-surface-container)] text-[var(--color-on-surface)]",
     pending: "bg-yellow-100 text-yellow-700",
     processing: "bg-indigo-100 text-indigo-700",

@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 
 export default function AdminFoodsDashboard() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [vendors, setVendors] = useState<any[]>([]);
@@ -160,13 +160,13 @@ export default function AdminFoodsDashboard() {
 
   const statusColors: Record<string, string> = {
     pending: "bg-yellow-100 text-yellow-700",
-    accepted: "bg-blue-100 text-blue-700",
+    accepted: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
     preparing: "bg-purple-100 text-purple-700",
     shopping: "bg-orange-100 text-orange-700",
     picked_up: "bg-indigo-100 text-indigo-700",
     on_the_way: "bg-cyan-100 text-cyan-700",
-    delivered: "bg-green-100 text-green-700",
-    cancelled: "bg-red-100 text-red-700",
+    delivered: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
+    cancelled: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
     refunded: "bg-gray-100 text-gray-700",
   };
 
@@ -289,7 +289,7 @@ export default function AdminFoodsDashboard() {
                 <select
                   value={vendorFilter}
                   onChange={(e) => setVendorFilter(e.target.value)}
-                  className="w-full px-3 py-2 border border-[var(--color-border-subtle)] rounded-lg text-sm bg-white"
+                  className="w-full px-3 py-2 border border-[var(--color-border-subtle)] rounded-lg text-sm bg-[var(--color-surface-container-lowest)]"
                 >
                   <option value="all">All Vendors</option>
                   {vendors.map(v => (
@@ -302,7 +302,7 @@ export default function AdminFoodsDashboard() {
                 <select
                   value={paymentFilter}
                   onChange={(e) => setPaymentFilter(e.target.value)}
-                  className="w-full px-3 py-2 border border-[var(--color-border-subtle)] rounded-lg text-sm bg-white"
+                  className="w-full px-3 py-2 border border-[var(--color-border-subtle)] rounded-lg text-sm bg-[var(--color-surface-container-lowest)]"
                 >
                   <option value="all">All Methods</option>
                   <option value="upi">UPI</option>
@@ -318,7 +318,7 @@ export default function AdminFoodsDashboard() {
                   value={amountMin}
                   onChange={(e) => setAmountMin(e.target.value)}
                   placeholder="0"
-                  className="w-full px-3 py-2 border border-[var(--color-border-subtle)] rounded-lg text-sm bg-white"
+                  className="w-full px-3 py-2 border border-[var(--color-border-subtle)] rounded-lg text-sm bg-[var(--color-surface-container-lowest)]"
                 />
               </div>
               <div>
@@ -328,7 +328,7 @@ export default function AdminFoodsDashboard() {
                   value={amountMax}
                   onChange={(e) => setAmountMax(e.target.value)}
                   placeholder="10000"
-                  className="w-full px-3 py-2 border border-[var(--color-border-subtle)] rounded-lg text-sm bg-white"
+                  className="w-full px-3 py-2 border border-[var(--color-border-subtle)] rounded-lg text-sm bg-[var(--color-surface-container-lowest)]"
                 />
               </div>
             </div>
@@ -347,7 +347,7 @@ export default function AdminFoodsDashboard() {
               <select
                 value={bulkStatus}
                 onChange={(e) => setBulkStatus(e.target.value)}
-                className="px-4 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold bg-white"
+                className="px-4 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold bg-[var(--color-surface-container-lowest)]"
               >
                 <option value="">Change Status</option>
                 <option value="pending">Pending</option>

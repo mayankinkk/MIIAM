@@ -5,7 +5,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { PRINTING_VENDOR_ID } from "@/lib/constants";
 
-const supabase = createClient();
+const supabase = useMemo(() => createClient(), []);
 
 interface AnalyticsData {
   totalRevenue: number;

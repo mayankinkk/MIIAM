@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 
-const supabase = createClient();
+const supabase = useMemo(() => createClient(), []);
 
 interface GroceryPartner {
   id: string;
@@ -298,7 +298,7 @@ export default function GroceryPartnersPage() {
                       value={partner.status}
                       onChange={(e) => updatePartnerStatus(partner.id, e.target.value)}
                       className={`px-3 py-1 rounded-full text-xs font-bold border-0 cursor-pointer ${
-                        partner.status === "active" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                        partner.status === "active" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300"
                       }`}
                     >
                       <option value="active">Active</option>

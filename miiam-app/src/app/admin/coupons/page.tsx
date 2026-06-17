@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
 
@@ -24,7 +24,7 @@ type Coupon = {
 
 export default function CouponsAdminPage() {
   const { confirm } = useConfirm();
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [editingCoupon, setEditingCoupon] = useState<Coupon | null>(null);
@@ -243,9 +243,9 @@ export default function CouponsAdminPage() {
                     <span
                       className={`text-xs px-2 py-1 rounded-full font-bold ${
                         coupon.status === "active"
-                          ? "bg-green-100 text-green-700"
+                          ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300"
                           : coupon.status === "exhausted"
-                          ? "bg-amber-100 text-amber-700"
+                          ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300"
                           : "bg-[var(--color-surface-container)] text-[var(--color-on-surface)]"
                       }`}
                     >

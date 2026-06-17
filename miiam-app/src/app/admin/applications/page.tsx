@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
 
@@ -44,7 +44,7 @@ type JobApplication = {
 
 export default function AdminApplicationsPage() {
   const { confirm } = useConfirm();
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [applications, setApplications] = useState<JobApplication[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
@@ -194,10 +194,10 @@ export default function AdminApplicationsPage() {
                         onChange={(e) => updateStatus(app.id, e.target.value)}
                         className={`text-xs font-bold px-3 py-1 rounded-full border-0 cursor-pointer ${
                           app.status === "pending" 
-                            ? "bg-amber-100 text-amber-700" 
+                            ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300" 
                             : app.status === "reviewed"
-                            ? "bg-blue-100 text-blue-700"
-                            : "bg-green-100 text-green-700"
+                            ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
+                            : "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300"
                         }`}
                       >
                         <option value="pending">Pending</option>

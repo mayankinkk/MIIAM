@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -24,7 +24,7 @@ import PrintHero from "@/components/print/PrintHero";
 import CameraCapture from "@/components/print/CameraCapture";
 
 export default function PassportPage() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const router = useRouter();
   const cartStore = useCartStore();
   const serviceSettings = useServiceSettingsStore();

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 
@@ -19,7 +19,7 @@ interface Review {
 }
 
 export default function ReviewsPage() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "vendor" | "rider">("all");
@@ -160,13 +160,13 @@ export default function ReviewsPage() {
                 <div className="flex flex-col gap-2">
                   <button 
                     onClick={() => toggleStatus(review.id, review.is_approved, 'is_approved')}
-                    className={`text-xs px-3 py-1 rounded-full font-bold ${review.is_approved ? "bg-green-100 text-green-700" : "bg-[var(--color-surface-container)] text-[var(--color-outline)]"}`}
+                    className={`text-xs px-3 py-1 rounded-full font-bold ${review.is_approved ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" : "bg-[var(--color-surface-container)] text-[var(--color-outline)]"}`}
                   >
                     {review.is_approved ? "Approved" : "Pending"}
                   </button>
                   <button 
                     onClick={() => toggleStatus(review.id, review.is_highlighted, 'is_highlighted')}
-                    className={`text-xs px-3 py-1 rounded-full font-bold flex items-center gap-1 ${review.is_highlighted ? "bg-amber-100 text-amber-700" : "bg-[var(--color-surface-container)] text-[var(--color-outline)]"}`}
+                    className={`text-xs px-3 py-1 rounded-full font-bold flex items-center gap-1 ${review.is_highlighted ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300" : "bg-[var(--color-surface-container)] text-[var(--color-outline)]"}`}
                   >
                     <span className="material-symbols-outlined text-[14px]">star</span>
                     {review.is_highlighted ? "Highlighted" : "Highlight"}

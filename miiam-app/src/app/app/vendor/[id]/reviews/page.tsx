@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -13,7 +13,7 @@ export default function VendorReviewsPage() {
   const params = useParams();
   const router = useRouter();
   const vendorId = params.id as string;
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [vendor, setVendor] = useState<any>(null);
   const [reviews, setReviews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -63,7 +63,7 @@ export default function VendorReviewsPage() {
     <div className="min-h-screen bg-[#f8f8f8] pb-24">
       <header className="bg-[var(--color-surface-container-lowest)] border-b border-[var(--color-border-subtle)] px-4 py-4 sticky top-0 z-10">
         <div className="flex items-center gap-3">
-          <button onClick={() => router.back()} className="p-2 -ml-2 hover:bg-[var(--color-surface-container)] rounded-full">
+          <button onClick={() => router.back()} aria-label="Go back" className="p-2 -ml-2 hover:bg-[var(--color-surface-container)] rounded-full">
             <span className="material-symbols-outlined">arrow_back</span>
           </button>
           <div>

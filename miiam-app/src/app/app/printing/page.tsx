@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -63,7 +63,7 @@ export default function PrintingPage() {
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [draftPromptShown, setDraftPromptShown] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const router = useRouter();
   const cartStore = useCartStore();
   const serviceSettings = useServiceSettingsStore();

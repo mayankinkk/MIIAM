@@ -115,7 +115,7 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
   return (
     <div className="min-h-screen bg-surface">
       <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-[var(--color-surface-container-lowest)]/90 backdrop-blur-2xl shadow-sm">
-        <Link href={`/app/orders/${id}`} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-all">
+        <Link href={`/app/orders/${id}`} aria-label="Go back" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-all">
           <span className="material-symbols-outlined text-primary">arrow_back</span>
         </Link>
         <span className="text-xl font-extrabold tracking-tighter text-primary">MIIAM</span>

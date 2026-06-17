@@ -73,7 +73,7 @@ export default function SupportChatPage() {
     <div className="min-h-screen bg-surface flex flex-col">
       <header className="bg-[var(--color-surface-container-lowest)] px-4 py-4 sticky top-0 z-10 shadow-sm border-b border-[var(--color-border-subtle)]">
         <div className="flex items-center gap-3">
-          <Link href="/app/support" className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center">
+          <Link href="/app/support" aria-label="Go back" className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center">
             <span className="material-symbols-outlined">arrow_back</span>
           </Link>
           <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary-container rounded-full flex items-center justify-center text-white font-black text-sm">M</div>

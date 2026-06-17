@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { Profile } from "@/lib/types";
 import { ProfileSkeleton } from "@/components/Skeleton";
@@ -11,7 +11,7 @@ const PAGE_SIZE = 15;
 
 export default function UserRegistry() {
   const { confirm } = useConfirm();
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -153,7 +153,7 @@ export default function UserRegistry() {
                   <td className="p-6">
                     <span className={`text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest ${
                       profile.role === 'admin' ? 'bg-[var(--color-primary)] text-white' :
-                      profile.role === 'rider' ? 'bg-amber-100 text-amber-700' :
+                      profile.role === 'rider' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300' :
                       'bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]'
                     }`}>
                       {profile.role}

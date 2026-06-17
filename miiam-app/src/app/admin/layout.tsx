@@ -34,7 +34,7 @@ export default async function AdminLayout({
 
   return (
     <div className="min-h-screen bg-[var(--color-surface-subtle)] flex">
-      <Suspense fallback={<div className="w-64 bg-white animate-pulse" />}>
+      <Suspense fallback={<div className="w-64 bg-[var(--color-surface-container-lowest)] animate-pulse" />}>
         <AdminSidebar />
       </Suspense>
 

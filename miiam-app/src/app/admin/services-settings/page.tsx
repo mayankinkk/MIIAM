@@ -158,7 +158,7 @@ export default function ServiceSettingsPage() {
                       className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-bold ${
                         isServiceOpen(service.hours)
                           ? "bg-emerald-100 text-emerald-700"
-                          : "bg-amber-100 text-amber-700"
+                          : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300"
                       }`}
                     >
                       <span

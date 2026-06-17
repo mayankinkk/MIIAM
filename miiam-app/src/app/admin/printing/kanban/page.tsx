@@ -5,7 +5,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { PRINTING_VENDOR_ID } from "@/lib/constants";
 
-const supabase = createClient();
+const supabase = useMemo(() => createClient(), []);
 
 const KANBAN_COLUMNS = [
   { id: "pending", label: "Pending", icon: "schedule", color: "bg-amber-100 border-amber-300" },
@@ -252,7 +252,7 @@ export default function AdminPrintingKanban() {
                       {selFileNames.map((name: string, fi: number) => {
                         const url = selFileUrls[fi] || "";
                         return (
-                          <div key={fi} className="flex items-center gap-2 p-2.5 bg-white">
+                          <div key={fi} className="flex items-center gap-2 p-2.5 bg-[var(--color-surface-container-lowest)]">
                             <span className="material-symbols-outlined text-indigo-500 text-base shrink-0">description</span>
                             <span className="text-sm font-medium text-[var(--color-on-surface)] truncate flex-1 min-w-0">{name}</span>
                             {url && (

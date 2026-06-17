@@ -261,7 +261,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
       <header className="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
         <div className="flex justify-between items-center w-full px-6 py-4">
           <div className="flex items-center gap-4">
-            <button onClick={() => router.back()} className="hover:opacity-80 transition-opacity">
+            <button onClick={() => router.back()} aria-label="Close" className="hover:opacity-80 transition-opacity">
               <span className="material-symbols-outlined text-on-surface">close</span>
             </button>
             <span className="text-2xl font-extrabold tracking-tighter text-primary">MIIAM</span>

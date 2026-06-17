@@ -2,7 +2,7 @@
 
 export const dynamic = "force-dynamic";
 
-import { useEffect, useState } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 interface AnalyticsOrder {
@@ -53,7 +53,7 @@ interface OrderWithTimes {
 }
 
 export default function AdvancedAnalytics() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [orders, setOrders] = useState<AnalyticsOrder[]>([]);
   const [users, setUsers] = useState<AnalyticsUser[]>([]);
   const [vendors, setVendors] = useState<AnalyticsVendor[]>([]);
@@ -664,9 +664,9 @@ export default function AdvancedAnalytics() {
                     <td className="py-3 font-bold text-[var(--color-on-surface)]">₹{order.total_amount?.toFixed(2)}</td>
                     <td className="py-3">
                       <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                        order.status === "delivered" ? "bg-green-100 text-green-700" :
-                        order.status === "cancelled" ? "bg-red-100 text-red-700" :
-                        "bg-blue-100 text-blue-700"
+                        order.status === "delivered" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" :
+                        order.status === "cancelled" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300" :
+                        "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
                       }`}>
                         {order.status}
                       </span>
@@ -742,7 +742,7 @@ export default function AdvancedAnalytics() {
                   <tr key={vendor} className="border-b border-slate-50">
                     <td className="py-3 font-bold text-[var(--color-on-surface)]">{vendor}</td>
                     <td className="py-3">
-                      <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold">
+                      <span className="px-2 py-1 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 rounded-full text-xs font-bold">
                         Active
                       </span>
                     </td>

@@ -10,7 +10,7 @@ const STATUS_OPTIONS: OrderStatus[] = ["pending", "scheduled", "accepted", "proc
 const STATUS_COLORS: Record<OrderStatus, string> = {
   pending: "bg-yellow-100 text-yellow-700",
   scheduled: "bg-indigo-100 text-indigo-700",
-  accepted: "bg-blue-100 text-blue-700",
+  accepted: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
   processing: "bg-indigo-100 text-indigo-700",
   preparing: "bg-purple-100 text-purple-700",
   ready_for_pickup: "bg-orange-100 text-orange-700",
@@ -18,10 +18,10 @@ const STATUS_COLORS: Record<OrderStatus, string> = {
   picking_up: "bg-orange-100 text-orange-700",
   on_the_way: "bg-cyan-100 text-cyan-700",
   arrived: "bg-teal-100 text-teal-700",
-  delivered: "bg-green-100 text-green-700",
-  cancelled: "bg-red-100 text-red-700",
+  delivered: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
+  cancelled: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
   refunded: "bg-[var(--color-surface-container)] text-[var(--color-on-surface)]",
-  no_rider_available: "bg-amber-100 text-amber-700",
+  no_rider_available: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
 };
 
 export default function OrderManagement() {
@@ -351,7 +351,7 @@ export default function OrderManagement() {
       {selectedOrder && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-[var(--color-border-subtle)] flex justify-between items-center sticky top-0 bg-white">
+            <div className="p-6 border-b border-[var(--color-border-subtle)] flex justify-between items-center sticky top-0 bg-[var(--color-surface-container-lowest)]">
               <div>
                 <h2 className="text-xl font-black text-[var(--color-on-surface)]">Order #{selectedOrder.id.slice(0, 8)}</h2>
                 <p className="text-xs text-[var(--color-outline-variant)]">{new Date(selectedOrder.placed_at).toLocaleString()}</p>

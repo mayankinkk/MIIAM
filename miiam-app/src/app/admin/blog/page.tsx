@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import BlurImage from "@/components/BlurImage";
@@ -22,7 +22,7 @@ type BlogPost = {
 const categories = ["All", "AC Care", "Plumbing", "Beauty", "Electrical", "Cleaning", "General"];
 
 export default function BlogAdminPage() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");

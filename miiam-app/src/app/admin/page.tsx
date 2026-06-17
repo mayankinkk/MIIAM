@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
@@ -20,7 +20,7 @@ const categoryColors: Record<string, string> = {
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
 
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
@@ -284,10 +284,10 @@ export default function AdminDashboard() {
                         <td className="py-3 font-bold text-[var(--color-on-surface)]">₹{order.total_amount?.toFixed(0)}</td>
                         <td className="py-3">
                           <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                            order.status === "delivered" ? "bg-green-100 text-green-700" :
-                            order.status === "cancelled" ? "bg-red-100 text-red-700" :
-                            order.status === "pending" ? "bg-amber-100 text-amber-700" :
-                            "bg-blue-100 text-blue-700"
+                            order.status === "delivered" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" :
+                            order.status === "cancelled" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300" :
+                            order.status === "pending" ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300" :
+                            "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
                           }`}>{order.status}</span>
                         </td>
                         <td className="py-3 text-[var(--color-outline-variant)]">{new Date(order.placed_at).toLocaleDateString()}</td>
@@ -326,9 +326,9 @@ export default function AdminDashboard() {
                       </td>
                       <td className="py-3">
                         <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                          v.status === "active" ? "bg-green-100 text-green-700" :
-                          v.status === "pending" ? "bg-amber-100 text-amber-700" :
-                          v.status === "suspended" ? "bg-red-100 text-red-700" :
+                          v.status === "active" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" :
+                          v.status === "pending" ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300" :
+                          v.status === "suspended" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300" :
                           "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
                         }`}>{v.status}</span>
                       </td>

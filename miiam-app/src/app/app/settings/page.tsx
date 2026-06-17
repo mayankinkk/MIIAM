@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useTranslation } from "@/lib/i18n/useTranslation";
+import { useConfirm } from "@/components/ui/ConfirmDialog";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
 const supabase = createClient();
@@ -13,6 +14,7 @@ export default function SettingsPage() {
   const router = useRouter();
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
+  const { confirm } = useConfirm();
 
   const settingsSections = useMemo(() => [
     {
@@ -42,6 +44,7 @@ export default function SettingsPage() {
   ], [t]);
 
   const handleSignOut = async () => {
+    if (!await confirm({ title: "Sign Out", message: "Are you sure you want to sign out?", variant: "danger" })) return;
     setLoading(true);
     await supabase.auth.signOut();
     router.push("/");
@@ -52,7 +55,7 @@ export default function SettingsPage() {
     <div className="min-h-screen bg-background text-on-background pb-24">
       <header className="bg-surface-container px-6 py-4 sticky top-0 z-10 border-b border-outline-variant/10 shadow-sm">
         <div className="flex items-center justify-between">
-          <Link href="/app/profile" className="w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center hover:bg-surface-container-highest transition-colors">
+          <Link href="/app/profile" aria-label="Go back" className="w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center hover:bg-surface-container-highest transition-colors">
             <span className="material-symbols-outlined text-on-background">arrow_back</span>
           </Link>
           <h1 className="text-xl font-black text-on-surface">{t.settings.title}</h1>

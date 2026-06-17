@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
-const supabase = createClient();
+const supabase = useMemo(() => createClient(), []);
 
 export default function GroceryAdmin() {
   const [stats, setStats] = useState({ totalOrders: 0, revenue: 0, activePartners: 0, totalProducts: 0 });

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 interface RiderEarning {
@@ -16,7 +16,7 @@ interface RiderEarning {
 }
 
 export default function RiderEarningsPage() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [riders, setRiders] = useState<RiderEarning[]>([]);
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState<"week" | "month" | "all">("week");
@@ -215,7 +215,7 @@ export default function RiderEarningsPage() {
                   </td>
                   <td className="py-3">
                     <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                      rider.is_online ? "bg-green-100 text-green-700" : "bg-[var(--color-surface-container)] text-[var(--color-outline)]"
+                      rider.is_online ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" : "bg-[var(--color-surface-container)] text-[var(--color-outline)]"
                     }`}>
                       {rider.is_online ? "Online" : "Offline"}
                     </span>

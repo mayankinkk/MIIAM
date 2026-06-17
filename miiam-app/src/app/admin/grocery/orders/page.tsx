@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import Link from "next/link";
 
-const supabase = createClient();
+const supabase = useMemo(() => createClient(), []);
 
 interface GroceryOrder {
   id: string;
@@ -21,12 +21,12 @@ interface GroceryOrder {
 
 const statusColors: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-700",
-  accepted: "bg-blue-100 text-blue-700",
+  accepted: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
   preparing: "bg-purple-100 text-purple-700",
   on_the_way: "bg-orange-100 text-orange-700",
-  arrived: "bg-green-100 text-green-700",
-  delivered: "bg-green-100 text-green-700",
-  cancelled: "bg-red-100 text-red-700",
+  arrived: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
+  delivered: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
+  cancelled: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
 };
 
 const statusOptions = [
@@ -231,7 +231,7 @@ export default function GroceryOrdersPage() {
       {selectedOrder && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b sticky top-0 bg-white">
+            <div className="p-6 border-b sticky top-0 bg-[var(--color-surface-container-lowest)]">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-xl font-black text-[var(--color-on-surface)]">Order Details</h2>

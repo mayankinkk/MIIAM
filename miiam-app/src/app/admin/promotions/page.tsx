@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
 
-const supabase = createClient();
+const supabase = useMemo(() => createClient(), []);
 
 interface Promotion {
   id: string;
@@ -148,7 +148,7 @@ export default function PromotionsPage() {
                   <td className="p-4 text-sm text-[var(--color-on-surface-variant)]">{p.used_count}{p.usage_limit ? ` / ${p.usage_limit}` : ""}</td>
                   <td className="p-4 text-sm text-[var(--color-on-surface-variant)]">{p.expires_at ? new Date(p.expires_at).toLocaleDateString("en-IN") : "Never"}</td>
                   <td className="p-4">
-                    <span className={`text-xs font-bold px-3 py-1 rounded-full ${p.active ? "bg-green-100 text-green-700" : "bg-[var(--color-surface-container)] text-[var(--color-outline)]"}`}>
+                    <span className={`text-xs font-bold px-3 py-1 rounded-full ${p.active ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" : "bg-[var(--color-surface-container)] text-[var(--color-outline)]"}`}>
                       {p.active ? "Active" : "Inactive"}
                     </span>
                   </td>

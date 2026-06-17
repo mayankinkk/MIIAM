@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
@@ -40,7 +40,7 @@ export default function SubscriptionsPage() {
   };
   const [vendorNames, setVendorNames] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const { addToast } = useToastStore();
   const { confirm } = useConfirm();
 
@@ -123,7 +123,7 @@ export default function SubscriptionsPage() {
     <div className="min-h-screen bg-surface pb-24">
       <header className="bg-surface-container-lowest px-6 py-4 sticky top-0 z-10 shadow-sm">
         <div className="flex items-center gap-4">
-          <Link href="/app/profile" className="w-10 h-10 bg-surface-container rounded-full flex items-center justify-center">
+          <Link href="/app/profile" aria-label="Go back" className="w-10 h-10 bg-surface-container rounded-full flex items-center justify-center">
             <span className="material-symbols-outlined text-on-surface">arrow_back</span>
           </Link>
           <div>

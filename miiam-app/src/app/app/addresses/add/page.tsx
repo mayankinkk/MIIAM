@@ -369,10 +369,10 @@ export default function AddressPickerPage() {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-white">
+    <div className="h-screen flex flex-col bg-[var(--color-surface-container-lowest)]">
       <header className="fixed top-0 left-0 right-0 z-50 bg-[var(--color-surface-container-lowest)] shadow-md">
         <div className="flex items-center gap-3 px-4 py-3">
-          <Link href="/app/checkout">
+          <Link href="/app/checkout" aria-label="Go back">
             <span className="material-symbols-outlined text-on-surface">arrow_back</span>
           </Link>
           <div className="flex-1">
@@ -402,7 +402,7 @@ export default function AddressPickerPage() {
 
         {/* Accuracy Status */}
         {detecting && (
-          <div className="absolute top-24 left-4 right-4 z-40 bg-white/95 backdrop-blur p-3 rounded-xl shadow-lg">
+          <div className="absolute top-24 left-4 right-4 z-40 bg-[var(--color-surface-container-lowest)]/95 backdrop-blur p-3 rounded-xl shadow-lg">
             <div className="flex items-center gap-2">
               {locationStatus === "improving" ? (
                 <span className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />

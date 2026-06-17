@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import ImageUpload from "@/components/ImageUpload";
 import BlurImage from "@/components/BlurImage";
@@ -18,7 +18,7 @@ interface Banner {
 }
 
 export default function BannerManagement() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [banners, setBanners] = useState<Banner[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);

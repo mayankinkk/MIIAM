@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
@@ -15,7 +15,7 @@ const beautyCategories = [
 ];
 
 export default function BeautyServicesAdmin() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [activeTab, setActiveTab] = useState<"overview" | "bookings" | "professionals">("overview");
   const [bookings, setBookings] = useState<any[]>([]);
   const [providers, setProviders] = useState<any[]>([]);
@@ -244,8 +244,8 @@ export default function BeautyServicesAdmin() {
                           <td className="p-4 font-bold text-[var(--color-on-surface)]">₹{booking.amount}</td>
                           <td className="p-4">
                             <span className={`text-xs px-2 py-1 rounded-full font-bold ${
-                              booking.status === "completed" ? "bg-green-100 text-green-700" :
-                              booking.status === "pending" ? "bg-amber-100 text-amber-700" :
+                              booking.status === "completed" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" :
+                              booking.status === "pending" ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300" :
                               "bg-[var(--color-surface-container)] text-[var(--color-on-surface)]"
                             }`}>
                               {booking.status}
@@ -289,7 +289,7 @@ export default function BeautyServicesAdmin() {
                           </td>
                           <td className="p-4">
                             <span className={`text-xs px-2 py-1 rounded-full font-bold ${
-                              pro.status === "active" ? "bg-green-100 text-green-700" :
+                              pro.status === "active" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" :
                               "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
                             }`}>
                               {pro.status || "active"}

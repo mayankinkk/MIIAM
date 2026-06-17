@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { useToastStore } from "@/lib/store/toastStore";
@@ -19,7 +19,7 @@ interface SponsoredItem {
 
 export default function SponsoredListingsPage() {
   const { confirm } = useConfirm();
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [items, setItems] = useState<SponsoredItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -185,8 +185,8 @@ export default function SponsoredListingsPage() {
                       value={item.status}
                       onChange={e => handleStatusChange(item.id, e.target.value)}
                       className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase border-0 ${
-                        item.status === "active" ? "bg-green-100 text-green-700" :
-                        item.status === "paused" ? "bg-amber-100 text-amber-700" :
+                        item.status === "active" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" :
+                        item.status === "paused" ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300" :
                         "bg-[var(--color-surface-container)] text-[var(--color-outline)]"
                       }`}
                     >

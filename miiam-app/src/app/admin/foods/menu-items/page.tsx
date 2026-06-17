@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import ImageUpload from "@/components/ImageUpload";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
@@ -23,7 +23,7 @@ interface MenuItem {
 
 export default function AdminMenuItemsPage() {
   const { confirm } = useConfirm();
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [items, setItems] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [vendors, setVendors] = useState<any[]>([]);
@@ -239,8 +239,8 @@ export default function AdminMenuItemsPage() {
                       onClick={() => toggleAvailability(item)}
                       className={`px-3 py-1 rounded-full text-[10px] font-bold ${
                         item.available 
-                          ? "bg-green-100 text-green-700" 
-                          : "bg-red-100 text-red-700"
+                          ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" 
+                          : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300"
                       }`}
                     >
                       {item.available ? "Available" : "Unavailable"}

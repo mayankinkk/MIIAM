@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 interface AuditLog {
@@ -14,7 +14,7 @@ interface AuditLog {
 }
 
 export default function AuditLogs() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
@@ -156,9 +156,9 @@ export default function AuditLogs() {
                   </td>
                   <td className="p-4">
                     <span className={`text-[10px] font-black px-2 py-1 rounded-full uppercase ${
-                      log.action === "create" ? "bg-green-100 text-green-700" :
-                      log.action === "update" ? "bg-blue-100 text-blue-700" :
-                      log.action === "delete" ? "bg-red-100 text-red-700" :
+                      log.action === "create" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" :
+                      log.action === "update" ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300" :
+                      log.action === "delete" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300" :
                       "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
                     }`}>
                       {log.action}

@@ -2,7 +2,7 @@
 
 export const dynamic = "force-dynamic";
 
-import { useEffect, useState } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 interface InsightUser {
@@ -19,7 +19,7 @@ interface InsightOrder {
 }
 
 export default function CustomerInsights() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [users, setUsers] = useState<InsightUser[]>([]);
   const [orders, setOrders] = useState<InsightOrder[]>([]);
   const [loading, setLoading] = useState(true);
