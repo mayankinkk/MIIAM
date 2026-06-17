@@ -29,7 +29,11 @@ export default function DashboardHeader({ isOnline, streakDays, onToggleOnline, 
       </div>
       <div className="flex items-center gap-2">
         <button 
-          onClick={() => window.open("tel:+9118001234567", "_self")}
+          onClick={() => {
+            if (window.confirm("Are you sure you want to send an SOS alert?")) {
+              window.open("tel:+9118001234567", "_self");
+            }
+          }}
           className="p-2 bg-red-50 rounded-full animate-pulse" 
           title={t.rider.header.emergencySos}
         >

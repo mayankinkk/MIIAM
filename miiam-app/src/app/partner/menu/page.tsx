@@ -707,6 +707,7 @@ export default function PartnerMenuPage() {
 
       {/* Items Table */}
       <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)] overflow-hidden">
+        <div className="overflow-x-auto">
         {loading ? (
           <div className="p-12 text-center text-[var(--color-outline-variant)] font-medium">Loading items...</div>
         ) : filteredItems.length === 0 ? (
@@ -912,6 +913,7 @@ export default function PartnerMenuPage() {
             </tbody>
           </table>
         )}
+        </div>
       </div>
 
       {/* Add Item Modal */}
