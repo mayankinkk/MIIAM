@@ -226,7 +226,7 @@ export default function RiderDocumentsPage() {
                 >
                   <span className="material-symbols-outlined text-[var(--color-outline-variant)]">description</span>
                   <div className="flex-1">
-                    <p className="text-sm font-bold text-[var(--color-on-surface)]">{doc.doc_type.replace("_", " ")}</p>
+                    <p className="text-sm font-bold text-[var(--color-on-surface)]">{doc.doc_type.replaceAll("_", " ")}</p>
                     <p className="text-xs text-[var(--color-outline)]">{new Date(doc.created_at).toLocaleDateString("en-IN")}</p>
                   </div>
                   <span className={`px-2 py-1 rounded text-xs font-bold ${getStatusColor(doc.status)}`}>

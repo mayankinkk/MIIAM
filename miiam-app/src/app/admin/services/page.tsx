@@ -254,7 +254,7 @@ export default function EnhancedServicesDashboard() {
                 <div className="space-y-3">
                   {Object.entries(statusCounts).map(([status, count]) => (
                     <div key={status} className="flex items-center justify-between">
-                      <span className="text-sm font-bold text-[var(--color-on-surface-variant)] capitalize">{status.replace("_", " ")}</span>
+                      <span className="text-sm font-bold text-[var(--color-on-surface-variant)] capitalize">{status.replaceAll("_", " ")}</span>
                       <span className="font-black text-[var(--color-on-surface)]">{count}</span>
                     </div>
                   ))}
@@ -299,7 +299,7 @@ export default function EnhancedServicesDashboard() {
                           booking.status === "in_progress" ? "bg-blue-100 text-blue-700" :
                           "bg-amber-100 text-amber-700"
                         }`}>
-                          {booking.status.replace("_", " ")}
+                          {booking.status.replaceAll("_", " ")}
                         </span>
                       </td>
                       <td className="p-4 text-right font-black text-[var(--color-on-surface)]">₹{booking.amount}</td>
@@ -333,7 +333,7 @@ export default function EnhancedServicesDashboard() {
                       : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]"
                   }`}
                 >
-                  {status === "all" ? "All" : status.replace("_", " ")}
+                  {status === "all" ? "All" : status.replaceAll("_", " ")}
                 </button>
               ))}
             </div>

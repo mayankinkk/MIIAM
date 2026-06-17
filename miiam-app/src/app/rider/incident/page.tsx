@@ -194,7 +194,7 @@ export default function RiderIncidentPage() {
             {recentIncidents.length > 0 ? recentIncidents.map((report, i) => (
               <div key={i} className="flex items-center justify-between p-3 border-b border-[var(--color-border-subtle)]">
                 <div>
-                  <p className="font-bold text-sm capitalize">{report.type.replace("_", " ")}</p>
+                  <p className="font-bold text-sm capitalize">{report.type.replaceAll("_", " ")}</p>
                   <p className="text-xs text-[var(--color-outline-variant)]">{report.date}</p>
                 </div>
                 <span className={`text-xs px-2 py-1 rounded-full ${report.status === "resolved" ? "bg-green-100 text-green-600" : "bg-amber-100 text-amber-600"}`}>
@@ -229,7 +229,7 @@ export default function RiderIncidentPage() {
                   {incidentTypes.find(t => t.id === selectedType)?.icon || "🚨"}
                 </span>
               </div>
-              <h3 className="font-bold text-xl">Report {selectedType?.replace("_", " ")}</h3>
+              <h3 className="font-bold text-xl">Report {selectedType?.replaceAll("_", " ")}</h3>
               <p className="text-sm text-[var(--color-outline)] mt-1">We'll help you right away</p>
             </div>
 

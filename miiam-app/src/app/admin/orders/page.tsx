@@ -226,7 +226,7 @@ export default function OrderManagement() {
         </div>
         <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl shadow-sm border border-[var(--color-border-subtle)]">
           <p className="text-xs font-black text-[var(--color-outline-variant)] uppercase tracking-widest mb-1">Avg Order</p>
-          <p className="text-3xl font-black text-[var(--color-on-surface)]">₹{orders.length ? Math.round(totalRevenue / orders.filter(o => o.status === "delivered").length) : 0}</p>
+          <p className="text-3xl font-black text-[var(--color-on-surface)]">₹{(() => { const delivered = orders.filter(o => o.status === "delivered").length; return delivered > 0 ? Math.round(totalRevenue / delivered) : 0; })()}</p>
         </div>
       </div>
 
@@ -251,7 +251,7 @@ export default function OrderManagement() {
             >
               <option value="all">All Status</option>
               {STATUS_OPTIONS.map(s => (
-                <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1).replace("_", " ")}</option>
+                <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1).replaceAll("_", " ")}</option>
               ))}
             </select>
           </div>
@@ -322,7 +322,7 @@ export default function OrderManagement() {
                   <td className="p-4 text-sm font-medium text-[var(--color-on-surface-variant)]">{order.vendor?.name || "Unknown"}</td>
                   <td className="p-4">
                     <span className={`text-[10px] font-black px-3 py-1 rounded-full uppercase ${STATUS_COLORS[order.status]}`}>
-                      {order.status.replace("_", " ")}
+                      {order.status.replaceAll("_", " ")}
                     </span>
                   </td>
                   <td className="p-4 text-right font-black text-[var(--color-on-surface)]">₹{order.total_amount}</td>
@@ -403,7 +403,7 @@ export default function OrderManagement() {
                       onClick={() => updateStatus(selectedOrder.id, s)}
                       className={`px-3 py-2 rounded-xl text-xs font-bold transition-all ${STATUS_COLORS[s]} hover:opacity-80`}
                     >
-                      → {s.replace("_", " ").replace(/\b\w/g, l => l.toUpperCase())}
+                      → {s.replaceAll("_", " ").replace(/\b\w/g, l => l.toUpperCase())}
                     </button>
                   ))}
                 </div>
