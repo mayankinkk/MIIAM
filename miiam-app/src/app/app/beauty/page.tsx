@@ -92,23 +92,17 @@ export default function BeautyPage() {
   const userPincode = locationStore.pincode;
   const userCity = locationStore.city;
   const { addToast } = useToastStore();
-  const supabase = createClient();
   const beautySetting = getSetting("beauty");
-
-  if (beautySetting && !beautySetting.isEnabled) {
-    return <ServiceUnavailable serviceName="Beauty & Wellness" message={beautySetting.message} icon="spa" />;
-  }
   const [bookingService, setBookingService] = useState<any>(null);
   const [selectedDate, setSelectedDate] = useState(0);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [location, setLocation] = useState<"home" | "salon">("home");
   const { addItem, items, updateQuantity } = useCartStore();
+  const [days, setDays] = useState<{ label: string; date: string }[]>([]);
 
   useEffect(() => {
     checkServiceability();
   }, [userPincode]);
-
-  const [days, setDays] = useState<{ label: string; date: string }[]>([]);
 
   useEffect(() => {
     const today = new Date();
@@ -120,6 +114,10 @@ export default function BeautyPage() {
     }
     setDays(result);
   }, []);
+
+  if (beautySetting && !beautySetting.isEnabled) {
+    return <ServiceUnavailable serviceName="Beauty & Wellness" message={beautySetting.message} icon="spa" />;
+  }
 
   const checkServiceability = async () => {
     setIsServiceable(true);
