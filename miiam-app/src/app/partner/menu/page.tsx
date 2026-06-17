@@ -555,7 +555,7 @@ export default function PartnerMenuPage() {
             <span className="material-symbols-outlined text-3xl text-[var(--color-outline-variant)] mb-2">file_upload</span>
             <p className="font-bold text-[var(--color-on-surface)] text-sm">Bulk Import Items</p>
             <p className="text-xs text-[var(--color-outline-variant)] mt-1 mb-3">CSV upload</p>
-            <label className="cursor-pointer px-4 py-2 bg-[var(--color-primary)] text-white text-xs font-bold rounded-xl hover:bg-[#a40017]">
+              <label className="cursor-pointer px-4 py-2 bg-[var(--color-primary)] text-white text-xs font-bold rounded-xl hover:bg-[var(--color-primary-dim)]">
               Upload CSV
               <input
                 type="file"
@@ -741,6 +741,7 @@ export default function PartnerMenuPage() {
           </div>
         ) : (
           <table className="w-full text-left">
+            <caption className="sr-only">Menu items inventory</caption>
             <thead className="bg-[var(--color-surface-subtle)] border-b border-[var(--color-border-subtle)]">
               <tr>
                 {bulkMode && (
@@ -862,6 +863,8 @@ export default function PartnerMenuPage() {
                     <td className="p-4">
                       <button
                         onClick={() => toggleAvailability(item)}
+                        role="switch"
+                        aria-checked={(item as MenuItem).available}
                         className={`text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider ${
                           (item as MenuItem).available
                             ? "bg-green-100 text-green-700"
@@ -876,6 +879,8 @@ export default function PartnerMenuPage() {
                     <td className="p-4">
                       <button
                         onClick={() => toggleFeatured(item)}
+                        role="switch"
+                        aria-checked={!!(item as any).is_featured}
                         className={`text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider ${
                           (item as any).is_featured
                             ? "bg-amber-100 text-amber-700"
@@ -908,12 +913,14 @@ export default function PartnerMenuPage() {
                       <button
                         onClick={() => setEditingItem(item)}
                         className="w-10 h-10 bg-[var(--color-surface-container)] rounded-lg flex items-center justify-center hover:bg-[var(--color-surface-container-high)] transition-colors"
+                        aria-label={`Edit ${item.name}`}
                       >
                         <span className="material-symbols-outlined text-[var(--color-on-surface-variant)] text-sm">edit</span>
                       </button>
                       <button
                         onClick={() => handleDeleteItem(item.id)}
                         className="w-10 h-10 bg-[var(--color-surface-container)] rounded-lg flex items-center justify-center hover:bg-red-100 transition-colors"
+                        aria-label={`Delete ${item.name}`}
                       >
                         <span className="material-symbols-outlined text-red-500 text-sm">delete</span>
                       </button>
@@ -935,14 +942,15 @@ export default function PartnerMenuPage() {
               <h2 id="add-item-title" className="text-xl font-extrabold text-[var(--color-on-surface)]">
                 Add {vendorKey === "food" ? "Menu Item" : vendorKey === "grocery" ? "Product" : vendorKey === "pharmacy" ? "Medicine" : "Item"}
               </h2>
-              <button onClick={() => setShowAddModal(false)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center">
+              <button onClick={() => setShowAddModal(false)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center" aria-label="Close">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-semibold text-[var(--color-on-surface)]">Name *</label>
+                <label htmlFor="add-item-name" className="text-sm font-semibold text-[var(--color-on-surface)]">Name *</label>
                 <input
+                  id="add-item-name"
                   type="text"
                   value={newItem.name}
                   onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
@@ -951,8 +959,9 @@ export default function PartnerMenuPage() {
                 />
               </div>
               <div>
-                <label className="text-sm font-semibold text-[var(--color-on-surface)]">Price (₹) *</label>
+                <label htmlFor="add-item-price" className="text-sm font-semibold text-[var(--color-on-surface)]">Price (₹) *</label>
                 <input
+                  id="add-item-price"
                   type="number"
                   min="0"
                   step="0.5"
@@ -963,8 +972,9 @@ export default function PartnerMenuPage() {
                 />
               </div>
               <div>
-                <label className="text-sm font-semibold text-[var(--color-on-surface)]">Category</label>
+                <label htmlFor="add-item-category" className="text-sm font-semibold text-[var(--color-on-surface)]">Category</label>
                 <select
+                  id="add-item-category"
                   value={newItem.category || categories[0]}
                   onChange={(e) => setNewItem({ ...newItem, category: e.target.value })}
                   className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
@@ -976,8 +986,9 @@ export default function PartnerMenuPage() {
               </div>
               {(vendorKey === "food" || vendorKey === "flowers") && (
                 <div>
-                  <label className="text-sm font-semibold text-[var(--color-on-surface)]">Description</label>
+                  <label htmlFor="add-item-description" className="text-sm font-semibold text-[var(--color-on-surface)]">Description</label>
                   <textarea
+                    id="add-item-description"
                     value={newItem.description}
                     onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
                     placeholder="Brief description"
@@ -988,8 +999,9 @@ export default function PartnerMenuPage() {
               )}
               {(vendorKey === "grocery" || vendorKey === "pharmacy") && (
                 <div>
-                  <label className="text-sm font-semibold text-[var(--color-on-surface)]">Stock Quantity</label>
+                  <label htmlFor="add-item-stock" className="text-sm font-semibold text-[var(--color-on-surface)]">Stock Quantity</label>
                   <input
+                    id="add-item-stock"
                     type="number"
                     min="0"
                     value={newItem.stock}
@@ -1001,8 +1013,9 @@ export default function PartnerMenuPage() {
               )}
               {(vendorKey === "food") && (
                 <div>
-                  <label className="text-sm font-semibold text-[var(--color-on-surface)]">Stock Quantity</label>
+                  <label htmlFor="add-item-stock-food" className="text-sm font-semibold text-[var(--color-on-surface)]">Stock Quantity</label>
                   <input
+                    id="add-item-stock-food"
                     type="number"
                     min="0"
                     value={newItem.stock}
@@ -1025,7 +1038,7 @@ export default function PartnerMenuPage() {
                   </label>
                   {newItem.has_discount && (
                     <div>
-                      <label className="text-xs font-semibold text-[var(--color-on-surface)] mb-2 block">Discount %</label>
+                      <label htmlFor="add-item-discount" className="text-xs font-semibold text-[var(--color-on-surface)] mb-2 block">Discount %</label>
                       <div className="flex gap-2">
                         {[10, 15, 20, 25, 30, 40, 50].map((p) => (
                           <button
@@ -1177,7 +1190,7 @@ export default function PartnerMenuPage() {
               <button
                 onClick={handleAddItem}
                 disabled={uploading}
-                className="w-full py-4 bg-[var(--color-primary)] text-white font-extrabold rounded-2xl mt-4 hover:bg-[#a40017] transition-colors disabled:opacity-50"
+                className="w-full py-4 bg-[var(--color-primary)] text-white font-extrabold rounded-2xl mt-4 hover:bg-[var(--color-primary-dim)] transition-colors disabled:opacity-50"
               >
                 {uploading ? "Uploading..." : `Add ${vendorKey === "pharmacy" ? "Medicine" : vendorKey === "grocery" ? "Product" : "Item"}`}
               </button>
@@ -1192,14 +1205,15 @@ export default function PartnerMenuPage() {
           <div className="bg-[var(--color-surface-container-lowest)] w-full max-w-lg rounded-3xl p-6 m-4" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
               <h2 id="edit-item-title" className="text-xl font-extrabold text-[var(--color-on-surface)]">Edit Item</h2>
-              <button onClick={() => setEditingItem(null)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center">
+              <button onClick={() => setEditingItem(null)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center" aria-label="Close">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-semibold text-[var(--color-on-surface)]">Name</label>
+                <label htmlFor="edit-item-name" className="text-sm font-semibold text-[var(--color-on-surface)]">Name</label>
                 <input
+                  id="edit-item-name"
                   type="text"
                   value={editingItem.name}
                   onChange={(e) => setEditingItem({ ...editingItem, name: e.target.value })}
@@ -1207,8 +1221,9 @@ export default function PartnerMenuPage() {
                 />
               </div>
               <div>
-                <label className="text-sm font-semibold text-[var(--color-on-surface)]">Price (₹)</label>
+                <label htmlFor="edit-item-price" className="text-sm font-semibold text-[var(--color-on-surface)]">Price (₹)</label>
                 <input
+                  id="edit-item-price"
                   type="number"
                   min="0"
                   step="0.5"
@@ -1218,8 +1233,9 @@ export default function PartnerMenuPage() {
                 />
               </div>
               <div>
-                <label className="text-sm font-semibold text-[var(--color-on-surface)]">Category</label>
+                <label htmlFor="edit-item-category" className="text-sm font-semibold text-[var(--color-on-surface)]">Category</label>
                 <select
+                  id="edit-item-category"
                   value={editingItem.category}
                   onChange={(e) => setEditingItem({ ...editingItem, category: e.target.value })}
                   className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
@@ -1231,8 +1247,9 @@ export default function PartnerMenuPage() {
               </div>
               {(vendorKey === "food" || vendorKey === "flowers") && (
                 <div>
-                  <label className="text-sm font-semibold text-[var(--color-on-surface)]">Description</label>
+                  <label htmlFor="edit-item-description" className="text-sm font-semibold text-[var(--color-on-surface)]">Description</label>
                   <textarea
+                    id="edit-item-description"
                     value={(editingItem as MenuItem).description || ""}
                     onChange={(e) => setEditingItem({ ...editingItem, description: e.target.value })}
                     rows={2}
@@ -1242,8 +1259,9 @@ export default function PartnerMenuPage() {
               )}
               {(vendorKey === "food" || vendorKey === "grocery" || vendorKey === "pharmacy") && (
                 <div>
-                  <label className="text-sm font-semibold text-[var(--color-on-surface)]">Stock Quantity</label>
+                  <label htmlFor="edit-item-stock" className="text-sm font-semibold text-[var(--color-on-surface)]">Stock Quantity</label>
                   <input
+                    id="edit-item-stock"
                     type="number"
                     min="0"
                     value={(editingItem as any).stock}
@@ -1271,7 +1289,7 @@ export default function PartnerMenuPage() {
                   </label>
                   {(editingItem as any).discount_percent > 0 && (
                     <div>
-                      <label className="text-xs font-semibold text-[var(--color-on-surface)] mb-2 block">Discount %</label>
+                      <label htmlFor="edit-item-discount" className="text-xs font-semibold text-[var(--color-on-surface)] mb-2 block">Discount %</label>
                       <div className="flex gap-2">
                         {[10, 15, 20, 25, 30, 40, 50].map((p) => (
                           <button
@@ -1442,7 +1460,7 @@ export default function PartnerMenuPage() {
                 <button
                   onClick={handleUpdateItem}
                   disabled={uploading}
-                  className="flex-1 py-4 bg-[var(--color-primary)] text-white font-extrabold rounded-2xl hover:bg-[#a40017] transition-colors disabled:opacity-50"
+                  className="flex-1 py-4 bg-[var(--color-primary)] text-white font-extrabold rounded-2xl hover:bg-[var(--color-primary-dim)] transition-colors disabled:opacity-50"
                 >
                   {uploading ? "Uploading..." : "Save Changes"}
                 </button>
@@ -1457,7 +1475,7 @@ export default function PartnerMenuPage() {
           <div className="bg-[var(--color-surface-container-lowest)] w-full max-w-lg rounded-3xl p-6 m-4" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
               <h2 id="category-modal-title" className="text-xl font-extrabold text-[var(--color-on-surface)]">Manage Categories</h2>
-              <button onClick={() => setShowCategoryModal(false)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center">
+              <button onClick={() => setShowCategoryModal(false)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center" aria-label="Close">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
@@ -1488,6 +1506,7 @@ export default function PartnerMenuPage() {
                       <button
                         onClick={() => setEditingCategory({ oldName: cat, newName: cat })}
                         className="p-2 hover:bg-[var(--color-surface-container)] rounded-lg"
+                        aria-label={`Edit ${cat}`}
                       >
                         <span className="material-symbols-outlined text-lg text-[var(--color-outline)]">edit</span>
                       </button>
@@ -1498,6 +1517,7 @@ export default function PartnerMenuPage() {
                           }
                         }}
                         className="p-2 hover:bg-red-50 rounded-lg"
+                        aria-label={`Delete ${cat}`}
                       >
                         <span className="material-symbols-outlined text-lg text-red-400">delete</span>
                       </button>
@@ -1527,7 +1547,7 @@ export default function PartnerMenuPage() {
                     setNewCategoryName("");
                   }
                 }}
-                className="px-5 py-3 bg-[var(--color-primary)] text-white font-bold rounded-xl text-sm hover:bg-[#a40017]"
+                className="px-5 py-3 bg-[var(--color-primary)] text-white font-bold rounded-xl text-sm hover:bg-[var(--color-primary-dim)]"
               >
                 Add
               </button>
@@ -1565,7 +1585,7 @@ export default function PartnerMenuPage() {
                   if (qr) link.href = qr.src;
                   link.click();
                 }}
-                className="flex-1 py-3 bg-[var(--color-primary)] text-white font-bold rounded-xl text-sm hover:bg-[#a40017]"
+                className="flex-1 py-3 bg-[var(--color-primary)] text-white font-bold rounded-xl text-sm hover:bg-[var(--color-primary-dim)]"
               >
                 Download
               </button>

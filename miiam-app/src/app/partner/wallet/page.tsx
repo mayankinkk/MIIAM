@@ -113,22 +113,22 @@ export default function VendorWalletPage() {
       <div className="bg-gradient-to-br from-[var(--color-primary)] to-[#6b0011] text-white rounded-3xl p-8 shadow-lg">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <p className="text-white/60 text-sm font-medium">Available Balance</p>
+            <p className="text-white/80 text-sm font-medium">Available Balance</p>
             <p className="text-5xl font-black mt-2">₹{wallet.balance.toFixed(2)}</p>
           </div>
           <span className="material-symbols-outlined text-5xl text-white/30">account_balance_wallet</span>
         </div>
         <div className="grid grid-cols-3 gap-4">
           <div>
-            <p className="text-white/50 text-xs">Total Earned</p>
+            <p className="text-white/80 text-xs">Total Earned</p>
             <p className="text-xl font-bold">₹{wallet.total_earned.toFixed(0)}</p>
           </div>
           <div>
-            <p className="text-white/50 text-xs">Pending</p>
+            <p className="text-white/80 text-xs">Pending</p>
             <p className="text-xl font-bold">₹{wallet.pending_payout.toFixed(0)}</p>
           </div>
           <div>
-            <p className="text-white/50 text-xs">Last Payout</p>
+            <p className="text-white/80 text-xs">Last Payout</p>
             <p className="text-xl font-bold">₹{wallet.last_payout.toFixed(0)}</p>
           </div>
         </div>
@@ -173,6 +173,7 @@ export default function VendorWalletPage() {
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left">
+            <caption className="sr-only">Recent transactions</caption>
             <thead className="bg-[var(--color-surface-subtle)] border-y border-[var(--color-border-subtle)]">
               <tr>
                 <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Order</th>
@@ -225,7 +226,7 @@ export default function VendorWalletPage() {
           <div className="bg-[var(--color-surface-container-lowest)] w-full max-w-md rounded-3xl p-6 m-4" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
               <h2 id="payout-modal-title" className="text-xl font-extrabold text-[var(--color-on-surface)]">Request Payout</h2>
-              <button onClick={() => setShowRequestPayout(false)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center">
+              <button onClick={() => setShowRequestPayout(false)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center" aria-label="Close">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
@@ -235,8 +236,9 @@ export default function VendorWalletPage() {
                 <p className="text-2xl font-black text-[var(--color-primary)]">₹{wallet.balance.toFixed(2)}</p>
               </div>
               <div>
-                <label className="text-sm font-semibold text-[var(--color-on-surface)]">Withdrawal Amount (₹)</label>
+                <label htmlFor="payout-amount" className="text-sm font-semibold text-[var(--color-on-surface)]">Withdrawal Amount (₹)</label>
                 <input
+                  id="payout-amount"
                   type="number"
                   value={payoutAmount}
                   onChange={(e) => setPayoutAmount(e.target.value)}
@@ -265,7 +267,7 @@ export default function VendorWalletPage() {
               <button
                 onClick={handleRequestPayout}
                 disabled={!payoutAmount || parseFloat(payoutAmount) <= 0 || parseFloat(payoutAmount) > wallet.balance}
-                className="w-full py-4 bg-[var(--color-primary)] text-white font-extrabold rounded-2xl hover:bg-[#a40017] transition-colors disabled:opacity-50"
+                className="w-full py-4 bg-[var(--color-primary)] text-white font-extrabold rounded-2xl hover:bg-[var(--color-primary-dim)] transition-colors disabled:opacity-50"
               >
                 Request ₹{parseFloat(payoutAmount || "0").toFixed(2)}
               </button>

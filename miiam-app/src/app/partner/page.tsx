@@ -48,7 +48,7 @@ export default function PartnerLanding() {
           </Link>
           <Link
             href="/partner/register"
-            className="bg-[var(--color-primary)] text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-[#a40017] transition-colors"
+            className="bg-[var(--color-primary)] text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-[var(--color-primary-dim)] transition-colors"
           >
             Get Started
           </Link>
@@ -74,7 +74,7 @@ export default function PartnerLanding() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
               <Link
                 href="/partner/register"
-                className="bg-[var(--color-primary)] text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-[#a40017] transition-colors shadow-xl shadow-[var(--color-primary)]/20 text-center"
+                className="bg-[var(--color-primary)] text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-[var(--color-primary-dim)] transition-colors shadow-xl shadow-[var(--color-primary)]/20 text-center"
               >
                 Register Your Store
               </Link>
@@ -145,7 +145,7 @@ export default function PartnerLanding() {
         <div className="text-center mt-12">
           <Link
             href="/partner/register"
-            className="inline-block bg-[var(--color-primary)] text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-[#a40017] transition-colors shadow-xl shadow-[var(--color-primary)]/20"
+            className="inline-block bg-[var(--color-primary)] text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-[var(--color-primary-dim)] transition-colors shadow-xl shadow-[var(--color-primary)]/20"
           >
             Start Registration
           </Link>
@@ -177,7 +177,7 @@ export default function PartnerLanding() {
           <p className="text-[var(--color-outline)] mb-8">Join thousands of partners already growing with MIIAM.</p>
           <Link
             href="/partner/register"
-            className="inline-block bg-[var(--color-primary)] text-white px-10 py-4 rounded-2xl font-bold text-xl hover:bg-[#a40017] transition-colors shadow-xl shadow-[var(--color-primary)]/20"
+            className="inline-block bg-[var(--color-primary)] text-white px-10 py-4 rounded-2xl font-bold text-xl hover:bg-[var(--color-primary-dim)] transition-colors shadow-xl shadow-[var(--color-primary)]/20"
           >
             Register Now — It&apos;s Free
           </Link>

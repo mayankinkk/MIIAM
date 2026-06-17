@@ -112,7 +112,7 @@ export default function VendorProfilePage() {
           className={`px-6 py-3 rounded-xl font-bold text-sm transition-all ${
             saved
               ? "bg-green-100 text-green-700"
-              : "bg-[var(--color-primary)] text-white hover:bg-[#a40017]"
+              : "bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-dim)]"
           }`}
         >
           {saving ? "Saving..." : saved ? "Saved!" : "Save Changes"}

@@ -254,9 +254,9 @@ export default function VendorAnalytics() {
       {/* KPI Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-gradient-to-br from-[var(--color-primary)] to-[#6b0011] text-white rounded-2xl p-6">
-          <p className="text-white/70 text-sm font-medium">Total Revenue</p>
+          <p className="text-white/80 text-sm font-medium">Total Revenue</p>
           <p className="text-3xl font-black mt-1">₹{totalRevenue.toFixed(0)}</p>
-          <p className="text-white/50 text-xs mt-1">{deliveredOrders.length} orders</p>
+          <p className="text-white/80 text-xs mt-1">{deliveredOrders.length} orders</p>
         </div>
         <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-[var(--color-border-subtle)]">
           <p className="text-[var(--color-outline)] text-sm font-medium">Orders</p>
@@ -277,7 +277,7 @@ export default function VendorAnalytics() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Revenue Chart */}
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-[var(--color-border-subtle)]">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-[var(--color-border-subtle)]" role="img" aria-label="Daily revenue bar chart">
           <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Daily Revenue</h3>
           {dailyRevenue.length === 0 ? (
             <p className="text-[var(--color-outline-variant)] text-sm text-center py-8">No data for this period</p>
@@ -303,7 +303,7 @@ export default function VendorAnalytics() {
         </div>
 
         {/* Peak Hours */}
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-[var(--color-border-subtle)]">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-[var(--color-border-subtle)]" role="img" aria-label="Peak hours bar chart showing order volume by hour">
           <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Peak Hours</h3>
           <div className="space-y-2">
             {peakHours.map((h) => {
@@ -352,29 +352,29 @@ export default function VendorAnalytics() {
               <h3 className="font-bold text-[var(--color-on-surface)]">Performance & Staffing</h3>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="p-4 bg-emerald-50 rounded-xl">
-                <p className="text-xs text-emerald-600 mb-2 font-bold uppercase tracking-wider">Staffing Recommendation</p>
-                <p className="text-sm text-emerald-800">
+              <div className="p-4 bg-emerald-50 dark:bg-emerald-900/30 rounded-xl">
+                <p className="text-xs text-emerald-600 dark:text-emerald-400 mb-2 font-bold uppercase tracking-wider">Staffing Recommendation</p>
+                <p className="text-sm text-emerald-800 dark:text-emerald-300">
                   {topHours.length > 0
                     ? `Schedule extra staff during peak: ${peakLabel}`
                     : "Insufficient data for recommendation"}
                 </p>
               </div>
-              <div className="p-4 bg-blue-50 rounded-xl text-center">
-                <p className="text-xs text-blue-600 mb-1 font-bold uppercase tracking-wider">Avg Prep Time</p>
-                <p className="text-3xl font-black text-blue-700">{avgPrepTime ?? "—"}</p>
-                <p className="text-xs text-blue-500 mt-1">minutes</p>
+              <div className="p-4 bg-blue-50 dark:bg-blue-900/30 rounded-xl text-center">
+                <p className="text-xs text-blue-600 dark:text-blue-400 mb-1 font-bold uppercase tracking-wider">Avg Prep Time</p>
+                <p className="text-3xl font-black text-blue-700 dark:text-blue-300">{avgPrepTime ?? "—"}</p>
+                <p className="text-xs text-blue-500 dark:text-blue-400 mt-1">minutes</p>
               </div>
-              <div className="p-4 bg-green-50 rounded-xl text-center">
-                <p className="text-xs text-green-600 mb-1 font-bold uppercase tracking-wider">On-time Rate</p>
-                <p className="text-3xl font-black text-green-700">{onTimeRate != null ? `${onTimeRate}%` : "—"}</p>
-                <p className="text-xs text-green-500 mt-1">delivered within 45 min</p>
+              <div className="p-4 bg-green-50 dark:bg-green-900/30 rounded-xl text-center">
+                <p className="text-xs text-green-600 dark:text-green-400 mb-1 font-bold uppercase tracking-wider">On-time Rate</p>
+                <p className="text-3xl font-black text-green-700 dark:text-green-300">{onTimeRate != null ? `${onTimeRate}%` : "—"}</p>
+                <p className="text-xs text-green-500 dark:text-green-400 mt-1">delivered within 45 min</p>
               </div>
             </div>
             {delayedOrders.length > 0 && (
-              <div className="mt-4 p-3 bg-red-50 rounded-xl flex items-center gap-2">
+              <div className="mt-4 p-3 bg-red-50 dark:bg-red-900/30 rounded-xl flex items-center gap-2">
                 <span className="material-symbols-outlined text-red-500 text-sm">warning</span>
-                <p className="text-xs text-red-700">
+                <p className="text-xs text-red-700 dark:text-red-300">
                   {delayedOrders.length} order{delayedOrders.length > 1 ? "s" : ""} reported with delays — avg {Math.round(delayedOrders.reduce((s, o) => s + (o.delay_minutes || 0), 0) / delayedOrders.length)} min delay
                 </p>
               </div>
@@ -446,6 +446,7 @@ export default function VendorAnalytics() {
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
+              <caption className="sr-only">Competitor benchmarking data</caption>
               <thead className="bg-[var(--color-surface-subtle)] rounded-xl">
                 <tr>
                   <th className="p-3 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Vendor</th>
@@ -473,31 +474,31 @@ export default function VendorAnalytics() {
 
       {/* Demand Forecasting */}
       {forecast && (
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-[var(--color-border-subtle)]">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-[var(--color-border-subtle)]" role="img" aria-label="Demand forecast by day of week">
           <div className="flex items-center gap-2 mb-4">
             <span className="material-symbols-outlined text-purple-500">trending_up</span>
             <h3 className="font-bold text-[var(--color-on-surface)]">Demand Forecast</h3>
             <span className="text-[10px] text-[var(--color-outline-variant)] bg-[var(--color-surface-container)] px-2 py-0.5 rounded-full">Based on last 90 days</span>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-            <div className="p-4 bg-purple-50 rounded-xl text-center">
-              <p className="text-xs text-purple-600 mb-1">Avg Daily Orders</p>
-              <p className="text-2xl font-black text-purple-700">{forecast.avgDailyOrders}</p>
+            <div className="p-4 bg-purple-50 dark:bg-purple-900/30 rounded-xl text-center">
+              <p className="text-xs text-purple-600 dark:text-purple-400 mb-1">Avg Daily Orders</p>
+              <p className="text-2xl font-black text-purple-700 dark:text-purple-300">{forecast.avgDailyOrders}</p>
             </div>
-            <div className="p-4 bg-green-50 rounded-xl text-center">
-              <p className="text-xs text-green-600 mb-1">Busiest Day</p>
-              <p className="text-2xl font-black text-green-700">{forecast.peakDay.name}</p>
-              <p className="text-[10px] text-green-500">{forecast.peakDay.orders} orders</p>
+            <div className="p-4 bg-green-50 dark:bg-green-900/30 rounded-xl text-center">
+              <p className="text-xs text-green-600 dark:text-green-400 mb-1">Busiest Day</p>
+              <p className="text-2xl font-black text-green-700 dark:text-green-300">{forecast.peakDay.name}</p>
+              <p className="text-[10px] text-green-500 dark:text-green-400">{forecast.peakDay.orders} orders</p>
             </div>
-            <div className="p-4 bg-amber-50 rounded-xl text-center">
-              <p className="text-xs text-amber-600 mb-1">Slowest Day</p>
-              <p className="text-2xl font-black text-amber-700">{forecast.slowDay.name}</p>
-              <p className="text-[10px] text-amber-500">{forecast.slowDay.orders} orders</p>
+            <div className="p-4 bg-amber-50 dark:bg-amber-900/30 rounded-xl text-center">
+              <p className="text-xs text-amber-600 dark:text-amber-400 mb-1">Slowest Day</p>
+              <p className="text-2xl font-black text-amber-700 dark:text-amber-300">{forecast.slowDay.name}</p>
+              <p className="text-[10px] text-amber-500 dark:text-amber-400">{forecast.slowDay.orders} orders</p>
             </div>
-            <div className="p-4 bg-blue-50 rounded-xl text-center">
-              <p className="text-xs text-blue-600 mb-1">Projected Weekly</p>
-              <p className="text-2xl font-black text-blue-700">{forecast.projectedWeekly}</p>
-              <p className="text-[10px] text-blue-500">orders</p>
+            <div className="p-4 bg-blue-50 dark:bg-blue-900/30 rounded-xl text-center">
+              <p className="text-xs text-blue-600 dark:text-blue-400 mb-1">Projected Weekly</p>
+              <p className="text-2xl font-black text-blue-700 dark:text-blue-300">{forecast.projectedWeekly}</p>
+              <p className="text-[10px] text-blue-500 dark:text-blue-400">orders</p>
             </div>
           </div>
           <div className="flex gap-3 overflow-x-auto pb-2">
@@ -525,6 +526,7 @@ export default function VendorAnalytics() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left">
+              <caption className="sr-only">Popular items by quantity sold</caption>
               <thead className="bg-[var(--color-surface-subtle)] rounded-xl">
                 <tr>
                   <th className="p-3 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">#</th>

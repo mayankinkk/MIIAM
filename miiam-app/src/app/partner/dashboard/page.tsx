@@ -199,7 +199,7 @@ export default function VendorDashboard() {
         <p className="text-[var(--color-outline)] mb-6">You don&apos;t have a vendor account yet. Register to start selling.</p>
         <Link
           href="/partner/register"
-          className="bg-[var(--color-primary)] text-white px-8 py-4 rounded-2xl font-bold hover:bg-[#a40017] transition-colors"
+          className="bg-[var(--color-primary)] text-white px-8 py-4 rounded-2xl font-bold hover:bg-[var(--color-primary-dim)] transition-colors"
         >
           Register Your Store
         </Link>
@@ -222,7 +222,7 @@ export default function VendorDashboard() {
                 <p className="text-sm opacity-90">Tap to view details</p>
               </div>
             </div>
-            <button onClick={() => setNewOrderAlert(false)} className="p-2">
+            <button onClick={() => setNewOrderAlert(false)} className="p-2" aria-label="Close">
               <span className="material-symbols-outlined">close</span>
             </button>
           </div>
@@ -238,6 +238,8 @@ export default function VendorDashboard() {
         <div className="flex items-center gap-3">
           <button
             onClick={toggleOpen}
+            role="switch"
+            aria-checked={isOpen}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all ${
               isOpen
                 ? "bg-green-100 text-green-700 hover:bg-green-200"

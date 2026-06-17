@@ -181,13 +181,13 @@ export default function PartnerPOS() {
   };
 
   const statusBadge: Record<string, string> = {
-    pending: "bg-amber-100 text-amber-700",
-    accepted: "bg-blue-100 text-blue-700",
-    preparing: "bg-indigo-100 text-indigo-700",
-    ready_for_pickup: "bg-purple-100 text-purple-700",
-    on_the_way: "bg-cyan-100 text-cyan-700",
-    delivered: "bg-green-100 text-green-700",
-    cancelled: "bg-red-100 text-red-700",
+    pending: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
+    accepted: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
+    preparing: "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300",
+    ready_for_pickup: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300",
+    on_the_way: "bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-300",
+    delivered: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
+    cancelled: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
   };
 
   const terminalStatuses = ["delivered", "cancelled", "refunded"];
@@ -542,6 +542,7 @@ export default function PartnerPOS() {
         <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl overflow-hidden shadow-sm border border-[var(--color-border-subtle)]">
           <div className="overflow-x-auto">
             <table className="w-full text-left">
+              <caption className="sr-only">Past completed and cancelled orders</caption>
               <thead className="bg-[var(--color-surface-subtle)] border-b border-[var(--color-border-subtle)]">
                 <tr>
                   <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Order</th>
@@ -721,7 +722,7 @@ export default function PartnerPOS() {
           <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-6 max-w-lg w-full shadow-2xl max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
               <h3 id="cust-history-modal-title" className="text-lg font-extrabold text-[var(--color-on-surface)]">Customer Order History</h3>
-              <button onClick={() => setCustHistoryModal(null)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center">
+              <button onClick={() => setCustHistoryModal(null)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center" aria-label="Close">
                 <span className="material-symbols-outlined text-sm">close</span>
               </button>
             </div>
@@ -754,7 +755,7 @@ export default function PartnerPOS() {
           <div className="bg-[var(--color-surface-container-lowest)] w-full max-w-sm rounded-3xl p-6" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
               <h3 id="call-mask-modal-title" className="font-extrabold text-[var(--color-on-surface)]">Connect Call</h3>
-              <button onClick={() => setCallMaskModal(null)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center">
+              <button onClick={() => setCallMaskModal(null)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center" aria-label="Close">
                 <span className="material-symbols-outlined text-sm">close</span>
               </button>
             </div>
@@ -775,7 +776,7 @@ export default function PartnerPOS() {
               </div>
               <button
                 onClick={() => setCallMaskModal(null)}
-                className="block w-full py-3 bg-[var(--color-primary)] text-white font-bold rounded-xl hover:bg-[#a40017] transition-colors"
+                className="block w-full py-3 bg-[var(--color-primary)] text-white font-bold rounded-xl hover:bg-[var(--color-primary-dim)] transition-colors"
               >
                 Done
               </button>

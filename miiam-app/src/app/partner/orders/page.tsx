@@ -155,12 +155,12 @@ export default function VendorOrders() {
                   <div className="flex items-center gap-3 mb-2">
                     <span className="font-extrabold text-[var(--color-on-surface)]">#{order.id.slice(0, 8).toUpperCase()}</span>
                     <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase ${
-                      order.status === "pending" ? "bg-amber-100 text-amber-700" :
-                      order.status === "accepted" ? "bg-blue-100 text-blue-700" :
-                      order.status === "preparing" ? "bg-indigo-100 text-indigo-700" :
-                      order.status === "ready_for_pickup" ? "bg-purple-100 text-purple-700" :
-                      order.status === "delivered" ? "bg-green-100 text-green-700" :
-                      order.status === "cancelled" ? "bg-red-100 text-red-700" :
+                      order.status === "pending" ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300" :
+                      order.status === "accepted" ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300" :
+                      order.status === "preparing" ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300" :
+                      order.status === "ready_for_pickup" ? "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300" :
+                      order.status === "delivered" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" :
+                      order.status === "cancelled" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300" :
                       "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
                     }`}>
                       {order.status.replace(/_/g, " ")}
@@ -191,6 +191,7 @@ export default function VendorOrders() {
                     onClick={() => setChatOrder(order)}
                     className="relative px-3 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold text-secondary hover:bg-secondary/5 transition-colors flex items-center gap-1"
                     title="Chat with customer"
+                    aria-label="Chat with customer"
                   >
                     <span className="material-symbols-outlined text-base">chat_bubble</span>
                     {(unreadByOrder[order.id] || 0) > 0 && (

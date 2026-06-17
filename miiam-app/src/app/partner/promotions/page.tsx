@@ -169,7 +169,7 @@ export default function VendorPromotions() {
         </div>
         <button
           onClick={() => { generateCode(); setShowCreate(true); }}
-          className="bg-[var(--color-primary)] text-white px-5 py-3 rounded-xl font-bold text-sm flex items-center gap-2 hover:bg-[#a40017] transition-colors"
+          className="bg-[var(--color-primary)] text-white px-5 py-3 rounded-xl font-bold text-sm flex items-center gap-2 hover:bg-[var(--color-primary-dim)] transition-colors"
         >
           <span className="material-symbols-outlined text-lg">add</span>
           Create Offer
@@ -244,6 +244,7 @@ export default function VendorPromotions() {
                       onClick={() => handleDelete(promo.id)}
                       className="p-1.5 hover:bg-red-50 rounded-lg"
                       title="Delete"
+                      aria-label="Delete"
                     >
                       <span className="material-symbols-outlined text-lg text-red-400">delete</span>
                     </button>
@@ -286,7 +287,7 @@ export default function VendorPromotions() {
           <div className="bg-[var(--color-surface-container-lowest)] w-full max-w-md rounded-3xl p-6 m-4" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
               <h2 id="create-promo-title" className="text-xl font-extrabold text-[var(--color-on-surface)]">Create Promotion</h2>
-              <button onClick={() => setShowCreate(false)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center">
+              <button onClick={() => setShowCreate(false)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center" aria-label="Close">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
@@ -361,7 +362,7 @@ export default function VendorPromotions() {
               </div>
               <button
                 onClick={handleCreate}
-                className="w-full py-4 bg-[var(--color-primary)] text-white font-extrabold rounded-2xl hover:bg-[#a40017] transition-colors"
+                className="w-full py-4 bg-[var(--color-primary)] text-white font-extrabold rounded-2xl hover:bg-[var(--color-primary-dim)] transition-colors"
               >
                 Create Promotion
               </button>

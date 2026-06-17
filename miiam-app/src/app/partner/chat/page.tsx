@@ -141,7 +141,7 @@ export default function PartnerChatPage() {
                   <button
                     onClick={sendReply}
                     disabled={sending || !reply.trim()}
-                    className="px-5 py-2.5 bg-[var(--color-primary)] text-white font-bold rounded-xl text-sm hover:bg-[#a40017] disabled:opacity-50"
+                    className="px-5 py-2.5 bg-[var(--color-primary)] text-white font-bold rounded-xl text-sm hover:bg-[var(--color-primary-dim)] disabled:opacity-50"
                   >
                     Send
                   </button>

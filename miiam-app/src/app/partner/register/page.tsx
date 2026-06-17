@@ -150,7 +150,7 @@ export default function VendorRegister() {
             </div>
             <button
               onClick={() => router.push("/")}
-              className="w-full py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold hover:bg-[#a40017] transition-colors"
+              className="w-full py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold hover:bg-[var(--color-primary-dim)] transition-colors"
             >
               Go to Home
             </button>
@@ -195,16 +195,16 @@ export default function VendorRegister() {
             <div className="space-y-5">
               <h2 className="text-xl font-extrabold text-[var(--color-on-surface)]">Owner Details</h2>
               <div>
-                <label className={labelClass}>Full Name *</label>
-                <input type="text" value={form.owner_name} onChange={(e) => update("owner_name", e.target.value)} placeholder="Your full name" className={inputClass} />
+                <label htmlFor="owner_name" className={labelClass}>Full Name *</label>
+                <input id="owner_name" type="text" value={form.owner_name} onChange={(e) => update("owner_name", e.target.value)} placeholder="Your full name" className={inputClass} />
               </div>
               <div>
-                <label className={labelClass}>Phone Number *</label>
-                <input type="tel" value={form.phone} onChange={(e) => update("phone", e.target.value)} placeholder="+91 98765 43210" className={inputClass} />
+                <label htmlFor="phone" className={labelClass}>Phone Number *</label>
+                <input id="phone" type="tel" value={form.phone} onChange={(e) => update("phone", e.target.value)} placeholder="+91 98765 43210" className={inputClass} />
               </div>
               <div>
-                <label className={labelClass}>Email</label>
-                <input type="email" value={form.email} onChange={(e) => update("email", e.target.value)} placeholder="Will use your account email if left blank" className={inputClass} />
+                <label htmlFor="email" className={labelClass}>Email</label>
+                <input id="email" type="email" value={form.email} onChange={(e) => update("email", e.target.value)} placeholder="Will use your account email if left blank" className={inputClass} />
               </div>
             </div>
           )}
@@ -213,44 +213,44 @@ export default function VendorRegister() {
             <div className="space-y-5">
               <h2 className="text-xl font-extrabold text-[var(--color-on-surface)]">Shop Details</h2>
               <div>
-                <label className={labelClass}>Shop Name *</label>
-                <input type="text" value={form.shop_name} onChange={(e) => update("shop_name", e.target.value)} placeholder="e.g., The Burger Alchemist" className={inputClass} />
+                <label htmlFor="shop_name" className={labelClass}>Shop Name *</label>
+                <input id="shop_name" type="text" value={form.shop_name} onChange={(e) => update("shop_name", e.target.value)} placeholder="e.g., The Burger Alchemist" className={inputClass} />
               </div>
               <div>
-                <label className={labelClass}>Store Type *</label>
-                <select value={form.type} onChange={(e) => update("type", e.target.value)} className={inputClass}>
+                <label htmlFor="type" className={labelClass}>Store Type *</label>
+                <select id="type" value={form.type} onChange={(e) => update("type", e.target.value)} className={inputClass}>
                   <option value="food">Food & Restaurant</option>
                   <option value="grocery">Grocery</option>
                 </select>
               </div>
               <div>
-                <label className={labelClass}>Cuisine / Category</label>
-                <input type="text" value={form.cuisine} onChange={(e) => update("cuisine", e.target.value)} placeholder="e.g., Indian, Chinese, Italian" className={inputClass} />
+                <label htmlFor="cuisine" className={labelClass}>Cuisine / Category</label>
+                <input id="cuisine" type="text" value={form.cuisine} onChange={(e) => update("cuisine", e.target.value)} placeholder="e.g., Indian, Chinese, Italian" className={inputClass} />
               </div>
               <div>
-                <label className={labelClass}>Description</label>
-                <textarea value={form.description} onChange={(e) => update("description", e.target.value)} placeholder="Tell customers about your store..." rows={3} className={`${inputClass} resize-none`} />
+                <label htmlFor="description" className={labelClass}>Description</label>
+                <textarea id="description" value={form.description} onChange={(e) => update("description", e.target.value)} placeholder="Tell customers about your store..." rows={3} className={`${inputClass} resize-none`} />
               </div>
               <div>
-                <label className={labelClass}>Address *</label>
-                <input type="text" value={form.address} onChange={(e) => update("address", e.target.value)} placeholder="Street address" className={inputClass} />
+                <label htmlFor="address" className={labelClass}>Address *</label>
+                <input id="address" type="text" value={form.address} onChange={(e) => update("address", e.target.value)} placeholder="Street address" className={inputClass} />
               </div>
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <label className={labelClass}>City *</label>
-                  <input type="text" value={form.city} onChange={(e) => update("city", e.target.value)} className={inputClass} />
+                  <label htmlFor="city" className={labelClass}>City *</label>
+                  <input id="city" type="text" value={form.city} onChange={(e) => update("city", e.target.value)} className={inputClass} />
                 </div>
                 <div>
-                  <label className={labelClass}>State</label>
-                  <input type="text" value={form.state} onChange={(e) => update("state", e.target.value)} className={inputClass} />
+                  <label htmlFor="state" className={labelClass}>State</label>
+                  <input id="state" type="text" value={form.state} onChange={(e) => update("state", e.target.value)} className={inputClass} />
                 </div>
                 <div>
-                  <label className={labelClass}>Pincode</label>
-                  <input type="text" value={form.pincode} onChange={(e) => update("pincode", e.target.value)} className={inputClass} />
+                  <label htmlFor="pincode" className={labelClass}>Pincode</label>
+                  <input id="pincode" type="text" value={form.pincode} onChange={(e) => update("pincode", e.target.value)} className={inputClass} />
                 </div>
               </div>
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input type="checkbox" checked={form.is_pure_veg} onChange={(e) => update("is_pure_veg", e.target.checked)} className="w-5 h-5 accent-[var(--color-primary)]" />
+              <label htmlFor="is_pure_veg" className="flex items-center gap-3 cursor-pointer">
+                <input id="is_pure_veg" type="checkbox" checked={form.is_pure_veg} onChange={(e) => update("is_pure_veg", e.target.checked)} className="w-5 h-5 accent-[var(--color-primary)]" />
                 <span className={labelClass}>Pure Vegetarian Store</span>
               </label>
             </div>
@@ -261,16 +261,16 @@ export default function VendorRegister() {
               <h2 className="text-xl font-extrabold text-[var(--color-on-surface)]">Business Documents</h2>
               <p className="text-sm text-[var(--color-outline)]">Provide your business documents for verification.</p>
               <div>
-                <label className={labelClass}>GST Number</label>
-                <input type="text" value={form.gst_number} onChange={(e) => update("gst_number", e.target.value)} placeholder="22AAAAA0000A1Z5" className={inputClass} />
+                <label htmlFor="gst_number" className={labelClass}>GST Number</label>
+                <input id="gst_number" type="text" value={form.gst_number} onChange={(e) => update("gst_number", e.target.value)} placeholder="22AAAAA0000A1Z5" className={inputClass} />
               </div>
               <div>
-                <label className={labelClass}>FSSAI Number</label>
-                <input type="text" value={form.fssai_number} onChange={(e) => update("fssai_number", e.target.value)} placeholder="12345678901234" className={inputClass} />
+                <label htmlFor="fssai_number" className={labelClass}>FSSAI Number</label>
+                <input id="fssai_number" type="text" value={form.fssai_number} onChange={(e) => update("fssai_number", e.target.value)} placeholder="12345678901234" className={inputClass} />
               </div>
               <div>
-                <label className={labelClass}>PAN Number</label>
-                <input type="text" value={form.pan_number} onChange={(e) => update("pan_number", e.target.value)} placeholder="ABCDE1234F" className={inputClass} />
+                <label htmlFor="pan_number" className={labelClass}>PAN Number</label>
+                <input id="pan_number" type="text" value={form.pan_number} onChange={(e) => update("pan_number", e.target.value)} placeholder="ABCDE1234F" className={inputClass} />
               </div>
             </div>
           )}
@@ -281,22 +281,22 @@ export default function VendorRegister() {
               <p className="text-sm text-[var(--color-outline)]">Configure your delivery preferences.</p>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className={labelClass}>Min Order Amount (₹)</label>
-                  <input type="number" min="0" value={form.min_order_amount} onChange={(e) => update("min_order_amount", parseFloat(e.target.value) || 0)} className={inputClass} />
+                  <label htmlFor="min_order_amount" className={labelClass}>Min Order Amount (₹)</label>
+                  <input id="min_order_amount" type="number" min="0" value={form.min_order_amount} onChange={(e) => update("min_order_amount", parseFloat(e.target.value) || 0)} className={inputClass} />
                 </div>
                 <div>
-                  <label className={labelClass}>Delivery Charge (₹)</label>
-                  <input type="number" min="0" value={form.delivery_charge} onChange={(e) => update("delivery_charge", parseFloat(e.target.value) || 0)} className={inputClass} />
+                  <label htmlFor="delivery_charge" className={labelClass}>Delivery Charge (₹)</label>
+                  <input id="delivery_charge" type="number" min="0" value={form.delivery_charge} onChange={(e) => update("delivery_charge", parseFloat(e.target.value) || 0)} className={inputClass} />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className={labelClass}>Min Delivery Time (min)</label>
-                  <input type="number" min="1" value={form.delivery_time_min} onChange={(e) => update("delivery_time_min", parseInt(e.target.value) || 30)} className={inputClass} />
+                  <label htmlFor="delivery_time_min" className={labelClass}>Min Delivery Time (min)</label>
+                  <input id="delivery_time_min" type="number" min="1" value={form.delivery_time_min} onChange={(e) => update("delivery_time_min", parseInt(e.target.value) || 30)} className={inputClass} />
                 </div>
                 <div>
-                  <label className={labelClass}>Max Delivery Time (min)</label>
-                  <input type="number" min="1" value={form.delivery_time_max} onChange={(e) => update("delivery_time_max", parseInt(e.target.value) || 45)} className={inputClass} />
+                  <label htmlFor="delivery_time_max" className={labelClass}>Max Delivery Time (min)</label>
+                  <input id="delivery_time_max" type="number" min="1" value={form.delivery_time_max} onChange={(e) => update("delivery_time_max", parseInt(e.target.value) || 45)} className={inputClass} />
                 </div>
               </div>
 
@@ -327,7 +327,7 @@ export default function VendorRegister() {
               </button>
             ) : <div />}
             {step < 4 ? (
-              <button onClick={() => setStep(step + 1)} className="px-8 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold hover:bg-[#a40017] transition-colors">
+              <button onClick={() => setStep(step + 1)} className="px-8 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold hover:bg-[var(--color-primary-dim)] transition-colors">
                 Continue
               </button>
             ) : (

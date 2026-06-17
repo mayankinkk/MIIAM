@@ -125,7 +125,7 @@ export default function PartnerLayout({
           <Link href="/partner/dashboard" className="text-xl font-extrabold tracking-tighter text-[var(--color-primary)]">
             MIIAM <span className="text-[var(--color-on-surface)] text-xs tracking-normal ml-1">Partner</span>
           </Link>
-          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="text-[var(--color-on-surface)] p-1">
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="text-[var(--color-on-surface)] p-1" aria-label="Toggle menu">
             <span className="material-symbols-outlined">{mobileMenuOpen ? "close" : "menu"}</span>
           </button>
         </header>
