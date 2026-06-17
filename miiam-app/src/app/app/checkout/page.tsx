@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { useToastStore } from "@/lib/store/toastStore";
 import { useCartStore } from "@/lib/store/cartStore";
 import AddressPickerSheet, { type SelectedAddress } from "@/components/AddressPickerSheet";
 import CheckoutDeliveryAddress from "@/components/checkout/CheckoutDeliveryAddress";
@@ -384,11 +385,11 @@ export default function CheckoutPage() {
               <button
                 onClick={() => {
                   if (!phone.trim()) {
-                    alert(t.services.pleaseEnterPhone || "Please enter your phone number");
+                    useToastStore.getState().addToast(t.services.pleaseEnterPhone || "Please enter your phone number", "error");
                     return;
                   }
                   if (!phoneVerified) {
-                    alert("Please verify your phone number before placing the order");
+                    useToastStore.getState().addToast("Please verify your phone number before placing the order", "error");
                     return;
                   }
                   setPlacing(true);

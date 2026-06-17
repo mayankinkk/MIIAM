@@ -2,6 +2,7 @@
 
 import { useMemo, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useToastStore } from "@/lib/store/toastStore";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import PullToRefresh from "@/components/PullToRefresh";
@@ -87,7 +88,7 @@ export default function RiderAccountPage() {
       await supabase.from("riders").update({ is_online: newStatus }).eq("id", rider.id);
       setIsOnline(newStatus);
     }
-    alert(`You are now ${newStatus ? "Online" : "Offline"}`);
+    useToastStore.getState().addToast(`You are now ${newStatus ? "Online" : "Offline"}`, "success");
   }
 
   async function handleSignOut() {
@@ -140,7 +141,7 @@ export default function RiderAccountPage() {
       }
     }
     const selectedShifts = shifts.filter(s => s.isSelected).map(s => s.name).join(", ");
-    alert(`Shifts saved: ${selectedShifts || "No shifts selected"}`);
+    useToastStore.getState().addToast(`Shifts saved: ${selectedShifts || "No shifts selected"}`, "success");
     setShowShiftModal(false);
   };
 

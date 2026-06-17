@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { useToastStore } from "@/lib/store/toastStore";
 import { SERVICE_TIME_SLOTS } from "@/lib/data/services";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -64,6 +65,7 @@ export default function BookingsPage() {
   const [rebookDate, setRebookDate] = useState("");
   const [rebookTime, setRebookTime] = useState("");
   const [rebooking, setRebooking] = useState(false);
+  const { confirm } = useConfirm();
 
   useEffect(() => {
     async function loadBookings() {
@@ -350,7 +352,7 @@ export default function BookingsPage() {
                       </button>
                       <button
                         onClick={async () => {
-                          if (window.confirm("Cancel this booking?")) {
+                          if (await confirm({ title: "Cancel Booking", message: "Cancel this booking?", variant: "danger" })) {
                             handleCancel(booking.id);
                           }
                         }}

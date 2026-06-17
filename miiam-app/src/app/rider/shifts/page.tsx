@@ -2,6 +2,7 @@
 
 import { useMemo, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useToastStore } from "@/lib/store/toastStore";
 import { useRouter } from "next/navigation";
 
 const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -50,7 +51,7 @@ export default function RiderShifts() {
       end_time: newShift.end_time,
       is_active: true,
     });
-    if (error) { alert("Error: " + error.message); return; }
+    if (error) { useToastStore.getState().addToast("Error: " + error.message, "error"); return; }
     setShowAdd(false);
     await loadShifts(riderId);
   };
@@ -61,7 +62,7 @@ export default function RiderShifts() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Delete this shift?")) return;
+    if (!window.confirm("Delete this shift?")) return;
     await supabase.from("rider_shifts").delete().eq("id", id);
     setShifts(shifts.filter(s => s.id !== id));
   };
