@@ -41,7 +41,7 @@ export default function OnboardingPage() {
                 <div className="w-12 h-12 rounded-full bg-[var(--color-primary)] flex items-center justify-center text-white">
                   <span className="material-symbols-outlined">restaurant</span>
                 </div>
-                <div className="w-12 h-12 rounded-full bg-[#0b50d5] flex items-center justify-center text-white">
+                <div className="w-12 h-12 rounded-full bg-brand-secondary flex items-center justify-center text-white">
                   <span className="material-symbols-outlined">handyman</span>
                 </div>
                 <span className="font-bold text-[var(--color-on-surface-variant)]">Food &amp; Services, Reimagined.</span>
@@ -106,17 +106,17 @@ export default function OnboardingPage() {
               </div>
             </div>
             <div className="bg-[var(--color-surface-container-lowest)] rounded-lg p-12 relative overflow-hidden group shadow-[0px_20px_40px_rgba(77,33,42,0.04)]">
-              <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#0b50d5]/10 rounded-full transform group-hover:scale-150 transition-transform duration-700" />
+              <div className="absolute -top-10 -right-10 w-40 h-40 bg-brand-secondary/10 rounded-full transform group-hover:scale-150 transition-transform duration-700" />
               <div className="mb-8 w-20 h-20 rounded-full bg-[#ffd2d7] flex items-center justify-center">
-                <span className="material-symbols-outlined text-4xl text-[#0b50d5]" style={{ fontVariationSettings: "'FILL' 1" }}>verified_user</span>
+                <span className="material-symbols-outlined text-4xl text-brand-secondary" style={{ fontVariationSettings: "'FILL' 1" }}>verified_user</span>
               </div>
               <h3 className="text-3xl font-bold mb-6">Lifestyle Utility</h3>
               <p className="text-[var(--color-on-surface-variant)] leading-relaxed mb-8">
                 Vetted professionals for your every need. Home maintenance, wellness, or logistics.
               </p>
               <div className="flex flex-wrap gap-3">
-                <span className="px-4 py-2 bg-[#0b50d5]/10 text-[#0b50d5] rounded-full text-xs font-bold uppercase tracking-wider">Certified Pros</span>
-                <span className="px-4 py-2 bg-[#0b50d5]/10 text-[#0b50d5] rounded-full text-xs font-bold uppercase tracking-wider">Secure Payment</span>
+                <span className="px-4 py-2 bg-brand-secondary/10 text-brand-secondary rounded-full text-xs font-bold uppercase tracking-wider">Certified Pros</span>
+                <span className="px-4 py-2 bg-brand-secondary/10 text-brand-secondary rounded-full text-xs font-bold uppercase tracking-wider">Secure Payment</span>
               </div>
             </div>
           </div>
@@ -154,7 +154,7 @@ export default function OnboardingPage() {
           <div className="space-y-4">
             <Link
               href="/auth/signup"
-              className="w-full bento-gradient-blue text-white font-bold py-5 rounded-xl flex items-center justify-center gap-3 shadow-lg shadow-[#0b50d5]/20 transform transition-transform active:scale-95 text-lg"
+              className="w-full bento-gradient-blue text-white font-bold py-5 rounded-xl flex items-center justify-center gap-3 shadow-lg shadow-brand-secondary/20 transform transition-transform active:scale-95 text-lg"
             >
               <span className="material-symbols-outlined">near_me</span>
               Use current location

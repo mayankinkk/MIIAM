@@ -557,14 +557,14 @@ export default function RiderDashboard() {
               <h2 className="text-xl font-bold text-[var(--color-on-surface)] mb-2">{t.rider.errors.notRiderYet}</h2>
               <p className="text-[var(--color-outline)] mb-2">{t.rider.errors.notRiderDesc}</p>
               <p className="text-[var(--color-outline)] mb-6">{t.rider.errors.notRiderCta}</p>
-              <Link href="/rider/apply" className="inline-block px-6 py-3 bg-[#0b50d5] text-white rounded-xl font-bold">{t.rider.errors.applyToRider}</Link>
+              <Link href="/rider/apply" className="inline-block px-6 py-3 bg-brand-secondary text-white rounded-xl font-bold">{t.rider.errors.applyToRider}</Link>
             </>
           ) : (
             <>
               <span className="material-symbols-outlined text-5xl text-red-400 mb-4 block">wifi_off</span>
               <h2 className="text-xl font-bold text-[var(--color-on-surface)] mb-2">{t.rider.errors.unableToLoad}</h2>
               <p className="text-[var(--color-outline)] mb-6">{error}</p>
-              <button onClick={() => window.location.reload()} className="px-6 py-3 bg-[#0b50d5] text-white rounded-xl font-bold">{t.rider.errors.tryAgain}</button>
+              <button onClick={() => window.location.reload()} className="px-6 py-3 bg-brand-secondary text-white rounded-xl font-bold">{t.rider.errors.tryAgain}</button>
             </>
           )}
         </div>
@@ -578,12 +578,12 @@ export default function RiderDashboard() {
       <audio ref={audioRef} src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2teleQoKJZPl" preload="auto" aria-hidden="true" />
       <DashboardHeader isOnline={isOnline} streakDays={streakDays} onToggleOnline={async () => { const newStatus = !isOnline; setIsOnline(newStatus); if (riderId) await supabase.from("riders").update({ is_online: newStatus }).eq("id", riderId); }} onOpenQuests={() => setShowQuestModal(true)} />
       {isOnline && pendingOrders.length > 1 && !currentOrder && (
-        <div className="fixed top-16 left-0 right-0 z-40 bg-[#0b50d5]/5 border-b border-[#0b50d5]/10 px-4 py-2 flex items-center justify-between">
+        <div className="fixed top-16 left-0 right-0 z-40 bg-brand-secondary/5 border-b border-brand-secondary/10 px-4 py-2 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-[#0b50d5] text-sm">stacked_bar_chart</span>
-            <span className="text-sm font-bold text-[#0b50d5]">{pendingOrders.length} {t.rider.stats.ordersAvailable}</span>
+            <span className="material-symbols-outlined text-brand-secondary text-sm">stacked_bar_chart</span>
+            <span className="text-sm font-bold text-brand-secondary">{pendingOrders.length} {t.rider.stats.ordersAvailable}</span>
           </div>
-          <button onClick={() => { pendingOrders.forEach((order) => handleAccept(order)); }} className="px-4 py-1.5 bg-[#0b50d5] text-white text-xs font-bold rounded-full">{t.rider.stats.acceptAll}</button>
+          <button onClick={() => { pendingOrders.forEach((order) => handleAccept(order)); }} className="px-4 py-1.5 bg-brand-secondary text-white text-xs font-bold rounded-full">{t.rider.stats.acceptAll}</button>
         </div>
       )}
       {snoozeMessage && (

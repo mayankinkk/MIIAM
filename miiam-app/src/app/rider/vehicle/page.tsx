@@ -96,7 +96,7 @@ export default function RiderVehiclePage() {
     return (
       <div className="min-h-screen bg-[var(--color-surface-container-lowest)] flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-[#0b50d5] border-t-transparent rounded-full animate-spin mx-auto" />
+          <div className="w-12 h-12 border-4 border-brand-secondary border-t-transparent rounded-full animate-spin mx-auto" />
           <p className="mt-4 text-[var(--color-outline)] font-medium">Loading vehicle info...</p>
         </div>
       </div>
@@ -187,7 +187,7 @@ export default function RiderVehiclePage() {
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`flex-1 py-2 rounded-lg text-xs font-bold capitalize transition-all ${
-                activeTab === tab ? "bg-[#0b50d5] text-white" : "text-[var(--color-outline)]"
+                activeTab === tab ? "bg-brand-secondary text-white" : "text-[var(--color-outline)]"
               }`}
             >
               {tab === "vehicles" ? "Vehicles" : tab === "maintenance" ? "Service" : "Fuel"}
@@ -202,7 +202,7 @@ export default function RiderVehiclePage() {
                 key={vehicle.id}
                 onClick={() => setSelectedVehicle(vehicle)}
                 className={`bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-sm border-2 cursor-pointer transition-all ${
-                  vehicle.isDefault ? "border-[#0b50d5]" : "border-transparent"
+                  vehicle.isDefault ? "border-brand-secondary" : "border-transparent"
                 }`}
               >
                 <div className="flex items-center justify-between">
@@ -216,7 +216,7 @@ export default function RiderVehiclePage() {
                     </div>
                   </div>
                   {vehicle.isDefault && (
-                    <span className="text-xs bg-[#0b50d5] text-white px-2 py-1 rounded-full">Default</span>
+                    <span className="text-xs bg-brand-secondary text-white px-2 py-1 rounded-full">Default</span>
                   )}
                 </div>
               </div>
@@ -389,7 +389,7 @@ export default function RiderVehiclePage() {
                   setShowAddFuelModal(false);
                   setFuelForm({ liters: "", cost: "", odometer: "", date: new Date().toISOString().split("T")[0] });
                 }}
-                className="flex-1 py-3 bg-[#0b50d5] text-white rounded-xl font-bold text-sm"
+                className="flex-1 py-3 bg-brand-secondary text-white rounded-xl font-bold text-sm"
               >
                 Save Entry
               </button>
@@ -449,7 +449,7 @@ function AddVehicleModal({ riderId, onClose, onSaved }: { riderId: string | null
           <input type="date" value={insuranceExpiry} onChange={(e) => setInsuranceExpiry(e.target.value)} placeholder="Insurance Expiry" className="w-full p-3 border-2 border-[var(--color-border-subtle)] rounded-xl" />
           <input type="date" value={licenseExpiry} onChange={(e) => setLicenseExpiry(e.target.value)} placeholder="License Expiry" className="w-full p-3 border-2 border-[var(--color-border-subtle)] rounded-xl" />
         </div>
-        <button onClick={handleSave} disabled={saving || !name.trim()} className="w-full py-4 bg-[#0b50d5] text-white font-bold rounded-xl mt-4 disabled:opacity-50">
+        <button onClick={handleSave} disabled={saving || !name.trim()} className="w-full py-4 bg-brand-secondary text-white font-bold rounded-xl mt-4 disabled:opacity-50">
           {saving ? "Saving..." : "Add Vehicle"}
         </button>
         <button onClick={onClose} className="w-full py-3 text-[var(--color-outline)] font-bold mt-2">Cancel</button>

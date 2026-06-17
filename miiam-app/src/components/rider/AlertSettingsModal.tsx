@@ -39,7 +39,7 @@ export default function AlertSettingsModal({
         <div className="space-y-4">
           <div className="flex items-center justify-between p-4 bg-[var(--color-surface-subtle)] rounded-xl">
             <div className="flex items-center gap-3">
-              <span className="material-symbols-outlined text-[#0b50d5]">volume_up</span>
+              <span className="material-symbols-outlined text-brand-secondary">volume_up</span>
               <div>
                 <p className="font-bold">{t.rider.modals.soundAlert}</p>
                 <p className="text-xs text-[var(--color-outline)]">{t.rider.modals.soundAlertDesc}</p>
@@ -55,7 +55,7 @@ export default function AlertSettingsModal({
 
           <div className="flex items-center justify-between p-4 bg-[var(--color-surface-subtle)] rounded-xl">
             <div className="flex items-center gap-3">
-              <span className="material-symbols-outlined text-[#0b50d5]">vibration</span>
+              <span className="material-symbols-outlined text-brand-secondary">vibration</span>
               <div>
                 <p className="font-bold">{t.rider.modals.vibration}</p>
                 <p className="text-xs text-[var(--color-outline)]">{t.rider.modals.vibrationDesc}</p>
@@ -93,7 +93,7 @@ export default function AlertSettingsModal({
 
         <button 
           onClick={onClose}
-          className="w-full mt-4 py-3 bg-[#0b50d5] text-white font-bold rounded-xl"
+          className="w-full mt-4 py-3 bg-brand-secondary text-white font-bold rounded-xl"
         >
           {t.rider.modals.saveSettings}
         </button>

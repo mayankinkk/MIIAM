@@ -93,7 +93,7 @@ export default function RiderApplyPage() {
           Already have an account? Login
         </Link>
         <div className="max-w-md w-full mx-auto">
-          <span className="text-[#0b50d5] font-bold text-sm tracking-widest uppercase mb-4 block">Fleet Network</span>
+          <span className="text-brand-secondary font-bold text-sm tracking-widest uppercase mb-4 block">Fleet Network</span>
           <h1 className="text-4xl md:text-5xl font-extrabold text-[var(--color-on-surface)] mb-4 tracking-tight">
             Join the <br/> fleet.
           </h1>
@@ -158,7 +158,7 @@ export default function RiderApplyPage() {
                   type="button"
                   onClick={() => setStep("docs")}
                   disabled={!formData.full_name || !formData.email || !formData.phone}
-                  className="w-full bento-gradient-blue text-white rounded-xl py-5 text-lg font-bold shadow-lg shadow-[#0b50d5]/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-70 disabled:pointer-events-none"
+                  className="w-full bento-gradient-blue text-white rounded-xl py-5 text-lg font-bold shadow-lg shadow-brand-secondary/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-70 disabled:pointer-events-none"
                 >
                   Continue
                 </button>
@@ -246,7 +246,7 @@ export default function RiderApplyPage() {
                     type="button"
                     onClick={() => setStep("vehicle")}
                     disabled={!formData.profile_photo || !formData.id_proof_type || !formData.id_proof_image}
-                    className="flex-1 bento-gradient-blue text-white rounded-xl font-bold shadow-lg shadow-[#0b50d5]/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-70 disabled:pointer-events-none"
+                    className="flex-1 bento-gradient-blue text-white rounded-xl font-bold shadow-lg shadow-brand-secondary/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-70 disabled:pointer-events-none"
                   >
                     Continue
                   </button>

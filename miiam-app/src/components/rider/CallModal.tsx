@@ -22,8 +22,8 @@ export default function CallModal({ open, onClose, name, phone }: CallModalProps
           </button>
         </div>
         <div className="text-center py-6">
-          <div className="w-16 h-16 bg-[#0b50d5]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="material-symbols-outlined text-[#0b50d5] text-3xl">person</span>
+          <div className="w-16 h-16 bg-brand-secondary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="material-symbols-outlined text-brand-secondary text-3xl">person</span>
           </div>
           <p className="font-bold mb-1">{name || "{t.rider.callModal.vendor}"}</p>
           <p className="text-sm text-[var(--color-outline)]">{phone}</p>

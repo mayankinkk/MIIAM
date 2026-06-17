@@ -80,7 +80,7 @@ export default function RiderShifts() {
             <h1 className="text-2xl font-extrabold text-[var(--color-on-surface)]">Work Shifts</h1>
             <p className="text-sm text-[var(--color-outline)] mt-0.5">Set your weekly availability schedule</p>
           </div>
-          <button onClick={() => setShowAdd(true)} className="w-10 h-10 bg-[#0b50d5] rounded-full flex items-center justify-center shadow-lg">
+          <button onClick={() => setShowAdd(true)} className="w-10 h-10 bg-brand-secondary rounded-full flex items-center justify-center shadow-lg">
             <span className="material-symbols-outlined text-white">add</span>
           </button>
         </div>
@@ -93,11 +93,11 @@ export default function RiderShifts() {
           groupedShifts.map((g) => {
             const isToday = g.day === new Date().getDay();
             return (
-              <div key={g.day} className={`bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 border ${isToday ? "border-[#0b50d5]/30 ring-1 ring-[#0b50d5]/10" : "border-[var(--color-border-subtle)]"}`}>
+              <div key={g.day} className={`bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 border ${isToday ? "border-brand-secondary/30 ring-1 ring-brand-secondary/10" : "border-[var(--color-border-subtle)]"}`}>
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <span className={`font-bold text-sm ${isToday ? "text-[#0b50d5]" : "text-[var(--color-on-surface)]"}`}>{g.label}</span>
-                    {isToday && <span className="text-[10px] font-bold px-2 py-0.5 bg-[#0b50d5]/10 text-[#0b50d5] rounded-full">Today</span>}
+                    <span className={`font-bold text-sm ${isToday ? "text-brand-secondary" : "text-[var(--color-on-surface)]"}`}>{g.label}</span>
+                    {isToday && <span className="text-[10px] font-bold px-2 py-0.5 bg-brand-secondary/10 text-brand-secondary rounded-full">Today</span>}
                   </div>
                   <span className="text-xs text-[var(--color-outline-variant)]">{g.shifts.length} shift{g.shifts.length !== 1 ? "s" : ""}</span>
                 </div>
@@ -153,7 +153,7 @@ export default function RiderShifts() {
                   <input type="time" value={newShift.end_time} onChange={(e) => setNewShift({ ...newShift, end_time: e.target.value })} className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)]" />
                 </div>
               </div>
-              <button onClick={handleAdd} className="w-full py-3 bg-[#0b50d5] text-white font-bold rounded-xl">Add Shift</button>
+              <button onClick={handleAdd} className="w-full py-3 bg-brand-secondary text-white font-bold rounded-xl">Add Shift</button>
             </div>
           </div>
         </div>

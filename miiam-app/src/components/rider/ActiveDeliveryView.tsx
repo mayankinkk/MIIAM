@@ -42,7 +42,7 @@ export default function ActiveDeliveryView({
   onSetPickedItems,
 }: ActiveDeliveryViewProps) {
   const { t } = useTranslation();
-  const headerBg = deliveryStep === "shopping" ? "bg-purple-600" : deliveryStep === "picking_up" ? "bg-[#0b50d5]" : deliveryStep === "delivering" ? "bg-[var(--color-on-surface)]" : "bg-green-600";
+  const headerBg = deliveryStep === "shopping" ? "bg-purple-600" : deliveryStep === "picking_up" ? "bg-brand-secondary" : deliveryStep === "delivering" ? "bg-[var(--color-on-surface)]" : "bg-green-600";
 
   return (
     <div className="absolute inset-0 z-10 flex items-end justify-center pb-24 px-4">
@@ -56,7 +56,7 @@ export default function ActiveDeliveryView({
                 onClick={() => { onSetCurrentOrder(ao); onSetDeliveryStep("shopping"); }}
                 className={`flex-shrink-0 px-3 py-1 rounded-full text-[10px] font-bold transition-all ${
                   currentOrder?.id === ao.id
-                    ? "bg-[#0b50d5] text-white"
+                    ? "bg-brand-secondary text-white"
                     : "bg-[var(--color-surface-container-lowest)] text-[var(--color-outline)] border border-[var(--color-border-subtle)]"
                 }`}
               >
@@ -112,7 +112,7 @@ export default function ActiveDeliveryView({
             {currentOrder.type === "multi_stop" ? (
               <>
                 <div className={`flex flex-col items-center ${deliveryStep === "picking_up" ? "text-white" : "text-white/50"}`}>
-                  <div className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${deliveryStep === "picking_up" ? "bg-[var(--color-surface-container-lowest)] text-[#0b50d5]" : "bg-white/30"}`}>1</div>
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${deliveryStep === "picking_up" ? "bg-[var(--color-surface-container-lowest)] text-brand-secondary" : "bg-white/30"}`}>1</div>
                   <span>{t.rider.delivery.pickupStep}</span>
                 </div>
                 <div className="flex-1 h-0.5 bg-white/30 mx-2"><div className={`h-full bg-white ${deliveryStep !== "picking_up" ? "w-full" : "w-0"}`}></div></div>
@@ -134,7 +134,7 @@ export default function ActiveDeliveryView({
                 </div>
                 <div className="flex-1 h-0.5 bg-white/30 mx-2"><div className={`h-full bg-white ${["picking_up", "delivering", "arrived"].includes(deliveryStep) ? "w-full" : "w-0"}`}></div></div>
                 <div className={`flex flex-col items-center ${["picking_up", "delivering", "arrived"].includes(deliveryStep) ? "text-white" : "text-white/50"}`}>
-                  <div className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${["picking_up", "delivering", "arrived"].includes(deliveryStep) ? "bg-[var(--color-surface-container-lowest)] text-[#0b50d5]" : "bg-white/30"}`}>2</div>
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${["picking_up", "delivering", "arrived"].includes(deliveryStep) ? "bg-[var(--color-surface-container-lowest)] text-brand-secondary" : "bg-white/30"}`}>2</div>
                   <span>{t.rider.delivery.deliverStep}</span>
                 </div>
                 <div className="flex-1 h-0.5 bg-white/30 mx-2"><div className={`h-full bg-white ${deliveryStep === "arrived" ? "w-full" : "w-0"}`}></div></div>
@@ -316,7 +316,7 @@ export default function ActiveDeliveryView({
               <a 
                 href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(currentOrder.stops[currentStopIndex].address)}`}
                 target="_blank"
-                className="w-full mt-2 py-3 bg-[#0b50d5] text-white font-bold rounded-xl flex items-center justify-center gap-2"
+                className="w-full mt-2 py-3 bg-brand-secondary text-white font-bold rounded-xl flex items-center justify-center gap-2"
               >
                 <span className="material-symbols-outlined">navigation</span>{t.rider.delivery.navigateToStop}
               </a>
@@ -365,7 +365,7 @@ export default function ActiveDeliveryView({
               <a 
                 href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(currentOrder.customerAddress)}`}
                 target="_blank"
-                className="w-full mt-2 py-3 bg-[#0b50d5] text-white font-bold rounded-xl flex items-center justify-center gap-2"
+                className="w-full mt-2 py-3 bg-brand-secondary text-white font-bold rounded-xl flex items-center justify-center gap-2"
               >
                 <span className="material-symbols-outlined">navigation</span>{t.rider.delivery.navigate}
               </a>

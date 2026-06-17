@@ -23,7 +23,7 @@ export default function MapControls({ onZoomIn, onZoomOut, onCenter }: MapContro
       </button>
       <button
         onClick={onCenter}
-        className="w-10 h-10 bg-[#0b50d5] text-white rounded-lg shadow flex items-center justify-center mt-2"
+        className="w-10 h-10 bg-brand-secondary text-white rounded-lg shadow flex items-center justify-center mt-2"
       >
         <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>my_location</span>
       </button>

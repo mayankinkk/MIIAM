@@ -405,7 +405,7 @@ export default function VendorDashboard() {
                       <button
                         onClick={() => handleMarkReady(order.id)}
                         disabled={processingOrder === order.id}
-                        className="px-4 py-2 text-xs font-bold bg-[#0b50d5] text-white rounded-lg hover:bg-[#0044bf] disabled:opacity-50 transition-all"
+                        className="px-4 py-2 text-xs font-bold bg-brand-secondary text-white rounded-lg hover:bg-secondary-dim disabled:opacity-50 transition-all"
                       >
                         {processingOrder === order.id ? "..." : "Mark Ready for Pickup"}
                       </button>

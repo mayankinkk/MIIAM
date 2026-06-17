@@ -240,7 +240,7 @@ export default function RiderWalletPage() {
           <p className="text-[var(--color-outline)] mb-6">{error}</p>
           <button
             onClick={() => loadWalletData()}
-            className="px-6 py-3 bg-[#0b50d5] text-white rounded-xl font-bold"
+            className="px-6 py-3 bg-brand-secondary text-white rounded-xl font-bold"
           >
             Try Again
           </button>
@@ -253,7 +253,7 @@ export default function RiderWalletPage() {
     return (
       <div className="min-h-screen bg-[var(--color-surface-container-lowest)] flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-[#0b50d5] border-t-transparent rounded-full animate-spin mx-auto" />
+          <div className="w-12 h-12 border-4 border-brand-secondary border-t-transparent rounded-full animate-spin mx-auto" />
           <p className="mt-4 text-[var(--color-outline)] font-medium">Loading wallet...</p>
         </div>
       </div>
@@ -264,7 +264,7 @@ export default function RiderWalletPage() {
     <>
     <PullToRefresh onRefresh={loadWalletData}>
     <div className="min-h-screen bg-[var(--color-surface-container-lowest)]">
-      <header className="bg-gradient-to-br from-[#0b50d5] to-[#0044bf] text-white p-6 pb-12 rounded-b-[3rem]">
+      <header className="bg-gradient-to-br from-brand-secondary to-[#0044bf] text-white p-6 pb-12 rounded-b-[3rem]">
         <div className="flex justify-between items-center">
           <Link href="/rider/dashboard" className="text-3xl font-black tracking-tighter">MIIAM</Link>
         </div>
@@ -279,14 +279,14 @@ export default function RiderWalletPage() {
             <div className="flex gap-3 mt-6">
               <button 
                 onClick={() => setShowInstantPayout(true)}
-                className="flex-1 bg-yellow-400 text-[#0b50d5] py-3 rounded-xl font-bold flex items-center justify-center gap-2"
+                className="flex-1 bg-yellow-400 text-brand-secondary py-3 rounded-xl font-bold flex items-center justify-center gap-2"
               >
                 <span className="material-symbols-outlined">bolt</span>
                 Instant Payout
               </button>
               <button 
                 onClick={() => requestPayout(500)}
-                className="flex-1 bg-[var(--color-surface-container-lowest)] text-[#0b50d5] py-3 rounded-xl font-bold"
+                className="flex-1 bg-[var(--color-surface-container-lowest)] text-brand-secondary py-3 rounded-xl font-bold"
               >
                 Weekly Payout
               </button>
@@ -303,7 +303,7 @@ export default function RiderWalletPage() {
               onClick={() => setActiveTab(tab)}
               className={`flex-1 py-3 rounded-xl text-sm font-bold capitalize transition-all ${
                 activeTab === tab
-                  ? "bg-[#0b50d5] text-white"
+                  ? "bg-brand-secondary text-white"
                   : "text-[var(--color-outline)] hover:bg-[var(--color-surface-subtle)]"
               }`}
             >
@@ -395,7 +395,7 @@ export default function RiderWalletPage() {
                   key={p}
                   onClick={() => setPeriod(p)}
                   className={`flex-1 py-2 rounded-lg text-xs font-bold transition-colors ${
-                    period === p ? "bg-[var(--color-surface-container-lowest)] text-[#0b50d5] shadow-sm" : "text-[var(--color-outline)]"
+                    period === p ? "bg-[var(--color-surface-container-lowest)] text-brand-secondary shadow-sm" : "text-[var(--color-outline)]"
                   }`}
                 >
                   {p === "today" ? "Today" : p === "week" ? "This Week" : "This Month"}
@@ -480,7 +480,7 @@ export default function RiderWalletPage() {
                 ]).map((day) => (
                   <div key={day.date} className="flex-1 flex flex-col items-center gap-2">
                     <div 
-                      className="w-full bg-gradient-to-t from-[#0b50d5] to-blue-400 rounded-t-lg"
+                      className="w-full bg-gradient-to-t from-brand-secondary to-blue-400 rounded-t-lg"
                       style={{ height: `${(day.earnings / 1100) * 100}%`, minHeight: "8px" }}
                     />
                     <span className="text-[10px] text-[var(--color-outline-variant)]">{day.date}</span>
@@ -524,7 +524,7 @@ export default function RiderWalletPage() {
                 </div>
                 <button
                   onClick={() => setShowBankModal(true)}
-                  className="text-[#0b50d5] text-sm font-bold"
+                  className="text-brand-secondary text-sm font-bold"
                 >
                   Edit
                 </button>
@@ -566,7 +566,7 @@ export default function RiderWalletPage() {
                   <button
                     key={amount}
                     onClick={() => requestPayout(amount)}
-                    className="flex-1 py-3 border-2 border-[var(--color-border-subtle)] rounded-xl font-bold text-[var(--color-on-surface-variant)] hover:border-[#0b50d5] hover:text-[#0b50d5] transition-colors"
+                    className="flex-1 py-3 border-2 border-[var(--color-border-subtle)] rounded-xl font-bold text-[var(--color-on-surface-variant)] hover:border-brand-secondary hover:text-brand-secondary transition-colors"
                   >
                     ₹{amount}
                   </button>
@@ -574,7 +574,7 @@ export default function RiderWalletPage() {
               </div>
               <button 
                 onClick={() => requestPayout(walletData.balance)}
-                className="w-full py-4 bg-[#0b50d5] text-white rounded-xl font-bold"
+                className="w-full py-4 bg-brand-secondary text-white rounded-xl font-bold"
               >
                 Withdraw Full Balance (₹{walletData.balance})
               </button>
@@ -610,7 +610,7 @@ export default function RiderWalletPage() {
                 value={instantPayoutAmount}
                 onChange={(e) => setInstantPayoutAmount(e.target.value)}
                 placeholder="Min: ₹100"
-                className="w-full border-2 border-[var(--color-border-subtle)] rounded-xl p-4 text-xl font-bold focus:outline-none focus:border-[#0b50d5]"
+                className="w-full border-2 border-[var(--color-border-subtle)] rounded-xl p-4 text-xl font-bold focus:outline-none focus:border-brand-secondary"
               />
             </div>
 
@@ -634,7 +634,7 @@ export default function RiderWalletPage() {
             <button 
               onClick={instantPayout}
               disabled={processingPayout || !instantPayoutAmount || parseInt(instantPayoutAmount) < 100}
-              className="w-full py-4 bg-yellow-400 text-[#0b50d5] font-bold rounded-xl disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full py-4 bg-yellow-400 text-brand-secondary font-bold rounded-xl disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {processingPayout ? (
                 <>
@@ -715,7 +715,7 @@ export default function RiderWalletPage() {
                 setShowBankModal(false);
                 setBankForm({ account_number: "", ifsc_code: "", bank_name: "", account_holder: "" });
               }}
-              className="flex-1 py-3 bg-[#0b50d5] text-white rounded-xl font-bold text-sm"
+              className="flex-1 py-3 bg-brand-secondary text-white rounded-xl font-bold text-sm"
             >
               Save
             </button>

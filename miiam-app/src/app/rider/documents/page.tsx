@@ -136,7 +136,7 @@ export default function RiderDocumentsPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[var(--color-surface-container-lowest)] flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-[#0b50d5] border-t-transparent rounded-full animate-spin" />
+        <div className="w-12 h-12 border-4 border-brand-secondary border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -151,7 +151,7 @@ export default function RiderDocumentsPage() {
           <button onClick={() => { setDataError(null); loadRiderAndDocuments(); }} className="text-red-700 font-bold text-sm">Retry</button>
         </div>
       )}
-      <header className="bg-[#0b50d5] text-white p-6 pb-8 rounded-b-[3rem]">
+      <header className="bg-brand-secondary text-white p-6 pb-8 rounded-b-[3rem]">
         <div className="flex items-center gap-4">
           <Link href="/rider/account" className="text-white">
             <span className="material-symbols-outlined">arrow_back</span>
@@ -201,7 +201,7 @@ export default function RiderDocumentsPage() {
                     {(status === "missing" || status === "rejected") && (
                       <button
                         onClick={() => { setSelectedDocType(doc.type); setShowUploadModal(true); }}
-                        className="p-2 bg-[#0b50d5] text-white rounded-full"
+                        className="p-2 bg-brand-secondary text-white rounded-full"
                       >
                         <span className="material-symbols-outlined text-sm">add</span>
                       </button>
@@ -321,7 +321,7 @@ export default function RiderDocumentsPage() {
                 <label className="text-sm font-bold text-[var(--color-on-surface)] mb-2 block">Upload Document *</label>
                 <div
                   onClick={() => fileInputRef.current?.click()}
-                  className="border-2 border-dashed border-[var(--color-outline-variant)] rounded-xl p-8 text-center cursor-pointer hover:border-[#0b50d5]"
+                  className="border-2 border-dashed border-[var(--color-outline-variant)] rounded-xl p-8 text-center cursor-pointer hover:border-brand-secondary"
                 >
                   {selectedFile ? (
                     <div className="flex items-center justify-center gap-2">
@@ -349,7 +349,7 @@ export default function RiderDocumentsPage() {
             <button
               onClick={handleUpload}
               disabled={uploading || !selectedFile || !selectedDocType || !docNumber}
-              className="w-full mt-6 py-4 bg-[#0b50d5] text-white rounded-2xl font-bold flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full mt-6 py-4 bg-brand-secondary text-white rounded-2xl font-bold flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {uploading ? (
                 <>

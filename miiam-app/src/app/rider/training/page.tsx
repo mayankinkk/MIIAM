@@ -132,7 +132,7 @@ export default function RiderTrainingPage() {
               onClick={() => setActiveCategory(cat)}
               className={`flex-shrink-0 px-4 py-2 rounded-full text-xs font-bold transition-all ${
                 activeCategory === cat 
-                  ? "bg-[#0b50d5] text-white" 
+                  ? "bg-brand-secondary text-white" 
                   : "bg-[var(--color-surface-container-lowest)] text-[var(--color-outline)]"
               }`}
             >
@@ -242,7 +242,7 @@ export default function RiderTrainingPage() {
               </div>
               <button 
                 onClick={completeVideo}
-                className="w-full py-3 bg-[#0b50d5] text-white font-bold rounded-xl"
+                className="w-full py-3 bg-brand-secondary text-white font-bold rounded-xl"
               >
                 Mark as Complete
               </button>

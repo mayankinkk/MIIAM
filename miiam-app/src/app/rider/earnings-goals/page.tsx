@@ -149,7 +149,7 @@ export default function RiderEarningsGoalsPage() {
 
   return (
     <div className="min-h-screen bg-[var(--color-surface-container-lowest)]">
-      <header className="bg-gradient-to-br from-[#0b50d5] to-[#0044bf] text-white p-6 pb-12">
+      <header className="bg-gradient-to-br from-brand-secondary to-[#0044bf] text-white p-6 pb-12">
         <div className="flex items-center gap-4">
           <Link href="/rider/dashboard" className="text-white">
             <span className="material-symbols-outlined">arrow_back</span>
@@ -160,7 +160,7 @@ export default function RiderEarningsGoalsPage() {
 
       <main className="px-4 -mt-8 space-y-4 pb-24">
         {/* Total Earnings */}
-        <div className="bg-gradient-to-br from-[#0b50d5] to-[#0044bf] text-white rounded-2xl p-5 shadow-lg">
+        <div className="bg-gradient-to-br from-brand-secondary to-[#0044bf] text-white rounded-2xl p-5 shadow-lg">
           <p className="text-xs font-bold opacity-80 uppercase">Total Earnings (All Time)</p>
           <p className="text-4xl font-black mt-2">₹{totalEarnings.toLocaleString()}</p>
         </div>
@@ -169,16 +169,16 @@ export default function RiderEarningsGoalsPage() {
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-sm">
           <div className="flex justify-between items-center mb-3">
             <h3 className="font-bold text-[var(--color-on-surface)]">Daily Goal</h3>
-            <button onClick={() => { setGoalType("daily"); setShowSetGoal(true); }} className="text-xs text-[#0b50d5] font-bold">Edit</button>
+            <button onClick={() => { setGoalType("daily"); setShowSetGoal(true); }} className="text-xs text-brand-secondary font-bold">Edit</button>
           </div>
-          <p className="text-3xl font-black text-[#0b50d5]">₹{todayEarnings}</p>
+          <p className="text-3xl font-black text-brand-secondary">₹{todayEarnings}</p>
           <p className="text-xs text-[var(--color-outline-variant)]">of ₹{dailyTarget}</p>
           <div className="w-full bg-[var(--color-surface-container)] rounded-full h-3 mt-3 overflow-hidden">
-            <div className="h-full bg-gradient-to-r from-[#0b50d5] to-green-500 rounded-full transition-all" style={{ width: `${dailyProgress}%` }} />
+            <div className="h-full bg-gradient-to-r from-brand-secondary to-green-500 rounded-full transition-all" style={{ width: `${dailyProgress}%` }} />
           </div>
           <div className="flex justify-between mt-2 text-xs">
             <span className="text-[var(--color-outline)]">{todayDeliveries} deliveries</span>
-            <span className="text-[#0b50d5] font-bold">{Math.round(dailyProgress)}%</span>
+            <span className="text-brand-secondary font-bold">{Math.round(dailyProgress)}%</span>
           </div>
         </div>
 
@@ -186,7 +186,7 @@ export default function RiderEarningsGoalsPage() {
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-sm">
           <div className="flex justify-between items-center mb-3">
             <h3 className="font-bold text-[var(--color-on-surface)]">Weekly Goal</h3>
-            <button onClick={() => { setGoalType("weekly"); setShowSetGoal(true); }} className="text-xs text-[#0b50d5] font-bold">Edit</button>
+            <button onClick={() => { setGoalType("weekly"); setShowSetGoal(true); }} className="text-xs text-brand-secondary font-bold">Edit</button>
           </div>
           <p className="text-3xl font-black text-green-600">₹{weeklyEarnings}</p>
           <p className="text-xs text-[var(--color-outline-variant)]">of ₹{weeklyTarget}</p>
@@ -204,7 +204,7 @@ export default function RiderEarningsGoalsPage() {
           <h3 className="font-bold text-[var(--color-on-surface)] mb-3">Earnings Breakdown</h3>
           <div className="grid grid-cols-3 gap-3">
             <div className="bg-[var(--color-surface-subtle)] p-3 rounded-xl text-center">
-              <p className="text-2xl font-black text-[#0b50d5]">{todayDeliveries}</p>
+              <p className="text-2xl font-black text-brand-secondary">{todayDeliveries}</p>
               <p className="text-xs text-[var(--color-outline-variant)]">Today</p>
             </div>
             <div className="bg-[var(--color-surface-subtle)] p-3 rounded-xl text-center">
@@ -233,9 +233,9 @@ export default function RiderEarningsGoalsPage() {
               <div className="flex items-end gap-1 h-32">
                 {dailyData.map((amt, i) => (
                   <div key={i} className="flex-1 flex flex-col items-center gap-1">
-                    <div className="w-full bg-[#0b50d5]/20 rounded-t-md relative" style={{ height: "100%" }}>
+                    <div className="w-full bg-brand-secondary/20 rounded-t-md relative" style={{ height: "100%" }}>
                       <div
-                        className="absolute bottom-0 w-full bg-gradient-to-t from-[#0b50d5] to-[#4489ff] rounded-t-md transition-all"
+                        className="absolute bottom-0 w-full bg-gradient-to-t from-brand-secondary to-[#4489ff] rounded-t-md transition-all"
                         style={{ height: `${Math.max((amt / chartMax) * 100, 4)}%` }}
                       />
                     </div>
@@ -284,7 +284,7 @@ export default function RiderEarningsGoalsPage() {
                     key={amount}
                     onClick={() => setDailyTarget(amount)}
                     className={`w-full py-3 rounded-xl font-bold text-sm ${
-                      dailyTarget === amount ? "bg-[#0b50d5] text-white" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface)]"
+                      dailyTarget === amount ? "bg-brand-secondary text-white" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface)]"
                     }`}
                   >
                     ₹{amount.toLocaleString()}
@@ -296,7 +296,7 @@ export default function RiderEarningsGoalsPage() {
                     key={amount}
                     onClick={() => setWeeklyTarget(amount)}
                     className={`w-full py-3 rounded-xl font-bold text-sm ${
-                      weeklyTarget === amount ? "bg-[#0b50d5] text-white" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface)]"
+                      weeklyTarget === amount ? "bg-brand-secondary text-white" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface)]"
                     }`}
                   >
                     ₹{amount.toLocaleString()}
@@ -307,7 +307,7 @@ export default function RiderEarningsGoalsPage() {
             <button
               onClick={handleSaveGoal}
               disabled={savingGoal}
-              className="w-full mt-3 py-3 bg-[#0b50d5] text-white font-bold rounded-xl disabled:opacity-50"
+              className="w-full mt-3 py-3 bg-brand-secondary text-white font-bold rounded-xl disabled:opacity-50"
             >
               {savingGoal ? "Saving..." : "Save Goal"}
             </button>

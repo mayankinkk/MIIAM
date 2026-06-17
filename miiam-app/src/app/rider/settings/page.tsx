@@ -87,7 +87,7 @@ export default function RiderSettingsPage() {
 
   return (
     <div className="min-h-screen bg-[var(--color-surface-container-lowest)]">
-      <header className="bg-[#0b50d5] text-white p-6 pb-8 rounded-b-[3rem]">
+      <header className="bg-brand-secondary text-white p-6 pb-8 rounded-b-[3rem]">
         <div className="flex justify-between items-center">
           <Link href="/rider/dashboard" className="text-3xl font-black tracking-tighter">MIIAM</Link>
         </div>
@@ -163,7 +163,7 @@ export default function RiderSettingsPage() {
                     onClick={() => toggleOrderType(type.id)}
                     className={`p-3 rounded-xl flex items-center gap-2 transition-all ${
                       preferredOrderTypes.includes(type.id)
-                        ? "bg-[#0b50d5] text-white"
+                        ? "bg-brand-secondary text-white"
                         : "bg-[var(--color-surface-subtle)] text-[var(--color-on-surface-variant)]"
                     }`}
                   >
@@ -325,7 +325,7 @@ export default function RiderSettingsPage() {
                   onClick={() => { setLanguage(lang); setShowLanguageModal(false); saveSetting({ language: lang }); }}
                   className={`w-full p-4 rounded-xl font-bold text-left transition-all ${
                     language === lang 
-                      ? "bg-[#0b50d5] text-white" 
+                      ? "bg-brand-secondary text-white" 
                       : "bg-[var(--color-surface-subtle)] hover:bg-[var(--color-surface-container)]"
                   }`}
                 >

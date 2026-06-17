@@ -68,7 +68,7 @@ export default function RiderNavBar({ active }: RiderNavBarProps) {
           href={item.href}
           aria-label={item.name}
           className={`flex flex-col items-center p-2 ${
-            active === item.name.toLowerCase() ? "text-[#0b50d5]" : "text-[var(--color-on-surface-variant)]"
+            active === item.name.toLowerCase() ? "text-brand-secondary" : "text-[var(--color-on-surface-variant)]"
           }`}
         >
           <span className="material-symbols-outlined text-3xl" style={{ fontVariationSettings: active === item.name.toLowerCase() ? "'FILL' 1" : "'FILL' 0" }}>

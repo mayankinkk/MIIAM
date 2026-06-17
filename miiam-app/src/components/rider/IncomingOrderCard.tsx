@@ -26,7 +26,7 @@ export default function IncomingOrderCard({
   return (
     <div className="absolute inset-0 z-10 flex items-end justify-center pb-24 px-4">
       <div className="max-w-md w-full bg-white/95 backdrop-blur-xl rounded-2xl overflow-hidden shadow-2xl border border-white flex flex-col max-h-[80vh]">
-        <div className="bg-gradient-to-r from-[#0b50d5] to-[#0044bf] p-4 flex items-center justify-between text-white">
+        <div className="bg-gradient-to-r from-brand-secondary to-[#0044bf] p-4 flex items-center justify-between text-white">
           <div className="flex items-center gap-3">
             <div className="relative w-12 h-12">
               <svg className="w-full h-full -rotate-90">
@@ -47,7 +47,7 @@ export default function IncomingOrderCard({
             <div className="flex items-center gap-1">
               <span className="text-2xl font-black">₹{calculatePeakEarnings(order)}</span>
               {order.peakMultiplier > 1 && (
-                <span className="bg-yellow-400 text-[#0b50d5] text-[10px] font-bold px-1.5 rounded">+{(order.peakMultiplier - 1) * 100}%</span>
+                <span className="bg-yellow-400 text-brand-secondary text-[10px] font-bold px-1.5 rounded">+{(order.peakMultiplier - 1) * 100}%</span>
               )}
             </div>
             <p className="text-[10px] opacity-60">{t.rider.order.orderTotal} ₹{order.orderTotal}</p>
@@ -134,11 +134,11 @@ export default function IncomingOrderCard({
             <div className="absolute left-[10px] top-4 bottom-4 w-0.5 border-l-2 border-dashed border-[var(--color-outline-variant)]"></div>
             
             <div className="flex items-start gap-3">
-              <div className="z-10 bg-[#0b50d5] w-5 h-5 rounded-full flex items-center justify-center">
+              <div className="z-10 bg-brand-secondary w-5 h-5 rounded-full flex items-center justify-center">
                 <span className="material-symbols-outlined text-white text-xs">restaurant</span>
               </div>
               <div className="flex-1">
-                <p className="text-[9px] text-[#0b50d5] font-bold">{t.rider.order.pickup}</p>
+                <p className="text-[9px] text-brand-secondary font-bold">{t.rider.order.pickup}</p>
                 <p className="font-bold text-sm">{order.vendor}</p>
                 <p className="text-[10px] text-[var(--color-outline)]">{order.vendorAddress}</p>
               </div>
@@ -195,7 +195,7 @@ export default function IncomingOrderCard({
           <button 
             onClick={() => onAccept(order)}
             aria-label={t.rider.order.acceptOrder}
-            className="flex-[2] py-3 bg-[#0b50d5] text-white font-black rounded-xl text-sm shadow-lg"
+            className="flex-[2] py-3 bg-brand-secondary text-white font-black rounded-xl text-sm shadow-lg"
           >
             {t.rider.order.acceptOrder}
           </button>

@@ -27,7 +27,7 @@ export default function RiderSupportPage() {
 
   return (
     <div className="min-h-screen bg-[var(--color-surface-container-lowest)]">
-      <header className="bg-[#0b50d5] text-white p-6 pb-8 rounded-b-[3rem]">
+      <header className="bg-brand-secondary text-white p-6 pb-8 rounded-b-[3rem]">
         <div className="flex items-center gap-4">
           <Link href="/rider/account" className="text-white">
             <span className="material-symbols-outlined">arrow_back</span>
@@ -41,17 +41,17 @@ export default function RiderSupportPage() {
           <h2 className="font-bold text-[var(--color-on-surface)] mb-4">Contact Us</h2>
           <div className="space-y-3">
             <a href={`tel:${support.support_phone}`} className="w-full flex items-center gap-3 p-4 bg-[var(--color-surface-subtle)] rounded-xl">
-              <span className="material-symbols-outlined text-[#0b50d5]">call</span>
+              <span className="material-symbols-outlined text-brand-secondary">call</span>
               <span className="flex-1 text-left font-bold">Call Support</span>
               <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
             </a>
             <a href={`mailto:${support.support_email}`} className="w-full flex items-center gap-3 p-4 bg-[var(--color-surface-subtle)] rounded-xl">
-              <span className="material-symbols-outlined text-[#0b50d5]">chat</span>
+              <span className="material-symbols-outlined text-brand-secondary">chat</span>
               <span className="flex-1 text-left font-bold">Chat with Us</span>
               <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
             </a>
             <a href={`mailto:${support.support_email}`} className="w-full flex items-center gap-3 p-4 bg-[var(--color-surface-subtle)] rounded-xl">
-              <span className="material-symbols-outlined text-[#0b50d5]">email</span>
+              <span className="material-symbols-outlined text-brand-secondary">email</span>
               <span className="flex-1 text-left font-bold">Email Support</span>
               <span className="material-symbols-outlined text-[var(--color-outline-variant)]">chevron_right</span>
             </a>

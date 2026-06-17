@@ -65,7 +65,7 @@ function RateCustomerContent() {
   if (!authChecked) {
     return (
       <div className="min-h-screen bg-[var(--color-surface-container-lowest)] flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-[#0b50d5] border-t-transparent rounded-full animate-spin" />
+        <div className="w-12 h-12 border-4 border-brand-secondary border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -86,7 +86,7 @@ function RateCustomerContent() {
 
   return (
     <div className="min-h-screen bg-[var(--color-surface-container-lowest)]">
-      <header className="bg-[#0b50d5] text-white p-6 pb-12">
+      <header className="bg-brand-secondary text-white p-6 pb-12">
         <div className="flex items-center gap-4">
           <Link href="/rider/dashboard" className="text-white">
             <span className="material-symbols-outlined">arrow_back</span>
@@ -98,7 +98,7 @@ function RateCustomerContent() {
       <main className="p-6 -mt-6 space-y-6 pb-32">
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg">
           <div className="flex items-center gap-4 mb-6">
-            <div className="w-16 h-16 bg-[#0b50d5] rounded-full flex items-center justify-center text-white text-2xl font-bold">
+            <div className="w-16 h-16 bg-brand-secondary rounded-full flex items-center justify-center text-white text-2xl font-bold">
               {customerName[0]}
             </div>
             <div>
@@ -183,14 +183,14 @@ function RateCustomerContent() {
             value={additionalComment}
             onChange={(e) => setAdditionalComment(e.target.value)}
             placeholder="Share more about your experience..."
-            className="w-full p-4 bg-[var(--color-surface-subtle)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#0b50d5]"
+            className="w-full p-4 bg-[var(--color-surface-subtle)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-secondary"
             rows={3}
           />
         </div>
 
         <button 
           onClick={handleSubmit}
-          className="w-full py-4 bg-[#0b50d5] text-white font-black rounded-2xl text-lg"
+          className="w-full py-4 bg-brand-secondary text-white font-black rounded-2xl text-lg"
         >
           Submit Feedback
         </button>
@@ -209,7 +209,7 @@ function LoadingFallback() {
   return (
     <div className="min-h-screen bg-[var(--color-surface-container-lowest)] flex items-center justify-center">
       <div className="text-center">
-        <span className="material-symbols-outlined text-4xl text-[#0b50d5] animate-spin">sync</span>
+        <span className="material-symbols-outlined text-4xl text-brand-secondary animate-spin">sync</span>
         <p className="mt-4 text-[var(--color-outline)]">Loading...</p>
       </div>
     </div>

@@ -62,7 +62,7 @@ export default function RiderNotificationsPage() {
           <p className="text-[var(--color-outline)] mb-6">{error}</p>
           <button
             onClick={() => loadNotifications()}
-            className="px-6 py-3 bg-[#0b50d5] text-white rounded-xl font-bold"
+            className="px-6 py-3 bg-brand-secondary text-white rounded-xl font-bold"
           >
             Try Again
           </button>
@@ -73,7 +73,7 @@ export default function RiderNotificationsPage() {
 
   if (loading) return (
     <div className="min-h-screen bg-[var(--color-surface-container-lowest)] flex items-center justify-center">
-      <div className="w-12 h-12 border-4 border-[#0b50d5] border-t-transparent rounded-full animate-spin" />
+      <div className="w-12 h-12 border-4 border-brand-secondary border-t-transparent rounded-full animate-spin" />
     </div>
   );
 
@@ -81,7 +81,7 @@ export default function RiderNotificationsPage() {
     <>
     <PullToRefresh onRefresh={loadNotifications}>
     <div className="min-h-screen bg-[var(--color-surface-container-lowest)]">
-      <header className="bg-[#0b50d5] text-white p-6 pb-8 rounded-b-[3rem]">
+      <header className="bg-brand-secondary text-white p-6 pb-8 rounded-b-[3rem]">
         <div className="flex items-center justify-between">
           <Link href="/rider/account" className="text-white">
             <span className="material-symbols-outlined">arrow_back</span>
@@ -111,7 +111,7 @@ export default function RiderNotificationsPage() {
           >
             <div className="flex items-start gap-3">
               {!notif.read && (
-                <span className="w-3 h-3 bg-[#0b50d5] rounded-full mt-2"></span>
+                <span className="w-3 h-3 bg-brand-secondary rounded-full mt-2"></span>
               )}
               <div className="flex-1">
                 <h3 className="font-bold text-[var(--color-on-surface)]">{notif.title}</h3>

@@ -74,7 +74,7 @@ function RiderLoginContent() {
           MIIAM
         </Link>
         <div className="max-w-md w-full mx-auto">
-          <span className="text-[#0b50d5] font-bold text-sm tracking-widest uppercase mb-4 block">Fleet Network</span>
+          <span className="text-brand-secondary font-bold text-sm tracking-widest uppercase mb-4 block">Fleet Network</span>
           <h1 className="text-4xl md:text-5xl font-extrabold text-[var(--color-on-surface)] mb-4 tracking-tight">
             Ride with <br/> purpose.
           </h1>
@@ -116,7 +116,7 @@ function RiderLoginContent() {
               <button
                 type="button"
                 onClick={() => setShowForgotPassword(true)}
-                className="text-sm text-[#0b50d5] font-bold mt-2 hover:underline"
+                className="text-sm text-brand-secondary font-bold mt-2 hover:underline"
               >
                 Forgot Password?
               </button>
@@ -124,7 +124,7 @@ function RiderLoginContent() {
             <button
               type="submit"
               disabled={loading || !email || !password}
-              className="w-full bento-gradient-blue text-white rounded-xl py-5 text-lg font-bold shadow-lg shadow-[#0b50d5]/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-70 disabled:pointer-events-none"
+              className="w-full bento-gradient-blue text-white rounded-xl py-5 text-lg font-bold shadow-lg shadow-brand-secondary/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-70 disabled:pointer-events-none"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -143,7 +143,7 @@ function RiderLoginContent() {
           </div>
         </div>
       </div>
-      <div className="hidden md:block md:w-1/2 bg-[#0b50d5] relative overflow-hidden">
+      <div className="hidden md:block md:w-1/2 bg-brand-secondary relative overflow-hidden">
         <div className="absolute inset-0 opacity-40 mix-blend-overlay">
           <img
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMs7iF1l6q72X44B4k_1288bT7cR8iT6ApejS0e_P22k1uYx9YI9zTXXP7Z8T39H5Q0A9f_2WbI6Qe9q8A1D3Yt_E1yZtBqZ2W5TfO27vC-w4m12yX_Y1239O9U2I97Y3yI6C6O28c4w09o5IqD9Z288Q3oU2D1G375_C1P31Z_pP7Y78I6T_7oA_XW2X8t3oGZ"
@@ -185,7 +185,7 @@ function RiderLoginContent() {
                 </p>
                 <button
                   onClick={() => { setShowForgotPassword(false); setResetSent(false); setResetEmail(""); }}
-                  className="w-full py-3 bg-[#0b50d5] text-white font-bold rounded-xl"
+                  className="w-full py-3 bg-brand-secondary text-white font-bold rounded-xl"
                 >
                   Done
                 </button>
@@ -221,7 +221,7 @@ function RiderLoginContent() {
                   <button
                     type="submit"
                     disabled={!resetEmail}
-                    className="w-full py-3 bg-[#0b50d5] text-white font-bold rounded-xl disabled:opacity-50"
+                    className="w-full py-3 bg-brand-secondary text-white font-bold rounded-xl disabled:opacity-50"
                   >
                     Send Reset Link
                   </button>

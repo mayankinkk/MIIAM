@@ -91,7 +91,7 @@ export default function RiderAnalyticsPage() {
 
   return (
     <div className="min-h-screen bg-[var(--color-surface-container-lowest)]">
-      <header className="bg-gradient-to-br from-[#0b50d5] to-[#0044bf] text-white p-6 pb-12">
+      <header className="bg-gradient-to-br from-brand-secondary to-[#0044bf] text-white p-6 pb-12">
         <div className="flex items-center gap-4">
           <Link href="/rider/dashboard" className="text-white">
             <span className="material-symbols-outlined">arrow_back</span>
@@ -105,7 +105,7 @@ export default function RiderAnalyticsPage() {
               key={p}
               onClick={() => setPeriod(p)}
               className={`flex-1 py-2 rounded-lg text-sm font-bold ${
-                period === p ? "bg-[var(--color-surface-container-lowest)] text-[#0b50d5]" : "text-white/70"
+                period === p ? "bg-[var(--color-surface-container-lowest)] text-brand-secondary" : "text-white/70"
               }`}
             >
               {p.charAt(0).toUpperCase() + p.slice(1)}
@@ -130,7 +130,7 @@ export default function RiderAnalyticsPage() {
             <div className="grid grid-cols-2 gap-3">
               <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-sm">
                 <p className="text-xs text-[var(--color-outline-variant)]">Total Deliveries</p>
-                <p className="text-3xl font-black text-[#0b50d5] mt-1">{totalDeliveries}</p>
+                <p className="text-3xl font-black text-brand-secondary mt-1">{totalDeliveries}</p>
               </div>
               <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-sm">
                 <p className="text-xs text-[var(--color-outline-variant)]">Total Earnings</p>
@@ -142,7 +142,7 @@ export default function RiderAnalyticsPage() {
               </div>
               <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-sm">
                 <p className="text-xs text-[var(--color-outline-variant)]">Avg Earning/Delivery</p>
-                <p className="text-3xl font-black text-[#0b50d5]">
+                <p className="text-3xl font-black text-brand-secondary">
                   {totalDeliveries > 0 ? `₹${Math.round(totalEarnings / totalDeliveries)}` : "₹0"}
                 </p>
               </div>
@@ -160,9 +160,9 @@ export default function RiderAnalyticsPage() {
                 <div className="flex items-end gap-1 h-40">
                   {weeklyData.map((d, i) => (
                     <div key={i} className="flex-1 flex flex-col items-center gap-1">
-                      <div className="w-full bg-[#0b50d5]/20 rounded-t-md relative" style={{ height: "100%" }}>
+                      <div className="w-full bg-brand-secondary/20 rounded-t-md relative" style={{ height: "100%" }}>
                         <div 
-                          className="absolute bottom-0 w-full bg-gradient-to-t from-[#0b50d5] to-[#4489ff] rounded-t-md transition-all"
+                          className="absolute bottom-0 w-full bg-gradient-to-t from-brand-secondary to-[#4489ff] rounded-t-md transition-all"
                           style={{ height: `${Math.max((d.earnings / chartMax) * 100, 4)}%` }}
                         />
                       </div>

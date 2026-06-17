@@ -115,8 +115,8 @@ export default function ChatModal({
             <button onClick={onClose}>
               <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">arrow_back</span>
             </button>
-            <div className="w-10 h-10 bg-[#0b50d5]/10 rounded-full flex items-center justify-center">
-              <span className="material-symbols-outlined text-[#0b50d5]">person</span>
+            <div className="w-10 h-10 bg-brand-secondary/10 rounded-full flex items-center justify-center">
+              <span className="material-symbols-outlined text-brand-secondary">person</span>
             </div>
             <div>
               <p className="font-bold">{customerName || "Customer"}</p>
@@ -148,7 +148,7 @@ export default function ChatModal({
               : "";
             return (
               <div key={msg.id} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
-                <div className={`max-w-[80%] p-3 rounded-2xl ${isMe ? "bg-[#0b50d5] text-white" : "bg-[var(--color-surface-container)]"}`}>
+                <div className={`max-w-[80%] p-3 rounded-2xl ${isMe ? "bg-brand-secondary text-white" : "bg-[var(--color-surface-container)]"}`}>
                   {msg.type === "image" && msg.file_url ? (
                     <img src={msg.file_url} alt="Shared image" className="rounded-lg max-w-full mb-1" />
                   ) : msg.type === "audio" && msg.file_url ? (
@@ -168,7 +168,7 @@ export default function ChatModal({
               <button
                 key={msg}
                 onClick={() => onChatMessageChange(msg)}
-                className="flex-shrink-0 px-3 py-1.5 bg-[#0b50d5]/10 text-[#0b50d5] rounded-full text-xs font-bold"
+                className="flex-shrink-0 px-3 py-1.5 bg-brand-secondary/10 text-brand-secondary rounded-full text-xs font-bold"
               >
                 {msg}
               </button>
@@ -185,14 +185,14 @@ export default function ChatModal({
             <button
               onClick={() => fileInputRef.current?.click()}
               disabled={uploading}
-              className="p-2 text-[var(--color-outline-variant)] hover:text-[#0b50d5] hover:bg-[var(--color-surface-container)] rounded-full disabled:opacity-50"
+              className="p-2 text-[var(--color-outline-variant)] hover:text-brand-secondary hover:bg-[var(--color-surface-container)] rounded-full disabled:opacity-50"
               title="Attach file"
             >
               <span className="material-symbols-outlined">{uploading ? "hourglass_top" : "attach_file"}</span>
             </button>
             <button
               onClick={toggleRecording}
-              className={`p-2 rounded-full ${isRecording ? "text-red-500 bg-red-50 animate-pulse" : "text-[var(--color-outline-variant)] hover:text-[#0b50d5] hover:bg-[var(--color-surface-container)]"}`}
+              className={`p-2 rounded-full ${isRecording ? "text-red-500 bg-red-50 animate-pulse" : "text-[var(--color-outline-variant)] hover:text-brand-secondary hover:bg-[var(--color-surface-container)]"}`}
               title={isRecording ? "Stop recording" : "Voice message"}
             >
               <span className="material-symbols-outlined">{isRecording ? "stop" : "mic"}</span>
@@ -208,7 +208,7 @@ export default function ChatModal({
             <button
               onClick={onSend}
               disabled={!chatMessage.trim()}
-              className="w-10 h-10 bg-[#0b50d5] text-white rounded-full flex items-center justify-center disabled:opacity-50"
+              className="w-10 h-10 bg-brand-secondary text-white rounded-full flex items-center justify-center disabled:opacity-50"
             >
               <span className="material-symbols-outlined">send</span>
             </button>
