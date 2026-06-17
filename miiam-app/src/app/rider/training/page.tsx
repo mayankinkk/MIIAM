@@ -279,7 +279,7 @@ export default function RiderTrainingPage() {
                         }
                         setShowQuiz(false);
                       } else {
-                        alert("Try again!");
+                        import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Try again!", "error"));
                       }
                     }}
                     className="w-full p-3 bg-[var(--color-surface-subtle)] rounded-xl font-bold text-sm hover:bg-[var(--color-surface-container)]"

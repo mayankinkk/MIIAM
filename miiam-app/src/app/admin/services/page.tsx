@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { useToastStore } from "@/lib/store/toastStore";
 
 type ServiceStatus = "pending" | "confirmed" | "in_progress" | "completed" | "cancelled";
 
@@ -529,7 +530,7 @@ export default function EnhancedServicesDashboard() {
                     },
                   }),
                 });
-                alert("Pricing settings saved");
+                useToastStore.getState().addToast("Pricing settings saved", "success");
               }}
               className="w-full mt-4 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm"
             >
@@ -557,13 +558,13 @@ export default function EnhancedServicesDashboard() {
               <button onClick={() => setShowProviderModal(false)} className="flex-1 py-3 border border-[var(--color-border-subtle)] rounded-xl font-bold text-sm">Cancel</button>
               <button
                 onClick={async () => {
-                  if (!providerForm.name || !providerForm.phone) { alert("Name and phone are required"); return; }
+                  if (!providerForm.name || !providerForm.phone) { useToastStore.getState().addToast("Name and phone are required", "error"); return; }
                   const { error } = await supabase.from("service_providers").insert({
                     name: providerForm.name, phone: providerForm.phone, email: providerForm.email,
                     service_type: providerForm.service_type, experience: providerForm.experience, status: "pending",
                   });
-                  if (error) { alert("Error: " + error.message); return; }
-                  alert("Provider registered successfully!");
+                  if (error) { useToastStore.getState().addToast("Error: " + error.message, "error"); return; }
+                  useToastStore.getState().addToast("Provider registered successfully!", "success");
                   setShowProviderModal(false);
                   setProviderForm({ name: "", phone: "", email: "", service_type: "beauty", experience: "" });
                 }}
@@ -590,12 +591,12 @@ export default function EnhancedServicesDashboard() {
               <button onClick={() => setShowCategoryModal(false)} className="flex-1 py-3 border border-[var(--color-border-subtle)] rounded-xl font-bold text-sm">Cancel</button>
               <button
                 onClick={async () => {
-                  if (!categoryForm.name) { alert("Category name is required"); return; }
+                  if (!categoryForm.name) { useToastStore.getState().addToast("Category name is required", "error"); return; }
                   const { error } = await supabase.from("service_categories").insert({
                     name: categoryForm.name, icon: categoryForm.icon, description: categoryForm.description, is_active: true,
                   });
-                  if (error) { alert("Error: " + error.message); return; }
-                  alert("Category created!");
+                  if (error) { useToastStore.getState().addToast("Error: " + error.message, "error"); return; }
+                  useToastStore.getState().addToast("Category created!", "success");
                   setShowCategoryModal(false);
                   setCategoryForm({ name: "", icon: "home_repair_service", description: "" });
                 }}

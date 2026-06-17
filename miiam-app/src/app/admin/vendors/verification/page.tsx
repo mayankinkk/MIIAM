@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useToastStore } from "@/lib/store/toastStore";
 
 interface VendorVerification {
   id: string;
@@ -71,7 +72,7 @@ export default function VerificationPage() {
       setSelectedVendor(null);
     } catch (error: any) {
       console.error("Error updating vendor:", error);
-      alert(`Failed: ${error.message}`);
+      useToastStore.getState().addToast(`Failed: ${error.message}`, "error");
     }
   };
 

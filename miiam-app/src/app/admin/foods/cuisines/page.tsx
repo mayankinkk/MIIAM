@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useToastStore } from "@/lib/store/toastStore";
 
 interface Cuisine {
   id: string;
@@ -36,7 +37,7 @@ export default function AdminCuisinesPage() {
 
   const handleAddCuisine = async () => {
     if (!newCuisine.name) {
-      alert("Please enter cuisine name");
+      useToastStore.getState().addToast("Please enter cuisine name", "error");
       return;
     }
     setLoading(true);
@@ -47,12 +48,12 @@ export default function AdminCuisinesPage() {
         active: true,
       });
       if (error) throw error;
-      alert("Cuisine added!");
+      useToastStore.getState().addToast("Cuisine added!", "success");
       setShowAddModal(false);
       setNewCuisine({ name: "", image_url: "" });
       loadCuisines();
     } catch (error: any) {
-      alert(`Failed: ${error.message}`);
+      useToastStore.getState().addToast(`Failed: ${error.message}`, "error");
     } finally {
       setLoading(false);
     }
@@ -67,11 +68,11 @@ export default function AdminCuisinesPage() {
         .update({ name: editingCuisine.name, active: editingCuisine.active })
         .eq("id", editingCuisine.id);
       if (error) throw error;
-      alert("Cuisine updated!");
+      useToastStore.getState().addToast("Cuisine updated!", "success");
       setEditingCuisine(null);
       loadCuisines();
     } catch (error: any) {
-      alert(`Failed: ${error.message}`);
+      useToastStore.getState().addToast(`Failed: ${error.message}`, "error");
     } finally {
       setLoading(false);
     }
@@ -83,9 +84,9 @@ export default function AdminCuisinesPage() {
     try {
       await supabase.from("cuisines").delete().eq("id", id);
       setCuisines(cuisines.filter(c => c.id !== id));
-      alert("Cuisine deleted!");
+      useToastStore.getState().addToast("Cuisine deleted!", "success");
     } catch (error: any) {
-      alert(`Failed: ${error.message}`);
+      useToastStore.getState().addToast(`Failed: ${error.message}`, "error");
     } finally {
       setLoading(false);
     }
@@ -99,7 +100,7 @@ export default function AdminCuisinesPage() {
     try {
       await supabase.from("cuisines").update({ active: newActive }).eq("id", cuisine.id);
     } catch (err: any) {
-      alert(`Failed: ${err.message}`);
+      useToastStore.getState().addToast(`Failed: ${err.message}`, "error");
       setCuisines(cuisines.map(c => 
         c.id === cuisine.id ? { ...c, active: !newActive } : c
       ));

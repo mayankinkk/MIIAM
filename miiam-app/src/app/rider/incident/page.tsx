@@ -92,9 +92,9 @@ export default function RiderIncidentPage() {
           })));
         }
       }
-      alert("Incident reported successfully! Support team has been notified and will contact you shortly.");
+      import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Incident reported successfully! Support team has been notified and will contact you shortly.", "success"));
     } catch (e) {
-      alert("Failed to submit report. Please try again.");
+      import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Failed to submit report. Please try again.", "error"));
     }
     setIsSubmitting(false);
     setShowConfirm(false);

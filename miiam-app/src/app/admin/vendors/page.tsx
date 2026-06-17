@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { useToastStore } from "@/lib/store/toastStore";
 import ImageUpload from "@/components/ImageUpload";
 
 interface Vendor {
@@ -213,7 +214,7 @@ export default function AdminVendorsPage() {
         if (menuError) throw menuError;
       }
 
-      alert("Vendor created successfully!");
+      useToastStore.getState().addToast("Vendor created successfully!", "success");
       setShowAddVendor(false);
       setVendorForm({
         ownerName: "",
@@ -241,7 +242,7 @@ export default function AdminVendorsPage() {
       loadVendors();
     } catch (error: any) {
       console.error("Error creating vendor:", error);
-      alert(`Failed to create vendor: ${error?.message || JSON.stringify(error)}`);
+      useToastStore.getState().addToast(`Failed to create vendor: ${error?.message || JSON.stringify(error)}`, "error");
     } finally {
       setLoading(false);
     }
@@ -256,9 +257,9 @@ export default function AdminVendorsPage() {
       const { error } = await supabase.from("vendors").delete().eq("id", vendor.id);
       if (error) throw error;
       setVendors(vendors.filter(v => v.id !== vendor.id));
-      alert("Vendor deleted.");
+      useToastStore.getState().addToast("Vendor deleted.", "success");
     } catch (error: any) {
-      alert(`Failed to delete: ${error.message}`);
+      useToastStore.getState().addToast(`Failed to delete: ${error.message}`, "error");
     } finally {
       setLoading(false);
     }
@@ -309,12 +310,12 @@ export default function AdminVendorsPage() {
         }
       }
 
-      alert("Vendor updated successfully!");
+      useToastStore.getState().addToast("Vendor updated successfully!", "success");
       setEditingVendor(null);
       loadVendors();
     } catch (error: any) {
       console.error("Error updating vendor:", error);
-      alert(`Failed to update vendor: ${error.message}`);
+      useToastStore.getState().addToast(`Failed to update vendor: ${error.message}`, "error");
     } finally {
       setLoading(false);
     }
@@ -384,10 +385,10 @@ export default function AdminVendorsPage() {
         is_featured: false,
       });
       await loadVendorMenuItems(editingVendor.id);
-      alert("Menu item added!");
+      useToastStore.getState().addToast("Menu item added!", "success");
     } catch (error: any) {
       console.error("Error adding menu item:", error);
-      alert(`Failed to add menu item: ${error.message}`);
+      useToastStore.getState().addToast(`Failed to add menu item: ${error.message}`, "error");
     } finally {
       setLoading(false);
     }
@@ -402,10 +403,10 @@ export default function AdminVendorsPage() {
       if (error) throw error;
       
       setVendorMenuItems(vendorMenuItems.filter(item => item.id !== id));
-      alert("Menu item deleted!");
+      useToastStore.getState().addToast("Menu item deleted!", "success");
     } catch (error: any) {
       console.error("Error deleting menu item:", error);
-      alert(`Failed to delete: ${error.message}`);
+      useToastStore.getState().addToast(`Failed to delete: ${error.message}`, "error");
     } finally {
       setLoading(false);
     }
@@ -434,10 +435,10 @@ export default function AdminVendorsPage() {
 
       await loadVendorMenuItems(editingVendor.id);
       setEditingMenuItem(null);
-      alert("Menu item updated!");
+      useToastStore.getState().addToast("Menu item updated!", "success");
     } catch (error: any) {
       console.error("Error updating menu item:", error);
-      alert(`Failed to update menu item: ${error.message}`);
+      useToastStore.getState().addToast(`Failed to update menu item: ${error.message}`, "error");
     } finally {
       setLoading(false);
     }

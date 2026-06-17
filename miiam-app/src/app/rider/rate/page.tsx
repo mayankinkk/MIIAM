@@ -31,7 +31,7 @@ function RateCustomerContent() {
 
   const handleSubmit = async () => {
     if (selectedRating === null) {
-      alert("Please give a rating");
+      import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Please give a rating", "error"));
       return;
     }
     setSubmitted(true);

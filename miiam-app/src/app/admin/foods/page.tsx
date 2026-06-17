@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useToastStore } from "@/lib/store/toastStore";
 
 export default function AdminFoodsDashboard() {
   const supabase = createClient();
@@ -66,10 +67,10 @@ export default function AdminFoodsDashboard() {
       if (error) throw error;
 
       setOrders(orders.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
-      alert(`Order status updated to ${newStatus}`);
+      useToastStore.getState().addToast(`Order status updated to ${newStatus}`, "success");
     } catch (error: any) {
       console.error("Error updating order:", error);
-      alert(`Failed to update: ${error.message}`);
+      useToastStore.getState().addToast(`Failed to update: ${error.message}`, "error");
     }
   };
 
@@ -106,11 +107,11 @@ export default function AdminFoodsDashboard() {
       setOrders(orders.map(o => 
         selectedOrders.includes(o.id) ? { ...o, status: bulkStatus } : o
       ));
-      alert(`${selectedOrders.length} orders updated!`);
+      useToastStore.getState().addToast(`${selectedOrders.length} orders updated!`, "success");
       setSelectedOrders([]);
       setBulkStatus("");
     } catch (error: any) {
-      alert(`Failed: ${error.message}`);
+      useToastStore.getState().addToast(`Failed: ${error.message}`, "error");
     } finally {
       setLoading(false);
     }

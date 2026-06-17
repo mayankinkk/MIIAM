@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { useToastStore } from "@/lib/store/toastStore";
 
 const beautyCategories = [
   { id: "salon", label: "Salon at Home", icon: "content_cut", color: "pink" },
@@ -297,7 +298,7 @@ export default function BeautyServicesAdmin() {
                           <td className="p-4 text-[var(--color-on-surface-variant)]">{pro.phone || "—"}</td>
                           <td className="p-4">
                             <button
-                              onClick={() => alert(`Provider: ${pro.name}\nPhone: ${pro.phone || "—"}\nStatus: ${pro.status || "active"}\nSpecialties: ${pro.specialties?.join(", ") || "—"}`)}
+                              onClick={() => useToastStore.getState().addToast(`Provider: ${pro.name}\nPhone: ${pro.phone || "—"}\nStatus: ${pro.status || "active"}\nSpecialties: ${pro.specialties?.join(", ") || "—"}`, "success")}
                               className="text-pink-600 font-bold text-sm hover:underline"
                             >
                               View

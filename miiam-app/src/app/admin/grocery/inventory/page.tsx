@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
+import { useToastStore } from "@/lib/store/toastStore";
 import ImageUpload from "@/components/ImageUpload";
 
 const supabase = createClient();
@@ -80,7 +81,7 @@ export default function GroceryInventoryPage() {
 
   const handleSaveProduct = async () => {
     if (!newProduct.name || !newProduct.price || !newProduct.vendor_id) {
-      alert("Please fill in required fields (Name, Price, Vendor)");
+      useToastStore.getState().addToast("Please fill in required fields (Name, Price, Vendor)", "error");
       return;
     }
 
@@ -115,10 +116,10 @@ export default function GroceryInventoryPage() {
 
       resetModal();
       loadProducts();
-      alert(editingProduct ? "Product updated!" : "Product added!");
+      useToastStore.getState().addToast(editingProduct ? "Product updated!" : "Product added!", "success");
     } catch (error: any) {
       console.error("Error saving product:", error);
-      alert("Failed to save: " + error.message);
+      useToastStore.getState().addToast("Failed to save: " + error.message, "error");
     } finally {
       setSaving(false);
     }
@@ -131,10 +132,10 @@ export default function GroceryInventoryPage() {
       const { error } = await supabase.from("grocery_products").delete().eq("id", id);
       if (error) throw error;
       setProducts(products.filter(p => p.id !== id));
-      alert("Product deleted!");
+      useToastStore.getState().addToast("Product deleted!", "success");
     } catch (error: any) {
       console.error("Error deleting product:", error);
-      alert("Failed to delete: " + error.message);
+      useToastStore.getState().addToast("Failed to delete: " + error.message, "error");
     }
   };
 
@@ -149,7 +150,7 @@ export default function GroceryInventoryPage() {
       loadProducts();
     } catch (error) {
       console.error("Error updating stock:", error);
-      alert("Failed to update stock");
+      useToastStore.getState().addToast("Failed to update stock", "error");
     }
   };
 

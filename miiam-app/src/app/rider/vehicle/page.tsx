@@ -428,7 +428,7 @@ function AddVehicleModal({ riderId, onClose, onSaved }: { riderId: string | null
       await onSaved();
     } catch (e) {
       console.error("Failed to save vehicle:", e);
-      alert("Failed to save vehicle");
+      import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Failed to save vehicle", "error"));
     }
     setSaving(false);
   };

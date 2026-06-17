@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useToastStore } from "@/lib/store/toastStore";
 import Link from "next/link";
 
 const supabase = createClient();
@@ -93,7 +94,7 @@ export default function GroceryOrdersPage() {
       setSelectedOrder(null);
     } catch (error) {
       console.error("Error updating order:", error);
-      alert("Failed to update order status");
+      useToastStore.getState().addToast("Failed to update order status", "error");
     }
   };
 

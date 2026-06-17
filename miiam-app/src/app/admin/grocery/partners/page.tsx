@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { useToastStore } from "@/lib/store/toastStore";
 
 const supabase = createClient();
 
@@ -104,20 +105,20 @@ export default function GroceryPartnersPage() {
 
       if (error) throw error;
       loadPartners();
-      alert("Partner status updated!");
+      useToastStore.getState().addToast("Partner status updated!", "success");
     } catch (error) {
       console.error("Error updating partner:", error);
-      alert("Failed to update partner status");
+      useToastStore.getState().addToast("Failed to update partner status", "error");
     }
   };
 
   const handleSavePartner = async () => {
     if (!newPartner.shop_name || !newPartner.owner_name || !newPartner.phone) {
-      alert("Please fill in all required fields (Shop Name, Owner Name, Phone)");
+      useToastStore.getState().addToast("Please fill in all required fields (Shop Name, Owner Name, Phone)", "error");
       return;
     }
     if (newPartner.pincode && (newPartner.pincode.length !== 6 || !/^\d{6}$/.test(newPartner.pincode))) {
-      alert("Please enter a valid 6-digit PIN code");
+      useToastStore.getState().addToast("Please enter a valid 6-digit PIN code", "error");
       return;
     }
 
@@ -156,10 +157,10 @@ export default function GroceryPartnersPage() {
       
       resetModal();
       loadPartners();
-      alert(editingPartner ? "Partner updated successfully!" : "Partner added successfully!");
+      useToastStore.getState().addToast(editingPartner ? "Partner updated successfully!" : "Partner added successfully!", "success");
     } catch (error: any) {
       console.error("Error saving partner:", error);
-      alert("Failed to save: " + error.message);
+      useToastStore.getState().addToast("Failed to save: " + error.message, "error");
     } finally {
       setSaving(false);
     }

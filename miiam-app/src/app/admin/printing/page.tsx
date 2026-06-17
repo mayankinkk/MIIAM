@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { useToastStore } from "@/lib/store/toastStore";
 import { PRINTING_VENDOR_ID } from "@/lib/constants";
 import type { OrderStatus } from "@/lib/types";
 import { getPrintingPricing, savePrintingPricing, type PrintingPricing } from "@/lib/printing-pricing";
@@ -123,14 +124,14 @@ export default function AdminPrintingPage() {
     try {
       const currentOrder = orders.find(o => o.id === orderId);
       if (currentOrder && VALID_TRANSITIONS[currentOrder.status] && !VALID_TRANSITIONS[currentOrder.status].includes(status)) {
-        alert(`Cannot change status from "${currentOrder.status.replace(/_/g, " ")}" to "${status.replace(/_/g, " ")}".`);
+        useToastStore.getState().addToast(`Cannot change status from "${currentOrder.status.replace(/_/g, " ")}" to "${status.replace(/_/g, " ")}".`, "error");
         return;
       }
       const { data: order } = await supabase.from("orders").select("user_id").eq("id", orderId).single();
       const { error } = await supabase.from("orders").update({ status }).eq("id", orderId);
       if (error) {
         console.error("[admin-printing] Failed to update order status:", error);
-        alert("Failed to update status. Please try again.");
+        useToastStore.getState().addToast("Failed to update status. Please try again.", "error");
         return;
       }
       if (order?.user_id) {
@@ -163,7 +164,7 @@ export default function AdminPrintingPage() {
       setSelectedOrder(null);
     } catch (e) {
       console.error("[admin-printing] Unexpected error updating status:", e);
-      alert("An unexpected error occurred. Please try again.");
+      useToastStore.getState().addToast("An unexpected error occurred. Please try again.", "error");
     }
   }
 
@@ -736,7 +737,7 @@ export default function AdminPrintingPage() {
                         setSelectedOrder(null);
                       } catch (e) {
                         console.error("[admin-printing] Refund failed:", e);
-                        alert("Refund failed. Please try again.");
+                        useToastStore.getState().addToast("Refund failed. Please try again.", "error");
                       }
                     }}
                     className="w-full py-3 bg-red-50 text-red-700 rounded-xl font-bold text-sm hover:bg-red-100"

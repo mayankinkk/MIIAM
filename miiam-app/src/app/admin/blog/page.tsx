@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useToastStore } from "@/lib/store/toastStore";
 
 type BlogPost = {
   id: string;
@@ -74,7 +75,7 @@ export default function BlogAdminPage() {
 
   const handleSave = async () => {
     if (!formTitle.trim()) {
-      alert("Please enter a title");
+      useToastStore.getState().addToast("Please enter a title", "error");
       return;
     }
     setSaving(true);
@@ -109,7 +110,7 @@ export default function BlogAdminPage() {
       setShowModal(false);
       loadPosts();
     } catch (err: any) {
-      alert(`Failed: ${err.message}`);
+      useToastStore.getState().addToast(`Failed: ${err.message}`, "error");
     } finally {
       setSaving(false);
     }
@@ -125,7 +126,7 @@ export default function BlogAdminPage() {
         prev.map(p => (p.id === post.id ? { ...p, published: !p.published } : p))
       );
     } catch (err: any) {
-      alert(`Failed: ${err.message}`);
+      useToastStore.getState().addToast(`Failed: ${err.message}`, "error");
     }
   };
 
@@ -135,7 +136,7 @@ export default function BlogAdminPage() {
       await supabase.from("blog_posts").delete().eq("id", id);
       setPosts(prev => prev.filter(p => p.id !== id));
     } catch (err: any) {
-      alert(`Failed: ${err.message}`);
+      useToastStore.getState().addToast(`Failed: ${err.message}`, "error");
     }
   };
 
