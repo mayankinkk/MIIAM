@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import BlurImage from "@/components/BlurImage";
 import { useLanguageStore } from "@/lib/store/languageStore";
 import { getTranslations } from "@/lib/i18n";
 import { LandingNavbar, LandingFooter } from "@/components/layout/LandingNavbar";
@@ -35,12 +36,11 @@ export default function LandingPage() {
           {/* Background */}
           <div className="absolute inset-0">
             <div className="absolute inset-0 bg-gradient-to-br from-[#0f0f0f] via-[#1a0a0e] to-[#0a0a0a]" />
-            <img
+            <BlurImage
               src="/images/food_hero.png"
               alt=""
-              role="presentation"
               className="absolute inset-0 w-full h-full object-cover opacity-[0.12] mix-blend-luminosity"
-              onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200&q=80"; }}
+              fallbackSrc="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200&q=80"
             />
           </div>
 
@@ -143,10 +143,10 @@ export default function LandingPage() {
             {/* Food Card - Links to Pizza Paradise */}
             <Link href="/app/vendor/r2" className="md:col-span-2 group relative overflow-hidden rounded-2xl bg-[var(--color-surface-container-lowest)] shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-[var(--color-border-subtle)] hover:shadow-[0_8px_40px_rgba(0,0,0,0.1)] transition-shadow duration-500">
               <div className="aspect-[16/9] overflow-hidden">
-                <img
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                <BlurImage
                   src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=800&q=80"
                   alt="Pizza Paradise"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                 />
               </div>
               <div className="p-6">
@@ -175,11 +175,11 @@ export default function LandingPage() {
             {/* Service Card */}
             <div className="group relative overflow-hidden rounded-2xl bg-[var(--color-surface-container-lowest)] shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-[var(--color-border-subtle)] flex flex-col hover:shadow-[0_8px_40px_rgba(0,0,0,0.1)] transition-shadow duration-500">
               <div className="aspect-square overflow-hidden">
-                <img
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                <BlurImage
                   src="/images/service_cleaning.png"
                   alt="Professional cleaner"
-                  onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=80"; }}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  fallbackSrc="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=80"
                 />
               </div>
               <div className="p-6 flex-1 flex flex-col">
