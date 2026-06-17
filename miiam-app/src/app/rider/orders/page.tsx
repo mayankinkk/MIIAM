@@ -5,52 +5,13 @@ import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import PullToRefresh from "@/components/PullToRefresh";
-import { startLocationTracking, stopLocationTracking } from "@/lib/rider-location-tracker";
 import { calculateEarnings } from "@/lib/earnings";
-
-interface OrderItem {
-  id: string;
-  order_id: string;
-  menu_item_id: string;
-  quantity: number;
-  unit_price: number;
-  special_notes: string | null;
-  status: "pending" | "available" | "unavailable" | "different_brand";
-  picked: boolean;
-  actual_price: number | null;
-  menu_item?: {
-    name: string;
-    category: string;
-  };
-}
-
-interface Order {
-  id: string;
-  user_id?: string;
-  rider_id?: string;
-  vendor_id?: string;
-  status: string;
-  total_amount: number;
-  delivery_fee: number;
-  special_instructions: string | null;
-  placed_at: string;
-  delivered_at?: string;
-  customer_collected?: number;
-  customer_name?: string;
-  customer_phone?: string;
-  vendor?: {
-    name: string;
-    address: string;
-    phone: string;
-    lat?: number;
-    lng?: number;
-  };
-  address?: {
-    street: string;
-    city: string;
-  };
-  items?: OrderItem[];
-}
+import { startLocationTracking, stopLocationTracking } from "@/lib/rider-location-tracker";
+import OrderCard from "@/components/rider/orders/OrderCard";
+import CashCollectModal from "@/components/rider/orders/CashCollectModal";
+import IssueReportModal from "@/components/rider/orders/IssueReportModal";
+import ActiveDeliveryView from "@/components/rider/orders/ActiveDeliveryView";
+import type { Order, OrderItem } from "@/components/rider/orders/types";
 
 export default function RiderOrdersPage() {
   const supabase = useMemo(() => createClient(), []);
@@ -806,7 +767,7 @@ export default function RiderOrdersPage() {
         {activeTab === "shopping" && (
           <>
             {shoppingOrders.map(order => (
-              <ShoppingCard 
+              <ActiveDeliveryView 
                 key={order.id} 
                 order={order}
                 riderId={riderProfile?.id || ''}
@@ -862,72 +823,39 @@ export default function RiderOrdersPage() {
         )}
       </main>
 
-      {/* Cash Collection Modal */}
-      {showCashCollectModal && (
-        <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-sm">
-            <div className="text-center mb-4">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <span className="material-symbols-outlined text-green-600 text-4xl">payments</span>
-              </div>
-              <h3 className="font-bold text-xl">Collect Payment</h3>
-            </div>
-            <div className="bg-green-50 p-4 rounded-xl mb-4">
-              <p className="text-sm text-green-700">Amount to collect from customer:</p>
-              <p className="text-3xl font-black text-green-600">₹{cashToCollect}</p>
-            </div>
-            <div className="space-y-2 mb-4">
-              <button onClick={() => setCashToCollect(cashToCollect + 10)} className="w-full py-2 border border-[var(--color-border-subtle)] rounded-lg font-bold">+₹10</button>
-              <button onClick={() => setCashToCollect(cashToCollect + 50)} className="w-full py-2 border border-[var(--color-border-subtle)] rounded-lg font-bold">+₹50</button>
-            </div>
-            <div className="flex gap-3">
-              <button onClick={() => setShowCashCollectModal(false)} className="flex-1 py-3 bg-[var(--color-surface-container-high)] text-[var(--color-on-surface-variant)] font-bold rounded-xl">Cancel</button>
-              <button onClick={confirmDelivery} className="flex-1 py-3 bg-green-500 text-white font-bold rounded-xl">Confirm & Complete</button>
-            </div>
-          </div>
-        </div>
-      )}
+      <CashCollectModal
+        open={showCashCollectModal}
+        cashToCollect={cashToCollect}
+        onCashToCollectChange={setCashToCollect}
+        onConfirm={confirmDelivery}
+        onClose={() => setShowCashCollectModal(false)}
+      />
 
-      {/* Issue Reporting Modal */}
-      {showIssueModal && (
-        <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-sm">
-            <h3 className="font-bold text-xl mb-4">Report Issue</h3>
-            <div className="space-y-2">
-              {["Wrong Items", "Store Closed", "Customer Unreachable", "Safety Concern", "Other"].map(issue => (
-                <button
-                  key={issue}
-                  onClick={async () => {
-                    setIssueType(issue);
-                    try {
-                      const { data: { user } } = await supabase.auth.getUser();
-                      if (user) {
-                        const { data: rider } = await supabase.from("riders").select("id").eq("user_id", user.id).single();
-                        if (rider) {
-                          await supabase.from("rider_incidents").insert({
-                            rider_id: rider.id,
-                            type: issue,
-                            description: `Issue with order ${currentOrderId}`,
-                            status: "reported",
-                          });
-                        }
-                      }
-                      showToast(`Issue "${issue}" reported.`, "success");
-                    } catch (e) {
-                      showToast("Failed to report issue. Please try again.", "error");
-                    }
-                    setShowIssueModal(false);
-                  }}
-                  className="w-full p-3 text-left bg-[var(--color-surface-subtle)] rounded-xl font-bold hover:bg-[var(--color-surface-container)]"
-                >
-                  {issue}
-                </button>
-              ))}
-            </div>
-            <button onClick={() => setShowIssueModal(false)} className="w-full mt-4 py-3 text-[var(--color-outline)] font-bold">Cancel</button>
-          </div>
-        </div>
-      )}
+      <IssueReportModal
+        open={showIssueModal}
+        onClose={() => setShowIssueModal(false)}
+        onSubmit={async (issue) => {
+          setIssueType(issue);
+          try {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+              const { data: rider } = await supabase.from("riders").select("id").eq("user_id", user.id).single();
+              if (rider) {
+                await supabase.from("rider_incidents").insert({
+                  rider_id: rider.id,
+                  type: issue,
+                  description: `Issue with order ${currentOrderId}`,
+                  status: "reported",
+                });
+              }
+            }
+            showToast(`Issue "${issue}" reported.`, "success");
+          } catch (e) {
+            showToast("Failed to report issue. Please try again.", "error");
+          }
+          setShowIssueModal(false);
+        }}
+      />
 
     </div>
     </PullToRefresh>
@@ -939,58 +867,6 @@ export default function RiderOrdersPage() {
       </div>
     )}
     </>
-  );
-}
-
-function OrderCard({ order, onAccept, isSelected, onToggleSelect }: { order: Order; onAccept: () => void; isSelected: boolean; onToggleSelect: () => void }) {
-  const totalItems = order.items?.reduce((s, i) => s + i.quantity, 0) || 0;
-  const estimatedEarning = order.total_amount + (order.delivery_fee || 0);
-
-  return (
-    <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-lg border-2 border-transparent hover:border-brand-secondary/30">
-      <div className="flex justify-between items-start mb-2">
-        <div className="flex items-start gap-3">
-          <button onClick={onToggleSelect} className={`mt-1 w-10 h-10 rounded-full border-2 flex items-center justify-center ${isSelected ? "bg-brand-secondary border-brand-secondary" : "border-[var(--color-outline-variant)]"}`}>
-            {isSelected && <span className="material-symbols-outlined text-white text-sm">check</span>}
-          </button>
-          <div>
-            <div className="flex items-center gap-2">
-              <h3 className="font-bold text-[var(--color-on-surface)]">{order.vendor?.name}</h3>
-              <span className="text-[10px] font-bold text-brand-secondary bg-[#c4d0ff]/50 px-2 py-0.5 rounded-full">For {order.customer_name || "Customer"}</span>
-            </div>
-            <p className="text-xs text-[var(--color-outline-variant)] flex items-center gap-1">
-              <span className="material-symbols-outlined text-xs">store</span>
-              {order.vendor?.address}
-            </p>
-          </div>
-        </div>
-        <div className="text-right">
-          <p className="text-xl font-black text-green-600">₹{estimatedEarning}</p>
-          <p className="text-[10px] text-[var(--color-outline-variant)]">{totalItems} items</p>
-        </div>
-      </div>
-      
-      <div className="bg-[var(--color-surface-subtle)] rounded-lg p-2 mb-3">
-        <p className="text-[10px] text-[var(--color-outline-variant)] mb-1">📍 DELIVER TO:</p>
-        <p className="text-sm">{order.address?.street}</p>
-      </div>
-
-      {order.special_instructions && (
-        <div className="bg-amber-50 text-amber-800 text-xs p-2 rounded-lg mb-3">
-          📝 {order.special_instructions}
-        </div>
-      )}
-
-      <div className="flex gap-2">
-        <a href={`tel:${order.customer_phone}`} className="flex-1 py-2 bg-[var(--color-surface-container)] text-[var(--color-on-surface)] font-bold rounded-lg text-center text-sm flex items-center justify-center gap-1">
-          <span className="material-symbols-outlined text-sm">call</span>
-          Call
-        </a>
-        <button onClick={onAccept} className="flex-[2] bg-brand-secondary text-white py-2 rounded-lg font-bold text-sm">
-          Start Shopping
-        </button>
-      </div>
-    </div>
   );
 }
 

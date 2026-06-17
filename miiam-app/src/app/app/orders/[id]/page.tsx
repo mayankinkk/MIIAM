@@ -19,28 +19,37 @@ import PendingOrderCard from "@/components/order/PendingOrderCard";
 import { useOrderTracking } from "@/lib/hooks/useOrderTracking";
 import { useUnreadMessages } from "@/lib/hooks/useUnreadMessages";
 
-function getFoodSteps(t: any) {
+function formatTimestamp(ts: string | null | undefined): string {
+  if (!ts) return "";
+  try {
+    return new Date(ts).toLocaleString("en-IN", { dateStyle: "short", timeStyle: "short" });
+  } catch {
+    return "";
+  }
+}
+
+function getFoodSteps(t: any, order?: any) {
   return [
-    { key: "pending", label: t.orders.orderPlaced, icon: "receipt_long", time: "" },
-    { key: "accepted", label: t.orders.orderAccepted, icon: "check_circle", time: "" },
-    { key: "preparing", label: t.orders.preparing, icon: "skillet", time: "" },
-    { key: "ready_for_pickup", label: t.orders.readyForPickup, icon: "inventory_2", time: "" },
-    { key: "shopping", label: t.orders.shopping, icon: "shopping_cart", time: "" },
-    { key: "picking_up", label: t.orders.pickingUp, icon: "storefront", time: "" },
-    { key: "on_the_way", label: t.orders.onTheWay, icon: "directions_bike", time: "" },
-    { key: "arrived", label: t.orders.arrived, icon: "location_on", time: "" },
-    { key: "delivered", label: t.orders.delivered, icon: "home_pin", time: "" },
+    { key: "pending", label: t.orders.orderPlaced, icon: "receipt_long", time: formatTimestamp(order?.placed_at) },
+    { key: "accepted", label: t.orders.orderAccepted, icon: "check_circle", time: formatTimestamp(order?.accepted_at) },
+    { key: "preparing", label: t.orders.preparing, icon: "skillet", time: formatTimestamp(order?.preparing_at) },
+    { key: "ready_for_pickup", label: t.orders.readyForPickup, icon: "inventory_2", time: formatTimestamp(order?.ready_at) },
+    { key: "shopping", label: t.orders.shopping, icon: "shopping_cart", time: formatTimestamp(order?.shopping_at) },
+    { key: "picking_up", label: t.orders.pickingUp, icon: "storefront", time: formatTimestamp(order?.picked_at) },
+    { key: "on_the_way", label: t.orders.onTheWay, icon: "directions_bike", time: formatTimestamp(order?.on_the_way_at) },
+    { key: "arrived", label: t.orders.arrived, icon: "location_on", time: formatTimestamp(order?.arrived_at) },
+    { key: "delivered", label: t.orders.delivered, icon: "home_pin", time: formatTimestamp(order?.delivered_at) },
   ];
 }
 
-function getPrintSteps(t: any) {
+function getPrintSteps(t: any, order?: any) {
   return [
-    { key: "pending", label: t.orders.orderPlaced, icon: "receipt_long", time: "" },
-    { key: "processing", label: t.orders.printingInProgress, icon: "print", time: "" },
-    { key: "ready_for_pickup", label: t.orders.readyForPickup, icon: "inventory_2", time: "" },
-    { key: "on_the_way", label: t.orders.onTheWay, icon: "directions_bike", time: "" },
-    { key: "arrived", label: t.orders.arrived, icon: "location_on", time: "" },
-    { key: "delivered", label: t.orders.delivered, icon: "home_pin", time: "" },
+    { key: "pending", label: t.orders.orderPlaced, icon: "receipt_long", time: formatTimestamp(order?.placed_at) },
+    { key: "processing", label: t.orders.printingInProgress, icon: "print", time: formatTimestamp(order?.processing_at) },
+    { key: "ready_for_pickup", label: t.orders.readyForPickup, icon: "inventory_2", time: formatTimestamp(order?.ready_at) },
+    { key: "on_the_way", label: t.orders.onTheWay, icon: "directions_bike", time: formatTimestamp(order?.on_the_way_at) },
+    { key: "arrived", label: t.orders.arrived, icon: "location_on", time: formatTimestamp(order?.arrived_at) },
+    { key: "delivered", label: t.orders.delivered, icon: "home_pin", time: formatTimestamp(order?.delivered_at) },
   ];
 }
 
@@ -122,7 +131,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
     );
   }
 
-  const steps = order?.vendor_id === PRINTING_VENDOR_ID ? getPrintSteps(t) : getFoodSteps(t);
+  const steps = order?.vendor_id === PRINTING_VENDOR_ID ? getPrintSteps(t, order) : getFoodSteps(t, order);
   const currentStepIndex = steps.findIndex((s) => s.key === order.status);
 
   return (

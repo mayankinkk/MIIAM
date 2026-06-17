@@ -6,6 +6,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useLocationStore } from "@/lib/store/locationStore";
 import { useTranslation } from "@/lib/i18n/useTranslation";
+import { useLanguageStore, type Language } from "@/lib/store/languageStore";
 import { HomeSkeleton } from "@/components/Skeleton";
 import BlurImage from "@/components/BlurImage";
 import { NetworkError } from "@/components/ui/EmptyStates";
@@ -18,6 +19,7 @@ export default function HomePage() {
 
   const supabase = useMemo(() => createClient(), []);
   const { t } = useTranslation();
+  const { language, setLanguage } = useLanguageStore();
   const [loading, setLoading] = useState(true);
 
   const categories = [
@@ -350,7 +352,19 @@ export default function HomePage() {
               <p className="text-sm text-on-surface-variant">{greeting} {timeIcon}</p>
               <h1 className="text-2xl font-black text-on-background capitalize">{userName}</h1>
             </div>
-            <button 
+            <div className="flex items-center gap-2">
+              <select
+                value={language}
+                onChange={(e) => setLanguage(e.target.value as Language)}
+                aria-label="Select language"
+                className="bg-surface-container-high text-on-surface text-xs font-bold px-2 py-1.5 rounded-lg border border-outline-variant/20 focus:outline-none focus:border-primary"
+              >
+                <option value="en">EN</option>
+                <option value="hi">HI</option>
+                <option value="as">AS</option>
+                <option value="bn">BN</option>
+              </select>
+              <button 
               aria-label={`Notifications${unreadCount > 0 ? `, ${unreadCount} unread` : ''}`}
               onClick={async () => { 
                 setShowNotifications(!showNotifications);
@@ -368,6 +382,7 @@ export default function HomePage() {
                 </span>
               )}
             </button>
+            </div>
           </div>
         </div>
 
@@ -440,8 +455,8 @@ export default function HomePage() {
                 </div>
                 <button onClick={() => setOrderBubbleExpanded(false)} aria-label="Close order details" className="text-gray-400 w-11 h-11 flex items-center justify-center rounded-full">
                   <span className="material-symbols-outlined" aria-hidden="true">close</span>
-                </button>
-              </div>
+            </button>
+          </div>
               
               {/* Progress Steps */}
               <div className="space-y-3">

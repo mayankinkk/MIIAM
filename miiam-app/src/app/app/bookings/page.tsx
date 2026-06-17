@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
@@ -66,6 +66,20 @@ export default function BookingsPage() {
   const [rebookTime, setRebookTime] = useState("");
   const [rebooking, setRebooking] = useState(false);
   const { confirm } = useConfirm();
+
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        if (rescheduleBooking) setRescheduleBooking(null);
+        else if (ratingBooking) setRatingBooking(null);
+        else if (rebookBooking) setRebookBooking(null);
+      }
+    };
+    if (rescheduleBooking || ratingBooking || rebookBooking) {
+      document.addEventListener("keydown", handleKey);
+      return () => document.removeEventListener("keydown", handleKey);
+    }
+  }, [rescheduleBooking, ratingBooking, rebookBooking]);
 
   useEffect(() => {
     async function loadBookings() {
@@ -406,10 +420,10 @@ export default function BookingsPage() {
 
       {/* Reschedule Modal */}
       {rescheduleBooking && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end justify-center">
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end justify-center" role="dialog" aria-modal="true" aria-labelledby="reschedule-modal-title">
           <div className="bg-surface-container-lowest w-full max-w-lg rounded-t-3xl shadow-2xl p-6 pb-10 animate-slide-reveal">
             <div className="w-12 h-1.5 bg-surface-container-high rounded-full mx-auto mb-5" />
-            <h2 className="text-lg font-bold text-on-surface mb-1">Reschedule Booking</h2>
+            <h2 id="reschedule-modal-title" className="text-lg font-bold text-on-surface mb-1">Reschedule Booking</h2>
             <p className="text-sm text-on-surface-variant mb-5">{rescheduleBooking.sub_service || rescheduleBooking.service_type}</p>
 
             <p className="font-bold text-on-surface text-sm mb-2">Select Date</p>
@@ -468,10 +482,10 @@ export default function BookingsPage() {
 
       {/* Rating Modal */}
       {ratingBooking && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end justify-center">
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end justify-center" role="dialog" aria-modal="true" aria-labelledby="rating-modal-title">
           <div className="bg-surface-container-lowest w-full max-w-lg rounded-t-3xl shadow-2xl p-6 pb-10 animate-slide-reveal">
             <div className="w-12 h-1.5 bg-surface-container-high rounded-full mx-auto mb-5" />
-            <h2 className="text-lg font-bold text-on-surface mb-1">Rate Your Experience</h2>
+            <h2 id="rating-modal-title" className="text-lg font-bold text-on-surface mb-1">Rate Your Experience</h2>
             <p className="text-sm text-on-surface-variant mb-5">{ratingBooking.sub_service || ratingBooking.service_type}</p>
 
             <div className="flex items-center justify-center gap-2 mb-5">
@@ -531,10 +545,10 @@ export default function BookingsPage() {
 
       {/* Rebook Modal */}
       {rebookBooking && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end justify-center">
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end justify-center" role="dialog" aria-modal="true" aria-labelledby="rebook-modal-title">
           <div className="bg-surface-container-lowest w-full max-w-lg rounded-t-3xl shadow-2xl p-6 pb-10 animate-slide-reveal">
             <div className="w-12 h-1.5 bg-surface-container-high rounded-full mx-auto mb-5" />
-            <h2 className="text-lg font-bold text-on-surface mb-1">Book Again</h2>
+            <h2 id="rebook-modal-title" className="text-lg font-bold text-on-surface mb-1">Book Again</h2>
             <p className="text-sm text-on-surface-variant mb-5">{rebookBooking.sub_service || rebookBooking.service_type} — ₹{rebookBooking.amount}</p>
 
             <p className="font-bold text-on-surface text-sm mb-2">Select Date</p>

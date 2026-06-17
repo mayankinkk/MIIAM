@@ -86,7 +86,8 @@ export default function RiderDashboard() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (pos) => { mapInstanceRef.current?.setView([pos.coords.latitude, pos.coords.longitude], 15); },
-        () => {}
+        () => {},
+        { timeout: 10000 }
       );
     }
   }, []);
@@ -354,7 +355,7 @@ export default function RiderDashboard() {
       L.control.zoom({ position: 'bottomright' }).addTo(map);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors', maxZoom: 18 }).addTo(map);
       mapInstanceRef.current = map;
-      navigator.geolocation.getCurrentPosition((pos) => map.setView([pos.coords.latitude, pos.coords.longitude], 15), () => {});
+      navigator.geolocation.getCurrentPosition((pos) => map.setView([pos.coords.latitude, pos.coords.longitude], 15), () => {}, { timeout: 10000 });
       const riderIcon = L.divIcon({ className: '', html: `<div style="display:flex;align-items:center;justify-content:center;width:40px;height:40px;background:#0b50d5;border-radius:50%;border:3px solid white;box-shadow:0 3px 10px rgba(11,80,213,0.4);"><span style="font-size:20px;color:white;">🏍️</span></div>`, iconSize: [40, 40], iconAnchor: [20, 40] });
       riderMarkerRef.current = L.marker([28.6139, 77.2090], { icon: riderIcon }).addTo(map);
       const watchId = navigator.geolocation.watchPosition((pos) => { riderMarkerRef.current?.setLatLng([pos.coords.latitude, pos.coords.longitude]); }, () => {}, { enableHighAccuracy: true, maximumAge: 5000, timeout: 10000 });
@@ -595,7 +596,7 @@ export default function RiderDashboard() {
         </div>
       )}
       <main className="relative h-screen w-full pt-16">
-        <div className="absolute inset-0 z-0"><div ref={mapRef} className="w-full h-full" /></div>
+        <div className="absolute inset-0 z-0"><div ref={mapRef} className="w-full h-full" style={{ opacity: isOnline ? 1 : 0.3, transition: "opacity 0.3s ease" }} /></div>
         {!currentOrder && pendingOrders.length > 0 && (
           <IncomingOrderCard order={pendingOrders[0]} countdown={countdown} customerRating={customerRating} onAccept={handleAccept} onDecline={() => setShowCancelModal(true)} isTakenByOther={orderTakenByOther} />
         )}
