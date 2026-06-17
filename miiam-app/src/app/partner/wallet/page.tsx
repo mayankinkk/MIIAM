@@ -65,11 +65,11 @@ export default function VendorWalletPage() {
     const pendingNet = pendingAmount - pendingAmount * 0.15;
 
     setWallet({
-      balance: netEarnings * 0.4, // 40% available for withdrawal
+      balance: netEarnings,
       total_earned: total,
       pending_payout: pendingNet,
-      last_payout: total * 0.3, // 30% was last payout
-      last_payout_date: delivered.length > 0 ? delivered[0].placed_at : null,
+      last_payout: 0,
+      last_payout_date: null,
     });
   }
 
