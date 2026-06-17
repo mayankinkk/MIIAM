@@ -168,7 +168,7 @@ export default function VendorProfilePage() {
                 />
               </label>
               {uploading && (
-                <div className="absolute inset-0 bg-white/60 flex items-center justify-center rounded-2xl">
+                <div className="absolute inset-0 bg-[var(--color-surface-container-lowest)]/60 flex items-center justify-center rounded-2xl">
                   <span className="material-symbols-outlined text-[var(--color-primary)] animate-spin">progress_activity</span>
                 </div>
               )}
@@ -228,7 +228,7 @@ export default function VendorProfilePage() {
                 />
               </label>
               {uploading && (
-                <div className="absolute inset-0 bg-white/60 flex items-center justify-center rounded-2xl">
+                <div className="absolute inset-0 bg-[var(--color-surface-container-lowest)]/60 flex items-center justify-center rounded-2xl">
                   <span className="material-symbols-outlined text-[var(--color-primary)] animate-spin">progress_activity</span>
                 </div>
               )}

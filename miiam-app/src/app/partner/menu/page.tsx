@@ -422,7 +422,7 @@ export default function PartnerMenuPage() {
           <select
             value={selectedVendorId}
             onChange={(e) => setSelectedVendorId(e.target.value)}
-            className="px-4 py-2.5 border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold bg-white"
+            className="px-4 py-2.5 border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold bg-[var(--color-surface-container-lowest)]"
           >
             {vendors.map(v => (
               <option key={v.id} value={v.id}>
@@ -604,7 +604,7 @@ export default function PartnerMenuPage() {
           <select
             value={bulkAction}
             onChange={(e) => setBulkAction(e.target.value)}
-            className="px-3 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold bg-white"
+            className="px-3 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold bg-[var(--color-surface-container-lowest)]"
           >
             <option value="">Select action...</option>
             {vendorKey === "food" && (
@@ -625,7 +625,7 @@ export default function PartnerMenuPage() {
                 <select
                   value={bulkValue}
                   onChange={(e) => setBulkValue(e.target.value)}
-                  className="px-3 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold bg-white"
+                  className="px-3 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold bg-[var(--color-surface-container-lowest)]"
                 >
                   <option value="all_day">All Day</option>
                   <option value="breakfast">Breakfast</option>
@@ -636,7 +636,7 @@ export default function PartnerMenuPage() {
                 <select
                   value={bulkValue}
                   onChange={(e) => setBulkValue(e.target.value)}
-                  className="px-3 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold bg-white"
+                  className="px-3 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold bg-[var(--color-surface-container-lowest)]"
                 >
                   <option value="">Select category...</option>
                   {categories.map(c => <option key={c} value={c}>{c}</option>)}
@@ -915,7 +915,7 @@ export default function PartnerMenuPage() {
       {/* Add Item Modal */}
       {showAddModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowAddModal(false)}>
-          <div className="bg-white w-full max-w-lg rounded-3xl p-6 m-4" onClick={e => e.stopPropagation()}>
+          <div className="bg-[var(--color-surface-container-lowest)] w-full max-w-lg rounded-3xl p-6 m-4" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-extrabold text-[var(--color-on-surface)]">
                 Add {vendorKey === "food" ? "Menu Item" : vendorKey === "grocery" ? "Product" : vendorKey === "pharmacy" ? "Medicine" : "Item"}
@@ -1174,7 +1174,7 @@ export default function PartnerMenuPage() {
       {/* Edit Item Modal */}
       {editingItem && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setEditingItem(null)}>
-          <div className="bg-white w-full max-w-lg rounded-3xl p-6 m-4" onClick={e => e.stopPropagation()}>
+          <div className="bg-[var(--color-surface-container-lowest)] w-full max-w-lg rounded-3xl p-6 m-4" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-extrabold text-[var(--color-on-surface)]">Edit Item</h2>
               <button onClick={() => setEditingItem(null)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center">
@@ -1439,7 +1439,7 @@ export default function PartnerMenuPage() {
       {/* Category Management Modal */}
       {showCategoryModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowCategoryModal(false)}>
-          <div className="bg-white w-full max-w-lg rounded-3xl p-6 m-4" onClick={e => e.stopPropagation()}>
+          <div className="bg-[var(--color-surface-container-lowest)] w-full max-w-lg rounded-3xl p-6 m-4" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-extrabold text-[var(--color-on-surface)]">Manage Categories</h2>
               <button onClick={() => setShowCategoryModal(false)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center">
@@ -1524,7 +1524,7 @@ export default function PartnerMenuPage() {
       {/* QR Code Modal */}
       {showQRModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowQRModal(false)}>
-          <div className="bg-white w-full max-w-sm rounded-3xl p-8 m-4 text-center" onClick={e => e.stopPropagation()}>
+          <div className="bg-[var(--color-surface-container-lowest)] w-full max-w-sm rounded-3xl p-8 m-4 text-center" onClick={e => e.stopPropagation()}>
             <span className="material-symbols-outlined text-6xl text-[var(--color-on-surface)] mb-4">qr_code_scanner</span>
             <h2 className="text-xl font-extrabold text-[var(--color-on-surface)] mb-2">Menu QR Code</h2>
             <p className="text-sm text-[var(--color-outline)] mb-6">Scan to view {selectedVendor?.shop_name || "store"}'s menu</p>

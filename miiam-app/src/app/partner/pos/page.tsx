@@ -736,7 +736,7 @@ export default function PartnerPOS() {
       {/* Call Masking Modal */}
       {callMaskModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setCallMaskModal(null)}>
-          <div className="bg-white w-full max-w-sm rounded-3xl p-6" onClick={e => e.stopPropagation()}>
+          <div className="bg-[var(--color-surface-container-lowest)] w-full max-w-sm rounded-3xl p-6" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
               <h3 className="font-extrabold text-[var(--color-on-surface)]">Connect Call</h3>
               <button onClick={() => setCallMaskModal(null)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center">

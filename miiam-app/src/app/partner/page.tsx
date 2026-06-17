@@ -38,7 +38,7 @@ export default function PartnerLanding() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[var(--color-surface)]">
       {/* Navigation */}
       <nav className="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto">
         <Link href="/" className="text-2xl font-extrabold tracking-tighter text-[var(--color-primary)]">MIIAM</Link>
