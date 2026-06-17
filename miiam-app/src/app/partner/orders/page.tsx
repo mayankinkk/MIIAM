@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { getVendorIdForUser, getVendorMenuItems } from "@/lib/vendor";
 import type { Order, OrderStatus } from "@/lib/types";
@@ -10,7 +10,7 @@ import { useUnreadMessages } from "@/lib/hooks/useUnreadMessages";
 type FilterStatus = "all" | "active" | "delivered" | "cancelled";
 
 export default function VendorOrders() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [orders, setOrders] = useState<Order[]>([]);
   const [vendorId, setVendorId] = useState<string | null>(null);
   const [filter, setFilter] = useState<FilterStatus>("active");

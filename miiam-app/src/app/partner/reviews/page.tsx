@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { getVendorForUser } from "@/lib/vendor";
 
 export default function PartnerReviewsPage() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [vendor, setVendor] = useState<{ id: string; shop_name: string } | null>(null);
   const [reviews, setReviews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);

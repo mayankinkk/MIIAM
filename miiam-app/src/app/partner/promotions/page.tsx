@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { useToastStore } from "@/lib/store/toastStore";
@@ -30,7 +30,7 @@ interface CustomerSegment {
 }
 
 export default function VendorPromotions() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const { confirm } = useConfirm();
   const [vendorId, setVendorId] = useState<string | null>(null);
   const [promoCodes, setPromoCodes] = useState<PromoCode[]>([]);

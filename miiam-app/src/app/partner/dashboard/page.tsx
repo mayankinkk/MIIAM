@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
@@ -8,7 +8,7 @@ import { getVendorForUser, getVendorMenuItems } from "@/lib/vendor";
 import type { Order } from "@/lib/types";
 
 export default function VendorDashboard() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const { confirm } = useConfirm();
   const [vendor, setVendor] = useState<{ id: string; shop_name: string; status: string; rating: number; review_count: number; type?: string } | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);

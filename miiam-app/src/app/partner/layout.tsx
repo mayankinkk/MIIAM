@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -30,7 +30,7 @@ export default function PartnerLayout({
   const [vendor, setVendor] = useState<{ shop_name: string; status: string; owner_name: string; type?: string; id?: string } | null>(null);
   const pathname = usePathname();
   const router = useRouter();
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
 
   useEffect(() => {
     getVendorForUser().then(setVendor);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { getVendorForUser, getVendorMenuItems } from "@/lib/vendor";
 import type { Order } from "@/lib/types";
@@ -20,7 +20,7 @@ interface HourlyData {
 }
 
 export default function VendorAnalytics() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [vendorId, setVendorId] = useState<string | null>(null);
   const [vendor, setVendor] = useState<any>(null);
   const [orders, setOrders] = useState<Order[]>([]);

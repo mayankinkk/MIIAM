@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { getVendorIdForUser } from "@/lib/vendor";
 import type { Order } from "@/lib/types";
@@ -15,7 +15,7 @@ interface VendorWallet {
 }
 
 export default function VendorWalletPage() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [vendorId, setVendorId] = useState<string | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
   const [wallet, setWallet] = useState<VendorWallet>({
