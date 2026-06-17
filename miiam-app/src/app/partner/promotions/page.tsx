@@ -88,7 +88,7 @@ export default function VendorPromotions() {
     if (!orders || orders.length === 0) return;
 
     const userMap = new Map<string, { count: number; total: number; lastDate: Date }>();
-    orders.forEach((o: any) => {
+    orders.forEach((o: { user_id: string; total_amount: number; placed_at: string }) => {
       const existing = userMap.get(o.user_id) || { count: 0, total: 0, lastDate: new Date(0) };
       existing.count++;
       existing.total += o.total_amount || 0;
@@ -206,7 +206,7 @@ export default function VendorPromotions() {
         {loading ? (
           <div className="col-span-full text-center py-12 text-[var(--color-outline-variant)] animate-pulse">Loading promotions...</div>
         ) : promoCodes.length === 0 ? (
-          <div className="col-span-full bg-[var(--color-surface-container-lowest)] border-2 border-dashed border-[var(--color-border-subtle)] rounded-3xl p-16 text-center">
+          <div className="col-span-full bg-[var(--color-surface-container-lowest)] border-2 border-dashed border-[var(--color-border-subtle)] rounded-3xl p-8 md:p-16 text-center">
             <span className="material-symbols-outlined text-6xl text-[var(--color-outline-variant)]/60 mb-4">local_offer</span>
             <p className="text-[var(--color-outline-variant)] font-medium text-lg">No promotions yet</p>
             <p className="text-[var(--color-outline-variant)]/60 text-sm mt-1">Create your first offer to attract more customers</p>

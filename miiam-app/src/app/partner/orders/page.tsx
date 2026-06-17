@@ -149,7 +149,7 @@ export default function VendorOrders() {
         {loading ? (
           <VendorTableSkeleton />
         ) : filteredOrders.length === 0 ? (
-          <div className="bg-[var(--color-surface-container-lowest)] border-2 border-dashed border-[var(--color-border-subtle)] rounded-3xl p-16 text-center">
+          <div className="bg-[var(--color-surface-container-lowest)] border-2 border-dashed border-[var(--color-border-subtle)] rounded-3xl p-8 md:p-16 text-center">
             <span className="material-symbols-outlined text-6xl text-[var(--color-outline-variant)]/60 mb-4">receipt_long</span>
             <p className="text-[var(--color-outline-variant)] font-medium text-lg">No orders found</p>
           </div>

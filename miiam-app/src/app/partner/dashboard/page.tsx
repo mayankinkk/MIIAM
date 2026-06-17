@@ -235,7 +235,7 @@ export default function VendorDashboard() {
 
       {/* New Order Alert Banner */}
       {newOrderAlert && (
-        <div className="fixed top-4 left-4 right-4 z-50 bg-gradient-to-r from-[var(--color-primary)] to-[#ff4444] text-white p-4 rounded-2xl shadow-2xl animate-bounce">
+        <div className="fixed top-4 left-4 right-4 z-50 bg-gradient-to-r from-[var(--color-primary)] to-[#ff4444] text-white p-4 rounded-2xl shadow-2xl transition-all">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <span className="material-symbols-outlined animate-bounce">notification_important</span>
@@ -340,7 +340,7 @@ export default function VendorDashboard() {
         <div className="lg:col-span-2 space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold text-[var(--color-on-surface)] flex items-center gap-2">
-              <span className="w-2 h-2 bg-red-500 rounded-full animate-ping"></span>
+              <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
               Pending Orders
               {pendingOrders.length > 0 && (
                 <span className="bg-[var(--color-primary)] text-white text-xs px-2 py-0.5 rounded-full">{pendingOrders.length}</span>
@@ -352,7 +352,7 @@ export default function VendorDashboard() {
           </div>
 
           {pendingOrders.length === 0 ? (
-            <div className="bg-[var(--color-surface-container-lowest)] border-2 border-dashed border-[var(--color-border-subtle)] rounded-3xl p-12 text-center">
+            <div className="bg-[var(--color-surface-container-lowest)] border-2 border-dashed border-[var(--color-border-subtle)] rounded-2xl p-12 text-center">
               <span className="material-symbols-outlined text-5xl text-[var(--color-outline-variant)]/60 mb-3">check_circle</span>
               <p className="text-[var(--color-outline-variant)] font-medium">No pending orders</p>
               <p className="text-[var(--color-outline-variant)]/60 text-sm mt-1">New orders will appear here in real-time</p>

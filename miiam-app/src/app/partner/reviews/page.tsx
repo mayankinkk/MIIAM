@@ -5,10 +5,21 @@ import { createClient } from "@/lib/supabase/client";
 import { getVendorForUser } from "@/lib/vendor";
 import { VendorTableSkeleton } from "@/components/vendor/VendorSkeleton";
 
+interface Review {
+  id: string;
+  rating: number;
+  review_text?: string;
+  user_id: string;
+  created_at: string;
+  profile?: { full_name?: string; avatar_url?: string };
+  vendor_reply?: string | null;
+  vendor_reply_at?: string | null;
+}
+
 export default function PartnerReviewsPage() {
   const supabase = useMemo(() => createClient(), []);
   const [vendor, setVendor] = useState<{ id: string; shop_name: string } | null>(null);
-  const [reviews, setReviews] = useState<any[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [replyInputs, setReplyInputs] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState<Record<string, boolean>>({});

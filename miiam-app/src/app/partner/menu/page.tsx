@@ -30,9 +30,11 @@ interface MenuItem extends BaseItem {
   available: boolean;
   description?: string;
   is_veg?: boolean;
+  is_featured?: boolean;
   stock?: number;
   original_price?: number | null;
   discount_percent?: number | null;
+  images?: string[];
 }
 
 interface GroceryItem extends BaseItem {
@@ -83,7 +85,22 @@ export default function PartnerMenuPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
 
-  const [newItem, setNewItem] = useState<Record<string, any>>({
+  const [newItem, setNewItem] = useState<{
+    name: string;
+    price: string;
+    category: string;
+    description: string;
+    is_veg: boolean;
+    stock: string;
+    requires_prescription: boolean;
+    imageFiles: File[];
+    image_url: string;
+    showUrlInput: boolean;
+    has_discount: boolean;
+    discount_percent: number;
+    is_featured: boolean;
+    menu_slot?: string;
+  }>({
     name: "",
     price: "",
     category: "",
@@ -91,7 +108,7 @@ export default function PartnerMenuPage() {
     is_veg: true,
     stock: "",
     requires_prescription: false,
-    imageFiles: [] as File[],
+    imageFiles: [],
     image_url: "",
     showUrlInput: false,
     has_discount: false,
@@ -104,6 +121,7 @@ export default function PartnerMenuPage() {
   const [newCategoryName, setNewCategoryName] = useState("");
   const [editingCategory, setEditingCategory] = useState<{ oldName: string; newName: string } | null>(null);
   const [showQRModal, setShowQRModal] = useState(false);
+  const [showEditUrlInput, setShowEditUrlInput] = useState(false);
   const [bulkMode, setBulkMode] = useState(false);
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
   const [bulkAction, setBulkAction] = useState<string>("");
@@ -232,7 +250,7 @@ export default function PartnerMenuPage() {
   }
 
   function buildInsertPayload() {
-    const base: Record<string, any> = {
+    const base: Record<string, string | number | boolean | string[] | null> = {
       name: newItem.name,
       price: parseFloat(newItem.price),
       category: newItem.category || categories[0],
@@ -246,7 +264,7 @@ export default function PartnerMenuPage() {
       if (newItem.menu_slot) base.menu_slot = newItem.menu_slot;
       base.is_featured = !!newItem.is_featured;
       if (newItem.has_discount && newItem.discount_percent > 0) {
-        const discount = parseFloat(newItem.discount_percent);
+        const discount = newItem.discount_percent;
         base.discount_percent = discount;
         base.original_price = parseFloat(newItem.price);
         base.price = Math.round(parseFloat(newItem.price) * (1 - discount / 100) * 100) / 100;
@@ -265,20 +283,20 @@ export default function PartnerMenuPage() {
   }
 
   function buildUpdatePayload(item: AnyItem) {
-    const base: Record<string, any> = {
+    const base: Record<string, string | number | boolean | string[] | null | undefined> = {
       name: item.name,
       price: item.price,
       category: item.category,
     };
-    if ((item as any).image_url) base.image_url = (item as any).image_url;
-    if ((item as any).images) base.images = (item as any).images;
+    if ("image_url" in item) base.image_url = (item as BaseItem).image_url;
+    if ("images" in item) base.images = (item as MenuItem).images;
     if (vendorKey === "food") {
       const m = item as MenuItem;
       if (m.description) base.description = m.description;
       base.is_veg = m.is_veg;
-      base.stock = (m as any).stock ?? 0;
-      if ((m as any).menu_slot) base.menu_slot = (m as any).menu_slot;
-      base.is_featured = !!(m as any).is_featured;
+      base.stock = m.stock ?? 0;
+      if (m.menu_slot) base.menu_slot = m.menu_slot;
+      base.is_featured = !!m.is_featured;
       if (m.discount_percent && m.discount_percent > 0) {
         base.discount_percent = m.discount_percent;
         base.original_price = m.original_price || m.price;
@@ -340,8 +358,8 @@ export default function PartnerMenuPage() {
       setShowAddModal(false);
       resetNewItem();
       loadItems();
-    } catch (error: any) {
-      useToastStore.getState().addToast("Failed: " + error.message, "error");
+    } catch (error: unknown) {
+      useToastStore.getState().addToast("Failed: " + (error instanceof Error ? error.message : String(error)), "error");
     } finally {
       setUploading(false);
     }
@@ -355,8 +373,8 @@ export default function PartnerMenuPage() {
       if (error) throw error;
       setEditingItem(null);
       loadItems();
-    } catch (error: any) {
-      useToastStore.getState().addToast("Failed: " + error.message, "error");
+    } catch (error: unknown) {
+      useToastStore.getState().addToast("Failed: " + (error instanceof Error ? error.message : String(error)), "error");
     }
   };
 
@@ -365,8 +383,8 @@ export default function PartnerMenuPage() {
     try {
       await supabase.from(table).delete().eq("id", id);
       setItems(prev => prev.filter(i => i.id !== id));
-    } catch (error: any) {
-      useToastStore.getState().addToast("Failed: " + error.message, "error");
+    } catch (error: unknown) {
+      useToastStore.getState().addToast("Failed: " + (error instanceof Error ? error.message : String(error)), "error");
     }
   };
 
@@ -380,27 +398,27 @@ export default function PartnerMenuPage() {
         return;
       }
       setItems(prev => prev.map(i => i.id === item.id ? { ...i, available: !m.available } as AnyItem : i));
-    } catch (error: any) {
-      console.warn("Toggle availability failed:", error.message);
+    } catch (error: unknown) {
+      console.warn("Toggle availability failed:", error instanceof Error ? error.message : String(error));
     }
   };
 
   const toggleFeatured = async (item: AnyItem) => {
-    const current = !!(item as any).is_featured;
+    const current = !!(item as MenuItem).is_featured;
     try {
       const { error } = await supabase.from(table).update({ is_featured: !current }).eq("id", item.id);
       if (error) {
         console.warn("Toggle featured not supported:", error.message);
         return;
       }
-      setItems(prev => prev.map(i => i.id === item.id ? { ...i, is_featured: !current } as any : i));
-    } catch (error: any) {
-      console.warn("Toggle featured failed:", error.message);
+      setItems(prev => prev.map(i => i.id === item.id ? { ...i, is_featured: !current } as AnyItem : i));
+    } catch (error: unknown) {
+      console.warn("Toggle featured failed:", error instanceof Error ? error.message : String(error));
     }
   };
 
   const handleStockChange = async (item: AnyItem, delta: number) => {
-    const currentStock = (item as any).stock ?? 0;
+    const currentStock = ('stock' in item ? (item as GroceryItem | PharmacyItem | MenuItem).stock : 0) ?? 0;
     const newStock = currentStock + delta;
     if (newStock < 0) return;
     try {
@@ -410,8 +428,8 @@ export default function PartnerMenuPage() {
         return;
       }
       setItems(prev => prev.map(i => i.id === item.id ? { ...i, stock: newStock } as AnyItem : i));
-    } catch (error: any) {
-      console.warn("Stock update failed:", error.message);
+    } catch (error: unknown) {
+      console.warn("Stock update failed:", error instanceof Error ? error.message : String(error));
     }
   };
 
@@ -532,8 +550,8 @@ export default function PartnerMenuPage() {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
               {(() => {
                 const total = items.length;
-                const noDesc = items.filter(i => !('description' in i) || !(i as any).description).length;
-                const outOfStock = items.filter(i => 'stock' in i && (i as any).stock === 0).length;
+                const noDesc = items.filter(i => !('description' in i) || !(i as MenuItem | FlowerItem).description).length;
+                const outOfStock = items.filter(i => 'stock' in i && (i as GroceryItem | PharmacyItem | MenuItem).stock === 0).length;
                 const noImg = items.filter(i => !i.image_url).length;
                 const suggestions: string[] = [];
                 if (noDesc > 0) suggestions.push(`Add descriptions to ${noDesc} item${noDesc > 1 ? 's' : ''} to boost conversion`);
@@ -575,7 +593,7 @@ export default function PartnerMenuPage() {
                   let imported = 0;
                   for (const c of cols) {
                     if (!c.name || !c.price) continue;
-                    const payload: any = {
+                    const payload: Record<string, string | number | boolean | null> = {
                       vendor_id: vendorId,
                       name: c.name,
                       price: parseFloat(c.price),
@@ -670,7 +688,7 @@ export default function PartnerMenuPage() {
                   if (!bulkAction || !bulkValue) return;
                   const currentItems = itemsRef.current;
                   const currentSelected = selectedItemsRef.current;
-                  const updates: Record<string, any> = {};
+                  const updates: Record<string, string | number | null> = {};
                   if (bulkAction === "discount") {
                     updates.discount_percent = parseInt(bulkValue);
                   } else if (bulkAction === "remove_discount") {
@@ -814,8 +832,8 @@ export default function PartnerMenuPage() {
                       </div>
                       <div>
                         <p className="font-bold text-[var(--color-on-surface)]">{item.name}</p>
-                        {'description' in item && (item as any).description && (
-                          <p className="text-xs text-[var(--color-outline-variant)] mt-0.5">{(item as any).description}</p>
+                        {'description' in item && (item as MenuItem | FlowerItem).description && (
+                          <p className="text-xs text-[var(--color-outline-variant)] mt-0.5">{(item as MenuItem | FlowerItem).description}</p>
                         )}
                       </div>
                     </div>
@@ -840,8 +858,8 @@ export default function PartnerMenuPage() {
                               onClick={() => handleStockChange(item, -1)}
                               className="w-11 h-11 bg-[var(--color-surface-container)] rounded-lg flex items-center justify-center hover:bg-[var(--color-surface-container-high)] text-sm font-bold"
                             >−</button>
-                            <span className={`text-sm font-bold min-w-[2ch] text-center ${(item as any).stock === 0 ? 'text-red-600' : (item as any).stock < 10 ? 'text-amber-600' : 'text-[var(--color-on-surface)]'}`}>
-                              {(item as any).stock}
+                            <span className={`text-sm font-bold min-w-[2ch] text-center ${('stock' in item && (item as GroceryItem | PharmacyItem | MenuItem).stock === 0) ? 'text-red-600' : ('stock' in item && (item as GroceryItem | PharmacyItem | MenuItem).stock! < 10) ? 'text-amber-600' : 'text-[var(--color-on-surface)]'}`}>
+                              {'stock' in item ? (item as GroceryItem | PharmacyItem | MenuItem).stock : 0}
                             </span>
                             <button
                               onClick={() => handleStockChange(item, 1)}
@@ -880,26 +898,26 @@ export default function PartnerMenuPage() {
                       <button
                         onClick={() => toggleFeatured(item)}
                         role="switch"
-                        aria-checked={!!(item as any).is_featured}
+                        aria-checked={!!(item as MenuItem).is_featured}
                         className={`text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider ${
-                          (item as any).is_featured
+                          (item as MenuItem).is_featured
                             ? "bg-amber-100 text-amber-700"
                             : "bg-[var(--color-surface-container)] text-[var(--color-outline)]"
                         }`}
                       >
-                        {(item as any).is_featured ? "Featured" : "Promote"}
+                        {(item as MenuItem).is_featured ? "Featured" : "Promote"}
                       </button>
                     </td>
                   )}
                   <td className="p-4 text-right">
                     <div className="flex items-center justify-end gap-2">
-                      {(item as any).discount_percent > 0 && (
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 bg-red-100 text-red-700 rounded-full">-{(item as any).discount_percent}%</span>
+                      {(item as MenuItem).discount_percent != null && (item as MenuItem).discount_percent! > 0 && (
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 bg-red-100 text-red-700 rounded-full">-{(item as MenuItem).discount_percent}%</span>
                       )}
                       <p className="font-extrabold text-[var(--color-on-surface)]">
-                        {(item as any).original_price ? (
+                        {(item as MenuItem).original_price ? (
                           <>
-                            <span className="line-through text-[var(--color-outline-variant)] text-xs mr-1">₹{(item as any).original_price}</span>
+                            <span className="line-through text-[var(--color-outline-variant)] text-xs mr-1">₹{(item as MenuItem).original_price}</span>
                             ₹{item.price}
                           </>
                         ) : (
@@ -1264,7 +1282,7 @@ export default function PartnerMenuPage() {
                     id="edit-item-stock"
                     type="number"
                     min="0"
-                    value={(editingItem as any).stock}
+                    value={'stock' in editingItem ? (editingItem as GroceryItem | PharmacyItem | MenuItem).stock ?? 0 : 0}
                     onChange={(e) => setEditingItem({ ...editingItem, stock: parseInt(e.target.value) || 0 })}
                     className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
                   />
@@ -1275,7 +1293,7 @@ export default function PartnerMenuPage() {
                   <label className="flex items-center gap-3 cursor-pointer mb-3">
                     <input
                       type="checkbox"
-                      checked={(editingItem as any).discount_percent > 0}
+                      checked={(editingItem as MenuItem).discount_percent != null && (editingItem as MenuItem).discount_percent! > 0}
                       onChange={(e) => {
                         if (e.target.checked) {
                           setEditingItem({ ...editingItem, discount_percent: 20, original_price: editingItem.price } as AnyItem);
@@ -1287,7 +1305,7 @@ export default function PartnerMenuPage() {
                     />
                     <span className="text-sm font-bold text-red-700">On Sale</span>
                   </label>
-                  {(editingItem as any).discount_percent > 0 && (
+                  {(editingItem as MenuItem).discount_percent != null && (editingItem as MenuItem).discount_percent! > 0 && (
                     <div>
                       <label htmlFor="edit-item-discount" className="text-xs font-semibold text-[var(--color-on-surface)] mb-2 block">Discount %</label>
                       <div className="flex gap-2">
@@ -1296,7 +1314,7 @@ export default function PartnerMenuPage() {
                             key={p}
                             onClick={() => setEditingItem({ ...editingItem, discount_percent: p } as AnyItem)}
                             className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${
-                              (editingItem as any).discount_percent === p
+                              (editingItem as MenuItem).discount_percent === p
                                 ? "bg-[var(--color-primary)] text-white shadow-md"
                                 : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface-variant)] border border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]"
                             }`}
@@ -1306,9 +1324,9 @@ export default function PartnerMenuPage() {
                         ))}
                       </div>
                       <p className="text-xs text-[var(--color-outline)] mt-2">
-                        Original: ₹{((editingItem as any).original_price || editingItem.price).toFixed(2)} →{" "}
+                        Original: ₹{((editingItem as MenuItem).original_price || editingItem.price).toFixed(2)} →{" "}
                         <span className="font-bold text-red-600">
-                          ₹{Math.round(((editingItem as any).original_price || editingItem.price) * (1 - ((editingItem as any).discount_percent || 0) / 100) * 100) / 100}
+                          ₹{Math.round(((editingItem as MenuItem).original_price || editingItem.price) * (1 - ((editingItem as MenuItem).discount_percent || 0) / 100) * 100) / 100}
                         </span>
                       </p>
                     </div>
@@ -1320,8 +1338,8 @@ export default function PartnerMenuPage() {
                   <label className="flex items-center gap-3 cursor-pointer">
                     <input
                       type="checkbox"
-                      checked={!!(editingItem as any).is_featured}
-                      onChange={(e) => setEditingItem({ ...editingItem, is_featured: e.target.checked } as any)}
+                      checked={!!(editingItem as MenuItem).is_featured}
+                      onChange={(e) => setEditingItem({ ...editingItem, is_featured: e.target.checked } as AnyItem)}
                       className="w-5 h-5 accent-[var(--color-primary)]"
                     />
                     <span className="text-sm font-bold text-amber-700">Promote as Featured</span>
@@ -1362,7 +1380,7 @@ export default function PartnerMenuPage() {
                 <div>
                   <label className="text-sm font-semibold text-[var(--color-on-surface)]">Available For</label>
                   <select
-                    value={(editingItem as any).menu_slot || "all_day"}
+                    value={(editingItem as MenuItem).menu_slot || "all_day"}
                     onChange={(e) => setEditingItem({ ...editingItem, menu_slot: e.target.value })}
                     className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
                   >
@@ -1386,16 +1404,17 @@ export default function PartnerMenuPage() {
                   </label>
                 </div>
               )}
-              {editingItem && ((editingItem as any).images?.length > 0 || (editingItem as any).image_url) && (
+              {editingItem && (("images" in editingItem && (editingItem as MenuItem).images && (editingItem as MenuItem).images!.length > 0) || ("image_url" in editingItem && (editingItem as MenuItem).image_url)) && (
                 <div>
                   <label className="text-sm font-semibold text-[var(--color-on-surface)] block mb-2">Current Images</label>
                   <div className="flex flex-wrap gap-2">
-                    {((editingItem as any).images?.length > 0 ? (editingItem as any).images : [(editingItem as any).image_url]).map((url: string, idx: number) => (
+                    {(("images" in editingItem && (editingItem as MenuItem).images && (editingItem as MenuItem).images!.length > 0 ? (editingItem as MenuItem).images! : [("image_url" in editingItem ? (editingItem as MenuItem).image_url : "")])).filter((url): url is string => !!url).map((url, idx) => (
                       <div key={idx} className="relative w-16 h-16 rounded-xl overflow-hidden border border-[var(--color-border-subtle)] group">
                         <BlurImage src={url} alt="" className="w-full h-full object-cover" />
                         <button
                           onClick={() => {
-                            const imgs = ((editingItem as any).images || [(editingItem as any).image_url]).filter((_: string, i: number) => i !== idx);
+                            const existing: string[] = ("images" in editingItem && (editingItem as MenuItem).images ? (editingItem as MenuItem).images! : ("image_url" in editingItem ? [(editingItem as MenuItem).image_url!] : []));
+                            const imgs = existing.filter((_url, i) => i !== idx);
                             setEditingItem({ ...editingItem, images: imgs, image_url: imgs[0] || null } as AnyItem);
                           }}
                           className="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-[10px] font-bold flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-bl-xl"
@@ -1423,7 +1442,7 @@ export default function PartnerMenuPage() {
                       setUploading(false);
                     }
                     if (newUrls.length > 0) {
-                      const existing: string[] = (editingItem as any).images || ((editingItem as any).image_url ? [(editingItem as any).image_url] : []);
+                      const existing: string[] = ("images" in editingItem && (editingItem as MenuItem).images ? (editingItem as MenuItem).images! : (("image_url" in editingItem && (editingItem as MenuItem).image_url) ? [(editingItem as MenuItem).image_url!] : []));
                       const all = [...existing, ...newUrls];
                       setEditingItem({ ...editingItem, images: all, image_url: all[0] } as AnyItem);
                     }
@@ -1434,16 +1453,16 @@ export default function PartnerMenuPage() {
                 <div className="mt-2">
                   <button
                     type="button"
-                    onClick={() => setEditingItem({ ...(editingItem as any), _showUrlInput: !(editingItem as any)._showUrlInput })}
+                    onClick={() => setShowEditUrlInput(!showEditUrlInput)}
                     className="text-xs font-bold text-[var(--color-primary)] hover:underline"
                   >
-                    {(editingItem as any)._showUrlInput ? "Hide URL input" : "Or enter URL instead"}
+                    {showEditUrlInput ? "Hide URL input" : "Or enter URL instead"}
                   </button>
-                  {(editingItem as any)._showUrlInput && (
+                  {showEditUrlInput && (
                     <input
                       type="url"
-                      value={(editingItem as any).image_url || ""}
-                      onChange={(e) => setEditingItem({ ...(editingItem as any), image_url: e.target.value })}
+                      value={("image_url" in editingItem ? (editingItem as MenuItem).image_url : "") || ""}
+                      onChange={(e) => setEditingItem({ ...editingItem, image_url: e.target.value } as AnyItem)}
                       placeholder="https://example.com/image.jpg"
                       className="mt-2 w-full px-4 py-3 bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl text-sm focus:outline-none focus:border-[var(--color-primary)]"
                     />

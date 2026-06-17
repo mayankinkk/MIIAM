@@ -102,7 +102,7 @@ export default function PartnerLayout({
             <div className="overflow-hidden min-w-0">
               <p className="text-sm font-bold text-[var(--color-on-surface)] truncate">{vendor?.shop_name || "Your Store"}</p>
               <p className="text-xs font-bold flex items-center gap-1">
-                <span className={`w-2 h-2 rounded-full animate-pulse ${vendor?.status === "active" ? "bg-green-500" : "bg-slate-400"}`}></span>
+                <span className={`w-2 h-2 rounded-full animate-pulse ${vendor?.status === "active" ? "bg-green-500" : "bg-gray-400"}`}></span>
                 <span className={vendor?.status === "active" ? "text-green-600" : "text-[var(--color-outline-variant)]"}>
                   {vendor?.status === "active" ? "Online" : vendor?.status || "Loading..."}
                 </span>

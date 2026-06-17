@@ -19,16 +19,58 @@ interface HourlyData {
   revenue: number;
 }
 
+interface VendorInfo {
+  id: string;
+  shop_name: string;
+  type?: string;
+  rating?: number;
+  review_count?: number;
+  delivery_time_min?: number;
+  delivery_time_max?: number;
+  delivery_time_minutes?: number;
+  min_order_amount?: number;
+  city?: string;
+  pincode?: string;
+}
+
+interface Competitor {
+  id?: string;
+  shop_name: string;
+  type?: string;
+  rating?: number;
+  review_count?: number;
+  delivery_time_min?: number;
+  delivery_time_max?: number;
+  delivery_time_minutes?: number;
+  min_order_amount?: number;
+  city?: string;
+  pincode?: string;
+}
+
+interface ForecastDay {
+  day: string;
+  orders: number;
+  revenue: number;
+}
+
+interface Forecast {
+  avgDailyOrders: number;
+  peakDay: { name: string; orders: number };
+  slowDay: { name: string; orders: number };
+  projectedWeekly: number;
+  dayOfWeek: ForecastDay[];
+}
+
 export default function VendorAnalytics() {
   const supabase = useMemo(() => createClient(), []);
   const [vendorId, setVendorId] = useState<string | null>(null);
-  const [vendor, setVendor] = useState<any>(null);
+  const [vendor, setVendor] = useState<VendorInfo | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
   const [period, setPeriod] = useState<"week" | "month" | "all">("week");
   const [loading, setLoading] = useState(true);
   const [menuItemNames, setMenuItemNames] = useState<Map<string, { name: string; category: string }>>(new Map());
-  const [competitors, setCompetitors] = useState<any[]>([]);
-  const [forecast, setForecast] = useState<any>(null);
+  const [competitors, setCompetitors] = useState<Competitor[]>([]);
+  const [forecast, setForecast] = useState<Forecast | null>(null);
   const [dimRatings, setDimRatings] = useState<{ food_quality: number; packaging: number; delivery_time: number } | null>(null);
 
   useEffect(() => {
@@ -63,17 +105,17 @@ export default function VendorAnalytics() {
     }
   }
 
-  async function loadCompetitors(v: any) {
+  async function loadCompetitors(v: VendorInfo) {
     if (!v.city && !v.pincode) return;
     const { data } = await supabase
       .from("vendors")
-      .select("shop_name, type, rating, review_count, delivery_time_min, delivery_time_max, min_order_amount, city, pincode")
+      .select("id, shop_name, type, rating, review_count, delivery_time_min, delivery_time_max, min_order_amount, city, pincode")
       .neq("id", v.id)
       .eq("status", "active");
     if (!data) return;
 
-    const sameCity = data.filter((c: any) => c.city === v.city || c.pincode === v.pincode);
-    const sameType = sameCity.filter((c: any) => c.type === v.type);
+    const sameCity = data.filter((c: Competitor) => c.city === v.city || c.pincode === v.pincode);
+    const sameType = sameCity.filter((c: Competitor) => c.type === v.type);
     setCompetitors(sameType.length > 0 ? sameType : sameCity.slice(0, 10));
   }
 
@@ -90,7 +132,7 @@ export default function VendorAnalytics() {
 
     const dayOfWeek: Record<number, { count: number; revenue: number }> = {};
     for (let i = 0; i < 7; i++) dayOfWeek[i] = { count: 0, revenue: 0 };
-    data.forEach((o: any) => {
+    data.forEach((o: { placed_at: string; total_amount: number }) => {
       const d = new Date(o.placed_at);
       const dow = d.getDay();
       dayOfWeek[dow].count++;
@@ -98,16 +140,16 @@ export default function VendorAnalytics() {
     });
 
     const avgDailyOrders = Object.values(dayOfWeek).reduce((s, d) => s + d.count, 0) / 7;
-    const peakDay = Object.entries(dayOfWeek).sort((a: any, b: any) => b[1].count - a[1].count)[0];
-    const slowDay = Object.entries(dayOfWeek).sort((a: any, b: any) => a[1].count - b[1].count)[0];
+    const peakDay = Object.entries(dayOfWeek).sort((a, b) => b[1].count - a[1].count)[0];
+    const slowDay = Object.entries(dayOfWeek).sort((a, b) => a[1].count - b[1].count)[0];
 
     const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     setForecast({
       avgDailyOrders: Math.round(avgDailyOrders * 10) / 10,
-      peakDay: { name: dayNames[parseInt(peakDay[0])], orders: (peakDay[1] as any).count },
-      slowDay: { name: dayNames[parseInt(slowDay[0])], orders: (slowDay[1] as any).count },
+      peakDay: { name: dayNames[parseInt(peakDay[0])], orders: peakDay[1].count },
+      slowDay: { name: dayNames[parseInt(slowDay[0])], orders: slowDay[1].count },
       projectedWeekly: Math.round(avgDailyOrders * 7),
-      dayOfWeek: Object.entries(dayOfWeek).map(([day, val]: any) => ({
+      dayOfWeek: Object.entries(dayOfWeek).map(([day, val]) => ({
         day: dayNames[parseInt(day)],
         orders: val.count,
         revenue: val.revenue,
@@ -187,10 +229,10 @@ export default function VendorAnalytics() {
 
   const { avgCompetitorRating, avgCompetitorDeliveryMin, competitorCount } = useMemo(() => ({
     avgCompetitorRating: competitors.length
-      ? (competitors.reduce((s: number, c: any) => s + (c.rating || 0), 0) / competitors.length).toFixed(1)
+      ? (competitors.reduce((s, c) => s + (c.rating || 0), 0) / competitors.length).toFixed(1)
       : "N/A",
     avgCompetitorDeliveryMin: competitors.length
-      ? Math.round(competitors.reduce((s: number, c: any) => s + ((c.delivery_time_min || 0) + (c.delivery_time_max || 30)) / 2, 0) / competitors.length)
+      ? Math.round(competitors.reduce((s, c) => s + ((c.delivery_time_min || 0) + (c.delivery_time_max || 30)) / 2, 0) / competitors.length)
       : 0,
     competitorCount: competitors.length,
   }), [competitors]);
@@ -463,7 +505,7 @@ export default function VendorAnalytics() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--color-border-subtle)]">
-                {competitors.slice(0, 5).map((c: any) => (
+                {competitors.slice(0, 5).map((c) => (
                   <tr key={c.id || c.shop_name} className="hover:bg-[var(--color-surface-subtle)]">
                     <td className="p-3 font-bold text-[var(--color-on-surface)]">{c.shop_name}</td>
                     <td className="p-3"><span className="text-amber-500">★</span> {c.rating?.toFixed(1) || "N/A"}</td>
@@ -508,8 +550,8 @@ export default function VendorAnalytics() {
             </div>
           </div>
           <div className="flex gap-3 overflow-x-auto pb-2">
-            {forecast.dayOfWeek.map((d: any) => {
-              const maxOrders = Math.max(...forecast.dayOfWeek.map((x: any) => x.orders), 1);
+            {forecast.dayOfWeek.map((d) => {
+              const maxOrders = Math.max(...forecast.dayOfWeek.map((x) => x.orders), 1);
               return (
                 <div key={d.day} className="flex flex-col items-center gap-2 min-w-[60px]">
                   <span className="text-xs font-bold text-[var(--color-outline)]">{d.day}</span>

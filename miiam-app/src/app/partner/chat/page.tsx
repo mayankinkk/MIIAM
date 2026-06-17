@@ -61,10 +61,12 @@ export default function PartnerChatPage() {
   async function sendReply() {
     if (!reply.trim() || !activeOrder) return;
     setSending(true);
+    const sanitized = reply.replace(/<[^>]*>/g, "").trim();
+    if (!sanitized) { setSending(false); return; }
     const { error } = await supabase.from("order_chat").insert({
       order_id: activeOrder,
       sender: "vendor",
-      message: reply.trim(),
+      message: sanitized,
       read: false,
     });
     if (!error) {
@@ -117,7 +119,7 @@ export default function PartnerChatPage() {
                 <div className="p-4 border-b border-[var(--color-border-subtle)] font-bold text-sm text-[var(--color-on-surface)]">
                   Order #{activeOrder.slice(0, 8)}
                 </div>
-                <div className="flex-1 p-4 space-y-3 max-h-[60vh] overflow-y-auto">
+                <div className="flex-1 min-h-0 p-4 space-y-3 overflow-y-auto">
                   {(grouped[activeOrder] || []).slice().reverse().map((m) => (
                     <div key={m.id} className={`flex ${m.sender === "vendor" ? "justify-end" : "justify-start"}`}>
                       <div className={`max-w-[75%] rounded-2xl px-4 py-2.5 text-sm ${m.sender === "vendor" ? "bg-[var(--color-primary)] text-white" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface)]"}`}>

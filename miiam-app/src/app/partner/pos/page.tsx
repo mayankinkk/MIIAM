@@ -3,11 +3,13 @@
 import { useEffect, useState, useRef, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
+import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { getVendorIdForUser, getVendorMenuItems } from "@/lib/vendor";
 import type { Order, OrderStatus } from "@/lib/types";
 
 export default function PartnerPOS() {
   const supabase = useMemo(() => createClient(), []);
+  const { confirm } = useConfirm();
   const [orders, setOrders] = useState<Order[]>([]);
   const [vendorId, setVendorId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -18,14 +20,14 @@ export default function PartnerPOS() {
   const [delayReason, setDelayReason] = useState("");
   const [prepTimeModal, setPrepTimeModal] = useState<{ orderId: string } | null>(null);
   const [prepTime, setPrepTime] = useState(15);
-  const [custHistoryModal, setCustHistoryModal] = useState<{ userId: string; orders: any[] } | null>(null);
+  const [custHistoryModal, setCustHistoryModal] = useState<{ userId: string; orders: Order[] } | null>(null);
   const [callMaskModal, setCallMaskModal] = useState<{ orderId: string; maskedNumber: string } | null>(null);
   const [scheduledOrders, setScheduledOrders] = useState<Order[]>([]);
   const [showScheduled, setShowScheduled] = useState(false);
   const [batchMode, setBatchMode] = useState(false);
   const [batchSelected, setBatchSelected] = useState<Set<string>>(new Set());
 
-  const channelRef = useRef<any>(null);
+  const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
   const mountedRef = useRef(true);
   const prevPendingCountRef = useRef(0);
   const audioCtxRef = useRef<AudioContext | null>(null);
@@ -59,8 +61,8 @@ export default function PartnerPOS() {
           if (channelRef.current) supabase.removeChannel(channelRef.current);
           channelRef.current = subscribeToOrders(id);
         }
-      } catch (err: any) {
-        if (mountedRef.current) setError(err.message);
+      } catch (err: unknown) {
+        if (mountedRef.current) setError(err instanceof Error ? err.message : String(err));
       } finally {
         if (mountedRef.current) setLoading(false);
       }
@@ -136,7 +138,7 @@ export default function PartnerPOS() {
     return channel;
   }
 
-  const updateStatus = async (orderId: string, newStatus: OrderStatus, extra?: Record<string, any>) => {
+  const updateStatus = async (orderId: string, newStatus: OrderStatus, extra?: Record<string, string | number | boolean>) => {
     const { error } = await supabase
       .from("orders")
       .update({ status: newStatus, ...extra })
@@ -286,7 +288,7 @@ export default function PartnerPOS() {
                     <p className="text-xl font-black text-indigo-600">₹{order.total_amount.toFixed(2)}</p>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    {order.items?.map((item: any, idx: number) => (
+                    {order.items?.map((item, idx) => (
                       <span key={idx} className="text-xs bg-[var(--color-surface-container)] px-2 py-1 rounded-lg font-medium text-[var(--color-on-surface-variant)]">
                         {item.quantity}x {menuItemNames.get(item.menu_item_id)?.name || "Item"}
                       </span>
@@ -336,6 +338,13 @@ export default function PartnerPOS() {
                 {activeOrders.some(o => o.status === "pending" && batchSelected.has(o.id)) && (
                   <button
                     onClick={async () => {
+                      const ok = await confirm({
+                        title: "Decline All Orders",
+                        message: "Are you sure you want to decline all selected pending orders?",
+                        confirmText: "Decline All",
+                        variant: "danger",
+                      });
+                      if (!ok) return;
                       const ids = activeOrders.filter(o => o.status === "pending" && batchSelected.has(o.id)).map(o => o.id);
                       for (const oid of ids) await updateStatus(oid, "cancelled");
                       setBatchSelected(new Set());
@@ -366,7 +375,7 @@ export default function PartnerPOS() {
         </div>
 
         {activeOrders.length === 0 ? (
-          <div className="bg-[var(--color-surface-container-lowest)] border-2 border-dashed border-[var(--color-border-subtle)] rounded-3xl p-16 text-center">
+          <div className="bg-[var(--color-surface-container-lowest)] border-2 border-dashed border-[var(--color-border-subtle)] rounded-3xl p-8 md:p-16 text-center">
             <span className="material-symbols-outlined text-6xl text-[var(--color-outline-variant)]/60 mb-4">check_circle</span>
             <p className="text-[var(--color-outline-variant)] font-medium text-lg">All caught up!</p>
             <p className="text-[var(--color-outline-variant)]/60 text-sm mt-1">Waiting for new orders...</p>
@@ -522,7 +531,15 @@ export default function PartnerPOS() {
                     ) : null}
                     {order.status === "pending" && (
                       <button
-                        onClick={() => updateStatus(order.id, "cancelled")}
+                        onClick={async () => {
+                          const ok = await confirm({
+                            title: "Decline Order",
+                            message: "Are you sure you want to decline this order?",
+                            confirmText: "Decline",
+                            variant: "danger",
+                          });
+                          if (ok) updateStatus(order.id, "cancelled");
+                        }}
                         className="px-6 border border-red-200 text-red-400 hover:text-red-600 hover:border-red-300 transition-colors rounded-xl font-bold text-xs"
                       >
                         Decline
@@ -730,7 +747,7 @@ export default function PartnerPOS() {
               <p className="text-[var(--color-outline-variant)] text-sm text-center py-8">No previous orders from this customer</p>
             ) : (
               <div className="space-y-3">
-                {custHistoryModal.orders.map((o: any) => (
+                {custHistoryModal.orders.map((o) => (
                   <div key={o.id} className="bg-[var(--color-surface-subtle)] rounded-xl p-4 border border-[var(--color-border-subtle)]">
                     <div className="flex justify-between items-start mb-2">
                       <span className="text-xs font-bold text-[var(--color-on-surface)]">#{o.id.slice(0, 8).toUpperCase()}</span>

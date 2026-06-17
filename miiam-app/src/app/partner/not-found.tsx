@@ -7,7 +7,7 @@ export default function NotFound() {
         <span className="material-symbols-outlined text-6xl text-[var(--color-outline-variant)]/60">question_mark</span>
         <h1 className="text-2xl font-black text-[var(--color-on-surface)] mt-4">Page Not Found</h1>
         <p className="text-sm text-[var(--color-outline-variant)] mt-2">The page you are looking for does not exist.</p>
-        <Link href="/partner/dashboard" className="inline-block mt-6 px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm">
+        <Link href="/partner/dashboard" className="inline-block mt-6 px-6 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm">
           Back to Dashboard
         </Link>
       </div>

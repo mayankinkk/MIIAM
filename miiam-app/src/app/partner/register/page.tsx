@@ -3,6 +3,22 @@
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { z } from "zod";
+import { useToastStore } from "@/lib/store/toastStore";
+
+const vendorSchema = z.object({
+  owner_name: z.string().min(2, "Owner name must be at least 2 characters"),
+  phone: z.string().regex(/^\d{10}$/, "Phone must be a valid 10-digit Indian number"),
+  shop_name: z.string().min(2, "Shop name must be at least 2 characters"),
+  type: z.enum(["food", "grocery", "pharmacy", "flowers", "printing"]),
+  address: z.string().min(5, "Address must be at least 5 characters"),
+  city: z.string().min(2, "City must be at least 2 characters"),
+  state: z.string().min(2, "State must be at least 2 characters"),
+  pincode: z.string().regex(/^\d{6}$/, "Pincode must be exactly 6 digits"),
+  gst_number: z.string().optional(),
+  fssai_number: z.string().optional(),
+  pan_number: z.string().optional(),
+});
 
 const STORAGE_KEY = "miiam-partner-registration";
 
@@ -87,6 +103,25 @@ export default function VendorRegister() {
         return;
       }
 
+      const parsed = vendorSchema.safeParse({
+        owner_name: form.owner_name,
+        phone: form.phone,
+        shop_name: form.shop_name,
+        type: form.type,
+        address: form.address,
+        city: form.city,
+        state: form.state,
+        pincode: form.pincode,
+        gst_number: form.gst_number || undefined,
+        fssai_number: form.fssai_number || undefined,
+        pan_number: form.pan_number || undefined,
+      });
+
+      if (!parsed.success) {
+        useToastStore.getState().addToast(parsed.error.issues[0].message, "error");
+        return;
+      }
+
       const payload = {
         ...form,
         email: form.email || user.email,
@@ -100,14 +135,14 @@ export default function VendorRegister() {
       // NOTE: profile role is updated to 'vendor' ONLY when admin approves — not here.
       sessionStorage.removeItem(STORAGE_KEY);
       setSubmitted(true);
-    } catch (err: any) {
-      setSubmitError(err.message || "Submission failed. Please try again.");
+    } catch (err: unknown) {
+      setSubmitError((err instanceof Error ? err.message : String(err)) || "Submission failed. Please try again.");
     } finally {
       setSubmitting(false);
     }
   };
 
-  const update = (field: string, value: any) => setForm({ ...form, [field]: value });
+  const update = (field: string, value: string | number | boolean) => setForm({ ...form, [field]: value });
 
   const inputClass = "w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]";
   const labelClass = "text-sm font-semibold text-[var(--color-on-surface)]";
@@ -184,7 +219,7 @@ export default function VendorRegister() {
               <span className={`text-sm font-medium ${step === s.num ? "text-[var(--color-on-surface)]" : "text-[var(--color-outline-variant)]"}`}>
                 {s.label}
               </span>
-              {i < steps.length - 1 && <div className={`w-12 h-0.5 ${step > s.num ? "bg-green-500" : "bg-[var(--color-surface-container-high)]"}`} />}
+              {i < steps.length - 1 && <div className={`w-12 h-0.5 ${step > s.num ? "bg-[var(--color-primary)]" : "bg-[var(--color-surface-container-high)]"}`} />}
             </div>
           ))}
         </div>
