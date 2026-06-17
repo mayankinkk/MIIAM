@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
 
 import { createClient } from "@/lib/supabase/client";
@@ -54,6 +54,7 @@ export default function HomePage() {
   const [localServiceable, setLocalServiceable] = useState(true);
   const [checkingPincode, setCheckingPincode] = useState(false);
   const [dataError, setDataError] = useState<string | null>(null);
+  const [retryKey, setRetryKey] = useState(0);
   const userPincode = locationStore.pincode;
 
   useEffect(() => {
@@ -192,7 +193,7 @@ export default function HomePage() {
     return () => {
       if (channelRef.current) supabase.removeChannel(channelRef.current);
     };
-  }, [locationStore.pincode, locationStore.city]);
+  }, [locationStore.pincode, locationStore.city, retryKey]);
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -334,7 +335,7 @@ export default function HomePage() {
   if (dataError) {
     return (
       <div className="min-h-screen bg-background text-on-background flex items-center justify-center px-6 pb-24">
-        <NetworkError onRetry={() => { setDataError(null); setLoading(true); window.location.reload(); }} />
+        <NetworkError onRetry={() => { setDataError(null); setLoading(true); setRetryKey((k) => k + 1); }} />
       </div>
     );
   }

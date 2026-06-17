@@ -87,6 +87,7 @@ export default function BeautyPage() {
   const { t } = useTranslation();
   const { getSetting } = useServiceSettingsStore();
   const [activeCategory, setActiveCategory] = useState("salon");
+  const [search, setSearch] = useState("");
   const [isServiceable, setIsServiceable] = useState(true);
   const locationStore = useLocationStore();
   const userPincode = locationStore.pincode;
@@ -168,7 +169,7 @@ export default function BeautyPage() {
         {/* Search */}
         <div className="relative">
           <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-lg">search</span>
-          <input type="text" placeholder="Search for services..." aria-label="Search beauty services" className="w-full pl-9 pr-4 py-2.5 rounded-lg text-on-surface text-sm" />
+          <input type="text" placeholder="Search for services..." aria-label="Search beauty services" value={search} onChange={(e) => setSearch(e.target.value)} className="w-full pl-9 pr-4 py-2.5 rounded-lg text-on-surface text-sm" />
         </div>
       </header>
 
@@ -358,7 +359,7 @@ export default function BeautyPage() {
           <h2 className="text-lg font-black text-on-surface mb-4">Trending Searches</h2>
           <div className="flex flex-wrap gap-2">
             {trending.map((item, i) => (
-              <button key={i} onClick={() => { if (navigator.vibrate) navigator.vibrate(10); }} className="px-4 py-2 bg-surface-container-lowest border border-outline rounded-full text-sm font-medium text-on-surface-variant hover:border-pink-300 hover:text-pink-600 hover:scale-105 active:scale-95 transition-all animate-category-slide" style={{ animationDelay: `${i * 50}ms` }}>
+              <button key={i} onClick={() => { setSearch(item); if (navigator.vibrate) navigator.vibrate(10); }} className="px-4 py-2 bg-surface-container-lowest border border-outline rounded-full text-sm font-medium text-on-surface-variant hover:border-pink-300 hover:text-pink-600 hover:scale-105 active:scale-95 transition-all animate-category-slide" style={{ animationDelay: `${i * 50}ms` }}>
                 {item}
               </button>
             ))}
