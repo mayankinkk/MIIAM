@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 
@@ -15,7 +15,7 @@ interface Shift {
 }
 
 export default function RiderShifts() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const router = useRouter();
   const [riderId, setRiderId] = useState<string | null>(null);
   const [shifts, setShifts] = useState<Shift[]>([]);

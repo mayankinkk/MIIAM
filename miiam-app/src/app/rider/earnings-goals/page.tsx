@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
@@ -13,7 +13,7 @@ interface DeliveryRecord {
 }
 
 export default function RiderEarningsGoalsPage() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [dailyTarget, setDailyTarget] = useState(1500);
   const [weeklyTarget, setWeeklyTarget] = useState(10000);
   const [showSetGoal, setShowSetGoal] = useState(false);

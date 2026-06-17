@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useSupportSettings } from "@/lib/hooks/useSupportSettings";
@@ -16,7 +16,7 @@ const faqs = [
 export default function RiderSupportPage() {
   const [expanded, setExpanded] = useState<number | null>(null);
   const router = useRouter();
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const support = useSupportSettings();
 
   useEffect(() => {

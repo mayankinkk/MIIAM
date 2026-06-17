@@ -187,12 +187,14 @@ export default function IncomingOrderCard({
         <div className="p-4 border-t bg-[var(--color-surface-subtle)] flex gap-3">
           <button 
             onClick={onDecline}
+            aria-label={t.rider.order.decline}
             className="flex-1 py-3 bg-[var(--color-surface-container-high)] text-[var(--color-on-surface-variant)] font-bold rounded-xl text-sm"
           >
 {t.rider.order.decline}
           </button>
           <button 
             onClick={() => onAccept(order)}
+            aria-label={t.rider.order.acceptOrder}
             className="flex-[2] py-3 bg-[#0b50d5] text-white font-black rounded-xl text-sm shadow-lg"
           >
             {t.rider.order.acceptOrder}

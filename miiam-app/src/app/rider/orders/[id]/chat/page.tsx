@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useChat, type ChatMessage } from "@/lib/hooks/useChat";
@@ -9,7 +9,7 @@ export default function RiderChatPage() {
   const params = useParams();
   const router = useRouter();
   const orderId = params?.id as string;
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [currentUserId, setCurrentUserId] = useState<string>("");
   const [newMessage, setNewMessage] = useState("");
   const [sending, setSending] = useState(false);

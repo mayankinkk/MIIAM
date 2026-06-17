@@ -32,7 +32,7 @@ interface FuelEntry {
 }
 
 export default function RiderVehiclePage() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [riderId, setRiderId] = useState<string | null>(null);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [maintenanceRecords, setMaintenanceRecords] = useState<MaintenanceRecord[]>([]);
@@ -402,7 +402,7 @@ export default function RiderVehiclePage() {
 }
 
 function AddVehicleModal({ riderId, onClose, onSaved }: { riderId: string | null; onClose: () => void; onSaved: () => Promise<void> }) {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [name, setName] = useState("");
   const [type, setType] = useState<"scooter" | "bike" | "car">("scooter");
   const [model, setModel] = useState("");

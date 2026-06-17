@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
@@ -33,7 +33,7 @@ const quizzes = [
 ];
 
 export default function RiderTrainingPage() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [activeCategory, setActiveCategory] = useState("All");
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);

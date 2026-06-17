@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
@@ -13,7 +13,7 @@ interface DailyStats {
 }
 
 export default function RiderAnalyticsPage() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [period, setPeriod] = useState<"week" | "month" | "year">("week");
   const [weeklyData, setWeeklyData] = useState<DailyStats[]>([]);
   const [loading, setLoading] = useState(true);

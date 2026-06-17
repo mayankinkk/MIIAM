@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import { createClient } from "@/lib/supabase/client";
 import { startLocationTracking, stopLocationTracking } from "@/lib/rider-location-tracker";
 import { RiderDashboardSkeleton } from "@/components/Skeleton";
@@ -10,18 +11,19 @@ import { calculateEarnings } from "@/lib/earnings";
 import type { OrderWithTiming } from "./types";
 import QuickStats from "@/components/rider/QuickStats";
 import MapControls from "@/components/rider/MapControls";
-import CallModal from "@/components/rider/CallModal";
-import OrderChatOverlay from "@/components/order/OrderChatOverlay";
 import DashboardHeader from "@/components/rider/DashboardHeader";
 import IncomingOrderCard from "@/components/rider/IncomingOrderCard";
 import ActiveDeliveryView from "@/components/rider/ActiveDeliveryView";
-import AlertSettingsModal from "@/components/rider/AlertSettingsModal";
-import QuestModal from "@/components/rider/QuestModal";
-import CancelOrderModal from "@/components/rider/CancelOrderModal";
-import SkipOrderModal from "@/components/rider/SkipOrderModal";
-import LowBatteryWarning from "@/components/rider/LowBatteryWarning";
-import NewOrderBanner from "@/components/rider/NewOrderBanner";
 import { useTranslation } from "@/lib/i18n/useTranslation";
+
+const CallModal = dynamic(() => import("@/components/rider/CallModal"), { ssr: false });
+const OrderChatOverlay = dynamic(() => import("@/components/order/OrderChatOverlay"), { ssr: false });
+const AlertSettingsModal = dynamic(() => import("@/components/rider/AlertSettingsModal"), { ssr: false });
+const QuestModal = dynamic(() => import("@/components/rider/QuestModal"), { ssr: false });
+const CancelOrderModal = dynamic(() => import("@/components/rider/CancelOrderModal"), { ssr: false });
+const SkipOrderModal = dynamic(() => import("@/components/rider/SkipOrderModal"), { ssr: false });
+const LowBatteryWarning = dynamic(() => import("@/components/rider/LowBatteryWarning"), { ssr: false });
+const NewOrderBanner = dynamic(() => import("@/components/rider/NewOrderBanner"), { ssr: false });
 
 export default function RiderDashboard() {
   const router = useRouter();
@@ -245,38 +247,56 @@ export default function RiderDashboard() {
         const yesterday = new Date(); yesterday.setHours(yesterday.getHours() - 24);
         const { data: dbOrders } = await supabase.from("orders").select("*").is("rider_id", null).in("status", ["ready_for_pickup"]).gte("placed_at", yesterday.toISOString()).order("placed_at", { ascending: false });
         if (!dbOrders || dbOrders.length === 0) { setPendingOrders([]); return; }
+
+        const vendorIds = [...new Set(dbOrders.map((o: Record<string, unknown>) => o.vendor_id).filter(Boolean))] as string[];
+        const userIds = [...new Set(dbOrders.map((o: Record<string, unknown>) => o.user_id).filter(Boolean))] as string[];
+        const orderIds = dbOrders.map((o: Record<string, unknown>) => o.id) as string[];
+
+        const [vendorsRes, profilesRes, allItemsRes] = await Promise.all([
+          vendorIds.length > 0 ? supabase.from("vendors").select("*").in("id", vendorIds) : Promise.resolve({ data: [] }),
+          userIds.length > 0 ? supabase.from("profiles").select("id, full_name, name, phone").in("id", userIds) : Promise.resolve({ data: [] }),
+          supabase.from("order_items").select("*").in("order_id", orderIds),
+        ]);
+
+        const vendorsMap = new Map((vendorsRes.data || []).map((v: Record<string, unknown>) => [v.id, v]));
+        const profilesMap = new Map((profilesRes.data || []).map((p: Record<string, unknown>) => [p.id, p]));
+        const allItems = allItemsRes.data || [];
+
+        const allMenuItemIds = [...new Set(allItems.map((i: Record<string, unknown>) => i.menu_item_id).filter(Boolean))] as string[];
+        let menuItemsMap = new Map();
+        if (allMenuItemIds.length > 0) {
+          const { data: menuItems } = await supabase.from("menu_items").select("id, name").in("id", allMenuItemIds);
+          menuItemsMap = new Map((menuItems || []).map((mi: Record<string, unknown>) => [mi.id, mi]));
+        }
+
         const now = Date.now(); const expirationTime = now + (5 * 60 * 1000);
-        const mappedOrders: OrderWithTiming[] = await Promise.all(dbOrders.map(async (dbOrder: Record<string, unknown>) => {
-          const [vendorRes, itemsRes, profileRes] = await Promise.all([
-            dbOrder.vendor_id ? supabase.from("vendors").select("*").eq("id", dbOrder.vendor_id).maybeSingle() : Promise.resolve({ data: null }),
-            supabase.from("order_items").select("*").eq("order_id", dbOrder.id),
-            dbOrder.user_id ? supabase.from("profiles").select("full_name, name, phone").eq("id", dbOrder.user_id).maybeSingle() : Promise.resolve({ data: null }),
-          ]);
+        const mappedOrders: OrderWithTiming[] = dbOrders.map((dbOrder: Record<string, unknown>) => {
+          const vendorData = dbOrder.vendor_id ? vendorsMap.get(dbOrder.vendor_id as string) : null;
+          const profileData = dbOrder.user_id ? profilesMap.get(dbOrder.user_id as string) : null;
+          const orderItems = allItems.filter((i: Record<string, unknown>) => i.order_id === dbOrder.id);
           let itemsList: string[] = []; let itemsCount = 0;
-          const items = itemsRes.data || [];
-          if (items.length > 0) {
-            itemsCount = items.reduce((sum: number, item: { quantity: number }) => sum + item.quantity, 0);
-            const menuItemIds = items.map((i: { menu_item_id: string | null }) => i.menu_item_id).filter(Boolean);
-            if (menuItemIds.length > 0) {
-              const { data: menuItems } = await supabase.from("menu_items").select("*").in("id", menuItemIds);
-              if (menuItems) itemsList = items.map((item: { quantity: number; menu_item_id: string | null }) => { const menuItem = menuItems.find((mi: { id: string }) => mi.id === item.menu_item_id); return `${item.quantity}x ${menuItem?.name || "Item"}`; });
-            }
+          if (orderItems.length > 0) {
+            itemsCount = orderItems.reduce((sum: number, item: Record<string, unknown>) => sum + (item.quantity as number), 0);
+            itemsList = orderItems.map((item: Record<string, unknown>) => {
+              const mi = item.menu_item_id ? menuItemsMap.get(item.menu_item_id as string) : null;
+              return `${item.quantity}x ${(mi as Record<string, unknown>)?.name || "Item"}`;
+            });
           }
           return {
-            id: dbOrder.id, orderDbId: dbOrder.id, vendor: vendorRes.data?.shop_name || vendorRes.data?.name || "Restaurant",
-            vendorAddress: vendorRes.data?.address || "Restaurant Address", vendorPhone: vendorRes.data?.phone || "+91 99999 99999",
-            vendorLat: vendorRes.data?.latitude || vendorRes.data?.lat || 0, vendorLng: vendorRes.data?.longitude || vendorRes.data?.lng || 0,
-            customer: profileRes.data?.full_name || (profileRes.data as any)?.name || "Customer",
-            customerPhone: profileRes.data?.phone || dbOrder.customer_phone || "+91 88888 88888",
+            id: dbOrder.id, orderDbId: dbOrder.id, vendor: (vendorData as Record<string, unknown>)?.shop_name || (vendorData as Record<string, unknown>)?.name || "Restaurant",
+            vendorAddress: (vendorData as Record<string, unknown>)?.address || "Restaurant Address", vendorPhone: (vendorData as Record<string, unknown>)?.phone || "+91 99999 99999",
+            vendorLat: (vendorData as Record<string, unknown>)?.latitude || (vendorData as Record<string, unknown>)?.lat || 0, vendorLng: (vendorData as Record<string, unknown>)?.longitude || (vendorData as Record<string, unknown>)?.lng || 0,
+            customer: (profileData as Record<string, unknown>)?.full_name || (profileData as Record<string, unknown>)?.name || "Customer",
+            customerPhone: (profileData as Record<string, unknown>)?.phone || dbOrder.customer_phone || "+91 88888 88888",
             customerAddress: dbOrder.delivery_address || "Customer Delivery Location", landmark: dbOrder.special_instructions || "N/A",
             distance: 0, distance2: 0, totalDistance: 0, earnings: calculateEarnings(0),
             orderTotal: Math.round(Number(dbOrder.total_amount) || 0), items: itemsCount || 1,
             itemsList: itemsList.length > 0 ? itemsList : ["Items hidden"], time: "Calculating...", time2: "Calculating...",
             estCompletion: 0, priority: (Number(dbOrder.total_amount) > 500) ? "high" : "normal", peakMultiplier: 1.0,
-            specialInstructions: dbOrder.special_instructions || "", otp: dbOrder.otp || "", type: vendorRes.data?.type || "food",
+            specialInstructions: dbOrder.special_instructions || "", otp: dbOrder.otp || "", type: (vendorData as Record<string, unknown>)?.type || "food",
             expiresAt: expirationTime, isSnoozed: false,
           } as OrderWithTiming;
-        }));
+        });
         setPendingOrders(mappedOrders);
       } catch (err) { console.error("Failed to fetch pending orders:", err); setPendingOrders([]); }
     }
@@ -304,15 +324,21 @@ export default function RiderDashboard() {
   }, []);
 
   useEffect(() => {
-    if (typeof navigator !== 'undefined' && 'getBattery' in navigator) {
-      (navigator as any).getBattery().then((battery: any) => {
+    if (typeof navigator === 'undefined' || !('getBattery' in navigator)) return;
+    let batteryRef: any = null;
+    let handler: (() => void) | null = null;
+    (navigator as any).getBattery().then((battery: any) => {
+      batteryRef = battery;
+      setBatteryLevel(Math.round(battery.level * 100));
+      handler = () => {
         setBatteryLevel(Math.round(battery.level * 100));
-        battery.addEventListener('levelchange', () => {
-          setBatteryLevel(Math.round(battery.level * 100));
-          if (battery.level <= 0.2) setShowLowBattery(true);
-        });
-      });
-    }
+        if (battery.level <= 0.2) setShowLowBattery(true);
+      };
+      battery.addEventListener('levelchange', handler);
+    });
+    return () => {
+      if (batteryRef && handler) batteryRef.removeEventListener('levelchange', handler);
+    };
   }, []);
 
   useEffect(() => {
@@ -464,26 +490,30 @@ export default function RiderDashboard() {
     const finalEarnings = calculateEarnings(currentOrder.totalDistance, 40, 8, currentOrder.peakMultiplier);
     try {
       if (currentOrder.orderDbId && riderId) {
-        const { error: orderErr } = await supabase.from("orders").update({ status: "delivered", delivered_at: new Date().toISOString() }).eq("id", currentOrder.orderDbId);
-        if (orderErr) throw new Error("order update: " + orderErr.message);
-        // Best-effort: save earnings (column may not exist in DB)
-        await supabase.from("orders").update({ rider_earning: finalEarnings }).eq("id", currentOrder.orderDbId);
-        await supabase.from("riders").update({ total_deliveries: riderDeliveries + 1 }).eq("id", riderId);
-        setRiderDeliveries((prev) => prev + 1);
-        const { data: wallet } = await supabase.from("rider_wallets").select("id, balance, total_earnings").eq("rider_id", riderId).maybeSingle();
-        if (wallet) {
-          await supabase.from("rider_wallets").update({ balance: (wallet.balance || 0) + finalEarnings, total_earnings: (wallet.total_earnings || 0) + finalEarnings }).eq("id", wallet.id);
-        } else {
-          await supabase.from("rider_wallets").insert({ rider_id: riderId, balance: finalEarnings, total_earnings: finalEarnings, pending_payout: 0, advance_used: 0 });
-        }
-        await supabase.from("rider_wallet").insert({ rider_id: riderId, amount: finalEarnings, type: "earning", description: `Delivery earnings for order #${currentOrder.orderDbId.slice(0, 8)}`, order_id: currentOrder.orderDbId, created_at: new Date().toISOString() });
-        const { data: verify } = await supabase.from("orders").select("rider_earning").eq("id", currentOrder.orderDbId).maybeSingle();
-        if (verify && Number(verify.rider_earning) > 0) setRiderEarnings((prev) => prev + finalEarnings);
-        else setRiderEarnings((prev) => prev + finalEarnings);
+        // 1. Credit wallet first (non-critical)
+        try {
+          const { data: wallet } = await supabase.from("rider_wallets").select("id, balance, total_earnings").eq("rider_id", riderId).maybeSingle();
+          if (wallet) {
+            await supabase.from("rider_wallets").update({ balance: (wallet.balance || 0) + finalEarnings, total_earnings: (wallet.total_earnings || 0) + finalEarnings }).eq("id", wallet.id);
+          } else {
+            await supabase.from("rider_wallets").insert({ rider_id: riderId, balance: finalEarnings, total_earnings: finalEarnings, pending_payout: 0, advance_used: 0 });
+          }
+          await supabase.from("rider_wallet").insert({ rider_id: riderId, amount: finalEarnings, type: "earning", description: `Delivery earnings for order #${currentOrder.orderDbId.slice(0, 8)}`, order_id: currentOrder.orderDbId, created_at: new Date().toISOString() });
+        } catch (walletErr) { console.error("Wallet credit failed (non-critical):", walletErr); }
+
+        // 2. Update rider stats
+        try { await supabase.from("riders").update({ total_deliveries: riderDeliveries + 1 }).eq("id", riderId); setRiderDeliveries((prev) => prev + 1); } catch { /* column may not exist */ }
+
+        // 3. Update earnings + send notifications
+        setRiderEarnings((prev) => prev + finalEarnings);
         if (currentOrder?.user_id) {
-          await supabase.from("notifications").insert({ user_id: currentOrder.user_id, title: t.rider.notifications.orderDeliveredTitle, message: t.rider.notifications.orderDeliveredMsg, type: "order", read: false, created_at: new Date().toISOString() });
+          try { await supabase.from("notifications").insert({ user_id: currentOrder.user_id, title: t.rider.notifications.orderDeliveredTitle, message: t.rider.notifications.orderDeliveredMsg, type: "order", read: false, created_at: new Date().toISOString() }); } catch { /* silent */ }
           try { await fetch("/api/emails/order-status", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ orderId: currentOrder.orderDbId, status: "delivered" }) }); } catch { /* silent */ }
         }
+
+        // 4. Order status update LAST (critical — point of no return)
+        const { error: orderErr } = await supabase.from("orders").update({ status: "delivered", delivered_at: new Date().toISOString(), rider_earning: finalEarnings }).eq("id", currentOrder.orderDbId);
+        if (orderErr) throw new Error("order update: " + orderErr.message);
       }
     } catch (e) { console.error("Failed to persist delivery:", e); }
     setCurrentOrder(null); stopLocationTracking();

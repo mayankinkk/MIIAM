@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import PullToRefresh from "@/components/PullToRefresh";
@@ -22,7 +22,7 @@ interface DailyEarning {
 }
 
 export default function RiderWalletPage() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [riderId, setRiderId] = useState<string | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);

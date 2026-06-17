@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import PullToRefresh from "@/components/PullToRefresh";
@@ -25,7 +25,7 @@ const documentTypes = [
 ];
 
 export default function RiderDocumentsPage() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [documents, setDocuments] = useState<RiderDocument[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);

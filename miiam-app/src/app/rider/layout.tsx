@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import RiderNavBar from "@/components/rider/RiderNavBar";
@@ -8,7 +8,7 @@ import RiderNavBar from "@/components/rider/RiderNavBar";
 export default function RiderLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
 
   const isAuthPage = pathname === "/rider/login" || pathname === "/rider/apply";
 

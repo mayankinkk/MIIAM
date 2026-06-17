@@ -10,6 +10,7 @@ import { calculateEarnings } from "@/lib/earnings";
 
 interface OrderItem {
   id: string;
+  order_id: string;
   menu_item_id: string;
   quantity: number;
   unit_price: number;
@@ -71,6 +72,12 @@ export default function RiderOrdersPage() {
   const [riderLocation, setRiderLocation] = useState({ lat: 28.6139, lng: 77.2090 });
   const [error, setError] = useState<string | null>(null);
   const [riderProfile, setRiderProfile] = useState<{ id: string } | null>(null);
+  const [toast, setToast] = useState<{ message: string; type?: "success" | "error" | "info" } | null>(null);
+
+  function showToast(message: string, type: "success" | "error" | "info" = "info") {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  }
 
   async function loadOrders(riderId?: string) {
     setLoading(true);
@@ -108,36 +115,43 @@ export default function RiderOrdersPage() {
       });
 
       if (uniqueOrders.length > 0) {
-        const fullOrders = await Promise.all(uniqueOrders.map(async (order) => {
-          const [vendorRes, addressRes, itemsRes, userRes] = await Promise.all([
-            order.vendor_id ? supabase.from("vendors").select("*").eq("id", order.vendor_id).single() : Promise.resolve({ data: null }),
-            order.delivery_address_id ? supabase.from("delivery_addresses").select("*").eq("id", order.delivery_address_id).single() : Promise.resolve({ data: null }),
-            supabase.from("order_items").select("*").eq("order_id", order.id),
-            order.user_id ? supabase.from("profiles").select("full_name").eq("id", order.user_id).single() : Promise.resolve({ data: null })
-          ]);
+        const vendorIds = [...new Set(uniqueOrders.map(o => o.vendor_id).filter(Boolean))] as string[];
+        const addressIds = [...new Set(uniqueOrders.map(o => o.delivery_address_id).filter(Boolean))] as string[];
+        const userIds = [...new Set(uniqueOrders.map(o => o.user_id).filter(Boolean))] as string[];
+        const orderIds = uniqueOrders.map(o => o.id);
 
-          let items = itemsRes.data || [];
-          if (items.length > 0) {
-            const menuItemIds = items.map((i: OrderItem) => i.menu_item_id).filter(Boolean);
-            if (menuItemIds.length > 0) {
-              const { data: menuItems } = await supabase.from("menu_items").select("*").in("id", menuItemIds);
-              if (menuItems) {
-                items = items.map((item: OrderItem) => ({
-                  ...item,
-                  menu_item: menuItems.find((mi: { id: string; name: string }) => mi.id === item.menu_item_id) || null
-                }));
-              }
-            }
-          }
+        const [vendorsRes, addressesRes, allItemsRes, profilesRes] = await Promise.all([
+          vendorIds.length > 0 ? supabase.from("vendors").select("*").in("id", vendorIds) : Promise.resolve({ data: [] }),
+          addressIds.length > 0 ? supabase.from("delivery_addresses").select("*").in("id", addressIds) : Promise.resolve({ data: [] }),
+          supabase.from("order_items").select("*").in("order_id", orderIds),
+          userIds.length > 0 ? supabase.from("profiles").select("id, full_name").in("id", userIds) : Promise.resolve({ data: [] }),
+        ]);
 
+        const vendorsMap = new Map((vendorsRes.data || []).map((v: any) => [v.id, v]));
+        const addressesMap = new Map((addressesRes.data || []).map((a: any) => [a.id, a]));
+        const profilesMap = new Map((profilesRes.data || []).map((p: any) => [p.id, p]));
+        const allItems = allItemsRes.data || [];
+
+        const allMenuItemIds = [...new Set(allItems.map((i: OrderItem) => i.menu_item_id).filter(Boolean))] as string[];
+        let menuItemsMap = new Map();
+        if (allMenuItemIds.length > 0) {
+          const { data: menuItems } = await supabase.from("menu_items").select("id, name, category").in("id", allMenuItemIds);
+          menuItemsMap = new Map((menuItems || []).map((mi: any) => [mi.id, mi]));
+        }
+
+        const fullOrders = uniqueOrders.map(order => {
+          const items = (allItems.filter((i: OrderItem) => i.order_id === order.id)).map((item: OrderItem) => ({
+            ...item,
+            menu_item: item.menu_item_id ? menuItemsMap.get(item.menu_item_id) || null : null,
+          }));
           return {
             ...order,
-            vendor: vendorRes.data,
-            address: addressRes.data,
-            items: items,
-            customer_name: userRes.data?.full_name || "Customer"
+            vendor: order.vendor_id ? vendorsMap.get(order.vendor_id) || null : null,
+            address: order.delivery_address_id ? addressesMap.get(order.delivery_address_id) || null : null,
+            items,
+            customer_name: order.user_id ? (profilesMap.get(order.user_id) as any)?.full_name || "Customer" : "Customer",
           };
-        }));
+        });
         setOrders(fullOrders);
       } else {
         setOrders([]);
@@ -172,13 +186,11 @@ export default function RiderOrdersPage() {
           });
         },
         () => {
-          // Fallback to browser location API or keep default
           console.log("GPS unavailable, using default location");
         },
         { enableHighAccuracy: true, timeout: 10000 }
       );
     }
-    loadOrders();
 
     const channel = supabase
       .channel('rider-orders')
@@ -226,7 +238,7 @@ export default function RiderOrdersPage() {
   async function acceptOrder(orderId: string) {
     try {
       if (!riderProfile) {
-        alert("Rider profile not loaded. Please wait.");
+        showToast("Rider profile not loaded. Please wait.", "error");
         return;
       }
 
@@ -255,7 +267,7 @@ export default function RiderOrdersPage() {
           .is("rider_id", null);
 
         if (error) {
-          alert("Order was already accepted by another rider.");
+          showToast("Order was already accepted by another rider.", "error");
           return;
         }
       }
@@ -265,7 +277,7 @@ export default function RiderOrdersPage() {
         try {
           await supabase.from("notifications").insert({
             user_id: order.user_id,
-            title: "Rider Assigned! 🛵",
+            title: "Rider Assigned!",
             message: "A rider is on their way to pick up your order.",
             type: "order",
             read: false,
@@ -276,16 +288,17 @@ export default function RiderOrdersPage() {
       }
 
       setOrders(prev => prev.map(o => o.id === orderId ? { ...o, rider_id: riderProfile.id } : o));
+      showToast("Order accepted!", "success");
     } catch (err: any) {
       console.error("Error accepting order:", err);
-      alert("Failed to accept order: " + (err?.message || "Unknown error"));
+      showToast("Failed to accept order: " + (err?.message || "Unknown error"), "error");
     }
   }
 
   async function batchAccept() {
     if (selectedOrders.length === 0) return;
     if (!riderProfile) {
-      alert("Rider profile not loaded. Please wait.");
+      showToast("Rider profile not loaded. Please wait.", "error");
       return;
     }
 
@@ -324,7 +337,7 @@ export default function RiderOrdersPage() {
           try {
             await supabase.from("notifications").insert({
               user_id: order.user_id,
-              title: "Rider Assigned! 🛵",
+              title: "Rider Assigned!",
               message: "A rider is on their way to pick up your order.",
               type: "order",
               read: false,
@@ -335,11 +348,11 @@ export default function RiderOrdersPage() {
       
       const successCount = selectedOrders.length - failedCount;
       setOrders(prev => prev.map(o => selectedOrders.includes(o.id) ? { ...o, rider_id: riderProfile.id } : o));
-      alert(`${successCount} order(s) accepted!${failedCount > 0 ? ` ${failedCount} order(s) already taken.` : ''}`);
+      showToast(`${successCount} order(s) accepted!${failedCount > 0 ? ` ${failedCount} already taken.` : ''}`, "success");
       setSelectedOrders([]);
     } catch (err) {
       console.error("Error batch accepting:", err);
-      alert("Failed to accept orders");
+      showToast("Failed to accept orders", "error");
     }
   }
 
@@ -363,7 +376,7 @@ export default function RiderOrdersPage() {
       
       if (error) {
         console.error("Error updating item:", error);
-        alert("Failed to update item: " + error.message);
+        showToast("Failed to update item: " + error.message, "error");
         return;
       }
     } catch (err) {
@@ -394,39 +407,13 @@ export default function RiderOrdersPage() {
 
   async function confirmDelivery() {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-
       if (!currentOrderId) return;
       const order = orders.find(o => o.id === currentOrderId);
+      if (!order) return;
       const riderEarning = calculateEarnings(0);
 
-      // Update order status + earnings in one atomic update
-      const { error: orderErr } = await supabase
-        .from("orders")
-        .update({
-          status: "delivered",
-          delivered_at: new Date().toISOString(),
-          rider_earning: riderEarning,
-          customer_collected: cashToCollect,
-        })
-        .eq("id", currentOrderId);
-      if (orderErr) throw new Error("order update: " + orderErr.message);
-
-      if (order?.rider_id) {
-        // Update rider delivery count
-        try {
-          const { data: rider } = await supabase
-            .from("riders")
-            .select("total_deliveries")
-            .eq("id", order.rider_id)
-            .single();
-          await supabase
-            .from("riders")
-            .update({ total_deliveries: (rider?.total_deliveries || 0) + 1 })
-            .eq("id", order.rider_id);
-        } catch { /* column may not exist */ }
-
-        // Credit wallet — upsert with all known columns
+      // 1. Credit wallet first (non-critical — can be compensated)
+      if (order.rider_id) {
         try {
           const { data: wallet } = await supabase
             .from("rider_wallets")
@@ -452,10 +439,7 @@ export default function RiderOrdersPage() {
                 advance_used: 0,
               });
           }
-        } catch { /* table or column may not exist */ }
-
-        // Log transaction
-        try {
+          // Log transaction
           await supabase
             .from("rider_wallet")
             .insert({
@@ -466,20 +450,35 @@ export default function RiderOrdersPage() {
               order_id: currentOrderId,
               created_at: new Date().toISOString(),
             });
-        } catch { /* table or column may not exist */ }
+        } catch (walletErr) {
+          console.error("Wallet credit failed (non-critical):", walletErr);
+        }
+
+        // Update rider delivery count
+        try {
+          const { data: rider } = await supabase
+            .from("riders")
+            .select("total_deliveries")
+            .eq("id", order.rider_id)
+            .single();
+          await supabase
+            .from("riders")
+            .update({ total_deliveries: (rider?.total_deliveries || 0) + 1 })
+            .eq("id", order.rider_id);
+        } catch { /* column may not exist */ }
       }
 
-      if (order?.user_id) {
+      // 2. Send notifications (non-critical)
+      if (order.user_id) {
         try {
           await supabase.from("notifications").insert({
             user_id: order.user_id,
-            title: "Order Delivered! 🎉",
-            message: `Your order has been delivered. Enjoy your food!`,
+            title: "Order Delivered!",
+            message: "Your order has been delivered. Enjoy your food!",
             type: "order",
             read: false,
           });
         } catch { /* table or column may not exist */ }
-
         try {
           await fetch("/api/emails/order-status", {
             method: "POST",
@@ -491,12 +490,24 @@ export default function RiderOrdersPage() {
         }
       }
 
+      // 3. Order status update LAST (critical — point of no return)
+      const { error: orderErr } = await supabase
+        .from("orders")
+        .update({
+          status: "delivered",
+          delivered_at: new Date().toISOString(),
+          rider_earning: riderEarning,
+          customer_collected: cashToCollect,
+        })
+        .eq("id", currentOrderId);
+      if (orderErr) throw new Error("order update: " + orderErr.message);
+
       setOrders(prev => prev.map(o => o.id === currentOrderId ? { ...o, status: "delivered", delivered_at: new Date().toISOString(), customer_collected: cashToCollect } : o));
       setShowCashCollectModal(false);
-      alert(`Delivery complete! ₹${cashToCollect} collected. You earned ₹${riderEarning}!`);
+      showToast(`Delivery complete! You earned ₹${riderEarning}!`, "success");
     } catch (err) {
       console.error("Error delivering order:", err);
-      alert("Failed to complete delivery.");
+      showToast("Failed to complete delivery.", "error");
     }
   }
 
@@ -877,9 +888,9 @@ export default function RiderOrdersPage() {
                           });
                         }
                       }
-                      alert(`Issue "${issue}" reported. Support will contact you.`);
+                      showToast(`Issue "${issue}" reported.`, "success");
                     } catch (e) {
-                      alert("Failed to report issue. Please try again.");
+                      showToast("Failed to report issue. Please try again.", "error");
                     }
                     setShowIssueModal(false);
                   }}
@@ -896,7 +907,13 @@ export default function RiderOrdersPage() {
 
     </div>
     </PullToRefresh>
-
+    {toast && (
+      <div className={`fixed bottom-24 left-1/2 -translate-x-1/2 z-[200] px-4 py-3 rounded-xl shadow-lg text-sm font-bold text-white ${
+        toast.type === "success" ? "bg-green-500" : toast.type === "error" ? "bg-red-500" : "bg-slate-700"
+      }`}>
+        {toast.message}
+      </div>
+    )}
     </>
   );
 }

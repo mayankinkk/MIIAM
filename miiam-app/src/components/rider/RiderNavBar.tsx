@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 interface RiderNavBarProps {
@@ -9,7 +9,7 @@ interface RiderNavBarProps {
 }
 
 export default function RiderNavBar({ active }: RiderNavBarProps) {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [isOnline, setIsOnline] = useState(true);
   const [riderId, setRiderId] = useState<string | null>(null);
   const [toggling, setToggling] = useState(false);
@@ -51,6 +51,8 @@ export default function RiderNavBar({ active }: RiderNavBarProps) {
       <button
         onClick={toggleOnline}
         className="flex flex-col items-center p-2"
+        aria-label={isOnline ? "Go Offline" : "Go Online"}
+        aria-pressed={isOnline}
         title={isOnline ? "Go Offline" : "Go Online"}
       >
         <span className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${isOnline ? "bg-green-500 border-green-500" : "bg-[var(--color-surface-container-high)] border-[var(--color-outline-variant)]"}`}>
@@ -64,6 +66,7 @@ export default function RiderNavBar({ active }: RiderNavBarProps) {
         <Link
           key={item.name}
           href={item.href}
+          aria-label={item.name}
           className={`flex flex-col items-center p-2 ${
             active === item.name.toLowerCase() ? "text-[#0b50d5]" : "text-[var(--color-on-surface-variant)]"
           }`}

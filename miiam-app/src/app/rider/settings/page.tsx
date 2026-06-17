@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
 export default function RiderSettingsPage() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [riderId, setRiderId] = useState<string | null>(null);
   const [darkMode, setDarkMode] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);

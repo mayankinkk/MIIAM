@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import PullToRefresh from "@/components/PullToRefresh";
 
 export default function RiderNotificationsPage() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

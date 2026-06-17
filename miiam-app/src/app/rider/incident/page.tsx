@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -28,7 +28,7 @@ const incidentTypes: IncidentType[] = [
 ];
 
 export default function RiderIncidentPage() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const router = useRouter();
   const [riderId, setRiderId] = useState<string | null>(null);
   const [selectedType, setSelectedType] = useState<string | null>(null);
