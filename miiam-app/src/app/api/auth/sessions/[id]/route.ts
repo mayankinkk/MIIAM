@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { withRateLimit } from "@/lib/api-utils";
+import { withRateLimit, type RouteContext } from "@/lib/api-utils";
 
-export const DELETE = withRateLimit(async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export const DELETE = withRateLimit(async function DELETE(_req: NextRequest, context: RouteContext) {
   try {
-    const { id } = await params;
+    const { id } = await context.params!;
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {

@@ -7,7 +7,6 @@ import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import ImageUpload from "@/components/ImageUpload";
 
-const supabase = useMemo(() => createClient(), []);
 
 const groceryCategories = ["Fruits", "Vegetables", "Dairy", "Bakery", "Spices", "Pulses", "Oils", "Beverages"];
 
@@ -23,6 +22,7 @@ interface Product {
 }
 
 export default function GroceryInventoryPage() {
+  const supabase = useMemo(() => createClient(), []);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({ total: 0, lowStock: 0, outOfStock: 0, totalValue: 0 });

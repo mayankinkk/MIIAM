@@ -14,7 +14,7 @@ export function BounceButton({ children, onClick, className = "", scale = 1.05 }
     <button
       onClick={onClick}
       className={`active:scale-95 transition-transform duration-150 ${className}`}
-      style={{ ["--tw-scale-x" as any]: scale, ["--tw-scale-y" as any]: scale } as any}
+      style={{ ["--tw-scale-x" as string]: scale, ["--tw-scale-y" as string]: scale } as React.CSSProperties}
     >
       {children}
     </button>

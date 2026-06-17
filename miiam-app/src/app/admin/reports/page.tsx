@@ -3,7 +3,6 @@
 import { useMemo, useState, useEffect, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 
-const supabase = useMemo(() => createClient(), []);
 
 type ReportType = "orders" | "revenue" | "vendors" | "riders" | "users";
 
@@ -32,6 +31,7 @@ interface RiderRow {
 }
 
 export default function ReportsPage() {
+  const supabase = useMemo(() => createClient(), []);
   const [reportType, setReportType] = useState<ReportType>("orders");
   const [loading, setLoading] = useState(true);
   const [dateRange, setDateRange] = useState({ start: "", end: "" });
@@ -64,14 +64,18 @@ export default function ReportsPage() {
           .order("placed_at", { ascending: false })
           .limit(100);
         if (data) {
-          setOrders(data.map((o: any) => ({
-            id: o.id.slice(0, 8).toUpperCase(),
-            vendor_name: o.vendor?.name || "—",
-            customer_name: o.user?.full_name || o.user?.phone || "—",
-            status: o.status,
-            total_amount: o.total_amount || 0,
-            placed_at: o.placed_at,
-          })));
+          setOrders(data.map((o: Record<string, unknown>) => {
+            const vendor = o.vendor as Record<string, unknown> | null;
+            const user = o.user as Record<string, unknown> | null;
+            return {
+              id: (o.id as string).slice(0, 8).toUpperCase(),
+              vendor_name: (vendor?.name as string) || "—",
+              customer_name: (user?.full_name as string) || (user?.phone as string) || "—",
+              status: o.status as string,
+              total_amount: (o.total_amount as number) || 0,
+              placed_at: o.placed_at as string,
+            };
+          }));
           setTotalOrderCount(data.length);
         }
       } else if (reportType === "revenue") {
@@ -81,9 +85,9 @@ export default function ReportsPage() {
           .gte("placed_at", startIso)
           .lte("placed_at", endIso);
         if (data) {
-          const gross = data.reduce((s: number, o: any) => s + (o.total_amount || 0), 0);
-          const refunds = data.filter((o: any) => o.status === "refunded").reduce((s: number, o: any) => s + (o.total_amount || 0), 0);
-          const discounts = data.reduce((s: number, o: any) => s + (o.discount_amount || 0), 0);
+          const gross = data.reduce((s: number, o: Record<string, unknown>) => s + ((o.total_amount as number) || 0), 0);
+          const refunds = data.filter((o: Record<string, unknown>) => o.status === "refunded").reduce((s: number, o: Record<string, unknown>) => s + ((o.total_amount as number) || 0), 0);
+          const discounts = data.reduce((s: number, o: Record<string, unknown>) => s + ((o.discount_amount as number) || 0), 0);
           const platformFee = Math.round(gross * 0.15);
           setRevenue({ gross, net: gross - refunds - discounts, platformFee, refunds });
         }
@@ -97,7 +101,7 @@ export default function ReportsPage() {
           const vendorMap = new Map<string, { name: string; orders: number; revenue: number }>();
           for (const o of data) {
             const vid = o.vendor_id;
-            const vName = (o as any).vendor?.name || "Unknown";
+            const vName = (o.vendor as Record<string, unknown> | null)?.name as string || "Unknown";
             const cur = vendorMap.get(vid) || { name: vName, orders: 0, revenue: 0 };
             cur.orders++;
             cur.revenue += o.total_amount || 0;
@@ -120,7 +124,7 @@ export default function ReportsPage() {
           for (const o of data) {
             const rid = o.rider_id;
             if (!rid) continue;
-            const rName = (o as any).rider?.full_name || (o as any).rider?.phone || "Unknown";
+            const rName = (o.rider as Record<string, unknown> | null)?.full_name as string || (o.rider as Record<string, unknown> | null)?.phone as string || "Unknown";
             const cur = riderMap.get(rid) || { name: rName, deliveries: 0, earnings: 0 };
             cur.deliveries++;
             cur.earnings += o.total_amount || 0;

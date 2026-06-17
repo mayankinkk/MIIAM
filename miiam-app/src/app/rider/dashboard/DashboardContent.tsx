@@ -10,6 +10,7 @@ import { startLocationTracking, stopLocationTracking } from "@/lib/rider-locatio
 import { RiderDashboardSkeleton } from "@/components/Skeleton";
 import { calculateEarnings } from "@/lib/earnings";
 import type { OrderWithTiming } from "./types";
+import type * as Leaflet from 'leaflet';
 import QuickStats from "@/components/rider/QuickStats";
 import MapControls from "@/components/rider/MapControls";
 import DashboardHeader from "@/components/rider/DashboardHeader";
@@ -57,8 +58,8 @@ export default function RiderDashboard() {
   const [dndMode, setDndMode] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const mapRef = useRef<HTMLDivElement | null>(null);
-  const mapInstanceRef = useRef<any>(null);
-  const riderMarkerRef = useRef<any>(null);
+  const mapInstanceRef = useRef<Leaflet.Map | null>(null);
+  const riderMarkerRef = useRef<Leaflet.Marker | null>(null);
   const watchIdRef = useRef<number | null>(null);
 
   const questTitles = { complete5: t.rider.quests.complete5, earn500: t.rider.quests.earn500, threeStar: t.rider.quests.threeStar };
@@ -171,27 +172,27 @@ export default function RiderDashboard() {
           const { data: activeOrdersData } = await supabase.from("orders").select("*, vendor:vendors(*)").eq("rider_id", riderIdVal).in("status", activeStatuses).order("placed_at", { ascending: false }).limit(1);
           if (activeOrdersData && activeOrdersData.length > 0) {
             const dbOrder = activeOrdersData[0];
-            const vendorData = (dbOrder as any).vendor as any;
+            const vendorData = dbOrder.vendor as Record<string, unknown> | null;
             let customerName = "Customer";
             let customerPhone = dbOrder.customer_phone || "+91 88888 88888";
             if (dbOrder.user_id) {
               const { data: profile } = await supabase.from("profiles").select("full_name, name, phone").eq("id", dbOrder.user_id).maybeSingle();
-              if (profile) { customerName = (profile as any).full_name || (profile as any).name || "Customer"; customerPhone = (profile as any).phone || customerPhone; }
+              if (profile) { customerName = (profile.full_name as string) || (profile.name as string) || "Customer"; customerPhone = (profile.phone as string) || customerPhone; }
             }
             const { data: itemsData } = await supabase.from("order_items").select("*").eq("order_id", dbOrder.id);
             const items = itemsData || [];
-            const itemsCount = items.reduce((sum: number, it: any) => sum + it.quantity, 0);
-            const itemsList = items.map((it: any) => `${it.quantity}x ${it.name || "Item"}`);
+            const itemsCount = items.reduce((sum: number, it: Record<string, unknown>) => sum + (it.quantity as number), 0);
+            const itemsList = items.map((it: Record<string, unknown>) => `${it.quantity}x ${(it.name as string) || "Item"}`);
             const activeOrder: OrderWithTiming = {
-              id: dbOrder.id, orderDbId: dbOrder.id, vendor: vendorData?.shop_name || vendorData?.name || "Restaurant",
-              vendorAddress: vendorData?.address || "Restaurant Address", vendorPhone: vendorData?.phone || "+91 99999 99999",
-              vendorLat: vendorData?.latitude || vendorData?.lat || undefined, vendorLng: vendorData?.longitude || vendorData?.lng || undefined,
+              id: dbOrder.id, orderDbId: dbOrder.id, vendor: (vendorData?.shop_name as string) || (vendorData?.name as string) || "Restaurant",
+              vendorAddress: (vendorData?.address as string) || "Restaurant Address", vendorPhone: (vendorData?.phone as string) || "+91 99999 99999",
+              vendorLat: (vendorData?.latitude as number) || (vendorData?.lat as number) || undefined, vendorLng: (vendorData?.longitude as number) || (vendorData?.lng as number) || undefined,
               customer: customerName, customerPhone, customerAddress: dbOrder.delivery_address || "Customer Delivery Location",
               landmark: dbOrder.special_instructions || "N/A", distance: 0, distance2: 0, totalDistance: 0,
               earnings: calculateEarnings(0), orderTotal: Math.round(dbOrder.total_amount || 0), items: itemsCount || 1,
               itemsList: itemsList.length > 0 ? itemsList : ["Items hidden"], time: "Calculating...", time2: "Calculating...",
               estCompletion: 0, priority: (dbOrder.total_amount > 500) ? "high" as const : "normal" as const,
-              peakMultiplier: 1.0, specialInstructions: dbOrder.special_instructions || "", otp: dbOrder.otp || "", type: vendorData?.type || "food",
+              peakMultiplier: 1.0, specialInstructions: dbOrder.special_instructions || "", otp: dbOrder.otp || "", type: (vendorData?.type as "food" | "grocery" | "multi_stop") || "food",
             };
             setCurrentOrder(activeOrder);
             const statusStepMap: Record<string, "shopping" | "picking_up" | "picked" | "delivering" | "arrived"> = {
@@ -328,9 +329,9 @@ export default function RiderDashboard() {
 
   useEffect(() => {
     if (typeof navigator === 'undefined' || !('getBattery' in navigator)) return;
-    let batteryRef: any = null;
+    let batteryRef: { level: number; addEventListener: (type: string, listener: () => void) => void; removeEventListener: (type: string, listener: () => void) => void } | null = null;
     let handler: (() => void) | null = null;
-    (navigator as any).getBattery().then((battery: any) => {
+    (navigator as Navigator & { getBattery?: () => Promise<{ level: number; addEventListener: (type: string, listener: () => void) => void; removeEventListener: (type: string, listener: () => void) => void }> }).getBattery?.().then((battery) => {
       batteryRef = battery;
       setBatteryLevel(Math.round(battery.level * 100));
       handler = () => {
@@ -371,7 +372,7 @@ export default function RiderDashboard() {
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map) return;
-    const markers: any[] = [];
+    const markers: Leaflet.Marker[] = [];
     (async () => {
       const L = await import('leaflet');
       if (currentOrder && currentOrder.vendorLat && currentOrder.vendorLng) {
@@ -382,7 +383,7 @@ export default function RiderDashboard() {
           markers.push(L.marker([currentOrder.customerLat, currentOrder.customerLng], { icon: deliveryIcon }).addTo(map));
         }
       }
-      if (mapRef.current) { (mapRef.current as any)._orderMarkers?.forEach((m: any) => m.remove()); (mapRef.current as any)._orderMarkers = markers; }
+      if (mapRef.current) { const el = mapRef.current as HTMLDivElement & { _orderMarkers?: Leaflet.Marker[] }; el._orderMarkers?.forEach((m) => m.remove()); el._orderMarkers = markers; }
     })();
     return () => { markers.forEach(m => m.remove()); };
   }, [currentOrder, deliveryStep]);
@@ -392,17 +393,18 @@ export default function RiderDashboard() {
     if (!map) return;
     (async () => {
       const L = await import('leaflet');
-      if ((mapRef.current as any)?._demandMarkers) (mapRef.current as any)._demandMarkers.forEach((m: any) => m.remove());
-      const demandMarkers: any[] = [];
+      const mapEl = mapRef.current as (HTMLDivElement & { _demandMarkers?: Leaflet.Marker[] }) | null;
+      if (mapEl?._demandMarkers) mapEl._demandMarkers.forEach((m) => m.remove());
+      const demandMarkers: Leaflet.Marker[] = [];
       pendingOrders.forEach((order) => {
         if (order.vendorLat && order.vendorLng) {
           const dotIcon = L.divIcon({ className: '', html: `<div style="width:16px;height:16px;background:rgba(11,80,213,0.5);border:2px solid #0b50d5;border-radius:50%;box-shadow:0 0 12px rgba(11,80,213,0.4);animation:pulse-dot 2s ease-in-out infinite;"></div>`, iconSize: [16, 16], iconAnchor: [8, 8] });
           demandMarkers.push(L.marker([order.vendorLat, order.vendorLng], { icon: dotIcon }).addTo(map).bindPopup(`<b>${order.vendor}</b><br/>₹${order.earnings} • ${order.items} items`));
         }
       });
-      (mapRef.current as any)._demandMarkers = demandMarkers;
+      if (mapEl) mapEl._demandMarkers = demandMarkers;
     })();
-    return () => { if ((mapRef.current as any)?._demandMarkers) (mapRef.current as any)._demandMarkers.forEach((m: any) => m.remove()); };
+    return () => { const mapEl = mapRef.current as (HTMLDivElement & { _demandMarkers?: Leaflet.Marker[] }) | null; if (mapEl?._demandMarkers) mapEl._demandMarkers.forEach((m) => m.remove()); };
   }, [pendingOrders]);
 
   useEffect(() => {
@@ -429,7 +431,7 @@ export default function RiderDashboard() {
       new Notification(t.rider.notifications.newMessage, { body: `Order #${currentOrder?.id?.slice(0, 8) || ""}`, icon: "/icon.png" });
     }
     try {
-      const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const ctx = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
       const osc = ctx.createOscillator(); const gain = ctx.createGain();
       osc.connect(gain); gain.connect(ctx.destination);
       osc.frequency.value = 880; osc.type = "sine";
@@ -444,7 +446,7 @@ export default function RiderDashboard() {
       const { error } = await supabase.from("orders").delete().is("rider_id", null).in("status", ["pending"]);
       if (error) throw error;
       setPendingOrders([]);
-    } catch (err: any) { console.error("Clear failed:", err.message); }
+    } catch (err: unknown) { console.error("Clear failed:", err instanceof Error ? err.message : err); }
   };
 
   const handleAccept = async (order: OrderWithTiming) => {
@@ -601,7 +603,7 @@ export default function RiderDashboard() {
           <IncomingOrderCard order={pendingOrders[0]} countdown={countdown} customerRating={customerRating} onAccept={handleAccept} onDecline={() => setShowCancelModal(true)} isTakenByOther={orderTakenByOther} />
         )}
         {currentOrder && (
-          <ActiveDeliveryView currentOrder={currentOrder} activeOrders={activeOrders} deliveryStep={deliveryStep} currentStopIndex={currentStopIndex} unreadCount={unreadCount} pickedItems={pickedItems} onSetCurrentOrder={(o) => { setCurrentOrder(o); setDeliveryStep("shopping"); }} onSetDeliveryStep={(s) => setDeliveryStep(s as any)} onCallCustomer={() => setShowCallModal(true)} onStartChat={() => setShowChatModal(true)} onPickedUp={handlePickedUp} onArrived={handleArrived} onComplete={handleComplete} onItemsCollected={handleItemsCollected} onSetPickedItems={setPickedItems as any} />
+          <ActiveDeliveryView currentOrder={currentOrder} activeOrders={activeOrders} deliveryStep={deliveryStep} currentStopIndex={currentStopIndex} unreadCount={unreadCount} pickedItems={pickedItems} onSetCurrentOrder={(o) => { setCurrentOrder(o); setDeliveryStep("shopping"); }} onSetDeliveryStep={(s) => setDeliveryStep(s as "shopping" | "picking_up" | "picked" | "delivering" | "arrived")} onCallCustomer={() => setShowCallModal(true)} onStartChat={() => setShowChatModal(true)} onPickedUp={handlePickedUp} onArrived={handleArrived} onComplete={handleComplete} onItemsCollected={handleItemsCollected} onSetPickedItems={setPickedItems as (fn: (prev: Set<number>) => Set<number>) => void} />
         )}
         <MapControls onZoomIn={() => mapInstanceRef.current?.zoomIn()} onZoomOut={() => mapInstanceRef.current?.zoomOut()} onCenter={handleCenterMap} />
         {!(pendingOrders.length > 0 && !currentOrder) && (

@@ -19,6 +19,35 @@ import PendingOrderCard from "@/components/order/PendingOrderCard";
 import { useOrderTracking } from "@/lib/hooks/useOrderTracking";
 import { useUnreadMessages } from "@/lib/hooks/useUnreadMessages";
 
+interface OrderPageData {
+  id: string;
+  status: string;
+  user_id: string;
+  vendor_id: string;
+  rider_id: string | null;
+  total_amount: number;
+  delivery_lat?: number;
+  delivery_lng?: number;
+  delivery_address?: string | null;
+  vendor_lat?: number;
+  vendor_lng?: number;
+  delay_minutes?: number;
+  delay_reason?: string | null;
+  estimated_prep_time?: number | null;
+  placed_at?: string;
+  accepted_at?: string | null;
+  preparing_at?: string | null;
+  ready_at?: string | null;
+  shopping_at?: string | null;
+  picked_at?: string | null;
+  on_the_way_at?: string | null;
+  arrived_at?: string | null;
+  delivered_at?: string | null;
+  processing_at?: string | null;
+  riders?: { name?: string; profile_image?: string; rating?: number; phone?: string } | null;
+  vendor?: { name?: string; image_url?: string; logo_url?: string; address?: string } | null;
+}
+
 function formatTimestamp(ts: string | null | undefined): string {
   if (!ts) return "";
   try {
@@ -28,7 +57,36 @@ function formatTimestamp(ts: string | null | undefined): string {
   }
 }
 
-function getFoodSteps(t: any, order?: any) {
+interface TranslationKeys {
+  orders: {
+    orderPlaced: string;
+    orderAccepted: string;
+    preparing: string;
+    readyForPickup: string;
+    shopping: string;
+    pickingUp: string;
+    onTheWay: string;
+    arrived: string;
+    delivered: string;
+    printingInProgress: string;
+  };
+}
+
+interface OrderTimestamps {
+  placed_at?: string | null;
+  accepted_at?: string | null;
+  preparing_at?: string | null;
+  ready_at?: string | null;
+  shopping_at?: string | null;
+  picked_at?: string | null;
+  on_the_way_at?: string | null;
+  arrived_at?: string | null;
+  delivered_at?: string | null;
+  processing_at?: string | null;
+  [key: string]: unknown;
+}
+
+function getFoodSteps(t: TranslationKeys, order?: OrderTimestamps) {
   return [
     { key: "pending", label: t.orders.orderPlaced, icon: "receipt_long", time: formatTimestamp(order?.placed_at) },
     { key: "accepted", label: t.orders.orderAccepted, icon: "check_circle", time: formatTimestamp(order?.accepted_at) },
@@ -42,7 +100,7 @@ function getFoodSteps(t: any, order?: any) {
   ];
 }
 
-function getPrintSteps(t: any, order?: any) {
+function getPrintSteps(t: TranslationKeys, order?: OrderTimestamps) {
   return [
     { key: "pending", label: t.orders.orderPlaced, icon: "receipt_long", time: formatTimestamp(order?.placed_at) },
     { key: "processing", label: t.orders.printingInProgress, icon: "print", time: formatTimestamp(order?.processing_at) },
@@ -74,18 +132,20 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
     currentUserId,
   } = useOrderTracking(id, supabase);
 
+  const pageOrder = order as unknown as OrderPageData | null;
+
   const { unreadByOrder } = useUnreadMessages(currentUserId);
   const unreadCount = unreadByOrder[id] || 0;
 
-  const canCancel = order && ["pending", "accepted"].includes(order.status);
+  const canCancel = !!(pageOrder && ["pending", "accepted"].includes(pageOrder.status));
 
   const handleCancelOrder = async (reason?: string) => {
     try {
-      const updates: Record<string, any> = { status: "cancelled" };
+      const updates: Partial<Record<string, string>> = { status: "cancelled" };
       if (reason) updates.cancel_reason = reason;
       const { error } = await supabase.from("orders").update(updates).eq("id", id).eq("user_id", currentUserId);
       if (error) throw error;
-      setOrder((prev: any) => prev ? { ...prev, ...updates } : prev);
+      setOrder((prev) => prev ? { ...prev, ...updates } : prev);
       addToast(t.orders.orderCancelledSuccess, "success");
     } catch (error) {
       console.error("Cancel error:", error);
@@ -94,12 +154,12 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
     setShowCancelReason(false);
   };
 
-  const riderInfo = order?.riders
+  const riderInfo = pageOrder?.riders
     ? {
-        name: order.riders.name || t.orders.rider,
-        image: order.riders.profile_image || "https://ui-avatars.com/api/?name=Rider&background=0b50d5&color=fff",
-        rating: order.riders.rating || 4.9,
-        phone: order.riders.phone,
+        name: pageOrder.riders.name || t.orders.rider,
+        image: pageOrder.riders.profile_image || "https://ui-avatars.com/api/?name=Rider&background=0b50d5&color=fff",
+        rating: pageOrder.riders.rating || 4.9,
+        phone: pageOrder.riders.phone,
       }
     : {
         name: t.orders.assigningRider,
@@ -115,7 +175,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
     );
   }
 
-  if (!order) {
+  if (!pageOrder) {
     return (
       <div className="min-h-screen bg-surface flex flex-col items-center justify-center text-on-surface p-6">
         <span className="text-6xl mb-4">🔍</span>
@@ -131,8 +191,8 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
     );
   }
 
-  const steps = order?.vendor_id === PRINTING_VENDOR_ID ? getPrintSteps(t, order) : getFoodSteps(t, order);
-  const currentStepIndex = steps.findIndex((s) => s.key === order.status);
+  const steps = pageOrder?.vendor_id === PRINTING_VENDOR_ID ? getPrintSteps(t, pageOrder as unknown as OrderTimestamps) : getFoodSteps(t, pageOrder as unknown as OrderTimestamps);
+  const currentStepIndex = steps.findIndex((s) => s.key === pageOrder.status);
 
   return (
     <div className="min-h-screen bg-surface overflow-x-hidden">
@@ -142,7 +202,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
       <main className="pt-6 pb-12 min-h-screen">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:grid lg:grid-cols-12 lg:gap-10 items-start">
           <div className="lg:col-span-7 space-y-4 sm:space-y-6">
-            {order?.vendor_id !== PRINTING_VENDOR_ID && (
+            {pageOrder?.vendor_id !== PRINTING_VENDOR_ID && (
               <div className="relative w-full h-[260px] sm:h-[420px] rounded-2xl overflow-hidden shadow-sm">
                 {trackingInfo && (
                   <div className="absolute top-4 right-4 bg-[var(--color-surface-container-lowest)]/90 backdrop-blur rounded-full px-4 py-3 shadow-lg flex items-center gap-2" style={{ zIndex: 10 }}>
@@ -154,23 +214,23 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                   </div>
                 )}
                 <RiderMap
-                  dropoff={{ lat: order?.delivery_lat || 0, lng: order?.delivery_lng || 0, label: order?.delivery_address || "", kind: "home" }}
-                  pickup={order?.vendor?.address ? { lat: order?.vendor_lat || 0, lng: order?.vendor_lng || 0, label: order.vendor.address, kind: "vendor" } : null}
+                  dropoff={{ lat: pageOrder?.delivery_lat || 0, lng: pageOrder?.delivery_lng || 0, label: pageOrder?.delivery_address || "", kind: "home" }}
+                  pickup={pageOrder?.vendor?.address ? { lat: pageOrder?.vendor_lat || 0, lng: pageOrder?.vendor_lng || 0, label: pageOrder.vendor.address, kind: "vendor" } : null}
                   riderLocation={riderLocation}
                   onRouteUpdate={setTrackingInfo}
                 />
               </div>
             )}
 
-            {order?.delay_minutes > 0 && (
-              <OrderStatusBanner type="delay" delayMinutes={order.delay_minutes} delayReason={order.delay_reason} />
+            {pageOrder?.delay_minutes && pageOrder.delay_minutes > 0 && (
+              <OrderStatusBanner type="delay" delayMinutes={pageOrder.delay_minutes} delayReason={pageOrder.delay_reason ?? undefined} />
             )}
 
-            {order?.estimated_prep_time && !order.delay_minutes && ["accepted", "preparing"].includes(order.status) && (
-              <OrderStatusBanner type="prep_time" estimatedPrepTime={order.estimated_prep_time} placedAt={order.placed_at} preparingLabel={t.orders.preparingOrder} />
+            {pageOrder?.estimated_prep_time && !pageOrder.delay_minutes && ["accepted", "preparing"].includes(pageOrder.status) && (
+              <OrderStatusBanner type="prep_time" estimatedPrepTime={pageOrder.estimated_prep_time} placedAt={pageOrder.placed_at} preparingLabel={t.orders.preparingOrder} />
             )}
 
-            {order.status !== "pending" && order.riders && (
+            {pageOrder.status !== "pending" && pageOrder.riders && (
               <RiderContactCard
                 name={riderInfo.name}
                 image={riderInfo.image}
@@ -178,25 +238,25 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                 phone={riderInfo.phone}
                 orderId={id}
                 currentUserId={currentUserId}
-                orderStatus={order.status}
+                orderStatus={pageOrder.status}
                 unreadCount={unreadCount}
                 onChat={() => setShowChat("rider")}
               />
             )}
 
-            {order.status === "pending" && order.vendor_id !== PRINTING_VENDOR_ID && (
+            {pageOrder.status === "pending" && pageOrder.vendor_id !== PRINTING_VENDOR_ID && (
               <PendingOrderCard type="food" findingRiderLabel={t.orders.findingRider} riderWillAcceptLabel={t.orders.riderWillAccept} />
             )}
 
-            {order.status === "pending" && order.vendor_id === PRINTING_VENDOR_ID && (
+            {pageOrder.status === "pending" && pageOrder.vendor_id === PRINTING_VENDOR_ID && (
               <PendingOrderCard type="print" />
             )}
           </div>
 
           <div className="lg:col-span-5 space-y-4 sm:space-y-6 mt-6 lg:mt-0">
             <OrderJourney steps={steps} currentStepIndex={currentStepIndex} trackingInfo={trackingInfo} />
-            <OrderItemsList order={order} onChatVendor={() => setShowChat("vendor")} />
-            <OrderActions order={order} canCancel={canCancel} showHelp={showHelp} onToggleHelp={() => setShowHelp(!showHelp)} onShowCancelReason={() => setShowCancelReason(true)} />
+            <OrderItemsList order={order as Record<string, unknown> & { id: string; vendor_id: string; status: string }} onChatVendor={() => setShowChat("vendor")} />
+            <OrderActions order={pageOrder} canCancel={canCancel} showHelp={showHelp} onToggleHelp={() => setShowHelp(!showHelp)} onShowCancelReason={() => setShowCancelReason(true)} />
             <OrderCancelModal open={showCancelReason} onClose={() => setShowCancelReason(false)} onCancel={handleCancelOrder} />
           </div>
         </div>
@@ -207,8 +267,8 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
             currentUserId={currentUserId}
             senderType="user"
             thread={showChat === "vendor" ? "user-vendor" : "user-rider"}
-            otherName={showChat === "vendor" ? (order.vendor?.name || (order.vendor_id === PRINTING_VENDOR_ID ? t.orders.printStore : "Restaurant")) : (riderInfo?.name || t.orders.rider)}
-            otherAvatar={showChat === "vendor" ? order.vendor?.image_url || order.vendor?.logo_url || undefined : riderInfo?.image}
+            otherName={showChat === "vendor" ? (pageOrder.vendor?.name || (pageOrder.vendor_id === PRINTING_VENDOR_ID ? t.orders.printStore : "Restaurant")) : (riderInfo?.name || t.orders.rider)}
+            otherAvatar={showChat === "vendor" ? pageOrder.vendor?.image_url || pageOrder.vendor?.logo_url || undefined : riderInfo?.image}
             onClose={() => setShowChat(null)}
           />
         )}

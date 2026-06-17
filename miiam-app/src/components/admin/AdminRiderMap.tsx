@@ -13,6 +13,36 @@ interface RiderLocation {
   created_at: string;
 }
 
+interface LeafletMapInstance {
+  setView(center: [number, number], zoom: number): LeafletMapInstance;
+  invalidateSize(): void;
+  remove(): void;
+  removeLayer(layer: unknown): void;
+  fitBounds(bounds: unknown, options?: { padding?: [number, number]; maxZoom?: number }): void;
+}
+
+interface LeafletCircleMarkerInstance {
+  getLatLng(): { lat: number; lng: number };
+  setLatLng(latlng: [number, number]): LeafletCircleMarkerInstance;
+  bindPopup(content: string): LeafletCircleMarkerInstance;
+  addTo(map: LeafletMapInstance): LeafletCircleMarkerInstance;
+  on(event: string, handler: () => void): LeafletCircleMarkerInstance;
+}
+
+interface LeafletLatLngInstance {
+  lat: number;
+  lng: number;
+}
+
+interface LeafletModule {
+  map(el: HTMLElement, options?: Record<string, unknown>): LeafletMapInstance;
+  control: { zoom(options?: Record<string, unknown>): { addTo(map: LeafletMapInstance): void } };
+  tileLayer(url: string, options?: Record<string, unknown>): { addTo(map: LeafletMapInstance): void };
+  circleMarker(latlng: [number, number], options?: Record<string, unknown>): LeafletCircleMarkerInstance;
+  latLngBounds(bounds: [number, number][]): { contains(latlng: [number, number]): boolean };
+  latLng(latlng: [number, number]): LeafletLatLngInstance;
+}
+
 interface Props {
   riders: Rider[];
   onRiderClick: (rider: Rider) => void;
@@ -20,9 +50,9 @@ interface Props {
 
 export default function AdminRiderMap({ riders, onRiderClick }: Props) {
   const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<any>(null);
-  const markersRef = useRef<Map<string, any>>(new Map());
-  const leafletRef = useRef<any>(null);
+  const mapInstanceRef = useRef<LeafletMapInstance | null>(null);
+  const markersRef = useRef<Map<string, LeafletCircleMarkerInstance>>(new Map());
+  const leafletRef = useRef<LeafletModule | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [riderLocations, setRiderLocations] = useState<RiderLocation[]>([]);
   const [fetchError, setFetchError] = useState<string | null>(null);
@@ -67,8 +97,8 @@ export default function AdminRiderMap({ riders, onRiderClick }: Props) {
         }
         const data = await res.json();
         setRiderLocations(data);
-      } catch (e: any) {
-        setFetchError(e.message);
+      } catch (e: unknown) {
+        setFetchError(e instanceof Error ? e.message : "Unknown error");
       }
     }
     fetchLocations();

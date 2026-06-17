@@ -4,7 +4,6 @@ import { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
-const supabase = useMemo(() => createClient(), []);
 
 const statusColors: Record<string, string> = {
   delivered: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
@@ -25,6 +24,7 @@ interface PharmacyOrder {
 }
 
 export default function PharmacyOrdersPage() {
+  const supabase = useMemo(() => createClient(), []);
   const [orders, setOrders] = useState<PharmacyOrder[]>([]);
   const [stats, setStats] = useState({ total: 0, pending: 0, delivered: 0, prescription: 0 });
   const [searchTerm, setSearchTerm] = useState("");

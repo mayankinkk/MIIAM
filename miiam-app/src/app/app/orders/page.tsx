@@ -54,14 +54,16 @@ export default function OrdersPage() {
         schema: 'public',
         table: 'orders',
         filter: `user_id=eq.${userId}`,
-      }, (payload: any) => {
+      }, (payload: { eventType: string; new?: Record<string, unknown>; old?: Record<string, unknown> }) => {
         if (payload.eventType === 'UPDATE' && payload.new) {
-          setOrders(prev => prev.map(o => o.id === payload.new.id ? { ...o, ...payload.new } : o));
+          const updated = payload.new as { id: string };
+          setOrders(prev => prev.map(o => o.id === updated.id ? { ...o, ...payload.new } : o));
         } else if (payload.eventType === 'INSERT' && payload.new) {
           // Re-fetch to get full order with vendor details
           fetchOrders();
         } else if (payload.eventType === 'DELETE' && payload.old) {
-          setOrders(prev => prev.filter(o => o.id !== payload.old.id));
+          const deleted = payload.old as { id: string };
+          setOrders(prev => prev.filter(o => o.id !== deleted.id));
         }
       })
       .subscribe();
@@ -111,8 +113,8 @@ export default function OrdersPage() {
       } else {
         setOrders([]);
       }
-    } catch (error: any) {
-      console.error("Error fetching orders:", error?.message || error);
+    } catch (error: unknown) {
+      console.error("Error fetching orders:", error instanceof Error ? error.message : error);
       addToast(t.orders.loadFailed, "error");
     } finally {
       setLoading(false);
@@ -138,7 +140,7 @@ export default function OrdersPage() {
 
         const menuMap = new Map<string, { name: string; image_url?: string }>();
         if (menuItems) {
-          menuItems.forEach((mi: any) => menuMap.set(mi.id, mi));
+          menuItems.forEach((mi: { id: string; name: string; image_url?: string }) => menuMap.set(mi.id, mi));
         }
 
         for (const item of orderItems) {

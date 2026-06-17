@@ -5,7 +5,6 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 
-const supabase = useMemo(() => createClient(), []);
 
 interface GroceryPartner {
   id: string;
@@ -25,9 +24,11 @@ interface GroceryPartner {
   cuisine: string;
   total_orders: number;
   created_at: string;
+  type?: string;
 }
 
 export default function GroceryPartnersPage() {
+  const supabase = useMemo(() => createClient(), []);
   const [partners, setPartners] = useState<GroceryPartner[]>([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({ total: 0, active: 0, inactive: 0, newThisMonth: 0 });
@@ -67,7 +68,7 @@ export default function GroceryPartnersPage() {
       if (error) throw error;
       
       const partnersWithOrders = await Promise.all(
-        (data || []).map(async (partner: any) => {
+        (data || []).map(async (partner: GroceryPartner) => {
           const { count } = await supabase
             .from("orders")
             .select("*", { count: "exact", head: true })
@@ -81,12 +82,12 @@ export default function GroceryPartnersPage() {
       
       const now = new Date();
       const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-      const newThisMonth = data?.filter((p: any) => new Date(p.created_at) >= monthStart).length || 0;
+      const newThisMonth = data?.filter((p: GroceryPartner) => new Date(p.created_at) >= monthStart).length || 0;
       
       setStats({
         total: data?.length || 0,
-        active: data?.filter((p: any) => p.status === "active").length || 0,
-        inactive: data?.filter((p: any) => p.status !== "active").length || 0,
+        active: data?.filter((p: GroceryPartner) => p.status === "active").length || 0,
+        inactive: data?.filter((p: GroceryPartner) => p.status !== "active").length || 0,
         newThisMonth,
       });
     } catch (error) {
@@ -124,7 +125,7 @@ export default function GroceryPartnersPage() {
 
     setSaving(true);
     try {
-      const payload: Record<string, any> = {
+      const payload: Record<string, string | number | null> = {
         shop_name: newPartner.shop_name,
         owner_name: newPartner.owner_name,
         phone: newPartner.phone,
@@ -158,9 +159,10 @@ export default function GroceryPartnersPage() {
       resetModal();
       loadPartners();
       useToastStore.getState().addToast(editingPartner ? "Partner updated successfully!" : "Partner added successfully!", "success");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error saving partner:", error);
-      useToastStore.getState().addToast("Failed to save: " + error.message, "error");
+      const msg = error instanceof Error ? error.message : "Unknown error";
+      useToastStore.getState().addToast("Failed to save: " + msg, "error");
     } finally {
       setSaving(false);
     }
@@ -174,12 +176,12 @@ export default function GroceryPartnersPage() {
       phone: partner.phone,
       email: partner.email || "",
       address: partner.address || "",
-      city: (partner as any).city || "",
-      state: (partner as any).state || "",
-      pincode: (partner as any).pincode || "",
-      landmark: (partner as any).landmark || "",
-      delivery_charge: (partner as any).delivery_charge?.toString() || "",
-      min_order_amount: (partner as any).min_order_amount?.toString() || "",
+      city: partner.city || "",
+      state: partner.state || "",
+      pincode: partner.pincode || "",
+      landmark: partner.landmark || "",
+      delivery_charge: partner.delivery_charge?.toString() || "",
+      min_order_amount: partner.min_order_amount?.toString() || "",
     });
     setShowAddModal(true);
   };

@@ -28,6 +28,37 @@ const ADDRESS_TYPES = [
   { id: "other", icon: "place", label: "Other" },
 ];
 
+interface NominatimSuggestion {
+  place_id: number;
+  display_name: string;
+  lat: string;
+  lon: string;
+  address?: Record<string, string>;
+  [key: string]: unknown;
+}
+
+interface LeafletMapInstance {
+  setView(center: [number, number], zoom: number): LeafletMapInstance;
+  invalidateSize(): void;
+  remove(): void;
+}
+
+interface LeafletMarkerInstance {
+  setLatLng(latlng: [number, number]): LeafletMarkerInstance;
+  getLatLng(): { lat: number; lng: number };
+  addTo(map: LeafletMapInstance): LeafletMarkerInstance;
+  on(event: string, handler: (e: unknown) => void): LeafletMarkerInstance;
+  bindPopup(content: string): LeafletMarkerInstance;
+}
+
+interface LeafletModule {
+  map(el: HTMLElement, options?: Record<string, unknown>): LeafletMapInstance;
+  control: { zoom(options?: Record<string, unknown>): { addTo(map: LeafletMapInstance): void } };
+  tileLayer(url: string, options?: Record<string, unknown>): { addTo(map: LeafletMapInstance): void };
+  divIcon(options: Record<string, unknown>): unknown;
+  marker(latlng: [number, number], options?: Record<string, unknown>): LeafletMarkerInstance;
+}
+
 export default function AddressPickerSheet({ onSelect, onClose, savedAddresses = [] }: Props) {
   const [tab, setTab] = useState<"saved" | "gps" | "manual">(
     savedAddresses.length > 0 ? "saved" : "gps"
@@ -40,7 +71,7 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
 
   // Manual state
   const [searchQuery, setSearchQuery] = useState("");
-  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [suggestions, setSuggestions] = useState<NominatimSuggestion[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [pickedLocation, setPickedLocation] = useState<{ lat: number; lng: number; display: string } | null>(null);
   const [flat, setFlat] = useState("");
@@ -49,8 +80,8 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
   const [addrType, setAddrType] = useState("home");
   const searchTimeout = useRef<NodeJS.Timeout | null>(null);
   const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<any>(null);
-  const markerRef = useRef<any>(null);
+  const mapInstanceRef = useRef<LeafletMapInstance | null>(null);
+  const markerRef = useRef<LeafletMarkerInstance | null>(null);
 
   // GPS detection + reverse geocode
   async function detectGPS() {
@@ -150,8 +181,9 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
       requestAnimationFrame(() => map.invalidateSize());
       setTimeout(() => map.invalidateSize(), 300);
 
-      marker.on("dragend", async (e: any) => {
-        const { lat, lng } = e.target.getLatLng();
+      marker.on("dragend", async (e: unknown) => {
+        const target = (e as { target: { getLatLng: () => { lat: number; lng: number } } }).target;
+        const { lat, lng } = target.getLatLng();
         try {
           const res = await fetch(
             `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18`,
@@ -170,7 +202,7 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
     };
   }, []);
 
-  function pickSuggestion(s: any) {
+  function pickSuggestion(s: NominatimSuggestion) {
     const addr = s.address || {};
     setPickedLocation({
       lat: parseFloat(s.lat),

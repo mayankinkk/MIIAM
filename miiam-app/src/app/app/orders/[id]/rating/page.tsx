@@ -8,6 +8,7 @@ import { useToastStore } from "@/lib/store/toastStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
 import { useTranslation } from "@/lib/i18n/useTranslation";
+import type { Translations } from "@/lib/i18n";
 
 function AnimatedStarRating({ 
   rating, 
@@ -22,7 +23,7 @@ function AnimatedStarRating({
   setHover: (v: number) => void; 
   setRating: (v: number) => void;
   label: string;
-  t: any;
+  t: Translations;
 }) {
   return (
     <div className="flex flex-col items-center gap-4">
@@ -108,7 +109,7 @@ function Confetti() {
   );
 }
 
-function getFeedbackTags(t: any) {
+function getFeedbackTags(t: Translations) {
   return [
     t.rating.fastDelivery,
     t.rating.friendlyRider,
@@ -127,7 +128,14 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
   const [loading, setLoading] = useState(true);
-  const [order, setOrder] = useState<any>(null);
+  const [order, setOrder] = useState<{
+    id: string;
+    user_id: string;
+    vendor_id: string;
+    rider_id: string | null;
+    vendor?: { name?: string };
+    rider?: { name?: string; full_name?: string; profile_image?: string; rating?: number; total_ratings?: number };
+  } | null>(null);
   const [foodRating, setFoodRating] = useState(0);
   const [riderRating, setRiderRating] = useState(0);
   const [dimTaste, setDimTaste] = useState(0);
@@ -164,7 +172,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
     try {
       // Save rating to reviews table
       if (foodRating > 0) {
-        const reviewData: Record<string, any> = {
+        const reviewData: Record<string, string | number | string[]> = {
           order_id: id,
           user_id: order.user_id,
           vendor_id: order.vendor_id,

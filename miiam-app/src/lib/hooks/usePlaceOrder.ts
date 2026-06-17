@@ -9,6 +9,29 @@ import { safeMenuItemId } from "@/lib/checkout-utils";
 import { PRINTING_VENDOR_ID, SERVICES_VENDOR_ID } from "@/lib/constants";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
+interface DeliveryAddress {
+  street?: string;
+  city?: string;
+  state?: string;
+  postal_code?: string;
+  flat?: string;
+}
+
+interface OrderInsert {
+  user_id: string;
+  vendor_id: string;
+  status: string;
+  total_amount: number;
+  delivery_fee: number;
+  discount_amount: number;
+  payment_method: string;
+  delivery_address: string;
+  scheduled_delivery: string | null;
+  special_instructions: string | null;
+  customer_phone: string | null;
+  placed_at: string;
+}
+
 interface PaymentDetails {
   paymentId: string;
   razorpayOrderId: string;
@@ -21,7 +44,7 @@ export function usePlaceOrder(supabase: SupabaseClient) {
   const locationStore = useLocationStore();
   const userPincode = locationStore.pincode;
 
-  const validateCheckout = useCallback((deliveryAddress: any): boolean => {
+  const validateCheckout = useCallback((deliveryAddress: DeliveryAddress | null): boolean => {
     if (items.length === 0) {
       addToast("Your cart is empty! Add items from the Food page first.", "error");
       return false;
@@ -56,7 +79,7 @@ export function usePlaceOrder(supabase: SupabaseClient) {
     phone,
     paymentDetails,
   }: {
-    deliveryAddress: any;
+    deliveryAddress: DeliveryAddress | null;
     paymentMethod: string;
     discount: number;
     subtotal: number;
@@ -120,7 +143,7 @@ export function usePlaceOrder(supabase: SupabaseClient) {
             })()
           : null;
 
-        const orderData: any = {
+        const orderData: OrderInsert = {
           user_id: user.id,
           vendor_id: vendorId,
           status: scheduledIso ? "scheduled" : "pending",
@@ -217,10 +240,10 @@ export function usePlaceOrder(supabase: SupabaseClient) {
       const targetPath = firstOrderId ? `/app/orders/${firstOrderId}` : "/app/orders";
       router.push(targetPath);
       return true;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Order placement failed:", error);
       let errorMessage = "Something went wrong. Please try again.";
-      if (error?.message) {
+      if (error instanceof Error && error.message) {
         if (error.message.includes('miiam_food')) {
           errorMessage = "Cart error: Please remove items and add again from Food page.";
         } else if (error.message.includes('violates foreign key')) {

@@ -4,6 +4,7 @@ import { useEffect, useState, useRef, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { startLocationTracking, stopLocationTracking } from "@/lib/rider-location-tracker";
 import type { Order, OrderItem } from "./types";
+import type * as Leaflet from 'leaflet';
 
 interface ActiveDeliveryViewProps {
   order: Order;
@@ -18,23 +19,23 @@ interface ActiveDeliveryViewProps {
 export default function ActiveDeliveryView({ order, riderId, onUpdateItemStatus, onMarkDelivered, onReportIssue, onStartDelivery, onShareLocation }: ActiveDeliveryViewProps) {
   const supabase = useMemo(() => createClient(), []);
   const items = order.items || [];
-  const pickedCount = items.filter((i: any) => i.status === "available").length;
-  const totalSpent = items.reduce((s: number, i: any) => s + ((i.actual_price || 0) * i.quantity), 0);
+  const pickedCount = items.filter((i: OrderItem) => i.status === "available").length;
+  const totalSpent = items.reduce((s: number, i: OrderItem) => s + ((i.actual_price || 0) * i.quantity), 0);
   const profit = (order.total_amount || 0) + (order.delivery_fee || 0) - totalSpent;
 
   const phase = order.status === "on_the_way" ? "delivery" : "pickup";
   const [expanded, setExpanded] = useState(false);
   const [showMap, setShowMap] = useState(false);
   const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<any>(null);
-  const riderMarkerRef = useRef<any>(null);
-  const routeLayerRef = useRef<any[]>([]);
+  const mapInstanceRef = useRef<Leaflet.Map | null>(null);
+  const riderMarkerRef = useRef<Leaflet.Marker | null>(null);
+  const routeLayerRef = useRef<Leaflet.Polyline[]>([]);
   const destLatLngRef = useRef<[number, number] | null>(null);
   const [trackingInfo, setTrackingInfo] = useState<{ eta: number; distance: string } | null>(null);
   const locationWatchRef = useRef<number | null>(null);
   const prevPhaseRef = useRef(phase);
 
-  const deliveryAddress = (order as any).delivery_address || order.address?.street || "";
+  const deliveryAddress = order.delivery_address || order.address?.street || "";
   const vendorAddress = order.vendor?.address || "";
   const customerPhone = order.customer_phone || "";
 
@@ -159,8 +160,8 @@ export default function ActiveDeliveryView({ order, riderId, onUpdateItemStatus,
 
       const channel = supabase.channel(`rider-loc-${order.id}-${phase}`)
         .on('postgres_changes', { event: '*', schema: 'public', table: 'rider_locations', filter: `order_id=eq.${order.id}` },
-          async (payload: any) => {
-            const loc = payload.new;
+          async (payload: { new: Record<string, unknown> }) => {
+            const loc = payload.new as { lat: number; lng: number };
             if (loc?.lat && loc?.lng && isMounted && mapInstanceRef.current) {
               riderMarkerRef.current?.setLatLng([loc.lat, loc.lng]);
               if (destLatLngRef.current) {
@@ -283,11 +284,11 @@ export default function ActiveDeliveryView({ order, riderId, onUpdateItemStatus,
           </div>
 
           <div className="px-4 space-y-1 mb-2 max-h-40 overflow-y-auto">
-            {items.map((item: any) => (
+            {items.map((item: OrderItem) => (
               <div key={item.id} className="flex items-center gap-1.5 p-2 bg-[var(--color-surface-subtle)] rounded-lg">
                 <select
                   value={item.status || "pending"}
-                  onChange={(e) => onUpdateItemStatus(item.id, e.target.value, item.actual_price)}
+                  onChange={(e) => onUpdateItemStatus(item.id, e.target.value, item.actual_price ?? undefined)}
                   className={`text-[10px] font-bold px-1.5 py-1 rounded border-0 ${
                     item.status === "available" ? "bg-green-100 text-green-700" :
                     item.status === "unavailable" ? "bg-red-100 text-red-700" :

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { PRINTING_VENDOR_ID } from "@/lib/constants";
 
-const supabase = useMemo(() => createClient(), []);
+const supabase = createClient();
 
 const KANBAN_COLUMNS = [
   { id: "pending", label: "Pending", icon: "schedule", color: "bg-amber-100 border-amber-300" },
@@ -16,12 +16,44 @@ const KANBAN_COLUMNS = [
   { id: "cancelled", label: "Cancelled", icon: "cancel", color: "bg-red-100 border-red-300" },
 ] as const;
 
+interface PrintOrderItem {
+  id: string;
+  name: string;
+  special_notes: string | null;
+  [key: string]: unknown;
+}
+
+interface PrintOrder {
+  id: string;
+  status: string;
+  user_id: string | null;
+  vendor_id: string;
+  total_amount: number;
+  placed_at: string;
+  delivery_address: string | null;
+  priority: number;
+  order_items?: PrintOrderItem[];
+  [key: string]: unknown;
+}
+
+interface PrintSettings {
+  totalPages?: number;
+  pages?: number;
+  perFile?: unknown[];
+  fileUrls?: string[];
+  fileNames?: string[];
+  fileStatuses?: boolean[];
+  colorMode?: string;
+  copies?: number;
+  paperSize?: string;
+}
+
 export default function AdminPrintingKanban() {
-  const [orders, setOrders] = useState<any[]>([]);
+  const [orders, setOrders] = useState<PrintOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const [dragOverCol, setDragOverCol] = useState<string | null>(null);
-  const [selectedOrder, setSelectedOrder] = useState<any>(null);
+  const [selectedOrder, setSelectedOrder] = useState<PrintOrder | null>(null);
 
   useEffect(() => {
     loadOrders();
@@ -94,7 +126,7 @@ export default function AdminPrintingKanban() {
   }
 
   const byColumn = useMemo(() => {
-    const grouped: Record<string, any[]> = {};
+    const grouped: Record<string, PrintOrder[]> = {};
     for (const col of KANBAN_COLUMNS) grouped[col.id] = [];
     for (const o of orders) {
       if (grouped[o.status]) grouped[o.status].push(o);
@@ -161,7 +193,7 @@ export default function AdminPrintingKanban() {
               <div className="space-y-2">
                 {byColumn[col.id].map((order) => {
                   const item = order.order_items?.[0];
-                  let settings: Record<string, any> = {};
+                  let settings: PrintSettings = {};
                   try { if (item?.special_notes) settings = JSON.parse(item.special_notes); } catch { /* corrupted data, ignore */ }
                   const pageCount = settings.totalPages || settings.pages || 1;
                   const fileCount = settings.perFile?.length || settings.fileUrls?.length || settings.fileNames?.length || 1;
@@ -212,7 +244,7 @@ export default function AdminPrintingKanban() {
 
       {selectedOrder && (() => {
         const selItem = selectedOrder.order_items?.[0];
-        let selSettings: Record<string, any> = {};
+        let selSettings: PrintSettings = {};
         try { if (selItem?.special_notes) selSettings = JSON.parse(selItem.special_notes); } catch { /* corrupted data, ignore */ }
         const selFileNames: string[] = selSettings.fileNames || [];
         const selFileUrls: string[] = selSettings.fileUrls || [];

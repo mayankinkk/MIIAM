@@ -36,6 +36,69 @@ export interface OrderTracking {
   isLive: boolean;
 }
 
+interface OrderItemRecord {
+  id: string;
+  order_id: string;
+  menu_item_id: string | null;
+  name: string;
+  quantity: number;
+  price: number;
+  unit_price: number;
+  special_notes?: string | null;
+  menu_item?: MenuItemRecord | null;
+}
+
+interface MenuItemRecord {
+  id: string;
+  name: string;
+  price: number;
+  image_url?: string;
+  category?: string;
+  [key: string]: unknown;
+}
+
+interface VendorRecord {
+  id: string;
+  name?: string;
+  shop_name?: string;
+  [key: string]: unknown;
+}
+
+interface RiderRecord {
+  id: string;
+  name?: string;
+  phone?: string;
+  [key: string]: unknown;
+}
+
+interface LocationRecord {
+  lat: number;
+  lng: number;
+}
+
+interface OrderRecord {
+  id: string;
+  status: string;
+  user_id: string;
+  vendor_id: string | null;
+  rider_id: string | null;
+  total_amount: number;
+  vendor?: VendorRecord | null;
+  rider?: RiderRecord | null;
+  items?: OrderItemRecord[];
+  _location?: LocationRecord | null;
+  [key: string]: unknown;
+}
+
+interface ActiveOrderRecord {
+  id: string;
+  status: string;
+  total_amount: number;
+  placed_at: string;
+  vendors?: { shop_name: string }[] | { shop_name: string } | null;
+  [key: string]: unknown;
+}
+
 const STATUS_DESCRIPTIONS: Record<string, string> = {
   pending: "Order placed, waiting for restaurant acceptance",
   accepted: "Restaurant has accepted your order",
@@ -69,7 +132,7 @@ const STATUS_MESSAGES: Record<string, string> = {
 
 export function useOrderTracking(orderId: string, supabaseClient?: SupabaseClient) {
   const supabase = useMemo(() => supabaseClient || createClient(), [supabaseClient]);
-  const [order, setOrder] = useState<any>(null);
+  const [order, setOrder] = useState<OrderRecord | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [riderLocation, setRiderLocation] = useState<{ lat: number; lng: number } | null>(null);
@@ -106,12 +169,12 @@ export function useOrderTracking(orderId: string, supabaseClient?: SupabaseClien
     const items = itemsRes.data || [];
 
     if (items.length > 0) {
-      const menuItemIds = items.map((i: any) => i.menu_item_id).filter(Boolean);
+      const menuItemIds = items.map((i: OrderItemRecord) => i.menu_item_id).filter(Boolean) as string[];
       if (menuItemIds.length > 0) {
         const { data: menuItems } = await supabase.from("menu_items").select("*").in("id", menuItemIds);
         if (menuItems) {
-          items.forEach((item: any) => {
-            item.menu_item = menuItems.find((mi: any) => mi.id === item.menu_item_id) || null;
+          items.forEach((item: OrderItemRecord) => {
+            item.menu_item = (menuItems as MenuItemRecord[]).find((mi: MenuItemRecord) => mi.id === item.menu_item_id) || null;
           });
         }
       }
@@ -181,7 +244,7 @@ export function useOrderTracking(orderId: string, supabaseClient?: SupabaseClien
           table: "orders",
           filter: `id=eq.${orderId}`,
         },
-        async (payload: Record<string, unknown>) => {
+        async         (payload: { new: Record<string, unknown> }) => {
           if (!payload.new || typeof payload.new !== "object") return;
           const newData = payload.new as Record<string, unknown>;
           const newStatus = newData.status as string;
@@ -197,7 +260,7 @@ export function useOrderTracking(orderId: string, supabaseClient?: SupabaseClien
             riderData = data;
           }
 
-          setOrder((prev: any) => {
+          setOrder((prev: OrderRecord | null) => {
             if (!prev) return prev;
             return { ...prev, ...newData, rider: riderData || prev?.rider };
           });
@@ -230,9 +293,10 @@ export function useOrderTracking(orderId: string, supabaseClient?: SupabaseClien
           table: "rider_locations",
           filter: `order_id=eq.${orderId}`,
         },
-        (payload: any) => {
-          if (payload.new?.lat && payload.new?.lng) {
-            setRiderLocation({ lat: payload.new.lat, lng: payload.new.lng });
+        (payload: { new: Record<string, unknown> }) => {
+          const newRecord = payload.new as Record<string, unknown>;
+          if (newRecord.lat && newRecord.lng) {
+            setRiderLocation({ lat: newRecord.lat as number, lng: newRecord.lng as number });
           }
         }
       )
@@ -281,9 +345,10 @@ export function useRiderLocation(orderId: string) {
           table: "rider_locations",
           filter: `order_id=eq.${orderId}`,
         },
-        (payload: any) => {
-          if (payload.new?.lat && payload.new?.lng) {
-            setLocation({ lat: payload.new.lat, lng: payload.new.lng });
+        (payload: { new: Record<string, unknown> }) => {
+          const newLoc = payload.new as Record<string, unknown>;
+          if (newLoc.lat && newLoc.lng) {
+            setLocation({ lat: newLoc.lat as number, lng: newLoc.lng as number });
           }
         }
       )
@@ -299,7 +364,7 @@ export function useRiderLocation(orderId: string) {
 
 export function useActiveOrders(userId: string) {
   const supabase = useMemo(() => createClient(), []);
-  const [orders, setOrders] = useState<any[]>([]);
+  const [orders, setOrders] = useState<ActiveOrderRecord[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

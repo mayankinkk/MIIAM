@@ -50,6 +50,7 @@ interface MenuItem {
   is_veg?: boolean;
   is_featured?: boolean;
   description?: string;
+  _showUrl?: boolean;
 }
 
 export default function AdminVendorsPage() {
@@ -241,9 +242,10 @@ export default function AdminVendorsPage() {
       });
       setMenuItems([{ name: "", price: "", category: "Main Course" }]);
       loadVendors();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error creating vendor:", error);
-      useToastStore.getState().addToast(`Failed to create vendor: ${error?.message || JSON.stringify(error)}`, "error");
+      const msg = error instanceof Error ? error.message : JSON.stringify(error);
+      useToastStore.getState().addToast(`Failed to create vendor: ${msg}`, "error");
     } finally {
       setLoading(false);
     }
@@ -259,8 +261,9 @@ export default function AdminVendorsPage() {
       if (error) throw error;
       setVendors(vendors.filter(v => v.id !== vendor.id));
       useToastStore.getState().addToast("Vendor deleted.", "success");
-    } catch (error: any) {
-      useToastStore.getState().addToast(`Failed to delete: ${error.message}`, "error");
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : "Unknown error";
+      useToastStore.getState().addToast(`Failed to delete: ${msg}`, "error");
     } finally {
       setLoading(false);
     }
@@ -314,9 +317,10 @@ export default function AdminVendorsPage() {
       useToastStore.getState().addToast("Vendor updated successfully!", "success");
       setEditingVendor(null);
       loadVendors();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error updating vendor:", error);
-      useToastStore.getState().addToast(`Failed to update vendor: ${error.message}`, "error");
+      const msg = error instanceof Error ? error.message : "Unknown error";
+      useToastStore.getState().addToast(`Failed to update vendor: ${msg}`, "error");
     } finally {
       setLoading(false);
     }
@@ -387,9 +391,10 @@ export default function AdminVendorsPage() {
       });
       await loadVendorMenuItems(editingVendor.id);
       useToastStore.getState().addToast("Menu item added!", "success");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error adding menu item:", error);
-      useToastStore.getState().addToast(`Failed to add menu item: ${error.message}`, "error");
+      const msg = error instanceof Error ? error.message : "Unknown error";
+      useToastStore.getState().addToast(`Failed to add menu item: ${msg}`, "error");
     } finally {
       setLoading(false);
     }
@@ -405,9 +410,10 @@ export default function AdminVendorsPage() {
       
       setVendorMenuItems(vendorMenuItems.filter(item => item.id !== id));
       useToastStore.getState().addToast("Menu item deleted!", "success");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error deleting menu item:", error);
-      useToastStore.getState().addToast(`Failed to delete: ${error.message}`, "error");
+      const msg = error instanceof Error ? error.message : "Unknown error";
+      useToastStore.getState().addToast(`Failed to delete: ${msg}`, "error");
     } finally {
       setLoading(false);
     }
@@ -437,9 +443,10 @@ export default function AdminVendorsPage() {
       await loadVendorMenuItems(editingVendor.id);
       setEditingMenuItem(null);
       useToastStore.getState().addToast("Menu item updated!", "success");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error updating menu item:", error);
-      useToastStore.getState().addToast(`Failed to update menu item: ${error.message}`, "error");
+      const msg = error instanceof Error ? error.message : "Unknown error";
+      useToastStore.getState().addToast(`Failed to update menu item: ${msg}`, "error");
     } finally {
       setLoading(false);
     }
@@ -1155,7 +1162,7 @@ export default function AdminVendorsPage() {
                             onChange={async (e) => {
                               const file = e.target.files?.[0];
                               if (file) {
-                                setNewMenuItem({ ...(newMenuItem as any), image_url: URL.createObjectURL(file) });
+                                setNewMenuItem({ ...newMenuItem, image_url: URL.createObjectURL(file) });
                               }
                             }}
                           />
@@ -1165,16 +1172,16 @@ export default function AdminVendorsPage() {
                     <div className="mt-1">
                       <button
                         type="button"
-                        onClick={() => setNewMenuItem({ ...(newMenuItem as any), _showUrl: !(newMenuItem as any)._showUrl })}
+                        onClick={() => setNewMenuItem({ ...newMenuItem, _showUrl: !newMenuItem._showUrl })}
                         className="text-xs font-bold text-[var(--color-primary)] hover:underline"
                       >
-                        {(newMenuItem as any)._showUrl ? "Hide URL" : "Or enter URL"}
+                        {newMenuItem._showUrl ? "Hide URL" : "Or enter URL"}
                       </button>
-                      {(newMenuItem as any)._showUrl && (
+                      {newMenuItem._showUrl && (
                         <input
                           type="url"
                           value={newMenuItem.image_url}
-                          onChange={(e) => setNewMenuItem({ ...(newMenuItem as any), image_url: e.target.value })}
+                          onChange={(e) => setNewMenuItem({ ...newMenuItem, image_url: e.target.value })}
                           placeholder="https://example.com/image.jpg"
                           className="mt-1 w-full p-2.5 border border-[var(--color-border-subtle)] rounded-lg text-sm focus:border-[var(--color-primary)] focus:outline-none"
                         />

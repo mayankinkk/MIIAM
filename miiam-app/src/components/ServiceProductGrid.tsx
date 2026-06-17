@@ -85,7 +85,7 @@ export default function ServiceProductGrid({
   const [loading, setLoading] = useState(true);
   const [isServiceable, setIsServiceable] = useState(true);
   const [locationRequired, setLocationRequired] = useState(false);
-  const [vendor, setVendor] = useState<any>(null);
+  const [vendor, setVendor] = useState<{ id: string; shop_name: string; pincode?: string; city?: string; [key: string]: unknown } | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<string>("default");
   const [inStockOnly, setInStockOnly] = useState(false);
@@ -127,7 +127,7 @@ export default function ServiceProductGrid({
 
     if (vendors && vendors.length > 0) {
       const cityLower = (userCity || "").toLowerCase();
-      const localVendors = vendors.filter((v: any) => {
+      const localVendors = vendors.filter((v: { id: string; shop_name: string; pincode?: string; city?: string; [key: string]: unknown }) => {
         const pincodeMatch = userPincode && v.pincode === userPincode;
         const cityMatch = cityLower && v.city?.toLowerCase() === cityLower;
         return pincodeMatch || cityMatch;
@@ -164,7 +164,7 @@ export default function ServiceProductGrid({
   }
 
   const hasStock = vendorType === "grocery" || vendorType === "pharmacy";
-  const categoryIcon = (product: any) => {
+  const categoryIcon = (product: Product) => {
     const cat = (product.category || "").toLowerCase();
     if (cat.includes("fruit")) return "🍎";
     if (cat.includes("vegetable") || cat.includes("veg")) return "🥬";
@@ -528,7 +528,7 @@ export default function ServiceProductGrid({
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {filteredProducts.map((product: any, index) => (
+            {filteredProducts.map((product: Product, index) => (
               <div
                 key={product.id}
                 className="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm card-lift animate-in fade-in slide-in-from-bottom-4 duration-500"

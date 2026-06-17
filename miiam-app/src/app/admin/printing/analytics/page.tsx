@@ -5,7 +5,20 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { PRINTING_VENDOR_ID } from "@/lib/constants";
 
-const supabase = useMemo(() => createClient(), []);
+const supabase = createClient();
+
+interface OrderRecord {
+  id: string;
+  placed_at: string;
+  total_amount: number;
+  user_id: string | null;
+  order_items?: OrderItemRecord[];
+}
+
+interface OrderItemRecord {
+  id: string;
+  special_notes: string | null;
+}
 
 interface AnalyticsData {
   totalRevenue: number;
@@ -58,17 +71,17 @@ export default function AdminPrintingAnalytics() {
     const weekAgo = now - 7 * dayMs;
     const startRangeMs = startRange.getTime();
 
-    const inRange = orders.filter((o: any) => new Date(o.placed_at).getTime() >= startRangeMs);
-    const inWeek = orders.filter((o: any) => new Date(o.placed_at).getTime() >= weekAgo);
-    const today = orders.filter((o: any) => {
+    const inRange = orders.filter((o: OrderRecord) => new Date(o.placed_at).getTime() >= startRangeMs);
+    const inWeek = orders.filter((o: OrderRecord) => new Date(o.placed_at).getTime() >= weekAgo);
+    const today = orders.filter((o: OrderRecord) => {
       const d = new Date(o.placed_at);
       const t = new Date();
       return d.toDateString() === t.toDateString();
     });
 
-    const totalRevenue = inRange.reduce((acc: number, o: any) => acc + (o.total_amount || 0), 0);
-    const revenueThisWeek = inWeek.reduce((acc: number, o: any) => acc + (o.total_amount || 0), 0);
-    const revenueToday = today.reduce((acc: number, o: any) => acc + (o.total_amount || 0), 0);
+    const totalRevenue = inRange.reduce((acc: number, o: OrderRecord) => acc + (o.total_amount || 0), 0);
+    const revenueThisWeek = inWeek.reduce((acc: number, o: OrderRecord) => acc + (o.total_amount || 0), 0);
+    const revenueToday = today.reduce((acc: number, o: OrderRecord) => acc + (o.total_amount || 0), 0);
 
     let totalPages = 0;
     let bwCount = 0;
@@ -76,7 +89,7 @@ export default function AdminPrintingAnalytics() {
     let addOnsRevenue = 0;
     let rushRevenue = 0;
 
-    for (const o of inRange as any[]) {
+    for (const o of inRange) {
       const item = o.order_items?.[0];
       if (!item?.special_notes) continue;
       try {
@@ -97,7 +110,7 @@ export default function AdminPrintingAnalytics() {
     }
 
     const customerMap = new Map<string, { total: number; orders: number; name: string }>();
-    for (const o of inRange as any[]) {
+    for (const o of inRange) {
       if (!o.user_id) continue;
       const cur = customerMap.get(o.user_id) || { total: 0, orders: 0, name: "" };
       cur.total += o.total_amount || 0;
@@ -136,7 +149,7 @@ export default function AdminPrintingAnalytics() {
       const key = d.toISOString().split("T")[0];
       dailyMap.set(key, { revenue: 0, orders: 0 });
     }
-    for (const o of inRange as any[]) {
+    for (const o of inRange) {
       const d = new Date(o.placed_at);
       const key = d.toISOString().split("T")[0];
       const cur = dailyMap.get(key);

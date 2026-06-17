@@ -4,9 +4,9 @@ import { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
-const supabase = useMemo(() => createClient(), []);
 
 export default function PharmacyAdmin() {
+  const supabase = useMemo(() => createClient(), []);
   const [stats, setStats] = useState({ totalOrders: 0, revenue: 0, activePartners: 0, totalMedicines: 0 });
   const [loading, setLoading] = useState(true);
 

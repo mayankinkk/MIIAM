@@ -1,10 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { checkIpRateLimit, getClientIp } from "@/lib/security";
 
-type RouteHandler = (request: NextRequest, context?: any) => Promise<NextResponse>;
+export interface RouteContext {
+  params?: Promise<Record<string, string>>;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type RouteHandler = (request: NextRequest, context: RouteContext) => Promise<NextResponse> | Response;
 
 export function withRateLimit(handler: RouteHandler, maxRequests = 30, windowMs = 60 * 1000): RouteHandler {
-  return async (request: NextRequest, context?: any) => {
+  return async (request: NextRequest, context: RouteContext) => {
     const ip = getClientIp(request);
     if (!checkIpRateLimit(ip, maxRequests, windowMs)) {
       return NextResponse.json(
@@ -21,7 +26,7 @@ export function withAuthRateLimit(handler: RouteHandler): RouteHandler {
 }
 
 export function withCronAuth(handler: RouteHandler): RouteHandler {
-  return async (request: NextRequest, context?: any) => {
+  return async (request: NextRequest, context: RouteContext) => {
     const { requireCronAuth } = await import("@/lib/security");
     const authed = await requireCronAuth(request);
     if (!authed) {

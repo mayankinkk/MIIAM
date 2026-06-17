@@ -23,6 +23,46 @@ import { NetworkError } from "@/components/ui/EmptyStates";
 
 const supabase = createClient();
 
+interface FoodVendor {
+  id: string;
+  shop_name: string;
+  name?: string;
+  cuisine?: string;
+  image_url?: string;
+  cover_image_url?: string;
+  logo_url?: string;
+  rating?: string | number;
+  review_count?: number;
+  delivery_time_min?: number;
+  delivery_time_max?: number;
+  delivery_time_minutes?: number;
+  delivery_time?: string;
+  delivery_charge?: number | string;
+  min_order_amount?: string;
+  opening_hours?: string | null;
+  is_new?: boolean;
+  is_featured?: boolean;
+  status?: string;
+  type?: string;
+  pincode?: string;
+  city?: string;
+  created_at?: string;
+  [key: string]: unknown;
+}
+
+interface FoodMenuItem {
+  id: string;
+  vendor_id: string;
+  name: string;
+  price: number;
+  category: string;
+  image_url?: string;
+  is_veg?: boolean;
+  available?: boolean;
+  description?: string;
+  [key: string]: unknown;
+}
+
 function parseIsOpen(hours: string | null | undefined): boolean {
   if (!hours) return true;
   try {
@@ -49,7 +89,7 @@ function PromoBannerCarousel() {
     { id: "2", label: "⚡ Flash Sale", title: "Free delivery all day", sub: "On orders above ₹299", color: "from-violet-600 to-purple-400", image_url: "" },
     { id: "3", label: "🌟 New Arrival", title: "Try something new", sub: "Freshly added restaurants", color: "from-amber-500 to-yellow-300", image_url: "" },
   ];
-  const [banners, setBanners] = useState<any[]>(defaultBanners);
+  const [banners, setBanners] = useState<{ id: string; label: string; title: string; sub: string; color: string; image_url: string }[]>(defaultBanners);
   const [active, setActive] = useState(0);
 
   useEffect(() => {
@@ -61,7 +101,7 @@ function PromoBannerCarousel() {
         .order("position");
       
       if (!error && data && data.length > 0) {
-        setBanners(data.map((b: any) => ({
+        setBanners(data.map((b: { id: string; title: string; link_url?: string; image_url: string }) => ({
           id: b.id,
           label: "📣 Promotion",
           title: b.title,
@@ -397,8 +437,8 @@ export default function FoodPageContent() {
   const [sortBy, setSortBy] = useState<SortOption>("rating");
   const [priceMin, setPriceMin] = useState(0);
   const [priceMax, setPriceMax] = useState(1000);
-  const [restaurants, setRestaurants] = useState<any[]>([]);
-  const [menuItems, setMenuItems] = useState<any[]>([]);
+  const [restaurants, setRestaurants] = useState<FoodVendor[]>([]);
+  const [menuItems, setMenuItems] = useState<FoodMenuItem[]>([]);
   const favoriteIds = useFavoritesStore((s) => s.favoriteIds);
   const toggle = useFavoritesStore((s) => s.toggle);
   const setFavorites = useFavoritesStore((s) => s.setFavorites);
@@ -510,10 +550,10 @@ export default function FoodPageContent() {
 
   const sortedRestaurants = [...restaurants].sort((a, b) => {
     switch (sortBy) {
-      case "rating": return parseFloat(b.rating || "0") - parseFloat(a.rating || "0");
+      case "rating": return parseFloat(String(b.rating || "0")) - parseFloat(String(a.rating || "0"));
       case "delivery_time": return (a.delivery_time_min || 999) - (b.delivery_time_min || 999);
-      case "price_low": return parseFloat(a.min_order_amount || "0") - parseFloat(b.min_order_amount || "0");
-      case "price_high": return parseFloat(b.min_order_amount || "0") - parseFloat(a.min_order_amount || "0");
+      case "price_low": return parseFloat(String(a.min_order_amount || "0")) - parseFloat(String(b.min_order_amount || "0"));
+      case "price_high": return parseFloat(String(b.min_order_amount || "0")) - parseFloat(String(a.min_order_amount || "0"));
       default: return 0;
     }
   });
@@ -672,7 +712,7 @@ export default function FoodPageContent() {
                   <div className="flex items-start justify-between gap-1">
                     <div className="flex items-center gap-2">
                       <div className="relative w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-xs font-black flex-shrink-0 overflow-hidden">
-                        {restaurant.cover_image_url || restaurant.image_url ? <BlurImage src={restaurant.cover_image_url || restaurant.image_url} alt={`${restaurant.shop_name} cover`} fill className="w-full h-full" sizes="32px" /> : restaurant.shop_name?.charAt(0)}
+                        {restaurant.cover_image_url || restaurant.image_url ? <BlurImage src={(restaurant.cover_image_url || restaurant.image_url) as string} alt={`${restaurant.shop_name} cover`} fill className="w-full h-full" sizes="32px" /> : restaurant.shop_name?.charAt(0)}
                       </div>
                       <h3 className="font-bold text-on-surface text-base leading-tight">{restaurant.shop_name}</h3>
                     </div>

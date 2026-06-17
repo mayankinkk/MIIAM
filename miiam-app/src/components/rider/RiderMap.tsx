@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import "leaflet/dist/leaflet.css";
+import type * as Leaflet from 'leaflet';
 
 export interface RiderLocation {
   lat: number;
@@ -133,14 +134,14 @@ export default function RiderMap({
   height = "100%",
 }: Props) {
   const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<any>(null);
-  const riderMarkerRef = useRef<any>(null);
-  const homeMarkerRef = useRef<any>(null);
-  const vendorMarkerRef = useRef<any>(null);
-  const trailLayerRef = useRef<any | null>(null);
+  const mapInstanceRef = useRef<Leaflet.Map | null>(null);
+  const riderMarkerRef = useRef<Leaflet.Marker | null>(null);
+  const homeMarkerRef = useRef<Leaflet.Marker | null>(null);
+  const vendorMarkerRef = useRef<Leaflet.Marker | null>(null);
+  const trailLayerRef = useRef<Leaflet.Polyline | null>(null);
   const trailPointsRef = useRef<[number, number][]>([]);
-  const routeLayerRef = useRef<any[]>([]);
-  const leafletRef = useRef<any>(null);
+  const routeLayerRef = useRef<Leaflet.Polyline[]>([]);
+  const leafletRef = useRef<typeof import('leaflet') | null>(null);
   const dropoffCoordRef = useRef<[number, number] | null>(null);
   const pickupCoordRef = useRef<[number, number] | null>(null);
   const lastBearingRef = useRef<number>(0);
@@ -257,7 +258,7 @@ export default function RiderMap({
       if (pts.length === 1) {
         map.setView(pts[0], 15, { animate: true });
       } else {
-        map.fitBounds(pts as any, { padding: [60, 60] });
+        map.fitBounds(pts as [number, number][], { padding: [60, 60] });
       }
     }
   }, [resolvedDropoff, resolvedPickup]);
@@ -271,13 +272,13 @@ export default function RiderMap({
 
     let cancelled = false;
     async function draw() {
-      if (!mapInstanceRef.current) return;
+      if (!mapInstanceRef.current || !L) return;
       const drop = dropoffCoordRef.current;
       const pick = pickupCoordRef.current;
       const rider = riderLocation;
 
       // Remove old route layers
-      routeLayerRef.current.forEach((l) => map.removeLayer(l));
+      routeLayerRef.current.forEach((l) => map!.removeLayer(l));
       routeLayerRef.current = [];
 
       const drawLeg = async (from: [number, number], to: [number, number], opts: { dashed?: boolean; leg: "to_pickup" | "to_drop" }) => {

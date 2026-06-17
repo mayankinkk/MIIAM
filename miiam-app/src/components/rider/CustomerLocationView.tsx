@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { useCustomerLocation } from "@/lib/hooks/useShareLocation";
+import type * as Leaflet from 'leaflet';
 
 interface Props {
   orderId: string | null;
@@ -11,10 +12,10 @@ interface Props {
 
 export default function CustomerLocationView({ orderId, className = "", height = 180 }: Props) {
   const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<any>(null);
-  const markerRef = useRef<any>(null);
-  const accuracyRef = useRef<any>(null);
-  const leafletRef = useRef<any>(null);
+  const mapInstanceRef = useRef<Leaflet.Map | null>(null);
+  const markerRef = useRef<Leaflet.Marker | null>(null);
+  const accuracyRef = useRef<Leaflet.Circle | null>(null);
+  const leafletRef = useRef<typeof import('leaflet') | null>(null);
 
   const { location, loading } = useCustomerLocation({ orderId, enabled: !!orderId });
 

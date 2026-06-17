@@ -8,7 +8,6 @@ import ImageUpload from "@/components/ImageUpload";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { useToastStore } from "@/lib/store/toastStore";
 
-const supabase = useMemo(() => createClient(), []);
 
 const defaultCategories = ["Bouquets", "Arrangements", "Combos", "Hampers", "Sympathy", "Corporate"];
 
@@ -24,6 +23,7 @@ interface FlowerItem {
 }
 
 export default function FlowersItemsPage() {
+  const supabase = useMemo(() => createClient(), []);
   const { confirm } = useConfirm();
   const [items, setItems] = useState<FlowerItem[]>([]);
   const [loading, setLoading] = useState(true);

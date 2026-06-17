@@ -8,7 +8,6 @@ import ImageUpload from "@/components/ImageUpload";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { useToastStore } from "@/lib/store/toastStore";
 
-const supabase = useMemo(() => createClient(), []);
 
 const defaultCategories = ["Pain Relief", "Antibiotics", "Vitamins", "Diabetes", "Blood Pressure", "Heart Care", "Cold & Flu", "Skin Care", "Baby Care"];
 
@@ -25,6 +24,7 @@ interface Medicine {
 }
 
 export default function PharmacyMedicinesPage() {
+  const supabase = useMemo(() => createClient(), []);
   const { confirm } = useConfirm();
   const [medicines, setMedicines] = useState<Medicine[]>([]);
   const [loading, setLoading] = useState(true);

@@ -3,9 +3,35 @@
 import { useCallback, useState } from "react";
 import { useToastStore } from "@/lib/store/toastStore";
 
+interface RazorpayHandlerResponse {
+  razorpay_order_id: string;
+  razorpay_payment_id: string;
+  razorpay_signature: string;
+}
+
+interface RazorpayPaymentFailedResponse {
+  error?: {
+    description?: string;
+    code?: string;
+    source?: string;
+    step?: string;
+    reason?: string;
+    metadata?: Record<string, unknown>;
+  };
+}
+
+interface RazorpayInstance {
+  open: () => void;
+  on: (event: string, handler: (response: RazorpayPaymentFailedResponse) => void) => void;
+}
+
+interface RazorpayConstructor {
+  new (options: Record<string, unknown>): RazorpayInstance;
+}
+
 declare global {
   interface Window {
-    Razorpay: any;
+    Razorpay: RazorpayConstructor;
   }
 }
 
@@ -94,7 +120,7 @@ export function useRazorpay() {
         theme: {
           color: "var(--color-primary)",
         },
-        handler: async (response: any) => {
+        handler: async (response: RazorpayHandlerResponse) => {
           try {
             // Verify payment on server
             const verifyRes = await fetch("/api/payment/verify", {
@@ -133,18 +159,19 @@ export function useRazorpay() {
       };
 
       const razorpay = new window.Razorpay(options);
-      razorpay.on("payment.failed", (response: any) => {
+      razorpay.on("payment.failed", (response: RazorpayPaymentFailedResponse) => {
         const msg = response.error?.description || "Payment failed";
         addToast(msg, "error");
         setLoading(false);
         onFailure?.(msg);
       });
       razorpay.open();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Razorpay error:", error);
       addToast("Payment failed. Please try again.", "error");
       setLoading(false);
-      onFailure?.(error.message || "Payment failed");
+      const message = error instanceof Error ? error.message : "Payment failed";
+      onFailure?.(message);
     }
   }, [loadRazorpayScript, addToast]);
 

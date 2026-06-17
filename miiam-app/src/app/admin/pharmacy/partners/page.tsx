@@ -5,7 +5,6 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 
-const supabase = useMemo(() => createClient(), []);
 
 interface PharmacyPartner {
   id: string;
@@ -23,9 +22,12 @@ interface PharmacyPartner {
   status: string;
   rating: number;
   total_orders?: number;
+  fssai_number?: string;
+  created_at?: string;
 }
 
 export default function PharmacyPartnersPage() {
+  const supabase = useMemo(() => createClient(), []);
   const [partners, setPartners] = useState<PharmacyPartner[]>([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({ total: 0, active: 0, inactive: 0, newThisMonth: 0 });
@@ -66,7 +68,7 @@ export default function PharmacyPartnersPage() {
       if (error) throw error;
 
       const partnersWithOrders = await Promise.all(
-        (data || []).map(async (partner: any) => {
+        (data || []).map(async (partner: PharmacyPartner) => {
           const { count } = await supabase
             .from("orders")
             .select("*", { count: "exact", head: true })
@@ -80,12 +82,12 @@ export default function PharmacyPartnersPage() {
 
       const now = new Date();
       const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-      const newThisMonth = data?.filter((p: any) => new Date(p.created_at) >= monthStart).length || 0;
+      const newThisMonth = data?.filter((p: PharmacyPartner) => new Date(p.created_at ?? "") >= monthStart).length || 0;
 
       setStats({
         total: data?.length || 0,
-        active: data?.filter((p: any) => p.status === "active").length || 0,
-        inactive: data?.filter((p: any) => p.status !== "active").length || 0,
+        active: data?.filter((p: PharmacyPartner) => p.status === "active").length || 0,
+        inactive: data?.filter((p: PharmacyPartner) => p.status !== "active").length || 0,
         newThisMonth,
       });
     } catch (error) {
@@ -123,7 +125,7 @@ export default function PharmacyPartnersPage() {
 
     setSaving(true);
     try {
-      const payload: Record<string, any> = {
+      const payload: Record<string, string | number | null> = {
         shop_name: newPartner.shop_name,
         owner_name: newPartner.owner_name,
         phone: newPartner.phone,
@@ -157,9 +159,10 @@ export default function PharmacyPartnersPage() {
       resetModal();
       loadPartners();
       useToastStore.getState().addToast(editingPartner ? "Partner updated successfully!" : "Partner added successfully!", "success");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error saving partner:", error);
-      useToastStore.getState().addToast("Failed: " + error.message, "error");
+      const msg = error instanceof Error ? error.message : "Unknown error";
+      useToastStore.getState().addToast("Failed: " + msg, "error");
     } finally {
       setSaving(false);
     }
@@ -177,7 +180,7 @@ export default function PharmacyPartnersPage() {
       state: partner.state || "",
       pincode: partner.pincode || "",
       landmark: partner.landmark || "",
-      drug_license: (partner as any).fssai_number || "",
+      drug_license: partner.fssai_number || "",
       delivery_charge: partner.delivery_charge?.toString() || "",
       min_order_amount: partner.min_order_amount?.toString() || "",
     });

@@ -4,11 +4,36 @@ import { useMemo, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 
+interface FoodOrder {
+  id: string;
+  status: string;
+  total_amount: number;
+  placed_at: string;
+  user_id?: string;
+  payment_method?: string;
+  delivery_fee?: number;
+  special_instructions?: string;
+  vendor?: { id?: string; name?: string; shop_name?: string; rating?: number } | null;
+  items?: FoodOrderItem[];
+}
+
+interface FoodOrderItem {
+  quantity: number;
+  price: number;
+  menu_item?: { name?: string } | null;
+}
+
+interface VendorRow {
+  id: string;
+  shop_name: string;
+  name?: string;
+}
+
 export default function AdminFoodsDashboard() {
   const supabase = useMemo(() => createClient(), []);
-  const [orders, setOrders] = useState<any[]>([]);
+  const [orders, setOrders] = useState<FoodOrder[]>([]);
   const [loading, setLoading] = useState(true);
-  const [vendors, setVendors] = useState<any[]>([]);
+  const [vendors, setVendors] = useState<VendorRow[]>([]);
   
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -20,7 +45,7 @@ export default function AdminFoodsDashboard() {
   const [showFilters, setShowFilters] = useState(false);
   const [sortBy, setSortBy] = useState<"date" | "amount_high" | "amount_low" | "rating">("date");
   
-  const [selectedOrder, setSelectedOrder] = useState<any>(null);
+  const [selectedOrder, setSelectedOrder] = useState<FoodOrder | null>(null);
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
   const [bulkStatus, setBulkStatus] = useState<string>("");
 
@@ -68,9 +93,10 @@ export default function AdminFoodsDashboard() {
 
       setOrders(orders.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
       useToastStore.getState().addToast(`Order status updated to ${newStatus}`, "success");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error updating order:", error);
-      useToastStore.getState().addToast(`Failed to update: ${error.message}`, "error");
+      const msg = error instanceof Error ? error.message : "Unknown error";
+      useToastStore.getState().addToast(`Failed to update: ${msg}`, "error");
     }
   };
 
@@ -110,8 +136,9 @@ export default function AdminFoodsDashboard() {
       useToastStore.getState().addToast(`${selectedOrders.length} orders updated!`, "success");
       setSelectedOrders([]);
       setBulkStatus("");
-    } catch (error: any) {
-      useToastStore.getState().addToast(`Failed: ${error.message}`, "error");
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : "Unknown error";
+      useToastStore.getState().addToast(`Failed: ${msg}`, "error");
     } finally {
       setLoading(false);
     }
@@ -148,7 +175,7 @@ export default function AdminFoodsDashboard() {
     switch (sortBy) {
       case "amount_high": return (b.total_amount || 0) - (a.total_amount || 0);
       case "amount_low": return (a.total_amount || 0) - (b.total_amount || 0);
-      case "rating": return ((b.vendor as any)?.rating || 0) - ((a.vendor as any)?.rating || 0);
+      case "rating": return ((b.vendor as { rating?: number })?.rating || 0) - ((a.vendor as { rating?: number })?.rating || 0);
       default: return new Date(b.placed_at || 0).getTime() - new Date(a.placed_at || 0).getTime();
     }
   });
@@ -235,7 +262,7 @@ export default function AdminFoodsDashboard() {
                 </button>
                 <select
                   value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value as any)}
+                  onChange={(e) => setSortBy(e.target.value as "date" | "amount_high" | "amount_low" | "rating")}
                   className="px-4 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold"
                 >
                   <option value="date">Sort: Date</option>
@@ -417,7 +444,7 @@ export default function AdminFoodsDashboard() {
                     <td className="p-4">
                       <span className="font-black text-[var(--color-on-surface)]">#{order.id?.slice(0, 8).toUpperCase()}</span>
                     </td>
-                    <td className="p-4 text-[var(--color-on-surface-variant)]">{(order.vendor as any)?.name || (order.vendor as any)?.shop_name || "Unknown"}</td>
+                    <td className="p-4 text-[var(--color-on-surface-variant)]">{order.vendor?.name || order.vendor?.shop_name || "Unknown"}</td>
                     <td className="p-4 text-[var(--color-outline)]">{order.user_id?.slice(0, 8) || "Guest"}</td>
                     <td className="p-4">
                       <select
@@ -487,7 +514,7 @@ export default function AdminFoodsDashboard() {
               <div>
                 <p className="text-[10px] text-[var(--color-outline-variant)] uppercase mb-2">Items</p>
                 <div className="space-y-2">
-                  {selectedOrder.items?.map((item: any, idx: number) => (
+                  {selectedOrder.items?.map((item, idx) => (
                     <div key={idx} className="flex justify-between text-sm bg-[var(--color-surface-subtle)] p-2 rounded-lg">
                       <span>{item.quantity}x {item.menu_item?.name || "Item"}</span>
                       <span className="font-bold">₹{(item.price * item.quantity).toFixed(0)}</span>

@@ -12,6 +12,7 @@ import CashCollectModal from "@/components/rider/orders/CashCollectModal";
 import IssueReportModal from "@/components/rider/orders/IssueReportModal";
 import ActiveDeliveryView from "@/components/rider/orders/ActiveDeliveryView";
 import type { Order, OrderItem } from "@/components/rider/orders/types";
+import type * as Leaflet from 'leaflet';
 
 export default function RiderOrdersPage() {
   const supabase = useMemo(() => createClient(), []);
@@ -88,16 +89,16 @@ export default function RiderOrdersPage() {
           userIds.length > 0 ? supabase.from("profiles").select("id, full_name").in("id", userIds) : Promise.resolve({ data: [] }),
         ]);
 
-        const vendorsMap = new Map((vendorsRes.data || []).map((v: any) => [v.id, v]));
-        const addressesMap = new Map((addressesRes.data || []).map((a: any) => [a.id, a]));
-        const profilesMap = new Map((profilesRes.data || []).map((p: any) => [p.id, p]));
+        const vendorsMap = new Map((vendorsRes.data || []).map((v: Record<string, unknown>) => [v.id, v]));
+        const addressesMap = new Map((addressesRes.data || []).map((a: Record<string, unknown>) => [a.id, a]));
+        const profilesMap = new Map((profilesRes.data || []).map((p: Record<string, unknown>) => [p.id, p]));
         const allItems = allItemsRes.data || [];
 
         const allMenuItemIds = [...new Set(allItems.map((i: OrderItem) => i.menu_item_id).filter(Boolean))] as string[];
         let menuItemsMap = new Map();
         if (allMenuItemIds.length > 0) {
           const { data: menuItems } = await supabase.from("menu_items").select("id, name, category").in("id", allMenuItemIds);
-          menuItemsMap = new Map((menuItems || []).map((mi: any) => [mi.id, mi]));
+          menuItemsMap = new Map((menuItems || []).map((mi: Record<string, unknown>) => [mi.id, mi]));
         }
 
         const fullOrders = uniqueOrders.map(order => {
@@ -110,7 +111,7 @@ export default function RiderOrdersPage() {
             vendor: order.vendor_id ? vendorsMap.get(order.vendor_id) || null : null,
             address: order.delivery_address_id ? addressesMap.get(order.delivery_address_id) || null : null,
             items,
-            customer_name: order.user_id ? (profilesMap.get(order.user_id) as any)?.full_name || "Customer" : "Customer",
+            customer_name: order.user_id ? (profilesMap.get(order.user_id) as Record<string, unknown> | undefined)?.full_name || "Customer" : "Customer",
           };
         });
         setOrders(fullOrders);
@@ -250,9 +251,9 @@ export default function RiderOrdersPage() {
 
       setOrders(prev => prev.map(o => o.id === orderId ? { ...o, rider_id: riderProfile.id } : o));
       showToast("Order accepted!", "success");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error accepting order:", err);
-      showToast("Failed to accept order: " + (err?.message || "Unknown error"), "error");
+      showToast("Failed to accept order: " + ((err instanceof Error ? err.message : null) || "Unknown error"), "error");
     }
   }
 
@@ -349,7 +350,7 @@ export default function RiderOrdersPage() {
       if (o.id === orderId) {
         return {
           ...o,
-          items: o.items?.map(i => i.id === itemId ? { ...i, status: status as any, actual_price: actualPrice ?? i.actual_price } : i)
+          items: o.items?.map(i => i.id === itemId ? { ...i, status: status as OrderItem['status'], actual_price: actualPrice ?? i.actual_price } : i)
         };
       }
       return o;
@@ -568,11 +569,11 @@ export default function RiderOrdersPage() {
       case "distance": {
         const toRad = (d: number) => d * Math.PI / 180;
         const R = 6371;
-        const dLat = toRad((a as any).vendor?.lat - riderLocation.lat);
-        const dLng = toRad((a as any).vendor?.lng - riderLocation.lng);
+        const dLat = toRad((a.vendor?.lat ?? 0) - riderLocation.lat);
+        const dLng = toRad((a.vendor?.lng ?? 0) - riderLocation.lng);
         const distA = Math.sqrt(dLat * dLat + Math.cos(toRad(riderLocation.lat)) * dLng * dLng) * R;
-        const dLat2 = toRad((b as any).vendor?.lat - riderLocation.lat);
-        const dLng2 = toRad((b as any).vendor?.lng - riderLocation.lng);
+        const dLat2 = toRad((b.vendor?.lat ?? 0) - riderLocation.lat);
+        const dLng2 = toRad((b.vendor?.lng ?? 0) - riderLocation.lng);
         const distB = Math.sqrt(dLat2 * dLat2 + Math.cos(toRad(riderLocation.lat)) * dLng2 * dLng2) * R;
         return distA - distB;
       }
@@ -668,7 +669,7 @@ export default function RiderOrdersPage() {
           ))}
           <select
             value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as any)}
+            onChange={(e) => setSortBy(e.target.value as "newest" | "earnings_high" | "distance")}
             className={`py-1.5 px-3 rounded-lg text-xs font-bold ${
               sortBy !== "newest" ? "bg-[var(--color-surface-container-lowest)] text-brand-secondary" : "bg-[var(--color-surface-container-lowest)]/10 text-white/70"
             }`}
@@ -873,8 +874,8 @@ export default function RiderOrdersPage() {
 function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onReportIssue, onStartDelivery, onShareLocation }: { order: Order; riderId: string; onUpdateItemStatus: (itemId: string, status: string, price?: number) => void; onMarkDelivered: () => void; onReportIssue: () => void; onStartDelivery?: () => void; onShareLocation?: () => void }) {
   const supabase = useMemo(() => createClient(), []);
   const items = order.items || [];
-  const pickedCount = items.filter((i: any) => i.status === "available").length;
-  const totalSpent = items.reduce((s: number, i: any) => s + ((i.actual_price || 0) * i.quantity), 0);
+  const pickedCount = items.filter((i: OrderItem) => i.status === "available").length;
+  const totalSpent = items.reduce((s: number, i: OrderItem) => s + ((i.actual_price || 0) * i.quantity), 0);
   const profit = (order.total_amount || 0) + (order.delivery_fee || 0) - totalSpent;
 
   // Phase: "pickup" = go to restaurant, "delivery" = go to customer
@@ -882,15 +883,15 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
   const [expanded, setExpanded] = useState(false);
   const [showMap, setShowMap] = useState(false);
   const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<any>(null);
-  const riderMarkerRef = useRef<any>(null);
-  const routeLayerRef = useRef<any[]>([]);
+  const mapInstanceRef = useRef<Leaflet.Map | null>(null);
+  const riderMarkerRef = useRef<Leaflet.Marker | null>(null);
+  const routeLayerRef = useRef<Leaflet.Polyline[]>([]);
   const destLatLngRef = useRef<[number, number] | null>(null);
   const [trackingInfo, setTrackingInfo] = useState<{ eta: number; distance: string } | null>(null);
   const locationWatchRef = useRef<number | null>(null);
   const prevPhaseRef = useRef(phase);
 
-  const deliveryAddress = (order as any).delivery_address || order.address?.street || "";
+  const deliveryAddress = order.delivery_address || order.address?.street || "";
   const vendorAddress = order.vendor?.address || "";
   const customerPhone = order.customer_phone || "";
 
@@ -1025,8 +1026,8 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
       // Live rider position updates from Supabase
       const channel = supabase.channel(`rider-loc-${order.id}-${phase}`)
         .on('postgres_changes', { event: '*', schema: 'public', table: 'rider_locations', filter: `order_id=eq.${order.id}` },
-          async (payload: any) => {
-            const loc = payload.new;
+          async (payload: { new: Record<string, unknown> }) => {
+            const loc = payload.new as { lat: number; lng: number };
             if (loc?.lat && loc?.lng && isMounted && mapInstanceRef.current) {
               riderMarkerRef.current?.setLatLng([loc.lat, loc.lng]);
               if (destLatLngRef.current) {
@@ -1156,11 +1157,11 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
 
           {/* Items List (compact) */}
           <div className="px-4 space-y-1 mb-2 max-h-40 overflow-y-auto">
-            {items.map((item: any) => (
+            {items.map((item: OrderItem) => (
               <div key={item.id} className="flex items-center gap-1.5 p-2 bg-[var(--color-surface-subtle)] rounded-lg">
                 <select
                   value={item.status || "pending"}
-                  onChange={(e) => onUpdateItemStatus(item.id, e.target.value, item.actual_price)}
+                  onChange={(e) => onUpdateItemStatus(item.id, e.target.value, item.actual_price ?? undefined)}
                   className={`text-[10px] font-bold px-1.5 py-1 rounded border-0 ${
                     item.status === "available" ? "bg-green-100 text-green-700" :
                     item.status === "unavailable" ? "bg-red-100 text-red-700" :

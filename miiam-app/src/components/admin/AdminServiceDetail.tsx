@@ -6,6 +6,21 @@ import { createClient } from "@/lib/supabase/client";
 
 const supabase = createClient();
 
+interface ServiceBooking {
+  id: string;
+  user_id: string | null;
+  user_name?: string;
+  user_phone?: string;
+  service_type: string;
+  sub_service?: string;
+  amount?: number;
+  status: string;
+  technician_name?: string;
+  technician_phone?: string;
+  created_at?: string;
+  [key: string]: unknown;
+}
+
 interface ServiceDetail {
   name: string;
   icon: string;
@@ -42,9 +57,9 @@ const TEXT_COLOR: Record<string, string> = {
 
 export default function AdminServiceDetail({ serviceKey }: { serviceKey: string }) {
   const [loading, setLoading] = useState(true);
-  const [bookings, setBookings] = useState<any[]>([]);
+  const [bookings, setBookings] = useState<ServiceBooking[]>([]);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
-  const [assignBooking, setAssignBooking] = useState<any>(null);
+  const [assignBooking, setAssignBooking] = useState<ServiceBooking | null>(null);
   const [techName, setTechName] = useState("");
   const [techPhone, setTechPhone] = useState("");
   const [assigning, setAssigning] = useState(false);
@@ -147,8 +162,8 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
   }
 
   const totalBookings = bookings.length;
-  const totalRevenue = bookings.reduce((s: number, b: any) => s + (b.amount || 0), 0);
-  const completedCount = bookings.filter((b: any) => b.status === "completed").length;
+  const totalRevenue = bookings.reduce((s: number, b: ServiceBooking) => s + (b.amount || 0), 0);
+  const completedCount = bookings.filter((b: ServiceBooking) => b.status === "completed").length;
   const completionRate = totalBookings > 0 ? Math.round((completedCount / totalBookings) * 100) : 0;
 
   const statusColors: Record<string, string> = {
@@ -215,7 +230,7 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
-              {bookings.map((b: any) => (
+              {bookings.map((b: ServiceBooking) => (
                 <tr key={b.id}>
                   <td className="p-4 font-bold text-[var(--color-on-surface)]">{b.user_name || "—"}</td>
                   <td className="p-4 text-sm text-[var(--color-on-surface-variant)]">{b.user_phone || "—"}</td>

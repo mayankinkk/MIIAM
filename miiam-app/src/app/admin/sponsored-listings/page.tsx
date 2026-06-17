@@ -42,7 +42,7 @@ export default function SponsoredListingsPage() {
   async function load() {
     setLoading(true);
     const { data } = await supabase.from("sponsored_listings").select("*").order("created_at", { ascending: false });
-    if (data) setItems(data as any);
+    if (data) setItems(data as SponsoredItem[]);
     setLoading(false);
   }
 
@@ -86,8 +86,9 @@ export default function SponsoredListingsPage() {
       setShowCreateModal(false);
       setEditingItem(null);
       load();
-    } catch (err: any) {
-      useToastStore.getState().addToast(`Failed: ${err.message}`, "error");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Unknown error";
+      useToastStore.getState().addToast(`Failed: ${msg}`, "error");
     } finally {
       setSaving(false);
     }
@@ -96,9 +97,10 @@ export default function SponsoredListingsPage() {
   const handleStatusChange = async (id: string, newStatus: string) => {
     try {
       await supabase.from("sponsored_listings").update({ status: newStatus }).eq("id", id);
-      setItems(prev => prev.map(item => item.id === id ? { ...item, status: newStatus as any } : item));
-    } catch (err: any) {
-      useToastStore.getState().addToast(`Failed: ${err.message}`, "error");
+      setItems(prev => prev.map(item => item.id === id ? { ...item, status: newStatus as SponsoredItem["status"] } : item));
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Unknown error";
+      useToastStore.getState().addToast(`Failed: ${msg}`, "error");
     }
   };
 
@@ -107,8 +109,9 @@ export default function SponsoredListingsPage() {
     try {
       await supabase.from("sponsored_listings").delete().eq("id", id);
       setItems(prev => prev.filter(item => item.id !== id));
-    } catch (err: any) {
-      useToastStore.getState().addToast(`Failed: ${err.message}`, "error");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Unknown error";
+      useToastStore.getState().addToast(`Failed: ${msg}`, "error");
     }
   };
 

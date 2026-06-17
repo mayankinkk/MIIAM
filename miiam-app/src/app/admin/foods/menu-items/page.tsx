@@ -26,7 +26,7 @@ export default function AdminMenuItemsPage() {
   const supabase = useMemo(() => createClient(), []);
   const [items, setItems] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [vendors, setVendors] = useState<any[]>([]);
+  const [vendors, setVendors] = useState<{ id: string; shop_name?: string; name?: string }[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [vendorFilter, setVendorFilter] = useState("all");
@@ -77,8 +77,8 @@ export default function AdminMenuItemsPage() {
       setShowAddModal(false);
       setNewItem({ name: "", price: "", category: "Main Course", vendor_id: "", image_url: "" });
       loadData();
-    } catch (error: any) {
-      useToastStore.getState().addToast(`Failed: ${error.message}`, "error");
+    } catch (error: unknown) {
+      useToastStore.getState().addToast(`Failed: ${(error as Error).message}`, "error");
     } finally {
       setLoading(false);
     }
@@ -102,8 +102,8 @@ export default function AdminMenuItemsPage() {
       useToastStore.getState().addToast("Item updated!", "success");
       setEditingItem(null);
       loadData();
-    } catch (error: any) {
-      useToastStore.getState().addToast(`Failed: ${error.message}`, "error");
+    } catch (error: unknown) {
+      useToastStore.getState().addToast(`Failed: ${(error as Error).message}`, "error");
     } finally {
       setLoading(false);
     }
@@ -116,8 +116,8 @@ export default function AdminMenuItemsPage() {
       await supabase.from("menu_items").delete().eq("id", id);
       setItems(items.filter(i => i.id !== id));
       useToastStore.getState().addToast("Item deleted!", "success");
-    } catch (error: any) {
-      useToastStore.getState().addToast(`Failed: ${error.message}`, "error");
+    } catch (error: unknown) {
+      useToastStore.getState().addToast(`Failed: ${(error as Error).message}`, "error");
     } finally {
       setLoading(false);
     }
@@ -130,8 +130,8 @@ export default function AdminMenuItemsPage() {
         .update({ available: !item.available })
         .eq("id", item.id);
       setItems(items.map(i => i.id === item.id ? { ...i, available: !i.available } : i));
-    } catch (error: any) {
-      useToastStore.getState().addToast(`Failed: ${error.message}`, "error");
+    } catch (error: unknown) {
+      useToastStore.getState().addToast(`Failed: ${(error as Error).message}`, "error");
     }
   };
 

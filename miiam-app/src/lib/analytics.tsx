@@ -5,6 +5,12 @@ import { usePathname } from "next/navigation";
 
 type EventParams = Record<string, string | number | boolean | undefined | Record<string, unknown>[]>;
 
+type GtagFn = (...args: unknown[]) => void;
+
+interface WindowWithGtag extends Window {
+  gtag?: GtagFn;
+}
+
 declare global {
   interface Window {
     dataLayer: unknown[];
@@ -19,7 +25,7 @@ export function trackEvent(
 ) {
   if (typeof window === "undefined") return;
   
-  const gtag = (window as any).gtag;
+  const gtag = (window as WindowWithGtag).gtag;
   if (gtag) {
     gtag("event", eventName, params);
   } else {
@@ -30,7 +36,7 @@ export function trackEvent(
 export function trackPageView(url: string, title?: string) {
   if (typeof window === "undefined") return;
   
-  const gtag = (window as any).gtag;
+  const gtag = (window as WindowWithGtag).gtag;
   if (GA_MEASUREMENT_ID && gtag) {
     gtag("config", GA_MEASUREMENT_ID, {
       page_path: url,
@@ -148,10 +154,10 @@ function AnalyticsTrackerInner() {
       document.head.appendChild(script);
 
       window.dataLayer = window.dataLayer || [];
-      function gtag(...args: any[]) {
+      function gtag(...args: unknown[]) {
         window.dataLayer.push(args);
       }
-      (window as any).gtag = gtag;
+      (window as WindowWithGtag).gtag = gtag;
       gtag("js", new Date());
       gtag("config", GA_MEASUREMENT_ID);
     }

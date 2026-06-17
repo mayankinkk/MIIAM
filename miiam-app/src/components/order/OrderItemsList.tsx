@@ -6,8 +6,42 @@ import { usePrintLibraryStore } from "@/lib/store/printLibraryStore";
 import { useToastStore } from "@/lib/store/toastStore";
 import { useRouter } from "next/navigation";
 
+interface OrderItem {
+  quantity: number;
+  price?: number;
+  menu_item?: { name: string } | null;
+  special_notes?: string | null;
+  [key: string]: unknown;
+}
+
+interface PrintSettings {
+  fileUrls?: string[];
+  fileNames?: string[];
+  fileStatuses?: boolean[];
+  pages?: number;
+  copies?: number;
+  colorMode?: string;
+  paperSize?: string;
+  orientation?: string;
+  paperType?: string;
+  sides?: string;
+  addOns?: string[];
+  rushTier?: string;
+  rushLabel?: string;
+}
+
+interface OrderRecord {
+  id: string;
+  vendor_id: string;
+  status: string;
+  total_amount?: number;
+  vendor?: { name?: string } | null;
+  items?: OrderItem[];
+  [key: string]: unknown;
+}
+
 interface OrderItemsListProps {
-  order: any;
+  order: OrderRecord;
   onChatVendor: () => void;
 }
 
@@ -41,7 +75,7 @@ export default function OrderItemsList({ order, onChatVendor }: OrderItemsListPr
           </button>
         </div>
         <div className="bg-white/50 rounded-2xl p-4 space-y-3">
-          {order.items?.map((item: any, idx: number) => (
+          {order.items?.map((item: OrderItem, idx: number) => (
             <div key={idx} className="flex justify-between items-center text-sm">
               <span className="text-on-surface-variant font-medium">{item.quantity}x {item.menu_item?.name || "Item"}</span>
               <span className="font-bold text-on-surface">₹{item.price?.toFixed(2) || "0.00"}</span>
@@ -55,8 +89,8 @@ export default function OrderItemsList({ order, onChatVendor }: OrderItemsListPr
       </div>
 
       {/* Print File Details */}
-      {order.vendor_id === PRINTING_VENDOR_ID && order.items?.map((item: any, idx: number) => {
-        let settings: Record<string, any> = {};
+      {order.vendor_id === PRINTING_VENDOR_ID && order.items?.map((item: OrderItem, idx: number) => {
+        let settings: PrintSettings = {};
         try { if (item.special_notes) settings = JSON.parse(item.special_notes); } catch { /* corrupted data, ignore */ }
         const fileUrls: string[] = settings.fileUrls || [];
         const fileNames: string[] = settings.fileNames || [];
@@ -138,8 +172,8 @@ export default function OrderItemsList({ order, onChatVendor }: OrderItemsListPr
           <button
             onClick={() => {
               let added = 0;
-              order.items?.forEach((item: any) => {
-                let settings: Record<string, any> = {};
+              order.items?.forEach((item: OrderItem) => {
+                let settings: PrintSettings = {};
                 try { if (item.special_notes) settings = JSON.parse(item.special_notes); } catch { /* corrupted data, ignore */ }
                 const fileUrls: string[] = settings.fileUrls || [];
                 const fileNames: string[] = settings.fileNames || [];

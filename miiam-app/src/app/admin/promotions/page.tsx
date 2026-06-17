@@ -5,7 +5,6 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
 
-const supabase = useMemo(() => createClient(), []);
 
 interface Promotion {
   id: string;
@@ -22,6 +21,7 @@ interface Promotion {
 }
 
 export default function PromotionsPage() {
+  const supabase = useMemo(() => createClient(), []);
   const { confirm } = useConfirm();
   const [promos, setPromos] = useState<Promotion[]>([]);
   const [loading, setLoading] = useState(true);

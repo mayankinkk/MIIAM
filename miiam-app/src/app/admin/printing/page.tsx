@@ -17,7 +17,6 @@ import {
 import ServicesCatalogPanel from "@/components/admin/ServicesCatalogPanel";
 import BlurImage from "@/components/BlurImage";
 
-const supabase = useMemo(() => createClient(), []);
 
 const VALID_TRANSITIONS: Record<string, string[]> = {
   pending: ["processing", "cancelled"],
@@ -37,12 +36,49 @@ const statusColors: Record<string, string> = {
   cancelled: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
 };
 
+interface PrintingOrder {
+  id: string;
+  status: string;
+  total_amount: number;
+  placed_at: string;
+  priority: number;
+  user_id?: string;
+  payment_method?: string;
+  delivery_address?: string;
+  order_items?: PrintingOrderItem[];
+}
+
+interface PrintingOrderItem {
+  id: string;
+  name: string;
+  special_notes: string | null;
+  order_id: string;
+}
+
+interface PrintSettings {
+  pages?: number;
+  copies?: number;
+  colorMode?: string;
+  paperSize?: string;
+  orientation?: string;
+  sides?: string;
+  paperType?: string;
+  rushTier?: string;
+  rushLabel?: string;
+  fileNames?: string[];
+  fileUrls?: string[];
+  fileStatuses?: boolean[];
+  addOns?: { name: string; id: string }[];
+  [key: string]: unknown;
+}
+
 export default function AdminPrintingPage() {
-  const [orders, setOrders] = useState<any[]>([]);
+  const supabase = useMemo(() => createClient(), []);
+  const [orders, setOrders] = useState<PrintingOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [selectedOrder, setSelectedOrder] = useState<any>(null);
+  const [selectedOrder, setSelectedOrder] = useState<PrintingOrder | null>(null);
   const [showPricing, setShowPricing] = useState(false);
   const [pricing, setPricing] = useState<PrintingPricing>(getPrintingPricing());
   const [showAddons, setShowAddons] = useState(false);
@@ -92,10 +128,10 @@ export default function AdminPrintingPage() {
     setSigningUrls(false);
   }
 
-  function handleSelectOrder(order: any) {
+  function handleSelectOrder(order: PrintingOrder) {
     setSelectedOrder(order);
     const item = order.order_items?.[0];
-    let settings: Record<string, any> = {};
+    let settings: PrintSettings = {};
                 try { if (item?.special_notes) settings = JSON.parse(item.special_notes); } catch { /* corrupted data, ignore */ }
     const fileUrls: string[] = settings.fileUrls || [];
     if (fileUrls.length > 0) {
@@ -169,7 +205,7 @@ export default function AdminPrintingPage() {
     }
   }
 
-  async function toggleFilePrinted(orderId: string, fileIndex: number, currentSettings: any) {
+  async function toggleFilePrinted(orderId: string, fileIndex: number, currentSettings: PrintSettings) {
     const fileStatuses = currentSettings.fileStatuses || currentSettings.fileUrls?.map(() => false) || [];
     fileStatuses[fileIndex] = !fileStatuses[fileIndex];
     const updated = { ...currentSettings, fileStatuses };
@@ -457,7 +493,7 @@ export default function AdminPrintingPage() {
             <tbody>
               {paginatedOrders.map((order) => {
                 const item = order.order_items?.[0];
-                let settings: Record<string, any> = {};
+                let settings: PrintSettings = {};
     try { if (item?.special_notes) settings = JSON.parse(item.special_notes); } catch { /* corrupted data, ignore */ }
                 return (
                   <tr key={order.id} className={`border-t border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)] ${order.priority > 0 ? "bg-amber-50/50" : ""}`}>
@@ -561,7 +597,7 @@ export default function AdminPrintingPage() {
 
       {selectedOrder && (() => {
         const selItem = selectedOrder.order_items?.[0];
-        let selSettings: Record<string, any> = {};
+        let selSettings: PrintSettings = {};
         try { if (selItem?.special_notes) selSettings = JSON.parse(selItem.special_notes); } catch { /* corrupted data, ignore */ }
         const selFileNames: string[] = selSettings.fileNames || [];
         const selFileUrls: string[] = selSettings.fileUrls || [];
@@ -620,7 +656,7 @@ export default function AdminPrintingPage() {
                     </div>
                     {hasAnyAddOns && (
                       <div className="flex flex-wrap gap-1 mt-1">
-                        {selSettings.addOns.map((a: any, ai: number) => (
+                        {selSettings.addOns?.map((a, ai) => (
                           <span key={ai} className="px-2 py-0.5 bg-purple-100 text-purple-700 rounded text-[10px] font-bold">{a.name || a.id}</span>
                         ))}
                       </div>

@@ -5,7 +5,6 @@ import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import Link from "next/link";
 
-const supabase = useMemo(() => createClient(), []);
 
 interface GroceryOrder {
   id: string;
@@ -41,6 +40,7 @@ const statusOptions = [
 ];
 
 export default function GroceryOrdersPage() {
+  const supabase = useMemo(() => createClient(), []);
   const [orders, setOrders] = useState<GroceryOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({ total: 0, pending: 0, completed: 0, cancelled: 0 });
