@@ -603,7 +603,9 @@ export default function RiderDashboard() {
           <ActiveDeliveryView currentOrder={currentOrder} activeOrders={activeOrders} deliveryStep={deliveryStep} currentStopIndex={currentStopIndex} unreadCount={unreadCount} pickedItems={pickedItems} onSetCurrentOrder={(o) => { setCurrentOrder(o); setDeliveryStep("shopping"); }} onSetDeliveryStep={(s) => setDeliveryStep(s as any)} onCallCustomer={() => setShowCallModal(true)} onStartChat={() => setShowChatModal(true)} onPickedUp={handlePickedUp} onArrived={handleArrived} onComplete={handleComplete} onItemsCollected={handleItemsCollected} onSetPickedItems={setPickedItems as any} />
         )}
         <MapControls onZoomIn={() => mapInstanceRef.current?.zoomIn()} onZoomOut={() => mapInstanceRef.current?.zoomOut()} onCenter={handleCenterMap} />
-        <QuickStats todayEarnings={todayEarnings} liveEarnings={liveEarnings} cashCollected={cashCollected} cashPending={cashPending} dndMode={dndMode} hasActiveOrder={!!currentOrder} deliveryStep={deliveryStep} />
+        {!(pendingOrders.length > 0 && !currentOrder) && (
+          <QuickStats todayEarnings={todayEarnings} liveEarnings={liveEarnings} cashCollected={cashCollected} cashPending={cashPending} dndMode={dndMode} hasActiveOrder={!!currentOrder} deliveryStep={deliveryStep} />
+        )}
       </main>
       <CallModal open={showCallModal} onClose={() => setShowCallModal(false)} name={currentOrder?.vendor} phone={currentOrder?.vendorPhone || currentOrder?.customerPhone} />
       {showChatModal && currentOrder && currentUserId && (
