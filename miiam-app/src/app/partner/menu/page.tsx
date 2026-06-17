@@ -113,6 +113,21 @@ export default function PartnerMenuPage() {
   itemsRef.current = items;
   selectedItemsRef.current = selectedItems;
 
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        if (showAddModal) setShowAddModal(false);
+        else if (editingItem) setEditingItem(null);
+        else if (showCategoryModal) setShowCategoryModal(false);
+        else if (showQRModal) setShowQRModal(false);
+      }
+    };
+    if (showAddModal || editingItem || showCategoryModal || showQRModal) {
+      document.addEventListener("keydown", handleEsc);
+    }
+    return () => document.removeEventListener("keydown", handleEsc);
+  }, [showAddModal, editingItem, showCategoryModal, showQRModal]);
+
   // Helper: Upload image to Supabase Storage
   async function uploadImage(file: File): Promise<string | null> {
     const fileExt = file.name.split(".").pop();
@@ -914,10 +929,10 @@ export default function PartnerMenuPage() {
 
       {/* Add Item Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowAddModal(false)}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowAddModal(false)} role="dialog" aria-modal="true" aria-labelledby="add-item-title">
           <div className="bg-[var(--color-surface-container-lowest)] w-full max-w-lg rounded-3xl p-6 m-4" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-extrabold text-[var(--color-on-surface)]">
+              <h2 id="add-item-title" className="text-xl font-extrabold text-[var(--color-on-surface)]">
                 Add {vendorKey === "food" ? "Menu Item" : vendorKey === "grocery" ? "Product" : vendorKey === "pharmacy" ? "Medicine" : "Item"}
               </h2>
               <button onClick={() => setShowAddModal(false)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center">
@@ -1173,10 +1188,10 @@ export default function PartnerMenuPage() {
 
       {/* Edit Item Modal */}
       {editingItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setEditingItem(null)}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setEditingItem(null)} role="dialog" aria-modal="true" aria-labelledby="edit-item-title">
           <div className="bg-[var(--color-surface-container-lowest)] w-full max-w-lg rounded-3xl p-6 m-4" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-extrabold text-[var(--color-on-surface)]">Edit Item</h2>
+              <h2 id="edit-item-title" className="text-xl font-extrabold text-[var(--color-on-surface)]">Edit Item</h2>
               <button onClick={() => setEditingItem(null)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center">
                 <span className="material-symbols-outlined">close</span>
               </button>
@@ -1438,10 +1453,10 @@ export default function PartnerMenuPage() {
       )}
       {/* Category Management Modal */}
       {showCategoryModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowCategoryModal(false)}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowCategoryModal(false)} role="dialog" aria-modal="true" aria-labelledby="category-modal-title">
           <div className="bg-[var(--color-surface-container-lowest)] w-full max-w-lg rounded-3xl p-6 m-4" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-extrabold text-[var(--color-on-surface)]">Manage Categories</h2>
+              <h2 id="category-modal-title" className="text-xl font-extrabold text-[var(--color-on-surface)]">Manage Categories</h2>
               <button onClick={() => setShowCategoryModal(false)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center">
                 <span className="material-symbols-outlined">close</span>
               </button>
@@ -1523,10 +1538,10 @@ export default function PartnerMenuPage() {
 
       {/* QR Code Modal */}
       {showQRModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowQRModal(false)}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowQRModal(false)} role="dialog" aria-modal="true" aria-labelledby="qr-modal-title">
           <div className="bg-[var(--color-surface-container-lowest)] w-full max-w-sm rounded-3xl p-8 m-4 text-center" onClick={e => e.stopPropagation()}>
             <span className="material-symbols-outlined text-6xl text-[var(--color-on-surface)] mb-4">qr_code_scanner</span>
-            <h2 className="text-xl font-extrabold text-[var(--color-on-surface)] mb-2">Menu QR Code</h2>
+            <h2 id="qr-modal-title" className="text-xl font-extrabold text-[var(--color-on-surface)] mb-2">Menu QR Code</h2>
             <p className="text-sm text-[var(--color-outline)] mb-6">Scan to view {selectedVendor?.shop_name || "store"}'s menu</p>
             {selectedVendorId && (
               <BlurImage

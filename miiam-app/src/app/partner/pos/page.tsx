@@ -31,6 +31,21 @@ export default function PartnerPOS() {
   const audioCtxRef = useRef<AudioContext | null>(null);
 
   useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        if (delayModal) setDelayModal(null);
+        else if (prepTimeModal) setPrepTimeModal(null);
+        else if (custHistoryModal) setCustHistoryModal(null);
+        else if (callMaskModal) setCallMaskModal(null);
+      }
+    };
+    if (delayModal || prepTimeModal || custHistoryModal || callMaskModal) {
+      document.addEventListener("keydown", handleEsc);
+    }
+    return () => document.removeEventListener("keydown", handleEsc);
+  }, [delayModal, prepTimeModal, custHistoryModal, callMaskModal]);
+
+  useEffect(() => {
     mountedRef.current = true;
 
     async function init() {
@@ -571,12 +586,12 @@ export default function PartnerPOS() {
 
       {/* Delay Notification Modal */}
       {delayModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setDelayModal(null)}>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setDelayModal(null)} role="dialog" aria-modal="true" aria-labelledby="delay-modal-title">
           <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-6 max-w-sm w-full shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center gap-3 mb-4">
               <span className="material-symbols-outlined text-3xl text-orange-500">schedule</span>
               <div>
-                <h3 className="text-lg font-extrabold text-[var(--color-on-surface)]">Notify Delay</h3>
+                <h3 id="delay-modal-title" className="text-lg font-extrabold text-[var(--color-on-surface)]">Notify Delay</h3>
                 <p className="text-xs text-[var(--color-outline)]">Inform customer about the delay</p>
               </div>
             </div>
@@ -645,12 +660,12 @@ export default function PartnerPOS() {
 
       {/* Prep Time Modal */}
       {prepTimeModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setPrepTimeModal(null)}>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setPrepTimeModal(null)} role="dialog" aria-modal="true" aria-labelledby="prep-time-modal-title">
           <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-6 max-w-sm w-full shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center gap-3 mb-4">
               <span className="material-symbols-outlined text-3xl text-amber-500">timer</span>
               <div>
-                <h3 className="text-lg font-extrabold text-[var(--color-on-surface)]">Set Preparation Time</h3>
+                <h3 id="prep-time-modal-title" className="text-lg font-extrabold text-[var(--color-on-surface)]">Set Preparation Time</h3>
                 <p className="text-xs text-[var(--color-outline)]">How long will this order take to prepare?</p>
               </div>
             </div>
@@ -702,10 +717,10 @@ export default function PartnerPOS() {
 
       {/* Customer History Modal */}
       {custHistoryModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setCustHistoryModal(null)}>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setCustHistoryModal(null)} role="dialog" aria-modal="true" aria-labelledby="cust-history-modal-title">
           <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-6 max-w-lg w-full shadow-2xl max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-extrabold text-[var(--color-on-surface)]">Customer Order History</h3>
+              <h3 id="cust-history-modal-title" className="text-lg font-extrabold text-[var(--color-on-surface)]">Customer Order History</h3>
               <button onClick={() => setCustHistoryModal(null)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center">
                 <span className="material-symbols-outlined text-sm">close</span>
               </button>
@@ -735,10 +750,10 @@ export default function PartnerPOS() {
 
       {/* Call Masking Modal */}
       {callMaskModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setCallMaskModal(null)}>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setCallMaskModal(null)} role="dialog" aria-modal="true" aria-labelledby="call-mask-modal-title">
           <div className="bg-[var(--color-surface-container-lowest)] w-full max-w-sm rounded-3xl p-6" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
-              <h3 className="font-extrabold text-[var(--color-on-surface)]">Connect Call</h3>
+              <h3 id="call-mask-modal-title" className="font-extrabold text-[var(--color-on-surface)]">Connect Call</h3>
               <button onClick={() => setCallMaskModal(null)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center">
                 <span className="material-symbols-outlined text-sm">close</span>
               </button>

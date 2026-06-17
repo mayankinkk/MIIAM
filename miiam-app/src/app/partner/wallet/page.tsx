@@ -30,6 +30,16 @@ export default function VendorWalletPage() {
   const [payoutAmount, setPayoutAmount] = useState("");
 
   useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && showRequestPayout) {
+        setShowRequestPayout(false);
+      }
+    };
+    if (showRequestPayout) document.addEventListener("keydown", handleEsc);
+    return () => document.removeEventListener("keydown", handleEsc);
+  }, [showRequestPayout]);
+
+  useEffect(() => {
     init();
   }, []);
 
@@ -211,10 +221,10 @@ export default function VendorWalletPage() {
 
       {/* Request Payout Modal */}
       {showRequestPayout && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowRequestPayout(false)}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowRequestPayout(false)} role="dialog" aria-modal="true" aria-labelledby="payout-modal-title">
           <div className="bg-[var(--color-surface-container-lowest)] w-full max-w-md rounded-3xl p-6 m-4" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-extrabold text-[var(--color-on-surface)]">Request Payout</h2>
+              <h2 id="payout-modal-title" className="text-xl font-extrabold text-[var(--color-on-surface)]">Request Payout</h2>
               <button onClick={() => setShowRequestPayout(false)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center">
                 <span className="material-symbols-outlined">close</span>
               </button>
