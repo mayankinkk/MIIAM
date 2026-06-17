@@ -168,7 +168,7 @@ export default function BeautyPage() {
         {/* Search */}
         <div className="relative">
           <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-lg">search</span>
-          <input type="text" placeholder="Search for services..." className="w-full pl-9 pr-4 py-2.5 rounded-lg text-on-surface text-sm" />
+          <input type="text" placeholder="Search for services..." aria-label="Search beauty services" className="w-full pl-9 pr-4 py-2.5 rounded-lg text-on-surface text-sm" />
         </div>
       </header>
 

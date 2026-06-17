@@ -238,7 +238,7 @@ export default function CheckoutPage() {
             <span className="material-symbols-outlined text-6xl text-[var(--color-outline-variant)]/60">shopping_cart</span>
             <h2 className="text-xl font-black text-[var(--color-on-surface-variant)] mt-4">{t.checkout.cartEmpty}</h2>
             <p className="text-sm text-[var(--color-outline-variant)] mt-2">{t.checkout.cartEmptyDesc}</p>
-            <a href="/app/home" className="inline-block mt-6 px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm">{t.checkout.browseMenu}</a>
+            <Link href="/app/home" className="inline-block mt-6 px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm">{t.checkout.browseMenu}</Link>
           </div>
         ) : (
 

@@ -117,9 +117,12 @@ export function PaymentOptions({ total: _total, selected, onSelect }: PaymentOpt
         <div className="ml-14 p-4 bg-[var(--color-surface-subtle)] rounded-xl">
           <div className="flex items-center gap-3 py-3">
             <span className="material-symbols-outlined text-[var(--color-outline-variant)]">credit_card</span>
-            <p className="text-sm text-[var(--color-outline)]">
-              Card payments coming soon. Use UPI or Cash on Delivery for now.
-            </p>
+            <div>
+              <p className="text-sm text-[var(--color-outline)]">
+                Card payments coming soon.
+              </p>
+              <p className="text-xs text-[var(--color-outline-variant)] mt-1">Use UPI or Cash on Delivery for now.</p>
+            </div>
           </div>
         </div>
       )}

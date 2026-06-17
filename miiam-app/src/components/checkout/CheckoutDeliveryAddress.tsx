@@ -30,7 +30,7 @@ export default function CheckoutDeliveryAddress({ deliveryAddress, onChangeAddre
       </div>
 
       {deliveryAddress ? (
-        <div className="p-3 sm:p-4 rounded-xl border-2 border-primary bg-[#fff8f8] flex items-start gap-3 sm:gap-4">
+        <div className="p-3 sm:p-4 rounded-xl border-2 border-primary bg-primary/5 flex items-start gap-3 sm:gap-4">
           <div className="w-11 h-11 rounded-xl bg-surface-container flex items-center justify-center flex-shrink-0">
             <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>
               {deliveryAddress.type === "office" ? "business" : deliveryAddress.type === "other" ? "place" : "home"}

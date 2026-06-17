@@ -745,8 +745,9 @@ export default function HomePage() {
 
             {/* Pincode Entry */}
             <div className="mb-4">
-              <label className="text-xs font-bold text-[var(--color-outline)] mb-1 block">{t.home.pincode}</label>
+              <label htmlFor="pincode-input" className="text-xs font-bold text-[var(--color-outline)] mb-1 block">{t.home.pincode}</label>
               <input
+                id="pincode-input"
                 type="tel"
                 inputMode="numeric"
                 maxLength={6}
