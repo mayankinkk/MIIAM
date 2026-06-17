@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 export function useUnreadMessages(userId: string) {
-  const supabaseRef = useRef(createClient());
-  const supabase = supabaseRef.current;
+  const supabase = useMemo(() => createClient(), []);
   const [unreadByOrder, setUnreadByOrder] = useState<Record<string, number>>({});
   const [totalUnread, setTotalUnread] = useState(0);
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useCallback, useRef } from "react";
+import { useEffect, useCallback, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import {
   useNotificationStore,
@@ -9,8 +9,7 @@ import {
 } from "@/lib/store/notificationStore";
 
 export function useNotifications() {
-  const supabaseRef = useRef(createClient());
-  const supabase = supabaseRef.current;
+  const supabase = useMemo(() => createClient(), []);
   const {
     notifications,
     permission,
@@ -133,8 +132,7 @@ export function useNotifications() {
 }
 
 export function useOrderNotifications(orderId: string) {
-  const supabaseRef = useRef(createClient());
-  const supabase = supabaseRef.current;
+  const supabase = useMemo(() => createClient(), []);
   const { addNotification, markAsRead } = useNotificationStore();
 
   useEffect(() => {

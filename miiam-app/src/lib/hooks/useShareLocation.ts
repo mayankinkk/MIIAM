@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 export interface SharedLocation {
@@ -20,8 +20,7 @@ interface UseShareLocationOptions {
 }
 
 export function useShareLocation({ orderId, userId, active = true }: UseShareLocationOptions) {
-  const supabaseRef = useRef(createClient());
-  const supabase = supabaseRef.current;
+  const supabase = useMemo(() => createClient(), []);
   const [sharing, setSharing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lastSent, setLastSent] = useState<SharedLocation | null>(null);
@@ -135,8 +134,7 @@ interface UseCustomerLocationOptions {
 }
 
 export function useCustomerLocation({ orderId, enabled }: UseCustomerLocationOptions) {
-  const supabaseRef = useRef(createClient());
-  const supabase = supabaseRef.current;
+  const supabase = useMemo(() => createClient(), []);
   const [location, setLocation] = useState<SharedLocation | null>(null);
   const [loading, setLoading] = useState(false);
 

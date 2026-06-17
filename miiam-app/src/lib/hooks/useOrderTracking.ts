@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -68,8 +68,7 @@ const STATUS_MESSAGES: Record<string, string> = {
 };
 
 export function useOrderTracking(orderId: string, supabaseClient?: SupabaseClient) {
-  const supabaseRef = useRef(supabaseClient || createClient());
-  const supabase = supabaseRef.current;
+  const supabase = useMemo(() => supabaseClient || createClient(), [supabaseClient]);
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -266,8 +265,7 @@ export function useOrderTracking(orderId: string, supabaseClient?: SupabaseClien
 }
 
 export function useRiderLocation(orderId: string) {
-  const supabaseRef = useRef(createClient());
-  const supabase = supabaseRef.current;
+  const supabase = useMemo(() => createClient(), []);
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
 
   useEffect(() => {
@@ -300,8 +298,7 @@ export function useRiderLocation(orderId: string) {
 }
 
 export function useActiveOrders(userId: string) {
-  const supabaseRef = useRef(createClient());
-  const supabase = supabaseRef.current;
+  const supabase = useMemo(() => createClient(), []);
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 

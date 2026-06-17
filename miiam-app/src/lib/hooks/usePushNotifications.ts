@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useNotificationStore } from "@/lib/store/notificationStore";
 
@@ -8,8 +8,7 @@ export function usePushNotifications(userId?: string) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { setPermission, permission } = useNotificationStore();
-  const supabaseRef = useRef(createClient());
-  const supabase = supabaseRef.current;
+  const supabase = useMemo(() => createClient(), []);
 
   const subscribe = useCallback(async () => {
     if (!userId) {

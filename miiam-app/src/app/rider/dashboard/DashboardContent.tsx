@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -25,8 +25,7 @@ import { useTranslation } from "@/lib/i18n/useTranslation";
 
 export default function RiderDashboard() {
   const router = useRouter();
-  const supabaseRef = useRef(createClient());
-  const supabase = supabaseRef.current;
+  const supabase = useMemo(() => createClient(), []);
   const { t } = useTranslation();
   const [isOnline, setIsOnline] = useState(true);
   const [countdown, setCountdown] = useState(300);

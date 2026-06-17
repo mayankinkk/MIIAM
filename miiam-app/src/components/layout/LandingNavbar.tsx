@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { useLanguageStore } from "@/lib/store/languageStore";
 import { getTranslations } from "@/lib/i18n";
@@ -28,11 +28,10 @@ export function LandingNavbar({
   const { language } = useLanguageStore();
   const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const supabaseRef = useRef(createClient());
+  const supabase = useMemo(() => createClient(), []);
 
   useEffect(() => {
     setMounted(true);
-    const supabase = supabaseRef.current;
     const checkUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       setUser(user);
