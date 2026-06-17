@@ -3,6 +3,7 @@
 import { useMemo, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
+import { useRiderOnlineStore } from "@/lib/store/riderOnlineStore";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import PullToRefresh from "@/components/PullToRefresh";
@@ -29,7 +30,8 @@ export default function RiderAccountPage() {
   const [shifts, setShifts] = useState(weeklyShifts);
   const [showShiftModal, setShowShiftModal] = useState(false);
   const [activeShift, setActiveShift] = useState<string | null>("Lunch");
-  const [isOnline, setIsOnline] = useState(true);
+  const isOnline = useRiderOnlineStore((s) => s.isOnline);
+  const setOnline = useRiderOnlineStore((s) => s.setOnline);
   const [dataError, setDataError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -49,7 +51,7 @@ export default function RiderAccountPage() {
       
       if (riderData) {
         setRider(riderData);
-        setIsOnline(riderData.is_online || false);
+        setOnline(riderData.is_online || false);
 
         // Load saved shifts
         const { data: savedShifts } = await supabase
@@ -86,7 +88,7 @@ export default function RiderAccountPage() {
     const newStatus = !isOnline;
     if (rider) {
       await supabase.from("riders").update({ is_online: newStatus }).eq("id", rider.id);
-      setIsOnline(newStatus);
+      setOnline(newStatus);
     }
     useToastStore.getState().addToast(`You are now ${newStatus ? "Online" : "Offline"}`, "success");
   }

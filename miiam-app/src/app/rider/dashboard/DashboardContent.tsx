@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { createClient } from "@/lib/supabase/client";
+import { useRiderOnlineStore } from "@/lib/store/riderOnlineStore";
 import { startLocationTracking, stopLocationTracking } from "@/lib/rider-location-tracker";
 import { RiderDashboardSkeleton } from "@/components/Skeleton";
 import { calculateEarnings } from "@/lib/earnings";
@@ -29,7 +30,8 @@ export default function RiderDashboard() {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
   const { t } = useTranslation();
-  const [isOnline, setIsOnline] = useState(true);
+  const isOnline = useRiderOnlineStore((s) => s.isOnline);
+  const setOnline = useRiderOnlineStore((s) => s.setOnline);
   const [countdown, setCountdown] = useState(300);
   const [pendingOrders, setPendingOrders] = useState<OrderWithTiming[]>([]);
   const [selectedOrder, setSelectedOrder] = useState<OrderWithTiming | null>(null);
@@ -576,7 +578,7 @@ export default function RiderDashboard() {
   return (
     <div className="min-h-screen bg-background font-body-md text-on-surface">
       <audio ref={audioRef} src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2teleQoKJZPl" preload="auto" aria-hidden="true" />
-      <DashboardHeader isOnline={isOnline} streakDays={streakDays} onToggleOnline={async () => { const newStatus = !isOnline; setIsOnline(newStatus); if (riderId) await supabase.from("riders").update({ is_online: newStatus }).eq("id", riderId); }} onOpenQuests={() => setShowQuestModal(true)} />
+      <DashboardHeader isOnline={isOnline} streakDays={streakDays} onToggleOnline={async () => { const newStatus = !isOnline; setOnline(newStatus); if (riderId) await supabase.from("riders").update({ is_online: newStatus }).eq("id", riderId); }} onOpenQuests={() => setShowQuestModal(true)} />
       {isOnline && pendingOrders.length > 1 && !currentOrder && (
         <div className="fixed top-16 left-0 right-0 z-40 bg-brand-secondary/5 border-b border-brand-secondary/10 px-4 py-2 flex items-center justify-between">
           <div className="flex items-center gap-2">
