@@ -137,57 +137,63 @@ export default function VendorAnalytics() {
   else if (period === "month") periodStart.setMonth(periodStart.getMonth() - 1);
   else periodStart.setFullYear(2000);
 
-  const filteredOrders = orders.filter((o) => new Date(o.placed_at) >= periodStart);
-  const deliveredOrders = filteredOrders.filter((o) => o.status === "delivered");
+  const { filteredOrders, deliveredOrders, totalRevenue, totalOrders, avgOrderValue, dailyRevenue, popularItems, peakHours, maxOrders } = useMemo(() => {
+    const filtered = orders.filter((o) => new Date(o.placed_at) >= periodStart);
+    const delivered = filtered.filter((o) => o.status === "delivered");
 
-  const totalRevenue = deliveredOrders.reduce((s, o) => s + o.total_amount, 0);
-  const totalOrders = filteredOrders.length;
-  const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+    const rev = delivered.reduce((s, o) => s + o.total_amount, 0);
+    const count = filtered.length;
+    const avg = count > 0 ? rev / count : 0;
 
-  const dailyRevenue: { date: string; revenue: number; orders: number }[] = [];
-  const dateMap = new Map<string, { revenue: number; orders: number }>();
-  deliveredOrders.forEach((o) => {
-    const d = new Date(o.placed_at).toLocaleDateString();
-    const entry = dateMap.get(d) || { revenue: 0, orders: 0 };
-    entry.revenue += o.total_amount;
-    entry.orders += 1;
-    dateMap.set(d, entry);
-  });
-  dateMap.forEach((v, k) => dailyRevenue.push({ date: k, ...v }));
-  dailyRevenue.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-
-  const itemMap = new Map<string, MenuItemInfo>();
-  deliveredOrders.forEach((o) => {
-    o.items?.forEach((item) => {
-      const menuItem = menuItemNames.get(item.menu_item_id);
-      const name = menuItem?.name || "Unknown";
-      const existing = itemMap.get(name) || { name, total_qty: 0, total_revenue: 0, order_count: 0, category: menuItem?.category || "" };
-      existing.total_qty += item.quantity;
-      existing.total_revenue += item.unit_price * item.quantity;
-      existing.order_count += 1;
-      itemMap.set(name, existing);
+    const daily: { date: string; revenue: number; orders: number }[] = [];
+    const dateMap = new Map<string, { revenue: number; orders: number }>();
+    delivered.forEach((o) => {
+      const d = new Date(o.placed_at).toLocaleDateString();
+      const entry = dateMap.get(d) || { revenue: 0, orders: 0 };
+      entry.revenue += o.total_amount;
+      entry.orders += 1;
+      dateMap.set(d, entry);
     });
-  });
-  const popularItems = Array.from(itemMap.values()).sort((a, b) => b.total_qty - a.total_qty).slice(0, 10);
+    dateMap.forEach((v, k) => daily.push({ date: k, ...v }));
+    daily.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
-  const hourMap = new Map<number, { orders: number; revenue: number }>();
-  for (let i = 0; i < 24; i++) hourMap.set(i, { orders: 0, revenue: 0 });
-  deliveredOrders.forEach((o) => {
-    const hour = new Date(o.placed_at).getHours();
-    const entry = hourMap.get(hour)!;
-    entry.orders += 1;
-    entry.revenue += o.total_amount;
-  });
-  const peakHours: HourlyData[] = Array.from(hourMap.entries()).map(([hour, data]) => ({ hour, ...data }));
-  const maxOrders = Math.max(...peakHours.map((h) => h.orders), 1);
+    const itemMap = new Map<string, MenuItemInfo>();
+    delivered.forEach((o) => {
+      o.items?.forEach((item) => {
+        const menuItem = menuItemNames.get(item.menu_item_id);
+        const name = menuItem?.name || "Unknown";
+        const existing = itemMap.get(name) || { name, total_qty: 0, total_revenue: 0, order_count: 0, category: menuItem?.category || "" };
+        existing.total_qty += item.quantity;
+        existing.total_revenue += item.unit_price * item.quantity;
+        existing.order_count += 1;
+        itemMap.set(name, existing);
+      });
+    });
+    const popular = Array.from(itemMap.values()).sort((a, b) => b.total_qty - a.total_qty).slice(0, 10);
 
-  const avgCompetitorRating = competitors.length
-    ? (competitors.reduce((s: number, c: any) => s + (c.rating || 0), 0) / competitors.length).toFixed(1)
-    : "N/A";
-  const avgCompetitorDeliveryMin = competitors.length
-    ? Math.round(competitors.reduce((s: number, c: any) => s + ((c.delivery_time_min || 0) + (c.delivery_time_max || 30)) / 2, 0) / competitors.length)
-    : 0;
-  const competitorCount = competitors.length;
+    const hourMap = new Map<number, { orders: number; revenue: number }>();
+    for (let i = 0; i < 24; i++) hourMap.set(i, { orders: 0, revenue: 0 });
+    delivered.forEach((o) => {
+      const hour = new Date(o.placed_at).getHours();
+      const entry = hourMap.get(hour)!;
+      entry.orders += 1;
+      entry.revenue += o.total_amount;
+    });
+    const hours: HourlyData[] = Array.from(hourMap.entries()).map(([hour, data]) => ({ hour, ...data }));
+    const maxOrd = Math.max(...hours.map((h) => h.orders), 1);
+
+    return { filteredOrders: filtered, deliveredOrders: delivered, totalRevenue: rev, totalOrders: count, avgOrderValue: avg, dailyRevenue: daily, popularItems: popular, peakHours: hours, maxOrders: maxOrd };
+  }, [orders, periodStart, menuItemNames]);
+
+  const { avgCompetitorRating, avgCompetitorDeliveryMin, competitorCount } = useMemo(() => ({
+    avgCompetitorRating: competitors.length
+      ? (competitors.reduce((s: number, c: any) => s + (c.rating || 0), 0) / competitors.length).toFixed(1)
+      : "N/A",
+    avgCompetitorDeliveryMin: competitors.length
+      ? Math.round(competitors.reduce((s: number, c: any) => s + ((c.delivery_time_min || 0) + (c.delivery_time_max || 30)) / 2, 0) / competitors.length)
+      : 0,
+    competitorCount: competitors.length,
+  }), [competitors]);
 
   if (loading) {
     return (

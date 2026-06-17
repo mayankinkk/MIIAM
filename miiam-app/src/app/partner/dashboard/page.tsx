@@ -166,23 +166,22 @@ export default function VendorDashboard() {
     }
   };
 
-  const todayOrders = orders.filter((o) => {
-    const d = new Date(o.placed_at);
-    const now = new Date();
-    return d.toDateString() === now.toDateString();
-  });
-
-  const todayRevenue = todayOrders
-    .filter((o) => o.status === "delivered")
-    .reduce((sum, o) => sum + o.total_amount, 0);
-
-  const todayItemsSold = todayOrders
-    .filter((o) => o.status === "delivered")
-    .reduce((sum, o) => sum + (o.items?.reduce((s, i) => s + i.quantity, 0) || 0), 0);
-
-  const pendingOrders = orders.filter((o) => o.status === "pending");
-  const activeOrders = orders.filter((o) => ["accepted", "preparing"].includes(o.status));
-  const recentOrders = orders.slice(0, 5);
+  const { todayOrders, todayRevenue, todayItemsSold, pendingOrders, activeOrders, recentOrders } = useMemo(() => {
+    const today = orders.filter((o) => {
+      const d = new Date(o.placed_at);
+      const now = new Date();
+      return d.toDateString() === now.toDateString();
+    });
+    const delivered = today.filter((o) => o.status === "delivered");
+    return {
+      todayOrders: today,
+      todayRevenue: delivered.reduce((sum, o) => sum + o.total_amount, 0),
+      todayItemsSold: delivered.reduce((sum, o) => sum + (o.items?.reduce((s, i) => s + i.quantity, 0) || 0), 0),
+      pendingOrders: orders.filter((o) => o.status === "pending"),
+      activeOrders: orders.filter((o) => ["accepted", "preparing"].includes(o.status)),
+      recentOrders: orders.slice(0, 5),
+    };
+  }, [orders]);
 
   if (loading) {
     return (

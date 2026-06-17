@@ -56,25 +56,29 @@ export default function VendorOrders() {
     if (selectedOrder?.id === orderId) setSelectedOrder({ ...selectedOrder, status });
   };
 
-  const filteredOrders = orders.filter((o) => {
-    const matchesSearch =
-      search === "" ||
-      o.id.toLowerCase().includes(search.toLowerCase()) ||
-      (o.delivery_address || "").toLowerCase().includes(search.toLowerCase());
-    const matchesFilter =
-      filter === "all" ||
-      (filter === "active" && !["delivered", "cancelled", "refunded"].includes(o.status)) ||
-      (filter === "delivered" && o.status === "delivered") ||
-      (filter === "cancelled" && ["cancelled", "refunded"].includes(o.status));
-    return matchesSearch && matchesFilter;
-  });
-
-  const statusCounts = {
-    all: orders.length,
-    active: orders.filter((o) => !["delivered", "cancelled", "refunded"].includes(o.status)).length,
-    delivered: orders.filter((o) => o.status === "delivered").length,
-    cancelled: orders.filter((o) => ["cancelled", "refunded"].includes(o.status)).length,
-  };
+  const { filteredOrders, statusCounts } = useMemo(() => {
+    const filtered = orders.filter((o) => {
+      const matchesSearch =
+        search === "" ||
+        o.id.toLowerCase().includes(search.toLowerCase()) ||
+        (o.delivery_address || "").toLowerCase().includes(search.toLowerCase());
+      const matchesFilter =
+        filter === "all" ||
+        (filter === "active" && !["delivered", "cancelled", "refunded"].includes(o.status)) ||
+        (filter === "delivered" && o.status === "delivered") ||
+        (filter === "cancelled" && ["cancelled", "refunded"].includes(o.status));
+      return matchesSearch && matchesFilter;
+    });
+    return {
+      filteredOrders: filtered,
+      statusCounts: {
+        all: orders.length,
+        active: orders.filter((o) => !["delivered", "cancelled", "refunded"].includes(o.status)).length,
+        delivered: orders.filter((o) => o.status === "delivered").length,
+        cancelled: orders.filter((o) => ["cancelled", "refunded"].includes(o.status)).length,
+      },
+    };
+  }, [orders, search, filter]);
 
   return (
     <div className="p-4 md:p-8 space-y-8">
