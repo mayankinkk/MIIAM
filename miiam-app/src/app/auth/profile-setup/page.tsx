@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import BlurImage from "@/components/BlurImage";
 
 const INDIAN_STATES = [
   "Maharashtra", "Delhi", "Karnataka", "Tamil Nadu", "Telangana",
@@ -171,10 +172,12 @@ function ProfileSetupContent() {
       <div className="max-w-md mx-auto">
         {avatarUrl && (
           <div className="flex justify-center mb-6">
-            <img
+            <BlurImage
               src={avatarUrl}
               alt="Profile"
               className="w-20 h-20 rounded-full border-4 border-white shadow-lg object-cover"
+              width={80}
+              height={80}
             />
           </div>
         )}

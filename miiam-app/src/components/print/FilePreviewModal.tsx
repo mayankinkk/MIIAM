@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import { bytesToHumanReadable } from "@/lib/printing-utils";
+import BlurImage from "@/components/BlurImage";
 
 export interface PreviewFile {
   name: string;
@@ -92,10 +93,10 @@ export default function FilePreviewModal({ file, onClose }: FilePreviewModalProp
             </div>
           )}
           {file.type.startsWith("image/") ? (
-            <img
+            <BlurImage
               src={file.url}
               alt={file.name}
-              className={`max-w-full max-h-[70vh] object-contain rounded-lg shadow-md transition-opacity ${loading ? "opacity-0" : "opacity-100"}`}
+              className="max-w-full max-h-[70vh] object-contain rounded-lg shadow-md"
             />
           ) : file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf") ? (
             <iframe

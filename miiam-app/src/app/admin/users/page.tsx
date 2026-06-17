@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import type { Profile } from "@/lib/types";
 import { ProfileSkeleton } from "@/components/Skeleton";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
+import BlurImage from "@/components/BlurImage";
 
 const PAGE_SIZE = 15;
 
@@ -141,7 +142,7 @@ export default function UserRegistry() {
                   <td className="p-6">
                     <div className="flex items-center gap-4">
                       <div className="w-10 h-10 rounded-full bg-[var(--color-surface-container)] flex items-center justify-center text-[var(--color-primary)] font-black overflow-hidden shadow-sm">
-                        {profile.avatar_url ? <img src={profile.avatar_url} alt={`${profile.full_name || 'User'}'s avatar`} className="w-full h-full object-cover" /> : profile.full_name?.[0] || "?"}
+                        {profile.avatar_url ? <BlurImage src={profile.avatar_url} alt={`${profile.full_name || 'User'}'s avatar`} className="w-full h-full object-cover" /> : profile.full_name?.[0] || "?"}
                       </div>
                       <div>
                         <p className="text-sm font-bold text-[var(--color-on-surface)]">{profile.full_name || "Unknown"}</p>

@@ -9,6 +9,7 @@ import { useServiceSettingsStore } from "@/lib/store/serviceSettingsStore";
 import { useToastStore } from "@/lib/store/toastStore";
 import { PRINTING_VENDOR_ID, PRINT_MENU_ITEM_ID } from "@/lib/constants";
 import { useTranslation } from "@/lib/i18n/useTranslation";
+import BlurImage from "@/components/BlurImage";
 import {
   PASSPORT_PRESETS,
   PHOTO_SETS,
@@ -274,7 +275,7 @@ export default function PassportPage() {
                 className="bg-surface-container-high rounded-xl p-3 flex items-center justify-center"
                 style={{ aspectRatio: aspect, maxHeight: 320 }}
               >
-                <img
+                <BlurImage
                   src={imageDataUrl}
                   alt="Your photo preview"
                   className="max-w-full max-h-full object-contain rounded"

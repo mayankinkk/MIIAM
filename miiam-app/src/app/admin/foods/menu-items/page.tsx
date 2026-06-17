@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import ImageUpload from "@/components/ImageUpload";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { useToastStore } from "@/lib/store/toastStore";
+import BlurImage from "@/components/BlurImage";
 
 interface MenuItem {
   id: string;
@@ -214,7 +215,7 @@ export default function AdminMenuItemsPage() {
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 bg-[var(--color-surface-container)] rounded-lg overflow-hidden">
                         {item.image_url ? (
-                          <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
+                          <BlurImage src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-[var(--color-outline-variant)]/60">
                             <span className="material-symbols-outlined">restaurant</span>

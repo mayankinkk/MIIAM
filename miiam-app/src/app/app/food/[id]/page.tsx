@@ -9,6 +9,7 @@ import { useCartStore } from "@/lib/store/cartStore";
 import { useFavoritesStore } from "@/lib/store/favoritesStore";
 import { ProfileSkeleton, MenuItemSkeleton } from "@/components/Skeleton";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import BlurImage from "@/components/BlurImage";
 
 const supabase = createClient();
 
@@ -389,10 +390,11 @@ export default function RestaurantProfilePage() {
     <div className="min-h-screen bg-surface pb-32">
       {/* Hero Cover */}
       <div className="relative h-64 sm:h-80 overflow-hidden">
-        <img
+        <BlurImage
           src={coverImage}
           alt={vendor.shop_name}
           className="w-full h-full object-cover"
+          fill
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
@@ -494,11 +496,12 @@ export default function RestaurantProfilePage() {
             {specials.map((item) => (
               <div key={item.id} className="flex-shrink-0 w-40 bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm border border-amber-100">
                 <div className="h-28 overflow-hidden bg-surface-container">
-                  <img
+                  <BlurImage
                     src={item.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"}
                     alt={item.name}
                     className="w-full h-full object-cover"
-                    onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"; }}
+                    fill
+                    fallbackSrc="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"
                   />
                 </div>
                 <div className="p-3">
@@ -580,11 +583,12 @@ export default function RestaurantProfilePage() {
             filteredMenu.map((item) => (
               <div key={item.id} className="bg-surface-container-lowest rounded-2xl p-3 shadow-sm flex items-center gap-3">
                 <div className="w-20 h-20 rounded-xl overflow-hidden bg-surface-container flex-shrink-0 relative">
-                  <img
+                  <BlurImage
                     src={item.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"}
                     alt={item.name}
                     className="w-full h-full object-cover"
-                    onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"; }}
+                    fill
+                    fallbackSrc="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"
                   />
                   {item.is_featured && (
                     <span className="absolute bottom-0 left-0 right-0 bg-black/50 backdrop-blur-sm text-white text-[9px] font-black text-center py-0.5 tracking-wider">

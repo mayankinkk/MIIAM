@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useCartStore } from "@/lib/store/cartStore";
+import BlurImage from "@/components/BlurImage";
 
 type MenuItem = {
   id: string;
@@ -139,7 +140,7 @@ export default function CustomizationModal({ item, vendor_id, vendor_name, onClo
           <div className="flex gap-4 bg-[var(--color-surface-subtle)] rounded-2xl p-4">
             <div className="w-16 h-16 rounded-xl overflow-hidden bg-[var(--color-surface-container-high)] flex-shrink-0">
               {item.image_url ? (
-                <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
+                <BlurImage src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
                   <span className="material-symbols-outlined text-[var(--color-outline-variant)]">restaurant</span>

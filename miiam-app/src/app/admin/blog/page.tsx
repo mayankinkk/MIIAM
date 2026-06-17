@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
+import BlurImage from "@/components/BlurImage";
 
 type BlogPost = {
   id: string;
@@ -237,7 +238,7 @@ export default function BlogAdminPage() {
               <div key={post.id} className="bg-[var(--color-surface-container-lowest)] rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
                 <div className="relative h-40">
                   {post.image ? (
-                    <img src={post.image} alt={post.title} className="w-full h-full object-cover" />
+                    <BlurImage src={post.image} alt={post.title} className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-green-100 to-emerald-100 flex items-center justify-center">
                       <span className="material-symbols-outlined text-4xl text-green-300">image</span>

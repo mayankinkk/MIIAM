@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import BlurImage from "@/components/BlurImage";
 
 interface ChatMessage {
   id: string;
@@ -150,7 +151,7 @@ export default function ChatModal({
               <div key={msg.id} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
                 <div className={`max-w-[80%] p-3 rounded-2xl ${isMe ? "bg-brand-secondary text-white" : "bg-[var(--color-surface-container)]"}`}>
                   {msg.type === "image" && msg.file_url ? (
-                    <img src={msg.file_url} alt="Shared image" className="rounded-lg max-w-full mb-1" />
+                    <BlurImage src={msg.file_url} alt="Shared image" className="rounded-lg max-w-full mb-1" />
                   ) : msg.type === "audio" && msg.file_url ? (
                     <audio controls src={msg.file_url} className="max-w-full mb-1" />
                   ) : null}

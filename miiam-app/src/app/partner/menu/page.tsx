@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { useToastStore } from "@/lib/store/toastStore";
 import { getVendorForUser } from "@/lib/vendor";
+import BlurImage from "@/components/BlurImage";
 
 interface Vendor {
   id: string;
@@ -785,15 +786,10 @@ export default function PartnerMenuPage() {
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 bg-[var(--color-surface-container)] rounded-xl flex items-center justify-center overflow-hidden">
                         {item.image_url ? (
-                          <img
+                          <BlurImage
                             src={item.image_url}
                             alt={item.name}
                             className="w-full h-full object-cover"
-                            onError={(e) => {
-                              e.currentTarget.style.display = "none";
-                              const el = e.currentTarget.parentElement?.querySelector(".mi-fallback");
-                              if (el) (el as HTMLElement).style.display = "flex";
-                            }}
                           />
                         ) : null}
                         <span className="mi-fallback material-symbols-outlined text-[var(--color-outline-variant)]" style={{ display: item.image_url ? "none" : "flex" }}>
@@ -1130,7 +1126,7 @@ export default function PartnerMenuPage() {
                   <div className="flex flex-wrap gap-2 mt-3">
                     {newItem.imageFiles.map((file: File, idx: number) => (
                       <div key={idx} className="relative w-16 h-16 rounded-xl overflow-hidden border border-[var(--color-border-subtle)] group">
-                        <img src={URL.createObjectURL(file)} alt="" className="w-full h-full object-cover" />
+                        <BlurImage src={URL.createObjectURL(file)} alt="" className="w-full h-full object-cover" />
                         <button
                           onClick={() => setNewItem({
                             ...newItem,
@@ -1363,7 +1359,7 @@ export default function PartnerMenuPage() {
                   <div className="flex flex-wrap gap-2">
                     {((editingItem as any).images?.length > 0 ? (editingItem as any).images : [(editingItem as any).image_url]).map((url: string, idx: number) => (
                       <div key={idx} className="relative w-16 h-16 rounded-xl overflow-hidden border border-[var(--color-border-subtle)] group">
-                        <img src={url} alt="" className="w-full h-full object-cover" />
+                        <BlurImage src={url} alt="" className="w-full h-full object-cover" />
                         <button
                           onClick={() => {
                             const imgs = ((editingItem as any).images || [(editingItem as any).image_url]).filter((_: string, i: number) => i !== idx);
@@ -1533,7 +1529,7 @@ export default function PartnerMenuPage() {
             <h2 className="text-xl font-extrabold text-[var(--color-on-surface)] mb-2">Menu QR Code</h2>
             <p className="text-sm text-[var(--color-outline)] mb-6">Scan to view {selectedVendor?.shop_name || "store"}'s menu</p>
             {selectedVendorId && (
-              <img
+              <BlurImage
                 src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(`${window.location.origin}/app/vendor/${selectedVendorId}`)}`}
                 alt="Menu QR Code"
                 className="w-48 h-48 mx-auto mb-6"

@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
+import BlurImage from "@/components/BlurImage";
 
 interface ImageUploadProps {
   value: string;
@@ -56,7 +57,7 @@ export default function ImageUpload({
       <div className={`relative ${previewHeight} bg-[var(--color-surface-subtle)] rounded-xl border-2 border-dashed border-[var(--color-border-subtle)] overflow-hidden group`}>
         {value ? (
           <div className="relative w-full h-full">
-            <img src={value} alt={label} className="w-full h-full object-cover" />
+            <BlurImage src={value} alt={label} className="w-full h-full object-cover" />
             <button
               type="button"
               onClick={() => onChange("")}

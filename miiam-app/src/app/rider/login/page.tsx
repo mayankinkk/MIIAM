@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import BlurImage from "@/components/BlurImage";
 
 function RiderLoginContent() {
   const [email, setEmail] = useState("");
@@ -145,10 +146,11 @@ function RiderLoginContent() {
       </div>
       <div className="hidden md:block md:w-1/2 bg-brand-secondary relative overflow-hidden">
         <div className="absolute inset-0 opacity-40 mix-blend-overlay">
-          <img
+          <BlurImage
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMs7iF1l6q72X44B4k_1288bT7cR8iT6ApejS0e_P22k1uYx9YI9zTXXP7Z8T39H5Q0A9f_2WbI6Qe9q8A1D3Yt_E1yZtBqZ2W5TfO27vC-w4m12yX_Y1239O9U2I97Y3yI6C6O28c4w09o5IqD9Z288Q3oU2D1G375_C1P31Z_pP7Y78I6T_7oA_XW2X8t3oGZ"
             alt="Rider on motorcycle"
             className="w-full h-full object-cover grayscale"
+            fill
           />
         </div>
         <div className="absolute bottom-12 left-12 right-12 glass-card rounded-2xl p-8 border border-white/20">

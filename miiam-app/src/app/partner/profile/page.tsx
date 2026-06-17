@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import { getVendorForUser } from "@/lib/vendor";
+import BlurImage from "@/components/BlurImage";
 
 interface VendorProfile {
   id: string;
@@ -144,7 +145,7 @@ export default function VendorProfilePage() {
           <div className="flex items-center gap-6">
             <div className="relative w-24 h-24 bg-[var(--color-surface-container)] rounded-2xl flex items-center justify-center overflow-hidden flex-shrink-0 group">
               {form.cover_image_url ? (
-                <img src={form.cover_image_url} alt="Store" className="w-full h-full object-cover" />
+                <BlurImage src={form.cover_image_url} alt="Store" className="w-full h-full object-cover" />
               ) : (
                 <span className="material-symbols-outlined text-4xl text-[var(--color-outline-variant)]/60">store</span>
               )}
@@ -201,7 +202,7 @@ export default function VendorProfilePage() {
             <label className="text-sm font-semibold text-[var(--color-on-surface)] mb-2 block">Banner Image</label>
             <div className="relative w-full h-40 bg-[var(--color-surface-container)] rounded-2xl overflow-hidden group">
               {form.banner_url ? (
-                <img src={form.banner_url} alt="Store Banner" className="w-full h-full object-cover" />
+                <BlurImage src={form.banner_url} alt="Store Banner" className="w-full h-full object-cover" />
               ) : (
                 <div className="w-full h-full flex flex-col items-center justify-center text-[var(--color-outline-variant)]/60">
                   <span className="material-symbols-outlined text-5xl">panorama</span>

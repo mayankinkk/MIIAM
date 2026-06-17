@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import PerFileSettings, { type PerFileSettings as Pfs, DEFAULT_FILE_SETTINGS } from "./PerFileSettings";
 import { bytesToHumanReadable } from "@/lib/printing-utils";
+import BlurImage from "@/components/BlurImage";
 
 export interface PrintFileItem {
   id: string;
@@ -76,7 +77,7 @@ export default function FileSettingsRow({
           {file.type === "application/pdf" ? (
             <span className="material-symbols-outlined text-indigo-600 text-base">description</span>
           ) : (
-            <img src={file.url} alt={file.name} className="w-full h-full object-cover" />
+            <BlurImage src={file.url} alt={file.name} className="w-full h-full object-cover" />
           )}
         </button>
         <button

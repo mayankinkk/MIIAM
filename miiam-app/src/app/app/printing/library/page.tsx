@@ -14,6 +14,7 @@ import { useTranslation } from "@/lib/i18n/useTranslation";
 import { useToastStore } from "@/lib/store/toastStore";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
 import PrintHero from "@/components/print/PrintHero";
+import BlurImage from "@/components/BlurImage";
 
 export default function PrintLibraryPage() {
   const router = useRouter();
@@ -134,10 +135,11 @@ export default function PrintLibraryPage() {
                       {item.type === "application/pdf" ? (
                         <span className="material-symbols-outlined text-indigo-600">description</span>
                       ) : (
-                        <img
+                        <BlurImage
                           src={item.url}
                           alt={item.name}
                           className="w-full h-full object-cover"
+                          fill
                         />
                       )}
                     </div>

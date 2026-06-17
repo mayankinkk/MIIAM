@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import BlurImage from "@/components/BlurImage";
 
 function LoginContent() {
   const router = useRouter();
@@ -68,10 +69,11 @@ function LoginContent() {
       {/* Left Side - Lifestyle Imagery (Desktop only) */}
       <section className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-[var(--color-on-surface)]">
         <div className="absolute inset-0 bg-gradient-to-tr from-[#ffdad7]/40 to-transparent z-10" />
-        <img
+        <BlurImage
           className="absolute inset-0 w-full h-full object-cover"
           src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhfOu3V3KkjtmyRfet1cPPZc5-qz3jim-qm5VmrhPYL8E3dmOrFfYXh-HwTGSjO_r4V97XSEBy_beSGU9M8bT8PHCdIIjRAS2rc_9dvc2Hc0LuWrcxV_I-PXDGaYAS5GWX7xtmAFg-bM-_B534tnCSovYO6dgPTnCaTK497B_rF98rPi79CXKVAEP-jNYqV1DnuT2od_QN3lPEPg7WX1sk-MEbB6nBL3aIRWtvXwvBks9fDvVST6zxaQ6UBz0pCnlorp31ipPry8o"
           alt="Artisanal pizza"
+          fill
         />
         <div className="relative z-20 mt-auto p-16 max-w-xl">
           <div className="bg-[var(--color-primary)] px-4 py-1 inline-block mb-6 rounded-sm">

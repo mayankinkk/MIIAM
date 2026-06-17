@@ -5,6 +5,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import ImageUpload from "@/components/ImageUpload";
+import BlurImage from "@/components/BlurImage";
 
 interface Vendor {
   id: string;
@@ -1066,7 +1067,7 @@ export default function AdminVendorsPage() {
                     <div key={item.id || index} className="flex items-center gap-3 p-3 bg-[var(--color-surface-subtle)] rounded-xl hover:bg-[var(--color-surface-container)] transition-colors">
                       <div className="w-14 h-14 bg-[var(--color-surface-container-high)] rounded-lg overflow-hidden flex-shrink-0 relative">
                         {item.image_url ? (
-                          <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
+                          <BlurImage src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-[var(--color-outline-variant)]">
                             <span className="material-symbols-outlined text-xl">restaurant</span>

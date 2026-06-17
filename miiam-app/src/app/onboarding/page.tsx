@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import BlurImage from "@/components/BlurImage";
 
 export const metadata: Metadata = {
   title: "Welcome to MIIAM",
@@ -48,10 +49,11 @@ export default function OnboardingPage() {
               </div>
             </div>
             <div className="md:col-span-4 rounded-lg overflow-hidden relative min-h-[400px]">
-              <img
+              <BlurImage
                 className="w-full h-full object-cover"
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_eGuofEdBeeLV9hUZfIDuiZus9YUpGGblWZHG_Lv038k38xJ7Rv2t6XiifgkgOYs4N6KvE-BZg4bFNZyT4Gcf16rleAjp4S1IEKFSaSIUzpK24GG-HdU_LwqgHZYMtDD6foWu1yk-LPP_e1IfE1jg53Zb-Yidt97otbl-EVVf4YU2jncjwS1z7ywkVZoZgRd91OGCTnabtaIPdkI-nc23qq8indQ62JTlMXOGKb_CyxZ_0lQPd4pbZFfCMHWSeJG3-mNlG55HA7Q"
                 alt="Gourmet sushi platter"
+                fill
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-primary)]/60 to-transparent" />
               <div className="absolute bottom-6 left-6 text-white">
@@ -133,10 +135,11 @@ export default function OnboardingPage() {
         <div className="max-w-xl w-full text-center">
           <div className="glass-card rounded-lg p-2 mb-12 shadow-2xl relative">
             <div className="h-80 w-full rounded-lg overflow-hidden relative">
-              <img
+              <BlurImage
                 className="w-full h-full object-cover"
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuAN1xfJwpdw2bj7H_TfKXirk6ngjY55cxxz3kiMpV5TlLyEpclKB-8Qk4HHR9l3g-blikPhN1f-ewc5O8wx354nNJU5QWj8B6v5i1Nfxa6Z0W2vAZW1UjmTRSkoa6wra81VbQLHC5MyxFmXBnZURM8H2b80AiCH48-b-Pi-TNOhqrxvffzy3ZUDaMv4En7_m96mN3aIVdF3rPrG2HobmHzJTO4ssSqAubCSqZK9jO0KTsvOtxqlf7TEIsGvBNtFcnC7C3H_cHM9Xng"
                 alt="City map"
+                fill
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-primary)]/10 to-transparent" />
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">

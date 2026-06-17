@@ -15,6 +15,7 @@ import {
   type AddOnPricing,
 } from "@/lib/printing-addons";
 import ServicesCatalogPanel from "@/components/admin/ServicesCatalogPanel";
+import BlurImage from "@/components/BlurImage";
 
 const supabase = createClient();
 
@@ -766,7 +767,7 @@ export default function AdminPrintingPage() {
             </div>
             <div className="flex-1 overflow-auto bg-[var(--color-surface-subtle)] p-4 flex items-center justify-center min-h-[400px]">
               {previewFile.type.startsWith("image/") ? (
-                <img src={previewFile.url} alt={previewFile.name} className="max-w-full max-h-[75vh] object-contain rounded-lg shadow-md" />
+                <BlurImage src={previewFile.url} alt={previewFile.name} className="max-w-full max-h-[75vh] object-contain rounded-lg shadow-md" />
               ) : previewFile.type === "application/pdf" || previewFile.name.toLowerCase().endsWith(".pdf") ? (
                 <iframe src={previewFile.url} title={previewFile.name} className="w-full h-[75vh] bg-[var(--color-surface-container-lowest)] rounded-lg shadow-md border-0" />
               ) : (

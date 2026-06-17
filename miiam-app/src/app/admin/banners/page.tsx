@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import ImageUpload from "@/components/ImageUpload";
+import BlurImage from "@/components/BlurImage";
 
 interface Banner {
   id: string;
@@ -119,7 +120,7 @@ export default function BannerManagement() {
               </span>
               <div className="w-24 h-16 bg-[var(--color-surface-container)] rounded-lg overflow-hidden flex-shrink-0">
                 {banner.image_url ? (
-                  <img src={banner.image_url} alt={`Banner: ${banner.title || 'Untitled'}`} className="w-full h-full object-cover" />
+                  <BlurImage src={banner.image_url} alt={`Banner: ${banner.title || 'Untitled'}`} className="w-full h-full object-cover" />
                 ) : (
                   <span className="material-symbols-outlined text-2xl text-[var(--color-outline-variant)]/60">image</span>
                 )}
@@ -164,7 +165,7 @@ export default function BannerManagement() {
             <div key={banner.id} className="p-4 flex items-center gap-4 opacity-60">
               <div className="w-24 h-16 bg-[var(--color-surface-container)] rounded-lg overflow-hidden flex-shrink-0">
                 {banner.image_url ? (
-                  <img src={banner.image_url} alt={`Banner: ${banner.title || 'Untitled'}`} className="w-full h-full object-cover" />
+                  <BlurImage src={banner.image_url} alt={`Banner: ${banner.title || 'Untitled'}`} className="w-full h-full object-cover" />
                 ) : (
                   <span className="material-symbols-outlined text-2xl text-[var(--color-outline-variant)]/60">image</span>
                 )}

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import ImageUpload from "@/components/ImageUpload";
+import BlurImage from "@/components/BlurImage";
 
 interface PageAsset {
   id: string;
@@ -162,11 +163,11 @@ export default function PageAssetsPage() {
               <div className="flex flex-col md:flex-row">
                 {/* Preview */}
                 <div className="md:w-72 h-48 md:h-auto flex-shrink-0 relative bg-[var(--color-surface-container)]">
-                  <img
+                  <BlurImage
                     src={asset.image_url}
                     alt={asset.title || asset.section}
                     className="w-full h-full object-cover"
-                    onError={(e) => { (e.target as HTMLImageElement).style.opacity = "0.3"; }}
+                    fill
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-4">
                     {asset.title && <p className="text-white font-black text-lg leading-tight">{asset.title}</p>}
@@ -270,11 +271,11 @@ export default function PageAssetsPage() {
               {/* Live preview */}
               {editForm.image_url && (
                 <div className="relative h-36 rounded-2xl overflow-hidden bg-[var(--color-surface-container)]">
-                  <img
+                  <BlurImage
                     src={editForm.image_url}
                     alt="Preview"
                     className="w-full h-full object-cover"
-                    onError={(e) => { (e.target as HTMLImageElement).style.opacity = "0.3"; }}
+                    fill
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-4">
                     {editForm.title && <p className="text-white font-black">{editForm.title}</p>}
