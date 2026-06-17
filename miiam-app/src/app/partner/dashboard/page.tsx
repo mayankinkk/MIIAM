@@ -5,6 +5,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { getVendorForUser, getVendorMenuItems } from "@/lib/vendor";
+import { VendorDashboardSkeleton } from "@/components/vendor/VendorSkeleton";
 import type { Order } from "@/lib/types";
 
 export default function VendorDashboard() {
@@ -19,7 +20,11 @@ export default function VendorDashboard() {
   const [weeklyOrders, setWeeklyOrders] = useState(0);
   const [newOrderAlert, setNewOrderAlert] = useState(false);
   const [processingOrder, setProcessingOrder] = useState<string | null>(null);
+  const [autoAccept, setAutoAccept] = useState(false);
+  const [showRejectModal, setShowRejectModal] = useState<string | null>(null);
+  const [rejectReason, setRejectReason] = useState("");
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const rejectReasons = ["Out of stock", "Too busy", "Store closing", "Item unavailable", "Other"];
 
   useEffect(() => {
     init();
@@ -150,13 +155,13 @@ export default function VendorDashboard() {
     }
   };
 
-  const handleCancelOrder = async (orderId: string) => {
+  const handleCancelOrder = async (orderId: string, reason?: string) => {
     if (!await confirm({ title: "Cancel Order", message: "Are you sure you want to cancel this order?", variant: "danger" })) return;
     setProcessingOrder(orderId);
     try {
       await supabase
         .from("orders")
-        .update({ status: "cancelled", cancellation_reason: "Cancelled by vendor" })
+        .update({ status: "cancelled", cancellation_reason: reason || "Cancelled by vendor", cancelled_by: "vendor" })
         .eq("id", orderId);
       setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status: "cancelled" } : o)));
     } catch (err) {
@@ -183,11 +188,28 @@ export default function VendorDashboard() {
     };
   }, [orders]);
 
+  useEffect(() => {
+    if (!autoAccept || !vendor?.id) return;
+    pendingOrders.forEach((order) => {
+      handleAcceptOrder(order.id);
+    });
+  }, [autoAccept, pendingOrders, vendor?.id]);
+
+  const openRejectModal = (orderId: string) => {
+    setShowRejectModal(orderId);
+    setRejectReason("");
+  };
+
+  const confirmReject = async () => {
+    if (!showRejectModal || !rejectReason) return;
+    await handleCancelOrder(showRejectModal, rejectReason);
+    setShowRejectModal(null);
+    setRejectReason("");
+  };
+
   if (loading) {
     return (
-      <div className="p-8 flex items-center justify-center min-h-[60vh]">
-        <div className="text-[var(--color-outline-variant)] font-medium animate-pulse">Loading dashboard...</div>
-      </div>
+      <VendorDashboardSkeleton />
     );
   }
 
@@ -248,6 +270,19 @@ export default function VendorDashboard() {
           >
             <span className={`w-2 h-2 rounded-full ${isOpen ? "bg-green-500 animate-pulse" : "bg-slate-400"}`}></span>
             {isOpen ? "Open for Orders" : "Closed"}
+          </button>
+          <button
+            onClick={() => setAutoAccept(!autoAccept)}
+            role="switch"
+            aria-checked={autoAccept}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all ${
+              autoAccept
+                ? "bg-blue-100 text-blue-700 hover:bg-blue-200"
+                : "bg-[var(--color-surface-container)] text-[var(--color-outline)] hover:bg-[var(--color-surface-container-high)]"
+            }`}
+          >
+            <span className={`w-2 h-2 rounded-full ${autoAccept ? "bg-blue-500 animate-pulse" : "bg-slate-400"}`}></span>
+            {autoAccept ? "Auto-Accept On" : "Auto-Accept Off"}
           </button>
         </div>
       </div>
@@ -352,7 +387,7 @@ export default function VendorDashboard() {
                     <p className="font-extrabold text-lg text-[var(--color-primary)]">₹{order.total_amount.toFixed(2)}</p>
                     <div className="flex gap-2">
                       <button
-                        onClick={() => handleCancelOrder(order.id)}
+                        onClick={() => openRejectModal(order.id)}
                         disabled={processingOrder === order.id}
                         className="px-3 py-1.5 text-xs font-bold bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] rounded-lg hover:bg-[var(--color-surface-container-high)] disabled:opacity-50 transition-all"
                       >
@@ -388,7 +423,39 @@ export default function VendorDashboard() {
                         <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-blue-100 text-blue-700 uppercase">
                           {order.status}
                         </span>
-                      </div>
+      {/* Reject Order Modal */}
+      {showRejectModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowRejectModal(null)} role="dialog" aria-modal="true" aria-labelledby="reject-modal-title">
+          <div className="bg-[var(--color-surface-container-lowest)] w-full max-w-sm rounded-3xl p-6 m-4" onClick={(e) => e.stopPropagation()}>
+            <h2 id="reject-modal-title" className="text-xl font-extrabold text-[var(--color-on-surface)] mb-4">Decline Order</h2>
+            <p className="text-sm text-[var(--color-outline)] mb-4">Select a reason for declining this order:</p>
+            <div className="space-y-2 mb-6" role="radiogroup" aria-label="Rejection reason">
+              {rejectReasons.map((reason) => (
+                <label key={reason} className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-colors ${rejectReason === reason ? "bg-red-50 border border-red-200" : "bg-[var(--color-surface-subtle)] hover:bg-[var(--color-surface-container)]"}`}>
+                  <input
+                    type="radio"
+                    name="reject-reason"
+                    value={reason}
+                    checked={rejectReason === reason}
+                    onChange={() => setRejectReason(reason)}
+                    className="accent-red-500"
+                  />
+                  <span className="text-sm font-medium text-[var(--color-on-surface)]">{reason}</span>
+                </label>
+              ))}
+            </div>
+            <div className="flex gap-3">
+              <button onClick={() => setShowRejectModal(null)} className="flex-1 py-3 bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] font-bold rounded-xl hover:bg-[var(--color-surface-container-high)] transition-colors">
+                Cancel
+              </button>
+              <button onClick={confirmReject} disabled={!rejectReason} className="flex-1 py-3 bg-red-500 text-white font-bold rounded-xl hover:bg-red-600 transition-colors disabled:opacity-50">
+                Confirm Decline
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
                       <span className="text-sm text-[var(--color-outline-variant)] font-medium">
                         {new Date(order.placed_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                       </span>

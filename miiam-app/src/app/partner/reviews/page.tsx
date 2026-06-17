@@ -3,6 +3,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { getVendorForUser } from "@/lib/vendor";
+import { VendorTableSkeleton } from "@/components/vendor/VendorSkeleton";
 
 export default function PartnerReviewsPage() {
   const supabase = useMemo(() => createClient(), []);
@@ -72,8 +73,8 @@ export default function PartnerReviewsPage() {
 
   if (loading) {
     return (
-      <div className="p-8 flex items-center justify-center min-h-[60vh]">
-        <div className="text-[var(--color-outline-variant)] font-medium animate-pulse">Loading reviews...</div>
+      <div className="p-4 md:p-8">
+        <VendorTableSkeleton rows={3} />
       </div>
     );
   }

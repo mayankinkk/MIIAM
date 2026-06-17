@@ -3,6 +3,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { getVendorIdForUser, getVendorMenuItems } from "@/lib/vendor";
+import { VendorTableSkeleton } from "@/components/vendor/VendorSkeleton";
 import type { Order, OrderStatus } from "@/lib/types";
 import OrderChatOverlay from "@/components/order/OrderChatOverlay";
 import { useUnreadMessages } from "@/lib/hooks/useUnreadMessages";
@@ -20,6 +21,9 @@ export default function VendorOrders() {
   const [menuItemNames, setMenuItemNames] = useState<Map<string, { name: string }>>(new Map());
   const [chatOrder, setChatOrder] = useState<Order | null>(null);
   const [vendorUserId, setVendorUserId] = useState<string>("");
+  const [showRejectModal, setShowRejectModal] = useState<string | null>(null);
+  const [rejectReason, setRejectReason] = useState("");
+  const rejectReasons = ["Out of stock", "Too busy", "Store closing", "Item unavailable", "Other"];
   const { unreadByOrder } = useUnreadMessages(vendorUserId);
 
   useEffect(() => {
@@ -50,8 +54,13 @@ export default function VendorOrders() {
     }
   }
 
-  const updateStatus = async (orderId: string, status: OrderStatus) => {
-    await supabase.from("orders").update({ status }).eq("id", orderId);
+  const updateStatus = async (orderId: string, status: OrderStatus, reason?: string) => {
+    const updateData: Record<string, unknown> = { status };
+    if (status === "cancelled" && reason) {
+      updateData.cancellation_reason = reason;
+      updateData.cancelled_by = "vendor";
+    }
+    await supabase.from("orders").update(updateData).eq("id", orderId);
     setOrders(orders.map((o) => (o.id === orderId ? { ...o, status } : o)));
     if (selectedOrder?.id === orderId) setSelectedOrder({ ...selectedOrder, status });
   };
@@ -138,7 +147,7 @@ export default function VendorOrders() {
       {/* Orders List */}
       <div className="space-y-4">
         {loading ? (
-          <div className="text-center py-12 text-[var(--color-outline-variant)] font-medium animate-pulse">Loading orders...</div>
+          <VendorTableSkeleton />
         ) : filteredOrders.length === 0 ? (
           <div className="bg-[var(--color-surface-container-lowest)] border-2 border-dashed border-[var(--color-border-subtle)] rounded-3xl p-16 text-center">
             <span className="material-symbols-outlined text-6xl text-[var(--color-outline-variant)]/60 mb-4">receipt_long</span>
@@ -250,7 +259,7 @@ export default function VendorOrders() {
                     {order.status === "pending" && (
                       <>
                         <button onClick={() => updateStatus(order.id, "accepted")} className="px-6 py-3 bg-green-600 text-white rounded-xl font-bold text-sm hover:bg-green-700 transition-colors">Accept</button>
-                        <button onClick={() => updateStatus(order.id, "cancelled")} className="px-6 py-3 border border-red-200 text-red-500 rounded-xl font-bold text-sm hover:bg-red-50 transition-colors">Decline</button>
+                        <button onClick={() => setShowRejectModal(order.id)} className="px-6 py-3 border border-red-200 text-red-500 rounded-xl font-bold text-sm hover:bg-red-50 transition-colors">Decline</button>
                       </>
                     )}
                     {order.status === "accepted" && (
@@ -278,6 +287,39 @@ export default function VendorOrders() {
           ))
         )}
       </div>
+
+      {/* Reject Order Modal */}
+      {showRejectModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowRejectModal(null)} role="dialog" aria-modal="true" aria-labelledby="reject-modal-title-orders">
+          <div className="bg-[var(--color-surface-container-lowest)] w-full max-w-sm rounded-3xl p-6 m-4" onClick={(e) => e.stopPropagation()}>
+            <h2 id="reject-modal-title-orders" className="text-xl font-extrabold text-[var(--color-on-surface)] mb-4">Decline Order</h2>
+            <p className="text-sm text-[var(--color-outline)] mb-4">Select a reason for declining this order:</p>
+            <div className="space-y-2 mb-6" role="radiogroup" aria-label="Rejection reason">
+              {rejectReasons.map((reason) => (
+                <label key={reason} className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-colors ${rejectReason === reason ? "bg-red-50 border border-red-200" : "bg-[var(--color-surface-subtle)] hover:bg-[var(--color-surface-container)]"}`}>
+                  <input
+                    type="radio"
+                    name="reject-reason-orders"
+                    value={reason}
+                    checked={rejectReason === reason}
+                    onChange={() => setRejectReason(reason)}
+                    className="accent-red-500"
+                  />
+                  <span className="text-sm font-medium text-[var(--color-on-surface)]">{reason}</span>
+                </label>
+              ))}
+            </div>
+            <div className="flex gap-3">
+              <button onClick={() => setShowRejectModal(null)} className="flex-1 py-3 bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] font-bold rounded-xl hover:bg-[var(--color-surface-container-high)] transition-colors">
+                Cancel
+              </button>
+              <button onClick={async () => { if (!rejectReason) return; await updateStatus(showRejectModal!, "cancelled", rejectReason); setShowRejectModal(null); setRejectReason(""); }} disabled={!rejectReason} className="flex-1 py-3 bg-red-500 text-white font-bold rounded-xl hover:bg-red-600 transition-colors disabled:opacity-50">
+                Confirm Decline
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {chatOrder && vendorUserId && (
         <OrderChatOverlay

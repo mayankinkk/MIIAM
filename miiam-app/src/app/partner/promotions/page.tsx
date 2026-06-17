@@ -149,13 +149,13 @@ export default function VendorPromotions() {
 
   const toggleActive = async (promo: PromoCode) => {
     await supabase.from("promo_codes").update({ is_active: !promo.is_active }).eq("id", promo.id);
-    setPromoCodes(promoCodes.map((p) => (p.id === promo.id ? { ...p, is_active: !p.is_active } : p)));
+    setPromoCodes(prev => prev.map((p) => (p.id === promo.id ? { ...p, is_active: !p.is_active } : p)));
   };
 
   const handleDelete = async (id: string) => {
     if (!await confirm({ title: "Delete Promotion", message: "Delete this promotion?", variant: "danger" })) return;
     await supabase.from("promo_codes").delete().eq("id", id);
-    setPromoCodes(promoCodes.filter((p) => p.id !== id));
+    setPromoCodes(prev => prev.filter((p) => p.id !== id));
   };
 
   const isExpired = (date: string) => new Date(date) < new Date();

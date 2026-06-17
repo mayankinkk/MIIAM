@@ -364,7 +364,7 @@ export default function PartnerMenuPage() {
     if (!await confirm({ title: "Delete Item", message: "Delete this item?", variant: "danger" })) return;
     try {
       await supabase.from(table).delete().eq("id", id);
-      setItems(items.filter(i => i.id !== id));
+      setItems(prev => prev.filter(i => i.id !== id));
     } catch (error: any) {
       useToastStore.getState().addToast("Failed: " + error.message, "error");
     }
@@ -379,7 +379,7 @@ export default function PartnerMenuPage() {
         console.warn("Toggle availability not supported:", error.message);
         return;
       }
-      setItems(items.map(i => i.id === item.id ? { ...i, available: !m.available } as AnyItem : i));
+      setItems(prev => prev.map(i => i.id === item.id ? { ...i, available: !m.available } as AnyItem : i));
     } catch (error: any) {
       console.warn("Toggle availability failed:", error.message);
     }
@@ -393,7 +393,7 @@ export default function PartnerMenuPage() {
         console.warn("Toggle featured not supported:", error.message);
         return;
       }
-      setItems(items.map(i => i.id === item.id ? { ...i, is_featured: !current } as any : i));
+      setItems(prev => prev.map(i => i.id === item.id ? { ...i, is_featured: !current } as any : i));
     } catch (error: any) {
       console.warn("Toggle featured failed:", error.message);
     }
@@ -409,7 +409,7 @@ export default function PartnerMenuPage() {
         console.warn("Stock update not supported:", error.message);
         return;
       }
-      setItems(items.map(i => i.id === item.id ? { ...i, stock: newStock } as AnyItem : i));
+      setItems(prev => prev.map(i => i.id === item.id ? { ...i, stock: newStock } as AnyItem : i));
     } catch (error: any) {
       console.warn("Stock update failed:", error.message);
     }

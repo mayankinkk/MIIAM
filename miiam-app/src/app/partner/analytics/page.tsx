@@ -197,8 +197,14 @@ export default function VendorAnalytics() {
 
   if (loading) {
     return (
-      <div className="p-8 flex items-center justify-center min-h-[60vh]">
-        <div className="text-[var(--color-outline-variant)] font-medium animate-pulse">Loading analytics...</div>
+      <div className="p-4 md:p-8 space-y-6 animate-pulse">
+        <div className="h-8 bg-[var(--color-surface-container)] rounded w-48" />
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="h-24 bg-[var(--color-surface-container)] rounded-2xl" />
+          ))}
+        </div>
+        <div className="h-64 bg-[var(--color-surface-container)] rounded-2xl" />
       </div>
     );
   }

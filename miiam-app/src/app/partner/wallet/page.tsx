@@ -90,13 +90,26 @@ export default function VendorWalletPage() {
       useToastStore.getState().addToast("Insufficient balance", "error");
       return;
     }
-    setWallet({
-      ...wallet,
-      balance: wallet.balance - amount,
-      pending_payout: wallet.pending_payout + amount,
-    });
-    setShowRequestPayout(false);
-    setPayoutAmount("");
+    try {
+      const { error } = await supabase.from("vendor_payouts").insert({
+        vendor_id: vendorId,
+        amount,
+        status: "pending",
+        requested_at: new Date().toISOString(),
+      });
+      if (error) throw error;
+      setWallet({
+        ...wallet,
+        balance: wallet.balance - amount,
+        pending_payout: wallet.pending_payout + amount,
+      });
+      setShowRequestPayout(false);
+      setPayoutAmount("");
+      useToastStore.getState().addToast("Payout requested successfully", "success");
+    } catch (err) {
+      console.error("Failed to request payout:", err);
+      useToastStore.getState().addToast("Failed to request payout", "error");
+    }
   };
 
   const deliveredOrders = orders.filter((o) => o.status === "delivered");
