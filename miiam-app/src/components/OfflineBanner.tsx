@@ -36,7 +36,7 @@ export default function OfflineBanner() {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -60, opacity: 0 }}
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between bg-amber-500 px-4 py-2.5 text-sm font-medium text-white shadow-lg"
+          className="fixed top-0 left-0 right-0 z-[60] flex items-center justify-between bg-amber-500 px-4 py-2.5 text-sm font-medium text-white shadow-lg"
           role="alert"
         >
           <span className="flex items-center gap-2">

@@ -582,15 +582,39 @@ export default function RiderOrdersPage() {
   const filteredOrders = orders.filter(o => {
     if (searchQuery) {
       const search = searchQuery.toLowerCase();
-      return o.id.toLowerCase().includes(search) ||
+      const matchSearch = o.id.toLowerCase().includes(search) ||
              o.vendor?.name?.toLowerCase().includes(search) ||
              o.address?.street?.toLowerCase().includes(search);
+      if (!matchSearch) return false;
+    }
+    if (dateFilter) {
+      const placed = new Date(o.placed_at);
+      const now = new Date();
+      if (dateFilter === "today") {
+        if (placed.toDateString() !== now.toDateString()) return false;
+      } else if (dateFilter === "week") {
+        const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        if (placed < weekAgo) return false;
+      } else if (dateFilter === "month") {
+        const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+        if (placed < monthAgo) return false;
+      }
     }
     return true;
   }).sort((a, b) => {
     switch (sortBy) {
       case "earnings_high": return ((b.total_amount || 0) + (b.delivery_fee || 0)) - ((a.total_amount || 0) + (a.delivery_fee || 0));
-      case "distance": return 0;
+      case "distance": {
+        const toRad = (d: number) => d * Math.PI / 180;
+        const R = 6371;
+        const dLat = toRad((a as any).vendor?.lat - riderLocation.lat);
+        const dLng = toRad((a as any).vendor?.lng - riderLocation.lng);
+        const distA = Math.sqrt(dLat * dLat + Math.cos(toRad(riderLocation.lat)) * dLng * dLng) * R;
+        const dLat2 = toRad((b as any).vendor?.lat - riderLocation.lat);
+        const dLng2 = toRad((b as any).vendor?.lng - riderLocation.lng);
+        const distB = Math.sqrt(dLat2 * dLat2 + Math.cos(toRad(riderLocation.lat)) * dLng2 * dLng2) * R;
+        return distA - distB;
+      }
       default: return new Date(b.placed_at || 0).getTime() - new Date(a.placed_at || 0).getTime();
     }
   });
