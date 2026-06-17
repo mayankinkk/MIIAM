@@ -2,6 +2,7 @@
 
 import { useMemo, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useToastStore } from "@/lib/store/toastStore";
 import Link from "next/link";
 import PullToRefresh from "@/components/PullToRefresh";
 
@@ -180,7 +181,8 @@ export default function RiderWalletPage() {
   }, []);
 
   async function requestPayout(amount: number) {
-    if (riderId) {
+    if (!riderId) return;
+    try {
       await supabase.from("rider_wallets").update({ pending_payout: amount }).eq("rider_id", riderId);
       await supabase.from("rider_wallet").insert({
         rider_id: riderId,
@@ -189,43 +191,50 @@ export default function RiderWalletPage() {
         description: `Payout request for ₹${amount}`,
       });
       await loadWalletData();
+      useToastStore.getState().addToast(`Payout request of ₹${amount} submitted!`, "success");
+    } catch (err) {
+      useToastStore.getState().addToast("Failed to submit payout request. Please try again.", "error");
     }
-    alert(`Payout request of ₹${amount} submitted! Will be processed in 24-48 hours.`);
   }
 
   async function instantPayout() {
     const amount = parseInt(instantPayoutAmount);
     if (isNaN(amount) || amount < 100) {
-      alert("Minimum instant payout is ₹100");
+      useToastStore.getState().addToast("Minimum instant payout is ₹100", "error");
       return;
     }
     if (amount > walletData.balance) {
-      alert("Insufficient balance");
+      useToastStore.getState().addToast("Insufficient balance", "error");
       return;
     }
 
     setProcessingPayout(true);
-    const fee = Math.round(amount * (walletData.instantPayoutFee / 100));
-    const netAmount = amount - fee;
+    try {
+      const fee = Math.round(amount * (walletData.instantPayoutFee / 100));
+      const netAmount = amount - fee;
 
-    if (riderId) {
-      await supabase.from("rider_wallets").update({
-        balance: walletData.balance - amount,
-        pending_payout: walletData.pendingPayout + netAmount,
-      }).eq("rider_id", riderId);
-      await supabase.from("rider_wallet").insert({
-        rider_id: riderId,
-        amount: -amount,
-        type: "instant_payout",
-        description: `Instant payout - ₹${netAmount} credited (₹${fee} fee)`,
-      });
-      await loadWalletData();
+      if (riderId) {
+        await supabase.from("rider_wallets").update({
+          balance: walletData.balance - amount,
+          pending_payout: walletData.pendingPayout + netAmount,
+        }).eq("rider_id", riderId);
+        await supabase.from("rider_wallet").insert({
+          rider_id: riderId,
+          amount: -amount,
+          type: "instant_payout",
+          description: `Instant payout - ₹${netAmount} credited (₹${fee} fee)`,
+        });
+        await loadWalletData();
+      }
+
+      setShowInstantPayout(false);
+      setInstantPayoutAmount("");
+      useToastStore.getState().addToast(`Instant payout of ₹${netAmount} initiated!`, "success");
+    } catch (err) {
+      useToastStore.getState().addToast("Failed to process instant payout. Please try again.", "error");
+    } finally {
+      setProcessingPayout(false);
     }
-
-    setProcessingPayout(false);
-    setShowInstantPayout(false);
-    setInstantPayoutAmount("");
-    alert(`Instant payout of ₹${netAmount} initiated! (₹${fee} fee deducted). Amount will be credited in 5-30 minutes.`);
   }
 
   const now = Date.now();
