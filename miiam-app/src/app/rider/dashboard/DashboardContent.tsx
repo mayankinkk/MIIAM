@@ -585,7 +585,7 @@ export default function RiderDashboard() {
             <span className="material-symbols-outlined text-brand-secondary text-sm">stacked_bar_chart</span>
             <span className="text-sm font-bold text-brand-secondary">{pendingOrders.length} {t.rider.stats.ordersAvailable}</span>
           </div>
-          <button onClick={() => { pendingOrders.forEach((order) => handleAccept(order)); }} className="px-4 py-1.5 bg-brand-secondary text-white text-xs font-bold rounded-full">{t.rider.stats.acceptAll}</button>
+          <button onClick={async () => { if (pendingOrders.length > 1 && !window.confirm(`Accept all ${pendingOrders.length} orders?`)) return; for (const order of pendingOrders) { await handleAccept(order); } }} className="px-4 py-1.5 bg-brand-secondary text-white text-xs font-bold rounded-full">{t.rider.stats.acceptAll}</button>
         </div>
       )}
       {snoozeMessage && (
