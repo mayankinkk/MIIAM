@@ -336,7 +336,7 @@ function RidersPage() {
                 {saving ? "Saving..." : isEditing ? "Save Changes" : "Add Rider"}
               </button>
               {isEditing && (
-                <button type="button" onClick={async () => { if (await confirm({ title: "Delete", message: "Are you sure?", variant: "danger" })) deleteRider(selectedRider?.id!); }} className="w-full py-4 rounded-xl font-black text-xs uppercase text-red-600 bg-red-50 hover:bg-red-100 transition-all mt-2">
+                <button type="button" onClick={async () => { if (selectedRider?.id && await confirm({ title: "Delete", message: "Are you sure?", variant: "danger" })) deleteRider(selectedRider.id); }} className="w-full py-4 rounded-xl font-black text-xs uppercase text-red-600 bg-red-50 hover:bg-red-100 transition-all mt-2">
                   Delete Rider Account
                 </button>
               )}

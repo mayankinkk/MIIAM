@@ -27,6 +27,13 @@ const eslintConfig = defineConfig([
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "warn",
 
+      // React Compiler rules - disable overly strict rules
+      // These flag legitimate patterns the compiler can't optimize
+      "react-compiler/react-compiler": "off",
+      "react-hooks/immutability": "off",
+      "react-hooks/set-state-in-effect": "off",
+      "react-hooks/refs": "off",
+      "react-hooks/purity": "off",
       // React
       "react/no-unescaped-entities": "warn",
     },

@@ -31,7 +31,7 @@ export default function BlurImage({ src, alt, className = "", fill, width, heigh
   if (fill) {
     return (
       <div className={`relative w-full h-full ${className}`}>
-        <Image {...commonProps} fill />
+        <Image {...commonProps} fill alt={alt} />
         {!isLoaded && <div className="absolute inset-0 bg-surface-variant animate-pulse" />}
       </div>
     );
@@ -39,7 +39,7 @@ export default function BlurImage({ src, alt, className = "", fill, width, heigh
 
   return (
     <div className={`relative ${className}`}>
-      <Image {...commonProps} width={width ?? 400} height={height ?? 300} />
+      <Image {...commonProps} width={width ?? 400} height={height ?? 300} alt={alt} />
       {!isLoaded && <div className="absolute inset-0 bg-surface-variant animate-pulse" />}
     </div>
   );

@@ -584,14 +584,14 @@ export default function PartnerMenuPage() {
                 }}
               />
             </label>
-            <a href="#" onClick={(e) => {
+            <button type="button" onClick={(e) => {
               e.preventDefault();
               const blob = new Blob([['name,price,category,description,stock,isVeg', 'Butter Chicken,350,Main Course,Creamy tomato gravy,50,veg', 'Naan,40,Breads,Tandoor baked,100,veg'].join('\n')], { type: 'text/csv' });
               const url = URL.createObjectURL(blob);
               const a = document.createElement('a');
               a.href = url; a.download = 'menu_template.csv'; a.click();
               URL.revokeObjectURL(url);
-            }} className="text-[10px] text-[var(--color-primary)] font-semibold mt-2 hover:underline">Download template</a>
+            }} className="text-[10px] text-[var(--color-primary)] font-semibold mt-2 hover:underline">Download template</button>
           </div>
         </div>
       )}
