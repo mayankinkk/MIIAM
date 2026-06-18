@@ -47,7 +47,7 @@ export default function PartnerChatPage() {
       .select("*, orders!inner(vendor_id)")
       .eq("orders.vendor_id", v.id)
       .order("created_at", { ascending: false });
-    if (data) setMessages(data as any);
+    if (data) setMessages(data as ChatMessage[]);
   }
 
   const grouped = messages.reduce((acc, m) => {

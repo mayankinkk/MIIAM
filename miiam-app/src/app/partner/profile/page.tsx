@@ -69,8 +69,9 @@ export default function VendorProfilePage() {
   async function init() {
     const data = await getVendorForUser();
     if (data) {
-      setVendor(data as any);
-      setForm(data as any);
+      const vendorData = data as Partial<VendorProfile>;
+      setVendor(vendorData as VendorProfile);
+      setForm(vendorData);
     }
     setLoading(false);
   }
