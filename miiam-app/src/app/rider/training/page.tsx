@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
@@ -80,6 +80,27 @@ export default function RiderTrainingPage() {
     setSelectedVideo(video);
     setShowVideoModal(true);
   };
+
+  const closeVideoModal = useCallback(() => {
+    setShowVideoModal(false);
+    setSelectedVideo(null);
+  }, []);
+
+  const closeQuizModal = useCallback(() => {
+    setShowQuiz(false);
+  }, []);
+
+  useEffect(() => {
+    if (!showVideoModal && !showQuiz) return;
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        if (showVideoModal) closeVideoModal();
+        else if (showQuiz) closeQuizModal();
+      }
+    };
+    window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
+  }, [showVideoModal, showQuiz, closeVideoModal, closeQuizModal]);
 
   const completeVideo = async () => {
     if (selectedVideo && riderId) {
@@ -228,13 +249,13 @@ export default function RiderTrainingPage() {
 
       {/* Video Modal */}
       {showVideoModal && selectedVideo && (
-        <div className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4">
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-md overflow-hidden">
+        <div className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4" onClick={closeVideoModal} role="dialog" aria-modal="true" aria-labelledby="video-modal-title">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-md overflow-hidden" onClick={(e) => e.stopPropagation()}>
             <div className="bg-black h-48 flex items-center justify-center text-6xl">
               {selectedVideo.thumbnail}
             </div>
             <div className="p-5">
-              <h3 className="font-bold text-xl mb-2">{selectedVideo.title}</h3>
+              <h3 id="video-modal-title" className="font-bold text-xl mb-2">{selectedVideo.title}</h3>
               <p className="text-sm text-[var(--color-outline)] mb-4">{selectedVideo.description}</p>
               <div className="flex items-center justify-between mb-4">
                 <span className="text-sm text-[var(--color-outline-variant)]">{selectedVideo.duration}</span>
@@ -246,7 +267,7 @@ export default function RiderTrainingPage() {
               >
                 Mark as Complete
               </button>
-              <button onClick={() => setShowVideoModal(false)} className="w-full py-3 text-[var(--color-outline)] font-bold mt-2">
+              <button onClick={closeVideoModal} className="w-full py-3 text-[var(--color-outline)] font-bold mt-2">
                 Close
               </button>
             </div>
@@ -256,9 +277,9 @@ export default function RiderTrainingPage() {
 
       {/* Quiz Modal */}
       {showQuiz && (
-        <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-sm">
-            <h3 className="font-bold text-xl mb-4">Daily Quiz</h3>
+        <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4" onClick={closeQuizModal} role="dialog" aria-modal="true" aria-labelledby="quiz-modal-title">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-sm" onClick={(e) => e.stopPropagation()}>
+            <h3 id="quiz-modal-title" className="font-bold text-xl mb-4">Daily Quiz</h3>
             <div className="mb-4">
               <p className="font-bold mb-3">{quizzes[quizIndex].question}</p>
               <div className="space-y-2">
@@ -289,7 +310,7 @@ export default function RiderTrainingPage() {
                 ))}
               </div>
             </div>
-            <button onClick={() => setShowQuiz(false)} className="w-full py-3 text-[var(--color-outline)] font-bold">
+            <button onClick={closeQuizModal} className="w-full py-3 text-[var(--color-outline)] font-bold">
               Close
             </button>
           </div>
