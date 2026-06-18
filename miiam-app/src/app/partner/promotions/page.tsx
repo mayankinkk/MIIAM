@@ -229,12 +229,12 @@ export default function VendorPromotions() {
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className={`w-2 h-2 rounded-full ${promo.is_active && !expired ? "bg-green-500" : "bg-slate-300"}`}></span>
+                    <span className={`w-2 h-2 rounded-full ${promo.is_active && !expired ? "bg-green-500" : "bg-slate-300 dark:bg-slate-600"}`}></span>
                     <button
                       onClick={() => toggleActive(promo)}
                       className={`text-xs font-bold px-2 py-1 rounded-full ${
                         promo.is_active && !expired
-                          ? "bg-green-100 text-green-700"
+                          ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300"
                           : "bg-[var(--color-surface-container)] text-[var(--color-outline)]"
                       }`}
                     >

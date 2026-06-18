@@ -102,8 +102,8 @@ export default function PartnerLayout({
             <div className="overflow-hidden min-w-0">
               <p className="text-sm font-bold text-[var(--color-on-surface)] truncate">{vendor?.shop_name || "Your Store"}</p>
               <p className="text-xs font-bold flex items-center gap-1">
-                <span className={`w-2 h-2 rounded-full animate-pulse ${vendor?.status === "active" ? "bg-green-500" : "bg-gray-400"}`}></span>
-                <span className={vendor?.status === "active" ? "text-green-600" : "text-[var(--color-outline-variant)]"}>
+                <span className={`w-2 h-2 rounded-full animate-pulse ${vendor?.status === "active" ? "bg-green-500" : "bg-gray-400 dark:bg-gray-600"}`}></span>
+                <span className={vendor?.status === "active" ? "text-green-600 dark:text-green-400" : "text-[var(--color-outline-variant)]"}>
                   {vendor?.status === "active" ? "Online" : vendor?.status || "Loading..."}
                 </span>
               </p>
@@ -138,7 +138,7 @@ export default function PartnerLayout({
               </div>
               <div className="overflow-hidden min-w-0">
                 <p className="text-sm font-bold text-[var(--color-on-surface)] truncate">{vendor?.shop_name || "Your Store"}</p>
-                <p className="text-xs text-green-600 font-bold">{vendor?.status === "active" ? "Online" : "Loading..."}</p>
+                <p className="text-xs text-green-600 font-bold dark:text-green-400">{vendor?.status === "active" ? "Online" : "Loading..."}</p>
               </div>
             </div>
             {navLinks.map((link) => {

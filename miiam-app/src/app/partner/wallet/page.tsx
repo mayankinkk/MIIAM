@@ -212,9 +212,9 @@ export default function VendorWalletPage() {
                     </td>
                     <td className="p-4">
                       <span className={`text-[10px] font-bold px-2 py-1 rounded-full uppercase ${
-                        order.status === "delivered" ? "bg-green-100 text-green-700" :
-                        order.status === "cancelled" ? "bg-red-100 text-red-700" :
-                        "bg-amber-100 text-amber-700"
+                        order.status === "delivered" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" :
+                        order.status === "cancelled" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300" :
+                        "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300"
                       }`}>
                         {order.status}
                       </span>
@@ -271,8 +271,8 @@ export default function VendorWalletPage() {
                   ))}
                 </div>
               </div>
-              <div className="bg-amber-50 p-4 rounded-xl">
-                <p className="text-xs text-amber-700 font-medium flex items-center gap-2">
+              <div className="bg-amber-50 p-4 rounded-xl dark:bg-amber-900/20">
+                <p className="text-xs text-amber-700 font-medium flex items-center gap-2 dark:text-amber-300">
                   <span className="material-symbols-outlined text-sm">info</span>
                   Payouts are processed within 3-5 business days to your registered bank account.
                 </p>

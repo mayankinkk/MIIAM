@@ -654,7 +654,7 @@ export default function VendorAnalytics() {
                       <td className="p-3 text-sm font-bold text-indigo-600 text-right">{item.repeatCustomers}/{item.totalCustomers}</td>
                       <td className="p-3 text-right">
                         <span className={`text-xs font-bold px-2 py-1 rounded-full ${
-                          item.reorderRate >= 50 ? "bg-green-100 text-green-700" : item.reorderRate >= 25 ? "bg-amber-100 text-amber-700" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
+                          item.reorderRate >= 50 ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" : item.reorderRate >= 25 ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
                         }`}>
                           {item.reorderRate}%
                         </span>

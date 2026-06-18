@@ -101,8 +101,8 @@ export default function VendorOrders() {
         {([
           { key: "all", label: "Total", color: "text-[var(--color-on-surface)]" },
           { key: "active", label: "Active", color: "text-[var(--color-primary)]" },
-          { key: "delivered", label: "Delivered", color: "text-green-600" },
-          { key: "cancelled", label: "Cancelled", color: "text-red-600" },
+          { key: "delivered", label: "Delivered", color: "text-green-600 dark:text-green-400" },
+          { key: "cancelled", label: "Cancelled", color: "text-red-600 dark:text-red-400" },
         ] as const).map((s) => (
           <button
             key={s.key}
@@ -269,13 +269,13 @@ export default function VendorOrders() {
                       <button onClick={() => updateStatus(order.id, "ready_for_pickup")} className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold text-sm hover:bg-indigo-700 transition-colors">Mark Ready for Pickup</button>
                     )}
                     {order.status === "ready_for_pickup" && (
-                      <div className="px-6 py-3 bg-purple-50 text-purple-700 rounded-xl font-bold text-sm border border-purple-200">
+                      <div className="px-6 py-3 bg-purple-50 text-purple-700 rounded-xl font-bold text-sm border border-purple-200 dark:bg-purple-900/20 dark:text-purple-300 dark:border-purple-800">
                         <span className="material-symbols-outlined align-middle text-lg mr-1">pedal_bike</span>
                         Waiting for Rider
                       </div>
                     )}
                     {order.status === "on_the_way" && (
-                      <div className="px-6 py-3 bg-cyan-50 text-cyan-700 rounded-xl font-bold text-sm border border-cyan-200">
+                      <div className="px-6 py-3 bg-cyan-50 text-cyan-700 rounded-xl font-bold text-sm border border-cyan-200 dark:bg-cyan-900/20 dark:text-cyan-300 dark:border-cyan-800">
                         <span className="material-symbols-outlined align-middle text-lg mr-1">delivery_truck</span>
                         Out for Delivery
                       </div>
@@ -296,7 +296,7 @@ export default function VendorOrders() {
             <p className="text-sm text-[var(--color-outline)] mb-4">Select a reason for declining this order:</p>
             <div className="space-y-2 mb-6" role="radiogroup" aria-label="Rejection reason">
               {rejectReasons.map((reason) => (
-                <label key={reason} className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-colors ${rejectReason === reason ? "bg-red-50 border border-red-200" : "bg-[var(--color-surface-subtle)] hover:bg-[var(--color-surface-container)]"}`}>
+                <label key={reason} className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-colors ${rejectReason === reason ? "bg-red-50 border border-red-200 dark:bg-red-900/20 dark:border-red-800" : "bg-[var(--color-surface-subtle)] hover:bg-[var(--color-surface-container)]"}`}>
                   <input
                     type="radio"
                     name="reject-reason-orders"

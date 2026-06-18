@@ -247,7 +247,7 @@ export default function PartnerPOS() {
           <p className="text-[var(--color-outline)] text-sm font-bold uppercase tracking-wider mb-1">Delivered</p>
           <p className="text-4xl font-black text-green-600">{orders.filter((o) => o.status === "delivered").length}</p>
         </div>
-        <button onClick={() => setShowScheduled(!showScheduled)} className={`p-6 rounded-2xl shadow-sm border text-left transition-colors ${showScheduled ? "bg-indigo-50 border-indigo-300" : "bg-[var(--color-surface-container-lowest)] border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]"}`}>
+        <button onClick={() => setShowScheduled(!showScheduled)} className={`p-6 rounded-2xl shadow-sm border text-left transition-colors ${showScheduled ? "bg-indigo-50 border-indigo-300 dark:bg-indigo-900/20 dark:border-indigo-700" : "bg-[var(--color-surface-container-lowest)] border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]"}`}>
           <p className="text-[var(--color-outline)] text-sm font-bold uppercase tracking-wider mb-1">Scheduled</p>
           <p className="text-4xl font-black text-indigo-600">{scheduledOrders.length}</p>
         </button>
@@ -500,23 +500,23 @@ export default function PartnerPOS() {
                               updateStatus(order.id, action.next);
                             }
                           }}
-                          className={`flex-1 ${action.color} text-white py-4 rounded-xl font-bold transition-all active:scale-95 shadow-lg shadow-slate-200`}
+                          className={`flex-1 ${action.color} text-white py-4 rounded-xl font-bold transition-all active:scale-95 shadow-lg shadow-slate-200 dark:shadow-none`}
                         >
                           {action.label}
                         </button>
                       ))
                     ) : order.status === "ready_for_pickup" ? (
-                      <div className="flex-1 text-center py-4 rounded-xl bg-purple-50 text-purple-700 font-bold text-sm border border-purple-200">
+                      <div className="flex-1 text-center py-4 rounded-xl bg-purple-50 text-purple-700 font-bold text-sm border border-purple-200 dark:bg-purple-900/20 dark:text-purple-300 dark:border-purple-800">
                         <span className="material-symbols-outlined align-middle text-lg mr-1">pedal_bike</span>
                         Waiting for Rider to Pick Up
                       </div>
                     ) : order.status === "on_the_way" ? (
-                      <div className="flex-1 text-center py-4 rounded-xl bg-cyan-50 text-cyan-700 font-bold text-sm border border-cyan-200">
+                      <div className="flex-1 text-center py-4 rounded-xl bg-cyan-50 text-cyan-700 font-bold text-sm border border-cyan-200 dark:bg-cyan-900/20 dark:text-cyan-300 dark:border-cyan-800">
                         Out for Delivery — Rider on the Way
                       </div>
                     ) : null}
                     {order.delay_minutes && order.delay_minutes > 0 ? (
-                      <div className="w-full mt-2 py-2 px-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-bold flex items-center gap-2">
+                      <div className="w-full mt-2 py-2 px-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-bold flex items-center gap-2 dark:bg-red-900/20 dark:border-red-800 dark:text-red-300">
                         <span className="material-symbols-outlined text-sm">warning</span>
                         Delayed — {order.delay_reason || "Running late"} (+{order.delay_minutes} min)
                       </div>
@@ -580,8 +580,8 @@ export default function PartnerPOS() {
                     </td>
                     <td className="p-4">
                       <span className={`text-[10px] font-black px-2 py-1 rounded-full uppercase ${
-                        order.status === "delivered" ? "bg-green-100 text-green-700" :
-                        order.status === "cancelled" ? "bg-red-100 text-red-700" :
+                        order.status === "delivered" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" :
+                        order.status === "cancelled" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300" :
                         "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
                       }`}>
                         {order.status}
@@ -641,7 +641,7 @@ export default function PartnerPOS() {
                       onClick={() => setDelayReason(r)}
                       className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${
                         delayReason === r
-                          ? "bg-orange-100 text-orange-700 border border-orange-300"
+                          ? "bg-orange-100 text-orange-700 border border-orange-300 dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-800"
                           : "bg-[var(--color-surface-container)] text-[var(--color-outline)] border border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-container-high)]"
                       }`}
                     >
@@ -706,7 +706,7 @@ export default function PartnerPOS() {
                   ))}
                 </div>
               </div>
-              <div className="bg-amber-50 rounded-xl p-3 text-xs text-amber-700 flex items-start gap-2">
+              <div className="bg-amber-50 rounded-xl p-3 text-xs text-amber-700 flex items-start gap-2 dark:bg-amber-900/20 dark:text-amber-300">
                 <span className="material-symbols-outlined text-sm">info</span>
                 <p>The customer will see &ldquo;Estimated ready by {new Date(Date.now() + prepTime * 60000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}&rdquo;</p>
               </div>
@@ -752,7 +752,7 @@ export default function PartnerPOS() {
                     <div className="flex justify-between items-start mb-2">
                       <span className="text-xs font-bold text-[var(--color-on-surface)]">#{o.id.slice(0, 8).toUpperCase()}</span>
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                        o.status === "delivered" ? "bg-green-100 text-green-700" : o.status === "cancelled" ? "bg-red-100 text-red-700" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
+                        o.status === "delivered" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" : o.status === "cancelled" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
                       }`}>{o.status}</span>
                     </div>
                     <div className="text-xs text-[var(--color-outline)]">
@@ -777,16 +777,16 @@ export default function PartnerPOS() {
               </button>
             </div>
             <div className="text-center space-y-4">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-                <span className="material-symbols-outlined text-3xl text-green-600" style={{ fontVariationSettings: "'FILL' 1" }}>call</span>
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto dark:bg-green-900/30">
+                <span className="material-symbols-outlined text-3xl text-green-600 dark:text-green-400" style={{ fontVariationSettings: "'FILL' 1" }}>call</span>
               </div>
               <div>
                 <p className="text-sm text-[var(--color-outline)]">Masked Number</p>
                 <p className="text-xl font-black text-[var(--color-on-surface)] tracking-wider">{callMaskModal.maskedNumber}</p>
               </div>
               <p className="text-xs text-[var(--color-outline-variant)]">This masked number connects you to the customer without revealing either party&apos;s real number. Number copied to clipboard.</p>
-              <div className="bg-amber-50 rounded-xl p-3 border border-amber-200">
-                <p className="text-xs text-amber-700 flex items-center gap-1">
+              <div className="bg-amber-50 rounded-xl p-3 border border-amber-200 dark:bg-amber-900/20 dark:border-amber-800">
+                <p className="text-xs text-amber-700 flex items-center gap-1 dark:text-amber-300">
                   <span className="material-symbols-outlined text-sm">info</span>
                   For production, configure Twilio proxy in your dashboard settings
                 </p>

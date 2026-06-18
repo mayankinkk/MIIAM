@@ -264,11 +264,11 @@ export default function VendorDashboard() {
             aria-checked={isOpen}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all ${
               isOpen
-                ? "bg-green-100 text-green-700 hover:bg-green-200"
+                ? "bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-300"
                 : "bg-[var(--color-surface-container)] text-[var(--color-outline)] hover:bg-[var(--color-surface-container-high)]"
             }`}
           >
-            <span className={`w-2 h-2 rounded-full ${isOpen ? "bg-green-500 animate-pulse" : "bg-slate-400"}`}></span>
+            <span className={`w-2 h-2 rounded-full ${isOpen ? "bg-green-500 animate-pulse" : "bg-slate-400 dark:bg-slate-600"}`}></span>
             {isOpen ? "Open for Orders" : "Closed"}
           </button>
           <button
@@ -277,11 +277,11 @@ export default function VendorDashboard() {
             aria-checked={autoAccept}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all ${
               autoAccept
-                ? "bg-blue-100 text-blue-700 hover:bg-blue-200"
+                ? "bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900/30 dark:text-blue-300"
                 : "bg-[var(--color-surface-container)] text-[var(--color-outline)] hover:bg-[var(--color-surface-container-high)]"
             }`}
           >
-            <span className={`w-2 h-2 rounded-full ${autoAccept ? "bg-blue-500 animate-pulse" : "bg-slate-400"}`}></span>
+            <span className={`w-2 h-2 rounded-full ${autoAccept ? "bg-blue-500 animate-pulse" : "bg-slate-400 dark:bg-slate-600"}`}></span>
             {autoAccept ? "Auto-Accept On" : "Auto-Accept Off"}
           </button>
         </div>
@@ -292,7 +292,7 @@ export default function VendorDashboard() {
         <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-[var(--color-border-subtle)]">
           <div className="flex items-center justify-between mb-3">
             <span className="material-symbols-outlined text-[var(--color-outline-variant)]">receipt_long</span>
-            <span className="text-xs text-green-600 font-bold bg-green-50 px-2 py-1 rounded-full">
+            <span className="text-xs text-green-600 font-bold bg-green-50 px-2 py-1 rounded-full dark:text-green-400 dark:bg-green-900/20">
               {todayOrders.length > 0 ? "+" + todayOrders.length : "0"} today
             </span>
           </div>
@@ -364,7 +364,7 @@ export default function VendorDashboard() {
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                       <span className="font-extrabold text-[var(--color-on-surface)]">#{order.id.slice(0, 8).toUpperCase()}</span>
-                      <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-amber-100 text-amber-700 uppercase animate-pulse">
+                      <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-amber-100 text-amber-700 uppercase animate-pulse dark:bg-amber-900/30 dark:text-amber-300">
                         NEW
                       </span>
                     </div>
@@ -420,7 +420,7 @@ export default function VendorDashboard() {
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2">
                         <span className="font-extrabold text-[var(--color-on-surface)]">#{order.id.slice(0, 8).toUpperCase()}</span>
-                        <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-blue-100 text-blue-700 uppercase">
+                        <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-blue-100 text-blue-700 uppercase dark:bg-blue-900/30 dark:text-blue-300">
                           {order.status}
                         </span>
                       </div>
@@ -501,7 +501,7 @@ export default function VendorDashboard() {
                 <p className="text-sm text-[var(--color-outline-variant)] text-center py-4">No orders yet</p>
               ) : (
                 recentOrders.map((order) => (
-                  <div key={order.id} className="flex items-center justify-between py-2 border-b border-slate-50 last:border-0">
+                  <div key={order.id} className="flex items-center justify-between py-2 border-b border-slate-50 dark:border-slate-700 last:border-0">
                     <div>
                       <p className="text-sm font-bold text-[var(--color-on-surface)]">#{order.id.slice(0, 6).toUpperCase()}</p>
                       <p className="text-xs text-[var(--color-outline-variant)]">{new Date(order.placed_at).toLocaleDateString()}</p>
@@ -509,9 +509,9 @@ export default function VendorDashboard() {
                     <div className="text-right">
                       <p className="text-sm font-bold text-[var(--color-on-surface)]">₹{order.total_amount.toFixed(0)}</p>
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                        order.status === "delivered" ? "bg-green-100 text-green-700" :
-                        order.status === "cancelled" ? "bg-red-100 text-red-700" :
-                        "bg-amber-100 text-amber-700"
+                        order.status === "delivered" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" :
+                        order.status === "cancelled" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300" :
+                        "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300"
                       }`}>
                         {order.status}
                       </span>
@@ -532,7 +532,7 @@ export default function VendorDashboard() {
             <p className="text-sm text-[var(--color-outline)] mb-4">Select a reason for declining this order:</p>
             <div className="space-y-2 mb-6" role="radiogroup" aria-label="Rejection reason">
               {rejectReasons.map((reason) => (
-                <label key={reason} className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-colors ${rejectReason === reason ? "bg-red-50 border border-red-200" : "bg-[var(--color-surface-subtle)] hover:bg-[var(--color-surface-container)]"}`}>
+                <label key={reason} className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-colors ${rejectReason === reason ? "bg-red-50 border border-red-200 dark:bg-red-900/20 dark:border-red-800" : "bg-[var(--color-surface-subtle)] hover:bg-[var(--color-surface-container)]"}`}>
                   <input
                     type="radio"
                     name="reject-reason"

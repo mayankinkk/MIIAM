@@ -120,7 +120,7 @@ export default function PartnerReviewsPage() {
           <p className="text-xs text-[var(--color-outline)] mt-1">Avg Rating</p>
         </div>
         <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-[var(--color-border-subtle)] text-center">
-          <p className="text-2xl font-black text-green-600">{stats.withReplies}</p>
+          <p className="text-2xl font-black text-green-600 dark:text-green-400">{stats.withReplies}</p>
           <p className="text-xs text-[var(--color-outline)] mt-1">Replied</p>
         </div>
         <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-[var(--color-border-subtle)] text-center">

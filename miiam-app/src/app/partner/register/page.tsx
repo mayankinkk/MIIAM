@@ -150,12 +150,12 @@ export default function VendorRegister() {
   // ── Success screen ─────────────────────────────────────────────────────────
   if (submitted) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[var(--color-primary)]/5 to-white flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-b from-[var(--color-primary)]/5 to-white dark:to-[var(--color-surface)] flex items-center justify-center p-4">
         <div className="w-full max-w-lg text-center">
           <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-10 shadow-lg border border-[var(--color-border-subtle)] space-y-6">
             {/* Animated checkmark */}
-            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-              <span className="material-symbols-outlined text-green-600 text-5xl">check_circle</span>
+            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto dark:bg-green-900/30">
+              <span className="material-symbols-outlined text-green-600 text-5xl dark:text-green-400">check_circle</span>
             </div>
             <div className="space-y-2">
               <h1 className="text-3xl font-extrabold text-[var(--color-on-surface)] tracking-tight">
@@ -180,7 +180,7 @@ export default function VendorRegister() {
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-[var(--color-outline)]">Status</span>
-                <span className="font-bold text-yellow-600">⏳ Pending Review</span>
+                <span className="font-bold text-yellow-600 dark:text-yellow-400">⏳ Pending Review</span>
               </div>
             </div>
             <button
@@ -196,7 +196,7 @@ export default function VendorRegister() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[var(--color-primary)]/5 to-white flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-b from-[var(--color-primary)]/5 to-white dark:to-[var(--color-surface)] flex items-center justify-center p-4">
       <div className="w-full max-w-2xl">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-extrabold text-[var(--color-on-surface)] tracking-tight">
@@ -351,7 +351,7 @@ export default function VendorRegister() {
 
           {/* Navigation */}
           {submitError && (
-            <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm font-medium">
+            <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm font-medium dark:bg-red-900/20 dark:border-red-800 dark:text-red-300">
               ⚠️ {submitError}
             </div>
           )}
