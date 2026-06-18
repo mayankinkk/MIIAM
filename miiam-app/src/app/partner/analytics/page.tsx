@@ -673,16 +673,16 @@ export default function VendorAnalytics() {
         <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Order Status Breakdown</h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {([
-            { status: "delivered", label: "Delivered", color: "green" },
-            { status: "cancelled", label: "Cancelled", color: "red" },
-            { status: "pending", label: "Pending", color: "amber" },
-            { status: "accepted", label: "In Progress", color: "blue" },
+            { status: "delivered", label: "Delivered", textClass: "text-green-600 dark:text-green-400" },
+            { status: "cancelled", label: "Cancelled", textClass: "text-red-600 dark:text-red-400" },
+            { status: "pending", label: "Pending", textClass: "text-amber-600 dark:text-amber-400" },
+            { status: "accepted", label: "In Progress", textClass: "text-blue-600 dark:text-blue-400" },
           ] as const).map((s) => {
             const count = filteredOrders.filter((o) => o.status === s.status).length;
             const pct = filteredOrders.length > 0 ? (count / filteredOrders.length) * 100 : 0;
             return (
               <div key={s.status} className="text-center">
-                <div className={`text-3xl font-black text-${s.color}-600`}>{count}</div>
+                <div className={`text-3xl font-black ${s.textClass}`}>{count}</div>
                 <div className="text-sm text-[var(--color-outline)] font-medium">{s.label}</div>
                 <div className="text-xs text-[var(--color-outline-variant)]">{pct.toFixed(0)}%</div>
               </div>
