@@ -114,6 +114,7 @@ export default function VendorOrders() {
           <button
             key={s.key}
             onClick={() => setFilter(s.key)}
+            aria-pressed={filter === s.key}
             className={`bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border text-left transition-all ${
               filter === s.key ? "border-[var(--color-primary)] shadow-sm" : "border-[var(--color-border-subtle)] hover:border-[var(--color-outline-variant)]"
             }`}
@@ -159,6 +160,7 @@ export default function VendorOrders() {
           <div className="bg-[var(--color-surface-container-lowest)] border-2 border-dashed border-[var(--color-border-subtle)] rounded-3xl p-8 md:p-16 text-center">
             <span className="material-symbols-outlined text-6xl text-[var(--color-outline-variant)]/60 mb-4">receipt_long</span>
             <p className="text-[var(--color-outline-variant)] font-medium text-lg">No orders found</p>
+            <p className="text-[var(--color-outline-variant)] text-sm text-center">Try adjusting your filters or check back later</p>
           </div>
         ) : (
           filteredOrders.map((order) => (

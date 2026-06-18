@@ -295,7 +295,7 @@ export default function VendorDashboard() {
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-[var(--color-border-subtle)]">
           <div className="flex items-center justify-between mb-3">
-            <span className="material-symbols-outlined text-[var(--color-outline-variant)]">receipt_long</span>
+            <span className="material-symbols-outlined text-[var(--color-outline-variant)]" aria-hidden="true">receipt_long</span>
             <span className="text-xs text-green-600 font-bold bg-green-50 px-2 py-1 rounded-full dark:text-green-400 dark:bg-green-900/20">
               {todayOrders.length > 0 ? "+" + todayOrders.length : "0"} today
             </span>
@@ -306,7 +306,7 @@ export default function VendorDashboard() {
 
         <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-[var(--color-border-subtle)]">
           <div className="flex items-center justify-between mb-3">
-            <span className="material-symbols-outlined text-[var(--color-outline-variant)]">paid</span>
+            <span className="material-symbols-outlined text-[var(--color-outline-variant)]" aria-hidden="true">paid</span>
           </div>
           <p className="text-3xl font-black text-[var(--color-on-surface)]">₹{todayRevenue.toFixed(0)}</p>
           <p className="text-sm text-[var(--color-outline)] font-medium mt-1">Today&apos;s Revenue</p>
@@ -314,7 +314,7 @@ export default function VendorDashboard() {
 
         <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-[var(--color-border-subtle)]">
           <div className="flex items-center justify-between mb-3">
-            <span className="material-symbols-outlined text-amber-500">star</span>
+            <span className="material-symbols-outlined text-amber-500" aria-hidden="true">star</span>
             <span className="text-xs text-[var(--color-outline-variant)] font-medium">{vendor.review_count} reviews</span>
           </div>
           <p className="text-3xl font-black text-[var(--color-on-surface)]">{vendor.rating.toFixed(1)}</p>
@@ -323,7 +323,7 @@ export default function VendorDashboard() {
 
         <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-[var(--color-border-subtle)]">
           <div className="flex items-center justify-between mb-3">
-            <span className="material-symbols-outlined text-[var(--color-outline-variant)]">inventory_2</span>
+            <span className="material-symbols-outlined text-[var(--color-outline-variant)]" aria-hidden="true">inventory_2</span>
           </div>
           <p className="text-3xl font-black text-[var(--color-on-surface)]">{todayItemsSold}</p>
           <p className="text-sm text-[var(--color-outline)] font-medium mt-1">Items Sold Today</p>
@@ -331,7 +331,7 @@ export default function VendorDashboard() {
 
         <div className="bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-error)] p-6 rounded-2xl shadow-sm text-white">
           <div className="flex items-center justify-between mb-3">
-            <span className="material-symbols-outlined text-white/80">trending_up</span>
+            <span className="material-symbols-outlined text-white/80" aria-hidden="true">trending_up</span>
             <span className="text-xs text-white/70 font-medium">7 days</span>
           </div>
           <p className="text-3xl font-black">₹{weeklyRevenue.toFixed(0)}</p>

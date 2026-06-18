@@ -288,7 +288,7 @@ export default function VendorAnalytics() {
         </div>
         <div className="flex gap-2">
           {(["week", "month", "all"] as const).map((p) => (
-            <button key={p} onClick={() => setPeriod(p)}
+            <button key={p} onClick={() => setPeriod(p)} aria-pressed={period === p}
               className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${period === p ? "bg-[var(--color-primary)] text-white" : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface-variant)] border border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]"}`}>
               {p === "week" ? "This Week" : p === "month" ? "This Month" : "All Time"}
             </button>
@@ -570,7 +570,10 @@ export default function VendorAnalytics() {
       <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-[var(--color-border-subtle)]">
         <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Popular Items</h3>
         {popularItems.length === 0 ? (
-          <p className="text-[var(--color-outline-variant)] text-sm text-center py-8">No items sold yet</p>
+          <>
+            <p className="text-[var(--color-outline-variant)] text-sm text-center py-8">No items sold yet</p>
+            <p className="text-[var(--color-outline-variant)] text-xs text-center opacity-60 -mt-6 mb-6">Analytics will appear once you start receiving orders</p>
+          </>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left">

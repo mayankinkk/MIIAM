@@ -83,7 +83,11 @@ export default function VendorRegister() {
   }, [form]);
 
   // Show nothing while auth check is in progress
-  if (!authChecked && !submitted) return null;
+  if (!authChecked && !submitted) return (
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="w-8 h-8 border-3 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
 
   const steps = [
     { num: 1, label: "Owner Details" },

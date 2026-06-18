@@ -88,6 +88,7 @@ export default function PartnerChatPage() {
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-12 text-center border border-[var(--color-border-subtle)]">
           <span className="material-symbols-outlined text-5xl text-[var(--color-outline-variant)]/60">chat</span>
           <p className="text-[var(--color-outline-variant)] font-medium mt-3">No messages yet</p>
+          <p className="text-[var(--color-outline-variant)] text-sm mt-1">Messages from customers will appear here</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

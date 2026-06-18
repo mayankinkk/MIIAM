@@ -479,6 +479,7 @@ export default function PartnerMenuPage() {
           </button>
           <button
             onClick={() => { setBulkMode(!bulkMode); setSelectedItems(new Set()); }}
+            aria-pressed={bulkMode}
             className={`px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 border transition-colors ${
               bulkMode ? "bg-[var(--color-primary)] text-white border-[var(--color-primary)]" : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface)] border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]"
             }`}
@@ -1619,7 +1620,7 @@ export default function PartnerMenuPage() {
       {/* QR Code Modal */}
       {showQRModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowQRModal(false)} role="dialog" aria-modal="true" aria-labelledby="qr-modal-title">
-          <div className="bg-[var(--color-surface-container-lowest)] w-full max-w-sm rounded-3xl p-8 m-4 text-center" onClick={e => e.stopPropagation()}>
+          <div id="qr-modal" className="bg-[var(--color-surface-container-lowest)] w-full max-w-sm rounded-3xl p-8 m-4 text-center" onClick={e => e.stopPropagation()}>
             <span className="material-symbols-outlined text-6xl text-[var(--color-on-surface)] mb-4">qr_code_scanner</span>
             <h2 id="qr-modal-title" className="text-xl font-extrabold text-[var(--color-on-surface)] mb-2">Menu QR Code</h2>
             <p className="text-sm text-[var(--color-outline)] mb-6">Scan to view {selectedVendor?.shop_name || "store"}'s menu</p>
