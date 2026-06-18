@@ -293,9 +293,10 @@ export default function VendorPromotions() {
             </div>
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-semibold text-[var(--color-on-surface)]">Promo Code</label>
+                <label htmlFor="promo_code" className="text-sm font-semibold text-[var(--color-on-surface)]">Promo Code</label>
                 <div className="flex gap-2 mt-1">
                   <input
+                    id="promo_code"
                     type="text"
                     value={newPromo.code}
                     onChange={(e) => setNewPromo({ ...newPromo, code: e.target.value.toUpperCase() })}
@@ -309,8 +310,9 @@ export default function VendorPromotions() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-semibold text-[var(--color-on-surface)]">Discount %</label>
+                  <label htmlFor="discount_value" className="text-sm font-semibold text-[var(--color-on-surface)]">Discount %</label>
                   <input
+                    id="discount_value"
                     type="number"
                     min="1"
                     max="100"
@@ -320,8 +322,9 @@ export default function VendorPromotions() {
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-semibold text-[var(--color-on-surface)]">Max Discount (₹)</label>
+                  <label htmlFor="max_discount" className="text-sm font-semibold text-[var(--color-on-surface)]">Max Discount (₹)</label>
                   <input
+                    id="max_discount"
                     type="number"
                     min="0"
                     value={newPromo.max_discount}
@@ -331,8 +334,9 @@ export default function VendorPromotions() {
                 </div>
               </div>
               <div>
-                  <label className="text-sm font-semibold text-[var(--color-on-surface)]">Min Order Amount (₹)</label>
+                  <label htmlFor="min_order_amount_promo" className="text-sm font-semibold text-[var(--color-on-surface)]">Min Order Amount (₹)</label>
                   <input
+                    id="min_order_amount_promo"
                     type="number"
                     min="0"
                     value={newPromo.min_order_amount}
@@ -341,8 +345,9 @@ export default function VendorPromotions() {
                   />
               </div>
               <div>
-                <label className="text-sm font-semibold text-[var(--color-on-surface)]">Usage Limit</label>
+                <label htmlFor="usage_limit" className="text-sm font-semibold text-[var(--color-on-surface)]">Usage Limit</label>
                 <input
+                  id="usage_limit"
                   type="number"
                   min="1"
                   value={newPromo.usage_limit}
@@ -351,8 +356,9 @@ export default function VendorPromotions() {
                 />
               </div>
               <div>
-                <label className="text-sm font-semibold text-[var(--color-on-surface)]">Valid Until</label>
+                <label htmlFor="valid_until" className="text-sm font-semibold text-[var(--color-on-surface)]">Valid Until</label>
                 <input
+                  id="valid_until"
                   type="date"
                   value={newPromo.valid_until}
                   onChange={(e) => setNewPromo({ ...newPromo, valid_until: e.target.value })}

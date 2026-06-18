@@ -163,7 +163,7 @@ export default function PartnerReviewsPage() {
                       {review.vendor_reply_at && (
                         <div className="flex items-center gap-2 mt-1">
                           <p className="text-[10px] text-[var(--color-outline-variant)]">{new Date(review.vendor_reply_at).toLocaleDateString()}</p>
-                          <button onClick={() => deleteReply(review.id)} className="text-[10px] text-red-500 hover:underline">Remove</button>
+                          <button onClick={() => deleteReply(review.id)} aria-label="Remove reply" className="text-[10px] text-red-500 hover:underline">Remove</button>
                         </div>
                       )}
                     </div>

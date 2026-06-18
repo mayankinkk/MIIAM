@@ -31,8 +31,9 @@ export default function PartnerChatPage() {
     if (!vendorId) return;
     const channel = supabase
       .channel("partner-chat")
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "order_chat" }, () => {
-        init();
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "order_chat" }, (payload: { new: Record<string, unknown> }) => {
+        const newMsg = payload.new as unknown as ChatMessage;
+        setMessages(prev => [newMsg, ...prev]);
       })
       .subscribe();
     return () => { supabase.removeChannel(channel); };
@@ -143,6 +144,7 @@ export default function PartnerChatPage() {
                   <button
                     onClick={sendReply}
                     disabled={sending || !reply.trim()}
+                    aria-label="Send message"
                     className="px-5 py-2.5 bg-[var(--color-primary)] text-white font-bold rounded-xl text-sm hover:bg-[var(--color-primary-dim)] disabled:opacity-50"
                   >
                     Send

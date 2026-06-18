@@ -173,13 +173,13 @@ export default function VendorAnalytics() {
     });
   }
 
-  const now = new Date();
-  const periodStart = new Date(now);
-  if (period === "week") periodStart.setDate(periodStart.getDate() - 7);
-  else if (period === "month") periodStart.setMonth(periodStart.getMonth() - 1);
-  else periodStart.setFullYear(2000);
-
   const { filteredOrders, deliveredOrders, totalRevenue, totalOrders, avgOrderValue, dailyRevenue, popularItems, peakHours, maxOrders } = useMemo(() => {
+    const now = new Date();
+    const periodStart = new Date(now);
+    if (period === "week") periodStart.setDate(periodStart.getDate() - 7);
+    else if (period === "month") periodStart.setMonth(periodStart.getMonth() - 1);
+    else periodStart.setFullYear(2000);
+
     const filtered = orders.filter((o) => new Date(o.placed_at) >= periodStart);
     const delivered = filtered.filter((o) => o.status === "delivered");
 
@@ -225,7 +225,7 @@ export default function VendorAnalytics() {
     const maxOrd = Math.max(...hours.map((h) => h.orders), 1);
 
     return { filteredOrders: filtered, deliveredOrders: delivered, totalRevenue: rev, totalOrders: count, avgOrderValue: avg, dailyRevenue: daily, popularItems: popular, peakHours: hours, maxOrders: maxOrd };
-  }, [orders, periodStart, menuItemNames]);
+  }, [orders, period, menuItemNames]);
 
   const { avgCompetitorRating, avgCompetitorDeliveryMin, competitorCount } = useMemo(() => ({
     avgCompetitorRating: competitors.length

@@ -879,6 +879,7 @@ export default function PartnerMenuPage() {
                           <>
                             <button
                               onClick={() => handleStockChange(item, -1)}
+                              aria-label="Decrease stock"
                               className="w-11 h-11 bg-[var(--color-surface-container)] rounded-lg flex items-center justify-center hover:bg-[var(--color-surface-container-high)] text-sm font-bold"
                             >−</button>
                             <span className={`text-sm font-bold min-w-[2ch] text-center ${('stock' in item && (item as GroceryItem | PharmacyItem | MenuItem).stock === 0) ? 'text-red-600' : ('stock' in item && (item as GroceryItem | PharmacyItem | MenuItem).stock! < 10) ? 'text-amber-600' : 'text-[var(--color-on-surface)]'}`}>
@@ -886,6 +887,7 @@ export default function PartnerMenuPage() {
                             </span>
                             <button
                               onClick={() => handleStockChange(item, 1)}
+                              aria-label="Increase stock"
                               className="w-11 h-11 bg-[var(--color-surface-container)] rounded-lg flex items-center justify-center hover:bg-[var(--color-surface-container-high)] text-sm font-bold"
                             >+</button>
                           </>
@@ -1186,7 +1188,16 @@ export default function PartnerMenuPage() {
                   accept="image/*"
                   onChange={(e) => {
                     const files = Array.from(e.target.files || []);
-                    setNewItem({ ...newItem, imageFiles: [...(newItem.imageFiles || []), ...files] });
+                    const validFiles = files.filter((file: File) => {
+                      if (!file.type.startsWith("image/")) {
+                        useToastStore.getState().addToast("Only image files are allowed", "error");
+                        return false;
+                      }
+                      return true;
+                    });
+                    if (validFiles.length > 0) {
+                      setNewItem({ ...newItem, imageFiles: [...(newItem.imageFiles || []), ...validFiles] });
+                    }
                     e.target.value = "";
                   }}
                   className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] text-sm file:mr-3 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-[var(--color-primary)] file:text-white file:font-bold file:text-xs hover:file:bg-[#a40017]"
@@ -1457,8 +1468,15 @@ export default function PartnerMenuPage() {
                   accept="image/*"
                   onChange={async (e) => {
                     const files = Array.from(e.target.files || []);
+                    const validFiles = files.filter((file: File) => {
+                      if (!file.type.startsWith("image/")) {
+                        useToastStore.getState().addToast("Only image files are allowed", "error");
+                        return false;
+                      }
+                      return true;
+                    });
                     const newUrls: string[] = [];
-                    for (const file of files) {
+                    for (const file of validFiles) {
                       setUploading(true);
                       const url = await uploadImage(file);
                       if (url) newUrls.push(url);
