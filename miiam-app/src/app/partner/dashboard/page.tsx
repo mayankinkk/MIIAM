@@ -235,7 +235,7 @@ export default function VendorDashboard() {
 
       {/* New Order Alert Banner */}
       {newOrderAlert && (
-        <div className="fixed top-4 left-4 right-4 z-50 bg-gradient-to-r from-[var(--color-primary)] to-[#ff4444] text-white p-4 rounded-2xl shadow-2xl transition-all">
+        <div className="fixed top-4 left-4 right-4 z-50 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-error)] text-white p-4 rounded-2xl shadow-2xl transition-all">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <span className="material-symbols-outlined animate-bounce">notification_important</span>
@@ -325,7 +325,7 @@ export default function VendorDashboard() {
           <p className="text-sm text-[var(--color-outline)] font-medium mt-1">Items Sold Today</p>
         </div>
 
-        <div className="bg-gradient-to-br from-[var(--color-primary)] to-[#ff4444] p-6 rounded-2xl shadow-sm text-white">
+        <div className="bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-error)] p-6 rounded-2xl shadow-sm text-white">
           <div className="flex items-center justify-between mb-3">
             <span className="material-symbols-outlined text-white/80">trending_up</span>
             <span className="text-xs text-white/70 font-medium">7 days</span>

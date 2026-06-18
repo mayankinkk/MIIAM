@@ -301,7 +301,7 @@ export default function VendorAnalytics() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-gradient-to-br from-[var(--color-primary)] to-[#6b0011] text-white rounded-2xl p-6">
+        <div className="bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dim)] text-white rounded-2xl p-6">
           <p className="text-white/80 text-sm font-medium">Total Revenue</p>
           <p className="text-3xl font-black mt-1">₹{totalRevenue.toFixed(0)}</p>
           <p className="text-white/80 text-xs mt-1">{deliveredOrders.length} orders</p>

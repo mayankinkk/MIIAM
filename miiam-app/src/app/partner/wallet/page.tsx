@@ -123,7 +123,7 @@ export default function VendorWalletPage() {
       </div>
 
       {/* Balance Card */}
-      <div className="bg-gradient-to-br from-[var(--color-primary)] to-[#6b0011] text-white rounded-3xl p-8 shadow-lg">
+      <div className="bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dim)] text-white rounded-3xl p-8 shadow-lg">
         <div className="flex items-center justify-between mb-8">
           <div>
             <p className="text-white/80 text-sm font-medium">Available Balance</p>
