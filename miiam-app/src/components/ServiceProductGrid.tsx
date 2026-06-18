@@ -537,7 +537,7 @@ export default function ServiceProductGrid({
                 <div className="relative w-full h-32 bg-[var(--color-surface-container)]">
                   {product.image_url || product.image ? (
                     <BlurImage
-                      src={product.image_url || product.image}
+                      src={product.image_url || product.image || ""}
                       alt={product.name}
                       fill
                       className="object-cover"

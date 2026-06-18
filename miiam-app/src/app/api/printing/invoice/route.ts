@@ -32,12 +32,12 @@ export const GET = withRateLimit(async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Invoices are only available for print orders" }, { status: 400 });
     }
 
-    const lines: InvoiceLine[] = (order.order_items || []).map((it: any) => {
-      const qty = it.quantity || 1;
-      const unit = (it.price || 0) / qty;
-      let desc = it.name || "Print job";
-      let settings: Record<string, any> = {};
-      try { if (it.special_notes) settings = JSON.parse(it.special_notes); } catch { /* corrupted data, ignore */ }
+    const lines: InvoiceLine[] = (order.order_items || []).map((it: Record<string, unknown>) => {
+      const qty = (it.quantity as number) || 1;
+      const unit = ((it.price as number) || 0) / qty;
+      let desc = (it.name as string) || "Print job";
+      let settings: Record<string, string> = {};
+      try { if (it.special_notes) settings = JSON.parse(it.special_notes as string); } catch { /* corrupted data, ignore */ }
       const meta: string[] = [];
       if (settings.colorMode) meta.push(settings.colorMode === "bw" ? "B&W" : "Color");
       if (settings.paperSize) meta.push(String(settings.paperSize).toUpperCase());
@@ -48,7 +48,7 @@ export const GET = withRateLimit(async function GET(request: NextRequest) {
         description: desc,
         quantity: qty,
         unitPrice: unit,
-        amount: it.price || 0,
+        amount: (it.price as number) || 0,
       };
     });
 
@@ -79,7 +79,7 @@ export const GET = withRateLimit(async function GET(request: NextRequest) {
       sgst: tax / 2,
       igst: 0,
       total: subtotal + tax,
-      paymentMode: (order as any).payment_method || "Online",
+      paymentMode: (typeof order === 'object' && order !== null && 'payment_method' in order ? String((order as Record<string, unknown>).payment_method) : null) || "Online",
       notes: "Files auto-deleted after delivery for privacy. No refunds on completed print jobs.",
     };
 

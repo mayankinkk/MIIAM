@@ -7,7 +7,58 @@ export default function AdminCustomerInsights() {
   const supabase = useMemo(() => createClient(), []);
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState<"7d" | "30d" | "90d">("30d");
-  const [insights, setInsights] = useState<any>(null);
+  interface VendorWithStats {
+    id: string;
+    shop_name: string;
+    type: string | null;
+    rating: number | null;
+    review_count: number | null;
+    orderCount: number;
+  }
+
+  interface VendorRated {
+    id: string;
+    shop_name: string;
+    type: string | null;
+    rating: number | null;
+    review_count: number | null;
+    avgRating: string;
+    reviewCount: number;
+  }
+
+  interface InsightData {
+    totalCustomers: number;
+    totalProfiles: number;
+    newUsers: number;
+    repeatCustomers: number;
+    repeatRate: string;
+    totalOrdersValue: number;
+    deliveredOrders: number;
+    cancelledOrders: number;
+    cancellRate: string;
+    avgOrderValue: string;
+    topVendors: VendorWithStats[];
+    topRatedVendors: VendorRated[];
+    peakDays: [string, number][];
+    totalOrders: number;
+  }
+
+  const [insights, setInsights] = useState<InsightData>({
+    totalCustomers: 0,
+    totalProfiles: 0,
+    newUsers: 0,
+    repeatCustomers: 0,
+    repeatRate: "0",
+    totalOrdersValue: 0,
+    deliveredOrders: 0,
+    cancelledOrders: 0,
+    cancellRate: "0",
+    avgOrderValue: "0",
+    topVendors: [],
+    topRatedVendors: [],
+    peakDays: [],
+    totalOrders: 0,
+  });
 
   useEffect(() => {
     loadInsights();
@@ -149,7 +200,7 @@ export default function AdminCustomerInsights() {
         <div className="lg:col-span-2 bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] p-5">
           <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Top Vendors by Orders</h3>
           <div className="space-y-3">
-            {insights.topVendors.map((v: any, i: number) => (
+            {insights.topVendors.map((v, i) => (
               <div key={v.id} className="flex items-center gap-3 py-2 border-b border-slate-50 last:border-0">
                 <span className="w-6 h-6 rounded-full bg-[var(--color-surface-container)] flex items-center justify-center text-xs font-bold text-[var(--color-outline)]">#{i + 1}</span>
                 <div className="flex-1">
@@ -169,7 +220,7 @@ export default function AdminCustomerInsights() {
         <div className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] p-5">
           <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Top Rated Vendors</h3>
           <div className="space-y-3">
-            {insights.topRatedVendors.slice(0, 8).map((v: any, i: number) => (
+            {insights.topRatedVendors.slice(0, 8).map((v, i) => (
               <div key={v.id} className="flex items-center gap-2 py-1.5 border-b border-slate-50 last:border-0">
                 <span className="text-amber-400 text-sm">★</span>
                 <div className="flex-1 min-w-0">

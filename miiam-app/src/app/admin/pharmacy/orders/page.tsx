@@ -13,6 +13,17 @@ const statusColors: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-700",
 };
 
+interface PharmacyOrderItem { name: string; quantity: number; }
+interface PharmacyOrderRaw {
+  id: string;
+  total_amount: number | null;
+  status: string | null;
+  placed_at: string | null;
+  delivery_address: string | null;
+  special_instructions: string | null;
+  order_items: PharmacyOrderItem[] | null;
+}
+
 interface PharmacyOrder {
   id: string;
   customer: string;
@@ -45,10 +56,10 @@ export default function PharmacyOrdersPage() {
       .limit(50);
 
     if (data) {
-      const mapped: PharmacyOrder[] = data.map((o: any) => ({
+      const mapped: PharmacyOrder[] = (data as PharmacyOrderRaw[]).map((o) => ({
         id: o.id,
         customer: o.delivery_address?.split(",")[0] || "Customer",
-        items: o.order_items?.map((i: any) => `${i.name} (x${i.quantity})`).join(", ") || "N/A",
+        items: o.order_items?.map((i) => `${i.name} (x${i.quantity})`).join(", ") || "N/A",
         total: o.total_amount || 0,
         status: o.status || "pending",
         date: o.placed_at ? new Date(o.placed_at).toLocaleDateString("en-IN", { month: "short", day: "numeric" }) : "",

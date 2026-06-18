@@ -135,9 +135,9 @@ export async function POST(request: Request) {
       console.error("Profile error:", profileError);
       return NextResponse.json({ error: "Failed to update profile: " + profileError.message }, { status: 400 });
     }
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.error("Profile catch error:", e);
-    return NextResponse.json({ error: e.message }, { status: 400 });
+    return NextResponse.json({ error: e instanceof Error ? e.message : "Unknown error" }, { status: 400 });
   }
   
   try {
@@ -155,9 +155,9 @@ export async function POST(request: Request) {
       console.error("Rider error:", riderError);
       return NextResponse.json({ error: "Failed to create rider: " + riderError.message }, { status: 400 });
     }
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.error("Rider catch error:", e);
-    return NextResponse.json({ error: e.message }, { status: 400 });
+    return NextResponse.json({ error: e instanceof Error ? e.message : "Unknown error" }, { status: 400 });
   }
   
   return NextResponse.json({ success: true, userId: userId });

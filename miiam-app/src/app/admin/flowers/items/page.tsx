@@ -31,7 +31,7 @@ export default function FlowersItemsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [vendorFilter, setVendorFilter] = useState("all");
-  const [vendors, setVendors] = useState<any[]>([]);
+  const [vendors, setVendors] = useState<{ id: string; shop_name: string }[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingItem, setEditingItem] = useState<FlowerItem | null>(null);
   const [saving, setSaving] = useState(false);
@@ -113,9 +113,9 @@ export default function FlowersItemsPage() {
       resetModal();
       loadItems();
       useToastStore.getState().addToast(editingItem ? "Item updated!" : "Item added!", "success");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error saving:", error);
-      useToastStore.getState().addToast("Failed: " + error.message, "error");
+      useToastStore.getState().addToast("Failed: " + (error instanceof Error ? error.message : "Unknown error"), "error");
     } finally {
       setSaving(false);
     }
@@ -127,8 +127,8 @@ export default function FlowersItemsPage() {
       const { error } = await supabase.from("flower_items").delete().eq("id", id);
       if (error) throw error;
       setItems(items.filter(i => i.id !== id));
-    } catch (error: any) {
-      useToastStore.getState().addToast("Failed: " + error.message, "error");
+    } catch (error: unknown) {
+      useToastStore.getState().addToast("Failed: " + (error instanceof Error ? error.message : "Unknown error"), "error");
     }
   };
 

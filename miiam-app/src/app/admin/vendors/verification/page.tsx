@@ -66,13 +66,13 @@ export default function VerificationPage() {
       }
 
       setVendors(vendors.map(v => 
-        v.id === vendorId ? { ...v, status: newStatus as any } : v
+        v.id === vendorId ? { ...v, status: newStatus as VendorVerification["status"] } : v
       ));
 
       setSelectedVendor(null);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error updating vendor:", error);
-      useToastStore.getState().addToast(`Failed: ${error.message}`, "error");
+      useToastStore.getState().addToast(`Failed: ${(error as Error).message}`, "error");
     }
   };
 

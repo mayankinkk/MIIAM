@@ -174,7 +174,7 @@ export default function CouponsAdminPage() {
           {["all", "active", "expired", "exhausted"].map((f) => (
             <button
               key={f}
-              onClick={() => setFilter(f as any)}
+              onClick={() => setFilter(f as "all" | "active" | "expired" | "exhausted")}
               className={`px-4 py-2 rounded-full font-bold text-sm capitalize transition-colors ${
                 filter === f
                   ? "bg-[var(--color-primary)] text-white"
@@ -321,7 +321,7 @@ export default function CouponsAdminPage() {
                   <select
                     value={formData.type}
                     onChange={(e) =>
-                      setFormData({ ...formData, type: e.target.value as any })
+                      setFormData({ ...formData, type: e.target.value as "percentage" | "fixed" })
                     }
                     className="w-full p-3 rounded-xl border border-[var(--color-border-subtle)] focus:border-[var(--color-primary)] outline-none"
                   >

@@ -94,7 +94,20 @@ export default function BeautyPage() {
   const userCity = locationStore.city;
   const { addToast } = useToastStore();
   const beautySetting = getSetting("beauty");
-  const [bookingService, setBookingService] = useState<any>(null);
+interface Service {
+  id: string;
+  name: string;
+  price: number;
+  original?: number;
+  duration: string;
+  rating: number;
+  reviews: number;
+  image: string;
+  popular?: boolean;
+  description: string;
+}
+
+  const [bookingService, setBookingService] = useState<Service | null>(null);
   const [selectedDate, setSelectedDate] = useState(0);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [location, setLocation] = useState<"home" | "salon">("home");
@@ -126,7 +139,7 @@ export default function BeautyPage() {
 
   const getQty = (id: string) => items.filter(i => i.menu_item_id === id).reduce((s, i) => s + i.quantity, 0);
 
-  const handleBook = (service: any) => {
+  const handleBook = (service: Service) => {
     if (!isServiceable) {
       addToast("Beauty services are not available at your location!", "error");
       return;
@@ -243,7 +256,7 @@ export default function BeautyPage() {
         <section>
           <h2 className="text-lg font-black text-on-surface mb-4">{categories.find(c => c.id === activeCategory)?.label}</h2>
           <div className="space-y-4">
-            {currentServices.map((service: any, index) => {
+            {currentServices.map((service: Service, index) => {
               const qty = getQty(service.id);
               const discount = service.original ? Math.round(((service.original - service.price) / service.original) * 100) : 0;
               

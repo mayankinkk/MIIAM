@@ -5,6 +5,11 @@ import { createRouteLogger } from "@/lib/logger";
 
 const WHATSAPP_CLOUD_API_URL = "https://graph.facebook.com/v18.0";
 
+interface WhatsAppComponent {
+  type: string;
+  parameters?: { type: string; text: string }[];
+}
+
 interface WhatsAppMessage {
   messaging_product: string;
   to: string;
@@ -12,14 +17,14 @@ interface WhatsAppMessage {
   template?: {
     name: string;
     language: { code: string };
-    components?: any[];
+    components?: WhatsAppComponent[];
   };
   text?: {
     body: string;
   };
 }
 
-const messageTemplates: Record<string, { name: string; language: string; components: any[] }> = {
+const messageTemplates: Record<string, { name: string; language: string; components: WhatsAppComponent[] }> = {
   order_confirmed: {
     name: "order_confirmed",
     language: "en_US",
@@ -106,9 +111,9 @@ export async function POST(request: NextRequest) {
     const paramValues = Object.values(parameters);
     const components = template.components.map((component) => ({
       ...component,
-      parameters: component.parameters.map((_: any, pi: number) => ({
+      parameters: (component.parameters ?? []).map((_: unknown, pi: number) => ({
         type: "text" as const,
-        text: paramValues[pi] || "",
+        text: String(paramValues[pi] || ""),
       })),
     }));
 

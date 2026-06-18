@@ -37,7 +37,7 @@ export default function FlowersAdmin() {
         .from("flower_items")
         .select("*", { count: "exact", head: true });
 
-      const totalRevenue = ordersData?.reduce((sum: number, o: any) => sum + (o.total_amount || 0), 0) || 0;
+      const totalRevenue = ordersData?.reduce((sum: number, o: { total_amount?: number | null }) => sum + (o.total_amount || 0), 0) || 0;
 
       // Last month data for comparison
       const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
@@ -58,7 +58,7 @@ export default function FlowersAdmin() {
         .gte("placed_at", sixtyDaysAgo)
         .lt("placed_at", thirtyDaysAgo);
 
-      const lastMonthRevenue = lastMonthOrdersData?.reduce((sum: number, o: any) => sum + (o.total_amount || 0), 0) || 0;
+      const lastMonthRevenue = lastMonthOrdersData?.reduce((sum: number, o: { total_amount?: number | null }) => sum + (o.total_amount || 0), 0) || 0;
 
       const { count: newPartnersCount } = await supabase
         .from("vendors")

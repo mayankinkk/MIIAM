@@ -72,9 +72,9 @@ export async function POST(request: NextRequest) {
   }
   try {
     return await activateScheduledOrders();
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error({ err: error }, "Error activating scheduled orders");
-    return NextResponse.json({ error: error?.message || "Server error" }, { status: 500 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Server error" }, { status: 500 });
   }
 }
 
@@ -85,8 +85,8 @@ export async function GET(request: NextRequest) {
   }
   try {
     return await activateScheduledOrders();
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error({ err: error }, "Error activating scheduled orders");
-    return NextResponse.json({ error: error?.message || "Server error" }, { status: 500 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Server error" }, { status: 500 });
   }
 }

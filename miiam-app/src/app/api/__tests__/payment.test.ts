@@ -2,8 +2,23 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { NextRequest } from "next/server";
 
-const mockQueryChain = () => {
-  const chain: any = {
+interface QueryChain {
+  select: ReturnType<typeof vi.fn>;
+  order: ReturnType<typeof vi.fn>;
+  insert: ReturnType<typeof vi.fn>;
+  update: ReturnType<typeof vi.fn>;
+  delete: ReturnType<typeof vi.fn>;
+  eq: ReturnType<typeof vi.fn>;
+  is: ReturnType<typeof vi.fn>;
+  in: ReturnType<typeof vi.fn>;
+  gte: ReturnType<typeof vi.fn>;
+  lte: ReturnType<typeof vi.fn>;
+  single: ReturnType<typeof vi.fn>;
+  maybeSingle: ReturnType<typeof vi.fn>;
+}
+
+const mockQueryChain = (): QueryChain => {
+  const chain: QueryChain = {
     select: vi.fn().mockReturnThis(),
     order: vi.fn().mockReturnThis(),
     insert: vi.fn().mockReturnThis(),
@@ -20,8 +35,13 @@ const mockQueryChain = () => {
   return chain;
 };
 
-let profileQueryResult: any = { data: null, error: null };
-let orderQueryResult: any = { data: null, error: null };
+interface QueryResult {
+  data: unknown;
+  error: unknown;
+}
+
+let profileQueryResult: QueryResult = { data: null, error: null };
+let orderQueryResult: QueryResult = { data: null, error: null };
 
 const mockFrom = vi.fn(() => {
   const chain = mockQueryChain();

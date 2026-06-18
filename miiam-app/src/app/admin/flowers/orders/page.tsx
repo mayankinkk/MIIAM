@@ -20,6 +20,17 @@ const typeColors: Record<string, string> = {
   hamper: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
 };
 
+interface FlowerOrderItem { name: string; quantity: number; }
+interface FlowerOrderRaw {
+  id: string;
+  total_amount: number | null;
+  status: string | null;
+  placed_at: string | null;
+  delivery_address: string | null;
+  order_items: FlowerOrderItem[] | null;
+  created_at?: string | null;
+}
+
 interface FlowerOrder {
   id: string;
   customer: string;
@@ -52,10 +63,10 @@ export default function FlowersOrdersPage() {
       .limit(50);
 
     if (data) {
-      const mapped: FlowerOrder[] = data.map((o: any) => ({
+      const mapped: FlowerOrder[] = (data as FlowerOrderRaw[]).map((o) => ({
         id: o.id,
         customer: o.delivery_address?.split(",")[0] || "Customer",
-        items: o.order_items?.map((i: any) => `${i.name} (x${i.quantity})`).join(", ") || "N/A",
+        items: o.order_items?.map((i) => `${i.name} (x${i.quantity})`).join(", ") || "N/A",
         total: o.total_amount || 0,
         status: o.status || "pending",
         date: o.placed_at ? new Date(o.placed_at).toLocaleDateString("en-IN", { month: "short", day: "numeric" }) : "",

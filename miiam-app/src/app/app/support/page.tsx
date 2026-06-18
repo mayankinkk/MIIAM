@@ -59,9 +59,17 @@ export default function SupportPage() {
   const [orderIssue, setOrderIssue] = useState("");
   const [showQuickActions, setShowQuickActions] = useState(true);
 
-  const [userOrders, setUserOrders] = useState<any[]>([]);
+  interface OrderData {
+  id: string;
+  vendor: { name: string } | null;
+  status: string;
+  total_amount: number;
+  placed_at: string;
+}
+
+const [userOrders, setUserOrders] = useState<OrderData[]>([]);
   const [ordersLoading, setOrdersLoading] = useState(true);
-  const [selectedOrder, setSelectedOrder] = useState<any>(null);
+  const [selectedOrder, setSelectedOrder] = useState<OrderData | null>(null);
   const [faqSearch, setFaqSearch] = useState("");
   const [faqCategory, setFaqCategory] = useState<string>("All");
   const chatEndRef = useRef<HTMLDivElement>(null);
@@ -150,7 +158,7 @@ export default function SupportPage() {
           {(["home", "chat", "tickets", "faqs"] as const).map((tabKey) => (
             <button
               key={tabKey}
-              onClick={() => setTab(tabKey as any)}
+              onClick={() => setTab(tabKey)}
               className={`flex-1 py-4 text-sm font-bold border-b-2 transition-all ${
                 tab === tabKey ? "border-primary text-primary" : "border-transparent text-on-surface-variant"
               }`}

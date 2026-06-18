@@ -8,8 +8,25 @@ import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
+interface AddressData {
+  id: string;
+  user_id: string;
+  label: string;
+  icon?: string;
+  name: string;
+  street?: string;
+  city?: string;
+  state?: string;
+  postal_code?: string;
+  is_default?: boolean;
+  phone: string;
+  instructions?: string;
+  address?: string;
+  pincode?: string;
+}
+
 interface AddressCardProps {
-  address: any;
+  address: AddressData;
   onSelect: () => void;
   onEdit: () => void;
   onDelete: () => void;
@@ -176,7 +193,7 @@ export default function AddressBookPage() {
   const { confirm } = useConfirm();
   const supabase = useMemo(() => createClient(), []);
   const router = useRouter();
-  const [addresses, setAddresses] = useState<any[]>([]);
+  const [addresses, setAddresses] = useState<AddressData[]>([]);
   const [loading, setLoading] = useState(true);
 
   const loadAddresses = useCallback(async () => {
@@ -197,7 +214,7 @@ export default function AddressBookPage() {
   }, [loadAddresses]);
 
   const [showAddAddress, setShowAddAddress] = useState(false);
-  const [editingAddress, setEditingAddress] = useState<any | null>(null);
+  const [editingAddress, setEditingAddress] = useState<AddressData | null>(null);
   const [newAddress, setNewAddress] = useState({
     label: "home",
     name: "",
@@ -386,12 +403,12 @@ export default function AddressBookPage() {
                   setNewAddress({
                     label: address.label.toLowerCase(),
                     name: address.name,
-                    street: address.street,
-                    city: address.city,
-                    state: address.state,
-                    postal_code: address.postal_code,
+                    street: address.street || "",
+                    city: address.city || "",
+                    state: address.state || "",
+                    postal_code: address.postal_code || "",
                     phone: address.phone,
-                    instructions: address.instructions,
+                    instructions: address.instructions || "",
                   });
                   setShowAddAddress(true);
                 }}

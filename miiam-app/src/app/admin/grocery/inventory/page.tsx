@@ -29,7 +29,7 @@ export default function GroceryInventoryPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [vendorFilter, setVendorFilter] = useState("all");
-  const [vendors, setVendors] = useState<any[]>([]);
+  const [vendors, setVendors] = useState<{ id: string; shop_name?: string; name?: string }[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [saving, setSaving] = useState(false);
@@ -117,9 +117,9 @@ export default function GroceryInventoryPage() {
       resetModal();
       loadProducts();
       useToastStore.getState().addToast(editingProduct ? "Product updated!" : "Product added!", "success");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error saving product:", error);
-      useToastStore.getState().addToast("Failed to save: " + error.message, "error");
+      useToastStore.getState().addToast("Failed to save: " + (error instanceof Error ? error.message : "Unknown error"), "error");
     } finally {
       setSaving(false);
     }
@@ -133,9 +133,9 @@ export default function GroceryInventoryPage() {
       if (error) throw error;
       setProducts(products.filter(p => p.id !== id));
       useToastStore.getState().addToast("Product deleted!", "success");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error deleting product:", error);
-      useToastStore.getState().addToast("Failed to delete: " + error.message, "error");
+      useToastStore.getState().addToast("Failed to delete: " + (error instanceof Error ? error.message : "Unknown error"), "error");
     }
   };
 

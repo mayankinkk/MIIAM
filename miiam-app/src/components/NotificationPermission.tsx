@@ -20,8 +20,8 @@ export default function NotificationPermission() {
     }
 
     let isMounted = true;
-    let notificationsChannel: any = null;
-    let ordersChannel: any = null;
+    let notificationsChannel: ReturnType<typeof supabase.channel> | null = null;
+    let ordersChannel: ReturnType<typeof supabase.channel> | null = null;
 
     // Play a premium system notification sound
     const playNotificationSound = () => {

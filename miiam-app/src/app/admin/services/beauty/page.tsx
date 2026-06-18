@@ -17,8 +17,31 @@ const beautyCategories = [
 export default function BeautyServicesAdmin() {
   const supabase = useMemo(() => createClient(), []);
   const [activeTab, setActiveTab] = useState<"overview" | "bookings" | "professionals">("overview");
-  const [bookings, setBookings] = useState<any[]>([]);
-  const [providers, setProviders] = useState<any[]>([]);
+  interface Booking {
+    id: string;
+    service_type: string;
+    service_sub_type?: string;
+    status: string;
+    amount: number;
+    user_name: string;
+    user_phone: string;
+    scheduled_date: string;
+    scheduled_time: string;
+    created_at: string;
+  }
+
+  interface Provider {
+    id: string;
+    name?: string;
+    full_name?: string;
+    status?: string;
+    phone?: string;
+    specialties?: string[];
+    created_at: string;
+  }
+
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [providers, setProviders] = useState<Provider[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -128,7 +151,7 @@ export default function BeautyServicesAdmin() {
           {["overview", "bookings", "professionals"].map((tab) => (
             <button
               key={tab}
-              onClick={() => setActiveTab(tab as any)}
+              onClick={() => setActiveTab(tab as "overview" | "bookings" | "professionals")}
               className={`px-4 py-3 font-bold text-sm capitalize transition-colors ${
                 activeTab === tab
                   ? "text-pink-600 border-b-2 border-pink-600"

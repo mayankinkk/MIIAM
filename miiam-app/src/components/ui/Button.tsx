@@ -99,7 +99,7 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
     if ("href" in rest && rest.href) {
       const { href, ...linkProps } = rest as ButtonAsLink;
       return (
-        <Link href={href} className={classes} ref={ref as any} {...linkProps}>
+        <Link href={href} className={classes} ref={ref as React.Ref<HTMLAnchorElement>} {...linkProps}>
           {content}
         </Link>
       );
@@ -107,7 +107,7 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
 
     const { href: _h, ...buttonProps } = rest as ButtonAsButton;
     return (
-      <button className={classes} ref={ref as any} {...buttonProps}>
+      <button className={classes} ref={ref as React.Ref<HTMLButtonElement>} {...buttonProps}>
         {content}
       </button>
     );

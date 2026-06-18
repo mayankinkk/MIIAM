@@ -208,12 +208,12 @@ function toCssVarName(path: string): string {
   return `--${path.replace(/\./g, '-')}`;
 }
 
-function flattenTokens(obj: Record<string, any>, prefix = ''): Record<string, string> {
+function flattenTokens(obj: Record<string, unknown>, prefix = ''): Record<string, string> {
   const result: Record<string, string> = {};
   for (const [key, value] of Object.entries(obj)) {
     const newPrefix = prefix ? `${prefix}-${key}` : key;
     if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      Object.assign(result, flattenTokens(value, newPrefix));
+      Object.assign(result, flattenTokens(value as Record<string, unknown>, newPrefix));
     } else {
       result[toCssVarName(newPrefix)] = String(value);
     }
@@ -221,7 +221,7 @@ function flattenTokens(obj: Record<string, any>, prefix = ''): Record<string, st
   return result;
 }
 
-export const cssVariables = flattenTokens(tokens as Record<string, any>);
+export const cssVariables = flattenTokens(tokens as Record<string, unknown>);
 
 export function generateCssVariables(selector = ':root'): string {
   const vars = cssVariables;

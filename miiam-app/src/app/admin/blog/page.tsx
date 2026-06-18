@@ -110,8 +110,8 @@ export default function BlogAdminPage() {
       }
       setShowModal(false);
       loadPosts();
-    } catch (err: any) {
-      useToastStore.getState().addToast(`Failed: ${err.message}`, "error");
+    } catch (err: unknown) {
+      useToastStore.getState().addToast(`Failed: ${err instanceof Error ? err.message : "Unknown error"}`, "error");
     } finally {
       setSaving(false);
     }
@@ -126,8 +126,8 @@ export default function BlogAdminPage() {
       setPosts(prev =>
         prev.map(p => (p.id === post.id ? { ...p, published: !p.published } : p))
       );
-    } catch (err: any) {
-      useToastStore.getState().addToast(`Failed: ${err.message}`, "error");
+    } catch (err: unknown) {
+      useToastStore.getState().addToast(`Failed: ${err instanceof Error ? err.message : "Unknown error"}`, "error");
     }
   };
 
@@ -136,8 +136,8 @@ export default function BlogAdminPage() {
     try {
       await supabase.from("blog_posts").delete().eq("id", id);
       setPosts(prev => prev.filter(p => p.id !== id));
-    } catch (err: any) {
-      useToastStore.getState().addToast(`Failed: ${err.message}`, "error");
+    } catch (err: unknown) {
+      useToastStore.getState().addToast(`Failed: ${err instanceof Error ? err.message : "Unknown error"}`, "error");
     }
   };
 

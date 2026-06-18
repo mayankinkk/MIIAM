@@ -84,9 +84,9 @@ export function useShareLocation({ orderId, userId, active = true }: UseShareLoc
           speed: speed ?? undefined,
           updatedAt: payload.updated_at,
         });
-      } catch (e: any) {
+      } catch (e: unknown) {
         console.error("Failed to share location", e);
-        setError(e?.message || "Failed to share location");
+        setError((e instanceof Error ? e.message : "Failed to share location"));
       }
     };
 
@@ -175,8 +175,8 @@ export function useCustomerLocation({ orderId, enabled }: UseCustomerLocationOpt
           table: "customer_locations",
           filter: `order_id=eq.${orderId}`,
         },
-        (payload: any) => {
-          const row = payload.new;
+        (payload: { new: Record<string, unknown> }) => {
+          const row = payload.new as { lat: number; lng: number; accuracy?: number; heading?: number; speed?: number; updated_at?: string };
           if (!row) return;
           setLocation({
             lat: row.lat,
@@ -184,7 +184,7 @@ export function useCustomerLocation({ orderId, enabled }: UseCustomerLocationOpt
             accuracy: row.accuracy,
             heading: row.heading,
             speed: row.speed,
-            updatedAt: row.updated_at,
+            updatedAt: row.updated_at || "",
           });
         }
       )

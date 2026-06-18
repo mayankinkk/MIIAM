@@ -81,17 +81,23 @@ export const GET = withRateLimit(async function GET(request: NextRequest) {
       .lte("date", end_date)
       .order("date");
 
-    const days: Record<string, any> = {};
+    interface DayAvailability {
+      available: boolean;
+      reason: string | null;
+      slots: string[];
+    }
+
+    const days: Record<string, DayAvailability> = {};
     const currentDate = new Date(start_date);
     const end = new Date(end_date);
 
     while (currentDate <= end) {
       const dateStr = currentDate.toISOString().split("T")[0];
-      const dayAvail = (availabilities || []).find((a: any) => a.date === dateStr);
+      const dayAvail = (availabilities || []).find((a: Record<string, unknown>) => a.date === dateStr);
       
       days[dateStr] = {
         available: !dayAvail?.is_unavailable,
-        reason: dayAvail?.reason || null,
+        reason: (dayAvail?.reason as string) || null,
         slots: dayAvail?.is_unavailable ? [] : generateTimeSlots()
       };
       

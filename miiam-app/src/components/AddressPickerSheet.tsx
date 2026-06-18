@@ -43,21 +43,11 @@ interface LeafletMapInstance {
   remove(): void;
 }
 
-interface LeafletMarkerInstance {
-  setLatLng(latlng: [number, number]): LeafletMarkerInstance;
-  getLatLng(): { lat: number; lng: number };
-  addTo(map: LeafletMapInstance): LeafletMarkerInstance;
-  on(event: string, handler: (e: unknown) => void): LeafletMarkerInstance;
-  bindPopup(content: string): LeafletMarkerInstance;
-}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type LeafletMarkerInstance = any;
 
-interface LeafletModule {
-  map(el: HTMLElement, options?: Record<string, unknown>): LeafletMapInstance;
-  control: { zoom(options?: Record<string, unknown>): { addTo(map: LeafletMapInstance): void } };
-  tileLayer(url: string, options?: Record<string, unknown>): { addTo(map: LeafletMapInstance): void };
-  divIcon(options: Record<string, unknown>): unknown;
-  marker(latlng: [number, number], options?: Record<string, unknown>): LeafletMarkerInstance;
-}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type LeafletModule = Record<string, any>;
 
 export default function AddressPickerSheet({ onSelect, onClose, savedAddresses = [] }: Props) {
   const [tab, setTab] = useState<"saved" | "gps" | "manual">(

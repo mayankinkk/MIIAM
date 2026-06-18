@@ -6,6 +6,18 @@ import { useToastStore } from "@/lib/store/toastStore";
 import Link from "next/link";
 
 
+interface GroceryOrderProfile {
+  full_name: string;
+  phone: string;
+}
+
+interface GroceryOrderItem {
+  id: string;
+  name: string;
+  quantity: number;
+  price: number;
+}
+
 interface GroceryOrder {
   id: string;
   user_id: string;
@@ -14,8 +26,8 @@ interface GroceryOrder {
   delivery_address: string;
   created_at: string;
   placed_at: string;
-  profile?: any;
-  order_items?: any[];
+  profile?: GroceryOrderProfile;
+  order_items?: GroceryOrderItem[];
 }
 
 const statusColors: Record<string, string> = {
@@ -283,7 +295,7 @@ export default function GroceryOrdersPage() {
               <div>
                 <p className="font-bold text-[var(--color-on-surface)] mb-3">Order Items</p>
                 <div className="space-y-2">
-                  {selectedOrder.order_items?.map((item: any, idx: number) => (
+                  {selectedOrder.order_items?.map((item, idx) => (
                     <div key={idx} className="flex items-center justify-between p-3 bg-[var(--color-surface-subtle)] rounded-lg">
                       <div>
                         <p className="font-medium text-[var(--color-on-surface)]">{item.name || "Item"}</p>

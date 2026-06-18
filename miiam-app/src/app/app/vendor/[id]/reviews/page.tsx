@@ -8,14 +8,33 @@ import { createClient } from "@/lib/supabase/client";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import EmptyState from "@/components/EmptyState";
 
+interface VendorData {
+  shop_name: string;
+  rating: number;
+  review_count: number;
+}
+
+interface ReviewData {
+  id: string;
+  rating: number;
+  review_text: string | null;
+  tags: string[] | null;
+  vendor_reply: string | null;
+  created_at: string;
+  profile: {
+    full_name: string | null;
+    avatar_url: string | null;
+  } | null;
+}
+
 export default function VendorReviewsPage() {
   const { t } = useTranslation();
   const params = useParams();
   const router = useRouter();
   const vendorId = params.id as string;
   const supabase = useMemo(() => createClient(), []);
-  const [vendor, setVendor] = useState<any>(null);
-  const [reviews, setReviews] = useState<any[]>([]);
+  const [vendor, setVendor] = useState<VendorData | null>(null);
+  const [reviews, setReviews] = useState<ReviewData[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "5" | "4" | "3" | "2" | "1">("all");
 
@@ -117,7 +136,7 @@ export default function VendorReviewsPage() {
         {filteredReviews.length === 0 ? (
           <EmptyState icon="⭐" title={t.food.noReviews} description={t.food.beFirst} />
         ) : (
-          filteredReviews.map((review: any) => (
+          filteredReviews.map((review: ReviewData) => (
             <div key={review.id} className="bg-[var(--color-surface-container-lowest)] rounded-xl p-4 shadow-sm">
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">

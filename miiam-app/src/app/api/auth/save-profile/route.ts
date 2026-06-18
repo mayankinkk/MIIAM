@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Cannot update another user's profile" }, { status: 403 });
     }
 
-    const profileData: Record<string, any> = {
+    const profileData: Record<string, string | boolean> = {
       id: user.id,
       full_name,
       phone,
@@ -50,8 +50,8 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ success: true, userId: user.id });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("[save-profile] error:", error);
-    return NextResponse.json({ error: error?.message || "Server error" }, { status: 500 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Server error" }, { status: 500 });
   }
 }

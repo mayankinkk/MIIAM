@@ -34,14 +34,8 @@ interface LeafletLatLngInstance {
   lng: number;
 }
 
-interface LeafletModule {
-  map(el: HTMLElement, options?: Record<string, unknown>): LeafletMapInstance;
-  control: { zoom(options?: Record<string, unknown>): { addTo(map: LeafletMapInstance): void } };
-  tileLayer(url: string, options?: Record<string, unknown>): { addTo(map: LeafletMapInstance): void };
-  circleMarker(latlng: [number, number], options?: Record<string, unknown>): LeafletCircleMarkerInstance;
-  latLngBounds(bounds: [number, number][]): { contains(latlng: [number, number]): boolean };
-  latLng(latlng: [number, number]): LeafletLatLngInstance;
-}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type LeafletModule = Record<string, any>;
 
 interface Props {
   riders: Rider[];
@@ -168,7 +162,7 @@ export default function AdminRiderMap({ riders, onRiderClick }: Props) {
       const pos: [number, number] = [rider._lat, rider._lng];
 
       if (markersRef.current.has(rider.id)) {
-        const marker = markersRef.current.get(rider.id);
+        const marker = markersRef.current.get(rider.id)!;
         const from = marker.getLatLng();
         const to = L.latLng(pos);
         const duration = 1000;
