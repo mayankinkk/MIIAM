@@ -153,7 +153,7 @@ export default function PartnerPOS() {
       try {
         await fetch("/api/emails/order-status", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", "x-csrf-token": "1" },
           body: JSON.stringify({ orderId, status: newStatus }),
         });
       } catch { /* ignore */ }

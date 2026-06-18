@@ -27,6 +27,13 @@ export default function VendorOrders() {
   const { unreadByOrder } = useUnreadMessages(vendorUserId);
 
   useEffect(() => {
+    if (!showRejectModal) return;
+    const handleEsc = (e: KeyboardEvent) => { if (e.key === "Escape") setShowRejectModal(null); };
+    window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
+  }, [showRejectModal]);
+
+  useEffect(() => {
     init();
   }, []);
 

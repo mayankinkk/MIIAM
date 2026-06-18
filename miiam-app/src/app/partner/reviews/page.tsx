@@ -53,7 +53,7 @@ export default function PartnerReviewsPage() {
 
     const res = await fetch("/api/vendor/reply", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "x-csrf-token": "1" },
       body: JSON.stringify({ reviewId, reply }),
     });
 
@@ -67,7 +67,7 @@ export default function PartnerReviewsPage() {
   }
 
   async function deleteReply(reviewId: string) {
-    const res = await fetch(`/api/vendor/reply?reviewId=${reviewId}`, { method: "DELETE" });
+    const res = await fetch(`/api/vendor/reply?reviewId=${reviewId}`, { method: "DELETE", headers: { "x-csrf-token": "1" } });
     if (res.ok) {
       setReviews(prev => prev.map(r =>
         r.id === reviewId ? { ...r, vendor_reply: null, vendor_reply_at: null } : r

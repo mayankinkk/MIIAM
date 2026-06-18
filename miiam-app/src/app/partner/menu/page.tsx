@@ -584,10 +584,33 @@ export default function PartnerMenuPage() {
                   if (!file) return;
                   const text = await file.text();
                   const rows = text.split('\n').slice(1).filter(r => r.trim());
+                  if (rows.length > 50) {
+                    useToastStore.getState().addToast("Maximum 50 rows allowed per import", "error");
+                    e.target.value = '';
+                    return;
+                  }
                   const cols = rows.map(r => {
                     const [name, price, category, description, stock, isVeg] = r.split(',').map(c => c.trim());
                     return { name, price, category, description, stock, is_veg: isVeg === 'veg' };
                   });
+                  const errors: string[] = [];
+                  for (let i = 0; i < cols.length; i++) {
+                    const c = cols[i];
+                    if (!c.name) { errors.push(`Row ${i + 1}: name is required`); continue; }
+                    if (c.name.length > 100) errors.push(`Row ${i + 1}: name exceeds 100 characters`);
+                    if (c.description && c.description.length > 500) errors.push(`Row ${i + 1}: description exceeds 500 characters`);
+                    const priceNum = parseFloat(c.price);
+                    if (!c.price || isNaN(priceNum) || priceNum <= 0) errors.push(`Row ${i + 1}: price must be a positive number`);
+                  }
+                  if (errors.length > 0) {
+                    useToastStore.getState().addToast(errors.slice(0, 5).join("; ") + (errors.length > 5 ? ` ...and ${errors.length - 5} more` : ""), "error");
+                    e.target.value = '';
+                    return;
+                  }
+                  if (!await confirm({ title: "Bulk Import", message: `Import ${cols.length} items? This will add them to your menu.`, variant: "default" })) {
+                    e.target.value = '';
+                    return;
+                  }
                   const table = TABLE_MAP[vendorKey];
                   const vendorId = selectedVendorId;
                   let imported = 0;

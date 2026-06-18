@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import { getVendorIdForUser } from "@/lib/vendor";
 import type { Order } from "@/lib/types";
 import { useToastStore } from "@/lib/store/toastStore";
+import { useConfirm } from "@/components/ui/ConfirmDialog";
 
 interface VendorWallet {
   balance: number;
@@ -16,6 +17,7 @@ interface VendorWallet {
 
 export default function VendorWalletPage() {
   const supabase = useMemo(() => createClient(), []);
+  const { confirm } = useConfirm();
   const [vendorId, setVendorId] = useState<string | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
   const [wallet, setWallet] = useState<VendorWallet>({
@@ -90,6 +92,7 @@ export default function VendorWalletPage() {
       useToastStore.getState().addToast("Insufficient balance", "error");
       return;
     }
+    if (!await confirm({ title: "Request Payout", message: "Are you sure you want to request a payout? This action cannot be undone.", variant: "danger" })) return;
     try {
       const { error } = await supabase.from("vendor_payouts").insert({
         vendor_id: vendorId,

@@ -24,6 +24,7 @@ export default function VendorDashboard() {
   const [showRejectModal, setShowRejectModal] = useState<string | null>(null);
   const [rejectReason, setRejectReason] = useState("");
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const processedOrdersRef = useRef(new Set<string>());
   const rejectReasons = ["Out of stock", "Too busy", "Store closing", "Item unavailable", "Other"];
 
   useEffect(() => {
@@ -191,7 +192,10 @@ export default function VendorDashboard() {
   useEffect(() => {
     if (!autoAccept || !vendor?.id) return;
     pendingOrders.forEach((order) => {
-      handleAcceptOrder(order.id);
+      if (!processedOrdersRef.current.has(order.id)) {
+        processedOrdersRef.current.add(order.id);
+        handleAcceptOrder(order.id);
+      }
     });
   }, [autoAccept, pendingOrders, vendor?.id]);
 
@@ -235,7 +239,7 @@ export default function VendorDashboard() {
 
       {/* New Order Alert Banner */}
       {newOrderAlert && (
-        <div className="fixed top-4 left-4 right-4 z-50 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-error)] text-white p-4 rounded-2xl shadow-2xl transition-all">
+        <div className="fixed top-4 left-4 right-4 z-50 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-error)] text-white p-4 rounded-2xl shadow-2xl transition-all" role="alert" aria-live="assertive">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <span className="material-symbols-outlined animate-bounce">notification_important</span>
