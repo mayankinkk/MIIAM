@@ -1,15 +1,40 @@
-import en from "./en";
-import hi from "./hi";
-import as from "./as";
-import bn from "./bn";
 import type { Translations } from "./en";
 import type { Language } from "@/lib/store/languageStore";
 
-const translations: Record<Language, Translations> = { en, hi, as, bn };
+let cachedEn: Translations | null = null;
+const syncCache: Partial<Record<Language, Translations>> = {};
 
-export function getTranslations(lang: Language): Translations {
-  return translations[lang] || en;
+async function loadTranslations(lang: Language): Promise<Translations> {
+  if (lang === "en") {
+    if (!cachedEn) {
+      cachedEn = (await import("./en")).default;
+      syncCache.en = cachedEn;
+    }
+    return cachedEn;
+  }
+  if (syncCache[lang]) return syncCache[lang]!;
+  switch (lang) {
+    case "hi": syncCache.hi = (await import("./hi")).default; return syncCache.hi!;
+    case "bn": syncCache.bn = (await import("./bn")).default; return syncCache.bn!;
+    case "as": syncCache.as = (await import("./as")).default; return syncCache.as!;
+    default: {
+      if (!cachedEn) {
+        cachedEn = (await import("./en")).default;
+        syncCache.en = cachedEn;
+      }
+      return cachedEn;
+    }
+  }
+}
+
+export async function getTranslations(lang: Language): Promise<Translations> {
+  return loadTranslations(lang);
+}
+
+export function getTranslationsSync(lang: Language): Translations {
+  if (syncCache[lang]) return syncCache[lang]!;
+  loadTranslations(lang);
+  return syncCache.en || ({} as Translations);
 }
 
 export type { Translations };
-export { en, hi, as, bn };

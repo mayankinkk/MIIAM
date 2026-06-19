@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import BlurImage from "@/components/BlurImage";
 import { useLanguageStore } from "@/lib/store/languageStore";
-import { getTranslations } from "@/lib/i18n";
+import { getTranslationsSync } from "@/lib/i18n";
 import { LandingNavbar, LandingFooter } from "@/components/layout/LandingNavbar";
 
 export default function LandingPage() {
@@ -15,7 +15,7 @@ export default function LandingPage() {
     setMounted(true);
   }, []);
 
-  const t = mounted ? getTranslations(language).landing : getTranslations('en').landing;
+  const t = mounted ? getTranslationsSync(language).landing : getTranslationsSync('en').landing;
 
   const quickServices = [
     { icon: "restaurant", label: "Food", href: "/app/food", color: "from-[var(--color-primary)] to-[var(--color-primary-light)]" },

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useLanguageStore } from "@/lib/store/languageStore";
-import { getTranslations } from "@/lib/i18n";
+import { getTranslationsSync } from "@/lib/i18n";
 import { getPrintingPricing } from "@/lib/printing-pricing";
 import { LandingNavbar } from "@/components/layout/LandingNavbar";
 
@@ -17,7 +17,7 @@ export default function PublicPrintLanding() {
     setPricing(getPrintingPricing());
   }, []);
 
-  const t = mounted ? getTranslations(language).print : getTranslations("en").print;
+  const t = mounted ? getTranslationsSync(language).print : getTranslationsSync("en").print;
 
   const features = [
     { icon: "bolt", title: "30-minute delivery", desc: "Average delivery under 30 minutes across the city" },

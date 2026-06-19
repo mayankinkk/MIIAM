@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { useLanguageStore } from "@/lib/store/languageStore";
-import { getTranslations } from "@/lib/i18n";
+import { getTranslationsSync } from "@/lib/i18n";
 import { createClient } from "@/lib/supabase/client";
 import LanguageSwitcher from "./LanguageSwitcher";
 
@@ -39,7 +39,7 @@ export function LandingNavbar({
     checkUser();
   }, []);
 
-  const t = mounted ? getTranslations(language).landing : getTranslations("en").landing;
+  const t = mounted ? getTranslationsSync(language).landing : getTranslationsSync("en").landing;
 
   const defaultLinks = [
     { label: t.navFood, href: "/app/food" },
@@ -111,7 +111,7 @@ export function LandingFooter() {
     setMounted(true);
   }, []);
 
-  const t = mounted ? getTranslations(language).landing : getTranslations("en").landing;
+  const t = mounted ? getTranslationsSync(language).landing : getTranslationsSync("en").landing;
 
   return (
     <footer className="bg-[var(--color-inverse-surface)] w-full py-14 px-6 lg:px-10">

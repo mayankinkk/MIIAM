@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useLanguageStore } from "@/lib/store/languageStore";
-import { getTranslations } from "@/lib/i18n";
+import { getTranslationsSync } from "@/lib/i18n";
 import {
   usePrintServiceStore,
   type ServicePresetId,
@@ -48,7 +48,7 @@ interface Props {
 export default function PrintServiceGrid({ activePreset, onSelect }: Props) {
   const { language } = useLanguageStore();
   const [mounted] = useMounted();
-  const t = mounted ? getTranslations(language).print.services : getTranslations("en").print.services;
+  const t = mounted ? getTranslationsSync(language).print.services : getTranslationsSync("en").print.services;
   const allServices = usePrintServiceStore((s) => s.services);
   const services = useMemo(
     () => allServices.filter((s) => s.enabled).sort((a, b) => a.order - b.order),
