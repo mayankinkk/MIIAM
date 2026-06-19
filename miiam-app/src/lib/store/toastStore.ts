@@ -8,26 +8,38 @@ export interface Toast {
   id: string;
   message: string;
   type: ToastType;
+  duration?: number;
 }
 
 interface ToastStore {
   toasts: Toast[];
-  addToast: (message: string, type?: ToastType) => void;
+  addToast: (message: string, type?: ToastType, duration?: number) => void;
   removeToast: (id: string) => void;
   clearToasts: () => void;
 }
 
+const MAX_VISIBLE = 5;
+
 export const useToastStore = create<ToastStore>()((set, get) => ({
   toasts: [],
-  addToast: (message, type = "info") => {
+  addToast: (message, type = "info", duration = 4000) => {
     const activeToasts = get().toasts || [];
     if (activeToasts.some((t) => t.message === message)) return;
 
     const id = Math.random().toString(36).substring(2, 9);
-    set((state) => ({ toasts: [...state.toasts, { id, message, type }] }));
+    const toast: Toast = { id, message, type, duration };
+
+    set((state) => {
+      const updated = [toast, ...state.toasts];
+      if (updated.length > MAX_VISIBLE) {
+        return { toasts: updated.slice(0, MAX_VISIBLE) };
+      }
+      return { toasts: updated };
+    });
+
     setTimeout(() => {
       set((state) => ({ toasts: state.toasts.filter((t) => t.id !== id) }));
-    }, 4000);
+    }, duration);
   },
   removeToast: (id) => set((state) => ({ toasts: state.toasts.filter((t) => t.id !== id) })),
   clearToasts: () => set({ toasts: [] }),
