@@ -44,6 +44,17 @@ export default function CouponsAdminPage() {
 
   useEffect(() => {
     loadCoupons();
+
+    const channel = supabase
+      .channel("promo_codes-changes")
+      .on("postgres_changes", { event: "*", schema: "public", table: "promo_codes" }, () => {
+        loadCoupons();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [supabase]);
 
   const loadCoupons = async () => {

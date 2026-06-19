@@ -26,9 +26,21 @@ export default function ReviewsPage() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "vendor" | "rider">("all");
   const [search, setSearch] = useState("");
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     loadReviews();
+
+    const channel = supabase
+      .channel("reviews-changes")
+      .on("postgres_changes", { event: "*", schema: "public", table: "reviews" }, () => {
+        loadReviews();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [supabase, filter]);
 
   async function loadReviews() {
@@ -65,6 +77,63 @@ export default function ReviewsPage() {
     if (search && !r.comment?.toLowerCase().includes(search.toLowerCase())) return false;
     return true;
   });
+
+  function toggleSelectAll() {
+    if (selectedIds.size === filteredReviews.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filteredReviews.map(r => r.id)));
+    }
+  }
+
+  function toggleSelect(id: string) {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) { next.delete(id); } else { next.add(id); }
+      return next;
+    });
+  }
+
+  function exportToCSV() {
+    const headers = ["User", "Rating", "Comment", "Type", "Approved", "Highlighted", "Date"];
+    const rows = filteredReviews.filter(r => selectedIds.size === 0 || selectedIds.has(r.id)).map(r => [
+      r.profile?.full_name || "User",
+      r.rating,
+      r.comment || "",
+      r.vendor_id ? "Vendor" : "Rider",
+      r.is_approved ? "Yes" : "No",
+      r.is_highlighted ? "Yes" : "No",
+      new Date(r.created_at).toLocaleDateString()
+    ]);
+    const escapeCsv = (val: unknown) => {
+      const str = String(val ?? "");
+      return str.includes(",") || str.includes('"') || str.includes("\n") ? `"${str.replace(/"/g, '""')}"` : str;
+    };
+    const csv = [headers, ...rows].map(r => r.map(escapeCsv).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `reviews_${new Date().toISOString().split("T")[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  async function bulkDelete() {
+    if (await confirm({ title: "Bulk Delete", message: `Delete ${selectedIds.size} reviews? This cannot be undone.`, variant: "danger" })) {
+      await supabase.from("reviews").delete().in("id", Array.from(selectedIds));
+      setReviews(reviews.filter(r => !selectedIds.has(r.id)));
+      useToastStore.getState().addToast(`${selectedIds.size} reviews deleted`, "success");
+      setSelectedIds(new Set());
+    }
+  }
+
+  async function bulkApprove() {
+    await supabase.from("reviews").update({ is_approved: true }).in("id", Array.from(selectedIds));
+    setReviews(reviews.map(r => selectedIds.has(r.id) ? { ...r, is_approved: true } : r));
+    useToastStore.getState().addToast(`${selectedIds.size} reviews approved`, "success");
+    setSelectedIds(new Set());
+  }
 
   const avgRating = reviews.length ? (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1) : 0;
   const fiveStars = reviews.filter(r => r.rating === 5).length;
@@ -105,7 +174,7 @@ export default function ReviewsPage() {
 
       {/* Filters */}
       <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-4 shadow-sm">
-        <div className="flex gap-4 flex-wrap">
+        <div className="flex gap-4 flex-wrap items-center">
           {(["all", "vendor", "rider"] as const).map(f => (
             <button
               key={f}
@@ -128,6 +197,45 @@ export default function ReviewsPage() {
               className="w-full bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none"
             />
           </div>
+          <div className="flex gap-2 items-center">
+            {selectedIds.size === 0 ? (
+              <button
+                onClick={toggleSelectAll}
+                className="px-3 py-2 text-xs font-bold text-[var(--color-outline)] hover:text-[var(--color-on-surface)] hover:bg-[var(--color-surface-subtle)] rounded-xl"
+              >
+                Select All
+              </button>
+            ) : (
+              <>
+                <span className="text-xs font-bold text-[var(--color-outline-variant)]">{selectedIds.size} selected</span>
+                <button
+                  onClick={toggleSelectAll}
+                  className="px-3 py-2 text-xs font-bold text-[var(--color-outline)] hover:text-[var(--color-on-surface)] hover:bg-[var(--color-surface-subtle)] rounded-xl"
+                >
+                  Deselect All
+                </button>
+                <button
+                  onClick={bulkApprove}
+                  className="px-4 py-2 bg-green-50 text-green-600 rounded-xl text-xs font-bold hover:bg-green-100 dark:bg-green-900/30 dark:text-green-300"
+                >
+                  Bulk Approve
+                </button>
+                <button
+                  onClick={bulkDelete}
+                  className="px-4 py-2 bg-red-50 text-red-600 rounded-xl text-xs font-bold hover:bg-red-100 dark:bg-red-900/30 dark:text-red-300"
+                >
+                  Bulk Delete
+                </button>
+              </>
+            )}
+            <button
+              onClick={exportToCSV}
+              className="px-4 py-2 bg-green-50 text-green-600 rounded-xl text-xs font-bold hover:bg-green-100 flex items-center gap-1 dark:bg-green-900/30 dark:text-green-300"
+            >
+              <span className="material-symbols-outlined text-sm">download</span>
+              Export CSV
+            </button>
+          </div>
         </div>
       </div>
 
@@ -137,7 +245,13 @@ export default function ReviewsPage() {
           {filteredReviews.map(review => (
             <div key={review.id} className="p-4 hover:bg-[var(--color-surface-subtle)]">
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-full bg-[var(--color-surface-container-high)] flex items-center justify-center font-bold text-[var(--color-on-surface-variant)]">
+                <input
+                  type="checkbox"
+                  checked={selectedIds.has(review.id)}
+                  onChange={() => toggleSelect(review.id)}
+                  className="w-4 h-4 mt-2 accent-[var(--color-primary)] flex-shrink-0"
+                />
+                <div className="w-10 h-10 rounded-full bg-[var(--color-surface-container-high)] flex items-center justify-center font-bold text-[var(--color-on-surface-variant)] flex-shrink-0">
                   {review.profile?.full_name?.[0] || "U"}
                 </div>
                 <div className="flex-1">

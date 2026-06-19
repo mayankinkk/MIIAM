@@ -115,9 +115,21 @@ export default function AdminVendorsPage() {
     is_featured: false,
   });
   const [editingMenuItem, setEditingMenuItem] = useState<MenuItem | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     loadVendors();
+
+    const channel = supabase
+      .channel("vendors-changes")
+      .on("postgres_changes", { event: "*", schema: "public", table: "vendors" }, () => {
+        loadVendors();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const loadVendors = async () => {
@@ -451,6 +463,69 @@ export default function AdminVendorsPage() {
       setLoading(false);
     }
   };
+
+  function toggleSelectAll() {
+    if (selectedIds.size === vendors.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(vendors.map(v => v.id)));
+    }
+  }
+
+  function toggleSelect(id: string) {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) { next.delete(id); } else { next.add(id); }
+      return next;
+    });
+  }
+
+  function exportToCSV() {
+    const headers = ["Shop Name", "Owner", "Phone", "Email", "Cuisine", "Status", "Delivery Charge", "City", "GST Number"];
+    const rows = vendors.filter(v => selectedIds.size === 0 || selectedIds.has(v.id)).map(v => [
+      v.shop_name,
+      v.owner_name,
+      v.phone,
+      v.email || "",
+      v.cuisine,
+      v.status,
+      v.delivery_charge || 0,
+      v.city || "",
+      v.gst_number
+    ]);
+    const escapeCsv = (val: unknown) => {
+      const str = String(val ?? "");
+      return str.includes(",") || str.includes('"') || str.includes("\n") ? `"${str.replace(/"/g, '""')}"` : str;
+    };
+    const csv = [headers, ...rows].map(r => r.map(escapeCsv).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `vendors_${new Date().toISOString().split("T")[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  async function bulkSuspend() {
+    if (!confirm(`Suspend ${selectedIds.size} vendors?`)) return;
+    setLoading(true);
+    try {
+      await Promise.all(
+        Array.from(selectedIds).map(id =>
+          supabase.from("vendors").update({ status: "suspended" }).eq("id", id)
+        )
+      );
+      useToastStore.getState().addToast(`${selectedIds.size} vendors suspended`, "success");
+      setSelectedIds(new Set());
+      loadVendors();
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : "Unknown error";
+      useToastStore.getState().addToast(`Failed to suspend vendors: ${msg}`, "error");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <div className="px-8 space-y-8">
@@ -1252,13 +1327,41 @@ export default function AdminVendorsPage() {
       )}
 
       <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] overflow-hidden shadow-sm">
-        <div className="p-6 border-b border-slate-50">
+        <div className="p-6 border-b border-slate-50 flex items-center justify-between">
           <h2 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm">All Vendors</h2>
+          <div className="flex gap-2 items-center">
+            {selectedIds.size > 0 && (
+              <>
+                <span className="text-xs font-bold text-[var(--color-outline-variant)]">{selectedIds.size} selected</span>
+                <button
+                  onClick={bulkSuspend}
+                  className="px-4 py-2 bg-amber-50 text-amber-600 rounded-xl text-xs font-bold hover:bg-amber-100 dark:bg-amber-900/30 dark:text-amber-300"
+                >
+                  Bulk Suspend
+                </button>
+              </>
+            )}
+            <button
+              onClick={exportToCSV}
+              className="px-4 py-2 bg-green-50 text-green-600 rounded-xl text-xs font-bold hover:bg-green-100 flex items-center gap-1 dark:bg-green-900/30 dark:text-green-300"
+            >
+              <span className="material-symbols-outlined text-sm">download</span>
+              Export CSV
+            </button>
+          </div>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead className="bg-[var(--color-surface-subtle)]">
               <tr>
+                <th className="p-4 w-10">
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.size === vendors.length && vendors.length > 0}
+                    onChange={toggleSelectAll}
+                    className="w-4 h-4 accent-[var(--color-primary)]"
+                  />
+                </th>
                 <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Shop Name</th>
                 <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Owner</th>
                 <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Phone</th>
@@ -1270,13 +1373,21 @@ export default function AdminVendorsPage() {
             <tbody className="divide-y divide-slate-50 text-xs font-medium">
               {vendors.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-[var(--color-outline-variant)]">
+                  <td colSpan={7} className="p-8 text-center text-[var(--color-outline-variant)]">
                     No vendors found. Click "Add Vendor" to create one.
                   </td>
                 </tr>
               ) : (
                 vendors.map((vendor) => (
                   <tr key={vendor.id} className="hover:bg-[var(--color-surface-subtle)] transition-colors">
+                    <td className="p-4">
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.has(vendor.id)}
+                        onChange={() => toggleSelect(vendor.id)}
+                        className="w-4 h-4 accent-[var(--color-primary)]"
+                      />
+                    </td>
                     <td className="p-4 text-[var(--color-on-surface)] font-bold">{vendor.shop_name}</td>
                     <td className="p-4 text-[var(--color-outline)]">{vendor.owner_name}</td>
                     <td className="p-4 text-[var(--color-outline)]">{vendor.phone}</td>

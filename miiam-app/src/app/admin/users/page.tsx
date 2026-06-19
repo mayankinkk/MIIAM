@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import type { Profile } from "@/lib/types";
 import { ProfileSkeleton } from "@/components/Skeleton";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
+import { useToastStore } from "@/lib/store/toastStore";
 import BlurImage from "@/components/BlurImage";
 
 const PAGE_SIZE = 15;
@@ -22,9 +23,21 @@ export default function UserRegistry() {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [showRoleModal, setShowRoleModal] = useState(false);
   const [newRole, setNewRole] = useState("");
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     loadProfiles();
+
+    const channel = supabase
+      .channel("profiles-changes")
+      .on("postgres_changes", { event: "*", schema: "public", table: "profiles" }, () => {
+        loadProfiles();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [page, searchQuery]);
 
   const filteredProfiles = searchQuery
@@ -83,6 +96,57 @@ export default function UserRegistry() {
 
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);
 
+  function toggleSelectAll() {
+    if (selectedIds.size === filteredProfiles.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filteredProfiles.map(p => p.id)));
+    }
+  }
+
+  function toggleSelect(id: string) {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) { next.delete(id); } else { next.add(id); }
+      return next;
+    });
+  }
+
+  function exportToCSV() {
+    const headers = ["Name", "Email", "Role", "Join Date", "ID"];
+    const rows = filteredProfiles.filter(p => selectedIds.size === 0 || selectedIds.has(p.id)).map(p => [
+      p.full_name || "",
+      p.email || "",
+      p.role || "",
+      p.created_at ? new Date(p.created_at).toLocaleDateString("en-IN") : "",
+      p.id
+    ]);
+    const escapeCsv = (val: unknown) => {
+      const str = String(val ?? "");
+      return str.includes(",") || str.includes('"') || str.includes("\n") ? `"${str.replace(/"/g, '""')}"` : str;
+    };
+    const csv = [headers, ...rows].map(r => r.map(escapeCsv).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `users_${new Date().toISOString().split("T")[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  async function bulkSuspend() {
+    if (!(await confirm({ title: "Bulk Suspend", message: `Suspend ${selectedIds.size} users?`, variant: "danger" }))) return;
+    await Promise.all(
+      Array.from(selectedIds).map(id =>
+        supabase.from("profiles").update({ role: "suspended" }).eq("id", id)
+      )
+    );
+    useToastStore.getState().addToast(`${selectedIds.size} users suspended`, "success");
+    setSelectedIds(new Set());
+    loadProfiles();
+  }
+
   if (loading) return (
     <div className="px-8 space-y-8">
       <div className="flex justify-between items-end">
@@ -129,13 +193,33 @@ export default function UserRegistry() {
                className="bg-transparent border-none focus:outline-none text-sm w-full"
              />
            </div>
-            <button
-              onClick={() => { setSearchQuery(""); setPage(1); }}
-              className={`p-3 rounded-xl transition-colors ${searchQuery ? "bg-[var(--color-primary)] text-white" : "bg-[var(--color-surface-subtle)] text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]"}`}
-              aria-label="Clear search"
-            >
-              <span className="material-symbols-outlined">filter_list</span>
-            </button>
+           <div className="flex gap-2 items-center">
+             {selectedIds.size > 0 && (
+               <>
+                 <span className="text-xs font-bold text-[var(--color-outline-variant)]">{selectedIds.size} selected</span>
+                 <button
+                   onClick={bulkSuspend}
+                   className="px-4 py-2 bg-amber-50 text-amber-600 rounded-xl text-xs font-bold hover:bg-amber-100 dark:bg-amber-900/30 dark:text-amber-300"
+                 >
+                   Bulk Suspend
+                 </button>
+               </>
+             )}
+             <button
+               onClick={exportToCSV}
+               className="px-4 py-2 bg-green-50 text-green-600 rounded-xl text-xs font-bold hover:bg-green-100 flex items-center gap-1 dark:bg-green-900/30 dark:text-green-300"
+             >
+               <span className="material-symbols-outlined text-sm">download</span>
+               Export CSV
+             </button>
+             <button
+               onClick={() => { setSearchQuery(""); setPage(1); }}
+               className={`p-3 rounded-xl transition-colors ${searchQuery ? "bg-[var(--color-primary)] text-white" : "bg-[var(--color-surface-subtle)] text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]"}`}
+               aria-label="Clear search"
+             >
+               <span className="material-symbols-outlined">filter_list</span>
+             </button>
+           </div>
         </div>
         
         <div className="overflow-x-auto" onClick={() => setOpenMenuId(null)}>
@@ -143,6 +227,14 @@ export default function UserRegistry() {
             <caption className="sr-only">User Registry</caption>
             <thead className="bg-[var(--color-surface-subtle)] border-b border-[var(--color-border-subtle)]">
               <tr>
+                <th className="p-4 w-10">
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.size === filteredProfiles.length && filteredProfiles.length > 0}
+                    onChange={toggleSelectAll}
+                    className="w-4 h-4 accent-[var(--color-primary)]"
+                  />
+                </th>
                 <th className="p-6 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Profile</th>
                 <th className="p-6 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Role</th>
                 <th className="p-6 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest text-center">Join Date</th>
@@ -152,6 +244,14 @@ export default function UserRegistry() {
             <tbody className="divide-y divide-[var(--color-border-subtle)]">
               {filteredProfiles.map((profile) => (
                 <tr key={profile.id} className="hover:bg-[var(--color-surface-subtle)]/50 transition-colors">
+                  <td className="p-4">
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.has(profile.id)}
+                      onChange={() => toggleSelect(profile.id)}
+                      className="w-4 h-4 accent-[var(--color-primary)]"
+                    />
+                  </td>
                   <td className="p-6">
                     <div className="flex items-center gap-4">
                       <div className="w-10 h-10 rounded-full bg-[var(--color-surface-container)] flex items-center justify-center text-[var(--color-primary)] font-black overflow-hidden shadow-sm">

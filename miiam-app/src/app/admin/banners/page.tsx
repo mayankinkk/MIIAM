@@ -32,6 +32,17 @@ export default function BannerManagement() {
 
   useEffect(() => {
     loadBanners();
+
+    const channel = supabase
+      .channel("banners-changes")
+      .on("postgres_changes", { event: "*", schema: "public", table: "banners" }, () => {
+        loadBanners();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [supabase]);
 
   async function addBanner() {
