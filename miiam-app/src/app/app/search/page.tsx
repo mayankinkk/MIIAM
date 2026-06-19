@@ -154,7 +154,7 @@ function SearchContent() {
 
   return (
     <>
-      <header className="fixed top-0 w-full z-50 px-6 py-4 bg-surface/80 backdrop-blur-2xl border-b border-outline-variant/20">
+      <header className="fixed top-0 w-full z-50 px-6 py-4 bg-surface/80 dark:bg-[var(--color-surface)]/80 backdrop-blur-2xl border-b border-outline-variant/20">
         <div className="flex items-center gap-4 max-w-4xl mx-auto">
           <Link href="/app/explore" className="text-primary">
             <span className="material-symbols-outlined">arrow_back</span>
@@ -165,7 +165,7 @@ function SearchContent() {
               type="text"
               value={inputValue}
               placeholder="Search restaurants, dishes..."
-              className="w-full bg-[var(--color-surface-container-lowest)] border-none rounded-xl pl-12 pr-4 py-3 text-on-surface font-medium focus:outline-none focus:ring-2 focus:ring-primary/40"
+              className="w-full bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container-lowest)] border-none rounded-xl pl-12 pr-4 py-3 text-on-surface font-medium focus:outline-none focus:ring-2 focus:ring-primary/40"
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
@@ -193,7 +193,7 @@ function SearchContent() {
                   className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${
                     activeTab === tab
                       ? "bg-primary text-white"
-                      : "bg-[var(--color-surface-container-lowest)] text-on-surface-variant border border-outline-variant/30"
+                       : "bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container-lowest)] text-on-surface-variant border border-outline-variant/30"
                   }`}
                 >
                   {tab === "all" ? "All" : tab === "vendors" ? "Restaurants" : "Dishes"}
@@ -202,13 +202,13 @@ function SearchContent() {
             </div>
             {activeTab !== "vendors" && (
               <div className="flex gap-2">
-                <button onClick={() => setVegFilter("all")} className={`px-3 py-2 rounded-full text-xs font-bold ${vegFilter === "all" ? "bg-on-surface text-white" : "bg-surface-container-high text-on-surface-variant"}`}>
+                <button onClick={() => setVegFilter("all")} className={`px-3 py-2 rounded-full text-xs font-bold ${vegFilter === "all" ? "bg-on-surface text-white" : "bg-surface-container-high dark:bg-[var(--color-surface-container-high)] text-on-surface-variant"}`}>
                   All
                 </button>
-                <button onClick={() => setVegFilter("veg")} className={`px-3 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 ${vegFilter === "veg" ? "bg-green-600 text-white" : "bg-green-100 text-green-700"}`}>
+                <button onClick={() => setVegFilter("veg")} className={`px-3 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 ${vegFilter === "veg" ? "bg-green-600 text-white" : "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400"}`}>
                   <span className="w-3 h-3 border-2 border-green-600 rounded-sm flex items-center justify-center"><span className="w-1.5 h-1.5 bg-green-600 rounded-full"></span></span> Veg
                 </button>
-                <button onClick={() => setVegFilter("non_veg")} className={`px-3 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 ${vegFilter === "non_veg" ? "bg-red-600 text-white" : "bg-red-100 text-red-700"}`}>
+                <button onClick={() => setVegFilter("non_veg")} className={`px-3 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 ${vegFilter === "non_veg" ? "bg-red-600 text-white" : "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400"}`}>
                   <span className="w-3 h-3 border-2 border-red-600 rounded-sm flex items-center justify-center"><span className="w-1.5 h-1.5 bg-red-600 rounded-full"></span></span> Non-Veg
                 </button>
               </div>
@@ -228,7 +228,7 @@ function SearchContent() {
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {searchHistory.map((term) => (
-                    <Link key={term} href={`/app/search?q=${term}`} className="px-4 py-2 bg-[var(--color-surface-container-lowest)] rounded-full text-sm text-on-surface-variant border border-outline-variant/30 hover:border-primary transition-all flex items-center gap-2">
+                    <Link key={term} href={`/app/search?q=${term}`} className="px-4 py-2 bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container-lowest)] rounded-full text-sm text-on-surface-variant border border-outline-variant/30 hover:border-primary transition-all flex items-center gap-2">
                       <span className="material-symbols-outlined text-sm">history</span>
                       {term}
                     </Link>
@@ -245,7 +245,7 @@ function SearchContent() {
                   <Link
                     key={tag}
                     href={`/app/search?q=${tag}`}
-                    className="px-4 py-2 bg-[var(--color-surface-container-lowest)] rounded-full text-sm text-on-surface-variant border border-outline-variant/30 hover:border-primary transition-all"
+                    className="px-4 py-2 bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container-lowest)] rounded-full text-sm text-on-surface-variant border border-outline-variant/30 hover:border-primary transition-all"
                   >
                     {tag}
                   </Link>
@@ -263,7 +263,7 @@ function SearchContent() {
                   <Link
                     key={tag}
                     href={`/app/search?q=${tag}`}
-                    className="px-4 py-2 bg-[var(--color-surface-container-lowest)] rounded-full text-sm text-on-surface-variant border border-outline-variant/30 hover:border-primary hover:bg-primary/5 transition-all"
+                    className="px-4 py-2 bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container-lowest)] rounded-full text-sm text-on-surface-variant border border-outline-variant/30 hover:border-primary hover:bg-primary/5 transition-all"
                   >
                     {tag}
                   </Link>
@@ -283,9 +283,9 @@ function SearchContent() {
                     <Link
                       key={vendor.id}
                       href={`/app/vendor/${vendor.id}`}
-                      className="bg-surface-container-lowest rounded-2xl overflow-hidden border border-outline-variant/20 hover:shadow-lg transition-all"
+                      className="bg-surface-container-lowest dark:bg-[var(--color-surface-container-lowest)] rounded-2xl overflow-hidden border border-outline-variant/20 hover:shadow-lg transition-all"
                     >
-                      <div className="h-32 bg-surface-container relative">
+                      <div className="h-32 bg-surface-container dark:bg-[var(--color-surface-container)] relative">
                         {vendor.cover_image_url || vendor.image_url ? (
                           <BlurImage src={vendor.cover_image_url || vendor.image_url || ""} alt={vendor.shop_name} fill className="w-full h-full" sizes="(max-width: 768px) 100vw, 50vw" />
                         ) : (
@@ -293,7 +293,7 @@ function SearchContent() {
                             <span className="material-symbols-outlined text-4xl text-outline-variant">restaurant</span>
                           </div>
                         )}
-                        <div className="absolute bottom-2 left-2 bg-[var(--color-surface-container-lowest)]/90 backdrop-blur px-2 py-1 rounded-lg text-xs font-bold text-on-surface">
+                        <div className="absolute bottom-2 left-2 bg-[var(--color-surface-container-lowest)]/90 dark:bg-[var(--color-surface-container-lowest)]/90 backdrop-blur px-2 py-1 rounded-lg text-xs font-bold text-on-surface">
                           ⭐ {vendor.rating?.toFixed(1) || "N/A"}
                         </div>
                       </div>
@@ -319,9 +319,9 @@ function SearchContent() {
                   {filteredResults.menuItems.map((item) => (
                     <div
                       key={item.id}
-                      className="flex items-center gap-4 p-4 bg-surface-container-lowest rounded-2xl border border-outline-variant/20"
+                      className="flex items-center gap-4 p-4 bg-surface-container-lowest dark:bg-[var(--color-surface-container-lowest)] rounded-2xl border border-outline-variant/20"
                     >
-                      <div className="w-20 h-20 bg-surface-container rounded-lg overflow-hidden flex-shrink-0">
+                      <div className="w-20 h-20 bg-surface-container dark:bg-[var(--color-surface-container)] rounded-lg overflow-hidden flex-shrink-0">
                         {item.image_url ? (
                           <BlurImage src={item.image_url} alt={item.name} fill className="w-full h-full" sizes="(max-width: 768px) 50vw, 25vw" />
                         ) : (
@@ -364,7 +364,7 @@ function SearchContent() {
 export default function SearchPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-surface flex items-center justify-center">
+      <div className="min-h-screen bg-surface dark:bg-[var(--color-surface)] flex items-center justify-center">
         <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
       </div>
     }>

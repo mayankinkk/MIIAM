@@ -82,7 +82,7 @@ export default function FavoritesPage() {
 
   return (
     <PullToRefresh onRefresh={loadFavorites}>
-      <header className="fixed top-0 w-full z-50 flex items-center gap-4 px-6 py-4 bg-surface/80 backdrop-blur-2xl shadow-sm">
+      <header className="fixed top-0 w-full z-50 flex items-center gap-4 px-6 py-4 bg-surface/80 dark:bg-[var(--color-surface)]/80 backdrop-blur-2xl shadow-sm">
         <Link href="/app/explore" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-all">
           <span className="material-symbols-outlined text-primary">arrow_back</span>
         </Link>
@@ -119,9 +119,9 @@ export default function FavoritesPage() {
               <div key={vendor.id} className="relative group">
                 <Link
                   href={`/vendor/${vendor.id}`}
-                  className="block bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all"
+                  className="block bg-surface-container-lowest dark:bg-[var(--color-surface-container-lowest)] rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all"
                 >
-                  <div className="h-48 bg-surface-container overflow-hidden">
+                  <div className="h-48 bg-surface-container dark:bg-[var(--color-surface-container)] overflow-hidden">
                     <BlurImage src={vendor.cover_image_url || vendor.image_url} alt={vendor.name} fill className="w-full h-full group-hover:scale-105 transition-transform duration-700" sizes="(max-width: 768px) 100vw, 50vw" />
                   </div>
                   <div className="p-5">

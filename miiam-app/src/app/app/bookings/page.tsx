@@ -216,8 +216,8 @@ export default function BookingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-surface pb-24">
-      <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-4 py-3 bg-surface/90 backdrop-blur-2xl shadow-[0px_4px_20px_rgba(77,33,42,0.06)]"
+    <div className="min-h-screen bg-surface dark:bg-[var(--color-surface)] pb-24">
+      <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-4 py-3 bg-surface/90 dark:bg-[var(--color-surface)]/90 backdrop-blur-2xl shadow-[0px_4px_20px_rgba(77,33,42,0.06)]"
         style={{ paddingTop: "calc(0.75rem + env(safe-area-inset-top, 0px))" }}
       >
         <div className="flex items-center gap-3">
@@ -238,7 +238,7 @@ export default function BookingsPage() {
         </section>
 
         {/* Tabs */}
-        <div className="flex gap-2 bg-surface-container rounded-xl p-1 mb-6">
+        <div className="flex gap-2 bg-surface-container dark:bg-[var(--color-surface-container)] rounded-xl p-1 mb-6">
           <button
             onClick={() => setActiveTab("upcoming")}
             className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all ${
@@ -284,7 +284,7 @@ export default function BookingsPage() {
                 : "—";
 
               return (
-                <div key={booking.id} className="bg-surface-container-lowest rounded-2xl p-4 shadow-sm border border-outline-variant/10">
+                <div key={booking.id} className="bg-surface-container-lowest dark:bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-sm border border-outline-variant/10">
                   <div className="flex items-start gap-3 mb-3">
                     <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
                       <span className="material-symbols-outlined text-primary text-xl">{serviceIcon}</span>
@@ -304,22 +304,22 @@ export default function BookingsPage() {
                   </div>
 
                   <div className="grid grid-cols-3 gap-2 mb-3">
-                    <div className="bg-surface rounded-lg p-2 text-center">
+                    <div className="bg-surface dark:bg-[var(--color-surface)] rounded-lg p-2 text-center">
                       <span className="material-symbols-outlined text-on-surface-variant text-sm">calendar_today</span>
                       <p className="text-xs font-bold text-on-surface mt-1">{dateStr}</p>
                     </div>
-                    <div className="bg-surface rounded-lg p-2 text-center">
+                    <div className="bg-surface dark:bg-[var(--color-surface)] rounded-lg p-2 text-center">
                       <span className="material-symbols-outlined text-on-surface-variant text-sm">schedule</span>
                       <p className="text-xs font-bold text-on-surface mt-1">{booking.scheduled_time || "—"}</p>
                     </div>
-                    <div className="bg-surface rounded-lg p-2 text-center">
+                    <div className="bg-surface dark:bg-[var(--color-surface)] rounded-lg p-2 text-center">
                       <span className="material-symbols-outlined text-on-surface-variant text-sm">payments</span>
                       <p className="text-xs font-bold text-on-surface mt-1">₹{booking.amount || 0}</p>
                     </div>
                   </div>
 
                   {booking.address && (
-                    <div className="flex items-center gap-2 text-xs text-on-surface-variant mb-3 bg-surface rounded-lg px-3 py-2">
+                    <div className="flex items-center gap-2 text-xs text-on-surface-variant mb-3 bg-surface dark:bg-[var(--color-surface)] rounded-lg px-3 py-2">
                       <span className="material-symbols-outlined text-sm">location_on</span>
                       <span className="truncate">{booking.address}</span>
                     </div>
@@ -328,13 +328,13 @@ export default function BookingsPage() {
                   {booking.status === "in_progress" && (
                     <div className="flex gap-2">
                       {booking.technician_name ? (
-                        <div className="flex-1 py-2 bg-green-50 rounded-lg text-xs font-bold text-green-700 flex items-center justify-center gap-2">
+                        <div className="flex-1 py-2 bg-green-50 dark:bg-green-900/20 rounded-lg text-xs font-bold text-green-700 dark:text-green-400 flex items-center justify-center gap-2">
                           <span className="material-symbols-outlined text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
                           {booking.technician_name}
-                          {booking.technician_phone && <span className="text-green-600 font-normal">· {booking.technician_phone}</span>}
+                          {booking.technician_phone && <span className="text-green-600 dark:text-green-400 font-normal">· {booking.technician_phone}</span>}
                         </div>
                       ) : (
-                        <div className="flex-1 py-2 bg-amber-50 text-amber-700 rounded-lg text-xs font-bold text-center flex items-center justify-center gap-1">
+                        <div className="flex-1 py-2 bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 rounded-lg text-xs font-bold text-center flex items-center justify-center gap-1">
                           <span className="material-symbols-outlined text-[14px]">person_off</span>
                           Technician Not Assigned
                         </div>
@@ -344,7 +344,7 @@ export default function BookingsPage() {
 
                   {(booking.status === "confirmed" || booking.status === "pending") && (
                     <div className="flex items-center gap-2 mb-2">
-                      <div className="flex items-center gap-1.5 bg-blue-50 text-blue-700 px-3 py-1.5 rounded-full text-[10px] font-bold">
+                      <div className="flex items-center gap-1.5 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 px-3 py-1.5 rounded-full text-[10px] font-bold">
                         <span className="material-symbols-outlined text-[12px]" style={{ fontVariationSettings: "'FILL' 1" }}>event</span>
                         Scheduled {dateStr} {booking.scheduled_time ? `· ${booking.scheduled_time}` : ""}
                       </div>
@@ -381,7 +381,7 @@ export default function BookingsPage() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => { setRatingBooking(booking); setRating(0); setReviewText(""); }}
-                        className="flex-1 py-2 bg-amber-100 text-amber-700 rounded-lg text-xs font-bold text-center hover:bg-amber-200 transition-colors flex items-center justify-center gap-1"
+                        className="flex-1 py-2 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 rounded-lg text-xs font-bold text-center hover:bg-amber-200 dark:hover:bg-amber-900/40 transition-colors flex items-center justify-center gap-1"
                       >
                         <span className="material-symbols-outlined text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
                         Rate Service
@@ -421,8 +421,8 @@ export default function BookingsPage() {
       {/* Reschedule Modal */}
       {rescheduleBooking && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end justify-center" role="dialog" aria-modal="true" aria-labelledby="reschedule-modal-title">
-          <div className="bg-surface-container-lowest w-full max-w-lg rounded-t-3xl shadow-2xl p-6 pb-10 animate-slide-reveal">
-            <div className="w-12 h-1.5 bg-surface-container-high rounded-full mx-auto mb-5" />
+          <div className="bg-surface-container-lowest dark:bg-[var(--color-surface-container-lowest)] w-full max-w-lg rounded-t-3xl shadow-2xl p-6 pb-10 animate-slide-reveal">
+            <div className="w-12 h-1.5 bg-surface-container-high dark:bg-[var(--color-surface-container-high)] rounded-full mx-auto mb-5" />
             <h2 id="reschedule-modal-title" className="text-lg font-bold text-on-surface mb-1">Reschedule Booking</h2>
             <p className="text-sm text-on-surface-variant mb-5">{rescheduleBooking.sub_service || rescheduleBooking.service_type}</p>
 
@@ -483,8 +483,8 @@ export default function BookingsPage() {
       {/* Rating Modal */}
       {ratingBooking && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end justify-center" role="dialog" aria-modal="true" aria-labelledby="rating-modal-title">
-          <div className="bg-surface-container-lowest w-full max-w-lg rounded-t-3xl shadow-2xl p-6 pb-10 animate-slide-reveal">
-            <div className="w-12 h-1.5 bg-surface-container-high rounded-full mx-auto mb-5" />
+          <div className="bg-surface-container-lowest dark:bg-[var(--color-surface-container-lowest)] w-full max-w-lg rounded-t-3xl shadow-2xl p-6 pb-10 animate-slide-reveal">
+            <div className="w-12 h-1.5 bg-surface-container-high dark:bg-[var(--color-surface-container-high)] rounded-full mx-auto mb-5" />
             <h2 id="rating-modal-title" className="text-lg font-bold text-on-surface mb-1">Rate Your Experience</h2>
             <p className="text-sm text-on-surface-variant mb-5">{ratingBooking.sub_service || ratingBooking.service_type}</p>
 
@@ -546,8 +546,8 @@ export default function BookingsPage() {
       {/* Rebook Modal */}
       {rebookBooking && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end justify-center" role="dialog" aria-modal="true" aria-labelledby="rebook-modal-title">
-          <div className="bg-surface-container-lowest w-full max-w-lg rounded-t-3xl shadow-2xl p-6 pb-10 animate-slide-reveal">
-            <div className="w-12 h-1.5 bg-surface-container-high rounded-full mx-auto mb-5" />
+          <div className="bg-surface-container-lowest dark:bg-[var(--color-surface-container-lowest)] w-full max-w-lg rounded-t-3xl shadow-2xl p-6 pb-10 animate-slide-reveal">
+            <div className="w-12 h-1.5 bg-surface-container-high dark:bg-[var(--color-surface-container-high)] rounded-full mx-auto mb-5" />
             <h2 id="rebook-modal-title" className="text-lg font-bold text-on-surface mb-1">Book Again</h2>
             <p className="text-sm text-on-surface-variant mb-5">{rebookBooking.sub_service || rebookBooking.service_type} — ₹{rebookBooking.amount}</p>
 

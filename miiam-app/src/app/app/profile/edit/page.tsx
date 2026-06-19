@@ -137,7 +137,7 @@ export default function EditProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-surface flex justify-center pt-32">
+      <div className="min-h-screen bg-surface dark:bg-[var(--color-surface)] flex justify-center pt-32">
         <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -145,7 +145,7 @@ export default function EditProfilePage() {
 
   return (
     <>
-      <header className="fixed top-0 w-full z-50 flex items-center px-6 py-4 bg-surface/80 backdrop-blur-2xl shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
+      <header className="fixed top-0 w-full z-50 flex items-center px-6 py-4 bg-surface/80 dark:bg-[var(--color-surface)]/80 backdrop-blur-2xl shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
         <Link href="/app/profile" aria-label="Go back" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-all mr-4">
           <span className="material-symbols-outlined text-primary">arrow_back</span>
         </Link>
@@ -162,7 +162,7 @@ export default function EditProfilePage() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-xl p-6 shadow-[0px_10px_30px_rgba(77,33,42,0.04)] space-y-6">
+          <div className="bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container)] rounded-xl p-6 shadow-[0px_10px_30px_rgba(77,33,42,0.04)] space-y-6">
             
             {/* Avatar Upload */}
             <div className="flex flex-col items-center justify-center border-b border-outline-variant/20 pb-6 mb-6">
@@ -198,7 +198,7 @@ export default function EditProfilePage() {
                 required
                 value={formData.fullName}
                 onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                className="w-full bg-surface-container-low border-none rounded-xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-primary/40 font-medium text-on-surface"
+                className="w-full bg-surface-container-low dark:bg-[var(--color-surface-container)] border-none rounded-xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-primary/40 font-medium text-on-surface dark:text-[var(--color-on-surface)]"
                 placeholder="John Doe"
               />
             </div>
@@ -210,7 +210,7 @@ export default function EditProfilePage() {
                 type="email"
                 disabled
                 value={formData.email}
-                className="w-full bg-[#f8f9fa] border-none rounded-xl px-5 py-4 text-on-surface-variant cursor-not-allowed opacity-70 font-medium"
+                className="w-full bg-[#f8f9fa] dark:bg-[var(--color-surface-container)] border-none rounded-xl px-5 py-4 text-on-surface-variant dark:text-[var(--color-outline)] cursor-not-allowed opacity-70 font-medium"
               />
               <p className="text-[10px] text-on-surface-variant mt-2 px-1 font-medium">{t.profile.emailCannotChange}</p>
             </div>
@@ -222,7 +222,7 @@ export default function EditProfilePage() {
                 type="tel"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                className="w-full bg-surface-container-low border-none rounded-xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-primary/40 font-medium text-on-surface"
+                className="w-full bg-surface-container-low dark:bg-[var(--color-surface-container)] border-none rounded-xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-primary/40 font-medium text-on-surface dark:text-[var(--color-on-surface)]"
                 placeholder="+1 234 567 8900"
               />
             </div>

@@ -169,7 +169,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-surface flex items-center justify-center">
+      <div className="min-h-screen bg-surface dark:bg-[var(--color-surface)] flex items-center justify-center">
         <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -177,14 +177,14 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
 
   if (!pageOrder) {
     return (
-      <div className="min-h-screen bg-surface flex flex-col items-center justify-center text-on-surface p-6">
+      <div className="min-h-screen bg-surface dark:bg-[var(--color-surface)] flex flex-col items-center justify-center text-on-surface dark:text-[var(--color-on-surface)] p-6">
         <span className="text-6xl mb-4">🔍</span>
         <h2 className="text-xl font-bold mb-2">{t.orders.orderNotFound}</h2>
-        <p className="text-on-surface-variant text-center mb-6">{t.orders.orderNotFoundDesc}</p>
+        <p className="text-on-surface-variant dark:text-[var(--color-outline)] text-center mb-6">{t.orders.orderNotFoundDesc}</p>
         <Link href="/app/orders" className="bg-primary text-white px-6 py-3 rounded-xl font-bold">
           {t.orders.viewAllOrders}
         </Link>
-        <button onClick={() => window.location.reload()} className="mt-4 text-sm text-on-surface-variant">
+        <button onClick={() => window.location.reload()} className="mt-4 text-sm text-on-surface-variant dark:text-[var(--color-outline)]">
           {t.orders.reloadPage}
         </button>
       </div>
@@ -195,7 +195,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
   const currentStepIndex = steps.findIndex((s) => s.key === pageOrder.status);
 
   return (
-    <div className="min-h-screen bg-surface overflow-x-hidden">
+    <div className="min-h-screen bg-surface dark:bg-[var(--color-surface)] overflow-x-hidden">
       <OrderHeader orderId={id} isRefreshing={isRefreshing} onRefresh={refreshOrder} />
       <div className="bg-gradient-to-b from-surface-container to-transparent h-2 mt-16" />
 

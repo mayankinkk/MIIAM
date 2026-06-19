@@ -208,7 +208,7 @@ export default function CheckoutPage() {
 
   if (!hydrated) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-surface">
+      <div className="min-h-screen flex items-center justify-center bg-surface dark:bg-[var(--color-surface)]">
         <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" role="status" aria-live="polite" />
       </div>
     );
@@ -216,22 +216,22 @@ export default function CheckoutPage() {
 
   return (
     <>
-      <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-4 sm:px-6 py-3 sm:py-4 bg-surface/80 backdrop-blur-2xl shadow-sm">
+      <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-4 sm:px-6 py-3 sm:py-4 bg-surface/80 dark:bg-[var(--color-surface)]/80 backdrop-blur-2xl shadow-sm">
         <div className="flex items-center gap-3 sm:gap-4">
-          <Link href="/app/cart" aria-label="Back to cart" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-all">
+          <Link href="/app/cart" aria-label="Back to cart" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container dark:hover:bg-[var(--color-surface-container)] transition-all">
             <span className="material-symbols-outlined text-primary">arrow_back</span>
           </Link>
           <span className="text-xl sm:text-2xl font-extrabold tracking-tighter text-primary">MIIAM</span>
         </div>
-        <span className="text-on-surface font-semibold hidden md:block">Checkout</span>
+        <span className="text-on-surface dark:text-[var(--color-on-surface)] font-semibold hidden md:block">Checkout</span>
       </nav>
 
       <Breadcrumbs items={[{ label: "Home", href: "/app/explore" }, { label: "Cart", href: "/app/cart" }, { label: "Checkout" }]} />
 
-      <main className="pt-20 sm:pt-24 pb-24 px-3 sm:px-6 max-w-7xl mx-auto bg-background text-on-background">
+      <main className="pt-20 sm:pt-24 pb-24 px-3 sm:px-6 max-w-7xl mx-auto bg-background dark:bg-[var(--color-surface)] text-on-background dark:text-[var(--color-on-surface)]">
         <header className="mb-6 sm:mb-12">
-          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-on-surface mb-2 break-words">{t.checkout.title}</h1>
-          <p className="text-sm sm:text-base text-on-surface-variant">{t.checkout.subtitle}</p>
+          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-on-surface dark:text-[var(--color-on-surface)] mb-2 break-words">{t.checkout.title}</h1>
+          <p className="text-sm sm:text-base text-on-surface-variant dark:text-[var(--color-outline)]">{t.checkout.subtitle}</p>
         </header>
 
         {items.length === 0 ? (
@@ -249,14 +249,14 @@ export default function CheckoutPage() {
               deliveryAddress={deliveryAddress}
               onChangeAddress={() => setShowAddressPicker(true)}
             />
-            <section className="bg-surface-container-lowest p-4 sm:p-6 rounded-2xl shadow-sm">
+            <section className="bg-surface-container-lowest dark:bg-[var(--color-surface-container-lowest)] p-4 sm:p-6 rounded-2xl shadow-sm">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-surface-container dark:bg-[var(--color-surface-container)] flex items-center justify-center">
                   <span className="material-symbols-outlined text-primary">{phoneVerified ? "verified" : "phone"}</span>
                 </div>
                 <div className="flex-1">
-                  <h2 className="text-lg font-extrabold text-on-surface">{t.services.phoneNumber || "Phone Number"}</h2>
-                  <p className="text-xs text-on-surface-variant">
+                  <h2 className="text-lg font-extrabold text-on-surface dark:text-[var(--color-on-surface)]">{t.services.phoneNumber || "Phone Number"}</h2>
+                  <p className="text-xs text-on-surface-variant dark:text-[var(--color-outline)]">
                     {phoneVerified ? "Phone verified" : (t.services.phonePlaceholder || "For rider to contact you")}
                   </p>
                 </div>
@@ -315,7 +315,7 @@ export default function CheckoutPage() {
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-on-surface font-medium">{phone}</span>
+                  <span className="text-sm text-on-surface dark:text-[var(--color-on-surface)] font-medium">{phone}</span>
                   <button
                     type="button"
                     onClick={() => { setPhoneVerified(false); setOtpSent(false); setOtpCode(""); setPhone(""); }}
@@ -355,7 +355,7 @@ export default function CheckoutPage() {
           </div>
 
           <div className="lg:col-span-4 lg:sticky lg:top-24">
-            <aside className="bg-surface-container-low p-5 sm:p-8 rounded-2xl shadow-sm relative overflow-hidden">
+            <aside className="bg-surface-container-low dark:bg-[var(--color-surface-container)] p-5 sm:p-8 rounded-2xl shadow-sm relative overflow-hidden">
               <CheckoutOrderSummary
                 items={items}
                 subtotal={subtotal}
@@ -434,7 +434,7 @@ export default function CheckoutPage() {
                 ) : t.checkout.placeOrder}
                 {!placing && <span className="material-symbols-outlined">shield</span>}
               </button>
-              <p className="text-center mt-6 text-xs text-on-surface-variant flex items-center justify-center gap-2">
+              <p className="text-center mt-6 text-xs text-on-surface-variant dark:text-[var(--color-outline)] flex items-center justify-center gap-2">
                 <span className="material-symbols-outlined text-sm">lock</span>
                 {t.checkout.securePayment}
               </p>

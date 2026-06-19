@@ -66,8 +66,8 @@ export default function NotificationsPage() {
 
   return (
     <PullToRefresh onRefresh={fetchNotifications}>
-    <div className="min-h-screen bg-surface pb-24">
-      <header className="fixed top-0 w-full z-50 bg-[var(--color-surface-container-lowest)] shadow-sm">
+    <div className="min-h-screen bg-surface dark:bg-[var(--color-surface)] pb-24">
+      <header className="fixed top-0 w-full z-50 bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container)] shadow-sm">
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-4">
             <Link href="/app/explore" aria-label="Go back" className="w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center">
@@ -92,7 +92,7 @@ export default function NotificationsPage() {
         </section>
 
         {/* Push Notification Settings */}
-        <section className="bg-surface-container-lowest rounded-2xl p-6 shadow-sm mb-8">
+        <section className="bg-surface-container-lowest dark:bg-[var(--color-surface-container)] rounded-2xl p-6 shadow-sm mb-8">
           <h2 className="text-lg font-bold text-on-surface mb-4">Push Notifications</h2>
           
           {permission === "denied" ? (
@@ -158,14 +158,14 @@ export default function NotificationsPage() {
           {loading ? (
             <div className="space-y-4">
               {[1, 2, 3].map(i => (
-                <div key={i} className="bg-surface-container-lowest rounded-2xl p-4 animate-pulse">
+                <div key={i} className="bg-surface-container-lowest dark:bg-[var(--color-surface-container)] rounded-2xl p-4 animate-pulse">
                   <div className="h-4 bg-surface-container-high rounded w-3/4 mb-2"></div>
                   <div className="h-3 bg-surface-container-high rounded w-1/2"></div>
                 </div>
               ))}
             </div>
           ) : notifications.length === 0 ? (
-            <div className="text-center py-12 bg-surface-container-lowest rounded-2xl">
+            <div className="text-center py-12 bg-surface-container-lowest dark:bg-[var(--color-surface-container)] rounded-2xl">
               <span className="text-5xl">🔔</span>
               <p className="text-on-surface-variant mt-4">No notifications yet</p>
             </div>
@@ -186,7 +186,7 @@ export default function NotificationsPage() {
                   }}
                 >
                   <div
-                    className={`bg-surface-container-lowest rounded-2xl p-4 ${notification.read ? "opacity-70" : "border-l-4 border-primary"}`}
+                    className={`bg-surface-container-lowest dark:bg-[var(--color-surface-container)] rounded-2xl p-4 ${notification.read ? "opacity-70" : "border-l-4 border-primary"}`}
                   >
                     <div className="flex items-start gap-3">
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center ${

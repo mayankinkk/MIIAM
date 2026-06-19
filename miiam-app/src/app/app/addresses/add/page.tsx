@@ -369,8 +369,8 @@ export default function AddressPickerPage() {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-[var(--color-surface-container-lowest)]">
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[var(--color-surface-container-lowest)] shadow-md">
+    <div className="h-screen flex flex-col bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container-lowest)]">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container-lowest)] shadow-md">
         <div className="flex items-center gap-3 px-4 py-3">
           <Link href="/app/checkout" aria-label="Go back">
             <span className="material-symbols-outlined text-on-surface">arrow_back</span>
@@ -390,7 +390,7 @@ export default function AddressPickerPage() {
         <button
           onClick={() => handleDetectLocation(true)}
           disabled={detecting}
-          className="absolute bottom-36 right-4 z-40 bg-[var(--color-surface-container-lowest)] p-3 rounded-full shadow-lg hover:bg-[var(--color-surface-subtle)] transition-all"
+          className="absolute bottom-36 right-4 z-40 bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container-lowest)] p-3 rounded-full shadow-lg hover:bg-[var(--color-surface-subtle)] transition-all"
           title="Use current location"
         >
           {detecting ? (
@@ -402,7 +402,7 @@ export default function AddressPickerPage() {
 
         {/* Accuracy Status */}
         {detecting && (
-          <div className="absolute top-24 left-4 right-4 z-40 bg-[var(--color-surface-container-lowest)]/95 backdrop-blur p-3 rounded-xl shadow-lg">
+          <div className="absolute top-24 left-4 right-4 z-40 bg-[var(--color-surface-container-lowest)]/95 dark:bg-[var(--color-surface-container-lowest)]/95 backdrop-blur p-3 rounded-xl shadow-lg">
             <div className="flex items-center gap-2">
               {locationStatus === "improving" ? (
                 <span className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
@@ -422,13 +422,13 @@ export default function AddressPickerPage() {
         )}
 
         {currentLocation && (
-          <div className="absolute bottom-0 left-0 right-0 bg-[var(--color-surface-container-lowest)] rounded-t-2xl shadow-xl z-50 max-h-[50vh] overflow-y-auto">
+          <div className="absolute bottom-0 left-0 right-0 bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container-lowest)] rounded-t-2xl shadow-xl z-50 max-h-[50vh] overflow-y-auto">
             <div className="p-4 border-b border-[var(--color-border-subtle)]">
               <div className="flex items-center gap-2 mb-2">
-                <span className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                  <span className="material-symbols-outlined text-green-600 text-sm">location_on</span>
+                <span className="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+                  <span className="material-symbols-outlined text-green-600 dark:text-green-400 text-sm">location_on</span>
                 </span>
-                <span className="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full">
+                <span className="text-xs font-bold text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded-full">
                   {locationAccuracy ? `GPS Accuracy: ${locationAccuracy.toFixed(0)}m` : "Location Selected"}
                 </span>
               </div>
@@ -523,7 +523,7 @@ export default function AddressPickerPage() {
         )}
 
         {!currentLocation && (
-          <div className="absolute bottom-4 left-4 right-4 bg-[var(--color-surface-container-lowest)] rounded-xl shadow-lg p-4 z-40">
+          <div className="absolute bottom-4 left-4 right-4 bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container-lowest)] rounded-xl shadow-lg p-4 z-40">
             <div className="relative">
               <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-outline-variant)]">search</span>
               <input

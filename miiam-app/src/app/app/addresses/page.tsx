@@ -36,8 +36,8 @@ interface AddressCardProps {
 function AddressCard({ address, onSelect, onEdit, onDelete, onSetDefault }: AddressCardProps) {
   const { t } = useTranslation();
   const labelColors = {
-    Home: { bg: "bg-blue-100", text: "text-blue-700", accent: "from-blue-500 to-blue-600" },
-    Office: { bg: "bg-purple-100", text: "text-purple-700", accent: "from-purple-500 to-purple-600" },
+    Home: { bg: "bg-blue-100 dark:bg-blue-900/30", text: "text-blue-700 dark:text-blue-400", accent: "from-blue-500 to-blue-600" },
+    Office: { bg: "bg-purple-100 dark:bg-purple-900/30", text: "text-purple-700 dark:text-purple-400", accent: "from-purple-500 to-purple-600" },
     Other: { bg: "bg-[var(--color-surface-container)]", text: "text-[var(--color-on-surface)]", accent: "from-slate-500 to-slate-600" },
   };
   
@@ -104,7 +104,7 @@ function AddressCard({ address, onSelect, onEdit, onDelete, onSetDefault }: Addr
             <div className="flex items-center gap-2">
               <h3 className="font-bold text-[var(--color-on-surface)]">{address.label}</h3>
               {address.is_default && (
-                <span className="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-[10px] font-bold px-2 py-0.5 rounded-full">
                   Default
                 </span>
               )}
@@ -115,8 +115,8 @@ function AddressCard({ address, onSelect, onEdit, onDelete, onSetDefault }: Addr
             </p>
             <p className="text-xs text-[var(--color-outline)]">{address.state} - {address.postal_code}</p>
             {address.instructions && (
-              <p className="text-xs text-[var(--color-outline-variant)] mt-2 flex items-center gap-1 bg-amber-50 px-2 py-1 rounded-lg">
-                <span className="material-symbols-outlined text-sm text-amber-600">info</span>
+              <p className="text-xs text-[var(--color-outline-variant)] mt-2 flex items-center gap-1 bg-amber-50 dark:bg-amber-900/20 px-2 py-1 rounded-lg">
+                <span className="material-symbols-outlined text-sm text-amber-600 dark:text-amber-400">info</span>
                 {address.instructions}
               </p>
             )}
@@ -154,8 +154,8 @@ function AddressCard({ address, onSelect, onEdit, onDelete, onSetDefault }: Addr
 }
 
 const addressTypes = [
-  { id: "home", icon: "home", label: "Home", color: "bg-blue-100 text-blue-700" },
-  { id: "office", icon: "business", label: "Office", color: "bg-purple-100 text-purple-700" },
+  { id: "home", icon: "home", label: "Home", color: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400" },
+  { id: "office", icon: "business", label: "Office", color: "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400" },
   { id: "other", icon: "place", label: "Other", color: "bg-[var(--color-surface-container)] text-[var(--color-on-surface)]" },
 ];
 
@@ -356,16 +356,16 @@ export default function AddressBookPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#f8f8f8] flex items-center justify-center">
+      <div className="min-h-screen bg-[#f8f8f8] dark:bg-[var(--color-surface)] flex items-center justify-center">
         <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f8f8] pb-24">
+    <div className="min-h-screen bg-[#f8f8f8] dark:bg-[var(--color-surface)] pb-24">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-[var(--color-surface-container-lowest)] shadow-sm">
+      <header className="sticky top-0 z-50 bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container-lowest)] shadow-sm">
         <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/app/profile" className="text-2xl font-black text-primary tracking-tighter">
             MIIAM
@@ -438,12 +438,12 @@ export default function AddressBookPage() {
         </div>
 
         {/* Info */}
-        <div className="mt-8 bg-blue-50 rounded-2xl p-4">
+        <div className="mt-8 bg-blue-50 dark:bg-[var(--color-surface-container)] rounded-2xl p-4">
           <div className="flex items-start gap-3">
             <span className="material-symbols-outlined text-blue-600">info</span>
             <div>
-              <p className="font-bold text-blue-900 text-sm">Delivery Tips</p>
-              <ul className="text-xs text-blue-700 mt-2 space-y-1">
+              <p className="font-bold text-blue-900 dark:text-[var(--color-on-surface)] text-sm">Delivery Tips</p>
+              <ul className="text-xs text-blue-700 dark:text-[var(--color-outline)] mt-2 space-y-1">
                 <li>• Add clear, complete addresses for smoother deliveries</li>
                 <li>• Include landmark or building name if available</li>
                 <li>• Add delivery instructions (e.g., gate code, floor)</li>
@@ -462,8 +462,8 @@ export default function AddressBookPage() {
             setEditingAddress(null);
           }} />
 
-          <div className="relative bg-[var(--color-surface-container-lowest)] w-full max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[90vh] overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="address-modal-title" onKeyDown={(e) => { if (e.key === "Escape") { setShowAddAddress(false); setEditingAddress(null); } }}>
-            <div className="sticky top-0 bg-[var(--color-surface-container-lowest)] z-10 border-b border-[var(--color-border-subtle)] px-6 py-4 flex items-center justify-between">
+          <div className="relative bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container-lowest)] w-full max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[90vh] overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="address-modal-title" onKeyDown={(e) => { if (e.key === "Escape") { setShowAddAddress(false); setEditingAddress(null); } }}>
+            <div className="sticky top-0 bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container-lowest)] z-10 border-b border-[var(--color-border-subtle)] px-6 py-4 flex items-center justify-between">
               <div>
                 <h2 id="address-modal-title" className="text-xl font-extrabold text-[var(--color-on-surface)]">
                   {editingAddress ? "Edit Address" : "Add New Address"}

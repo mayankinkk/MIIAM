@@ -394,16 +394,16 @@ export default function HomePage() {
 
   if (dataError) {
     return (
-      <div className="min-h-screen bg-background text-on-background flex items-center justify-center px-6 pb-24">
+      <div className="min-h-screen bg-background dark:bg-[var(--color-surface)] text-on-background flex items-center justify-center px-6 pb-24">
         <NetworkError onRetry={() => { setDataError(null); setLoading(true); setRetryKey((k) => k + 1); }} />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background text-on-background pb-24">
+    <div className="min-h-screen bg-background dark:bg-[var(--color-surface)] text-on-background pb-24">
       {/* Header */}
-      <header className="bg-surface-container border-b border-outline-variant/10 shadow-sm">
+      <header className="bg-surface-container dark:bg-[var(--color-surface-container-lowest)] border-b border-outline-variant/10 dark:border-[var(--color-border-subtle)] shadow-sm">
         <div className="px-4 pt-4 pb-2">
           <div className="flex items-center justify-between">
             <div>
@@ -500,7 +500,7 @@ export default function HomePage() {
           style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}>
           {/* Expanded Order Details */}
           {orderBubbleExpanded && (
-            <div className="absolute bottom-16 right-0 w-72 bg-surface-container rounded-2xl border border-outline-variant/10 shadow-2xl p-4 mb-2 animate-in fade-in zoom-in duration-300">
+            <div className="absolute bottom-16 right-0 w-72 bg-surface-container dark:bg-[var(--color-surface-container-lowest)] rounded-2xl border border-outline-variant/10 dark:border-[var(--color-border-subtle)] shadow-2xl p-4 mb-2 animate-in fade-in zoom-in duration-300">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <div className="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center">
@@ -653,7 +653,7 @@ export default function HomePage() {
           </div>
           <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
             {featuredRestaurants.map((restaurant) => (
-              <Link key={restaurant.id} href={`/app/vendor/${restaurant.id}`} className="flex-shrink-0 w-36 bg-surface-container-lowest border border-outline-variant/10 rounded-2xl overflow-hidden shadow-sm hover:border-purple-500/30 transition-all">
+              <Link key={restaurant.id} href={`/app/vendor/${restaurant.id}`} className="flex-shrink-0 w-36 bg-surface-container-lowest dark:bg-[var(--color-surface-container)] border border-outline-variant/10 dark:border-[var(--color-border-subtle)] rounded-2xl overflow-hidden shadow-sm hover:border-purple-500/30 transition-all">
                 <div className="relative h-28 bg-surface-container">
                   {restaurant.cover_image_url || restaurant.image_url ? (
                     <BlurImage src={restaurant.cover_image_url || restaurant.image_url || ""} alt={`${restaurant.shop_name || restaurant.name} promoted`} fill className="w-full h-full" sizes="(max-width: 768px) 50vw, 25vw" />
@@ -707,7 +707,7 @@ export default function HomePage() {
         {nearbyRestaurants.filter(r => r.type === 'food' || r.type === 'restaurant').length > 0 ? (
           <div className="space-y-3">
             {nearbyRestaurants.filter(r => r.type === 'food' || r.type === 'restaurant').map((restaurant) => (
-              <Link key={restaurant.id} href={`/app/vendor/${restaurant.id}`} className="block bg-surface-container-lowest border border-outline-variant/10 rounded-2xl overflow-hidden shadow-sm">
+              <Link key={restaurant.id} href={`/app/vendor/${restaurant.id}`} className="block bg-surface-container-lowest dark:bg-[var(--color-surface-container)] border border-outline-variant/10 dark:border-[var(--color-border-subtle)] rounded-2xl overflow-hidden shadow-sm">
                 <div className="flex">
                   <div className="w-28 h-28 flex-shrink-0 bg-surface-container relative">
                     {restaurant.cover_image_url || restaurant.image_url ? (
@@ -759,12 +759,12 @@ export default function HomePage() {
             ))}
           </div>
         ) : !locationStore.pincode ? (
-          <div className="bg-surface-container border border-outline-variant/10 rounded-2xl p-8 text-center shadow-sm">
+          <div className="bg-surface-container dark:bg-[var(--color-surface-container-lowest)] border border-outline-variant/10 dark:border-[var(--color-border-subtle)] rounded-2xl p-8 text-center shadow-sm">
             <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 animate-glow-pulse">
               <span className="material-symbols-outlined text-4xl text-primary">location_on</span>
             </div>
-            <h3 className="text-lg font-black text-on-surface mb-1">{t.home.locationRequired}</h3>
-            <p className="text-sm text-on-surface-variant mb-5">
+            <h3 className="text-lg font-black text-on-surface dark:text-[var(--color-on-surface)] mb-1">{t.home.locationRequired}</h3>
+            <p className="text-sm text-on-surface-variant dark:text-[var(--color-outline)] mb-5">
               {t.home.locationRequiredDesc}
             </p>
             <button
@@ -775,12 +775,12 @@ export default function HomePage() {
             </button>
           </div>
         ) : locationStore.pincode ? (
-          <div className="bg-surface-container border border-outline-variant/10 rounded-2xl p-8 text-center shadow-sm">
+          <div className="bg-surface-container dark:bg-[var(--color-surface-container-lowest)] border border-outline-variant/10 dark:border-[var(--color-border-subtle)] rounded-2xl p-8 text-center shadow-sm">
             <div className="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="material-symbols-outlined text-4xl text-amber-500">location_off</span>
             </div>
-            <h3 className="text-lg font-black text-on-surface mb-1">{t.home.notAvailable}</h3>
-            <p className="text-sm text-on-surface-variant mb-1">
+            <h3 className="text-lg font-black text-on-surface dark:text-[var(--color-on-surface)] mb-1">{t.home.notAvailable}</h3>
+            <p className="text-sm text-on-surface-variant dark:text-[var(--color-outline)] mb-1">
               {t.home.notAvailableDesc}
             </p>
             <p className="text-sm font-bold text-primary mb-4">
@@ -807,7 +807,7 @@ export default function HomePage() {
       {/* Location Modal */}
       {showLocationModal && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end md:items-center justify-center animate-fade-in" role="dialog" aria-modal="true" aria-labelledby="location-modal-title">
-          <div className="bg-surface-container w-full md:w-96 rounded-t-3xl md:rounded-3xl p-6 border-t border-x border-outline-variant/10 md:border animate-in slide-in-from-bottom duration-300">
+          <div className="bg-surface-container dark:bg-[var(--color-surface-container-lowest)] w-full md:w-96 rounded-t-3xl md:rounded-3xl p-6 border-t border-x border-outline-variant/10 dark:border-[var(--color-border-subtle)] md:border animate-in slide-in-from-bottom duration-300">
             <div className="flex items-center justify-between mb-4">
               <h2 id="location-modal-title" className="text-xl font-black text-on-surface">{t.home.enterPincode}</h2>
               <button onClick={() => setShowLocationModal(false)} aria-label="Close location modal" className="w-11 h-11 bg-surface-container-high rounded-full flex items-center justify-center">
@@ -831,7 +831,7 @@ export default function HomePage() {
                   setPincodeError("");
                 }}
                 placeholder={t.home.enter6Digit}
-                className="w-full px-4 py-4 bg-surface-container-high rounded-xl border-2 border-transparent focus:border-primary outline-none text-2xl font-black tracking-[0.5em] text-center text-on-surface"
+                className="w-full px-4 py-4 bg-surface-container-high dark:bg-[var(--color-surface-container)] rounded-xl border-2 border-transparent focus:border-primary outline-none text-2xl font-black tracking-[0.5em] text-center text-on-surface dark:text-[var(--color-on-surface)]"
                 autoFocus
               />
               {pincodeError && <p className="text-red-500 text-xs mt-2 text-center font-bold">{pincodeError}</p>}
@@ -885,7 +885,7 @@ export default function HomePage() {
         <div className="fixed inset-0 z-50" onClick={() => setShowNotifications(false)} role="dialog" aria-modal="true" aria-labelledby="notifications-title">
           <div className="absolute inset-0 bg-black/30" />
           <div 
-            className="absolute right-0 top-0 h-full w-full max-w-md bg-surface-container-lowest border-l border-outline-variant/10 shadow-2xl animate-in slide-in-from-right duration-300"
+            className="absolute right-0 top-0 h-full w-full max-w-md bg-surface-container-lowest dark:bg-[var(--color-surface-container)] border-l border-outline-variant/10 dark:border-[var(--color-border-subtle)] shadow-2xl animate-in slide-in-from-right duration-300"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}

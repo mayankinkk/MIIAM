@@ -54,8 +54,8 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-on-background pb-24">
-      <header className="bg-surface-container px-6 py-4 sticky top-0 z-10 border-b border-outline-variant/10 shadow-sm">
+    <div className="min-h-screen bg-background dark:bg-[var(--color-surface)] text-on-background pb-24">
+      <header className="bg-surface-container dark:bg-[var(--color-surface-container-lowest)] px-6 py-4 sticky top-0 z-10 border-b border-outline-variant/10 dark:border-[var(--color-border-subtle)] shadow-sm">
         <div className="flex items-center justify-between">
           <Link href="/app/profile" aria-label="Go back" className="w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center hover:bg-surface-container-highest transition-colors">
             <span className="material-symbols-outlined text-on-background">arrow_back</span>
@@ -71,7 +71,7 @@ export default function SettingsPage() {
         {settingsSections.map((section, sectionIndex) => (
           <div key={section.title} className="mb-6">
             <h2 className="text-xs font-bold text-on-surface-variant/70 uppercase tracking-wider mb-3">{section.title}</h2>
-            <div className="bg-surface-container rounded-2xl overflow-hidden shadow-sm border border-outline-variant/10">
+            <div className="bg-surface-container dark:bg-[var(--color-surface-container-lowest)] rounded-2xl overflow-hidden shadow-sm border border-outline-variant/10 dark:border-[var(--color-border-subtle)]">
               {section.items.map((item, itemIndex) => (
                 <Link
                   key={item.id}
@@ -94,7 +94,7 @@ export default function SettingsPage() {
           </div>
         ))}
 
-        <div className="bg-surface-container rounded-2xl overflow-hidden shadow-sm mt-6 border border-outline-variant/10">
+        <div className="bg-surface-container dark:bg-[var(--color-surface-container-lowest)] rounded-2xl overflow-hidden shadow-sm mt-6 border border-outline-variant/10 dark:border-[var(--color-border-subtle)]">
           <button
             onClick={handleSignOut}
             disabled={loading}

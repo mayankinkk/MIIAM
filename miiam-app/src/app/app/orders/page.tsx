@@ -169,17 +169,17 @@ export default function OrdersPage() {
 
   return (
     <>
-      <header className="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-surface/80 backdrop-blur-2xl shadow-sm">
+      <header className="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-surface/80 dark:bg-[var(--color-surface)]/80 backdrop-blur-2xl shadow-sm">
         <span className="text-2xl font-extrabold tracking-tighter text-primary">MIIAM</span>
       </header>
       <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'My Orders' }]} />
       <PullToRefresh onRefresh={async () => {
         await fetchOrders();
       }}>
-      <main className="pt-24 pb-24 px-6 max-w-4xl mx-auto bg-background text-on-background">
+      <main className="pt-24 pb-24 px-6 max-w-4xl mx-auto bg-background dark:bg-[var(--color-surface)] text-on-background dark:text-[var(--color-on-surface)]">
         <section className="mb-10">
-          <h1 className="text-3xl font-extrabold tracking-tight leading-none mb-2 text-on-surface">{t.orders.title}</h1>
-          <p className="text-on-surface-variant text-lg">{t.orders.subtitle}</p>
+          <h1 className="text-3xl font-extrabold tracking-tight leading-none mb-2 text-on-surface dark:text-[var(--color-on-surface)]">{t.orders.title}</h1>
+          <p className="text-on-surface-variant dark:text-[var(--color-outline)] text-lg">{t.orders.subtitle}</p>
         </section>
 
         {loading ? (
@@ -211,10 +211,10 @@ export default function OrdersPage() {
         ) : (
           <div className="space-y-6">
             {orders.map((order) => (
-              <div key={order.id} className="bg-surface-container-lowest rounded-2xl shadow-sm overflow-hidden">
-                <Link href={`/app/orders/${order.id}`} className="block p-6 hover:bg-surface-container-low/30 transition-all">
+              <div key={order.id} className="bg-surface-container-lowest dark:bg-[var(--color-surface-container-lowest)] rounded-2xl shadow-sm overflow-hidden">
+                <Link href={`/app/orders/${order.id}`} className="block p-6 hover:bg-surface-container-low/30 dark:hover:bg-[var(--color-surface-container)]/30 transition-all">
                   <div className="flex items-center gap-4">
-                    <div className={`w-16 h-16 rounded-xl overflow-hidden flex items-center justify-center flex-shrink-0 ${order.vendor_id === PRINTING_VENDOR_ID ? "bg-indigo-100" : "bg-surface-container"}`}>
+                    <div className={`w-16 h-16 rounded-xl overflow-hidden flex items-center justify-center flex-shrink-0 ${order.vendor_id === PRINTING_VENDOR_ID ? "bg-indigo-100 dark:bg-indigo-900/30" : "bg-surface-container dark:bg-[var(--color-surface-container)]"}`}>
                       {order.vendor?.cover_image_url ? (
                         <BlurImage src={order.vendor.cover_image_url} alt={order.vendor.name} fill className="w-full h-full" sizes="(max-width: 768px) 50vw, 25vw" />
                       ) : (
@@ -226,8 +226,8 @@ export default function OrdersPage() {
                     <div className="flex-1">
                       <div className="flex justify-between items-start">
                         <div>
-                          <h3 className="font-bold text-on-surface">{order.vendor?.name ?? "Order"}</h3>
-                          <p className="text-xs text-on-surface-variant">
+                          <h3 className="font-bold text-on-surface dark:text-[var(--color-on-surface)]">{order.vendor?.name ?? "Order"}</h3>
+                          <p className="text-xs text-on-surface-variant dark:text-[var(--color-outline)]">
                             {new Date(order.placed_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
                           </p>
                         </div>
@@ -235,15 +235,15 @@ export default function OrdersPage() {
                           <span className={`text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider ${statusColors[order.status] ?? "bg-surface-container text-primary"}`}>
                             {order.status.replace(/_/g, " ")}
                           </span>
-                          <p className="font-bold text-on-surface mt-2">₹{order.total_amount.toFixed(2)}</p>
+                          <p className="font-bold text-on-surface dark:text-[var(--color-on-surface)] mt-2">₹{order.total_amount.toFixed(2)}</p>
                         </div>
                       </div>
                     </div>
-                    <span className="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+                    <span className="material-symbols-outlined text-on-surface-variant dark:text-[var(--color-outline)]">chevron_right</span>
                   </div>
                 </Link>
                 {order.status === "delivered" && (
-                  <div className="border-t border-outline-variant/20 px-6 py-4 flex gap-3">
+                  <div className="border-t border-outline-variant/20 dark:border-t-[var(--color-border-subtle)]/20 px-6 py-4 flex gap-3">
                     <button
                       onClick={() => handleReorder(order)}
                       disabled={reordering === order.id}
@@ -254,7 +254,7 @@ export default function OrdersPage() {
                     </button>
                     <Link
                       href={`/app/orders/${order.id}/rating`}
-                      className="flex-1 bg-[var(--color-surface-container-lowest)] border border-outline-variant/30 text-on-surface py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:border-primary"
+                      className="flex-1 bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container-lowest)] border border-outline-variant/30 dark:border-[var(--color-border-subtle)]/30 text-on-surface dark:text-[var(--color-on-surface)] py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:border-primary"
                     >
                       <span className="material-symbols-outlined text-sm">star</span>
                       {t.orders.rate}

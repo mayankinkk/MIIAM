@@ -147,7 +147,7 @@ export default function ExplorePage() {
 
   if (!isLoaded) {
     return (
-      <div className="min-h-screen bg-surface flex items-center justify-center">
+      <div className="min-h-screen bg-surface dark:bg-[var(--color-surface)] flex items-center justify-center">
         <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center animate-pulse">
           <span className="material-symbols-outlined text-3xl text-white">M</span>
         </div>
@@ -156,7 +156,7 @@ export default function ExplorePage() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-on-background">
+    <div className="min-h-screen bg-background dark:bg-[var(--color-surface)] text-on-background dark:text-[var(--color-on-surface)]">
       {error && (
         <div className="bg-red-50 border border-red-200 px-4 py-3 flex items-center gap-2">
           <span className="material-symbols-outlined text-red-500">error</span>
@@ -189,20 +189,20 @@ export default function ExplorePage() {
       )}
       <PullToRefresh onRefresh={handleRefresh} className="pb-24">
         {/* Header */}
-        <header className="bg-surface-container px-6 pt-8 pb-4">
+        <header className="bg-surface-container dark:bg-[var(--color-surface-container)] px-6 pt-8 pb-4">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-3xl font-black text-on-surface">Explore</h1>
-              <p className="text-on-surface-variant/70">Discover everything MIIAM has to offer</p>
+              <h1 className="text-3xl font-black text-on-surface dark:text-[var(--color-on-surface)]">Explore</h1>
+              <p className="text-on-surface-variant/70 dark:text-[var(--color-outline)]/70">Discover everything MIIAM has to offer</p>
             </div>
             <div className="flex items-center gap-3">
               {/* Cart with animated badge */}
               <Link 
                 href="/app/cart" 
                 aria-label={`Cart (${cartCount} items)`}
-                className={`relative p-2 bg-surface-container-high rounded-full hover:bg-surface-container-highest transition-colors ${cartBounce ? "animate-bounce-sm" : ""}`}
+                className={`relative p-2 bg-surface-container-high dark:bg-[var(--color-surface-container-high)] rounded-full hover:bg-surface-container-highest transition-colors ${cartBounce ? "animate-bounce-sm" : ""}`}
               >
-                <span className="material-symbols-outlined text-2xl text-on-surface-variant" aria-hidden="true">shopping_cart</span>
+                <span className="material-symbols-outlined text-2xl text-on-surface-variant dark:text-[var(--color-outline)]" aria-hidden="true">shopping_cart</span>
                 {cartCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center animate-bounce-in">
                     {cartCount > 99 ? "99+" : cartCount}
@@ -213,12 +213,12 @@ export default function ExplorePage() {
               <button
                 onClick={() => { localStorage.removeItem("miiam_onboarding_tour_done"); window.location.reload(); }}
                 aria-label="Take a tour"
-                className="p-2 bg-surface-container-high rounded-full hover:bg-surface-container-highest transition-colors"
+                className="p-2 bg-surface-container-high dark:bg-[var(--color-surface-container-high)] rounded-full hover:bg-surface-container-highest transition-colors"
               >
-                <span className="material-symbols-outlined text-2xl text-on-surface-variant">help_outline</span>
+                <span className="material-symbols-outlined text-2xl text-on-surface-variant dark:text-[var(--color-outline)]">help_outline</span>
               </button>
-              <Link href="/app/notifications" aria-label="Notifications" className="p-2 bg-surface-container-high rounded-full hover:bg-surface-container-highest transition-colors relative">
-                <span className="material-symbols-outlined text-2xl text-on-surface-variant" aria-hidden="true">notifications</span>
+              <Link href="/app/notifications" aria-label="Notifications" className="p-2 bg-surface-container-high dark:bg-[var(--color-surface-container-high)] rounded-full hover:bg-surface-container-highest transition-colors relative">
+                <span className="material-symbols-outlined text-2xl text-on-surface-variant dark:text-[var(--color-outline)]" aria-hidden="true">notifications</span>
                 <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse" />
               </Link>
             </div>
@@ -226,20 +226,20 @@ export default function ExplorePage() {
 
           {/* Search */}
           <div className="relative">
-            <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/60">search</span>
+            <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/60 dark:text-[var(--color-outline)]/60">search</span>
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t.home.searchPlaceholder}
-              className="w-full pl-12 pr-4 py-4 bg-surface-container-high rounded-2xl text-on-surface placeholder-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/20"
+              className="w-full pl-12 pr-4 py-4 bg-surface-container-high dark:bg-[var(--color-surface-container-high)] rounded-2xl text-on-surface dark:text-[var(--color-on-surface)] placeholder-on-surface-variant/50 dark:placeholder-[var(--color-outline)]/50 focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
           </div>
         </header>
 
         <main className="space-y-8">
         {/* Swipeable Category Tabs */}
-        <section className="sticky top-0 z-20 bg-surface-container/85 backdrop-blur-xl border-b border-outline-variant/10">
+        <section className="sticky top-0 z-20 bg-surface-container/85 dark:bg-[var(--color-surface-container)]/85 backdrop-blur-xl border-b border-outline-variant/10 dark:border-b-[var(--color-border-subtle)]/10">
           <div 
             ref={scrollRef}
             className="flex gap-2 px-6 py-4 overflow-x-auto no-scrollbar snap-x snap-mandatory"
@@ -254,7 +254,7 @@ export default function ExplorePage() {
                   transition-all duration-300 snap-start active:scale-95 animate-category-slide
                   ${activeCategory === cat.id 
                     ? 'bg-primary text-white shadow-lg shadow-primary/25 scale-105' 
-                    : 'bg-surface-container text-on-surface-variant hover:bg-surface-container-high hover:scale-[1.02]'}
+                    : 'bg-surface-container dark:bg-[var(--color-surface-container)] text-on-surface-variant dark:text-[var(--color-outline)] hover:bg-surface-container-high dark:hover:bg-[var(--color-surface-container-high)] hover:scale-[1.02]'}
                 `}
                 style={{ animationDelay: `${i * 50}ms` }}
               >
@@ -268,7 +268,7 @@ export default function ExplorePage() {
         {/* Active Category Filter Chip */}
         {activeCategory !== "all" && (
           <div className="px-6 flex items-center gap-2">
-            <span className="text-sm text-on-surface-variant/70">Showing:</span>
+            <span className="text-sm text-on-surface-variant/70 dark:text-[var(--color-outline)]/70">Showing:</span>
             <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${colorMap[activeCategory]}`}>
               <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>{categories.find(c => c.id === activeCategory)?.icon}</span>
               {categories.find(c => c.id === activeCategory)?.label}
@@ -288,7 +288,7 @@ export default function ExplorePage() {
             <button
               onClick={() => setShowFilters(!showFilters)}
               className={`flex items-center gap-2 px-4 py-3 rounded-xl font-bold text-sm ${
-                hasActiveFilters ? "bg-primary text-white" : "bg-surface-container text-on-surface-variant border border-outline-variant/20 hover:bg-surface-container-high"
+                hasActiveFilters ? "bg-primary text-white" : "bg-surface-container dark:bg-[var(--color-surface-container)] text-on-surface-variant dark:text-[var(--color-outline)] border border-outline-variant/20 dark:border-[var(--color-border-subtle)]/20 hover:bg-surface-container-high dark:hover:bg-[var(--color-surface-container-high)]"
               }`}
             >
               <span className="material-symbols-outlined text-lg">filter_list</span>
@@ -298,7 +298,7 @@ export default function ExplorePage() {
           </div>
           
           {showFilters && (
-            <div className="mt-4 p-4 bg-surface-container rounded-2xl border border-outline-variant/10 space-y-4 animate-fade-in">
+            <div className="mt-4 p-4 bg-surface-container dark:bg-[var(--color-surface-container)] rounded-2xl border border-outline-variant/10 dark:border-[var(--color-border-subtle)]/10 space-y-4 animate-fade-in">
               <div>
                 <p className="text-xs font-bold text-on-surface-variant/70 uppercase mb-2">Price Range</p>
                 <div className="flex gap-2 flex-wrap">
@@ -312,7 +312,7 @@ export default function ExplorePage() {
                       key={opt.value}
                       onClick={() => setPriceFilter(opt.value as any)}
                       className={`px-3 py-2 rounded-lg text-xs font-bold ${
-                        priceFilter === opt.value ? "bg-primary text-white" : "bg-surface-container-high text-on-surface-variant"
+                        priceFilter === opt.value ? "bg-primary text-white" : "bg-surface-container-high dark:bg-[var(--color-surface-container-high)] text-on-surface-variant dark:text-[var(--color-outline)]"
                       }`}
                     >
                       {opt.label}
@@ -333,7 +333,7 @@ export default function ExplorePage() {
                       key={opt.value}
                       onClick={() => setRatingFilter(opt.value as any)}
                       className={`px-3 py-2 rounded-lg text-xs font-bold ${
-                        ratingFilter === opt.value ? "bg-primary text-white" : "bg-surface-container-high text-on-surface-variant"
+                        ratingFilter === opt.value ? "bg-primary text-white" : "bg-surface-container-high dark:bg-[var(--color-surface-container-high)] text-on-surface-variant dark:text-[var(--color-outline)]"
                       }`}
                     >
                       {opt.label}
@@ -357,7 +357,7 @@ export default function ExplorePage() {
         {/* Results Count */}
         {(searchQuery || hasActiveFilters) && (
           <div className="px-6 mb-2">
-            <p className="text-sm text-on-surface-variant/70">
+              <p className="text-sm text-on-surface-variant/70 dark:text-[var(--color-outline)]/70">
               {filteredServices.length} {filteredServices.length === 1 ? "result" : "results"} found
             </p>
           </div>
@@ -365,7 +365,7 @@ export default function ExplorePage() {
 
         {/* Services Grid */}
         <section className="px-6">
-          <h2 className="text-lg font-black text-on-surface mb-4">
+          <h2 className="text-lg font-black text-on-surface dark:text-[var(--color-on-surface)] mb-4">
             {activeCategory === "all" ? t.nav.services : categories.find(c => c.id === activeCategory)?.label}
           </h2>
           {filteredServices.length === 0 ? (
@@ -385,15 +385,15 @@ export default function ExplorePage() {
               <StaggerItem key={feature.id}>
               <Link 
                 href={`/app/${feature.id}`}
-                className={`bg-surface-container-lowest border border-outline-variant/10 rounded-2xl p-5 shadow-sm hover:shadow-lg transition-all group card-lift ${
+                className={`bg-surface-container-lowest dark:bg-[var(--color-surface-container-lowest)] border border-outline-variant/10 dark:border-[var(--color-border-subtle)]/10 rounded-2xl p-5 shadow-sm hover:shadow-lg transition-all group card-lift ${
                   activeCategory !== "all" && activeCategory !== feature.id ? "opacity-40 scale-95" : ""
                 }`}
               >
                 <div className={`w-14 h-14 rounded-2xl ${colorMap[feature.id]} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
                   <span className="material-symbols-outlined text-2xl">{feature.icon}</span>
                 </div>
-                <h3 className="font-bold text-on-surface">{feature.name}</h3>
-                <p className="text-xs text-on-surface-variant mt-1">
+                <h3 className="font-bold text-on-surface dark:text-[var(--color-on-surface)]">{feature.name}</h3>
+                <p className="text-xs text-on-surface-variant dark:text-[var(--color-outline)] mt-1">
                   {feature.id === "food" && "Order from top restaurants"}
                   {feature.id === "grocery" && "Fresh groceries delivered"}
                   {feature.id === "beauty" && "Salon, Spa, Nails"}
@@ -414,7 +414,7 @@ export default function ExplorePage() {
 
         {/* Collections */}
         <section>
-          <h2 className="text-lg font-black text-on-surface mb-4">Featured Collections</h2>
+          <h2 className="text-lg font-black text-on-surface dark:text-[var(--color-on-surface)] mb-4">Featured Collections</h2>
           <StaggerContainer className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" staggerDelay={0.08}>
             {collections.map((collection, i) => (
               <StaggerItem key={collection.id}>

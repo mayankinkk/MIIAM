@@ -78,7 +78,7 @@ export default function EnhancedProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-surface pb-24">
+    <div className="min-h-screen bg-surface dark:bg-[var(--color-surface)] pb-24">
       {/* Header */}
       <header className="bg-gradient-to-br from-primary to-primary-container text-white p-6 pb-12 rounded-b-[3rem]">
         <div className="flex items-center justify-between mb-6">
@@ -129,13 +129,13 @@ export default function EnhancedProfilePage() {
         {/* Menu Sections */}
         <div className="space-y-2">
           {menuItems.slice(0, 4).map((item) => (
-            <Link key={item.id} href={`/app/${item.id}`} className="block bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 flex items-center gap-4 hover:shadow-md transition-shadow">
+            <Link key={item.id} href={`/app/${item.id}`} className="block bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container)] rounded-2xl p-4 flex items-center gap-4 hover:shadow-md transition-shadow">
               <div className={`w-12 h-12 rounded-xl ${item.bg} flex items-center justify-center`}>
                 <span className={`material-symbols-outlined ${item.color}`}>{item.icon}</span>
               </div>
               <div className="flex-1">
-                <p className="font-bold text-[var(--color-on-surface)]">{item.label}</p>
-                <p className="text-xs text-[var(--color-outline)]">{item.sub}</p>
+                <p className="font-bold text-[var(--color-on-surface)] dark:text-[var(--color-on-surface)]">{item.label}</p>
+                <p className="text-xs text-[var(--color-outline)] dark:text-[var(--color-outline)]">{item.sub}</p>
               </div>
               <span className="material-symbols-outlined text-[var(--color-outline-variant)]/60">chevron_right</span>
             </Link>
@@ -145,7 +145,7 @@ export default function EnhancedProfilePage() {
         {/* Second Section */}
         <div className="space-y-2">
           {menuItems.slice(4, 8).map((item) => (
-            <Link key={item.id} href={`/app/${item.id}`} className="block bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 flex items-center gap-4 hover:shadow-md transition-shadow">
+            <Link key={item.id} href={`/app/${item.id}`} className="block bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container)] rounded-2xl p-4 flex items-center gap-4 hover:shadow-md transition-shadow">
               <div className={`w-12 h-12 rounded-xl ${item.bg} flex items-center justify-center`}>
                 <span className={`material-symbols-outlined ${item.color}`}>{item.icon}</span>
               </div>
@@ -168,7 +168,7 @@ export default function EnhancedProfilePage() {
                   triggerHaptic("medium");
                   setShowHapticSettings(!showHapticSettings);
                 }}
-                className="w-full bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 flex items-center gap-4 hover:shadow-md transition-shadow"
+                className="w-full bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container)] rounded-2xl p-4 flex items-center gap-4 hover:shadow-md transition-shadow"
               >
                 <div className={`w-12 h-12 rounded-xl ${item.bg} flex items-center justify-center`}>
                   <span className={`material-symbols-outlined ${item.color}`}>{item.icon}</span>
@@ -180,7 +180,7 @@ export default function EnhancedProfilePage() {
                 <span className={`material-symbols-outlined text-[var(--color-outline-variant)]/60 transition-transform ${showHapticSettings ? "rotate-180" : ""}`}>expand_more</span>
               </button>
             ) : (
-              <Link key={item.id} href={`/app/${item.id}`} className="block bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 flex items-center gap-4 hover:shadow-md transition-shadow">
+              <Link key={item.id} href={`/app/${item.id}`} className="block bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container)] rounded-2xl p-4 flex items-center gap-4 hover:shadow-md transition-shadow">
                 <div className={`w-12 h-12 rounded-xl ${item.bg} flex items-center justify-center`}>
                   <span className={`material-symbols-outlined ${item.color}`}>{item.icon}</span>
                 </div>
@@ -196,7 +196,7 @@ export default function EnhancedProfilePage() {
 
         {/* Haptic Feedback Settings Panel */}
         {showHapticSettings && (
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 space-y-2 animate-fade-in">
+          <div className="bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container)] rounded-2xl p-4 space-y-2 animate-fade-in">
             <div className="flex items-center gap-3 mb-4 pb-3 border-b border-[var(--color-border-subtle)]">
               <span className="material-symbols-outlined text-primary">vibration</span>
               <p className="font-bold text-[var(--color-on-surface)]">{t.profile.hapticFeedbackSettings}</p>
@@ -291,7 +291,7 @@ export default function EnhancedProfilePage() {
         {/* Logout */}
         <button 
           onClick={handleLogout}
-          className="w-full bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 flex items-center gap-4 hover:bg-red-50 transition-colors group"
+          className="w-full bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container)] rounded-2xl p-4 flex items-center gap-4 hover:bg-red-50 transition-colors group"
         >
           <div className="w-12 h-12 rounded-xl bg-red-50 flex items-center justify-center group-hover:bg-red-100">
             <span className="material-symbols-outlined text-red-500">logout</span>
