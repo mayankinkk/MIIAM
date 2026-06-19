@@ -463,7 +463,7 @@ export default function FoodPageContent() {
 
       let query = supabase
         .from("vendors")
-        .select("*")
+        .select("id, shop_name, name, cuisine, image_url, cover_image_url, rating, delivery_time_min, delivery_time_max, delivery_charge, min_order_amount, is_featured, is_new, status, type, pincode, city, opening_hours, created_at")
         .in("type", ["food", "restaurant"])
         .eq("status", "active");
 
@@ -492,7 +492,7 @@ export default function FoodPageContent() {
       setRestaurants(filteredVendors);
       const vendorIds = filteredVendors.map((v: { id: string }) => v.id);
       if (vendorIds.length > 0) {
-        const { data: itemsData, error: itemsError } = await supabase.from("menu_items").select("*").in("vendor_id", vendorIds).order("name");
+        const { data: itemsData, error: itemsError } = await supabase.from("menu_items").select("id, vendor_id, name, price, category, image_url, is_veg, is_available, description").in("vendor_id", vendorIds).order("name");
         if (itemsError) {
           console.error("Menu items query failed:", itemsError.message);
         }

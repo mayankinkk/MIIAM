@@ -51,7 +51,7 @@ export default function RiderOrdersPage() {
       // Fetch available orders (not assigned to any rider)
       const { data: availableOrders, error: dbError } = await supabase
         .from("orders")
-        .select("*")
+        .select("id, user_id, vendor_id, rider_id, status, total_amount, delivery_fee, delivery_address, delivery_address_id, customer_phone, special_instructions, otp, placed_at, delivered_at, customer_collected")
         .is("rider_id", null)
         .in("status", ["ready_for_pickup"])
         .gte("placed_at", yesterday.toISOString())
@@ -62,7 +62,7 @@ export default function RiderOrdersPage() {
       // Also fetch this rider's own accepted orders
       const { data: myOrders } = riderId ? await supabase
         .from("orders")
-        .select("*")
+        .select("id, user_id, vendor_id, rider_id, status, total_amount, delivery_fee, delivery_address, delivery_address_id, customer_phone, special_instructions, otp, placed_at, delivered_at, customer_collected")
         .eq("rider_id", riderId)
         .in("status", ["ready_for_pickup", "on_the_way"])
         .order("placed_at", { ascending: false }) : { data: [] };
@@ -83,9 +83,9 @@ export default function RiderOrdersPage() {
         const orderIds = uniqueOrders.map(o => o.id);
 
         const [vendorsRes, addressesRes, allItemsRes, profilesRes] = await Promise.all([
-          vendorIds.length > 0 ? supabase.from("vendors").select("*").in("id", vendorIds) : Promise.resolve({ data: [] }),
-          addressIds.length > 0 ? supabase.from("delivery_addresses").select("*").in("id", addressIds) : Promise.resolve({ data: [] }),
-          supabase.from("order_items").select("*").in("order_id", orderIds),
+          vendorIds.length > 0 ? supabase.from("vendors").select("id, shop_name, name, address, phone, latitude, longitude, lat, lng, type").in("id", vendorIds) : Promise.resolve({ data: [] }),
+          addressIds.length > 0 ? supabase.from("delivery_addresses").select("id, street, city, state, pincode, label, lat, lng").in("id", addressIds) : Promise.resolve({ data: [] }),
+          supabase.from("order_items").select("id, order_id, menu_item_id, name, quantity, price, unit_price, status, actual_price, picked").in("order_id", orderIds),
           userIds.length > 0 ? supabase.from("profiles").select("id, full_name").in("id", userIds) : Promise.resolve({ data: [] }),
         ]);
 

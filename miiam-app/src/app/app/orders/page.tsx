@@ -86,7 +86,7 @@ export default function OrdersPage() {
 
       const { data: ordersData, error: ordersError } = await supabase
         .from("orders")
-        .select("*")
+        .select("id, user_id, vendor_id, status, total_amount, delivery_fee, discount_amount, placed_at, delivered_at, created_at")
         .eq("user_id", authUser.id)
         .order("placed_at", { ascending: false });
 
@@ -127,7 +127,7 @@ export default function OrdersPage() {
     try {
       const { data: orderItems } = await supabase
         .from("order_items")
-        .select("*")
+        .select("id, order_id, menu_item_id, name, quantity, unit_price, price")
         .eq("order_id", order.id);
 
       if (orderItems && orderItems.length > 0) {

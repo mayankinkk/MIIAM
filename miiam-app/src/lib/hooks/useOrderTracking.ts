@@ -149,7 +149,7 @@ export function useOrderTracking(orderId: string, supabaseClient?: SupabaseClien
   const fetchOrderData = useCallback(async (id: string) => {
     const { data: orderData, error: orderError } = await supabase
       .from("orders")
-      .select("*")
+      .select("id, user_id, vendor_id, rider_id, status, total_amount, delivery_fee, discount_amount, payment_method, payment_status, created_at, delivery_address, special_instructions, otp, placed_at, delivered_at")
       .eq("id", id)
       .maybeSingle();
 
@@ -157,12 +157,12 @@ export function useOrderTracking(orderId: string, supabaseClient?: SupabaseClien
 
     const [vendorRes, riderRes, itemsRes, locationRes] = await Promise.all([
       orderData.vendor_id
-        ? supabase.from("vendors").select("*").eq("id", orderData.vendor_id).single()
+        ? supabase.from("vendors").select("id, shop_name, name, address, phone, latitude, longitude, lat, lng").eq("id", orderData.vendor_id).single()
         : Promise.resolve({ data: null }),
       orderData.rider_id
-        ? supabase.from("riders").select("*").eq("id", orderData.rider_id).single()
+        ? supabase.from("riders").select("id, name, phone").eq("id", orderData.rider_id).single()
         : Promise.resolve({ data: null }),
-      supabase.from("order_items").select("*").eq("order_id", id),
+      supabase.from("order_items").select("id, order_id, menu_item_id, name, quantity, price, unit_price, special_notes, status, actual_price, picked").eq("order_id", id),
       supabase.from("rider_locations").select("lat, lng").eq("order_id", id).limit(1).maybeSingle(),
     ]);
 
@@ -171,7 +171,7 @@ export function useOrderTracking(orderId: string, supabaseClient?: SupabaseClien
     if (items.length > 0) {
       const menuItemIds = items.map((i: OrderItemRecord) => i.menu_item_id).filter(Boolean) as string[];
       if (menuItemIds.length > 0) {
-        const { data: menuItems } = await supabase.from("menu_items").select("*").in("id", menuItemIds);
+        const { data: menuItems } = await supabase.from("menu_items").select("id, name, price, image_url, category").in("id", menuItemIds);
         if (menuItems) {
           items.forEach((item: OrderItemRecord) => {
             item.menu_item = (menuItems as MenuItemRecord[]).find((mi: MenuItemRecord) => mi.id === item.menu_item_id) || null;
@@ -254,7 +254,7 @@ export function useOrderTracking(orderId: string, supabaseClient?: SupabaseClien
           if (newData.rider_id) {
             const { data } = await supabase
               .from("riders")
-              .select("*")
+              .select("id, name, phone")
               .eq("id", newData.rider_id as string)
               .maybeSingle();
             riderData = data;
@@ -371,7 +371,7 @@ export function useActiveOrders(userId: string) {
     async function fetchActiveOrders() {
       const { data, error } = await supabase
         .from("orders")
-        .select("*, vendor:vendors(name)")
+        .select("id, user_id, vendor_id, status, total_amount, placed_at, vendor:vendors(shop_name)")
         .eq("user_id", userId)
         .in("status", [
           "pending", "accepted", "preparing", "ready",

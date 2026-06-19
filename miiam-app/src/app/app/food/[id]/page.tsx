@@ -304,9 +304,9 @@ export default function RestaurantProfilePage() {
     setError(null);
     try {
       const [vendorRes, menuRes, reviewsRes] = await Promise.all([
-        supabase.from("vendors").select("*").eq("id", vendorId).single(),
-        supabase.from("menu_items").select("*").eq("vendor_id", vendorId).order("name"),
-        supabase.from("reviews").select("*").eq("vendor_id", vendorId).order("created_at", { ascending: false }),
+        supabase.from("vendors").select("id, shop_name, cuisine, address, rating, rating_count, delivery_time, delivery_charge, image_url, cover_image_url, banner_url, description, opening_hours, is_featured").eq("id", vendorId).single(),
+        supabase.from("menu_items").select("id, name, price, category, image_url, is_veg, is_featured, description, vendor_id").eq("vendor_id", vendorId).order("name"),
+        supabase.from("reviews").select("id, user_name, user_avatar, rating, comment, created_at").eq("vendor_id", vendorId).order("created_at", { ascending: false }),
       ]);
       if (vendorRes.data) setVendor(vendorRes.data);
       if (menuRes.data) setMenuItems(menuRes.data);

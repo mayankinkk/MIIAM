@@ -225,7 +225,7 @@ export default function PartnerMenuPage() {
 
   async function loadItems() {
     setLoading(true);
-    const query = supabase.from(table).select("*").eq("vendor_id", selectedVendorId).order("name");
+    const query = supabase.from(table).select("id, vendor_id, name, price, category, image_url, is_veg, is_available, is_featured, description, stock, requires_prescription, has_discount, discount_percent, menu_slot").eq("vendor_id", selectedVendorId).order("name");
     const { data } = await query;
     if (data) setItems(data);
     setLoading(false);

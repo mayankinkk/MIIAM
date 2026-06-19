@@ -110,13 +110,13 @@ function SearchContent() {
       const [vendorsRes, menuRes] = await Promise.all([
         supabase
           .from("vendors")
-          .select("*")
+          .select("id, shop_name, name, cuisine, image_url, cover_image_url, rating, review_count, delivery_time_min, delivery_time_max, delivery_charge, min_order_amount, is_featured, status, type, pincode, city")
           .or(`shop_name.ilike.${searchTerm},cuisine.ilike.${searchTerm}`)
           .eq("status", "active")
           .limit(20),
         supabase
           .from("menu_items")
-          .select("*, vendor:vendors(*)")
+          .select("id, vendor_id, name, price, category, image_url, is_veg, is_available, vendor:vendors(id, shop_name, name, image_url, cover_image_url)")
           .ilike("name", `%${searchQuery}%`)
           .limit(20),
       ]);

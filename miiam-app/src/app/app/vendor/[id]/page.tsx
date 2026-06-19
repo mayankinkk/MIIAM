@@ -80,7 +80,7 @@ export default function VendorPage() {
       try {
         const { data: vendorData } = await supabase
           .from("vendors")
-          .select("*")
+          .select("id, shop_name, name, cuisine, address, phone, image_url, cover_image_url, banner_url, rating, rating_count, delivery_time, delivery_time_min, delivery_time_max, delivery_charge, min_order_amount, opening_hours, description, is_featured, is_pure_veg, status, type, pincode, city, state, latitude, longitude, lat, lng")
           .eq("id", vendorId)
           .single();
 
@@ -93,7 +93,7 @@ export default function VendorPage() {
 
         const { data: menuData } = await supabase
           .from(itemsTable)
-          .select("*")
+          .select("id, vendor_id, name, price, category, image_url, is_veg, is_available, is_featured, featured, description, menu_slot")
           .eq("vendor_id", vendorId);
 
         if (menuData) setMenuItems(menuData);

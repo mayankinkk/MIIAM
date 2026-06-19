@@ -135,7 +135,7 @@ export default function AdminVendorsPage() {
   const loadVendors = async () => {
     const { data } = await supabase
       .from("vendors")
-      .select("*")
+      .select("id, shop_name, name, owner_name, phone, email, address, city, state, pincode, cuisine, status, rating, review_count, delivery_charge, min_order_amount, delivery_time_min, delivery_time_max, is_featured, is_pure_veg, type, created_at")
       .order("created_at", { ascending: false });
     if (data) setVendors(data);
   };
@@ -341,7 +341,7 @@ export default function AdminVendorsPage() {
   const loadVendorMenuItems = async (vendorId: string) => {
     const { data } = await supabase
       .from("menu_items")
-      .select("*")
+      .select("id, vendor_id, name, price, category, image_url, description, is_veg, is_featured")
       .eq("vendor_id", vendorId);
     if (data) setVendorMenuItems(data.map((item: { id: string; vendor_id: string; name: string; price: number; category: string; image_url: string | null; description: string | null; is_veg: boolean | null; is_featured: boolean | null }) => ({ ...item, isNew: false })));
   };
