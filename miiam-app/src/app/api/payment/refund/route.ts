@@ -6,7 +6,7 @@ import { createRouteLogger } from "@/lib/logger";
 
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
-  if (!checkIpRateLimit(ip, 5, 60_000)) {
+  if (!await checkIpRateLimit(ip, 5, 60_000)) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 

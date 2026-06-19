@@ -89,35 +89,14 @@ export function checkCsrf(request: NextRequest): boolean {
   return true;
 }
 
-// IP-based rate limiting using in-memory store (resets on serverless cold start,
-// but sufficient for basic abuse prevention; use Redis for persistent limits)
-const ipRateLimits = new Map<string, { count: number; resetTime: number }>();
-
-export function checkIpRateLimit(
+// IP-based rate limiting backed by Upstash Redis (persistent across serverless cold starts).
+export async function checkIpRateLimit(
   ip: string,
   maxRequests: number = 30,
   windowMs: number = 60 * 1000
-): boolean {
-  const now = Date.now();
-  const entry = ipRateLimits.get(ip);
-
-  if (!entry || now > entry.resetTime) {
-    ipRateLimits.set(ip, { count: 1, resetTime: now + windowMs });
-    return true;
-  }
-
-  if (entry.count >= maxRequests) return false;
-  entry.count++;
-
-  // Cleanup expired entries periodically (every 1000 calls)
-  if (ipRateLimits.size > 1000) {
-    const now2 = Date.now();
-    for (const [key, val] of ipRateLimits) {
-      if (now2 > val.resetTime) ipRateLimits.delete(key);
-    }
-  }
-
-  return true;
+): Promise<boolean> {
+  const { checkIpRateLimit: checkUpstash } = await import("@/lib/rate-limit");
+  return checkUpstash(ip, maxRequests, windowMs);
 }
 
 export function getClientIp(request: NextRequest): string {

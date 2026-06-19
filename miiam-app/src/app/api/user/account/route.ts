@@ -4,7 +4,7 @@ import { checkIpRateLimit, getClientIp } from "@/lib/security";
 
 export async function DELETE(request: NextRequest) {
   const ip = getClientIp(request);
-  if (!checkIpRateLimit(ip, 3, 60 * 1000)) {
+  if (!await checkIpRateLimit(ip, 3, 60 * 1000)) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 

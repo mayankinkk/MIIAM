@@ -6,7 +6,7 @@ import { validatePassword, verifyHmac, getClientIp, checkIpRateLimit } from "@/l
 
 export async function POST(request: NextRequest) {
   const ip = getClientIp(request);
-  if (!checkIpRateLimit(ip, 20, 60_000)) {
+  if (!await checkIpRateLimit(ip, 20, 60_000)) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 

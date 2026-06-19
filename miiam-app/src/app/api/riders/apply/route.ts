@@ -9,7 +9,7 @@ export async function POST(request: Request) {
 
   // Rate limit: max 3 rider applications per hour per IP
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
-  if (!checkIpRateLimit(ip, 3, 60 * 60 * 1000)) {
+  if (!await checkIpRateLimit(ip, 3, 60 * 60 * 1000)) {
     return NextResponse.json({ error: "Too many applications. Please try again later." }, { status: 429 });
   }
   

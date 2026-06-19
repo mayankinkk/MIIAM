@@ -11,7 +11,7 @@ async function requireAuth() {
 
 export async function POST(request: NextRequest) {
   const ip = getClientIp(request);
-  if (!checkIpRateLimit(ip, 30, 60_000)) {
+  if (!await checkIpRateLimit(ip, 30, 60_000)) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 
@@ -130,7 +130,7 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   const ip = getClientIp(request);
-  if (!checkIpRateLimit(ip, 30, 60_000)) {
+  if (!await checkIpRateLimit(ip, 30, 60_000)) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 

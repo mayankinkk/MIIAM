@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
 
     // Rate limit: max 10 payment order creations per minute per IP
     const ip = getClientIp(req);
-    if (!checkIpRateLimit(ip, 10, 60 * 1000)) {
+    if (!await checkIpRateLimit(ip, 10, 60 * 1000)) {
       return NextResponse.json({ error: "Too many requests" }, { status: 429 });
     }
 

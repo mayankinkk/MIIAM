@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
 
     // Rate limit: max 10 messages per minute per IP
     const ip = getClientIp(request);
-    if (!checkIpRateLimit(ip, 10, 60 * 1000)) {
+    if (!await checkIpRateLimit(ip, 10, 60 * 1000)) {
       return NextResponse.json({ error: "Too many requests" }, { status: 429 });
     }
 

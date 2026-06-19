@@ -4,7 +4,7 @@ import { getClientIp, checkIpRateLimit } from "@/lib/security";
 
 export async function GET(request: NextRequest) {
   const ip = getClientIp(request);
-  if (!checkIpRateLimit(ip, 30, 60_000)) {
+  if (!await checkIpRateLimit(ip, 30, 60_000)) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 
