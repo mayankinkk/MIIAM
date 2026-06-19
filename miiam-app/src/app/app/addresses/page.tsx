@@ -8,6 +8,7 @@ import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import logger from "@/lib/logger";
+import { ListSkeleton } from "@/components/Skeleton";
 
 interface AddressData {
   id: string;
@@ -357,8 +358,8 @@ export default function AddressBookPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#f8f8f8] dark:bg-[var(--color-surface)] flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[#f8f8f8] dark:bg-[var(--color-surface)] p-4" aria-label="Loading...">
+        <ListSkeleton count={3} />
       </div>
     );
   }

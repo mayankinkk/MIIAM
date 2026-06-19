@@ -7,6 +7,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import EmptyState from "@/components/EmptyState";
+import { ListSkeleton } from "@/components/Skeleton";
 
 interface VendorData {
   shop_name: string;
@@ -72,8 +73,8 @@ export default function VendorReviewsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#f8f8f8] flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[#f8f8f8] p-4" aria-label="Loading...">
+        <ListSkeleton count={5} />
       </div>
     );
   }

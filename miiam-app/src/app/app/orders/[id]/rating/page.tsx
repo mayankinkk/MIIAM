@@ -8,6 +8,7 @@ import { useToastStore } from "@/lib/store/toastStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
 import { useTranslation } from "@/lib/i18n/useTranslation";
+import { Skeleton } from "@/components/Skeleton";
 import type { Translations } from "@/lib/i18n";
 
 function AnimatedStarRating({ 
@@ -236,8 +237,52 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-surface flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-surface flex items-center justify-center p-6" aria-label="Loading...">
+        <div className="w-full max-w-md space-y-6">
+          <div className="text-center space-y-2">
+            <Skeleton className="h-12 w-12 rounded-full mx-auto" />
+            <Skeleton className="h-6 w-40 mx-auto" />
+            <Skeleton className="h-4 w-56 mx-auto" />
+          </div>
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-xl p-8 space-y-4">
+            <Skeleton className="h-5 w-32 mx-auto" />
+            <div className="flex justify-center gap-3">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <Skeleton key={i} className="h-10 w-10 rounded-full" />
+              ))}
+            </div>
+            <Skeleton className="h-4 w-20 mx-auto" />
+          </div>
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-xl p-6 space-y-3">
+            <Skeleton className="h-5 w-36 mx-auto" />
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="flex items-center justify-between">
+                <Skeleton className="h-4 w-24" />
+                <div className="flex gap-1">
+                  {[1, 2, 3, 4, 5].map((j) => (
+                    <Skeleton key={j} className="h-5 w-5 rounded-full" />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-xl p-8 space-y-4">
+            <Skeleton className="h-20 w-20 rounded-full mx-auto" />
+            <Skeleton className="h-5 w-32 mx-auto" />
+            <div className="flex justify-center gap-3">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <Skeleton key={i} className="h-10 w-10 rounded-full" />
+              ))}
+            </div>
+          </div>
+          <Skeleton className="h-28 w-full rounded-xl" />
+          <div className="flex flex-wrap gap-2">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <Skeleton key={i} className="h-9 w-24 rounded-full" />
+            ))}
+          </div>
+          <Skeleton className="h-14 w-full rounded-xl" />
+        </div>
       </div>
     );
   }

@@ -12,6 +12,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
 import { PRINTING_VENDOR_ID } from "@/lib/constants";
 import { useTranslation } from "@/lib/i18n/useTranslation";
+import { ListSkeleton } from "@/components/Skeleton";
 
 
 interface PastOrder {
@@ -88,8 +89,8 @@ export default function CartPage() {
 
   if (!hydrated) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-surface dark:bg-[var(--color-surface)]">
-        <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" role="status" aria-live="polite"></div>
+      <div className="min-h-screen bg-surface dark:bg-[var(--color-surface)] p-4" aria-label="Loading...">
+        <ListSkeleton count={4} />
       </div>
     );
   }

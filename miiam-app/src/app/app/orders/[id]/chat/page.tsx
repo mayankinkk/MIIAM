@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useChat } from "@/lib/hooks/useChat";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { useTranslation } from "@/lib/i18n/useTranslation";
+import { Skeleton } from "@/components/Skeleton";
 
 export default function ChatPage() {
   const { t } = useTranslation();
@@ -66,16 +67,34 @@ export default function ChatPage() {
 
   if (!orderId) {
     return (
-      <div className="min-h-screen bg-surface flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-surface flex items-center justify-center" aria-label="Loading...">
+        <div className="w-full max-w-sm space-y-4 px-6">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className={`flex ${i % 2 === 0 ? "justify-end" : "justify-start"}`}>
+              <div className={`space-y-2 ${i % 2 === 0 ? "items-end" : "items-start"} flex flex-col`}>
+                <Skeleton className={`h-12 ${i % 2 === 0 ? "w-40" : "w-48"} rounded-2xl`} />
+                <Skeleton className="h-3 w-16" />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
 
   if (!currentUserId) {
     return (
-      <div className="min-h-screen bg-surface flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-surface flex items-center justify-center" aria-label="Loading...">
+        <div className="w-full max-w-sm space-y-4 px-6">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className={`flex ${i % 2 === 0 ? "justify-end" : "justify-start"}`}>
+              <div className={`space-y-2 ${i % 2 === 0 ? "items-end" : "items-start"} flex flex-col`}>
+                <Skeleton className={`h-12 ${i % 2 === 0 ? "w-40" : "w-48"} rounded-2xl`} />
+                <Skeleton className="h-3 w-16" />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
@@ -114,8 +133,13 @@ export default function ChatPage() {
       {/* Messages */}
       <main className="flex-1 mt-16 mb-32 px-4 pt-6 overflow-y-auto flex flex-col gap-6">
         {loading ? (
-          <div className="flex items-center justify-center h-32">
-            <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+          <div className="flex flex-col gap-6" aria-label="Loading messages...">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className={`flex flex-col gap-1 max-w-[85%] ${i % 2 === 0 ? "self-end items-end" : "self-start items-start"}`}>
+                <Skeleton className={`h-12 ${i % 2 === 0 ? "w-40 rounded-bl-2xl rounded-br-sm" : "w-48 rounded-br-2xl rounded-bl-sm"} rounded-t-2xl`} />
+                <Skeleton className="h-3 w-16" />
+              </div>
+            ))}
           </div>
         ) : messages.length === 0 ? (
           <div className="text-center py-12">

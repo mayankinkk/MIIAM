@@ -16,6 +16,7 @@ import CheckoutPromoCode from "@/components/checkout/CheckoutPromoCode";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { SERVICES_VENDOR_ID, PRINTING_VENDOR_ID } from "@/lib/constants";
 import { useTranslation } from "@/lib/i18n/useTranslation";
+import { Skeleton } from "@/components/Skeleton";
 import { calculateOrderTotals } from "@/lib/checkout-utils";
 import type { PromoCode } from "@/lib/checkout-utils";
 import { useCheckoutPromo } from "@/lib/hooks/useCheckoutPromo";
@@ -209,8 +210,27 @@ export default function CheckoutPage() {
 
   if (!hydrated) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-surface dark:bg-[var(--color-surface)]">
-        <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" role="status" aria-live="polite" />
+      <div className="min-h-screen bg-surface dark:bg-[var(--color-surface)] p-4" aria-label="Loading...">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-8 max-w-7xl mx-auto">
+          <div className="lg:col-span-8 space-y-5 sm:space-y-8">
+            <div className="bg-surface-container-lowest dark:bg-[var(--color-surface-container-lowest)] p-4 sm:p-6 rounded-2xl shadow-sm space-y-4">
+              <Skeleton className="h-5 w-32" />
+              <Skeleton className="h-12 w-full rounded-xl" />
+            </div>
+            <div className="bg-surface-container-lowest dark:bg-[var(--color-surface-container-lowest)] p-4 sm:p-6 rounded-2xl shadow-sm space-y-4">
+              <Skeleton className="h-5 w-40" />
+              <Skeleton className="h-12 w-full rounded-xl" />
+            </div>
+          </div>
+          <div className="lg:col-span-4 lg:sticky lg:top-24">
+            <div className="bg-surface-container-low dark:bg-[var(--color-surface-container)] p-5 sm:p-8 rounded-2xl shadow-sm space-y-4">
+              <Skeleton className="h-5 w-36" />
+              <Skeleton className="h-8 w-24" />
+              <Skeleton className="h-10 w-full rounded-xl" />
+              <Skeleton className="h-12 w-full rounded-xl" />
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

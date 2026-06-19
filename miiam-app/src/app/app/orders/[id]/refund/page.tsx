@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { useTranslation } from "@/lib/i18n/useTranslation";
+import { ListSkeleton } from "@/components/Skeleton";
 
 type RefundStatus = "requested" | "processing" | "approved" | "completed" | "rejected";
 
@@ -94,8 +95,8 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-surface flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-surface px-6 pt-24" aria-label="Loading...">
+        <ListSkeleton count={3} />
       </div>
     );
   }

@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { ListSkeleton } from "@/components/Skeleton";
 
 export default function BookingTrackPage() {
   const params = useParams();
@@ -28,8 +29,8 @@ export default function BookingTrackPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-surface">
-        <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+      <div className="min-h-screen bg-surface px-4 pt-20" aria-label="Loading...">
+        <ListSkeleton count={4} />
       </div>
     );
   }

@@ -10,6 +10,7 @@ import CustomizationModal from "@/components/food/CustomizationModal";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
 import { getCurrentMenuSlot } from "@/lib/menuSlots";
+import { Skeleton, ProfileSkeleton, MenuItemSkeleton } from "@/components/Skeleton";
 
 interface Vendor {
   id: string;
@@ -158,8 +159,15 @@ const sortedItems = [...filteredItems].sort((a, b) => ((b.is_featured || b.featu
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#f8f8f8] flex items-center justify-center">
-        <span className="material-symbols-outlined text-6xl text-primary animate-spin">sync</span>
+      <div className="min-h-screen bg-[#f8f8f8] p-4 space-y-4" aria-label="Loading...">
+        <Skeleton className="h-56 w-full rounded-2xl" />
+        <ProfileSkeleton />
+        <div className="space-y-3">
+          <Skeleton className="h-5 w-24" />
+          {[1, 2, 3, 4].map((i) => (
+            <MenuItemSkeleton key={i} />
+          ))}
+        </div>
       </div>
     );
   }

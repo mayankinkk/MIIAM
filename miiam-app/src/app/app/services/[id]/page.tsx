@@ -6,6 +6,7 @@ import { useRouter, useParams } from "next/navigation";
 import { useCartStore } from "@/lib/store/cartStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
+import { CardSkeleton } from "@/components/Skeleton";
 import { SERVICES_VENDOR_ID } from "@/lib/constants";
 import { getServiceById, SERVICE_TIME_SLOTS } from "@/lib/data/services";
 
@@ -295,8 +296,8 @@ function ServiceDetailContent() {
 
 function LoadingFallback() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-surface">
-      <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+    <div className="min-h-screen bg-surface flex items-center justify-center px-4" aria-label="Loading...">
+      <CardSkeleton />
     </div>
   );
 }
