@@ -3,13 +3,17 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useTranslation } from "@/lib/i18n/useTranslation";
+import dynamic from "next/dynamic";
 import PullToRefresh from "@/components/PullToRefresh";
 import QuickActionsFAB from "@/components/QuickActionsFAB";
 import BlurImage from "@/components/BlurImage";
 import { useCartStore } from "@/lib/store/cartStore";
 import { createClient } from "@/lib/supabase/client";
-import OnboardingTour from "@/components/OnboardingTour";
-import { StaggerContainer, StaggerItem, FadeIn } from "@/components/ui/AnimationWrappers";
+
+const OnboardingTour = dynamic(() => import("@/components/OnboardingTour"), { ssr: false });
+const StaggerContainer = dynamic(() => import("@/components/ui/AnimationWrappers").then(m => m.StaggerContainer), { ssr: false });
+const StaggerItem = dynamic(() => import("@/components/ui/AnimationWrappers").then(m => m.StaggerItem), { ssr: false });
+const FadeIn = dynamic(() => import("@/components/ui/AnimationWrappers").then(m => m.FadeIn), { ssr: false });
 
 const categories = [
   { id: "all", icon: "apps", label: "All" },
