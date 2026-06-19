@@ -138,6 +138,7 @@ function AddToCartButton({ item, vendor }: { item: MenuItem; vendor: Vendor }) {
 }
 
 function ReviewModal({ vendorId, onClose, onSubmitted }: { vendorId: string; onClose: () => void; onSubmitted: () => void }) {
+  const supabase = useMemo(() => createClient(), []);
   const { t } = useTranslation();
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
