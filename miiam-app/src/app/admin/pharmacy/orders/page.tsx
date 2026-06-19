@@ -3,6 +3,7 @@
 import { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { useToastStore } from "@/lib/store/toastStore";
 
 
 const statusColors: Record<string, string> = {
@@ -74,6 +75,16 @@ export default function PharmacyOrdersPage() {
       });
     }
     setLoading(false);
+  }
+
+  async function updateStatus(orderId: string, newStatus: string) {
+    const { error } = await supabase.from("orders").update({ status: newStatus }).eq("id", orderId);
+    if (error) {
+      useToastStore.getState().addToast("Failed to update status", "error");
+      return;
+    }
+    useToastStore.getState().addToast("Status updated", "success");
+    loadOrders();
   }
 
   const filteredOrders = orders.filter(order => {
@@ -174,9 +185,15 @@ export default function PharmacyOrdersPage() {
                     )}
                   </td>
                   <td className="p-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-bold capitalize ${statusColors[order.status]}`}>
-                      {order.status}
-                    </span>
+                    <select
+                      value={order.status}
+                      onChange={(e) => updateStatus(order.id, e.target.value)}
+                      className={`px-3 py-1 rounded-full text-xs font-bold capitalize border-0 focus:ring-2 focus:ring-[var(--color-primary)]/20 cursor-pointer ${statusColors[order.status]}`}
+                    >
+                      {["pending", "preparing", "shipped", "delivered", "cancelled"].map(s => (
+                        <option key={s} value={s}>{s}</option>
+                      ))}
+                    </select>
                   </td>
                   <td className="p-4 text-[var(--color-outline)] text-sm">{order.date}</td>
                 </tr>

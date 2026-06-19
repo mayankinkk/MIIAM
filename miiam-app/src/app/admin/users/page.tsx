@@ -24,6 +24,8 @@ export default function UserRegistry() {
   const [showRoleModal, setShowRoleModal] = useState(false);
   const [newRole, setNewRole] = useState("");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
 
   useEffect(() => {
     loadProfiles();
@@ -40,13 +42,16 @@ export default function UserRegistry() {
     };
   }, [page, searchQuery]);
 
-  const filteredProfiles = searchQuery
-    ? profiles.filter(p =>
-        p.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.id?.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : profiles;
+  const filteredProfiles = profiles.filter(p => {
+    const matchesSearch = !searchQuery ||
+      p.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.id?.toLowerCase().includes(searchQuery.toLowerCase());
+    if (!matchesSearch) return false;
+    if (dateFrom && p.created_at && new Date(p.created_at) < new Date(dateFrom)) return false;
+    if (dateTo && p.created_at && new Date(p.created_at) > new Date(dateTo + "T23:59:59")) return false;
+    return true;
+  });
 
   const toggleMenu = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -193,6 +198,20 @@ export default function UserRegistry() {
                className="bg-transparent border-none focus:outline-none text-sm w-full"
              />
            </div>
+           <input
+             type="date"
+             value={dateFrom}
+             onChange={(e) => setDateFrom(e.target.value)}
+             aria-label="Filter users from join date"
+             className="bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2 text-sm focus:outline-none"
+           />
+           <input
+             type="date"
+             value={dateTo}
+             onChange={(e) => setDateTo(e.target.value)}
+             aria-label="Filter users to join date"
+             className="bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2 text-sm focus:outline-none"
+           />
            <div className="flex gap-2 items-center">
              {selectedIds.size > 0 && (
                <>

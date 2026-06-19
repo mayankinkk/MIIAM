@@ -27,6 +27,8 @@ export default function ReviewsPage() {
   const [filter, setFilter] = useState<"all" | "vendor" | "rider">("all");
   const [search, setSearch] = useState("");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
 
   useEffect(() => {
     loadReviews();
@@ -75,6 +77,8 @@ export default function ReviewsPage() {
     if (filter === "vendor" && !r.vendor_id) return false;
     if (filter === "rider" && !r.rider_id) return false;
     if (search && !r.comment?.toLowerCase().includes(search.toLowerCase())) return false;
+    if (dateFrom && new Date(r.created_at) < new Date(dateFrom)) return false;
+    if (dateTo && new Date(r.created_at) > new Date(dateTo + "T23:59:59")) return false;
     return true;
   });
 
@@ -197,6 +201,20 @@ export default function ReviewsPage() {
               className="w-full bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none"
             />
           </div>
+          <input
+            type="date"
+            value={dateFrom}
+            onChange={(e) => setDateFrom(e.target.value)}
+            aria-label="Filter reviews from date"
+            className="bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2 text-sm focus:outline-none"
+          />
+          <input
+            type="date"
+            value={dateTo}
+            onChange={(e) => setDateTo(e.target.value)}
+            aria-label="Filter reviews to date"
+            className="bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2 text-sm focus:outline-none"
+          />
           <div className="flex gap-2 items-center">
             {selectedIds.size === 0 ? (
               <button

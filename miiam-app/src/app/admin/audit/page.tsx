@@ -2,6 +2,7 @@
 
 import { useMemo, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useToastStore } from "@/lib/store/toastStore";
 
 interface AuditLog {
   id: string;
@@ -19,6 +20,8 @@ export default function AuditLogs() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
 
   useEffect(() => {
     async function fetchLogs() {
@@ -69,12 +72,14 @@ export default function AuditLogs() {
   }, {} as Record<string, number>);
 
   const filteredLogs = logs.filter(l => {
-    if (search && !l.action.toLowerCase().includes(search.toLowerCase()) && 
+    if (search && !l.action.toLowerCase().includes(search.toLowerCase()) &&
         !l.target_id?.toLowerCase().includes(search.toLowerCase())) return false;
+    if (dateFrom && new Date(l.created_at) < new Date(dateFrom)) return false;
+    if (dateTo && new Date(l.created_at) > new Date(dateTo + "T23:59:59")) return false;
     return true;
   });
 
-  if (loading) return <div className="px-8">Loading audit logs...</div>;
+  if (loading) return <div className="px-8 text-[var(--color-on-surface)]">Loading audit logs...</div>;
 
   return (
     <div className="px-8 space-y-8">
@@ -84,8 +89,8 @@ export default function AuditLogs() {
           <p className="text-[var(--color-outline)]">Track all admin actions and platform changes.</p>
         </div>
         <button 
-          onClick={exportLogs}
-          className="bg-green-50 text-green-600 px-6 py-3 rounded-xl font-bold hover:bg-green-100 flex items-center gap-2"
+          onClick={() => { exportLogs(); useToastStore.getState().addToast("Audit logs exported", "success"); }}
+          className="bg-green-50 text-green-600 dark:bg-green-900/30 dark:text-green-300 px-6 py-3 rounded-xl font-bold hover:bg-green-100 flex items-center gap-2"
         >
           <span className="material-symbols-outlined text-sm">download</span>
           Export CSV
@@ -104,19 +109,38 @@ export default function AuditLogs() {
 
       {/* Filters */}
       <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-4 shadow-sm">
-        <div className="flex gap-4 flex-wrap">
+        <div className="flex gap-4 flex-wrap items-center">
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
+            aria-label="Filter by action type"
             className="bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2 text-sm focus:outline-none"
           >
             <option value="all">All Actions</option>
+            <option value="login">Login</option>
+            <option value="order">Order</option>
+            <option value="payment">Payment</option>
+            <option value="settings_change">Settings Change</option>
+            <option value="vendor_action">Vendor Action</option>
             <option value="create">Create</option>
             <option value="update">Update</option>
             <option value="delete">Delete</option>
-            <option value="login">Login</option>
             <option value="logout">Logout</option>
           </select>
+          <input
+            type="date"
+            value={dateFrom}
+            onChange={(e) => setDateFrom(e.target.value)}
+            aria-label="Filter from date"
+            className="bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2 text-sm focus:outline-none"
+          />
+          <input
+            type="date"
+            value={dateTo}
+            onChange={(e) => setDateTo(e.target.value)}
+            aria-label="Filter to date"
+            className="bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2 text-sm focus:outline-none"
+          />
           <div className="relative flex-1 min-w-[200px]">
             <span className="material-symbols-outlined absolute left-3 top-2.5 text-[var(--color-outline-variant)] text-sm">search</span>
             <input
@@ -124,6 +148,7 @@ export default function AuditLogs() {
               placeholder="Search logs..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
+              aria-label="Search audit logs"
               className="w-full bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/10"
             />
           </div>
@@ -179,8 +204,10 @@ export default function AuditLogs() {
           </table>
         </div>
         {filteredLogs.length === 0 && (
-          <div className="p-8 text-center text-[var(--color-outline-variant)]">
-            No audit logs found
+          <div className="p-12 text-center text-[var(--color-outline-variant)]">
+            <span className="material-symbols-outlined text-4xl mb-3 block">policy</span>
+            <p className="font-bold text-[var(--color-on-surface-variant)]">No audit logs found</p>
+            <p className="text-sm mt-1">Adjust filters or check back later.</p>
           </div>
         )}
       </div>

@@ -1,11 +1,11 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useToastStore } from "@/lib/store/toastStore";
 
 interface Settings {
   [key: string]: string | undefined;
-  // General
   platform_name?: string;
   support_email?: string;
   support_phone?: string;
@@ -13,39 +13,112 @@ interface Settings {
   maintenance_mode?: string;
   new_user_registration?: string;
   partner_onboarding?: string;
-  // Delivery
   default_delivery_fee?: string;
   free_delivery_above?: string;
   max_delivery_radius?: string;
   max_order_value?: string;
   cancellation_grace_period?: string;
   auto_accept_orders?: string;
-  // Payments
   platform_commission?: string;
   payment_gateway_fee?: string;
   payout_frequency?: string;
   min_payout_amount?: string;
-  // Legal / Contact
   grievance_email?: string;
   business_address?: string;
   city?: string;
   state?: string;
   pincode?: string;
-  // Legal content
   terms_content?: string;
   privacy_content?: string;
   refund_content?: string;
 }
 
+interface HealthCheck {
+  label: string;
+  status: "healthy" | "down" | "slow" | "loading";
+  value: string;
+}
+
 export default function SettingsPage() {
   const supabase = useMemo(() => createClient(), []);
+  const { addToast: _addToast } = useToastStore();
   const [activeTab, setActiveTab] = useState("general");
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
   const [settings, setSettings] = useState<Settings>({});
+  const [health, setHealth] = useState<HealthCheck[]>([
+    { label: "Database", status: "loading", value: "Checking..." },
+    { label: "API Response", status: "loading", value: "Checking..." },
+    { label: "Memory", status: "loading", value: "Checking..." },
+    { label: "Network", status: "loading", value: "Checking..." },
+    { label: "Settings Sync", status: "loading", value: "Checking..." },
+  ]);
+
+  const runHealthChecks = useCallback(async () => {
+    setHealth([
+      { label: "Database", status: "loading", value: "Checking..." },
+      { label: "API Response", status: "loading", value: "Checking..." },
+      { label: "Memory", status: "loading", value: "Checking..." },
+      { label: "Network", status: "loading", value: "Checking..." },
+      { label: "Settings Sync", status: "loading", value: "Checking..." },
+    ]);
+
+    const dbCheck = (async () => {
+      try {
+        const res = await supabase
+          .from("site_settings")
+          .select("id", { count: "exact", head: true });
+        if (res.error) return { label: "Database", status: "down" as const, value: res.error.message };
+        return { label: "Database", status: "healthy" as const, value: "Connected" };
+      } catch {
+        return { label: "Database", status: "down" as const, value: "Connection failed" };
+      }
+    })();
+
+    const apiCheck = (async () => {
+      const start = performance.now();
+      try {
+        const res = await fetch("/api/settings");
+        const ms = Math.round(performance.now() - start);
+        if (!res.ok) return { label: "API Response", status: "down" as const, value: `${res.status} — ${ms}ms` };
+        return { label: "API Response", status: ms > 1000 ? "slow" as const : "healthy" as const, value: `${ms}ms` };
+      } catch {
+        return { label: "API Response", status: "down" as const, value: "Unreachable" };
+      }
+    })();
+
+    const memCheck = (() => {
+      const mem = (navigator as unknown as { deviceMemory?: number }).deviceMemory;
+      if (mem) return { label: "Memory", status: "healthy" as const, value: `${mem} GB` };
+      return { label: "Memory", status: "healthy" as const, value: "Not available (SPA)" };
+    })();
+
+    const netCheck = (() => {
+      if (navigator.onLine) return { label: "Network", status: "healthy" as const, value: "Online" };
+      return { label: "Network", status: "down" as const, value: "Offline" };
+    })();
+
+    const syncCheck = (async () => {
+      const start = performance.now();
+      try {
+        const res = await fetch("/api/settings");
+        const data = await res.json();
+        const ms = Math.round(performance.now() - start);
+        const count = data.settings ? Object.keys(data.settings).length : 0;
+        return { label: "Settings Sync", status: ms > 1000 ? "slow" as const : "healthy" as const, value: `${count} keys loaded in ${ms}ms` };
+      } catch {
+        return { label: "Settings Sync", status: "down" as const, value: "Sync failed" };
+      }
+    })();
+
+    const results = await Promise.all([dbCheck, apiCheck, memCheck, netCheck, syncCheck]);
+    setHealth(results);
+  }, [supabase]);
 
   useEffect(() => {
     loadSettings();
+    runHealthChecks();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function loadSettings() {
@@ -102,7 +175,7 @@ export default function SettingsPage() {
       </div>
 
       <div className="flex gap-4">
-        {["general", "delivery", "payments", "notifications", "support", "legal"].map((tab) => (
+        {["general", "delivery", "payments", "notifications", "support", "legal", "system health"].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -608,6 +681,55 @@ export default function SettingsPage() {
                   <p className="font-bold text-[var(--color-on-surface)] text-sm mt-2">Refund Policy</p>
                 </a>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === "system health" && (
+        <div className="space-y-6">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-8 shadow-sm">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm">System Health</h3>
+              <button
+                onClick={runHealthChecks}
+                aria-label="Refresh health checks"
+                className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-xl text-sm font-bold hover:opacity-90"
+              >
+                Refresh
+              </button>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {health.map((item) => (
+                <div
+                  key={item.label}
+                  className={`p-5 rounded-2xl border transition-colors ${
+                    item.status === "healthy"
+                      ? "bg-green-50 border-green-200 dark:bg-green-950 dark:border-green-800"
+                      : item.status === "down"
+                      ? "bg-red-50 border-red-200 dark:bg-red-950 dark:border-red-800"
+                      : item.status === "slow"
+                      ? "bg-amber-50 border-amber-200 dark:bg-amber-950 dark:border-amber-800"
+                      : "bg-[var(--color-surface-subtle)] border-[var(--color-border-subtle)]"
+                  }`}
+                >
+                  <div className="flex items-center gap-3 mb-2">
+                    <span
+                      className={`w-3 h-3 rounded-full ${
+                        item.status === "healthy"
+                          ? "bg-green-500"
+                          : item.status === "down"
+                          ? "bg-red-500"
+                          : item.status === "slow"
+                          ? "bg-amber-500"
+                          : "bg-[var(--color-outline-variant)] animate-pulse"
+                      }`}
+                    />
+                    <p className="font-black text-[var(--color-on-surface)] text-sm uppercase tracking-wider">{item.label}</p>
+                  </div>
+                  <p className="text-[var(--color-on-surface-variant)] text-xs font-medium ml-6">{item.value}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>

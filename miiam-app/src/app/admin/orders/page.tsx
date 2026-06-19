@@ -36,6 +36,9 @@ export default function OrderManagement() {
   const [availableRiders, setAvailableRiders] = useState<{ id: string; name: string; phone: string }[]>([]);
   const [selectedRiderId, setSelectedRiderId] = useState<string>("");
   const [assigning, setAssigning] = useState(false);
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
+  const [orderItems, setOrderItems] = useState<Record<string, { name: string; quantity: number; unit_price: number }[]>>({});
 
   useEffect(() => {
     loadOrders();
@@ -92,7 +95,24 @@ export default function OrderManagement() {
       .select("*, vendor:vendors(name), rider:riders(*), user:user_id(*)")
       .neq("vendor_id", PRINTING_VENDOR_ID)
       .order("placed_at", { ascending: false });
-    if (data) setOrders(data);
+    if (data) {
+      setOrders(data);
+      const itemsMap: Record<string, { name: string; quantity: number; unit_price: number }[]> = {};
+      for (const o of data) {
+        const { data: items } = await supabase
+          .from("order_items")
+          .select("quantity, unit_price, menu_item:menu_items(name)")
+          .eq("order_id", o.id);
+        if (items) {
+          itemsMap[o.id] = items.map((i: any) => ({
+            name: i.menu_item?.name || "Item",
+            quantity: i.quantity,
+            unit_price: i.unit_price,
+          }));
+        }
+      }
+      setOrderItems(itemsMap);
+    }
     setLoading(false);
   }
 
@@ -190,6 +210,26 @@ export default function OrderManagement() {
     a.click();
   }
 
+  function generateInvoice(order: Order) {
+    const items = orderItems[order.id] || [];
+    const subtotal = order.total_amount - order.delivery_fee;
+    const gst = Math.round(subtotal * 0.05 * 100) / 100;
+    const itemsHtml = items.map(i => `
+      <tr>
+        <td style="padding:12px 16px;border-bottom:1px solid #f0f0f0;font-size:14px">${i.name}</td>
+        <td style="padding:12px 16px;border-bottom:1px solid #f0f0f0;font-size:14px;text-align:center">${i.quantity}</td>
+        <td style="padding:12px 16px;border-bottom:1px solid #f0f0f0;font-size:14px;text-align:right">₹${i.unit_price}</td>
+        <td style="padding:12px 16px;border-bottom:1px solid #f0f0f0;font-size:14px;text-align:right">₹${i.unit_price * i.quantity}</td>
+      </tr>
+    `).join("");
+    const html = `<!DOCTYPE html><html><head><title>Invoice #${order.id.slice(0,8)}</title><style>body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;margin:0;padding:40px;background:#fafafa;color:#1a1a1a}table{width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.08)}.header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px}.logo{font-size:24px;font-weight:800;color:#a40017}button{background:#a40017;color:#fff;border:none;padding:10px 24px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer}button:hover{opacity:0.9}</style></head><body><div class="header"><div><div class="logo">MIIAM</div><p style="color:#666;margin:4px 0 0;font-size:13px">Order Invoice</p></div><button onclick="window.print()">Print Invoice</button></div><div style="display:flex;gap:24px;margin-bottom:24px"><div style="background:#fff;padding:16px 20px;border-radius:8px;flex:1;box-shadow:0 1px 3px rgba(0,0,0,0.08)"><p style="margin:0;font-size:11px;color:#999;text-transform:uppercase;font-weight:700;letter-spacing:0.5px">Order ID</p><p style="margin:4px 0 0;font-size:15px;font-weight:700">#${order.id.slice(0,8)}</p></div><div style="background:#fff;padding:16px 20px;border-radius:8px;flex:1;box-shadow:0 1px 3px rgba(0,0,0,0.08)"><p style="margin:0;font-size:11px;color:#999;text-transform:uppercase;font-weight:700;letter-spacing:0.5px">Date</p><p style="margin:4px 0 0;font-size:15px;font-weight:700">${new Date(order.placed_at).toLocaleDateString("en-IN",{day:"numeric",month:"long",year:"numeric"})}</p></div><div style="background:#fff;padding:16px 20px;border-radius:8px;flex:1;box-shadow:0 1px 3px rgba(0,0,0,0.08)"><p style="margin:0;font-size:11px;color:#999;text-transform:uppercase;font-weight:700;letter-spacing:0.5px">Vendor</p><p style="margin:4px 0 0;font-size:15px;font-weight:700">${order.vendor?.name || "N/A"}</p></div></div><table><thead><tr style="background:#f8f8f8"><th style="padding:12px 16px;text-align:left;font-size:11px;text-transform:uppercase;font-weight:700;color:#999;letter-spacing:0.5px">Item</th><th style="padding:12px 16px;text-align:center;font-size:11px;text-transform:uppercase;font-weight:700;color:#999;letter-spacing:0.5px">Qty</th><th style="padding:12px 16px;text-align:right;font-size:11px;text-transform:uppercase;font-weight:700;color:#999;letter-spacing:0.5px">Price</th><th style="padding:12px 16px;text-align:right;font-size:11px;text-transform:uppercase;font-weight:700;color:#999;letter-spacing:0.5px">Total</th></tr></thead><tbody>${itemsHtml}</tbody></table><div style="background:#fff;padding:20px;border-radius:8px;margin-top:16px;box-shadow:0 1px 3px rgba(0,0,0,0.08);max-width:320px;margin-left:auto"><div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:14px;color:#666"><span>Subtotal</span><span>₹${subtotal}</span></div><div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:14px;color:#666"><span>Delivery Fee</span><span>₹${order.delivery_fee}</span></div><div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:14px;color:#666"><span>GST (5%)</span><span>₹${gst}</span></div>${order.discount_amount>0?`<div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:14px;color:#16a34a"><span>Discount</span><span>-₹${order.discount_amount}</span></div>`:""}<div style="display:flex;justify-content:space-between;padding-top:8px;border-top:2px solid #f0f0f0;font-size:16px;font-weight:800"><span>Total</span><span>₹${order.total_amount}</span></div></div><script>window.onafterprint=()=>window.close()</script></body></html>`;
+    const w = window.open("", "_blank");
+    if (w) {
+      w.document.write(html);
+      w.document.close();
+    }
+  }
+
   function toggleSelectAll() {
     if (selectedIds.size === filteredOrders.length) {
       setSelectedIds(new Set());
@@ -239,6 +279,8 @@ export default function OrderManagement() {
   const filteredOrders = orders.filter(o => {
     if (filter !== "all" && o.status !== filter) return false;
     if (search && !o.id.toLowerCase().includes(search.toLowerCase())) return false;
+    if (dateFrom && new Date(o.placed_at) < new Date(dateFrom)) return false;
+    if (dateTo && new Date(o.placed_at) > new Date(dateTo + "T23:59:59")) return false;
     return true;
   });
 
@@ -295,6 +337,20 @@ export default function OrderManagement() {
                 <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1).replaceAll("_", " ")}</option>
               ))}
             </select>
+            <input
+              type="date"
+              value={dateFrom}
+              onChange={(e) => setDateFrom(e.target.value)}
+              aria-label="Filter orders from date"
+              className="bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2 text-sm focus:outline-none"
+            />
+            <input
+              type="date"
+              value={dateTo}
+              onChange={(e) => setDateTo(e.target.value)}
+              aria-label="Filter orders to date"
+              className="bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2 text-sm focus:outline-none"
+            />
           </div>
           <div className="flex gap-2">
             {selectedIds.size > 0 && (
@@ -486,6 +542,13 @@ export default function OrderManagement() {
                 </div>
               )}
               <div className="flex gap-2">
+                <button
+                  onClick={() => generateInvoice(selectedOrder)}
+                  className="flex-1 py-3 bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] rounded-xl font-bold text-sm hover:bg-[var(--color-surface-container-high)] flex items-center justify-center gap-2"
+                >
+                  <span className="material-symbols-outlined text-sm">receipt_long</span>
+                  Invoice
+                </button>
                 {selectedOrder.status === "cancelled" && (
                   <button
                     onClick={() => refundOrder(selectedOrder.id)}

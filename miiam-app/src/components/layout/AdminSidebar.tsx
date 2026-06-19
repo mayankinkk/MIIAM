@@ -90,6 +90,7 @@ const menuGroups = [
       { name: "Reports", href: "/admin/reports", icon: "description" },
       { name: "Audit Logs", href: "/admin/audit", icon: "fact_check" },
       { name: "Service Toggles", href: "/admin/services-settings", icon: "toggle_on" },
+      { name: "Feature Flags", href: "/admin/feature-flags", icon: "flag" },
       { name: "Settings", href: "/admin/settings", icon: "settings" },
     ],
   },
