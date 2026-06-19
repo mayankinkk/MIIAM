@@ -189,8 +189,9 @@ export default function CouponsAdminPage() {
 
       {/* Coupons Table */}
       <div className="px-6 pb-6">
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl shadow-lg overflow-hidden">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl shadow-lg overflow-x-auto">
           <table className="w-full">
+            <caption className="sr-only">Coupons & Promotions</caption>
             <thead className="bg-[var(--color-surface-subtle)] border-b border-[var(--color-border-subtle)]">
               <tr>
                 <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Code</th>
@@ -279,10 +280,10 @@ export default function CouponsAdminPage() {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="coupon-modal-title" onKeyDown={(e) => e.key === "Escape" && setShowModal(false)}>
           <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl w-full max-w-lg p-6 m-4">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-black text-[var(--color-on-surface)]">
+              <h2 id="coupon-modal-title" className="text-xl font-black text-[var(--color-on-surface)]">
                 {editingCoupon ? "Edit Coupon" : "Create New Coupon"}
               </h2>
               <button
@@ -291,6 +292,7 @@ export default function CouponsAdminPage() {
                   setEditingCoupon(null);
                 }}
                 className="w-10 h-10 rounded-full hover:bg-[var(--color-surface-container)] flex items-center justify-center"
+                aria-label="Close"
               >
                 <span className="material-symbols-outlined text-[var(--color-outline-variant)]">close</span>
               </button>

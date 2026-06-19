@@ -149,17 +149,17 @@ export default function GroceryOrdersPage() {
           <p className="text-[var(--color-outline-variant)] text-xs font-bold">TOTAL ORDERS</p>
           <p className="text-2xl font-black text-[var(--color-on-surface)] mt-1">{stats.total}</p>
         </div>
-        <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-200">
-          <p className="text-yellow-600 text-xs font-bold">PENDING</p>
-          <p className="text-2xl font-black text-yellow-700 mt-1">{stats.pending}</p>
+        <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-xl border border-yellow-200 dark:border-yellow-800/30">
+          <p className="text-yellow-600 dark:text-yellow-400 text-xs font-bold">PENDING</p>
+          <p className="text-2xl font-black text-yellow-700 dark:text-yellow-300 mt-1">{stats.pending}</p>
         </div>
-        <div className="bg-green-50 p-4 rounded-xl border border-green-200">
-          <p className="text-green-600 text-xs font-bold">COMPLETED</p>
-          <p className="text-2xl font-black text-green-700 mt-1">{stats.completed}</p>
+        <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-xl border border-green-200 dark:border-green-800/30">
+          <p className="text-green-600 dark:text-green-400 text-xs font-bold">COMPLETED</p>
+          <p className="text-2xl font-black text-green-700 dark:text-green-300 mt-1">{stats.completed}</p>
         </div>
-        <div className="bg-red-50 p-4 rounded-xl border border-red-200">
-          <p className="text-red-600 text-xs font-bold">CANCELLED</p>
-          <p className="text-2xl font-black text-red-700 mt-1">{stats.cancelled}</p>
+        <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-xl border border-red-200 dark:border-red-800/30">
+          <p className="text-red-600 dark:text-red-400 text-xs font-bold">CANCELLED</p>
+          <p className="text-2xl font-black text-red-700 dark:text-red-300 mt-1">{stats.cancelled}</p>
         </div>
       </div>
 
@@ -171,12 +171,14 @@ export default function GroceryOrdersPage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search by order ID or customer name..."
+            aria-label="Search grocery orders"
             className="w-full pl-10 pr-4 py-3 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:border-[var(--color-primary)]"
           />
         </div>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
+          aria-label="Filter by status"
           className="px-4 py-3 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:border-[var(--color-primary)]"
         >
           <option value="all">All Status</option>
@@ -196,6 +198,7 @@ export default function GroceryOrdersPage() {
       ) : (
         <div className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] overflow-hidden">
           <table className="w-full">
+            <caption className="sr-only">Grocery Orders</caption>
             <thead className="bg-[var(--color-surface-subtle)]">
               <tr>
                 <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Order ID</th>
@@ -241,15 +244,15 @@ export default function GroceryOrdersPage() {
       )}
 
       {selectedOrder && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" role="dialog" aria-modal="true" aria-labelledby="grocery-order-title" onKeyDown={(e) => e.key === "Escape" && setSelectedOrder(null)}>
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b sticky top-0 bg-[var(--color-surface-container-lowest)]">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-xl font-black text-[var(--color-on-surface)]">Order Details</h2>
+                  <h2 id="grocery-order-title" className="text-xl font-black text-[var(--color-on-surface)]">Order Details</h2>
                   <p className="text-[var(--color-outline)] text-sm">#{selectedOrder.id.slice(0, 8).toUpperCase()}</p>
                 </div>
-                <button onClick={() => setSelectedOrder(null)} className="text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]">
+                <button onClick={() => setSelectedOrder(null)} className="text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]" aria-label="Close">
                   <span className="material-symbols-outlined text-3xl">close</span>
                 </button>
               </div>

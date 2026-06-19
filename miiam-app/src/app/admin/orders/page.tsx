@@ -241,12 +241,14 @@ export default function OrderManagement() {
                 placeholder="Search order ID..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
+                aria-label="Search orders"
                 className="bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/10"
               />
             </div>
             <select
               value={filter}
               onChange={(e) => setFilter(e.target.value as OrderStatus | "all")}
+              aria-label="Filter by status"
               className="bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2 text-sm focus:outline-none"
             >
               <option value="all">All Status</option>
@@ -285,6 +287,7 @@ export default function OrderManagement() {
       <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
+            <caption className="sr-only">Order Management</caption>
             <thead className="bg-[var(--color-surface-subtle)] border-b border-[var(--color-border-subtle)]">
               <tr>
                 <th className="p-4">
@@ -333,6 +336,7 @@ export default function OrderManagement() {
                     <button
                       onClick={() => setSelectedOrder(order)}
                       className="text-[var(--color-outline-variant)] hover:text-[var(--color-primary)] p-2"
+                      aria-label={`View order ${order.id.slice(0, 8)}`}
                     >
                       <span className="material-symbols-outlined">visibility</span>
                     </button>
@@ -349,14 +353,14 @@ export default function OrderManagement() {
 
       {/* Order Detail Modal */}
       {selectedOrder && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" role="dialog" aria-modal="true" aria-labelledby="order-detail-title" onKeyDown={(e) => e.key === "Escape" && setSelectedOrder(null)}>
           <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-[var(--color-border-subtle)] flex justify-between items-center sticky top-0 bg-[var(--color-surface-container-lowest)]">
               <div>
-                <h2 className="text-xl font-black text-[var(--color-on-surface)]">Order #{selectedOrder.id.slice(0, 8)}</h2>
+                <h2 id="order-detail-title" className="text-xl font-black text-[var(--color-on-surface)]">Order #{selectedOrder.id.slice(0, 8)}</h2>
                 <p className="text-xs text-[var(--color-outline-variant)]">{new Date(selectedOrder.placed_at).toLocaleString()}</p>
               </div>
-              <button onClick={() => setSelectedOrder(null)} className="text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)] p-2">
+              <button onClick={() => setSelectedOrder(null)} className="text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)] p-2" aria-label="Close">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>

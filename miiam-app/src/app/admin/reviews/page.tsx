@@ -3,6 +3,7 @@
 import { useMemo, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
+import { useConfirm } from "@/components/ui/ConfirmDialog";
 
 interface Review {
   id: string;
@@ -20,6 +21,7 @@ interface Review {
 
 export default function ReviewsPage() {
   const supabase = useMemo(() => createClient(), []);
+  const { confirm } = useConfirm();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "vendor" | "rider">("all");
@@ -37,8 +39,10 @@ export default function ReviewsPage() {
   }
 
   async function deleteReview(id: string) {
-    await supabase.from("reviews").delete().eq("id", id);
-    setReviews(reviews.filter(r => r.id !== id));
+    if (await confirm({ title: "Delete Review", message: "Are you sure you want to delete this review? This action cannot be undone.", variant: "danger" })) {
+      await supabase.from("reviews").delete().eq("id", id);
+      setReviews(reviews.filter(r => r.id !== id));
+    }
   }
 
   async function toggleStatus(id: string, currentStatus: boolean, field: 'is_approved' | 'is_highlighted') {
@@ -83,9 +87,9 @@ export default function ReviewsPage() {
           <p className="text-xs font-black text-[var(--color-outline-variant)] uppercase tracking-widest mb-1">Total Reviews</p>
           <p className="text-3xl font-black text-[var(--color-on-surface)]">{reviews.length}</p>
         </div>
-        <div className="bg-amber-50 p-6 rounded-3xl border border-amber-100 shadow-sm">
-          <p className="text-xs font-black text-amber-600 uppercase tracking-widest mb-1">Avg Rating</p>
-          <p className="text-3xl font-black text-amber-600 flex items-center gap-1">
+        <div className="bg-amber-50 dark:bg-amber-900/20 p-6 rounded-3xl border border-amber-100 dark:border-amber-800/30 shadow-sm">
+          <p className="text-xs font-black text-amber-600 dark:text-amber-400 uppercase tracking-widest mb-1">Avg Rating</p>
+          <p className="text-3xl font-black text-amber-600 dark:text-amber-400 flex items-center gap-1">
             {avgRating} <span className="material-symbols-outlined text-xl">star</span>
           </p>
         </div>
@@ -120,6 +124,7 @@ export default function ReviewsPage() {
               placeholder="Search reviews..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
+              aria-label="Search reviews"
               className="w-full bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none"
             />
           </div>
@@ -174,7 +179,7 @@ export default function ReviewsPage() {
                   <button 
                     onClick={() => deleteReview(review.id)}
                     className="text-red-500 hover:text-red-700 p-1 flex justify-end"
-                    title="Delete Review"
+                    aria-label="Delete review"
                   >
                     <span className="material-symbols-outlined text-sm">delete</span>
                   </button>

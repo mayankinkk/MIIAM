@@ -213,6 +213,7 @@ export default function BlogAdminPage() {
               placeholder="Search articles..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
+              aria-label="Search blog articles"
               className="pl-10 pr-4 py-2 rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-green-500 w-full md:w-64"
             />
           </div>
@@ -255,6 +256,7 @@ export default function BlogAdminPage() {
                       className={`w-10 h-10 rounded-full flex items-center justify-center ${
                         post.published ? "bg-green-500 text-white" : "bg-[var(--color-surface-container-high)] text-[var(--color-outline)]"
                       }`}
+                      aria-label={post.published ? `Unpublish: ${post.title}` : `Publish: ${post.title}`}
                     >
                       <span className="material-symbols-outlined text-sm">
                         {post.published ? "visibility" : "visibility_off"}
@@ -300,16 +302,17 @@ export default function BlogAdminPage() {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4" role="dialog" aria-modal="true" aria-labelledby="blog-modal-title" onKeyDown={(e) => e.key === "Escape" && setShowModal(false)}>
           <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-[var(--color-border-subtle)]">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-black text-[var(--color-on-surface)]">
+                <h2 id="blog-modal-title" className="text-xl font-black text-[var(--color-on-surface)]">
                   {editingPost ? "Edit Article" : "Create New Article"}
                 </h2>
                 <button
                   onClick={() => setShowModal(false)}
                   className="w-10 h-10 rounded-full hover:bg-[var(--color-surface-container)] flex items-center justify-center"
+                  aria-label="Close"
                 >
                   <span className="material-symbols-outlined text-[var(--color-outline-variant)]">close</span>
                 </button>

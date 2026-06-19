@@ -5,8 +5,6 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { PRINTING_VENDOR_ID } from "@/lib/constants";
 
-const supabase = createClient();
-
 interface OrderRecord {
   id: string;
   placed_at: string;
@@ -37,6 +35,7 @@ interface AnalyticsData {
 }
 
 export default function AdminPrintingAnalytics() {
+  const supabase = useMemo(() => createClient(), []);
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [days, setDays] = useState(14);

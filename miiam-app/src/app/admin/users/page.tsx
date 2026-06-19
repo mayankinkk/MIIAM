@@ -25,7 +25,7 @@ export default function UserRegistry() {
 
   useEffect(() => {
     loadProfiles();
-  }, [page]);
+  }, [page, searchQuery]);
 
   const filteredProfiles = searchQuery
     ? profiles.filter(p =>
@@ -61,13 +61,23 @@ export default function UserRegistry() {
     const from = (page - 1) * PAGE_SIZE;
     const to = from + PAGE_SIZE - 1;
     
-    const [{ data, count }] = await Promise.all([
-      supabase.from("profiles").select("*", { count: "exact" }).range(from, to).order("created_at", { ascending: false }),
-      supabase.from("profiles").select("*", { count: "exact", head: true })
-    ]);
-    
-    if (data) setProfiles(data);
-    setTotalCount(count || 0);
+    if (searchQuery.trim()) {
+      const { data, count } = await supabase
+        .from("profiles")
+        .select("*", { count: "exact" })
+        .or(`full_name.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%`)
+        .range(from, to)
+        .order("created_at", { ascending: false });
+      if (data) setProfiles(data);
+      setTotalCount(count || 0);
+    } else {
+      const [{ data, count }] = await Promise.all([
+        supabase.from("profiles").select("*", { count: "exact" }).range(from, to).order("created_at", { ascending: false }),
+        supabase.from("profiles").select("*", { count: "exact", head: true })
+      ]);
+      if (data) setProfiles(data);
+      setTotalCount(count || 0);
+    }
     setLoading(false);
   };
 
@@ -113,14 +123,16 @@ export default function UserRegistry() {
              <input
                type="text"
                value={searchQuery}
-               onChange={e => setSearchQuery(e.target.value)}
+               onChange={e => { setSearchQuery(e.target.value); setPage(1); }}
                placeholder="Search by name, email or ID..."
+               aria-label="Search users"
                className="bg-transparent border-none focus:outline-none text-sm w-full"
              />
            </div>
             <button
               onClick={() => { setSearchQuery(""); setPage(1); }}
               className={`p-3 rounded-xl transition-colors ${searchQuery ? "bg-[var(--color-primary)] text-white" : "bg-[var(--color-surface-subtle)] text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]"}`}
+              aria-label="Clear search"
             >
               <span className="material-symbols-outlined">filter_list</span>
             </button>
@@ -128,6 +140,7 @@ export default function UserRegistry() {
         
         <div className="overflow-x-auto" onClick={() => setOpenMenuId(null)}>
           <table className="w-full text-left">
+            <caption className="sr-only">User Registry</caption>
             <thead className="bg-[var(--color-surface-subtle)] border-b border-[var(--color-border-subtle)]">
               <tr>
                 <th className="p-6 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Profile</th>
@@ -166,6 +179,7 @@ export default function UserRegistry() {
                     <button 
                       onClick={(e) => toggleMenu(profile.id, e)}
                       className="text-[var(--color-outline-variant)] hover:text-[var(--color-primary)] transition-colors p-2 rounded hover:bg-[var(--color-surface-container)]"
+                      aria-label="More actions"
                     >
                       <span className="material-symbols-outlined text-[20px]">more_vert</span>
                     </button>
@@ -225,11 +239,11 @@ export default function UserRegistry() {
 
       {/* User Detail Modal */}
       {showDetailModal && selectedProfile && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" role="dialog" aria-modal="true" aria-labelledby="user-detail-title" onKeyDown={(e) => e.key === "Escape" && setShowDetailModal(false)}>
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-md mx-4">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-black text-[var(--color-on-surface)]">User Details</h3>
-              <button onClick={() => setShowDetailModal(false)} className="p-1 hover:bg-[var(--color-surface-container)] rounded-full">
+              <h3 id="user-detail-title" className="text-lg font-black text-[var(--color-on-surface)]">User Details</h3>
+              <button onClick={() => setShowDetailModal(false)} className="p-1 hover:bg-[var(--color-surface-container)] rounded-full" aria-label="Close">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
@@ -247,9 +261,9 @@ export default function UserRegistry() {
 
       {/* Role Change Modal */}
       {showRoleModal && selectedProfile && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" role="dialog" aria-modal="true" aria-labelledby="role-change-title" onKeyDown={(e) => e.key === "Escape" && setShowRoleModal(false)}>
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-sm mx-4">
-            <h3 className="text-lg font-black text-[var(--color-on-surface)] mb-4">Change Role — {selectedProfile.full_name}</h3>
+            <h3 id="role-change-title" className="text-lg font-black text-[var(--color-on-surface)] mb-4">Change Role — {selectedProfile.full_name}</h3>
             <div className="space-y-2">
               {["customer", "admin", "rider"].map(role => (
                 <button

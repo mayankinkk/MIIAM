@@ -34,16 +34,16 @@ export default function NotificationCenter() {
     
     const { data: users } = await supabase.from("profiles").select("id");
     
-    if (users) {
-      const notifications = users.map((u: { id: string }) => ({
-        user_id: u.id,
-        title: newNotification.title,
-        body: newNotification.body,
-        type: newNotification.type,
-        is_read: false
-      }));
-      
-      await supabase.from("notifications").insert(notifications);
+    if (users && users.length > 0) {
+      await supabase.from("notifications").insert(
+        users.map((u: { id: string }) => ({
+          user_id: u.id,
+          title: newNotification.title,
+          body: newNotification.body,
+          type: newNotification.type,
+          is_read: false,
+        }))
+      );
     }
     
     setShowSend(false);
@@ -92,9 +92,9 @@ export default function NotificationCenter() {
           <p className="text-xs font-black text-[var(--color-outline-variant)] uppercase tracking-widest mb-1">Total</p>
           <p className="text-3xl font-black text-[var(--color-on-surface)]">{notifications.length}</p>
         </div>
-        <div className="bg-yellow-50 p-6 rounded-3xl border border-yellow-100 shadow-sm">
-          <p className="text-xs font-black text-yellow-600 uppercase tracking-widest mb-1">Unread</p>
-          <p className="text-3xl font-black text-yellow-600">{unreadCount}</p>
+        <div className="bg-yellow-50 dark:bg-yellow-900/20 p-6 rounded-3xl border border-yellow-100 dark:border-yellow-800/30 shadow-sm">
+          <p className="text-xs font-black text-yellow-600 dark:text-yellow-400 uppercase tracking-widest mb-1">Unread</p>
+          <p className="text-3xl font-black text-yellow-600 dark:text-yellow-400">{unreadCount}</p>
         </div>
         <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-[var(--color-border-subtle)] shadow-sm">
           <p className="text-xs font-black text-[var(--color-outline-variant)] uppercase tracking-widest mb-1">Order Alerts</p>
@@ -174,11 +174,11 @@ export default function NotificationCenter() {
 
       {/* Send Notification Modal */}
       {showSend && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" role="dialog" aria-modal="true" aria-labelledby="notif-send-title">
           <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl max-w-md w-full">
             <div className="p-6 border-b border-[var(--color-border-subtle)] flex justify-between items-center">
-              <h2 className="text-xl font-black text-[var(--color-on-surface)]">Send Notification</h2>
-              <button onClick={() => setShowSend(false)} className="text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]">
+              <h2 id="notif-send-title" className="text-xl font-black text-[var(--color-on-surface)]">Send Notification</h2>
+              <button onClick={() => setShowSend(false)} className="text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]" aria-label="Close">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>

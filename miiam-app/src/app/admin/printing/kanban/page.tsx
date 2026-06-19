@@ -5,8 +5,6 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { PRINTING_VENDOR_ID } from "@/lib/constants";
 
-const supabase = createClient();
-
 const KANBAN_COLUMNS = [
   { id: "pending", label: "Pending", icon: "schedule", color: "bg-amber-100 border-amber-300" },
   { id: "processing", label: "Printing", icon: "print", color: "bg-indigo-100 border-indigo-300" },
@@ -49,6 +47,7 @@ interface PrintSettings {
 }
 
 export default function AdminPrintingKanban() {
+  const supabase = useMemo(() => createClient(), []);
   const [orders, setOrders] = useState<PrintOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [draggingId, setDraggingId] = useState<string | null>(null);
@@ -255,14 +254,14 @@ export default function AdminPrintingKanban() {
         const fallbackEta = nameMatch?.[2] ? parseInt(nameMatch[2], 10) : null;
         const hasAnySettings = selSettings.pages || selSettings.copies || selSettings.colorMode || selSettings.paperSize || fallbackPages;
         return (
-          <div className="fixed inset-0 z-50 bg-black/50 flex items-start justify-center p-4 pt-[5vh] overflow-y-auto" onClick={() => setSelectedOrder(null)}>
+          <div className="fixed inset-0 z-50 bg-black/50 flex items-start justify-center p-4 pt-[5vh] overflow-y-auto" onClick={() => setSelectedOrder(null)} role="dialog" aria-modal="true" aria-labelledby="kanban-order-title" onKeyDown={(e) => e.key === "Escape" && setSelectedOrder(null)}>
             <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-lg" onClick={(e) => e.stopPropagation()}>
               <div className="flex items-center justify-between p-5 pb-0">
                 <div>
-                  <h3 className="font-bold text-lg">Order #{selectedOrder.id.slice(0, 8)}</h3>
+                  <h3 id="kanban-order-title" className="font-bold text-lg">Order #{selectedOrder.id.slice(0, 8)}</h3>
                   <p className="text-sm text-[var(--color-outline)]">{new Date(selectedOrder.placed_at).toLocaleString("en-IN")} · ₹{selectedOrder.total_amount}</p>
                 </div>
-                <button onClick={() => setSelectedOrder(null)} className="w-11 h-11 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center shrink-0">
+                <button onClick={() => setSelectedOrder(null)} className="w-11 h-11 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center shrink-0" aria-label="Close">
                   <span className="material-symbols-outlined text-sm">close</span>
                 </button>
               </div>

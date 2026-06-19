@@ -276,6 +276,7 @@ export default function EnhancedServicesDashboard() {
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-left">
+                <caption className="sr-only">Recent Service Bookings</caption>
                 <thead className="bg-[var(--color-surface-subtle)]">
                   <tr>
                     <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">ID</th>
@@ -341,6 +342,7 @@ export default function EnhancedServicesDashboard() {
             <select
               value={serviceFilter}
               onChange={(e) => setServiceFilter(e.target.value)}
+              aria-label="Filter by service type"
               className="ml-auto px-4 py-2 bg-[var(--color-surface-subtle)] rounded-lg text-sm font-bold"
             >
               <option value="all">All Services</option>
@@ -349,22 +351,23 @@ export default function EnhancedServicesDashboard() {
               ))}
             </select>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead className="bg-[var(--color-surface-subtle)]">
-                <tr>
-                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Booking ID</th>
-                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Service</th>
-                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Customer</th>
-                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Phone</th>
-                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Address</th>
-                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Schedule</th>
-                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Provider</th>
-                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Status</th>
-                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase text-right">Amount</th>
-                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Actions</th>
-                </tr>
-              </thead>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <caption className="sr-only">Service Bookings</caption>
+                <thead className="bg-[var(--color-surface-subtle)]">
+                  <tr>
+                    <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Booking ID</th>
+                    <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Service</th>
+                    <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Customer</th>
+                    <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Phone</th>
+                    <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Address</th>
+                    <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Schedule</th>
+                    <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Provider</th>
+                    <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Status</th>
+                    <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase text-right">Amount</th>
+                    <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Actions</th>
+                  </tr>
+                </thead>
               <tbody className="divide-y divide-slate-50 text-sm">
                 {bookings.map((booking) => (
                   <tr key={booking.id} className="hover:bg-[var(--color-surface-subtle)]">
@@ -542,9 +545,9 @@ export default function EnhancedServicesDashboard() {
 
       {/* Provider Registration Modal */}
       {showProviderModal && (
-        <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="provider-modal-title" onKeyDown={(e) => e.key === "Escape" && setShowProviderModal(false)}>
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-md p-6">
-            <h3 className="font-bold text-lg mb-4">Register Service Provider</h3>
+            <h3 id="provider-modal-title" className="font-bold text-lg mb-4">Register Service Provider</h3>
             <div className="space-y-3">
               <input type="text" placeholder="Full Name" value={providerForm.name} onChange={(e) => setProviderForm({ ...providerForm, name: e.target.value })} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm" />
               <input type="tel" placeholder="Phone Number" value={providerForm.phone} onChange={(e) => setProviderForm({ ...providerForm, phone: e.target.value })} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm" />
@@ -579,9 +582,9 @@ export default function EnhancedServicesDashboard() {
 
       {/* Category Creation Modal */}
       {showCategoryModal && (
-        <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="category-modal-title" onKeyDown={(e) => e.key === "Escape" && setShowCategoryModal(false)}>
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-md p-6">
-            <h3 className="font-bold text-lg mb-4">Add Service Category</h3>
+            <h3 id="category-modal-title" className="font-bold text-lg mb-4">Add Service Category</h3>
             <div className="space-y-3">
               <input type="text" placeholder="Category Name" value={categoryForm.name} onChange={(e) => setCategoryForm({ ...categoryForm, name: e.target.value })} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm" />
               <input type="text" placeholder="Icon name (e.g., construction, clean_hands)" value={categoryForm.icon} onChange={(e) => setCategoryForm({ ...categoryForm, icon: e.target.value })} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm" />

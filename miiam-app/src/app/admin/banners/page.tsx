@@ -94,9 +94,9 @@ export default function BannerManagement() {
           <p className="text-xs font-black text-[var(--color-outline-variant)] uppercase tracking-widest mb-1">Total Banners</p>
           <p className="text-3xl font-black text-[var(--color-on-surface)]">{banners.length}</p>
         </div>
-        <div className="bg-green-50 p-6 rounded-3xl border border-green-100 shadow-sm">
-          <p className="text-xs font-black text-green-600 uppercase tracking-widest mb-1">Active</p>
-          <p className="text-3xl font-black text-green-600">{banners.filter(b => b.is_active).length}</p>
+        <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-3xl border border-green-100 dark:border-green-800/30 shadow-sm">
+          <p className="text-xs font-black text-green-600 dark:text-green-400 uppercase tracking-widest mb-1">Active</p>
+          <p className="text-3xl font-black text-green-600 dark:text-green-400">{banners.filter(b => b.is_active).length}</p>
         </div>
         <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-[var(--color-border-subtle)] shadow-sm">
           <p className="text-xs font-black text-[var(--color-outline-variant)] uppercase tracking-widest mb-1">Inactive</p>
@@ -141,6 +141,7 @@ export default function BannerManagement() {
                 <button 
                   onClick={() => deleteBanner(banner.id)}
                   className="text-[var(--color-outline-variant)] hover:text-red-500 p-2"
+                  aria-label={`Delete banner: ${banner.title}`}
                 >
                   <span className="material-symbols-outlined text-sm">delete</span>
                 </button>
@@ -183,6 +184,7 @@ export default function BannerManagement() {
                 <button 
                   onClick={() => deleteBanner(banner.id)}
                   className="text-[var(--color-outline-variant)] hover:text-red-500 p-2"
+                  aria-label={`Delete banner: ${banner.title}`}
                 >
                   <span className="material-symbols-outlined text-sm">delete</span>
                 </button>
@@ -199,11 +201,11 @@ export default function BannerManagement() {
 
       {/* Add Banner Modal */}
       {showAdd && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" role="dialog" aria-modal="true" aria-labelledby="banner-modal-title" onKeyDown={(e) => e.key === "Escape" && setShowAdd(false)}>
           <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl max-w-md w-full">
             <div className="p-6 border-b border-[var(--color-border-subtle)] flex justify-between items-center">
-              <h2 className="text-xl font-black text-[var(--color-on-surface)]">Add Banner</h2>
-              <button onClick={() => setShowAdd(false)} className="text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]">
+              <h2 id="banner-modal-title" className="text-xl font-black text-[var(--color-on-surface)]">Add Banner</h2>
+              <button onClick={() => setShowAdd(false)} className="text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]" aria-label="Close">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>

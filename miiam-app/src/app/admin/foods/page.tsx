@@ -482,11 +482,11 @@ export default function AdminFoodsDashboard() {
       </div>
 
       {selectedOrder && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" role="dialog" aria-modal="true" aria-labelledby="food-order-title" onKeyDown={(e) => e.key === "Escape" && setSelectedOrder(null)}>
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl max-w-lg w-full max-h-[80vh] overflow-y-auto">
             <div className="p-6 border-b flex items-center justify-between">
-              <h2 className="font-black text-lg">Order #{selectedOrder.id?.slice(0, 8).toUpperCase()}</h2>
-              <button onClick={() => setSelectedOrder(null)} className="text-[var(--color-outline-variant)]">
+              <h2 id="food-order-title" className="font-black text-lg">Order #{selectedOrder.id?.slice(0, 8).toUpperCase()}</h2>
+              <button onClick={() => setSelectedOrder(null)} className="text-[var(--color-outline-variant)]" aria-label="Close">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>

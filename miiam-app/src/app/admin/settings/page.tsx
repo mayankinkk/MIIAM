@@ -171,6 +171,9 @@ export default function SettingsPage() {
                 </div>
                 <button
                   onClick={() => toggleKey("maintenance_mode")}
+                  role="switch"
+                  aria-checked={isOn("maintenance_mode")}
+                  aria-label="Toggle Maintenance Mode"
                   className={`w-12 h-6 rounded-full relative transition-colors ${isOn("maintenance_mode") ? "bg-red-500" : "bg-[var(--color-surface-container-high)]"}`}
                 >
                   <span className={`absolute top-1 w-4 h-4 bg-[var(--color-surface-container-lowest)] rounded-full transition-all ${isOn("maintenance_mode") ? "right-1" : "left-1"}`} />
@@ -183,6 +186,9 @@ export default function SettingsPage() {
                 </div>
                 <button
                   onClick={() => toggleKey("new_user_registration")}
+                  role="switch"
+                  aria-checked={isOn("new_user_registration")}
+                  aria-label="Toggle New User Registration"
                   className={`w-12 h-6 rounded-full relative transition-colors ${isOn("new_user_registration") ? "bg-green-500" : "bg-[var(--color-surface-container-high)]"}`}
                 >
                   <span className={`absolute top-1 w-4 h-4 bg-[var(--color-surface-container-lowest)] rounded-full transition-all ${isOn("new_user_registration") ? "right-1" : "left-1"}`} />
@@ -195,6 +201,9 @@ export default function SettingsPage() {
                 </div>
                 <button
                   onClick={() => toggleKey("partner_onboarding")}
+                  role="switch"
+                  aria-checked={isOn("partner_onboarding")}
+                  aria-label="Toggle Partner Onboarding"
                   className={`w-12 h-6 rounded-full relative transition-colors ${isOn("partner_onboarding") ? "bg-green-500" : "bg-[var(--color-surface-container-high)]"}`}
                 >
                   <span className={`absolute top-1 w-4 h-4 bg-[var(--color-surface-container-lowest)] rounded-full transition-all ${isOn("partner_onboarding") ? "right-1" : "left-1"}`} />
@@ -327,6 +336,9 @@ export default function SettingsPage() {
               </div>
               <button
                 onClick={() => toggleKey("notif_order_updates")}
+                role="switch"
+                aria-checked={isOn("notif_order_updates")}
+                aria-label="Toggle Order Update Notifications"
                 className={`w-12 h-6 rounded-full relative transition-colors ${isOn("notif_order_updates") ? "bg-green-500" : "bg-[var(--color-surface-container-high)]"}`}
               >
                 <span className={`absolute top-1 w-4 h-4 bg-[var(--color-surface-container-lowest)] rounded-full transition-all ${isOn("notif_order_updates") ? "right-1" : "left-1"}`} />
@@ -339,6 +351,9 @@ export default function SettingsPage() {
               </div>
               <button
                 onClick={() => toggleKey("notif_promotions")}
+                role="switch"
+                aria-checked={isOn("notif_promotions")}
+                aria-label="Toggle Promotional Notifications"
                 className={`w-12 h-6 rounded-full relative transition-colors ${isOn("notif_promotions") ? "bg-green-500" : "bg-[var(--color-surface-container-high)]"}`}
               >
                 <span className={`absolute top-1 w-4 h-4 bg-[var(--color-surface-container-lowest)] rounded-full transition-all ${isOn("notif_promotions") ? "right-1" : "left-1"}`} />
@@ -351,6 +366,9 @@ export default function SettingsPage() {
               </div>
               <button
                 onClick={() => toggleKey("notif_sms")}
+                role="switch"
+                aria-checked={isOn("notif_sms")}
+                aria-label="Toggle SMS Notifications"
                 className={`w-12 h-6 rounded-full relative transition-colors ${isOn("notif_sms") ? "bg-green-500" : "bg-[var(--color-surface-container-high)]"}`}
               >
                 <span className={`absolute top-1 w-4 h-4 bg-[var(--color-surface-container-lowest)] rounded-full transition-all ${isOn("notif_sms") ? "right-1" : "left-1"}`} />

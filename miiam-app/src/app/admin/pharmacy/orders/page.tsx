@@ -101,17 +101,17 @@ export default function PharmacyOrdersPage() {
           <p className="text-[var(--color-outline-variant)] text-xs font-bold">TOTAL ORDERS</p>
           <p className="text-2xl font-black text-[var(--color-on-surface)] mt-1">{stats.total}</p>
         </div>
-        <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-200">
-          <p className="text-yellow-600 text-xs font-bold">PENDING</p>
-          <p className="text-2xl font-black text-yellow-700 mt-1">{stats.pending}</p>
+        <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-xl border border-yellow-200 dark:border-yellow-800/30">
+          <p className="text-yellow-600 dark:text-yellow-400 text-xs font-bold">PENDING</p>
+          <p className="text-2xl font-black text-yellow-700 dark:text-yellow-300 mt-1">{stats.pending}</p>
         </div>
-        <div className="bg-green-50 p-4 rounded-xl border border-green-200">
-          <p className="text-green-600 text-xs font-bold">DELIVERED</p>
-          <p className="text-2xl font-black text-green-700 mt-1">{stats.delivered}</p>
+        <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-xl border border-green-200 dark:border-green-800/30">
+          <p className="text-green-600 dark:text-green-400 text-xs font-bold">DELIVERED</p>
+          <p className="text-2xl font-black text-green-700 dark:text-green-300 mt-1">{stats.delivered}</p>
         </div>
-        <div className="bg-blue-50 p-4 rounded-xl border border-blue-200">
-          <p className="text-blue-600 text-xs font-bold">PRESCRIPTION</p>
-          <p className="text-2xl font-black text-blue-700 mt-1">{stats.prescription}</p>
+        <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-200 dark:border-blue-800/30">
+          <p className="text-blue-600 dark:text-blue-400 text-xs font-bold">PRESCRIPTION</p>
+          <p className="text-2xl font-black text-blue-700 dark:text-blue-300 mt-1">{stats.prescription}</p>
         </div>
       </div>
 
@@ -123,12 +123,14 @@ export default function PharmacyOrdersPage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search by customer or order ID..."
+            aria-label="Search pharmacy orders"
             className="w-full pl-10 pr-4 py-3 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:border-[var(--color-primary)]"
           />
         </div>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
+          aria-label="Filter by status"
           className="px-4 py-3 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:border-[var(--color-primary)]"
         >
           <option value="all">All Status</option>
@@ -147,6 +149,7 @@ export default function PharmacyOrdersPage() {
       ) : (
         <div className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] overflow-hidden">
           <table className="w-full">
+            <caption className="sr-only">Pharmacy Orders</caption>
             <thead className="bg-[var(--color-surface-subtle)]">
               <tr>
                 <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Order ID</th>
