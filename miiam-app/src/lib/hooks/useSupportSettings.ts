@@ -44,7 +44,7 @@ export function useSupportSettings(): SupportSettings {
           const merged = { ...defaults };
           for (const key of Object.keys(defaults)) {
             if (data.settings[key]) {
-              (merged as any)[key] = data.settings[key];
+              (merged as Record<string, unknown>)[key] = data.settings[key];
             }
           }
           cached = merged;

@@ -36,8 +36,8 @@ function RiderLoginContent() {
       });
       if (error) throw error;
       setResetSent(true);
-    } catch (err: any) {
-      setResetError(err.message || "Failed to send reset email");
+    } catch (err) {
+      setResetError(err instanceof Error ? err.message : "Failed to send reset email");
     }
   };
 

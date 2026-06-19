@@ -39,8 +39,8 @@ function LoginContent() {
       const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
       if (signInError) throw signInError;
       router.push(searchParams.get("redirect") || "/app/home");
-    } catch (err: any) { 
-      setError(err.message || "Something went wrong"); 
+    } catch (err: unknown) { 
+      setError(err instanceof Error ? err.message : "Something went wrong"); 
     }
     finally { setIsLoading(false); }
   };
@@ -52,9 +52,10 @@ function LoginContent() {
       const redirectTo = searchParams.get("redirect") || "/app/home";
       const { error } = await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: `${window.location.origin}/auth/callback?redirect=${encodeURIComponent(redirectTo)}` } });
       if (error) throw error;
-    } catch (err: any) {
+    } catch (err: unknown) {
       setIsGoogleLoading(false);
-      if (err.message?.includes("popup") || err.message?.includes("closed")) {
+      const message = err instanceof Error ? err.message : "";
+      if (message.includes("popup") || message.includes("closed")) {
         setError("Google sign-in was cancelled. Try again or use email instead.");
       } else {
         setError("Google sign-in is temporarily unavailable. Please use email to sign in.");

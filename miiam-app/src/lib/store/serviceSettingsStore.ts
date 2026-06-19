@@ -159,7 +159,7 @@ export const useServiceSettingsStore = create<ServiceSettingsStore>()(
             .from("service_settings")
             .select("id, name, is_enabled, message, icon, hours_open, hours_close, hours_is_24x7");
           if (data && data.length > 0) {
-            const synced: ServiceSetting[] = data.map((row: any) => ({
+            const synced: ServiceSetting[] = data.map((row: { id: string; name: string; is_enabled: boolean; message: string; icon: string; hours_open: string; hours_close: string; hours_is_24x7: boolean }) => ({
               id: row.id as ServiceCategory,
               name: row.name,
               isEnabled: row.is_enabled,

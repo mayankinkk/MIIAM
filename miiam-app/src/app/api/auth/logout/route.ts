@@ -33,8 +33,9 @@ export async function POST(request: NextRequest) {
       .is("revoked_at", null);
 
     return NextResponse.json({ success: true });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Server error";
     console.error("[logout] error:", error);
-    return NextResponse.json({ error: error?.message || "Server error" }, { status: 500 });
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

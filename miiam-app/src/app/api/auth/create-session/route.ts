@@ -2,6 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient, createClient } from "@/lib/supabase/server";
 import { getClientIp, checkIpRateLimit } from "@/lib/security";
 
+interface AdminAuthExtension {
+  createSession(args: { userId: string }): Promise<{
+    data: { session: Record<string, unknown> } | null;
+    error: { message: string } | null;
+  }>;
+}
+
 export async function POST(request: NextRequest) {
   const ip = getClientIp(request);
   if (!await checkIpRateLimit(ip, 10, 60_000)) {
@@ -51,9 +58,9 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "Failed to create user" }, { status: 500 });
       }
       
-      const { data: sessionData, error: sessionError } = await (supabaseAdmin.auth.admin as any).createSession({
-        userId: newUser.user.id,
-      });
+      const { data: sessionData, error: sessionError } = await (
+        supabaseAdmin.auth.admin as unknown as AdminAuthExtension
+      ).createSession({ userId: newUser.user.id });
 
       return NextResponse.json({
         success: true,
@@ -62,9 +69,9 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    const { data: sessionData, error: sessionError } = await (supabaseAdmin.auth.admin as any).createSession({
-      userId: userRecord.id,
-    });
+    const { data: sessionData, error: sessionError } = await (
+      supabaseAdmin.auth.admin as unknown as AdminAuthExtension
+    ).createSession({ userId: userRecord.id });
 
     if (sessionError) {
       console.error("Create session error:", sessionError);

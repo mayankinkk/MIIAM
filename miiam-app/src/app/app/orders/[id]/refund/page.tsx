@@ -10,11 +10,22 @@ import { ListSkeleton } from "@/components/Skeleton";
 
 type RefundStatus = "requested" | "processing" | "approved" | "completed" | "rejected";
 
+interface RefundOrder {
+  id: string;
+  status: string;
+  vendor_id?: string;
+  total_amount?: number;
+  payment_method?: string;
+  cancellation_reason?: string;
+  user_id?: string;
+  vendor?: { name?: string; shop_name?: string };
+}
+
 export default function OrderRefundPage({ params }: { params: Promise<{ id: string }> }) {
   const { t } = useTranslation();
   const { id } = use(params);
   const supabase = useMemo(() => createClient(), []);
-  const [order, setOrder] = useState<any>(null);
+  const [order, setOrder] = useState<RefundOrder | null>(null);
   const [loading, setLoading] = useState(true);
   const [refundStatus, setRefundStatus] = useState<RefundStatus>("requested");
   const [showCancelForm, setShowCancelForm] = useState(false);

@@ -104,7 +104,7 @@ export default function OrderManagement() {
           .select("quantity, unit_price, menu_item:menu_items(name)")
           .eq("order_id", o.id);
         if (items) {
-          itemsMap[o.id] = items.map((i: any) => ({
+          itemsMap[o.id] = items.map((i: { quantity: number; unit_price: number; menu_item?: { name: string } }) => ({
             name: i.menu_item?.name || "Item",
             quantity: i.quantity,
             unit_price: i.unit_price,
@@ -197,7 +197,7 @@ export default function OrderManagement() {
       o.payment_method,
       new Date(o.placed_at).toLocaleString()
     ]);
-    const escapeCsv = (val: any) => {
+    const escapeCsv = (val: string | number) => {
       const str = String(val ?? "");
       return str.includes(",") || str.includes('"') || str.includes("\n") ? `"${str.replace(/"/g, '""')}"` : str;
     };

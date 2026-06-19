@@ -52,7 +52,7 @@ export async function getVendorMenuItems(vendorId: string): Promise<Map<string, 
 
   const map = new Map<string, { name: string; category: string }>();
   if (data) {
-    data.forEach((item: any) => map.set(item.id, { name: item.name, category: item.category || "" }));
+    data.forEach((item: { id: string; name: string; category: string | null }) => map.set(item.id, { name: item.name, category: item.category || "" }));
   }
   return map;
 }

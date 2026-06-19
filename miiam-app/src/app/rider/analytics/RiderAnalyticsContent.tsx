@@ -17,7 +17,7 @@ export default function RiderAnalyticsPage() {
   const [period, setPeriod] = useState<"week" | "month" | "year">("week");
   const [weeklyData, setWeeklyData] = useState<DailyStats[]>([]);
   const [loading, setLoading] = useState(true);
-  const [rider, setRider] = useState<any>(null);
+  const [rider, setRider] = useState<{ rating?: number; total_deliveries?: number } | null>(null);
 
   useEffect(() => {
     async function fetchAnalytics() {

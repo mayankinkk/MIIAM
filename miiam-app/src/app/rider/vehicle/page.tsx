@@ -438,7 +438,7 @@ function AddVehicleModal({ riderId, onClose, onSaved }: { riderId: string | null
       <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-sm">
         <h3 className="font-bold text-xl mb-4">Add New Vehicle</h3>
         <div className="space-y-3">
-          <select value={type} onChange={(e) => setType(e.target.value as any)} className="w-full p-3 border-2 border-[var(--color-border-subtle)] rounded-xl">
+          <select value={type} onChange={(e) => setType(e.target.value as "scooter" | "bike" | "car")} className="w-full p-3 border-2 border-[var(--color-border-subtle)] rounded-xl">
             <option value="scooter">Scooter</option>
             <option value="bike">Bike</option>
             <option value="car">Car</option>

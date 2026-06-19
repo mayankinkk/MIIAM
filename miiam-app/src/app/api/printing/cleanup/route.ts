@@ -136,9 +136,10 @@ export async function POST(request: NextRequest) {
     }
     const supabase = createAdminClient();
     return await handleCleanup(supabase);
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Server error";
     console.error("[printing-cleanup] Error:", error);
-    return NextResponse.json({ error: error?.message || "Server error" }, { status: 500 });
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 

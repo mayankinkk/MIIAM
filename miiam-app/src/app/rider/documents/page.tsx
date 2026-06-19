@@ -104,8 +104,8 @@ export default function RiderDocumentsPage() {
       setShowUploadModal(false);
       resetForm();
       loadRiderAndDocuments();
-    } catch (err: any) {
-      setError(err.message || "Upload failed. Please try again.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Upload failed. Please try again.");
     }
 
     setUploading(false);

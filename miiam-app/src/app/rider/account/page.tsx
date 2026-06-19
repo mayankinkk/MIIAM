@@ -25,7 +25,18 @@ const weeklyShifts: Shift[] = [
 export default function RiderAccountPage() {
   const supabase = useMemo(() => createClient(), []);
   const router = useRouter();
-  const [rider, setRider] = useState<any>(null);
+  const [rider, setRider] = useState<{
+    id: string;
+    name?: string;
+    phone?: string;
+    is_online?: boolean;
+    total_deliveries?: number;
+    total_earnings?: number;
+    rating?: number;
+    vehicle_type?: string;
+    created_at?: string;
+    profile?: { full_name?: string; email?: string };
+  } | null>(null);
   const [loading, setLoading] = useState(true);
   const [shifts, setShifts] = useState(weeklyShifts);
   const [showShiftModal, setShowShiftModal] = useState(false);

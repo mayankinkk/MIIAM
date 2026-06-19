@@ -37,7 +37,7 @@ export default function GroceryAdmin() {
         .from("grocery_products")
         .select("*", { count: "exact", head: true });
 
-      const totalRevenue = ordersData?.reduce((sum: number, o: any) => sum + (o.total_amount || 0), 0) || 0;
+      const totalRevenue = ordersData?.reduce((sum: number, o: { total_amount?: number }) => sum + (o.total_amount || 0), 0) || 0;
 
       const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
       const sixtyDaysAgo = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString();
@@ -57,7 +57,7 @@ export default function GroceryAdmin() {
         .gte("placed_at", sixtyDaysAgo)
         .lt("placed_at", thirtyDaysAgo);
 
-      const lastMonthRevenue = lastMonthOrdersData?.reduce((sum: number, o: any) => sum + (o.total_amount || 0), 0) || 0;
+      const lastMonthRevenue = lastMonthOrdersData?.reduce((sum: number, o: { total_amount?: number }) => sum + (o.total_amount || 0), 0) || 0;
 
       const { count: newPartnersCount } = await supabase
         .from("vendors")

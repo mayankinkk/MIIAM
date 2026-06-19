@@ -91,10 +91,11 @@ export async function POST(req: NextRequest) {
       amount: Number(payment.amount) / 100,
       method: payment.method,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Payment verification failed";
     logger.error({ err: error }, "Payment verification failed");
     return NextResponse.json(
-      { error: error.message || "Payment verification failed" },
+      { error: message },
       { status: 500 }
     );
   }

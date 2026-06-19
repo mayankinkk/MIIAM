@@ -55,8 +55,8 @@ export default function PharmacyPage() {
       setPrescriptionFile(null);
       setPrescriptionNotes("");
       setPrescriptionPhone("");
-    } catch (error: any) {
-      console.error("Upload error:", error);
+    } catch (error: unknown) {
+      console.error("Upload error:", error instanceof Error ? error.message : error);
       addToast(t.pharmacy.prescriptionFailed, "error");
     } finally {
       setUploading(false);

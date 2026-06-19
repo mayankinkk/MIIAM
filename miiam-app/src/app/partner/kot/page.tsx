@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { getVendorIdForUser } from "@/lib/vendor";
-import type { Order, OrderStatus } from "@/lib/types";
+import type { Order, OrderItem, OrderStatus } from "@/lib/types";
 
 export default function PartnerKOTPage() {
   const supabase = useMemo(() => createClient(), []);
@@ -70,12 +70,12 @@ export default function PartnerKOTPage() {
                 </span>
               </div>
               <div className="border-t border-[var(--color-border-subtle)] pt-3 space-y-2">
-                {order.items?.map((item: any, i: number) => (
+                {order.items?.map((item: OrderItem, i: number) => (
                   <div key={i}>
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-[var(--color-on-surface)]">
                         <span className="font-bold mr-2">×{item.quantity}</span>
-                        {item.name || "Unknown"}
+                        {item.menu_item?.name || "Unknown"}
                       </span>
                     </div>
                     {item.special_notes && (

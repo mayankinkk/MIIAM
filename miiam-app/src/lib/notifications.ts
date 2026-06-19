@@ -29,7 +29,7 @@ export async function sendOrderNotification(
   orderId: string,
   status: string,
   userId: string,
-  supabase: any
+  supabase: { from: (table: string) => { insert: (data: Record<string, unknown>) => Promise<unknown> } }
 ) {
   const message = statusMessages[status];
   if (!message) return;

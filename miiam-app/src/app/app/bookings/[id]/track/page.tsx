@@ -6,12 +6,24 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { ListSkeleton } from "@/components/Skeleton";
 
+interface ServiceBooking {
+  id: string;
+  status: string;
+  technician_name?: string | null;
+  technician_phone?: string | null;
+  sub_service?: string | null;
+  service_type?: string;
+  scheduled_date?: string | null;
+  scheduled_time?: string | null;
+  amount?: number | null;
+}
+
 export default function BookingTrackPage() {
   const params = useParams();
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
   const bookingId = params.id as string;
-  const [booking, setBooking] = useState<any>(null);
+  const [booking, setBooking] = useState<ServiceBooking | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

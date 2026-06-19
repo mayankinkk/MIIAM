@@ -98,8 +98,9 @@ export async function POST(request: NextRequest) {
       userId,
       email: cleanEmail,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Server error";
     console.error("[create-user] error:", error);
-    return NextResponse.json({ error: error?.message || "Server error" }, { status: 500 });
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

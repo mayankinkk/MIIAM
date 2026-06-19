@@ -69,7 +69,7 @@ export default async function RiderDashboardPage() {
         </div>
         
         <div className="space-y-4 mb-32">
-          {orders && orders.length > 0 ? orders.map((order: any) => (
+          {orders && orders.length > 0 ? orders.map((order: { id: string; total_amount: number; vendor?: { name?: string } }) => (
             <div
               key={order.id}
               className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-[0px_10px_30px_rgba(77,33,42,0.04)] border border-[var(--color-outline-variant)]/10 relative overflow-hidden"

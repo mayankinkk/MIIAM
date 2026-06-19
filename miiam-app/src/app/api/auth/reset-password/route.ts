@@ -71,7 +71,8 @@ export async function POST(request: NextRequest) {
     cookieStore.delete("password_reset_verified");
 
     return NextResponse.json({ success: true, message: "Password updated successfully" });
-  } catch (error: any) {
-    return NextResponse.json({ error: error?.message || "Server error" }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Server error";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

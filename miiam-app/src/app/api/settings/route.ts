@@ -24,7 +24,7 @@ export const GET = withRateLimit(async function GET() {
     .order("key", { ascending: true });
 
   const settings: Record<string, string> = {};
-  (rows || []).forEach((row: any) => {
+  (rows || []).forEach((row: { key: string; value: string }) => {
     settings[row.key] = row.value;
   });
 
