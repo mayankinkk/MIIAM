@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import BlurImage from "@/components/BlurImage";
 import { LandingNavbar, LandingFooter } from "@/components/layout/LandingNavbar";
