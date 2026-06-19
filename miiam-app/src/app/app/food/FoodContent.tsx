@@ -81,6 +81,7 @@ function parseIsOpen(hours: string | null | undefined): boolean {
 }
 
 function PromoBannerCarousel() {
+  const supabase = useMemo(() => createClient(), []);
   const { t } = useTranslation();
   const defaultBanners = [
     { id: "1", label: t.food.promoteTitle, title: "50% OFF your first order", sub: "Use code FIRST50", color: "from-primary to-primary-container", image_url: "" },

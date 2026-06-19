@@ -236,7 +236,7 @@ export default function AddressBookPage() {
     if ("geolocation" in navigator) {
       const handleSuccess = (position: GeolocationPosition) => {
         const { latitude, longitude, accuracy } = position.coords;
-        logger.info("Location detected: %f, %f, accuracy: %f m", latitude, longitude, accuracy);
+        logger.info({ latitude, longitude, accuracy }, "Location detected");
         
         setNewAddress((prev) => ({
           ...prev,
