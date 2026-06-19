@@ -17,14 +17,14 @@ import { PRINTING_VENDOR_ID } from "@/lib/constants";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 
 const statusColors: Record<string, string> = {
-  pending: "bg-[#ffd709]/20 text-[#453900]",
-  accepted: "bg-[#c4d0ff]/30 text-[#003dac]",
-  preparing: "bg-[#c4d0ff]/30 text-[#003dac]",
-  picking_up: "bg-surface-container text-primary",
-  on_the_way: "bg-surface-container text-primary",
-  arrived: "bg-green-100 text-green-700",
-  delivered: "bg-green-100 text-green-700",
-  cancelled: "bg-error-container/10 text-error",
+  pending: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
+  accepted: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
+  preparing: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
+  picking_up: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
+  on_the_way: "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300",
+  arrived: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
+  delivered: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
+  cancelled: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
 };
 
 export default function OrdersPage() {
