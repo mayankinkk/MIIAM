@@ -43,10 +43,25 @@ export default function EnhancedServicesDashboard() {
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [providerForm, setProviderForm] = useState({ name: "", phone: "", email: "", service_type: "beauty", experience: "" });
   const [categoryForm, setCategoryForm] = useState({ name: "", icon: "home_repair_service", description: "" });
+  const [pricing, setPricing] = useState({ commission: "15", minOrder: "199", cancelWindow: "2" });
 
   useEffect(() => {
     loadBookings();
+    loadPricing();
   }, [statusFilter, serviceFilter, supabase]);
+
+  async function loadPricing() {
+    try {
+      const res = await fetch("/api/settings");
+      if (!res.ok) return;
+      const { settings } = await res.json();
+      setPricing({
+        commission: settings.service_commission || "15",
+        minOrder: settings.service_min_order || "199",
+        cancelWindow: settings.service_cancel_window || "2",
+      });
+    } catch { /* settings may not exist yet */ }
+  }
 
   async function loadBookings() {
     setLoading(true);
@@ -483,8 +498,9 @@ export default function EnhancedServicesDashboard() {
                     type="number"
                     min={0}
                     max={100}
-                    defaultValue={15}
-                    id="svc_commission"
+                    value={pricing.commission}
+                    onChange={(e) => setPricing({ ...pricing, commission: e.target.value })}
+                    aria-label="Platform commission percentage"
                     className="w-16 text-right font-black text-[var(--color-on-surface)] bg-transparent border-b-2 border-transparent focus:border-[var(--color-primary)] outline-none"
                   />
                   <span className="font-bold text-[var(--color-outline)]">%</span>
@@ -497,8 +513,9 @@ export default function EnhancedServicesDashboard() {
                   <input
                     type="number"
                     min={0}
-                    defaultValue={199}
-                    id="svc_min_order"
+                    value={pricing.minOrder}
+                    onChange={(e) => setPricing({ ...pricing, minOrder: e.target.value })}
+                    aria-label="Minimum order value in rupees"
                     className="w-20 text-right font-black text-[var(--color-on-surface)] bg-transparent border-b-2 border-transparent focus:border-[var(--color-primary)] outline-none"
                   />
                 </div>
@@ -509,8 +526,9 @@ export default function EnhancedServicesDashboard() {
                   <input
                     type="number"
                     min={0}
-                    defaultValue={2}
-                    id="svc_cancel_window"
+                    value={pricing.cancelWindow}
+                    onChange={(e) => setPricing({ ...pricing, cancelWindow: e.target.value })}
+                    aria-label="Cancellation window in hours"
                     className="w-16 text-right font-black text-[var(--color-on-surface)] bg-transparent border-b-2 border-transparent focus:border-[var(--color-primary)] outline-none"
                   />
                   <span className="font-bold text-[var(--color-outline)]">hrs</span>
@@ -519,17 +537,14 @@ export default function EnhancedServicesDashboard() {
             </div>
             <button
               onClick={async () => {
-                const commission = (document.getElementById("svc_commission") as HTMLInputElement)?.value;
-                const minOrder = (document.getElementById("svc_min_order") as HTMLInputElement)?.value;
-                const cancelWindow = (document.getElementById("svc_cancel_window") as HTMLInputElement)?.value;
                 await fetch("/api/settings", {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({
                     settings: {
-                      service_commission: commission,
-                      service_min_order: minOrder,
-                      service_cancel_window: cancelWindow,
+                      service_commission: pricing.commission,
+                      service_min_order: pricing.minOrder,
+                      service_cancel_window: pricing.cancelWindow,
                     },
                   }),
                 });

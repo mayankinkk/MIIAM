@@ -1,18 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useServiceSettingsStore, ServiceCategory, isServiceOpen } from "@/lib/store/serviceSettingsStore";
 
 export default function ServiceSettingsPage() {
-  const { settings, updateSetting, updateHours } = useServiceSettingsStore();
+  const { settings, updateSetting, updateHours, syncFromSupabase } = useServiceSettingsStore();
   const [editingId, setEditingId] = useState<ServiceCategory | null>(null);
   const [tempMessage, setTempMessage] = useState("");
   const [editingHoursId, setEditingHoursId] = useState<ServiceCategory | null>(null);
   const [tempOpen, setTempOpen] = useState("06:00");
   const [tempClose, setTempClose] = useState("23:59");
   const [tempIs247, setTempIs247] = useState(false);
+  const [syncing, setSyncing] = useState(true);
 
-  const handleReset = () => {
+  useEffect(() => {
+    syncFromSupabase().finally(() => setSyncing(false));
+  }, [syncFromSupabase]);
+
+  const handleReset = async () => {
     if (confirm("Reset all settings to defaults? This will clear all custom messages.")) {
       localStorage.removeItem("miiam-service-settings");
       window.location.reload();
@@ -55,12 +60,17 @@ export default function ServiceSettingsPage() {
         <h1 className="text-3xl font-extrabold text-[var(--color-on-surface)] tracking-tight">Service Settings</h1>
         <p className="text-[var(--color-outline)] mt-1">Control which services are available to users</p>
       </div>
-      <button
-        onClick={handleReset}
-        className="px-4 py-2 bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] rounded-lg text-sm font-bold hover:bg-[var(--color-surface-container-high)]"
-      >
-        Reset to Defaults
-      </button>
+      <div className="flex items-center gap-3">
+        <button
+          onClick={handleReset}
+          className="px-4 py-2 bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] rounded-lg text-sm font-bold hover:bg-[var(--color-surface-container-high)]"
+        >
+          Reset to Defaults
+        </button>
+        {syncing && (
+          <span className="text-xs text-[var(--color-outline)] animate-pulse">Syncing from cloud...</span>
+        )}
+      </div>
 
       <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)] shadow-sm overflow-hidden">
         <div className="p-4 border-b border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)]">
@@ -91,8 +101,11 @@ export default function ServiceSettingsPage() {
               <div className="col-span-1">
                 <button
                   onClick={() => handleToggle(service.id)}
+                  role="switch"
+                  aria-checked={service.isEnabled}
+                  aria-label={`${service.isEnabled ? "Disable" : "Enable"} ${service.name}`}
                   className={`relative w-12 h-6 rounded-full transition-colors ${
-                    service.isEnabled ? "bg-green-500" : "bg-slate-300"
+                    service.isEnabled ? "bg-green-500" : "bg-slate-300 dark:bg-slate-600"
                   }`}
                 >
                   <span
@@ -157,13 +170,13 @@ export default function ServiceSettingsPage() {
                     <span
                       className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-bold ${
                         isServiceOpen(service.hours)
-                          ? "bg-emerald-100 text-emerald-700"
+                          ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300"
                           : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300"
                       }`}
                     >
                       <span
                         className={`w-1.5 h-1.5 rounded-full ${
-                          isServiceOpen(service.hours) ? "bg-emerald-500 animate-pulse" : "bg-amber-500"
+                          isServiceOpen(service.hours) ? "bg-emerald-500 animate-pulse" : "bg-amber-500 dark:bg-amber-400"
                         }`}
                       />
                       {service.hours.is24x7
@@ -221,12 +234,12 @@ export default function ServiceSettingsPage() {
         </div>
       </div>
 
-      <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+      <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-xl p-4">
         <div className="flex items-start gap-3">
-          <span className="material-symbols-outlined text-amber-600">info</span>
+          <span className="material-symbols-outlined text-amber-600 dark:text-amber-400">info</span>
           <div>
-            <p className="font-bold text-amber-800">How it works</p>
-            <p className="text-sm text-amber-700 mt-1">
+            <p className="font-bold text-amber-800 dark:text-amber-200">How it works</p>
+            <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">
               When a service is turned OFF, users visiting that section will see your custom message instead of the regular content.
               Service hours are surfaced in the customer UI to show live availability (Open/Closed) and the time window.
             </p>

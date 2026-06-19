@@ -767,9 +767,19 @@ export default function AdminPrintingPage() {
                 {selectedOrder.status === "cancelled" && selectedOrder.payment_method !== "cod" && (
                   <button
                     onClick={async () => {
-                      if (!confirm(`Process refund of ₹${selectedOrder.total_amount}? This will update the order status to refunded.`)) return;
+                      if (!confirm(`Process refund of ₹${selectedOrder.total_amount}? This will refund via Razorpay and update the order status.`)) return;
                       try {
-                        await supabase.from("orders").update({ status: "refunded" }).eq("id", selectedOrder.id);
+                        const res = await fetch("/api/payment/refund", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ orderId: selectedOrder.id, reason: "Admin initiated refund" }),
+                        });
+                        const data = await res.json();
+                        if (!res.ok) {
+                          useToastStore.getState().addToast(data.error || "Refund failed", "error");
+                          return;
+                        }
+                        useToastStore.getState().addToast(`Refund of ₹${data.amount} processed (ID: ${data.refundId})`, "success");
                         loadOrders();
                         setSelectedOrder(null);
                       } catch (e) {
@@ -777,7 +787,7 @@ export default function AdminPrintingPage() {
                         useToastStore.getState().addToast("Refund failed. Please try again.", "error");
                       }
                     }}
-                    className="w-full py-3 bg-red-50 text-red-700 rounded-xl font-bold text-sm hover:bg-red-100"
+                    className="w-full py-3 bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-300 rounded-xl font-bold text-sm hover:bg-red-100 dark:hover:bg-red-900/30"
                   >
                     Process Refund (₹{selectedOrder.total_amount})
                   </button>
