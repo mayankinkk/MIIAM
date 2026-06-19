@@ -93,7 +93,7 @@ export default function RiderAnalyticsPage() {
     <div className="min-h-screen bg-[var(--color-surface-container-lowest)]">
       <header className="bg-gradient-to-br from-brand-secondary to-[#0044bf] text-white p-6 pb-12">
         <div className="flex items-center gap-4">
-          <Link href="/rider/dashboard" className="text-white">
+          <Link href="/rider/dashboard" className="text-white" aria-label="Go back">
             <span className="material-symbols-outlined">arrow_back</span>
           </Link>
           <h1 className="text-2xl font-black tracking-tighter">Analytics</h1>

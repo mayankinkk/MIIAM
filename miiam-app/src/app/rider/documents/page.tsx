@@ -153,7 +153,7 @@ export default function RiderDocumentsPage() {
       )}
       <header className="bg-brand-secondary text-white p-6 pb-8 rounded-b-[3rem]">
         <div className="flex items-center gap-4">
-          <Link href="/rider/account" className="text-white">
+          <Link href="/rider/account" className="text-white" aria-label="Go back">
             <span className="material-symbols-outlined">arrow_back</span>
           </Link>
           <h1 className="text-2xl font-black tracking-tighter">Documents</h1>
@@ -166,7 +166,7 @@ export default function RiderDocumentsPage() {
           <div className="bg-green-50 border border-green-200 p-4 rounded-xl flex items-center gap-3">
             <span className="material-symbols-outlined text-green-600">check_circle</span>
             <p className="text-sm text-green-700 flex-1">{success}</p>
-            <button onClick={() => setSuccess(null)}>
+            <button onClick={() => setSuccess(null)} aria-label="Dismiss">
               <span className="material-symbols-outlined text-green-600">close</span>
             </button>
           </div>
@@ -202,6 +202,7 @@ export default function RiderDocumentsPage() {
                       <button
                         onClick={() => { setSelectedDocType(doc.type); setShowUploadModal(true); }}
                         className="p-2 bg-brand-secondary text-white rounded-full"
+                        aria-label="Upload document"
                       >
                         <span className="material-symbols-outlined text-sm">add</span>
                       </button>
@@ -270,7 +271,7 @@ export default function RiderDocumentsPage() {
           <div className="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl p-6 max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-xl font-black text-[var(--color-on-surface)]">Upload Document</h3>
-              <button onClick={() => { setShowUploadModal(false); resetForm(); }} className="p-2">
+              <button onClick={() => { setShowUploadModal(false); resetForm(); }} className="p-2" aria-label="Close">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>

@@ -81,7 +81,7 @@ export default function RiderShifts() {
             <h1 className="text-2xl font-extrabold text-[var(--color-on-surface)]">Work Shifts</h1>
             <p className="text-sm text-[var(--color-outline)] mt-0.5">Set your weekly availability schedule</p>
           </div>
-          <button onClick={() => setShowAdd(true)} className="w-10 h-10 bg-brand-secondary rounded-full flex items-center justify-center shadow-lg">
+          <button onClick={() => setShowAdd(true)} className="w-10 h-10 bg-brand-secondary rounded-full flex items-center justify-center shadow-lg" aria-label="Add shift">
             <span className="material-symbols-outlined text-white">add</span>
           </button>
         </div>
@@ -116,10 +116,10 @@ export default function RiderShifts() {
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
-                          <button onClick={() => toggleShift(shift)} className={`w-10 h-6 rounded-full transition-all ${shift.is_active ? "bg-green-500" : "bg-slate-300"}`}>
+                          <button onClick={() => toggleShift(shift)} className={`w-10 h-6 rounded-full transition-all ${shift.is_active ? "bg-green-500" : "bg-slate-300"}`} aria-label={shift.is_active ? "Disable shift" : "Enable shift"}>
                             <div className={`w-4 h-4 bg-[var(--color-surface-container-lowest)] rounded-full transition-all ${shift.is_active ? "translate-x-5" : "translate-x-0.5"}`} />
                           </button>
-                          <button onClick={() => handleDelete(shift.id)} className="p-1.5 hover:bg-red-50 rounded-lg">
+                          <button onClick={() => handleDelete(shift.id)} className="p-1.5 hover:bg-red-50 rounded-lg" aria-label="Delete shift">
                             <span className="material-symbols-outlined text-sm text-red-400">delete</span>
                           </button>
                         </div>

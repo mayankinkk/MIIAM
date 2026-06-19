@@ -1214,6 +1214,7 @@ export default function PartnerMenuPage() {
                             imageFiles: newItem.imageFiles.filter((_: File, i: number) => i !== idx)
                           })}
                           className="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-[10px] font-bold flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-bl-xl"
+                          aria-label="Remove image"
                         >
                           ×
                         </button>
@@ -1453,6 +1454,7 @@ export default function PartnerMenuPage() {
                             setEditingItem({ ...editingItem, images: imgs, image_url: imgs[0] || null } as AnyItem);
                           }}
                           className="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-[10px] font-bold flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-bl-xl"
+                          aria-label="Remove image"
                         >
                           ×
                         </button>

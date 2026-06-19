@@ -174,6 +174,7 @@ export default function RiderAccountPage() {
           <button 
             onClick={handleSignOut}
             className="text-white/70 hover:text-white"
+            aria-label="Sign out"
           >
             <span className="material-symbols-outlined">logout</span>
           </button>
@@ -196,7 +197,7 @@ export default function RiderAccountPage() {
                 <span className="text-[var(--color-outline-variant)] text-sm">• {displayRider.totalDeliveries} deliveries</span>
               </div>
             </div>
-            <Link href="/rider/account" className="p-2 bg-[var(--color-surface-container)] rounded-full">
+            <Link href="/rider/account" className="p-2 bg-[var(--color-surface-container)] rounded-full" aria-label="Edit profile">
               <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">edit</span>
             </Link>
           </div>
@@ -378,7 +379,7 @@ export default function RiderAccountPage() {
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-sm">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-bold text-xl">Set Your Schedule</h3>
-              <button onClick={() => setShowShiftModal(false)}>
+              <button onClick={() => setShowShiftModal(false)} aria-label="Close">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>

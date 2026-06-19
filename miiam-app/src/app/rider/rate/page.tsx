@@ -88,7 +88,7 @@ function RateCustomerContent() {
     <div className="min-h-screen bg-[var(--color-surface-container-lowest)]">
       <header className="bg-brand-secondary text-white p-6 pb-12">
         <div className="flex items-center gap-4">
-          <Link href="/rider/dashboard" className="text-white">
+          <Link href="/rider/dashboard" className="text-white" aria-label="Go back">
             <span className="material-symbols-outlined">arrow_back</span>
           </Link>
           <h1 className="text-2xl font-black tracking-tighter">Rate Customer</h1>
@@ -115,6 +115,7 @@ function RateCustomerContent() {
                   key={star}
                   onClick={() => setSelectedRating(star)}
                   className="p-2 transition-transform hover:scale-110"
+                  aria-label={`Rate ${star} star${star > 1 ? 's' : ''}`}
                 >
                   <span 
                     className={`text-4xl ${star <= (selectedRating || 0) ? "text-yellow-400" : "text-[var(--color-outline-variant)]/60"}`}

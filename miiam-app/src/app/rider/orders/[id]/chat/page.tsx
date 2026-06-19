@@ -65,7 +65,7 @@ export default function RiderChatPage() {
     <div className="bg-surface text-on-surface min-h-screen flex flex-col">
       <header className="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-[var(--color-surface-container-lowest)]/80 backdrop-blur-xl shadow-[0_20px_40px_rgba(77,33,42,0.06)]">
         <div className="flex items-center gap-4">
-          <button onClick={() => router.back()} className="text-secondary hover:bg-surface-container rounded-full p-2 transition-colors active:scale-95 duration-200">
+          <button onClick={() => router.back()} className="text-secondary hover:bg-surface-container rounded-full p-2 transition-colors active:scale-95 duration-200" aria-label="Go back">
             <span className="material-symbols-outlined">arrow_back</span>
           </button>
           <div className="flex items-center gap-3">
@@ -145,6 +145,7 @@ export default function RiderChatPage() {
             onClick={handleSend}
             disabled={!newMessage.trim() || sending}
             className="w-12 h-12 flex items-center justify-center bg-primary text-on-primary rounded-full shadow-lg shadow-primary/20 active:scale-95 transition-transform disabled:opacity-50"
+            aria-label="Send message"
           >
             {sending ? (
               <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />

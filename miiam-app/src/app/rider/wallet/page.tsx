@@ -599,7 +599,7 @@ export default function RiderWalletPage() {
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-sm">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-bold text-xl">Instant Payout</h3>
-              <button onClick={() => setShowInstantPayout(false)}>
+              <button onClick={() => setShowInstantPayout(false)} aria-label="Close">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>

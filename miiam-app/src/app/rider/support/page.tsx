@@ -29,7 +29,7 @@ export default function RiderSupportPage() {
     <div className="min-h-screen bg-[var(--color-surface-container-lowest)]">
       <header className="bg-brand-secondary text-white p-6 pb-8 rounded-b-[3rem]">
         <div className="flex items-center gap-4">
-          <Link href="/rider/account" className="text-white">
+          <Link href="/rider/account" className="text-white" aria-label="Go back">
             <span className="material-symbols-outlined">arrow_back</span>
           </Link>
           <h1 className="text-2xl font-black tracking-tighter">Help & Support</h1>

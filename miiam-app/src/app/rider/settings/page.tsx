@@ -135,6 +135,9 @@ export default function RiderSettingsPage() {
               </div>
               <button 
                 onClick={() => { setAutoAccept(!autoAccept); saveSetting({ auto_accept: !autoAccept }); }}
+                role="switch"
+                aria-checked={autoAccept}
+                aria-label="Auto-accept orders"
                 className={`w-12 h-6 rounded-full transition-colors ${autoAccept ? "bg-green-500" : "bg-[var(--color-surface-container-high)]"}`}
               >
                 <div className={`w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full shadow transition-transform ${autoAccept ? "translate-x-6" : "translate-x-0.5"}`} />
@@ -148,6 +151,9 @@ export default function RiderSettingsPage() {
               </div>
               <button 
                 onClick={() => { setOnlyHighEarnings(!onlyHighEarnings); saveSetting({ only_high_earnings: !onlyHighEarnings }); }}
+                role="switch"
+                aria-checked={onlyHighEarnings}
+                aria-label="Only high earnings"
                 className={`w-12 h-6 rounded-full transition-colors ${onlyHighEarnings ? "bg-green-500" : "bg-[var(--color-surface-container-high)]"}`}
               >
                 <div className={`w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full shadow transition-transform ${onlyHighEarnings ? "translate-x-6" : "translate-x-0.5"}`} />
@@ -187,6 +193,9 @@ export default function RiderSettingsPage() {
               </div>
               <button 
                 onClick={() => { setSoundEnabled(!soundEnabled); saveSetting({ sound_enabled: !soundEnabled }); }}
+                role="switch"
+                aria-checked={soundEnabled}
+                aria-label="Sound"
                 className={`w-12 h-6 rounded-full transition-colors ${soundEnabled ? "bg-green-500" : "bg-[var(--color-surface-container-high)]"}`}
               >
                 <div className={`w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full shadow transition-transform ${soundEnabled ? "translate-x-6" : "translate-x-0.5"}`} />
@@ -200,6 +209,9 @@ export default function RiderSettingsPage() {
               </div>
               <button 
                 onClick={() => { setVibrationEnabled(!vibrationEnabled); saveSetting({ vibration_enabled: !vibrationEnabled }); }}
+                role="switch"
+                aria-checked={vibrationEnabled}
+                aria-label="Vibration"
                 className={`w-12 h-6 rounded-full transition-colors ${vibrationEnabled ? "bg-green-500" : "bg-[var(--color-surface-container-high)]"}`}
               >
                 <div className={`w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full shadow transition-transform ${vibrationEnabled ? "translate-x-6" : "translate-x-0.5"}`} />
@@ -213,6 +225,9 @@ export default function RiderSettingsPage() {
               </div>
               <button 
                 onClick={() => { setDndMode(!dndMode); saveSetting({ dnd_mode: !dndMode }); }}
+                role="switch"
+                aria-checked={dndMode}
+                aria-label="Do not disturb"
                 className={`w-12 h-6 rounded-full transition-colors ${dndMode ? "bg-red-500" : "bg-[var(--color-surface-container-high)]"}`}
               >
                 <div className={`w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full shadow transition-transform ${dndMode ? "translate-x-6" : "translate-x-0.5"}`} />
@@ -240,6 +255,9 @@ export default function RiderSettingsPage() {
               </div>
               <button 
                 onClick={() => { setDarkMode(!darkMode); saveSetting({ dark_mode: !darkMode }); }}
+                role="switch"
+                aria-checked={darkMode}
+                aria-label="Dark mode"
                 className={`w-12 h-6 rounded-full transition-colors ${darkMode ? "bg-green-500" : "bg-[var(--color-surface-container-high)]"}`}
               >
                 <div className={`w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full shadow transition-transform ${darkMode ? "translate-x-6" : "translate-x-0.5"}`} />

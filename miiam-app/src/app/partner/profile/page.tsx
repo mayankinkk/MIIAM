@@ -525,6 +525,7 @@ export default function VendorProfilePage() {
                     <button
                       onClick={() => setForm({ ...form, delivery_zones: form.delivery_zones!.filter((_, j) => j !== i) })}
                       className="ml-2 text-red-400 hover:text-red-600"
+                      aria-label={`Remove ${z}`}
                     >×</button>
                   </span>
                 ))}

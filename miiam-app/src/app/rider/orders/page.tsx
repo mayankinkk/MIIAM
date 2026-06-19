@@ -626,17 +626,17 @@ export default function RiderOrdersPage() {
         <div className="flex justify-between items-center mb-4">
           <Link href="/rider/dashboard" className="text-2xl font-black tracking-tighter">MIIAM</Link>
           <div className="flex items-center gap-2">
-            <button onClick={() => setShowAutoSkip(!showAutoSkip)} className="relative p-2 bg-[var(--color-surface-container-lowest)]/20 rounded-full">
+            <button onClick={() => setShowAutoSkip(!showAutoSkip)} className="relative p-2 bg-[var(--color-surface-container-lowest)]/20 rounded-full" aria-label="Toggle auto-skip settings">
               <span className="material-symbols-outlined">timer</span>
               {showAutoSkip && <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>}
             </button>
-            <Link href="/rider/analytics" className="p-2 bg-[var(--color-surface-container-lowest)]/20 rounded-full">
+            <Link href="/rider/analytics" className="p-2 bg-[var(--color-surface-container-lowest)]/20 rounded-full" aria-label="View analytics">
               <span className="material-symbols-outlined">insights</span>
             </Link>
-            <Link href="/rider/incident" className="p-2 bg-red-500/20 rounded-full">
+            <Link href="/rider/incident" className="p-2 bg-red-500/20 rounded-full" aria-label="Report incident">
               <span className="material-symbols-outlined text-red-400">emergency</span>
             </Link>
-            <Link href="/rider/account" className="w-10 h-10 bg-[var(--color-surface-container-lowest)]/20 rounded-full flex items-center justify-center">
+            <Link href="/rider/account" className="w-10 h-10 bg-[var(--color-surface-container-lowest)]/20 rounded-full flex items-center justify-center" aria-label="View account">
               <span className="material-symbols-outlined">person</span>
             </Link>
           </div>

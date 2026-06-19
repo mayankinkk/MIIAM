@@ -108,7 +108,7 @@ export default function RiderVehiclePage() {
       <header className="bg-gradient-to-br from-slate-700 to-slate-900 text-white p-6 pb-8 rounded-b-[3rem]">
         <div className="flex justify-between items-center">
           <Link href="/rider/dashboard" className="text-3xl font-black tracking-tighter">MIIAM</Link>
-          <button onClick={() => setShowAddVehicle(true)} className="bg-[var(--color-surface-container-lowest)]/20 p-2 rounded-lg">
+          <button onClick={() => setShowAddVehicle(true)} className="bg-[var(--color-surface-container-lowest)]/20 p-2 rounded-lg" aria-label="Add vehicle">
             <span className="material-symbols-outlined">add</span>
           </button>
         </div>
