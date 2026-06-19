@@ -176,8 +176,8 @@ export default function PassportPage() {
 
         {/* Country filter */}
         <div className="bg-surface-container rounded-2xl p-5 border border-outline-variant/10 shadow-sm">
-          <label className="text-xs font-bold text-on-surface-variant block mb-2">Filter by country</label>
-          <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+          <label htmlFor="country-filter" className="text-xs font-bold text-on-surface-variant block mb-2">Filter by country</label>
+          <div id="country-filter" className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
             <button
               onClick={() => setCountry("all")}
               className={`px-3 py-1.5 rounded-full text-xs font-bold flex-shrink-0 ${
@@ -202,10 +202,10 @@ export default function PassportPage() {
 
         {/* Preset picker */}
         <div className="bg-surface-container rounded-2xl p-5 border border-outline-variant/10 shadow-sm">
-          <label className="text-xs font-bold text-on-surface-variant block mb-2">
+          <label htmlFor="document-type" className="text-xs font-bold text-on-surface-variant block mb-2">
             Choose your document type
           </label>
-          <div className="grid grid-cols-2 gap-2">
+          <div id="document-type" className="grid grid-cols-2 gap-2">
             {filteredPresets.map((p) => (
               <button
                 key={p.id}
@@ -229,9 +229,9 @@ export default function PassportPage() {
         </div>
 
         {/* Capture / upload area */}
-        <div className="bg-surface-container rounded-2xl p-5 border border-outline-variant/10 shadow-sm">
+        <div id="photo-upload" className="bg-surface-container rounded-2xl p-5 border border-outline-variant/10 shadow-sm">
           <div className="flex items-center justify-between mb-2">
-            <label className="text-xs font-bold text-on-surface-variant">Your photo</label>
+            <label htmlFor="photo-upload" className="text-xs font-bold text-on-surface-variant">Your photo</label>
             {imageDataUrl && (
               <button
                 onClick={() => { setImageDataUrl(null); setImageNaturalDims(null); }}
@@ -319,8 +319,8 @@ export default function PassportPage() {
 
         {/* Set size */}
         <div className="bg-surface-container rounded-2xl p-5 border border-outline-variant/10 shadow-sm">
-          <label className="text-xs font-bold text-on-surface-variant block mb-2">How many copies?</label>
-          <div className="grid grid-cols-4 gap-2">
+          <label htmlFor="photo-copies" className="text-xs font-bold text-on-surface-variant block mb-2">How many copies?</label>
+          <div id="photo-copies" className="grid grid-cols-4 gap-2">
             {PHOTO_SETS.map((s, idx) => (
               <button
                 key={s.count}

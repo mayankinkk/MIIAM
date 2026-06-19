@@ -191,8 +191,9 @@ export default function EditProfilePage() {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2 px-1">{t.profile.fullName}</label>
+              <label htmlFor="full-name" className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2 px-1">{t.profile.fullName}</label>
               <input
+                id="full-name"
                 type="text"
                 required
                 value={formData.fullName}
@@ -203,8 +204,9 @@ export default function EditProfilePage() {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2 px-1">{t.profile.emailAddress}</label>
+              <label htmlFor="email-address" className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2 px-1">{t.profile.emailAddress}</label>
               <input
+                id="email-address"
                 type="email"
                 disabled
                 value={formData.email}
@@ -214,8 +216,9 @@ export default function EditProfilePage() {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2 px-1">{t.profile.phoneNumber}</label>
+              <label htmlFor="phone-number" className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2 px-1">{t.profile.phoneNumber}</label>
               <input
+                id="phone-number"
                 type="tel"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}

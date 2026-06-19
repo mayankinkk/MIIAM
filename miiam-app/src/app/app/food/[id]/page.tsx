@@ -207,8 +207,9 @@ function ReviewModal({ vendorId, onClose, onSubmitted }: { vendorId: string; onC
 
         <div className="space-y-3 mb-5">
           <div>
-            <label className="text-xs font-bold text-on-surface-variant uppercase tracking-widest block mb-1">{t.food.yourName}</label>
+            <label htmlFor="reviewer-name" className="text-xs font-bold text-on-surface-variant uppercase tracking-widest block mb-1">{t.food.yourName}</label>
             <input
+              id="reviewer-name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="w-full px-4 py-3 bg-surface-container-low rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
@@ -216,8 +217,9 @@ function ReviewModal({ vendorId, onClose, onSubmitted }: { vendorId: string; onC
             />
           </div>
           <div>
-            <label className="text-xs font-bold text-on-surface-variant uppercase tracking-widest block mb-1">{t.food.yourReview}</label>
+            <label htmlFor="review-comment" className="text-xs font-bold text-on-surface-variant uppercase tracking-widest block mb-1">{t.food.yourReview}</label>
             <textarea
+              id="review-comment"
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               rows={3}

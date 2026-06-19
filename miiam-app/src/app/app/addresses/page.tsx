@@ -512,8 +512,9 @@ export default function AddressBookPage() {
 
               {/* Name */}
               <div>
-                <label className="text-sm font-semibold text-[var(--color-on-surface)]">Full Name *</label>
+                <label htmlFor="full-name" className="text-sm font-semibold text-[var(--color-on-surface)]">Full Name *</label>
                 <input
+                  id="full-name"
                   type="text"
                   value={newAddress.name}
                   onChange={(e) => setNewAddress({ ...newAddress, name: e.target.value })}
@@ -524,8 +525,9 @@ export default function AddressBookPage() {
 
               {/* Phone */}
               <div>
-                <label className="text-sm font-semibold text-[var(--color-on-surface)]">Phone Number *</label>
+                <label htmlFor="phone-number" className="text-sm font-semibold text-[var(--color-on-surface)]">Phone Number *</label>
                 <input
+                  id="phone-number"
                   type="tel"
                   value={newAddress.phone}
                   onChange={(e) => setNewAddress({ ...newAddress, phone: e.target.value })}
@@ -536,8 +538,9 @@ export default function AddressBookPage() {
 
               {/* Street Address */}
               <div>
-                <label className="text-sm font-semibold text-[var(--color-on-surface)]">Street Address *</label>
+                <label htmlFor="street-address" className="text-sm font-semibold text-[var(--color-on-surface)]">Street Address *</label>
                 <input
+                  id="street-address"
                   type="text"
                   value={newAddress.street}
                   onChange={(e) => setNewAddress({ ...newAddress, street: e.target.value })}
@@ -562,8 +565,9 @@ export default function AddressBookPage() {
               {/* City & State */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-sm font-semibold text-[var(--color-on-surface)]">City *</label>
+                  <label htmlFor="city" className="text-sm font-semibold text-[var(--color-on-surface)]">City *</label>
                   <input
+                    id="city"
                     type="text"
                     value={newAddress.city}
                     onChange={(e) => setNewAddress({ ...newAddress, city: e.target.value })}
@@ -572,8 +576,9 @@ export default function AddressBookPage() {
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-semibold text-[var(--color-on-surface)]">State *</label>
+                  <label htmlFor="state" className="text-sm font-semibold text-[var(--color-on-surface)]">State *</label>
                   <input
+                    id="state"
                     type="text"
                     value={newAddress.state}
                     onChange={(e) => setNewAddress({ ...newAddress, state: e.target.value })}
@@ -585,8 +590,9 @@ export default function AddressBookPage() {
 
               {/* Postal Code */}
               <div>
-                <label className="text-sm font-semibold text-[var(--color-on-surface)]">PIN Code *</label>
+                <label htmlFor="pin-code" className="text-sm font-semibold text-[var(--color-on-surface)]">PIN Code *</label>
                 <input
+                  id="pin-code"
                   type="text"
                   value={newAddress.postal_code}
                   onChange={(e) => setNewAddress({ ...newAddress, postal_code: e.target.value })}
@@ -597,8 +603,9 @@ export default function AddressBookPage() {
 
               {/* Delivery Instructions */}
               <div>
-                <label className="text-sm font-semibold text-[var(--color-on-surface)]">Delivery Instructions (Optional)</label>
+                <label htmlFor="delivery-instructions" className="text-sm font-semibold text-[var(--color-on-surface)]">Delivery Instructions (Optional)</label>
                 <textarea
+                  id="delivery-instructions"
                   value={newAddress.instructions}
                   onChange={(e) => setNewAddress({ ...newAddress, instructions: e.target.value })}
                   placeholder="E.g., Ring bell, call on arrival, near park"
