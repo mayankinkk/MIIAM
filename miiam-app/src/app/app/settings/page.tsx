@@ -45,9 +45,12 @@ export default function SettingsPage() {
   const handleSignOut = async () => {
     if (!await confirm({ title: "Sign Out", message: "Are you sure you want to sign out?", variant: "danger" })) return;
     setLoading(true);
-    await supabase.auth.signOut();
-    router.push("/");
-    setLoading(false);
+    try {
+      await supabase.auth.signOut();
+      router.push("/");
+    } catch {
+      setLoading(false);
+    }
   };
 
   return (
