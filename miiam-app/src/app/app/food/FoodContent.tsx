@@ -21,8 +21,6 @@ import BlurImage from "@/components/BlurImage";
 import { PressScale, CartBounce } from "@/components/ui/AnimationWrappers";
 import { NetworkError } from "@/components/ui/EmptyStates";
 
-const supabase = createClient();
-
 interface FoodVendor {
   id: string;
   shop_name: string;
@@ -422,6 +420,7 @@ function CartFloater() {
 }
 
 export default function FoodPageContent() {
+  const supabase = useMemo(() => createClient(), []);
   const { t } = useTranslation();
   const foodCategories = [
     { id: "pizza", name: t.food.pizza, icon: "🍕", color: "bg-orange-100" },

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -10,8 +10,6 @@ import { useFavoritesStore } from "@/lib/store/favoritesStore";
 import { ProfileSkeleton, MenuItemSkeleton } from "@/components/Skeleton";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
-
-const supabase = createClient();
 
 const MENU_CATEGORIES = ["All", "Starters", "Main Course", "Desserts", "Beverages"];
 
@@ -268,6 +266,7 @@ function CartFloater() {
 }
 
 export default function RestaurantProfilePage() {
+  const supabase = useMemo(() => createClient(), []);
   const { t } = useTranslation();
   const params = useParams();
   const router = useRouter();

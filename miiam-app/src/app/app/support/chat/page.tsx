@@ -1,12 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { createClient } from "@/lib/supabase/client";
 import { useTranslation } from "@/lib/i18n/useTranslation";
-
-const supabase = createClient();
 
 const BOT_RESPONSES: Record<string, string> = {
   default: "Thanks for reaching out! A support agent will respond shortly. For urgent issues, call us at 1800-123-4567.",
@@ -33,6 +31,7 @@ interface Message {
 }
 
 export default function SupportChatPage() {
+  const supabase = useMemo(() => createClient(), []);
   const { t } = useTranslation();
   const [messages, setMessages] = useState<Message[]>([
     {

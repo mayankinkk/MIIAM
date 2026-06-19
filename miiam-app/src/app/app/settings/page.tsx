@@ -8,9 +8,8 @@ import { useTranslation } from "@/lib/i18n/useTranslation";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
-const supabase = createClient();
-
 export default function SettingsPage() {
+  const supabase = useMemo(() => createClient(), []);
   const router = useRouter();
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
