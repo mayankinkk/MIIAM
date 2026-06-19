@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 
 export default function PharmacyAdmin() {
   const supabase = useMemo(() => createClient(), []);
-  const [stats, setStats] = useState({ totalOrders: 0, revenue: 0, activePartners: 0, totalMedicines: 0 });
+  const [stats, setStats] = useState({ totalOrders: 0, revenue: 0, activePartners: 0, totalMedicines: 0, lastMonthOrders: 0, lastMonthRevenue: 0, newPartnersThisMonth: 0 });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -39,11 +39,40 @@ export default function PharmacyAdmin() {
 
       const totalRevenue = ordersData?.reduce((sum: number, o: any) => sum + (o.total_amount || 0), 0) || 0;
 
+      const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+      const sixtyDaysAgo = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString();
+      const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
+
+      const { count: lastMonthOrdersCount } = await supabase
+        .from("orders")
+        .select("*", { count: "exact", head: true })
+        .eq("vendor_type", "pharmacy")
+        .gte("placed_at", sixtyDaysAgo)
+        .lt("placed_at", thirtyDaysAgo);
+
+      const { data: lastMonthOrdersData } = await supabase
+        .from("orders")
+        .select("total_amount")
+        .eq("vendor_type", "pharmacy")
+        .gte("placed_at", sixtyDaysAgo)
+        .lt("placed_at", thirtyDaysAgo);
+
+      const lastMonthRevenue = lastMonthOrdersData?.reduce((sum: number, o: any) => sum + (o.total_amount || 0), 0) || 0;
+
+      const { count: newPartnersCount } = await supabase
+        .from("vendors")
+        .select("*", { count: "exact", head: true })
+        .eq("type", "pharmacy")
+        .gte("created_at", startOfMonth);
+
       setStats({
         totalOrders: ordersCount || 0,
         revenue: totalRevenue,
         activePartners: partnersCount || 0,
         totalMedicines: medicinesCount || 0,
+        lastMonthOrders: lastMonthOrdersCount || 0,
+        lastMonthRevenue,
+        newPartnersThisMonth: newPartnersCount || 0,
       });
     } catch (error) {
       console.error("Error loading stats:", error);
@@ -64,22 +93,34 @@ export default function PharmacyAdmin() {
           <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl border border-[var(--color-border-subtle)]">
             <p className="text-[var(--color-outline-variant)] text-sm">Total Orders</p>
             <p className="text-3xl font-black text-[var(--color-on-surface)] mt-1">{loading ? "..." : stats.totalOrders}</p>
-            <p className="text-green-600 text-sm mt-2">↑ 15% from last month</p>
+            {stats.lastMonthOrders > 0 ? (
+              <p className={`text-sm mt-2 ${stats.totalOrders >= stats.lastMonthOrders ? 'text-green-600' : 'text-red-500'}`}>
+                {stats.totalOrders >= stats.lastMonthOrders ? '↑' : '↓'} {Math.abs(Math.round(((stats.totalOrders - stats.lastMonthOrders) / stats.lastMonthOrders) * 100))}% from last month
+              </p>
+            ) : (
+              <p className="text-[var(--color-outline-variant)] text-sm mt-2">No prior data</p>
+            )}
           </div>
           <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl border border-[var(--color-border-subtle)]">
             <p className="text-[var(--color-outline-variant)] text-sm">Revenue</p>
             <p className="text-3xl font-black text-[var(--color-on-surface)] mt-1">{loading ? "..." : `₹${(stats.revenue / 100000).toFixed(1)}L`}</p>
-            <p className="text-green-600 text-sm mt-2">↑ 18% from last month</p>
+            {stats.lastMonthRevenue > 0 ? (
+              <p className={`text-sm mt-2 ${stats.revenue >= stats.lastMonthRevenue ? 'text-green-600' : 'text-red-500'}`}>
+                {stats.revenue >= stats.lastMonthRevenue ? '↑' : '↓'} {Math.abs(Math.round(((stats.revenue - stats.lastMonthRevenue) / stats.lastMonthRevenue) * 100))}% from last month
+              </p>
+            ) : (
+              <p className="text-[var(--color-outline-variant)] text-sm mt-2">No prior data</p>
+            )}
           </div>
           <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl border border-[var(--color-border-subtle)]">
             <p className="text-[var(--color-outline-variant)] text-sm">Active Partners</p>
             <p className="text-3xl font-black text-[var(--color-on-surface)] mt-1">{loading ? "..." : stats.activePartners}</p>
-            <p className="text-green-600 text-sm mt-2">↑ 2 new this month</p>
+            <p className="text-green-600 text-sm mt-2">{stats.newPartnersThisMonth > 0 ? `↑ ${stats.newPartnersThisMonth} new this month` : "No new partners"}</p>
           </div>
           <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl border border-[var(--color-border-subtle)]">
             <p className="text-[var(--color-outline-variant)] text-sm">Total Medicines</p>
             <p className="text-3xl font-black text-[var(--color-on-surface)] mt-1">{loading ? "..." : stats.totalMedicines}</p>
-            <p className="text-green-600 text-sm mt-2">In inventory</p>
+            <p className="text-[var(--color-outline-variant)] text-sm mt-2">In inventory</p>
           </div>
         </div>
 

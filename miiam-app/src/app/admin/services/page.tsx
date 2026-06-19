@@ -35,6 +35,7 @@ const serviceOptions = [
 export default function EnhancedServicesDashboard() {
   const supabase = useMemo(() => createClient(), []);
   const [bookings, setBookings] = useState<ServiceBooking[]>([]);
+  const [providers, setProviders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"dashboard" | "bookings" | "providers" | "settings">("dashboard");
   const [statusFilter, setStatusFilter] = useState<ServiceStatus | "all">("all");
@@ -47,6 +48,7 @@ export default function EnhancedServicesDashboard() {
 
   useEffect(() => {
     loadBookings();
+    loadProviders();
     loadPricing();
   }, [statusFilter, serviceFilter, supabase]);
 
@@ -61,6 +63,16 @@ export default function EnhancedServicesDashboard() {
         cancelWindow: settings.service_cancel_window || "2",
       });
     } catch { /* settings may not exist yet */ }
+  }
+
+  async function loadProviders() {
+    try {
+      const { data } = await supabase
+        .from("service_providers")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (data) setProviders(data);
+    } catch { /* table may not exist yet */ }
   }
 
   async function loadBookings() {
@@ -452,11 +464,61 @@ export default function EnhancedServicesDashboard() {
               Add Provider
             </button>
           </div>
-          <div className="text-center py-12 text-[var(--color-outline-variant)]">
-            <span className="material-symbols-outlined text-5xl text-[var(--color-outline-variant)]/60">people</span>
-            <p className="mt-4 font-bold">No providers yet</p>
-            <p className="text-sm mt-1">Add service providers to get started</p>
-          </div>
+          {providers.length === 0 ? (
+            <div className="text-center py-12 text-[var(--color-outline-variant)]">
+              <span className="material-symbols-outlined text-5xl text-[var(--color-outline-variant)]/60">people</span>
+              <p className="mt-4 font-bold">No providers yet</p>
+              <p className="text-sm mt-1">Add service providers to get started</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {providers.map((provider) => {
+                const serviceOption = serviceOptions.find((s) => s.id === provider.service_type);
+                return (
+                  <div key={provider.id} className="bg-[var(--color-surface-subtle)] rounded-2xl p-4 border border-transparent hover:border-[var(--color-primary)] transition-colors">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-10 h-10 rounded-xl ${serviceOption?.bg ?? "bg-gray-100"} flex items-center justify-center`}>
+                          <span className={`material-symbols-outlined text-lg ${serviceOption?.color ?? "text-gray-500"}`}>{serviceOption?.icon ?? "person"}</span>
+                        </div>
+                        <div>
+                          <p className="font-bold text-[var(--color-on-surface)] text-sm">{provider.name}</p>
+                          <p className="text-xs text-[var(--color-outline)]">{serviceOption?.label ?? provider.service_type}</p>
+                        </div>
+                      </div>
+                      <span className={`text-[10px] font-black px-2 py-1 rounded-full uppercase ${
+                        provider.status === "active"
+                          ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300"
+                          : provider.status === "rejected"
+                          ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300"
+                          : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300"
+                      }`}>
+                        {provider.status}
+                      </span>
+                    </div>
+                    <div className="space-y-1 text-xs text-[var(--color-outline)]">
+                      <div className="flex items-center gap-2">
+                        <span className="material-symbols-outlined text-sm">phone</span>
+                        <span>{provider.phone}</span>
+                      </div>
+                      {provider.email && (
+                        <div className="flex items-center gap-2">
+                          <span className="material-symbols-outlined text-sm">mail</span>
+                          <span>{provider.email}</span>
+                        </div>
+                      )}
+                      {provider.experience && (
+                        <div className="flex items-center gap-2">
+                          <span className="material-symbols-outlined text-sm">work_history</span>
+                          <span>{provider.experience} yrs experience</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       )}
 
@@ -585,6 +647,7 @@ export default function EnhancedServicesDashboard() {
                   useToastStore.getState().addToast("Provider registered successfully!", "success");
                   setShowProviderModal(false);
                   setProviderForm({ name: "", phone: "", email: "", service_type: "beauty", experience: "" });
+                  loadProviders();
                 }}
                 className="flex-1 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm"
               >
