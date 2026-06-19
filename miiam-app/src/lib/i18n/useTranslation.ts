@@ -4,21 +4,21 @@ import { useState, useEffect } from "react";
 import { useLanguageStore } from "@/lib/store/languageStore";
 import { getTranslations } from "./index";
 import type { Translations } from "./en";
+import en from "./en";
 
-let cachedTranslations: Record<string, Translations> = {};
+let cachedTranslations: Record<string, Translations> = { en };
 
 export function useTranslation() {
   const language = useLanguageStore((s) => s.language);
-  const [t, setT] = useState<Translations>(() => cachedTranslations[language] || cachedTranslations["en"]);
+  const [t, setT] = useState<Translations>(() => cachedTranslations[language] || en);
 
   useEffect(() => {
-    const cacheKey = language;
-    if (cachedTranslations[cacheKey]) {
-      setT(cachedTranslations[cacheKey]);
+    if (cachedTranslations[language]) {
+      setT(cachedTranslations[language]);
       return;
     }
     getTranslations(language).then((translations) => {
-      cachedTranslations[cacheKey] = translations;
+      cachedTranslations[language] = translations;
       setT(translations);
     });
   }, [language]);
