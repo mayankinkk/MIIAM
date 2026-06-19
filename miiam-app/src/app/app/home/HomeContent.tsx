@@ -15,6 +15,64 @@ import PrintCostCalculator from "@/components/print/PrintCostCalculator";
 
 
 
+import type { User } from "@supabase/supabase-js";
+
+interface HomeVendor {
+  id: string;
+  shop_name: string;
+  name?: string;
+  cuisine?: string;
+  image_url?: string;
+  cover_image_url?: string;
+  logo_url?: string;
+  rating?: string | number;
+  review_count?: number;
+  delivery_time_min?: number;
+  delivery_time_max?: number;
+  delivery_time_minutes?: number;
+  delivery_time?: string;
+  delivery_charge?: number | string;
+  min_order_amount?: string;
+  is_new?: boolean;
+  is_featured?: boolean;
+  is_promoted?: boolean;
+  status?: string;
+  type?: string;
+  pincode?: string;
+  city?: string;
+  created_at?: string;
+}
+
+interface HomeNotification {
+  id: string;
+  user_id: string;
+  title: string;
+  body?: string;
+  message?: string;
+  type: "order" | "promo" | "offer" | "info" | "system" | "rider";
+  read: boolean;
+  created_at: string;
+}
+
+interface OrderStep {
+  id: number;
+  label: string;
+  completed: boolean;
+  time: string;
+}
+
+interface ActiveOrder {
+  id: string;
+  vendor: string;
+  items: string;
+  steps: OrderStep[];
+  eta: string;
+}
+
+interface UserProfile extends User {
+  profile_name?: string;
+}
+
 export default function HomePage() {
 
   const supabase = useMemo(() => createClient(), []);
@@ -36,11 +94,11 @@ export default function HomePage() {
     { id: "o3", title: t.home.offerFlat100, subtitle: t.home.offerFlat100Desc, color: "from-blue-500 to-indigo-500", badge: t.home.offerFlatOff },
   ];
 
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<UserProfile | null>(null);
   const [currentOffer, setCurrentOffer] = useState(0);
   const locationStore = useLocationStore();
   const [location, setLocation] = useState(locationStore.displayAddress || t.home.selectLocation);
-  const [activeOrder, setActiveOrder] = useState<any>(null);
+  const [activeOrder, setActiveOrder] = useState<ActiveOrder | null>(null);
   const [orderBubbleExpanded, setOrderBubbleExpanded] = useState(false);
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
   const [showLocationModal, setShowLocationModal] = useState(false);
@@ -48,11 +106,11 @@ export default function HomePage() {
   const [pincodeError, setPincodeError] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifTab, setNotifTab] = useState<"all" | "orders" | "offers">("all");
-  const [notifications, setNotifications] = useState<any[]>([]);
+  const [notifications, setNotifications] = useState<HomeNotification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
-  const [nearbyRestaurants, setNearbyRestaurants] = useState<any[]>([]);
-  const [featuredRestaurants, setFeaturedRestaurants] = useState<any[]>([]);
-  const [spotlightRestaurant, setSpotlightRestaurant] = useState<any>(null);
+  const [nearbyRestaurants, setNearbyRestaurants] = useState<HomeVendor[]>([]);
+  const [featuredRestaurants, setFeaturedRestaurants] = useState<HomeVendor[]>([]);
+  const [spotlightRestaurant, setSpotlightRestaurant] = useState<HomeVendor | null>(null);
   const [localServiceable, setLocalServiceable] = useState(true);
   const [checkingPincode, setCheckingPincode] = useState(false);
   const [dataError, setDataError] = useState<string | null>(null);
@@ -99,7 +157,7 @@ export default function HomePage() {
 
         if (notifsResult.data) {
           setNotifications(notifsResult.data);
-          setUnreadCount(notifsResult.data.filter((n: { read: boolean }) => !n.read).length);
+          setUnreadCount(notifsResult.data.filter((n: HomeNotification) => !n.read).length);
         }
       }
 
@@ -119,7 +177,7 @@ export default function HomePage() {
         const userCity = locationStore.city?.toLowerCase() || "";
         
         // Strict filter: pincode match OR city match only
-        const local = vendors.filter((v: any) => {
+        const local = vendors.filter((v: HomeVendor) => {
           const pincodeMatch = v.pincode === pincode;
           const cityMatch = userCity && v.city?.toLowerCase() === userCity;
           return pincodeMatch || cityMatch;
@@ -130,8 +188,8 @@ export default function HomePage() {
         
         // Show ONLY local vendors — empty array if none found
         setNearbyRestaurants(local);
-        setFeaturedRestaurants(local.filter((v: any) => v.is_featured || v.is_promoted).slice(0, 6));
-        setSpotlightRestaurant(local.find((v: any) => v.is_featured) || null);
+        setFeaturedRestaurants(local.filter((v: HomeVendor) => v.is_featured || v.is_promoted).slice(0, 6));
+        setSpotlightRestaurant(local.find((v: HomeVendor) => v.is_featured) || null);
       }
       setCheckingPincode(false);
       setLoading(false);
@@ -157,7 +215,7 @@ export default function HomePage() {
           if (active) {
             setActiveOrder({
               id: active.id,
-              vendor: (active.vendors as any)?.shop_name || (active.vendors as any)?.[0]?.shop_name || "Restaurant",
+              vendor: (Array.isArray(active.vendors) ? active.vendors[0] : active.vendors)?.shop_name || "Restaurant",
               items: t.home.orderInProgress,
               steps: [
                 { id: 1, label: t.home.orderPlaced, completed: true, time: new Date(active.placed_at).toLocaleTimeString() },
@@ -174,7 +232,7 @@ export default function HomePage() {
       fetchActiveOrder();
 
       // Set up Realtime subscription to get live notification updates
-    const channelRef = { current: null as any };
+    const channelRef = { current: null as ReturnType<typeof supabase.channel> | null };
     supabase.auth.getUser().then(({ data: { user } }: { data: { user: { id: string } | null } }) => {
       if (!user) return;
       const channel = supabase
@@ -184,7 +242,7 @@ export default function HomePage() {
           schema: "public",
           table: "notifications",
           filter: `user_id=eq.${user.id}`,
-        }, (payload: { new: Record<string, unknown> }) => {
+        }, (payload: { new: HomeNotification }) => {
           setNotifications(prev => [payload.new, ...prev]);
           setUnreadCount(prev => prev + 1);
         })
@@ -460,7 +518,7 @@ export default function HomePage() {
               
               {/* Progress Steps */}
               <div className="space-y-3">
-                {activeOrder.steps.map((step: any, index: number) => (
+                {activeOrder.steps.map((step: OrderStep, index: number) => (
                   <div key={step.id} className="flex items-center gap-3">
                     <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
                       step.completed ? 'bg-green-500' : index === 2 ? 'bg-orange-500 animate-pulse' : 'bg-surface-container-high'
@@ -561,7 +619,7 @@ export default function HomePage() {
             <div className="relative z-10 flex items-center gap-4">
               <div className="w-20 h-20 bg-[var(--color-surface-container-lowest)]/20 rounded-2xl flex items-center justify-center overflow-hidden">
                 {spotlightRestaurant.cover_image_url || spotlightRestaurant.image_url ? (
-                  <BlurImage src={spotlightRestaurant.cover_image_url || spotlightRestaurant.image_url} alt={`${spotlightRestaurant.name || spotlightRestaurant.shop_name} featured`} fill className="w-full h-full" sizes="80px" />
+                  <BlurImage src={spotlightRestaurant.cover_image_url || spotlightRestaurant.image_url || ""} alt={`${spotlightRestaurant.name || spotlightRestaurant.shop_name} featured`} fill className="w-full h-full" sizes="80px" />
                 ) : (
                   <span className="text-3xl">🍽️</span>
                 )}
@@ -598,7 +656,7 @@ export default function HomePage() {
               <Link key={restaurant.id} href={`/app/vendor/${restaurant.id}`} className="flex-shrink-0 w-36 bg-surface-container-lowest border border-outline-variant/10 rounded-2xl overflow-hidden shadow-sm hover:border-purple-500/30 transition-all">
                 <div className="relative h-28 bg-surface-container">
                   {restaurant.cover_image_url || restaurant.image_url ? (
-                    <BlurImage src={restaurant.cover_image_url || restaurant.image_url} alt={`${restaurant.shop_name || restaurant.name} promoted`} fill className="w-full h-full" sizes="(max-width: 768px) 50vw, 25vw" />
+                    <BlurImage src={restaurant.cover_image_url || restaurant.image_url || ""} alt={`${restaurant.shop_name || restaurant.name} promoted`} fill className="w-full h-full" sizes="(max-width: 768px) 50vw, 25vw" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-2xl">🍽️</div>
                   )}
@@ -653,7 +711,7 @@ export default function HomePage() {
                 <div className="flex">
                   <div className="w-28 h-28 flex-shrink-0 bg-surface-container relative">
                     {restaurant.cover_image_url || restaurant.image_url ? (
-                      <BlurImage src={restaurant.cover_image_url || restaurant.image_url} alt={restaurant.name || restaurant.shop_name} fill className="w-full h-full" sizes="112px" />
+                      <BlurImage src={restaurant.cover_image_url || restaurant.image_url || ""} alt={restaurant.name || restaurant.shop_name} fill className="w-full h-full" sizes="112px" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-3xl">🍽️</div>
                     )}
