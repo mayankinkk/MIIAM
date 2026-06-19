@@ -222,9 +222,9 @@ export default function BannerManagement() {
             </div>
             <div className="p-6 space-y-4">
               <div>
-                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-1">Title</label>
+                <label htmlFor="banner-title" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-1">Title</label>
                 <input
-                  type="text"
+                  id="banner-title"
                   value={newBanner.title}
                   onChange={(e) => setNewBanner({ ...newBanner, title: e.target.value })}
                   className="w-full bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/10"
@@ -240,9 +240,9 @@ export default function BannerManagement() {
                 previewHeight="h-32"
               />
               <div>
-                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-1">Link (optional)</label>
+                <label htmlFor="banner-link" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-1">Link (optional)</label>
                 <input
-                  type="text"
+                  id="banner-link"
                   value={newBanner.link_url}
                   onChange={(e) => setNewBanner({ ...newBanner, link_url: e.target.value })}
                   className="w-full bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/10"

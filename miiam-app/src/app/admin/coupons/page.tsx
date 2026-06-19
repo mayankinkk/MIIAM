@@ -311,11 +311,11 @@ export default function CouponsAdminPage() {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-bold text-[var(--color-on-surface)] mb-1">
+                <label htmlFor="coupon-code" className="block text-sm font-bold text-[var(--color-on-surface)] mb-1">
                   Coupon Code
                 </label>
                 <input
-                  type="text"
+                  id="coupon-code"
                   value={formData.code}
                   onChange={(e) =>
                     setFormData({ ...formData, code: e.target.value.toUpperCase() })
@@ -328,10 +328,11 @@ export default function CouponsAdminPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-bold text-[var(--color-on-surface)] mb-1">
+                  <label htmlFor="coupon-discount-type" className="block text-sm font-bold text-[var(--color-on-surface)] mb-1">
                     Discount Type
                   </label>
                   <select
+                    id="coupon-discount-type"
                     value={formData.type}
                     onChange={(e) =>
                       setFormData({ ...formData, type: e.target.value as "percentage" | "fixed" })
@@ -343,11 +344,11 @@ export default function CouponsAdminPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-[var(--color-on-surface)] mb-1">
+                  <label htmlFor="coupon-value" className="block text-sm font-bold text-[var(--color-on-surface)] mb-1">
                     Value
                   </label>
                   <input
-                    type="number"
+                    id="coupon-value"
                     value={formData.value}
                     onChange={(e) =>
                       setFormData({ ...formData, value: parseInt(e.target.value) })
@@ -360,11 +361,11 @@ export default function CouponsAdminPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-bold text-[var(--color-on-surface)] mb-1">
+                  <label htmlFor="coupon-min-order" className="block text-sm font-bold text-[var(--color-on-surface)] mb-1">
                     Min Order (₹)
                   </label>
                   <input
-                    type="number"
+                    id="coupon-min-order"
                     value={formData.min_order}
                     onChange={(e) =>
                       setFormData({ ...formData, min_order: parseInt(e.target.value) })
@@ -373,11 +374,11 @@ export default function CouponsAdminPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-[var(--color-on-surface)] mb-1">
+                  <label htmlFor="coupon-max-discount" className="block text-sm font-bold text-[var(--color-on-surface)] mb-1">
                     Max Discount (₹)
                   </label>
                   <input
-                    type="number"
+                    id="coupon-max-discount"
                     value={formData.max_discount}
                     onChange={(e) =>
                       setFormData({ ...formData, max_discount: parseInt(e.target.value) })
@@ -389,11 +390,11 @@ export default function CouponsAdminPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-bold text-[var(--color-on-surface)] mb-1">
+                  <label htmlFor="coupon-valid-from" className="block text-sm font-bold text-[var(--color-on-surface)] mb-1">
                     Valid From
                   </label>
                   <input
-                    type="date"
+                    id="coupon-valid-from"
                     value={formData.valid_from}
                     onChange={(e) =>
                       setFormData({ ...formData, valid_from: e.target.value })
@@ -403,11 +404,11 @@ export default function CouponsAdminPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-[var(--color-on-surface)] mb-1">
+                  <label htmlFor="coupon-valid-until" className="block text-sm font-bold text-[var(--color-on-surface)] mb-1">
                     Valid Until
                   </label>
                   <input
-                    type="date"
+                    id="coupon-valid-until"
                     value={formData.valid_until}
                     onChange={(e) =>
                       setFormData({ ...formData, valid_until: e.target.value })
@@ -419,11 +420,11 @@ export default function CouponsAdminPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-[var(--color-on-surface)] mb-1">
+                <label htmlFor="coupon-usage-limit" className="block text-sm font-bold text-[var(--color-on-surface)] mb-1">
                   Usage Limit
                 </label>
                 <input
-                  type="number"
+                  id="coupon-usage-limit"
                   value={formData.usage_limit}
                   onChange={(e) =>
                     setFormData({ ...formData, usage_limit: parseInt(e.target.value) })
@@ -434,10 +435,11 @@ export default function CouponsAdminPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-[var(--color-on-surface)] mb-1">
+                <label htmlFor="coupon-service-type" className="block text-sm font-bold text-[var(--color-on-surface)] mb-1">
                   Applicable To
                 </label>
                 <select
+                  id="coupon-service-type"
                   value={formData.service_type}
                   onChange={(e) =>
                     setFormData({ ...formData, service_type: e.target.value })

@@ -196,17 +196,18 @@ export default function SettingsPage() {
             <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm mb-6">Platform Details</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Platform Name</label>
+                <label htmlFor="settings-platform-name" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Platform Name</label>
                 <input
-                  type="text"
+                  id="settings-platform-name"
                   value={settings.platform_name || ""}
                   onChange={(e) => handleChange("platform_name", e.target.value)}
                   className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Support Email</label>
+                <label htmlFor="settings-support-email" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Support Email</label>
                 <input
+                  id="settings-support-email"
                   type="email"
                   value={settings.support_email || ""}
                   onChange={(e) => handleChange("support_email", e.target.value)}
@@ -214,8 +215,9 @@ export default function SettingsPage() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Support Phone</label>
+                <label htmlFor="settings-support-phone" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Support Phone</label>
                 <input
+                  id="settings-support-phone"
                   type="tel"
                   value={settings.support_phone || ""}
                   onChange={(e) => handleChange("support_phone", e.target.value)}
@@ -223,9 +225,9 @@ export default function SettingsPage() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Platform URL</label>
+                <label htmlFor="settings-platform-url" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Platform URL</label>
                 <input
-                  type="url"
+                  id="settings-platform-url"
                   value={settings.platform_url || ""}
                   onChange={(e) => handleChange("platform_url", e.target.value)}
                   className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
@@ -292,53 +294,54 @@ export default function SettingsPage() {
           <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm mb-6">Delivery Settings</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Default Delivery Fee (₹)</label>
+              <label htmlFor="settings-delivery-fee" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Default Delivery Fee (₹)</label>
               <input
-                type="number"
+                id="settings-delivery-fee"
                 value={settings.default_delivery_fee || ""}
                 onChange={(e) => handleChange("default_delivery_fee", e.target.value)}
                 className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Free Delivery Above (₹)</label>
+              <label htmlFor="settings-free-delivery" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Free Delivery Above (₹)</label>
               <input
-                type="number"
+                id="settings-free-delivery"
                 value={settings.free_delivery_above || ""}
                 onChange={(e) => handleChange("free_delivery_above", e.target.value)}
                 className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Max Delivery Radius (km)</label>
+              <label htmlFor="settings-delivery-radius" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Max Delivery Radius (km)</label>
               <input
-                type="number"
+                id="settings-delivery-radius"
                 value={settings.max_delivery_radius || ""}
                 onChange={(e) => handleChange("max_delivery_radius", e.target.value)}
                 className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Max Order Value (₹)</label>
+              <label htmlFor="settings-max-order" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Max Order Value (₹)</label>
               <input
-                type="number"
+                id="settings-max-order"
                 value={settings.max_order_value || ""}
                 onChange={(e) => handleChange("max_order_value", e.target.value)}
                 className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Cancellation Grace Period (seconds)</label>
+              <label htmlFor="settings-cancellation-grace" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Cancellation Grace Period (seconds)</label>
               <input
-                type="number"
+                id="settings-cancellation-grace"
                 value={settings.cancellation_grace_period || ""}
                 onChange={(e) => handleChange("cancellation_grace_period", e.target.value)}
                 className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Auto-Accept Orders</label>
+              <label htmlFor="settings-auto-accept" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Auto-Accept Orders</label>
               <select
+                id="settings-auto-accept"
                 value={settings.auto_accept_orders || "true"}
                 onChange={(e) => handleChange("auto_accept_orders", e.target.value)}
                 className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
@@ -356,26 +359,27 @@ export default function SettingsPage() {
           <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm mb-6">Payment Settings</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Platform Commission (%)</label>
+              <label htmlFor="settings-platform-commission" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Platform Commission (%)</label>
               <input
-                type="number"
+                id="settings-platform-commission"
                 value={settings.platform_commission || ""}
                 onChange={(e) => handleChange("platform_commission", e.target.value)}
                 className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Payment Gateway Fee (%)</label>
+              <label htmlFor="settings-gateway-fee" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Payment Gateway Fee (%)</label>
               <input
-                type="number"
+                id="settings-gateway-fee"
                 value={settings.payment_gateway_fee || ""}
                 onChange={(e) => handleChange("payment_gateway_fee", e.target.value)}
                 className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Payout Frequency</label>
+              <label htmlFor="settings-payout-frequency" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Payout Frequency</label>
               <select
+                id="settings-payout-frequency"
                 value={settings.payout_frequency || "daily"}
                 onChange={(e) => handleChange("payout_frequency", e.target.value)}
                 className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
@@ -386,9 +390,9 @@ export default function SettingsPage() {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Min Payout Amount (₹)</label>
+              <label htmlFor="settings-min-payout" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Min Payout Amount (₹)</label>
               <input
-                type="number"
+                id="settings-min-payout"
                 value={settings.min_payout_amount || ""}
                 onChange={(e) => handleChange("min_payout_amount", e.target.value)}
                 className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
@@ -457,8 +461,9 @@ export default function SettingsPage() {
             <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm mb-6">Contact Information</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Support Phone Number</label>
+                <label htmlFor="settings-support-phone-number" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Support Phone Number</label>
                 <input
+                  id="settings-support-phone-number"
                   type="tel"
                   value={settings.support_phone || ""}
                   onChange={(e) => handleChange("support_phone", e.target.value)}
@@ -467,9 +472,9 @@ export default function SettingsPage() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Phone Display Label</label>
+                <label htmlFor="settings-phone-label" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Phone Display Label</label>
                 <input
-                  type="text"
+                  id="settings-phone-label"
                   value={settings.support_phone_label || ""}
                   onChange={(e) => handleChange("support_phone_label", e.target.value)}
                   placeholder="1800-123-4567 (Toll free)"
@@ -477,8 +482,9 @@ export default function SettingsPage() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Support Email</label>
+                <label htmlFor="settings-support-email-support" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Support Email</label>
                 <input
+                  id="settings-support-email-support"
                   type="email"
                   value={settings.support_email || ""}
                   onChange={(e) => handleChange("support_email", e.target.value)}
@@ -487,9 +493,9 @@ export default function SettingsPage() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">WhatsApp Number</label>
+                <label htmlFor="settings-whatsapp" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">WhatsApp Number</label>
                 <input
-                  type="tel"
+                  id="settings-whatsapp"
                   value={settings.support_whatsapp || ""}
                   onChange={(e) => handleChange("support_whatsapp", e.target.value)}
                   placeholder="+9118001234567"
@@ -497,9 +503,9 @@ export default function SettingsPage() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Chat Response Time</label>
+                <label htmlFor="settings-chat-response" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Chat Response Time</label>
                 <input
-                  type="text"
+                  id="settings-chat-response"
                   value={settings.support_response_time || ""}
                   onChange={(e) => handleChange("support_response_time", e.target.value)}
                   placeholder="2 mins"
@@ -507,9 +513,9 @@ export default function SettingsPage() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Email Response Time</label>
+                <label htmlFor="settings-email-response" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Email Response Time</label>
                 <input
-                  type="text"
+                  id="settings-email-response"
                   value={settings.support_email_response_time || ""}
                   onChange={(e) => handleChange("support_email_response_time", e.target.value)}
                   placeholder="24 hours"
@@ -523,9 +529,9 @@ export default function SettingsPage() {
             <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm mb-6">Social Media Links</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Twitter / X</label>
+                <label htmlFor="settings-twitter" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Twitter / X</label>
                 <input
-                  type="url"
+                  id="settings-twitter"
                   value={settings.support_twitter || ""}
                   onChange={(e) => handleChange("support_twitter", e.target.value)}
                   placeholder="https://twitter.com/miiam_in"
@@ -533,9 +539,9 @@ export default function SettingsPage() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Instagram</label>
+                <label htmlFor="settings-instagram" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Instagram</label>
                 <input
-                  type="url"
+                  id="settings-instagram"
                   value={settings.support_instagram || ""}
                   onChange={(e) => handleChange("support_instagram", e.target.value)}
                   placeholder="https://instagram.com/miiam_in"
@@ -543,9 +549,9 @@ export default function SettingsPage() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Facebook</label>
+                <label htmlFor="settings-facebook" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Facebook</label>
                 <input
-                  type="url"
+                  id="settings-facebook"
                   value={settings.support_facebook || ""}
                   onChange={(e) => handleChange("support_facebook", e.target.value)}
                   placeholder="https://facebook.com/miiam.in"
@@ -553,9 +559,9 @@ export default function SettingsPage() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">LinkedIn</label>
+                <label htmlFor="settings-linkedin" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">LinkedIn</label>
                 <input
-                  type="url"
+                  id="settings-linkedin"
                   value={settings.support_linkedin || ""}
                   onChange={(e) => handleChange("support_linkedin", e.target.value)}
                   placeholder="https://linkedin.com/company/miiam"
@@ -563,9 +569,9 @@ export default function SettingsPage() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">YouTube</label>
+                <label htmlFor="settings-youtube" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">YouTube</label>
                 <input
-                  type="url"
+                  id="settings-youtube"
                   value={settings.support_youtube || ""}
                   onChange={(e) => handleChange("support_youtube", e.target.value)}
                   placeholder="https://youtube.com/@miiam"
@@ -596,8 +602,9 @@ export default function SettingsPage() {
             <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm mb-6">Contact Information</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Support Email</label>
+                <label htmlFor="settings-legal-email" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Support Email</label>
                 <input
+                  id="settings-legal-email"
                   type="email"
                   value={settings.support_email || ""}
                   onChange={(e) => handleChange("support_email", e.target.value)}
@@ -605,8 +612,9 @@ export default function SettingsPage() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Support Phone</label>
+                <label htmlFor="settings-legal-phone" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Support Phone</label>
                 <input
+                  id="settings-legal-phone"
                   type="tel"
                   value={settings.support_phone || ""}
                   onChange={(e) => handleChange("support_phone", e.target.value)}
@@ -614,8 +622,9 @@ export default function SettingsPage() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Grievance Email</label>
+                <label htmlFor="settings-grievance-email" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Grievance Email</label>
                 <input
+                  id="settings-grievance-email"
                   type="email"
                   value={settings.grievance_email || ""}
                   onChange={(e) => handleChange("grievance_email", e.target.value)}
@@ -623,8 +632,9 @@ export default function SettingsPage() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Business Address</label>
+                <label htmlFor="settings-business-address" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Business Address</label>
                 <input
+                  id="settings-business-address"
                   type="text"
                   value={settings.business_address || ""}
                   onChange={(e) => handleChange("business_address", e.target.value)}
@@ -632,8 +642,9 @@ export default function SettingsPage() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">City</label>
+                <label htmlFor="settings-legal-city" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">City</label>
                 <input
+                  id="settings-legal-city"
                   type="text"
                   value={settings.city || ""}
                   onChange={(e) => handleChange("city", e.target.value)}
@@ -641,8 +652,9 @@ export default function SettingsPage() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">State</label>
+                <label htmlFor="settings-legal-state" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">State</label>
                 <input
+                  id="settings-legal-state"
                   type="text"
                   value={settings.state || ""}
                   onChange={(e) => handleChange("state", e.target.value)}
@@ -650,8 +662,9 @@ export default function SettingsPage() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Pincode</label>
+                <label htmlFor="settings-legal-pincode" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Pincode</label>
                 <input
+                  id="settings-legal-pincode"
                   type="text"
                   value={settings.pincode || ""}
                   onChange={(e) => handleChange("pincode", e.target.value)}

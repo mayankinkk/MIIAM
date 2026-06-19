@@ -557,8 +557,9 @@ export default function AdminVendorsPage() {
                 <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-xs mb-4">Owner Details</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Owner Name *</label>
+                    <label htmlFor="create-owner-name" className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Owner Name *</label>
                     <input
+                      id="create-owner-name"
                       type="text"
                       required
                       value={vendorForm.ownerName}
@@ -568,8 +569,9 @@ export default function AdminVendorsPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Phone Number *</label>
+                    <label htmlFor="create-phone" className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Phone Number *</label>
                     <input
+                      id="create-phone"
                       type="tel"
                       required
                       value={vendorForm.phone}
@@ -579,8 +581,9 @@ export default function AdminVendorsPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Email Address</label>
+                    <label htmlFor="create-email" className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Email Address</label>
                     <input
+                      id="create-email"
                       type="email"
                       value={vendorForm.email}
                       onChange={(e) => setVendorForm({ ...vendorForm, email: e.target.value })}
@@ -595,8 +598,9 @@ export default function AdminVendorsPage() {
                 <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-xs mb-4">Shop Details</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="md:col-span-2">
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Restaurant Name *</label>
+                    <label htmlFor="create-shop-name" className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Restaurant Name *</label>
                     <input
+                      id="create-shop-name"
                       type="text"
                       required
                       value={vendorForm.shopName}
@@ -606,8 +610,9 @@ export default function AdminVendorsPage() {
                     />
                   </div>
                   <div className="md:col-span-2">
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Full Address *</label>
+                    <label htmlFor="create-address" className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Full Address *</label>
                     <textarea
+                      id="create-address"
                       required
                       value={vendorForm.address}
                       onChange={(e) => setVendorForm({ ...vendorForm, address: e.target.value })}
@@ -617,8 +622,9 @@ export default function AdminVendorsPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">City *</label>
+                    <label htmlFor="create-city" className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">City *</label>
                     <input
+                      id="create-city"
                       required
                       type="text"
                       value={vendorForm.city}
@@ -628,8 +634,9 @@ export default function AdminVendorsPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">State *</label>
+                    <label htmlFor="create-state" className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">State *</label>
                     <input
+                      id="create-state"
                       type="text"
                       value={vendorForm.state}
                       onChange={(e) => setVendorForm({ ...vendorForm, state: e.target.value })}
@@ -638,8 +645,9 @@ export default function AdminVendorsPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">PIN Code *</label>
+                    <label htmlFor="create-pincode" className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">PIN Code *</label>
                     <input
+                      id="create-pincode"
                       required
                       type="tel"
                       inputMode="numeric"
@@ -651,8 +659,9 @@ export default function AdminVendorsPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Landmark</label>
+                    <label htmlFor="create-landmark" className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Landmark</label>
                     <input
+                      id="create-landmark"
                       type="text"
                       value={vendorForm.landmark}
                       onChange={(e) => setVendorForm({ ...vendorForm, landmark: e.target.value })}
@@ -661,8 +670,9 @@ export default function AdminVendorsPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Latitude</label>
+                    <label htmlFor="create-latitude" className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Latitude</label>
                     <input
+                      id="create-latitude"
                       type="number"
                       step="any"
                       value={vendorForm.latitude}
@@ -672,8 +682,9 @@ export default function AdminVendorsPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Longitude</label>
+                    <label htmlFor="create-longitude" className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Longitude</label>
                     <input
+                      id="create-longitude"
                       type="number"
                       step="any"
                       value={vendorForm.longitude}
@@ -683,8 +694,9 @@ export default function AdminVendorsPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Cuisine Type *</label>
+                    <label htmlFor="create-cuisine" className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Cuisine Type *</label>
                     <input
+                      id="create-cuisine"
                       type="text"
                       required
                       value={vendorForm.cuisine}
@@ -694,8 +706,9 @@ export default function AdminVendorsPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 flex items-center gap-2">
+                    <label htmlFor="create-pure-veg" className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 flex items-center gap-2">
                       <input
+                        id="create-pure-veg"
                         type="checkbox"
                         checked={vendorForm.isPureVeg}
                         onChange={(e) => setVendorForm({ ...vendorForm, isPureVeg: e.target.checked })}
@@ -711,8 +724,9 @@ export default function AdminVendorsPage() {
                 <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-xs mb-4">Business Documents</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">GST Number</label>
+                    <label htmlFor="create-gst" className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">GST Number</label>
                     <input
+                      id="create-gst"
                       type="text"
                       value={vendorForm.gstNumber}
                       onChange={(e) => setVendorForm({ ...vendorForm, gstNumber: e.target.value })}
@@ -721,8 +735,9 @@ export default function AdminVendorsPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">PAN Number</label>
+                    <label htmlFor="create-pan" className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">PAN Number</label>
                     <input
+                      id="create-pan"
                       type="text"
                       value={vendorForm.panNumber}
                       onChange={(e) => setVendorForm({ ...vendorForm, panNumber: e.target.value.toUpperCase() })}
@@ -732,8 +747,9 @@ export default function AdminVendorsPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">FSSAI License</label>
+                    <label htmlFor="create-fssai" className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">FSSAI License</label>
                     <input
+                      id="create-fssai"
                       type="text"
                       value={vendorForm.fssaiNumber}
                       onChange={(e) => setVendorForm({ ...vendorForm, fssaiNumber: e.target.value })}
@@ -748,10 +764,11 @@ export default function AdminVendorsPage() {
                 <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-xs mb-4">Delivery Settings</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Min Order (₹)</label>
+                    <label htmlFor="create-min-order" className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Min Order (₹)</label>
                     <div className="relative">
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-outline-variant)]">₹</span>
                       <input
+                        id="create-min-order"
                         type="number"
                         value={vendorForm.minOrderAmount}
                         onChange={(e) => setVendorForm({ ...vendorForm, minOrderAmount: e.target.value })}
@@ -761,10 +778,11 @@ export default function AdminVendorsPage() {
                     </div>
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Delivery Charge (₹)</label>
+                    <label htmlFor="create-delivery-charge" className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Delivery Charge (₹)</label>
                     <div className="relative">
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-outline-variant)]">₹</span>
                       <input
+                        id="create-delivery-charge"
                         type="number"
                         value={vendorForm.deliveryCharge}
                         onChange={(e) => setVendorForm({ ...vendorForm, deliveryCharge: e.target.value })}
@@ -774,8 +792,9 @@ export default function AdminVendorsPage() {
                     </div>
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Min Delivery Time (min)</label>
+                    <label htmlFor="create-delivery-time-min" className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Min Delivery Time (min)</label>
                     <input
+                      id="create-delivery-time-min"
                       type="number"
                       value={vendorForm.deliveryTimeMin}
                       onChange={(e) => setVendorForm({ ...vendorForm, deliveryTimeMin: e.target.value })}
@@ -784,8 +803,9 @@ export default function AdminVendorsPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Max Delivery Time (min)</label>
+                    <label htmlFor="create-delivery-time-max" className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Max Delivery Time (min)</label>
                     <input
+                      id="create-delivery-time-max"
                       type="number"
                       value={vendorForm.deliveryTimeMax}
                       onChange={(e) => setVendorForm({ ...vendorForm, deliveryTimeMax: e.target.value })}
@@ -890,8 +910,9 @@ export default function AdminVendorsPage() {
                 <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-xs mb-4">Owner Details</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Owner Name *</label>
+                    <label htmlFor="edit-owner-name" className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Owner Name *</label>
                     <input
+                      id="edit-owner-name"
                       type="text"
                       required
                       value={editForm.ownerName}
@@ -900,8 +921,9 @@ export default function AdminVendorsPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Phone Number *</label>
+                    <label htmlFor="edit-phone" className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Phone Number *</label>
                     <input
+                      id="edit-phone"
                       type="tel"
                       required
                       value={editForm.phone}
@@ -910,8 +932,9 @@ export default function AdminVendorsPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Email Address</label>
+                    <label htmlFor="edit-email" className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Email Address</label>
                     <input
+                      id="edit-email"
                       type="email"
                       value={editForm.email}
                       onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
@@ -925,8 +948,9 @@ export default function AdminVendorsPage() {
                 <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-xs mb-4">Shop Details</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Shop Name *</label>
+                    <label htmlFor="edit-shop-name" className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Shop Name *</label>
                     <input
+                      id="edit-shop-name"
                       type="text"
                       required
                       value={editForm.shopName}
@@ -935,8 +959,9 @@ export default function AdminVendorsPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Cuisine Type</label>
+                    <label htmlFor="edit-cuisine" className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Cuisine Type</label>
                     <input
+                      id="edit-cuisine"
                       type="text"
                       value={editForm.cuisine}
                       onChange={(e) => setEditForm({ ...editForm, cuisine: e.target.value })}
@@ -944,8 +969,9 @@ export default function AdminVendorsPage() {
                     />
                   </div>
                   <div className="md:col-span-2">
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Shop Address *</label>
+                    <label htmlFor="edit-address" className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Shop Address *</label>
                     <textarea
+                      id="edit-address"
                       required
                       value={editForm.address}
                       onChange={(e) => setEditForm({ ...editForm, address: e.target.value })}
@@ -954,8 +980,9 @@ export default function AdminVendorsPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">City *</label>
+                    <label htmlFor="edit-city" className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">City *</label>
                     <input
+                      id="edit-city"
                       required
                       type="text"
                       value={editForm.city}
@@ -965,8 +992,9 @@ export default function AdminVendorsPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">PIN Code *</label>
+                    <label htmlFor="edit-pincode" className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">PIN Code *</label>
                     <input
+                      id="edit-pincode"
                       required
                       type="tel"
                       inputMode="numeric"
@@ -978,8 +1006,9 @@ export default function AdminVendorsPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">GST Number</label>
+                    <label htmlFor="edit-gst" className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">GST Number</label>
                     <input
+                      id="edit-gst"
                       type="text"
                       value={editForm.gstNumber}
                       onChange={(e) => setEditForm({ ...editForm, gstNumber: e.target.value })}
@@ -987,8 +1016,9 @@ export default function AdminVendorsPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Min Order Amount (₹)</label>
+                    <label htmlFor="edit-min-order" className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Min Order Amount (₹)</label>
                     <input
+                      id="edit-min-order"
                       type="number"
                       value={editForm.minOrderAmount}
                       onChange={(e) => setEditForm({ ...editForm, minOrderAmount: Number(e.target.value) })}
@@ -996,10 +1026,11 @@ export default function AdminVendorsPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Delivery Charge (₹)</label>
+                    <label htmlFor="edit-delivery-charge" className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Delivery Charge (₹)</label>
                     <div className="relative">
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-outline-variant)]">₹</span>
                       <input
+                        id="edit-delivery-charge"
                         type="number"
                         value={editForm.deliveryCharge}
                         onChange={(e) => setEditForm({ ...editForm, deliveryCharge: e.target.value })}
@@ -1008,8 +1039,9 @@ export default function AdminVendorsPage() {
                     </div>
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Min Delivery Time (min)</label>
+                    <label htmlFor="edit-delivery-time-min" className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Min Delivery Time (min)</label>
                     <input
+                      id="edit-delivery-time-min"
                       type="number"
                       value={editForm.deliveryTimeMin}
                       onChange={(e) => setEditForm({ ...editForm, deliveryTimeMin: e.target.value })}
@@ -1018,8 +1050,9 @@ export default function AdminVendorsPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Max Delivery Time (min)</label>
+                    <label htmlFor="edit-delivery-time-max" className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Max Delivery Time (min)</label>
                     <input
+                      id="edit-delivery-time-max"
                       type="number"
                       value={editForm.deliveryTimeMax}
                       onChange={(e) => setEditForm({ ...editForm, deliveryTimeMax: e.target.value })}
@@ -1038,8 +1071,9 @@ export default function AdminVendorsPage() {
                     />
                   </div>
                   <div className="md:col-span-2">
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Restaurant Description</label>
+                    <label htmlFor="edit-description" className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Restaurant Description</label>
                     <textarea
+                      id="edit-description"
                       value={editForm.description}
                       onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
                       className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
@@ -1048,8 +1082,9 @@ export default function AdminVendorsPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Opening Hours</label>
+                    <label htmlFor="edit-opening-hours" className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Opening Hours</label>
                     <input
+                      id="edit-opening-hours"
                       type="text"
                       value={editForm.openingHours}
                       onChange={(e) => setEditForm({ ...editForm, openingHours: e.target.value })}
@@ -1058,8 +1093,9 @@ export default function AdminVendorsPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Status</label>
+                    <label htmlFor="edit-status" className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Status</label>
                     <select
+                      id="edit-status"
                       value={editForm.status}
                       onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
                       className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
@@ -1076,10 +1112,10 @@ export default function AdminVendorsPage() {
               <div className="border-t pt-6">
                 <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-xs mb-4">Promotional Options</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <label className="flex items-center justify-between p-4 bg-amber-50 rounded-xl cursor-pointer border-2 border-transparent hover:border-amber-200 transition-all">
+                  <label htmlFor="edit-is-featured" className="flex items-center justify-between p-4 bg-amber-50 rounded-xl cursor-pointer border-2 border-transparent hover:border-amber-200 transition-all">
                     <input
+                      id="edit-is-featured"
                       type="checkbox"
-                      checked={editForm.isFeatured}
                       onChange={(e) => setEditForm({ ...editForm, isFeatured: e.target.checked })}
                       className="sr-only"
                     />
@@ -1097,10 +1133,10 @@ export default function AdminVendorsPage() {
                     </div>
                   </label>
 
-                  <label className="flex items-center justify-between p-4 bg-purple-50 rounded-xl cursor-pointer border-2 border-transparent hover:border-purple-200 transition-all">
+                  <label htmlFor="edit-is-promoted" className="flex items-center justify-between p-4 bg-purple-50 rounded-xl cursor-pointer border-2 border-transparent hover:border-purple-200 transition-all">
                     <input
+                      id="edit-is-promoted"
                       type="checkbox"
-                      checked={editForm.isPromoted}
                       onChange={(e) => setEditForm({ ...editForm, isPromoted: e.target.checked })}
                       className="sr-only"
                     />
@@ -1118,10 +1154,10 @@ export default function AdminVendorsPage() {
                     </div>
                   </label>
 
-                  <label className="flex items-center justify-between p-4 bg-green-50 rounded-xl cursor-pointer border-2 border-transparent hover:border-green-200 transition-all">
+                  <label htmlFor="edit-is-new" className="flex items-center justify-between p-4 bg-green-50 rounded-xl cursor-pointer border-2 border-transparent hover:border-green-200 transition-all">
                     <input
+                      id="edit-is-new"
                       type="checkbox"
-                      checked={editForm.isNew}
                       onChange={(e) => setEditForm({ ...editForm, isNew: e.target.checked })}
                       className="sr-only"
                     />
@@ -1272,20 +1308,18 @@ export default function AdminVendorsPage() {
                     />
 
                     <div className="flex gap-4">
-                      <label className="flex items-center gap-2 cursor-pointer">
+                      <label htmlFor="new-menu-item-veg" className="flex items-center gap-2 cursor-pointer">
                         <input
-                          type="checkbox"
-                          checked={newMenuItem.is_veg ?? true}
+                          id="new-menu-item-veg"
                           onChange={(e) => setNewMenuItem({ ...newMenuItem, is_veg: e.target.checked })}
                           className="rounded text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                         />
                         <span className="text-xs font-bold text-[var(--color-on-surface-variant)]">Veg / Green Badge</span>
                       </label>
 
-                      <label className="flex items-center gap-2 cursor-pointer">
+                      <label htmlFor="new-menu-item-featured" className="flex items-center gap-2 cursor-pointer">
                         <input
-                          type="checkbox"
-                          checked={newMenuItem.is_featured ?? false}
+                          id="new-menu-item-featured"
                           onChange={(e) => setNewMenuItem({ ...newMenuItem, is_featured: e.target.checked })}
                           className="rounded text-amber-500 focus:ring-amber-500"
                         />
@@ -1444,8 +1478,9 @@ export default function AdminVendorsPage() {
             <form onSubmit={handleUpdateMenuItem} className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[10px] font-bold text-[var(--color-outline)] uppercase tracking-wider block mb-1">Item Name *</label>
+                  <label htmlFor="edit-menu-item-name" className="text-[10px] font-bold text-[var(--color-outline)] uppercase tracking-wider block mb-1">Item Name *</label>
                   <input
+                    id="edit-menu-item-name"
                     type="text"
                     required
                     value={editingMenuItem.name}
@@ -1454,8 +1489,9 @@ export default function AdminVendorsPage() {
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] font-bold text-[var(--color-outline)] uppercase tracking-wider block mb-1">Price (₹) *</label>
+                  <label htmlFor="edit-menu-item-price" className="text-[10px] font-bold text-[var(--color-outline)] uppercase tracking-wider block mb-1">Price (₹) *</label>
                   <input
+                    id="edit-menu-item-price"
                     type="number"
                     required
                     value={editingMenuItem.price}
@@ -1467,8 +1503,9 @@ export default function AdminVendorsPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[10px] font-bold text-[var(--color-outline)] uppercase tracking-wider block mb-1">Category</label>
+                  <label htmlFor="edit-menu-item-category" className="text-[10px] font-bold text-[var(--color-outline)] uppercase tracking-wider block mb-1">Category</label>
                   <select
+                    id="edit-menu-item-category"
                     value={editingMenuItem.category}
                     onChange={(e) => setEditingMenuItem({ ...editingMenuItem, category: e.target.value })}
                     className="w-full p-2.5 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
@@ -1490,8 +1527,9 @@ export default function AdminVendorsPage() {
               </div>
 
               <div>
-                <label className="text-[10px] font-bold text-[var(--color-outline)] uppercase tracking-wider block mb-1">Description</label>
+                <label htmlFor="edit-menu-item-description" className="text-[10px] font-bold text-[var(--color-outline)] uppercase tracking-wider block mb-1">Description</label>
                 <textarea
+                  id="edit-menu-item-description"
                   value={editingMenuItem.description || ""}
                   onChange={(e) => setEditingMenuItem({ ...editingMenuItem, description: e.target.value })}
                   className="w-full p-2.5 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
@@ -1501,20 +1539,18 @@ export default function AdminVendorsPage() {
               </div>
 
               <div className="flex gap-4 pt-2">
-                <label className="flex items-center gap-2 cursor-pointer">
+                <label htmlFor="edit-menu-item-veg" className="flex items-center gap-2 cursor-pointer">
                   <input
-                    type="checkbox"
-                    checked={editingMenuItem.is_veg ?? true}
+                    id="edit-menu-item-veg"
                     onChange={(e) => setEditingMenuItem({ ...editingMenuItem, is_veg: e.target.checked })}
                     className="rounded text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                   />
                   <span className="text-xs font-bold text-[var(--color-on-surface-variant)]">Veg / Green Badge</span>
                 </label>
 
-                <label className="flex items-center gap-2 cursor-pointer">
+                <label htmlFor="edit-menu-item-featured" className="flex items-center gap-2 cursor-pointer">
                   <input
-                    type="checkbox"
-                    checked={editingMenuItem.is_featured ?? false}
+                    id="edit-menu-item-featured"
                     onChange={(e) => setEditingMenuItem({ ...editingMenuItem, is_featured: e.target.checked })}
                     className="rounded text-amber-500 focus:ring-amber-500"
                   />

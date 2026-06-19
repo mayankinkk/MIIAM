@@ -124,9 +124,9 @@ export default function ServiceSettingsPage() {
               <div className="col-span-2">
                 {editingHoursId === service.id ? (
                   <div className="flex flex-col gap-1">
-                    <label className="flex items-center gap-1 text-[11px] text-[var(--color-outline)]">
+                    <label htmlFor={`service-247-${service.id}`} className="flex items-center gap-1 text-[11px] text-[var(--color-outline)]">
                       <input
-                        type="checkbox"
+                        id={`service-247-${service.id}`}
                         checked={tempIs247}
                         onChange={(e) => setTempIs247(e.target.checked)}
                         className="w-3 h-3"
