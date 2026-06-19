@@ -11,19 +11,66 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
 import { getCurrentMenuSlot } from "@/lib/menuSlots";
 
+interface Vendor {
+  id: string;
+  shop_name: string;
+  type: string;
+  cuisine?: string;
+  address?: string;
+  rating?: number;
+  delivery_time_min?: number;
+  delivery_time_max?: number;
+  min_order_amount?: number;
+  is_veg?: boolean;
+  banner_url?: string;
+  cover_image_url?: string;
+  image_url?: string;
+}
+
+interface MenuItem {
+  id: string;
+  name: string;
+  price: number;
+  category?: string;
+  image_url?: string;
+  images?: string[];
+  is_veg?: boolean;
+  is_featured?: boolean;
+  featured?: boolean;
+  discount_percent?: number;
+  original_price?: number;
+  menu_slot?: string;
+  quantity?: number;
+  description?: string;
+}
+
+interface ReviewProfile {
+  full_name?: string;
+  avatar_url?: string;
+}
+
+interface Review {
+  id: string;
+  rating: number;
+  review_text?: string;
+  tags?: string[];
+  created_at: string;
+  profile?: ReviewProfile;
+}
+
 export default function VendorPage() {
   const { t } = useTranslation();
   const params = useParams();
   const router = useRouter();
   const vendorId = params.id as string;
   const supabase = useMemo(() => createClient(), []);
-  const [vendor, setVendor] = useState<any>(null);
-  const [menuItems, setMenuItems] = useState<any[]>([]);
-  const [reviews, setReviews] = useState<any[]>([]);
+  const [vendor, setVendor] = useState<Vendor | null>(null);
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState("All");
   const [vegFilter, setVegFilter] = useState<"all" | "veg" | "non_veg">("all");
-  const [customizingItem, setCustomizingItem] = useState<any>(null);
+  const [customizingItem, setCustomizingItem] = useState<MenuItem | null>(null);
   const [imageIndex, setImageIndex] = useState<Record<string, number>>({});
   const { addItem, items, updateQuantity } = useCartStore();
 
@@ -68,7 +115,7 @@ export default function VendorPage() {
 
   const getQty = (id: string) => items.find((i) => i.menu_item_id === id)?.quantity || 0;
 
-  const categories = ["All", ...new Set(menuItems.map((m) => m.category).filter(Boolean))];
+  const categories = ["All", ...new Set(menuItems.map((m) => m.category).filter((c): c is string => Boolean(c)))];
 
   const currentSlot = getCurrentMenuSlot();
 
@@ -78,9 +125,9 @@ export default function VendorPage() {
     const slotMatch = !m.menu_slot || m.menu_slot === "all_day" || m.menu_slot === currentSlot;
   return categoryMatch && vegMatch && slotMatch;
 });
-const sortedItems = [...filteredItems].sort((a, b) => (((b as any).is_featured || (b as any).featured) ? 1 : 0) - (((a as any).is_featured || (a as any).featured) ? 1 : 0));
+const sortedItems = [...filteredItems].sort((a, b) => ((b.is_featured || b.featured) ? 1 : 0) - ((a.is_featured || a.featured) ? 1 : 0));
 
-  const handleCustomizeItem = (item: any) => {
+  const handleCustomizeItem = (item: MenuItem) => {
     // Only food/restaurant vendors should use the customization modal, NOT grocery/pharmacy/etc.
     const isFoodVendor = vendor && (vendor.type === "food" || vendor.type === "restaurant" || vendor.cuisine);
     const isGroceryOrOther = vendor && (vendor.type === "grocery" || vendor.type === "pharmacy" || vendor.type === "flower" || vendor.type === "flowers");
@@ -92,7 +139,7 @@ const sortedItems = [...filteredItems].sort((a, b) => (((b as any).is_featured |
     }
   };
 
-  const handleAddToCart = (item: any) => {
+  const handleAddToCart = (item: MenuItem) => {
     addItem({
       id: item.id,
       menu_item_id: item.id,
@@ -100,7 +147,7 @@ const sortedItems = [...filteredItems].sort((a, b) => (((b as any).is_featured |
       price: item.price,
       image_url: item.image_url,
       vendor_id: vendorId,
-      vendor_name: vendor?.shop_name,
+      vendor_name: vendor?.shop_name ?? "",
     }, item.quantity || 1);
   };
 
@@ -132,7 +179,7 @@ const sortedItems = [...filteredItems].sort((a, b) => (((b as any).is_featured |
     <div className="min-h-screen bg-[#f8f8f8] pb-24">
       <div className="relative h-56 overflow-hidden">
         {vendor.banner_url || vendor.cover_image_url || vendor.image_url ? (
-        <BlurImage src={vendor.banner_url || vendor.cover_image_url || vendor.image_url} alt={vendor.shop_name} fill className="w-full h-full" sizes="100vw" />
+        <BlurImage src={vendor.banner_url || vendor.cover_image_url || vendor.image_url!} alt={vendor.shop_name} fill className="w-full h-full" sizes="100vw" />
         ) : (
           <div className="w-full h-full bg-gradient-to-b from-slate-300 to-slate-100" />
         )}
@@ -181,7 +228,7 @@ const sortedItems = [...filteredItems].sort((a, b) => (((b as any).is_featured |
             </Link>
           </div>
           <div className="space-y-3">
-            {reviews.slice(0, 3).map((review: any) => (
+            {reviews.slice(0, 3).map((review: Review) => (
               <div key={review.id} className="bg-[var(--color-surface-subtle)] rounded-xl p-3">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-xs font-bold">
@@ -321,10 +368,10 @@ const sortedItems = [...filteredItems].sort((a, b) => (((b as any).is_featured |
                       </span>
                     )}
                     <h3 className="font-bold text-[var(--color-on-surface)]">{item.name}</h3>
-                    {((item as any).is_featured || (item as any).featured) && (
+                    {((item).is_featured || (item).featured) && (
                       <span className="text-[10px] font-bold px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded-full">★ Featured</span>
                     )}
-                    {item.discount_percent > 0 && (
+                    {item.discount_percent != null && item.discount_percent > 0 && (
                       <span className="text-[10px] font-bold px-1.5 py-0.5 bg-red-100 text-red-700 rounded-full">-{item.discount_percent}%</span>
                     )}
                   </div>
