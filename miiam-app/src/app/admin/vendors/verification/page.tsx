@@ -13,6 +13,14 @@ interface VendorVerification {
   address: string;
   cuisine: string;
   status: "pending" | "active" | "inactive" | "suspended";
+  gst_number: string | null;
+  fssai_number: string | null;
+  pan_number: string | null;
+  type: string;
+  city: string;
+  state: string;
+  pincode: string;
+  description: string | null;
   created_at: string;
 }
 
@@ -22,6 +30,8 @@ export default function VerificationPage() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
   const [selectedVendor, setSelectedVendor] = useState<VendorVerification | null>(null);
+  const [rejectionReason, setRejectionReason] = useState("");
+  const [reviewNotes, setReviewNotes] = useState("");
 
   useEffect(() => {
     loadVendors();
@@ -31,17 +41,21 @@ export default function VerificationPage() {
     setLoading(true);
     const { data } = await supabase
       .from("vendors")
-      .select("*")
+      .select("id, shop_name, owner_name, phone, email, address, cuisine, status, gst_number, fssai_number, pan_number, type, city, state, pincode, description, created_at")
       .order("created_at", { ascending: false });
     if (data) setVendors(data);
     setLoading(false);
   }
 
-  const updateVendorStatus = async (vendorId: string, newStatus: string) => {
+  const updateVendorStatus = async (vendorId: string, newStatus: string, reason?: string) => {
     try {
+      const updates: Record<string, unknown> = { status: newStatus };
+      if (reason) updates.rejection_reason = reason;
+      updates.reviewed_at = new Date().toISOString();
+
       const { error } = await supabase
         .from("vendors")
-        .update({ status: newStatus })
+        .update(updates)
         .eq("id", vendorId);
 
       if (error) throw error;
@@ -146,7 +160,7 @@ export default function VerificationPage() {
                 <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Shop</th>
                 <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Owner</th>
                 <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Contact</th>
-                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Cuisine</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Documents</th>
                 <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Status</th>
                 <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Date</th>
                 <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Actions</th>
@@ -174,9 +188,14 @@ export default function VerificationPage() {
                       <p className="text-[10px] text-[var(--color-outline-variant)]">{vendor.email}</p>
                     </td>
                     <td className="p-4">
-                      <span className="bg-[var(--color-surface-container)] px-2 py-1 rounded text-[10px] font-bold">
-                        {vendor.cuisine || "Not set"}
-                      </span>
+                      <div className="flex gap-1">
+                        {vendor.gst_number && <span className="w-5 h-5 rounded bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 flex items-center justify-center text-[10px] font-bold" title={`GST: ${vendor.gst_number}`}>G</span>}
+                        {vendor.fssai_number && <span className="w-5 h-5 rounded bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 flex items-center justify-center text-[10px] font-bold" title={`FSSAI: ${vendor.fssai_number}`}>F</span>}
+                        {vendor.pan_number && <span className="w-5 h-5 rounded bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 flex items-center justify-center text-[10px] font-bold" title={`PAN: ${vendor.pan_number}`}>P</span>}
+                        {!vendor.gst_number && !vendor.fssai_number && !vendor.pan_number && (
+                          <span className="text-[10px] text-amber-600 dark:text-amber-400 font-bold">None</span>
+                        )}
+                      </div>
                     </td>
                     <td className="p-4">
                       <span className={`text-[10px] font-black px-2 py-1 rounded-full uppercase ${statusColors[vendor.status] || ""}`}>
@@ -221,69 +240,130 @@ export default function VerificationPage() {
       </div>
 
       {selectedVendor && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl max-w-lg w-full max-h-[80vh] overflow-y-auto">
-            <div className="p-6 border-b flex items-center justify-between sticky top-0 bg-[var(--color-surface-container-lowest)]">
-              <h2 className="font-black text-lg">Vendor Details</h2>
-              <button onClick={() => setSelectedVendor(null)} className="text-[var(--color-outline-variant)]">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" role="dialog" aria-modal="true" aria-labelledby="kyc-modal-title" onKeyDown={(e) => e.key === "Escape" && setSelectedVendor(null)}>
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl max-w-lg w-full max-h-[85vh] overflow-y-auto">
+            <div className="p-6 border-b border-[var(--color-border-subtle)] flex items-center justify-between sticky top-0 bg-[var(--color-surface-container-lowest)] z-10">
+              <h2 id="kyc-modal-title" className="font-black text-lg text-[var(--color-on-surface)]">KYC Review</h2>
+              <button onClick={() => setSelectedVendor(null)} aria-label="Close" className="text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface)]">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
-            <div className="p-6 space-y-4">
+            <div className="p-6 space-y-5">
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-[10px] text-[var(--color-outline-variant)] uppercase">Shop Name</p>
-                  <p className="font-bold">{selectedVendor.shop_name}</p>
+                  <p className="font-bold text-[var(--color-on-surface)]">{selectedVendor.shop_name}</p>
                 </div>
                 <div>
                   <p className="text-[10px] text-[var(--color-outline-variant)] uppercase">Owner</p>
-                  <p className="font-bold">{selectedVendor.owner_name}</p>
+                  <p className="font-bold text-[var(--color-on-surface)]">{selectedVendor.owner_name}</p>
                 </div>
                 <div>
                   <p className="text-[10px] text-[var(--color-outline-variant)] uppercase">Phone</p>
-                  <p className="font-bold">{selectedVendor.phone}</p>
+                  <p className="font-bold text-[var(--color-on-surface)]">{selectedVendor.phone}</p>
                 </div>
                 <div>
                   <p className="text-[10px] text-[var(--color-outline-variant)] uppercase">Email</p>
-                  <p className="font-bold text-sm">{selectedVendor.email || "Not provided"}</p>
+                  <p className="font-bold text-sm text-[var(--color-on-surface)]">{selectedVendor.email || "Not provided"}</p>
                 </div>
               </div>
               <div>
                 <p className="text-[10px] text-[var(--color-outline-variant)] uppercase">Address</p>
-                <p className="text-sm">{selectedVendor.address}</p>
+                <p className="text-sm text-[var(--color-on-surface)]">{selectedVendor.address}, {selectedVendor.city}, {selectedVendor.state} - {selectedVendor.pincode}</p>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-[10px] text-[var(--color-outline-variant)] uppercase">Cuisine</p>
-                  <p className="font-bold">{selectedVendor.cuisine || "Not set"}</p>
+                  <p className="text-[10px] text-[var(--color-outline-variant)] uppercase">Store Type</p>
+                  <p className="font-bold text-[var(--color-on-surface)] capitalize">{selectedVendor.type}</p>
                 </div>
                 <div>
-                  <p className="text-[10px] text-[var(--color-outline-variant)] uppercase">Status</p>
-                  <span className={`text-xs font-black px-2 py-1 rounded-full uppercase ${statusColors[selectedVendor.status]}`}>
-                    {selectedVendor.status}
-                  </span>
+                  <p className="text-[10px] text-[var(--color-outline-variant)] uppercase">Cuisine</p>
+                  <p className="font-bold text-[var(--color-on-surface)]">{selectedVendor.cuisine || "Not set"}</p>
                 </div>
               </div>
-              <div className="flex gap-3 pt-4 border-t">
+
+              <div className="bg-[var(--color-surface-subtle)] rounded-xl p-4 space-y-3">
+                <p className="text-xs font-black text-[var(--color-on-surface)] uppercase tracking-widest">Documents (KYC)</p>
+                <div className="grid grid-cols-3 gap-3">
+                  <div className={`p-3 rounded-lg border ${selectedVendor.gst_number ? "border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/20" : "border-[var(--color-border-subtle)]"}`}>
+                    <p className="text-[10px] text-[var(--color-outline-variant)] uppercase">GST Number</p>
+                    <p className={`font-bold text-sm mt-1 ${selectedVendor.gst_number ? "text-green-700 dark:text-green-300" : "text-[var(--color-outline-variant)]"}`}>
+                      {selectedVendor.gst_number || "Not provided"}
+                    </p>
+                  </div>
+                  <div className={`p-3 rounded-lg border ${selectedVendor.fssai_number ? "border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/20" : "border-[var(--color-border-subtle)]"}`}>
+                    <p className="text-[10px] text-[var(--color-outline-variant)] uppercase">FSSAI Number</p>
+                    <p className={`font-bold text-sm mt-1 ${selectedVendor.fssai_number ? "text-green-700 dark:text-green-300" : "text-[var(--color-outline-variant)]"}`}>
+                      {selectedVendor.fssai_number || "Not provided"}
+                    </p>
+                  </div>
+                  <div className={`p-3 rounded-lg border ${selectedVendor.pan_number ? "border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/20" : "border-[var(--color-border-subtle)]"}`}>
+                    <p className="text-[10px] text-[var(--color-outline-variant)] uppercase">PAN Number</p>
+                    <p className={`font-bold text-sm mt-1 ${selectedVendor.pan_number ? "text-green-700 dark:text-green-300" : "text-[var(--color-outline-variant)]"}`}>
+                      {selectedVendor.pan_number || "Not provided"}
+                    </p>
+                  </div>
+                </div>
+                {!selectedVendor.gst_number && !selectedVendor.fssai_number && !selectedVendor.pan_number && (
+                  <p className="text-xs text-amber-600 dark:text-amber-400 flex items-center gap-1">
+                    <span className="material-symbols-outlined text-sm">warning</span>
+                    No documents submitted. Vendor should upload GST/FSSAI/PAN.
+                  </p>
+                )}
+              </div>
+
+              {selectedVendor.description && (
+                <div>
+                  <p className="text-[10px] text-[var(--color-outline-variant)] uppercase">Description</p>
+                  <p className="text-sm text-[var(--color-on-surface)]">{selectedVendor.description}</p>
+                </div>
+              )}
+
+              <div>
+                <label htmlFor="review-notes" className="text-[10px] text-[var(--color-outline-variant)] uppercase">Admin Review Notes</label>
+                <textarea
+                  id="review-notes"
+                  value={reviewNotes}
+                  onChange={(e) => setReviewNotes(e.target.value)}
+                  placeholder="Optional notes about this vendor..."
+                  rows={2}
+                  className="w-full mt-1 px-3 py-2 border border-[var(--color-border-subtle)] rounded-lg text-sm text-[var(--color-on-surface)] bg-[var(--color-surface-container-lowest)]"
+                />
+              </div>
+
+              <div className="flex gap-3 pt-4 border-t border-[var(--color-border-subtle)]">
                 {selectedVendor.status !== "active" ? (
                   <>
                     <button
-                      onClick={() => updateVendorStatus(selectedVendor.id, "active")}
-                      className="flex-1 py-3 bg-green-600 text-white rounded-xl font-bold"
+                      onClick={() => {
+                        if (!confirm(`Approve ${selectedVendor.shop_name}? They will be able to receive orders.`)) return;
+                        updateVendorStatus(selectedVendor.id, "active");
+                        setSelectedVendor(null);
+                      }}
+                      className="flex-1 py-3 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 transition-colors"
                     >
                       Approve Partner
                     </button>
                     <button
-                      onClick={() => updateVendorStatus(selectedVendor.id, "suspended")}
-                      className="flex-1 py-3 bg-red-600 text-white rounded-xl font-bold"
+                      onClick={() => {
+                        const reason = prompt("Rejection reason (optional):");
+                        updateVendorStatus(selectedVendor.id, "suspended", reason || undefined);
+                        setSelectedVendor(null);
+                      }}
+                      className="flex-1 py-3 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700 transition-colors"
                     >
                       Reject
                     </button>
                   </>
                 ) : (
                   <button
-                    onClick={() => updateVendorStatus(selectedVendor.id, "suspended")}
-                    className="flex-1 py-3 bg-red-600 text-white rounded-xl font-bold"
+                    onClick={() => {
+                      if (!confirm(`Suspend ${selectedVendor.shop_name}? They will no longer receive orders.`)) return;
+                      const reason = prompt("Suspension reason (optional):");
+                      updateVendorStatus(selectedVendor.id, "suspended", reason || undefined);
+                      setSelectedVendor(null);
+                    }}
+                    className="flex-1 py-3 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700 transition-colors"
                   >
                     Suspend Partner
                   </button>

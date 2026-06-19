@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { Order, OrderStatus } from "@/lib/types";
 import { PRINTING_VENDOR_ID } from "@/lib/constants";
+import { useToastStore } from "@/lib/store/toastStore";
 
 const STATUS_OPTIONS: OrderStatus[] = ["pending", "scheduled", "accepted", "processing", "preparing", "ready_for_pickup", "shopping", "picking_up", "on_the_way", "arrived", "delivered", "cancelled", "refunded", "no_rider_available"];
 
@@ -32,6 +33,9 @@ export default function OrderManagement() {
   const [search, setSearch] = useState("");
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [availableRiders, setAvailableRiders] = useState<{ id: string; name: string; phone: string }[]>([]);
+  const [selectedRiderId, setSelectedRiderId] = useState<string>("");
+  const [assigning, setAssigning] = useState(false);
 
   useEffect(() => {
     loadOrders();
@@ -46,6 +50,41 @@ export default function OrderManagement() {
       supabase.removeChannel(channel);
     };
   }, []);
+
+  useEffect(() => {
+    if (selectedOrder) {
+      loadAvailableRiders();
+      setSelectedRiderId("");
+    }
+  }, [selectedOrder?.id]);
+
+  async function loadAvailableRiders() {
+    const { data } = await supabase
+      .from("riders")
+      .select("id, name, phone")
+      .eq("is_online", true)
+      .eq("verification_status", "verified");
+    setAvailableRiders(data || []);
+  }
+
+  async function assignRider(orderId: string, riderId: string) {
+    setAssigning(true);
+    try {
+      const { error } = await supabase
+        .from("orders")
+        .update({ rider_id: riderId, status: "accepted" })
+        .eq("id", orderId);
+      if (error) throw error;
+      useToastStore.getState().addToast("Rider assigned successfully", "success");
+      setSelectedRiderId("");
+      loadOrders();
+      setSelectedOrder(null);
+    } catch (err) {
+      useToastStore.getState().addToast("Failed to assign rider", "error");
+    } finally {
+      setAssigning(false);
+    }
+  }
 
   async function loadOrders() {
     const { data } = await supabase
@@ -412,11 +451,45 @@ export default function OrderManagement() {
                   ))}
                 </div>
               </div>
+              {(selectedOrder.status === "pending" || selectedOrder.status === "no_rider_available") && (
+                <div className="bg-[var(--color-surface-subtle)] p-4 rounded-xl">
+                  <p className="text-[10px] font-black text-[var(--color-outline-variant)] uppercase mb-3">Assign Rider</p>
+                  {selectedOrder.rider ? (
+                    <div className="flex items-center gap-3 mb-3 p-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)]">
+                      <span className="material-symbols-outlined text-[var(--color-primary)]">person</span>
+                      <div>
+                        <p className="font-bold text-[var(--color-on-surface)]">{selectedOrder.rider.name}</p>
+                        {selectedOrder.rider.phone && <p className="text-xs text-[var(--color-outline)]">{selectedOrder.rider.phone}</p>}
+                      </div>
+                    </div>
+                  ) : null}
+                  <div className="flex gap-2">
+                    <select
+                      value={selectedRiderId}
+                      onChange={(e) => setSelectedRiderId(e.target.value)}
+                      aria-label="Select rider"
+                      className="flex-1 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/10"
+                    >
+                      <option value="">Select a rider...</option>
+                      {availableRiders.map((rider) => (
+                        <option key={rider.id} value={rider.id}>{rider.name}</option>
+                      ))}
+                    </select>
+                    <button
+                      onClick={() => selectedRiderId && assignRider(selectedOrder.id, selectedRiderId)}
+                      disabled={!selectedRiderId || assigning}
+                      className="px-6 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm hover:opacity-90 disabled:opacity-50"
+                    >
+                      {assigning ? "Assigning..." : "Assign"}
+                    </button>
+                  </div>
+                </div>
+              )}
               <div className="flex gap-2">
                 {selectedOrder.status === "cancelled" && (
                   <button
                     onClick={() => refundOrder(selectedOrder.id)}
-                    className="flex-1 py-3 bg-red-50 text-red-600 rounded-xl font-bold text-sm hover:bg-red-100"
+                    className="flex-1 py-3 bg-red-50 text-red-600 rounded-xl font-bold text-sm hover:bg-red-100 dark:bg-red-900/30 dark:text-red-300"
                   >
                     Refund Order
                   </button>
