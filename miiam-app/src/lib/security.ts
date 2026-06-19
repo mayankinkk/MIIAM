@@ -95,7 +95,7 @@ export async function checkIpRateLimit(
   maxRequests: number = 30,
   windowMs: number = 60 * 1000
 ): Promise<boolean> {
-  const { checkIpRateLimit: checkUpstash } = await import("@/lib/rate-limit");
+  const { checkIpRateLimit: checkUpstash } = await import(/* webpackIgnore: true */ "@/lib/rate-limit");
   return checkUpstash(ip, maxRequests, windowMs);
 }
 

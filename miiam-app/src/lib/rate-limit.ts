@@ -1,20 +1,19 @@
-import { Ratelimit } from "@upstash/ratelimit";
-import { Redis } from "@upstash/redis";
+const UPSTASH_URL = process.env.UPSTASH_REDIS_REST_URL;
+const UPSTASH_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
 
-let ratelimit: Ratelimit | null = null;
-
-function getRatelimit(): Ratelimit | null {
-  if (ratelimit) return ratelimit;
-  const url = process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
-  if (!url || !token) return null;
-  ratelimit = new Ratelimit({
-    redis: Redis.fromEnv(),
-    limiter: Ratelimit.slidingWindow(30, "60 s"),
-    analytics: true,
-    prefix: "miiam:ratelimit",
+async function redisEval(script: string, keys: string[], args: string[]): Promise<string | null> {
+  if (!UPSTASH_URL || !UPSTASH_TOKEN) return null;
+  const res = await fetch(`${UPSTASH_URL}/eval`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${UPSTASH_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ script, keys, args }),
   });
-  return ratelimit;
+  if (!res.ok) return null;
+  const data = await res.json();
+  return String(data.result ?? "");
 }
 
 export async function checkIpRateLimit(
@@ -22,17 +21,28 @@ export async function checkIpRateLimit(
   maxRequests: number = 30,
   windowMs: number = 60 * 1000
 ): Promise<boolean> {
-  const rl = getRatelimit();
-  if (!rl) return true;
+  if (!UPSTASH_URL || !UPSTASH_TOKEN) return true;
 
+  const key = `miiam:rl:${ip}`;
   const windowSec = Math.ceil(windowMs / 1000);
-  const customRatelimit = new Ratelimit({
-    redis: Redis.fromEnv(),
-    limiter: Ratelimit.slidingWindow(maxRequests, `${windowSec} s`),
-    analytics: false,
-    prefix: "miiam:ratelimit:custom",
-  });
 
-  const { success } = await customRatelimit.limit(ip);
-  return success;
+  const script = `
+    local key = KEYS[1]
+    local window = tonumber(ARGV[1])
+    local limit = tonumber(ARGV[2])
+    local now = tonumber(ARGV[3])
+    local window_start = now - window
+    redis.call('ZREMRANGEBYSCORE', key, '-inf', window_start)
+    local count = redis.call('ZCARD', key)
+    if count < limit then
+      redis.call('ZADD', key, now, now .. '-' .. math.random(1000000))
+      redis.call('EXPIRE', key, window)
+      return 1
+    end
+    return 0
+  `;
+
+  const now = Date.now();
+  const result = await redisEval(script, [key], [String(windowSec), String(maxRequests), String(now)]);
+  return result === "1";
 }
