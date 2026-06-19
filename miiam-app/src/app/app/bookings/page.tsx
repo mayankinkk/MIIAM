@@ -495,6 +495,7 @@ export default function BookingsPage() {
                   onClick={() => setRating(star)}
                   onMouseEnter={() => setHoverRating(star)}
                   onMouseLeave={() => setHoverRating(0)}
+                  aria-label={`Rate ${star} star${star > 1 ? 's' : ''}`}
                   className="p-2"
                 >
                   <span

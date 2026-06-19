@@ -161,7 +161,7 @@ export default function ExplorePage() {
         <div className="bg-red-50 border border-red-200 px-4 py-3 flex items-center gap-2">
           <span className="material-symbols-outlined text-red-500">error</span>
           <span className="text-sm text-red-700">{error}</span>
-          <button onClick={() => setError(null)} className="ml-auto text-red-500">
+          <button onClick={() => setError(null)} aria-label="Dismiss error" className="ml-auto text-red-500">
             <span className="material-symbols-outlined text-sm">close</span>
           </button>
         </div>
@@ -181,6 +181,7 @@ export default function ExplorePage() {
           </Link>
           <button
             onClick={() => { setShowLocationBanner(false); setDismissedLocationBanner(true); }}
+            aria-label="Dismiss location banner"
             className="text-amber-500"
           >
             <span className="material-symbols-outlined text-sm">close</span>
@@ -310,7 +311,7 @@ export default function ExplorePage() {
                   ].map(opt => (
                     <button
                       key={opt.value}
-                      onClick={() => setPriceFilter(opt.value as any)}
+                      onClick={() => setPriceFilter(opt.value as typeof priceFilter)}
                       className={`px-3 py-2 rounded-lg text-xs font-bold ${
                         priceFilter === opt.value ? "bg-primary text-white" : "bg-surface-container-high dark:bg-[var(--color-surface-container-high)] text-on-surface-variant dark:text-[var(--color-outline)]"
                       }`}
@@ -331,7 +332,7 @@ export default function ExplorePage() {
                   ].map(opt => (
                     <button
                       key={opt.value}
-                      onClick={() => setRatingFilter(opt.value as any)}
+                      onClick={() => setRatingFilter(opt.value as typeof ratingFilter)}
                       className={`px-3 py-2 rounded-lg text-xs font-bold ${
                         ratingFilter === opt.value ? "bg-primary text-white" : "bg-surface-container-high dark:bg-[var(--color-surface-container-high)] text-on-surface-variant dark:text-[var(--color-outline)]"
                       }`}

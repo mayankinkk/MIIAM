@@ -11,9 +11,19 @@ import { useToastStore } from "@/lib/store/toastStore";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
 import SwipeableRow from "@/components/SwipeableRow";
 
+interface NotificationData {
+  id: string;
+  user_id: string;
+  title: string;
+  body: string;
+  type: string;
+  read: boolean;
+  created_at: string;
+}
+
 export default function NotificationsPage() {
   const { permission, preferences, requestPermission, updatePreferences } = useNotificationStore();
-  const [notifications, setNotifications] = useState<any[]>([]);
+  const [notifications, setNotifications] = useState<NotificationData[]>([]);
   const [loading, setLoading] = useState(true);
   const supabase = useMemo(() => createClient(), []);
   const { addToast } = useToastStore();

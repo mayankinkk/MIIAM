@@ -12,10 +12,24 @@ import BlurImage from "@/components/BlurImage";
 import PullToRefresh from "@/components/PullToRefresh";
 import { useState, useEffect, useMemo, useCallback } from "react";
 
+interface FavoriteVendor {
+  id: string;
+  shop_name: string;
+  name?: string;
+  cuisine?: string;
+  rating: number;
+  cover_image_url?: string;
+  image_url?: string;
+  delivery_time_min?: number;
+  delivery_time_max?: number;
+  delivery_time_minutes?: number;
+  delivery_time?: string;
+}
+
 export default function FavoritesPage() {
   const supabase = useMemo(() => createClient(), []);
   const { favoriteIds, toggle, setFavorites } = useFavoritesStore();
-  const [favorites, setFavoriteVendors] = useState<any[]>([]);
+  const [favorites, setFavoriteVendors] = useState<FavoriteVendor[]>([]);
   const [loading, setLoading] = useState(true);
   const { addToast } = useToastStore();
 
@@ -122,7 +136,7 @@ export default function FavoritesPage() {
                   className="block bg-surface-container-lowest dark:bg-[var(--color-surface-container-lowest)] rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all"
                 >
                   <div className="h-48 bg-surface-container dark:bg-[var(--color-surface-container)] overflow-hidden">
-                    <BlurImage src={vendor.cover_image_url || vendor.image_url} alt={vendor.name} fill className="w-full h-full group-hover:scale-105 transition-transform duration-700" sizes="(max-width: 768px) 100vw, 50vw" />
+                    <BlurImage src={vendor.cover_image_url || vendor.image_url || ""} alt={vendor.name || vendor.shop_name} fill className="w-full h-full group-hover:scale-105 transition-transform duration-700" sizes="(max-width: 768px) 100vw, 50vw" />
                   </div>
                   <div className="p-5">
                     <div className="flex justify-between items-start">

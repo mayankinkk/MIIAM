@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { useToastStore } from "@/lib/store/toastStore";
+import type * as L from "leaflet";
 
 interface DetectedLocation {
   lat: number;
@@ -24,8 +25,8 @@ export default function AddressPickerPage() {
   const { t } = useTranslation();
   const router = useRouter();
   const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<any>(null);
-  const markerRef = useRef<any>(null);
+  const mapInstanceRef = useRef<L.Map | null>(null);
+  const markerRef = useRef<L.Marker | null>(null);
   
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
@@ -46,8 +47,8 @@ export default function AddressPickerPage() {
   const [locationStatus, setLocationStatus] = useState<"detecting" | "improving" | "good" | "error">("detecting");
 
   useEffect(() => {
-    let map: any;
-    let L: any;
+    let map: L.Map;
+    let L: typeof import('leaflet');
     let isMounted = true;
 
     const initMap = async (centerLat?: number, centerLng?: number) => {
@@ -106,13 +107,13 @@ export default function AddressPickerPage() {
         await reverseGeocode(lat, lng);
       };
 
-      marker.on('dragend', async (e: any) => {
+      marker.on('dragend', async (e: { target: L.Marker }) => {
         const pos = e.target.getLatLng();
         map.setView([pos.lat, pos.lng], 18);
         await updateLocation(pos.lat, pos.lng);
       });
 
-      map.on('click', async (e: any) => {
+      map.on('click', async (e: { latlng: L.LatLng }) => {
         if (!isMounted) return;
         const { lat, lng } = e.latlng;
         marker.setLatLng([lat, lng]);

@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import logger from "@/lib/logger";
 
 interface AddressData {
   id: string;
@@ -235,7 +236,7 @@ export default function AddressBookPage() {
     if ("geolocation" in navigator) {
       const handleSuccess = (position: GeolocationPosition) => {
         const { latitude, longitude, accuracy } = position.coords;
-        console.log("Location detected:", latitude, longitude, "accuracy:", accuracy, "m");
+        logger.info("Location detected: %f, %f, accuracy: %f m", latitude, longitude, accuracy);
         
         setNewAddress((prev) => ({
           ...prev,
@@ -456,13 +457,13 @@ export default function AddressBookPage() {
 
       {/* Add/Edit Address Modal */}
       {showAddAddress && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center" role="dialog" aria-modal="true" aria-labelledby="address-modal-title" onKeyDown={(e) => { if (e.key === "Escape") { setShowAddAddress(false); setEditingAddress(null); } }}>
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => {
             setShowAddAddress(false);
             setEditingAddress(null);
           }} />
 
-          <div className="relative bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container-lowest)] w-full max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[90vh] overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="address-modal-title" onKeyDown={(e) => { if (e.key === "Escape") { setShowAddAddress(false); setEditingAddress(null); } }}>
+          <div className="relative bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container-lowest)] w-full max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[90vh] overflow-y-auto">
             <div className="sticky top-0 bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container-lowest)] z-10 border-b border-[var(--color-border-subtle)] px-6 py-4 flex items-center justify-between">
               <div>
                 <h2 id="address-modal-title" className="text-xl font-extrabold text-[var(--color-on-surface)]">

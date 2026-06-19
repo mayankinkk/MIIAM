@@ -103,7 +103,7 @@ export interface Order {
   vendor?: Vendor;
   items?: OrderItem[];
   address?: Address;
-  rider?: any;
+  rider?: Rider;
 }
 
 export interface OrderItem {

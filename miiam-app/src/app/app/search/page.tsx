@@ -133,11 +133,11 @@ function SearchContent() {
     }
   };
 
-  const handleAddToCart = (item: any) => {
+  const handleAddToCart = (item: MenuResult) => {
     addItem({
       id: item.id,
       menu_item_id: item.id,
-      vendor_id: item.vendor_id,
+      vendor_id: item.vendor.id,
       vendor_name: item.vendor?.shop_name || "Vendor",
       name: item.name,
       price: item.price,
@@ -156,7 +156,7 @@ function SearchContent() {
     <>
       <header className="fixed top-0 w-full z-50 px-6 py-4 bg-surface/80 dark:bg-[var(--color-surface)]/80 backdrop-blur-2xl border-b border-outline-variant/20">
         <div className="flex items-center gap-4 max-w-4xl mx-auto">
-          <Link href="/app/explore" className="text-primary">
+          <Link href="/app/explore" aria-label="Go back" className="text-primary">
             <span className="material-symbols-outlined">arrow_back</span>
           </Link>
           <div className="flex-1 relative">
@@ -345,6 +345,7 @@ function SearchContent() {
                           e.preventDefault();
                           handleAddToCart(item);
                         }}
+                        aria-label="Add to cart"
                         className="bg-primary text-white p-2 rounded-lg hover:bg-[#a00018] transition-all"
                       >
                         <span className="material-symbols-outlined">add</span>

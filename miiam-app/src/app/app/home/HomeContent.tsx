@@ -557,6 +557,7 @@ export default function HomePage() {
           {/* Bubble Button */}
           <button
             onClick={() => setOrderBubbleExpanded(!orderBubbleExpanded)}
+            aria-label="Toggle order details"
             className={`w-14 h-14 rounded-full shadow-xl flex items-center justify-center transition-all ${
               orderBubbleExpanded ? 'bg-primary' : 'bg-surface-container-lowest border border-outline-variant/15'
             }`}
@@ -806,7 +807,7 @@ export default function HomePage() {
 
       {/* Location Modal */}
       {showLocationModal && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end md:items-center justify-center animate-fade-in" role="dialog" aria-modal="true" aria-labelledby="location-modal-title">
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end md:items-center justify-center animate-fade-in" role="dialog" aria-modal="true" aria-labelledby="location-modal-title" onKeyDown={(e) => { if (e.key === "Escape") setShowLocationModal(false); }}>
           <div className="bg-surface-container dark:bg-[var(--color-surface-container-lowest)] w-full md:w-96 rounded-t-3xl md:rounded-3xl p-6 border-t border-x border-outline-variant/10 dark:border-[var(--color-border-subtle)] md:border animate-in slide-in-from-bottom duration-300">
             <div className="flex items-center justify-between mb-4">
               <h2 id="location-modal-title" className="text-xl font-black text-on-surface">{t.home.enterPincode}</h2>
@@ -882,7 +883,7 @@ export default function HomePage() {
 
       {/* Notifications Dropdown */}
       {showNotifications && (
-        <div className="fixed inset-0 z-50" onClick={() => setShowNotifications(false)} role="dialog" aria-modal="true" aria-labelledby="notifications-title">
+        <div className="fixed inset-0 z-50" onClick={() => setShowNotifications(false)} role="dialog" aria-modal="true" aria-labelledby="notifications-title" onKeyDown={(e) => { if (e.key === "Escape") setShowNotifications(false); }}>
           <div className="absolute inset-0 bg-black/30" />
           <div 
             className="absolute right-0 top-0 h-full w-full max-w-md bg-surface-container-lowest dark:bg-[var(--color-surface-container)] border-l border-outline-variant/10 dark:border-[var(--color-border-subtle)] shadow-2xl animate-in slide-in-from-right duration-300"

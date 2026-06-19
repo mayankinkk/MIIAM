@@ -86,8 +86,8 @@ export default function EditProfilePage() {
       const { data } = supabase.storage.from('avatars').getPublicUrl(filePath);
       
       setFormData(prev => ({ ...prev, avatarUrl: data.publicUrl }));
-    } catch (error: any) {
-      setError(error.message);
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : "Upload failed");
     } finally {
       setUploading(false);
     }

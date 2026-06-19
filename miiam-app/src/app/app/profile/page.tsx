@@ -4,6 +4,8 @@ import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import type { User } from "@supabase/supabase-js";
+import type { Profile } from "@/lib/types";
 import { useHapticStore } from "@/components/HapticFeedback";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -13,8 +15,8 @@ export default function EnhancedProfilePage() {
   const supabase = useMemo(() => createClient(), []);
   const router = useRouter();
   const { t } = useTranslation();
-  const [user, setUser] = useState<any>(null);
-  const [profile, setProfile] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [stats, setStats] = useState({ orders: 0, reviews: 0, saved: 0 });
   const [showHapticSettings, setShowHapticSettings] = useState(false);
   const { settings, updateSetting, triggerHaptic } = useHapticStore();
@@ -83,7 +85,7 @@ export default function EnhancedProfilePage() {
       <header className="bg-gradient-to-br from-primary to-primary-container text-white p-6 pb-12 rounded-b-[3rem]">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-xl font-black">{t.profile.title}</h1>
-          <Link href="/app/profile/edit" className="p-2 bg-[var(--color-surface-container-lowest)]/10 rounded-full hover:bg-[var(--color-surface-container-lowest)]/20 transition-colors">
+          <Link href="/app/profile/edit" aria-label="Edit profile" className="p-2 bg-[var(--color-surface-container-lowest)]/10 rounded-full hover:bg-[var(--color-surface-container-lowest)]/20 transition-colors">
             <span className="material-symbols-outlined">edit</span>
           </Link>
         </div>

@@ -14,6 +14,13 @@ import { PRINTING_VENDOR_ID } from "@/lib/constants";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 
 
+interface PastOrder {
+  id: string;
+  total_amount: number | null;
+  placed_at: string;
+  vendors?: { name: string } | null;
+}
+
 export default function CartPage() {
   const { t } = useTranslation();
   const supabase = useMemo(() => createClient(), []);
@@ -28,7 +35,7 @@ export default function CartPage() {
   const savedItems = useCartStore((s) => s.savedItems);
   const moveToCart = useCartStore((s) => s.moveToCart);
   const removeSaved = useCartStore((s) => s.removeSaved);
-  const [pastOrders, setPastOrders] = useState<any[]>([]);
+  const [pastOrders, setPastOrders] = useState<PastOrder[]>([]);
   const [showReorderModal, setShowReorderModal] = useState(false);
   const [reordering, setReordering] = useState(false);
   const [loadingOrders, setLoadingOrders] = useState(false);
@@ -334,6 +341,7 @@ export default function CartPage() {
                       </button>
                       <button
                         onClick={() => removeSaved(item.id)}
+                        aria-label="Remove saved item"
                         className="text-on-surface-variant dark:text-[var(--color-outline)] hover:text-red-500"
                       >
                         <span className="material-symbols-outlined text-sm">close</span>
@@ -373,8 +381,8 @@ export default function CartPage() {
         )}
 
         {showReorderModal && (
-          <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end justify-center animate-fade-in">
-            <div className="bg-surface-container-lowest dark:bg-[var(--color-surface-container-lowest)] rounded-t-2xl w-full max-h-[80vh] overflow-hidden" role="dialog" aria-modal="true" aria-labelledby="reorder-modal-title" onKeyDown={(e) => { if (e.key === "Escape") setShowReorderModal(false); }}>
+          <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end justify-center animate-fade-in" role="dialog" aria-modal="true" aria-labelledby="reorder-modal-title" onKeyDown={(e) => { if (e.key === "Escape") setShowReorderModal(false); }}>
+            <div className="bg-surface-container-lowest dark:bg-[var(--color-surface-container-lowest)] rounded-t-2xl w-full max-h-[80vh] overflow-hidden">
               <div className="p-4 border-b border-outline-variant dark:border-[var(--color-border-subtle)] flex items-center justify-between">
                 <h3 id="reorder-modal-title" className="text-base font-bold text-on-surface dark:text-[var(--color-on-surface)]">{t.cart.reorderFromPast}</h3>
                 <button onClick={() => setShowReorderModal(false)} aria-label="Close" className="w-11 h-11 bg-surface-container dark:bg-[var(--color-surface-container)] rounded-full flex items-center justify-center">

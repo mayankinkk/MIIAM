@@ -17,6 +17,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import { SERVICES_VENDOR_ID, PRINTING_VENDOR_ID } from "@/lib/constants";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import { calculateOrderTotals } from "@/lib/checkout-utils";
+import type { PromoCode } from "@/lib/checkout-utils";
 import { useCheckoutPromo } from "@/lib/hooks/useCheckoutPromo";
 import { usePlaceOrder } from "@/lib/hooks/usePlaceOrder";
 import { useRazorpay } from "@/lib/hooks/useRazorpay";
@@ -48,7 +49,7 @@ export default function CheckoutPage() {
   const [otpError, setOtpError] = useState("");
   const [otpCooldown, setOtpCooldown] = useState(0);
   const [serviceCharge, setServiceCharge] = useState(8);
-  const [promoCodesRaw, setPromoCodesRaw] = useState<any[]>([]);
+  const [promoCodesRaw, setPromoCodesRaw] = useState<PromoCode[]>([]);
   const [hydrated, setHydrated] = useState(false);
   const { items, totalPrice } = useCartStore();
   const supabase = useMemo(() => createClient(), []);
