@@ -4,6 +4,7 @@ import { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
+import logger from "@/lib/logger";
 
 
 interface PharmacyPartner {
@@ -91,7 +92,7 @@ export default function PharmacyPartnersPage() {
         newThisMonth,
       });
     } catch (error) {
-      console.error("Error loading partners:", error);
+      logger.error({ err: error }, "Error loading partners");
     } finally {
       setLoading(false);
     }
@@ -108,7 +109,7 @@ export default function PharmacyPartnersPage() {
       loadPartners();
       useToastStore.getState().addToast("Partner status updated!", "success");
     } catch (error) {
-      console.error("Error updating partner:", error);
+      logger.error({ err: error }, "Error updating partner");
       useToastStore.getState().addToast("Failed to update partner status", "error");
     }
   };
@@ -160,7 +161,7 @@ export default function PharmacyPartnersPage() {
       loadPartners();
       useToastStore.getState().addToast(editingPartner ? "Partner updated successfully!" : "Partner added successfully!", "success");
     } catch (error: unknown) {
-      console.error("Error saving partner:", error);
+      logger.error({ err: error }, "Error saving partner");
       const msg = error instanceof Error ? error.message : "Unknown error";
       useToastStore.getState().addToast("Failed: " + msg, "error");
     } finally {

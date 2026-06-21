@@ -13,6 +13,7 @@ import BlurImage from "@/components/BlurImage";
 import { PRINTING_VENDOR_ID } from "@/lib/constants";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import { ListSkeleton } from "@/components/Skeleton";
+import logger from "@/lib/logger";
 
 
 interface PastOrder {
@@ -126,7 +127,7 @@ export default function CartPage() {
         .limit(10);
       setPastOrders(orders || []);
     } catch (error) {
-      console.error("Failed to fetch past orders:", error);
+      logger.error({ err: error }, "Failed to fetch past orders");
       addToast("Failed to load past orders. Please try again.", "error");
     } finally {
       setLoadingOrders(false);
@@ -162,7 +163,7 @@ export default function CartPage() {
       }
       setShowReorderModal(false);
     } catch (error) {
-      console.error("Reorder failed:", error);
+      logger.error({ err: error }, "Reorder failed");
       addToast("Failed to reorder. Please try again.", "error");
     } finally {
       setReordering(false);

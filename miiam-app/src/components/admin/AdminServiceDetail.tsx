@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import logger from "@/lib/logger";
 
 const supabase = createClient();
 
@@ -110,7 +111,7 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
         }
       }
     } catch (e) {
-      console.error("[AdminServiceDetail] Failed to update status:", e);
+      logger.error({ err: e }, "[AdminServiceDetail] Failed to update status");
       setBookings(prev);
     }
     setUpdatingId(null);
@@ -127,7 +128,7 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
         .eq("id", bookingId);
       if (error) throw error;
     } catch (e) {
-      console.error("[AdminServiceDetail] Failed to delete booking:", e);
+      logger.error({ err: e }, "[AdminServiceDetail] Failed to delete booking");
       setBookings(prev);
     }
   }
@@ -156,7 +157,7 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
       setTechName("");
       setTechPhone("");
     } catch (e) {
-      console.error("[AdminServiceDetail] Failed to assign technician:", e);
+      logger.error({ err: e }, "[AdminServiceDetail] Failed to assign technician");
     }
     setAssigning(false);
   }

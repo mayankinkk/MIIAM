@@ -9,6 +9,7 @@ import QuickActionsFAB from "@/components/QuickActionsFAB";
 import BlurImage from "@/components/BlurImage";
 import { useCartStore } from "@/lib/store/cartStore";
 import { createClient } from "@/lib/supabase/client";
+import logger from "@/lib/logger";
 
 const OnboardingTour = dynamic(() => import("@/components/OnboardingTour"), { ssr: false });
 const StaggerContainer = dynamic(() => import("@/components/ui/AnimationWrappers").then(m => m.StaggerContainer), { ssr: false });
@@ -109,7 +110,7 @@ export default function ExplorePage() {
           setShowLocationBanner(true);
         }
       } catch (err) {
-        console.error("Failed to check location:", err);
+        logger.error({ err: err }, "Failed to check location");
       }
     }
     checkLocation();

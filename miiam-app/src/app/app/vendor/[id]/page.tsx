@@ -11,6 +11,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
 import { getCurrentMenuSlot } from "@/lib/menuSlots";
 import { Skeleton, ProfileSkeleton, MenuItemSkeleton } from "@/components/Skeleton";
+import logger from "@/lib/logger";
 
 interface Vendor {
   id: string;
@@ -107,7 +108,7 @@ export default function VendorPage() {
 
         if (reviewsData) setReviews(reviewsData);
       } catch (err) {
-        console.error("Failed to load vendor data:", err);
+        logger.error({ err: err }, "Failed to load vendor data");
       }
       setLoading(false);
     }

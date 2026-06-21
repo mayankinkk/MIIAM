@@ -22,6 +22,7 @@ import type { PromoCode } from "@/lib/checkout-utils";
 import { useCheckoutPromo } from "@/lib/hooks/useCheckoutPromo";
 import { usePlaceOrder } from "@/lib/hooks/usePlaceOrder";
 import { useRazorpay } from "@/lib/hooks/useRazorpay";
+import logger from "@/lib/logger";
 
 export default function CheckoutPage() {
   const { t } = useTranslation();
@@ -77,7 +78,7 @@ export default function CheckoutPage() {
           .eq("is_active", true);
         if (data) setPromoCodesRaw(data);
       } catch (err) {
-        console.error("Failed to load promo codes:", err);
+        logger.error({ err: err }, "Failed to load promo codes");
       }
     }
     loadPromoCodes();
@@ -106,7 +107,7 @@ export default function CheckoutPage() {
           setVendorDeliveryCharges(charges);
         }
       } catch (err) {
-        console.error("Failed to load vendor delivery charges:", err);
+        logger.error({ err: err }, "Failed to load vendor delivery charges");
       }
     }
     loadVendorDetails();

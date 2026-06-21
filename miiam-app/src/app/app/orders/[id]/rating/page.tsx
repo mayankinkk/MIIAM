@@ -10,6 +10,7 @@ import BlurImage from "@/components/BlurImage";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import { Skeleton } from "@/components/Skeleton";
 import type { Translations } from "@/lib/i18n";
+import logger from "@/lib/logger";
 
 function AnimatedStarRating({ 
   rating, 
@@ -160,7 +161,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
         
         if (orderData) setOrder(orderData);
       } catch (err) {
-        console.error("Failed to load order:", err);
+        logger.error({ err }, "Failed to load order");
       }
       setLoading(false);
     }
@@ -216,7 +217,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
 
       // Mark order as rated
       const { error: markErr } = await supabase.from("orders").update({ rating_submitted: true }).eq("id", id);
-      if (markErr) console.warn("rating_submitted column may not exist:", markErr.message);
+      if (markErr) logger.warn({ err: markErr }, "rating_submitted column may not exist");
 
       setSubmitted(true);
       if (typeof navigator !== "undefined" && navigator.vibrate) {
@@ -224,7 +225,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
       }
       setTimeout(() => router.push("/app/orders"), 2500);
     } catch (err) {
-      console.error("Error submitting rating:", err);
+      logger.error({ err }, "Error submitting rating");
       addToast(t.rating.ratingFailed, "error");
     }
   };

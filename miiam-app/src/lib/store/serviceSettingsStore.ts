@@ -3,6 +3,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { createClient } from "@/lib/supabase/client";
+import logger from "@/lib/logger";
 
 export type ServiceCategory =
   | "food" | "grocery" | "printing" | "pharmacy" | "flowers" | "beauty"
@@ -99,7 +100,7 @@ function scheduleSyncToSupabase(id: ServiceCategory, updates: Partial<ServiceSet
       }
       await supabase.from("service_settings").upsert({ id, ...payload }, { onConflict: "id" });
     } catch (e) {
-      console.error("[serviceSettings] Failed to sync to Supabase:", e);
+      logger.error({ err: e }, "[serviceSettings] Failed to sync to Supabase");
     }
   }, 300);
 }
@@ -174,7 +175,7 @@ export const useServiceSettingsStore = create<ServiceSettingsStore>()(
             set({ settings: synced, _synced: true });
           }
         } catch (e) {
-          console.error("[serviceSettings] Failed to sync from Supabase:", e);
+          logger.error({ err: e }, "[serviceSettings] Failed to sync from Supabase");
         }
       },
     }),

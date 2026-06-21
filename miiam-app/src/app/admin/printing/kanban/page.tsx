@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { PRINTING_VENDOR_ID } from "@/lib/constants";
+import logger from "@/lib/logger";
 
 const KANBAN_COLUMNS = [
   { id: "pending", label: "Pending", icon: "schedule", color: "bg-amber-100 border-amber-300" },
@@ -67,12 +68,12 @@ export default function AdminPrintingKanban() {
         .eq("vendor_id", PRINTING_VENDOR_ID)
         .order("placed_at", { ascending: false });
       if (error) {
-        console.error("[kanban] Failed to load orders:", error);
+        logger.error({ err: error }, "[kanban] Failed to load orders");
       } else if (data) {
         setOrders(data);
       }
     } catch (e) {
-      console.error("[kanban] Unexpected error loading orders:", e);
+      logger.error({ err: e }, "[kanban] Unexpected error loading orders");
     }
     setLoading(false);
   }
@@ -91,7 +92,7 @@ export default function AdminPrintingKanban() {
     try {
       const { error } = await supabase.from("orders").update({ status: newStatus }).eq("id", orderId);
       if (error) {
-        console.error("[kanban] Failed to update status:", error);
+        logger.error({ err: error }, "[kanban] Failed to update status");
         // Rollback on failure
         setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status: order.status } : o)));
         return;
@@ -113,12 +114,12 @@ export default function AdminPrintingKanban() {
               body: JSON.stringify({ user_id: order.user_id, event, order_id: orderId }),
             });
           } catch (e) {
-            console.warn("[kanban] Failed to send notification:", e);
+            logger.warn({ err: e }, "[kanban] Failed to send notification");
           }
         }
       }
     } catch (e) {
-      console.error("[kanban] Unexpected error updating status:", e);
+      logger.error({ err: e }, "[kanban] Unexpected error updating status");
       // Rollback on failure
       setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status: order.status } : o)));
     }

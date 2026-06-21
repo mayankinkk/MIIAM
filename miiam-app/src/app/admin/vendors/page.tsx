@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import ImageUpload from "@/components/ImageUpload";
 import BlurImage from "@/components/BlurImage";
+import logger from "@/lib/logger";
 
 interface Vendor {
   id: string;
@@ -255,7 +256,7 @@ export default function AdminVendorsPage() {
       setMenuItems([{ name: "", price: "", category: "Main Course" }]);
       loadVendors();
     } catch (error: unknown) {
-      console.error("Error creating vendor:", error);
+      logger.error({ err: error }, "Error creating vendor");
       const msg = error instanceof Error ? error.message : JSON.stringify(error);
       useToastStore.getState().addToast(`Failed to create vendor: ${msg}`, "error");
     } finally {
@@ -330,7 +331,7 @@ export default function AdminVendorsPage() {
       setEditingVendor(null);
       loadVendors();
     } catch (error: unknown) {
-      console.error("Error updating vendor:", error);
+      logger.error({ err: error }, "Error updating vendor");
       const msg = error instanceof Error ? error.message : "Unknown error";
       useToastStore.getState().addToast(`Failed to update vendor: ${msg}`, "error");
     } finally {
@@ -404,7 +405,7 @@ export default function AdminVendorsPage() {
       await loadVendorMenuItems(editingVendor.id);
       useToastStore.getState().addToast("Menu item added!", "success");
     } catch (error: unknown) {
-      console.error("Error adding menu item:", error);
+      logger.error({ err: error }, "Error adding menu item");
       const msg = error instanceof Error ? error.message : "Unknown error";
       useToastStore.getState().addToast(`Failed to add menu item: ${msg}`, "error");
     } finally {
@@ -423,7 +424,7 @@ export default function AdminVendorsPage() {
       setVendorMenuItems(vendorMenuItems.filter(item => item.id !== id));
       useToastStore.getState().addToast("Menu item deleted!", "success");
     } catch (error: unknown) {
-      console.error("Error deleting menu item:", error);
+      logger.error({ err: error }, "Error deleting menu item");
       const msg = error instanceof Error ? error.message : "Unknown error";
       useToastStore.getState().addToast(`Failed to delete: ${msg}`, "error");
     } finally {
@@ -456,7 +457,7 @@ export default function AdminVendorsPage() {
       setEditingMenuItem(null);
       useToastStore.getState().addToast("Menu item updated!", "success");
     } catch (error: unknown) {
-      console.error("Error updating menu item:", error);
+      logger.error({ err: error }, "Error updating menu item");
       const msg = error instanceof Error ? error.message : "Unknown error";
       useToastStore.getState().addToast(`Failed to update menu item: ${msg}`, "error");
     } finally {

@@ -17,6 +17,7 @@ import DashboardHeader from "@/components/rider/DashboardHeader";
 import IncomingOrderCard from "@/components/rider/IncomingOrderCard";
 import ActiveDeliveryView from "@/components/rider/ActiveDeliveryView";
 import { useTranslation } from "@/lib/i18n/useTranslation";
+import logger from "@/lib/logger";
 
 const CallModal = dynamic(() => import("@/components/rider/CallModal"), { ssr: false });
 const OrderChatOverlay = dynamic(() => import("@/components/order/OrderChatOverlay"), { ssr: false });
@@ -201,7 +202,7 @@ export default function RiderDashboard() {
             };
             setDeliveryStep(statusStepMap[dbOrder.status] || "shopping");
           }
-        } catch (activeErr) { console.warn("Failed to load active order:", activeErr); }
+        } catch (activeErr) { logger.warn({ err: activeErr }, "Failed to load active order"); }
 
         setInitialLoading(false);
       } catch (err) {
@@ -302,7 +303,7 @@ export default function RiderDashboard() {
           } as OrderWithTiming;
         });
         setPendingOrders(mappedOrders);
-      } catch (err) { console.error("Failed to fetch pending orders:", err); setPendingOrders([]); }
+      } catch (err) { logger.error({ err }, "Failed to fetch pending orders"); setPendingOrders([]); }
     }
     fetchRealOrders();
     const channel = supabase.channel('rider-orders-dash')
@@ -446,7 +447,7 @@ export default function RiderDashboard() {
       const { error } = await supabase.from("orders").delete().is("rider_id", null).in("status", ["pending"]);
       if (error) throw error;
       setPendingOrders([]);
-    } catch (err: unknown) { console.error("Clear failed:", err instanceof Error ? err.message : err); }
+    } catch (err: unknown) { logger.error({ err }, "Clear failed"); }
   };
 
   const handleAccept = async (order: OrderWithTiming) => {
@@ -504,7 +505,7 @@ export default function RiderDashboard() {
             await supabase.from("rider_wallets").insert({ rider_id: riderId, balance: finalEarnings, total_earnings: finalEarnings, pending_payout: 0, advance_used: 0 });
           }
           await supabase.from("rider_wallet").insert({ rider_id: riderId, amount: finalEarnings, type: "earning", description: `Delivery earnings for order #${currentOrder.orderDbId.slice(0, 8)}`, order_id: currentOrder.orderDbId, created_at: new Date().toISOString() });
-        } catch (walletErr) { console.error("Wallet credit failed (non-critical):", walletErr); }
+        } catch (walletErr) { logger.error({ err: walletErr }, "Wallet credit failed (non-critical)"); }
 
         // 2. Update rider stats
         try { await supabase.from("riders").update({ total_deliveries: riderDeliveries + 1 }).eq("id", riderId); setRiderDeliveries((prev) => prev + 1); } catch { /* column may not exist */ }
@@ -520,7 +521,7 @@ export default function RiderDashboard() {
         const { error: orderErr } = await supabase.from("orders").update({ status: "delivered", delivered_at: new Date().toISOString(), rider_earning: finalEarnings }).eq("id", currentOrder.orderDbId);
         if (orderErr) throw new Error("order update: " + orderErr.message);
       }
-    } catch (e) { console.error("Failed to persist delivery:", e); }
+    } catch (e) { logger.error({ err: e }, "Failed to persist delivery"); }
     setCurrentOrder(null); stopLocationTracking();
     setActiveOrders(prev => {
       const remaining = prev.filter(o => o.id !== currentOrder?.id);

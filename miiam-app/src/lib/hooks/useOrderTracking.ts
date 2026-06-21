@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import logger from "@/lib/logger";
 
 export interface OrderStatus {
   status: string;
@@ -199,7 +200,7 @@ export function useOrderTracking(orderId: string, supabaseClient?: SupabaseClien
         if (_location) setRiderLocation({ lat: _location.lat, lng: _location.lng });
       }
     } catch (err) {
-      console.error("Failed to refresh order:", err);
+      logger.error({ err }, "Failed to refresh order");
     }
     setIsRefreshing(false);
   }, [orderId, fetchOrderData]);
@@ -224,7 +225,7 @@ export function useOrderTracking(orderId: string, supabaseClient?: SupabaseClien
           setOrder(null);
         }
       } catch (err) {
-        console.error("Failed to load order:", err);
+        logger.error({ err }, "Failed to load order");
         if (!mounted) return;
         setOrder(null);
         setError(err instanceof Error ? err.message : "Failed to load order");

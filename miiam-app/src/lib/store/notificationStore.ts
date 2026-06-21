@@ -2,6 +2,7 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import logger from "@/lib/logger";
 
 export interface AppNotification {
   id?: string;
@@ -81,7 +82,7 @@ export const useNotificationStore = create<NotificationStore>()(
 
       requestPermission: async () => {
         if (!("Notification" in window)) {
-          console.log("Notifications not supported");
+          logger.info("Notifications not supported");
           return false;
         }
 
@@ -105,7 +106,7 @@ export const useNotificationStore = create<NotificationStore>()(
           }
           return permission === "granted";
         } catch (error) {
-          console.error("Notification permission error:", error);
+          logger.error({ err: error }, "Notification permission error");
           return false;
         }
       },
@@ -137,7 +138,7 @@ export async function subscribe() {
 
     const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
     if (!vapidPublicKey) {
-      console.log("VAPID public key not configured");
+      logger.info("VAPID public key not configured");
       return null;
     }
 
@@ -149,7 +150,7 @@ export async function subscribe() {
     store.setToken(subscription.endpoint);
     return subscription;
   } catch (error) {
-    console.error("Push subscription error:", error);
+    logger.error({ err: error }, "Push subscription error");
     return null;
   }
 }

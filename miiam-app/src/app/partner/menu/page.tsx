@@ -6,6 +6,7 @@ import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { useToastStore } from "@/lib/store/toastStore";
 import { getVendorForUser } from "@/lib/vendor";
 import BlurImage from "@/components/BlurImage";
+import logger from "@/lib/logger";
 
 interface Vendor {
   id: string;
@@ -157,7 +158,7 @@ export default function PartnerMenuPage() {
       .upload(filePath, file);
 
     if (uploadError) {
-      console.error("Upload error:", uploadError);
+      logger.error({ err: uploadError }, "Upload error");
       return null;
     }
 
@@ -394,12 +395,12 @@ export default function PartnerMenuPage() {
     try {
       const { error } = await supabase.from(table).update({ available: !m.available }).eq("id", item.id);
       if (error) {
-        console.warn("Toggle availability not supported:", error.message);
+        logger.warn("Toggle availability not supported: " + error.message);
         return;
       }
       setItems(prev => prev.map(i => i.id === item.id ? { ...i, available: !m.available } as AnyItem : i));
     } catch (error: unknown) {
-      console.warn("Toggle availability failed:", error instanceof Error ? error.message : String(error));
+      logger.warn("Toggle availability failed: " + (error instanceof Error ? error.message : String(error)));
     }
   };
 
@@ -408,12 +409,12 @@ export default function PartnerMenuPage() {
     try {
       const { error } = await supabase.from(table).update({ is_featured: !current }).eq("id", item.id);
       if (error) {
-        console.warn("Toggle featured not supported:", error.message);
+        logger.warn("Toggle featured not supported: " + error.message);
         return;
       }
       setItems(prev => prev.map(i => i.id === item.id ? { ...i, is_featured: !current } as AnyItem : i));
     } catch (error: unknown) {
-      console.warn("Toggle featured failed:", error instanceof Error ? error.message : String(error));
+      logger.warn("Toggle featured failed: " + (error instanceof Error ? error.message : String(error)));
     }
   };
 
@@ -424,12 +425,12 @@ export default function PartnerMenuPage() {
     try {
       const { error } = await supabase.from(table).update({ stock: newStock }).eq("id", item.id);
       if (error) {
-        console.warn("Stock update not supported:", error.message);
+        logger.warn("Stock update not supported: " + error.message);
         return;
       }
       setItems(prev => prev.map(i => i.id === item.id ? { ...i, stock: newStock } as AnyItem : i));
     } catch (error: unknown) {
-      console.warn("Stock update failed:", error instanceof Error ? error.message : String(error));
+      logger.warn("Stock update failed: " + (error instanceof Error ? error.message : String(error)));
     }
   };
 

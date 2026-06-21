@@ -8,6 +8,7 @@ import { useLocationStore } from "@/lib/store/locationStore";
 import { safeMenuItemId } from "@/lib/checkout-utils";
 import { PRINTING_VENDOR_ID, SERVICES_VENDOR_ID } from "@/lib/constants";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import logger from "@/lib/logger";
 
 interface DeliveryAddress {
   street?: string;
@@ -192,7 +193,7 @@ export function usePlaceOrder(supabase: SupabaseClient) {
               body: JSON.stringify({ orderId: order.id }),
             });
           } catch (emailErr) {
-            console.warn("Failed to send confirmation email:", emailErr);
+            logger.warn({ err: emailErr }, "Failed to send confirmation email");
           }
         }
       }
@@ -228,9 +229,9 @@ export function usePlaceOrder(supabase: SupabaseClient) {
                 return new Date(`${scheduledDate}T${String(h).padStart(2, "0")}:${String(minutes || 0).padStart(2, "0")}:00`).toISOString();
               })(),
             });
-          if (scheduleError) console.warn("Failed to create recurring schedule:", scheduleError);
+          if (scheduleError) logger.warn({ err: scheduleError }, "Failed to create recurring schedule");
         } catch (scheduleErr) {
-          console.warn("Failed to create recurring schedule:", scheduleErr);
+          logger.warn({ err: scheduleErr }, "Failed to create recurring schedule");
         }
       }
 
@@ -241,7 +242,7 @@ export function usePlaceOrder(supabase: SupabaseClient) {
       router.push(targetPath);
       return true;
     } catch (error: unknown) {
-      console.error("Order placement failed:", error);
+      logger.error({ err: error }, "Order placement failed");
       let errorMessage = "Something went wrong. Please try again.";
       if (error instanceof Error && error.message) {
         if (error.message.includes('miiam_food')) {

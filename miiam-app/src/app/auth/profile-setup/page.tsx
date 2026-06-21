@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import BlurImage from "@/components/BlurImage";
+import logger from "@/lib/logger";
 
 const INDIAN_STATES = [
   "Maharashtra", "Delhi", "Karnataka", "Tamil Nadu", "Telangana",
@@ -126,7 +127,7 @@ function ProfileSetupContent() {
           ...profileData,
         });
 
-        if (profileError) console.error("Profile error:", profileError);
+        if (profileError) logger.error({ err: profileError }, "Profile error");
 
         // Send welcome email
         try {
@@ -140,7 +141,7 @@ function ProfileSetupContent() {
           });
         } catch { /* non-critical */ }
       } else {
-        console.log("[profile-setup] No session found, saving via admin API");
+        logger.info("[profile-setup] No session found, saving via admin API");
         const res = await fetch("/api/auth/save-profile", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -152,7 +153,7 @@ function ProfileSetupContent() {
         
         if (!res.ok) {
           const data = await res.json();
-          console.error("[profile-setup] Save profile error:", data.error);
+          logger.error({ err: data.error }, "[profile-setup] Save profile error");
         }
       }
 
@@ -162,7 +163,7 @@ function ProfileSetupContent() {
       localStorage.setItem("miiam_onboarding_tour_done", "false");
       router.push(searchParams.get("redirect") || "/app/home");
     } catch (error) {
-      console.error("Setup error:", error);
+      logger.error({ err: error }, "Setup error");
       setLoading(false);
     }
   };

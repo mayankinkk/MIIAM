@@ -21,6 +21,7 @@ import BlurImage from "@/components/BlurImage";
 import { PressScale, CartBounce } from "@/components/ui/AnimationWrappers";
 import { NetworkError } from "@/components/ui/EmptyStates";
 import { withRetry } from "@/lib/retry";
+import logger from "@/lib/logger";
 
 function isNetworkError(err: unknown): boolean {
   if (err instanceof TypeError && err.message.includes("fetch")) return true;
@@ -477,7 +478,7 @@ export default function FoodPageContent() {
           .limit(100);
 
         if (vendorsError) {
-          console.error("Vendors query failed:", vendorsError.message);
+          logger.error({ err: vendorsError }, "Vendors query failed");
           throw new Error(vendorsError.message);
         }
 
@@ -502,7 +503,7 @@ export default function FoodPageContent() {
         if (vendorIds.length > 0) {
           const { data: itemsData, error: itemsError } = await supabase.from("menu_items").select("id, vendor_id, name, price, category, image_url, is_veg, is_available, description").in("vendor_id", vendorIds).order("name");
           if (itemsError) {
-            console.error("Menu items query failed:", itemsError.message);
+            logger.error({ err: itemsError }, "Menu items query failed");
           }
           setMenuItems(itemsData || []);
         } else {
@@ -512,7 +513,7 @@ export default function FoodPageContent() {
         if (heroRes?.data) setHeroAsset(heroRes.data);
       });
     } catch (err) {
-      console.error("Failed to load food page:", err);
+      logger.error({ err }, "Failed to load food page");
       if (isNetworkError(err) || !navigator.onLine) {
         setFetchError("network");
       } else {

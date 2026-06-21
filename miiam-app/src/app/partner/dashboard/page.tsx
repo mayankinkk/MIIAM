@@ -7,6 +7,7 @@ import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { getVendorForUser, getVendorMenuItems } from "@/lib/vendor";
 import { VendorDashboardSkeleton } from "@/components/vendor/VendorSkeleton";
 import type { Order } from "@/lib/types";
+import logger from "@/lib/logger";
 
 export default function VendorDashboard() {
   const supabase = useMemo(() => createClient(), []);
@@ -135,7 +136,7 @@ export default function VendorDashboard() {
         .eq("id", orderId);
       setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status: "accepted" } : o)));
     } catch (err) {
-      console.error("Failed to accept order:", err);
+      logger.error({ err }, "Failed to accept order");
     } finally {
       setProcessingOrder(null);
     }
@@ -150,7 +151,7 @@ export default function VendorDashboard() {
         .eq("id", orderId);
       setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status: "ready_for_pickup" } : o)));
     } catch (err) {
-      console.error("Failed to mark ready:", err);
+      logger.error({ err }, "Failed to mark ready");
     } finally {
       setProcessingOrder(null);
     }
@@ -166,7 +167,7 @@ export default function VendorDashboard() {
         .eq("id", orderId);
       setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status: "cancelled" } : o)));
     } catch (err) {
-      console.error("Failed to cancel order:", err);
+      logger.error({ err }, "Failed to cancel order");
     } finally {
       setProcessingOrder(null);
     }

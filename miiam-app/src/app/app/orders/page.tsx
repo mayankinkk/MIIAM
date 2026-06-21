@@ -15,6 +15,7 @@ import BlurImage from "@/components/BlurImage";
 import PullToRefresh from "@/components/PullToRefresh";
 import { PRINTING_VENDOR_ID } from "@/lib/constants";
 import { useTranslation } from "@/lib/i18n/useTranslation";
+import logger from "@/lib/logger";
 
 const statusColors: Record<string, string> = {
   pending: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
@@ -91,7 +92,7 @@ export default function OrdersPage() {
         .order("placed_at", { ascending: false });
 
       if (ordersError) {
-        console.error("Fetch orders error:", ordersError.message);
+        logger.error({ err: ordersError }, "Fetch orders error");
         addToast(t.orders.loadFailed, "error");
         throw ordersError;
       }
@@ -114,7 +115,7 @@ export default function OrdersPage() {
         setOrders([]);
       }
     } catch (error: unknown) {
-      console.error("Error fetching orders:", error instanceof Error ? error.message : error);
+      logger.error({ err: error }, "Error fetching orders");
       addToast(t.orders.loadFailed, "error");
     } finally {
       setLoading(false);
@@ -160,7 +161,7 @@ export default function OrdersPage() {
         router.push("/app/cart");
       }
     } catch (error) {
-      console.error("Reorder failed:", error);
+      logger.error({ err: error }, "Reorder failed");
       addToast("Failed to reorder. Please try again.", "error");
     } finally {
       setReordering(null);

@@ -13,6 +13,7 @@ import IssueReportModal from "@/components/rider/orders/IssueReportModal";
 import ActiveDeliveryView from "@/components/rider/orders/ActiveDeliveryView";
 import type { Order, OrderItem } from "@/components/rider/orders/types";
 import type * as Leaflet from 'leaflet';
+import logger from "@/lib/logger";
 
 export default function RiderOrdersPage() {
   const supabase = useMemo(() => createClient(), []);
@@ -148,7 +149,7 @@ export default function RiderOrdersPage() {
           });
         },
         () => {
-          console.log("GPS unavailable, using default location");
+          logger.info("GPS unavailable, using default location");
         },
         { enableHighAccuracy: true, timeout: 10000 }
       );
@@ -214,7 +215,7 @@ export default function RiderOrdersPage() {
         });
         if (success && !error) accepted = true;
       } catch {
-        console.log("RPC not available, using fallback");
+        logger.info("RPC not available, using fallback");
       }
 
       // Fallback: direct update — just assign rider to ready_for_pickup order
@@ -245,14 +246,14 @@ export default function RiderOrdersPage() {
             read: false,
           });
         } catch (notifErr) {
-          console.log("Notification error (non-critical):", notifErr);
+          logger.info({ err: notifErr }, "Notification error (non-critical)");
         }
       }
 
       setOrders(prev => prev.map(o => o.id === orderId ? { ...o, rider_id: riderProfile.id } : o));
       showToast("Order accepted!", "success");
     } catch (err: unknown) {
-      console.error("Error accepting order:", err);
+      logger.error({ err }, "Error accepting order");
       showToast("Failed to accept order: " + ((err instanceof Error ? err.message : null) || "Unknown error"), "error");
     }
   }
@@ -275,7 +276,7 @@ export default function RiderOrdersPage() {
           });
           if (success && !error) accepted = true;
         } catch {
-          console.log("RPC not available, using fallback");
+          logger.info("RPC not available, using fallback");
         }
 
         if (!accepted) {
@@ -304,7 +305,7 @@ export default function RiderOrdersPage() {
               type: "order",
               read: false,
             });
-          } catch (e) { console.warn("Failed to insert notification:", e); }
+          } catch (e) { logger.warn({ err: e }, "Failed to insert notification"); }
         }
       }
       
@@ -313,7 +314,7 @@ export default function RiderOrdersPage() {
       showToast(`${successCount} order(s) accepted!${failedCount > 0 ? ` ${failedCount} already taken.` : ''}`, "success");
       setSelectedOrders([]);
     } catch (err) {
-      console.error("Error batch accepting:", err);
+      logger.error({ err }, "Error batch accepting");
       showToast("Failed to accept orders", "error");
     }
   }
@@ -337,12 +338,12 @@ export default function RiderOrdersPage() {
         .eq("id", itemId);
       
       if (error) {
-        console.error("Error updating item:", error);
+        logger.error({ err: error }, "Error updating item");
         showToast("Failed to update item: " + error.message, "error");
         return;
       }
     } catch (err) {
-      console.error("Update error:", err);
+      logger.error({ err }, "Update error");
     }
     
     // Update local state
@@ -413,7 +414,7 @@ export default function RiderOrdersPage() {
               created_at: new Date().toISOString(),
             });
         } catch (walletErr) {
-          console.error("Wallet credit failed (non-critical):", walletErr);
+          logger.error({ err: walletErr }, "Wallet credit failed (non-critical)");
         }
 
         // Update rider delivery count
@@ -448,7 +449,7 @@ export default function RiderOrdersPage() {
             body: JSON.stringify({ orderId: currentOrderId, status: "delivered" }),
           });
         } catch (emailErr) {
-          console.warn("Failed to send delivery email:", emailErr);
+          logger.warn({ err: emailErr }, "Failed to send delivery email");
         }
       }
 
@@ -468,7 +469,7 @@ export default function RiderOrdersPage() {
       setShowCashCollectModal(false);
       showToast(`Delivery complete! You earned ₹${riderEarning}!`, "success");
     } catch (err) {
-      console.error("Error delivering order:", err);
+      logger.error({ err }, "Error delivering order");
       showToast("Failed to complete delivery.", "error");
     }
   }
@@ -500,7 +501,7 @@ export default function RiderOrdersPage() {
             body: JSON.stringify({ orderId, status: "on_the_way" }),
           });
         } catch (emailErr) {
-          console.warn("Failed to send status email:", emailErr);
+          logger.warn({ err: emailErr }, "Failed to send status email");
         }
 
         // Browser notification
@@ -523,7 +524,7 @@ export default function RiderOrdersPage() {
 
       setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: "on_the_way" } : o));
     } catch (err) {
-      console.error("Error starting delivery:", err);
+      logger.error({ err }, "Error starting delivery");
     }
   }
 
@@ -992,7 +993,7 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
             if (isMounted) setTrackingInfo({ eta, distance: dist });
             map.fitBounds([[rLat, rLng], [dLat, dLng]], { padding: [40, 40] });
           }
-        } catch (e) { console.warn("Map routing error:", e); }
+        } catch (e) { logger.warn({ err: e }, "Map routing error"); }
       }
 
       // Geocode destination address
@@ -1015,7 +1016,7 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
             await drawRoute(riderLat, riderLng, dLat, dLng);
             geoSuccess = true;
           }
-        } catch (e) { console.warn("Map routing error:", e); }
+        } catch (e) { logger.warn({ err: e }, "Map routing error"); }
       }
 
       if (!geoSuccess && isMounted) {

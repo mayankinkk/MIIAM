@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import ImageUpload from "@/components/ImageUpload";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { useToastStore } from "@/lib/store/toastStore";
+import logger from "@/lib/logger";
 
 
 const defaultCategories = ["Bouquets", "Arrangements", "Combos", "Hampers", "Sympathy", "Corporate"];
@@ -57,7 +58,7 @@ export default function FlowersItemsPage() {
         .from("vendors")
         .select("id, shop_name")
         .or("type.eq.flower,type.eq.flowers");
-      if (vendorError) console.error("Vendor fetch error:", vendorError);
+      if (vendorError) logger.error({ err: vendorError }, "Vendor fetch error");
       if (vendorsData) setVendors(vendorsData);
 
       const { data, error } = await supabase
@@ -71,7 +72,7 @@ export default function FlowersItemsPage() {
       const categories = new Set((data || []).map((i: FlowerItem) => i.category));
       setStats({ total: data?.length || 0, categories: categories.size });
     } catch (error) {
-      console.error("Error loading items:", error);
+      logger.error({ err: error }, "Error loading items");
     } finally {
       setLoading(false);
     }
@@ -114,7 +115,7 @@ export default function FlowersItemsPage() {
       loadItems();
       useToastStore.getState().addToast(editingItem ? "Item updated!" : "Item added!", "success");
     } catch (error: unknown) {
-      console.error("Error saving:", error);
+      logger.error({ err: error }, "Error saving item");
       useToastStore.getState().addToast("Failed: " + (error instanceof Error ? error.message : "Unknown error"), "error");
     } finally {
       setSaving(false);

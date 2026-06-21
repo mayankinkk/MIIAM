@@ -11,6 +11,7 @@ import { HomeSkeleton } from "@/components/Skeleton";
 import BlurImage from "@/components/BlurImage";
 import { NetworkError } from "@/components/ui/EmptyStates";
 import { withRetry } from "@/lib/retry";
+import logger from "@/lib/logger";
 import PrintCostCalculator from "@/components/print/PrintCostCalculator";
 
 
@@ -195,7 +196,7 @@ export default function HomePage() {
       setLoading(false);
     }
     withRetry(checkAndLoad).catch((e) => {
-      console.error("Home page data load error:", e);
+      logger.error({ err: e }, "Home page data load error");
       setDataError("Couldn't load recommendations. Pull down to try again.");
       setLoading(false);
     });
@@ -226,7 +227,7 @@ export default function HomePage() {
             });
           }
         } catch (err) {
-          console.error("Failed to fetch active order:", err);
+          logger.error({ err: err }, "Failed to fetch active order");
         }
       }
       fetchActiveOrder();

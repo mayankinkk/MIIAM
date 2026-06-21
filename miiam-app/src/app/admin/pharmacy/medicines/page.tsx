@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import ImageUpload from "@/components/ImageUpload";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { useToastStore } from "@/lib/store/toastStore";
+import logger from "@/lib/logger";
 
 
 const defaultCategories = ["Pain Relief", "Antibiotics", "Vitamins", "Diabetes", "Blood Pressure", "Heart Care", "Cold & Flu", "Skin Care", "Baby Care"];
@@ -59,7 +60,7 @@ export default function PharmacyMedicinesPage() {
         .from("vendors")
         .select("id, shop_name")
         .eq("type", "pharmacy");
-      if (vendorError) console.error("Vendor fetch error:", vendorError);
+      if (vendorError) logger.error({ err: vendorError }, "Vendor fetch error");
       if (vendorsData) setVendors(vendorsData);
 
       const { data, error } = await supabase
@@ -82,7 +83,7 @@ export default function PharmacyMedicinesPage() {
 
       setStats({ total: data?.length || 0, lowStock, outOfStock, prescription });
     } catch (error) {
-      console.error("Error loading medicines:", error);
+      logger.error({ err: error }, "Error loading medicines");
     } finally {
       setLoading(false);
     }
@@ -97,7 +98,7 @@ export default function PharmacyMedicinesPage() {
       if (error) throw error;
       loadMedicines();
     } catch (error) {
-      console.error("Error updating stock:", error);
+      logger.error({ err: error }, "Error updating stock");
     }
   };
 
@@ -140,7 +141,7 @@ export default function PharmacyMedicinesPage() {
       loadMedicines();
       useToastStore.getState().addToast(editingMedicine ? "Medicine updated!" : "Medicine added!", "success");
     } catch (error: unknown) {
-      console.error("Error saving:", error);
+      logger.error({ err: error }, "Error saving");
       useToastStore.getState().addToast("Failed: " + (error instanceof Error ? error.message : "Unknown error"), "error");
     } finally {
       setSaving(false);

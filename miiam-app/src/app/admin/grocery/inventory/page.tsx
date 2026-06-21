@@ -6,6 +6,7 @@ import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import ImageUpload from "@/components/ImageUpload";
+import logger from "@/lib/logger";
 
 
 const groceryCategories = ["Fruits", "Vegetables", "Dairy", "Bakery", "Spices", "Pulses", "Oils", "Beverages"];
@@ -51,7 +52,7 @@ export default function GroceryInventoryPage() {
     setLoading(true);
     try {
       const { data: vendorsData, error: vendorError } = await supabase.from("vendors").select("id, shop_name").eq("type", "grocery");
-      if (vendorError) console.error("Vendor fetch error:", vendorError);
+      if (vendorError) logger.error({ err: vendorError }, "Vendor fetch error");
       if (vendorsData) setVendors(vendorsData);
 
       const { data, error } = await supabase
@@ -73,7 +74,7 @@ export default function GroceryInventoryPage() {
         totalValue,
       });
     } catch (error) {
-      console.error("Error loading products:", error);
+      logger.error({ err: error }, "Error loading products");
     } finally {
       setLoading(false);
     }
@@ -118,7 +119,7 @@ export default function GroceryInventoryPage() {
       loadProducts();
       useToastStore.getState().addToast(editingProduct ? "Product updated!" : "Product added!", "success");
     } catch (error: unknown) {
-      console.error("Error saving product:", error);
+      logger.error({ err: error }, "Error saving product");
       useToastStore.getState().addToast("Failed to save: " + (error instanceof Error ? error.message : "Unknown error"), "error");
     } finally {
       setSaving(false);
@@ -134,7 +135,7 @@ export default function GroceryInventoryPage() {
       setProducts(products.filter(p => p.id !== id));
       useToastStore.getState().addToast("Product deleted!", "success");
     } catch (error: unknown) {
-      console.error("Error deleting product:", error);
+      logger.error({ err: error }, "Error deleting product");
       useToastStore.getState().addToast("Failed to delete: " + (error instanceof Error ? error.message : "Unknown error"), "error");
     }
   };
@@ -149,7 +150,7 @@ export default function GroceryInventoryPage() {
       if (error) throw error;
       loadProducts();
     } catch (error) {
-      console.error("Error updating stock:", error);
+      logger.error({ err: error }, "Error updating stock");
       useToastStore.getState().addToast("Failed to update stock", "error");
     }
   };

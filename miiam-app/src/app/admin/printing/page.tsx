@@ -16,6 +16,7 @@ import {
 } from "@/lib/printing-addons";
 import ServicesCatalogPanel from "@/components/admin/ServicesCatalogPanel";
 import BlurImage from "@/components/BlurImage";
+import logger from "@/lib/logger";
 
 
 const VALID_TRANSITIONS: Record<string, string[]> = {
@@ -123,7 +124,7 @@ export default function AdminPrintingPage() {
         setSignedUrls((prev) => ({ ...prev, ...map }));
       }
     } catch (e) {
-      console.error("[admin-printing] Failed to fetch signed URLs:", e);
+      logger.error({ err: e }, "[admin-printing] Failed to fetch signed URLs");
     }
     setSigningUrls(false);
   }
@@ -147,12 +148,12 @@ export default function AdminPrintingPage() {
         .eq("vendor_id", PRINTING_VENDOR_ID)
         .order("placed_at", { ascending: false });
       if (error) {
-        console.error("[admin-printing] Failed to load orders:", error);
+        logger.error({ err: error }, "[admin-printing] Failed to load orders");
       } else if (data) {
         setOrders(data);
       }
     } catch (e) {
-      console.error("[admin-printing] Unexpected error loading orders:", e);
+      logger.error({ err: e }, "[admin-printing] Unexpected error loading orders");
     }
     setLoading(false);
   }
@@ -167,7 +168,7 @@ export default function AdminPrintingPage() {
       const { data: order } = await supabase.from("orders").select("user_id").eq("id", orderId).single();
       const { error } = await supabase.from("orders").update({ status }).eq("id", orderId);
       if (error) {
-        console.error("[admin-printing] Failed to update order status:", error);
+        logger.error({ err: error }, "[admin-printing] Failed to update order status");
         useToastStore.getState().addToast("Failed to update status. Please try again.", "error");
         return;
       }
@@ -188,19 +189,19 @@ export default function AdminPrintingPage() {
               body: JSON.stringify({ user_id: order.user_id, ...notif, type: "order" }),
             });
           } catch (e) {
-            console.warn("[admin-printing] Failed to send notification:", e);
+            logger.warn({ err: e }, "[admin-printing] Failed to send notification");
           }
         }
         try {
           await fetch("/api/emails/order-status", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ orderId, status }) });
         } catch (e) {
-          console.warn("[admin-printing] Failed to send email:", e);
+          logger.warn({ err: e }, "[admin-printing] Failed to send email");
         }
       }
       loadOrders();
       setSelectedOrder(null);
     } catch (e) {
-      console.error("[admin-printing] Unexpected error updating status:", e);
+      logger.error({ err: e }, "[admin-printing] Unexpected error updating status");
       useToastStore.getState().addToast("An unexpected error occurred. Please try again.", "error");
     }
   }
@@ -783,7 +784,7 @@ export default function AdminPrintingPage() {
                         loadOrders();
                         setSelectedOrder(null);
                       } catch (e) {
-                        console.error("[admin-printing] Refund failed:", e);
+                        logger.error({ err: e }, "[admin-printing] Refund failed");
                         useToastStore.getState().addToast("Refund failed. Please try again.", "error");
                       }
                     }}

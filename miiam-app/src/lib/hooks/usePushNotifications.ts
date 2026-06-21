@@ -3,6 +3,7 @@
 import { useState, useCallback, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useNotificationStore } from "@/lib/store/notificationStore";
+import logger from "@/lib/logger";
 
 export function usePushNotifications(userId?: string) {
   const [isLoading, setIsLoading] = useState(false);
@@ -38,7 +39,7 @@ export function usePushNotifications(userId?: string) {
 
       const VAPID_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
       if (!VAPID_PUBLIC_KEY) {
-        console.warn("VAPID public key not configured, push subscription skipped");
+        logger.warn("VAPID public key not configured, push subscription skipped");
         setIsLoading(false);
         return;
       }
@@ -56,7 +57,7 @@ export function usePushNotifications(userId?: string) {
 
       setIsLoading(false);
     } catch (err) {
-      console.error("Notification setup error:", err);
+      logger.error({ err }, "Notification setup error");
       setError("Failed to setup notifications");
       setIsLoading(false);
     }
@@ -78,7 +79,7 @@ export function usePushNotifications(userId?: string) {
       });
       return response.json();
     } catch (err) {
-      console.error("Failed to send notification:", err);
+      logger.error({ err }, "Failed to send notification");
     }
   }, [userId]);
 
@@ -89,7 +90,7 @@ export function usePushNotifications(userId?: string) {
       const data = await response.json();
       return data.notifications || [];
     } catch (err) {
-      console.error("Failed to fetch notifications:", err);
+      logger.error({ err }, "Failed to fetch notifications");
       return [];
     }
   }, [userId]);

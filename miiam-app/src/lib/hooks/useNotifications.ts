@@ -7,6 +7,7 @@ import {
   subscribe,
   notify,
 } from "@/lib/store/notificationStore";
+import logger from "@/lib/logger";
 
 export function useNotifications() {
   const supabase = useMemo(() => createClient(), []);
@@ -85,7 +86,7 @@ export function useNotifications() {
       );
 
       if (error) {
-        console.error("Failed to send push notification:", error);
+        logger.error({ err: error }, "Failed to send push notification");
       }
 
       return result;
@@ -110,7 +111,7 @@ export function useNotifications() {
       });
 
       if (error) {
-        console.error("Failed to schedule notification:", error);
+        logger.error({ err: error }, "Failed to schedule notification");
       }
     },
     [supabase]
