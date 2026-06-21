@@ -138,28 +138,27 @@ export default function HomePage() {
       ]);
 
       const { user } = userResult.data;
-      if (user) {
-        const [profileResult, notifsResult] = await Promise.all([
-          supabase.from("profiles")
-            .select("full_name")
-            .eq("id", user.id)
-            .maybeSingle(),
-          supabase.from("notifications")
-            .select("*")
-            .eq("user_id", user.id)
-            .order("created_at", { ascending: false })
-            .limit(20),
-        ]);
+      if (!user) return;
+      const [profileResult, notifsResult] = await Promise.all([
+        supabase.from("profiles")
+          .select("full_name")
+          .eq("id", user.id)
+          .maybeSingle(),
+        supabase.from("notifications")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false })
+          .limit(20),
+      ]);
 
-        setUser({
-          ...user,
-          profile_name: profileResult.data?.full_name || user.user_metadata?.full_name || user.user_metadata?.name
-        });
+      setUser({
+        ...user,
+        profile_name: profileResult.data?.full_name || user.user_metadata?.full_name || user.user_metadata?.name
+      });
 
-        if (notifsResult.data) {
-          setNotifications(notifsResult.data);
-          setUnreadCount(notifsResult.data.filter((n: HomeNotification) => !n.read).length);
-        }
+      if (notifsResult.data) {
+        setNotifications(notifsResult.data);
+        setUnreadCount(notifsResult.data.filter((n: HomeNotification) => !n.read).length);
       }
 
       if (!pincode) {
