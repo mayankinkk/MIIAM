@@ -9,6 +9,7 @@ import OrderChatOverlay from "@/components/order/OrderChatOverlay";
 import { useUnreadMessages } from "@/lib/hooks/useUnreadMessages";
 
 type FilterStatus = "all" | "active" | "delivered" | "cancelled";
+type TabType = "orders" | "services";
 
 export default function VendorOrders() {
   const supabase = useMemo(() => createClient(), []);
@@ -23,6 +24,9 @@ export default function VendorOrders() {
   const [vendorUserId, setVendorUserId] = useState<string>("");
   const [showRejectModal, setShowRejectModal] = useState<string | null>(null);
   const [rejectReason, setRejectReason] = useState("");
+  const [activeTab, setActiveTab] = useState<TabType>("orders");
+  const [serviceBookings, setServiceBookings] = useState<{ id: string; status: string; scheduled_date: string | null; scheduled_time: string | null; sub_service: string | null; user_name: string | null; user_phone: string | null; amount: number | null }[]>([]);
+  const [serviceBookingsLoading, setServiceBookingsLoading] = useState(false);
   const rejectReasons = ["Out of stock", "Too busy", "Store closing", "Item unavailable", "Other"];
   const { unreadByOrder } = useUnreadMessages(vendorUserId);
 
@@ -44,6 +48,7 @@ export default function VendorOrders() {
     if (id) {
       setVendorId(id);
       loadOrders(id);
+      loadServiceBookings(id);
     }
     setLoading(false);
   }
@@ -59,6 +64,17 @@ export default function VendorOrders() {
       const names = await getVendorMenuItems(vId);
       setMenuItemNames(names);
     }
+  }
+
+  async function loadServiceBookings(vId: string) {
+    setServiceBookingsLoading(true);
+    const { data } = await supabase
+      .from("service_bookings")
+      .select("id, status, scheduled_date, scheduled_time, sub_service, user_name, user_phone, amount")
+      .eq("provider_id", vId)
+      .order("created_at", { ascending: false });
+    if (data) setServiceBookings(data);
+    setServiceBookingsLoading(false);
   }
 
   const updateStatus = async (orderId: string, status: OrderStatus, reason?: string) => {
@@ -103,6 +119,80 @@ export default function VendorOrders() {
         <p className="text-[var(--color-outline)] mt-1">View and manage all your orders</p>
       </div>
 
+      {/* Tabs */}
+      <div className="flex gap-2 border-b border-[var(--color-border-subtle)] pb-px">
+        {([
+          { key: "orders" as TabType, label: "Orders" },
+          { key: "services" as TabType, label: "Services" },
+        ]).map((tab) => (
+          <button
+            key={tab.key}
+            onClick={() => setActiveTab(tab.key)}
+            className={`px-5 py-3 text-sm font-bold rounded-t-xl transition-all ${
+              activeTab === tab.key
+                ? "bg-[var(--color-primary)] text-white"
+                : "text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container)]"
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Services Tab */}
+      {activeTab === "services" && (
+        <div className="space-y-4">
+          {serviceBookingsLoading ? (
+            <VendorTableSkeleton />
+          ) : serviceBookings.length === 0 ? (
+            <div className="bg-[var(--color-surface-container-lowest)] border-2 border-dashed border-[var(--color-border-subtle)] rounded-3xl p-8 md:p-16 text-center">
+              <span className="material-symbols-outlined text-6xl text-[var(--color-outline-variant)]/60 mb-4">event_available</span>
+              <p className="text-[var(--color-outline-variant)] font-medium text-lg">No service bookings</p>
+              <p className="text-[var(--color-outline-variant)] text-sm text-center">Service bookings will appear here</p>
+            </div>
+          ) : (
+            serviceBookings.map((sb) => (
+              <div
+                key={sb.id}
+                className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-sm border border-[var(--color-border-subtle)]"
+              >
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className="font-extrabold text-[var(--color-on-surface)]">#{sb.id.slice(0, 8).toUpperCase()}</span>
+                      <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase ${
+                        sb.status === "pending" ? "bg-amber-100 text-amber-700" :
+                        sb.status === "confirmed" ? "bg-blue-100 text-blue-700" :
+                        sb.status === "in_progress" ? "bg-indigo-100 text-indigo-700" :
+                        sb.status === "completed" ? "bg-green-100 text-green-700" :
+                        sb.status === "cancelled" ? "bg-red-100 text-red-700" :
+                        "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
+                      }`}>
+                        {sb.status.replace(/_/g, " ")}
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap gap-4 text-sm text-[var(--color-outline)]">
+                      {sb.sub_service && <span>{sb.sub_service}</span>}
+                      {sb.scheduled_date && (
+                        <span>{new Date(sb.scheduled_date + "T00:00:00").toLocaleDateString()} {sb.scheduled_time || ""}</span>
+                      )}
+                      {sb.user_name && <span>{sb.user_name}</span>}
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    {sb.amount != null && <p className="text-xl font-black text-[var(--color-primary)]">₹{sb.amount}</p>}
+                    {sb.user_phone && <p className="text-xs text-[var(--color-outline-variant)]">{sb.user_phone}</p>}
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      )}
+
+      {/* Orders Tab */}
+      {activeTab === "orders" && (
+        <>
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {([
@@ -296,6 +386,8 @@ export default function VendorOrders() {
           ))
         )}
       </div>
+        </>
+      )}
 
       {/* Reject Order Modal */}
       {showRejectModal && (

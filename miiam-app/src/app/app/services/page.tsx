@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense, useCallback, useMemo } from "react";
+import { useState, useEffect, Suspense, useCallback, useMemo, useRef } from "react";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -27,6 +27,8 @@ function BookingModal({ service, onClose }: { service: ServiceData; onClose: () 
   const prefilledAddress = locationStore.displayAddress !== "Select Location" ? locationStore.displayAddress : "";
   const [address, setAddress] = useState(prefilledAddress);
   const [phone, setPhone] = useState("");
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
 
   const dateOptions = useMemo(() => {
     return [0, 1, 2, 3, 4].map((d) => {
@@ -102,11 +104,11 @@ function BookingModal({ service, onClose }: { service: ServiceData; onClose: () 
   // Close on Escape
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") onCloseRef.current();
     };
     document.addEventListener("keydown", handleKey);
     return () => document.removeEventListener("keydown", handleKey);
-  }, [onClose]);
+  }, []);
 
   return (
     <div

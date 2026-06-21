@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 interface TimeSlot {
@@ -24,6 +25,7 @@ export default function BookingCalendar({
   price,
   onBook 
 }: BookingCalendarProps) {
+  const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -169,14 +171,14 @@ export default function BookingCalendar({
 
       <div className="flex items-center justify-between mb-4">
         <button 
-          onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1))}
+          onClick={() => { setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1)); setSelectedDate(null); setSelectedTime(null); }}
           className="p-3 hover:bg-[var(--color-surface-container)] rounded-lg"
         >
           <span className="material-symbols-outlined">chevron_left</span>
         </button>
         <span className="font-bold text-[var(--color-on-surface)]">{monthName}</span>
         <button 
-          onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1))}
+          onClick={() => { setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1)); setSelectedDate(null); setSelectedTime(null); }}
           className="p-3 hover:bg-[var(--color-surface-container)] rounded-lg"
         >
           <span className="material-symbols-outlined">chevron_right</span>
@@ -294,6 +296,12 @@ export default function BookingCalendar({
             <p className="text-[var(--color-on-surface-variant)] mb-6">
               Your appointment for {serviceName} on {new Date(selectedDate!).toLocaleDateString()} at {selectedTime} has been confirmed.
             </p>
+            <button
+              onClick={() => { setShowConfirmation(false); router.push("/app/bookings"); }}
+              className="w-full py-4 bg-[var(--color-surface-container)] text-[var(--color-on-surface)] rounded-xl font-bold mb-2"
+            >
+              View Booking
+            </button>
             <button
               onClick={() => setShowConfirmation(false)}
               className="w-full py-4 bg-[var(--color-primary)] text-white rounded-xl font-bold"

@@ -102,9 +102,9 @@ export default function BookingTrackPage() {
         style={{ paddingTop: "calc(0.75rem + env(safe-area-inset-top, 0px))" }}
       >
         <div className="flex items-center gap-3">
-          <Link href="/app/bookings" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-all" aria-label="Back">
+          <button onClick={() => router.back()} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-all" aria-label="Back">
             <span className="material-symbols-outlined text-on-surface text-[22px]">arrow_back</span>
-          </Link>
+          </button>
           <span className="text-xl font-extrabold tracking-tighter text-primary">MIIAM</span>
         </div>
         <span className="text-on-surface font-semibold text-sm hidden md:block">Track Service</span>
