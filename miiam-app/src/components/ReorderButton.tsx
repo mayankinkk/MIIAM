@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/lib/store/cartStore";
@@ -29,7 +29,7 @@ interface ReorderButtonProps {
 export function ReorderButton({ order }: ReorderButtonProps) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const { addItem } = useCartStore();
   const { addToast } = useToastStore();
 

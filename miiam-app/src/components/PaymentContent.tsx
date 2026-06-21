@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useTranslation } from "@/lib/i18n/useTranslation";
@@ -8,7 +8,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function PaymentContent() {
   const { t } = useTranslation();
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [paymentMethods, setPaymentMethods] = useState<{ id: string; type: string; last4: string; brand: string; isDefault: boolean }[]>([]);
   const [loading, setLoading] = useState(true);
 
