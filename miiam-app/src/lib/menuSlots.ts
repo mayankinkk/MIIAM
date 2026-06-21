@@ -11,7 +11,7 @@ export function getCurrentMenuSlot(): MenuSlot {
   if (hour >= SLOT_RANGES.breakfast.start && hour < SLOT_RANGES.breakfast.end) return "breakfast";
   if (hour >= SLOT_RANGES.lunch.start && hour < SLOT_RANGES.lunch.end) return "lunch";
   if (hour >= SLOT_RANGES.dinner.start && hour < SLOT_RANGES.dinner.end) return "dinner";
-  return "breakfast";
+  return "all_day";
 }
 
 export function getSlotLabel(slot: MenuSlot): string {
