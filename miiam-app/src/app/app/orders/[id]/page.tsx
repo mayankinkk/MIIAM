@@ -193,7 +193,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
   }
 
   const steps = pageOrder?.vendor_id === PRINTING_VENDOR_ID ? getPrintSteps(t, pageOrder as unknown as OrderTimestamps) : getFoodSteps(t, pageOrder as unknown as OrderTimestamps);
-  const currentStepIndex = steps.findIndex((s) => s.key === pageOrder.status);
+  const currentStepIndex = Math.max(0, steps.findIndex((s) => s.key === pageOrder.status));
 
   return (
     <div className="min-h-screen bg-surface dark:bg-[var(--color-surface)] overflow-x-hidden">
