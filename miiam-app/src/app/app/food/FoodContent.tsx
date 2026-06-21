@@ -470,34 +470,35 @@ export default function FoodPageContent() {
       await withRetry(async () => {
         const heroRes = await supabase.from("page_assets").select("*").eq("section", "food_hero").eq("is_active", true).maybeSingle();
 
-        let query = supabase
+        const { data: vendorsData, error: vendorsError } = await supabase
           .from("vendors")
           .select("id, shop_name, name, cuisine, image_url, cover_image_url, rating, delivery_time_min, delivery_time_max, delivery_charge, min_order_amount, is_featured, is_new, status, type, pincode, city, opening_hours, created_at")
-          .in("type", ["food", "restaurant"])
-          .eq("status", "active");
-
-        if (pincode) {
-          query = query.eq("pincode", pincode);
-        } else if (city) {
-          query = query.ilike("city", city);
-        }
-
-        query = query.order("created_at", { ascending: false });
-        const { data: vendorsData, error: vendorsError } = await query;
+          .order("created_at", { ascending: false })
+          .limit(100);
 
         if (vendorsError) {
           console.error("Vendors query failed:", vendorsError.message);
           throw new Error(vendorsError.message);
         }
 
-        const filteredVendors = vendorsData || [];
+        const allVendors = vendorsData || [];
+        const filteredVendors = allVendors.filter(
+          (v: { type?: string; status?: string }) =>
+            (v.type === "food" || v.type === "restaurant") && v.status === "active"
+        );
 
-        if (filteredVendors.length === 0) {
+        const locationFiltered = pincode
+          ? filteredVendors.filter((v: { pincode?: string }) => v.pincode === pincode)
+          : city
+            ? filteredVendors.filter((v: { city?: string }) => v.city?.toLowerCase() === city.toLowerCase())
+            : filteredVendors;
+
+        if (locationFiltered.length === 0) {
           setNoLocalVendors(true);
         }
 
-        setRestaurants(filteredVendors);
-        const vendorIds = filteredVendors.map((v: { id: string }) => v.id);
+        setRestaurants(locationFiltered);
+        const vendorIds = locationFiltered.map((v: { id: string }) => v.id);
         if (vendorIds.length > 0) {
           const { data: itemsData, error: itemsError } = await supabase.from("menu_items").select("id, vendor_id, name, price, category, image_url, is_veg, is_available, description").in("vendor_id", vendorIds).order("name");
           if (itemsError) {
