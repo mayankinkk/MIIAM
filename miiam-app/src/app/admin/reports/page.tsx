@@ -58,7 +58,7 @@ export default function ReportsPage() {
       if (reportType === "orders") {
         const { data } = await supabase
           .from("orders")
-          .select("id, status, total_amount, placed_at, vendor:vendors(name), user:user_id(full_name, phone)")
+          .select("id, status, total_amount, placed_at, vendor:vendors(name), user:profiles(full_name, phone)")
           .gte("placed_at", startIso)
           .lte("placed_at", endIso)
           .order("placed_at", { ascending: false })
