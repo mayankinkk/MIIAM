@@ -28,6 +28,8 @@ const bn: Translations = {
     close: "বন্ধ",
     submit: "জমা দিন",
     done: "হয়েছে",
+    pause: "বিরতি",
+    resume: "পুনরায় শুরু করুন",
     next: "পরবর্তী",
     ago: "আগে",
     today: "আজ",

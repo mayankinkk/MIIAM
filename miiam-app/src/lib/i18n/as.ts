@@ -28,6 +28,8 @@ const as: Translations = {
     close: "বন্ধ",
     submit: "দাখিল কৰক",
     done: "হৈছে",
+    pause: "বিৰতি",
+    resume: "পুনৰ আৰম্ভ কৰক",
     next: "পৰৱৰ্তী",
     ago: "আগতে",
     today: "আজি",

@@ -26,6 +26,8 @@ const en = {
     close: "Close",
     submit: "Submit",
     done: "Done",
+    pause: "Pause",
+    resume: "Resume",
     next: "Next",
     ago: "ago",
     today: "Today",

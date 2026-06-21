@@ -28,6 +28,8 @@ const hi: Translations = {
     close: "बंद करें",
     submit: "जमा करें",
     done: "हो गया",
+    pause: "रोकें",
+    resume: "फिर से शुरू करें",
     next: "अगला",
     ago: "पहले",
     today: "आज",

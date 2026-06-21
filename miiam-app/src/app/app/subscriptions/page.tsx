@@ -220,7 +220,7 @@ export default function SubscriptionsPage() {
                             : "bg-green-50 text-green-700 border border-green-300 hover:bg-green-100"
                         }`}
                       >
-                        {schedule.status === "active" ? t.common.cancel : t.common.done}
+                        {schedule.status === "active" ? t.common.pause : t.common.resume}
                       </button>
                     )}
                     <button
