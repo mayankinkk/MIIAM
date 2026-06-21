@@ -20,6 +20,14 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
 import { PressScale, CartBounce } from "@/components/ui/AnimationWrappers";
 import { NetworkError } from "@/components/ui/EmptyStates";
+import { withRetry } from "@/lib/retry";
+
+function isNetworkError(err: unknown): boolean {
+  if (err instanceof TypeError && err.message.includes("fetch")) return true;
+  if (err instanceof DOMException && err.name === "AbortError") return true;
+  const msg = (err as { message?: string })?.message?.toLowerCase() ?? "";
+  return msg.includes("network") || msg.includes("failed to fetch") || msg.includes("load failed") || msg.includes("timeout");
+}
 
 interface FoodVendor {
   id: string;
@@ -459,52 +467,56 @@ export default function FoodPageContent() {
     setNoLocalVendors(false);
     setFetchError(null);
     try {
-      const heroRes = await supabase.from("page_assets").select("*").eq("section", "food_hero").eq("is_active", true).maybeSingle();
+      await withRetry(async () => {
+        const heroRes = await supabase.from("page_assets").select("*").eq("section", "food_hero").eq("is_active", true).maybeSingle();
 
-      let query = supabase
-        .from("vendors")
-        .select("id, shop_name, name, cuisine, image_url, cover_image_url, rating, delivery_time_min, delivery_time_max, delivery_charge, min_order_amount, is_featured, is_new, status, type, pincode, city, opening_hours, created_at")
-        .in("type", ["food", "restaurant"])
-        .eq("status", "active");
+        let query = supabase
+          .from("vendors")
+          .select("id, shop_name, name, cuisine, image_url, cover_image_url, rating, delivery_time_min, delivery_time_max, delivery_charge, min_order_amount, is_featured, is_new, status, type, pincode, city, opening_hours, created_at")
+          .in("type", ["food", "restaurant"])
+          .eq("status", "active");
 
-      if (pincode) {
-        query = query.eq("pincode", pincode);
-      } else if (city) {
-        query = query.ilike("city", city);
-      }
-
-      query = query.order("created_at", { ascending: false });
-      const { data: vendorsData, error: vendorsError } = await query;
-
-      if (vendorsError) {
-        console.error("Vendors query failed:", vendorsError.message);
-        setFetchError("Couldn't load restaurants. Please try again.");
-        setLoading(false);
-        return;
-      }
-
-      const filteredVendors = vendorsData || [];
-
-      if (filteredVendors.length === 0) {
-        setNoLocalVendors(true);
-      }
-
-      setRestaurants(filteredVendors);
-      const vendorIds = filteredVendors.map((v: { id: string }) => v.id);
-      if (vendorIds.length > 0) {
-        const { data: itemsData, error: itemsError } = await supabase.from("menu_items").select("id, vendor_id, name, price, category, image_url, is_veg, is_available, description").in("vendor_id", vendorIds).order("name");
-        if (itemsError) {
-          console.error("Menu items query failed:", itemsError.message);
+        if (pincode) {
+          query = query.eq("pincode", pincode);
+        } else if (city) {
+          query = query.ilike("city", city);
         }
-        setMenuItems(itemsData || []);
-      } else {
-        setMenuItems([]);
-      }
-      
-      if (heroRes?.data) setHeroAsset(heroRes.data);
+
+        query = query.order("created_at", { ascending: false });
+        const { data: vendorsData, error: vendorsError } = await query;
+
+        if (vendorsError) {
+          console.error("Vendors query failed:", vendorsError.message);
+          throw new Error(vendorsError.message);
+        }
+
+        const filteredVendors = vendorsData || [];
+
+        if (filteredVendors.length === 0) {
+          setNoLocalVendors(true);
+        }
+
+        setRestaurants(filteredVendors);
+        const vendorIds = filteredVendors.map((v: { id: string }) => v.id);
+        if (vendorIds.length > 0) {
+          const { data: itemsData, error: itemsError } = await supabase.from("menu_items").select("id, vendor_id, name, price, category, image_url, is_veg, is_available, description").in("vendor_id", vendorIds).order("name");
+          if (itemsError) {
+            console.error("Menu items query failed:", itemsError.message);
+          }
+          setMenuItems(itemsData || []);
+        } else {
+          setMenuItems([]);
+        }
+        
+        if (heroRes?.data) setHeroAsset(heroRes.data);
+      });
     } catch (err) {
       console.error("Failed to load food page:", err);
-      setFetchError("Couldn't load restaurants. Please try again.");
+      if (isNetworkError(err) || !navigator.onLine) {
+        setFetchError("network");
+      } else {
+        setFetchError("server");
+      }
     }
     setLoading(false);
   }, []);
@@ -529,9 +541,24 @@ export default function FoodPageContent() {
   }
 
   if (fetchError) {
+    if (fetchError === "network") {
+      return (
+        <div className="min-h-screen bg-surface flex items-center justify-center px-6">
+          <NetworkError onRetry={() => fetchData(userPincode, userCity)} />
+        </div>
+      );
+    }
     return (
       <div className="min-h-screen bg-surface flex items-center justify-center px-6">
-        <NetworkError onRetry={() => fetchData(userPincode, userCity)} />
+        <EmptyState
+          icon="error"
+          emoji="⚠️"
+          title="Something went wrong"
+          description="We couldn't load restaurants right now. Please try again."
+          actionLabel="Retry"
+          onAction={() => fetchData(userPincode, userCity)}
+          type="default"
+        />
       </div>
     );
   }
