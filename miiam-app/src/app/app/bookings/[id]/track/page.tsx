@@ -62,6 +62,12 @@ export default function BookingTrackPage() {
   const hasTechnician = !!booking.technician_name;
 
   const statusConfig: Record<string, { icon: string; iconColor: string; title: string; message: string }> = {
+    in_progress: {
+      icon: "pending",
+      iconColor: "text-blue-500",
+      title: "In Progress",
+      message: "Your service is currently in progress.",
+    },
     confirmed: {
       icon: "check_circle",
       iconColor: "text-blue-500",
@@ -142,12 +148,6 @@ export default function BookingTrackPage() {
             <span className={`material-symbols-outlined text-5xl ${activeConfig.iconColor} mb-3 block`}>{activeConfig.icon}</span>
             <h2 className="text-lg font-bold text-on-surface mb-2">{activeConfig.title}</h2>
             <p className="text-on-surface-variant text-sm">{activeConfig.message}</p>
-          </div>
-        ) : booking.status === "in_progress" ? (
-          <div className="bg-surface-container-lowest rounded-2xl p-6 text-center border border-outline-variant/10">
-            <span className="material-symbols-outlined text-5xl text-amber-500 mb-3 block">person_off</span>
-            <h2 className="text-lg font-bold text-on-surface mb-2">Technician Not Assigned</h2>
-            <p className="text-on-surface-variant text-sm">A service technician has not been assigned to your booking yet. You will be notified once one is assigned.</p>
           </div>
         ) : null}
 

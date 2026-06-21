@@ -96,6 +96,12 @@ export function usePlaceOrder(supabase: SupabaseClient) {
   }) => {
     if (!validateCheckout(deliveryAddress)) return false;
 
+    if (scheduledDate && !scheduledTime) {
+      logger.warn("Scheduled date provided without time — ignoring scheduled delivery");
+    } else if (!scheduledDate && scheduledTime) {
+      logger.warn("Scheduled time provided without date — ignoring scheduled delivery");
+    }
+
     const finalAddress = deliveryAddress
       ? [deliveryAddress.flat, deliveryAddress.street, deliveryAddress.city, deliveryAddress.state, deliveryAddress.postal_code].filter(Boolean).join(", ")
       : "452/A Kinetic Plaza, 5th Floor, Skyway Avenue, Tech District, Local Area, State 560001";

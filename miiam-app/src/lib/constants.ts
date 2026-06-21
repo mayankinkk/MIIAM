@@ -25,16 +25,6 @@ export const DELIVERY_FEE_DEFAULT = 0;
 export const SERVICE_CHARGE_DEFAULT = 8;
 export const TIP_OPTIONS = [0, 20, 30, 50, 100];
 
-// Services
-export const SERVICE_TIME_SLOTS = [
-  "07:00 AM - 09:00 AM",
-  "09:00 AM - 11:00 AM",
-  "11:00 AM - 01:00 PM",
-  "01:00 PM - 03:00 PM",
-  "03:00 PM - 05:00 PM",
-  "05:00 PM - 07:00 PM",
-];
-
 // Notifications
 export const NOTIFICATION_RETENTION_DAYS = 90;
 
