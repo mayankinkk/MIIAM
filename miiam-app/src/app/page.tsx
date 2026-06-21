@@ -66,7 +66,7 @@ export default function LandingPage() {
                   <div className="grid grid-cols-3 sm:grid-cols-6 gap-4">
                     {quickServices.map((svc) => (
                       <Link key={svc.label} href={svc.href} className="group flex flex-col items-center gap-2.5 py-3 rounded-2xl hover:bg-[var(--color-surface-subtle)] transition-colors duration-200">
-                        <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${svc.color} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                        <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${svc.color} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 overflow-hidden`}>
                           <span className="material-symbols-outlined text-white text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>{svc.icon}</span>
                         </div>
                         <span className="text-xs font-bold text-[var(--color-on-surface-variant)] group-hover:text-[var(--color-primary)] transition-colors">{svc.label}</span>
@@ -86,7 +86,7 @@ export default function LandingPage() {
                     { icon: "support_agent", label: t.featureSupport, sub: "Always available", color: "bg-green-50 text-green-600" },
                   ].map((item) => (
                     <div key={item.label} className="flex items-start gap-3 group">
-                      <div className={`${item.color} p-3 rounded-xl group-hover:scale-110 transition-transform duration-300`}>
+                      <div className={`${item.color} p-3 rounded-xl group-hover:scale-110 transition-transform duration-300 shrink-0`}>
                         <span className="material-symbols-outlined text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>{item.icon}</span>
                       </div>
                       <div>

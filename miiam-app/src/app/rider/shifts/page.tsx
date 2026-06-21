@@ -135,7 +135,7 @@ export default function RiderShifts() {
 
       {showAdd && (
         <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4" onClick={() => setShowAdd(false)}>
-          <div className="bg-white w-full max-w-sm rounded-3xl p-6" onClick={e => e.stopPropagation()}>
+          <div className="bg-white dark:bg-[var(--color-surface)] w-full max-w-sm rounded-3xl p-6" onClick={e => e.stopPropagation()}>
             <h2 className="text-lg font-extrabold text-[var(--color-on-surface)] mb-4">Add Shift</h2>
             <div className="space-y-4">
               <div>

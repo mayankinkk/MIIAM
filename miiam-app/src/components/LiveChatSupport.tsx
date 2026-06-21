@@ -76,7 +76,7 @@ export function LiveChatSupport({ orderId, onClose }: LiveChatProps) {
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-4">
-      <div className="bg-white w-full max-w-md rounded-2xl overflow-hidden flex flex-col max-h-[80vh]">
+      <div className="bg-white dark:bg-[var(--color-surface)] w-full max-w-md rounded-2xl overflow-hidden flex flex-col max-h-[80vh]">
         <div className="bg-[var(--color-primary)] text-white p-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
@@ -146,7 +146,7 @@ export function LiveChatSupport({ orderId, onClose }: LiveChatProps) {
           </div>
         )}
 
-        <div className="p-4 border-t bg-white">
+        <div className="p-4 border-t bg-white dark:bg-[var(--color-surface)]">
           <div className="flex gap-2">
             <input
               type="text"
@@ -181,7 +181,7 @@ export function SupportButton() {
         style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}
       >
         <span className="material-symbols-outlined text-2xl">chat</span>
-        <span className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white" />
+        <span className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white dark:border-[var(--color-surface)]" />
       </button>
       {showChat && <LiveChatSupport onClose={() => setShowChat(false)} />}
     </>

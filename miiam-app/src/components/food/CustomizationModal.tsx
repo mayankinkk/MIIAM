@@ -124,7 +124,7 @@ export default function CustomizationModal({ item, vendor_id, vendor_name, onClo
 
       <div className="relative w-full max-w-sm bg-[var(--color-surface-container-lowest)] rounded-t-3xl sm:rounded-3xl flex flex-col animate-slide-up">
         {/* Header */}
-        <div className="bg-white z-10 border-b border-[var(--color-border-subtle)] px-6 py-4 flex items-center justify-between rounded-t-3xl sm:rounded-t-3xl">
+        <div className="bg-white dark:bg-[var(--color-surface)] z-10 border-b border-[var(--color-border-subtle)] px-6 py-4 flex items-center justify-between rounded-t-3xl sm:rounded-t-3xl">
           <div>
             <h2 className="text-lg font-extrabold text-[var(--color-on-surface)]">Add to Cart</h2>
             <p className="text-sm text-[var(--color-outline)]">{item.name}</p>

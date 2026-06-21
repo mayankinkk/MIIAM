@@ -86,7 +86,7 @@ export default function RiderApplyPage() {
 
   return (
     <div className="min-h-screen bg-[var(--color-surface-container-lowest)] flex flex-col md:flex-row">
-      <div className="md:w-1/2 p-12 md:p-24 flex flex-col justify-center relative bg-white">
+      <div className="md:w-1/2 p-12 md:p-24 flex flex-col justify-center relative bg-white dark:bg-[var(--color-surface)]">
         <Link href="/" className="absolute top-8 left-8 text-3xl font-black text-[var(--color-primary)] tracking-tighter">
           MIIAM
         </Link>

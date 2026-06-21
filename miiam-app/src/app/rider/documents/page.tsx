@@ -268,7 +268,7 @@ export default function RiderDocumentsPage() {
 
       {showUploadModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center">
-          <div className="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl p-6 max-h-[90vh] overflow-y-auto">
+          <div className="bg-white dark:bg-[var(--color-surface)] w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl p-6 max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-xl font-black text-[var(--color-on-surface)]">Upload Document</h3>
               <button onClick={() => { setShowUploadModal(false); resetForm(); }} className="p-2" aria-label="Close">

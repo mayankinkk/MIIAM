@@ -52,7 +52,7 @@ export default function AboutUsPage() {
       </section>
 
       {/* Platform Section */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-white dark:bg-[var(--color-surface)]">
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             {mission.map((item) => (
