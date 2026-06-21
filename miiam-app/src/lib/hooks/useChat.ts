@@ -84,6 +84,9 @@ export function useChat(
 
     return () => {
       supabase.removeChannel(channel);
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
       if (typingChannelRef.current) {
         supabase.removeChannel(typingChannelRef.current);
         typingChannelRef.current = null;
@@ -155,7 +158,7 @@ export function useChat(
       }
       
       typingTimeoutRef.current = setTimeout(async () => {
-        await channel.track({ user_id: currentUserId, typing: false });
+        await channel.track({ user_id: userIdRef.current, typing: false });
       }, 3000);
     } else {
       await channel.track({ user_id: currentUserId, typing: false });

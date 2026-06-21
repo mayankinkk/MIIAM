@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useCallback, useMemo } from "react";
+import { useEffect, useCallback, useMemo, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import {
   useNotificationStore,
@@ -31,13 +31,14 @@ export function useNotifications() {
     }
   }, [requestNotificationPermission]);
 
+  const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
+
   useEffect(() => {
     initializeNotifications();
 
-    let channel: ReturnType<typeof supabase.channel> | null = null;
     supabase.auth.getUser().then(({ data: { user } }: { data: { user: { id: string; email?: string } | null } }) => {
       if (!user) return;
-      channel = supabase
+      channelRef.current = supabase
         .channel(`notifications-${user.id}`)
         .on(
           "postgres_changes",
@@ -67,7 +68,7 @@ export function useNotifications() {
     });
 
     return () => {
-      if (channel) supabase.removeChannel(channel);
+      if (channelRef.current) supabase.removeChannel(channelRef.current);
     };
   }, [supabase, addNotification, initializeNotifications]);
 

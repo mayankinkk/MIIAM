@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 export function useUnreadMessages(userId: string) {
   const supabase = useMemo(() => createClient(), []);
   const [unreadByOrder, setUnreadByOrder] = useState<Record<string, number>>({});
   const [totalUnread, setTotalUnread] = useState(0);
+  const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
 
   useEffect(() => {
     if (!userId) return;
@@ -45,11 +46,10 @@ export function useUnreadMessages(userId: string) {
       return channel;
     }
 
-    let channel: ReturnType<typeof supabase.channel> | null = null;
-    setupChannel().then(ch => { channel = ch; });
+    setupChannel().then(ch => { channelRef.current = ch; });
 
     return () => {
-      if (channel) supabase.removeChannel(channel);
+      if (channelRef.current) supabase.removeChannel(channelRef.current);
     };
   }, [userId, supabase]);
 
