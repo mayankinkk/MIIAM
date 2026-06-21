@@ -75,11 +75,11 @@ export default function CartPage() {
       }
       const { data } = await supabase
         .from("vendors")
-        .select("id")
+        .select("id, delivery_charge")
         .in("id", vendorIds);
       if (data) {
-        const charges = data.reduce((acc: Record<string, number>, v: { id: string }) => {
-          acc[v.id] = 0;
+        const charges = data.reduce((acc: Record<string, number>, v: { id: string; delivery_charge: number | null }) => {
+          acc[v.id] = v.delivery_charge || 0;
           return acc;
         }, {} as Record<string, number>);
         setVendorDeliveryCharges(charges);
@@ -109,7 +109,7 @@ export default function CartPage() {
   const total = totalPrice();
 
   const vendorIds = Array.from(new Set(safeItems.map((i) => i.vendor_id).filter(Boolean)));
-  const totalDeliveryFee = 0;
+  const totalDeliveryFee = vendorIds.reduce((sum, vid) => sum + (vendorDeliveryCharges[vid] || 0), 0);
   const grandTotal = Math.max(0, total + totalDeliveryFee + (vendorIds.length * serviceCharge));
 
 
