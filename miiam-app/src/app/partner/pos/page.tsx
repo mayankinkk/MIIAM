@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { getVendorIdForUser, getVendorMenuItems } from "@/lib/vendor";
+import logger from "@/lib/logger";
 import type { Order, OrderStatus } from "@/lib/types";
 
 export default function PartnerPOS() {
@@ -132,8 +133,8 @@ export default function PartnerPOS() {
         }
       )
       .subscribe((status: string) => {
-        if (status === "SUBSCRIBED") console.log("POS channel subscribed");
-        else if (status === "CHANNEL_ERROR") console.error("POS channel error");
+        if (status === "SUBSCRIBED") logger.debug("POS channel subscribed");
+        else if (status === "CHANNEL_ERROR") logger.error("POS channel error");
       });
     return channel;
   }

@@ -55,7 +55,7 @@ function AddressCard({ address, onSelect, onEdit, onDelete, onSetDefault }: Addr
 
       <div className="p-4">
         {/* Map Preview */}
-        <div className="relative mb-4 rounded-xl overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 h-32 group-hover:shadow-md transition-shadow">
+        <div className="relative mb-4 rounded-xl overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 dark:from-gray-800 dark:to-gray-700 h-32 group-hover:shadow-md transition-shadow">
           {/* Static map placeholder with location marker */}
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="absolute inset-0 opacity-30">
@@ -135,7 +135,7 @@ function AddressCard({ address, onSelect, onEdit, onDelete, onSetDefault }: Addr
         {!address.is_default && (
           <button
             onClick={onSetDefault}
-            className="flex-1 py-3 text-blue-600 font-bold text-sm border-r border-[var(--color-border-subtle)] hover:bg-blue-50 transition-colors"
+            className="flex-1 py-3 text-blue-600 dark:text-blue-400 font-bold text-sm border-r border-[var(--color-border-subtle)] hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"
           >
             Set as Default
           </button>

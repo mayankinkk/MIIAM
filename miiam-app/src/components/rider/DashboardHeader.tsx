@@ -51,8 +51,8 @@ export default function DashboardHeader({ isOnline, streakDays, onToggleOnline, 
             </span>
           )}
         </button>
-        <Link href="/rider/analytics" className="p-2 bg-blue-50 rounded-full" title={t.rider.header.analytics}>
-          <span className="material-symbols-outlined text-blue-600">insights</span>
+        <Link href="/rider/analytics" className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-full" title={t.rider.header.analytics}>
+          <span className="material-symbols-outlined text-blue-600 dark:text-blue-400">insights</span>
         </Link>
         <Link href="/rider/account" className="p-2">
           <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">person</span>

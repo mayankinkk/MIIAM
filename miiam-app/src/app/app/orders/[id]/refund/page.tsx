@@ -4,6 +4,7 @@ import { use, useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
+import logger from "@/lib/logger";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import { ListSkeleton } from "@/components/Skeleton";
@@ -63,7 +64,7 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
           }
         }
       } catch (err) {
-        console.error("Failed to load order:", err);
+        logger.error({ err }, "Failed to load order");
       }
       setLoading(false);
     }
@@ -90,7 +91,7 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
       setShowCancelForm(false);
       setShowRefundSuccess(true);
     } catch (error) {
-      console.error("Failed to cancel order:", error);
+      logger.error({ err: error instanceof Error ? error : new Error(String(error)) }, "Failed to cancel order");
       addToast(t.refund.refundFailed, "error");
     } finally {
       setCancelling(false);
@@ -136,13 +137,13 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
       <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'My Orders', href: '/app/orders' }, { label: 'Refund' }]} />
       <main className="pt-24 pb-12 px-6 max-w-lg mx-auto">
         {showRefundSuccess && (
-          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl flex items-center gap-3">
-            <span className="material-symbols-outlined text-green-600" style={{ fontVariationSettings: "'FILL' 1" }}>
+          <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl flex items-center gap-3">
+            <span className="material-symbols-outlined text-green-600 dark:text-green-400" style={{ fontVariationSettings: "'FILL' 1" }}>
               check_circle
             </span>
             <div>
-              <p className="font-bold text-green-700">{t.refund.cancellationSubmitted}</p>
-              <p className="text-sm text-green-600">{t.refund.refundBeingProcessed}</p>
+              <p className="font-bold text-green-700 dark:text-green-300">{t.refund.cancellationSubmitted}</p>
+              <p className="text-sm text-green-600 dark:text-green-400">{t.refund.refundBeingProcessed}</p>
             </div>
           </div>
         )}
@@ -292,12 +293,12 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
           </div>
         </div>
 
-        <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+        <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl">
           <div className="flex items-start gap-3">
-            <span className="material-symbols-outlined text-blue-600">info</span>
+            <span className="material-symbols-outlined text-blue-600 dark:text-blue-400">info</span>
             <div>
-              <p className="font-bold text-blue-700">{t.refund.refundTimeline}</p>
-              <p className="text-sm text-blue-600">
+              <p className="font-bold text-blue-700 dark:text-blue-300">{t.refund.refundTimeline}</p>
+              <p className="text-sm text-blue-600 dark:text-blue-400">
                 {t.refund.refundTimelineDesc}
               </p>
             </div>

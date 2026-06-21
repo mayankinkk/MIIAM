@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { useToastStore } from "@/lib/store/toastStore";
 import { SERVICE_TIME_SLOTS } from "@/lib/data/services";
+import logger from "@/lib/logger";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 
@@ -95,7 +96,7 @@ export default function BookingsPage() {
 
         setBookings(data || []);
       } catch (err) {
-        console.error("Failed to load bookings:", err);
+        logger.error({ err }, "Failed to load bookings");
       } finally {
         setLoading(false);
       }

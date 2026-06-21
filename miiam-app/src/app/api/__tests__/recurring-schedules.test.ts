@@ -34,7 +34,7 @@ describe("Recurring schedules API", () => {
     mockSupabase.auth.getUser.mockResolvedValue({ data: { user: null }, error: { message: "No user" } });
     const { GET } = await import("@/app/api/recurring-schedules/route");
     const req = new NextRequest("http://localhost:3000/api/recurring-schedules");
-    const res = await GET(req);
+    const res = await GET(req, {});
     expect(res.status).toBe(401);
   });
 
@@ -45,7 +45,7 @@ describe("Recurring schedules API", () => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ vendor_id: "v1" }),
-    }));
+    }), {});
     expect(res.status).toBe(400);
     const body = await res.json();
     expect(body.error).toBe("Missing required fields");
@@ -69,7 +69,7 @@ describe("Recurring schedules API", () => {
         payment_method: "card",
         items: [{ menu_item_id: "p1", name: "Apple", price: 50, quantity: 2 }],
       }),
-    }));
+    }), {});
     expect(res.status).toBe(201);
     const body = await res.json();
     expect(body.id).toBe("s1");

@@ -296,13 +296,13 @@ function ServiceDetailContent() {
               <span className="text-[10px] font-bold bg-primary/10 text-primary px-2 py-0.5 rounded-full">Most Popular</span>
             )}
             {service.badge === "bestSeller" && (
-              <span className="text-[10px] font-bold bg-green-50 text-green-600 px-2 py-0.5 rounded-full">Best Seller</span>
+              <span className="text-[10px] font-bold bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 px-2 py-0.5 rounded-full">Best Seller</span>
             )}
           </div>
         )}
 
         {error && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600" role="alert">
+          <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-sm text-red-600 dark:text-red-400" role="alert">
             {error}
           </div>
         )}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import logger from "@/lib/logger";
 
 export default function AdminPageError({
   error,
@@ -12,7 +13,7 @@ export default function AdminPageError({
   title?: string;
 }) {
   useEffect(() => {
-    console.error(`[${title}]`, error);
+    logger.error({ err: error instanceof Error ? error : new Error(String(error)), title }, `Page error: ${title}`);
   }, [error, title]);
 
   return (

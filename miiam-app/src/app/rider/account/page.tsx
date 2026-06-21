@@ -207,7 +207,7 @@ export default function RiderAccountPage() {
         <button
           onClick={toggleOnline}
           className={`w-full p-5 rounded-2xl shadow-lg flex items-center justify-between ${
-            isOnline ? "bg-green-500" : "bg-slate-300"
+            isOnline ? "bg-green-500" : "bg-slate-300 dark:bg-gray-600"
           } text-white`}
         >
           <div className="flex items-center gap-3">
@@ -392,7 +392,7 @@ export default function RiderAccountPage() {
                   key={shift.id}
                   onClick={() => toggleShift(shift.id)}
                   className={`w-full p-4 rounded-xl flex items-center justify-between border-2 transition-all ${
-                    shift.isSelected ? "border-brand-secondary bg-blue-50" : "border-[var(--color-border-subtle)]"
+                    shift.isSelected ? "border-brand-secondary bg-blue-50 dark:bg-blue-900/20" : "border-[var(--color-border-subtle)]"
                   }`}
                 >
                   <div className="text-left">
@@ -408,8 +408,8 @@ export default function RiderAccountPage() {
               ))}
             </div>
 
-            <div className="bg-amber-50 p-3 rounded-xl mb-4">
-              <p className="text-xs text-amber-700">💡 Tip: During selected shifts, you'll receive priority order notifications</p>
+            <div className="bg-amber-50 dark:bg-amber-900/20 p-3 rounded-xl mb-4">
+              <p className="text-xs text-amber-700 dark:text-amber-300">💡 Tip: During selected shifts, you'll receive priority order notifications</p>
             </div>
 
             <button 

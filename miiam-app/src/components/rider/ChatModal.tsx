@@ -127,7 +127,7 @@ export default function ChatModal({
           <div className="flex items-center gap-1">
             <button
               onClick={onCall}
-              className="p-2 text-green-500 hover:bg-green-50 rounded-full"
+              className="p-2 text-green-500 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/30 rounded-full"
               title="Call Customer"
             >
               <span className="material-symbols-outlined">call</span>

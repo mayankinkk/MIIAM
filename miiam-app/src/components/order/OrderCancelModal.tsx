@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "@/lib/i18n/useTranslation";
+import { useToastStore } from "@/lib/store/toastStore";
 
 interface OrderCancelModalProps {
   open: boolean;
@@ -21,8 +22,18 @@ const cancelReasons = [
 
 export default function OrderCancelModal({ open, onClose, onCancel }: OrderCancelModalProps) {
   const { t } = useTranslation();
+  const { addToast } = useToastStore();
   const [cancelReason, setCancelReason] = useState("");
   const [cancelOtherReason, setCancelOtherReason] = useState("");
+
+  useEffect(() => {
+    if (!open) return;
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [open, onClose]);
 
   const handleCancelOrder = (reason: string) => {
     onCancel(reason);
@@ -34,7 +45,10 @@ export default function OrderCancelModal({ open, onClose, onCancel }: OrderCance
     const finalReason = cancelReason === "Other" && cancelOtherReason.trim()
       ? cancelOtherReason.trim()
       : cancelReason;
-    if (!finalReason) return;
+    if (!finalReason) {
+      addToast(t.refund.selectReason, "error");
+      return;
+    }
     handleCancelOrder(finalReason);
   };
 
@@ -42,10 +56,10 @@ export default function OrderCancelModal({ open, onClose, onCancel }: OrderCance
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
-      <div className="bg-surface-container-lowest rounded-2xl w-full max-w-md p-4 sm:p-6">
+      <div role="dialog" aria-modal="true" aria-labelledby="cancel-modal-title" className="bg-surface-container-lowest rounded-2xl w-full max-w-md p-4 sm:p-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-black text-on-surface">{t.orders.cancelOrder}</h2>
-          <button onClick={onClose} className="w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center">
+          <h2 id="cancel-modal-title" className="text-xl font-black text-on-surface">{t.orders.cancelOrder}</h2>
+          <button onClick={onClose} className="w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center" aria-label="Close">
             <span className="material-symbols-outlined">close</span>
           </button>
         </div>
@@ -63,7 +77,7 @@ export default function OrderCancelModal({ open, onClose, onCancel }: OrderCance
                 }}
                 className={`w-full text-left p-3 rounded-xl font-medium text-sm transition-all ${
                   cancelReason === reason
-                    ? "bg-red-50 text-red-700 border border-red-200"
+                    ? "bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800"
                     : "bg-[var(--color-surface-subtle)] text-[var(--color-on-surface)] hover:bg-surface-container-high"
                 }`}
               >
@@ -76,6 +90,7 @@ export default function OrderCancelModal({ open, onClose, onCancel }: OrderCance
                     value={cancelOtherReason}
                     onChange={(e) => setCancelOtherReason(e.target.value)}
                     placeholder="Describe your reason..."
+                    aria-label={t.orders.describeReason}
                     className="flex-1 bg-[var(--color-surface-subtle)] border border-outline-variant/20 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-300"
                     autoFocus
                   />

@@ -273,7 +273,7 @@ export default function ServicesLandingPage() {
         <div className="max-w-4xl mx-auto">
           <div className="relative p-12 rounded-3xl overflow-hidden text-center">
             {/* Background */}
-            <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-primary)] to-[#8a0014]" />
+            <div className="absolute inset-0 bg-gradient-to-r from-primary to-primary-dim" />
             <div className="absolute inset-0 opacity-20">
               <div className="absolute top-0 right-0 w-64 h-64 border border-white/20 rounded-full" />
               <div className="absolute bottom-0 left-0 w-48 h-48 border border-white/20 rounded-full" />

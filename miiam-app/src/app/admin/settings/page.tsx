@@ -3,6 +3,7 @@
 import { useMemo, useState, useEffect, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
+import logger from "@/lib/logger";
 
 interface Settings {
   [key: string]: string | undefined;
@@ -130,7 +131,7 @@ export default function SettingsPage() {
         setSettings(data.settings);
       }
     } catch (e) {
-      console.error("Failed to load settings:", e);
+      logger.error({ err: e instanceof Error ? e : new Error(String(e)) }, "Failed to load settings");
     }
     setLoading(false);
   }
@@ -149,7 +150,7 @@ export default function SettingsPage() {
         setTimeout(() => setSaved(false), 3000);
       }
     } catch (e) {
-      console.error("Failed to save settings:", e);
+      logger.error({ err: e instanceof Error ? e : new Error(String(e)) }, "Failed to save settings");
     }
     setLoading(false);
   }

@@ -19,7 +19,7 @@ export default function CheckoutPaymentMethods({ paymentMethod, onChange }: Chec
   return (
     <section className="bg-surface-container-lowest p-5 sm:p-8 rounded-2xl shadow-sm">
       <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
-        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#c4d0ff] flex items-center justify-center text-[#003dac] shrink-0">
+        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container shrink-0">
           <span className="material-symbols-outlined">payments</span>
         </div>
         <h2 className="text-xl sm:text-2xl font-bold">{t.checkout.paymentMethod}</h2>

@@ -8,6 +8,7 @@ import type { User } from "@supabase/supabase-js";
 import type { Profile } from "@/lib/types";
 import { useHapticStore } from "@/components/HapticFeedback";
 import { useTranslation } from "@/lib/i18n/useTranslation";
+import logger from "@/lib/logger";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
 
@@ -66,7 +67,7 @@ export default function EnhancedProfilePage() {
           });
         }
       } catch (err) {
-        console.error("Failed to load profile:", err);
+        logger.error({ err }, "Failed to load profile");
       }
     }
     loadUserAndProfile();

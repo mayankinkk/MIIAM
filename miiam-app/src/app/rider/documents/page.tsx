@@ -163,11 +163,11 @@ export default function RiderDocumentsPage() {
 
       <main className="p-6 space-y-6 pb-32">
         {success && (
-          <div className="bg-green-50 border border-green-200 p-4 rounded-xl flex items-center gap-3">
-            <span className="material-symbols-outlined text-green-600">check_circle</span>
-            <p className="text-sm text-green-700 flex-1">{success}</p>
+          <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 p-4 rounded-xl flex items-center gap-3">
+            <span className="material-symbols-outlined text-green-600 dark:text-green-400">check_circle</span>
+            <p className="text-sm text-green-700 dark:text-green-300 flex-1">{success}</p>
             <button onClick={() => setSuccess(null)} aria-label="Dismiss">
-              <span className="material-symbols-outlined text-green-600">close</span>
+              <span className="material-symbols-outlined text-green-600 dark:text-green-400">close</span>
             </button>
           </div>
         )}
@@ -239,12 +239,12 @@ export default function RiderDocumentsPage() {
           </div>
         )}
 
-        <div className="bg-amber-50 p-4 rounded-2xl border border-amber-100">
+        <div className="bg-amber-50 dark:bg-amber-900/20 p-4 rounded-2xl border border-amber-100 dark:border-amber-800">
           <div className="flex items-start gap-3">
-            <span className="material-symbols-outlined text-amber-600">info</span>
+            <span className="material-symbols-outlined text-amber-600 dark:text-amber-400">info</span>
             <div>
-              <p className="font-bold text-amber-800 text-sm">Document Verification</p>
-              <p className="text-xs text-amber-600 mt-1">
+              <p className="font-bold text-amber-800 dark:text-amber-200 text-sm">Document Verification</p>
+              <p className="text-xs text-amber-600 dark:text-amber-400 mt-1">
                 Upload clear images. Documents are verified within 24-48 hours. 
                 Keep documents updated before expiry to continue accepting orders.
               </p>
@@ -252,12 +252,12 @@ export default function RiderDocumentsPage() {
           </div>
         </div>
 
-        <div className="bg-blue-50 p-4 rounded-2xl border border-blue-100">
+        <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-2xl border border-blue-100 dark:border-blue-800">
           <div className="flex items-start gap-3">
-            <span className="material-symbols-outlined text-blue-600">security</span>
+            <span className="material-symbols-outlined text-blue-600 dark:text-blue-400">security</span>
             <div>
-              <p className="font-bold text-blue-800 text-sm">Your Data is Safe</p>
-              <p className="text-xs text-blue-600 mt-1">
+              <p className="font-bold text-blue-800 dark:text-blue-200 text-sm">Your Data is Safe</p>
+              <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
                 Documents are encrypted and stored securely. We comply with 
                 DPDP Act 2023 and never share your data with third parties.
               </p>

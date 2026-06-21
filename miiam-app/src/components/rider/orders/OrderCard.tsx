@@ -17,13 +17,13 @@ export default function OrderCard({ order, onAccept, isSelected, onToggleSelect 
     <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-lg border-2 border-transparent hover:border-brand-secondary/30">
       <div className="flex justify-between items-start mb-2">
         <div className="flex items-start gap-3">
-          <button onClick={onToggleSelect} className={`mt-1 w-10 h-10 rounded-full border-2 flex items-center justify-center ${isSelected ? "bg-brand-secondary border-brand-secondary" : "border-[var(--color-outline-variant)]"}`}>
+          <button onClick={onToggleSelect} className={`mt-1 w-10 h-10 rounded-full border-2 flex items-center justify-center ${isSelected ? "bg-brand-secondary border-brand-secondary" : "border-[var(--color-outline-variant)]"}`} aria-label="Select order" aria-pressed={isSelected}>
             {isSelected && <span className="material-symbols-outlined text-white text-sm">check</span>}
           </button>
           <div>
             <div className="flex items-center gap-2">
               <h3 className="font-bold text-[var(--color-on-surface)]">{order.vendor?.name}</h3>
-              <span className="text-[10px] font-bold text-brand-secondary bg-[#c4d0ff]/50 px-2 py-0.5 rounded-full">For {order.customer_name || "Customer"}</span>
+              <span className="text-[10px] font-bold text-brand-secondary bg-secondary-container/50 px-2 py-0.5 rounded-full">For {order.customer_name || "Customer"}</span>
             </div>
             <p className="text-xs text-[var(--color-outline-variant)] flex items-center gap-1">
               <span className="material-symbols-outlined text-xs">store</span>

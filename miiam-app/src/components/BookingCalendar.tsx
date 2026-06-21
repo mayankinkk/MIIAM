@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import logger from "@/lib/logger";
 
 interface TimeSlot {
   time: string;
@@ -53,7 +54,7 @@ export default function BookingCalendar({
       const data = await res.json();
       setAvailability(data.availability || {});
     } catch (err) {
-      console.error("Failed to load availability", err);
+      logger.error({ err }, "Failed to load availability");
     }
   }
 
@@ -66,7 +67,7 @@ export default function BookingCalendar({
       const data = await res.json();
       setSlots(data.slots || []);
     } catch (err) {
-      console.error("Failed to load slots", err);
+      logger.error({ err }, "Failed to load slots");
       setSlots(generateDefaultSlots());
     }
     setLoading(false);

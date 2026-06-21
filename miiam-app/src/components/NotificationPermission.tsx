@@ -4,6 +4,7 @@ import { useEffect, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import { notify } from "@/lib/store/notificationStore";
+import logger from "@/lib/logger";
 
 export default function NotificationPermission() {
   const supabase = useMemo(() => createClient(), []);
@@ -14,7 +15,7 @@ export default function NotificationPermission() {
     if (typeof window !== "undefined" && "Notification" in window) {
       if (Notification.permission === "default") {
         Notification.requestPermission().then((permission) => {
-          console.log("Notification permission:", permission);
+          logger.debug({ permission }, "Notification permission");
         });
       }
     }

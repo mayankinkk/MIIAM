@@ -8,6 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useToastStore } from "@/lib/store/toastStore";
 import { Skeleton, VendorCardSkeleton, SearchResultSkeleton } from "@/components/Skeleton";
+import logger from "@/lib/logger";
 import { EmptySearch } from "@/components/ui/EmptyStates";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
@@ -126,7 +127,7 @@ function SearchContent() {
         menuItems: (menuRes.data || []) as MenuResult[],
       });
     } catch (error) {
-      console.error("Search error:", error);
+      logger.error({ err: error instanceof Error ? error : new Error(String(error)) }, "Search error");
       addToast("Search failed. Please try again.", "error");
     } finally {
       setLoading(false);

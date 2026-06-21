@@ -68,7 +68,7 @@ export default function VendorReviews({ vendorId }: VendorReviewsProps) {
                     className="material-symbols-outlined text-sm"
                     style={{ 
                       fontVariationSettings: "'FILL' 1",
-                      color: star <= Math.round(avgRating) ? "#ffd700" : "#e5e7eb"
+                      color: star <= Math.round(avgRating) ? "var(--color-tertiary)" : "var(--color-border-subtle)"
                     }}
                   >
                     star
@@ -86,7 +86,7 @@ export default function VendorReviews({ vendorId }: VendorReviewsProps) {
                     <span className="text-xs font-bold text-[var(--color-on-surface-variant)] w-3">{star}</span>
                     <div className="flex-1 h-2 bg-[var(--color-surface-container-high)] rounded-full overflow-hidden">
                       <div 
-                        className="h-full bg-[#ffd700] rounded-full" 
+                        className="h-full bg-tertiary rounded-full" 
                         style={{ width: `${pct}%` }} 
                       />
                     </div>
@@ -114,7 +114,7 @@ export default function VendorReviews({ vendorId }: VendorReviewsProps) {
                             className="material-symbols-outlined text-xs"
                             style={{ 
                               fontVariationSettings: "'FILL' 1",
-                              color: star <= review.rating ? "#ffd700" : "#e5e7eb"
+                              color: star <= review.rating ? "var(--color-tertiary)" : "var(--color-border-subtle)"
                             }}
                           >
                             star
@@ -131,9 +131,9 @@ export default function VendorReviews({ vendorId }: VendorReviewsProps) {
                   <p className="text-sm text-[var(--color-on-surface-variant)] mt-2">{review.comment}</p>
                 )}
                 {review.vendor_reply && (
-                  <div className="mt-2 ml-2 pl-3 border-l-2 border-green-400 bg-green-50 p-2 rounded-r-lg">
-                    <p className="text-[10px] font-bold text-green-700 mb-0.5">Vendor reply</p>
-                    <p className="text-xs text-green-800">{review.vendor_reply}</p>
+                  <div className="mt-2 ml-2 pl-3 border-l-2 border-green-400 dark:border-green-600 bg-green-50 dark:bg-green-900/20 p-2 rounded-r-lg">
+                    <p className="text-[10px] font-bold text-green-700 dark:text-green-300 mb-0.5">Vendor reply</p>
+                    <p className="text-xs text-green-800 dark:text-green-200">{review.vendor_reply}</p>
                   </div>
                 )}
               </div>

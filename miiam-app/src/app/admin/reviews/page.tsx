@@ -4,6 +4,7 @@ import { useMemo, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
+import logger from "@/lib/logger";
 
 interface Review {
   id: string;
@@ -63,13 +64,13 @@ export default function ReviewsPage() {
     try {
       const { error } = await supabase.from("reviews").update({ [field]: !currentStatus }).eq("id", id);
       if (error) {
-        console.error("Update failed:", error);
+        logger.error({ err: error instanceof Error ? error : new Error(String(error)) }, "Review update failed");
         useToastStore.getState().addToast("Could not update review. Ensure database schema supports this field.", "error");
         return;
       }
       setReviews(reviews.map(r => r.id === id ? { ...r, [field]: !currentStatus } : r));
     } catch (e) {
-      console.error(e);
+      logger.error({ err: e instanceof Error ? e : new Error(String(e)) }, "Review toggle error");
     }
   }
 

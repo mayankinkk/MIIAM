@@ -3,6 +3,7 @@
 import { useRef, useState, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
+import logger from "@/lib/logger";
 import ServiceProductGrid from "@/components/ServiceProductGrid";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 
@@ -56,7 +57,7 @@ export default function PharmacyPage() {
       setPrescriptionNotes("");
       setPrescriptionPhone("");
     } catch (error: unknown) {
-      console.error("Upload error:", error instanceof Error ? error.message : error);
+      logger.error({ err: error instanceof Error ? error : new Error(String(error)) }, "Upload error");
       addToast(t.pharmacy.prescriptionFailed, "error");
     } finally {
       setUploading(false);

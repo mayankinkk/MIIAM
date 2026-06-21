@@ -6,6 +6,7 @@ import { getVendorIdForUser } from "@/lib/vendor";
 import type { Order } from "@/lib/types";
 import { useToastStore } from "@/lib/store/toastStore";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
+import logger from "@/lib/logger";
 
 interface VendorWallet {
   balance: number;
@@ -110,7 +111,7 @@ export default function VendorWalletPage() {
       setPayoutAmount("");
       useToastStore.getState().addToast("Payout requested successfully", "success");
     } catch (err) {
-      console.error("Failed to request payout:", err);
+      logger.error({ err }, "Failed to request payout");
       useToastStore.getState().addToast("Failed to request payout", "error");
     }
   };

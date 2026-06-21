@@ -43,7 +43,7 @@ export default async function RiderDashboardPage() {
           </div>
           <div>
             <h1 className="text-3xl font-bold tracking-tight mb-1">{rider?.profile?.full_name || "Rider"}</h1>
-            <p className="text-[#c4d0ff] font-medium flex items-center gap-1">
+            <p className="text-secondary-container font-medium flex items-center gap-1">
               <span className="material-symbols-outlined text-sm">star</span> 
               {rider?.rating?.toFixed(1) || "5.0"} {rider?.total_deliveries ? `${rider.total_deliveries} deliveries` : ""}
             </p>

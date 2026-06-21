@@ -214,7 +214,7 @@ export default function EnhancedServicesDashboard() {
                 <span className="material-symbols-outlined text-amber-500">check_circle</span>
                 <span className="text-xs font-bold text-[var(--color-outline-variant)] uppercase tracking-widest">Completed</span>
               </div>
-              <p className="text-3xl font-black text-green-600">{stats.completedBookings}</p>
+              <p className="text-3xl font-black text-green-600 dark:text-green-400">{stats.completedBookings}</p>
               <p className="text-xs text-[var(--color-outline-variant)] mt-2">Successfully delivered</p>
             </div>
           </div>
@@ -243,7 +243,7 @@ export default function EnhancedServicesDashboard() {
                         </div>
                         <div className="flex justify-between text-xs">
                           <span className="text-[var(--color-outline)]">Revenue</span>
-                          <span className="font-bold text-green-600">₹{service.revenue.toLocaleString()}</span>
+                          <span className="font-bold text-green-600 dark:text-green-400">₹{service.revenue.toLocaleString()}</span>
                         </div>
                       </div>
                     </Link>
@@ -478,8 +478,8 @@ export default function EnhancedServicesDashboard() {
                   <div key={provider.id} className="bg-[var(--color-surface-subtle)] rounded-2xl p-4 border border-transparent hover:border-[var(--color-primary)] transition-colors">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">
-                        <div className={`w-10 h-10 rounded-xl ${serviceOption?.bg ?? "bg-gray-100"} flex items-center justify-center`}>
-                          <span className={`material-symbols-outlined text-lg ${serviceOption?.color ?? "text-gray-500"}`}>{serviceOption?.icon ?? "person"}</span>
+                        <div className={`w-10 h-10 rounded-xl ${serviceOption?.bg ?? "bg-gray-100 dark:bg-gray-800"} flex items-center justify-center`}>
+                           <span className={`material-symbols-outlined text-lg ${serviceOption?.color ?? "text-gray-500 dark:text-gray-400"}`}>{serviceOption?.icon ?? "person"}</span>
                         </div>
                         <div>
                           <p className="font-bold text-[var(--color-on-surface)] text-sm">{provider.name}</p>

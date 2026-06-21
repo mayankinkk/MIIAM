@@ -129,7 +129,7 @@ export function TipBadge({ amount }: TipBadgeProps) {
   if (!amount) return null;
 
   return (
-    <div className="bg-[#ffd709] text-[#453900] px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+    <div className="bg-tertiary text-on-tertiary-fixed px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
       <span className="material-symbols-outlined text-sm">favorite</span>
       <span>₹{amount} tip</span>
     </div>

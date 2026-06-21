@@ -52,7 +52,7 @@ export function ServiceWorkerRegistration() {
         </div>
         <button
           onClick={handleUpdate}
-          className="bg-[var(--color-primary)] text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-[#a00018] active:scale-95 transition-all shrink-0"
+          className="bg-primary text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-primary-dim active:scale-95 transition-all shrink-0"
         >
           Update
         </button>

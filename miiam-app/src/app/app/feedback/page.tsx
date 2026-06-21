@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
+import logger from "@/lib/logger";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 
@@ -51,7 +52,10 @@ function FeedbackContent() {
   };
 
   const handleSubmit = async () => {
-    if (rating === 0) return;
+    if (rating === 0) {
+      addToast("Please select a rating", "error");
+      return;
+    }
     
     setIsSubmitting(true);
 
@@ -76,7 +80,7 @@ function FeedbackContent() {
 
       setSubmitted(true);
     } catch (error) {
-      console.error("Failed to submit feedback:", error);
+      logger.error({ err: error instanceof Error ? error : new Error(String(error)) }, "Failed to submit feedback");
       addToast("Failed to submit feedback. Please try again.", "error");
     } finally {
       setIsSubmitting(false);
@@ -156,7 +160,7 @@ function FeedbackContent() {
                   className="material-symbols-outlined text-5xl"
                   style={{
                     fontVariationSettings: "'FILL' 1",
-                    color: star <= (hoverRating || rating) ? "#f59e0b" : "#d1d5db",
+                    color: star <= (hoverRating || rating) ? "var(--color-status-warning)" : "var(--color-border-subtle)",
                   }}
                 >
                   star

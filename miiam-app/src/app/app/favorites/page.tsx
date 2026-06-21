@@ -5,6 +5,7 @@ import { useTranslation } from "@/lib/i18n/useTranslation";
 import { useFavoritesStore } from "@/lib/store/favoritesStore";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
+import logger from "@/lib/logger";
 import EmptyState from "@/components/EmptyState";
 import { VendorCardSkeleton } from "@/components/Skeleton";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -62,7 +63,7 @@ export default function FavoritesPage() {
         setFavoriteVendors([]);
       }
     } catch (error) {
-      console.error("Error loading favorites:", error);
+      logger.error({ err: error instanceof Error ? error : new Error(String(error)) }, "Error loading favorites");
       addToast("Failed to load favorites. Please try again.", "error");
     } finally {
       setLoading(false);
@@ -85,7 +86,7 @@ export default function FavoritesPage() {
         }
       }
     } catch (error) {
-      console.error("Error toggling favorite:", error);
+      logger.error({ err: error instanceof Error ? error : new Error(String(error)) }, "Error toggling favorite");
       addToast("Failed to update favorites. Please try again.", "error");
     }
   };

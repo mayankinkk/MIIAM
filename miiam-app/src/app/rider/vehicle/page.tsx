@@ -3,6 +3,8 @@
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { useTranslation } from "@/lib/i18n/useTranslation";
+import logger from "@/lib/logger";
 
 interface Vehicle {
   id: string;
@@ -33,6 +35,7 @@ interface FuelEntry {
 
 export default function RiderVehiclePage() {
   const supabase = useMemo(() => createClient(), []);
+  const { t } = useTranslation();
   const [riderId, setRiderId] = useState<string | null>(null);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [maintenanceRecords, setMaintenanceRecords] = useState<MaintenanceRecord[]>([]);
@@ -227,7 +230,7 @@ export default function RiderVehiclePage() {
               className="w-full py-4 border-2 border-dashed border-[var(--color-outline-variant)] rounded-2xl text-[var(--color-outline)] font-bold flex items-center justify-center gap-2"
             >
               <span className="material-symbols-outlined">add</span>
-              Add New Vehicle
+              {t.vehicle.addNewVehicle}
             </button>
           </>
         )}
@@ -362,12 +365,12 @@ export default function RiderVehiclePage() {
       {showAddFuelModal && (
         <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-md p-6">
-            <h3 className="font-bold text-lg mb-4">Add Fuel Entry</h3>
+            <h3 className="font-bold text-lg mb-4">{t.vehicle.addFuelEntry}</h3>
             <div className="space-y-3">
-              <input type="date" value={fuelForm.date} onChange={(e) => setFuelForm({ ...fuelForm, date: e.target.value })} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm" />
-              <input type="number" placeholder="Liters" value={fuelForm.liters} onChange={(e) => setFuelForm({ ...fuelForm, liters: e.target.value })} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm" />
-              <input type="number" placeholder="Cost (₹)" value={fuelForm.cost} onChange={(e) => setFuelForm({ ...fuelForm, cost: e.target.value })} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm" />
-              <input type="number" placeholder="Odometer (km)" value={fuelForm.odometer} onChange={(e) => setFuelForm({ ...fuelForm, odometer: e.target.value })} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm" />
+              <input type="date" value={fuelForm.date} onChange={(e) => setFuelForm({ ...fuelForm, date: e.target.value })} aria-label={t.vehicle.fuelDate} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm" />
+              <input type="number" placeholder="Liters" value={fuelForm.liters} onChange={(e) => setFuelForm({ ...fuelForm, liters: e.target.value })} aria-label={t.vehicle.fuelLiters} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm" />
+              <input type="number" placeholder="Cost (₹)" value={fuelForm.cost} onChange={(e) => setFuelForm({ ...fuelForm, cost: e.target.value })} aria-label={t.vehicle.fuelCost} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm" />
+              <input type="number" placeholder="Odometer (km)" value={fuelForm.odometer} onChange={(e) => setFuelForm({ ...fuelForm, odometer: e.target.value })} aria-label={t.vehicle.fuelOdometer} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm" />
             </div>
             <div className="flex gap-3 mt-6">
               <button onClick={() => setShowAddFuelModal(false)} className="flex-1 py-3 border border-[var(--color-border-subtle)] rounded-xl font-bold text-sm">Cancel</button>
@@ -391,7 +394,7 @@ export default function RiderVehiclePage() {
                 }}
                 className="flex-1 py-3 bg-brand-secondary text-white rounded-xl font-bold text-sm"
               >
-                Save Entry
+                {t.vehicle.saveEntry}
               </button>
             </div>
           </div>
@@ -403,6 +406,7 @@ export default function RiderVehiclePage() {
 
 function AddVehicleModal({ riderId, onClose, onSaved }: { riderId: string | null; onClose: () => void; onSaved: () => Promise<void> }) {
   const supabase = useMemo(() => createClient(), []);
+  const { t } = useTranslation();
   const [name, setName] = useState("");
   const [type, setType] = useState<"scooter" | "bike" | "car">("scooter");
   const [model, setModel] = useState("");
@@ -427,7 +431,7 @@ function AddVehicleModal({ riderId, onClose, onSaved }: { riderId: string | null
       });
       await onSaved();
     } catch (e) {
-      console.error("Failed to save vehicle:", e);
+      logger.error({ err: e instanceof Error ? e : new Error(String(e)) }, "Failed to save vehicle");
       import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Failed to save vehicle", "error"));
     }
     setSaving(false);
@@ -435,22 +439,22 @@ function AddVehicleModal({ riderId, onClose, onSaved }: { riderId: string | null
 
   return (
     <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-sm">
-        <h3 className="font-bold text-xl mb-4">Add New Vehicle</h3>
+      <div role="dialog" aria-modal="true" aria-labelledby="add-vehicle-title" className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-sm">
+        <h3 id="add-vehicle-title" className="font-bold text-xl mb-4">{t.vehicle.addNewVehicle}</h3>
         <div className="space-y-3">
-          <select value={type} onChange={(e) => setType(e.target.value as "scooter" | "bike" | "car")} className="w-full p-3 border-2 border-[var(--color-border-subtle)] rounded-xl">
+          <select value={type} onChange={(e) => setType(e.target.value as "scooter" | "bike" | "car")} aria-label={t.vehicle.vehicleType} className="w-full p-3 border-2 border-[var(--color-border-subtle)] rounded-xl">
             <option value="scooter">Scooter</option>
             <option value="bike">Bike</option>
             <option value="car">Car</option>
           </select>
-          <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Vehicle Name (e.g., Honda Activa)" className="w-full p-3 border-2 border-[var(--color-border-subtle)] rounded-xl" />
-          <input value={model} onChange={(e) => setModel(e.target.value)} placeholder="Model (e.g., Activa 5G)" className="w-full p-3 border-2 border-[var(--color-border-subtle)] rounded-xl" />
-          <input value={number} onChange={(e) => setNumber(e.target.value)} placeholder="Vehicle Number (e.g., DL 01 AB 1234)" className="w-full p-3 border-2 border-[var(--color-border-subtle)] rounded-xl" />
-          <input type="date" value={insuranceExpiry} onChange={(e) => setInsuranceExpiry(e.target.value)} placeholder="Insurance Expiry" className="w-full p-3 border-2 border-[var(--color-border-subtle)] rounded-xl" />
-          <input type="date" value={licenseExpiry} onChange={(e) => setLicenseExpiry(e.target.value)} placeholder="License Expiry" className="w-full p-3 border-2 border-[var(--color-border-subtle)] rounded-xl" />
+          <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Vehicle Name (e.g., Honda Activa)" aria-label={t.vehicle.vehicleName} className="w-full p-3 border-2 border-[var(--color-border-subtle)] rounded-xl" />
+          <input value={model} onChange={(e) => setModel(e.target.value)} placeholder="Model (e.g., Activa 5G)" aria-label={t.vehicle.vehicleModel} className="w-full p-3 border-2 border-[var(--color-border-subtle)] rounded-xl" />
+          <input value={number} onChange={(e) => setNumber(e.target.value)} placeholder="Vehicle Number (e.g., DL 01 AB 1234)" aria-label={t.vehicle.vehicleNumber} className="w-full p-3 border-2 border-[var(--color-border-subtle)] rounded-xl" />
+          <input type="date" value={insuranceExpiry} onChange={(e) => setInsuranceExpiry(e.target.value)} placeholder="Insurance Expiry" aria-label={t.vehicle.insuranceExpiry} className="w-full p-3 border-2 border-[var(--color-border-subtle)] rounded-xl" />
+          <input type="date" value={licenseExpiry} onChange={(e) => setLicenseExpiry(e.target.value)} placeholder="License Expiry" aria-label={t.vehicle.licenseExpiry} className="w-full p-3 border-2 border-[var(--color-border-subtle)] rounded-xl" />
         </div>
         <button onClick={handleSave} disabled={saving || !name.trim()} className="w-full py-4 bg-brand-secondary text-white font-bold rounded-xl mt-4 disabled:opacity-50">
-          {saving ? "Saving..." : "Add Vehicle"}
+          {saving ? t.vehicle.saving : t.vehicle.addVehicle}
         </button>
         <button onClick={onClose} className="w-full py-3 text-[var(--color-outline)] font-bold mt-2">Cancel</button>
       </div>

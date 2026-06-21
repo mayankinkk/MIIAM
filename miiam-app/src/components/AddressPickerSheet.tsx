@@ -317,7 +317,7 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
               {gpsStatus === "idle" && (
                 <button
                   onClick={detectGPS}
-                  className="w-full py-5 bg-gradient-to-br from-[var(--color-primary)] to-[#ff7670] text-white rounded-2xl font-extrabold flex flex-col items-center gap-3 shadow-lg shadow-[var(--color-primary)]/25"
+                  className="w-full py-5 bg-gradient-to-br from-primary to-primary-container text-white rounded-2xl font-extrabold flex flex-col items-center gap-3 shadow-lg shadow-primary/25"
                 >
                   <span className="material-symbols-outlined text-4xl">my_location</span>
                   <span>Detect My Location</span>
@@ -402,7 +402,7 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
                   <button
                     onClick={() => onSelect({ ...gpsAddress!, flat, landmark, instructions, type: addrType, label: addrType.charAt(0).toUpperCase() + addrType.slice(1) })}
                     disabled={!flat.trim()}
-                    className="w-full py-4 bg-gradient-to-r from-[var(--color-primary)] to-[#ff7670] text-white font-extrabold rounded-2xl disabled:opacity-50 shadow-lg shadow-[var(--color-primary)]/20 flex items-center justify-center gap-2"
+                    className="w-full py-4 bg-gradient-to-r from-primary to-primary-container text-white font-extrabold rounded-2xl disabled:opacity-50 shadow-lg shadow-primary/20 flex items-center justify-center gap-2"
                   >
                     <span className="material-symbols-outlined">check_circle</span>
                     Confirm This Location
@@ -506,7 +506,7 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
                   <button
                     onClick={confirmManual}
                     disabled={!flat.trim()}
-                    className="w-full py-4 bg-gradient-to-r from-[var(--color-primary)] to-[#ff7670] text-white font-extrabold rounded-2xl disabled:opacity-50 shadow-lg shadow-[var(--color-primary)]/20 flex items-center justify-center gap-2"
+                    className="w-full py-4 bg-gradient-to-r from-primary to-primary-container text-white font-extrabold rounded-2xl disabled:opacity-50 shadow-lg shadow-primary/20 flex items-center justify-center gap-2"
                   >
                     <span className="material-symbols-outlined">check_circle</span>
                     Confirm Address

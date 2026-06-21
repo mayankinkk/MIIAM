@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useToastStore } from "@/lib/store/toastStore";
+import logger from "@/lib/logger";
 import { useLocationStore } from "@/lib/store/locationStore";
 import { useServiceSettingsStore, ServiceCategory } from "@/lib/store/serviceSettingsStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -152,7 +153,7 @@ export default function ServiceProductGrid({
         .order("created_at", { ascending: false });
 
       if (error) {
-        console.error("Error fetching products:", error);
+        logger.error({ err: error instanceof Error ? error : new Error(String(error)) }, "Error fetching products");
         addToast("Failed to load data. Please try again.", "error");
       } else {
         setProducts(data || []);
@@ -495,7 +496,7 @@ export default function ServiceProductGrid({
             <p className="text-on-surface-variant text-sm mt-2 max-w-[240px] mx-auto">Please set your delivery location to view available products in your area.</p>
             <button 
               onClick={() => { router.push("/app/home?selectLocation=true"); }}
-              className="mt-6 px-6 py-2.5 bg-[var(--color-primary)] text-white rounded-full font-bold text-sm hover:bg-[#a00018] active:scale-95 transition-all shadow-md"
+              className="mt-6 px-6 py-2.5 bg-primary text-white rounded-full font-bold text-sm hover:bg-primary-dim active:scale-95 transition-all shadow-md"
             >
               Set Location
             </button>
@@ -521,7 +522,7 @@ export default function ServiceProductGrid({
             <p className="text-on-surface-variant text-sm mt-2 max-w-[200px] mx-auto">{emptyDescription}</p>
             <button 
               onClick={() => setSelectedCategory("all")}
-              className="mt-6 px-6 py-2 bg-[var(--color-primary)] text-white rounded-full font-bold text-sm hover:bg-[#a40017] transition-colors"
+              className="mt-6 px-6 py-2 bg-primary text-white rounded-full font-bold text-sm hover:bg-primary-dim transition-colors"
             >
               {emptyActionLabel}
             </button>

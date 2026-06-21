@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
+import logger from "@/lib/logger";
 
 type EventParams = Record<string, string | number | boolean | undefined | Record<string, unknown>[]>;
 
@@ -29,7 +30,7 @@ export function trackEvent(
   if (gtag) {
     gtag("event", eventName, params);
   } else {
-    console.log("[Analytics]", eventName, params);
+    logger.debug({ module: "analytics" }, `[Analytics] ${eventName}`, params);
   }
 }
 
@@ -43,7 +44,7 @@ export function trackPageView(url: string, title?: string) {
       page_title: title,
     });
   } else {
-    console.log("[Analytics] Page view:", url, title);
+    logger.debug({ module: "analytics" }, `Page view: ${url}`, title);
   }
 }
 

@@ -60,7 +60,7 @@ export default function InstallPrompt() {
           <p className="font-bold text-on-surface text-sm">Install MIIAM</p>
           <p className="text-xs text-on-surface-variant mt-0.5">Add to your home screen for a better experience</p>
         </div>
-        <button onClick={() => setShowPrompt(false)} className="text-on-surface-variant hover:text-on-surface">
+        <button onClick={() => setShowPrompt(false)} className="text-on-surface-variant hover:text-on-surface" aria-label="Dismiss install prompt">
           <span className="material-symbols-outlined text-lg">close</span>
         </button>
       </div>

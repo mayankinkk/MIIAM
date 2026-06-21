@@ -28,7 +28,7 @@ export default function RiderContactCard({
 }: RiderContactCardProps) {
   return (
     <div className="relative bg-surface-container-lowest rounded-2xl p-4 sm:p-6 shadow-sm overflow-hidden">
-      <div className="absolute top-0 right-0 w-32 h-32 bg-[#c4d0ff]/20 rounded-full -mr-16 -mt-16 blur-2xl" />
+      <div className="absolute top-0 right-0 w-32 h-32 bg-secondary-container/20 rounded-full -mr-16 -mt-16 blur-2xl" />
       <div className="flex items-center gap-3 sm:gap-6 relative z-10 min-w-0">
         <div className="relative w-16 h-16 sm:w-20 sm:h-20 shrink-0">
           <BlurImage
@@ -39,7 +39,7 @@ export default function RiderContactCard({
             sizes="80px"
           />
           {rating > 0 && (
-            <div className="absolute bottom-0 right-0 bg-[#ffd709] text-[#453900] px-2 py-0.5 rounded-full text-[10px] font-black flex items-center gap-1 shadow-sm">
+            <div className="absolute bottom-0 right-0 bg-tertiary text-on-tertiary-fixed px-2 py-0.5 rounded-full text-[10px] font-black flex items-center gap-1 shadow-sm">
               <span
                 className="material-symbols-outlined text-[12px]"
                 style={{ fontVariationSettings: "'FILL' 1" }}

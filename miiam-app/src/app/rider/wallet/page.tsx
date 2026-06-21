@@ -273,7 +273,7 @@ export default function RiderWalletPage() {
     <>
     <PullToRefresh onRefresh={loadWalletData}>
     <div className="min-h-screen bg-[var(--color-surface-container-lowest)]">
-      <header className="bg-gradient-to-br from-brand-secondary to-[#0044bf] text-white p-6 pb-12 rounded-b-[3rem]">
+      <header className="bg-gradient-to-br from-brand-secondary to-secondary-dim text-white p-6 pb-12 rounded-b-[3rem]">
         <div className="flex justify-between items-center">
           <Link href="/rider/dashboard" className="text-3xl font-black tracking-tighter">MIIAM</Link>
         </div>

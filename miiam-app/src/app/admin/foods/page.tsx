@@ -3,6 +3,7 @@
 import { useMemo, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
+import logger from "@/lib/logger";
 
 interface FoodOrder {
   id: string;
@@ -94,7 +95,7 @@ export default function AdminFoodsDashboard() {
       setOrders(orders.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
       useToastStore.getState().addToast(`Order status updated to ${newStatus}`, "success");
     } catch (error: unknown) {
-      console.error("Error updating order:", error);
+      logger.error({ err: error instanceof Error ? error : new Error(String(error)) }, "Error updating order");
       const msg = error instanceof Error ? error.message : "Unknown error";
       useToastStore.getState().addToast(`Failed to update: ${msg}`, "error");
     }
@@ -186,15 +187,15 @@ export default function AdminFoodsDashboard() {
   const cancelledOrders = filteredOrders.filter(o => o.status === "cancelled").length;
 
   const statusColors: Record<string, string> = {
-    pending: "bg-yellow-100 text-yellow-700",
+    pending: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300",
     accepted: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
-    preparing: "bg-purple-100 text-purple-700",
-    shopping: "bg-orange-100 text-orange-700",
-    picked_up: "bg-indigo-100 text-indigo-700",
-    on_the_way: "bg-cyan-100 text-cyan-700",
+    preparing: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300",
+    shopping: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300",
+    picked_up: "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300",
+    on_the_way: "bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-300",
     delivered: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
     cancelled: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
-    refunded: "bg-gray-100 text-gray-700",
+    refunded: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300",
   };
 
   if (loading) return <div className="px-8">Loading foods dashboard...</div>;
@@ -523,8 +524,8 @@ export default function AdminFoodsDashboard() {
                 </div>
               </div>
               {selectedOrder.special_instructions && (
-                <div className="bg-amber-50 p-3 rounded-lg">
-                  <p className="text-[10px] text-amber-700 uppercase">Special Instructions</p>
+                <div className="bg-amber-50 dark:bg-amber-900/20 p-3 rounded-lg">
+                  <p className="text-[10px] text-amber-700 dark:text-amber-300 uppercase">Special Instructions</p>
                   <p className="text-sm">{selectedOrder.special_instructions}</p>
                 </div>
               )}

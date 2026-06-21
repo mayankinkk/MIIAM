@@ -120,7 +120,7 @@ const homeIconHtml = `
 const vendorIconHtml = `
   <div style="position:relative;width:44px;height:44px">
     <div style="position:absolute;inset:0;background:rgba(11,80,213,0.15);border-radius:50%;animation:pulse-ring 1.4s ease-out infinite"></div>
-    <div style="position:absolute;inset:4px;background:#0b50d5;border-radius:50%;border:3px solid white;box-shadow:0 3px 10px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:18px;">🍽️</div>
+    <div style="position:absolute;inset:4px;background:var(--color-secondary);border-radius:50%;border:3px solid white;box-shadow:0 3px 10px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:18px;">🍽️</div>
   </div>`;
 
 export default function RiderMap({
@@ -286,7 +286,7 @@ export default function RiderMap({
         const r = await routeBetween(from, to);
         if (cancelled || !r || !mapInstanceRef.current) return;
         const m = mapInstanceRef.current;
-        const baseColor = opts.leg === "to_pickup" ? "#0b50d5" : "var(--color-primary)";
+        const baseColor = opts.leg === "to_pickup" ? "var(--color-secondary)" : "var(--color-primary)";
         const shadow = L.polyline(r.coords, {
           color: `${baseColor}33`,
           weight: 10,
@@ -340,9 +340,9 @@ export default function RiderMap({
         html: `<div id="rider-anchor" style="position:relative;width:46px;height:46px;transform:translate(-23px,-23px);">
           <div id="rider-pulse" style="position:absolute;inset:0;background:rgba(255,215,9,0.25);border-radius:50%;animation:pulse-ring 1.4s ease-out infinite"></div>
           <div id="rider-orbit" style="position:absolute;inset:0;offset-path:path('M 23 8 A 15 15 0 1 1 22.99 8');offset-rotate:0deg;animation:orbit-dot 1.8s linear infinite;">
-            <span style="display:block;width:6px;height:6px;background:#ffd709;border:2px solid white;border-radius:50%;box-shadow:0 0 4px rgba(0,0,0,0.3);margin-left:20px;margin-top:-3px;"></span>
+            <span style="display:block;width:6px;height:6px;background:var(--color-tertiary);border:2px solid white;border-radius:50%;box-shadow:0 0 4px rgba(0,0,0,0.3);margin-left:20px;margin-top:-3px;"></span>
           </div>
-          <div id="rider-scooter" style="position:absolute;inset:4px;background:#ffd709;border-radius:50%;border:3px solid white;box-shadow:0 3px 10px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:20px;transform-origin:center;transition:transform 1.2s linear;">🛵</div>
+          <div id="rider-scooter" style="position:absolute;inset:4px;background:var(--color-tertiary);border-radius:50%;border:3px solid white;box-shadow:0 3px 10px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:20px;transform-origin:center;transition:transform 1.2s linear;">🛵</div>
         </div>`,
         iconSize: [0, 0],
         iconAnchor: [0, 0],
@@ -397,7 +397,7 @@ export default function RiderMap({
         if (trailLayerRef.current) trailLayerRef.current.remove();
         if (trailPointsRef.current.length >= 2) {
           trailLayerRef.current = L.polyline(trailPointsRef.current, {
-            color: "#ffd709",
+            color: "var(--color-tertiary)",
             weight: 4,
             opacity: 0.7,
             lineCap: "round",

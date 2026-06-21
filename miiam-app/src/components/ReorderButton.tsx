@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useCartStore } from "@/lib/store/cartStore";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
+import logger from "@/lib/logger";
 
 interface OrderHistoryItem {
   id: string;
@@ -68,7 +69,7 @@ export function ReorderButton({ order }: ReorderButtonProps) {
 
       router.push("/app/cart");
     } catch (error) {
-      console.error("Reorder error:", error);
+      logger.error({ err: error instanceof Error ? error : new Error(String(error)) }, "Reorder error");
       addToast("Failed to reorder. Please try again.", "error");
     }
     

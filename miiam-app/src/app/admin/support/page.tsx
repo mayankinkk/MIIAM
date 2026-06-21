@@ -202,7 +202,7 @@ export default function LiveChatSupport() {
                   />
                   <button
                     onClick={sendMessage}
-                    className="px-4 bg-[var(--color-primary)] text-white rounded-xl hover:bg-[#a00018]"
+                    className="px-4 bg-primary text-white rounded-xl hover:bg-primary-dim"
                   >
                     <span className="material-symbols-outlined">send</span>
                   </button>

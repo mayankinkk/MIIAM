@@ -3,6 +3,7 @@
 import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import logger from "@/lib/logger";
 
 function CallbackContent() {
   const router = useRouter();
@@ -59,7 +60,7 @@ function CallbackContent() {
           await handlePostAuth(retrySession.user.id);
           return;
         }
-        console.error("OAuth exchange error:", exchangeError.message);
+        logger.error({ err: new Error(exchangeError.message) }, "OAuth exchange error");
         setError(exchangeError.message);
         setTimeout(() => router.replace("/auth/login"), 3000);
         return;

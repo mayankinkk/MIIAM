@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { deviceIcon, deviceLabel, parseUserAgent, DeviceInfo } from "@/lib/device";
+import logger from "@/lib/logger";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 
@@ -89,7 +90,7 @@ export default function DevicesPage() {
       setSessions(s.sessions || []);
       setEvents(e.events || []);
     } catch (err) {
-      console.error("Failed to load sessions", err);
+      logger.error({ err }, "Failed to load sessions");
       addToast("Failed to load device list", "error");
     } finally {
       setLoading(false);

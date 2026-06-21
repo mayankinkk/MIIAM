@@ -1085,7 +1085,7 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
           {/* ETA Strip */}
           {trackingInfo && (
             <div className="flex border-b border-[var(--color-border-subtle)]">
-              <div className={`flex-1 py-2 text-center border-r border-[var(--color-border-subtle)] ${phase === "pickup" ? "bg-green-50" : "bg-blue-50"}`}>
+              <div className={`flex-1 py-2 text-center border-r border-[var(--color-border-subtle)] ${phase === "pickup" ? "bg-green-50 dark:bg-green-900/20" : "bg-blue-50 dark:bg-blue-900/20"}`}>
                 <p className="text-[9px] font-bold uppercase tracking-wide text-[var(--color-outline-variant)]">ETA</p>
                 <p className={`text-lg font-black ${phase === "pickup" ? "text-green-600" : "text-brand-secondary"}`}>
                   {trackingInfo.eta}<span className="text-xs font-normal ml-0.5">min</span>
@@ -1120,7 +1120,7 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
             </div>
           )}
           <div className="px-4 pt-2 pb-1 flex gap-2">
-            <button onClick={() => setShowMap(!showMap)} className="text-[10px] font-bold text-brand-secondary bg-blue-50 px-4 py-2.5 rounded-lg flex items-center gap-1">
+            <button onClick={() => setShowMap(!showMap)} className="text-[10px] font-bold text-brand-secondary bg-blue-50 dark:bg-blue-900/20 px-4 py-2.5 rounded-lg flex items-center gap-1">
               <span className="material-symbols-outlined text-sm">{showMap ? "visibility_off" : "map"}</span>
               {showMap ? "Hide Map" : "Show Map"}
             </button>
@@ -1164,9 +1164,9 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
                   value={item.status || "pending"}
                   onChange={(e) => onUpdateItemStatus(item.id, e.target.value, item.actual_price ?? undefined)}
                   className={`text-[10px] font-bold px-1.5 py-1 rounded border-0 ${
-                    item.status === "available" ? "bg-green-100 text-green-700" :
-                    item.status === "unavailable" ? "bg-red-100 text-red-700" :
-                    item.status === "different_brand" ? "bg-amber-100 text-amber-700" :
+                    item.status === "available" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" :
+                    item.status === "unavailable" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300" :
+                    item.status === "different_brand" ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300" :
                     "bg-[var(--color-surface-container)] text-[var(--color-outline)]"
                   }`}
                 >
@@ -1183,7 +1183,7 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
                     placeholder="Actual"
                     value={item.actual_price || ""}
                     onChange={(e) => onUpdateItemStatus(item.id, "available", parseFloat(e.target.value))}
-                    className="w-14 text-[10px] border border-[var(--color-border-subtle)] rounded px-1.5 py-1 bg-white"
+                    className="w-14 text-[10px] border border-[var(--color-border-subtle)] rounded px-1.5 py-1 bg-white dark:bg-[var(--color-surface)]"
                   />
                 )}
               </div>
@@ -1192,7 +1192,7 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
 
           {/* Financial Summary */}
           <div className="px-4 mb-2">
-            <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-2 rounded-lg">
+            <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 p-2 rounded-lg">
               <div className="flex justify-between text-[11px]">
                 <span className="text-[var(--color-outline)]">Spent</span>
                 <span className="font-bold">₹{totalSpent.toFixed(0)}</span>
@@ -1223,7 +1223,7 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
                   Share Location
                 </button>
               )}
-              <button onClick={onReportIssue} className="py-2 px-3 bg-red-50 text-red-600 rounded-lg text-[11px] font-bold border border-red-100">
+              <button onClick={onReportIssue} className="py-2 px-3 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg text-[11px] font-bold border border-red-100 dark:border-red-800">
                 Report
               </button>
             </div>

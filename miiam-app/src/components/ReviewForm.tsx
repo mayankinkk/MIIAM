@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
+import logger from "@/lib/logger";
 
 interface ReviewFormProps {
   vendorId: string;
@@ -44,7 +45,7 @@ export default function ReviewForm({ vendorId, orderId, onSuccess }: ReviewFormP
       setSubmitted(true);
       onSuccess?.();
     } catch (error: unknown) {
-      console.error("Error submitting review:", error instanceof Error ? error.message : error);
+      logger.error({ err: error instanceof Error ? error : new Error(String(error)) }, "Error submitting review");
       addToast("Failed to submit review", "error");
     } finally {
       setLoading(false);
@@ -53,10 +54,10 @@ export default function ReviewForm({ vendorId, orderId, onSuccess }: ReviewFormP
 
   if (submitted) {
     return (
-      <div className="bg-green-50 border border-green-200 rounded-xl p-6 text-center">
-        <span className="material-symbols-outlined text-4xl text-green-600">check_circle</span>
-        <h3 className="font-bold text-green-800 mt-2">Thank you for your review!</h3>
-        <p className="text-sm text-green-600">Your feedback helps others</p>
+      <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6 text-center">
+        <span className="material-symbols-outlined text-4xl text-green-600 dark:text-green-400">check_circle</span>
+        <h3 className="font-bold text-green-800 dark:text-green-200 mt-2">Thank you for your review!</h3>
+        <p className="text-sm text-green-600 dark:text-green-400">Your feedback helps others</p>
       </div>
     );
   }
@@ -82,7 +83,7 @@ export default function ReviewForm({ vendorId, orderId, onSuccess }: ReviewFormP
               className="material-symbols-outlined text-4xl transition-all"
               style={{ 
                 fontVariationSettings: "'FILL' 1",
-                color: star <= (hoverRating || rating) ? "#ffd700" : "#e5e7eb"
+                color: star <= (hoverRating || rating) ? "var(--color-tertiary)" : "var(--color-border-subtle)"
               }}
             >
               star
@@ -105,7 +106,7 @@ export default function ReviewForm({ vendorId, orderId, onSuccess }: ReviewFormP
       <button
         type="submit"
         disabled={loading || rating === 0}
-        className="w-full py-3 bg-[var(--color-primary)] text-white font-bold rounded-xl hover:bg-[#a00018] transition-all disabled:opacity-50"
+        className="w-full py-3 bg-primary text-white font-bold rounded-xl hover:bg-primary-dim transition-all disabled:opacity-50"
       >
         {loading ? "Submitting..." : "Submit Review"}
       </button>

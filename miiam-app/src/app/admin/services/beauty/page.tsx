@@ -4,6 +4,7 @@ import { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
+import logger from "@/lib/logger";
 
 const beautyCategories = [
   { id: "salon", label: "Salon at Home", icon: "content_cut", color: "pink" },
@@ -58,7 +59,7 @@ export default function BeautyServicesAdmin() {
       if (bookingsRes.data) setBookings(bookingsRes.data);
       if (providersRes.data) setProviders(providersRes.data);
     } catch (e) {
-      console.error("Failed to load beauty data:", e);
+      logger.error({ err: e instanceof Error ? e : new Error(String(e)) }, "Failed to load beauty data");
     }
     setLoading(false);
   }

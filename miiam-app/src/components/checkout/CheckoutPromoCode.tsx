@@ -23,15 +23,15 @@ export default function CheckoutPromoCode({ promoApplied, promoCode, onPromoCode
   return (
     <>
       {promoApplied ? (
-        <div className="flex items-center justify-between bg-green-50 border border-green-200 p-3 sm:p-4 rounded-xl gap-2">
+        <div className="flex items-center justify-between bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 p-3 sm:p-4 rounded-xl gap-2">
           <div className="flex items-center gap-2 min-w-0">
-            <span className="material-symbols-outlined text-green-600 shrink-0">local_offer</span>
+            <span className="material-symbols-outlined text-green-600 dark:text-green-400 shrink-0">local_offer</span>
             <div className="min-w-0">
-              <p className="font-bold text-green-700 truncate">{promoApplied.code}</p>
-              <p className="text-xs text-green-600">-{promoApplied.type === "percent" ? `${promoApplied.discount}%` : `₹${promoApplied.discount}`}</p>
+              <p className="font-bold text-green-700 dark:text-green-300 truncate">{promoApplied.code}</p>
+              <p className="text-xs text-green-600 dark:text-green-400">-{promoApplied.type === "percent" ? `${promoApplied.discount}%` : `₹${promoApplied.discount}`}</p>
             </div>
           </div>
-          <button onClick={onRemovePromo} className="text-green-700 text-sm font-bold shrink-0">Remove</button>
+          <button onClick={onRemovePromo} className="text-green-700 dark:text-green-300 text-sm font-bold shrink-0">Remove</button>
         </div>
       ) : (
         <div className="relative">

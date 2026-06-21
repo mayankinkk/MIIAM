@@ -3,6 +3,7 @@
 import { useMemo, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import logger from "@/lib/logger";
 
 const modules = [
   { id: "foods", title: "Foods", icon: "restaurant", color: "bg-[var(--color-primary)]/10 text-[var(--color-primary)]", route: "/admin/foods", type: "food" },
@@ -102,7 +103,7 @@ export default function AdminDashboard() {
       });
       setCategoryRevenue(catRev);
     } catch (err) {
-      console.error("Dashboard error:", err);
+      logger.error({ err }, "Dashboard error");
     } finally {
       setLoading(false);
     }

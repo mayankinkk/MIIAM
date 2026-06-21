@@ -3,6 +3,7 @@
 import { useMemo, useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
+import logger from "@/lib/logger";
 import Link from "next/link";
 
 
@@ -88,7 +89,7 @@ export default function GroceryOrdersPage() {
       };
       setStats(stats);
     } catch (error) {
-      console.error("Error loading orders:", error);
+      logger.error({ err: error instanceof Error ? error : new Error(String(error)) }, "Error loading orders");
     } finally {
       setLoading(false);
     }
@@ -105,7 +106,7 @@ export default function GroceryOrdersPage() {
       loadOrders();
       setSelectedOrder(null);
     } catch (error) {
-      console.error("Error updating order:", error);
+      logger.error({ err: error instanceof Error ? error : new Error(String(error)) }, "Error updating order");
       useToastStore.getState().addToast("Failed to update order status", "error");
     }
   };

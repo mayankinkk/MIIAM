@@ -17,7 +17,7 @@ export default function NewOrderBanner({ visible, order, onView, onDismiss }: Ne
   if (!visible || !order) return null;
 
   return (
-    <div className="fixed top-16 left-0 right-0 z-[90] bg-gradient-to-r from-brand-secondary to-[#0044bf] text-white p-3 flex items-center justify-between shadow-lg animate-slide-down">
+    <div className="fixed top-16 left-0 right-0 z-[90] bg-gradient-to-r from-brand-secondary to-secondary-dim text-white p-3 flex items-center justify-between shadow-lg animate-slide-down">
       <div className="flex items-center gap-3">
         <span className="material-symbols-outlined animate-bounce">local_shipping</span>
         <div>

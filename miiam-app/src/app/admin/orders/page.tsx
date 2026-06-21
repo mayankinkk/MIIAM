@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import type { Order, OrderStatus } from "@/lib/types";
 import { PRINTING_VENDOR_ID } from "@/lib/constants";
 import { useToastStore } from "@/lib/store/toastStore";
+import logger from "@/lib/logger";
 
 const STATUS_OPTIONS: OrderStatus[] = ["pending", "scheduled", "accepted", "processing", "preparing", "ready_for_pickup", "shopping", "picking_up", "on_the_way", "arrived", "delivered", "cancelled", "refunded", "no_rider_available"];
 
@@ -130,7 +131,7 @@ export default function OrderManagement() {
             await supabase.storage.from("menu-images").remove([path]);
           }
         }
-      } catch (e) { console.warn("Failed to delete image:", e); }
+      } catch (e) { logger.warn({ err: e instanceof Error ? e : new Error(String(e)) }, "Failed to delete image"); }
     }
   }
 
@@ -267,7 +268,7 @@ export default function OrderManagement() {
               body: JSON.stringify({ user_id: order.user_id, ...notif, type: "order" }),
             });
           } catch (e) {
-            console.warn("[admin-orders] Failed to send bulk notification:", e);
+            logger.warn({ err: e instanceof Error ? e : new Error(String(e)) }, "[admin-orders] Failed to send bulk notification");
           }
         }
       })

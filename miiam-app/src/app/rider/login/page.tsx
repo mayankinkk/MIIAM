@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import logger from "@/lib/logger";
 import BlurImage from "@/components/BlurImage";
 
 function RiderLoginContent() {
@@ -62,7 +63,7 @@ function RiderLoginContent() {
         router.push(redirectTo);
       }
     } catch (err) {
-      console.error(err);
+      logger.error({ err }, "Rider login failed");
       setError("Login failed. Please try again.");
     }
     setLoading(false);
@@ -82,7 +83,7 @@ function RiderLoginContent() {
           <p className="text-[var(--color-on-surface-variant)] text-lg mb-12">Sign in to your rider account to start accepting orders and earning.</p>
 
           {error && (
-            <div className="mb-6 p-4 bg-[#f95630]/10 border border-[#f95630]/30 rounded-xl text-[#b02500] text-sm font-medium">
+            <div className="mb-6 p-4 bg-error-container/10 border border-error-container/30 rounded-xl text-error text-sm font-medium">
               {error}
             </div>
           )}
@@ -90,8 +91,8 @@ function RiderLoginContent() {
           <form onSubmit={handleLogin} className="space-y-6">
             <div>
               <label className="block text-sm font-bold text-[var(--color-on-surface)] mb-3 uppercase tracking-widest px-1">Email Address</label>
-              <div className="flex bg-[#ffecee] rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-[var(--color-primary)]/40 transition-all border border-[var(--color-outline-variant)]/30">
-                <span className="px-5 py-4 font-bold text-[var(--color-on-surface-variant)] border-r border-[var(--color-outline-variant)]/30">
+              <div className="flex bg-surface-container-low rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-primary/40 transition-all border border-outline-variant/30">
+                <span className="px-5 py-4 font-bold text-on-surface-variant border-r border-outline-variant/30">
                   <span className="material-symbols-outlined">mail</span>
                 </span>
                 <input
@@ -99,7 +100,7 @@ function RiderLoginContent() {
                   required
                   value={email}
                   onChange={(e) => { setEmail(e.target.value); setError(null); }}
-                  className="w-full bg-transparent border-none px-5 py-4 text-lg font-semibold focus:outline-none placeholder:text-[var(--color-on-surface-variant)]/40 text-[var(--color-on-surface)]"
+                  className="w-full bg-transparent border-none px-5 py-4 text-lg font-semibold focus:outline-none placeholder:text-on-surface-variant/40 text-on-surface"
                   placeholder="your@email.com"
                 />
               </div>
@@ -111,7 +112,7 @@ function RiderLoginContent() {
                 required
                 value={password}
                   onChange={(e) => { setPassword(e.target.value); setError(null); }}
-                className="w-full bg-[#ffecee] border border-[var(--color-outline-variant)]/30 rounded-xl px-5 py-4 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/40 transition-all text-[var(--color-on-surface)]"
+                className="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-5 py-4 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all text-on-surface"
                 placeholder="Enter your password"
               />
               <button
@@ -155,11 +156,11 @@ function RiderLoginContent() {
         </div>
         <div className="absolute bottom-12 left-12 right-12 glass-card rounded-2xl p-8 border border-white/20">
           <div className="flex gap-2 mb-4">
-            <span className="material-symbols-outlined text-[#ffd709]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-            <span className="material-symbols-outlined text-[#ffd709]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-            <span className="material-symbols-outlined text-[#ffd709]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-            <span className="material-symbols-outlined text-[#ffd709]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-            <span className="material-symbols-outlined text-[#ffd709]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+            <span className="material-symbols-outlined text-tertiary" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+            <span className="material-symbols-outlined text-tertiary" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+            <span className="material-symbols-outlined text-tertiary" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+            <span className="material-symbols-outlined text-tertiary" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+            <span className="material-symbols-outlined text-tertiary" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
           </div>
           <p className="text-white text-xl font-medium leading-relaxed mb-6">
             &quot;Switching to MIIAM was the best decision. The flexible hours and transparent earnings let me ride on my own terms. Plus, the app is incredibly easy to use.&quot;
@@ -216,7 +217,7 @@ function RiderLoginContent() {
                       required
                       value={resetEmail}
                       onChange={(e) => setResetEmail(e.target.value)}
-                      className="w-full bg-[#ffecee] border border-[var(--color-outline-variant)]/30 rounded-xl px-4 py-3 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/40 text-[var(--color-on-surface)]"
+                      className="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-4 py-3 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-primary/40 text-on-surface"
                       placeholder="your@email.com"
                     />
                   </div>

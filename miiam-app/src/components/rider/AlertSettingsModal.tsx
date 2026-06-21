@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 
 interface AlertSettingsModalProps {
@@ -24,14 +24,23 @@ export default function AlertSettingsModal({
 }: AlertSettingsModalProps) {
   const { t } = useTranslation();
 
+  useEffect(() => {
+    if (!open) return;
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [open, onClose]);
+
   if (!open) return null;
 
   return (
     <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-sm">
+      <div role="dialog" aria-modal="true" aria-labelledby="alert-settings-title" className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-sm">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-bold text-xl">{t.rider.modals.alertSettings}</h3>
-          <button onClick={onClose}>
+          <h3 id="alert-settings-title" className="font-bold text-xl">{t.rider.modals.alertSettings}</h3>
+          <button onClick={onClose} aria-label="Close">
             <span className="material-symbols-outlined">close</span>
           </button>
         </div>
@@ -47,7 +56,7 @@ export default function AlertSettingsModal({
             </div>
             <button 
               onClick={() => onSoundChange(!soundEnabled)}
-              className={`w-12 h-6 rounded-full transition-all ${soundEnabled ? "bg-green-500" : "bg-slate-300"}`}
+              className={`w-12 h-6 rounded-full transition-all ${soundEnabled ? "bg-green-500" : "bg-slate-300 dark:bg-gray-600"}`}
             >
               <div className={`w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full transition-all ${soundEnabled ? "translate-x-6" : "translate-x-0.5"}`}></div>
             </button>
@@ -63,16 +72,16 @@ export default function AlertSettingsModal({
             </div>
             <button 
               onClick={() => onVibrationChange(!vibrationEnabled)}
-              className={`w-12 h-6 rounded-full transition-all ${vibrationEnabled ? "bg-green-500" : "bg-slate-300"}`}
+              className={`w-12 h-6 rounded-full transition-all ${vibrationEnabled ? "bg-green-500" : "bg-slate-300 dark:bg-gray-600"}`}
             >
               <div className={`w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full transition-all ${vibrationEnabled ? "translate-x-6" : "translate-x-0.5"}`}></div>
             </button>
           </div>
 
-          <div className="p-4 bg-blue-50 rounded-xl">
+          <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
             <div className="flex items-start gap-2">
-              <span className="material-symbols-outlined text-blue-600 text-sm">info</span>
-              <p className="text-xs text-blue-700">
+              <span className="material-symbols-outlined text-blue-600 dark:text-blue-400 text-sm">info</span>
+              <p className="text-xs text-blue-700 dark:text-blue-300">
                 {t.rider.modals.alertsInfo}
               </p>
             </div>
@@ -82,7 +91,7 @@ export default function AlertSettingsModal({
             <p className="text-[10px] font-black text-[var(--color-outline-variant)] uppercase mb-3">{t.rider.modals.developerTools}</p>
             <button 
               onClick={onClearOrders}
-              className="w-full py-3 rounded-xl bg-red-50 text-red-600 font-bold text-xs flex items-center justify-center gap-2 hover:bg-red-100 transition-colors"
+              className="w-full py-3 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 font-bold text-xs flex items-center justify-center gap-2 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
             >
               <span className="material-symbols-outlined text-sm">delete_sweep</span>
               {t.rider.modals.clearPendingOrders}

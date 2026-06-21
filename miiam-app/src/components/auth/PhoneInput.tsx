@@ -78,7 +78,7 @@ export default function PhoneInput({ purpose = "signup", onSuccess }: PhoneInput
         disabled={phone.length !== 10 || isLoading}
         className={`w-full py-4 rounded-xl font-bold text-lg transition-all ${
           phone.length === 10 && !isLoading
-            ? "bg-[var(--color-primary)] text-white hover:bg-[#a40017]"
+            ? "bg-primary text-white hover:bg-primary-dim"
             : "bg-[var(--color-surface-container-high)] text-[var(--color-outline-variant)] cursor-not-allowed"
         }`}
       >

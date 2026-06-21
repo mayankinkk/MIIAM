@@ -103,7 +103,7 @@ function EmailVerifyContent() {
           <div className="flex justify-center gap-2 mb-6">
             {otp.map((d, i) => (
               <input key={i} ref={(el) => { inputRefs.current[i] = el; }} type="text" inputMode="numeric" pattern="[0-9]*" maxLength={1} value={d} onChange={(e) => handleChange(i, e.target.value)}
-                className={`w-12 h-14 text-center text-xl font-bold rounded-xl border-2 ${error ? "border-red-300 bg-red-50" : d ? "border-[var(--color-primary)] bg-[var(--color-primary)]/5" : "border-[var(--color-border-subtle)] bg-white"} focus:border-[var(--color-primary)] outline-none`} />
+                className={`w-12 h-14 text-center text-xl font-bold rounded-xl border-2 ${error ? "border-red-300 bg-red-50 dark:bg-red-900/20" : d ? "border-[var(--color-primary)] bg-[var(--color-primary)]/5" : "border-[var(--color-border-subtle)] bg-white dark:bg-[var(--color-surface)]"} focus:border-[var(--color-primary)] outline-none`} />
             ))}
           </div>
           {error && <p className="text-center text-red-500 text-sm mb-4">{error}</p>}

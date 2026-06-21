@@ -6,6 +6,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import { useTranslation } from "@/lib/i18n/useTranslation";
+import logger from "@/lib/logger";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
 
@@ -54,7 +55,7 @@ export default function EditProfilePage() {
           });
         }
       } catch (err) {
-        console.error("Failed to load profile:", err);
+        logger.error({ err }, "Failed to load profile");
       }
       setLoading(false);
     }

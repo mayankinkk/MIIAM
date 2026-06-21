@@ -8,6 +8,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import PullToRefresh from "@/components/PullToRefresh";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
+import logger from "@/lib/logger";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
 import SwipeableRow from "@/components/SwipeableRow";
 
@@ -49,7 +50,7 @@ export default function NotificationsPage() {
         .limit(50);
       setNotifications(data || []);
     } catch (error) {
-      console.error("Failed to fetch notifications:", error);
+      logger.error({ err: error instanceof Error ? error : new Error(String(error)) }, "Failed to fetch notifications");
       addToast("Failed to load notifications. Please try again.", "error");
     } finally {
       setLoading(false);
@@ -67,7 +68,7 @@ export default function NotificationsPage() {
         .eq("read", false);
       setNotifications(notifications.map(n => ({ ...n, read: true })));
     } catch (error) {
-      console.error("Failed to mark all read:", error);
+      logger.error({ err: error instanceof Error ? error : new Error(String(error)) }, "Failed to mark all read");
       addToast("Failed to mark notifications as read. Please try again.", "error");
     }
   };

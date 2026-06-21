@@ -7,6 +7,7 @@ import { useToastStore } from "@/lib/store/toastStore";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import { ListSkeleton } from "@/components/Skeleton";
+import logger from "@/lib/logger";
 
 interface RecurringSchedule {
   id: string;
@@ -57,7 +58,7 @@ export default function SubscriptionsPage() {
       .order("created_at", { ascending: false });
 
     if (error) {
-      console.error("Failed to load schedules:", error);
+      logger.error({ err: error instanceof Error ? error : new Error(String(error)) }, "Failed to load schedules");
       addToast("Failed to load subscriptions", "error");
     } else {
       setSchedules(data || []);

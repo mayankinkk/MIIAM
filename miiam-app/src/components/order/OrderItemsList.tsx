@@ -74,7 +74,7 @@ export default function OrderItemsList({ order, onChatVendor }: OrderItemsListPr
             Chat
           </button>
         </div>
-        <div className="bg-white/50 rounded-2xl p-4 space-y-3">
+        <div className="bg-white/50 dark:bg-[var(--color-surface)]/50 rounded-2xl p-4 space-y-3">
           {order.items?.map((item: OrderItem, idx: number) => (
             <div key={idx} className="flex justify-between items-center text-sm">
               <span className="text-on-surface-variant font-medium">{item.quantity}x {item.menu_item?.name || "Item"}</span>
@@ -121,7 +121,7 @@ export default function OrderItemsList({ order, onChatVendor }: OrderItemsListPr
               {(fileNames.length > 0 ? fileNames : fileUrls).map((name: string, fi: number) => {
                 const isPrinted = fileStatuses[fi] === true;
                 return (
-                  <div key={fi} className="flex items-center gap-3 bg-white/50 rounded-2xl p-3 min-w-0">
+                  <div key={fi} className="flex items-center gap-3 bg-white/50 dark:bg-[var(--color-surface)]/50 rounded-2xl p-3 min-w-0">
                     <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                       isPrinted ? "bg-emerald-100" : "bg-indigo-100"
                     }`}>

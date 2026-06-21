@@ -4,6 +4,7 @@ import { use, useState, useMemo } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
+import logger from "@/lib/logger";
 import OrderChatOverlay from "@/components/order/OrderChatOverlay";
 import RiderMap from "@/components/rider/RiderMap";
 import { PRINTING_VENDOR_ID } from "@/lib/constants";
@@ -149,7 +150,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
       setOrder((prev) => prev ? { ...prev, ...updates } : prev);
       addToast(t.orders.orderCancelledSuccess, "success");
     } catch (error) {
-      console.error("Cancel error:", error);
+      logger.error({ err: error instanceof Error ? error : new Error(String(error)) }, "Cancel error");
       addToast(t.orders.cancelFailed, "error");
     }
     setShowCancelReason(false);

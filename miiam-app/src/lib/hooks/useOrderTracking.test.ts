@@ -16,7 +16,7 @@ function createDefaultFromMock() {
   };
 }
 
-const mockSelect = vi.fn(() => createDefaultFromMock());
+const mockSelect = vi.fn((_table?: string) => createDefaultFromMock());
 
 const mockGetUser = vi.fn().mockResolvedValue({ data: { user: { id: "user-1" } }, error: null });
 const mockSubscribe = vi.fn().mockResolvedValue({});
@@ -64,6 +64,7 @@ function eqChain(resolveValue: unknown) {
         single: vi.fn().mockResolvedValue(resolveValue),
       }),
     }),
+    in: vi.fn().mockResolvedValue({ data: [], error: null }),
   };
 }
 
@@ -91,8 +92,8 @@ describe("useOrderTracking", () => {
     };
 
     const calls: string[] = [];
-    mockSelect.mockImplementation((table: string) => {
-      calls.push(table);
+    mockSelect.mockImplementation((table?: string) => {
+      calls.push(table ?? "unknown");
       switch (table) {
         case "orders":
           return eqChain({ data: orderData, error: null });
@@ -103,6 +104,7 @@ describe("useOrderTracking", () => {
             select: vi.fn().mockReturnValue({
               eq: vi.fn().mockReturnValue({ data: [], error: null }),
             }),
+            in: vi.fn().mockResolvedValue({ data: [], error: null }),
           };
         case "rider_locations":
           return {
@@ -113,6 +115,7 @@ describe("useOrderTracking", () => {
                 }),
               }),
             }),
+            in: vi.fn().mockResolvedValue({ data: [], error: null }),
           };
         default:
           return createDefaultFromMock();
@@ -159,6 +162,7 @@ describe("useOrderTracking", () => {
           maybeSingle: vi.fn().mockResolvedValue({ data: null, error: { message: "not found" } }),
         }),
       }),
+      in: vi.fn().mockResolvedValue({ data: [], error: null }),
     });
 
     const { result } = renderHook(() => useOrderTracking("order-missing"));

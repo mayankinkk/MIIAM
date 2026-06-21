@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import type { Rider } from "@/lib/types";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { useToastStore } from "@/lib/store/toastStore";
+import logger from "@/lib/logger";
 import BlurImage from "@/components/BlurImage";
 
 const AdminRiderMap = dynamic(() => import("@/components/admin/AdminRiderMap"), { ssr: false });
@@ -74,7 +75,7 @@ function RidersPage() {
     try {
       const res = await fetch(`/api/riders?id=${riderId}`, { method: "DELETE" });
       if (res.ok) { setSelectedRider(null); loadRiders(); }
-    } catch (err) { console.error(err); }
+    } catch (err) { logger.error({ err }, "Failed to delete rider"); }
   }
 
   async function addRider(e: React.FormEvent) {
@@ -101,7 +102,7 @@ function RidersPage() {
       setShowAddModal(false);
       setNewRider({ email: "", phone: "", full_name: "", profile_photo: null, id_proof_type: "", id_proof_image: null, vehicle_type: "motorcycle", vehicle_number: "" });
       loadRiders();
-    } catch (err) { console.error(err); setSaving(false); }
+    } catch (err) { logger.error({ err }, "Failed to add rider"); setSaving(false); }
   }
 
   const filteredRiders = riders.filter(r => filter === "all" || (filter === "online" && r.is_online) || (filter === "offline" && !r.is_online));

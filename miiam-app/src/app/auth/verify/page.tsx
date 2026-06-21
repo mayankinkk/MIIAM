@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import logger from "@/lib/logger";
 
 function OTPVerificationContent() {
   const router = useRouter();
@@ -118,7 +119,7 @@ function OTPVerificationContent() {
         body: JSON.stringify({ phoneNumber: phone, purpose }),
       });
     } catch (err) {
-      console.error("Resend error:", err);
+      logger.error({ err }, "Resend error");
     }
 
     setTimeout(() => setResent(false), 2000);

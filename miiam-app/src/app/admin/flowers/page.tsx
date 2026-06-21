@@ -3,6 +3,7 @@
 import { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import logger from "@/lib/logger";
 
 
 export default function FlowersAdmin() {
@@ -76,7 +77,7 @@ export default function FlowersAdmin() {
         newPartnersThisMonth: newPartnersCount || 0,
       });
     } catch (error) {
-      console.error("Error loading stats:", error);
+      logger.error({ err: error instanceof Error ? error : new Error(String(error)) }, "Error loading stats");
     } finally {
       setLoading(false);
     }

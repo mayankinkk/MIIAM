@@ -266,9 +266,9 @@ function BookingModal({ service, onClose }: { service: ServiceData; onClose: () 
                 <span className="font-black text-primary text-lg">₹{service.price}</span>
               </div>
             </div>
-            <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 flex gap-2 mb-5">
-              <span className="material-symbols-outlined text-blue-600 text-sm mt-0.5">info</span>
-              <p className="text-xs text-blue-700">{t.services.paymentAfterService}</p>
+            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-3 flex gap-2 mb-5">
+              <span className="material-symbols-outlined text-blue-600 dark:text-blue-400 text-sm mt-0.5">info</span>
+              <p className="text-xs text-blue-700 dark:text-blue-300">{t.services.paymentAfterService}</p>
             </div>
             <button
               onClick={handleConfirmBooking}

@@ -184,7 +184,7 @@ export default function AdminRiderMap({ riders, onRiderClick }: Props) {
 
         const marker = L.circleMarker(pos, {
           radius: 10,
-          fillColor: online ? "#22c55e" : "#94a3b8",
+          fillColor: online ? "var(--color-status-success)" : "var(--color-outline-variant)",
           fillOpacity: 1,
           color: "#ffffff",
           weight: 3,

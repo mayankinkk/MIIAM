@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import logger from "@/lib/logger";
 
 function RateCustomerContent() {
   const router = useRouter();
@@ -53,7 +54,7 @@ function RateCustomerContent() {
           })
           .eq("id", orderId);
       } catch (e) {
-        console.error("Failed to save rating:", e);
+        logger.error({ err: e instanceof Error ? e : new Error(String(e)) }, "Failed to save rating");
       }
     }
 

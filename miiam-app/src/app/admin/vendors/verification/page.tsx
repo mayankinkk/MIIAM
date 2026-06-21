@@ -3,6 +3,7 @@
 import { useMemo, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
+import logger from "@/lib/logger";
 
 interface VendorVerification {
   id: string;
@@ -85,7 +86,7 @@ export default function VerificationPage() {
 
       setSelectedVendor(null);
     } catch (error: unknown) {
-      console.error("Error updating vendor:", error);
+      logger.error({ err: error instanceof Error ? error : new Error(String(error)) }, "Error updating vendor");
       useToastStore.getState().addToast(`Failed: ${(error as Error).message}`, "error");
     }
   };

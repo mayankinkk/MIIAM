@@ -126,7 +126,7 @@ export default function OnboardingTour({ onComplete }: OnboardingTourProps) {
               )}
               <button
                 onClick={next}
-                className="px-6 py-2 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm hover:bg-[#a40017] transition-colors"
+                className="px-6 py-2 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-dim transition-colors"
               >
                 {currentStep < steps.length - 1 ? "Next" : "Get Started"}
               </button>

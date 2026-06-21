@@ -11,8 +11,8 @@ export default function OnboardingPage() {
   return (
     <div className="bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface)] min-h-screen">
       {/* Background Kinetic Elements */}
-      <div className="absolute -top-24 -left-24 w-96 h-96 bg-[#ff7670]/20 rounded-full blur-[100px]" />
-      <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-[#c4d0ff]/20 rounded-full blur-[100px]" />
+      <div className="absolute -top-24 -left-24 w-96 h-96 bg-primary-container/20 rounded-full blur-[100px]" />
+      <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-secondary-container/20 rounded-full blur-[100px]" />
 
       {/* Step 1: Welcome */}
       <main className="min-h-screen flex flex-col items-center justify-center px-6 relative overflow-hidden">
@@ -66,8 +66,8 @@ export default function OnboardingPage() {
           {/* Step Indicators */}
           <div className="flex justify-center gap-2 mb-10">
             <div className="w-8 h-2 bg-[var(--color-primary)] rounded-full" />
-            <div className="w-2 h-2 bg-[#ffd2d7] rounded-full" />
-            <div className="w-2 h-2 bg-[#ffd2d7] rounded-full" />
+            <div className="w-2 h-2 bg-surface-container-highest rounded-full" />
+            <div className="w-2 h-2 bg-surface-container-highest rounded-full" />
           </div>
 
           {/* CTA */}
@@ -95,8 +95,8 @@ export default function OnboardingPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             <div className="bg-[var(--color-surface-container-lowest)] rounded-lg p-12 relative overflow-hidden group shadow-[0px_20px_40px_rgba(77,33,42,0.04)]">
               <div className="absolute -top-10 -right-10 w-40 h-40 bg-[var(--color-primary)]/10 rounded-full transform group-hover:scale-150 transition-transform duration-700" />
-              <div className="mb-8 w-20 h-20 rounded-full bg-[#ffd2d7] flex items-center justify-center">
-                <span className="material-symbols-outlined text-4xl text-[var(--color-primary)]" style={{ fontVariationSettings: "'FILL' 1" }}>restaurant_menu</span>
+              <div className="mb-8 w-20 h-20 rounded-full bg-surface-container-highest flex items-center justify-center">
+                <span className="material-symbols-outlined text-4xl text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>restaurant_menu</span>
               </div>
               <h3 className="text-3xl font-bold mb-6">Food Delivery</h3>
               <p className="text-[var(--color-on-surface-variant)] leading-relaxed mb-8">
@@ -109,7 +109,7 @@ export default function OnboardingPage() {
             </div>
             <div className="bg-[var(--color-surface-container-lowest)] rounded-lg p-12 relative overflow-hidden group shadow-[0px_20px_40px_rgba(77,33,42,0.04)]">
               <div className="absolute -top-10 -right-10 w-40 h-40 bg-brand-secondary/10 rounded-full transform group-hover:scale-150 transition-transform duration-700" />
-              <div className="mb-8 w-20 h-20 rounded-full bg-[#ffd2d7] flex items-center justify-center">
+              <div className="mb-8 w-20 h-20 rounded-full bg-surface-container-highest flex items-center justify-center">
                 <span className="material-symbols-outlined text-4xl text-brand-secondary" style={{ fontVariationSettings: "'FILL' 1" }}>verified_user</span>
               </div>
               <h3 className="text-3xl font-bold mb-6">Lifestyle Utility</h3>

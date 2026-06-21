@@ -283,7 +283,7 @@ export default function CheckoutPage() {
                   </p>
                 </div>
                 {phoneVerified && (
-                  <span className="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full">Verified</span>
+                  <span className="text-xs font-bold text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded-full">Verified</span>
                 )}
               </div>
               {!phoneVerified ? (

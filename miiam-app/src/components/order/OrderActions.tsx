@@ -54,30 +54,30 @@ export default function OrderActions({ order, canCancel, showHelp, onToggleHelp,
 
       {/* Show cancelled state prominently */}
       {order.status === "cancelled" && (
-        <div className="w-full bg-red-50 border border-red-200 rounded-xl py-4 text-center">
-          <span className="material-symbols-outlined text-red-500 text-3xl block mb-1">cancel</span>
-          <p className="text-red-600 font-bold">{t.orders.orderCancelled}</p>
-          <p className="text-sm text-red-400 mt-1">{t.orders.orderCancelledDesc}</p>
+        <div className="w-full bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl py-4 text-center">
+          <span className="material-symbols-outlined text-red-500 dark:text-red-400 text-3xl block mb-1">cancel</span>
+          <p className="text-red-600 dark:text-red-400 font-bold">{t.orders.orderCancelled}</p>
+          <p className="text-sm text-red-400 dark:text-red-300 mt-1">{t.orders.orderCancelledDesc}</p>
         </div>
       )}
 
       {order.status === "no_rider_available" && (
-        <div className="w-full bg-amber-50 border border-amber-200 rounded-xl py-4 text-center">
-          <span className="material-symbols-outlined text-amber-500 text-3xl block mb-1">local_shipping</span>
-          <p className="text-amber-700 font-bold">No Riders Available</p>
-          <p className="text-sm text-amber-500 mt-1">No rider could accept your order in time. Please try placing the order again or contact support.</p>
+        <div className="w-full bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl py-4 text-center">
+          <span className="material-symbols-outlined text-amber-500 dark:text-amber-400 text-3xl block mb-1">local_shipping</span>
+          <p className="text-amber-700 dark:text-amber-300 font-bold">{t.orders.noRiders}</p>
+          <p className="text-sm text-amber-500 dark:text-amber-400 mt-1">{t.orders.noRidersDesc}</p>
           <Link
             href="/app/home"
             className="inline-block mt-3 px-6 py-2 bg-amber-500 text-white font-bold rounded-xl text-sm"
           >
-            Browse Restaurants
+            {t.orders.browseRestaurants}
           </Link>
         </div>
       )}
 
       {!canCancel && order && order.status !== "delivered" && order.status !== "cancelled" && order.status !== "no_rider_available" && (
         <p className="text-center text-sm text-on-surface-variant mt-2">
-          Contact rider or customer support to make changes
+          {t.orders.contactForChanges}
         </p>
       )}
 
@@ -86,7 +86,7 @@ export default function OrderActions({ order, canCancel, showHelp, onToggleHelp,
           <div className="bg-surface-container-lowest rounded-2xl w-full max-w-md p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-black text-on-surface">{t.orders.needHelp}</h2>
-              <button onClick={onToggleHelp} className="w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center">
+              <button onClick={onToggleHelp} className="w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center" aria-label="Close help dialog">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
@@ -94,7 +94,7 @@ export default function OrderActions({ order, canCancel, showHelp, onToggleHelp,
             <div className="space-y-3">
               <button
                 onClick={() => router.push(`/app/orders/${order.id}/chat`)}
-                className="w-full p-4 bg-blue-50 text-blue-600 rounded-xl font-bold flex items-center justify-center gap-2"
+                className="w-full p-4 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-xl font-bold flex items-center justify-center gap-2"
               >
                 <span className="material-symbols-outlined">chat</span>
                 {t.orders.chatWithRider}
@@ -103,7 +103,7 @@ export default function OrderActions({ order, canCancel, showHelp, onToggleHelp,
               {order?.riders?.phone ? (
                 <a
                   href={`tel:${order.riders.phone}`}
-                  className="w-full p-4 bg-green-50 text-green-600 rounded-xl font-bold flex items-center justify-center gap-2"
+                  className="w-full p-4 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 rounded-xl font-bold flex items-center justify-center gap-2"
                 >
                   <span className="material-symbols-outlined">call</span>
                   {t.orders.callRider}
@@ -111,7 +111,7 @@ export default function OrderActions({ order, canCancel, showHelp, onToggleHelp,
               ) : (
                 <a
                   href="tel:+919876543210"
-                  className="w-full p-4 bg-green-50 text-green-600 rounded-xl font-bold flex items-center justify-center gap-2"
+                  className="w-full p-4 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 rounded-xl font-bold flex items-center justify-center gap-2"
                 >
                   <span className="material-symbols-outlined">call</span>
                   {t.orders.callSupport}
@@ -121,7 +121,7 @@ export default function OrderActions({ order, canCancel, showHelp, onToggleHelp,
               {canCancel && (
                 <button
                   onClick={onShowCancelReason}
-                  className="w-full p-4 bg-red-50 text-red-600 rounded-xl font-bold flex items-center justify-center gap-2"
+                  className="w-full p-4 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-xl font-bold flex items-center justify-center gap-2"
                 >
                   <span className="material-symbols-outlined">cancel</span>
                   {t.orders.cancelOrder}

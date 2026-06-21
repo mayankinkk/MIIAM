@@ -100,8 +100,8 @@ function LoginContent() {
           </div>
 
           {resetSuccess && (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-              <p className="text-green-700 font-medium text-sm">Password reset successfully. Please sign in with your new password.</p>
+            <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+              <p className="text-green-700 dark:text-green-300 font-medium text-sm">Password reset successfully. Please sign in with your new password.</p>
             </div>
           )}
 

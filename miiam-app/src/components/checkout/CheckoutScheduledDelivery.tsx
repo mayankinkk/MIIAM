@@ -212,11 +212,11 @@ export default function CheckoutScheduledDelivery({
 
       {/* Scheduled Order Info */}
       {scheduledDate && scheduledTime && (
-        <div className="mt-4 p-4 bg-green-50 rounded-lg border border-green-200 flex items-start gap-3">
-          <span className="material-symbols-outlined text-green-600 shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+        <div className="mt-4 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800 flex items-start gap-3">
+          <span className="material-symbols-outlined text-green-600 dark:text-green-400 shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
           <div className="min-w-0">
-            <p className="font-bold text-green-700">Scheduled for delivery</p>
-            <p className="text-sm text-green-600 break-words">
+            <p className="font-bold text-green-700 dark:text-green-300">Scheduled for delivery</p>
+            <p className="text-sm text-green-600 dark:text-green-400 break-words">
               {new Date(scheduledDate).toLocaleDateString('en-IN', { weekday: 'long', month: 'long', day: 'numeric' })} at {scheduledTime}
             </p>
           </div>

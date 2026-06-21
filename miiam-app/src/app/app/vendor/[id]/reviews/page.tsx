@@ -5,6 +5,7 @@ import { useTranslation } from "@/lib/i18n/useTranslation";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import logger from "@/lib/logger";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import EmptyState from "@/components/EmptyState";
 import { ListSkeleton } from "@/components/Skeleton";
@@ -54,7 +55,7 @@ export default function VendorReviewsPage() {
         if (vendorData) setVendor(vendorData);
         if (reviewsData) setReviews(reviewsData);
       } catch (err) {
-        console.error("Failed to load reviews:", err);
+        logger.error({ err }, "Failed to load reviews");
       }
       setLoading(false);
     }

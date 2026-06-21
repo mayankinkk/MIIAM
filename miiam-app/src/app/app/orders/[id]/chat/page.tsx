@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useChat } from "@/lib/hooks/useChat";
+import logger from "@/lib/logger";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import { Skeleton } from "@/components/Skeleton";
@@ -44,7 +45,7 @@ export default function ChatPage() {
       await sendMessage(newMessage.trim(), "user");
       setNewMessage("");
     } catch (err) {
-      console.error("Failed to send message:", err);
+      logger.error({ err }, "Failed to send message");
     }
     setSending(false);
   };

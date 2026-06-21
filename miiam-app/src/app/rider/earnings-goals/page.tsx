@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import logger from "@/lib/logger";
 
 interface DeliveryRecord {
   id: string;
@@ -140,7 +141,7 @@ export default function RiderEarningsGoalsPage() {
         weekly_goal: weeklyTarget,
       }, { onConflict: "rider_id" });
     } catch (err) {
-      console.error("Failed to save goals:", err);
+      logger.error({ err }, "Failed to save goals");
     } finally {
       setSavingGoal(false);
       setShowSetGoal(false);
@@ -149,7 +150,7 @@ export default function RiderEarningsGoalsPage() {
 
   return (
     <div className="min-h-screen bg-[var(--color-surface-container-lowest)]">
-      <header className="bg-gradient-to-br from-brand-secondary to-[#0044bf] text-white p-6 pb-12">
+      <header className="bg-gradient-to-br from-brand-secondary to-secondary-dim text-white p-6 pb-12">
         <div className="flex items-center gap-4">
           <Link href="/rider/dashboard" className="text-white" aria-label="Go back">
             <span className="material-symbols-outlined">arrow_back</span>
@@ -160,7 +161,7 @@ export default function RiderEarningsGoalsPage() {
 
       <main className="px-4 -mt-8 space-y-4 pb-24">
         {/* Total Earnings */}
-        <div className="bg-gradient-to-br from-brand-secondary to-[#0044bf] text-white rounded-2xl p-5 shadow-lg">
+        <div className="bg-gradient-to-br from-brand-secondary to-secondary-dim text-white rounded-2xl p-5 shadow-lg">
           <p className="text-xs font-bold opacity-80 uppercase">Total Earnings (All Time)</p>
           <p className="text-4xl font-black mt-2">₹{totalEarnings.toLocaleString()}</p>
         </div>
@@ -235,7 +236,7 @@ export default function RiderEarningsGoalsPage() {
                   <div key={i} className="flex-1 flex flex-col items-center gap-1">
                     <div className="w-full bg-brand-secondary/20 rounded-t-md relative" style={{ height: "100%" }}>
                       <div
-                        className="absolute bottom-0 w-full bg-gradient-to-t from-brand-secondary to-[#4489ff] rounded-t-md transition-all"
+                        className="absolute bottom-0 w-full bg-gradient-to-t from-brand-secondary to-blue-400 rounded-t-md transition-all"
                         style={{ height: `${Math.max((amt / chartMax) * 100, 4)}%` }}
                       />
                     </div>

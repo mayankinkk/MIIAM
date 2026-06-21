@@ -70,7 +70,7 @@ export default function QuickActionsFAB({ actions = defaultActions }: QuickActio
         {/* Main FAB */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className={`w-14 h-14 bg-gradient-to-br from-[var(--color-primary)] to-[#ff7670] rounded-full flex items-center justify-center shadow-2xl shadow-[var(--color-primary)]/30 active:scale-90 transition-all duration-300 ${
+          className={`w-14 h-14 bg-gradient-to-br from-primary to-primary-container rounded-full flex items-center justify-center shadow-2xl shadow-primary/30 active:scale-90 transition-all duration-300 ${
             isOpen ? "rotate-45" : ""
           }`}
           aria-label="Quick actions"

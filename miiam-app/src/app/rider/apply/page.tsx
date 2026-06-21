@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import logger from "@/lib/logger";
 import BlurImage from "@/components/BlurImage";
 
 export default function RiderApplyPage() {
@@ -56,7 +57,7 @@ export default function RiderApplyPage() {
 
       setSuccess(true);
     } catch (err) {
-      console.error(err);
+      logger.error({ err }, "Rider application submit failed");
       setError("Something went wrong. Please try again.");
     }
     setLoading(false);
@@ -75,7 +76,7 @@ export default function RiderApplyPage() {
           </p>
           <Link 
             href="/rider/login" 
-            className="block w-full bg-[var(--color-primary)] text-white py-4 rounded-xl font-bold text-center hover:bg-[#a00019] transition-all"
+            className="block w-full bg-primary text-white py-4 rounded-xl font-bold text-center hover:bg-primary-dim transition-all"
           >
             Back to Login
           </Link>
@@ -107,14 +108,14 @@ export default function RiderApplyPage() {
                 key={s} 
                 className={`flex-1 h-2 rounded-full transition-all ${
                   step === s ? "bg-[var(--color-primary)]" : 
-                  (step === "docs" && s === "details") || (step === "vehicle" && s !== "vehicle") ? "bg-[var(--color-outline-variant)]" : "bg-[#f0d0d4]"
+                  (step === "docs" && s === "details") || (step === "vehicle" && s !== "vehicle") ? "bg-outline-variant" : "bg-surface-container-high"
                 }`}
               />
             ))}
           </div>
 
           {error && (
-            <div className="mb-6 p-4 bg-[#f95630]/10 border border-[#f95630]/30 rounded-xl text-[#b02500] text-sm font-medium">
+            <div className="mb-6 p-4 bg-error-container/10 border border-error-container/30 rounded-xl text-error text-sm font-medium">
               {error}
             </div>
           )}
@@ -129,7 +130,7 @@ export default function RiderApplyPage() {
                     required
                     value={formData.full_name}
                     onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-                    className="w-full bg-[#ffecee] border border-[var(--color-outline-variant)]/30 rounded-xl px-5 py-4 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/40 transition-all text-[var(--color-on-surface)]"
+                    className="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-5 py-4 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all text-on-surface"
                     placeholder="Enter your full name"
                   />
                 </div>
@@ -140,7 +141,7 @@ export default function RiderApplyPage() {
                     required
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full bg-[#ffecee] border border-[var(--color-outline-variant)]/30 rounded-xl px-5 py-4 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/40 transition-all text-[var(--color-on-surface)]"
+                    className="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-5 py-4 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all text-on-surface"
                     placeholder="your@email.com"
                   />
                 </div>
@@ -151,7 +152,7 @@ export default function RiderApplyPage() {
                     required
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full bg-[#ffecee] border border-[var(--color-outline-variant)]/30 rounded-xl px-5 py-4 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/40 transition-all text-[var(--color-on-surface)]"
+                    className="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-5 py-4 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all text-on-surface"
                     placeholder="+91XXXXXXXXXX"
                   />
                 </div>
@@ -199,7 +200,7 @@ export default function RiderApplyPage() {
                     required
                     value={formData.id_proof_type}
                     onChange={(e) => setFormData({ ...formData, id_proof_type: e.target.value, id_proof_image: null })}
-                    className="w-full bg-[#ffecee] border border-[var(--color-outline-variant)]/30 rounded-xl px-5 py-4 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/40 transition-all text-[var(--color-on-surface)]"
+                    className="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-5 py-4 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all text-on-surface"
                   >
                     <option value="">Select ID type</option>
                     <option value="aadhar">Aadhar Card</option>
@@ -239,7 +240,7 @@ export default function RiderApplyPage() {
                   <button
                     type="button"
                     onClick={() => setStep("details")}
-                    className="flex-1 py-5 bg-[#f0d0d4] text-[var(--color-on-surface)] rounded-xl font-bold hover:bg-[var(--color-outline-variant)] transition-all"
+                    className="flex-1 py-5 bg-surface-container-high text-on-surface rounded-xl font-bold hover:bg-outline-variant transition-all"
                   >
                     Back
                   </button>
@@ -263,7 +264,7 @@ export default function RiderApplyPage() {
                     required
                     value={formData.vehicle_type}
                     onChange={(e) => setFormData({ ...formData, vehicle_type: e.target.value, vehicle_number: "" })}
-                    className="w-full bg-[#ffecee] border border-[var(--color-outline-variant)]/30 rounded-xl px-5 py-4 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/40 transition-all text-[var(--color-on-surface)]"
+                    className="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-5 py-4 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all text-on-surface"
                   >
                     <option value="motorcycle">Motorcycle</option>
                     <option value="scooty">Scooty</option>
@@ -278,7 +279,7 @@ export default function RiderApplyPage() {
                       required
                       value={formData.vehicle_number}
                       onChange={(e) => setFormData({ ...formData, vehicle_number: e.target.value.toUpperCase() })}
-                      className="w-full bg-[#ffecee] border border-[var(--color-outline-variant)]/30 rounded-xl px-5 py-4 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/40 transition-all text-[var(--color-on-surface)]"
+                      className="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-5 py-4 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all text-on-surface"
                       placeholder="AS 01 AB 1234"
                     />
                   </div>
@@ -287,7 +288,7 @@ export default function RiderApplyPage() {
                   <button
                     type="button"
                     onClick={() => setStep("docs")}
-                    className="flex-1 py-5 bg-[#f0d0d4] text-[var(--color-on-surface)] rounded-xl font-bold hover:bg-[var(--color-outline-variant)] transition-all"
+                    className="flex-1 py-5 bg-surface-container-high text-on-surface rounded-xl font-bold hover:bg-outline-variant transition-all"
                   >
                     Back
                   </button>

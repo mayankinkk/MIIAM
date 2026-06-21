@@ -258,7 +258,7 @@ export default function RiderSettingsPage() {
                 role="switch"
                 aria-checked={darkMode}
                 aria-label="Dark mode"
-                className={`w-12 h-6 rounded-full transition-colors ${darkMode ? "bg-green-500" : "bg-[var(--color-surface-container-high)]"}`}
+                className={`w-12 h-6 rounded-full transition-colors ${darkMode ? "bg-green-500" : "bg-slate-300 dark:bg-gray-600"}`}
               >
                 <div className={`w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full shadow transition-transform ${darkMode ? "translate-x-6" : "translate-x-0.5"}`} />
               </button>

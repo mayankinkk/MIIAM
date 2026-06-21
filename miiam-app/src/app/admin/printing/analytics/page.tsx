@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { PRINTING_VENDOR_ID } from "@/lib/constants";
+import logger from "@/lib/logger";
 
 interface OrderRecord {
   id: string;
@@ -55,7 +56,7 @@ export default function AdminPrintingAnalytics() {
       .order("placed_at", { ascending: false });
 
     if (error) {
-      console.error("[print-analytics] Failed to load orders:", error);
+      logger.error({ err: error instanceof Error ? error : new Error(String(error)) }, "[print-analytics] Failed to load orders");
       setLoading(false);
       return;
     }
@@ -104,7 +105,7 @@ export default function AdminPrintingAnalytics() {
           rushRevenue += (s.subtotal || 0) - (s.baseSubtotal || 0);
         }
       } catch (e) {
-        console.warn("[print-analytics] Failed to parse order special_notes:", e);
+        logger.warn({ err: e instanceof Error ? e : new Error(String(e)) }, "[print-analytics] Failed to parse order special_notes");
       }
     }
 

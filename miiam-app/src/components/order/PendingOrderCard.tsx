@@ -34,7 +34,7 @@ export default function PendingOrderCard({
 
   return (
     <div className="relative bg-surface-container-lowest rounded-2xl p-4 sm:p-6 shadow-sm overflow-hidden">
-      <div className="absolute top-0 right-0 w-32 h-32 bg-[#c4d0ff]/20 rounded-full -mr-16 -mt-16 blur-2xl" />
+      <div className="absolute top-0 right-0 w-32 h-32 bg-secondary-container/20 rounded-full -mr-16 -mt-16 blur-2xl" />
       <div className="flex items-center gap-3 sm:gap-6 relative z-10 min-w-0">
         <div className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 rounded-full object-cover border-4 border-surface-container bg-surface-container flex items-center justify-center">
           <span className="material-symbols-outlined text-4xl text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>person_search</span>

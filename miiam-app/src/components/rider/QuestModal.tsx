@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 
 interface Quest {
@@ -20,14 +21,23 @@ interface QuestModalProps {
 export default function QuestModal({ open, quests, streakDays, onClose }: QuestModalProps) {
   const { t } = useTranslation();
 
+  useEffect(() => {
+    if (!open) return;
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [open, onClose]);
+
   if (!open) return null;
 
   return (
     <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-sm p-4">
+      <div role="dialog" aria-modal="true" aria-labelledby="quest-modal-title" className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-sm p-4">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="font-bold text-lg">{t.rider.modals.dailyQuests}</h3>
-          <button onClick={onClose}>
+          <h3 id="quest-modal-title" className="font-bold text-lg">{t.rider.modals.dailyQuests}</h3>
+          <button onClick={onClose} aria-label="Close">
             <span className="material-symbols-outlined">close</span>
           </button>
         </div>
@@ -45,7 +55,7 @@ export default function QuestModal({ open, quests, streakDays, onClose }: QuestM
             <div key={quest.id} className="p-3 bg-[var(--color-surface-subtle)] rounded-xl">
               <div className="flex justify-between items-center mb-2">
                 <span className="font-bold text-sm">{quest.title}</span>
-                <span className="text-green-600 font-bold text-sm">+₹{quest.bonus}</span>
+                <span className="text-green-600 dark:text-green-400 font-bold text-sm">+₹{quest.bonus}</span>
               </div>
               <div className="w-full h-2 bg-[var(--color-surface-container-high)] rounded-full overflow-hidden">
                 <div 

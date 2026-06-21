@@ -358,7 +358,7 @@ export default function RiderDashboard() {
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors', maxZoom: 18 }).addTo(map);
       mapInstanceRef.current = map;
       navigator.geolocation.getCurrentPosition((pos) => map.setView([pos.coords.latitude, pos.coords.longitude], 15), () => {}, { timeout: 10000 });
-      const riderIcon = L.divIcon({ className: '', html: `<div style="display:flex;align-items:center;justify-content:center;width:40px;height:40px;background:#0b50d5;border-radius:50%;border:3px solid white;box-shadow:0 3px 10px rgba(11,80,213,0.4);"><span style="font-size:20px;color:white;">🏍️</span></div>`, iconSize: [40, 40], iconAnchor: [20, 40] });
+      const riderIcon = L.divIcon({ className: '', html: `<div style="display:flex;align-items:center;justify-content:center;width:40px;height:40px;background:var(--color-secondary);border-radius:50%;border:3px solid white;box-shadow:0 3px 10px rgba(11,80,213,0.4);"><span style="font-size:20px;color:white;">🏍️</span></div>`, iconSize: [40, 40], iconAnchor: [20, 40] });
       riderMarkerRef.current = L.marker([28.6139, 77.2090], { icon: riderIcon }).addTo(map);
       const watchId = navigator.geolocation.watchPosition((pos) => { riderMarkerRef.current?.setLatLng([pos.coords.latitude, pos.coords.longitude]); }, () => {}, { enableHighAccuracy: true, maximumAge: 5000, timeout: 10000 });
       watchIdRef.current = watchId;
@@ -377,7 +377,7 @@ export default function RiderDashboard() {
     (async () => {
       const L = await import('leaflet');
       if (currentOrder && currentOrder.vendorLat && currentOrder.vendorLng) {
-        const pickupIcon = L.divIcon({ className: '', html: `<div style="display:flex;flex-direction:column;align-items:center;"><div style="width:44px;height:44px;background:white;border-radius:50%;border:3px solid #0b50d5;box-shadow:0 3px 10px rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:center;"><span style="font-size:20px;">🍽️</span></div><span style="margin-top:2px;padding:2px 6px;background:white;border-radius:6px;font-size:10px;font-weight:bold;box-shadow:0 1px 4px rgba(0,0,0,0.15);white-space:nowrap;">${currentOrder.vendor}</span></div>`, iconSize: [44, 64], iconAnchor: [22, 64] });
+        const pickupIcon = L.divIcon({ className: '', html: `<div style="display:flex;flex-direction:column;align-items:center;"><div style="width:44px;height:44px;background:white;border-radius:50%;border:3px solid var(--color-secondary);box-shadow:0 3px 10px rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:center;"><span style="font-size:20px;">🍽️</span></div><span style="margin-top:2px;padding:2px 6px;background:white;border-radius:6px;font-size:10px;font-weight:bold;box-shadow:0 1px 4px rgba(0,0,0,0.15);white-space:nowrap;">${currentOrder.vendor}</span></div>`, iconSize: [44, 64], iconAnchor: [22, 64] });
         markers.push(L.marker([currentOrder.vendorLat, currentOrder.vendorLng], { icon: pickupIcon }).addTo(map));
         if (deliveryStep === "delivering" && currentOrder.customerLat && currentOrder.customerLng) {
           const deliveryIcon = L.divIcon({ className: '', html: `<div style="display:flex;flex-direction:column;align-items:center;"><div style="width:44px;height:44px;background:white;border-radius:50%;border:3px solid var(--color-primary);box-shadow:0 3px 10px rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:center;"><span style="font-size:20px;">🏠</span></div><span style="margin-top:2px;padding:2px 6px;background:white;border-radius:6px;font-size:10px;font-weight:bold;box-shadow:0 1px 4px rgba(0,0,0,0.15);white-space:nowrap;">${currentOrder.customer}</span></div>`, iconSize: [44, 64], iconAnchor: [22, 64] });
@@ -399,7 +399,7 @@ export default function RiderDashboard() {
       const demandMarkers: Leaflet.Marker[] = [];
       pendingOrders.forEach((order) => {
         if (order.vendorLat && order.vendorLng) {
-          const dotIcon = L.divIcon({ className: '', html: `<div style="width:16px;height:16px;background:rgba(11,80,213,0.5);border:2px solid #0b50d5;border-radius:50%;box-shadow:0 0 12px rgba(11,80,213,0.4);animation:pulse-dot 2s ease-in-out infinite;"></div>`, iconSize: [16, 16], iconAnchor: [8, 8] });
+          const dotIcon = L.divIcon({ className: '', html: `<div style="width:16px;height:16px;background:rgba(11,80,213,0.5);border:2px solid var(--color-secondary);border-radius:50%;box-shadow:0 0 12px rgba(11,80,213,0.4);animation:pulse-dot 2s ease-in-out infinite;"></div>`, iconSize: [16, 16], iconAnchor: [8, 8] });
           demandMarkers.push(L.marker([order.vendorLat, order.vendorLng], { icon: dotIcon }).addTo(map).bindPopup(`<b>${order.vendor}</b><br/>₹${order.earnings} • ${order.items} items`));
         }
       });

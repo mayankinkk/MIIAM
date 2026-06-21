@@ -149,11 +149,12 @@ describe("Addresses API", () => {
 });
 
 describe("Settings API", () => {
+  const ctx = {};
   it("GET returns 403 when not admin", async () => {
     profileQueryResult = { data: { role: "user" }, error: null };
     const { GET } = await import("../settings/route");
     const req = mockRequest("GET", "http://localhost:3000/api/settings");
-    const res = await GET(req);
+    const res = await GET(req, ctx);
     expect(res.status).toBe(403);
   });
 
@@ -161,7 +162,7 @@ describe("Settings API", () => {
     mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
     const { GET } = await import("../settings/route");
     const req = mockRequest("GET", "http://localhost:3000/api/settings");
-    const res = await GET(req);
+    const res = await GET(req, ctx);
     expect(res.status).toBe(401);
   });
 
@@ -169,7 +170,7 @@ describe("Settings API", () => {
     profileQueryResult = { data: { role: "admin" }, error: null };
     const { GET } = await import("../settings/route");
     const req = mockRequest("GET", "http://localhost:3000/api/settings");
-    const res = await GET(req);
+    const res = await GET(req, ctx);
     expect(res.status).toBe(200);
   });
 
@@ -177,7 +178,7 @@ describe("Settings API", () => {
     profileQueryResult = { data: { role: "admin" }, error: null };
     const { PUT } = await import("../settings/route");
     const req = mockRequest("PUT", "http://localhost:3000/api/settings", { value: "test" });
-    const res = await PUT(req);
+    const res = await PUT(req, ctx);
     const body = await res.json();
     expect(res.status).toBe(400);
     expect(body.error).toBe("Key is required");
@@ -187,7 +188,7 @@ describe("Settings API", () => {
     profileQueryResult = { data: { role: "admin" }, error: null };
     const { POST } = await import("../settings/route");
     const req = mockRequest("POST", "http://localhost:3000/api/settings", {});
-    const res = await POST(req);
+    const res = await POST(req, ctx);
     const body = await res.json();
     expect(res.status).toBe(400);
     expect(body.error).toBe("Settings object required");
@@ -195,6 +196,7 @@ describe("Settings API", () => {
 });
 
 describe("Rider Cancel Order API", () => {
+  const ctx = {};
   it("POST returns 401 when unauthenticated", async () => {
     mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
     const { POST } = await import("../rider/cancel-order/route");
@@ -203,7 +205,7 @@ describe("Rider Cancel Order API", () => {
       rider_id: "rider-1",
       reason: "Too far",
     });
-    const res = await POST(req);
+    const res = await POST(req, ctx);
     expect(res.status).toBe(401);
   });
 
@@ -212,7 +214,7 @@ describe("Rider Cancel Order API", () => {
     const req = mockRequest("POST", "http://localhost:3000/api/rider/cancel-order", {
       order_id: "ord-1",
     });
-    const res = await POST(req);
+    const res = await POST(req, ctx);
     const body = await res.json();
     expect(res.status).toBe(400);
     expect(body.error).toBe("Missing fields");
@@ -226,7 +228,7 @@ describe("Rider Cancel Order API", () => {
       rider_id: "other-rider",
       reason: "Too far",
     });
-    const res = await POST(req);
+    const res = await POST(req, ctx);
     const body = await res.json();
     expect(res.status).toBe(403);
     expect(body.error).toBe("Forbidden");

@@ -2,6 +2,7 @@
 
 import { useMemo, useState, useEffect, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
+import logger from "@/lib/logger";
 
 
 type ReportType = "orders" | "revenue" | "vendors" | "riders" | "users";
@@ -152,7 +153,7 @@ export default function ReportsPage() {
         setUserStats({ total: total || 0, newThisMonth: newThisMonth || 0, active: active || 0 });
       }
     } catch (e) {
-      console.error("[reports] Failed to load report:", e);
+      logger.error({ err: e instanceof Error ? e : new Error(String(e)) }, "[reports] Failed to load report");
     }
     setLoading(false);
   }, [reportType, dateRange]);

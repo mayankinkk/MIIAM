@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { startLocationTracking, stopLocationTracking } from "@/lib/rider-location-tracker";
+import logger from "@/lib/logger";
 import type { Order, OrderItem } from "./types";
 import type * as Leaflet from 'leaflet';
 
@@ -88,7 +89,7 @@ export default function ActiveDeliveryView({ order, riderId, onUpdateItemStatus,
         className: '',
         html: `<div style="position:relative;width:46px;height:46px">
           <div style="position:absolute;inset:0;background:rgba(11,80,213,0.2);border-radius:50%;animation:pulse-ring 1s ease-out infinite"></div>
-          <div style="position:absolute;inset:4px;background:#0b50d5;border-radius:50%;border:3px solid white;box-shadow:0 4px 14px rgba(11,80,213,0.5);display:flex;align-items:center;justify-content:center;font-size:20px;">🛵</div>
+          <div style="position:absolute;inset:4px;background:var(--color-secondary);border-radius:50%;border:3px solid white;box-shadow:0 4px 14px rgba(11,80,213,0.5);display:flex;align-items:center;justify-content:center;font-size:20px;">🛵</div>
         </div>`,
         iconSize: [46, 46], iconAnchor: [23, 46],
       });
@@ -97,7 +98,7 @@ export default function ActiveDeliveryView({ order, riderId, onUpdateItemStatus,
       riderMarkerRef.current = riderMarker;
 
       const isPickup = phase === "pickup";
-      const destColor = isPickup ? "#16a34a" : "var(--color-primary)";
+      const destColor = isPickup ? "var(--color-status-success)" : "var(--color-primary)";
       const destEmoji = isPickup ? "🏪" : "🏠";
       const destLabel = isPickup ? "Pick up here" : "Deliver here";
       const destAddr = isPickup ? vendorAddress : deliveryAddress;
@@ -129,7 +130,7 @@ export default function ActiveDeliveryView({ order, riderId, onUpdateItemStatus,
             if (isMounted) setTrackingInfo({ eta, distance: dist });
             map.fitBounds([[rLat, rLng], [dLat, dLng]], { padding: [40, 40] });
           }
-        } catch (e) { console.warn("Map routing error:", e); }
+        } catch (e) { logger.warn({ err: e }, "Map routing error"); }
       }
 
       let geoSuccess = false;
@@ -151,7 +152,7 @@ export default function ActiveDeliveryView({ order, riderId, onUpdateItemStatus,
             await drawRoute(riderLat, riderLng, dLat, dLng);
             geoSuccess = true;
           }
-        } catch (e) { console.warn("Map routing error:", e); }
+        } catch (e) { logger.warn({ err: e }, "Map routing error"); }
       }
 
       if (!geoSuccess && isMounted) {
@@ -187,7 +188,7 @@ export default function ActiveDeliveryView({ order, riderId, onUpdateItemStatus,
         @keyframes slide-up { from{transform:translateY(6px);opacity:0} to{transform:translateY(0);opacity:1} }
       `}</style>
 
-      <button onClick={() => setExpanded(!expanded)} className="w-full text-left">
+      <button onClick={() => setExpanded(!expanded)} className="w-full text-left" aria-expanded={expanded} aria-label={expanded ? "Collapse order details" : "Expand order details"}>
         <div className={`px-4 py-3 flex items-center gap-3 ${phase === "pickup" ? "bg-gradient-to-r from-green-600 to-emerald-500" : "bg-gradient-to-r from-brand-secondary to-indigo-600"}`}>
           <div className="w-9 h-9 bg-[var(--color-surface-container-lowest)]/20 rounded-full flex items-center justify-center text-base flex-shrink-0">
             {phase === "pickup" ? "🏪" : "🏠"}
@@ -215,7 +216,7 @@ export default function ActiveDeliveryView({ order, riderId, onUpdateItemStatus,
         <div style={{ animation: 'slide-up 0.25s ease' }}>
           {trackingInfo && (
             <div className="flex border-b border-[var(--color-border-subtle)]">
-              <div className={`flex-1 py-2 text-center border-r border-[var(--color-border-subtle)] ${phase === "pickup" ? "bg-green-50" : "bg-blue-50"}`}>
+              <div className={`flex-1 py-2 text-center border-r border-[var(--color-border-subtle)] ${phase === "pickup" ? "bg-green-50 dark:bg-green-900/20" : "bg-blue-50 dark:bg-blue-900/20"}`}>
                 <p className="text-[9px] font-bold uppercase tracking-wide text-[var(--color-outline-variant)]">ETA</p>
                 <p className={`text-lg font-black ${phase === "pickup" ? "text-green-600" : "text-brand-secondary"}`}>
                   {trackingInfo.eta}<span className="text-xs font-normal ml-0.5">min</span>
@@ -228,7 +229,7 @@ export default function ActiveDeliveryView({ order, riderId, onUpdateItemStatus,
               <div className="flex-1 py-2 text-center border-l border-[var(--color-border-subtle)]">
                 <p className="text-[9px] font-bold uppercase tracking-wide text-[var(--color-outline-variant)]">GPS</p>
                 <div className="flex items-center justify-center gap-1 mt-0.5">
-                  <span style={{ width:7,height:7,borderRadius:'50%',background:'#22c55e',display:'inline-block',boxShadow:'0 0 0 2px rgba(34,197,94,0.25)'}}></span>
+                  <span style={{ width:7,height:7,borderRadius:'50%',background:'var(--color-status-success)',display:'inline-block',boxShadow:'0 0 0 2px rgba(34,197,94,0.25)'}}></span>
                   <span className="text-[10px] font-bold text-green-600">Live</span>
                 </div>
               </div>
@@ -249,7 +250,7 @@ export default function ActiveDeliveryView({ order, riderId, onUpdateItemStatus,
             </div>
           )}
           <div className="px-4 pt-2 pb-1 flex gap-2">
-            <button onClick={() => setShowMap(!showMap)} className="text-[10px] font-bold text-brand-secondary bg-blue-50 px-4 py-2.5 rounded-lg flex items-center gap-1">
+            <button onClick={() => setShowMap(!showMap)} className="text-[10px] font-bold text-brand-secondary bg-blue-50 dark:bg-blue-900/20 px-4 py-2.5 rounded-lg flex items-center gap-1">
               <span className="material-symbols-outlined text-sm">{showMap ? "visibility_off" : "map"}</span>
               {showMap ? "Hide Map" : "Show Map"}
             </button>
@@ -309,7 +310,7 @@ export default function ActiveDeliveryView({ order, riderId, onUpdateItemStatus,
                     placeholder="Actual"
                     value={item.actual_price || ""}
                     onChange={(e) => onUpdateItemStatus(item.id, "available", parseFloat(e.target.value))}
-                    className="w-14 text-[10px] border border-[var(--color-border-subtle)] rounded px-1.5 py-1 bg-white"
+                    className="w-14 text-[10px] border border-[var(--color-border-subtle)] rounded px-1.5 py-1 bg-white dark:bg-[var(--color-surface)]"
                   />
                 )}
               </div>
@@ -317,7 +318,7 @@ export default function ActiveDeliveryView({ order, riderId, onUpdateItemStatus,
           </div>
 
           <div className="px-4 mb-2">
-            <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-2 rounded-lg">
+            <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 p-2 rounded-lg">
               <div className="flex justify-between text-[11px]">
                 <span className="text-[var(--color-outline)]">Spent</span>
                 <span className="font-bold">₹{totalSpent.toFixed(0)}</span>

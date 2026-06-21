@@ -62,7 +62,7 @@ export default function CustomerLocationView({ orderId, className = "", height =
       className: "customer-live-pin",
       html: `<div style="position:relative;width:40px;height:40px">
         <div style="position:absolute;inset:0;background:rgba(11,80,213,0.25);border-radius:50%;animation:pulse-ring 1.4s ease-out infinite"></div>
-        <div style="position:absolute;inset:4px;background:#0b50d5;border-radius:50%;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:14px;">📍</div>
+        <div style="position:absolute;inset:4px;background:var(--color-secondary);border-radius:50%;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:14px;">📍</div>
       </div>`,
       iconSize: [40, 40],
       iconAnchor: [20, 20],
@@ -78,8 +78,8 @@ export default function CustomerLocationView({ orderId, className = "", height =
       if (!accuracyRef.current) {
         accuracyRef.current = L.circle(latLng, {
           radius: location.accuracy,
-          color: "#0b50d5",
-          fillColor: "#0b50d5",
+          color: "var(--color-secondary)",
+          fillColor: "var(--color-secondary)",
           fillOpacity: 0.1,
           weight: 1,
         }).addTo(map);

@@ -191,7 +191,7 @@ export default function CustomizationModal({ item, vendor_id, vendor_name, onClo
         <div className="bg-[var(--color-surface-container-lowest)] border-t border-[var(--color-border-subtle)] px-6 py-4 pb-[env(safe-area-inset-bottom)]">
           <button
             onClick={handleAddToCart}
-            className="w-full py-4 bg-[var(--color-primary)] text-white font-extrabold rounded-2xl flex items-center justify-center gap-3 hover:bg-[#a40017] active:scale-95 transition-all shadow-lg shadow-[var(--color-primary)]/30"
+            className="w-full py-4 bg-primary text-white font-extrabold rounded-2xl flex items-center justify-center gap-3 hover:bg-primary-dim active:scale-95 transition-all shadow-lg shadow-primary/30"
           >
             <span className="material-symbols-outlined">add_shopping_cart</span>
             <span>Add to Cart</span>

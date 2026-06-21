@@ -25,8 +25,8 @@ export default function IncomingOrderCard({
 
   return (
     <div className="absolute inset-0 z-10 flex items-end justify-center pb-24 px-4">
-      <div className="max-w-md w-full bg-white/95 backdrop-blur-xl rounded-2xl overflow-hidden shadow-2xl border border-white flex flex-col max-h-[80vh]">
-        <div className="bg-gradient-to-r from-brand-secondary to-[#0044bf] p-4 flex items-center justify-between text-white">
+      <div className="max-w-md w-full bg-white/95 dark:bg-[var(--color-surface)]/95 backdrop-blur-xl rounded-2xl overflow-hidden shadow-2xl border border-white dark:border-gray-700 flex flex-col max-h-[80vh]">
+        <div className="bg-gradient-to-r from-brand-secondary to-secondary-dim p-4 flex items-center justify-between text-white">
           <div className="flex items-center gap-3">
             <div className="relative w-12 h-12">
               <svg className="w-full h-full -rotate-90">

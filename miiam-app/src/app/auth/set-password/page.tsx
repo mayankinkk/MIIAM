@@ -3,6 +3,7 @@
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import logger from "@/lib/logger";
 import BlurImage from "@/components/BlurImage";
 
 function SetPasswordContent() {
@@ -89,7 +90,7 @@ function SetPasswordContent() {
       });
 
       if (signInError) {
-        console.error("[set-password] Sign in error after account creation:", signInError.message);
+        logger.error({ err: signInError }, "[set-password] Sign in error after account creation");
         // If still "email not confirmed", force-confirm via login API and retry
         if (signInError.message.toLowerCase().includes("email not confirmed")) {
           await fetch("/api/auth/login", {
