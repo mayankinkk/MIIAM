@@ -3,11 +3,10 @@
 import { useState, Suspense, useCallback, useMemo } from "react";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import { useRouter, useParams } from "next/navigation";
-import { useCartStore } from "@/lib/store/cartStore";
+import { createClient } from "@/lib/supabase/client";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
 import { CardSkeleton } from "@/components/Skeleton";
-import { SERVICES_VENDOR_ID } from "@/lib/constants";
 import { getServiceById, SERVICE_TIME_SLOTS } from "@/lib/data/services";
 
 function ServiceDetailContent() {
@@ -16,36 +15,63 @@ function ServiceDetailContent() {
   const params = useParams();
   const serviceId = (params.id as string) || "s1";
   const service = getServiceById(serviceId);
+  const supabase = useMemo(() => createClient(), []);
 
-  const { addItem } = useCartStore();
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [adding, setAdding] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleAddToCart = useCallback(() => {
+  const handleBook = useCallback(async () => {
     if (!service) return;
+    if (!selectedDate || !selectedTime) {
+      setError("Please select both date and time");
+      return;
+    }
     setAdding(true);
-    const schedulingNote = [selectedDate, selectedTime].filter(Boolean).join(" | ");
-    addItem(
-      {
-        id: `service-${service.id}`,
-        name: service.name,
-        price: service.price,
-        image_url: service.image,
-        vendor_name: "MIIAM Services",
-        vendor_id: SERVICES_VENDOR_ID,
-        menu_item_id: service.id,
-        special_notes: schedulingNote || undefined,
-      },
-      1,
-    );
-    setTimeout(() => {
+    setError("");
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setError("Please login to book");
+        setAdding(false);
+        return;
+      }
+
+      // Convert display date to ISO format
+      const dateObj = new Date(selectedDate);
+      const isoDate = dateObj.toISOString().split("T")[0];
+
+      const res = await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          service_type: service.category,
+          sub_service: service.name,
+          user_name: user.user_metadata?.full_name || "",
+          user_phone: user.user_metadata?.phone || "",
+          address: "",
+          scheduled_date: isoDate,
+          scheduled_time: selectedTime,
+          amount: service.price,
+          notes: null,
+          provider_id: null,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Booking failed");
+
+      router.push("/app/bookings");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Booking failed");
+    } finally {
       setAdding(false);
-      router.push("/app/cart");
-    }, 500);
-  }, [service, selectedDate, selectedTime, addItem, router]);
+    }
+  }, [service, selectedDate, selectedTime, supabase, router]);
 
   const dates = useMemo(
     () =>
@@ -275,9 +301,15 @@ function ServiceDetailContent() {
           </div>
         )}
 
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600" role="alert">
+            {error}
+          </div>
+        )}
+
         {/* CTA */}
         <button
-          onClick={handleAddToCart}
+          onClick={handleBook}
           disabled={adding}
           className="fixed bottom-6 left-4 right-4 bg-primary text-white py-4 rounded-2xl font-bold text-lg shadow-lg shadow-primary/20 active:scale-95 transition-all z-50 flex items-center justify-center gap-2"
           style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}
@@ -285,7 +317,7 @@ function ServiceDetailContent() {
           {adding ? (
             <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
           ) : (
-            <span className="material-symbols-outlined text-[20px]">shopping_cart</span>
+            <span className="material-symbols-outlined text-[20px]">calendar_today</span>
           )}
           {adding ? t.common.loading : t.services.bookNow}
         </button>
