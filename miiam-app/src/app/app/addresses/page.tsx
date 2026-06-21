@@ -23,8 +23,6 @@ interface AddressData {
   is_default?: boolean;
   phone: string;
   instructions?: string;
-  address?: string;
-  pincode?: string;
 }
 
 interface AddressCardProps {
@@ -242,7 +240,7 @@ export default function AddressBookPage() {
         setNewAddress((prev) => ({
           ...prev,
           street: `Lat: ${latitude.toFixed(5)}, Lng: ${longitude.toFixed(5)}`,
-          postal_code: accuracy < 100 ? "High Accuracy" : "Medium Accuracy",
+          postal_code: "",
         }));
         setDetectingLocation(false);
       };
@@ -274,7 +272,7 @@ export default function AddressBookPage() {
   const handleSetDefault = async (addressId: string) => {
     const selectedAddress = addresses.find(addr => addr.id === addressId);
     if (selectedAddress) {
-      const fullAddress = `${selectedAddress.address}, ${selectedAddress.city}, ${selectedAddress.state} - ${selectedAddress.pincode}`;
+      const fullAddress = `${selectedAddress.street}, ${selectedAddress.city}, ${selectedAddress.state} - ${selectedAddress.postal_code}`;
       localStorage.setItem('miiam_selected_address', JSON.stringify({ address: fullAddress }));
     }
     
@@ -297,7 +295,7 @@ export default function AddressBookPage() {
   };
 
   const handleSelectAddress = (address: typeof addresses[0]) => {
-    const fullAddress = `${address.address}, ${address.city}, ${address.state} - ${address.pincode}`;
+    const fullAddress = `${address.street}, ${address.city}, ${address.state} - ${address.postal_code}`;
     localStorage.setItem('miiam_selected_address', JSON.stringify({ address: fullAddress }));
     router.push('/app/checkout');
   };
