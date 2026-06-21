@@ -132,7 +132,7 @@ export default function FavoritesPage() {
             {favorites.map((vendor) => (
               <div key={vendor.id} className="relative group">
                 <Link
-                  href={`/vendor/${vendor.id}`}
+                  href={`/app/vendor/${vendor.id}`}
                   className="block bg-surface-container-lowest dark:bg-[var(--color-surface-container-lowest)] rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all"
                 >
                   <div className="h-48 bg-surface-container dark:bg-[var(--color-surface-container)] overflow-hidden">
