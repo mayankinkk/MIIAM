@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 interface TimeSlot {
@@ -24,7 +24,7 @@ export default function BookingCalendar({
   price,
   onBook 
 }: BookingCalendarProps) {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
@@ -129,23 +129,20 @@ export default function BookingCalendar({
     setError(null);
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        setError("Please login to book");
-        setBooking(false);
-        return;
-      }
+      const dateObj = new Date(selectedDate);
+      const isoDate = dateObj.toISOString().split("T")[0];
 
       const res = await fetch("/api/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          service_id: serviceId,
-          user_id: user.id,
+          service_type: serviceId,
+          sub_service: serviceName,
           provider_id: providerId,
-          scheduled_date: selectedDate,
+          scheduled_date: isoDate,
           scheduled_time: selectedTime,
-          total_amount: price,
+          amount: price,
+          address: "",
         })
       });
 

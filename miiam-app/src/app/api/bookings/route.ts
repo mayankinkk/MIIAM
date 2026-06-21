@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
     const user_id = user.id;
 
     // Check for conflicting bookings (same provider, date, time)
-    if (provider_id) {
+    if (provider_id && provider_id !== "null") {
       const { data: existing } = await supabase
         .from("service_bookings")
         .select("id")
@@ -112,7 +112,7 @@ export async function POST(request: NextRequest) {
       await supabase.from("notifications").insert({
         user_id,
         title: "Booking Confirmed ✓",
-        message: `Your ${sub_service || service_type} booking is confirmed for ${scheduled_date} at ${scheduled_time}.`,
+        body: `Your ${sub_service || service_type} booking is confirmed for ${scheduled_date} at ${scheduled_time}.`,
         type: "booking",
         read: false,
         created_at: new Date().toISOString(),
