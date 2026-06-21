@@ -141,7 +141,6 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const provider_id = searchParams.get("provider_id");
   const date = searchParams.get("date");
-  const user_id = searchParams.get("user_id");
 
   if (provider_id && date) {
     const { data: bookings } = await supabase
@@ -154,33 +153,28 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ booked_slots: bookings || [] });
   }
 
-  if (user_id) {
-    if (user_id !== user.id) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
-    const { data: bookings, error } = await supabase
-      .from("service_bookings")
-      .select("*")
-      .eq("user_id", user_id)
-      .order("created_at", { ascending: false });
+  // Fetch only the authenticated user's own bookings
+  const { data: userBookings, error: userError } = await supabase
+    .from("service_bookings")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
 
-    if (error) {
-      return NextResponse.json({ bookings: [] });
-    }
-
-    return NextResponse.json({ bookings });
+  if (userError) {
+    return NextResponse.json({ bookings: [] });
   }
 
-  // Only admins can list all bookings without a filter
+  // Check if user is admin — admins can also see all bookings (user bookings already fetched)
   const { data: profile } = await supabase
     .from("profiles")
     .select("role")
     .eq("id", user.id)
     .maybeSingle();
   if (!profile || profile.role !== "admin") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    return NextResponse.json({ bookings: userBookings || [] });
   }
 
+  // Admins see all bookings
   const { data: allBookings } = await supabase
     .from("service_bookings")
     .select("*")

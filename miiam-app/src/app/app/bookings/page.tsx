@@ -108,6 +108,11 @@ export default function BookingsPage() {
   const displayBookings = activeTab === "upcoming" ? upcoming : past;
 
   async function handleCancel(bookingId: string) {
+    const booking = bookings.find(b => b.id === bookingId);
+    if (!booking || !["pending", "confirmed"].includes(booking.status)) {
+      addToast("This booking cannot be cancelled", "error");
+      return;
+    }
     try {
       const { error } = await supabase
         .from("service_bookings")
@@ -123,6 +128,11 @@ export default function BookingsPage() {
 
   async function handleReschedule() {
     if (!rescheduleBooking || !rescheduleDate || !rescheduleTime) return;
+    if (!["pending", "confirmed"].includes(rescheduleBooking.status)) {
+      addToast("This booking cannot be rescheduled", "error");
+      setRescheduleBooking(null);
+      return;
+    }
     setRescheduling(true);
     try {
       const { error } = await supabase
@@ -195,7 +205,7 @@ export default function BookingsPage() {
         scheduled_date: rebookDate,
         scheduled_time: rebookTime,
         amount: rebookBooking.amount,
-        status: "confirmed",
+        status: "pending",
       });
       if (error) throw error;
       setRebookBooking(null);
