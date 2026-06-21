@@ -433,7 +433,7 @@ export default function CheckoutPage() {
 
                   if (paymentMethod === "upi" || paymentMethod === "card") {
                     pay({
-                      amount: grand + tipAmount,
+                      amount: grand,
                       description: `${items.length} item(s) from MIIAM`,
                       onSuccess: (paymentId, razorpayOrderId) => {
                         placeOrder({ ...orderArgs, paymentDetails: { paymentId, razorpayOrderId } })
