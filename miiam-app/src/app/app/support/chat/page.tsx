@@ -49,6 +49,14 @@ export default function SupportChatPage() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, typing]);
 
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
+
   const sendMessage = async () => {
     if (!input.trim()) return;
     const text = input.trim();
@@ -58,8 +66,8 @@ export default function SupportChatPage() {
     setMessages((prev) => [...prev, userMsg]);
     setTyping(true);
 
-    // Simulate bot response delay
-    setTimeout(() => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => {
       const botText = getBotResponse(text);
       setMessages((prev) => [...prev, { id: (Date.now() + 1).toString(), text: botText, role: "bot", time: new Date() }]);
       setTyping(false);
