@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
     await supabase.from("notifications").insert({
       user_id: userId,
       title,
-      message,
+      body: message,
       icon,
       action_url: actionUrl,
       type,

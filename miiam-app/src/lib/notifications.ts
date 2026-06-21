@@ -38,7 +38,7 @@ export async function sendOrderNotification(
   await supabase.from("notifications").insert({
     user_id: userId,
     title: message.title,
-    message: message.body(orderId),
+    body: message.body(orderId),
     type: "order_update",
     read: false,
     created_at: new Date().toISOString(),
