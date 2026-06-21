@@ -103,12 +103,6 @@ export default function RootLayout({
           `
         }} />
         <link rel="preconnect" href="https://ui-avatars.com" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
-          rel="stylesheet"
-        />
       </head>
       <body>
         <SkipLink href="#main-content">Skip to main content</SkipLink>

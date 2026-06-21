@@ -177,7 +177,15 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Material Symbols */
+/* Material Symbols — self-hosted from /fonts/ */
+@font-face {
+  font-family: 'Material Symbols Outlined';
+  font-style: normal;
+  font-weight: 100 700;
+  font-display: swap;
+  src: url('/fonts/MaterialSymbolsOutlined.woff2') format('woff2');
+}
+
 .material-symbols-outlined {
   font-family: 'Material Symbols Outlined';
   font-weight: normal;
