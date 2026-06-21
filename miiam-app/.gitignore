@@ -52,4 +52,10 @@ yarn-error.log*
 next-env.d.ts
 
 /src/generated/prisma
-.env*
+
+# Capacitor / Android
+/android/
+/out/
+.keystore
+*.jks
+*.keystore
