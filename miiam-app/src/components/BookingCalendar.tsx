@@ -157,8 +157,8 @@ export default function BookingCalendar({
 
       setShowConfirmation(true);
       onBook(selectedDate, selectedTime);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Booking failed");
     }
     setBooking(false);
   }

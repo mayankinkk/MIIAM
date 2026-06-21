@@ -6,7 +6,18 @@ import Link from "next/link";
 import PrintButton from "@/components/print/PrintButton";
 
 interface OrderActionsProps {
-  order: any;
+  order: {
+    id: string;
+    status: string;
+    placed_at?: string;
+    total_amount: number;
+    payment_method?: string;
+    delivery_address?: string | null;
+    delivery_instructions?: string;
+    vendor?: { shopName?: string; name?: string; image_url?: string; logo_url?: string; address?: string; phone?: string } | null;
+    items?: Array<{ name: string; quantity: number | string; unitPrice?: number | string; price?: number | string }>;
+    riders?: { phone?: string } | null;
+  };
   canCancel: boolean;
   showHelp: boolean;
   onToggleHelp: () => void;
@@ -33,7 +44,7 @@ export default function OrderActions({ order, canCancel, showHelp, onToggleHelp,
           placedAt: order.placed_at,
           totalAmount: order.total_amount,
           paymentMethod: order.payment_method,
-          deliveryAddress: order.delivery_address,
+          deliveryAddress: order.delivery_address ?? undefined,
           deliveryInstructions: order.delivery_instructions,
           status: order.status,
           vendor: order.vendor,

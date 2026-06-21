@@ -18,7 +18,7 @@ export default function PaymentContent() {
       if (!user) { setLoading(false); return; }
       const { data } = await supabase.from("payment_methods").select("*").eq("user_id", user.id).order("is_default", { ascending: false });
       if (data) {
-        setPaymentMethods(data.map((pm: any) => ({
+        setPaymentMethods(data.map((pm: { id: string; type?: string; last4?: string; brand?: string; is_default?: boolean }) => ({
           id: pm.id,
           type: pm.type || "card",
           last4: pm.last4 || "****",

@@ -41,7 +41,7 @@ export default function OrderChatOverlay({
   const { messages, loading, isTyping, sendMessage, sendTypingIndicator } = useChat(
     orderId,
     currentUserId,
-    { participants: participants ? Array.from(participants) as any : undefined }
+    { participants: participants ? (Array.from(participants) as Array<"user" | "rider" | "vendor" | "support">) : undefined }
   );
   const [input, setInput] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);

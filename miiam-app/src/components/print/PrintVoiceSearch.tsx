@@ -10,6 +10,11 @@ interface SpeechRecognitionEventLite {
   results: ArrayLike<ArrayLike<SpeechRecognitionResultLite>>;
   resultIndex: number;
 }
+interface SpeechRecognitionErrorEventLite {
+  error: string;
+  message?: string;
+}
+
 interface SpeechRecognitionLike {
   start: () => void;
   stop: () => void;
@@ -18,7 +23,7 @@ interface SpeechRecognitionLike {
   interimResults: boolean;
   lang: string;
   onresult: ((e: SpeechRecognitionEventLite) => void) | null;
-  onerror: ((e: any) => void) | null;
+  onerror: ((e: SpeechRecognitionErrorEventLite) => void) | null;
   onend: (() => void) | null;
 }
 

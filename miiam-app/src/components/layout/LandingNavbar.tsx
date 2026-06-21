@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useLanguageStore } from "@/lib/store/languageStore";
 import { getTranslationsSync } from "@/lib/i18n";
 import { createClient } from "@/lib/supabase/client";
+import type { User } from "@supabase/supabase-js";
 import LanguageSwitcher from "./LanguageSwitcher";
 
 interface NavLink {
@@ -27,7 +28,7 @@ export function LandingNavbar({
 }: LandingNavbarProps) {
   const { language } = useLanguageStore();
   const [mounted, setMounted] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const supabase = useMemo(() => createClient(), []);
 
   useEffect(() => {

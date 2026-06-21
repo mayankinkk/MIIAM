@@ -19,13 +19,23 @@ type CustomizationOption = {
   selected: boolean;
 };
 
+export interface CustomizationModalCartItem {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+  vendor_id: string;
+  vendor_name: string;
+  image_url?: string;
+}
+
 type Props = {
   item: MenuItem;
   vendor_id: string;
   vendor_name: string;
   vendor_type?: string;
   onClose: () => void;
-  onAdd?: (item: any) => void;
+  onAdd?: (item: CustomizationModalCartItem) => void;
 };
 
 const commonCustomizations: Record<string, { label: string; options: { label: string; price: number }[] }> = {

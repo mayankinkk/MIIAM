@@ -43,8 +43,8 @@ export default function ReviewForm({ vendorId, orderId, onSuccess }: ReviewFormP
       if (error) throw error;
       setSubmitted(true);
       onSuccess?.();
-    } catch (error: any) {
-      console.error("Error submitting review:", error);
+    } catch (error: unknown) {
+      console.error("Error submitting review:", error instanceof Error ? error.message : error);
       addToast("Failed to submit review", "error");
     } finally {
       setLoading(false);
