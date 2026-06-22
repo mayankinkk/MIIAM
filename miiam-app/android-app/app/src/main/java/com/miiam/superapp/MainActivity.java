@@ -1,18 +1,18 @@
 package com.miiam.superapp;
 
-import android.annotation.SuppressLint;
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.view.KeyEvent;
+import android.view.Gravity;
 import android.view.View;
-import android.view.WindowManager;
 import android.webkit.GeolocationPermissions;
 import android.webkit.JsResult;
 import android.webkit.ValueCallback;
@@ -26,10 +26,13 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.core.view.WindowInsetsControllerCompat;
+
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout errorLayout;
     private ValueCallback<Uri[]> fileChooserCallback;
     private static final int FILE_CHOOSER_REQUEST = 100;
+    private static final int PERMISSION_REQUEST_CODE = 200;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,12 +49,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Edge-to-edge
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-        WindowInsetsControllerCompat insetsController =
-            WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
-        insetsController.setSystemBarsBehavior(
-            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
-
-        // Status bar color
         getWindow().setStatusBarColor(0xFFBA001C);
         getWindow().setNavigationBarColor(0xFFBA001C);
 
@@ -86,8 +84,55 @@ public class MainActivity extends AppCompatActivity {
         setContentView(root);
 
         setupWebView();
+        requestPermissions();
+        setupPushNotifications();
         loadUrl();
     }
+
+    // ─── Permissions ──────────────────────────────────────────────
+
+    private void requestPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // Android 13+
+            String[] perms = {
+                Manifest.permission.POST_NOTIFICATIONS,
+                Manifest.permission.CAMERA,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.READ_MEDIA_IMAGES,
+            };
+            ActivityCompat.requestPermissions(this, perms, PERMISSION_REQUEST_CODE);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            // Android 6-12
+            String[] perms = {
+                Manifest.permission.CAMERA,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+            };
+            ActivityCompat.requestPermissions(this, perms, PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // Permissions handled gracefully — WebView works without them too
+    }
+
+    // ─── Push Notifications ──────────────────────────────────────
+
+    private void setupPushNotifications() {
+        FirebaseMessaging.getInstance().getToken()
+            .addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    String token = task.getResult();
+                    // TODO: Send token to your server
+                }
+            });
+    }
+
+    // ─── WebView Setup ──────────────────────────────────────────
 
     private void setupWebView() {
         WebSettings settings = webView.getSettings();
@@ -103,13 +148,11 @@ public class MainActivity extends AppCompatActivity {
         settings.setCacheMode(WebSettings.LOAD_DEFAULT);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
         settings.setMediaPlaybackRequiresUserGesture(false);
-
-        // Geolocation
         settings.setGeolocationEnabled(true);
 
         // User agent
-        String userAgent = settings.getUserAgentString();
-        settings.setUserAgentString(userAgent + " MIIAMApp/1.0");
+        String ua = settings.getUserAgentString();
+        settings.setUserAgentString(ua + " MIIAMApp/1.0");
 
         // WebViewClient
         webView.setWebViewClient(new WebViewClient() {
@@ -125,9 +168,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 progressBar.setProgress(newProgress);
-                if (newProgress == 100) {
-                    progressBar.setVisibility(View.GONE);
-                }
+                if (newProgress == 100) progressBar.setVisibility(View.GONE);
             }
 
             @Override
@@ -153,32 +194,25 @@ public class MainActivity extends AppCompatActivity {
                 String url = request.getUrl().toString();
 
                 // Let miiam.in load in WebView
-                if (url.contains("miiam.in")) {
-                    return false;
-                }
+                if (url.contains("miiam.in")) return false;
 
-                // Open external links in browser
+                // External HTTP links → browser
                 if (url.startsWith("http://") || url.startsWith("https://")) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                    startActivity(intent);
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
                     return true;
                 }
 
-                // Handle tel:, mailto:, sms:
-                if (url.startsWith("tel:") || url.startsWith("mailto:") ||
-                    url.startsWith("sms:")) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                    startActivity(intent);
+                // tel, mailto, sms
+                if (url.startsWith("tel:") || url.startsWith("mailto:") || url.startsWith("sms:")) {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
                     return true;
                 }
 
-                // Handle WhatsApp
+                // WhatsApp
                 if (url.startsWith("whatsapp:")) {
                     try {
                         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
-                    } catch (Exception e) {
-                        // WhatsApp not installed
-                    }
+                    } catch (Exception ignored) {}
                     return true;
                 }
 
@@ -191,9 +225,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 progressBar.setProgress(newProgress);
-                if (newProgress == 100) {
-                    progressBar.setVisibility(View.GONE);
-                }
+                if (newProgress == 100) progressBar.setVisibility(View.GONE);
             }
 
             @Override
@@ -202,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
                 new AlertDialog.Builder(MainActivity.this)
                     .setTitle("MIIAM")
                     .setMessage(message)
-                    .setPositiveButton("OK", (dialog, which) -> result.confirm())
+                    .setPositiveButton("OK", (d, w) -> result.confirm())
                     .setCancelable(false)
                     .show();
                 return true;
@@ -214,8 +246,8 @@ public class MainActivity extends AppCompatActivity {
                 new AlertDialog.Builder(MainActivity.this)
                     .setTitle("MIIAM")
                     .setMessage(message)
-                    .setPositiveButton("OK", (dialog, which) -> result.confirm())
-                    .setNegativeButton("Cancel", (dialog, which) -> result.cancel())
+                    .setPositiveButton("OK", (d, w) -> result.confirm())
+                    .setNegativeButton("Cancel", (d, w) -> result.cancel())
                     .setCancelable(false)
                     .show();
                 return true;
@@ -227,14 +259,11 @@ public class MainActivity extends AppCompatActivity {
                 callback.invoke(origin, true, false);
             }
 
-            // File chooser (for image uploads)
             @Override
             public boolean onShowFileChooser(WebView webView,
                     ValueCallback<Uri[]> filePathCallback,
                     FileChooserParams fileChooserParams) {
-                if (fileChooserCallback != null) {
-                    fileChooserCallback.onReceiveValue(null);
-                }
+                if (fileChooserCallback != null) fileChooserCallback.onReceiveValue(null);
                 fileChooserCallback = filePathCallback;
                 Intent intent = fileChooserParams.createIntent();
                 try {
@@ -248,6 +277,21 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    // ─── Share Feature ──────────────────────────────────────────
+
+    private void shareCurrentPage() {
+        String url = webView.getUrl();
+        if (url == null) url = "https://miiam.in";
+
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Check out MIIAM");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, "Check this out on MIIAM: " + url);
+        startActivity(Intent.createChooser(shareIntent, "Share via"));
+    }
+
+    // ─── URL Loading ────────────────────────────────────────────
+
     private void loadUrl() {
         if (isNetworkAvailable()) {
             webView.loadUrl("https://miiam.in");
@@ -257,37 +301,48 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void loadUrl(String url) {
+        if (isNetworkAvailable()) {
+            webView.loadUrl(url);
+        } else {
+            webView.setVisibility(View.GONE);
+            errorLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+    // ─── Error Layout ───────────────────────────────────────────
+
     private LinearLayout createErrorLayout() {
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setGravity(android.view.Gravity.CENTER);
+        layout.setGravity(Gravity.CENTER);
         layout.setPadding(dpToPx(32), dpToPx(32), dpToPx(32), dpToPx(32));
 
         TextView icon = new TextView(this);
         icon.setText("📶");
         icon.setTextSize(48);
-        icon.setGravity(android.view.Gravity.CENTER);
+        icon.setGravity(Gravity.CENTER);
         layout.addView(icon);
 
         TextView title = new TextView(this);
         title.setText("No Internet Connection");
         title.setTextSize(20);
         title.setTextColor(0xFF333333);
-        title.setGravity(android.view.Gravity.CENTER);
-        LinearLayout.LayoutParams titleParams = new LinearLayout.LayoutParams(
+        title.setGravity(Gravity.CENTER);
+        LinearLayout.LayoutParams tp = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        titleParams.topMargin = dpToPx(16);
-        layout.addView(title, titleParams);
+        tp.topMargin = dpToPx(16);
+        layout.addView(title, tp);
 
-        TextView subtitle = new TextView(this);
-        subtitle.setText("Please check your internet connection and try again.");
-        subtitle.setTextSize(14);
-        subtitle.setTextColor(0xFF666666);
-        subtitle.setGravity(android.view.Gravity.CENTER);
-        LinearLayout.LayoutParams subParams = new LinearLayout.LayoutParams(
+        TextView sub = new TextView(this);
+        sub.setText("Please check your internet connection and try again.");
+        sub.setTextSize(14);
+        sub.setTextColor(0xFF666666);
+        sub.setGravity(Gravity.CENTER);
+        LinearLayout.LayoutParams sp = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        subParams.topMargin = dpToPx(8);
-        layout.addView(subtitle, subParams);
+        sp.topMargin = dpToPx(8);
+        layout.addView(sub, sp);
 
         TextView retryBtn = new TextView(this);
         retryBtn.setText("RETRY");
@@ -295,15 +350,17 @@ public class MainActivity extends AppCompatActivity {
         retryBtn.setTextColor(0xFFFFFFFF);
         retryBtn.setBackgroundColor(0xFFBA001C);
         retryBtn.setPadding(dpToPx(32), dpToPx(12), dpToPx(32), dpToPx(12));
-        retryBtn.setGravity(android.view.Gravity.CENTER);
+        retryBtn.setGravity(Gravity.CENTER);
         retryBtn.setOnClickListener(v -> loadUrl());
-        LinearLayout.LayoutParams retryParams = new LinearLayout.LayoutParams(
+        LinearLayout.LayoutParams rp = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        retryParams.topMargin = dpToPx(24);
-        layout.addView(retryBtn, retryParams);
+        rp.topMargin = dpToPx(24);
+        layout.addView(retryBtn, rp);
 
         return layout;
     }
+
+    // ─── Helpers ────────────────────────────────────────────────
 
     private boolean isNetworkAvailable() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
@@ -318,7 +375,8 @@ public class MainActivity extends AppCompatActivity {
         return (int) (dp * getResources().getDisplayMetrics().density);
     }
 
-    // Back button
+    // ─── Lifecycle ──────────────────────────────────────────────
+
     @Override
     public void onBackPressed() {
         if (webView.canGoBack()) {
@@ -327,32 +385,49 @@ public class MainActivity extends AppCompatActivity {
             new AlertDialog.Builder(this)
                 .setTitle("Exit MIIAM?")
                 .setMessage("Are you sure you want to exit?")
-                .setPositiveButton("Yes", (dialog, which) -> finish())
+                .setPositiveButton("Yes", (d, w) -> finish())
                 .setNegativeButton("No", null)
                 .show();
         }
     }
 
-    // File chooser result
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == FILE_CHOOSER_REQUEST) {
-            if (fileChooserCallback != null) {
-                Uri[] results = null;
-                if (resultCode == Activity.RESULT_OK && data != null) {
-                    String dataString = data.getDataString();
-                    if (dataString != null) {
-                        results = new Uri[]{Uri.parse(dataString)};
-                    }
-                }
-                fileChooserCallback.onReceiveValue(results);
-                fileChooserCallback = null;
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+        if (intent != null && intent.hasExtra("open_url")) {
+            String url = intent.getStringExtra("open_url");
+            if (url != null && !url.isEmpty()) {
+                loadUrl(url);
+            }
+        }
+        // Handle deep links
+        if (intent != null && intent.getData() != null) {
+            Uri data = intent.getData();
+            if (data.getHost() != null && data.getHost().contains("miiam.in")) {
+                loadUrl(data.toString());
             }
         }
     }
 
-    // Keep WebView state on rotation
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == FILE_CHOOSER_REQUEST && fileChooserCallback != null) {
+            Uri[] results = null;
+            if (resultCode == Activity.RESULT_OK && data != null) {
+                String dataString = data.getDataString();
+                if (dataString != null) results = new Uri[]{Uri.parse(dataString)};
+            }
+            fileChooserCallback.onReceiveValue(results);
+            fileChooserCallback = null;
+        }
+    }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -379,9 +454,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if (webView != null) {
-            webView.destroy();
-        }
+        if (webView != null) webView.destroy();
         super.onDestroy();
     }
 }

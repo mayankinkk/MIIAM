@@ -1,15 +1,38 @@
 # MIIAM Android WebView App
 
+## Native Features
+
+| Feature | Status |
+|---------|--------|
+| Splash Screen | MIIAM branded (red bg, white M, app name) |
+| Push Notifications | Firebase Cloud Messaging |
+| Back Button | WebView history + exit confirmation |
+| File Upload | Image picker from camera/gallery |
+| Camera | Permission requested at startup |
+| Location | Permission requested at startup |
+| Share | Share current page URL |
+| Deep Links | `https://miiam.in` opens in app |
+| Offline Screen | "No Internet" with retry |
+| HTTPS Only | Network security config |
+
 ## Setup
 
 ### Prerequisites
 1. **Android Studio** — https://developer.android.com/studio
 2. **JDK 17+**
+3. **Google Services JSON** — for push notifications (see below)
 
 ### Open in Android Studio
 ```
 File → Open → select miiam-app/android-app/
 ```
+
+### Firebase Setup (Push Notifications)
+1. Go to https://console.firebase.google.com
+2. Create project (or use existing)
+3. Add Android app → package name: `com.miiam.superapp`
+4. Download `google-services.json`
+5. Place at `android-app/app/google-services.json`
 
 ### Build
 ```
@@ -80,8 +103,8 @@ Release → Production → Create New Release
 - **Short description:** Your super app for food, services & more
 - **Full description:** (4000 chars max — describe features)
 - **Screenshots:** min 2 phone screenshots (16:9 ratio)
-- **App icon:** 512×512 PNG
-- **Feature graphic:** 1024×500 PNG
+- **App icon:** 512x512 PNG
+- **Feature graphic:** 1024x500 PNG
 
 ### 5. Required Forms
 - **Data Safety** — data you collect (location, contacts, etc.)
@@ -106,14 +129,43 @@ Review: hours to a few days.
 | URL | `https://miiam.in` |
 | Permissions | Internet, Camera, Location, Notifications, Phone |
 
+## File Structure
+```
+android-app/
+├── app/
+│   ├── src/main/
+│   │   ├── java/com/miiam/superapp/
+│   │   │   ├── SplashActivity.java      # Branded splash screen
+│   │   │   ├── MainActivity.java        # WebView + all features
+│   │   │   └── MiiamFirebaseService.java # Push notifications
+│   │   ├── AndroidManifest.xml
+│   │   └── res/
+│   │       ├── layout/activity_main.xml
+│   │       ├── drawable/ic_launcher_foreground.xml
+│   │       ├── mipmap-anydpi-v26/       # Adaptive icons
+│   │       ├── values/colors.xml
+│   │       ├── values/styles.xml
+│   │       └── xml/network_security_config.xml
+│   ├── build.gradle
+│   └── proguard-rules.pro
+├── build.gradle                         # Google services plugin
+├── settings.gradle
+├── gradle.properties
+└── gradle/wrapper/
+```
+
 ## Troubleshooting
 
-**White screen:** Check internet connection. WebView loads miiam.in remotely.
+**White screen:** Check internet. WebView loads miiam.in remotely.
+
+**Build fails without google-services.json:**
+Temporarily remove `apply plugin: 'com.google.gms.google-services'` from `app/build.gradle`.
+
+**Push notifications not working:**
+Ensure `google-services.json` is in `android-app/app/` and SHA-1 is added in Firebase console.
 
 **App rejected:**
 - Ensure targetSdk >= 34
 - Add Privacy Policy URL
 - Complete Data Safety form
 - Add valid screenshots
-
-**Can't build:** Open `android-app/` in Android Studio, let Gradle sync, then build.
