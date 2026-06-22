@@ -29,10 +29,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.WindowCompat;
-
-import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -85,15 +82,13 @@ public class MainActivity extends AppCompatActivity {
 
         setupWebView();
         requestPermissions();
-        setupPushNotifications();
-        loadUrl();
+        handleIntent(getIntent());
     }
 
     // ─── Permissions ──────────────────────────────────────────────
 
     private void requestPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            // Android 13+
             String[] perms = {
                 Manifest.permission.POST_NOTIFICATIONS,
                 Manifest.permission.CAMERA,
@@ -103,7 +98,6 @@ public class MainActivity extends AppCompatActivity {
             };
             ActivityCompat.requestPermissions(this, perms, PERMISSION_REQUEST_CODE);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            // Android 6-12
             String[] perms = {
                 Manifest.permission.CAMERA,
                 Manifest.permission.ACCESS_FINE_LOCATION,
@@ -117,19 +111,6 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        // Permissions handled gracefully — WebView works without them too
-    }
-
-    // ─── Push Notifications ──────────────────────────────────────
-
-    private void setupPushNotifications() {
-        FirebaseMessaging.getInstance().getToken()
-            .addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    String token = task.getResult();
-                    // TODO: Send token to your server
-                }
-            });
     }
 
     // ─── WebView Setup ──────────────────────────────────────────
@@ -193,22 +174,18 @@ public class MainActivity extends AppCompatActivity {
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 String url = request.getUrl().toString();
 
-                // Let miiam.in load in WebView
                 if (url.contains("miiam.in")) return false;
 
-                // External HTTP links → browser
                 if (url.startsWith("http://") || url.startsWith("https://")) {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
                     return true;
                 }
 
-                // tel, mailto, sms
                 if (url.startsWith("tel:") || url.startsWith("mailto:") || url.startsWith("sms:")) {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
                     return true;
                 }
 
-                // WhatsApp
                 if (url.startsWith("whatsapp:")) {
                     try {
                         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
@@ -399,19 +376,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void handleIntent(Intent intent) {
-        if (intent != null && intent.hasExtra("open_url")) {
+        if (intent == null) return;
+
+        // Handle notification URL
+        if (intent.hasExtra("open_url")) {
             String url = intent.getStringExtra("open_url");
             if (url != null && !url.isEmpty()) {
                 loadUrl(url);
+                return;
             }
         }
+
         // Handle deep links
-        if (intent != null && intent.getData() != null) {
+        if (intent.getData() != null) {
             Uri data = intent.getData();
             if (data.getHost() != null && data.getHost().contains("miiam.in")) {
                 loadUrl(data.toString());
+                return;
             }
         }
+
+        // Default: load main URL
+        loadUrl();
     }
 
     @Override

@@ -27,9 +27,6 @@
     <!-- Phone (rider calls) -->
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
-    <!-- Wake lock (FCM) -->
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -70,30 +67,6 @@
                     android:host="miiam.in" />
             </intent-filter>
         </activity>
-
-        <!-- Firebase Cloud Messaging Service -->
-        <service
-            android:name=".MiiamFirebaseService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
-
-        <!-- Default notification channel -->
-        <meta-data
-            android:name="com.google.firebase.messaging.default_notification_channel_id"
-            android:value="miiam_notifications" />
-
-        <!-- Default notification icon -->
-        <meta-data
-            android:name="com.google.firebase.messaging.default_notification_icon"
-            android:drawable="@android:drawable/ic_dialog_info" />
-
-        <!-- Default notification color -->
-        <meta-data
-            android:name="com.google.firebase.messaging.default_notification_color"
-            android:value="#BA001C" />
 
     </application>
 </manifest>
