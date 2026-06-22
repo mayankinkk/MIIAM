@@ -1,13 +1,15 @@
 package com.miiam.superapp;
 
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,57 +21,57 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Full screen
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         getWindow().setStatusBarColor(0xFFBA001C);
         getWindow().setNavigationBarColor(0xFFBA001C);
 
-        // Build splash screen programmatically
+        // Root: red background, centered content
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
         root.setGravity(Gravity.CENTER);
         root.setBackgroundColor(0xFFBA001C);
-        root.setPadding(dp(48), dp(48), dp(48), dp(48));
 
-        // M icon
-        TextView mIcon = new TextView(this);
-        mIcon.setText("M");
-        mIcon.setTextSize(72);
-        mIcon.setTextColor(0xFFFFFFFF);
-        mIcon.setGravity(Gravity.CENTER);
-        mIcon.setTypeface(android.graphics.Typeface.DEFAULT_BOLD);
-        root.addView(mIcon);
+        // White circle with M letter
+        View circle = new View(this) {
+            @Override
+            protected void onDraw(Canvas canvas) {
+                super.onDraw(canvas);
+                float cx = getWidth() / 2f;
+                float cy = getHeight() / 2f;
+                float radius = Math.min(cx, cy);
 
-        // App name
+                // White circle
+                Paint bgPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+                bgPaint.setColor(0xFFFFFFFF);
+                canvas.drawCircle(cx, cy, radius, bgPaint);
+
+                // Red M letter
+                Paint textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+                textPaint.setColor(0xFFBA001C);
+                textPaint.setTextSize(radius * 1.1f);
+                textPaint.setTextAlign(Paint.Align.CENTER);
+                textPaint.setTypeface(android.graphics.Typeface.DEFAULT_BOLD);
+                Paint.FontMetrics fm = textPaint.getFontMetrics();
+                float yOffset = (fm.ascent + fm.descent) / 2f;
+                canvas.drawText("M", cx, cy - yOffset, textPaint);
+            }
+        };
+
+        int circleSize = (int) (getResources().getDisplayMetrics().density * 100);
+        LinearLayout.LayoutParams circleParams = new LinearLayout.LayoutParams(circleSize, circleSize);
+        root.addView(circle, circleParams);
+
+        // "MIIAM" text below circle
         TextView appName = new TextView(this);
         appName.setText("MIIAM");
-        appName.setTextSize(32);
+        appName.setTextSize(24);
         appName.setTextColor(0xFFFFFFFF);
         appName.setGravity(Gravity.CENTER);
         appName.setTypeface(android.graphics.Typeface.DEFAULT_BOLD);
         LinearLayout.LayoutParams nameParams = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        nameParams.topMargin = dp(16);
+        nameParams.topMargin = (int) (getResources().getDisplayMetrics().density * 24);
         root.addView(appName, nameParams);
-
-        // Tagline
-        TextView tagline = new TextView(this);
-        tagline.setText("Your Super App");
-        tagline.setTextSize(14);
-        tagline.setTextColor(0xCCFFFFFF);
-        tagline.setGravity(Gravity.CENTER);
-        LinearLayout.LayoutParams tagParams = new LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        tagParams.topMargin = dp(8);
-        root.addView(tagline, tagParams);
-
-        // Loading indicator
-        ProgressBar spinner = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
-        spinner.setMax(100);
-        spinner.setIndeterminate(true);
-        LinearLayout.LayoutParams spinParams = new LinearLayout.LayoutParams(dp(120), dp(4));
-        spinParams.topMargin = dp(48);
-        root.addView(spinner, spinParams);
 
         setContentView(root);
 
@@ -81,9 +83,5 @@ public class SplashActivity extends AppCompatActivity {
             finish();
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         }, 1500);
-    }
-
-    private int dp(int value) {
-        return (int) (value * getResources().getDisplayMetrics().density);
     }
 }
