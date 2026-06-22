@@ -7,7 +7,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.WindowCompat;
 
 public class MainActivity extends AppCompatActivity {
@@ -37,24 +39,22 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private LinearLayout errorLayout;
     private ValueCallback<Uri[]> fileChooserCallback;
+    private GeolocationPermissions.Callback geolocationCallback;
+    private String geolocationOrigin;
     private static final int FILE_CHOOSER_REQUEST = 100;
-    private static final int PERMISSION_REQUEST_CODE = 200;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Edge-to-edge
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         getWindow().setStatusBarColor(0xFFBA001C);
         getWindow().setNavigationBarColor(0xFFBA001C);
 
-        // Layout
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
         root.setBackgroundColor(0xFFFFFFFF);
 
-        // Progress bar
         progressBar = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
         progressBar.setMax(100);
         progressBar.setVisibility(View.GONE);
@@ -63,14 +63,12 @@ public class MainActivity extends AppCompatActivity {
         progressBar.setLayoutParams(progressParams);
         root.addView(progressBar);
 
-        // Error layout
         errorLayout = createErrorLayout();
         errorLayout.setVisibility(View.GONE);
         root.addView(errorLayout, new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.MATCH_PARENT));
 
-        // WebView
         webView = new WebView(this);
         webView.setLayoutParams(new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
@@ -81,29 +79,38 @@ public class MainActivity extends AppCompatActivity {
         setContentView(root);
 
         setupWebView();
-        requestPermissions();
         handleIntent(getIntent());
     }
 
-    // ─── Permissions ──────────────────────────────────────────────
+    // ─── In-Context Permission Requests ─────────────────────────
+    // Permissions are requested only when the user triggers the feature.
 
-    private void requestPermissions() {
+    public void requestCameraPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.CAMERA}, 101);
+        }
+    }
+
+    public void requestLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                }, 102);
+        }
+    }
+
+    public void requestNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            String[] perms = {
-                Manifest.permission.POST_NOTIFICATIONS,
-                Manifest.permission.CAMERA,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.READ_MEDIA_IMAGES,
-            };
-            ActivityCompat.requestPermissions(this, perms, PERMISSION_REQUEST_CODE);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            String[] perms = {
-                Manifest.permission.CAMERA,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-            };
-            ActivityCompat.requestPermissions(this, perms, PERMISSION_REQUEST_CODE);
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.POST_NOTIFICATIONS}, 103);
+            }
         }
     }
 
@@ -111,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // Results handled by the feature that triggered the request
     }
 
     // ─── WebView Setup ──────────────────────────────────────────
@@ -120,8 +128,8 @@ public class MainActivity extends AppCompatActivity {
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
         settings.setDatabaseEnabled(true);
-        settings.setAllowFileAccess(true);
-        settings.setAllowContentAccess(true);
+        settings.setAllowFileAccess(false);
+        settings.setAllowContentAccess(false);
         settings.setLoadWithOverviewMode(true);
         settings.setUseWideViewPort(true);
         settings.setBuiltInZoomControls(true);
@@ -131,11 +139,9 @@ public class MainActivity extends AppCompatActivity {
         settings.setMediaPlaybackRequiresUserGesture(false);
         settings.setGeolocationEnabled(true);
 
-        // User agent
         String ua = settings.getUserAgentString();
         settings.setUserAgentString(ua + " MIIAMApp/1.0");
 
-        // WebViewClient
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
@@ -144,12 +150,6 @@ public class MainActivity extends AppCompatActivity {
                 progressBar.setProgress(0);
                 errorLayout.setVisibility(View.GONE);
                 webView.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onProgressChanged(WebView view, int newProgress) {
-                progressBar.setProgress(newProgress);
-                if (newProgress == 100) progressBar.setVisibility(View.GONE);
             }
 
             @Override
@@ -197,7 +197,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // WebChromeClient
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
@@ -230,10 +229,32 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
 
+            // Geolocation: ask user before granting
             @Override
             public void onGeolocationPermissionsShowPrompt(String origin,
                     GeolocationPermissions.Callback callback) {
-                callback.invoke(origin, true, false);
+                geolocationCallback = callback;
+                geolocationOrigin = origin;
+
+                new AlertDialog.Builder(MainActivity.this)
+                    .setTitle("Location Access")
+                    .setMessage(origin + " wants to access your location. Allow?")
+                    .setPositiveButton("Allow", (d, w) -> {
+                        if (geolocationCallback != null) {
+                            geolocationCallback.invoke(geolocationOrigin, true, false);
+                            geolocationCallback = null;
+                            geolocationOrigin = null;
+                        }
+                    })
+                    .setNegativeButton("Deny", (d, w) -> {
+                        if (geolocationCallback != null) {
+                            geolocationCallback.invoke(geolocationOrigin, false, false);
+                            geolocationCallback = null;
+                            geolocationOrigin = null;
+                        }
+                    })
+                    .setCancelable(false)
+                    .show();
             }
 
             @Override
@@ -254,7 +275,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    // ─── Share Feature ──────────────────────────────────────────
+    // ─── Share ──────────────────────────────────────────────────
 
     private void shareCurrentPage() {
         String url = webView.getUrl();
@@ -341,11 +362,11 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean isNetworkAvailable() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-        if (cm != null) {
-            NetworkInfo info = cm.getActiveNetworkInfo();
-            return info != null && info.isConnected();
-        }
-        return false;
+        if (cm == null) return false;
+        Network network = cm.getActiveNetwork();
+        if (network == null) return false;
+        NetworkCapabilities caps = cm.getNetworkCapabilities(network);
+        return caps != null && caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
     }
 
     private int dpToPx(int dp) {
@@ -376,9 +397,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void handleIntent(Intent intent) {
-        if (intent == null) return;
+        if (intent == null) {
+            loadUrl();
+            return;
+        }
 
-        // Handle notification URL
         if (intent.hasExtra("open_url")) {
             String url = intent.getStringExtra("open_url");
             if (url != null && !url.isEmpty()) {
@@ -387,7 +410,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        // Handle deep links
         if (intent.getData() != null) {
             Uri data = intent.getData();
             if (data.getHost() != null && data.getHost().contains("miiam.in")) {
@@ -396,7 +418,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        // Default: load main URL
         loadUrl();
     }
 
@@ -440,7 +461,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if (webView != null) webView.destroy();
+        if (webView != null) {
+            webView.stopLoading();
+            webView.destroy();
+        }
         super.onDestroy();
     }
 }
