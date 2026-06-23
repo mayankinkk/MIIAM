@@ -14,6 +14,8 @@ export interface SelectedAddress {
   lat?: number;
   lng?: number;
   type?: string;
+  phone?: string;
+  phone_verified?: boolean;
 }
 
 interface Props {

@@ -42,14 +42,6 @@ export default function CheckoutPage() {
   const [deliveryAddress, setDeliveryAddress] = useState<SelectedAddress | null>(null);
   const [savedAddresses, setSavedAddresses] = useState<SelectedAddress[]>([]);
   const [showAddressPicker, setShowAddressPicker] = useState(false);
-  const [phone, setPhone] = useState("");
-  const [phoneVerified, setPhoneVerified] = useState(false);
-  const [otpSent, setOtpSent] = useState(false);
-  const [otpCode, setOtpCode] = useState("");
-  const [sendingOtp, setSendingOtp] = useState(false);
-  const [verifyingOtp, setVerifyingOtp] = useState(false);
-  const [otpError, setOtpError] = useState("");
-  const [otpCooldown, setOtpCooldown] = useState(0);
   const [serviceCharge, setServiceCharge] = useState(8);
   const [promoCodesRaw, setPromoCodesRaw] = useState<PromoCode[]>([]);
   const [hydrated, setHydrated] = useState(false);
@@ -145,70 +137,6 @@ export default function CheckoutPage() {
     return unsub;
   }, []);
 
-  useEffect(() => {
-    if (otpCooldown <= 0) return;
-    const timer = setInterval(() => setOtpCooldown((s) => s - 1), 1000);
-    return () => clearInterval(timer);
-  }, [otpCooldown]);
-
-  async function handleSendOtp() {
-    const clean = phone.replace(/\D/g, "");
-    if (!/^[6-9]\d{9}$/.test(clean)) {
-      setOtpError("Enter a valid 10-digit phone number");
-      return;
-    }
-    setSendingOtp(true);
-    setOtpError("");
-    try {
-      const res = await fetch("/api/auth/otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phoneNumber: clean, purpose: "checkout" }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to send OTP");
-      setOtpSent(true);
-      setOtpCooldown(60);
-    } catch (err: unknown) {
-      setOtpError(err instanceof Error ? err.message : "Failed to send OTP");
-    } finally {
-      setSendingOtp(false);
-    }
-  }
-
-  async function handleVerifyOtp() {
-    const clean = phone.replace(/\D/g, "");
-    if (!otpCode.trim()) {
-      setOtpError("Enter the OTP sent to your phone");
-      return;
-    }
-    setVerifyingOtp(true);
-    setOtpError("");
-    try {
-      const res = await fetch("/api/auth/otp", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phoneNumber: clean, otpCode: otpCode.trim() }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Invalid OTP");
-      setPhoneVerified(true);
-    } catch (err: unknown) {
-      setOtpError(err instanceof Error ? err.message : "Invalid OTP");
-    } finally {
-      setVerifyingOtp(false);
-    }
-  }
-
-  function handlePhoneChange(value: string) {
-    setPhone(value);
-    if (phoneVerified) {
-      setPhoneVerified(false);
-      setOtpSent(false);
-      setOtpCode("");
-    }
-  }
-
   if (!hydrated) {
     return (
       <div className="min-h-screen bg-surface dark:bg-[var(--color-surface)] p-4" aria-label="Loading...">
@@ -271,83 +199,28 @@ export default function CheckoutPage() {
               deliveryAddress={deliveryAddress}
               onChangeAddress={() => setShowAddressPicker(true)}
             />
-            <section className="bg-surface-container-lowest dark:bg-[var(--color-surface-container-lowest)] p-4 sm:p-6 rounded-2xl shadow-sm">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-full bg-surface-container dark:bg-[var(--color-surface-container)] flex items-center justify-center">
-                  <span className="material-symbols-outlined text-primary">{phoneVerified ? "verified" : "phone"}</span>
+            {deliveryAddress?.phone && (
+              <div className="bg-surface-container-lowest dark:bg-[var(--color-surface-container-lowest)] p-4 rounded-2xl shadow-sm flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-surface-container dark:bg-[var(--color-surface-container)] flex items-center justify-center">
+                  <span className="material-symbols-outlined text-primary text-lg">phone</span>
                 </div>
-                <div className="flex-1">
-                  <h2 className="text-lg font-extrabold text-on-surface dark:text-[var(--color-on-surface)]">{t.services.phoneNumber || "Phone Number"}</h2>
-                  <p className="text-xs text-on-surface-variant dark:text-[var(--color-outline)]">
-                    {phoneVerified ? "Phone verified" : (t.services.phonePlaceholder || "For rider to contact you")}
-                  </p>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-on-surface-variant dark:text-[var(--color-outline)]">Rider will call on</p>
+                  <p className="text-sm font-bold text-on-surface dark:text-[var(--color-on-surface)] truncate">{deliveryAddress.phone}</p>
                 </div>
-                {phoneVerified && (
-                  <span className="text-xs font-bold text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded-full">Verified</span>
-                )}
+                <Link href="/app/addresses" className="text-xs text-primary font-bold">Change</Link>
               </div>
-              {!phoneVerified ? (
-                <div className="space-y-3">
-                  <div className="flex gap-2">
-                    <input
-                      type="tel"
-                      className="flex-1 border-2 border-outline rounded-xl p-3 text-sm focus:border-primary focus:outline-none disabled:opacity-50"
-                      placeholder={t.services.phonePlaceholder || "Enter your phone number"}
-                      value={phone}
-                      onChange={(e) => handlePhoneChange(e.target.value)}
-                      aria-label={t.services.phoneNumber || "Phone Number"}
-                      inputMode="numeric"
-                      maxLength={10}
-                      disabled={otpSent}
-                    />
-                    <button
-                      type="button"
-                      onClick={handleSendOtp}
-                      disabled={sendingOtp || otpCooldown > 0 || phone.replace(/\D/g, "").length !== 10}
-                      className="px-4 py-3 rounded-xl text-sm font-bold bg-primary text-white hover:bg-primary/90 transition-all disabled:opacity-50 whitespace-nowrap"
-                    >
-                      {sendingOtp ? "Sending..." : otpCooldown > 0 ? `Retry ${otpCooldown}s` : "Send OTP"}
-                    </button>
-                  </div>
-                  {otpSent && (
-                    <div className="flex gap-2">
-                      <input
-                        type="tel"
-                        className="flex-1 border-2 border-outline rounded-xl p-3 text-sm focus:border-primary focus:outline-none"
-                        placeholder="Enter 6-digit OTP"
-                        value={otpCode}
-                        onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
-                        aria-label="OTP verification code"
-                        inputMode="numeric"
-                        maxLength={6}
-                      />
-                      <button
-                        type="button"
-                        onClick={handleVerifyOtp}
-                        disabled={verifyingOtp || otpCode.length !== 6}
-                        className="px-4 py-3 rounded-xl text-sm font-bold bg-green-600 text-white hover:bg-green-700 transition-all disabled:opacity-50 whitespace-nowrap"
-                      >
-                        {verifyingOtp ? "Verifying..." : "Verify"}
-                      </button>
-                    </div>
-                  )}
-                  {otpError && (
-                    <p className="text-xs text-red-500 font-medium">{otpError}</p>
-                  )}
+            )}
+            {!deliveryAddress?.phone && (
+              <div className="bg-amber-50 dark:bg-amber-900/20 p-4 rounded-2xl shadow-sm flex items-center gap-3">
+                <span className="material-symbols-outlined text-amber-600">warning</span>
+                <div className="flex-1">
+                  <p className="text-sm font-bold text-amber-800 dark:text-amber-300">Phone number needed</p>
+                  <p className="text-xs text-amber-600 dark:text-amber-400">Add a phone number to your address for the rider to contact you.</p>
                 </div>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-on-surface dark:text-[var(--color-on-surface)] font-medium">{phone}</span>
-                  <button
-                    type="button"
-                    onClick={() => { setPhoneVerified(false); setOtpSent(false); setOtpCode(""); setPhone(""); }}
-                    className="text-xs text-primary font-bold hover:underline"
-                  >
-                    Change
-                  </button>
-                </div>
-              )}
-            </section>
+                <Link href="/app/addresses" className="text-xs text-primary font-bold whitespace-nowrap">Add</Link>
+              </div>
+            )}
             <CheckoutScheduledServices items={items} />
             <CheckoutPrintOrderSummary items={items} />
             {!items.some(i => i.vendor_id === SERVICES_VENDOR_ID) && (
@@ -406,12 +279,8 @@ export default function CheckoutPage() {
 
               <button
                 onClick={() => {
-                  if (!phone.trim()) {
-                    useToastStore.getState().addToast(t.services.pleaseEnterPhone || "Please enter your phone number", "error");
-                    return;
-                  }
-                  if (!phoneVerified) {
-                    useToastStore.getState().addToast("Please verify your phone number before placing the order", "error");
+                  if (!deliveryAddress?.phone) {
+                    useToastStore.getState().addToast("Please add a phone number to your delivery address", "error");
                     return;
                   }
                   setPlacing(true);
@@ -428,7 +297,7 @@ export default function CheckoutPage() {
                     isRecurring,
                     recurringFrequency,
                     recurringDayOfWeek,
-                    phone: phone.trim(),
+                    phone: deliveryAddress.phone,
                   };
 
                   if (paymentMethod === "upi" || paymentMethod === "card") {
@@ -445,7 +314,7 @@ export default function CheckoutPage() {
                     placeOrder(orderArgs).finally(() => setPlacing(false));
                   }
                 }}
-                disabled={placing || razorpayLoading || items.length === 0 || !deliveryAddress || !phoneVerified}
+                disabled={placing || razorpayLoading || items.length === 0 || !deliveryAddress || !deliveryAddress.phone}
                 className="w-full bg-gradient-to-r from-primary to-primary-container text-white py-4 sm:py-5 rounded-xl text-base sm:text-lg font-extrabold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 sm:gap-3 disabled:opacity-60"
               >
                 {(placing || razorpayLoading) ? (

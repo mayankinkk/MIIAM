@@ -227,6 +227,13 @@ export default function AddressBookPage() {
   });
   const [detectingLocation, setDetectingLocation] = useState(false);
   const [locationError, setLocationError] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpCode, setOtpCode] = useState("");
+  const [sendingOtp, setSendingOtp] = useState(false);
+  const [verifyingOtp, setVerifyingOtp] = useState(false);
+  const [otpError, setOtpError] = useState("");
+  const [otpCooldown, setOtpCooldown] = useState(0);
+  const [phoneVerified, setPhoneVerified] = useState(false);
 
   const handleUseMyLocation = () => {
     setDetectingLocation(true);
@@ -268,6 +275,70 @@ export default function AddressBookPage() {
       setDetectingLocation(false);
     }
   };
+
+  useEffect(() => {
+    if (otpCooldown <= 0) return;
+    const timer = setInterval(() => setOtpCooldown((s) => s - 1), 1000);
+    return () => clearInterval(timer);
+  }, [otpCooldown]);
+
+  async function handleSendOtp() {
+    const clean = newAddress.phone.replace(/\D/g, "");
+    if (!/^[6-9]\d{9}$/.test(clean)) {
+      setOtpError("Enter a valid 10-digit phone number");
+      return;
+    }
+    setSendingOtp(true);
+    setOtpError("");
+    try {
+      const res = await fetch("/api/auth/otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phoneNumber: clean, purpose: "checkout" }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to send OTP");
+      setOtpSent(true);
+      setOtpCooldown(60);
+    } catch (err: unknown) {
+      setOtpError(err instanceof Error ? err.message : "Failed to send OTP");
+    } finally {
+      setSendingOtp(false);
+    }
+  }
+
+  async function handleVerifyOtp() {
+    const clean = newAddress.phone.replace(/\D/g, "");
+    if (!otpCode.trim()) {
+      setOtpError("Enter the OTP sent to your phone");
+      return;
+    }
+    setVerifyingOtp(true);
+    setOtpError("");
+    try {
+      const res = await fetch("/api/auth/otp", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phoneNumber: clean, otpCode: otpCode.trim() }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Invalid OTP");
+      setPhoneVerified(true);
+    } catch (err: unknown) {
+      setOtpError(err instanceof Error ? err.message : "Invalid OTP");
+    } finally {
+      setVerifyingOtp(false);
+    }
+  }
+
+  function handlePhoneChange(value: string) {
+    setNewAddress({ ...newAddress, phone: value });
+    if (phoneVerified) {
+      setPhoneVerified(false);
+      setOtpSent(false);
+      setOtpCode("");
+    }
+  }
 
   const handleSetDefault = async (addressId: string) => {
     const selectedAddress = addresses.find(addr => addr.id === addressId);
@@ -314,6 +385,8 @@ export default function AddressBookPage() {
       city: newAddress.city,
       state: newAddress.state,
       pincode: newAddress.postal_code,
+      phone: newAddress.phone,
+      phone_verified: phoneVerified,
       is_default: addresses.length === 0,
     };
 
@@ -342,6 +415,10 @@ export default function AddressBookPage() {
 
     setShowAddAddress(false);
     setEditingAddress(null);
+    setOtpSent(false);
+    setOtpCode("");
+    setPhoneVerified(false);
+    setOtpError("");
     setNewAddress({
       label: "home",
       name: "",
@@ -456,10 +533,14 @@ export default function AddressBookPage() {
 
       {/* Add/Edit Address Modal */}
       {showAddAddress && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center" role="dialog" aria-modal="true" aria-labelledby="address-modal-title" onKeyDown={(e) => { if (e.key === "Escape") { setShowAddAddress(false); setEditingAddress(null); } }}>
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center" role="dialog" aria-modal="true" aria-labelledby="address-modal-title" onKeyDown={(e) => { if (e.key === "Escape") { setShowAddAddress(false); setEditingAddress(null); setOtpSent(false); setOtpCode(""); setPhoneVerified(false); setOtpError(""); } }}>
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => {
             setShowAddAddress(false);
             setEditingAddress(null);
+            setOtpSent(false);
+            setOtpCode("");
+            setPhoneVerified(false);
+            setOtpError("");
           }} />
 
           <div className="relative bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container-lowest)] w-full max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[90vh] overflow-y-auto">
@@ -476,6 +557,10 @@ export default function AddressBookPage() {
                 onClick={() => {
                   setShowAddAddress(false);
                   setEditingAddress(null);
+                  setOtpSent(false);
+                  setOtpCode("");
+                  setPhoneVerified(false);
+                  setOtpError("");
                 }}
                 aria-label="Close"
                 className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center"
@@ -526,14 +611,65 @@ export default function AddressBookPage() {
               {/* Phone */}
               <div>
                 <label htmlFor="phone-number" className="text-sm font-semibold text-[var(--color-on-surface)]">Phone Number *</label>
-                <input
-                  id="phone-number"
-                  type="tel"
-                  value={newAddress.phone}
-                  onChange={(e) => setNewAddress({ ...newAddress, phone: e.target.value })}
-                  placeholder="10-digit mobile number"
-                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
-                />
+                {!phoneVerified ? (
+                  <div className="space-y-2 mt-1">
+                    <div className="flex gap-2">
+                      <input
+                        id="phone-number"
+                        type="tel"
+                        value={newAddress.phone}
+                        onChange={(e) => handlePhoneChange(e.target.value)}
+                        placeholder="10-digit mobile number"
+                        className="flex-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                        inputMode="numeric"
+                        maxLength={10}
+                        disabled={otpSent}
+                      />
+                      <button
+                        type="button"
+                        onClick={handleSendOtp}
+                        disabled={sendingOtp || otpCooldown > 0 || newAddress.phone.replace(/\D/g, "").length !== 10}
+                        className="px-4 py-3 rounded-xl text-sm font-bold bg-primary text-white hover:bg-primary/90 transition-all disabled:opacity-50 whitespace-nowrap"
+                      >
+                        {sendingOtp ? "Sending..." : otpCooldown > 0 ? `Retry ${otpCooldown}s` : "Send OTP"}
+                      </button>
+                    </div>
+                    {otpSent && (
+                      <div className="flex gap-2">
+                        <input
+                          type="tel"
+                          className="flex-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                          placeholder="Enter 6-digit OTP"
+                          value={otpCode}
+                          onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                          inputMode="numeric"
+                          maxLength={6}
+                        />
+                        <button
+                          type="button"
+                          onClick={handleVerifyOtp}
+                          disabled={verifyingOtp || otpCode.length !== 6}
+                          className="px-4 py-3 rounded-xl text-sm font-bold bg-green-600 text-white hover:bg-green-700 transition-all disabled:opacity-50 whitespace-nowrap"
+                        >
+                          {verifyingOtp ? "Verifying..." : "Verify"}
+                        </button>
+                      </div>
+                    )}
+                    {otpError && <p className="text-xs text-red-500 font-medium">{otpError}</p>}
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="flex-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-green-300 text-sm font-medium text-green-700">{newAddress.phone}</span>
+                    <span className="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full">✓ Verified</span>
+                    <button
+                      type="button"
+                      onClick={() => { setPhoneVerified(false); setOtpSent(false); setOtpCode(""); setNewAddress({ ...newAddress, phone: "" }); }}
+                      className="text-xs text-primary font-bold hover:underline"
+                    >
+                      Change
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Street Address */}
@@ -617,7 +753,7 @@ export default function AddressBookPage() {
               {/* Save Button */}
               <button
                 onClick={handleSave}
-                disabled={!newAddress.name || !newAddress.street || !newAddress.postal_code}
+                disabled={!newAddress.name || !newAddress.street || !newAddress.postal_code || !phoneVerified}
                 className="w-full py-4 bg-primary text-white font-extrabold rounded-2xl flex items-center justify-center gap-2 hover:bg-primary-dim disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-xl shadow-primary/30"
               >
                 <span className="material-symbols-outlined">check</span>
