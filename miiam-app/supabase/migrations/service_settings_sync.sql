@@ -41,6 +41,11 @@ CREATE POLICY "Anyone can read service settings"
   TO anon
   USING (true);
 
+CREATE POLICY "Authenticated users can read service settings"
+  ON service_settings FOR SELECT
+  TO authenticated
+  USING (true);
+
 -- Seed default rows
 INSERT INTO service_settings (id, name, is_enabled, message, icon, hours_open, hours_close, hours_is_24x7)
 VALUES
