@@ -422,7 +422,7 @@ export default function AddressPickerPage() {
           </div>
         )}
 
-        {currentLocation && (
+        {mapLoaded && (
           <div className="absolute bottom-0 left-0 right-0 bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container-lowest)] rounded-t-2xl shadow-xl z-50 max-h-[50vh] overflow-y-auto">
             <div className="p-4 border-b border-[var(--color-border-subtle)]">
               <div className="flex items-center gap-2 mb-2">
@@ -430,14 +430,48 @@ export default function AddressPickerPage() {
                   <span className="material-symbols-outlined text-green-600 dark:text-green-400 text-sm">location_on</span>
                 </span>
                 <span className="text-xs font-bold text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded-full">
-                  {locationAccuracy ? `GPS Accuracy: ${locationAccuracy.toFixed(0)}m` : "Location Selected"}
+                  {currentLocation ? (locationAccuracy ? `GPS Accuracy: ${locationAccuracy.toFixed(0)}m` : "Location Selected") : "Tap map or search to select"}
                 </span>
               </div>
-              <p className="font-medium text-on-surface text-sm">{currentLocation.address}</p>
-              <p className="text-xs text-[var(--color-outline-variant)] mt-1">{currentLocation.lat.toFixed(6)}, {currentLocation.lng.toFixed(6)}</p>
+              {currentLocation ? (
+                <>
+                  <p className="font-medium text-on-surface text-sm">{currentLocation.address}</p>
+                  <p className="text-xs text-[var(--color-outline-variant)] mt-1">{currentLocation.lat.toFixed(6)}, {currentLocation.lng.toFixed(6)}</p>
+                </>
+              ) : (
+                <p className="text-sm text-[var(--color-outline)]">Move the crosshair on the map or search below to select your delivery location</p>
+              )}
             </div>
 
             <div className="p-4 space-y-3">
+              <div className="relative">
+                <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-outline-variant)]">search</span>
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => handleSearchInput(e.target.value)}
+                  placeholder="Search for area, street, landmark..."
+                  className="w-full pl-10 pr-4 py-3 border border-[var(--color-border-subtle)] rounded-lg text-sm focus:border-primary focus:outline-none"
+                />
+                {searching && (
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 border-2 border-[var(--color-outline-variant)] border-t-primary rounded-full animate-spin" />
+                )}
+              </div>
+
+              {searchResults.length > 0 && (
+                <div className="border border-[var(--color-border-subtle)] rounded-lg max-h-40 overflow-y-auto">
+                  {searchResults.map((result) => (
+                    <button
+                      key={result.place_id}
+                      onClick={() => handleSelectSearchResult(result)}
+                      className="w-full text-left p-3 border-b border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)] last:border-0"
+                    >
+                      <p className="text-sm text-on-surface line-clamp-2">{result.display_name.split(", ").slice(0, 3).join(", ")}</p>
+                    </button>
+                  ))}
+                </div>
+              )}
+
               <p className="text-xs text-[var(--color-outline)] font-medium uppercase tracking-wide">Address Label</p>
               <div className="flex gap-2">
                 <button
@@ -508,7 +542,7 @@ export default function AddressPickerPage() {
                 </button>
                 <button
                   onClick={handleSave}
-                  disabled={saving}
+                  disabled={saving || !currentLocation}
                   className="flex-[2] bg-primary text-white py-3 rounded-lg font-bold text-sm hover:bg-primary-dim transition-colors flex items-center justify-center gap-2 disabled:opacity-60"
                 >
                   {saving ? (
@@ -523,39 +557,9 @@ export default function AddressPickerPage() {
           </div>
         )}
 
-        {!currentLocation && (
+        {locationError && !mapLoaded && (
           <div className="absolute bottom-4 left-4 right-4 bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container-lowest)] rounded-xl shadow-lg p-4 z-40">
-            <div className="relative">
-              <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-outline-variant)]">search</span>
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => handleSearchInput(e.target.value)}
-                placeholder="Search for area, street, landmark..."
-                className="w-full pl-10 pr-4 py-3 border border-[var(--color-border-subtle)] rounded-lg text-sm focus:border-primary focus:outline-none"
-              />
-              {searching && (
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 border-2 border-[var(--color-outline-variant)] border-t-primary rounded-full animate-spin" />
-              )}
-            </div>
-
-            {searchResults.length > 0 && (
-              <div className="mt-2 border border-[var(--color-border-subtle)] rounded-lg max-h-48 overflow-y-auto">
-                {searchResults.map((result) => (
-                  <button
-                    key={result.place_id}
-                    onClick={() => handleSelectSearchResult(result)}
-                    className="w-full text-left p-3 border-b border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)] last:border-0"
-                  >
-                    <p className="text-sm text-on-surface line-clamp-2">{result.display_name.split(", ").slice(0, 3).join(", ")}</p>
-                  </button>
-                ))}
-              </div>
-            )}
-
-            {locationError && (
-              <p className="text-red-500 text-xs mt-2">{locationError}</p>
-            )}
+            <p className="text-red-500 text-xs">{locationError}</p>
           </div>
         )}
       </div>
