@@ -1,11 +1,13 @@
 "use client";
 
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import BlurImage from "@/components/BlurImage";
 import { LandingNavbar, LandingFooter } from "@/components/layout/LandingNavbar";
 import LandingClient from "@/components/LandingClient";
 import LandingBottomNav from "@/components/layout/LandingBottomNav";
 import InstallPrompt from "@/components/InstallPrompt";
+import { createClient } from "@/lib/supabase/client";
 
 const quickServices = [
   { icon: "restaurant", label: "Food", href: "/app/food", color: "from-[var(--color-primary)] to-[var(--color-primary-light)]" },
@@ -15,7 +17,51 @@ const quickServices = [
   { icon: "print", label: "Printing", href: "/app/printing", color: "from-[#6366f1] to-[#8b5cf6]" },
 ];
 
+interface LandingVendor {
+  id: string;
+  shop_name: string;
+  name?: string;
+  cuisine?: string;
+  type?: string;
+  image_url?: string;
+  cover_image_url?: string;
+  rating?: string | number;
+  review_count?: number;
+  delivery_time_min?: number;
+  delivery_time_max?: number;
+  delivery_time?: string;
+  is_featured?: boolean;
+  is_promoted?: boolean;
+  status?: string;
+  description?: string;
+  address?: string;
+}
+
 export default function LandingPage() {
+  const supabase = useMemo(() => createClient(), []);
+  const [vendors, setVendors] = useState<LandingVendor[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchVendors() {
+      const { data } = await supabase
+        .from("vendors")
+        .select("id, shop_name, name, cuisine, type, image_url, cover_image_url, rating, review_count, delivery_time_min, delivery_time_max, delivery_time, is_featured, is_promoted, status, description, address")
+        .eq("status", "active")
+        .order("is_featured", { ascending: false })
+        .order("created_at", { ascending: false })
+        .limit(6);
+
+      if (data) setVendors(data);
+      setLoading(false);
+    }
+    fetchVendors();
+  }, [supabase]);
+
+  const featuredVendor = vendors.find((v) => v.is_featured || v.is_promoted) || vendors[0] || null;
+  const serviceVendor = vendors.find((v) => v.type !== "food" && v.type !== "restaurant") || null;
+  const foodVendors = vendors.filter((v) => v.type === "food" || v.type === "restaurant");
+
   return (
     <>
       <LandingNavbar />
@@ -101,99 +147,129 @@ export default function LandingPage() {
               </section>
 
               {/* Popular Near You */}
-              <section className="max-w-7xl mx-auto px-6 lg:px-8 pb-20">
-                <div className="flex justify-between items-end mb-10">
-                  <div>
-                    <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-[var(--color-on-surface)]">{t.popularNearYou}</h2>
-                    <p className="text-[var(--color-outline-variant)] font-medium mt-1.5">{t.popularDesc}</p>
-                  </div>
-                  <Link href="/app/explore" className="text-[var(--color-primary)] font-bold text-sm flex items-center gap-1.5 hover:gap-3 transition-all duration-200">
-                    {t.viewAll} <span className="material-symbols-outlined text-lg">arrow_forward</span>
-                  </Link>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <Link href="/app/vendor/r2" className="md:col-span-2 group relative overflow-hidden rounded-2xl bg-[var(--color-surface-container-lowest)] shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-[var(--color-border-subtle)] hover:shadow-[0_8px_40px_rgba(0,0,0,0.1)] active:scale-[0.98] transition-all duration-500">
-                    <div className="aspect-[16/9] overflow-hidden">
-                      <BlurImage src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=800&q=80" alt="Pizza Paradise" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+              {!loading && vendors.length > 0 && (
+                <section className="max-w-7xl mx-auto px-6 lg:px-8 pb-20">
+                  <div className="flex justify-between items-end mb-10">
+                    <div>
+                      <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-[var(--color-on-surface)]">{t.popularNearYou}</h2>
+                      <p className="text-[var(--color-outline-variant)] font-medium mt-1.5">{t.popularDesc}</p>
                     </div>
-                    <div className="p-6">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <span className="bg-[var(--color-primary)]/10 text-[var(--color-primary)] text-[10px] font-black px-3 py-1 rounded-full mb-3 inline-block uppercase tracking-wider">{t.trendingFood}</span>
-                          <h3 className="text-xl font-bold text-[var(--color-on-surface)]">Pizza Paradise</h3>
-                          <div className="flex items-center gap-2 mt-1.5 text-[var(--color-outline)] text-sm font-medium">
-                            <span className="flex items-center gap-1 text-green-600 font-bold">
-                              <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>4.9
-                            </span>
-                            <span className="text-[var(--color-outline-variant)]/60">•</span>
-                            <span>2k+ reviews</span>
-                            <span className="text-[var(--color-outline-variant)]/60">•</span>
-                            <span>15-20 mins</span>
-                          </div>
-                        </div>
-                        <span className="bg-[var(--color-primary)] p-3 rounded-xl text-white shadow-lg shadow-[var(--color-primary)]/20">
-                          <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>add_shopping_cart</span>
-                        </span>
-                      </div>
-                    </div>
-                  </Link>
-                  <div className="group relative overflow-hidden rounded-2xl bg-[var(--color-surface-container-lowest)] shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-[var(--color-border-subtle)] flex flex-col hover:shadow-[0_8px_40px_rgba(0,0,0,0.1)] active:scale-[0.98] transition-all duration-500">
-                    <div className="aspect-square overflow-hidden">
-                      <BlurImage src="/images/service_cleaning.png" alt="Professional cleaner" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" fallbackSrc="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=80" />
-                    </div>
-                    <div className="p-6 flex-1 flex flex-col">
-                      <span className="bg-[var(--color-secondary)]/10 text-[var(--color-secondary)] text-[10px] font-black px-3 py-1 rounded-full mb-3 self-start uppercase tracking-wider">Service Pro</span>
-                      <h3 className="text-xl font-bold text-[var(--color-on-surface)]">PureHome Cleaning</h3>
-                      <div className="mt-auto pt-4 flex justify-between items-center">
-                        <span className="text-[var(--color-outline)] font-bold text-sm">From ₹29/hr</span>
-                        <span className="flex items-center gap-1.5 font-bold text-sm text-[var(--color-on-surface)]">
-                          <span className="material-symbols-outlined text-[var(--color-secondary)] text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>Elite
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              {/* Promo Banner */}
-              <section className="max-w-7xl mx-auto px-6 lg:px-8 mb-24">
-                <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#0f0505] via-[#1a0a0e] to-[#0a0a0a] p-10 md:p-16 flex flex-col md:flex-row items-center gap-10">
-                  <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-[var(--color-primary)]/20 to-transparent pointer-events-none" />
-                  <div className="absolute -top-20 -right-20 w-72 h-72 bg-[var(--color-primary)]/15 rounded-full blur-[80px] pointer-events-none" />
-                  <div className="relative z-10 flex-1">
-                    <span className="text-[var(--color-primary-container)] font-black tracking-widest text-xs uppercase mb-4 block">{t.promoLabel}</span>
-                    <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight leading-none mb-5">
-                      {t.promoTitle1}<br /><span className="bg-gradient-to-r from-[var(--color-primary-light)] to-[#ffc371] bg-clip-text text-transparent">{t.promoTitle2}</span>
-                    </h2>
-                    <p className="text-white/40 text-lg max-w-md mb-8">
-                      {t.promoDesc1}<span className="text-white font-bold">MIIAM50</span>{t.promoDesc2}
-                    </p>
-                    <Link href="/onboarding" className="inline-flex items-center gap-2 bg-[var(--color-primary)] text-white px-8 py-4 rounded-2xl font-bold text-base shadow-xl shadow-[var(--color-primary)]/20 hover:shadow-[var(--color-primary)]/40 active:scale-95 transition-all duration-200">
-                      {t.claimOffer}
-                      <span className="material-symbols-outlined text-lg">arrow_forward</span>
+                    <Link href="/app/explore" className="text-[var(--color-primary)] font-bold text-sm flex items-center gap-1.5 hover:gap-3 transition-all duration-200">
+                      {t.viewAll} <span className="material-symbols-outlined text-lg">arrow_forward</span>
                     </Link>
                   </div>
-                  <div className="relative z-10 w-full md:w-1/3">
-                    <div className="bg-white/[0.06] backdrop-blur-xl p-7 rounded-2xl border border-white/10 shadow-2xl">
-                      <div className="flex gap-4 mb-5">
-                        <div className="w-11 h-11 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-light)] rounded-xl flex items-center justify-center shadow-lg">
-                          <span className="material-symbols-outlined text-white text-lg">confirmation_number</span>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {/* Featured Vendor - Large Card */}
+                    {featuredVendor && (
+                      <Link href={`/app/vendor/${featuredVendor.id}`} className="md:col-span-2 group relative overflow-hidden rounded-2xl bg-[var(--color-surface-container-lowest)] shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-[var(--color-border-subtle)] hover:shadow-[0_8px_40px_rgba(0,0,0,0.1)] active:scale-[0.98] transition-all duration-500">
+                        <div className="aspect-[16/9] overflow-hidden">
+                          <BlurImage
+                            src={featuredVendor.cover_image_url || featuredVendor.image_url || ""}
+                            alt={featuredVendor.shop_name}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                            fallbackSrc="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=800&q=80"
+                          />
                         </div>
-                        <div>
-                          <p className="text-white font-bold text-sm">Promo Applied</p>
-                          <p className="text-white/40 text-xs">Save up to ₹25.00</p>
+                        <div className="p-6">
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <span className="bg-[var(--color-primary)]/10 text-[var(--color-primary)] text-[10px] font-black px-3 py-1 rounded-full mb-3 inline-block uppercase tracking-wider">
+                                {featuredVendor.is_featured ? t.trendingFood : "New"}
+                              </span>
+                              <h3 className="text-xl font-bold text-[var(--color-on-surface)]">{featuredVendor.shop_name}</h3>
+                              <div className="flex items-center gap-2 mt-1.5 text-[var(--color-outline)] text-sm font-medium">
+                                {featuredVendor.rating && (
+                                  <span className="flex items-center gap-1 text-green-600 font-bold">
+                                    <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                                    {Number(featuredVendor.rating).toFixed(1)}
+                                  </span>
+                                )}
+                                {featuredVendor.review_count !== undefined && (
+                                  <>
+                                    <span className="text-[var(--color-outline-variant)]/60">•</span>
+                                    <span>{featuredVendor.review_count}+ reviews</span>
+                                  </>
+                                )}
+                                {featuredVendor.delivery_time_min && (
+                                  <>
+                                    <span className="text-[var(--color-outline-variant)]/60">•</span>
+                                    <span>{featuredVendor.delivery_time_min}-{featuredVendor.delivery_time_max || featuredVendor.delivery_time_min + 10} mins</span>
+                                  </>
+                                )}
+                              </div>
+                            </div>
+                            <span className="bg-[var(--color-primary)] p-3 rounded-xl text-white shadow-lg shadow-[var(--color-primary)]/20">
+                              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>add_shopping_cart</span>
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                      <div className="space-y-3">
-                        <div className="h-1.5 w-full bg-[var(--color-surface-container-lowest)]/10 rounded-full overflow-hidden">
-                          <div className="h-full bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-light)] w-2/3 rounded-full" />
+                      </Link>
+                    )}
+
+                    {/* Service or Second Food Vendor - Small Card */}
+                    {serviceVendor && (
+                      <Link href={`/app/vendor/${serviceVendor.id}`} className="group relative overflow-hidden rounded-2xl bg-[var(--color-surface-container-lowest)] shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-[var(--color-border-subtle)] flex flex-col hover:shadow-[0_8px_40px_rgba(0,0,0,0.1)] active:scale-[0.98] transition-all duration-500">
+                        <div className="aspect-square overflow-hidden">
+                          <BlurImage
+                            src={serviceVendor.cover_image_url || serviceVendor.image_url || ""}
+                            alt={serviceVendor.shop_name}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                            fallbackSrc="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=80"
+                          />
                         </div>
-                        <p className="text-white/40 text-xs font-medium">942 people claimed this today</p>
-                      </div>
-                    </div>
+                        <div className="p-6 flex-1 flex flex-col">
+                          <span className="bg-[var(--color-secondary)]/10 text-[var(--color-secondary)] text-[10px] font-black px-3 py-1 rounded-full mb-3 self-start uppercase tracking-wider">
+                            {serviceVendor.type || "Service"}
+                          </span>
+                          <h3 className="text-xl font-bold text-[var(--color-on-surface)]">{serviceVendor.shop_name}</h3>
+                          <div className="mt-auto pt-4 flex justify-between items-center">
+                            {serviceVendor.cuisine && (
+                              <span className="text-[var(--color-outline)] font-bold text-sm">{serviceVendor.cuisine}</span>
+                            )}
+                            {serviceVendor.rating && (
+                              <span className="flex items-center gap-1.5 font-bold text-sm text-[var(--color-on-surface)]">
+                                <span className="material-symbols-outlined text-[var(--color-secondary)] text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
+                                {Number(serviceVendor.rating).toFixed(1)}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </Link>
+                    )}
+
+                    {/* Fallback: Show first food vendor if no service vendor */}
+                    {!serviceVendor && foodVendors.length > 1 && (
+                      <Link href={`/app/vendor/${foodVendors[1].id}`} className="group relative overflow-hidden rounded-2xl bg-[var(--color-surface-container-lowest)] shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-[var(--color-border-subtle)] flex flex-col hover:shadow-[0_8px_40px_rgba(0,0,0,0.1)] active:scale-[0.98] transition-all duration-500">
+                        <div className="aspect-square overflow-hidden">
+                          <BlurImage
+                            src={foodVendors[1].cover_image_url || foodVendors[1].image_url || ""}
+                            alt={foodVendors[1].shop_name}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                            fallbackSrc="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=80"
+                          />
+                        </div>
+                        <div className="p-6 flex-1 flex flex-col">
+                          <span className="bg-[var(--color-secondary)]/10 text-[var(--color-secondary)] text-[10px] font-black px-3 py-1 rounded-full mb-3 self-start uppercase tracking-wider">
+                            {foodVendors[1].cuisine || "Food"}
+                          </span>
+                          <h3 className="text-xl font-bold text-[var(--color-on-surface)]">{foodVendors[1].shop_name}</h3>
+                          <div className="mt-auto pt-4 flex justify-between items-center">
+                            {foodVendors[1].cuisine && (
+                              <span className="text-[var(--color-outline)] font-bold text-sm">{foodVendors[1].cuisine}</span>
+                            )}
+                            {foodVendors[1].rating && (
+                              <span className="flex items-center gap-1.5 font-bold text-sm text-[var(--color-on-surface)]">
+                                <span className="material-symbols-outlined text-[var(--color-secondary)] text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
+                                {Number(foodVendors[1].rating).toFixed(1)}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </Link>
+                    )}
                   </div>
-                </div>
-              </section>
+                </section>
+              )}
             </>
           )}
         </LandingClient>
