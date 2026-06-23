@@ -51,7 +51,7 @@ interface HomeNotification {
   body?: string;
   message?: string;
   type: "order" | "promo" | "offer" | "info" | "system" | "rider";
-  read: boolean;
+  is_read: boolean;
   created_at: string;
 }
 

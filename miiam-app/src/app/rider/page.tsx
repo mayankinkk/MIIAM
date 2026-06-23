@@ -77,7 +77,7 @@ export default async function RiderDashboardPage() {
               <div className="absolute top-0 right-0 w-24 h-24 bg-[var(--color-secondary)]/5 rounded-bl-full" />
               <div className="flex justify-between items-start mb-4 relative z-10">
                 <div>
-                  <h3 className="font-bold text-xl text-[var(--color-on-surface)]">{order.vendor?.shop_name || order.vendor?.name}</h3>
+                  <h3 className="font-bold text-xl text-[var(--color-on-surface)]">{String((order.vendor as Record<string, unknown>)?.shop_name || order.vendor?.name || "Order")}</h3>
                   <p className="text-[var(--color-on-surface-variant)] text-sm flex items-center gap-1 mt-1">
                     <span className="material-symbols-outlined text-sm">store</span>
                     Pick up here

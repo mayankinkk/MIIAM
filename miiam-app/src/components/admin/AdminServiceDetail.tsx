@@ -92,9 +92,9 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
       if (error) throw error;
 
       if (booking?.user_id) {
-        const statusMessages: Record<string, { title: string; message: string }> = {
-          confirmed: { title: "Booking Confirmed ✓", message: `Your ${booking.sub_service || booking.service_type} booking has been confirmed.` },
-          in_progress: { title: "Technician On The Way 🔧", message: `A technician is on the way for your ${booking.sub_service || booking.service_type} service.` },
+        const statusMessages: Record<string, { title: string; body: string }> = {
+          confirmed: { title: "Booking Confirmed ✓", body: `Your ${booking.sub_service || booking.service_type} booking has been confirmed.` },
+          in_progress: { title: "Technician On The Way 🔧", body: `A technician is on the way for your ${booking.sub_service || booking.service_type} service.` },
           completed: { title: "Service Completed ✓", body: `Your ${booking.sub_service || booking.service_type} service has been completed. Rate your experience!` },
           cancelled: { title: "Booking Cancelled", body: `Your ${booking.sub_service || booking.service_type} booking has been cancelled.` },
         };

@@ -35,7 +35,7 @@ interface OrderRecord {
   vendor_id: string;
   status: string;
   total_amount?: number;
-  vendor?: { name?: string } | null;
+  vendor?: { name?: string; shop_name?: string } | null;
   items?: OrderItem[];
   [key: string]: unknown;
 }

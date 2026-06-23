@@ -18,7 +18,7 @@ interface NotificationData {
   title: string;
   body: string;
   type: string;
-  read: boolean;
+  is_read: boolean;
   created_at: string;
 }
 

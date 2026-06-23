@@ -104,11 +104,11 @@ export default function RiderOrdersPage() {
             ...item,
             menu_item: item.menu_item_id ? menuItemsMap.get(item.menu_item_id) || null : null,
           }));
-          const rawVendor = order.vendor_id ? vendorsMap.get(order.vendor_id) || null : null;
+          const rawVendor = order.vendor_id ? (vendorsMap.get(order.vendor_id) as Record<string, unknown> | null) : null;
           const vendor = rawVendor ? {
             ...rawVendor,
-            lat: rawVendor.latitude ?? rawVendor.lat,
-            lng: rawVendor.longitude ?? rawVendor.lng,
+            lat: (rawVendor.latitude as number) ?? (rawVendor.lat as number),
+            lng: (rawVendor.longitude as number) ?? (rawVendor.lng as number),
           } : null;
           return {
             ...order,

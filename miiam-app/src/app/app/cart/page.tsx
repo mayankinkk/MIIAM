@@ -241,7 +241,7 @@ export default function CartPage() {
                     </span>
                   </div>
                   <div className="min-w-0">
-                    <h2 className="text-base font-bold tracking-tight truncate">{vendor.shop_name || vendor.name}</h2>
+                    <h2 className="text-base font-bold tracking-tight truncate">{vendor.name}</h2>
                     <p className="text-[10px] font-medium text-primary uppercase tracking-widest">{t.cart.priorityDelivery}</p>
                   </div>
                 </div>
@@ -308,7 +308,7 @@ export default function CartPage() {
                   ))}
                 </div>
                 <div className="mt-4 flex justify-between items-center text-xs border-t border-outline-variant/20 dark:border-t-[var(--color-border-subtle)]/20 pt-3">
-                  <span className="text-on-surface-variant dark:text-[var(--color-outline)]">{t.cart.subtotal} ({vendor.shop_name || vendor.name})</span>
+                  <span className="text-on-surface-variant dark:text-[var(--color-outline)]">{t.cart.subtotal} ({vendor.name})</span>
                   <span className="font-bold">₹{subtotalByVendor(vendor.id).toFixed(2)}</span>
                 </div>
               </div>

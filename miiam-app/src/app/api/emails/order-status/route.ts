@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
         vendor_id,
         estimated_delivery_time,
         users:user_id(email, full_name),
-        vendors:vendor_id(name),
+        vendors:vendor_id(shop_name),
         riders:rider_id(name, phone)
       `)
       .eq("id", orderId)
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
     const vendorsData = order.vendors;
     const vendor = Array.isArray(vendorsData)
       ? vendorsData[0]
-      : (vendorsData as { name: string } | null);
+      : (vendorsData as { shop_name: string } | null);
 
     const ridersData = order.riders;
     const rider = Array.isArray(ridersData)
@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
       customerName: user.full_name || "Customer",
       customerEmail: user.email,
       status,
-      vendorName: vendor?.shop_name || vendor?.name || "Restaurant",
+      vendorName: vendor?.shop_name || "Restaurant",
       estimatedDelivery: order.estimated_delivery_time || undefined,
       riderName: rider?.name || undefined,
       riderPhone: rider?.phone || undefined,
