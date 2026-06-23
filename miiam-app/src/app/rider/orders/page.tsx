@@ -54,7 +54,7 @@ export default function RiderOrdersPage() {
         .from("orders")
         .select("id, user_id, vendor_id, rider_id, status, total_amount, delivery_fee, delivery_address, special_instructions, placed_at, delivered_at")
         .is("rider_id", null)
-        .in("status", ["ready_for_pickup"])
+        .in("status", ["pending", "ready_for_pickup"])
         .gte("placed_at", yesterday.toISOString())
         .order("placed_at", { ascending: false });
 
@@ -65,7 +65,7 @@ export default function RiderOrdersPage() {
         .from("orders")
         .select("id, user_id, vendor_id, rider_id, status, total_amount, delivery_fee, delivery_address, special_instructions, placed_at, delivered_at")
         .eq("rider_id", riderId)
-        .in("status", ["ready_for_pickup", "on_the_way"])
+        .in("status", ["pending", "ready_for_pickup", "on_the_way"])
         .order("placed_at", { ascending: false }) : { data: [] };
 
       const allDbOrders = [...(availableOrders || []), ...(myOrders || [])];
@@ -84,7 +84,7 @@ export default function RiderOrdersPage() {
         const orderIds = uniqueOrders.map(o => o.id);
 
         const [vendorsRes, addressesRes, allItemsRes, profilesRes] = await Promise.all([
-          vendorIds.length > 0 ? supabase.from("vendors").select("id, shop_name, address, phone, latitude, longitude, lat, lng, type").in("id", vendorIds) : Promise.resolve({ data: [] }),
+          vendorIds.length > 0 ? supabase.from("vendors").select("id, shop_name, address, phone, latitude, longitude, type").in("id", vendorIds) : Promise.resolve({ data: [] }),
           addressIds.length > 0 ? supabase.from("delivery_addresses").select("id, street, city, state, pincode, label, lat, lng").in("id", addressIds) : Promise.resolve({ data: [] }),
           supabase.from("order_items").select("id, order_id, menu_item_id, name, quantity, price, unit_price, status, actual_price, picked").in("order_id", orderIds),
           userIds.length > 0 ? supabase.from("profiles").select("id, full_name").in("id", userIds) : Promise.resolve({ data: [] }),
@@ -218,12 +218,13 @@ export default function RiderOrdersPage() {
         logger.info("RPC not available, using fallback");
       }
 
-      // Fallback: direct update — just assign rider to ready_for_pickup order
+      // Fallback: direct update — assign rider and accept order
       if (!accepted) {
         const { error } = await supabase
           .from("orders")
           .update({
             rider_id: riderProfile.id,
+            status: "accepted",
             accepted_at: new Date().toISOString(),
           })
           .eq("id", orderId)

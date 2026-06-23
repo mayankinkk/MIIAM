@@ -158,7 +158,7 @@ export function useOrderTracking(orderId: string, supabaseClient?: SupabaseClien
 
     const [vendorRes, riderRes, itemsRes, locationRes] = await Promise.all([
       orderData.vendor_id
-        ? supabase.from("vendors").select("id, shop_name, address, phone, latitude, longitude, lat, lng").eq("id", orderData.vendor_id).single()
+        ? supabase.from("vendors").select("id, shop_name, address, phone, latitude, longitude").eq("id", orderData.vendor_id).single()
         : Promise.resolve({ data: null }),
       orderData.rider_id
         ? supabase.from("riders").select("id, name, phone").eq("id", orderData.rider_id).single()
