@@ -176,7 +176,7 @@ export default function RiderDashboard() {
             let customerName = "Customer";
             let customerPhone = "+91 88888 88888";
             if (dbOrder.user_id) {
-              const { data: profile } = await supabase.from("profiles").select("full_name, name, phone").eq("id", dbOrder.user_id).maybeSingle();
+               const { data: profile } = await supabase.from("profiles").select("id, full_name, phone").eq("id", dbOrder.user_id).maybeSingle();
               if (profile) { customerName = (profile.full_name as string) || (profile.name as string) || "Customer"; customerPhone = (profile.phone as string) || customerPhone; }
             }
             const { data: itemsData } = await supabase.from("order_items").select("id, order_id, menu_item_id, name, quantity, price, unit_price, status, actual_price, picked").eq("order_id", dbOrder.id);
@@ -258,7 +258,7 @@ export default function RiderDashboard() {
 
         const [vendorsRes, profilesRes, allItemsRes] = await Promise.all([
           vendorIds.length > 0 ? supabase.from("vendors").select("id, shop_name, address, phone, latitude, longitude").in("id", vendorIds) : Promise.resolve({ data: [] }),
-          userIds.length > 0 ? supabase.from("profiles").select("id, full_name, name, phone").in("id", userIds) : Promise.resolve({ data: [] }),
+          userIds.length > 0 ? supabase.from("profiles").select("id, full_name, phone").in("id", userIds) : Promise.resolve({ data: [] }),
           supabase.from("order_items").select("id, order_id, menu_item_id, name, quantity, price, unit_price").in("order_id", orderIds),
         ]);
 
