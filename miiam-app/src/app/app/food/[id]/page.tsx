@@ -85,7 +85,7 @@ function StarRating({ rating, size = "sm" }: { rating: number; size?: "sm" | "lg
   );
 }
 
-function AddToCartButton({ item, vendor }: { item: MenuItem; vendor: Vendor }) {
+function AddToCartButton({ item, vendor, compact }: { item: MenuItem; vendor: Vendor; compact?: boolean }) {
   const { addItem, items, updateQuantity } = useCartStore();
   const cartItem = items.find((i) => i.menu_item_id === item.id);
   const qty = cartItem?.quantity ?? 0;
@@ -108,10 +108,33 @@ function AddToCartButton({ item, vendor }: { item: MenuItem; vendor: Vendor }) {
     return (
       <button
         onClick={handleAdd}
-        className="px-4 py-1.5 bg-primary text-white text-xs font-bold rounded-full hover:bg-primary-dim active:scale-90 transition-all"
+        className={compact
+          ? "px-2 py-0.5 bg-primary text-white text-[9px] font-bold rounded-full hover:bg-primary-dim active:scale-90 transition-all"
+          : "px-4 py-1.5 bg-primary text-white text-xs font-bold rounded-full hover:bg-primary-dim active:scale-90 transition-all"
+        }
       >
         Add +
       </button>
+    );
+  }
+
+  if (compact) {
+    return (
+      <div className="flex items-center gap-0.5 bg-primary rounded-full px-0.5 py-0.5">
+        <button
+          onClick={() => { updateQuantity(item.id, qty - 1); if (navigator.vibrate) navigator.vibrate(10); }}
+          className="text-white font-bold w-5 h-5 flex items-center justify-center active:scale-75 transition-transform text-[10px]"
+        >
+          −
+        </button>
+        <span className="text-white font-bold text-[9px] min-w-[10px] text-center">{qty}</span>
+        <button
+          onClick={handleAdd}
+          className="text-white font-bold w-5 h-5 flex items-center justify-center active:scale-125 transition-transform text-[10px]"
+        >
+          +
+        </button>
+      </div>
     );
   }
 
@@ -515,7 +538,7 @@ export default function RestaurantProfilePage() {
                   </div>
                   <div className="flex items-center justify-between mt-0.5">
                     <span className="font-black text-primary text-xs">₹{item.price}</span>
-                    <AddToCartButton item={item} vendor={vendor} />
+                    <AddToCartButton item={item} vendor={vendor} compact />
                   </div>
                 </div>
               </div>
