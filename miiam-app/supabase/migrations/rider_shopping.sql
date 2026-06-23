@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS rider_wallet (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   rider_id UUID REFERENCES riders(id),
   amount DECIMAL(10,2) NOT NULL,
-  type TEXT CHECK (type IN ('advance', 'expense', 'payout', 'earning')) NOT NULL,
+  type TEXT CHECK (type IN ('advance', 'expense', 'payout', 'earning', 'instant_payout')) NOT NULL,
   description TEXT,
   order_id UUID REFERENCES orders(id),
   created_at TIMESTAMP DEFAULT NOW()
