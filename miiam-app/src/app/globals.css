@@ -954,3 +954,15 @@ textarea:focus-visible {
   font-variation-settings: "FILL" 0, "wght" 700, "GRAD" 0, "opsz" 24;
 }
 
+/* Touch feedback for PWA */
+@media (hover: none) and (pointer: coarse) {
+  .touch-feedback {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .touch-feedback:active {
+    transform: scale(0.97);
+    transition: transform 0.1s ease-out;
+  }
+}
+
