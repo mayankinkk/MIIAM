@@ -44,9 +44,6 @@ interface Vendor {
   delivery_time_min: number;
   delivery_time_max: number;
   delivery_charge: number;
-  image_url: string;
-  cover_image_url: string;
-  banner_url: string;
   description: string;
   opening_hours: string;
   is_featured: boolean;
@@ -67,7 +64,6 @@ interface MenuItem {
 interface Review {
   id: string;
   user_name: string;
-  user_avatar: string;
   rating: number;
   comment: string;
   created_at: string;
@@ -305,10 +301,12 @@ export default function RestaurantProfilePage() {
     setError(null);
     try {
       const [vendorRes, menuRes, reviewsRes] = await Promise.all([
-        supabase.from("vendors").select("id, shop_name, cuisine, address, rating, review_count, delivery_time_min, delivery_time_max, delivery_charge, image_url, cover_image_url, banner_url, description, opening_hours, is_featured").eq("id", vendorId).single(),
-        supabase.from("menu_items").select("id, name, price, category, image_url, is_veg, is_featured, description, vendor_id").eq("vendor_id", vendorId).order("name"),
-        supabase.from("reviews").select("id, user_name, user_avatar, rating, comment, created_at").eq("vendor_id", vendorId).order("created_at", { ascending: false }),
+        supabase.from("vendors").select("id, shop_name, cuisine, address, rating, review_count, delivery_time_min, delivery_time_max, delivery_charge, description, opening_hours, is_featured").eq("id", vendorId).single(),
+        supabase.from("menu_items").select("id, name, price, category, is_veg, is_featured, vendor_id").eq("vendor_id", vendorId).order("name"),
+        supabase.from("reviews").select("id, user_name, rating, comment, created_at").eq("vendor_id", vendorId).order("created_at", { ascending: false }),
       ]);
+      if (vendorRes.error) console.error("Vendor query error:", vendorRes.error);
+      if (menuRes.error) console.error("Menu query error:", menuRes.error);
       if (vendorRes.data) setVendor(vendorRes.data);
       if (menuRes.data) setMenuItems(menuRes.data);
       if (reviewsRes.data) setReviews(reviewsRes.data);
@@ -368,7 +366,7 @@ export default function RestaurantProfilePage() {
     );
   }
 
-  const coverImage = vendor.banner_url || vendor.cover_image_url || vendor.image_url || "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80";
+  const coverImage = "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80";
   const isOpen = parseIsOpen(vendor.opening_hours);
   const specials = menuItems.filter((item) => item.is_featured);
   const filteredMenu = menuItems
