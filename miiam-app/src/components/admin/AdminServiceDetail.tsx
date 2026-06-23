@@ -95,15 +95,15 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
         const statusMessages: Record<string, { title: string; message: string }> = {
           confirmed: { title: "Booking Confirmed ✓", message: `Your ${booking.sub_service || booking.service_type} booking has been confirmed.` },
           in_progress: { title: "Technician On The Way 🔧", message: `A technician is on the way for your ${booking.sub_service || booking.service_type} service.` },
-          completed: { title: "Service Completed ✓", message: `Your ${booking.sub_service || booking.service_type} service has been completed. Rate your experience!` },
-          cancelled: { title: "Booking Cancelled", message: `Your ${booking.sub_service || booking.service_type} booking has been cancelled.` },
+          completed: { title: "Service Completed ✓", body: `Your ${booking.sub_service || booking.service_type} service has been completed. Rate your experience!` },
+          cancelled: { title: "Booking Cancelled", body: `Your ${booking.sub_service || booking.service_type} booking has been cancelled.` },
         };
         const notif = statusMessages[newStatus];
         if (notif) {
           await supabase.from("notifications").insert({
             user_id: booking.user_id,
             title: notif.title,
-            message: notif.message,
+            body: notif.body,
             type: "booking",
             read: false,
             created_at: new Date().toISOString(),
@@ -147,7 +147,7 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
         await supabase.from("notifications").insert({
           user_id: assignBooking.user_id,
           title: "Technician Assigned ✓",
-          message: `${techName.trim()} has been assigned to your ${assignBooking.sub_service || assignBooking.service_type} service. Contact: ${techPhone.trim() || "N/A"}`,
+          body: `${techName.trim()} has been assigned to your ${assignBooking.sub_service || assignBooking.service_type} service. Contact: ${techPhone.trim() || "N/A"}`,
           type: "booking",
           read: false,
           created_at: new Date().toISOString(),

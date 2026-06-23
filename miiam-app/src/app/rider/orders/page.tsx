@@ -245,7 +245,7 @@ export default function RiderOrdersPage() {
           await supabase.from("notifications").insert({
             user_id: order.user_id,
             title: "Rider Assigned!",
-            message: "A rider is on their way to pick up your order.",
+            body: "A rider is on their way to pick up your order.",
             type: "order",
             read: false,
           });
@@ -306,7 +306,7 @@ export default function RiderOrdersPage() {
             await supabase.from("notifications").insert({
               user_id: order.user_id,
               title: "Rider Assigned!",
-              message: "A rider is on their way to pick up your order.",
+              body: "A rider is on their way to pick up your order.",
               type: "order",
               read: false,
             });
@@ -442,7 +442,7 @@ export default function RiderOrdersPage() {
           await supabase.from("notifications").insert({
             user_id: order.user_id,
             title: "Order Delivered!",
-            message: "Your order has been delivered. Enjoy your food!",
+            body: "Your order has been delivered. Enjoy your food!",
             type: "order",
             read: false,
           });
@@ -491,7 +491,7 @@ export default function RiderOrdersPage() {
         await supabase.from("notifications").insert({
           user_id: order.user_id,
           title: "Order On The Way! 🚴",
-          message: "Your rider has picked up your order and is heading to you. Track in real-time!",
+          body: "Your rider has picked up your order and is heading to you. Track in real-time!",
           type: "order",
           read: false,
           created_at: new Date().toISOString(),
