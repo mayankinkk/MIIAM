@@ -390,7 +390,7 @@ export default function RestaurantProfilePage() {
   return (
     <div className="min-h-screen bg-surface pb-32">
       {/* Hero Cover */}
-      <div className="relative h-64 sm:h-80 overflow-hidden">
+      <div className="relative h-48 sm:h-64 overflow-hidden">
         <BlurImage
           src={coverImage}
           alt={vendor.shop_name}
