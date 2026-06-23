@@ -79,19 +79,16 @@ export default function RiderOrdersPage() {
 
       if (uniqueOrders.length > 0) {
         const vendorIds = [...new Set(uniqueOrders.map(o => o.vendor_id).filter(Boolean))] as string[];
-        const addressIds = [...new Set(uniqueOrders.map(o => o.delivery_address_id).filter(Boolean))] as string[];
         const userIds = [...new Set(uniqueOrders.map(o => o.user_id).filter(Boolean))] as string[];
         const orderIds = uniqueOrders.map(o => o.id);
 
-        const [vendorsRes, addressesRes, allItemsRes, profilesRes] = await Promise.all([
+        const [vendorsRes, allItemsRes, profilesRes] = await Promise.all([
           vendorIds.length > 0 ? supabase.from("vendors").select("id, shop_name, address, phone, latitude, longitude").in("id", vendorIds) : Promise.resolve({ data: [] }),
-          addressIds.length > 0 ? supabase.from("delivery_addresses").select("id, street, city, state, pincode, label, lat, lng").in("id", addressIds) : Promise.resolve({ data: [] }),
           supabase.from("order_items").select("id, order_id, menu_item_id, name, quantity, price, unit_price, status, actual_price, picked").in("order_id", orderIds),
           userIds.length > 0 ? supabase.from("profiles").select("id, full_name").in("id", userIds) : Promise.resolve({ data: [] }),
         ]);
 
         const vendorsMap = new Map((vendorsRes.data || []).map((v: Record<string, unknown>) => [v.id, v]));
-        const addressesMap = new Map((addressesRes.data || []).map((a: Record<string, unknown>) => [a.id, a]));
         const profilesMap = new Map((profilesRes.data || []).map((p: Record<string, unknown>) => [p.id, p]));
         const allItems = allItemsRes.data || [];
 
@@ -110,7 +107,7 @@ export default function RiderOrdersPage() {
           return {
             ...order,
             vendor: order.vendor_id ? vendorsMap.get(order.vendor_id) || null : null,
-            address: order.delivery_address_id ? addressesMap.get(order.delivery_address_id) || null : null,
+            address: null,
             items,
             customer_name: order.user_id ? (profilesMap.get(order.user_id) as Record<string, unknown> | undefined)?.full_name || "Customer" : "Customer",
           };
@@ -163,7 +160,7 @@ export default function RiderOrdersPage() {
         table: 'orders',
       }, (payload: { new: Record<string, unknown> }) => {
         const newOrder = payload.new as { id?: string; status: string; total_amount: number };
-        if (newOrder.status === 'ready_for_pickup') {
+        if (newOrder.status === 'ready_for_pickup' || newOrder.status === 'pending') {
           setOrders(prev => [newOrder as Order, ...prev]);
           if (Notification.permission === 'granted') {
             new Notification('New Order Available!', {
