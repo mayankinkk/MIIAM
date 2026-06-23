@@ -104,9 +104,15 @@ export default function RiderOrdersPage() {
             ...item,
             menu_item: item.menu_item_id ? menuItemsMap.get(item.menu_item_id) || null : null,
           }));
+          const rawVendor = order.vendor_id ? vendorsMap.get(order.vendor_id) || null : null;
+          const vendor = rawVendor ? {
+            ...rawVendor,
+            lat: rawVendor.latitude ?? rawVendor.lat,
+            lng: rawVendor.longitude ?? rawVendor.lng,
+          } : null;
           return {
             ...order,
-            vendor: order.vendor_id ? vendorsMap.get(order.vendor_id) || null : null,
+            vendor,
             address: null,
             items,
             customer_name: order.user_id ? (profilesMap.get(order.user_id) as Record<string, unknown> | undefined)?.full_name || "Customer" : "Customer",

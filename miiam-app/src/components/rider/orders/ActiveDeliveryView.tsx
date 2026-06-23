@@ -152,7 +152,19 @@ export default function ActiveDeliveryView({ order, riderId, onUpdateItemStatus,
             await drawRoute(riderLat, riderLng, dLat, dLng);
             geoSuccess = true;
           }
-        } catch (e) { logger.warn({ err: e }, "Map routing error"); }
+        } catch (e) { logger.warn({ err: e }, "Map geocoding error"); }
+      }
+
+      // Fallback: use vendor's stored lat/lng for pickup phase
+      if (!geoSuccess && isMounted && isPickup && order.vendor?.lat && order.vendor?.lng) {
+        const dLat = order.vendor.lat;
+        const dLng = order.vendor.lng;
+        destLatLngRef.current = [dLat, dLng];
+        L.marker([dLat, dLng], { icon: destIcon })
+          .bindPopup(`<b>${destLabel}</b><br><span style="font-size:11px">${order.vendor?.shop_name || order.vendor?.name || "Vendor"}</span>`)
+          .openPopup().addTo(map);
+        await drawRoute(riderLat, riderLng, dLat, dLng);
+        geoSuccess = true;
       }
 
       if (!geoSuccess && isMounted) {
