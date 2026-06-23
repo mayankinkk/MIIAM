@@ -25,6 +25,10 @@ CREATE TABLE IF NOT EXISTS rider_wallets (
   pending_payout DECIMAL(10,2) DEFAULT 0,
   total_earnings DECIMAL(10,2) DEFAULT 0,
   advance_used DECIMAL(10,2) DEFAULT 0,
+  bank_account_number TEXT,
+  bank_ifsc TEXT,
+  bank_name TEXT,
+  bank_holder_name TEXT,
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()
 );
