@@ -549,7 +549,7 @@ export default function RiderOrdersPage() {
     if (searchQuery) {
       const search = searchQuery.toLowerCase();
       const matchSearch = o.id.toLowerCase().includes(search) ||
-             o.vendor?.name?.toLowerCase().includes(search) ||
+             (o.vendor?.shop_name || o.vendor?.name || "").toLowerCase().includes(search) ||
              o.address?.street?.toLowerCase().includes(search);
       if (!matchSearch) return false;
     }
@@ -1065,7 +1065,7 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <p className="text-white font-extrabold text-xs truncate">{order.vendor?.name || "Order"}</p>
+              <p className="text-white font-extrabold text-xs truncate">{order.vendor?.shop_name || order.vendor?.name || "Order"}</p>
               <span className="text-[10px] text-white/70 font-bold bg-[var(--color-surface-container-lowest)]/10 px-1.5 py-0.5 rounded-full shrink-0">{phase === "pickup" ? "Pickup" : "Delivery"}</span>
             </div>
             <p className="text-white/80 text-[10px] truncate mt-0.5">
@@ -1247,7 +1247,7 @@ function CompletedCard({ order }: { order: Order }) {
     <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-lg">
       <div className="flex justify-between items-start">
         <div>
-          <h3 className="font-bold text-[var(--color-on-surface)]">{order.vendor?.name}</h3>
+          <h3 className="font-bold text-[var(--color-on-surface)]">{order.vendor?.shop_name || order.vendor?.name}</h3>
           <p className="text-xs text-[var(--color-outline-variant)]">{new Date(order.delivered_at || "").toLocaleString()}</p>
         </div>
         <div className="text-right">
@@ -1267,7 +1267,7 @@ function HistoryCard({ order }: { order: Order }) {
     <div className="bg-[var(--color-surface-container-lowest)] rounded-xl p-3 shadow-sm mb-2">
       <div className="flex justify-between items-center">
         <div>
-          <p className="font-bold text-sm">{order.vendor?.name}</p>
+          <p className="font-bold text-sm">{order.vendor?.shop_name || order.vendor?.name}</p>
           <p className="text-xs text-[var(--color-outline-variant)]">{new Date(order.placed_at).toLocaleDateString("en-IN")}</p>
         </div>
         <div className="text-right">

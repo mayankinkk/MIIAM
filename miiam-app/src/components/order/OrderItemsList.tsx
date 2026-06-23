@@ -62,7 +62,7 @@ export default function OrderItemsList({ order, onChatVendor }: OrderItemsListPr
               </span>
             </div>
             <div>
-              <h3 className="font-extrabold text-on-surface">{order.vendor?.name || "Restaurant"}</h3>
+              <h3 className="font-extrabold text-on-surface">{order.vendor?.shop_name || order.vendor?.name || "Restaurant"}</h3>
               <p className="text-xs font-bold text-primary uppercase tracking-widest">Order #{order.id.slice(0, 8).toUpperCase()}</p>
             </div>
           </div>

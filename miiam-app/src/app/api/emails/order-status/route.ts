@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
       customerName: user.full_name || "Customer",
       customerEmail: user.email,
       status,
-      vendorName: vendor?.name || "Restaurant",
+      vendorName: vendor?.shop_name || vendor?.name || "Restaurant",
       estimatedDelivery: order.estimated_delivery_time || undefined,
       riderName: rider?.name || undefined,
       riderPhone: rider?.phone || undefined,

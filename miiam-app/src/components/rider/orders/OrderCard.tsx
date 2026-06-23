@@ -22,7 +22,7 @@ export default function OrderCard({ order, onAccept, isSelected, onToggleSelect 
           </button>
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="font-bold text-[var(--color-on-surface)]">{order.vendor?.name}</h3>
+              <h3 className="font-bold text-[var(--color-on-surface)]">{order.vendor?.shop_name || order.vendor?.name}</h3>
               <span className="text-[10px] font-bold text-brand-secondary bg-secondary-container/50 px-2 py-0.5 rounded-full">For {order.customer_name || "Customer"}</span>
             </div>
             <p className="text-xs text-[var(--color-outline-variant)] flex items-center gap-1">

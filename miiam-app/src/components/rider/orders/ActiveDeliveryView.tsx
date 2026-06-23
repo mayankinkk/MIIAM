@@ -207,7 +207,7 @@ export default function ActiveDeliveryView({ order, riderId, onUpdateItemStatus,
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <p className="text-white font-extrabold text-xs truncate">{order.vendor?.name || "Order"}</p>
+              <p className="text-white font-extrabold text-xs truncate">{order.vendor?.shop_name || order.vendor?.name || "Order"}</p>
               <span className="text-[10px] text-white/70 font-bold bg-[var(--color-surface-container-lowest)]/10 px-1.5 py-0.5 rounded-full shrink-0">{phase === "pickup" ? "Pickup" : "Delivery"}</span>
             </div>
             <p className="text-white/80 text-[10px] truncate mt-0.5">

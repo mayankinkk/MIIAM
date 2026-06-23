@@ -70,7 +70,7 @@ export default function ReportsPage() {
             const user = o.user as Record<string, unknown> | null;
             return {
               id: (o.id as string).slice(0, 8).toUpperCase(),
-              vendor_name: (vendor?.name as string) || "—",
+              vendor_name: (vendor?.shop_name as string) || (vendor?.name as string) || "—",
               customer_name: (user?.full_name as string) || (user?.phone as string) || "—",
               status: o.status as string,
               total_amount: (o.total_amount as number) || 0,
