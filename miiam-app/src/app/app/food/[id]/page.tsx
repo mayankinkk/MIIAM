@@ -40,8 +40,9 @@ interface Vendor {
   cuisine: string;
   address: string;
   rating: number;
-  rating_count: number;
-  delivery_time: string;
+  review_count: number;
+  delivery_time_min: number;
+  delivery_time_max: number;
   delivery_charge: number;
   image_url: string;
   cover_image_url: string;
@@ -304,7 +305,7 @@ export default function RestaurantProfilePage() {
     setError(null);
     try {
       const [vendorRes, menuRes, reviewsRes] = await Promise.all([
-        supabase.from("vendors").select("id, shop_name, cuisine, address, rating, rating_count, delivery_time, delivery_charge, image_url, cover_image_url, banner_url, description, opening_hours, is_featured").eq("id", vendorId).single(),
+        supabase.from("vendors").select("id, shop_name, cuisine, address, rating, review_count, delivery_time_min, delivery_time_max, delivery_charge, image_url, cover_image_url, banner_url, description, opening_hours, is_featured").eq("id", vendorId).single(),
         supabase.from("menu_items").select("id, name, price, category, image_url, is_veg, is_featured, description, vendor_id").eq("vendor_id", vendorId).order("name"),
         supabase.from("reviews").select("id, user_name, user_avatar, rating, comment, created_at").eq("vendor_id", vendorId).order("created_at", { ascending: false }),
       ]);
@@ -440,7 +441,7 @@ export default function RestaurantProfilePage() {
             <div className="bg-[var(--color-surface-container-lowest)]/20 backdrop-blur-sm rounded-2xl px-4 py-2 text-center flex-shrink-0">
               <p className="text-white font-black text-xl">{avgRating}</p>
               <div className="flex text-amber-400 text-xs">{'★'.repeat(5)}</div>
-              <p className="text-white/70 text-[10px] mt-0.5">{reviews.length || vendor.rating_count || 0} reviews</p>
+              <p className="text-white/70 text-[10px] mt-0.5">{reviews.length || vendor.review_count || 0} reviews</p>
             </div>
           </div>
         </div>
@@ -458,7 +459,7 @@ export default function RestaurantProfilePage() {
         <div className="w-px h-4 bg-surface-container-high" />
         <div className="flex items-center gap-1.5 text-on-surface-variant flex-shrink-0">
           <span className="material-symbols-outlined text-primary text-base">schedule</span>
-          <span className="text-sm font-semibold">{vendor.delivery_time || "30-40 min"}</span>
+          <span className="text-sm font-semibold">{vendor.delivery_time_min && vendor.delivery_time_max ? `${vendor.delivery_time_min}-${vendor.delivery_time_max} min` : "30-40 min"}</span>
         </div>
         <div className="w-px h-4 bg-surface-container-high" />
         <div className="flex items-center gap-1.5 text-on-surface-variant flex-shrink-0">
