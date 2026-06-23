@@ -308,6 +308,8 @@ export default function RiderDashboard() {
     const channel = supabase.channel('rider-orders-dash')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders', filter: `status=eq.ready_for_pickup` }, () => { fetchRealOrders(); })
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'orders', filter: `status=eq.ready_for_pickup` }, () => { fetchRealOrders(); })
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders', filter: `status=eq.pending` }, () => { fetchRealOrders(); })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'orders', filter: `status=eq.pending` }, () => { fetchRealOrders(); })
       .subscribe();
     return () => { supabase.removeChannel(channel); };
   }, [isOnline, supabase]);

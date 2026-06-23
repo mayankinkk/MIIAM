@@ -185,7 +185,7 @@ export default function VendorDashboard() {
       todayRevenue: delivered.reduce((sum, o) => sum + o.total_amount, 0),
       todayItemsSold: delivered.reduce((sum, o) => sum + (o.items?.reduce((s, i) => s + i.quantity, 0) || 0), 0),
       pendingOrders: orders.filter((o) => o.status === "pending"),
-      activeOrders: orders.filter((o) => ["accepted", "preparing"].includes(o.status)),
+      activeOrders: orders.filter((o) => ["accepted", "preparing", "ready_for_pickup"].includes(o.status)),
       recentOrders: orders.slice(0, 5),
     };
   }, [orders]);

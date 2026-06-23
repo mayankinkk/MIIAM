@@ -288,6 +288,7 @@ export default function RiderOrdersPage() {
             .from("orders")
             .update({
               rider_id: riderProfile.id,
+              status: "accepted",
               accepted_at: new Date().toISOString(),
             })
             .eq("id", orderId)

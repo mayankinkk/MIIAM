@@ -375,7 +375,7 @@ export function useActiveOrders(userId: string) {
         .select("id, user_id, vendor_id, status, total_amount, placed_at, vendor:vendors(shop_name)")
         .eq("user_id", userId)
         .in("status", [
-          "pending", "accepted", "preparing", "ready",
+          "pending", "accepted", "preparing", "ready_for_pickup",
           "picking_up", "on_the_way", "arrived", "scheduled",
         ])
         .order("created_at", { ascending: false });
