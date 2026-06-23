@@ -65,7 +65,7 @@ export default function RiderOrdersPage() {
         .from("orders")
         .select("id, user_id, vendor_id, rider_id, status, total_amount, delivery_fee, delivery_address, special_instructions, placed_at, delivered_at")
         .eq("rider_id", riderId)
-        .in("status", ["pending", "ready_for_pickup", "on_the_way"])
+        .in("status", ["pending", "accepted", "preparing", "ready_for_pickup", "on_the_way"])
         .order("placed_at", { ascending: false }) : { data: [] };
 
       const allDbOrders = [...(availableOrders || []), ...(myOrders || [])];
@@ -578,8 +578,8 @@ export default function RiderOrdersPage() {
     }
   });
 
-  const availableOrders = filteredOrders.filter(o => o.status === "ready_for_pickup" && !o.rider_id);
-  const shoppingOrders = filteredOrders.filter(o => o.rider_id && ["ready_for_pickup", "on_the_way"].includes(o.status));
+  const availableOrders = filteredOrders.filter(o => ["pending", "ready_for_pickup"].includes(o.status) && !o.rider_id);
+  const shoppingOrders = filteredOrders.filter(o => o.rider_id && ["pending", "accepted", "preparing", "ready_for_pickup", "on_the_way"].includes(o.status));
   const completedOrders = filteredOrders.filter(o => o.status === "delivered");
 
   const todayEarnings = completedOrders

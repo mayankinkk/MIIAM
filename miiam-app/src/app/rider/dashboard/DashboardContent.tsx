@@ -249,7 +249,7 @@ export default function RiderDashboard() {
       try {
         if (!isOnline) return;
         const yesterday = new Date(); yesterday.setHours(yesterday.getHours() - 24);
-        const { data: dbOrders } = await supabase.from("orders").select("id, user_id, vendor_id, status, total_amount, delivery_address, special_instructions, placed_at").is("rider_id", null).in("status", ["ready_for_pickup"]).gte("placed_at", yesterday.toISOString()).order("placed_at", { ascending: false });
+        const { data: dbOrders } = await supabase.from("orders").select("id, user_id, vendor_id, status, total_amount, delivery_address, special_instructions, placed_at").is("rider_id", null).in("status", ["pending", "ready_for_pickup"]).gte("placed_at", yesterday.toISOString()).order("placed_at", { ascending: false });
         if (!dbOrders || dbOrders.length === 0) { setPendingOrders([]); return; }
 
         const vendorIds = [...new Set(dbOrders.map((o: Record<string, unknown>) => o.vendor_id).filter(Boolean))] as string[];
