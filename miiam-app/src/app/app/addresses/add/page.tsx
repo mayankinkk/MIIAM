@@ -422,8 +422,8 @@ export default function AddressPickerPage() {
           </div>
         )}
 
-        {mapLoaded && (
-          <div className="absolute bottom-0 left-0 right-0 bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container-lowest)] rounded-t-2xl shadow-xl z-50 max-h-[50vh] overflow-y-auto">
+        {/* Bottom form panel - always show */}
+        <div className="absolute bottom-0 left-0 right-0 bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container-lowest)] rounded-t-2xl shadow-xl z-50 max-h-[50vh] overflow-y-auto">
             <div className="p-4 border-b border-[var(--color-border-subtle)]">
               <div className="flex items-center gap-2 mb-2">
                 <span className="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
@@ -555,7 +555,6 @@ export default function AddressPickerPage() {
               </div>
             </div>
           </div>
-        )}
 
         {locationError && !mapLoaded && (
           <div className="absolute bottom-4 left-4 right-4 bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container-lowest)] rounded-xl shadow-lg p-4 z-40">
