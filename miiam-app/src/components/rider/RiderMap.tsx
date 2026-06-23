@@ -43,6 +43,15 @@ interface Props {
 const OSRM = "https://router.project-osrm.org/route/v1/driving";
 const NOMINATIM = "https://nominatim.openstreetmap.org/search";
 
+// Fallback tile servers for OpenStreetMap (handles 503s)
+const TILE_SERVERS = [
+  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+  "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
+  "https://b.tile.openstreetmap.org/{z}/{x}/{y}.png",
+  "https://c.tile.openstreetmap.org/{z}/{x}/{y}.png",
+  "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+];
+
 async function geocode(address: string): Promise<[number, number] | null> {
   try {
     const q = address.toLowerCase().includes("india") ? address : `${address}, India`;
@@ -169,10 +178,22 @@ export default function RiderMap({
       }).setView([28.6139, 77.209], 13);
 
       L.control.zoom({ position: "bottomright" }).addTo(map);
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: "© OpenStreetMap contributors",
-        maxZoom: 19,
-      }).addTo(map);
+
+      // Add tile layer with fallback servers for 503 handling
+      let tileServerIndex = 0;
+      function addTileLayer(urlIndex: number) {
+        if (urlIndex >= TILE_SERVERS.length) return;
+        const tileLayer = L.tileLayer(TILE_SERVERS[urlIndex], {
+          attribution: "© OpenStreetMap contributors",
+          maxZoom: 19,
+        });
+        tileLayer.on('tileerror', () => {
+          tileLayer.remove();
+          addTileLayer(urlIndex + 1);
+        });
+        tileLayer.addTo(map);
+      }
+      addTileLayer(0);
 
       mapInstanceRef.current = map;
       requestAnimationFrame(() => map.invalidateSize());
