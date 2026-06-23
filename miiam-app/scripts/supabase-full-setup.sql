@@ -96,6 +96,18 @@ create table if not exists riders (
   created_at timestamp with time zone default timezone('utc'::text, now())
 );
 
+-- RIDER LOCATIONS TABLE
+create table if not exists rider_locations (
+  id uuid default uuid_generate_v4() primary key,
+  order_id uuid references orders(id) on delete cascade,
+  rider_id uuid references riders(id) on delete cascade,
+  rider_name text,
+  rider_phone text,
+  lat double precision not null,
+  lng double precision not null,
+  created_at timestamp with time zone default timezone('utc'::text, now())
+);
+
 -- RIDER WALLET TABLE
 create table if not exists rider_wallet (
   id uuid default uuid_generate_v4() primary key,
@@ -534,10 +546,12 @@ CREATE TABLE IF NOT EXISTS order_items (
 -- Enable RLS
 ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.order_items ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.rider_locations ENABLE ROW LEVEL SECURITY;
 
 -- Policies
 CREATE POLICY "Allow full access to orders" ON public.orders FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow full access to order_items" ON public.order_items FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow full access to rider_locations" ON public.rider_locations FOR ALL USING (true) WITH CHECK (true);
 
 -- User Prescriptions Table
 CREATE TABLE IF NOT EXISTS user_prescriptions (
