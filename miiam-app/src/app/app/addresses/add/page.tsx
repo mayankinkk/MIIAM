@@ -423,7 +423,7 @@ export default function AddressPickerPage() {
         )}
 
         {/* Bottom form panel - always show */}
-        <div className="absolute bottom-0 left-0 right-0 bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container-lowest)] rounded-t-2xl shadow-xl z-50 max-h-[50vh] overflow-y-auto">
+        <div className="absolute bottom-0 left-0 right-0 bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container-lowest)] rounded-t-2xl shadow-xl max-h-[50vh] overflow-y-auto" style={{ zIndex: 9999 }}>
             <div className="p-4 border-b border-[var(--color-border-subtle)]">
               <div className="flex items-center gap-2 mb-2">
                 <span className="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
