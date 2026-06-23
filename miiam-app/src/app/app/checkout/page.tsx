@@ -199,28 +199,6 @@ export default function CheckoutPage() {
               deliveryAddress={deliveryAddress}
               onChangeAddress={() => setShowAddressPicker(true)}
             />
-            {deliveryAddress?.phone && (
-              <div className="bg-surface-container-lowest dark:bg-[var(--color-surface-container-lowest)] p-4 rounded-2xl shadow-sm flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-surface-container dark:bg-[var(--color-surface-container)] flex items-center justify-center">
-                  <span className="material-symbols-outlined text-primary text-lg">phone</span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs text-on-surface-variant dark:text-[var(--color-outline)]">Rider will call on</p>
-                  <p className="text-sm font-bold text-on-surface dark:text-[var(--color-on-surface)] truncate">{deliveryAddress.phone}</p>
-                </div>
-                <Link href="/app/addresses" className="text-xs text-primary font-bold">Change</Link>
-              </div>
-            )}
-            {!deliveryAddress?.phone && (
-              <div className="bg-amber-50 dark:bg-amber-900/20 p-4 rounded-2xl shadow-sm flex items-center gap-3">
-                <span className="material-symbols-outlined text-amber-600">warning</span>
-                <div className="flex-1">
-                  <p className="text-sm font-bold text-amber-800 dark:text-amber-300">Phone number needed</p>
-                  <p className="text-xs text-amber-600 dark:text-amber-400">Add a phone number to your address for the rider to contact you.</p>
-                </div>
-                <Link href="/app/addresses" className="text-xs text-primary font-bold whitespace-nowrap">Add</Link>
-              </div>
-            )}
             <CheckoutScheduledServices items={items} />
             <CheckoutPrintOrderSummary items={items} />
             {!items.some(i => i.vendor_id === SERVICES_VENDOR_ID) && (
@@ -279,10 +257,7 @@ export default function CheckoutPage() {
 
               <button
                 onClick={() => {
-                  if (!deliveryAddress?.phone) {
-                    useToastStore.getState().addToast("Please add a phone number to your delivery address", "error");
-                    return;
-                  }
+                  if (!deliveryAddress) return;
                   setPlacing(true);
 
                   const orderArgs = {
@@ -297,7 +272,7 @@ export default function CheckoutPage() {
                     isRecurring,
                     recurringFrequency,
                     recurringDayOfWeek,
-                    phone: deliveryAddress.phone,
+                    phone: deliveryAddress.phone || "",
                   };
 
                   if (paymentMethod === "upi" || paymentMethod === "card") {
@@ -314,7 +289,7 @@ export default function CheckoutPage() {
                     placeOrder(orderArgs).finally(() => setPlacing(false));
                   }
                 }}
-                disabled={placing || razorpayLoading || items.length === 0 || !deliveryAddress || !deliveryAddress.phone}
+                disabled={placing || razorpayLoading || items.length === 0 || !deliveryAddress}
                 className="w-full bg-gradient-to-r from-primary to-primary-container text-white py-4 sm:py-5 rounded-xl text-base sm:text-lg font-extrabold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 sm:gap-3 disabled:opacity-60"
               >
                 {(placing || razorpayLoading) ? (

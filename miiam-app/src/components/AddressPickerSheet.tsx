@@ -70,6 +70,7 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
   const [landmark, setLandmark] = useState("");
   const [instructions, setInstructions] = useState("");
   const [addrType, setAddrType] = useState("home");
+  const [phone, setPhone] = useState("");
   const searchTimeout = useRef<NodeJS.Timeout | null>(null);
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<LeafletMapInstance | null>(null);
@@ -210,7 +211,7 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
     if (!pickedLocation) return;
     const parts = pickedLocation.display.split(",");
     const rawPostal = parts[parts.length - 2]?.trim() || "";
-    onSelect({
+      onSelect({
       label: addrType === "home" ? "Home" : addrType === "office" ? "Office" : "Other",
       street: [flat, parts[0]].filter(Boolean).join(", "),
       city: parts[1]?.trim() || "",
@@ -222,6 +223,7 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
       lat: pickedLocation.lat,
       lng: pickedLocation.lng,
       type: addrType,
+      phone,
     });
   }
 
@@ -383,6 +385,16 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
                     onChange={e => setLandmark(e.target.value)}
                     className="w-full px-4 py-3.5 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 text-sm"
                   />
+                  <input
+                    type="tel"
+                    placeholder="Phone Number *"
+                    aria-label="Phone number"
+                    value={phone}
+                    onChange={e => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
+                    className="w-full px-4 py-3.5 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 text-sm"
+                    inputMode="numeric"
+                    maxLength={10}
+                  />
 
                   {/* Address type */}
                   <div>
@@ -402,8 +414,8 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
                   </div>
 
                   <button
-                    onClick={() => onSelect({ ...gpsAddress!, flat, landmark, instructions, type: addrType, label: addrType.charAt(0).toUpperCase() + addrType.slice(1) })}
-                    disabled={!flat.trim()}
+                    onClick={() => onSelect({ ...gpsAddress!, flat, landmark, instructions, type: addrType, label: addrType.charAt(0).toUpperCase() + addrType.slice(1), phone })}
+                    disabled={!flat.trim() || phone.length !== 10}
                     className="w-full py-4 bg-gradient-to-r from-primary to-primary-container text-white font-extrabold rounded-2xl disabled:opacity-50 shadow-lg shadow-primary/20 flex items-center justify-center gap-2"
                   >
                     <span className="material-symbols-outlined">check_circle</span>
@@ -481,6 +493,16 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
                     onChange={e => setLandmark(e.target.value)}
                     className="w-full px-4 py-3.5 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 text-sm"
                   />
+                  <input
+                    type="tel"
+                    placeholder="Phone Number *"
+                    aria-label="Phone number"
+                    value={phone}
+                    onChange={e => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
+                    className="w-full px-4 py-3.5 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 text-sm"
+                    inputMode="numeric"
+                    maxLength={10}
+                  />
                   <textarea
                     placeholder="Delivery instructions (e.g. Ring bell, 2nd floor)"
                     aria-label="Delivery instructions"
@@ -507,7 +529,7 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
 
                   <button
                     onClick={confirmManual}
-                    disabled={!flat.trim()}
+                    disabled={!flat.trim() || phone.length !== 10}
                     className="w-full py-4 bg-gradient-to-r from-primary to-primary-container text-white font-extrabold rounded-2xl disabled:opacity-50 shadow-lg shadow-primary/20 flex items-center justify-center gap-2"
                   >
                     <span className="material-symbols-outlined">check_circle</span>
