@@ -566,6 +566,18 @@ CREATE TABLE IF NOT EXISTS user_prescriptions (
 ALTER TABLE public.user_prescriptions ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Allow full access to user_prescriptions" ON public.user_prescriptions FOR ALL USING (true) WITH CHECK (true);
 
+-- Favorites Table
+CREATE TABLE IF NOT EXISTS favorites (
+  id uuid default uuid_generate_v4() primary key,
+  user_id uuid not null references auth.users(id) on delete cascade,
+  vendor_id uuid not null references vendors(id) on delete cascade,
+  created_at timestamp with time zone default timezone('utc'::text, now()),
+  unique(user_id, vendor_id)
+);
+
+ALTER TABLE public.favorites ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow full access to favorites" ON public.favorites FOR ALL USING (true) WITH CHECK (true);
+
 -- STORAGE BUCKET FOR PHARMACY IMAGES
 INSERT INTO storage.buckets (id, name, public) VALUES ('pharmacy-images', 'pharmacy-images', true);
 
