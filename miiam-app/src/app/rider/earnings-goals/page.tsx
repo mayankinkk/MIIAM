@@ -59,7 +59,7 @@ export default function RiderEarningsGoalsPage() {
 
       const { data: orders } = await supabase
         .from("orders")
-        .select("id, rider_earning, placed_at, status")
+        .select("id, delivery_fee, placed_at, status")
         .eq("rider_id", myRider.id)
         .in("status", ["delivered", "completed"])
         .order("placed_at", { ascending: false });
@@ -72,9 +72,9 @@ export default function RiderEarningsGoalsPage() {
         const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
         const recent: DeliveryRecord[] = [];
 
-        orders.forEach((o: { placed_at: string; rider_earning: number | null; id: string; status: string }) => {
+        orders.forEach((o: { placed_at: string; delivery_fee: number | null; id: string; status: string }) => {
           const d = new Date(o.placed_at);
-          const earn = o.rider_earning || 0;
+          const earn = o.delivery_fee || 0;
           totalE += earn;
           if (d >= todayStart) { dayE += earn; dayD++; }
           if (d >= startOfWeek) { weekE += earn; weekD++; }

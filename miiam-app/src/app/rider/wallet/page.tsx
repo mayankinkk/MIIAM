@@ -105,7 +105,7 @@ export default function RiderWalletPage() {
 
       const { data: weekOrders } = await supabase
         .from("orders")
-        .select("rider_earning, placed_at")
+        .select("delivery_fee, placed_at")
         .eq("rider_id", riderData.id)
         .in("status", ["delivered", "completed"])
         .gte("placed_at", weekStart.toISOString());
@@ -117,12 +117,12 @@ export default function RiderWalletPage() {
       let weekTotalEarnings = 0;
       let weekTotalDeliveries = 0;
 
-      (weekOrders || []).forEach((order: { placed_at: string; rider_earning: number | null }) => {
+      (weekOrders || []).forEach((order: { placed_at: string; delivery_fee: number | null }) => {
         const date = new Date(order.placed_at);
         const dayKey = dayNames[date.getDay()];
         if (dailyMap[dayKey]) {
           dailyMap[dayKey].deliveries += 1;
-          const earning = Number(order.rider_earning) || 0;
+          const earning = Number(order.delivery_fee) || 0;
           dailyMap[dayKey].earnings += earning;
           weekTotalEarnings += earning;
           weekTotalDeliveries += 1;
@@ -145,11 +145,11 @@ export default function RiderWalletPage() {
       todayStart.setHours(0, 0, 0, 0);
       const { data: todayOrders } = await supabase
         .from("orders")
-        .select("rider_earning")
+        .select("delivery_fee")
         .eq("rider_id", riderData.id)
         .in("status", ["delivered", "completed"])
         .gte("placed_at", todayStart.toISOString());
-      const todayEarn = (todayOrders || []).reduce((s: number, o: { rider_earning: number | null }) => s + (Number(o.rider_earning) || 0), 0);
+      const todayEarn = (todayOrders || []).reduce((s: number, o: { delivery_fee: number | null }) => s + (Number(o.delivery_fee) || 0), 0);
       setTodayEarnings(todayEarn);
       setTodayDeliveries(todayOrders?.length || 0);
 

@@ -122,8 +122,8 @@ export default function RiderDashboard() {
         setRiderDeliveries(riderRow.total_deliveries || 0);
 
         let totalEarnings = 0;
-        const { data: allDeliveredOrders } = await supabase.from("orders").select("rider_earning").eq("rider_id", riderIdVal).in("status", ["delivered", "completed"]);
-        totalEarnings = (allDeliveredOrders || []).reduce((s: number, o: { rider_earning: number | null }) => s + (Number(o.rider_earning) || 0), 0);
+        const { data: allDeliveredOrders } = await supabase.from("orders").select("delivery_fee").eq("rider_id", riderIdVal).in("status", ["delivered", "completed"]);
+        totalEarnings = (allDeliveredOrders || []).reduce((s: number, o: { delivery_fee: number | null }) => s + (Number(o.delivery_fee) || 0), 0);
         if (!totalEarnings) {
           const { data: walletFallback } = await supabase.from("rider_wallets").select("total_earnings").eq("rider_id", riderIdVal).maybeSingle();
           totalEarnings = Number(walletFallback?.total_earnings) || 0;
@@ -132,16 +132,15 @@ export default function RiderDashboard() {
 
         const todayStart = new Date(); todayStart.setHours(0, 0, 0, 0);
         let todayEarned = 0; let collected = 0;
-        const { data: todayOrders } = await supabase.from("orders").select("rider_earning, customer_collected").eq("rider_id", riderIdVal).in("status", ["delivered", "completed"]).gte("placed_at", todayStart.toISOString());
-        todayEarned = (todayOrders || []).reduce((s: number, o: { rider_earning: number | null }) => s + (Number(o.rider_earning) || 0), 0);
+        const { data: todayOrders } = await supabase.from("orders").select("delivery_fee").eq("rider_id", riderIdVal).in("status", ["delivered", "completed"]).gte("placed_at", todayStart.toISOString());
+        todayEarned = (todayOrders || []).reduce((s: number, o: { delivery_fee: number | null }) => s + (Number(o.delivery_fee) || 0), 0);
         if (!todayEarned) {
           const weekStart = new Date(); weekStart.setHours(0, 0, 0, 0);
           const { data: todayTxns } = await supabase.from("rider_wallet").select("amount").eq("rider_id", riderIdVal).eq("type", "earning").gte("created_at", weekStart.toISOString());
           todayEarned = (todayTxns || []).reduce((s: number, t: { amount: number }) => s + Number(t.amount), 0);
         }
         setTodayEarnings(todayEarned);
-        (todayOrders || []).forEach((o: { customer_collected: number | null }) => { collected += Number(o.customer_collected) || 0; });
-        setCashCollected(collected); setCashPending(0);
+        setCashCollected(0); setCashPending(0);
 
         const { data: settings } = await supabase.from("rider_settings").select("dnd_mode, sound_enabled, vibration_enabled").eq("rider_id", riderIdVal).maybeSingle();
         if (settings) {
@@ -170,12 +169,12 @@ export default function RiderDashboard() {
 
         try {
           const activeStatuses = ["accepted", "preparing", "ready_for_pickup", "shopping", "picking_up", "on_the_way", "arrived"];
-          const { data: activeOrdersData } = await supabase.from("orders").select("id, user_id, vendor_id, status, total_amount, delivery_address, special_instructions, otp, customer_phone, placed_at, vendor:vendors(id, shop_name, address, phone, latitude, longitude, lat, lng, type)").eq("rider_id", riderIdVal).in("status", activeStatuses).order("placed_at", { ascending: false }).limit(1);
+          const { data: activeOrdersData } = await supabase.from("orders").select("id, user_id, vendor_id, status, total_amount, delivery_address, special_instructions, placed_at, vendor:vendors(id, shop_name, address, phone, latitude, longitude, lat, lng, type)").eq("rider_id", riderIdVal).in("status", activeStatuses).order("placed_at", { ascending: false }).limit(1);
           if (activeOrdersData && activeOrdersData.length > 0) {
             const dbOrder = activeOrdersData[0];
             const vendorData = dbOrder.vendor as Record<string, unknown> | null;
             let customerName = "Customer";
-            let customerPhone = dbOrder.customer_phone || "+91 88888 88888";
+            let customerPhone = "+91 88888 88888";
             if (dbOrder.user_id) {
               const { data: profile } = await supabase.from("profiles").select("full_name, name, phone").eq("id", dbOrder.user_id).maybeSingle();
               if (profile) { customerName = (profile.full_name as string) || (profile.name as string) || "Customer"; customerPhone = (profile.phone as string) || customerPhone; }
@@ -193,7 +192,7 @@ export default function RiderDashboard() {
               earnings: calculateEarnings(0), orderTotal: Math.round(dbOrder.total_amount || 0), items: itemsCount || 1,
               itemsList: itemsList.length > 0 ? itemsList : ["Items hidden"], time: "Calculating...", time2: "Calculating...",
               estCompletion: 0, priority: (dbOrder.total_amount > 500) ? "high" as const : "normal" as const,
-              peakMultiplier: 1.0, specialInstructions: dbOrder.special_instructions || "", otp: dbOrder.otp || "", type: (vendorData?.type as "food" | "grocery" | "multi_stop") || "food",
+              peakMultiplier: 1.0, specialInstructions: dbOrder.special_instructions || "", otp: "", type: (vendorData?.type as "food" | "grocery" | "multi_stop") || "food",
             };
             setCurrentOrder(activeOrder);
             const statusStepMap: Record<string, "shopping" | "picking_up" | "picked" | "delivering" | "arrived"> = {
@@ -250,7 +249,7 @@ export default function RiderDashboard() {
       try {
         if (!isOnline) return;
         const yesterday = new Date(); yesterday.setHours(yesterday.getHours() - 24);
-        const { data: dbOrders } = await supabase.from("orders").select("id, user_id, vendor_id, status, total_amount, delivery_address, special_instructions, otp, customer_phone, placed_at").is("rider_id", null).in("status", ["ready_for_pickup"]).gte("placed_at", yesterday.toISOString()).order("placed_at", { ascending: false });
+        const { data: dbOrders } = await supabase.from("orders").select("id, user_id, vendor_id, status, total_amount, delivery_address, special_instructions, placed_at").is("rider_id", null).in("status", ["ready_for_pickup"]).gte("placed_at", yesterday.toISOString()).order("placed_at", { ascending: false });
         if (!dbOrders || dbOrders.length === 0) { setPendingOrders([]); return; }
 
         const vendorIds = [...new Set(dbOrders.map((o: Record<string, unknown>) => o.vendor_id).filter(Boolean))] as string[];
@@ -292,13 +291,13 @@ export default function RiderDashboard() {
             vendorAddress: (vendorData as Record<string, unknown>)?.address || "Restaurant Address", vendorPhone: (vendorData as Record<string, unknown>)?.phone || "+91 99999 99999",
             vendorLat: (vendorData as Record<string, unknown>)?.latitude || (vendorData as Record<string, unknown>)?.lat || 0, vendorLng: (vendorData as Record<string, unknown>)?.longitude || (vendorData as Record<string, unknown>)?.lng || 0,
             customer: (profileData as Record<string, unknown>)?.full_name || (profileData as Record<string, unknown>)?.name || "Customer",
-            customerPhone: (profileData as Record<string, unknown>)?.phone || dbOrder.customer_phone || "+91 88888 88888",
+            customerPhone: (profileData as Record<string, unknown>)?.phone || "+91 88888 88888",
             customerAddress: dbOrder.delivery_address || "Customer Delivery Location", landmark: dbOrder.special_instructions || "N/A",
             distance: 0, distance2: 0, totalDistance: 0, earnings: calculateEarnings(0),
             orderTotal: Math.round(Number(dbOrder.total_amount) || 0), items: itemsCount || 1,
             itemsList: itemsList.length > 0 ? itemsList : ["Items hidden"], time: "Calculating...", time2: "Calculating...",
             estCompletion: 0, priority: (Number(dbOrder.total_amount) > 500) ? "high" : "normal", peakMultiplier: 1.0,
-            specialInstructions: dbOrder.special_instructions || "", otp: dbOrder.otp || "", type: (vendorData as Record<string, unknown>)?.type || "food",
+            specialInstructions: dbOrder.special_instructions || "", otp: "", type: (vendorData as Record<string, unknown>)?.type || "food",
             expiresAt: expirationTime, isSnoozed: false,
           } as OrderWithTiming;
         });
@@ -518,7 +517,7 @@ export default function RiderDashboard() {
         }
 
         // 4. Order status update LAST (critical — point of no return)
-        const { error: orderErr } = await supabase.from("orders").update({ status: "delivered", delivered_at: new Date().toISOString(), rider_earning: finalEarnings }).eq("id", currentOrder.orderDbId);
+        const { error: orderErr } = await supabase.from("orders").update({ status: "delivered", delivered_at: new Date().toISOString() }).eq("id", currentOrder.orderDbId);
         if (orderErr) throw new Error("order update: " + orderErr.message);
       }
     } catch (e) { logger.error({ err: e }, "Failed to persist delivery"); }

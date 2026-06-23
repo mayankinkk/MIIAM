@@ -34,7 +34,7 @@ export default function RiderAnalyticsPage() {
 
       const { data: orders } = await supabase
         .from("orders")
-        .select("id, status, total_amount, delivery_fee, placed_at, delivered_at, rating, rider_earning")
+        .select("id, status, total_amount, delivery_fee, placed_at, delivered_at")
         .eq("rider_id", myRider?.id)
         .gte("placed_at", startDate.toISOString())
         .in("status", ["delivered", "completed"]);
@@ -43,15 +43,14 @@ export default function RiderAnalyticsPage() {
         const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
         const dailyMap: Record<string, { deliveries: number; earnings: number; ratings: number[] }> = {};
         
-        orders.forEach((order: { placed_at: string; rider_earning: number | null; delivery_fee: number | null; rating: number | null }) => {
+        orders.forEach((order: { placed_at: string; delivery_fee: number | null }) => {
           const date = new Date(order.placed_at);
           const dayKey = dayNames[date.getDay()];
           if (!dailyMap[dayKey]) {
             dailyMap[dayKey] = { deliveries: 0, earnings: 0, ratings: [] };
           }
           dailyMap[dayKey].deliveries += 1;
-          dailyMap[dayKey].earnings += (order.rider_earning || order.delivery_fee || 0);
-          if (order.rating) dailyMap[dayKey].ratings.push(order.rating);
+          dailyMap[dayKey].earnings += (order.delivery_fee || 0);
         });
 
         const data = dayNames.map(day => {

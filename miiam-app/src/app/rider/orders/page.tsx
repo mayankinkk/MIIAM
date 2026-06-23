@@ -52,7 +52,7 @@ export default function RiderOrdersPage() {
       // Fetch available orders (not assigned to any rider)
       const { data: availableOrders, error: dbError } = await supabase
         .from("orders")
-        .select("id, user_id, vendor_id, rider_id, status, total_amount, delivery_fee, delivery_address, delivery_address_id, customer_phone, special_instructions, otp, placed_at, delivered_at, customer_collected")
+        .select("id, user_id, vendor_id, rider_id, status, total_amount, delivery_fee, delivery_address, special_instructions, placed_at, delivered_at")
         .is("rider_id", null)
         .in("status", ["ready_for_pickup"])
         .gte("placed_at", yesterday.toISOString())
@@ -63,7 +63,7 @@ export default function RiderOrdersPage() {
       // Also fetch this rider's own accepted orders
       const { data: myOrders } = riderId ? await supabase
         .from("orders")
-        .select("id, user_id, vendor_id, rider_id, status, total_amount, delivery_fee, delivery_address, delivery_address_id, customer_phone, special_instructions, otp, placed_at, delivered_at, customer_collected")
+        .select("id, user_id, vendor_id, rider_id, status, total_amount, delivery_fee, delivery_address, special_instructions, placed_at, delivered_at")
         .eq("rider_id", riderId)
         .in("status", ["ready_for_pickup", "on_the_way"])
         .order("placed_at", { ascending: false }) : { data: [] };
@@ -459,8 +459,6 @@ export default function RiderOrdersPage() {
         .update({
           status: "delivered",
           delivered_at: new Date().toISOString(),
-          rider_earning: riderEarning,
-          customer_collected: cashToCollect,
         })
         .eq("id", currentOrderId);
       if (orderErr) throw new Error("order update: " + orderErr.message);
