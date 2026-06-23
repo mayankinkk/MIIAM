@@ -29,7 +29,6 @@ interface OrderInsert {
   delivery_address: string;
   scheduled_delivery: string | null;
   special_instructions: string | null;
-  customer_phone: string | null;
   placed_at: string;
 }
 
@@ -161,7 +160,6 @@ export function usePlaceOrder(supabase: SupabaseClient) {
           delivery_address: finalAddress,
           scheduled_delivery: scheduledIso,
           special_instructions: specialInstructions || null,
-          customer_phone: phone || null,
           placed_at: new Date().toISOString(),
         };
 

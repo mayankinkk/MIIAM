@@ -87,7 +87,7 @@ export default function OrdersPage() {
 
       const { data: ordersData, error: ordersError } = await supabase
         .from("orders")
-        .select("id, user_id, vendor_id, status, total_amount, delivery_fee, discount_amount, placed_at, delivered_at, created_at")
+        .select("id, user_id, vendor_id, status, total_amount, delivery_fee, discount_amount, placed_at, delivered_at")
         .eq("user_id", authUser.id)
         .order("placed_at", { ascending: false });
 

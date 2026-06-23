@@ -12,7 +12,6 @@ export default function CheckoutPaymentMethods({ paymentMethod, onChange }: Chec
 
   const methods = [
     { id: "upi", label: "UPI Payment", sub: "Google Pay, PhonePe, Paytm, BHIM", icon: "qr_code_scanner" },
-    { id: "card", label: "Credit / Debit Card", sub: "Visa, Mastercard, RuPay", icon: "credit_card" },
     { id: "cod", label: "Cash on Delivery", sub: "Pay when you receive the order", icon: "payments" },
   ];
 

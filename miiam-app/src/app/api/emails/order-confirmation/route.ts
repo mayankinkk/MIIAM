@@ -1,13 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/server";
 import { sendOrderConfirmationEmail } from "@/lib/email";
-import { requireCronAuth } from "@/lib/security";
 
 export async function POST(request: NextRequest) {
-  if (!(await requireCronAuth(request))) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
   const supabase = createAdminClient();
 
   try {
@@ -24,13 +19,11 @@ export async function POST(request: NextRequest) {
         user_id,
         vendor_id,
         delivery_address,
-        subtotal,
+        total_amount,
         delivery_fee,
-        tip,
-        total,
-        estimated_delivery_time,
+        discount_amount,
         users:user_id(email, full_name),
-        vendors:vendor_id(name)
+        vendors:vendor_id(shop_name)
       `)
       .eq("id", orderId)
       .single();
@@ -47,7 +40,7 @@ export async function POST(request: NextRequest) {
     const vendorsData = order.vendors;
     const vendor = Array.isArray(vendorsData)
       ? vendorsData[0]
-      : (vendorsData as { name: string } | null);
+      : (vendorsData as { shop_name: string } | null);
 
     if (!user?.email) {
       return NextResponse.json({ error: "User email not found" }, { status: 400 });
@@ -62,18 +55,16 @@ export async function POST(request: NextRequest) {
       orderId: order.id,
       customerName: user.full_name || "Customer",
       customerEmail: user.email,
-      vendorName: vendor?.name || "Restaurant",
+      vendorName: vendor?.shop_name || "Restaurant",
       items: items?.map((i) => ({
         name: i.name || "Item",
         quantity: i.quantity,
         price: i.price,
       })) || [],
-      subtotal: order.subtotal || 0,
+      subtotal: (order.total_amount || 0) - (order.delivery_fee || 0) + (order.discount_amount || 0),
       deliveryFee: order.delivery_fee || 0,
-      tip: order.tip || undefined,
-      total: order.total || 0,
+      total: order.total_amount || 0,
       deliveryAddress: order.delivery_address || "",
-      estimatedDelivery: order.estimated_delivery_time || undefined,
     });
 
     if (!result.success) {
