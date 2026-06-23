@@ -8,25 +8,30 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { data: addresses, error } = await supabase
+      .from("user_addresses")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("is_default", { ascending: false })
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Address fetch error:", error);
+      return NextResponse.json({ addresses: [] });
+    }
+
+    return NextResponse.json({ addresses: addresses || [] });
+  } catch (err) {
+    console.error("Addresses GET error:", err);
+    return NextResponse.json({ addresses: [], error: "Failed to load addresses" }, { status: 500 });
   }
-
-  const { data: addresses, error } = await supabase
-    .from("user_addresses")
-    .select("*")
-    .eq("user_id", user.id)
-    .order("is_default", { ascending: false })
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    console.error("Address fetch error:", error);
-    return NextResponse.json({ addresses: [] });
-  }
-
-  return NextResponse.json({ addresses: addresses || [] });
 }
 
 export async function POST(request: NextRequest) {
@@ -37,7 +42,7 @@ export async function POST(request: NextRequest) {
   }
   try {
     const body = await request.json();
-    const { user_id, label, address, city, state, pincode, lat, lng, is_default } = body;
+    const { user_id, label, address, city, state, pincode, lat, lng, is_default, phone } = body;
 
     if (!user_id || !label || !address || !city || !pincode) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -59,13 +64,14 @@ export async function POST(request: NextRequest) {
       .insert({
         user_id,
         label,
-        address,
+        address_line1: address,
         city,
         state: state || "",
         pincode,
         lat: lat || null,
         lng: lng || null,
         is_default: is_default || false,
+        phone: phone || null,
       })
       .select()
       .single();
@@ -87,7 +93,7 @@ export async function PUT(request: NextRequest) {
   }
   try {
     const body = await request.json();
-    const { id, user_id, label, address, city, state, pincode, lat, lng, is_default } = body;
+    const { id, user_id, label, address, city, state, pincode, lat, lng, is_default, phone } = body;
 
     if (!id) {
       return NextResponse.json({ error: "Address ID required" }, { status: 400 });
@@ -117,13 +123,14 @@ export async function PUT(request: NextRequest) {
       .from("user_addresses")
       .update({
         label,
-        address,
+        address_line1: address,
         city,
         state: state || "",
         pincode,
         lat: lat || null,
         lng: lng || null,
         is_default: is_default || false,
+        phone: phone || null,
       })
       .eq("id", id)
       .select()

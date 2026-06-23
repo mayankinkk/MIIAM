@@ -198,15 +198,22 @@ export default function AddressBookPage() {
 
   const loadAddresses = useCallback(async () => {
     setLoading(true);
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user) {
-      const res = await fetch(`/api/addresses?user_id=${user.id}`);
-      const data = await res.json();
-      if (data.addresses) {
-        setAddresses(data.addresses);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const res = await fetch(`/api/addresses?user_id=${user.id}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.addresses) {
+            setAddresses(data.addresses);
+          }
+        }
       }
+    } catch (err) {
+      logger.error({ err }, "Failed to load addresses");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }, [supabase]);
 
   useEffect(() => {
