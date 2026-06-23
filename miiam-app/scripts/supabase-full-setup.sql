@@ -272,15 +272,13 @@ BEGIN
         notification_icon := 'update';
     END CASE;
 
-    INSERT INTO notifications (user_id, title, message, type, read, icon, action_url, created_at)
+    INSERT INTO notifications (user_id, title, body, type, is_read, created_at)
     VALUES (
       NEW.user_id,
       notification_title,
       notification_message,
       'order_update',
       false,
-      notification_icon,
-      '/app/orders/' || NEW.id,
       NOW()
     );
   END IF;
