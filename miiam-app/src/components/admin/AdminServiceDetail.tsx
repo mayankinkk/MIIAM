@@ -105,7 +105,7 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
             title: notif.title,
             body: notif.body,
             type: "booking",
-            read: false,
+            is_read: false,
             created_at: new Date().toISOString(),
           });
         }

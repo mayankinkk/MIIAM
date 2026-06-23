@@ -41,7 +41,7 @@ export const POST = withRateLimit(async function POST(req: NextRequest) {
         body,
         type: type || "system",
         action_url: action_url || null,
-        read: false,
+        is_read: false,
       });
 
     if (error) throw error;

@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
       icon,
       action_url: actionUrl,
       type,
-      read: false,
+      is_read: false,
       created_at: new Date().toISOString(),
     });
 

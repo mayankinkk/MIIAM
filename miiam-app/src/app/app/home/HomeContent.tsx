@@ -158,7 +158,7 @@ export default function HomePage() {
 
       if (notifsResult.data) {
         setNotifications(notifsResult.data);
-        setUnreadCount(notifsResult.data.filter((n: HomeNotification) => !n.read).length);
+        setUnreadCount(notifsResult.data.filter((n: HomeNotification) => !n.is_read).length);
       }
 
       if (!pincode) {
@@ -428,7 +428,7 @@ export default function HomePage() {
                 setShowNotifications(!showNotifications);
                 if (unreadCount > 0 && user) {
                   setUnreadCount(0);
-                  void supabase.from("notifications").update({ read: true }).eq("user_id", user.id).eq("read", false);
+                  void supabase.from("notifications").update({ is_read: true }).eq("user_id", user.id).eq("is_read", false);
                 }
               }}
               className="relative w-10 h-10 bg-surface-container-high hover:bg-surface-container-highest transition-colors rounded-full flex items-center justify-center"
@@ -919,7 +919,7 @@ export default function HomePage() {
               {notifications
                 .filter(n => notifTab === "all" || (notifTab === "orders" && (n.type === "order" || n.type === "info")) || (notifTab === "offers" && (n.type === "promo" || n.type === "offer")))
                 .map((notif) => (
-                <div key={notif.id} className={`p-4 border-b border-outline-variant/10 transition-colors ${!notif.read ? 'bg-primary/10' : 'hover:bg-surface-container-high/50'}`}>
+                <div key={notif.id} className={`p-4 border-b border-outline-variant/10 transition-colors ${!notif.is_read ? 'bg-primary/10' : 'hover:bg-surface-container-high/50'}`}>
                   <div className="flex gap-3">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
                       notif.type === "order" ? "bg-surface-container-high" :
@@ -932,7 +932,7 @@ export default function HomePage() {
                     </div>
                     <div className="flex-1">
                       <div className="flex items-start justify-between">
-                        <p className={`font-bold text-on-surface text-sm ${!notif.read ? 'text-primary' : ''}`}>{notif.title}</p>
+                        <p className={`font-bold text-on-surface text-sm ${!notif.is_read ? 'text-primary' : ''}`}>{notif.title}</p>
                         <span className="text-[10px] text-gray-400">
                           {new Date(notif.created_at).toLocaleDateString()}
                         </span>

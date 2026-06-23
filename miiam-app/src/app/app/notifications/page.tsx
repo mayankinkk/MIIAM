@@ -63,17 +63,17 @@ export default function NotificationsPage() {
       if (!user) return;
       await supabase
         .from("notifications")
-        .update({ read: true })
+        .update({ is_read: true })
         .eq("user_id", user.id)
-        .eq("read", false);
-      setNotifications(notifications.map(n => ({ ...n, read: true })));
+        .eq("is_read", false);
+      setNotifications(notifications.map(n => ({ ...n, is_read: true })));
     } catch (error) {
       logger.error({ err: error instanceof Error ? error : new Error(String(error)) }, "Failed to mark all read");
       addToast("Failed to mark notifications as read. Please try again.", "error");
     }
   };
 
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const unreadCount = notifications.filter(n => !n.is_read).length;
 
   return (
     <PullToRefresh onRefresh={fetchNotifications}>
@@ -197,7 +197,7 @@ export default function NotificationsPage() {
                   }}
                 >
                   <div
-                    className={`bg-surface-container-lowest dark:bg-[var(--color-surface-container)] rounded-2xl p-4 ${notification.read ? "opacity-70" : "border-l-4 border-primary"}`}
+                    className={`bg-surface-container-lowest dark:bg-[var(--color-surface-container)] rounded-2xl p-4 ${notification.is_read ? "opacity-70" : "border-l-4 border-primary"}`}
                   >
                     <div className="flex items-start gap-3">
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center ${

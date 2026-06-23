@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
           title: "No Rider Available",
           body: "Sorry, no riders are available for your order right now. Please try again in a few minutes.",
           type: "order_failed",
-          read: false,
+          is_read: false,
           icon: "local_shipping"
         });
       

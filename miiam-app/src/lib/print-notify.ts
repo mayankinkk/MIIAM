@@ -43,7 +43,7 @@ export async function notifyPrintEvent(
     body: copy.body,
     type: `print_${event}`,
     action_url: `/app/orders/${orderId}`,
-    read: false,
+    is_read: false,
   });
   if (error) {
     console.error("[print-notify] insert error:", error);

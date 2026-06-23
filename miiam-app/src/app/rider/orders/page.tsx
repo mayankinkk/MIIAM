@@ -247,7 +247,7 @@ export default function RiderOrdersPage() {
             title: "Rider Assigned!",
             body: "A rider is on their way to pick up your order.",
             type: "order",
-            read: false,
+            is_read: false,
           });
         } catch (notifErr) {
           logger.info({ err: notifErr }, "Notification error (non-critical)");
@@ -308,7 +308,7 @@ export default function RiderOrdersPage() {
               title: "Rider Assigned!",
               body: "A rider is on their way to pick up your order.",
               type: "order",
-              read: false,
+              is_read: false,
             });
           } catch (e) { logger.warn({ err: e }, "Failed to insert notification"); }
         }
@@ -444,7 +444,7 @@ export default function RiderOrdersPage() {
             title: "Order Delivered!",
             body: "Your order has been delivered. Enjoy your food!",
             type: "order",
-            read: false,
+            is_read: false,
           });
         } catch { /* table or column may not exist */ }
         try {
@@ -493,7 +493,7 @@ export default function RiderOrdersPage() {
           title: "Order On The Way! 🚴",
           body: "Your rider has picked up your order and is heading to you. Track in real-time!",
           type: "order",
-          read: false,
+          is_read: false,
           created_at: new Date().toISOString(),
         });
 

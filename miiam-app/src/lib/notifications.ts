@@ -40,7 +40,7 @@ export async function sendOrderNotification(
     title: message.title,
     body: message.body(orderId),
     type: "order_update",
-    read: false,
+    is_read: false,
     created_at: new Date().toISOString(),
     data: { order_id: orderId, status },
   });

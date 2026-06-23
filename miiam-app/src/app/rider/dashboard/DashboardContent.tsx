@@ -515,7 +515,7 @@ export default function RiderDashboard() {
         // 3. Update earnings + send notifications
         setRiderEarnings((prev) => prev + finalEarnings);
         if (currentOrder?.user_id) {
-          try { await supabase.from("notifications").insert({ user_id: currentOrder.user_id, title: t.rider.notifications.orderDeliveredTitle, body: t.rider.notifications.orderDeliveredMsg, type: "order", read: false, created_at: new Date().toISOString() }); } catch { /* silent */ }
+          try { await supabase.from("notifications").insert({ user_id: currentOrder.user_id, title: t.rider.notifications.orderDeliveredTitle, body: t.rider.notifications.orderDeliveredMsg, type: "order", is_read: false, created_at: new Date().toISOString() }); } catch { /* silent */ }
           try { await fetch("/api/emails/order-status", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ orderId: currentOrder.orderDbId, status: "delivered" }) }); } catch { /* silent */ }
         }
 

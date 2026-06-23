@@ -114,7 +114,7 @@ export async function POST(request: NextRequest) {
         title: "Booking Confirmed ✓",
         body: `Your ${sub_service || service_type} booking is confirmed for ${scheduled_date} at ${scheduled_time}.`,
         type: "booking",
-        read: false,
+        is_read: false,
         created_at: new Date().toISOString(),
       });
     } catch (notifErr) {
