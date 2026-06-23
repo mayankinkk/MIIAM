@@ -998,7 +998,7 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
 
       // Geocode destination address
       let geoSuccess = false;
-      const searchAddr = destAddr || (isPickup && order.vendor?.name ? order.vendor.name : null);
+      const searchAddr = destAddr || (isPickup && (order.vendor?.shop_name || order.vendor?.name) ? (order.vendor?.shop_name || order.vendor?.name) : null);
       if (searchAddr) {
         try {
           const res = await fetch(

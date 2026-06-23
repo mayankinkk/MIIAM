@@ -170,7 +170,7 @@ export default function RiderDashboard() {
 
         try {
           const activeStatuses = ["accepted", "preparing", "ready_for_pickup", "shopping", "picking_up", "on_the_way", "arrived"];
-          const { data: activeOrdersData } = await supabase.from("orders").select("id, user_id, vendor_id, status, total_amount, delivery_address, special_instructions, otp, customer_phone, placed_at, vendor:vendors(id, shop_name, name, address, phone, latitude, longitude, lat, lng, type)").eq("rider_id", riderIdVal).in("status", activeStatuses).order("placed_at", { ascending: false }).limit(1);
+          const { data: activeOrdersData } = await supabase.from("orders").select("id, user_id, vendor_id, status, total_amount, delivery_address, special_instructions, otp, customer_phone, placed_at, vendor:vendors(id, shop_name, address, phone, latitude, longitude, lat, lng, type)").eq("rider_id", riderIdVal).in("status", activeStatuses).order("placed_at", { ascending: false }).limit(1);
           if (activeOrdersData && activeOrdersData.length > 0) {
             const dbOrder = activeOrdersData[0];
             const vendorData = dbOrder.vendor as Record<string, unknown> | null;

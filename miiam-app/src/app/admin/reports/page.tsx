@@ -95,14 +95,14 @@ export default function ReportsPage() {
       } else if (reportType === "vendors") {
         const { data } = await supabase
           .from("orders")
-          .select("vendor_id, total_amount, vendor:vendors(id, name)")
+          .select("vendor_id, total_amount, vendor:vendors(id, shop_name)")
           .gte("placed_at", startIso)
           .lte("placed_at", endIso);
         if (data) {
           const vendorMap = new Map<string, { name: string; orders: number; revenue: number }>();
           for (const o of data) {
             const vid = o.vendor_id;
-            const vName = (o.vendor as Record<string, unknown> | null)?.name as string || "Unknown";
+            const vName = (o.vendor as Record<string, unknown> | null)?.shop_name as string || "Unknown";
             const cur = vendorMap.get(vid) || { name: vName, orders: 0, revenue: 0 };
             cur.orders++;
             cur.revenue += o.total_amount || 0;
