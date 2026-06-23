@@ -169,7 +169,7 @@ export default function RiderDashboard() {
 
         try {
           const activeStatuses = ["pending", "accepted", "preparing", "ready_for_pickup", "shopping", "picking_up", "on_the_way", "arrived"];
-          const { data: activeOrdersData } = await supabase.from("orders").select("id, user_id, vendor_id, status, total_amount, delivery_address, special_instructions, placed_at, vendor:vendors(id, shop_name, address, phone, latitude, longitude, type)").eq("rider_id", riderIdVal).in("status", activeStatuses).order("placed_at", { ascending: false }).limit(1);
+          const { data: activeOrdersData } = await supabase.from("orders").select("id, user_id, vendor_id, status, total_amount, delivery_address, special_instructions, placed_at, vendor:vendors(id, shop_name, address, phone, latitude, longitude)").eq("rider_id", riderIdVal).in("status", activeStatuses).order("placed_at", { ascending: false }).limit(1);
           if (activeOrdersData && activeOrdersData.length > 0) {
             const dbOrder = activeOrdersData[0];
             const vendorData = dbOrder.vendor as Record<string, unknown> | null;
@@ -257,7 +257,7 @@ export default function RiderDashboard() {
         const orderIds = dbOrders.map((o: Record<string, unknown>) => o.id) as string[];
 
         const [vendorsRes, profilesRes, allItemsRes] = await Promise.all([
-          vendorIds.length > 0 ? supabase.from("vendors").select("id, shop_name, address, phone, latitude, longitude, type").in("id", vendorIds) : Promise.resolve({ data: [] }),
+          vendorIds.length > 0 ? supabase.from("vendors").select("id, shop_name, address, phone, latitude, longitude").in("id", vendorIds) : Promise.resolve({ data: [] }),
           userIds.length > 0 ? supabase.from("profiles").select("id, full_name, name, phone").in("id", userIds) : Promise.resolve({ data: [] }),
           supabase.from("order_items").select("id, order_id, menu_item_id, name, quantity, price, unit_price").in("order_id", orderIds),
         ]);

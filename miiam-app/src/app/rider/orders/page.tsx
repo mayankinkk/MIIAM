@@ -84,7 +84,7 @@ export default function RiderOrdersPage() {
         const orderIds = uniqueOrders.map(o => o.id);
 
         const [vendorsRes, addressesRes, allItemsRes, profilesRes] = await Promise.all([
-          vendorIds.length > 0 ? supabase.from("vendors").select("id, shop_name, address, phone, latitude, longitude, type").in("id", vendorIds) : Promise.resolve({ data: [] }),
+          vendorIds.length > 0 ? supabase.from("vendors").select("id, shop_name, address, phone, latitude, longitude").in("id", vendorIds) : Promise.resolve({ data: [] }),
           addressIds.length > 0 ? supabase.from("delivery_addresses").select("id, street, city, state, pincode, label, lat, lng").in("id", addressIds) : Promise.resolve({ data: [] }),
           supabase.from("order_items").select("id, order_id, menu_item_id, name, quantity, price, unit_price, status, actual_price, picked").in("order_id", orderIds),
           userIds.length > 0 ? supabase.from("profiles").select("id, full_name").in("id", userIds) : Promise.resolve({ data: [] }),
