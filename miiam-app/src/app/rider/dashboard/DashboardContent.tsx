@@ -475,6 +475,7 @@ export default function RiderDashboard() {
     setCurrentOrder(prev => prev || order);
     setSelectedOrder(null); setCountdown(300);
     setDeliveryStep(order.type === "multi_stop" ? "picking_up" : "shopping");
+    if (order.orderDbId && riderId) startLocationTracking(riderId, order.orderDbId);
   };
 
   const handleDecline = async (orderId: string, reason?: string) => {
