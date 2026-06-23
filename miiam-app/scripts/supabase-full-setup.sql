@@ -578,6 +578,20 @@ CREATE TABLE IF NOT EXISTS favorites (
 ALTER TABLE public.favorites ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Allow full access to favorites" ON public.favorites FOR ALL USING (true) WITH CHECK (true);
 
+-- Payment Methods Table
+CREATE TABLE IF NOT EXISTS payment_methods (
+  id uuid default uuid_generate_v4() primary key,
+  user_id uuid not null references auth.users(id) on delete cascade,
+  type text default 'card',
+  last4 text,
+  brand text,
+  is_default boolean default false,
+  created_at timestamp with time zone default timezone('utc'::text, now())
+);
+
+ALTER TABLE public.payment_methods ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow full access to payment_methods" ON public.payment_methods FOR ALL USING (true) WITH CHECK (true);
+
 -- STORAGE BUCKET FOR PHARMACY IMAGES
 INSERT INTO storage.buckets (id, name, public) VALUES ('pharmacy-images', 'pharmacy-images', true);
 
