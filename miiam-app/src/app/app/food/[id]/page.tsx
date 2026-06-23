@@ -116,17 +116,17 @@ function AddToCartButton({ item, vendor }: { item: MenuItem; vendor: Vendor }) {
   }
 
   return (
-    <div className="flex items-center gap-1.5 bg-primary rounded-full px-2 py-1">
+    <div className="flex items-center gap-1 bg-primary rounded-full px-1 py-0.5">
       <button
         onClick={() => { updateQuantity(item.id, qty - 1); if (navigator.vibrate) navigator.vibrate(10); }}
-        className="text-white font-bold w-10 h-10 flex items-center justify-center active:scale-75 transition-transform"
+        className="text-white font-bold w-7 h-7 flex items-center justify-center active:scale-75 transition-transform text-sm"
       >
         −
       </button>
-      <span className="text-white font-bold text-xs min-w-[16px] text-center">{qty}</span>
+      <span className="text-white font-bold text-xs min-w-[14px] text-center">{qty}</span>
       <button
         onClick={handleAdd}
-        className="text-white font-bold w-10 h-10 flex items-center justify-center active:scale-125 transition-transform"
+        className="text-white font-bold w-7 h-7 flex items-center justify-center active:scale-125 transition-transform text-sm"
       >
         +
       </button>
@@ -496,8 +496,8 @@ export default function RestaurantProfilePage() {
           </div>
           <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2">
             {specials.map((item) => (
-              <div key={item.id} className="flex-shrink-0 w-40 bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm border border-amber-100">
-                <div className="h-28 overflow-hidden bg-surface-container">
+              <div key={item.id} className="flex-shrink-0 w-32 bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm border border-amber-100">
+                <div className="h-20 overflow-hidden bg-surface-container">
                   <BlurImage
                     src={item.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"}
                     alt={item.name}
@@ -506,15 +506,15 @@ export default function RestaurantProfilePage() {
                     fallbackSrc="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"
                   />
                 </div>
-                <div className="p-3">
-                  <div className="flex items-center gap-1 mb-1">
-                    <span className={`w-3 h-3 border-2 ${item.is_veg ? "border-green-600" : "border-red-600"} rounded-sm flex items-center justify-center flex-shrink-0`}>
-                      <span className={`w-1.5 h-1.5 ${item.is_veg ? "bg-green-600" : "bg-red-600"} rounded-full`} />
+                <div className="p-2">
+                  <div className="flex items-center gap-1 mb-0.5">
+                    <span className={`w-2.5 h-2.5 border-[1.5px] ${item.is_veg ? "border-green-600" : "border-red-600"} rounded-sm flex items-center justify-center flex-shrink-0`}>
+                      <span className={`w-1 h-1 ${item.is_veg ? "bg-green-600" : "bg-red-600"} rounded-full`} />
                     </span>
-                    <p className="font-bold text-on-surface text-xs truncate">{item.name}</p>
+                    <p className="font-bold text-on-surface text-[10px] truncate">{item.name}</p>
                   </div>
-                  <div className="flex items-center justify-between mt-1">
-                    <span className="font-black text-primary text-sm">₹{item.price}</span>
+                  <div className="flex items-center justify-between mt-0.5">
+                    <span className="font-black text-primary text-xs">₹{item.price}</span>
                     <AddToCartButton item={item} vendor={vendor} />
                   </div>
                 </div>
