@@ -135,7 +135,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
     user_id: string;
     vendor_id: string;
     rider_id: string | null;
-    vendor?: { name?: string };
+    vendor?: { shop_name?: string };
     rider?: { name?: string; full_name?: string; profile_image?: string; rating?: number; total_ratings?: number };
   } | null>(null);
   const [foodRating, setFoodRating] = useState(0);
@@ -155,7 +155,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
       try {
         const { data: orderData } = await supabase
           .from("orders")
-          .select("*, vendor:vendors(name, cover_image_url), rider:riders(name, profile_image)")
+          .select("*, vendor:vendors(shop_name, cover_image_url), rider:riders(name, profile_image)")
           .eq("id", id)
           .single();
         
@@ -338,7 +338,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
             hover={hoverFood}
             setHover={setHoverFood}
             setRating={setFoodRating}
-            label={order?.vendor?.name || "Restaurant"}
+            label={order?.vendor?.shop_name || "Restaurant"}
             t={t}
           />
         </section>

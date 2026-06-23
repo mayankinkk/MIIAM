@@ -20,7 +20,7 @@ interface PastOrder {
   id: string;
   total_amount: number | null;
   placed_at: string;
-  vendors?: { name: string } | null;
+  vendors?: { shop_name: string } | null;
 }
 
 export default function CartPage() {
@@ -120,7 +120,7 @@ export default function CartPage() {
       if (!user) return;
       const { data: orders } = await supabase
         .from("orders")
-        .select("*, vendors(name)")
+        .select("*, vendors(shop_name)")
         .eq("user_id", user.id)
         .eq("status", "delivered")
         .order("placed_at", { ascending: false })
@@ -404,7 +404,7 @@ export default function CartPage() {
                       <div key={order.id} className="border border-outline-variant dark:border-[var(--color-border-subtle)] rounded-xl p-3">
                         <div className="flex items-center justify-between mb-2">
                           <div>
-                            <p className="font-bold text-on-surface dark:text-[var(--color-on-surface)] text-sm">{order.vendors?.name || "Restaurant"}</p>
+                            <p className="font-bold text-on-surface dark:text-[var(--color-on-surface)] text-sm">{order.vendors?.shop_name || "Restaurant"}</p>
                             <p className="text-xs text-on-surface-variant dark:text-[var(--color-outline)]">{new Date(order.placed_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</p>
                           </div>
                           <p className="font-bold text-primary text-sm">₹{order.total_amount?.toFixed(2)}</p>

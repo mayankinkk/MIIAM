@@ -28,7 +28,8 @@ export interface Address {
 
 export interface Vendor {
   id: string;
-  name: string;
+  shop_name: string;
+  name?: string;
   category: string;
   description: string | null;
   image_url: string | null;

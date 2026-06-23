@@ -258,7 +258,7 @@ export default function RiderDashboard() {
         const orderIds = dbOrders.map((o: Record<string, unknown>) => o.id) as string[];
 
         const [vendorsRes, profilesRes, allItemsRes] = await Promise.all([
-          vendorIds.length > 0 ? supabase.from("vendors").select("id, shop_name, name, address, phone, latitude, longitude, lat, lng, type").in("id", vendorIds) : Promise.resolve({ data: [] }),
+          vendorIds.length > 0 ? supabase.from("vendors").select("id, shop_name, address, phone, latitude, longitude, lat, lng, type").in("id", vendorIds) : Promise.resolve({ data: [] }),
           userIds.length > 0 ? supabase.from("profiles").select("id, full_name, name, phone").in("id", userIds) : Promise.resolve({ data: [] }),
           supabase.from("order_items").select("id, order_id, menu_item_id, name, quantity, price, unit_price").in("order_id", orderIds),
         ]);

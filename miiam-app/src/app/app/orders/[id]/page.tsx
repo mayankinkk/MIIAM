@@ -47,7 +47,7 @@ interface OrderPageData {
   delivered_at?: string | null;
   processing_at?: string | null;
   riders?: { name?: string; profile_image?: string; rating?: number; phone?: string } | null;
-  vendor?: { name?: string; image_url?: string; logo_url?: string; address?: string } | null;
+  vendor?: { shop_name?: string; image_url?: string; logo_url?: string; address?: string } | null;
 }
 
 function formatTimestamp(ts: string | null | undefined): string {
@@ -269,7 +269,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
             currentUserId={currentUserId}
             senderType="user"
             thread={showChat === "vendor" ? "user-vendor" : "user-rider"}
-            otherName={showChat === "vendor" ? (pageOrder.vendor?.name || (pageOrder.vendor_id === PRINTING_VENDOR_ID ? t.orders.printStore : "Restaurant")) : (riderInfo?.name || t.orders.rider)}
+            otherName={showChat === "vendor" ? (pageOrder.vendor?.shop_name || (pageOrder.vendor_id === PRINTING_VENDOR_ID ? t.orders.printStore : "Restaurant")) : (riderInfo?.name || t.orders.rider)}
             otherAvatar={showChat === "vendor" ? pageOrder.vendor?.image_url || pageOrder.vendor?.logo_url || undefined : riderInfo?.image}
             onClose={() => setShowChat(null)}
           />

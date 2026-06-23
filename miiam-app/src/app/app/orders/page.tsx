@@ -105,7 +105,7 @@ export default function OrdersPage() {
           .select("id, name, cover_image_url")
           .in("id", vendorIds);
         
-        const vendorMap = new Map(vendorsData?.map((v: { id: string; name: string; cover_image_url: string | null }) => [v.id, v]) || []);
+        const vendorMap = new Map(vendorsData?.map((v: { id: string; shop_name: string; cover_image_url: string | null }) => [v.id, v]) || []);
         const ordersWithVendors = ordersData.map((order: Order) => ({
           ...order,
           vendor: vendorMap.get(order.vendor_id) || null
@@ -151,7 +151,7 @@ export default function OrdersPage() {
               id: item.menu_item_id,
               menu_item_id: item.menu_item_id,
               vendor_id: order.vendor_id,
-              vendor_name: order.vendor?.name || "Vendor",
+              vendor_name: order.vendor?.shop_name || "Vendor",
               name: mi?.name || "Item",
               price: item.unit_price,
               image_url: mi?.image_url || undefined,
@@ -217,7 +217,7 @@ export default function OrdersPage() {
                   <div className="flex items-center gap-4">
                     <div className={`w-16 h-16 rounded-xl overflow-hidden flex items-center justify-center flex-shrink-0 ${order.vendor_id === PRINTING_VENDOR_ID ? "bg-indigo-100 dark:bg-indigo-900/30" : "bg-surface-container dark:bg-[var(--color-surface-container)]"}`}>
                       {order.vendor?.cover_image_url ? (
-                        <BlurImage src={order.vendor.cover_image_url} alt={order.vendor.name} fill className="w-full h-full" sizes="(max-width: 768px) 50vw, 25vw" />
+                        <BlurImage src={order.vendor.cover_image_url} alt={order.vendor.shop_name} fill className="w-full h-full" sizes="(max-width: 768px) 50vw, 25vw" />
                       ) : (
                         <span className={`material-symbols-outlined text-3xl ${order.vendor_id === PRINTING_VENDOR_ID ? "text-indigo-600" : "text-outline-variant"}`}>
                           {order.vendor_id === PRINTING_VENDOR_ID ? "print" : "restaurant"}
@@ -227,7 +227,7 @@ export default function OrdersPage() {
                     <div className="flex-1">
                       <div className="flex justify-between items-start">
                         <div>
-                          <h3 className="font-bold text-on-surface dark:text-[var(--color-on-surface)]">{order.vendor?.name ?? "Order"}</h3>
+                          <h3 className="font-bold text-on-surface dark:text-[var(--color-on-surface)]">{order.vendor?.shop_name ?? "Order"}</h3>
                           <p className="text-xs text-on-surface-variant dark:text-[var(--color-outline)]">
                             {new Date(order.placed_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
                           </p>

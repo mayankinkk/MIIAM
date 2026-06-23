@@ -19,7 +19,7 @@ interface RefundOrder {
   payment_method?: string;
   cancellation_reason?: string;
   user_id?: string;
-  vendor?: { name?: string; shop_name?: string };
+  vendor?: { shop_name?: string };
 }
 
 export default function OrderRefundPage({ params }: { params: Promise<{ id: string }> }) {
@@ -187,7 +187,7 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
           <div className="space-y-3 pb-4 border-b border-[var(--color-border-subtle)]">
             <div className="flex justify-between">
               <span className="text-on-surface-variant">{t.refund.restaurant}</span>
-              <span className="font-bold text-on-surface">{order.vendor?.name || "Unknown"}</span>
+              <span className="font-bold text-on-surface">{order.vendor?.shop_name || "Unknown"}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-on-surface-variant">{t.refund.orderTotal}</span>

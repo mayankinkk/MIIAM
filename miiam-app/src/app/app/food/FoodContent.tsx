@@ -473,7 +473,7 @@ export default function FoodPageContent() {
 
         const { data: vendorsData, error: vendorsError } = await supabase
           .from("vendors")
-          .select("id, shop_name, name, cuisine, image_url, cover_image_url, rating, delivery_time_min, delivery_time_max, delivery_charge, min_order_amount, is_featured, is_new, status, type, pincode, city, opening_hours, created_at")
+          .select("id, shop_name, cuisine, image_url, cover_image_url, rating, delivery_time_min, delivery_time_max, delivery_charge, min_order_amount, is_featured, is_new, status, type, pincode, city, opening_hours, created_at")
           .order("created_at", { ascending: false })
           .limit(100);
 

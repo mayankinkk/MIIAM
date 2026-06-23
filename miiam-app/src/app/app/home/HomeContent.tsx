@@ -133,7 +133,7 @@ export default function HomePage() {
       const [userResult, vendorsResult] = await Promise.all([
         supabase.auth.getUser(),
         pincode
-          ? supabase.from("vendors").select("id, shop_name, name, cuisine, image_url, cover_image_url, rating, review_count, delivery_time_min, delivery_time_max, delivery_time_minutes, delivery_time, delivery_charge, min_order_amount, is_new, is_featured, is_promoted, status, type, pincode, city, created_at").order("created_at", { ascending: false }).limit(50)
+          ? supabase.from("vendors").select("id, shop_name, cuisine, image_url, cover_image_url, rating, review_count, delivery_time_min, delivery_time_max, delivery_time_minutes, delivery_time, delivery_charge, min_order_amount, is_new, is_featured, is_promoted, status, type, pincode, city, created_at").order("created_at", { ascending: false }).limit(50)
           : Promise.resolve({ data: null }),
       ]);
 

@@ -95,9 +95,9 @@ export function SearchAutocomplete({ onSelect, className = "" }: SearchAutocompl
       type: "dish" as const,
     }));
 
-    const vendorSuggestions: SearchSuggestion[] = (vendors || []).map((v: { name: string }) => ({
-      id: `vendor-${v.name}`,
-      text: v.name,
+    const vendorSuggestions: SearchSuggestion[] = (vendors || []).map((v: { shop_name: string }) => ({
+      id: `vendor-${v.shop_name}`,
+      text: v.shop_name,
       type: "popular" as const,
     }));
 
