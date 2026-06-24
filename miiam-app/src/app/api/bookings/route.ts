@@ -77,12 +77,30 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
-      console.error("Booking insert failed:", JSON.stringify({ code: error.code, message: error.message, details: error.details, hint: error.hint }));
-      if (error.code === "23503") {
-        return NextResponse.json({ error: "Your account profile is incomplete. Please contact support." }, { status: 400 });
-      }
+      console.error("Booking insert failed:", JSON.stringify({
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+      }));
+
+      // Table doesn't exist yet — run the migration SQL in Supabase dashboard
       if (error.code === "42P01" || error.message?.includes("does not exist")) {
-        return NextResponse.json({ error: "Service bookings not available yet. Please try again later." }, { status: 503 });
+        return NextResponse.json(
+          { error: "Service bookings are not set up yet. Please contact support." },
+          { status: 503 }
+        );
+      }
+      // Foreign key violation — user profile missing
+      if (error.code === "23503") {
+        return NextResponse.json(
+          { error: "Your account profile is incomplete. Please update your profile and try again." },
+          { status: 400 }
+        );
+      }
+      // Check constraint violation (e.g. invalid status value)
+      if (error.code === "23514") {
+        return NextResponse.json({ error: "Invalid booking data. Please try again." }, { status: 400 });
       }
       return NextResponse.json({ error: error.message || "Booking failed" }, { status: 500 });
     }
