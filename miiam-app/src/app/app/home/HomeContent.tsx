@@ -589,14 +589,14 @@ export default function HomePage() {
       {/* Categories with Offers */}
       <div className="px-4 pb-4">
         <h2 className="text-lg font-bold text-on-surface mb-3">{t.home.categories}</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
           {categories.map((cat) => (
             <Link key={cat.id} href={`/app/${cat.id}`} className="relative">
-              <div className={`${cat.color} dark:bg-surface-container rounded-2xl p-4 text-center shadow-sm`}>
-                <div className={`w-12 h-12 rounded-xl bg-surface-container-lowest mx-auto flex items-center justify-center mb-2`}>
-                  <span className={`material-symbols-outlined ${cat.iconColor} text-xl`}>{cat.icon}</span>
+              <div className={`${cat.color} dark:bg-surface-container rounded-xl p-3 text-center shadow-sm`}>
+                <div className={`w-9 h-9 rounded-lg bg-surface-container-lowest mx-auto flex items-center justify-center mb-1.5`}>
+                  <span className={`material-symbols-outlined ${cat.iconColor} text-base`}>{cat.icon}</span>
                 </div>
-                <p className="font-bold text-on-surface text-sm">{cat.label}</p>
+                <p className="font-semibold text-on-surface text-xs">{cat.label}</p>
               </div>
               {cat.offer && (
                 <div className="absolute -top-1 -right-1 bg-green-500 text-white text-[8px] font-bold px-2 py-0.5 rounded-full">
