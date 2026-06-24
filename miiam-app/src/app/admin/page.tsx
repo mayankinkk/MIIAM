@@ -36,14 +36,49 @@ export default function AdminDashboard() {
     cancelledOrders: 0,
     avgOrderValue: 0,
   });
-  const [categoryRevenue, setCategoryRevenue] = useState<Record<string, { revenue: number; orders: number }>>({});
+  const [categoryRevenue, setCategoryRevenue] = useState<Record<string, { revenue: number; orders: number }>>({}); 
   const [recentOrders, setRecentOrders] = useState<{ id: string; total_amount: number | null; status: string; placed_at: string; vendor_id: string }[]>([]);
   const [recentVendors, setRecentVendors] = useState<{ id: string; shop_name: string; owner_name: string | null; type: string | null; status: string; created_at: string }[]>([]);
   const [recentActivity, setRecentActivity] = useState<{ id: string; type: string; message: string; amount: number | null; time: string }[]>([]);
+  const [dbStatus, setDbStatus] = useState<"checking" | "ok" | "missing" | "error" | null>(null);
+  const [migrating, setMigrating] = useState(false);
+  const [migrateMsg, setMigrateMsg] = useState("");
 
   useEffect(() => {
     loadDashboardData();
+    checkDbHealth();
   }, []);
+
+  const checkDbHealth = async () => {
+    setDbStatus("checking");
+    try {
+      const res = await fetch("/api/admin/run-migration");
+      if (res.status === 403 || res.status === 401) { setDbStatus(null); return; }
+      const data = await res.json();
+      setDbStatus(data.tableExists ? "ok" : "missing");
+    } catch {
+      setDbStatus("error");
+    }
+  };
+
+  const runMigration = async () => {
+    setMigrating(true);
+    setMigrateMsg("");
+    try {
+      const res = await fetch("/api/admin/run-migration", { method: "POST" });
+      const data = await res.json();
+      if (res.ok) {
+        setMigrateMsg("✅ " + (data.message || "Migration successful!"));
+        setDbStatus("ok");
+      } else {
+        setMigrateMsg("❌ " + (data.error || "Migration failed. Check Vercel logs."));
+      }
+    } catch {
+      setMigrateMsg("❌ Network error. Try again.");
+    } finally {
+      setMigrating(false);
+    }
+  };
 
   const loadDashboardData = async () => {
     setLoading(true);
@@ -129,6 +164,31 @@ export default function AdminDashboard() {
           Refresh
         </button>
       </div>
+
+      {/* DB Health Banner */}
+      {dbStatus === "missing" && (
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <span className="material-symbols-outlined text-red-500 text-3xl">table_chart</span>
+          <div className="flex-1">
+            <p className="font-black text-red-700 dark:text-red-300">Service Bookings table is missing</p>
+            <p className="text-sm text-red-600 dark:text-red-400 mt-0.5">This is why bookings are failing with a 500 error. Click the button to create the table automatically.</p>
+            {migrateMsg && <p className="text-sm font-bold mt-2">{migrateMsg}</p>}
+          </div>
+          <button
+            onClick={runMigration}
+            disabled={migrating}
+            className="px-5 py-2.5 bg-red-600 text-white rounded-xl font-bold text-sm hover:bg-red-700 disabled:opacity-60 flex items-center gap-2 whitespace-nowrap"
+          >
+            {migrating ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <span className="material-symbols-outlined text-sm">build</span>}
+            {migrating ? "Creating tables..." : "Fix Database Now"}
+          </button>
+        </div>
+      )}
+      {dbStatus === "ok" && migrateMsg && (
+        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-2xl p-4">
+          <p className="text-green-700 dark:text-green-300 font-bold text-sm">{migrateMsg}</p>
+        </div>
+      )}
 
       {loading ? (
         <div className="flex items-center justify-center py-24">
