@@ -47,6 +47,8 @@ interface Vendor {
   description: string;
   opening_hours: string;
   is_featured: boolean;
+  cover_image_url: string | null;
+  image_url: string | null;
 }
 
 interface MenuItem {
@@ -324,7 +326,7 @@ export default function RestaurantProfilePage() {
     setError(null);
     try {
       const [vendorRes, menuRes, reviewsRes] = await Promise.all([
-        supabase.from("vendors").select("id, shop_name, cuisine, address, rating, review_count, delivery_time_min, delivery_time_max, delivery_charge, description, opening_hours, is_featured").eq("id", vendorId).single(),
+        supabase.from("vendors").select("id, shop_name, cuisine, address, rating, review_count, delivery_time_min, delivery_time_max, delivery_charge, description, opening_hours, is_featured, cover_image_url, image_url").eq("id", vendorId).single(),
         supabase.from("menu_items").select("id, name, price, category, is_veg, is_featured, vendor_id").eq("vendor_id", vendorId).order("name"),
         supabase.from("reviews").select("id, user_name, rating, comment, created_at").eq("vendor_id", vendorId).order("created_at", { ascending: false }),
       ]);
@@ -389,7 +391,7 @@ export default function RestaurantProfilePage() {
     );
   }
 
-  const coverImage = "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80";
+  const coverImage = vendor.cover_image_url || vendor.image_url || "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80";
   const isOpen = parseIsOpen(vendor.opening_hours);
   const specials = menuItems.filter((item) => item.is_featured);
   const filteredMenu = menuItems
