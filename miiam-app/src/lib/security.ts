@@ -89,13 +89,13 @@ export function checkCsrf(request: NextRequest): boolean {
   return true;
 }
 
-// IP-based rate limiting backed by Upstash Redis (persistent across serverless cold starts).
+import { checkIpRateLimit as checkUpstash } from "./rate-limit";
+
 export async function checkIpRateLimit(
   ip: string,
   maxRequests: number = 30,
   windowMs: number = 60 * 1000
 ): Promise<boolean> {
-  const { checkIpRateLimit: checkUpstash } = await import(/* webpackIgnore: true */ "@/lib/rate-limit");
   return checkUpstash(ip, maxRequests, windowMs);
 }
 
