@@ -17,10 +17,12 @@ function LoginContent() {
 
   useEffect(() => {
     const supabase = createClient();
-    supabase.auth.getUser().then(({ data: { user } }: { data: { user: { id: string } | null } }) => {
-      if (user) {
+    void supabase.auth.getSession().then((result: { data: { session: { user: unknown } | null } }) => {
+      const session = result.data?.session;
+      if (session?.user) {
         const redirectTo = searchParams.get("redirect") || "/app/home";
-        router.replace(redirectTo);
+        // Hard redirect so the server sees the fresh auth cookie
+        window.location.replace(redirectTo);
       }
     });
   }, []);
@@ -36,13 +38,16 @@ function LoginContent() {
     setIsLoading(true);
     try {
       const supabase = createClient();
-      const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
       if (signInError) throw signInError;
-      router.replace(searchParams.get("redirect") || "/app/home");
+      if (!data.session) throw new Error("No session returned. Please try again.");
+      // Use hard redirect so the server middleware receives the fresh auth cookie
+      const redirectTo = searchParams.get("redirect") || "/app/home";
+      window.location.replace(redirectTo);
     } catch (err: unknown) { 
-      setError(err instanceof Error ? err.message : "Something went wrong"); 
+      setError(err instanceof Error ? err.message : "Something went wrong");
+      setIsLoading(false);
     }
-    finally { setIsLoading(false); }
   };
 
   const handleGoogleLogin = async () => {
@@ -50,8 +55,20 @@ function LoginContent() {
     try {
       const supabase = createClient();
       const redirectTo = searchParams.get("redirect") || "/app/home";
-      const { error } = await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: `${window.location.origin}/auth/callback?redirect=${encodeURIComponent(redirectTo)}` } });
+      // Build the callback URL — must match an allowed URL in your Supabase dashboard
+      const callbackUrl = `${window.location.origin}/auth/callback?redirect=${encodeURIComponent(redirectTo)}`;
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: callbackUrl,
+          queryParams: {
+            access_type: "offline",
+            prompt: "select_account",
+          },
+        },
+      });
       if (error) throw error;
+      // signInWithOAuth redirects the browser, so we keep loading state
     } catch (err: unknown) {
       setIsGoogleLoading(false);
       const message = err instanceof Error ? err.message : "";

@@ -1,12 +1,11 @@
 "use client";
 
 import { useEffect, useState, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import logger from "@/lib/logger";
 
 function CallbackContent() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const [error, setError] = useState<string | null>(null);
 
@@ -24,13 +23,13 @@ function CallbackContent() {
       const profileSetupUrl = `/auth/profile-setup?redirect=${encodeURIComponent(redirectTo)}`;
 
       if (!profile) {
-        router.replace(profileSetupUrl);
+        window.location.replace(profileSetupUrl);
       } else if (profile.role === "admin") {
-        router.replace("/admin");
+        window.location.replace("/admin");
       } else if (!profile.is_profile_complete) {
-        router.replace(profileSetupUrl);
+        window.location.replace(profileSetupUrl);
       } else {
-        router.replace(redirectTo);
+        window.location.replace(redirectTo);
       }
     }
 
@@ -46,7 +45,8 @@ function CallbackContent() {
       // No session yet, try explicit exchange
       const code = searchParams.get("code");
       if (!code) {
-        router.replace("/auth/login");
+        // Redirect back to login — no code and no session
+        window.location.replace("/auth/login");
         return;
       }
 
@@ -62,14 +62,14 @@ function CallbackContent() {
         }
         logger.error({ err: new Error(exchangeError.message) }, "OAuth exchange error");
         setError(exchangeError.message);
-        setTimeout(() => router.replace("/auth/login"), 3000);
+        setTimeout(() => window.location.replace("/auth/login"), 3000);
         return;
       }
 
       if (data.session?.user) {
         await handlePostAuth(data.session.user.id);
       } else {
-        router.replace("/auth/login");
+        window.location.replace("/auth/login");
       }
     }
 
