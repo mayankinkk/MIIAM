@@ -156,16 +156,48 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
       try {
         const { data: orderData, error: orderErr } = await supabase
           .from("orders")
-          .select("*, vendor:vendors(shop_name, cover_image_url), rider:riders(name, profile_image)")
+          .select("*")
           .eq("id", id)
           .single();
 
         if (orderErr) {
           logger.error({ err: orderErr }, "Failed to load order");
           addToast("Failed to load order details", "error");
-        } else if (orderData) {
-          setOrder(orderData);
+          setLoading(false);
+          return;
         }
+
+        if (!orderData) {
+          setLoading(false);
+          return;
+        }
+
+        const loaded: typeof order = {
+          id: orderData.id,
+          user_id: orderData.user_id,
+          vendor_id: orderData.vendor_id,
+          rider_id: orderData.rider_id,
+        };
+
+        if (orderData.vendor_id) {
+          const { data: vendor } = await supabase
+            .from("vendors")
+            .select("shop_name, cover_image_url")
+            .eq("id", orderData.vendor_id)
+            .single();
+          loaded.vendor = vendor;
+        }
+
+        if (orderData.rider_id) {
+          const { data: rider } = await supabase
+            .from("riders")
+            .select("name, profile_image")
+            .eq("id", orderData.rider_id)
+            .single();
+          loaded.rider = rider;
+        }
+
+        setOrder(loaded);
       } catch (err) {
         logger.error({ err }, "Failed to load order");
       }
