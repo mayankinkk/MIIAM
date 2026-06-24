@@ -102,7 +102,7 @@ export default function OrdersPage() {
         const vendorIds = [...new Set(ordersData.map((o: { vendor_id: string }) => o.vendor_id).filter(Boolean))];
         const { data: vendorsData } = await supabase
           .from("vendors")
-          .select("id, name, cover_image_url")
+          .select("id, shop_name, cover_image_url")
           .in("id", vendorIds);
         
         const vendorMap = new Map(vendorsData?.map((v: { id: string; shop_name: string; cover_image_url: string | null }) => [v.id, v]) || []);

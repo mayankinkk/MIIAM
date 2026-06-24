@@ -132,7 +132,7 @@ export default function HomePage() {
       const [userResult, vendorsResult] = await Promise.all([
         supabase.auth.getUser(),
         pincode
-          ? supabase.from("vendors").select("id, shop_name, cuisine, image_url, rating, delivery_time_min, delivery_time_max, delivery_charge, min_order_amount, is_new, is_featured, is_promoted, status, type, pincode, city").order("shop_name", { ascending: true }).limit(50)
+          ? supabase.from("vendors").select("id, shop_name, cuisine, image_url, cover_image_url, rating, delivery_time_min, delivery_time_max, delivery_charge, min_order_amount, is_new, is_featured, is_promoted, status, type, pincode, city").order("shop_name", { ascending: true }).limit(50)
           : Promise.resolve({ data: null }),
       ]);
 
@@ -205,16 +205,21 @@ export default function HomePage() {
           if (!user) return;
           const { data: active } = await supabase
             .from("orders")
-            .select("id, status, total_amount, placed_at, vendors(shop_name)")
+            .select("id, status, total_amount, placed_at, vendor_id")
             .eq("user_id", user.id)
             .in("status", ["pending", "accepted", "preparing", "ready_for_pickup", "picking_up", "on_the_way"])
             .order("placed_at", { ascending: false })
             .limit(1)
             .maybeSingle();
           if (active) {
+            let vendorName = "Restaurant";
+            if (active.vendor_id) {
+              const { data: v } = await supabase.from("vendors").select("shop_name").eq("id", active.vendor_id).single();
+              if (v?.shop_name) vendorName = v.shop_name;
+            }
             setActiveOrder({
               id: active.id,
-              vendor: (Array.isArray(active.vendors) ? active.vendors[0] : active.vendors)?.shop_name || "Restaurant",
+              vendor: vendorName,
               items: t.home.orderInProgress,
               steps: [
                 { id: 1, label: t.home.orderPlaced, completed: true, time: new Date(active.placed_at).toLocaleTimeString() },
@@ -231,26 +236,27 @@ export default function HomePage() {
       fetchActiveOrder();
 
       // Set up Realtime subscription to get live notification updates
-    const channelRef = { current: null as ReturnType<typeof supabase.channel> | null };
-    supabase.auth.getUser().then(({ data: { user } }: { data: { user: { id: string } | null } }) => {
-      if (!user) return;
-      const channel = supabase
-        .channel(`notifications-${user.id}`)
-        .on("postgres_changes", {
-          event: "INSERT",
-          schema: "public",
-          table: "notifications",
-          filter: `user_id=eq.${user.id}`,
-        }, (payload: { new: HomeNotification }) => {
-          setNotifications(prev => [payload.new, ...prev]);
-          setUnreadCount(prev => prev + 1);
-        })
-        .subscribe();
-      channelRef.current = channel;
-    });
+      let cancelled = false;
+      const channelPromise = supabase.auth.getUser().then(({ data: { user } }: { data: { user: { id: string } | null } }) => {
+        if (!user || cancelled) return null;
+        const channel = supabase
+          .channel(`notifications-${user.id}`)
+          .on("postgres_changes", {
+            event: "INSERT",
+            schema: "public",
+            table: "notifications",
+            filter: `user_id=eq.${user.id}`,
+          }, (payload: { new: HomeNotification }) => {
+            setNotifications(prev => [payload.new, ...prev]);
+            setUnreadCount(prev => prev + 1);
+          })
+          .subscribe();
+        return channel;
+      });
 
     return () => {
-      if (channelRef.current) supabase.removeChannel(channelRef.current);
+      cancelled = true;
+      channelPromise.then((ch: ReturnType<typeof supabase.channel> | null) => { if (ch) supabase.removeChannel(ch); });
     };
   }, [locationStore.pincode, locationStore.city, retryKey]);
 
