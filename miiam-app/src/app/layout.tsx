@@ -25,8 +25,8 @@ const jakartaSans = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   title: "MIIAM — Food & Services App",
   description:
-    "Order food, book home services - all in one app. Food delivery, grocery, pharmacy, printing, AC repair, plumbing, beauty services and more.",
-  keywords: ["food delivery", "home services", "super app", "MIIAM", "grocery delivery", "pharmacy", "printing", "AC repair", "plumbing", "beauty services"],
+    "Order food, book home services - all in one app. Food delivery, grocery, pharmacy, printing, AC repair, plumbing and more.",
+  keywords: ["food delivery", "home services", "super app", "MIIAM", "grocery delivery", "pharmacy", "printing", "AC repair", "plumbing"],
   manifest: "/manifest.json",
   metadataBase: new URL("https://miiam.in"),
   openGraph: {

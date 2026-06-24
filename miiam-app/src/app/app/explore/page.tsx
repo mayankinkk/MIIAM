@@ -20,7 +20,6 @@ const categories = [
   { id: "all", icon: "apps", label: "All" },
   { id: "food", icon: "restaurant", label: "Food" },
   { id: "grocery", icon: "shopping_basket", label: "Grocery" },
-  { id: "beauty", icon: "spa", label: "Beauty" },
   { id: "services", icon: "handyman", label: "Services" },
   { id: "printing", icon: "print", label: "Printing" },
   { id: "cleaning", icon: "cleaning_services", label: "Cleaning" },
@@ -42,8 +41,7 @@ const collections = [
 const servicesData = [
   { id: "food", name: "Food Delivery", desc: "Order from top restaurants", icon: "restaurant", price: null, rating: 4.5, dietary: "both", cuisine: "multi" },
   { id: "grocery", name: "Grocery", desc: "Fresh groceries delivered", icon: "shopping_basket", price: null, rating: 4.3, dietary: "both", cuisine: "grocery" },
-  { id: "beauty", name: "Beauty & Spa", desc: "Salon, Spa, Nails", icon: "spa", price: 299, rating: 4.7, dietary: "both", cuisine: "beauty" },
-  { id: "services", name: "Home Services", desc: "AC, Plumbing, Cleaning", icon: "handyman", price: 199, rating: 4.4, dietary: "both", cuisine: "services" },
+  { id: "services", name: "Home Services", desc: "AC, Plumbing, Cleaning, Beauty & more", icon: "handyman", price: 199, rating: 4.4, dietary: "both", cuisine: "services" },
   { id: "printing", name: "Printing", desc: "Print docs, photos & more", icon: "print", price: 5, rating: 4.7, dietary: "both", cuisine: "printing" },
   { id: "cleaning", name: "Cleaning", desc: "Home & Office Cleaning", icon: "cleaning_services", price: 499, rating: 4.6, dietary: "both", cuisine: "cleaning" },
   { id: "ac", name: "AC Repair", desc: "AC Repair & Service", icon: "ac_unit", price: 299, rating: 4.7, dietary: "both", cuisine: "ac" },
@@ -140,7 +138,6 @@ export default function ExplorePage() {
     all: "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]",
     food: "bg-orange-100 text-orange-600",
     grocery: "bg-green-100 text-green-600",
-    beauty: "bg-pink-100 text-pink-600",
     services: "bg-blue-100 text-blue-600",
     printing: "bg-indigo-100 text-indigo-600",
     cleaning: "bg-cyan-100 text-cyan-600",
@@ -402,8 +399,7 @@ export default function ExplorePage() {
                 <p className="text-xs text-on-surface-variant dark:text-[var(--color-outline)] mt-1">
                   {feature.id === "food" && "Order from top restaurants"}
                   {feature.id === "grocery" && "Fresh groceries delivered"}
-                  {feature.id === "beauty" && "Salon, Spa, Nails"}
-                  {feature.id === "services" && "AC, Plumbing, Cleaning"}
+                  {feature.id === "services" && "AC, Plumbing, Cleaning & more"}
                   {feature.id === "printing" && "Print docs, photos & more"}
                   {feature.id === "cleaning" && "Home & Office Cleaning"}
                   {feature.id === "ac" && "AC Repair & Service"}

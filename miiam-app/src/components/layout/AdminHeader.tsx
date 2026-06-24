@@ -33,7 +33,6 @@ export default function AdminHeader() {
     riders: "/admin/riders",
     services: "/admin/services",
     applications: "/admin/applications",
-    beauty: "/admin/services/beauty",
     plumbing: "/admin/services/plumbing",
     electrical: "/admin/services/electrical",
     ac: "/admin/services/ac",

@@ -447,7 +447,6 @@ export default function CouponsAdminPage() {
                   className="w-full p-3 rounded-xl border border-[var(--color-border-subtle)] focus:border-[var(--color-primary)] outline-none"
                 >
                   <option value="all">All Services</option>
-                  <option value="beauty">Beauty & Wellness</option>
                   <option value="ac_repair">AC Repair</option>
                   <option value="plumbing">Plumbing</option>
                   <option value="electrical">Electrical</option>

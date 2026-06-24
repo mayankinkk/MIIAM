@@ -12,7 +12,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/app/pharmacy",
     "/app/flowers",
     "/app/printing",
-    "/app/beauty",
     "/app/cart",
     "/app/checkout",
     "/app/orders",

@@ -33,7 +33,6 @@ const menuGroups = [
     title: "Home Services",
     items: [
       { name: "All Services", href: "/admin/services", icon: "handyman" },
-      { name: "Beauty & Wellness", href: "/admin/services/beauty", icon: "spa" },
       { name: "AC Repair", href: "/admin/services/ac", icon: "ac_unit" },
       { name: "Plumbing", href: "/admin/services/plumbing", icon: "plumbing" },
       { name: "Electrical", href: "/admin/services/electrical", icon: "electrical_services" },

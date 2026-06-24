@@ -16,7 +16,6 @@ const flags: FeatureFlag[] = [
   { key: "feature_pharmacy_enabled", label: "Pharmacy Ordering", description: "Enable pharmacy ordering feature" },
   { key: "feature_flowers_enabled", label: "Flowers Ordering", description: "Enable flowers ordering feature" },
   { key: "feature_printing_enabled", label: "Printing Services", description: "Enable printing services feature" },
-  { key: "feature_beauty_enabled", label: "Beauty Services", description: "Enable beauty and wellness services" },
   { key: "feature_wallet_enabled", label: "Wallet Feature", description: "Enable in-app wallet and payments" },
   { key: "feature_chat_enabled", label: "Chat Feature", description: "Enable in-app chat support" },
   { key: "feature_notifications_enabled", label: "Push Notifications", description: "Enable push notification delivery" },
