@@ -16,6 +16,7 @@ interface BlurImageProps {
 
 export default function BlurImage({ src, alt, className = "", fill, width, height, sizes, fallbackSrc }: BlurImageProps) {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [errored, setErrored] = useState(false);
   const [imgSrc, setImgSrc] = useState(src);
 
   const commonProps = {
@@ -25,8 +26,19 @@ export default function BlurImage({ src, alt, className = "", fill, width, heigh
     loading: "lazy" as const,
     className: `object-cover transition-opacity duration-500 ${isLoaded ? "opacity-100" : "opacity-0"}`,
     onLoad: () => setIsLoaded(true),
-    onError: fallbackSrc ? () => setImgSrc(fallbackSrc) : undefined,
+    onError: () => {
+      setErrored(true);
+      if (fallbackSrc) setImgSrc(fallbackSrc);
+    },
   };
+
+  if (errored && !fallbackSrc) {
+    return (
+      <div className={`flex items-center justify-center bg-surface-container ${className}`}>
+        <span className="material-symbols-outlined text-outline-variant">image</span>
+      </div>
+    );
+  }
 
   if (fill) {
     return (

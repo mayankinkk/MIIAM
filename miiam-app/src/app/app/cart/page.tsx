@@ -120,12 +120,20 @@ export default function CartPage() {
       if (!user) return;
       const { data: orders } = await supabase
         .from("orders")
-        .select("*, vendors(shop_name)")
+        .select("*, vendor_id")
         .eq("user_id", user.id)
         .eq("status", "delivered")
         .order("placed_at", { ascending: false })
         .limit(10);
-      setPastOrders(orders || []);
+
+      const ordersWithVendor = await Promise.all((orders || []).map(async (o: { id: string; total_amount: number | null; placed_at: string; vendor_id: string | null }) => {
+        if (o.vendor_id) {
+          const { data: v } = await supabase.from("vendors").select("shop_name").eq("id", o.vendor_id).single();
+          return { ...o, vendors: v ? { shop_name: v.shop_name } : null };
+        }
+        return { ...o, vendors: null };
+      }));
+      setPastOrders(ordersWithVendor);
     } catch (error) {
       logger.error({ err: error }, "Failed to fetch past orders");
       addToast("Failed to load past orders. Please try again.", "error");
@@ -364,7 +372,11 @@ export default function CartPage() {
                 </div>
                 <div className="flex justify-between">
                   <span>{t.cart.deliveryFee}</span>
-                  <span className="text-green-600 font-semibold">FREE</span>
+                  {totalDeliveryFee > 0 ? (
+                    <span className="text-on-surface font-semibold">₹{totalDeliveryFee.toFixed(2)}</span>
+                  ) : (
+                    <span className="text-green-600 font-semibold">FREE</span>
+                  )}
                 </div>
                 <div className="flex justify-between gap-2">
                   <span>{t.cart.serviceCharge}</span>
