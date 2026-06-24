@@ -148,18 +148,24 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
   const [feedback, setFeedback] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const { addToast } = useToastStore();
 
   useEffect(() => {
     async function loadOrder() {
       try {
-        const { data: orderData } = await supabase
+        const { data: orderData, error: orderErr } = await supabase
           .from("orders")
           .select("*, vendor:vendors(shop_name, cover_image_url), rider:riders(name, profile_image)")
           .eq("id", id)
           .single();
-        
-        if (orderData) setOrder(orderData);
+
+        if (orderErr) {
+          logger.error({ err: orderErr }, "Failed to load order");
+          addToast("Failed to load order details", "error");
+        } else if (orderData) {
+          setOrder(orderData);
+        }
       } catch (err) {
         logger.error({ err }, "Failed to load order");
       }
@@ -169,7 +175,8 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
   }, [id]);
 
   const handleSubmit = async () => {
-    if (!order) return;
+    if (!order || submitting) return;
+    setSubmitting(true);
 
     try {
       // Save rating to reviews table
@@ -186,7 +193,10 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
         if (dimTaste > 0) reviewData.food_quality = dimTaste;
         if (dimPackaging > 0) reviewData.packaging = dimPackaging;
         if (dimDelivery > 0) reviewData.delivery_time = dimDelivery;
-        await supabase.from("reviews").insert(reviewData);
+        const { error: reviewErr } = await supabase.from("reviews").insert(reviewData);
+        if (reviewErr) {
+          logger.error({ err: reviewErr }, "Failed to submit review");
+        }
       }
 
       // Update rider rating atomically via RPC
@@ -215,9 +225,8 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
         }
       }
 
-      // Mark order as rated
-      const { error: markErr } = await supabase.from("orders").update({ rating_submitted: true }).eq("id", id);
-      if (markErr) logger.warn({ err: markErr }, "rating_submitted column may not exist");
+      // Mark order as rated (best-effort — column may not exist)
+      await supabase.from("orders").update({ rating_submitted: true }).eq("id", id);
 
       setSubmitted(true);
       if (typeof navigator !== "undefined" && navigator.vibrate) {
@@ -227,6 +236,8 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
     } catch (err) {
       logger.error({ err }, "Error submitting rating");
       addToast(t.rating.ratingFailed, "error");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -432,10 +443,17 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
 
         <button
           onClick={handleSubmit}
-          disabled={foodRating === 0 || riderRating === 0}
-          className="w-full bg-gradient-to-r from-primary to-[#a40017] text-white rounded-xl py-5 text-lg font-bold shadow-[0px_15px_30px_rgba(186,0,28,0.2)] active:scale-[0.98] transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={(foodRating === 0 && riderRating === 0) || submitting}
+          className="w-full bg-gradient-to-r from-primary to-[#a40017] text-white rounded-xl py-5 text-lg font-bold shadow-[0px_15px_30px_rgba(186,0,28,0.20)] active:scale-[0.98] transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {t.rating.submitReview}
+          {submitting ? (
+            <span className="flex items-center justify-center gap-2">
+              <span className="material-symbols-outlined text-xl animate-spin">progress_activity</span>
+              Submitting...
+            </span>
+          ) : (
+            t.rating.submitReview
+          )}
         </button>
 
         <p className="text-center text-on-surface-variant text-xs px-8 leading-relaxed">
