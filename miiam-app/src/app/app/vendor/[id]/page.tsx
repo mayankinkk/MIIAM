@@ -81,7 +81,7 @@ export default function VendorPage() {
       try {
         const { data: vendorData } = await supabase
           .from("vendors")
-          .select("id, shop_name, name, cuisine, address, phone, image_url, cover_image_url, banner_url, rating, rating_count, delivery_time, delivery_time_min, delivery_time_max, delivery_charge, min_order_amount, opening_hours, description, is_featured, is_pure_veg, status, type, pincode, city, state, latitude, longitude, lat, lng")
+          .select("id, shop_name, cuisine, address, phone, image_url, cover_image_url, rating, review_count, delivery_time_min, delivery_time_max, delivery_charge, min_order_amount, opening_hours, description, is_featured, status, type, pincode, city, latitude, longitude")
           .eq("id", vendorId)
           .single();
 
