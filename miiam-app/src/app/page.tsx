@@ -128,7 +128,7 @@ export default function LandingPage() {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                   {[
                     { icon: "shopping_cart_checkout", label: t.featureCart, sub: "Easy ordering", color: "bg-red-50 text-[var(--color-primary)]" },
-                    { icon: "bolt", label: t.featureDelivery, sub: "Under 30 mins", color: "bg-amber-50 text-amber-600" },
+                    { icon: "bolt", label: t.featureDelivery, sub: "Under 25 mins", color: "bg-amber-50 text-amber-600" },
                     { icon: "verified_user", label: t.featurePros, sub: "Background verified", color: "bg-blue-50 text-[var(--color-secondary)]" },
                     { icon: "support_agent", label: t.featureSupport, sub: "Always available", color: "bg-green-50 text-green-600" },
                   ].map((item) => (
