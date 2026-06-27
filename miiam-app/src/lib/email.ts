@@ -4,6 +4,15 @@ const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KE
 
 const FROM_ADDRESS = "MIIAM <noreply@miiam.in>";
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 const baseStyles = `
   font-family: Arial, sans-serif;
   max-width: 600px;
@@ -28,7 +37,7 @@ function getOrderItemsHtml(items: Array<{ name: string; quantity: number; price:
     .map(
       (item) => `
       <tr>
-        <td style="padding: 10px; border-bottom: 1px solid #eee;">${item.name}</td>
+        <td style="padding: 10px; border-bottom: 1px solid #eee;">${escapeHtml(item.name)}</td>
         <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: center;">${item.quantity}</td>
         <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right;">₹${item.price.toFixed(2)}</td>
       </tr>
@@ -90,7 +99,7 @@ export async function sendOrderConfirmationEmail(data: OrderEmailData): Promise<
             <p style="color: rgba(255,255,255,0.8); margin: 10px 0 0 0;">Order Confirmed</p>
           </div>
           <div style="${contentStyles}">
-            <h2 style="color: var(--color-on-surface); margin-bottom: 20px;">Hi ${data.customerName}! 👋</h2>
+            <h2 style="color: var(--color-on-surface); margin-bottom: 20px;">Hi ${escapeHtml(data.customerName)}! 👋</h2>
             <p style="color: #666; margin-bottom: 25px;">Your order has been confirmed and is being prepared.</p>
             
             <div style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
@@ -116,7 +125,7 @@ export async function sendOrderConfirmationEmail(data: OrderEmailData): Promise<
             
             <div style="background: white; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
               <p style="margin: 0; color: #666; font-size: 14px;"><strong>Delivery Address:</strong></p>
-              <p style="margin: 5px 0 0 0; color: var(--color-on-surface);">${data.deliveryAddress}</p>
+              <p style="margin: 5px 0 0 0; color: var(--color-on-surface);">${escapeHtml(data.deliveryAddress)}</p>
             </div>
             
             <p style="color: #999; font-size: 12px;">Order ID: ${data.orderId}</p>
@@ -188,7 +197,7 @@ export async function sendOrderStatusUpdateEmail(data: OrderStatusEmailData): Pr
             <p style="color: rgba(255,255,255,0.8); margin: 10px 0 0 0;">Order Update</p>
           </div>
           <div style="${contentStyles}">
-            <h2 style="color: var(--color-on-surface); margin-bottom: 20px;">Hi ${data.customerName}! 👋</h2>
+            <h2 style="color: var(--color-on-surface); margin-bottom: 20px;">Hi ${escapeHtml(data.customerName)}! 👋</h2>
             <p style="color: #666; margin-bottom: 25px;">${statusInfo.message}</p>
             
             <div style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; text-align: center;">
@@ -198,8 +207,8 @@ export async function sendOrderStatusUpdateEmail(data: OrderStatusEmailData): Pr
             ${data.riderName ? `
             <div style="background: white; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
               <p style="margin: 0 0 10px 0; color: #666; font-size: 14px;"><strong>Rider Details:</strong></p>
-              <p style="margin: 0; color: var(--color-on-surface);">${data.riderName}</p>
-              ${data.riderPhone ? `<p style="margin: 5px 0 0 0; color: #0b50d5;">📞 ${data.riderPhone}</p>` : ""}
+              <p style="margin: 0; color: var(--color-on-surface);">${escapeHtml(data.riderName)}</p>
+              ${data.riderPhone ? `<p style="margin: 5px 0 0 0; color: #0b50d5;">📞 ${escapeHtml(data.riderPhone)}</p>` : ""}
             </div>
             ` : ""}
             
@@ -243,7 +252,7 @@ export async function sendRefundNotificationEmail(data: RefundEmailData): Promis
             <p style="color: rgba(255,255,255,0.8); margin: 10px 0 0 0;">Refund Processed</p>
           </div>
           <div style="${contentStyles}">
-            <h2 style="color: var(--color-on-surface); margin-bottom: 20px;">Hi ${data.customerName}! 👋</h2>
+            <h2 style="color: var(--color-on-surface); margin-bottom: 20px;">Hi ${escapeHtml(data.customerName)}! 👋</h2>
             <p style="color: #666; margin-bottom: 25px;">Your refund has been processed successfully.</p>
             
             <div style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; text-align: center;">
@@ -251,7 +260,7 @@ export async function sendRefundNotificationEmail(data: RefundEmailData): Promis
               <p style="color: var(--color-primary); font-size: 32px; font-weight: bold; margin: 10px 0 0 0;">₹${data.amount.toFixed(2)}</p>
             </div>
             
-            ${data.reason ? `<p style="color: #666; margin-bottom: 20px;">Reason: ${data.reason}</p>` : ""}
+            ${data.reason ? `<p style="color: #666; margin-bottom: 20px;">Reason: ${escapeHtml(data.reason)}</p>` : ""}
             
             <p style="color: #999; font-size: 12px;">Order ID: ${data.orderId}</p>
             <p style="color: #999; font-size: 12px;">The refund should appear in your account within 3-5 business days.</p>
@@ -290,7 +299,7 @@ export async function sendWelcomeEmail(name: string, email: string): Promise<{ s
             <p style="color: rgba(255,255,255,0.8); margin: 10px 0 0 0;">Welcome!</p>
           </div>
           <div style="${contentStyles}">
-            <h2 style="color: var(--color-on-surface); margin-bottom: 20px;">Hi ${name}! 👋</h2>
+            <h2 style="color: var(--color-on-surface); margin-bottom: 20px;">Hi ${escapeHtml(name)}! 👋</h2>
             <p style="color: #666; margin-bottom: 25px;">Welcome to MIIAM - your one-stop superapp for food, groceries, beauty, pharmacy, and more!</p>
             
             <div style="text-align: center; margin-bottom: 20px;">
@@ -351,14 +360,14 @@ export async function sendBookingConfirmationEmail(data: BookingEmailData): Prom
             <p style="color: rgba(255,255,255,0.8); margin: 10px 0 0 0;">Booking Confirmed</p>
           </div>
           <div style="${contentStyles}">
-            <h2 style="color: var(--color-on-surface); margin-bottom: 20px;">Hi ${data.customerName}!</h2>
+            <h2 style="color: var(--color-on-surface); margin-bottom: 20px;">Hi ${escapeHtml(data.customerName)}!</h2>
             <p style="color: #666; margin-bottom: 25px;">Your booking has been confirmed. Here are the details:</p>
             
             <div style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
-              <p style="margin: 8px 0;"><strong>Service:</strong> ${data.serviceName}</p>
+              <p style="margin: 8px 0;"><strong>Service:</strong> ${escapeHtml(data.serviceName)}</p>
               <p style="margin: 8px 0;"><strong>Date:</strong> ${data.date}</p>
               <p style="margin: 8px 0;"><strong>Time:</strong> ${data.time}</p>
-              ${data.address ? `<p style="margin: 8px 0;"><strong>Address:</strong> ${data.address}</p>` : ""}
+              ${data.address ? `<p style="margin: 8px 0;"><strong>Address:</strong> ${escapeHtml(data.address)}</p>` : ""}
               <p style="margin: 8px 0;"><strong>Total:</strong> ₹${data.total.toFixed(2)}</p>
               <p style="margin: 8px 0;"><strong>Booking ID:</strong> ${data.bookingId.slice(0, 8).toUpperCase()}</p>
             </div>
