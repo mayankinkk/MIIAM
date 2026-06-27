@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
       .eq("user_id", user.id);
 
     const { data: addresses } = await supabase
-      .from("addresses")
+      .from("user_addresses")
       .select("*")
       .eq("user_id", user.id);
 
