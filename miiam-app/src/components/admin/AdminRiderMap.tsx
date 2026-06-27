@@ -81,25 +81,34 @@ export default function AdminRiderMap({ riders, onRiderClick }: Props) {
 
   // Fetch rider locations from API route (bypasses RLS)
   useEffect(() => {
+    let isMounted = true;
+    const abortController = new AbortController();
+
     async function fetchLocations() {
+      if (!isMounted) return;
       try {
-        const res = await fetch("/api/admin/riders/locations");
+        const res = await fetch("/api/admin/riders/locations", { signal: abortController.signal });
         if (!res.ok) {
           const body = await res.json().catch(() => ({}));
-          setFetchError(`HTTP ${res.status}: ${body.error || res.statusText}`);
+          if (isMounted) setFetchError(`HTTP ${res.status}: ${body.error || res.statusText}`);
           return;
         }
         const data = await res.json();
-        setRiderLocations(data);
+        if (isMounted) setRiderLocations(data);
       } catch (e: unknown) {
-        setFetchError(e instanceof Error ? e.message : "Unknown error");
+        if (e instanceof DOMException && e.name === "AbortError") return;
+        if (isMounted) setFetchError(e instanceof Error ? e.message : "Unknown error");
       }
     }
     fetchLocations();
 
     // Poll every 5 seconds
     const interval = setInterval(fetchLocations, 5000);
-    return () => clearInterval(interval);
+    return () => {
+      isMounted = false;
+      abortController.abort();
+      clearInterval(interval);
+    };
   }, []);
 
   // Initialize map
