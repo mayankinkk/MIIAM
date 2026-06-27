@@ -15,12 +15,12 @@ export default function PullToRefresh({
   threshold = 80,
   className = ""
 }: PullToRefreshProps) {
-  const [pulling, setPulling] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [pullDistance, setPullDistance] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const startY = useRef(0);
   const isPulling = useRef(false);
+  const isReadyToRefresh = useRef(false);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -43,7 +43,7 @@ export default function PullToRefresh({
         e.preventDefault();
         const pull = Math.min(diff * 0.5, threshold * 1.5);
         setPullDistance(pull);
-        setPulling(pull >= threshold);
+        isReadyToRefresh.current = pull >= threshold;
       }
     };
 
@@ -52,14 +52,14 @@ export default function PullToRefresh({
 
       isPulling.current = false;
 
-      if (pulling) {
+      if (isReadyToRefresh.current) {
         setRefreshing(true);
         setPullDistance(0);
+        isReadyToRefresh.current = false;
         try {
           await onRefresh();
         } finally {
           setRefreshing(false);
-          setPulling(false);
         }
       } else {
         setPullDistance(0);
@@ -75,7 +75,7 @@ export default function PullToRefresh({
       el.removeEventListener("touchmove", handleTouchMove);
       el.removeEventListener("touchend", handleTouchEnd);
     };
-  }, [onRefresh, pulling, threshold]);
+  }, [onRefresh, threshold]);
 
   return (
     <div
@@ -105,7 +105,7 @@ export default function PullToRefresh({
                 <span className="material-symbols-outlined text-brand-primary">arrow_downward</span>
               </div>
               <span className="text-xs font-medium text-surface-neutral">
-                {pulling ? "Release to refresh" : "Pull down"}
+                {pullDistance >= threshold ? "Release to refresh" : "Pull down"}
               </span>
             </>
           )}
