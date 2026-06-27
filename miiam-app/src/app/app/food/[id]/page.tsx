@@ -340,7 +340,7 @@ export default function RestaurantProfilePage() {
     } finally {
       setLoading(false);
     }
-  }, [vendorId]);
+  }, [supabase, vendorId]);
 
   useEffect(() => {
     fetchData();
