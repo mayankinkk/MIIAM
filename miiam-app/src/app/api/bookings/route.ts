@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient, createClient } from "@/lib/supabase/server";
-import { getClientIp, checkIpRateLimit } from "@/lib/security";
+import { getClientIp, checkIpRateLimit, checkCsrf } from "@/lib/security";
 
 async function requireAuth() {
   const supabase = await createClient();
@@ -80,6 +80,10 @@ async function insertBooking(supabase: ReturnType<typeof createAdminClient>, pay
 
 export async function POST(request: NextRequest) {
   try {
+    if (!checkCsrf(request)) {
+      return NextResponse.json({ error: "Invalid CSRF token" }, { status: 403 });
+    }
+
     const ip = getClientIp(request);
     if (!await checkIpRateLimit(ip, 30, 60_000)) {
       return NextResponse.json({ error: "Too many requests" }, { status: 429 });
