@@ -125,9 +125,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Cannot determine Supabase project ref from URL" }, { status: 500 });
   }
 
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!serviceRoleKey) {
-    return NextResponse.json({ error: "SUPABASE_SERVICE_ROLE_KEY not set" }, { status: 500 });
+  const supabasePAT = process.env.SUPABASE_PERSONAL_ACCESS_TOKEN;
+  if (!supabasePAT) {
+    return NextResponse.json({
+      error: "SUPABASE_PERSONAL_ACCESS_TOKEN not set. The Supabase Management API requires a Personal Access Token (PAT), not the service role key. Create one at https://supabase.com/dashboard/account/tokens",
+      sql: MIGRATION_SQL,
+      instructions: "Please run the SQL manually in your Supabase dashboard → SQL Editor",
+    }, { status: 500 });
   }
 
   // Call Supabase Management API to run SQL
@@ -139,8 +143,7 @@ export async function POST(request: NextRequest) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        // The Management API uses the service role key as a Bearer token
-        "Authorization": `Bearer ${serviceRoleKey}`,
+        "Authorization": `Bearer ${supabasePAT}`,
       },
       body: JSON.stringify({ query: MIGRATION_SQL }),
     });

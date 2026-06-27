@@ -14,12 +14,12 @@ async function requireAuth() {
 async function createServiceBookingsTable(): Promise<boolean> {
   try {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
-    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
+    const supabasePAT = process.env.SUPABASE_PERSONAL_ACCESS_TOKEN ?? "";
     // Extract project ref: https://PROJECTREF.supabase.co
     const projectRef = supabaseUrl.replace("https://", "").split(".")[0];
 
-    if (!projectRef || !serviceRoleKey) {
-      console.error("[bookings] Cannot auto-create table: missing env vars");
+    if (!projectRef || !supabasePAT) {
+      console.error("[bookings] Cannot auto-create table: missing env vars (need SUPABASE_PERSONAL_ACCESS_TOKEN)");
       return false;
     }
 
@@ -44,18 +44,17 @@ async function createServiceBookingsTable(): Promise<boolean> {
         completed_at TIMESTAMP WITH TIME ZONE
       );
       ALTER TABLE service_bookings ENABLE ROW LEVEL SECURITY;
-      DROP POLICY IF EXISTS "Allow full access to service_bookings" ON service_bookings;
-      CREATE POLICY "Allow full access to service_bookings" ON service_bookings FOR ALL USING (true) WITH CHECK (true);
+      DROP POLICY IF EXISTS "Service bookings user access" ON service_bookings;
+      CREATE POLICY "Service bookings user access" ON service_bookings FOR ALL USING (auth.uid() = user_id OR auth.uid() = provider_id);
       NOTIFY pgrst, 'reload schema';
     `;
 
-    // Try Supabase Management API first (needs service role as bearer — works for self-hosted,
-    // but on supabase.com it needs a personal access token, so this may 401)
+    // Supabase Management API requires a Personal Access Token (PAT), not the service role key
     const mgmtRes = await fetch(`https://api.supabase.com/v1/projects/${projectRef}/database/query`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${serviceRoleKey}`,
+        "Authorization": `Bearer ${supabasePAT}`,
       },
       body: JSON.stringify({ query: DDL }),
     });
