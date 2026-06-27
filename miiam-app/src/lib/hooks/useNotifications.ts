@@ -34,10 +34,11 @@ export function useNotifications() {
   const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
 
   useEffect(() => {
+    let cancelled = false;
     initializeNotifications();
 
     supabase.auth.getUser().then(({ data: { user } }: { data: { user: { id: string; email?: string } | null } }) => {
-      if (!user) return;
+      if (cancelled || !user) return;
       channelRef.current = supabase
         .channel(`notifications-${user.id}`)
         .on(
@@ -68,6 +69,7 @@ export function useNotifications() {
     });
 
     return () => {
+      cancelled = true;
       if (channelRef.current) supabase.removeChannel(channelRef.current);
     };
   }, [supabase, addNotification, initializeNotifications]);
