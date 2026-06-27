@@ -19,7 +19,6 @@ export const POST = withRateLimit(async function POST(request: Request) {
     return NextResponse.json({ error: "Service role key not configured" }, { status: 500 });
   }
   
-  const supabase = await createClient();
   const adminClient = createAdminClient();
   
   const formData = await request.formData();
@@ -122,7 +121,7 @@ export const POST = withRateLimit(async function POST(request: Request) {
   }
   
   try {
-    const { error: riderError } = await supabase.from("riders").upsert({
+    const { error: riderError } = await adminClient.from("riders").upsert({
       id: userId,
       user_id: userId,
       phone,
@@ -159,16 +158,15 @@ export const DELETE = withRateLimit(async function DELETE(request: Request) {
     return NextResponse.json({ error: "Rider ID required" }, { status: 400 });
   }
   
-  const supabase = await createClient();
   const adminClient = createAdminClient();
   
-  const { error: riderError } = await supabase.from("riders").delete().eq("id", riderId);
+  const { error: riderError } = await adminClient.from("riders").delete().eq("id", riderId);
   
   if (riderError) {
     return NextResponse.json({ error: riderError.message }, { status: 400 });
   }
   
-  const { error: profileError } = await supabase.from("profiles").delete().eq("id", riderId);
+  const { error: profileError } = await adminClient.from("profiles").delete().eq("id", riderId);
   
   if (profileError) {
     console.error("Profile delete error:", profileError);
