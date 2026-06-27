@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { checkCsrf } from "@/lib/security";
 
 // SQL to create all missing service tables
 const MIGRATION_SQL = `
@@ -95,6 +96,10 @@ NOTIFY pgrst, 'reload schema';
 `;
 
 export async function POST(request: NextRequest) {
+  if (!checkCsrf(request)) {
+    return NextResponse.json({ error: "Invalid CSRF token" }, { status: 403 });
+  }
+
   // Only allow admin users
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
