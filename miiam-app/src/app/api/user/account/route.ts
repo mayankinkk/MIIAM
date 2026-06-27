@@ -35,6 +35,7 @@ export async function DELETE(request: NextRequest) {
     const { error: deleteError } = await admin.auth.admin.deleteUser(user.id);
     if (deleteError) {
       console.error("[AccountDeletion] Failed to delete auth user:", deleteError);
+      return NextResponse.json({ error: "Failed to delete auth account. Data has been removed but the auth account still exists." }, { status: 500 });
     }
 
     return NextResponse.json({ success: true, message: "Account and all data permanently deleted." });
