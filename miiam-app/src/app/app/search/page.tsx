@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, Suspense, useMemo } from "react";
+import { useState, useEffect, useRef, Suspense, useMemo, useCallback } from "react";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -94,16 +94,7 @@ function SearchContent() {
     localStorage.removeItem("miiam-search-history");
   };
 
-  useEffect(() => {
-    if (!query.trim()) {
-      setResults({ vendors: [], menuItems: [] });
-      return;
-    }
-    saveSearch(query);
-    search(query);
-  }, [query]);
-
-  const search = async (searchQuery: string) => {
+  const search = useCallback(async (searchQuery: string) => {
     setLoading(true);
     try {
       const searchTerm = `%${searchQuery.toLowerCase()}%`;
@@ -132,7 +123,16 @@ function SearchContent() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [supabase, addToast]);
+
+  useEffect(() => {
+    if (!query.trim()) {
+      setResults({ vendors: [], menuItems: [] });
+      return;
+    }
+    saveSearch(query);
+    search(query);
+  }, [query, search]);
 
   const handleAddToCart = (item: MenuResult) => {
     addItem({
