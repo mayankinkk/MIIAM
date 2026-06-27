@@ -103,7 +103,7 @@ export function usePlaceOrder(supabase: SupabaseClient) {
 
     const finalAddress = deliveryAddress
       ? [deliveryAddress.flat, deliveryAddress.street, deliveryAddress.city, deliveryAddress.state, deliveryAddress.postal_code].filter(Boolean).join(", ")
-      : "452/A Kinetic Plaza, 5th Floor, Skyway Avenue, Tech District, Local Area, State 560001";
+      : "";
 
     if (userPincode && userPincode !== "000000") {
       const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean))).filter(v => v !== PRINTING_VENDOR_ID);
