@@ -311,13 +311,18 @@ export default function RestaurantProfilePage() {
 
   const handleToggleFavorite = async () => {
     toggle(vendorId);
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user) {
-      if (isFavorite) {
-        await supabase.from("favorites").delete().eq("user_id", user.id).eq("vendor_id", vendorId);
-      } else {
-        await supabase.from("favorites").insert({ user_id: user.id, vendor_id: vendorId });
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { error } = isFavorite
+          ? await supabase.from("favorites").delete().eq("user_id", user.id).eq("vendor_id", vendorId)
+          : await supabase.from("favorites").insert({ user_id: user.id, vendor_id: vendorId });
+        if (error) {
+          toggle(vendorId);
+        }
       }
+    } catch {
+      toggle(vendorId);
     }
   };
 
