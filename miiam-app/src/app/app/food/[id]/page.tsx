@@ -330,7 +330,10 @@ export default function RestaurantProfilePage() {
         supabase.from("menu_items").select("id, name, price, category, is_veg, is_featured, vendor_id").eq("vendor_id", vendorId).order("name"),
         supabase.from("reviews").select("id, user_name, rating, comment, created_at").eq("vendor_id", vendorId).order("created_at", { ascending: false }),
       ]);
-      if (vendorRes.error) console.error("Vendor query error:", vendorRes.error);
+      if (vendorRes.error) {
+        console.error("Vendor query error:", vendorRes.error);
+        setError("Failed to load restaurant details.");
+      }
       if (menuRes.error) console.error("Menu query error:", menuRes.error);
       if (vendorRes.data) setVendor(vendorRes.data);
       if (menuRes.data) setMenuItems(menuRes.data);
