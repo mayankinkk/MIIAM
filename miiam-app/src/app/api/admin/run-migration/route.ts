@@ -78,10 +78,11 @@ DROP POLICY IF EXISTS "Allow full access to service_providers" ON service_provid
 DROP POLICY IF EXISTS "Allow full access to service_categories" ON service_categories;
 DROP POLICY IF EXISTS "Allow full access to service_items" ON service_items;
 
-CREATE POLICY "Allow full access to service_bookings" ON service_bookings FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "Allow full access to service_providers" ON service_providers FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "Allow full access to service_categories" ON service_categories FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "Allow full access to service_items" ON service_items FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Users can read service categories" ON service_categories FOR SELECT USING (true);
+CREATE POLICY "Service providers can manage their bookings" ON service_bookings FOR ALL USING (auth.uid() = user_id OR auth.uid() = provider_id);
+CREATE POLICY "Service providers can view own profile" ON service_providers FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Service providers can update own profile" ON service_providers FOR UPDATE USING (auth.uid() = user_id);
+CREATE POLICY "Anyone can read service items" ON service_items FOR SELECT USING (true);
 
 INSERT INTO service_categories (name, icon, description, display_order) VALUES
   ('AC Repair', 'ac_unit', 'Air conditioning repair and maintenance', 1),
