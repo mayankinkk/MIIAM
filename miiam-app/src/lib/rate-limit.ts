@@ -1,6 +1,10 @@
 const UPSTASH_URL = process.env.UPSTASH_REDIS_REST_URL;
 const UPSTASH_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
 
+let warnedOnce = false;
+
+const inMemoryCounts = new Map<string, { count: number; windowStart: number }>();
+
 async function redisEval(script: string, keys: string[], args: string[]): Promise<string | null> {
   if (!UPSTASH_URL || !UPSTASH_TOKEN) return null;
   const res = await fetch(`${UPSTASH_URL}/eval`, {
@@ -21,7 +25,24 @@ export async function checkIpRateLimit(
   maxRequests: number = 30,
   windowMs: number = 60 * 1000
 ): Promise<boolean> {
-  if (!UPSTASH_URL || !UPSTASH_TOKEN) return true;
+  if (!UPSTASH_URL || !UPSTASH_TOKEN) {
+    if (!warnedOnce) {
+      console.warn("[MIIAM] Rate limiting disabled: UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN not set. Using in-memory fallback.");
+      warnedOnce = true;
+    }
+
+    const now = Date.now();
+    const windowStart = now - windowMs;
+    const entry = inMemoryCounts.get(ip);
+
+    if (!entry || entry.windowStart < windowStart) {
+      inMemoryCounts.set(ip, { count: 1, windowStart: now });
+      return true;
+    }
+
+    entry.count++;
+    return entry.count <= maxRequests;
+  }
 
   const key = `miiam:rl:${ip}`;
   const windowSec = Math.ceil(windowMs / 1000);
