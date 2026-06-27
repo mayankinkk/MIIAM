@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
-import { checkIpRateLimit, getClientIp } from "@/lib/security";
+import { checkIpRateLimit, getClientIp, checkCsrf } from "@/lib/security";
 
 export async function DELETE(request: NextRequest) {
+  if (!checkCsrf(request)) {
+    return NextResponse.json({ error: "Invalid CSRF token" }, { status: 403 });
+  }
+
   const ip = getClientIp(request);
   if (!await checkIpRateLimit(ip, 3, 60 * 1000)) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
