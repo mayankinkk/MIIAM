@@ -117,10 +117,12 @@ export default function SettingsPage() {
   }, [supabase]);
 
   useEffect(() => {
-    loadSettings();
-    runHealthChecks();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    async function init() {
+      await loadSettings();
+      await runHealthChecks();
+    }
+    init();
+  }, [loadSettings, runHealthChecks]);
 
   async function loadSettings() {
     setLoading(true);

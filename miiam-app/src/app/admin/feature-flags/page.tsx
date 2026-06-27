@@ -1,7 +1,6 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { useState, useEffect } from "react";
 import { useToastStore } from "@/lib/store/toastStore";
 
 interface FeatureFlag {
@@ -22,32 +21,31 @@ const flags: FeatureFlag[] = [
 ];
 
 export default function FeatureFlagsPage() {
-  const _supabase = useMemo(() => createClient(), []);
   const { addToast } = useToastStore();
   const [loading, setLoading] = useState(true);
   const [savingKey, setSavingKey] = useState<string | null>(null);
   const [flagValues, setFlagValues] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
-    loadFlags();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  async function loadFlags() {
-    setLoading(true);
-    try {
-      const res = await fetch("/api/settings");
-      const data = await res.json();
-      const loaded: Record<string, boolean> = {};
-      flags.forEach((f) => {
-        loaded[f.key] = data.settings?.[f.key] === "true";
-      });
-      setFlagValues(loaded);
-    } catch {
-      addToast("Failed to load feature flags", "error");
+    let cancelled = false;
+    async function loadFlags() {
+      setLoading(true);
+      try {
+        const res = await fetch("/api/settings");
+        const data = await res.json();
+        const loaded: Record<string, boolean> = {};
+        flags.forEach((f) => {
+          loaded[f.key] = data.settings?.[f.key] === "true";
+        });
+        if (!cancelled) setFlagValues(loaded);
+      } catch {
+        addToast("Failed to load feature flags", "error");
+      }
+      if (!cancelled) setLoading(false);
     }
-    setLoading(false);
-  }
+    loadFlags();
+    return () => { cancelled = true; };
+  }, [addToast]);
 
   async function toggleFlag(flag: FeatureFlag) {
     const newValue = !flagValues[flag.key];
