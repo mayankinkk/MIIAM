@@ -26,7 +26,7 @@ export async function DELETE(request: NextRequest) {
     await admin.from("reviews").delete().eq("user_id", user.id);
     await admin.from("service_bookings").delete().eq("user_id", user.id);
     await admin.from("orders").delete().eq("user_id", user.id);
-    await admin.from("addresses").delete().eq("user_id", user.id);
+    await admin.from("user_addresses").delete().eq("user_id", user.id);
     await admin.from("wallet_transactions").delete().eq("user_id", user.id);
     await admin.from("favorites").delete().eq("user_id", user.id);
     await admin.from("profiles").delete().eq("id", user.id);
