@@ -63,7 +63,7 @@ A comprehensive tiered loyalty program similar to Swiggy One / Zomato Gold.
 - **Earn More Section**: Ways to earn points (Referral: 500pts, Reviews: 50pts, Birthday: 2x)
 - **Exclusive Offers**: Gold-only deals like 50% off at premium restaurants, free delivery (10km)
 
-### 4. Quick Commerce - MIIAM Instamart (miiam_instamart/code.html)
+### 4. Quick Commerce - MIIAM Instamart 
 
 Grocery and essential delivery in 10 minutes - similar to Swiggy Instamart / Blinkit.
 
