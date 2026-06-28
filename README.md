@@ -472,4 +472,4 @@ MIT License
 
 Current Version: 2.0.0
 
-Last Updated: May 2026
+Last Updated: June 2026
