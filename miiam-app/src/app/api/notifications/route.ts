@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { withRateLimit } from "@/lib/api-utils";
+import { createRouteLogger } from "@/lib/logger";
+
+const logger = createRouteLogger("notifications");
 
 export const POST = withRateLimit(async function POST(request: NextRequest) {
   try {
@@ -46,7 +49,7 @@ export const POST = withRateLimit(async function POST(request: NextRequest) {
       .single();
 
     if (error) {
-      console.error("Failed to create notification:", error);
+      logger.error({ err: error }, "Failed to create notification");
       return NextResponse.json(
         { error: "Failed to create notification" },
         { status: 500 }
@@ -55,7 +58,7 @@ export const POST = withRateLimit(async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true, notification });
   } catch (error) {
-    console.error("Notification API error:", error);
+    logger.error({ err: error }, "Notification API error");
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
@@ -96,7 +99,7 @@ export const GET = withRateLimit(async function GET(request: NextRequest) {
       .limit(50);
 
     if (error) {
-      console.error("Failed to fetch notifications:", error);
+      logger.error({ err: error }, "Failed to fetch notifications");
       return NextResponse.json(
         { error: "Failed to fetch notifications" },
         { status: 500 }
@@ -105,7 +108,7 @@ export const GET = withRateLimit(async function GET(request: NextRequest) {
 
     return NextResponse.json({ notifications });
   } catch (error) {
-    console.error("Notification fetch error:", error);
+    logger.error({ err: error }, "Notification fetch error");
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

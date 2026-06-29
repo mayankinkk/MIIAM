@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { checkIpRateLimit, getClientIp, checkCsrf } from "@/lib/security";
+import { createRouteLogger } from "@/lib/logger";
+
+const logger = createRouteLogger("user/account");
 
 export async function DELETE(request: NextRequest) {
   if (!checkCsrf(request)) {
@@ -34,13 +37,13 @@ export async function DELETE(request: NextRequest) {
     // Delete the auth user
     const { error: deleteError } = await admin.auth.admin.deleteUser(user.id);
     if (deleteError) {
-      console.error("[AccountDeletion] Failed to delete auth user:", deleteError);
+      logger.error({ err: deleteError }, "Failed to delete auth user");
       return NextResponse.json({ error: "Failed to delete auth account. Data has been removed but the auth account still exists." }, { status: 500 });
     }
 
     return NextResponse.json({ success: true, message: "Account and all data permanently deleted." });
   } catch (e) {
-    console.error("[AccountDeletion] Error:", e);
+    logger.error({ err: e }, "Account deletion error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

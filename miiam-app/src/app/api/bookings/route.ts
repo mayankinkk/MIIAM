@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient, createClient } from "@/lib/supabase/server";
 import { getClientIp, checkIpRateLimit, checkCsrf } from "@/lib/security";
+import { createRouteLogger } from "@/lib/logger";
+
+const logger = createRouteLogger("bookings");
 
 async function requireAuth() {
   const supabase = await createClient();
@@ -19,7 +22,7 @@ async function createServiceBookingsTable(): Promise<boolean> {
     const projectRef = supabaseUrl.replace("https://", "").split(".")[0];
 
     if (!projectRef || !supabasePAT) {
-      console.error("[bookings] Cannot auto-create table: missing env vars (need SUPABASE_PERSONAL_ACCESS_TOKEN)");
+      logger.error("Cannot auto-create table: missing env vars (need SUPABASE_PERSONAL_ACCESS_TOKEN)");
       return false;
     }
 
@@ -60,15 +63,15 @@ async function createServiceBookingsTable(): Promise<boolean> {
     });
 
     if (mgmtRes.ok) {
-      console.log("[bookings] Table created via Management API");
+      logger.info("Table created via Management API");
       return true;
     }
 
     // Fall back: try the pg REST endpoint (only works on some Supabase configs)
-    console.warn("[bookings] Management API returned", mgmtRes.status, "- table auto-create failed");
+    logger.warn({ status: mgmtRes.status }, "Management API returned - table auto-create failed");
     return false;
   } catch (err) {
-    console.error("[bookings] Auto-create table error:", err);
+    logger.error({ err }, "Auto-create table error");
     return false;
   }
 }
@@ -135,7 +138,7 @@ export async function POST(request: NextRequest) {
 
     // If table is missing, auto-create it and retry once
     if (error && (error.code === "42P01" || error.message?.includes("does not exist"))) {
-      console.warn("[bookings] service_bookings table missing — attempting auto-create...");
+      logger.warn("service_bookings table missing - attempting auto-create...");
       const created = await createServiceBookingsTable();
       if (created) {
         // Retry the insert after table creation
@@ -151,7 +154,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (error) {
-      console.error("[bookings] Insert failed:", JSON.stringify({ code: error.code, message: error.message, details: error.details, hint: error.hint }));
+      logger.error({ code: error.code, message: error.message, details: error.details, hint: error.hint }, "Insert failed");
       if (error.code === "23503") {
         return NextResponse.json({ error: "Account profile incomplete. Please update your profile first." }, { status: 400 });
       }
@@ -178,7 +181,7 @@ export async function POST(request: NextRequest) {
         });
       }
     } catch (emailErr) {
-      console.warn("[bookings] Email failed:", emailErr);
+      logger.warn({ err: emailErr }, "Email failed");
     }
 
     // Send in-app notification (best-effort)
@@ -192,12 +195,12 @@ export async function POST(request: NextRequest) {
         created_at: new Date().toISOString(),
       });
     } catch (notifErr) {
-      console.warn("[bookings] Notification failed:", notifErr);
+      logger.warn({ err: notifErr }, "Notification failed");
     }
 
     return NextResponse.json({ success: true, booking });
   } catch (error) {
-    console.error("[/api/bookings POST] Unhandled error:", error instanceof Error ? error.stack : String(error));
+    logger.error({ err: error }, "POST /api/bookings unhandled error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
@@ -252,7 +255,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ bookings: allBookings || [] });
   } catch (error) {
-    console.error("[/api/bookings GET] Unhandled error:", error instanceof Error ? error.message : String(error));
+    logger.error({ err: error }, "GET /api/bookings unhandled error");
     return NextResponse.json({ bookings: [] });
   }
 }

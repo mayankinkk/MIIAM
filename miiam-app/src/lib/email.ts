@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import logger from "@/lib/logger";
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
@@ -81,7 +82,7 @@ export type RefundEmailData = {
 
 export async function sendOrderConfirmationEmail(data: OrderEmailData): Promise<{ success: boolean; error?: string }> {
   if (!resend) {
-    console.log("[DEV EMAIL] Order Confirmation:", data);
+    logger.info({ orderId: data.orderId, email: data.customerEmail }, "DEV EMAIL - Order Confirmation");
     return { success: true };
   }
 
@@ -135,13 +136,13 @@ export async function sendOrderConfirmationEmail(data: OrderEmailData): Promise<
     });
 
     if (error) {
-      console.error("Resend error:", error);
+      logger.error({ err: error }, "Resend error");
       return { success: false, error: error.message };
     }
 
     return { success: true };
   } catch (err) {
-    console.error("Email send error:", err);
+    logger.error({ err }, "Email send error");
     return { success: false, error: "Failed to send email" };
   }
 }
@@ -179,7 +180,7 @@ const statusMessages: Record<string, { title: string; message: string }> = {
 
 export async function sendOrderStatusUpdateEmail(data: OrderStatusEmailData): Promise<{ success: boolean; error?: string }> {
   if (!resend) {
-    console.log("[DEV EMAIL] Order Status Update:", data);
+    logger.info({ orderId: data.orderId, status: data.status }, "DEV EMAIL - Order Status Update");
     return { success: true };
   }
 
@@ -223,20 +224,20 @@ export async function sendOrderStatusUpdateEmail(data: OrderStatusEmailData): Pr
     });
 
     if (error) {
-      console.error("Resend error:", error);
+      logger.error({ err: error }, "Resend error");
       return { success: false, error: error.message };
     }
 
     return { success: true };
   } catch (err) {
-    console.error("Email send error:", err);
+    logger.error({ err }, "Email send error");
     return { success: false, error: "Failed to send email" };
   }
 }
 
 export async function sendRefundNotificationEmail(data: RefundEmailData): Promise<{ success: boolean; error?: string }> {
   if (!resend) {
-    console.log("[DEV EMAIL] Refund Notification:", data);
+    logger.info({ orderId: data.orderId, email: data.customerEmail }, "DEV EMAIL - Refund Notification");
     return { success: true };
   }
 
@@ -270,20 +271,20 @@ export async function sendRefundNotificationEmail(data: RefundEmailData): Promis
     });
 
     if (error) {
-      console.error("Resend error:", error);
+      logger.error({ err: error }, "Resend error");
       return { success: false, error: error.message };
     }
 
     return { success: true };
   } catch (err) {
-    console.error("Email send error:", err);
+    logger.error({ err }, "Email send error");
     return { success: false, error: "Failed to send email" };
   }
 }
 
 export async function sendWelcomeEmail(name: string, email: string): Promise<{ success: boolean; error?: string }> {
   if (!resend) {
-    console.log("[DEV EMAIL] Welcome:", { name, email });
+    logger.info({ email }, "DEV EMAIL - Welcome");
     return { success: true };
   }
 
@@ -320,13 +321,13 @@ export async function sendWelcomeEmail(name: string, email: string): Promise<{ s
     });
 
     if (error) {
-      console.error("Resend error:", error);
+      logger.error({ err: error }, "Resend error");
       return { success: false, error: error.message };
     }
 
     return { success: true };
   } catch (err) {
-    console.error("Email send error:", err);
+    logger.error({ err }, "Email send error");
     return { success: false, error: "Failed to send email" };
   }
 }
@@ -344,7 +345,7 @@ export type BookingEmailData = {
 
 export async function sendBookingConfirmationEmail(data: BookingEmailData): Promise<{ success: boolean; error?: string }> {
   if (!resend) {
-    console.log("[DEV EMAIL] Booking confirmation:", { to: data.customerEmail, service: data.serviceName });
+    logger.info({ email: data.customerEmail, service: data.serviceName }, "DEV EMAIL - Booking confirmation");
     return { success: true };
   }
 
@@ -379,13 +380,13 @@ export async function sendBookingConfirmationEmail(data: BookingEmailData): Prom
     });
 
     if (error) {
-      console.error("Resend error:", error);
+      logger.error({ err: error }, "Resend error");
       return { success: false, error: error.message };
     }
 
     return { success: true };
   } catch (err) {
-    console.error("Email send error:", err);
+    logger.error({ err }, "Email send error");
     return { success: false, error: "Failed to send email" };
   }
 }

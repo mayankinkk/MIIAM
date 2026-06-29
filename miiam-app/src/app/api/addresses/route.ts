@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { getClientIp, checkIpRateLimit, checkCsrf } from "@/lib/security";
+import { createRouteLogger } from "@/lib/logger";
+
+const logger = createRouteLogger("addresses");
 
 export async function GET(request: NextRequest) {
   const ip = getClientIp(request);
@@ -23,13 +26,13 @@ export async function GET(request: NextRequest) {
       .order("created_at", { ascending: false });
 
     if (error) {
-      console.error("Address fetch error:", error);
+      logger.error({ err: error }, "Address fetch error");
       return NextResponse.json({ addresses: [] });
     }
 
     return NextResponse.json({ addresses: addresses || [] });
   } catch (err) {
-    console.error("Addresses GET error:", err);
+    logger.error({ err }, "Addresses GET error");
     return NextResponse.json({ addresses: [], error: "Failed to load addresses" }, { status: 500 });
   }
 }
@@ -84,7 +87,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true, address: addressData });
   } catch (error) {
-    console.error("Address error:", error);
+    logger.error({ err: error }, "Address create error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
@@ -152,7 +155,7 @@ export async function PUT(request: NextRequest) {
 
     return NextResponse.json({ success: true, address: addressData });
   } catch (error) {
-    console.error("Address update error:", error);
+    logger.error({ err: error }, "Address update error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
@@ -181,7 +184,7 @@ export async function DELETE(request: NextRequest) {
     .eq("user_id", user.id);
 
   if (error) {
-    console.error("Address delete error:", error);
+    logger.error({ err: error }, "Address delete error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 
