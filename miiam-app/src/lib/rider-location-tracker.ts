@@ -126,11 +126,10 @@ export class RiderLocationTracker {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const { latitude, longitude } = position.coords;
-          const supabase = createClient();
 
           try {
             if (this.currentOrderId && this.currentRiderId) {
-              await supabase.from("rider_locations").upsert({
+              await this.supabase.from("rider_locations").upsert({
                 order_id: this.currentOrderId,
                 rider_id: this.currentRiderId,
                 lat: latitude,
@@ -266,18 +265,19 @@ export async function updateRiderLocation(orderId: string, riderId: string) {
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude, longitude } = position.coords;
-        const supabase = createClient();
 
         try {
-          await supabase.from("rider_locations").upsert({
-            order_id: orderId,
-            rider_id: riderId,
-            lat: latitude,
-            lng: longitude,
-            created_at: new Date().toISOString(),
-          }, {
-            onConflict: 'order_id'
-          });
+          if (_legacySupabase) {
+            await _legacySupabase.from("rider_locations").upsert({
+              order_id: orderId,
+              rider_id: riderId,
+              lat: latitude,
+              lng: longitude,
+              created_at: new Date().toISOString(),
+            }, {
+              onConflict: 'order_id'
+            });
+          }
           resolve({ lat: latitude, lng: longitude });
         } catch (error) {
           console.error("Failed to update location:", error);
