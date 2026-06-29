@@ -181,7 +181,11 @@ export function createRiderLocationTracker(
   return new RiderLocationTracker(riderId, orderId, options);
 }
 
-// Backward compatibility functions (deprecated)
+/**
+ * @deprecated Use `createRiderLocationTracker()` instead.
+ * These functions use module-level mutable state and create redundant Supabase clients.
+ * Will be removed in a future version.
+ */
 let _legacyWatchId: number | null = null;
 let _legacyOrderId: string | null = null;
 let _legacyRiderId: string | null = null;
