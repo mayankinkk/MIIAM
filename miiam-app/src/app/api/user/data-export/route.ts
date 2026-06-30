@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { checkIpRateLimit, getClientIp } from "@/lib/security";
+import { createRouteLogger } from "@/lib/logger";
+
+const logger = createRouteLogger("user/data-export");
 
 export async function GET(request: NextRequest) {
   const ip = getClientIp(request);
@@ -71,7 +74,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (e) {
-    console.error("[DataExport] Error:", e);
+    logger.error({ err: e }, "Data export error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

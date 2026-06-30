@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { getClientIp, checkIpRateLimit } from "@/lib/security";
+import { createRouteLogger } from "@/lib/logger";
+
+const logger = createRouteLogger("riders/apply");
 
 export async function POST(request: Request) {
   if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
@@ -8,7 +11,7 @@ export async function POST(request: Request) {
   }
 
   // Rate limit: max 3 rider applications per hour per IP
-  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+  const ip = getClientIp(request);
   if (!await checkIpRateLimit(ip, 3, 60 * 60 * 1000)) {
     return NextResponse.json({ error: "Too many applications. Please try again later." }, { status: 429 });
   }
@@ -99,7 +102,7 @@ export async function POST(request: Request) {
         const { data: { publicUrl } } = adminClient.storage.from("riders").getPublicUrl(filePath);
         profilePhotoUrl = publicUrl;
       } else {
-        console.error("Profile photo upload error:", uploadError);
+        logger.error({ err: uploadError }, "Profile photo upload error");
       }
     }
 
@@ -114,11 +117,11 @@ export async function POST(request: Request) {
         const { data: { publicUrl } } = adminClient.storage.from("riders").getPublicUrl(filePath);
         idProofUrl = publicUrl;
       } else {
-        console.error("ID proof upload error:", uploadError);
+        logger.error({ err: uploadError }, "ID proof upload error");
       }
     }
   } catch (e) {
-    console.error("Upload error:", e);
+    logger.error({ err: e }, "Upload error");
   }
   
   try {
@@ -132,11 +135,11 @@ export async function POST(request: Request) {
     }, { onConflict: 'id' });
     
     if (profileError) {
-      console.error("Profile error:", profileError);
+      logger.error({ err: profileError }, "Profile error");
       return NextResponse.json({ error: "Failed to update profile: " + profileError.message }, { status: 400 });
     }
   } catch (e: unknown) {
-    console.error("Profile catch error:", e);
+    logger.error({ err: e }, "Profile catch error");
     return NextResponse.json({ error: e instanceof Error ? e.message : "Unknown error" }, { status: 400 });
   }
   
@@ -152,11 +155,11 @@ export async function POST(request: Request) {
     });
     
     if (riderError) {
-      console.error("Rider error:", riderError);
+      logger.error({ err: riderError }, "Rider error");
       return NextResponse.json({ error: "Failed to create rider: " + riderError.message }, { status: 400 });
     }
   } catch (e: unknown) {
-    console.error("Rider catch error:", e);
+    logger.error({ err: e }, "Rider catch error");
     return NextResponse.json({ error: e instanceof Error ? e.message : "Unknown error" }, { status: 400 });
   }
   

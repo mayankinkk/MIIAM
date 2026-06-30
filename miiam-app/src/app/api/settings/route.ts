@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient, createClient } from "@/lib/supabase/server";
 import { checkCsrf } from "@/lib/security";
 import { withRateLimit } from "@/lib/api-utils";
+import { createRouteLogger } from "@/lib/logger";
+
+const logger = createRouteLogger("settings");
 
 async function requireAdmin() {
   const supabase = await createClient();
@@ -76,7 +79,7 @@ export const PUT = withRateLimit(async function PUT(request: NextRequest) {
 
     return NextResponse.json({ success: true, setting: result });
   } catch (error) {
-    console.error("Settings error:", error);
+    logger.error({ err: error }, "Settings error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 });
@@ -127,7 +130,7 @@ export const POST = withRateLimit(async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true, message: "Settings updated" });
   } catch (error) {
-    console.error("Settings bulk update error:", error);
+    logger.error({ err: error }, "Settings bulk update error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 });

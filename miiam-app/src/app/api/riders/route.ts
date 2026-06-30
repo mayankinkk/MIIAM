@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { withRateLimit } from "@/lib/api-utils";
+import { createRouteLogger } from "@/lib/logger";
+
+const logger = createRouteLogger("riders");
 
 async function requireAdmin() {
   const supabase = await createClient();
@@ -77,7 +80,7 @@ export const POST = withRateLimit(async function POST(request: Request) {
         const { data: { publicUrl } } = adminClient.storage.from("riders").getPublicUrl(filePath);
         profilePhotoUrl = publicUrl;
       } else {
-        console.error("Profile photo upload error:", uploadError);
+        logger.error({ err: uploadError }, "Profile photo upload error");
       }
     }
 
@@ -93,11 +96,11 @@ export const POST = withRateLimit(async function POST(request: Request) {
         const { data: { publicUrl } } = adminClient.storage.from("riders").getPublicUrl(filePath);
         idProofUrl = publicUrl;
       } else {
-        console.error("ID proof upload error:", uploadError);
+        logger.error({ err: uploadError }, "ID proof upload error");
       }
     }
   } catch (e) {
-    console.error("Upload error:", e);
+    logger.error({ err: e }, "Upload error");
   }
   
   try {
@@ -112,11 +115,11 @@ export const POST = withRateLimit(async function POST(request: Request) {
     }, { onConflict: 'id' });
     
     if (profileError) {
-      console.error("Profile error:", profileError);
+      logger.error({ err: profileError }, "Profile error");
       return NextResponse.json({ error: "Failed to update profile: " + profileError.message }, { status: 400 });
     }
   } catch (e: unknown) {
-    console.error("Profile catch error:", e);
+    logger.error({ err: e }, "Profile catch error");
     return NextResponse.json({ error: (e instanceof Error ? e.message : "Unknown error") }, { status: 400 });
   }
   
@@ -138,10 +141,10 @@ export const POST = withRateLimit(async function POST(request: Request) {
     });
     
     if (riderError) {
-      console.error("Rider error:", riderError);
+      logger.error({ err: riderError }, "Rider error");
     }
   } catch (e: unknown) {
-    console.error("Rider catch error:", e);
+    logger.error({ err: e }, "Rider catch error");
   }
   
   return NextResponse.json({ success: true, userId: userId });
@@ -169,13 +172,13 @@ export const DELETE = withRateLimit(async function DELETE(request: Request) {
   const { error: profileError } = await adminClient.from("profiles").delete().eq("id", riderId);
   
   if (profileError) {
-    console.error("Profile delete error:", profileError);
+    logger.error({ err: profileError }, "Profile delete error");
   }
   
   try {
     await adminClient.auth.admin.deleteUser(riderId);
   } catch (e) {
-    console.error("Auth delete error:", e);
+    logger.error({ err: e }, "Auth delete error");
   }
   
   return NextResponse.json({ success: true });
