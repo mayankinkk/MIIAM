@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { checkCsrf } from "@/lib/security";
 import { withRateLimit } from "@/lib/api-utils";
+import { createRouteLogger } from "@/lib/logger";
+
+const logger = createRouteLogger("notifications/subscribe");
 
 export const POST = withRateLimit(async function POST(request: NextRequest) {
   if (!checkCsrf(request)) {
@@ -36,13 +39,13 @@ export const POST = withRateLimit(async function POST(request: NextRequest) {
       );
 
     if (error) {
-      console.error("Failed to store push subscription:", error);
+      logger.error({ err: error }, "Failed to store push subscription");
       return NextResponse.json({ error: "Failed to store subscription" }, { status: 500 });
     }
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Push subscription error:", error);
+    logger.error({ err: error }, "Push subscription error");
     return NextResponse.json({ error: "Internal error" }, { status: 500 });
   }
 });

@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { checkCsrf } from "@/lib/security";
+import { createRouteLogger } from "@/lib/logger";
+
+const logger = createRouteLogger("admin/run-migration");
 
 // SQL to create all missing service tables
 const MIGRATION_SQL = `
@@ -151,7 +154,7 @@ export async function POST(request: NextRequest) {
     const result = await response.json();
 
     if (!response.ok) {
-      console.error("Supabase Management API error:", result);
+      logger.error({ result }, "Supabase Management API error");
       // Fall back: try each statement separately using the pg REST approach
       return NextResponse.json({
         error: "Management API failed",
@@ -168,7 +171,7 @@ export async function POST(request: NextRequest) {
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
-    console.error("Migration failed:", message);
+    logger.error({ err: message }, "Migration failed");
     return NextResponse.json({
       error: message,
       sql: MIGRATION_SQL,

@@ -2,6 +2,9 @@ import { createAdminClient, createClient } from "@/lib/supabase/server";
 import { uploadFile } from "@/lib/storage";
 import { NextRequest, NextResponse } from "next/server";
 import { withRateLimit } from "@/lib/api-utils";
+import { createRouteLogger } from "@/lib/logger";
+
+const logger = createRouteLogger("rider/documents");
 
 export const POST = withRateLimit(async function POST(request: NextRequest) {
   const supabase = await createClient();
@@ -90,7 +93,7 @@ export const POST = withRateLimit(async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error("Document upload error:", error);
+    logger.error({ err: error }, "Document upload error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 });

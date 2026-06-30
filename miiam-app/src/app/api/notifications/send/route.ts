@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { getClientIp, checkIpRateLimit } from "@/lib/security";
+import { createRouteLogger } from "@/lib/logger";
+
+const logger = createRouteLogger("notifications/send");
 
 export async function POST(request: NextRequest) {
   const ip = getClientIp(request);
@@ -52,7 +55,7 @@ export async function POST(request: NextRequest) {
       message: "Notification sent successfully",
     });
   } catch (error) {
-    console.error("Notification error:", error);
+    logger.error({ err: error }, "Notification error");
     return NextResponse.json(
       { error: "Failed to send notification" },
       { status: 500 }
