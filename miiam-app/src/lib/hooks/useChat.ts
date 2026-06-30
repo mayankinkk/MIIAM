@@ -151,7 +151,7 @@ export function useChat(
     const channel = typingChannelRef.current;
     
     if (isTyping) {
-      await channel.track({ user_id: currentUserId, typing: true });
+      await channel.track({ user_id: userIdRef.current, typing: true });
       
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current);
@@ -161,7 +161,7 @@ export function useChat(
         await channel.track({ user_id: userIdRef.current, typing: false });
       }, 3000);
     } else {
-      await channel.track({ user_id: currentUserId, typing: false });
+      await channel.track({ user_id: userIdRef.current, typing: false });
     }
   }
 

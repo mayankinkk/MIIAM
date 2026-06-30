@@ -5,7 +5,6 @@ export interface RouteContext {
   params?: Promise<Record<string, string>>;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type RouteHandler = (request: NextRequest, context: RouteContext) => Promise<NextResponse | Response>;
 
 export function withRateLimit(handler: RouteHandler, maxRequests = 30, windowMs = 60 * 1000): RouteHandler {

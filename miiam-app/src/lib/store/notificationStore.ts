@@ -10,7 +10,7 @@ export interface AppNotification {
   body: string;
   icon?: string;
   tag?: string;
-  data?: Record<string, any>;
+  data?: Record<string, unknown>;
   actionUrl?: string;
   read?: boolean;
   createdAt?: string;
