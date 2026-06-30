@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient, createClient } from "@/lib/supabase/server";
 import { checkCsrf } from "@/lib/security";
 import { withRateLimit } from "@/lib/api-utils";
+import { createRouteLogger } from "@/lib/logger";
+
+const logger = createRouteLogger("dispatch/assign");
 
 interface Order {
   id: string;
@@ -183,7 +186,7 @@ export const POST = withRateLimit(async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error("Dispatch error:", error);
+    logger.error({ err: error }, "Dispatch error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 });
