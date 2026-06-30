@@ -142,6 +142,8 @@ export function useOrderTracking(orderId: string, supabaseClient?: SupabaseClien
   const [currentUserId, setCurrentUserId] = useState<string>("");
   const statusRef = useRef(order?.status);
   const { addToast } = useToastStore();
+  const addToastRef = useRef(addToast);
+  addToastRef.current = addToast;
 
   useEffect(() => {
     statusRef.current = order?.status;
@@ -268,7 +270,7 @@ export function useOrderTracking(orderId: string, supabaseClient?: SupabaseClien
 
           if (newStatus !== oldStatus && newStatus) {
             const msg = STATUS_MESSAGES[newStatus];
-            if (msg) addToast(msg, "info");
+            if (msg) addToastRef.current(msg, "info");
 
             const notifyStatuses = ["accepted", "on_the_way", "arrived", "delivered"];
             if (
@@ -307,7 +309,7 @@ export function useOrderTracking(orderId: string, supabaseClient?: SupabaseClien
       mounted = false;
       supabase.removeChannel(channel);
     };
-  }, [orderId, supabase, addToast, fetchOrderData]);
+  }, [orderId, supabase, fetchOrderData]);
 
   useEffect(() => {
     const interval = setInterval(refreshOrder, 25000);

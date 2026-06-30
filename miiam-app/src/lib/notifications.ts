@@ -42,7 +42,7 @@ export async function sendOrderNotification(
     type: "order_update",
     is_read: false,
     created_at: new Date().toISOString(),
-    data: { order_id: orderId, status },
+    data: JSON.stringify({ order_id: orderId, status }),
   });
 
   // Show browser notification if permitted

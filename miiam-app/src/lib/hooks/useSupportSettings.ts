@@ -31,12 +31,14 @@ const defaults: SupportSettings = {
 };
 
 let cached: SupportSettings | null = null;
+let cacheTimestamp = 0;
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
 export function useSupportSettings(): SupportSettings {
   const [settings, setSettings] = useState<SupportSettings>(cached || defaults);
 
   useEffect(() => {
-    if (cached) return;
+    if (cached && Date.now() - cacheTimestamp < CACHE_TTL_MS) return;
     fetch("/api/settings")
       .then((r) => r.json())
       .then((data) => {
@@ -48,6 +50,7 @@ export function useSupportSettings(): SupportSettings {
             }
           }
           cached = merged;
+          cacheTimestamp = Date.now();
           setSettings(merged);
         }
       })

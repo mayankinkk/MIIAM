@@ -12,6 +12,8 @@ export function useUnreadMessages(userId: string) {
   useEffect(() => {
     if (!userId) return;
 
+    let cancelled = false;
+
     async function loadUnread() {
       const { data } = await supabase
         .from("chat_messages")
@@ -19,7 +21,7 @@ export function useUnreadMessages(userId: string) {
         .neq("sender_id", userId)
         .eq("read", false);
 
-      if (data) {
+      if (data && !cancelled) {
         const counts: Record<string, number> = {};
         data.forEach((msg: { order_id: string }) => {
           counts[msg.order_id] = (counts[msg.order_id] || 0) + 1;
@@ -46,10 +48,20 @@ export function useUnreadMessages(userId: string) {
       return channel;
     }
 
-    setupChannel().then(ch => { channelRef.current = ch; });
+    setupChannel().then(ch => {
+      if (cancelled) {
+        supabase.removeChannel(ch);
+      } else {
+        channelRef.current = ch;
+      }
+    });
 
     return () => {
-      if (channelRef.current) supabase.removeChannel(channelRef.current);
+      cancelled = true;
+      if (channelRef.current) {
+        supabase.removeChannel(channelRef.current);
+        channelRef.current = null;
+      }
     };
   }, [userId, supabase]);
 
