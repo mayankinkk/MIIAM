@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { getClientIp, checkIpRateLimit } from "@/lib/security";
+import { createRouteLogger } from "@/lib/logger";
+
+const logger = createRouteLogger("auth/logout");
 
 export async function POST(request: NextRequest) {
   const ip = getClientIp(request);
@@ -22,7 +25,7 @@ export async function POST(request: NextRequest) {
       await supabaseAdmin.auth.admin.signOut(user.id);
     } catch (err) {
       // signOut may not exist on all Supabase versions — log but don't fail
-      console.warn("[logout] Admin signOut error:", err);
+      logger.warn({ err }, "Admin signOut error");
     }
 
     // Mark all user sessions as revoked in our tracking table
@@ -35,7 +38,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Server error";
-    console.error("[logout] error:", error);
+    logger.error({ err: error }, "Logout error");
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

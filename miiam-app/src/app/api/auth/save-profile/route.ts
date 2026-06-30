@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient, createClient } from "@/lib/supabase/server";
 import { getClientIp, checkIpRateLimit } from "@/lib/security";
+import { createRouteLogger } from "@/lib/logger";
+
+const logger = createRouteLogger("auth/save-profile");
 
 export async function POST(request: NextRequest) {
   const ip = getClientIp(request);
@@ -45,13 +48,13 @@ export async function POST(request: NextRequest) {
     const { error: profileError } = await supabaseAdmin.from("profiles").upsert(profileData);
 
     if (profileError) {
-      console.error("[save-profile] Profile error:", profileError);
+      logger.error({ err: profileError }, "Profile error");
       return NextResponse.json({ error: profileError.message }, { status: 500 });
     }
 
     return NextResponse.json({ success: true, userId: user.id });
   } catch (error: unknown) {
-    console.error("[save-profile] error:", error);
+    logger.error({ err: error }, "Save profile error");
     return NextResponse.json({ error: error instanceof Error ? error.message : "Server error" }, { status: 500 });
   }
 }

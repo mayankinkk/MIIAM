@@ -3,6 +3,9 @@ import { createAdminClient } from "@/lib/supabase/server";
 import { cookies } from "next/headers";
 import crypto from "crypto";
 import { validatePassword, verifyHmac, getClientIp, checkIpRateLimit } from "@/lib/security";
+import { createRouteLogger } from "@/lib/logger";
+
+const logger = createRouteLogger("auth/create-user-with-password");
 
 export async function POST(request: NextRequest) {
   const ip = getClientIp(request);
@@ -49,7 +52,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (listError) {
-      console.error("[create-user] listUsers error:", listError);
+      logger.error({ err: listError }, "listUsers error");
       return NextResponse.json({ error: "Failed to look up users" }, { status: 500 });
     }
 
@@ -65,7 +68,7 @@ export async function POST(request: NextRequest) {
       });
 
       if (updateError) {
-        console.error("[create-user] Update error:", updateError);
+        logger.error({ err: updateError }, "Update error");
         return NextResponse.json({ error: updateError.message || "Failed to update account" }, { status: 500 });
       }
 
@@ -79,7 +82,7 @@ export async function POST(request: NextRequest) {
       });
 
       if (createError) {
-        console.error("[create-user] Create error:", createError);
+        logger.error({ err: createError }, "Create error");
         return NextResponse.json({ error: createError.message || "Failed to create account" }, { status: 500 });
       }
 
@@ -100,7 +103,7 @@ export async function POST(request: NextRequest) {
     });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Server error";
-    console.error("[create-user] error:", error);
+    logger.error({ err: error }, "Create user error");
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient, createClient } from "@/lib/supabase/server";
 import { getClientIp, checkIpRateLimit } from "@/lib/security";
+import { createRouteLogger } from "@/lib/logger";
+
+const logger = createRouteLogger("auth/create-session");
 
 interface AdminAuthExtension {
   createSession(args: { userId: string }): Promise<{
@@ -54,7 +57,7 @@ export async function POST(request: NextRequest) {
       });
       
       if (createError) {
-        console.error("Create user error:", createError);
+        logger.error({ err: createError }, "Create user error");
         return NextResponse.json({ error: "Failed to create user" }, { status: 500 });
       }
       
@@ -74,7 +77,7 @@ export async function POST(request: NextRequest) {
     ).createSession({ userId: userRecord.id });
 
     if (sessionError) {
-      console.error("Create session error:", sessionError);
+      logger.error({ err: sessionError }, "Create session error");
       return NextResponse.json({ 
         success: true, 
         userId: userRecord.id,
@@ -88,7 +91,7 @@ export async function POST(request: NextRequest) {
       email: userRecord.email,
     });
   } catch (error) {
-    console.error("Create session error:", error);
+    logger.error({ err: error }, "Create session error");
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

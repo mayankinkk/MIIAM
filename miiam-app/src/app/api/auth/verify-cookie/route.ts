@@ -3,6 +3,9 @@ import { cookies } from "next/headers";
 import { createAdminClient } from "@/lib/supabase/server";
 import crypto from "crypto";
 import { signHmac, getClientIp, checkIpRateLimit } from "@/lib/security";
+import { createRouteLogger } from "@/lib/logger";
+
+const logger = createRouteLogger("auth/verify-cookie");
 
 export async function POST(request: NextRequest) {
   const ip = getClientIp(request);
@@ -62,7 +65,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Verify cookie error:", error);
+    logger.error({ err: error }, "Verify cookie error");
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
