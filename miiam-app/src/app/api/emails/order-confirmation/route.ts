@@ -1,9 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createAdminClient } from "@/lib/supabase/server";
+import { createAdminClient, createClient } from "@/lib/supabase/server";
 import { sendOrderConfirmationEmail } from "@/lib/email";
+import { createRouteLogger } from "@/lib/logger";
+
+const logger = createRouteLogger("emails/order-confirmation");
 
 export async function POST(request: NextRequest) {
-  const supabase = createAdminClient();
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const supabaseAdmin = createAdminClient();
 
   try {
     const { orderId } = await request.json();
@@ -12,7 +21,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Order ID required" }, { status: 400 });
     }
 
-    const { data: order, error: orderError } = await supabase
+    const { data: order, error: orderError } = await supabaseAdmin
       .from("orders")
       .select(`
         id,
@@ -46,7 +55,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "User email not found" }, { status: 400 });
     }
 
-    const { data: items } = await supabase
+    const { data: items } = await supabaseAdmin
       .from("order_items")
       .select("name, quantity, price")
       .eq("order_id", orderId);
@@ -73,7 +82,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Order confirmation email error:", error);
+    logger.error({ err: error }, "Order confirmation email error");
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
