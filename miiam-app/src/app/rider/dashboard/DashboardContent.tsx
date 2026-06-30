@@ -62,6 +62,7 @@ export default function RiderDashboard() {
   const mapInstanceRef = useRef<Leaflet.Map | null>(null);
   const riderMarkerRef = useRef<Leaflet.Marker | null>(null);
   const watchIdRef = useRef<number | null>(null);
+  const handleDeclineRef = useRef<(orderId: string, reason?: string) => Promise<void>>(async () => {});
 
   const questTitles = { complete5: t.rider.quests.complete5, earn500: t.rider.quests.earn500, threeStar: t.rider.quests.threeStar };
   const [dailyQuests, setDailyQuests] = useState([
@@ -218,7 +219,7 @@ export default function RiderDashboard() {
       const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
       return () => clearTimeout(timer);
     } else if (countdown === 0 && selectedOrder) {
-      handleDecline(selectedOrder.id);
+      handleDeclineRef.current(selectedOrder.id);
     }
   }, [countdown, selectedOrder]);
 
@@ -492,6 +493,7 @@ export default function RiderDashboard() {
       } catch { /* silent */ }
     }
   };
+  handleDeclineRef.current = handleDecline;
 
   const handleComplete = async () => {
     if (!currentOrder) return;

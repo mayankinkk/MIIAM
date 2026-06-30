@@ -142,6 +142,7 @@ export const POST = withRateLimit(async function POST(request: Request) {
     
     if (riderError) {
       logger.error({ err: riderError }, "Rider error");
+      return NextResponse.json({ error: "Failed to update rider: " + riderError.message }, { status: 400 });
     }
   } catch (e: unknown) {
     logger.error({ err: e }, "Rider catch error");
