@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/server";
 import { requireCronAuth } from "@/lib/security";
 import { PRINTING_VENDOR_ID } from "@/lib/constants";
+import { createRouteLogger } from "@/lib/logger";
+
+const logger = createRouteLogger("printing/cleanup");
 
 const FINAL_STATUSES = ["delivered", "cancelled", "refunded"] as const;
 
@@ -44,7 +47,7 @@ async function collectOrderFilePaths(
           }
         }
       } catch (e) {
-        console.warn("[printing-cleanup] Malformed special_notes in order item:", e);
+        logger.warn({ err: e }, "Malformed special_notes in order item");
       }
     }
   }
@@ -110,7 +113,7 @@ async function cleanAbandonedUploads(supabase: ReturnType<typeof createAdminClie
     const paths = oldFiles.map(f => `prints/${f.name}`);
     const { error: removeError } = await supabase.storage.from(bucket).remove(paths);
     if (!removeError) totalRemoved += oldFiles.length;
-    else console.error(`[printing-cleanup] Abandoned file remove error in ${bucket}:`, removeError);
+    else logger.error({ err: removeError }, `Abandoned file remove error in ${bucket}`);
   }
 
   return totalRemoved;
@@ -138,7 +141,7 @@ export async function POST(request: NextRequest) {
     return await handleCleanup(supabase);
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Server error";
-    console.error("[printing-cleanup] Error:", error);
+    logger.error({ err: error }, "Printing cleanup error");
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

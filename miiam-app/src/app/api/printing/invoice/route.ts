@@ -3,6 +3,9 @@ import { createClient } from "@/lib/supabase/server";
 import { generateInvoicePdf, GST_INVOICE_TAX_RATE, type InvoiceData, type InvoiceLine } from "@/lib/gst-invoice";
 import { PRINTING_VENDOR_ID } from "@/lib/constants";
 import { withRateLimit } from "@/lib/api-utils";
+import { createRouteLogger } from "@/lib/logger";
+
+const logger = createRouteLogger("printing/invoice");
 
 const SELLER = {
   name: "MIIAM Print Services",
@@ -92,7 +95,7 @@ export const GET = withRateLimit(async function GET(request: NextRequest) {
       },
     });
   } catch (err: unknown) {
-    console.error("[invoice] error:", err);
+    logger.error({ err: err }, "Invoice error");
     return NextResponse.json({ error: (err instanceof Error ? err.message : "Server error") }, { status: 500 });
   }
 });

@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { withRateLimit } from "@/lib/api-utils";
+import { createRouteLogger } from "@/lib/logger";
+
+const logger = createRouteLogger("printing/files");
 
 const PRINT_BUCKET = "print-files";
 const LEGACY_BUCKET = "menu-images";
@@ -58,7 +61,7 @@ export const POST = withRateLimit(async function POST(req: NextRequest) {
         .createSignedUrl(info.path, SIGNED_URL_EXPIRY);
 
       if (error) {
-        console.error("[print-files] Signed URL error:", error);
+        logger.error({ err: error }, "Signed URL error");
         signedUrls.push({ original: url, signed: null, error: error.message });
       } else {
         signedUrls.push({ original: url, signed: data.signedUrl });
@@ -67,7 +70,7 @@ export const POST = withRateLimit(async function POST(req: NextRequest) {
 
     return NextResponse.json({ urls: signedUrls });
   } catch (err: unknown) {
-    console.error("[print-files] error:", err);
+    logger.error({ err: err }, "Print files error");
     return NextResponse.json({ error: (err instanceof Error ? err.message : "Server error") }, { status: 500 });
   }
 });
