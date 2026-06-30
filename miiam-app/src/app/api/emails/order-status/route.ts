@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/server";
 import { sendOrderStatusUpdateEmail } from "@/lib/email";
 import { requireCronAuth } from "@/lib/security";
+import { createRouteLogger } from "@/lib/logger";
+
+const logger = createRouteLogger("emails/order-status");
 
 export async function POST(request: NextRequest) {
   if (!(await requireCronAuth(request))) {
@@ -76,7 +79,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Order status email error:", error);
+    logger.error({ err: error }, "Order status email error");
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

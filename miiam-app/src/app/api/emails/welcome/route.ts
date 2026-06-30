@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { sendWelcomeEmail } from "@/lib/email";
 import { createClient } from "@/lib/supabase/server";
 import { getClientIp, checkIpRateLimit } from "@/lib/security";
+import { createRouteLogger } from "@/lib/logger";
+
+const logger = createRouteLogger("emails/welcome");
 
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
@@ -30,7 +33,7 @@ export async function POST(req: NextRequest) {
     const result = await sendWelcomeEmail(name || "there", email);
     return NextResponse.json(result);
   } catch (error) {
-    console.error("Welcome email error:", error);
+    logger.error({ err: error }, "Welcome email error");
     return NextResponse.json({ error: "Failed to send welcome email" }, { status: 500 });
   }
 }

@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient, createClient } from "@/lib/supabase/server";
 import { withRateLimit } from "@/lib/api-utils";
+import { createRouteLogger } from "@/lib/logger";
+
+const logger = createRouteLogger("provider/availability");
 
 async function requireAuth() {
   const supabase = await createClient();
@@ -176,7 +179,7 @@ export const POST = withRateLimit(async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true, availability: result });
   } catch (error) {
-    console.error("Availability error:", error);
+    logger.error({ err: error }, "Availability error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 });
