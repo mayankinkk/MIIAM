@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient, createClient } from "@/lib/supabase/server";
 
 // Debug endpoint: diagnoses exactly why bookings are failing
-// GET /api/admin/debug-bookings — returns diagnostic info
+// GET /api/admin/debug-bookings — returns diagnostic info (admin only)
 export async function GET(request: NextRequest) {
   const diagnostics: Record<string, unknown> = {};
 
@@ -16,14 +16,19 @@ export async function GET(request: NextRequest) {
     diagnostics.step = "getUser";
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     diagnostics.userAuthenticated = !!user;
-    diagnostics.userId = user?.id ?? null;
     diagnostics.authError = authError?.message ?? null;
 
     if (!user) {
       return NextResponse.json({ ...diagnostics, conclusion: "User not authenticated. Cookie might not be sent." });
     }
 
-    // 3. Check if createAdminClient works
+    // 3. Check if user is admin
+    const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
+    if (!profile || profile.role !== "admin") {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
+    // 4. Check if createAdminClient works
     diagnostics.step = "createAdminClient";
     let adminClient: ReturnType<typeof createAdminClient>;
     try {
@@ -119,7 +124,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(diagnostics);
   } catch (error) {
     diagnostics.crash = true;
-    diagnostics.crashError = error instanceof Error ? error.stack : String(error);
+    diagnostics.crashError = error instanceof Error ? error.message : "Unknown error";
     return NextResponse.json(diagnostics, { status: 500 });
   }
 }
