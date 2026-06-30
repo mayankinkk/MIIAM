@@ -1,11 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { getClientIp, checkIpRateLimit } from "@/lib/security";
 import { createRouteLogger } from "@/lib/logger";
 
 const logger = createRouteLogger("riders/apply");
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
     return NextResponse.json({ error: "Service role key not configured" }, { status: 500 });
   }

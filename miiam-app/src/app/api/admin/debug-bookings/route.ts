@@ -42,13 +42,13 @@ export async function GET(request: NextRequest) {
 
     // 4. Check if profiles table is accessible
     diagnostics.step = "checkProfilesTable";
-    const { data: profile, error: profileError } = await adminClient
+    const { data: profileData, error: profileError } = await adminClient
       .from("profiles")
       .select("id, role, full_name, email")
       .eq("id", user.id)
       .maybeSingle();
-    diagnostics.profileExists = !!profile;
-    diagnostics.profileData = profile ? { role: profile.role, hasName: !!profile.full_name, hasEmail: !!profile.email } : null;
+    diagnostics.profileExists = !!profileData;
+    diagnostics.profileData = profileData ? { role: profileData.role, hasName: !!profileData.full_name, hasEmail: !!profileData.email } : null;
     diagnostics.profileError = profileError?.message ?? null;
 
     // 5. Check if service_bookings table exists
