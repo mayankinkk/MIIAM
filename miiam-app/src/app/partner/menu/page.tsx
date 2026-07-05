@@ -28,7 +28,7 @@ interface BaseItem {
 
 interface MenuItem extends BaseItem {
   vendor_id: string;
-  available: boolean;
+  is_available: boolean;
   description?: string;
   is_veg?: boolean;
   is_featured?: boolean;
@@ -390,15 +390,15 @@ export default function PartnerMenuPage() {
   };
 
   const toggleAvailability = async (item: AnyItem) => {
-    if (!("available" in item)) return;
+    if (!("is_available" in item)) return;
     const m = item as MenuItem;
     try {
-      const { error } = await supabase.from(table).update({ available: !m.available }).eq("id", item.id);
+      const { error } = await supabase.from(table).update({ is_available: !m.is_available }).eq("id", item.id);
       if (error) {
         logger.warn("Toggle availability not supported: " + error.message);
         return;
       }
-      setItems(prev => prev.map(i => i.id === item.id ? { ...i, available: !m.available } as AnyItem : i));
+      setItems(prev => prev.map(i => i.id === item.id ? { ...i, is_available: !m.is_available } as AnyItem : i));
     } catch (error: unknown) {
       logger.warn("Toggle availability failed: " + (error instanceof Error ? error.message : String(error)));
     }
@@ -627,7 +627,7 @@ export default function PartnerMenuPage() {
                     };
                     if (vendorKey === 'food') {
                       payload.description = c.description || '';
-                      payload.available = true;
+                      payload.is_available = true;
                       payload.is_veg = c.is_veg;
                       payload.stock = parseInt(c.stock || '0', 10) || 0;
                     }
@@ -909,14 +909,14 @@ export default function PartnerMenuPage() {
                       <button
                         onClick={() => toggleAvailability(item)}
                         role="switch"
-                        aria-checked={(item as MenuItem).available}
+                        aria-checked={(item as MenuItem).is_available}
                         className={`text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider ${
-                          (item as MenuItem).available
+                          (item as MenuItem).is_available
                             ? "bg-green-100 text-green-700"
                             : "bg-red-100 text-red-700"
                         }`}
                       >
-                        {(item as MenuItem).available ? "Available" : "Unavailable"}
+                        {(item as MenuItem).is_available ? "Available" : "Unavailable"}
                       </button>
                     </td>
                   )}

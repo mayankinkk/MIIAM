@@ -54,7 +54,7 @@ export interface MenuItem {
   image_url?: string;
   images?: string[];
   is_veg?: boolean;
-  available?: boolean;
+  is_available?: boolean;
   stock?: number;
   menu_slot?: "breakfast" | "lunch" | "dinner" | "all_day";
   original_price?: number | null;

@@ -18,7 +18,7 @@ interface MenuItem {
     shop_name: string;
     name: string;
   };
-  available: boolean;
+  is_available: boolean;
 }
 
 export default function AdminMenuItemsPage() {
@@ -70,7 +70,7 @@ export default function AdminMenuItemsPage() {
         category: newItem.category,
         vendor_id: newItem.vendor_id,
         image_url: newItem.image_url || null,
-        available: true,
+        is_available: true,
       });
       if (error) throw error;
       useToastStore.getState().addToast("Menu item added!", "success");
@@ -95,7 +95,7 @@ export default function AdminMenuItemsPage() {
           price: editingItem.price,
           category: editingItem.category,
           image_url: editingItem.image_url || null,
-          available: editingItem.available,
+          is_available: editingItem.is_available,
         })
         .eq("id", editingItem.id);
       if (error) throw error;
@@ -127,9 +127,9 @@ export default function AdminMenuItemsPage() {
     try {
       await supabase
         .from("menu_items")
-        .update({ available: !item.available })
+        .update({ is_available: !item.is_available })
         .eq("id", item.id);
-      setItems(items.map(i => i.id === item.id ? { ...i, available: !i.available } : i));
+      setItems(items.map(i => i.id === item.id ? { ...i, is_available: !i.is_available } : i));
     } catch (error: unknown) {
       useToastStore.getState().addToast(`Failed: ${(error as Error).message}`, "error");
     }
@@ -210,7 +210,7 @@ export default function AdminMenuItemsPage() {
               </tr>
             ) : (
               filteredItems.map((item) => (
-                <tr key={item.id} className={item.available ? "" : "opacity-50"}>
+                <tr key={item.id} className={item.is_available ? "" : "opacity-50"}>
                   <td className="p-4">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 bg-[var(--color-surface-container)] rounded-lg overflow-hidden">
@@ -238,12 +238,12 @@ export default function AdminMenuItemsPage() {
                     <button
                       onClick={() => toggleAvailability(item)}
                       className={`px-3 py-1 rounded-full text-[10px] font-bold ${
-                        item.available 
+                        item.is_available 
                           ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" 
                           : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300"
                       }`}
                     >
-                      {item.available ? "Available" : "Unavailable"}
+                      {item.is_available ? "Available" : "Unavailable"}
                     </button>
                   </td>
                   <td className="p-4 text-right font-black text-[var(--color-on-surface)]">₹{item.price}</td>
@@ -410,8 +410,8 @@ export default function AdminMenuItemsPage() {
                 <input
                   type="checkbox"
                   id="available"
-                  checked={editingItem.available}
-                  onChange={(e) => setEditingItem({ ...editingItem, available: e.target.checked })}
+                  checked={editingItem.is_available}
+                  onChange={(e) => setEditingItem({ ...editingItem, is_available: e.target.checked })}
                   className="w-5 h-5"
                 />
                 <label htmlFor="available" className="text-sm font-bold">Available</label>
