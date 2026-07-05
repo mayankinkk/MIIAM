@@ -226,8 +226,10 @@ export default function PartnerMenuPage() {
 
   async function loadItems() {
     setLoading(true);
-    const query = supabase.from(table).select("id, vendor_id, name, price, category, image_url, is_veg, is_available, is_featured, description, stock, requires_prescription, has_discount, discount_percent, menu_slot").eq("vendor_id", selectedVendorId).order("name");
-    const { data } = await query;
+    const { data, error } = await supabase.from(table).select("*").eq("vendor_id", selectedVendorId).order("name");
+    if (error) {
+      logger.error({ err: error }, "Failed to load menu items");
+    }
     if (data) setItems(data);
     setLoading(false);
   }
@@ -261,15 +263,10 @@ export default function PartnerMenuPage() {
     if (vendorKey === "food") {
       if (newItem.description) base.description = newItem.description;
       base.is_veg = newItem.is_veg;
+      base.is_available = true;
       base.stock = parseInt(newItem.stock) || 0;
       if (newItem.menu_slot) base.menu_slot = newItem.menu_slot;
       base.is_featured = !!newItem.is_featured;
-      if (newItem.has_discount && newItem.discount_percent > 0) {
-        const discount = newItem.discount_percent;
-        base.discount_percent = discount;
-        base.original_price = parseFloat(newItem.price);
-        base.price = Math.round(parseFloat(newItem.price) * (1 - discount / 100) * 100) / 100;
-      }
     } else if (vendorKey === "grocery") {
       base.stock = parseInt(newItem.stock) || 0;
       if (newItem.description) base.description = newItem.description;
