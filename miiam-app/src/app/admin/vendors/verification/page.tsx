@@ -52,7 +52,6 @@ export default function VerificationPage() {
     try {
       const updates: Record<string, unknown> = { status: newStatus };
       if (reason) updates.rejection_reason = reason;
-      updates.reviewed_at = new Date().toISOString();
 
       const { error } = await supabase
         .from("vendors")
