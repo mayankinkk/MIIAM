@@ -3,7 +3,7 @@
 import { use, useState, useEffect } from "react";
 import Link from "next/link";
 import { useCartStore } from "@/lib/store/cartStore";
-import { useDiningStore } from "/lib/store/diningStore";
+import { useDiningStore } from "@/lib/store/diningStore";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import type { Vendor, MenuItem } from "@/lib/types";
@@ -39,16 +39,16 @@ export default function VendorPage({ params }: { params: Promise<{ id: string }>
       } else {
         // Fallback sample to match design
         setVendor({
-          id: "sample", name: "The Burger Alchemist", category: "Gourmet Fast Food", 
+          id: "sample", name: "The Burger Alchemist", shop_name: "The Burger Alchemist", category: "Gourmet Fast Food", 
           description: "Turning basic ingredients into culinary gold. Artisanal burgers, hand-cut fries, and secret sauces.",
           image_url: "https://lh3.googleusercontent.com/aida-public/AEd_1E-i-qQ9J8Dpw924vVvVnOq86W-05QG5i7kX14mBqW92G31P3X126_Vw9O7yYqO6O78_ZqV6R892O21Ww9W_7ZzZ7Y7w10q28WqQy_09V74z1V70Q219w2w9y0VwVwW1Z1W2347Z6W2vOq7Z6Yq6y182W7qO6Ww1Oq98wQvYQ19y08wW9V71Z02Y9w",
-          banner_url: null, is_active: true, rating: 4.8, review_count: 1240, delivery_time_min: 20, delivery_time_max: 30, min_order_amount: 15, created_at: ""
+          banner_url: undefined, is_active: true, rating: 4.8, review_count: 1240, delivery_time_min: 20, delivery_time_max: 30, min_order_amount: 15, created_at: ""
         });
         setMenuItems([
           { id: "1", vendor_id: "sample", name: "The Alchemist Special", description: "Double Wagyu, melted Gorgonzola, truffle honey, and crispy leeks on charcoal brioche.", price: 249, image_url: "https://lh3.googleusercontent.com/aida-public/AEd_1E-i-qQ9J8Dpw924vVvVnOq86W-05QG5i7kX14mBqW92G31P3X126_Vw9O7yYqO6O78_ZqV6R892O21Ww9W_7ZzZ7Y7w10q28WqQy_09V74z1V70Q219w2w9y0VwVwW1Z1W2347Z6W2vOq7Z6Yq6y182W7qO6Ww1Oq98wQvYQ19y08wW9V71Z02Y9w", category: "Burgers", is_available: true, is_featured: true, created_at: "" },
           { id: "2", vendor_id: "sample", name: "Philosopher's Stone", description: "Smoked Portobello, herbed goat cheese, roasted red pepper, and arugula pesto.", price: 199, image_url: "https://lh3.googleusercontent.com/aida-public/AEd_1E-i-qQ9J8Dpw924vVvVnOq86W-05QG5i7kX14mBqW92G31P3X126_Vw9O7yYqO6O78_ZqV6R892O21Ww9W_7ZzZ7Y7w10q28WqQy_09V74z1V70Q219w2w9y0VwVwW1Z1W2347Z6W2vOq7Z6Yq6y182W7qO6Ww1Oq98wQvYQ19y08wW9V71Z02Y9w", category: "Burgers", is_available: true, is_featured: true, created_at: "" },
-          { id: "3", vendor_id: "sample", name: "Truffle Fries", description: "Hand-cut fries tossed in truffle oil and parmesan.", price: 149, image_url: null, category: "Sides", is_available: true, is_featured: false, created_at: "" },
-          { id: "4", vendor_id: "sample", name: "Alchemy Shake", description: "Vanilla bean ice cream, gold leaf, caramel.", price: 99, image_url: null, category: "Drinks", is_available: true, is_featured: false, created_at: "" },
+          { id: "3", vendor_id: "sample", name: "Truffle Fries", description: "Hand-cut fries tossed in truffle oil and parmesan.", price: 149, image_url: undefined, category: "Sides", is_available: true, is_featured: false, created_at: "" },
+          { id: "4", vendor_id: "sample", name: "Alchemy Shake", description: "Vanilla bean ice cream, gold leaf, caramel.", price: 99, image_url: undefined, category: "Drinks", is_available: true, is_featured: false, created_at: "" },
         ]);
       }
       setLoading(false);
@@ -64,7 +64,7 @@ export default function VendorPage({ params }: { params: Promise<{ id: string }>
       id: item.id + Date.now(), // temp unique ID for cart
       menu_item_id: item.id,
       vendor_id: vendor.id,
-      vendor_name: vendor.name,
+      vendor_name: vendor.shop_name || vendor.name || "Unknown",
       name: item.name,
       price: item.price,
       image_url: item.image_url || undefined,
