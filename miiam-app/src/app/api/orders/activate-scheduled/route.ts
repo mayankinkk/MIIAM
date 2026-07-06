@@ -53,7 +53,6 @@ async function activateScheduledOrders() {
         title: "Order Being Activated!",
         body: "Your scheduled order is now visible to riders.",
         type: "order_activated",
-        order_id: orderId,
       };
     });
     await supabase.from("notifications").insert(notificationsToInsert);
