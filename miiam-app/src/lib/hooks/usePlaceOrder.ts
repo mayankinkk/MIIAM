@@ -110,11 +110,19 @@ export function usePlaceOrder(supabase: SupabaseClient) {
     if (userPincode && userPincode !== "000000") {
       const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean))).filter(v => v !== PRINTING_VENDOR_ID);
       if (vendorIds.length > 0) {
-        const { data: vendors } = await supabase.from("vendors").select("id, pincode, shop_name").in("id", vendorIds);
+        const { data: vendors } = await supabase.from("vendors").select("id, pincode, shop_name, min_order_amount").in("id", vendorIds);
         const unserviceable = vendors?.filter(v => v.pincode && v.pincode !== userPincode) || [];
         if (unserviceable.length > 0) {
           addToast(`Some items (${unserviceable.map(v => v.shop_name).join(", ")}) are not deliverable at your location. Please remove them to proceed.`, "error");
           return false;
+        }
+        for (const vendor of vendors || []) {
+          const vendorItems = items.filter(i => i.vendor_id === vendor.id);
+          const vendorTotal = vendorItems.reduce((s, i) => s + i.price * i.quantity, 0);
+          if (vendor.min_order_amount && vendorTotal < vendor.min_order_amount) {
+            addToast(`Minimum order of ₹${vendor.min_order_amount} required for ${vendor.shop_name}. Your total: ₹${vendorTotal}`, "error");
+            return false;
+          }
         }
       }
     }
