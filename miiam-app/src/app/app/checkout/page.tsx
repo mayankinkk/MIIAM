@@ -266,6 +266,7 @@ export default function CheckoutPage() {
                     discount,
                     subtotal,
                     deliveryFee: totalDeliveryFee,
+                    promoCode: promoApplied?.code || "",
                     scheduledDate,
                     scheduledTime,
                     specialInstructions,

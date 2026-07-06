@@ -70,6 +70,7 @@ export function usePlaceOrder(supabase: SupabaseClient) {
     discount,
     subtotal,
     deliveryFee,
+    promoCode,
     scheduledDate,
     scheduledTime,
     specialInstructions,
@@ -85,6 +86,7 @@ export function usePlaceOrder(supabase: SupabaseClient) {
     discount: number;
     subtotal: number;
     deliveryFee: number;
+    promoCode: string;
     scheduledDate: string;
     scheduledTime: string;
     specialInstructions: string;
@@ -96,6 +98,24 @@ export function usePlaceOrder(supabase: SupabaseClient) {
     paymentDetails?: PaymentDetails;
   }) => {
     if (!validateCheckout(deliveryAddress)) return false;
+
+    if (promoCode && discount > 0) {
+      try {
+        const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean)));
+        const res = await fetch("/api/promo/validate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code: promoCode, subtotal, vendorIds }),
+        });
+        const data = await res.json();
+        if (!data.valid) {
+          addToast(`Promo validation failed: ${data.error}`, "error");
+          return false;
+        }
+      } catch {
+        logger.warn("Could not verify promo code server-side — proceeding");
+      }
+    }
 
     if (scheduledDate && !scheduledTime) {
       logger.warn("Scheduled date provided without time — ignoring scheduled delivery");
