@@ -26,6 +26,7 @@ interface CartStore {
   addItem: (item: Omit<CartItem, "quantity">, quantity?: number, suppressToast?: boolean) => void;
   removeItem: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
+  updateQuantityByMenuItem: (menuItemId: string, quantity: number) => void;
   clearCart: () => void;
   saveForLater: (id: string) => void;
   moveToCart: (id: string) => void;
@@ -98,6 +99,22 @@ export const useCartStore = create<CartStore>()(
         set({
           items: currentItems.map((i) =>
             i.id === id ? { ...i, quantity: clamped } : i
+          ),
+        });
+      },
+
+      updateQuantityByMenuItem: (menuItemId, quantity) => {
+        if (quantity <= 0) {
+          const item = get().items.find((i) => i.menu_item_id === menuItemId);
+          if (item) get().removeItem(item.id);
+          return;
+        }
+        const currentItems = get().items;
+        if (!Array.isArray(currentItems)) return;
+        const clamped = Math.min(quantity, 99);
+        set({
+          items: currentItems.map((i) =>
+            i.menu_item_id === menuItemId ? { ...i, quantity: clamped } : i
           ),
         });
       },
