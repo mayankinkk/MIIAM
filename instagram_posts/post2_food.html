@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 1080px; height: 1080px; overflow: hidden; font-family: 'Inter', sans-serif; }
+  .container {
+    width: 1080px; height: 1080px;
+    background: linear-gradient(160deg, #fff5f5 0%, #ffe8ec 50%, #ffd2d9 100%);
+    display: flex; flex-direction: column; position: relative; overflow: hidden;
+  }
+  .top-accent {
+    width: 100%; height: 8px;
+    background: linear-gradient(90deg, #ba001c, #ff5f6d, #ba001c);
+  }
+  .header { padding: 50px 70px 30px; }
+  .brand { font-size: 28px; font-weight: 900; color: #ba001c; letter-spacing: -1px; }
+  .hero {
+    flex: 1; display: flex; flex-direction: column; justify-content: center;
+    padding: 0 70px;
+  }
+  .hero-title {
+    font-size: 64px; font-weight: 900; color: #1a0005;
+    line-height: 1.1; margin-bottom: 24px; letter-spacing: -2px;
+  }
+  .hero-title .highlight { color: #ba001c; }
+  .hero-sub {
+    font-size: 24px; color: #666; font-weight: 500; line-height: 1.6;
+    margin-bottom: 40px; max-width: 700px;
+  }
+  .food-cards {
+    display: flex; gap: 20px; margin-bottom: 50px;
+  }
+  .food-card {
+    flex: 1; border-radius: 24px; padding: 30px;
+    background: #fff; box-shadow: 0 8px 32px rgba(186,0,28,0.08);
+    text-align: center;
+  }
+  .food-card .emoji { font-size: 56px; margin-bottom: 12px; }
+  .food-card .name { font-size: 18px; font-weight: 700; color: #1a0005; }
+  .food-card .price { font-size: 20px; font-weight: 900; color: #ba001c; margin-top: 6px; }
+  .promo-banner {
+    margin: 0 70px 40px; padding: 24px 40px; border-radius: 20px;
+    background: linear-gradient(135deg, #ba001c, #ff2d4a);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .promo-text { color: #fff; font-size: 22px; font-weight: 700; }
+  .promo-code {
+    padding: 10px 24px; border-radius: 12px;
+    background: rgba(255,255,255,0.2); color: #ffd200;
+    font-size: 20px; font-weight: 900; letter-spacing: 2px;
+  }
+  .bottom {
+    padding: 30px 70px; display: flex; justify-content: space-between;
+    align-items: center; border-top: 1px solid rgba(186,0,28,0.1);
+  }
+  .bottom-left { font-size: 16px; color: #999; }
+  .bottom-right { font-size: 16px; color: #ba001c; font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="top-accent"></div>
+  <div class="header">
+    <div class="brand">MIIAM</div>
+  </div>
+  <div class="hero">
+    <div class="hero-title">
+      Craving Something<br><span class="highlight">Delicious?</span>
+    </div>
+    <div class="hero-sub">
+      Order from your favourite local restaurants. Fresh food, fast delivery, zero hassle.
+    </div>
+    <div class="food-cards">
+      <div class="food-card">
+        <div class="emoji">🍕</div>
+        <div class="name">Pizza</div>
+        <div class="price">From ₹99</div>
+      </div>
+      <div class="food-card">
+        <div class="emoji">🍛</div>
+        <div class="name">Biryani</div>
+        <div class="price">From ₹149</div>
+      </div>
+      <div class="food-card">
+        <div class="emoji">🍜</div>
+        <div class="name">Noodles</div>
+        <div class="price">From ₹89</div>
+      </div>
+      <div class="food-card">
+        <div class="emoji">🧁</div>
+        <div class="name">Desserts</div>
+        <div class="price">From ₹59</div>
+      </div>
+    </div>
+  </div>
+  <div class="promo-banner">
+    <div class="promo-text">Use code for 20% OFF on your first order!</div>
+    <div class="promo-code">MIFFirst</div>
+  </div>
+  <div class="bottom">
+    <div class="bottom-left">miiam.in | Available on iOS & Android</div>
+    <div class="bottom-right">Order Now →</div>
+  </div>
+</div>
+</body>
+</html>

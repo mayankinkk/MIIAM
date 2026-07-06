@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 1080px; height: 1080px; overflow: hidden; font-family: 'Inter', sans-serif; }
+  .container {
+    width: 1080px; height: 1080px;
+    background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #1a2332 100%);
+    display: flex; flex-direction: column; position: relative; overflow: hidden;
+  }
+  .glow {
+    position: absolute; width: 700px; height: 700px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(17,153,142,0.3) 0%, transparent 70%);
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+  }
+  .content { position: relative; z-index: 2; padding: 60px 70px; height: 100%; display: flex; flex-direction: column; }
+  .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+  .brand { font-size: 28px; font-weight: 900; color: #fff; }
+  .brand span { color: #38ef7d; }
+  .pill { padding: 8px 20px; border-radius: 50px; background: rgba(56,239,125,0.15); color: #38ef7d; font-size: 14px; font-weight: 700; }
+  .main { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .row { display: flex; gap: 24px; margin-bottom: 24px; }
+  .big-card {
+    flex: 1; border-radius: 28px; padding: 40px;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    min-height: 200px; position: relative; overflow: hidden;
+  }
+  .card-grocery { background: linear-gradient(135deg, #11998e, #38ef7d); }
+  .card-pharmacy { background: linear-gradient(135deg, #7c3aed, #a855f7); }
+  .card-flowers { background: linear-gradient(135deg, #f43f5e, #fb923c); }
+  .big-card .emoji-bg { position: absolute; top: 15px; right: 20px; font-size: 70px; opacity: 0.3; }
+  .big-card .label { font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 2px; }
+  .big-card .title { font-size: 32px; font-weight: 900; color: #fff; margin-top: 8px; }
+  .small-row { display: flex; gap: 24px; }
+  .small-card {
+    flex: 1; border-radius: 20px; padding: 28px;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+    text-align: center;
+  }
+  .small-card .emoji { font-size: 40px; margin-bottom: 10px; }
+  .small-card .text { font-size: 16px; font-weight: 700; color: #fff; }
+  .small-card .sub { font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 4px; }
+  .bottom {
+    margin-top: auto; padding-top: 30px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .bottom-left { color: rgba(255,255,255,0.4); font-size: 15px; }
+  .bottom-right {
+    padding: 12px 28px; border-radius: 50px;
+    background: linear-gradient(135deg, #11998e, #38ef7d);
+    color: #000; font-size: 16px; font-weight: 900;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="glow"></div>
+  <div class="content">
+    <div class="top">
+      <div class="brand">MII<span>A</span>M</div>
+      <div class="pill">Everyday Essentials</div>
+    </div>
+    <div class="main">
+      <div class="row">
+        <div class="big-card card-grocery">
+          <div class="emoji-bg">🛒</div>
+          <div class="label">Delivers in 30 min</div>
+          <div class="title">Fresh Grocery</div>
+        </div>
+        <div class="big-card card-pharmacy">
+          <div class="emoji-bg">💊</div>
+          <div class="label">Delivered safely</div>
+          <div class="title">Medicines</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="big-card card-flowers">
+          <div class="emoji-bg">💐</div>
+          <div class="label">Same day delivery</div>
+          <div class="title">Fresh Flowers</div>
+        </div>
+      </div>
+      <div class="small-row">
+        <div class="small-card">
+          <div class="emoji">⚡</div>
+          <div class="text">Express Delivery</div>
+          <div class="sub">Under 30 minutes</div>
+        </div>
+        <div class="small-card">
+          <div class="emoji">🔒</div>
+          <div class="text">Safe & Secure</div>
+          <div class="sub">Contactless delivery</div>
+        </div>
+        <div class="small-card">
+          <div class="emoji">💳</div>
+          <div class="text">Easy Payments</div>
+          <div class="sub">UPI, Cards, COD</div>
+        </div>
+      </div>
+    </div>
+    <div class="bottom">
+      <div class="bottom-left">miiam.in | Available 24/7</div>
+      <div class="bottom-right">Order Now</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

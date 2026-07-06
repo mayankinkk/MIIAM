@@ -95,7 +95,6 @@ CREATE TABLE IF NOT EXISTS rider_settings (
   auto_accept BOOLEAN DEFAULT FALSE,
   only_high_earnings BOOLEAN DEFAULT FALSE,
   preferred_order_types TEXT[] DEFAULT ARRAY['food', 'grocery'],
-  dnd_mode BOOLEAN DEFAULT FALSE,
   updated_at TIMESTAMP DEFAULT NOW()
 );
 
@@ -139,24 +138,15 @@ ALTER TABLE rider_settings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE rider_shifts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE rider_quest_progress ENABLE ROW LEVEL SECURITY;
 
--- RLS policies for all new tables (idempotent)
-DROP POLICY IF EXISTS "Allow all on rider_notifications" ON rider_notifications;
+-- RLS policies for all new tables
 CREATE POLICY "Allow all on rider_notifications" ON rider_notifications FOR ALL USING (true) WITH CHECK (true);
-DROP POLICY IF EXISTS "Allow all on rider_training_progress" ON rider_training_progress;
 CREATE POLICY "Allow all on rider_training_progress" ON rider_training_progress FOR ALL USING (true) WITH CHECK (true);
-DROP POLICY IF EXISTS "Allow all on rider_vehicles" ON rider_vehicles;
 CREATE POLICY "Allow all on rider_vehicles" ON rider_vehicles FOR ALL USING (true) WITH CHECK (true);
-DROP POLICY IF EXISTS "Allow all on rider_vehicle_maintenance" ON rider_vehicle_maintenance;
 CREATE POLICY "Allow all on rider_vehicle_maintenance" ON rider_vehicle_maintenance FOR ALL USING (true) WITH CHECK (true);
-DROP POLICY IF EXISTS "Allow all on rider_vehicle_fuel" ON rider_vehicle_fuel;
 CREATE POLICY "Allow all on rider_vehicle_fuel" ON rider_vehicle_fuel FOR ALL USING (true) WITH CHECK (true);
-DROP POLICY IF EXISTS "Allow all on rider_incidents" ON rider_incidents;
 CREATE POLICY "Allow all on rider_incidents" ON rider_incidents FOR ALL USING (true) WITH CHECK (true);
-DROP POLICY IF EXISTS "Allow all on rider_settings" ON rider_settings;
 CREATE POLICY "Allow all on rider_settings" ON rider_settings FOR ALL USING (true) WITH CHECK (true);
-DROP POLICY IF EXISTS "Allow all on rider_shifts" ON rider_shifts;
 CREATE POLICY "Allow all on rider_shifts" ON rider_shifts FOR ALL USING (true) WITH CHECK (true);
-DROP POLICY IF EXISTS "Allow all on rider_quest_progress" ON rider_quest_progress;
 CREATE POLICY "Allow all on rider_quest_progress" ON rider_quest_progress FOR ALL USING (true) WITH CHECK (true);
 
 -- Enable real-time for new tables

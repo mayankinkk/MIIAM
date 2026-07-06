@@ -23,6 +23,7 @@ export default function LandingPage() {
   }, [supabase]);
 
   const t = mounted ? getTranslationsSync(language) : getTranslationsSync('en');
+  const tl = t.landing;
 
   const quickServices = [
     { icon: "restaurant", label: "Food", href: "/app/food", color: "from-[#ba001c] to-[#ff5f6d]" },
@@ -43,11 +44,11 @@ export default function LandingPage() {
           </Link>
           <div className="hidden md:flex items-center gap-8">
             {[
-              { label: t.navFood, href: "/app/food" },
-              { label: t.navServices, href: "/services" },
-              { label: t.navVendors, href: "/app/explore" },
-              { label: t.navCareers, href: "/careers" },
-              { label: t.navBusiness, href: "/about" },
+              { label: tl.navFood, href: "/app/food" },
+              { label: tl.navServices, href: "/services" },
+              { label: tl.navVendors, href: "/app/explore" },
+              { label: tl.navCareers, href: "/careers" },
+              { label: tl.navBusiness, href: "/about" },
             ].map((item) => (
               <Link
                 key={item.href}
@@ -75,7 +76,7 @@ export default function LandingPage() {
                 href="/onboarding"
                 className="bg-[#ba001c] hover:bg-[#a40017] text-white px-6 py-2.5 rounded-full font-bold text-sm shadow-lg shadow-[#ba001c]/20 hover:shadow-[#ba001c]/30 active:scale-95 transition-all duration-200"
               >
-                {t.getApp}
+                {tl.getApp}
               </Link>
             )}
           </div>
@@ -109,13 +110,13 @@ export default function LandingPage() {
               </div>
 
               <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black text-white tracking-tight leading-[1.05] mb-6">
-                {t.heroTitle1}
+                {tl.heroTitle1}
                 <br />
-                <span className="bg-gradient-to-r from-[#ff5f6d] to-[#ffc371] bg-clip-text text-transparent">{t.heroTitle2}</span>
+                <span className="bg-gradient-to-r from-[#ff5f6d] to-[#ffc371] bg-clip-text text-transparent">{tl.heroTitle2}</span>
               </h1>
 
               <p className="text-white/50 text-lg sm:text-xl max-w-lg mb-10 leading-relaxed font-medium">
-                {t.heroDesc}
+                {tl.heroDesc}
               </p>
 
               <div className="flex flex-wrap gap-4">
@@ -123,14 +124,14 @@ export default function LandingPage() {
                   href="/app/food"
                   className="group flex items-center gap-3 bg-[#ba001c] hover:bg-[#d0001f] text-white pl-7 pr-5 py-4 rounded-2xl font-bold text-base shadow-xl shadow-[#ba001c]/25 hover:shadow-[#ba001c]/40 active:scale-[0.97] transition-all duration-200"
                 >
-                  {t.orderFood}
+                  {tl.orderFood}
                   <span className="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform">arrow_forward</span>
                 </Link>
                 <Link
                   href="/services"
                   className="group flex items-center gap-3 bg-white/10 hover:bg-white/15 backdrop-blur-md text-white border border-white/20 pl-7 pr-5 py-4 rounded-2xl font-bold text-base active:scale-[0.97] transition-all duration-200"
                 >
-                  {t.bookService}
+                  {tl.bookService}
                   <span className="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform">arrow_forward</span>
                 </Link>
               </div>
@@ -162,10 +163,10 @@ export default function LandingPage() {
         <section className="max-w-5xl mx-auto px-6 lg:px-8 py-16">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
-              { icon: "shopping_cart_checkout", label: t.featureCart, sub: "Easy ordering", color: "bg-red-50 text-[#ba001c]" },
-              { icon: "bolt", label: t.featureDelivery, sub: "Under 30 mins", color: "bg-amber-50 text-amber-600" },
-              { icon: "verified_user", label: t.featurePros, sub: "Background verified", color: "bg-blue-50 text-[#0b50d5]" },
-              { icon: "support_agent", label: t.featureSupport, sub: "Always available", color: "bg-green-50 text-green-600" },
+              { icon: "shopping_cart_checkout", label: tl.featureCart, sub: "Easy ordering", color: "bg-red-50 text-[#ba001c]" },
+              { icon: "bolt", label: tl.featureDelivery, sub: "Under 30 mins", color: "bg-amber-50 text-amber-600" },
+              { icon: "verified_user", label: tl.featurePros, sub: "Background verified", color: "bg-blue-50 text-[#0b50d5]" },
+              { icon: "support_agent", label: tl.featureSupport, sub: "Always available", color: "bg-green-50 text-green-600" },
             ].map((item) => (
               <div key={item.label} className="flex items-start gap-3 group">
                 <div className={`${item.color} p-3 rounded-xl group-hover:scale-110 transition-transform duration-300`}>
@@ -184,11 +185,11 @@ export default function LandingPage() {
         <section className="max-w-7xl mx-auto px-6 lg:px-8 pb-20">
           <div className="flex justify-between items-end mb-10">
             <div>
-              <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-800">{t.popularNearYou}</h2>
-              <p className="text-slate-400 font-medium mt-1.5">{t.popularDesc}</p>
+              <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-800">{tl.popularNearYou}</h2>
+              <p className="text-slate-400 font-medium mt-1.5">{tl.popularDesc}</p>
             </div>
             <Link href="/app/explore" className="text-[#ba001c] font-bold text-sm flex items-center gap-1.5 hover:gap-3 transition-all duration-200">
-              {t.viewAll} <span className="material-symbols-outlined text-lg">arrow_forward</span>
+              {tl.viewAll} <span className="material-symbols-outlined text-lg">arrow_forward</span>
             </Link>
           </div>
 
@@ -205,7 +206,7 @@ export default function LandingPage() {
               <div className="p-6">
                 <div className="flex justify-between items-start">
                   <div>
-                    <span className="bg-[#ba001c]/10 text-[#ba001c] text-[10px] font-black px-3 py-1 rounded-full mb-3 inline-block uppercase tracking-wider">{t.trendingFood}</span>
+                    <span className="bg-[#ba001c]/10 text-[#ba001c] text-[10px] font-black px-3 py-1 rounded-full mb-3 inline-block uppercase tracking-wider">{tl.trendingFood}</span>
                     <h3 className="text-xl font-bold text-slate-800">Pizza Paradise</h3>
                     <div className="flex items-center gap-2 mt-1.5 text-slate-500 text-sm font-medium">
                       <span className="flex items-center gap-1 text-green-600 font-bold">
@@ -258,18 +259,18 @@ export default function LandingPage() {
             <div className="absolute -top-20 -right-20 w-72 h-72 bg-[#ba001c]/15 rounded-full blur-[80px] pointer-events-none" />
 
             <div className="relative z-10 flex-1">
-              <span className="text-[#ff7670] font-black tracking-widest text-xs uppercase mb-4 block">{t.promoLabel}</span>
+              <span className="text-[#ff7670] font-black tracking-widest text-xs uppercase mb-4 block">{tl.promoLabel}</span>
               <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight leading-none mb-5">
-                {t.promoTitle1}<br /><span className="bg-gradient-to-r from-[#ff5f6d] to-[#ffc371] bg-clip-text text-transparent">{t.promoTitle2}</span>
+                {tl.promoTitle1}<br /><span className="bg-gradient-to-r from-[#ff5f6d] to-[#ffc371] bg-clip-text text-transparent">{tl.promoTitle2}</span>
               </h2>
               <p className="text-white/40 text-lg max-w-md mb-8">
-                {t.promoDesc1}<span className="text-white font-bold">MIIAM50</span>{t.promoDesc2}
+                {tl.promoDesc1}<span className="text-white font-bold">MIIAM50</span>{tl.promoDesc2}
               </p>
               <Link
                 href="/onboarding"
                 className="inline-flex items-center gap-2 bg-[#ba001c] text-white px-8 py-4 rounded-2xl font-bold text-base shadow-xl shadow-[#ba001c]/20 hover:shadow-[#ba001c]/40 active:scale-95 transition-all duration-200"
               >
-                {t.claimOffer}
+                {tl.claimOffer}
                <span className="material-symbols-outlined text-lg">arrow_forward</span>
               </Link>
             </div>
@@ -315,7 +316,7 @@ export default function LandingPage() {
             </Link>
           </div>
           <div className="text-slate-600 text-xs font-medium">
-            {t.footerRights}
+            {tl.footerRights}
           </div>
         </div>
       </footer>

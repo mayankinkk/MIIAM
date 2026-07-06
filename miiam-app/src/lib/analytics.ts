@@ -4,6 +4,12 @@ import { useEffect, useCallback } from "react";
 import { usePathname } from "next/navigation";
 import logger from "@/lib/logger";
 
+export function AnalyticsTracker() {
+  usePageTracking();
+  useAutoFlush();
+  return null;
+}
+
 export type FunnelEvent =
   | "page_view"
   | "vendor_view"

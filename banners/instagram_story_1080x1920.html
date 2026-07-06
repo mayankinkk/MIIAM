@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 1080px; height: 1920px; overflow: hidden; font-family: 'Inter', sans-serif; }
+  .container {
+    width: 1080px; height: 1920px;
+    background: linear-gradient(180deg, #0f0002 0%, #1a0005 20%, #3d0010 50%, #ba001c 80%, #ff2d4a 100%);
+    display: flex; flex-direction: column; position: relative; overflow: hidden;
+  }
+  .glow1 {
+    position: absolute; width: 800px; height: 800px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,210,0,0.12) 0%, transparent 65%);
+    top: 250px; right: -200px;
+  }
+  .glow2 {
+    position: absolute; width: 600px; height: 600px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,45,74,0.2) 0%, transparent 65%);
+    bottom: 400px; left: -150px;
+  }
+  .line-left {
+    position: absolute; left: 80px; top: 0; bottom: 0; width: 3px;
+    background: linear-gradient(180deg, transparent, rgba(255,210,0,0.3), transparent);
+  }
+  .line-right {
+    position: absolute; right: 80px; top: 0; bottom: 0; width: 3px;
+    background: linear-gradient(180deg, transparent, rgba(255,255,255,0.05), transparent);
+  }
+  .content { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 0 140px; position: relative; z-index: 2; }
+  .brand { font-size: 16px; font-weight: 900; color: rgba(255,255,255,0.3); letter-spacing: 6px; text-transform: uppercase; margin-bottom: 60px; }
+  .brand span { color: #ffd200; }
+  .title {
+    font-size: 100px; font-weight: 900; color: #fff; line-height: 1.05;
+    letter-spacing: -4px; margin-bottom: 40px;
+  }
+  .title .gold { color: #ffd200; }
+  .sub {
+    font-size: 28px; color: rgba(255,255,255,0.35); font-weight: 500;
+    letter-spacing: 1px; line-height: 1.6; max-width: 700px;
+  }
+  .icons-grid {
+    display: flex; flex-wrap: wrap; gap: 16px; margin-top: 60px;
+  }
+  .icon-pill {
+    display: flex; align-items: center; gap: 12px;
+    padding: 18px 30px; border-radius: 16px;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.06);
+  }
+  .icon-pill .emoji { font-size: 28px; }
+  .icon-pill .text { color: rgba(255,255,255,0.7); font-size: 18px; font-weight: 700; }
+  .bottom {
+    position: absolute; bottom: 80px; left: 140px; right: 140px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding-top: 30px; z-index: 2;
+  }
+  .bottom span { font-size: 15px; color: rgba(255,255,255,0.25); }
+  .bottom .url { color: rgba(255,210,0,0.5); font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="glow1"></div>
+  <div class="glow2"></div>
+  <div class="line-left"></div>
+  <div class="line-right"></div>
+  <div class="content">
+    <div class="brand"><span>M</span>IIAM</div>
+    <div class="title">Everything<br>Delivered <span class="gold">Fast.</span></div>
+    <div class="sub">Food &bull; Grocery &bull; Pharmacy &bull; Flowers &bull; Home Services</div>
+    <div class="icons-grid">
+      <div class="icon-pill"><span class="emoji">🍔</span><span class="text">Food</span></div>
+      <div class="icon-pill"><span class="emoji">🛒</span><span class="text">Grocery</span></div>
+      <div class="icon-pill"><span class="emoji">💊</span><span class="text">Pharmacy</span></div>
+      <div class="icon-pill"><span class="emoji">💐</span><span class="text">Flowers</span></div>
+      <div class="icon-pill"><span class="emoji">🔧</span><span class="text">Services</span></div>
+    </div>
+  </div>
+  <div class="bottom">
+    <span class="url">miiam.in</span>
+    <span>Swipe Up to Download</span>
+  </div>
+</div>
+</body>
+</html>

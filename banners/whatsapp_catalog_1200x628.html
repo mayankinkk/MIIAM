@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 1200px; height: 628px; overflow: hidden; font-family: 'Inter', sans-serif; }
+  .container {
+    width: 1200px; height: 628px;
+    background: linear-gradient(135deg, #0f0002 0%, #2a0009 40%, #ba001c 100%);
+    display: flex; position: relative; overflow: hidden;
+  }
+  .glow {
+    position: absolute; width: 500px; height: 500px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,210,0,0.12) 0%, transparent 70%);
+    right: 200px; top: -100px;
+  }
+  .line-v {
+    position: absolute; left: 50%; top: 0; bottom: 0; width: 2px;
+    background: linear-gradient(180deg, transparent, rgba(255,210,0,0.2), transparent);
+  }
+  .left, .right {
+    width: 50%; display: flex; flex-direction: column; justify-content: center;
+    position: relative; z-index: 2;
+  }
+  .left { padding: 0 60px 0 80px; }
+  .right { padding: 0 80px 0 60px; }
+  .brand { font-size: 14px; font-weight: 900; color: rgba(255,255,255,0.3); letter-spacing: 5px; text-transform: uppercase; margin-bottom: 20px; }
+  .brand span { color: #ffd200; }
+  .title {
+    font-size: 48px; font-weight: 900; color: #fff; line-height: 1.1;
+    letter-spacing: -2px; margin-bottom: 16px;
+  }
+  .title .gold { color: #ffd200; }
+  .sub {
+    font-size: 17px; color: rgba(255,255,255,0.35); font-weight: 500;
+    line-height: 1.6; max-width: 400px;
+  }
+  .service-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  }
+  .s-card {
+    padding: 20px; border-radius: 14px;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);
+    display: flex; align-items: center; gap: 14px;
+  }
+  .s-card .emoji { font-size: 28px; }
+  .s-card .info {}
+  .s-card .name { font-size: 15px; font-weight: 700; color: rgba(255,255,255,0.85); }
+  .s-card .desc { font-size: 11px; color: rgba(255,255,255,0.3); margin-top: 2px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="glow"></div>
+  <div class="line-v"></div>
+  <div class="left">
+    <div class="brand"><span>M</span>IIAM</div>
+    <div class="title">Everything<br>Delivered <span class="gold">Fast.</span></div>
+    <div class="sub">One app for food, grocery, medicines, flowers & home services.</div>
+  </div>
+  <div class="right">
+    <div class="service-grid">
+      <div class="s-card">
+        <div class="emoji">🍔</div>
+        <div class="info">
+          <div class="name">Food</div>
+          <div class="desc">Local restaurants</div>
+        </div>
+      </div>
+      <div class="s-card">
+        <div class="emoji">🛒</div>
+        <div class="info">
+          <div class="name">Grocery</div>
+          <div class="desc">Fresh & daily needs</div>
+        </div>
+      </div>
+      <div class="s-card">
+        <div class="emoji">💊</div>
+        <div class="info">
+          <div class="name">Pharmacy</div>
+          <div class="desc">Medicines delivered</div>
+        </div>
+      </div>
+      <div class="s-card">
+        <div class="emoji">💐</div>
+        <div class="info">
+          <div class="name">Flowers</div>
+          <div class="desc">Same day delivery</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -27,6 +27,7 @@ interface OrderInsert {
   total_amount: number;
   delivery_fee: number;
   discount_amount: number;
+  tip_amount: number;
   payment_method: string;
   delivery_address: string;
   scheduled_delivery: string | null;
@@ -209,13 +210,13 @@ export function usePlaceOrder(supabase: SupabaseClient) {
           total_amount: vendorTotal,
           delivery_fee: subtotal > 0 ? +(deliveryFee * (vendorTotal / subtotal)).toFixed(2) : 0,
           discount_amount: subtotal > 0 ? +(discount * (vendorTotal / subtotal)).toFixed(2) : 0,
+          tip_amount: subtotal > 0 ? +(tipAmount * (vendorTotal / subtotal)).toFixed(2) : 0,
           payment_method: paymentMethod,
           delivery_address: finalAddress,
           scheduled_delivery: scheduledIso,
           special_instructions: specialInstructions || null,
           placed_at: new Date().toISOString(),
-        } as OrderInsert & { tip_amount?: number };
-        (orderData as Record<string, unknown>).tip_amount = subtotal > 0 ? +(tipAmount * (vendorTotal / subtotal)).toFixed(2) : 0;
+        };
 
         const { data: order, error: orderError } = await supabase
           .from("orders")

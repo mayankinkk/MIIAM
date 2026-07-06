@@ -36,11 +36,11 @@ export async function checkStock(items: StockCheckItem[]): Promise<StockResult> 
     }
 
     const stockMap = new Map(
-      (menuItems || []).map(m => [m.id, { stock: m.stock, is_available: m.is_available, name: m.name }])
+      (menuItems || []).map((m: { id: string; name: string; stock: number | null; is_available: boolean }) => [m.id, { stock: m.stock, is_available: m.is_available, name: m.name }])
     );
 
     const results = items.map(item => {
-      const menuData = stockMap.get(item.menu_item_id);
+      const menuData = stockMap.get(item.menu_item_id) as { stock: number | null; is_available: boolean; name: string } | undefined;
       if (!menuData) {
         return {
           menu_item_id: item.menu_item_id,
