@@ -265,6 +265,7 @@ export default function CheckoutPage() {
                     paymentMethod,
                     discount,
                     subtotal,
+                    deliveryFee: totalDeliveryFee,
                     scheduledDate,
                     scheduledTime,
                     specialInstructions,

@@ -44,7 +44,7 @@ export function usePlaceOrder(supabase: SupabaseClient) {
   const locationStore = useLocationStore();
   const userPincode = locationStore.pincode;
 
-  const validateCheckout = useCallback((deliveryAddress: DeliveryAddress | null): boolean => {
+  const validateCheckout = useCallback((deliveryAddress: DeliveryAddress | null, deliveryFee?: number, tipAmount?: number): boolean => {
     if (items.length === 0) {
       addToast("Your cart is empty! Add items from the Food page first.", "error");
       return false;
@@ -69,6 +69,7 @@ export function usePlaceOrder(supabase: SupabaseClient) {
     paymentMethod,
     discount,
     subtotal,
+    deliveryFee,
     scheduledDate,
     scheduledTime,
     specialInstructions,
@@ -83,6 +84,7 @@ export function usePlaceOrder(supabase: SupabaseClient) {
     paymentMethod: string;
     discount: number;
     subtotal: number;
+    deliveryFee: number;
     scheduledDate: string;
     scheduledTime: string;
     specialInstructions: string;
@@ -154,14 +156,15 @@ export function usePlaceOrder(supabase: SupabaseClient) {
           vendor_id: vendorId,
           status: scheduledIso ? "scheduled" : "pending",
           total_amount: vendorTotal,
-          delivery_fee: 0,
+          delivery_fee: subtotal > 0 ? +(deliveryFee * (vendorTotal / subtotal)).toFixed(2) : 0,
           discount_amount: subtotal > 0 ? +(discount * (vendorTotal / subtotal)).toFixed(2) : 0,
           payment_method: paymentMethod,
           delivery_address: finalAddress,
           scheduled_delivery: scheduledIso,
           special_instructions: specialInstructions || null,
           placed_at: new Date().toISOString(),
-        };
+        } as OrderInsert & { tip_amount?: number };
+        (orderData as Record<string, unknown>).tip_amount = subtotal > 0 ? +(tipAmount * (vendorTotal / subtotal)).toFixed(2) : 0;
 
         const { data: order, error: orderError } = await supabase
           .from("orders")
