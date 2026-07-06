@@ -147,26 +147,30 @@ export async function POST(request: NextRequest) {
 
     if (!response.ok) {
       logger.error({ err: data }, "WhatsApp API error");
-      await supabaseAdmin.from("whatsapp_messages").insert({
-        phone_number: toPhone,
-        template_name: templateName,
-        parameters,
-        status: "failed",
-        error_message: data.error?.message || "API error",
-        sent_at: new Date().toISOString(),
-      });
+      try {
+        await supabaseAdmin.from("whatsapp_messages").insert({
+          phone_number: toPhone,
+          template_name: templateName,
+          parameters,
+          status: "failed",
+          error_message: data.error?.message || "API error",
+          sent_at: new Date().toISOString(),
+        });
+      } catch { /* whatsapp_messages table may not exist */ }
       return NextResponse.json({ success: false, error: data.error?.message || "WhatsApp API error" }, { status: 502 });
     }
 
     const messageId = data.messages?.[0]?.id;
-    await supabaseAdmin.from("whatsapp_messages").insert({
-      phone_number: toPhone,
-      template_name: templateName,
-      parameters,
-      status: "sent",
-      whatsapp_message_id: messageId,
-      sent_at: new Date().toISOString(),
-    });
+    try {
+      await supabaseAdmin.from("whatsapp_messages").insert({
+        phone_number: toPhone,
+        template_name: templateName,
+        parameters,
+        status: "sent",
+        whatsapp_message_id: messageId,
+        sent_at: new Date().toISOString(),
+      });
+    } catch { /* whatsapp_messages table may not exist */ }
 
     return NextResponse.json({ success: true, messageId });
   } catch (error) {
