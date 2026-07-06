@@ -24,15 +24,18 @@ export async function DELETE(request: NextRequest) {
 
     const admin = createAdminClient();
 
-    // Delete user data across tables
-    await admin.from("notifications").delete().eq("user_id", user.id);
-    await admin.from("reviews").delete().eq("user_id", user.id);
-    await admin.from("service_bookings").delete().eq("user_id", user.id);
-    await admin.from("orders").delete().eq("user_id", user.id);
-    await admin.from("user_addresses").delete().eq("user_id", user.id);
-    await admin.from("wallet_transactions").delete().eq("user_id", user.id);
-    await admin.from("favorites").delete().eq("user_id", user.id);
-    await admin.from("profiles").delete().eq("id", user.id);
+    // Delete user data across tables (ignore errors for tables that may not exist)
+    const safeDelete = async (table: string, column: string, value: string) => {
+      try { await admin.from(table).delete().eq(column, value); } catch { /* table may not exist */ }
+    };
+    await safeDelete("notifications", "user_id", user.id);
+    await safeDelete("reviews", "user_id", user.id);
+    await safeDelete("service_bookings", "user_id", user.id);
+    await safeDelete("orders", "user_id", user.id);
+    await safeDelete("user_addresses", "user_id", user.id);
+    await safeDelete("user_push_tokens", "user_id", user.id);
+    await safeDelete("login_events", "user_id", user.id);
+    await safeDelete("profiles", "id", user.id);
 
     // Delete the auth user
     const { error: deleteError } = await admin.auth.admin.deleteUser(user.id);
