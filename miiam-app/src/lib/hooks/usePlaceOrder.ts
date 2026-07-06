@@ -8,6 +8,7 @@ import { useLocationStore } from "@/lib/store/locationStore";
 import { safeMenuItemId } from "@/lib/checkout-utils";
 import { PRINTING_VENDOR_ID, SERVICES_VENDOR_ID } from "@/lib/constants";
 import { isVendorOpen } from "@/lib/vendor-hours";
+import { checkStock } from "@/lib/stock";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import logger from "@/lib/logger";
 
@@ -151,6 +152,20 @@ export function usePlaceOrder(supabase: SupabaseClient) {
               return false;
             }
           }
+        }
+      }
+    }
+
+    if (!scheduledDate) {
+      const stockItems = items
+        .filter(i => i.vendor_id !== PRINTING_VENDOR_ID && i.vendor_id !== SERVICES_VENDOR_ID)
+        .map(i => ({ menu_item_id: i.id || "", quantity: i.quantity, name: i.name, vendor_id: i.vendor_id || "" }));
+      if (stockItems.length > 0) {
+        const stockResult = await checkStock(stockItems);
+        if (!stockResult.available) {
+          const outItems = stockResult.items.filter(i => !i.in_stock);
+          addToast(`Some items are out of stock: ${outItems.map(i => i.name).join(", ")}. Please remove them from your cart.`, "error");
+          return false;
         }
       }
     }
