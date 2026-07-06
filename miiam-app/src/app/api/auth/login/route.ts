@@ -7,10 +7,16 @@ const LOGIN_RATE_LIMIT_WINDOW = 10 * 60 * 1000;
 
 async function checkLoginRateLimit(supabase: ReturnType<typeof createAdminClient>, email: string): Promise<boolean> {
   const windowStart = new Date(Date.now() - LOGIN_RATE_LIMIT_WINDOW).toISOString();
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("id")
+    .eq("email", email)
+    .maybeSingle();
+  if (!profile) return true;
   const { count } = await supabase
     .from("login_events")
     .select("id", { count: "exact", head: true })
-    .eq("email", email)
+    .eq("user_id", profile.id)
     .eq("success", false)
     .gte("created_at", windowStart);
   return (count || 0) < LOGIN_RATE_LIMIT_MAX;
@@ -41,8 +47,14 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       // Record failed attempt
+      const { data: failedProfile } = await supabaseAdmin
+        .from("profiles")
+        .select("id")
+        .eq("email", cleanEmail)
+        .maybeSingle();
       await supabaseAdmin.from("login_events").insert({
-        email: cleanEmail,
+        user_id: failedProfile?.id || "00000000-0000-0000-0000-000000000000",
+        event_type: "login",
         success: false,
         created_at: new Date().toISOString(),
       });
