@@ -390,3 +390,72 @@ export async function sendBookingConfirmationEmail(data: BookingEmailData): Prom
     return { success: false, error: "Failed to send email" };
   }
 }
+
+export type BookingStatusEmailData = {
+  bookingId: string;
+  customerName: string;
+  customerEmail: string;
+  serviceName: string;
+  status: string;
+  date: string;
+  time: string;
+  providerName?: string;
+  providerPhone?: string;
+};
+
+const bookingStatusMessages: Record<string, { title: string; message: string }> = {
+  confirmed: { title: "Booking Confirmed", message: "Your booking has been confirmed." },
+  "in-progress": { title: "Service In Progress", message: "Your service provider is on the way." },
+  completed: { title: "Service Completed", message: "Your service has been completed. We hope you loved it!" },
+  cancelled: { title: "Booking Cancelled", message: "Your booking has been cancelled." },
+  "no-show": { title: "Provider No-Show", message: "The provider didn't arrive. Please contact support for a refund." },
+};
+
+export async function sendBookingStatusUpdateEmail(data: BookingStatusEmailData): Promise<{ success: boolean; error?: string }> {
+  if (!resend) {
+    logger.info({ bookingId: data.bookingId, status: data.status }, "DEV EMAIL - Booking Status Update");
+    return { success: true };
+  }
+
+  const statusInfo = bookingStatusMessages[data.status] || { title: "Booking Update", message: "Your booking status has been updated." };
+
+  try {
+    const { error } = await resend.emails.send({
+      from: FROM_ADDRESS,
+      to: data.customerEmail,
+      subject: `${statusInfo.title} — ${data.serviceName}`,
+      html: `
+        <div style="${baseStyles}">
+          <div style="${headerStyles}">
+            <h1 style="color: white; margin: 0;">MIIAM</h1>
+            <p style="color: rgba(255,255,255,0.8); margin: 10px 0 0 0;">${statusInfo.title}</p>
+          </div>
+          <div style="${contentStyles}">
+            <h2 style="color: var(--color-on-surface); margin-bottom: 20px;">Hi ${escapeHtml(data.customerName)}!</h2>
+            <p style="color: #666; margin-bottom: 25px;">${statusInfo.message}</p>
+
+            <div style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+              <p style="margin: 8px 0;"><strong>Service:</strong> ${escapeHtml(data.serviceName)}</p>
+              <p style="margin: 8px 0;"><strong>Date:</strong> ${data.date}</p>
+              <p style="margin: 8px 0;"><strong>Time:</strong> ${data.time}</p>
+              <p style="margin: 8px 0;"><strong>Status:</strong> <span style="color: var(--color-primary); font-weight: bold;">${statusInfo.title}</span></p>
+              ${data.providerName ? `<p style="margin: 8px 0;"><strong>Provider:</strong> ${escapeHtml(data.providerName)}</p>` : ""}
+              ${data.providerPhone ? `<p style="margin: 8px 0;"><strong>Phone:</strong> ${escapeHtml(data.providerPhone)}</p>` : ""}
+            </div>
+
+            <p style="color: #999; font-size: 12px;">Booking ID: ${data.bookingId.slice(0, 8).toUpperCase()}</p>
+          </div>
+        </div>
+      `,
+    });
+
+    if (error) {
+      logger.error({ err: error }, "Resend error");
+      return { success: false, error: error.message };
+    }
+    return { success: true };
+  } catch (err) {
+    logger.error({ err }, "Email send error");
+    return { success: false, error: "Failed to send email" };
+  }
+}
