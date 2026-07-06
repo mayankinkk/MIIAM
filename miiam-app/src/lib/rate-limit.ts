@@ -27,7 +27,7 @@ export async function checkIpRateLimit(
 ): Promise<boolean> {
   if (!UPSTASH_URL || !UPSTASH_TOKEN) {
     if (!warnedOnce) {
-      console.warn("[MIIAM] Rate limiting disabled: UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN not set. Using in-memory fallback.");
+      console.warn("[MIIAM] Rate limiting degraded: UPSTASH not configured. Using in-memory fallback (not effective in serverless).");
       warnedOnce = true;
     }
 
