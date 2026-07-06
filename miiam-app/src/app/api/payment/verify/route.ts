@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
       const { error: updateError } = await supabaseAdmin
         .from("orders")
         .update({
-          status: "confirmed",
+          status: "accepted",
         })
         .eq("id", orderId);
 
