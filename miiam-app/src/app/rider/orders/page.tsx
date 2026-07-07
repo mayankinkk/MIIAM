@@ -388,15 +388,30 @@ export default function RiderOrdersPage() {
       const riderEarning = calculateEarnings(0);
 
       // 1. Critical: mark order as delivered FIRST
-      const { error: orderErr } = await supabase
+      // Try with customer_collected first; fall back without it if column doesn't exist
+      let orderErr;
+      ({ error: orderErr } = await supabase
         .from("orders")
         .update({
           status: "delivered",
           delivered_at: new Date().toISOString(),
           customer_collected: cashToCollect,
         })
-        .eq("id", currentOrderId);
-      if (orderErr) throw new Error("order update: " + orderErr.message);
+        .eq("id", currentOrderId));
+
+      // If failed (e.g. column doesn't exist), retry without customer_collected
+      if (orderErr) {
+        logger.warn({ err: orderErr }, "First update attempt failed, retrying without customer_collected");
+        ({ error: orderErr } = await supabase
+          .from("orders")
+          .update({
+            status: "delivered",
+            delivered_at: new Date().toISOString(),
+          })
+          .eq("id", currentOrderId));
+      }
+
+      if (orderErr) throw new Error(orderErr.message + " (code: " + orderErr.code + ")");
 
       // Update local state immediately so UI responds
       setOrders(prev => prev.map(o => o.id === currentOrderId ? { ...o, status: "delivered", delivered_at: new Date().toISOString(), customer_collected: cashToCollect } : o));
@@ -475,8 +490,9 @@ export default function RiderOrdersPage() {
         }
       }
     } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
       logger.error({ err }, "Error delivering order");
-      showToast("Failed to complete delivery.", "error");
+      showToast("Failed: " + msg, "error");
     }
   }
 
