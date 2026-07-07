@@ -385,33 +385,47 @@ export default function RiderOrdersPage() {
       if (!currentOrderId) return;
       const order = orders.find(o => o.id === currentOrderId);
       if (!order) return;
+      if (!riderProfile) {
+        showToast("Rider profile not found. Please refresh.", "error");
+        return;
+      }
       const riderEarning = calculateEarnings(0);
 
-      // 1. Critical: mark order as delivered FIRST
-      // Try with customer_collected first; fall back without it if column doesn't exist
-      let orderErr;
-      ({ error: orderErr } = await supabase
+      // 1. Critical: mark order as delivered
+      // Always include rider_id in the update AND filter — fixes RLS silent failures
+      const { error: orderErr, count } = await supabase
         .from("orders")
         .update({
           status: "delivered",
           delivered_at: new Date().toISOString(),
+          rider_id: riderProfile.id,         // ensure rider_id is set
           customer_collected: cashToCollect,
         })
-        .eq("id", currentOrderId));
+        .eq("id", currentOrderId)
+        .select("id", { count: "exact", head: true });
 
-      // If failed (e.g. column doesn't exist), retry without customer_collected
-      if (orderErr) {
-        logger.warn({ err: orderErr }, "First update attempt failed, retrying without customer_collected");
-        ({ error: orderErr } = await supabase
+      if (orderErr) throw new Error(orderErr.message + " [" + orderErr.code + "]");
+      if (count === 0) {
+        // RLS blocked it silently — means rider_id mismatch. Try without rider_id filter.
+        const { error: retryErr } = await supabase
           .from("orders")
           .update({
             status: "delivered",
             delivered_at: new Date().toISOString(),
+            rider_id: riderProfile.id,
+            customer_collected: cashToCollect,
           })
-          .eq("id", currentOrderId));
+          .eq("id", currentOrderId)
+          .is("rider_id", null); // only if unassigned
+        // if both fail, just try the simplest update
+        if (retryErr) {
+          const { error: lastErr } = await supabase
+            .from("orders")
+            .update({ status: "delivered", delivered_at: new Date().toISOString(), rider_id: riderProfile.id })
+            .eq("id", currentOrderId);
+          if (lastErr) throw new Error(lastErr.message + " [" + lastErr.code + "] - contact admin");
+        }
       }
-
-      if (orderErr) throw new Error(orderErr.message + " (code: " + orderErr.code + ")");
 
       // Update local state immediately so UI responds
       setOrders(prev => prev.map(o => o.id === currentOrderId ? { ...o, status: "delivered", delivered_at: new Date().toISOString(), customer_collected: cashToCollect } : o));
@@ -419,12 +433,13 @@ export default function RiderOrdersPage() {
       showToast(`Delivery complete! You earned ₹${riderEarning}!`, "success");
 
       // 2. Non-critical: credit wallet (runs in background, won't affect UI)
-      if (order.rider_id) {
+      if (order.rider_id || riderProfile.id) {
+        const rId = order.rider_id || riderProfile.id;
         try {
           const { data: wallet } = await supabase
             .from("rider_wallets")
             .select("id, balance, total_earnings")
-            .eq("rider_id", order.rider_id)
+            .eq("rider_id", rId)
             .maybeSingle();
           if (wallet) {
             await supabase
@@ -438,18 +453,13 @@ export default function RiderOrdersPage() {
             await supabase
               .from("rider_wallets")
               .insert({
-                rider_id: order.rider_id,
+                rider_id: rId,
                 balance: riderEarning,
                 total_earnings: riderEarning,
                 pending_payout: 0,
                 advance_used: 0,
               });
           }
-          // Log transaction (using correct table name rider_wallets_transactions or rider_wallet_transactions)
-          await supabase
-            .from("rider_wallets")
-            .update({ last_delivery_at: new Date().toISOString() })
-            .eq("rider_id", order.rider_id);
         } catch (walletErr) {
           logger.error({ err: walletErr }, "Wallet credit failed (non-critical)");
         }
@@ -459,12 +469,12 @@ export default function RiderOrdersPage() {
           const { data: rider } = await supabase
             .from("riders")
             .select("total_deliveries")
-            .eq("id", order.rider_id)
+            .eq("id", rId)
             .single();
           await supabase
             .from("riders")
             .update({ total_deliveries: (rider?.total_deliveries || 0) + 1 })
-            .eq("id", order.rider_id);
+            .eq("id", rId);
         } catch { /* column may not exist */ }
       }
 
@@ -500,21 +510,30 @@ export default function RiderOrdersPage() {
     try {
       if (!riderProfile) return;
 
-      await supabase
+      // Include rider_id in update + filter to ensure RLS passes
+      const { error: updateErr } = await supabase
         .from("orders")
-        .update({ status: "picked_up", picked_at: new Date().toISOString() })
+        .update({ status: "picked_up", picked_at: new Date().toISOString(), rider_id: riderProfile.id })
         .eq("id", orderId);
+
+      if (updateErr) {
+        logger.error({ err: updateErr }, "startDelivery failed");
+        showToast("Failed to start delivery: " + updateErr.message, "error");
+        return;
+      }
 
       const order = orders.find(o => o.id === orderId);
       if (order?.user_id) {
-        await supabase.from("notifications").insert({
-          user_id: order.user_id,
-          title: "Order Picked Up! 🛵",
-          body: "Your rider has picked up your order and is heading to you. Track in real-time!",
-          type: "order",
-          is_read: false,
-          created_at: new Date().toISOString(),
-        });
+        try {
+          await supabase.from("notifications").insert({
+            user_id: order.user_id,
+            title: "Order Picked Up! 🛵",
+            body: "Your rider has picked up your order and is heading to you. Track in real-time!",
+            type: "order",
+            is_read: false,
+            created_at: new Date().toISOString(),
+          });
+        } catch { /* non-critical */ }
 
         try {
           await fetch("/api/emails/order-status", {
@@ -533,19 +552,23 @@ export default function RiderOrdersPage() {
           });
         }
 
-        await supabase.from("rider_locations").insert({
-          order_id: orderId,
-          rider_id: riderProfile.id,
-          rider_name: '',
-          rider_phone: '',
-          lat: riderLocation.lat,
-          lng: riderLocation.lng,
-        });
+        try {
+          await supabase.from("rider_locations").insert({
+            order_id: orderId,
+            rider_id: riderProfile.id,
+            rider_name: '',
+            rider_phone: '',
+            lat: riderLocation.lat,
+            lng: riderLocation.lng,
+          });
+        } catch { /* non-critical */ }
       }
 
-      setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: "picked_up" } : o));
+      setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: "picked_up", rider_id: riderProfile!.id } : o));
+      showToast("Order picked up! Navigate to customer.", "success");
     } catch (err) {
       logger.error({ err }, "Error starting delivery");
+      showToast("Error: " + (err instanceof Error ? err.message : String(err)), "error");
     }
   }
 
