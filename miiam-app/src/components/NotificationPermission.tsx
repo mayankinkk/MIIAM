@@ -91,21 +91,25 @@ export default function NotificationPermission() {
             if (newOrder && oldOrder && newOrder.status !== oldOrder.status && isMounted) {
               const statusTitles: Record<string, string> = {
                 pending: "Order Placed! 🛒",
-                accepted: "Order Accepted! 🚴",
+                accepted: "Order Accepted! ✅",
                 preparing: "Preparing Food! 🍳",
-                shopping: "Rider Shopping! 🛍️",
-                picking_up: "Order Picked Up! 🛵",
+                ready_for_pickup: "Ready for Pickup! 📦",
+                shopping: "Rider Picked Up! 🛵",
+                picked_up: "Rider On The Way! 🛵",
+                picking_up: "Order Being Picked Up! 🛒",
                 on_the_way: "Out for Delivery! 🚴",
                 delivered: "Order Delivered! 🎉",
                 cancelled: "Order Cancelled ❌",
               };
 
               const statusMessages: Record<string, string> = {
-                pending: "Your order is pending confirmation",
-                accepted: "A delivery hero has accepted your order",
+                pending: "Your order is pending vendor confirmation",
+                accepted: "Vendor has accepted and will start preparing soon",
                 preparing: "The merchant is cooking/preparing your items",
-                shopping: "Rider is picking up the items from your list",
-                picking_up: "Rider is picking up from the store",
+                ready_for_pickup: "Your order is ready and waiting for a rider",
+                shopping: "Rider has picked up your order and is on the way!",
+                picked_up: "Your rider has your order and is heading to you!",
+                picking_up: "Rider is picking up your order from the store",
                 on_the_way: "Rider is heading to your delivery address!",
                 delivered: "Your order has been delivered successfully. Enjoy!",
                 cancelled: "Your order has been cancelled.",

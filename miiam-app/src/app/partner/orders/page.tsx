@@ -267,6 +267,7 @@ export default function VendorOrders() {
                       order.status === "accepted" ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300" :
                       order.status === "preparing" ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300" :
                       order.status === "ready_for_pickup" ? "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300" :
+                      order.status === "shopping" || order.status === "picked_up" ? "bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-300" :
                       order.status === "delivered" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" :
                       order.status === "cancelled" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300" :
                       "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
@@ -373,10 +374,10 @@ export default function VendorOrders() {
                         Waiting for Rider
                       </div>
                     )}
-                    {order.status === "on_the_way" && (
+                    {["shopping", "picked_up", "on_the_way"].includes(order.status) && (
                       <div className="px-6 py-3 bg-cyan-50 text-cyan-700 rounded-xl font-bold text-sm border border-cyan-200 dark:bg-cyan-900/20 dark:text-cyan-300 dark:border-cyan-800">
                         <span className="material-symbols-outlined align-middle text-lg mr-1">delivery_truck</span>
-                        Out for Delivery
+                        {order.status === "picked_up" ? "Rider picked up — On the way!" : "Out for Delivery"}
                       </div>
                     )}
                   </div>

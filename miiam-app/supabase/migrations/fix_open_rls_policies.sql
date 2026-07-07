@@ -79,6 +79,10 @@ CREATE POLICY "Users can view own order items" ON order_items
   FOR SELECT USING (
     EXISTS (SELECT 1 FROM orders WHERE id = order_items.order_id AND user_id = auth.uid())
   );
+CREATE POLICY "Users can create order items for own orders" ON order_items
+  FOR INSERT WITH CHECK (
+    EXISTS (SELECT 1 FROM orders WHERE id = order_items.order_id AND user_id = auth.uid())
+  );
 CREATE POLICY "Vendors can view their order items" ON order_items
   FOR SELECT USING (
     EXISTS (SELECT 1 FROM orders JOIN vendors ON orders.vendor_id = vendors.id

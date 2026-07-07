@@ -7,7 +7,7 @@ import { PRINTING_VENDOR_ID } from "@/lib/constants";
 import { useToastStore } from "@/lib/store/toastStore";
 import logger from "@/lib/logger";
 
-const STATUS_OPTIONS: OrderStatus[] = ["pending", "scheduled", "accepted", "processing", "preparing", "ready_for_pickup", "shopping", "picking_up", "on_the_way", "arrived", "delivered", "cancelled", "refunded", "no_rider_available"];
+const STATUS_OPTIONS: OrderStatus[] = ["pending", "scheduled", "accepted", "processing", "preparing", "ready_for_pickup", "shopping", "picked_up", "picking_up", "on_the_way", "arrived", "delivered", "cancelled", "refunded", "no_rider_available"];
 
 const STATUS_COLORS: Record<OrderStatus, string> = {
   pending: "bg-yellow-100 text-yellow-700",
@@ -17,6 +17,7 @@ const STATUS_COLORS: Record<OrderStatus, string> = {
   preparing: "bg-purple-100 text-purple-700",
   ready_for_pickup: "bg-orange-100 text-orange-700",
   shopping: "bg-pink-100 text-pink-700",
+  picked_up: "bg-pink-100 text-pink-700",
   picking_up: "bg-orange-100 text-orange-700",
   on_the_way: "bg-cyan-100 text-cyan-700",
   arrived: "bg-teal-100 text-teal-700",

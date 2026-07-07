@@ -73,7 +73,7 @@ export default function RiderContactCard({
               <span className="material-symbols-outlined text-2xl">call</span>
             </a>
           </div>
-          {currentUserId && ["on_the_way", "arrived", "picking_up"].includes(orderStatus) && (
+          {currentUserId && ["shopping", "picked_up", "on_the_way", "arrived", "picking_up"].includes(orderStatus) && (
             <div className="mt-3">
               <ShareLocationToggle orderId={orderId} userId={currentUserId} enabled />
             </div>

@@ -100,7 +100,7 @@ export default function AdminDashboard() {
 
       const totalRevenue = orders.filter((o: { status: string; total_amount: number | null }) => o.status === "delivered").reduce((s: number, o: { total_amount: number | null }) => s + (o.total_amount || 0), 0);
       const ordersToday = orders.filter((o: { placed_at: string }) => new Date(o.placed_at) >= today).length;
-      const pendingOrders = orders.filter((o: { status: string }) => ["pending", "accepted", "preparing", "ready_for_pickup", "on_the_way"].includes(o.status)).length;
+      const pendingOrders = orders.filter((o: { status: string }) => ["pending", "accepted", "preparing", "ready_for_pickup", "shopping", "picked_up", "on_the_way"].includes(o.status)).length;
       const cancelledOrders = orders.filter((o: { status: string }) => o.status === "cancelled").length;
       const activeVendors = vendors.filter((v: { status: string }) => v.status === "active").length;
       const onlineRiders = riders.filter((r: { status: string }) => r.status === "active").length;

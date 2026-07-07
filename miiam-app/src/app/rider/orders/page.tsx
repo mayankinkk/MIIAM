@@ -61,11 +61,11 @@ export default function RiderOrdersPage() {
       if (dbError) throw new Error(dbError.message);
 
       // Also fetch this rider's own accepted orders
-      const { data: myOrders } = riderId ? await supabase
+  const { data: myOrders } = riderId ? await supabase
         .from("orders")
         .select("id, user_id, vendor_id, rider_id, status, total_amount, delivery_fee, delivery_address, special_instructions, placed_at, delivered_at")
         .eq("rider_id", riderId)
-        .in("status", ["pending", "accepted", "preparing", "ready_for_pickup", "on_the_way"])
+        .in("status", ["shopping", "picked_up", "accepted", "pending", "preparing", "ready_for_pickup", "on_the_way"])
         .order("placed_at", { ascending: false }) : { data: [] };
 
       const allDbOrders = [...(availableOrders || []), ...(myOrders || [])];
@@ -208,6 +208,10 @@ export default function RiderOrdersPage() {
         return;
       }
 
+      // Determine which status to set based on current order status
+      const orderToAccept = orders.find(o => o.id === orderId);
+      const newStatus = orderToAccept?.status === "ready_for_pickup" ? "shopping" : "accepted";
+
       let accepted = false;
 
       // Try atomic RPC first
@@ -221,14 +225,15 @@ export default function RiderOrdersPage() {
         logger.info("RPC not available, using fallback");
       }
 
-      // Fallback: direct update — assign rider and accept order
+      // Fallback: direct update — assign rider
       if (!accepted) {
         const { error } = await supabase
           .from("orders")
           .update({
             rider_id: riderProfile.id,
-            status: "accepted",
+            status: newStatus,
             accepted_at: new Date().toISOString(),
+            ...(newStatus === "shopping" ? { shopping_at: new Date().toISOString() } : {}),
           })
           .eq("id", orderId)
           .is("rider_id", null);
@@ -244,8 +249,10 @@ export default function RiderOrdersPage() {
         try {
           await supabase.from("notifications").insert({
             user_id: order.user_id,
-            title: "Rider Assigned!",
-            body: "A rider is on their way to pick up your order.",
+            title: newStatus === "shopping" ? "Rider Picked Up Your Order! 🛵" : "Rider Assigned!",
+            body: newStatus === "shopping"
+              ? "Your rider has picked up the order and is on the way!"
+              : "A rider is on their way to pick up your order.",
             type: "order",
             is_read: false,
           });
@@ -254,8 +261,8 @@ export default function RiderOrdersPage() {
         }
       }
 
-      setOrders(prev => prev.map(o => o.id === orderId ? { ...o, rider_id: riderProfile.id } : o));
-      showToast("Order accepted!", "success");
+      setOrders(prev => prev.map(o => o.id === orderId ? { ...o, rider_id: riderProfile.id, status: newStatus } : o));
+      showToast(newStatus === "shopping" ? "Order picked up! Head to customer." : "Order accepted!", "success");
     } catch (err: unknown) {
       logger.error({ err }, "Error accepting order");
       showToast("Failed to accept order: " + ((err instanceof Error ? err.message : null) || "Unknown error"), "error");
@@ -483,14 +490,14 @@ export default function RiderOrdersPage() {
 
       await supabase
         .from("orders")
-        .update({ status: "on_the_way" })
+        .update({ status: "picked_up", picked_at: new Date().toISOString() })
         .eq("id", orderId);
 
       const order = orders.find(o => o.id === orderId);
       if (order?.user_id) {
         await supabase.from("notifications").insert({
           user_id: order.user_id,
-          title: "Order On The Way! 🚴",
+          title: "Order Picked Up! 🛵",
           body: "Your rider has picked up your order and is heading to you. Track in real-time!",
           type: "order",
           is_read: false,
@@ -501,15 +508,14 @@ export default function RiderOrdersPage() {
           await fetch("/api/emails/order-status", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ orderId, status: "on_the_way" }),
+            body: JSON.stringify({ orderId, status: "picked_up" }),
           });
         } catch (emailErr) {
           logger.warn({ err: emailErr }, "Failed to send status email");
         }
 
-        // Browser notification
         if (typeof window !== "undefined" && Notification.permission === "granted") {
-          new Notification("Order On The Way! 🚴", {
+          new Notification("Order Picked Up! 🛵", {
             body: "Your rider has picked up your order and is heading to you",
             icon: "/icon.png",
           });
@@ -525,7 +531,7 @@ export default function RiderOrdersPage() {
         });
       }
 
-      setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: "on_the_way" } : o));
+      setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: "picked_up" } : o));
     } catch (err) {
       logger.error({ err }, "Error starting delivery");
     }
@@ -586,7 +592,7 @@ export default function RiderOrdersPage() {
   });
 
   const availableOrders = filteredOrders.filter(o => ["pending", "ready_for_pickup"].includes(o.status) && !o.rider_id);
-  const shoppingOrders = filteredOrders.filter(o => o.rider_id && ["pending", "accepted", "preparing", "ready_for_pickup", "on_the_way"].includes(o.status));
+  const shoppingOrders = filteredOrders.filter(o => o.rider_id && ["accepted", "shopping", "picked_up", "preparing", "ready_for_pickup", "on_the_way"].includes(o.status));
   const completedOrders = filteredOrders.filter(o => o.status === "delivered");
 
   const todayEarnings = completedOrders
@@ -882,8 +888,8 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
   const totalSpent = items.reduce((s: number, i: OrderItem) => s + ((i.actual_price || 0) * i.quantity), 0);
   const profit = (order.total_amount || 0) + (order.delivery_fee || 0) - totalSpent;
 
-  // Phase: "pickup" = go to restaurant, "delivery" = go to customer
-  const phase = order.status === "on_the_way" ? "delivery" : "pickup";
+  // In new flow: shopping/picked_up = rider heading to deliver (delivery phase)
+  const phase = ["shopping", "picked_up", "on_the_way"].includes(order.status) ? "delivery" : "pickup";
   const [expanded, setExpanded] = useState(false);
   const [showMap, setShowMap] = useState(false);
   const mapRef = useRef<HTMLDivElement>(null);

@@ -228,7 +228,7 @@ export default function CheckoutPage() {
           </div>
 
           <div className="lg:col-span-4 lg:sticky lg:top-24">
-            <aside className="bg-surface-container-low dark:bg-[var(--color-surface-container)] p-5 sm:p-8 rounded-2xl shadow-sm relative overflow-hidden">
+            <aside className="bg-surface-container-low dark:bg-[var(--color-surface-container)] p-5 sm:p-8 rounded-2xl shadow-sm relative">
               <CheckoutOrderSummary
                 items={items}
                 subtotal={subtotal}

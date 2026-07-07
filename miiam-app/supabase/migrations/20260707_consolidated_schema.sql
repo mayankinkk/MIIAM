@@ -325,6 +325,9 @@ CREATE POLICY "Riders update assigned orders" ON orders FOR UPDATE USING (auth.u
 CREATE POLICY "Order items visible with order" ON order_items FOR SELECT USING (
   EXISTS (SELECT 1 FROM orders WHERE id = order_items.order_id AND (user_id = auth.uid() OR rider_id = auth.uid() OR EXISTS (SELECT 1 FROM vendors WHERE id = orders.vendor_id AND user_id = auth.uid())))
 );
+CREATE POLICY "Users create order items for own orders" ON order_items FOR INSERT WITH CHECK (
+  EXISTS (SELECT 1 FROM orders WHERE id = order_items.order_id AND user_id = auth.uid())
+);
 
 -- Addresses: user owns own
 CREATE POLICY "Users manage own addresses" ON addresses FOR ALL USING (auth.uid() = user_id);

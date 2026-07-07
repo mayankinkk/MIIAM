@@ -197,7 +197,8 @@ export default function RiderDashboard() {
             };
             setCurrentOrder(activeOrder);
             const statusStepMap: Record<string, "shopping" | "picking_up" | "picked" | "delivering" | "arrived"> = {
-              accepted: "shopping", preparing: "shopping", shopping: "shopping", ready_for_pickup: "picking_up",
+              accepted: "shopping", preparing: "shopping", shopping: "delivering", picked_up: "delivering",
+              ready_for_pickup: "picking_up",
               picking_up: "picking_up", on_the_way: "delivering", arrived: "arrived",
             };
             setDeliveryStep(statusStepMap[dbOrder.status] || "shopping");
@@ -537,7 +538,7 @@ export default function RiderDashboard() {
   const handlePickedUp = async () => {
     setDeliveryStep("delivering");
     if (currentOrder?.orderDbId && riderId) {
-      try { await supabase.from("orders").update({ status: "on_the_way", picked_at: new Date().toISOString() }).eq("id", currentOrder.orderDbId); startLocationTracking(riderId, currentOrder.orderDbId); } catch { /* silent */ }
+      try { await supabase.from("orders").update({ status: "picked_up", picked_at: new Date().toISOString() }).eq("id", currentOrder.orderDbId); startLocationTracking(riderId, currentOrder.orderDbId); } catch { /* silent */ }
     }
   };
 

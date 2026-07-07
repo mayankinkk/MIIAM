@@ -207,7 +207,7 @@ export default function HomePage() {
             .from("orders")
             .select("id, status, total_amount, placed_at, vendor_id")
             .eq("user_id", user.id)
-            .in("status", ["pending", "accepted", "preparing", "ready_for_pickup", "picking_up", "on_the_way"])
+            .in("status", ["pending", "accepted", "preparing", "ready_for_pickup", "shopping", "picked_up", "picking_up", "on_the_way"])
             .order("placed_at", { ascending: false })
             .limit(1)
             .maybeSingle();
@@ -223,10 +223,10 @@ export default function HomePage() {
               items: t.home.orderInProgress,
               steps: [
                 { id: 1, label: t.home.orderPlaced, completed: true, time: new Date(active.placed_at).toLocaleTimeString() },
-                { id: 2, label: t.home.accepted, completed: ["accepted", "preparing", "ready_for_pickup", "picking_up", "on_the_way"].includes(active.status), time: "" },
-                { id: 3, label: t.home.onTheWay, completed: ["on_the_way"].includes(active.status), time: "" },
+                { id: 2, label: t.home.accepted, completed: ["accepted", "preparing", "ready_for_pickup", "shopping", "picked_up", "picking_up", "on_the_way"].includes(active.status), time: "" },
+                { id: 3, label: t.home.onTheWay, completed: ["shopping", "picked_up", "on_the_way"].includes(active.status), time: "" },
               ],
-              eta: active.status === "on_the_way" ? "5-10 min" : "20-30 min",
+              eta: ["shopping", "picked_up", "on_the_way"].includes(active.status) ? "5-10 min" : "20-30 min",
             });
           }
         } catch (err) {

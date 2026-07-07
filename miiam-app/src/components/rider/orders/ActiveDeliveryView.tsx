@@ -24,7 +24,9 @@ export default function ActiveDeliveryView({ order, riderId, onUpdateItemStatus,
   const totalSpent = items.reduce((s: number, i: OrderItem) => s + ((i.actual_price || 0) * i.quantity), 0);
   const profit = (order.total_amount || 0) + (order.delivery_fee || 0) - totalSpent;
 
-  const phase = order.status === "on_the_way" ? "delivery" : "pickup";
+  // In new flow: shopping = rider accepted & heading to deliver; picked_up = confirmed picked up
+  // Both mean we're in "delivery" phase (going to customer)
+  const phase = ["shopping", "picked_up", "on_the_way"].includes(order.status) ? "delivery" : "pickup";
   const [expanded, setExpanded] = useState(false);
   const [showMap, setShowMap] = useState(false);
   const mapRef = useRef<HTMLDivElement>(null);
@@ -348,13 +350,14 @@ export default function ActiveDeliveryView({ order, riderId, onUpdateItemStatus,
 
           <div className="px-4 pb-4 space-y-1.5">
             <div className="flex gap-1.5">
-              {pickedCount === items.length && items.length > 0 && onStartDelivery && order.status !== "on_the_way" && (
+              {/* Show "Picked Up — Start Delivery" when in pickup phase and all items accounted for */}
+              {phase === "pickup" && pickedCount === items.length && items.length > 0 && onStartDelivery && (
                 <button onClick={onStartDelivery} className="flex-1 py-2 bg-brand-secondary text-white rounded-lg text-[11px] font-bold flex items-center justify-center gap-1">
                   <span className="material-symbols-outlined text-sm">directions_bike</span>
-                  Start Delivery
+                  Picked Up — Start Delivery
                 </button>
               )}
-              {order.status === "on_the_way" && onShareLocation && (
+              {phase === "delivery" && onShareLocation && (
                 <button onClick={onShareLocation} className="flex-1 py-2 bg-green-500 text-white rounded-lg text-[11px] font-bold flex items-center justify-center gap-1">
                   <span className="material-symbols-outlined text-sm">share_location</span>
                   Share Location
@@ -364,9 +367,9 @@ export default function ActiveDeliveryView({ order, riderId, onUpdateItemStatus,
                 Report
               </button>
             </div>
-            <button onClick={onMarkDelivered} disabled={pickedCount === 0} className="w-full bg-green-500 text-white py-2.5 rounded-lg font-bold disabled:opacity-40 flex items-center justify-center gap-1.5 text-xs">
+            <button onClick={onMarkDelivered} disabled={phase === "pickup" && pickedCount === 0} className="w-full bg-green-500 text-white py-2.5 rounded-lg font-bold disabled:opacity-40 flex items-center justify-center gap-1.5 text-xs">
               <span className="material-symbols-outlined text-sm">payments</span>
-              Complete & Collect ₹{(order.total_amount || 0) + (order.delivery_fee || 0)}
+              {phase === "delivery" ? `Delivered — Collect ₹${(order.total_amount || 0) + (order.delivery_fee || 0)}` : `Complete & Collect ₹${(order.total_amount || 0) + (order.delivery_fee || 0)}`}
             </button>
           </div>
         </div>

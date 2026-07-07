@@ -303,15 +303,23 @@ export function usePlaceOrder(supabase: SupabaseClient) {
     } catch (error: unknown) {
       logger.error({ err: error }, "Order placement failed");
       let errorMessage = "Something went wrong. Please try again.";
-      if (error instanceof Error && error.message) {
-        if (error.message.includes('miiam_food')) {
-          errorMessage = "Cart error: Please remove items and add again from Food page.";
-        } else if (error.message.includes('violates foreign key')) {
-          errorMessage = "Database error: Some items may no longer be available.";
-        } else if (error.message.includes('network') || error.message.includes('fetch')) {
+      if (error && typeof error === "object" && "message" in error) {
+        const msg = String((error as { message: unknown }).message);
+        const code = "code" in error ? String((error as { code: unknown }).code) : "";
+        if (code === "23503" || msg.includes("violates foreign key")) {
+          errorMessage = "Some items are no longer available. Please refresh and try again.";
+        } else if (code === "23505" || msg.includes("duplicate")) {
+          errorMessage = "Order already exists. Check your orders page.";
+        } else if (code === "42501" || msg.includes("permission") || msg.includes("row-level security")) {
+          errorMessage = "Permission denied. Please log in again.";
+        } else if (code === "PGRST301" || msg.includes("JSON")) {
+          errorMessage = "Invalid order data. Please try again.";
+        } else if (msg.includes("network") || msg.includes("fetch") || msg.includes("Failed to fetch")) {
           errorMessage = "Network error: Please check your internet connection.";
+        } else if (msg.includes("miiam_food")) {
+          errorMessage = "Cart error: Please remove items and add again from Food page.";
         } else {
-          errorMessage = `Error: ${error.message}`;
+          errorMessage = `Error: ${msg}`;
         }
       }
       addToast(errorMessage, "error");

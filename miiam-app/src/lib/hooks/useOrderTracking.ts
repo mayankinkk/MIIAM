@@ -105,7 +105,9 @@ const STATUS_DESCRIPTIONS: Record<string, string> = {
   accepted: "Restaurant has accepted your order",
   preparing: "Your order is being prepared",
   ready: "Order is ready for pickup",
-  ready_for_pickup: "Order is ready for rider pickup",
+  ready_for_pickup: "Order is ready — rider is picking it up",
+  shopping: "Rider has picked up your order and is on the way!",
+  picked_up: "Rider has picked up your order and is on the way!",
   picking_up: "Rider is picking up your order",
   on_the_way: "Your order is on the way",
   arrived: "Rider has arrived at your location",
@@ -113,17 +115,17 @@ const STATUS_DESCRIPTIONS: Record<string, string> = {
   cancelled: "Order has been cancelled",
   refunded: "Order has been refunded",
   processing: "We're processing your order",
-  shopping: "Rider is shopping for your items",
   no_rider_available: "No riders available",
 };
 
 const STATUS_MESSAGES: Record<string, string> = {
   pending: "Order placed!",
-  accepted: "Rider accepted your order!",
+  accepted: "Order accepted by restaurant!",
   processing: "We're processing your documents!",
   preparing: "Restaurant is preparing your order",
-  ready_for_pickup: "Order is ready for rider pickup!",
-  shopping: "Rider is shopping for your items",
+  ready_for_pickup: "Order is ready — rider picking it up!",
+  shopping: "Rider has picked up your order! On the way 🛵",
+  picked_up: "Rider has picked up your order! On the way 🛵",
   picking_up: "Rider is picking up your order",
   on_the_way: "Rider is on the way!",
   arrived: "Rider has arrived!",
@@ -272,7 +274,7 @@ export function useOrderTracking(orderId: string, supabaseClient?: SupabaseClien
             const msg = STATUS_MESSAGES[newStatus];
             if (msg) addToastRef.current(msg, "info");
 
-            const notifyStatuses = ["accepted", "on_the_way", "arrived", "delivered"];
+            const notifyStatuses = ["accepted", "preparing", "ready_for_pickup", "shopping", "picked_up", "delivered"];
             if (
               notifyStatuses.includes(newStatus) &&
               typeof window !== "undefined" &&
@@ -378,7 +380,7 @@ export function useActiveOrders(userId: string) {
         .eq("user_id", userId)
         .in("status", [
           "pending", "accepted", "preparing", "ready_for_pickup",
-          "picking_up", "on_the_way", "arrived", "scheduled",
+          "shopping", "picked_up", "picking_up", "on_the_way", "arrived", "scheduled",
         ])
         .order("created_at", { ascending: false });
 
