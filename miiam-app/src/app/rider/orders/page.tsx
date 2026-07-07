@@ -1143,13 +1143,25 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
           <div className="px-4 py-2 space-y-1">
             <div className="flex justify-between items-start">
               <div className="flex-1 min-w-0">
-                <p className="text-xs text-[var(--color-outline-variant)] truncate">{order.vendor?.address}</p>
-                <p className="text-[10px] text-[var(--color-primary)] font-semibold flex items-center gap-1 mt-0.5">
-                  <span className="material-symbols-outlined text-[10px]">location_on</span>
-                  <span className="truncate">{deliveryAddress}</span>
-                </p>
+                {phase === "pickup" ? (
+                  <>
+                    <div className="mb-1.5">
+                      <span className="text-[9px] font-bold uppercase tracking-wider text-brand-secondary">Pickup From</span>
+                      <p className="text-xs font-medium text-[var(--color-on-surface)] truncate">{vendorAddress}</p>
+                    </div>
+                    <div>
+                      <span className="text-[9px] font-bold uppercase tracking-wider text-[var(--color-outline)]">Dropoff To</span>
+                      <p className="text-[10px] text-[var(--color-outline-variant)] truncate">{deliveryAddress}</p>
+                    </div>
+                  </>
+                ) : (
+                  <div className="mb-1">
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-green-600">Deliver To</span>
+                    <p className="text-xs font-bold text-[var(--color-on-surface)] truncate">{deliveryAddress}</p>
+                  </div>
+                )}
                 {customerPhone && (
-                  <a href={`tel:${customerPhone}`} className="text-[10px] text-brand-secondary font-semibold flex items-center gap-1 mt-0.5">
+                  <a href={`tel:${customerPhone}`} className="text-[10px] text-brand-secondary font-semibold flex items-center gap-1 mt-1">
                     <span className="material-symbols-outlined text-[10px]">call</span>
                     Call {customerPhone}
                   </a>
@@ -1236,9 +1248,9 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
                 Report
               </button>
             </div>
-            <button onClick={onMarkDelivered} disabled={pickedCount === 0} className="w-full bg-green-500 text-white py-2.5 rounded-lg font-bold disabled:opacity-40 flex items-center justify-center gap-1.5 text-xs">
+            <button onClick={onMarkDelivered} disabled={phase === "pickup"} className="w-full bg-green-500 text-white py-2.5 rounded-lg font-bold disabled:opacity-40 flex items-center justify-center gap-1.5 text-xs">
               <span className="material-symbols-outlined text-sm">payments</span>
-              Complete & Collect ₹{(order.total_amount || 0) + (order.delivery_fee || 0)}
+              {phase === "delivery" ? `Delivered — Collect ₹${(order.total_amount || 0) + (order.delivery_fee || 0)}` : `Start delivery to collect ₹${(order.total_amount || 0) + (order.delivery_fee || 0)}`}
             </button>
           </div>
         </div>
