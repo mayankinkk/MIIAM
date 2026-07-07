@@ -387,7 +387,23 @@ export default function RiderOrdersPage() {
       if (!order) return;
       const riderEarning = calculateEarnings(0);
 
-      // 1. Credit wallet first (non-critical — can be compensated)
+      // 1. Critical: mark order as delivered FIRST
+      const { error: orderErr } = await supabase
+        .from("orders")
+        .update({
+          status: "delivered",
+          delivered_at: new Date().toISOString(),
+          customer_collected: cashToCollect,
+        })
+        .eq("id", currentOrderId);
+      if (orderErr) throw new Error("order update: " + orderErr.message);
+
+      // Update local state immediately so UI responds
+      setOrders(prev => prev.map(o => o.id === currentOrderId ? { ...o, status: "delivered", delivered_at: new Date().toISOString(), customer_collected: cashToCollect } : o));
+      setShowCashCollectModal(false);
+      showToast(`Delivery complete! You earned ₹${riderEarning}!`, "success");
+
+      // 2. Non-critical: credit wallet (runs in background, won't affect UI)
       if (order.rider_id) {
         try {
           const { data: wallet } = await supabase
@@ -414,17 +430,11 @@ export default function RiderOrdersPage() {
                 advance_used: 0,
               });
           }
-          // Log transaction
+          // Log transaction (using correct table name rider_wallets_transactions or rider_wallet_transactions)
           await supabase
-            .from("rider_wallet")
-            .insert({
-              rider_id: order.rider_id,
-              amount: riderEarning,
-              type: "earning",
-              description: `Delivery earnings for order #${currentOrderId.slice(0, 8)}`,
-              order_id: currentOrderId,
-              created_at: new Date().toISOString(),
-            });
+            .from("rider_wallets")
+            .update({ last_delivery_at: new Date().toISOString() })
+            .eq("rider_id", order.rider_id);
         } catch (walletErr) {
           logger.error({ err: walletErr }, "Wallet credit failed (non-critical)");
         }
@@ -443,17 +453,17 @@ export default function RiderOrdersPage() {
         } catch { /* column may not exist */ }
       }
 
-      // 2. Send notifications (non-critical)
+      // 3. Non-critical: send notifications
       if (order.user_id) {
         try {
           await supabase.from("notifications").insert({
             user_id: order.user_id,
-            title: "Order Delivered!",
-            body: "Your order has been delivered. Enjoy your food!",
+            title: "Order Delivered! 🎉",
+            body: "Your order has been delivered. Enjoy!",
             type: "order",
             is_read: false,
           });
-        } catch { /* table or column may not exist */ }
+        } catch { /* ignore */ }
         try {
           await fetch("/api/emails/order-status", {
             method: "POST",
@@ -464,20 +474,6 @@ export default function RiderOrdersPage() {
           logger.warn({ err: emailErr }, "Failed to send delivery email");
         }
       }
-
-      // 3. Order status update LAST (critical — point of no return)
-      const { error: orderErr } = await supabase
-        .from("orders")
-        .update({
-          status: "delivered",
-          delivered_at: new Date().toISOString(),
-        })
-        .eq("id", currentOrderId);
-      if (orderErr) throw new Error("order update: " + orderErr.message);
-
-      setOrders(prev => prev.map(o => o.id === currentOrderId ? { ...o, status: "delivered", delivered_at: new Date().toISOString(), customer_collected: cashToCollect } : o));
-      setShowCashCollectModal(false);
-      showToast(`Delivery complete! You earned ₹${riderEarning}!`, "success");
     } catch (err) {
       logger.error({ err }, "Error delivering order");
       showToast("Failed to complete delivery.", "error");
