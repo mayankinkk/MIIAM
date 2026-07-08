@@ -52,7 +52,7 @@ export default function RiderOrdersPage() {
       // Fetch available orders (not assigned to any rider)
       const { data: availableOrders, error: dbError } = await supabase
         .from("orders")
-        .select("id, user_id, vendor_id, rider_id, status, total_amount, delivery_fee, delivery_address, special_instructions, placed_at, delivered_at")
+        .select("id, user_id, vendor_id, rider_id, status, total_amount, delivery_fee, delivery_address, delivery_lat, delivery_lng, special_instructions, placed_at, delivered_at")
         .is("rider_id", null)
         .in("status", ["pending", "ready_for_pickup"])
         .gte("placed_at", yesterday.toISOString())
@@ -63,9 +63,9 @@ export default function RiderOrdersPage() {
       // Also fetch this rider's own accepted orders
   const { data: myOrders } = riderId ? await supabase
         .from("orders")
-        .select("id, user_id, vendor_id, rider_id, status, total_amount, delivery_fee, delivery_address, special_instructions, placed_at, delivered_at")
+        .select("id, user_id, vendor_id, rider_id, status, total_amount, delivery_fee, delivery_address, delivery_lat, delivery_lng, special_instructions, placed_at, delivered_at")
         .eq("rider_id", riderId)
-        .in("status", ["shopping", "picked_up", "accepted", "pending", "preparing", "ready_for_pickup", "on_the_way"])
+        .in("status", ["accepted", "shopping", "picked_up", "on_the_way"])
         .order("placed_at", { ascending: false }) : { data: [] };
 
       const allDbOrders = [...(availableOrders || []), ...(myOrders || [])];
@@ -247,12 +247,13 @@ export default function RiderOrdersPage() {
       const order = orders.find(o => o.id === orderId);
       if (order?.user_id) {
         try {
+          const isDirectPickup = order.status === "ready_for_pickup";
           await supabase.from("notifications").insert({
             user_id: order.user_id,
-            title: newStatus === "shopping" ? "Rider Picked Up Your Order! 🛵" : "Rider Assigned!",
-            body: newStatus === "shopping"
-              ? "Your rider has picked up the order and is on the way!"
-              : "A rider is on their way to pick up your order.",
+            title: isDirectPickup ? "Rider Heading to Store! 🛵" : "Rider Assigned! 🛵",
+            body: isDirectPickup
+              ? "A rider is heading to the store to pick up your order."
+              : "A rider has been assigned to your order.",
             type: "order",
             is_read: false,
           });
@@ -262,7 +263,7 @@ export default function RiderOrdersPage() {
       }
 
       setOrders(prev => prev.map(o => o.id === orderId ? { ...o, rider_id: riderProfile.id, status: newStatus } : o));
-      showToast(newStatus === "shopping" ? "Order picked up! Head to customer." : "Order accepted!", "success");
+      showToast(newStatus === "shopping" ? "Heading to store to pick up!" : "Order accepted!", "success");
     } catch (err: unknown) {
       logger.error({ err }, "Error accepting order");
       showToast("Failed to accept order: " + ((err instanceof Error ? err.message : null) || "Unknown error"), "error");
@@ -627,7 +628,7 @@ export default function RiderOrdersPage() {
   });
 
   const availableOrders = filteredOrders.filter(o => ["pending", "ready_for_pickup"].includes(o.status) && !o.rider_id);
-  const shoppingOrders = filteredOrders.filter(o => o.rider_id && ["accepted", "shopping", "picked_up", "preparing", "ready_for_pickup", "on_the_way"].includes(o.status));
+  const shoppingOrders = filteredOrders.filter(o => o.rider_id && ["accepted", "shopping", "picked_up", "on_the_way"].includes(o.status));
   const completedOrders = filteredOrders.filter(o => o.status === "delivered");
 
   const todayEarnings = completedOrders
@@ -923,8 +924,9 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
   const totalSpent = items.reduce((s: number, i: OrderItem) => s + ((i.actual_price || 0) * i.quantity), 0);
   const profit = (order.total_amount || 0) + (order.delivery_fee || 0) - totalSpent;
 
-  // In new flow: shopping/picked_up = rider heading to deliver (delivery phase)
-  const phase = ["shopping", "picked_up", "on_the_way"].includes(order.status) ? "delivery" : "pickup";
+  // In new flow: shopping = rider at store picking items (pickup phase)
+  // picked_up/on_the_way = confirmed picked up, heading to customer (delivery phase)
+  const phase = ["picked_up", "on_the_way"].includes(order.status) ? "delivery" : "pickup";
   const [expanded, setExpanded] = useState(false);
   const [showMap, setShowMap] = useState(false);
   const mapRef = useRef<HTMLDivElement>(null);
@@ -1063,6 +1065,30 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
         } catch (e) { logger.warn({ err: e }, "Map routing error"); }
       }
 
+      // Fallback: use vendor's stored lat/lng for pickup phase
+      if (!geoSuccess && isMounted && isPickup && order.vendor?.lat && order.vendor?.lng) {
+        const dLat = order.vendor.lat;
+        const dLng = order.vendor.lng;
+        destLatLngRef.current = [dLat, dLng];
+        L.marker([dLat, dLng], { icon: destIcon })
+          .bindPopup(`<b>${destLabel}</b><br><span style="font-size:11px">${order.vendor?.shop_name || order.vendor?.name || "Vendor"}</span>`)
+          .openPopup().addTo(map);
+        await drawRoute(riderLat, riderLng, dLat, dLng);
+        geoSuccess = true;
+      }
+
+      // Fallback: use delivery stored lat/lng for delivery phase
+      if (!geoSuccess && isMounted && !isPickup && order.delivery_lat && order.delivery_lng) {
+        const dLat = order.delivery_lat;
+        const dLng = order.delivery_lng;
+        destLatLngRef.current = [dLat, dLng];
+        L.marker([dLat, dLng], { icon: destIcon })
+          .bindPopup(`<b>${destLabel}</b><br><span style="font-size:11px">${deliveryAddress || "Customer"}</span>`)
+          .openPopup().addTo(map);
+        await drawRoute(riderLat, riderLng, dLat, dLng);
+        geoSuccess = true;
+      }
+
       if (!geoSuccess && isMounted) {
         // Fallback so the map isn't stuck loading forever
         setTrackingInfo({ eta: 0, distance: "0.0" });
@@ -1089,7 +1115,7 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
       isMounted = false;
       if (mapInstanceRef.current) { mapInstanceRef.current.remove(); mapInstanceRef.current = null; }
     };
-  }, [showMap, phase, order.id, vendorAddress, deliveryAddress]);
+  }, [showMap, phase, order.id, vendorAddress, deliveryAddress, order.delivery_lat, order.delivery_lng]);
 
   return (
     <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl shadow-lg overflow-hidden">

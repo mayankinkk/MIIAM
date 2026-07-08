@@ -30,6 +30,8 @@ export interface Order {
   customer_name?: string;
   customer_phone?: string;
   delivery_address?: string;
+  delivery_lat?: number;
+  delivery_lng?: number;
   vendor?: {
     shop_name: string;
     name?: string;

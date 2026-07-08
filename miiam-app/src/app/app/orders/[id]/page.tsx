@@ -94,7 +94,8 @@ function getFoodSteps(t: TranslationKeys, order?: OrderTimestamps) {
     { key: "accepted", label: t.orders.orderAccepted, icon: "check_circle", time: formatTimestamp(order?.accepted_at) },
     { key: "preparing", label: t.orders.preparing, icon: "skillet", time: formatTimestamp(order?.preparing_at) },
     { key: "ready_for_pickup", label: t.orders.readyForPickup, icon: "inventory_2", time: formatTimestamp(order?.ready_at) },
-    { key: "shopping", label: t.orders.shopping, icon: "directions_bike", time: formatTimestamp(order?.shopping_at) },
+    { key: "shopping", label: t.orders.shopping, icon: "shopping_cart", time: formatTimestamp(order?.shopping_at) },
+    { key: "picked_up", label: t.orders.onTheWay, icon: "directions_bike", time: formatTimestamp(order?.picked_at) },
     { key: "delivered", label: t.orders.delivered, icon: "home_pin", time: formatTimestamp(order?.delivered_at) },
   ];
 }
@@ -191,9 +192,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
   }
 
   const steps = pageOrder?.vendor_id === PRINTING_VENDOR_ID ? getPrintSteps(t, pageOrder as unknown as OrderTimestamps) : getFoodSteps(t, pageOrder as unknown as OrderTimestamps);
-  // Map picked_up → shopping for step index calculation (same visual step)
-  const statusForStep = pageOrder.status === "picked_up" ? "shopping" : pageOrder.status;
-  const currentStepIndex = Math.max(0, steps.findIndex((s) => s.key === statusForStep));
+  const currentStepIndex = Math.max(0, steps.findIndex((s) => s.key === pageOrder.status));
 
   return (
     <div className="min-h-screen bg-surface dark:bg-[var(--color-surface)] overflow-x-hidden">

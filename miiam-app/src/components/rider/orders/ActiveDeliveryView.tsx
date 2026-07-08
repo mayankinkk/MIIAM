@@ -24,9 +24,9 @@ export default function ActiveDeliveryView({ order, riderId, onUpdateItemStatus,
   const totalSpent = items.reduce((s: number, i: OrderItem) => s + ((i.actual_price || 0) * i.quantity), 0);
   const profit = (order.total_amount || 0) + (order.delivery_fee || 0) - totalSpent;
 
-  // In new flow: shopping = rider accepted & heading to deliver; picked_up = confirmed picked up
-  // Both mean we're in "delivery" phase (going to customer)
-  const phase = ["shopping", "picked_up", "on_the_way"].includes(order.status) ? "delivery" : "pickup";
+  // In new flow: shopping/accepted = rider at store picking items (pickup phase)
+  // picked_up/on_the_way = confirmed picked up, heading to customer (delivery phase)
+  const phase = ["picked_up", "on_the_way"].includes(order.status) ? "delivery" : "pickup";
   const [expanded, setExpanded] = useState(false);
   const [showMap, setShowMap] = useState(false);
   const mapRef = useRef<HTMLDivElement>(null);
@@ -169,6 +169,18 @@ export default function ActiveDeliveryView({ order, riderId, onUpdateItemStatus,
         geoSuccess = true;
       }
 
+      // Fallback: use delivery stored lat/lng for delivery phase
+      if (!geoSuccess && isMounted && !isPickup && order.delivery_lat && order.delivery_lng) {
+        const dLat = order.delivery_lat;
+        const dLng = order.delivery_lng;
+        destLatLngRef.current = [dLat, dLng];
+        L.marker([dLat, dLng], { icon: destIcon })
+          .bindPopup(`<b>${destLabel}</b><br><span style="font-size:11px">${deliveryAddress || "Customer"}</span>`)
+          .openPopup().addTo(map);
+        await drawRoute(riderLat, riderLng, dLat, dLng);
+        geoSuccess = true;
+      }
+
       if (!geoSuccess && isMounted) {
         setTrackingInfo({ eta: 0, distance: "0.0" });
       }
@@ -193,7 +205,7 @@ export default function ActiveDeliveryView({ order, riderId, onUpdateItemStatus,
       isMounted = false;
       if (mapInstanceRef.current) { mapInstanceRef.current.remove(); mapInstanceRef.current = null; }
     };
-  }, [showMap, phase, order.id, vendorAddress, deliveryAddress]);
+  }, [showMap, phase, order.id, vendorAddress, deliveryAddress, order.delivery_lat, order.delivery_lng]);
 
   return (
     <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl shadow-lg overflow-hidden">
