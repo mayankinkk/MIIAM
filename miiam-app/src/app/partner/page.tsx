@@ -23,7 +23,7 @@ const steps = [
 const faqs = [
   { q: "How long does verification take?", a: "Most applications are reviewed within 24-48 hours. You'll get an email once verified." },
   { q: "What documents do I need?", a: "You'll need a valid GST number, FSSAI license (for food), and PAN card." },
-  { q: "Are there any hidden fees?", a: "No hidden fees. We charge a flat 5% commission per order with no monthly or listing fees." },
+  { q: "Are there any hidden fees?", a: "No hidden fees. We charge a flat 15% commission per order with no monthly or listing fees." },
   { q: "When do I get paid?", a: "Payouts are processed every Monday for the previous week's orders." },
   { q: "Can I partner from any city?", a: "We're currently active in Gauripur and Dhubri only." },
 ];

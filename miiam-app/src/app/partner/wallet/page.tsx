@@ -117,7 +117,7 @@ export default function VendorWalletPage() {
   };
 
   const deliveredOrders = orders.filter((o) => o.status === "delivered");
-  const recentTransactions = orders.slice(0, 10);
+  const recentTransactions = orders.filter((o) => ["delivered", "cancelled", "refunded"].includes(o.status)).slice(0, 10);
 
   return (
     <div className="p-4 md:p-8 space-y-8">

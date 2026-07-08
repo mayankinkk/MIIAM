@@ -24,12 +24,11 @@ export default function VendorDashboard() {
   const [autoAccept, setAutoAccept] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState<string | null>(null);
   const [rejectReason, setRejectReason] = useState("");
-  const audioRef = useRef<HTMLAudioElement | null>(null);
   const processedOrdersRef = useRef(new Set<string>());
   const rejectReasons = ["Out of stock", "Too busy", "Store closing", "Item unavailable", "Other"];
 
   useEffect(() => {
-    init();
+    init().catch(() => setLoading(false));
   }, []);
 
   useEffect(() => {
@@ -236,7 +235,6 @@ export default function VendorDashboard() {
 
   return (
     <div className="p-4 md:p-8 space-y-8">
-      <audio ref={audioRef} preload="auto" />
 
       {/* New Order Alert Banner */}
       {newOrderAlert && (
@@ -389,7 +387,7 @@ export default function VendorDashboard() {
                     )}
                   </div>
                   <div className="flex items-center justify-between pt-3 border-t border-[var(--color-border-subtle)]">
-                    <p className="font-extrabold text-lg text-[var(--color-primary)]">₹{order.total_amount.toFixed(2)}</p>
+                    <p className="font-extrabold text-lg text-[var(--color-primary)]">₹{(order.total_amount || 0).toFixed(2)}</p>
                     <div className="flex gap-2">
                       <button
                         onClick={() => openRejectModal(order.id)}
@@ -442,7 +440,7 @@ export default function VendorDashboard() {
                       ))}
                     </div>
                     <div className="flex items-center justify-between pt-3 border-t border-[var(--color-border-subtle)]">
-                      <p className="font-extrabold text-lg text-blue-600">₹{order.total_amount.toFixed(2)}</p>
+                      <p className="font-extrabold text-lg text-blue-600">₹{(order.total_amount || 0).toFixed(2)}</p>
                       <button
                         onClick={() => handleMarkReady(order.id)}
                         disabled={processingOrder === order.id}
@@ -512,7 +510,7 @@ export default function VendorDashboard() {
                       <p className="text-xs text-[var(--color-outline-variant)]">{new Date(order.placed_at).toLocaleDateString()}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-bold text-[var(--color-on-surface)]">₹{order.total_amount.toFixed(0)}</p>
+                      <p className="text-sm font-bold text-[var(--color-on-surface)]">₹{(order.total_amount || 0).toFixed(0)}</p>
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                         order.status === "delivered" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" :
                         order.status === "cancelled" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300" :

@@ -21,7 +21,11 @@ export default function PartnerKOTPage() {
 
   async function init() {
     const id = await getVendorIdForUser();
-    if (!mountedRef.current || !id) return;
+    if (!mountedRef.current) return;
+    if (!id) {
+      setLoading(false);
+      return;
+    }
     setVendorId(id);
     await loadOrders(id);
   }

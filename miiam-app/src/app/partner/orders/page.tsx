@@ -7,6 +7,7 @@ import { VendorTableSkeleton } from "@/components/vendor/VendorSkeleton";
 import type { Order, OrderStatus } from "@/lib/types";
 import OrderChatOverlay from "@/components/order/OrderChatOverlay";
 import { useUnreadMessages } from "@/lib/hooks/useUnreadMessages";
+import logger from "@/lib/logger";
 
 type FilterStatus = "all" | "active" | "delivered" | "cancelled";
 type TabType = "orders" | "services";
@@ -38,19 +39,21 @@ export default function VendorOrders() {
   }, [showRejectModal]);
 
   useEffect(() => {
-    init();
+    init().catch(() => setLoading(false));
   }, []);
 
   async function init() {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user) setVendorUserId(user.id);
-    const id = await getVendorIdForUser();
-    if (id) {
-      setVendorId(id);
-      loadOrders(id);
-      loadServiceBookings(id);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) setVendorUserId(user.id);
+      const id = await getVendorIdForUser();
+      if (id) {
+        setVendorId(id);
+        await Promise.all([loadOrders(id), loadServiceBookings(id)]);
+      }
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   async function loadOrders(vId: string) {
@@ -83,7 +86,11 @@ export default function VendorOrders() {
       updateData.cancellation_reason = reason;
       updateData.cancelled_by = "vendor";
     }
-    await supabase.from("orders").update(updateData).eq("id", orderId);
+    const { error } = await supabase.from("orders").update(updateData).eq("id", orderId);
+    if (error) {
+      logger.error({ err: error }, "Failed to update order status");
+      return;
+    }
     setOrders(orders.map((o) => (o.id === orderId ? { ...o, status } : o)));
     if (selectedOrder?.id === orderId) setSelectedOrder({ ...selectedOrder, status });
   };

@@ -33,6 +33,11 @@ export default function PartnerPOS() {
   const prevPendingCountRef = useRef(0);
   const audioCtxRef = useRef<AudioContext | null>(null);
 
+  // Keep pending count ref in sync with orders state
+  useEffect(() => {
+    prevPendingCountRef.current = orders.filter(o => o.status === "pending").length;
+  }, [orders]);
+
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -81,7 +86,6 @@ export default function PartnerPOS() {
   }, []);
 
   async function loadOrders(vId: string) {
-    prevPendingCountRef.current = orders.filter(o => o.status === "pending").length;
     const { data, error } = await supabase
       .from("orders")
       .select("*, items:order_items(*)")

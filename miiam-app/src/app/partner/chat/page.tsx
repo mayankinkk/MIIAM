@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { getVendorForUser } from "@/lib/vendor";
 
@@ -21,19 +21,23 @@ export default function PartnerChatPage() {
   const [reply, setReply] = useState("");
   const [sending, setSending] = useState(false);
   const [activeOrder, setActiveOrder] = useState<string | null>(null);
+  const vendorOrderIdsRef = useRef(new Set<string>());
 
   useEffect(() => {
     init();
   }, []);
 
-  // Real-time subscription for new messages
+  // Real-time subscription for new messages (filtered to this vendor's orders)
   useEffect(() => {
     if (!vendorId) return;
     const channel = supabase
       .channel("partner-chat")
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "order_chat" }, (payload: { new: Record<string, unknown> }) => {
         const newMsg = payload.new as unknown as ChatMessage;
-        setMessages(prev => [newMsg, ...prev]);
+        // Only add if this message belongs to one of this vendor's orders
+        if (vendorOrderIdsRef.current.has(newMsg.order_id)) {
+          setMessages(prev => [newMsg, ...prev]);
+        }
       })
       .subscribe();
     return () => { supabase.removeChannel(channel); };
@@ -48,7 +52,11 @@ export default function PartnerChatPage() {
       .select("*, orders!inner(vendor_id)")
       .eq("orders.vendor_id", v.id)
       .order("created_at", { ascending: false });
-    if (data) setMessages(data as ChatMessage[]);
+    if (data) {
+      setMessages(data as ChatMessage[]);
+      // Track which orders belong to this vendor for realtime filtering
+      vendorOrderIdsRef.current = new Set(data.map((m: ChatMessage) => m.order_id));
+    }
   }
 
   const grouped = messages.reduce((acc, m) => {
@@ -72,7 +80,16 @@ export default function PartnerChatPage() {
     });
     if (!error) {
       setReply("");
-      init();
+      // Append the new message locally instead of re-fetching all messages
+      const newMsg: ChatMessage = {
+        id: crypto.randomUUID(),
+        order_id: activeOrder,
+        sender: "vendor",
+        message: sanitized,
+        created_at: new Date().toISOString(),
+        read: false,
+      };
+      setMessages(prev => [newMsg, ...prev]);
     }
     setSending(false);
   }
