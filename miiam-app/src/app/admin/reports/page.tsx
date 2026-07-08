@@ -116,7 +116,7 @@ export default function ReportsPage() {
       } else if (reportType === "riders") {
         const { data } = await supabase
           .from("orders")
-          .select("rider_id, total_amount, status, rider:riders(id, full_name, phone)")
+          .select("rider_id, delivery_fee, total_amount, status, rider:riders(id, full_name, phone)")
           .eq("status", "delivered")
           .gte("placed_at", startIso)
           .lte("placed_at", endIso);
@@ -128,7 +128,7 @@ export default function ReportsPage() {
             const rName = (o.rider as Record<string, unknown> | null)?.full_name as string || (o.rider as Record<string, unknown> | null)?.phone as string || "Unknown";
             const cur = riderMap.get(rid) || { name: rName, deliveries: 0, earnings: 0 };
             cur.deliveries++;
-            cur.earnings += o.total_amount || 0;
+            cur.earnings += o.delivery_fee || 0;
             riderMap.set(rid, cur);
           }
           const riderList = Array.from(riderMap.values())

@@ -92,7 +92,7 @@ export default function PartnerLanding() {
             <p className="text-[var(--color-outline)]">Active Restaurant Partners</p>
             <div className="grid grid-cols-3 gap-4 mt-8">
               <div>
-                <p className="text-xl font-black text-[var(--color-primary)]">50+</p>
+                <p className="text-xl font-black text-[var(--color-primary)]">2+</p>
                 <p className="text-xs text-[var(--color-outline)]">Cities</p>
               </div>
               <div>
