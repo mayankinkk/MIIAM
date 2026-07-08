@@ -979,7 +979,7 @@ export default function PartnerMenuPage() {
       {/* Add Item Modal */}
       {showAddModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowAddModal(false)} role="dialog" aria-modal="true" aria-labelledby="add-item-title">
-          <div className="bg-[var(--color-surface-container-lowest)] w-full max-w-lg rounded-3xl p-6 m-4" onClick={e => e.stopPropagation()}>
+          <div className="bg-[var(--color-surface-container-lowest)] w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl p-6 m-4" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
               <h2 id="add-item-title" className="text-xl font-extrabold text-[var(--color-on-surface)]">
                 Add {vendorKey === "food" ? "Menu Item" : vendorKey === "grocery" ? "Product" : vendorKey === "pharmacy" ? "Medicine" : "Item"}
@@ -1254,7 +1254,7 @@ export default function PartnerMenuPage() {
       {/* Edit Item Modal */}
       {editingItem && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setEditingItem(null)} role="dialog" aria-modal="true" aria-labelledby="edit-item-title">
-          <div className="bg-[var(--color-surface-container-lowest)] w-full max-w-lg rounded-3xl p-6 m-4" onClick={e => e.stopPropagation()}>
+          <div className="bg-[var(--color-surface-container-lowest)] w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl p-6 m-4" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
               <h2 id="edit-item-title" className="text-xl font-extrabold text-[var(--color-on-surface)]">Edit Item</h2>
               <button onClick={() => setEditingItem(null)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center" aria-label="Close">
