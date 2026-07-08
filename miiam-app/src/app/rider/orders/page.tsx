@@ -262,6 +262,28 @@ export default function RiderOrdersPage() {
         }
       }
 
+      // Notify vendor when rider accepts a pending order directly
+      if (order?.vendor_id && order.status === "pending") {
+        try {
+          const { data: vendorUser } = await supabase
+            .from("vendors")
+            .select("user_id")
+            .eq("id", order.vendor_id)
+            .single();
+          if (vendorUser?.user_id) {
+            await supabase.from("notifications").insert({
+              user_id: vendorUser.user_id,
+              title: "Order Accepted by Rider! 🛵",
+              body: `A rider has picked up order #${orderId.slice(0, 8)}. You don't need to do anything.`,
+              type: "order",
+              is_read: false,
+            });
+          }
+        } catch (notifErr) {
+          logger.info({ err: notifErr }, "Vendor notification error (non-critical)");
+        }
+      }
+
       setOrders(prev => prev.map(o => o.id === orderId ? { ...o, rider_id: riderProfile.id, status: newStatus } : o));
       showToast(newStatus === "shopping" ? "Heading to store to pick up!" : "Order accepted!", "success");
     } catch (err: unknown) {
