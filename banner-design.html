@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MIIAM Marketing Banner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: #111;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 40px;
+    }
+
+    /* ============================================
+       BANNER: 6ft x 3ft (horizontal roll-up)
+       At 150 DPI: 3600 x 1800 px
+       Scaled down 2x for screen preview: 1800 x 900
+       ============================================ */
+    .banner {
+      width: 1800px;
+      height: 900px;
+      background: linear-gradient(135deg, #0f0f0f 0%, #1a0a0e 30%, #2d0a12 60%, #0f0f0f 100%);
+      position: relative;
+      overflow: hidden;
+      border-radius: 12px;
+      box-shadow: 0 40px 100px rgba(186, 0, 28, 0.3);
+    }
+
+    /* Background glow effects */
+    .banner::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      right: -100px;
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(186, 0, 28, 0.15) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .banner::after {
+      content: '';
+      position: absolute;
+      bottom: -300px;
+      left: -100px;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(11, 80, 213, 0.1) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    /* Grid pattern overlay */
+    .grid-overlay {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 60px 60px;
+      z-index: 1;
+    }
+
+    /* Top accent line */
+    .accent-line {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #ba001c, #ff5f6d, #ba001c, #0b50d5, #ba001c);
+      z-index: 10;
+    }
+
+    /* Content layout */
+    .content {
+      position: relative;
+      z-index: 5;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      height: 100%;
+      padding: 50px 60px;
+    }
+
+    /* LEFT SIDE — Branding & Tagline */
+    .left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 24px;
+    }
+
+    .brand-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(186, 0, 28, 0.15);
+      border: 1px solid rgba(186, 0, 28, 0.3);
+      padding: 6px 16px;
+      border-radius: 100px;
+      width: fit-content;
+    }
+    .brand-badge span {
+      color: #ff5f6d;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .logo {
+      font-size: 72px;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: -3px;
+      line-height: 1;
+    }
+    .logo .red { color: #ba001c; }
+
+    .tagline {
+      font-size: 36px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #fff 0%, #ff5f6d 50%, #ba001c 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.6;
+      max-width: 480px;
+    }
+
+    /* Service icons row */
+    .services-row {
+      display: flex;
+      gap: 16px;
+      margin-top: 8px;
+    }
+    .service-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 10px 16px;
+      border-radius: 12px;
+      transition: all 0.3s;
+    }
+    .service-chip .icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+    .service-chip .label {
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .service-chip .price {
+      color: rgba(255,255,255,0.4);
+      font-size: 11px;
+    }
+
+    .sc-food .icon { background: rgba(186, 0, 28, 0.2); }
+    .sc-grocery .icon { background: rgba(16, 185, 129, 0.2); }
+    .sc-pharmacy .icon { background: rgba(139, 92, 246, 0.2); }
+    .sc-services .icon { background: rgba(11, 80, 213, 0.2); }
+    .sc-printing .icon { background: rgba(245, 158, 11, 0.2); }
+
+    /* QR Code area */
+    .qr-section {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .qr-box {
+      width: 100px;
+      height: 100px;
+      background: #fff;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .qr-box .qr-placeholder {
+      width: 80px;
+      height: 80px;
+      background: repeating-conic-gradient(#000 0% 25%, #fff 0% 50%) 50% / 16px 16px;
+      border-radius: 4px;
+    }
+    .qr-text {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .qr-text .scan {
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .qr-text .url {
+      color: rgba(255,255,255,0.5);
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .qr-text .or-text {
+      color: rgba(255,255,255,0.35);
+      font-size: 12px;
+    }
+
+    /* RIGHT SIDE — Features & Stats */
+    .right {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 20px;
+      padding-left: 40px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .feature-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+    }
+    .feature-card .f-icon {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+    .feature-card .f-title {
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .feature-card .f-desc {
+      color: rgba(255,255,255,0.45);
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    .fc-red::before { background: linear-gradient(90deg, #ba001c, transparent); }
+    .fc-blue::before { background: linear-gradient(90deg, #0b50d5, transparent); }
+    .fc-green::before { background: linear-gradient(90deg, #10b981, transparent); }
+    .fc-amber::before { background: linear-gradient(90deg, #f59e0b, transparent); }
+    .fc-purple::before { background: linear-gradient(90deg, #8b5cf6, transparent); }
+    .fc-pink::before { background: linear-gradient(90deg, #ec4899, transparent); }
+
+    /* Stats bar */
+    .stats-bar {
+      display: flex;
+      gap: 24px;
+      margin-top: 4px;
+    }
+    .stat {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .stat .val {
+      color: #fff;
+      font-size: 22px;
+      font-weight: 900;
+    }
+    .stat .lbl {
+      color: rgba(255,255,255,0.4);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Promo banner at bottom */
+    .promo-strip {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(90deg, #ba001c, #a40017);
+      padding: 12px 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 10;
+    }
+    .promo-strip .promo-text {
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    .promo-strip .promo-code {
+      background: rgba(255,255,255,0.2);
+      padding: 6px 20px;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: 3px;
+    }
+    .promo-strip .promo-note {
+      color: rgba(255,255,255,0.8);
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    /* Cities served */
+    .cities {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .cities .pin {
+      color: #ba001c;
+      font-size: 14px;
+    }
+    .cities .text {
+      color: rgba(255,255,255,0.5);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* Social icons */
+    .socials {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .social-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.5);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    /* Print styles */
+    @media print {
+      body { background: none; padding: 0; }
+      .banner { border-radius: 0; box-shadow: none; width: 100%; height: auto; aspect-ratio: 2/1; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="banner">
+  <div class="accent-line"></div>
+  <div class="grid-overlay"></div>
+
+  <div class="content">
+    <!-- LEFT: Branding -->
+    <div class="left">
+      <div class="brand-badge">
+        <span>Assam's #1 Super App</span>
+      </div>
+
+      <div class="logo">MII<span class="red">AM</span></div>
+
+      <div class="tagline">Crave It. Get It.</div>
+
+      <p class="subtitle">
+        Food delivery, grocery, pharmacy, flowers, printing & home services
+        &mdash; all in one app. From your favourite restaurants to verified
+        professionals at your doorstep.
+      </p>
+
+      <div class="services-row">
+        <div class="service-chip sc-food">
+          <div class="icon">&#127828;</div>
+          <div>
+            <div class="label">Food</div>
+            <div class="price">30-min delivery</div>
+          </div>
+        </div>
+        <div class="service-chip sc-grocery">
+          <div class="icon">&#129382;</div>
+          <div>
+            <div class="label">Grocery</div>
+            <div class="price">Fresh & fast</div>
+          </div>
+        </div>
+        <div class="service-chip sc-pharmacy">
+          <div class="icon">&#128138;</div>
+          <div>
+            <div class="label">Pharmacy</div>
+            <div class="price">Rx delivery</div>
+          </div>
+        </div>
+        <div class="service-chip sc-services">
+          <div class="icon">&#128295;</div>
+          <div>
+            <div class="label">Services</div>
+            <div class="price">Verified pros</div>
+          </div>
+        </div>
+        <div class="service-chip sc-printing">
+          <div class="icon">&#128424;</div>
+          <div>
+            <div class="label">Print</div>
+            <div class="price">30-min rush</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="qr-section">
+        <div class="qr-box">
+          <div class="qr-placeholder"></div>
+        </div>
+        <div class="qr-text">
+          <div class="scan">Scan to Download</div>
+          <div class="url">miiam.in</div>
+          <div class="or-text">Also on Play Store & App Store</div>
+        </div>
+      </div>
+
+      <div class="cities">
+        <span class="pin">&#128205;</span>
+        <span class="text">Guwahati &bull; Gauripur &bull; Dhubri &bull; Coming to more cities soon</span>
+      </div>
+
+      <div class="socials">
+        <div class="social-icon">IG</div>
+        <div class="social-icon">X</div>
+        <div class="social-icon">FB</div>
+        <div class="social-icon">YT</div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Features -->
+    <div class="right">
+      <div class="features-grid">
+        <div class="feature-card fc-red">
+          <div class="f-icon">&#9889;</div>
+          <div class="f-title">10-Min Quick Commerce</div>
+          <div class="f-desc">Ultra-fast delivery mode for when you need it NOW</div>
+        </div>
+        <div class="feature-card fc-blue">
+          <div class="f-icon">&#128722;</div>
+          <div class="f-title">Cross-Store Cart</div>
+          <div class="f-desc">Order from multiple restaurants in a single cart</div>
+        </div>
+        <div class="feature-card fc-green">
+          <div class="f-icon">&#128197;</div>
+          <div class="f-title">Scheduled & Recurring</div>
+          <div class="f-desc">Plan deliveries ahead or set auto-reorder on repeat</div>
+        </div>
+        <div class="feature-card fc-amber">
+          <div class="f-icon">&#128424;</div>
+          <div class="f-title">Print Store</div>
+          <div class="f-desc">B&W from &#8377;2/page, passport photos, 30-min delivery</div>
+        </div>
+        <div class="feature-card fc-purple">
+          <div class="f-icon">&#128105;&#8205;&#128295;</div>
+          <div class="f-title">Verified Professionals</div>
+          <div class="f-desc">Background-checked experts for home services</div>
+        </div>
+        <div class="feature-card fc-pink">
+          <div class="f-icon">&#128155;</div>
+          <div class="f-title">100% Tips to Riders</div>
+          <div class="f-desc">Zero commission on tips &mdash; every rupee goes to them</div>
+        </div>
+      </div>
+
+      <div class="stats-bar">
+        <div class="stat">
+          <div class="val">500+</div>
+          <div class="lbl">Restaurants</div>
+        </div>
+        <div class="stat">
+          <div class="val">8</div>
+          <div class="lbl">Service Categories</div>
+        </div>
+        <div class="stat">
+          <div class="val">30 min</div>
+          <div class="lbl">Avg Delivery</div>
+        </div>
+        <div class="stat">
+          <div class="val">&#8377;0</div>
+          <div class="lbl">Delivery Fee*</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Promo strip -->
+  <div class="promo-strip">
+    <div class="promo-text">USE CODE</div>
+    <div class="promo-code">MIIAM50</div>
+    <div class="promo-note">Flat 50% off on your first order &bull; Min order &#8377;199</div>
+  </div>
+</div>
+
+</body>
+</html>

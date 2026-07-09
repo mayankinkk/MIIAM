@@ -40,7 +40,7 @@ export default function RiderIncidentPage() {
   const [emergencyContacts] = useState([
     { name: "Emergency Services", number: "102" },
     { name: "Police", number: "100" },
-    { name: "Support Team", number: "1800-123-4567" },
+    { name: "Support Team", number: "99578 73472" },
   ]);
 
   useEffect(() => {

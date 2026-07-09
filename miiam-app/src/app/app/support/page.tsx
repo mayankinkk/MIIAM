@@ -104,7 +104,7 @@ const [userOrders, setUserOrders] = useState<OrderData[]>([]);
     setNewMessage("");
 
     setTimeout(() => {
-      const botMsg = { id: messages.length + 2, from: "bot" as const, text: "Thanks for your message! Our team is reviewing your query and will get back to you shortly. For immediate help, please call us at 1800-123-4567.", time: "Just now" };
+      const botMsg = { id: messages.length + 2, from: "bot" as const, text: "Thanks for your message! Our team is reviewing your query and will get back to you shortly. For immediate help, please call us at 99578 73472.", time: "Just now" };
       setMessages(prev => [...prev, botMsg]);
     }, 1500);
   };

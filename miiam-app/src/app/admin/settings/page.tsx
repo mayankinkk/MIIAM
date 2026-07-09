@@ -480,7 +480,7 @@ export default function SettingsPage() {
                   id="settings-phone-label"
                   value={settings.support_phone_label || ""}
                   onChange={(e) => handleChange("support_phone_label", e.target.value)}
-                  placeholder="1800-123-4567 (Toll free)"
+                  placeholder="99578 73472 (Toll free)"
                   className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                 />
               </div>
