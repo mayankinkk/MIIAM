@@ -538,6 +538,27 @@ export default function FoodPageContent() {
     });
   }, [userPincode, userCity, fetchData, setFavorites]);
 
+  // Real-time: listen for vendor status changes (online/offline toggle)
+  useEffect(() => {
+    const channel = supabase
+      .channel("vendor-status-changes")
+      .on("postgres_changes", {
+        event: "UPDATE",
+        schema: "public",
+        table: "vendors",
+      }, (payload: { new: Record<string, unknown> }) => {
+        const updated = payload.new as { type?: string; status?: string };
+        if (updated.type !== "food" && updated.type !== "restaurant") return;
+        // Refetch vendors list to reflect online/offline changes
+        fetchData(userPincode, userCity);
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [supabase, userPincode, userCity, fetchData]);
+
   if (foodSetting && !foodSetting.isEnabled) {
     return <ServiceUnavailable serviceName="Food Delivery" message={foodSetting.message} icon="restaurant" />;
   }
