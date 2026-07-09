@@ -1,3 +1,5 @@
+import logger from "@/lib/logger";
+
 export type AddOnId =
   | "cover_page"
   | "collate_interleaved"
@@ -59,7 +61,7 @@ export function getAddOnPricing(): AddOnPricing {
       return { ...DEFAULT_ADDON_PRICING, ...parsed };
     }
   } catch (e) {
-    console.warn("[printing-addons] Failed to parse stored addon pricing, using defaults:", e);
+    logger.warn({ err: e }, "[printing-addons] Failed to parse stored addon pricing, using defaults");
   }
   return DEFAULT_ADDON_PRICING;
 }
@@ -69,7 +71,7 @@ export function saveAddOnPricing(pricing: AddOnPricing): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(pricing));
   } catch (e) {
-    console.error("[printing-addons] Failed to save addon pricing to localStorage:", e);
+    logger.error({ err: e }, "[printing-addons] Failed to save addon pricing to localStorage");
   }
 }
 

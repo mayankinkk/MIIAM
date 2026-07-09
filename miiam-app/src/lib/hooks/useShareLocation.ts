@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
+import logger from "@/lib/logger";
 
 export interface SharedLocation {
   lat: number;
@@ -85,7 +86,7 @@ export function useShareLocation({ orderId, userId, active = true }: UseShareLoc
           updatedAt: payload.updated_at,
         });
       } catch (e: unknown) {
-        console.error("Failed to share location", e);
+        logger.error({ err: e }, "Failed to share location");
         setError((e instanceof Error ? e.message : "Failed to share location"));
       }
     };

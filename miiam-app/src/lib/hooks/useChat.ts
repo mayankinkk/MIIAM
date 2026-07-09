@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
+import logger from "@/lib/logger";
 
 export interface ChatMessage {
   id: string;
@@ -128,7 +129,7 @@ export function useChat(
       .single();
 
     if (error) {
-      console.error("Failed to send message:", error);
+      logger.error({ err: error }, "Failed to send message");
       return null;
     }
 

@@ -1,3 +1,5 @@
+import logger from "@/lib/logger";
+
 export const PRINT_MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB (Blinkit parity)
 export const PRINT_MAX_FILE_COUNT = 15; // Blinkit parity
 export const PRINT_ALLOWED_TYPES = [
@@ -50,7 +52,7 @@ export async function getPdfPageCount(file: File): Promise<number> {
     const pageRefs = (extended.match(/\/Type\s*\/Page(?!s)/g) || []).length;
     return pageRefs > 0 ? pageRefs : 1;
   } catch (e) {
-    console.warn("[printing-utils] Could not determine PDF page count, defaulting to 1:", e);
+    logger.warn({ err: e }, "[printing-utils] Could not determine PDF page count, defaulting to 1");
     return 1;
   }
 }
@@ -83,7 +85,7 @@ export async function validatePdfFile(file: File): Promise<PdfValidationResult> 
     const pageCount = extractPdfPageCountFromText(text);
     return { valid: true, pageCount: pageCount ?? undefined };
   } catch (e) {
-    console.error("[printing-utils] PDF validation error:", e);
+    logger.error({ err: e }, "[printing-utils] PDF validation error");
     return { valid: false, error: "Unable to read this PDF. It may be corrupted. Please try re-uploading." };
   }
 }

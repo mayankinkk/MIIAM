@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from "react";
 import { useToastStore } from "@/lib/store/toastStore";
+import logger from "@/lib/logger";
 
 interface RazorpayHandlerResponse {
   razorpay_order_id: string;
@@ -167,7 +168,7 @@ export function useRazorpay() {
       });
       razorpay.open();
     } catch (error: unknown) {
-      console.error("Razorpay error:", error);
+      logger.error({ err: error }, "Razorpay error");
       addToast("Payment failed. Please try again.", "error");
       setLoading(false);
       const message = error instanceof Error ? error.message : "Payment failed";

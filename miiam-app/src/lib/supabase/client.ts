@@ -1,4 +1,5 @@
 import { createBrowserClient } from '@supabase/ssr'
+import logger from '@/lib/logger'
 
 type SupabaseClient = ReturnType<typeof createBrowserClient>;
 
@@ -7,7 +8,7 @@ function createStubClient(): SupabaseClient {
     get(_target, prop) {
       if (prop === "then") return undefined;
       return () => {
-        console.error(`[MIIAM] Supabase stub called: ${String(prop)}. Ensure env vars are set at runtime.`);
+        logger.error(`Supabase stub called: ${String(prop)}. Ensure env vars are set at runtime.`);
         return { data: null, error: new Error("Supabase client not initialized. Environment variables missing.") };
       };
     },
@@ -23,7 +24,7 @@ export function createClient(): SupabaseClient {
     if (typeof window === "undefined") {
       return createStubClient();
     }
-    console.error("[MIIAM] Supabase credentials missing. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in .env.local");
+    logger.error("[MIIAM] Supabase credentials missing. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in .env.local");
     throw new Error("[MIIAM] Supabase credentials missing. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in .env.local");
   }
 

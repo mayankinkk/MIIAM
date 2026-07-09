@@ -1,3 +1,5 @@
+import logger from "@/lib/logger";
+
 const UPSTASH_URL = process.env.UPSTASH_REDIS_REST_URL;
 const UPSTASH_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
 
@@ -27,7 +29,7 @@ export async function checkIpRateLimit(
 ): Promise<boolean> {
   if (!UPSTASH_URL || !UPSTASH_TOKEN) {
     if (!warnedOnce) {
-      console.warn("[MIIAM] Rate limiting degraded: UPSTASH not configured. Using in-memory fallback (not effective in serverless).");
+      logger.warn("[MIIAM] Rate limiting degraded: UPSTASH not configured. Using in-memory fallback (not effective in serverless).");
       warnedOnce = true;
     }
 

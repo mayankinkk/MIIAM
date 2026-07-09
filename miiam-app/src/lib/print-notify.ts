@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import logger from "@/lib/logger";
 
 export type PrintJobEvent =
   | "print_started"
@@ -46,7 +47,7 @@ export async function notifyPrintEvent(
     is_read: false,
   });
   if (error) {
-    console.error("[print-notify] insert error:", error);
+    logger.error({ err: error, orderId, event }, "[print-notify] insert error");
     throw new Error(`Failed to create notification: ${error.message}`);
   }
 }

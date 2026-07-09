@@ -1,8 +1,10 @@
 // Firebase messaging stub — safe no-op when firebase is not installed
 
+import logger from "@/lib/logger";
+
 export async function requestFcmToken(): Promise<string | null> {
   if (typeof window === "undefined") return null;
-  console.warn("Firebase messaging not configured — push notifications disabled");
+  logger.warn("Firebase messaging not configured — push notifications disabled");
   return null;
 }
 

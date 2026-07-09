@@ -1,6 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { cookies } from 'next/headers'
+import logger from '@/lib/logger'
 
 function getRequiredEnv(key: string): string {
   const value = process.env[key];
@@ -26,7 +27,7 @@ export async function createClient() {
             cookiesToSet.forEach(({ name, value, options }) =>
               cookieStore.set(name, value, options)
             )
-          } catch (e) { console.warn("Failed to set cookie:", e); }
+          } catch (e) { logger.warn({ err: e }, "Failed to set cookie"); }
         },
       },
     }

@@ -1,3 +1,5 @@
+import logger from "@/lib/logger";
+
 export interface PrintingPricing {
   bwPerPage: number;
   colorPerPage: number;
@@ -23,7 +25,7 @@ export function getPrintingPricing(): PrintingPricing {
       return { ...defaultPricing, ...parsed };
     }
   } catch (e) {
-    console.warn("[printing-pricing] Failed to parse stored pricing, using defaults:", e);
+    logger.warn({ err: e }, "[printing-pricing] Failed to parse stored pricing, using defaults");
   }
   return defaultPricing;
 }
@@ -33,6 +35,6 @@ export function savePrintingPricing(pricing: PrintingPricing): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(pricing));
   } catch (e) {
-    console.error("[printing-pricing] Failed to save pricing to localStorage:", e);
+    logger.error({ err: e }, "[printing-pricing] Failed to save pricing to localStorage");
   }
 }

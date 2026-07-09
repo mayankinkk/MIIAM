@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import { requestFcmToken, onForegroundMessage, getFirebaseMessaging } from "@/lib/firebase/messaging";
 import { useNotificationStore } from "@/lib/store/notificationStore";
 import { showLocalNotification } from "@/lib/notifications";
+import logger from "@/lib/logger";
 
 export function usePushNotifications(userId?: string) {
   const [isLoading, setIsLoading] = useState(false);
@@ -48,7 +49,7 @@ export function usePushNotifications(userId?: string) {
           { onConflict: "user_id" }
         );
 
-        console.log("FCM token saved:", fcmToken.substring(0, 20) + "...");
+        logger.info("FCM token saved");
       }
 
       // Listen for foreground messages
@@ -77,7 +78,7 @@ export function usePushNotifications(userId?: string) {
       setIsLoading(false);
       return () => unsubscribe();
     } catch (err) {
-      console.error("Push notification setup error:", err);
+      logger.error({ err }, "Push notification setup error");
       setError("Failed to setup notifications");
       setIsLoading(false);
     }
@@ -107,7 +108,7 @@ export function usePushNotifications(userId?: string) {
 
       return response.json();
     } catch (err) {
-      console.error("Failed to send notification:", err);
+      logger.error({ err }, "Failed to send notification");
     }
   }, [userId]);
 
@@ -120,7 +121,7 @@ export function usePushNotifications(userId?: string) {
       const data = await response.json();
       return data.notifications || [];
     } catch (err) {
-      console.error("Failed to fetch notifications:", err);
+      logger.error({ err }, "Failed to fetch notifications");
       return [];
     }
   }, [userId]);
