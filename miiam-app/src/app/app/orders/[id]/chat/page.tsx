@@ -125,7 +125,7 @@ export default function ChatPage() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <a href="tel:+9118001234567" className="w-10 h-10 flex items-center justify-center text-primary hover:bg-[var(--color-surface-container)] rounded-full transition-colors active:scale-95 duration-200">
+          <a href="tel:+919957873472" className="w-10 h-10 flex items-center justify-center text-primary hover:bg-[var(--color-surface-container)] rounded-full transition-colors active:scale-95 duration-200">
             <span className="material-symbols-outlined">phone</span>
           </a>
         </div>
