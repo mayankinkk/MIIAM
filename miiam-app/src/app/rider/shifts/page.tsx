@@ -3,6 +3,7 @@
 import { useMemo, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
+import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { useRouter } from "next/navigation";
 
 const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -18,6 +19,7 @@ interface Shift {
 export default function RiderShifts() {
   const supabase = useMemo(() => createClient(), []);
   const router = useRouter();
+  const { confirm } = useConfirm();
   const [riderId, setRiderId] = useState<string | null>(null);
   const [shifts, setShifts] = useState<Shift[]>([]);
   const [loading, setLoading] = useState(true);
@@ -62,7 +64,8 @@ export default function RiderShifts() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm("Delete this shift?")) return;
+    const ok = await confirm({ title: "Delete Shift", message: "Are you sure you want to delete this shift?", confirmText: "Delete", variant: "danger" });
+    if (!ok) return;
     await supabase.from("rider_shifts").delete().eq("id", id);
     setShifts(shifts.filter(s => s.id !== id));
   };

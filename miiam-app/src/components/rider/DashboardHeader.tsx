@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useTranslation } from "@/lib/i18n/useTranslation";
+import { useConfirm } from "@/components/ui/ConfirmDialog";
 
 interface DashboardHeaderProps {
   isOnline: boolean;
@@ -12,6 +13,7 @@ interface DashboardHeaderProps {
 
 export default function DashboardHeader({ isOnline, streakDays, onToggleOnline, onOpenQuests }: DashboardHeaderProps) {
   const { t } = useTranslation();
+  const { confirm } = useConfirm();
 
   return (
     <header className="fixed top-0 w-full z-50 flex justify-between items-center px-4 py-3 bg-[var(--color-surface-container-lowest)]/90 backdrop-blur-lg border-b border-white/20 shadow-lg">
@@ -29,9 +31,15 @@ export default function DashboardHeader({ isOnline, streakDays, onToggleOnline, 
       </div>
       <div className="flex items-center gap-2">
         <button 
-          onClick={() => {
-            if (window.confirm("Are you sure you want to send an SOS alert?")) {
-              window.open("tel:+9118001234567", "_self");
+          onClick={async () => {
+            const ok = await confirm({
+              title: "Emergency SOS",
+              message: "Are you sure you want to send an SOS alert?",
+              confirmText: "Send SOS",
+              variant: "danger",
+            });
+            if (ok) {
+              window.open("tel:+919957873472", "_self");
             }
           }}
           className="p-2 bg-red-50 rounded-full animate-pulse" 

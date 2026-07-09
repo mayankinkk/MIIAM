@@ -17,6 +17,7 @@ import DashboardHeader from "@/components/rider/DashboardHeader";
 import IncomingOrderCard from "@/components/rider/IncomingOrderCard";
 import ActiveDeliveryView from "@/components/rider/ActiveDeliveryView";
 import { useTranslation } from "@/lib/i18n/useTranslation";
+import { useConfirm } from "@/components/ui/ConfirmDialog";
 import logger from "@/lib/logger";
 
 const CallModal = dynamic(() => import("@/components/rider/CallModal"), { ssr: false });
@@ -32,6 +33,7 @@ export default function RiderDashboard() {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
   const { t } = useTranslation();
+  const { confirm } = useConfirm();
   const isOnline = useRiderOnlineStore((s) => s.isOnline);
   const setOnline = useRiderOnlineStore((s) => s.setOnline);
   const [countdown, setCountdown] = useState(300);
@@ -594,7 +596,7 @@ export default function RiderDashboard() {
             <span className="material-symbols-outlined text-brand-secondary text-sm">stacked_bar_chart</span>
             <span className="text-sm font-bold text-brand-secondary">{pendingOrders.length} {t.rider.stats.ordersAvailable}</span>
           </div>
-          <button onClick={async () => { if (pendingOrders.length > 1 && !window.confirm(`Accept all ${pendingOrders.length} orders?`)) return; for (const order of pendingOrders) { await handleAccept(order); } }} className="px-4 py-1.5 bg-brand-secondary text-white text-xs font-bold rounded-full">{t.rider.stats.acceptAll}</button>
+          <button onClick={async () => { if (pendingOrders.length > 1) { const ok = await confirm({ title: "Accept All Orders", message: `Accept all ${pendingOrders.length} orders?`, confirmText: "Accept All" }); if (!ok) return; } for (const order of pendingOrders) { await handleAccept(order); } }} className="px-4 py-1.5 bg-brand-secondary text-white text-xs font-bold rounded-full">{t.rider.stats.acceptAll}</button>
         </div>
       )}
       {snoozeMessage && (

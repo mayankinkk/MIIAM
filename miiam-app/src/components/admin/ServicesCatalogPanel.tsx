@@ -7,6 +7,7 @@ import {
   type ServicePresetId,
 } from "@/lib/store/printServiceStore";
 import { SERVICE_META } from "@/components/print/PrintServiceGrid";
+import { useConfirm } from "@/components/ui/ConfirmDialog";
 
 interface Props {
   open: boolean;
@@ -15,6 +16,7 @@ interface Props {
 
 export default function ServicesCatalogPanel({ open, onClose }: Props) {
   const allServices = usePrintServiceStore((s) => s.services);
+  const { confirm } = useConfirm();
   const services = useMemo(
     () => [...allServices].sort((a, b) => a.order - b.order),
     [allServices]
@@ -38,10 +40,14 @@ export default function ServicesCatalogPanel({ open, onClose }: Props) {
           Services catalog ({services.filter((s) => s.enabled).length}/{services.length} visible)
         </p>
         <button
-          onClick={() => {
-            if (typeof window !== "undefined" && window.confirm("Reset all services to defaults? This clears any custom prices, ETAs, and badges.")) {
-              resetToDefaults();
-            }
+          onClick={async () => {
+            const ok = await confirm({
+              title: "Reset to Defaults",
+              message: "Reset all services to defaults? This clears any custom prices, ETAs, and badges.",
+              confirmText: "Reset",
+              variant: "danger",
+            });
+            if (ok) resetToDefaults();
           }}
           className="px-3 py-1 bg-amber-50 text-amber-700 rounded-lg text-xs font-bold hover:bg-amber-100"
         >
