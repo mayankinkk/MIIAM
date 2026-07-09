@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef, useMemo } from "react";
+import QRCode from "qrcode";
 import { createClient } from "@/lib/supabase/client";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { useToastStore } from "@/lib/store/toastStore";
@@ -122,6 +123,7 @@ export default function PartnerMenuPage() {
   const [newCategoryName, setNewCategoryName] = useState("");
   const [editingCategory, setEditingCategory] = useState<{ oldName: string; newName: string } | null>(null);
   const [showQRModal, setShowQRModal] = useState(false);
+  const [qrDataUrl, setQrDataUrl] = useState<string>("");
   const [showEditUrlInput, setShowEditUrlInput] = useState(false);
   const [bulkMode, setBulkMode] = useState(false);
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
@@ -146,6 +148,13 @@ export default function PartnerMenuPage() {
     }
     return () => document.removeEventListener("keydown", handleEsc);
   }, [showAddModal, editingItem, showCategoryModal, showQRModal]);
+
+  useEffect(() => {
+    if (showQRModal && selectedVendorId && typeof window !== "undefined") {
+      const url = `${window.location.origin}/app/vendor/${selectedVendorId}`;
+      QRCode.toDataURL(url, { width: 300, margin: 2 }).then(setQrDataUrl).catch(() => setQrDataUrl(""));
+    }
+  }, [showQRModal, selectedVendorId]);
 
   // Helper: Upload image to Supabase Storage
   async function uploadImage(file: File): Promise<string | null> {
@@ -1625,9 +1634,9 @@ export default function PartnerMenuPage() {
             <span className="material-symbols-outlined text-6xl text-[var(--color-on-surface)] mb-4">qr_code_scanner</span>
             <h2 id="qr-modal-title" className="text-xl font-extrabold text-[var(--color-on-surface)] mb-2">Menu QR Code</h2>
             <p className="text-sm text-[var(--color-outline)] mb-6">Scan to view {selectedVendor?.shop_name || "store"}'s menu</p>
-            {selectedVendorId && (
-              <BlurImage
-                src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(`${window.location.origin}/app/vendor/${selectedVendorId}`)}`}
+            {selectedVendorId && qrDataUrl && (
+              <img
+                src={qrDataUrl}
                 alt="Menu QR Code"
                 className="w-48 h-48 mx-auto mb-6"
               />
