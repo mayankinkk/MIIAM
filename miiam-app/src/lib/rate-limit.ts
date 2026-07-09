@@ -7,6 +7,16 @@ let warnedOnce = false;
 
 const inMemoryCounts = new Map<string, { count: number; windowStart: number }>();
 
+// Cleanup stale entries every 5 minutes to prevent memory leaks
+if (typeof setInterval !== "undefined") {
+  setInterval(() => {
+    const cutoff = Date.now() - 5 * 60 * 1000;
+    for (const [key, entry] of inMemoryCounts) {
+      if (entry.windowStart < cutoff) inMemoryCounts.delete(key);
+    }
+  }, 5 * 60 * 1000);
+}
+
 async function redisEval(script: string, keys: string[], args: string[]): Promise<string | null> {
   if (!UPSTASH_URL || !UPSTASH_TOKEN) return null;
   const res = await fetch(`${UPSTASH_URL}/eval`, {
