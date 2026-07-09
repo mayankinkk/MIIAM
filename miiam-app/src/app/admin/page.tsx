@@ -7,15 +7,11 @@ import logger from "@/lib/logger";
 
 const modules = [
   { id: "foods", title: "Foods", icon: "restaurant", color: "bg-[var(--color-primary)]/10 text-[var(--color-primary)]", route: "/admin/foods", type: "food" },
-  { id: "grocery", title: "Grocery", icon: "shopping_basket", color: "bg-green-50 text-green-600", route: "/admin/grocery", type: "grocery" },
-  { id: "printing", title: "Printing", icon: "print", color: "bg-indigo-50 text-indigo-600", route: "/admin/printing", type: "printing" },
   { id: "services", title: "Services", icon: "home_repair_service", color: "bg-blue-50 text-blue-600", route: "/admin/services", type: "services" },
 ];
 
 const categoryColors: Record<string, string> = {
   food: "bg-[var(--color-primary)]",
-  grocery: "bg-green-500",
-  printing: "bg-indigo-500",
   services: "bg-blue-500",
 };
 

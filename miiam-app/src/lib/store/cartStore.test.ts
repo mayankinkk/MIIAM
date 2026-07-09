@@ -1,5 +1,4 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { PRINT_MENU_ITEM_ID } from '../constants';
 import { useCartStore } from './cartStore';
 
 describe('cartStore', () => {
@@ -160,20 +159,5 @@ describe('cartStore', () => {
     });
     store.updateQuantity('1', 0);
     expect(useCartStore.getState().items).toHaveLength(0);
-  });
-
-  it('should migrate old print_<timestamp> menu_item_id to PRINT_MENU_ITEM_ID on hydration', () => {
-    const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    const PRINT_VENDOR = 'f1111111-1111-4000-8000-000000000000';
-    function migrateMenuItemId(menu_item_id: string, vendor_id: string) {
-      if (vendor_id === PRINT_VENDOR && !UUID_RE.test(menu_item_id)) return PRINT_MENU_ITEM_ID;
-      return menu_item_id;
-    }
-    expect(migrateMenuItemId('print_1780587697262', PRINT_VENDOR)).toBe(PRINT_MENU_ITEM_ID);
-    expect(migrateMenuItemId('passport_1780587697262', PRINT_VENDOR)).toBe(PRINT_MENU_ITEM_ID);
-    expect(migrateMenuItemId('print_lib_1780587697262', PRINT_VENDOR)).toBe(PRINT_MENU_ITEM_ID);
-    expect(migrateMenuItemId(PRINT_MENU_ITEM_ID, PRINT_VENDOR)).toBe(PRINT_MENU_ITEM_ID);
-    expect(migrateMenuItemId('menu-1', 'vendor-1')).toBe('menu-1');
-    expect(migrateMenuItemId(PRINT_MENU_ITEM_ID, 'vendor-1')).toBe(PRINT_MENU_ITEM_ID);
   });
 });

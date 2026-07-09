@@ -3,7 +3,6 @@
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import PrintButton from "@/components/print/PrintButton";
 
 interface OrderActionsProps {
   order: {
@@ -36,21 +35,6 @@ export default function OrderActions({ order, canCancel, showHelp, onToggleHelp,
       >
         {canCancel ? t.orders.cancelOrder : t.orders.helpWithOrder}
       </button>
-
-      <PrintButton
-        variant="full"
-        order={{
-          id: order.id,
-          placedAt: order.placed_at,
-          totalAmount: order.total_amount,
-          paymentMethod: order.payment_method,
-          deliveryAddress: order.delivery_address ?? undefined,
-          deliveryInstructions: order.delivery_instructions,
-          status: order.status,
-          vendor: order.vendor,
-          items: order.items,
-        }}
-      />
 
       {/* Show cancelled state prominently */}
       {order.status === "cancelled" && (

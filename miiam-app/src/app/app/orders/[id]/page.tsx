@@ -7,7 +7,6 @@ import { useToastStore } from "@/lib/store/toastStore";
 import logger from "@/lib/logger";
 import OrderChatOverlay from "@/components/order/OrderChatOverlay";
 import RiderMap from "@/components/rider/RiderMap";
-import { PRINTING_VENDOR_ID } from "@/lib/constants";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import OrderHeader from "@/components/order/OrderHeader";
 import OrderJourney from "@/components/order/OrderJourney";
@@ -70,7 +69,6 @@ interface TranslationKeys {
     onTheWay: string;
     arrived: string;
     delivered: string;
-    printingInProgress: string;
   };
 }
 
@@ -96,17 +94,6 @@ function getFoodSteps(t: TranslationKeys, order?: OrderTimestamps) {
     { key: "ready_for_pickup", label: t.orders.readyForPickup, icon: "inventory_2", time: formatTimestamp(order?.ready_at) },
     { key: "shopping", label: t.orders.shopping, icon: "shopping_cart", time: formatTimestamp(order?.shopping_at) },
     { key: "picked_up", label: t.orders.onTheWay, icon: "directions_bike", time: formatTimestamp(order?.picked_at) },
-    { key: "delivered", label: t.orders.delivered, icon: "home_pin", time: formatTimestamp(order?.delivered_at) },
-  ];
-}
-
-function getPrintSteps(t: TranslationKeys, order?: OrderTimestamps) {
-  return [
-    { key: "pending", label: t.orders.orderPlaced, icon: "receipt_long", time: formatTimestamp(order?.placed_at) },
-    { key: "processing", label: t.orders.printingInProgress, icon: "print", time: formatTimestamp(order?.processing_at) },
-    { key: "ready_for_pickup", label: t.orders.readyForPickup, icon: "inventory_2", time: formatTimestamp(order?.ready_at) },
-    { key: "on_the_way", label: t.orders.onTheWay, icon: "directions_bike", time: formatTimestamp(order?.on_the_way_at) },
-    { key: "arrived", label: t.orders.arrived, icon: "location_on", time: formatTimestamp(order?.arrived_at) },
     { key: "delivered", label: t.orders.delivered, icon: "home_pin", time: formatTimestamp(order?.delivered_at) },
   ];
 }
@@ -191,7 +178,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
     );
   }
 
-  const steps = pageOrder?.vendor_id === PRINTING_VENDOR_ID ? getPrintSteps(t, pageOrder as unknown as OrderTimestamps) : getFoodSteps(t, pageOrder as unknown as OrderTimestamps);
+  const steps = getFoodSteps(t, pageOrder as unknown as OrderTimestamps);
   const currentStepIndex = Math.max(0, steps.findIndex((s) => s.key === pageOrder.status));
 
   return (
@@ -202,8 +189,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
       <main className="pt-6 pb-12 min-h-screen">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:grid lg:grid-cols-12 lg:gap-10 items-start">
           <div className="lg:col-span-7 space-y-4 sm:space-y-6">
-            {pageOrder?.vendor_id !== PRINTING_VENDOR_ID && (
-              <div className="relative w-full h-[260px] sm:h-[420px] rounded-2xl overflow-hidden shadow-sm">
+            <div className="relative w-full h-[260px] sm:h-[420px] rounded-2xl overflow-hidden shadow-sm">
                 {trackingInfo && (
                   <div className="absolute top-4 right-4 bg-[var(--color-surface-container-lowest)]/90 backdrop-blur rounded-full px-4 py-3 shadow-lg flex items-center gap-2" style={{ zIndex: 10 }}>
                     <div className="text-center">
@@ -220,7 +206,6 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                   onRouteUpdate={setTrackingInfo}
                 />
               </div>
-            )}
 
             {pageOrder?.delay_minutes && pageOrder.delay_minutes > 0 && (
               <OrderStatusBanner type="delay" delayMinutes={pageOrder.delay_minutes} delayReason={pageOrder.delay_reason ?? undefined} />
@@ -244,12 +229,8 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
               />
             )}
 
-            {pageOrder.status === "pending" && pageOrder.vendor_id !== PRINTING_VENDOR_ID && (
+            {pageOrder.status === "pending" && (
               <PendingOrderCard type="food" findingRiderLabel={t.orders.findingRider} riderWillAcceptLabel={t.orders.riderWillAccept} />
-            )}
-
-            {pageOrder.status === "pending" && pageOrder.vendor_id === PRINTING_VENDOR_ID && (
-              <PendingOrderCard type="print" />
             )}
           </div>
 
@@ -267,7 +248,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
             currentUserId={currentUserId}
             senderType="user"
             thread={showChat === "vendor" ? "user-vendor" : "user-rider"}
-            otherName={showChat === "vendor" ? (pageOrder.vendor?.shop_name || (pageOrder.vendor_id === PRINTING_VENDOR_ID ? t.orders.printStore : "Restaurant")) : (riderInfo?.name || t.orders.rider)}
+            otherName={showChat === "vendor" ? (pageOrder.vendor?.shop_name || "Restaurant") : (riderInfo?.name || t.orders.rider)}
             otherAvatar={showChat === "vendor" ? pageOrder.vendor?.image_url || pageOrder.vendor?.logo_url || undefined : riderInfo?.image}
             onClose={() => setShowChat(null)}
           />

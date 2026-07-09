@@ -6,7 +6,7 @@ import { useCartStore } from "@/lib/store/cartStore";
 import { useToastStore } from "@/lib/store/toastStore";
 import { useLocationStore } from "@/lib/store/locationStore";
 import { safeMenuItemId } from "@/lib/checkout-utils";
-import { PRINTING_VENDOR_ID, SERVICES_VENDOR_ID } from "@/lib/constants";
+import { SERVICES_VENDOR_ID } from "@/lib/constants";
 import { isVendorOpen } from "@/lib/vendor-hours";
 import { checkStock } from "@/lib/stock";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -131,7 +131,7 @@ export function usePlaceOrder(supabase: SupabaseClient) {
       : "";
 
     if (userPincode && userPincode !== "000000") {
-      const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean))).filter(v => v !== PRINTING_VENDOR_ID);
+      const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean)));
       if (vendorIds.length > 0) {
         const { data: vendors } = await supabase.from("vendors").select("id, pincode, shop_name, min_order_amount, opening_hours").in("id", vendorIds);
         const unserviceable = vendors?.filter(v => v.pincode && v.pincode !== userPincode) || [];
@@ -159,7 +159,7 @@ export function usePlaceOrder(supabase: SupabaseClient) {
 
     if (!scheduledDate) {
       const stockItems = items
-        .filter(i => i.vendor_id !== PRINTING_VENDOR_ID && i.vendor_id !== SERVICES_VENDOR_ID)
+        .filter(i => i.vendor_id !== SERVICES_VENDOR_ID)
         .map(i => ({ menu_item_id: i.id || "", quantity: i.quantity, name: i.name, vendor_id: i.vendor_id || "" }));
       if (stockItems.length > 0) {
         const stockResult = await checkStock(stockItems);

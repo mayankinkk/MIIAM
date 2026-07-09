@@ -42,22 +42,6 @@ const menuGroups = [
     ],
   },
   {
-    title: "Grocery",
-    items: [
-      { name: "Grocery Orders", href: "/admin/grocery", icon: "shopping_cart" },
-      { name: "Partners", href: "/admin/grocery?tab=partners", icon: "storefront" },
-      { name: "Inventory", href: "/admin/grocery?tab=inventory", icon: "inventory_2" },
-    ],
-  },
-  {
-    title: "Printing",
-    items: [
-      { name: "Print Orders", href: "/admin/printing", icon: "print" },
-      { name: "Services", href: "/admin/printing?tab=services", icon: "description" },
-      { name: "Partners", href: "/admin/printing?tab=partners", icon: "storefront" },
-    ],
-  },
-  {
     title: "Fleet",
     items: [
       { name: "Manage Riders", href: "/admin/riders", icon: "two_wheeler" },

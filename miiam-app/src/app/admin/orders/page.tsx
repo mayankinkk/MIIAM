@@ -3,7 +3,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { Order, OrderStatus } from "@/lib/types";
-import { PRINTING_VENDOR_ID } from "@/lib/constants";
 import { useToastStore } from "@/lib/store/toastStore";
 import logger from "@/lib/logger";
 
@@ -95,7 +94,6 @@ export default function OrderManagement() {
     const { data } = await supabase
       .from("orders")
       .select("*, vendor:vendors(name), rider:riders(*), user:user_id(*)")
-      .neq("vendor_id", PRINTING_VENDOR_ID)
       .order("placed_at", { ascending: false });
     if (data) {
       setOrders(data);
@@ -118,35 +116,12 @@ export default function OrderManagement() {
     setLoading(false);
   }
 
-  async function deletePrintFiles(orderId: string) {
-    const { data: items } = await supabase.from("order_items").select("special_notes").eq("order_id", orderId);
-    if (!items) return;
-    for (const item of items) {
-      if (!item.special_notes) continue;
-      try {
-        const settings = JSON.parse(item.special_notes);
-        const urls: string[] = settings.fileUrls || [];
-        for (const url of urls) {
-          const path = url.split("/menu-images/")[1];
-          if (path) {
-            await supabase.storage.from("menu-images").remove([path]);
-          }
-        }
-      } catch (e) { logger.warn({ err: e instanceof Error ? e : new Error(String(e)) }, "Failed to delete image"); }
-    }
-  }
-
   async function updateStatus(orderId: string, status: OrderStatus) {
     // Fetch the order first to get user_id
     const { data: order } = await supabase.from("orders").select("user_id, vendor_id").eq("id", orderId).single();
     
     await supabase.from("orders").update({ status }).eq("id", orderId);
     
-    // Clean up print files when order is delivered or cancelled
-    if (order?.vendor_id === PRINTING_VENDOR_ID && (status === "delivered" || status === "cancelled")) {
-      deletePrintFiles(orderId);
-    }
-
     // Send notification to customer
     if (order?.user_id) {
       const notifMap: Record<string, { title: string; body: string }> = {

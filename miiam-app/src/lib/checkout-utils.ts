@@ -1,9 +1,7 @@
-import { PRINT_MENU_ITEM_ID } from "@/lib/constants";
-
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export function safeMenuItemId(id: string) {
-  return UUID_RE.test(id) ? id : PRINT_MENU_ITEM_ID;
+  return UUID_RE.test(id) ? id : crypto.randomUUID();
 }
 
 export interface PromoCode {

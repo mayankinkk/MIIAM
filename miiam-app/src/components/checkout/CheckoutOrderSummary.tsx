@@ -1,6 +1,5 @@
 "use client";
 
-import { PRINTING_VENDOR_ID } from "@/lib/constants";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import type { CartItem } from "@/lib/store/cartStore";
 import CheckoutRiderTip from "./CheckoutRiderTip";
@@ -52,30 +51,6 @@ export default function CheckoutOrderSummary({
           <span>Service Charge</span>
           <span className="font-semibold text-on-surface">₹{(vendorIds.length * serviceCharge).toFixed(2)}</span>
         </div>
-
-        {/* Print Settings Summary */}
-        {items.filter(i => i.vendor_id === PRINTING_VENDOR_ID).map(item => {
-          let s: Record<string, any> = {};
-          try { if (item.special_notes) s = JSON.parse(item.special_notes); } catch { /* corrupted data, ignore */ }
-          if (!s.pages) return null;
-          return (
-            <div key={item.menu_item_id} className="py-3 border-t border-dashed border-outline-variant/30">
-              <p className="text-xs font-bold text-indigo-600 mb-2 flex items-center gap-1">
-                <span className="material-symbols-outlined text-sm">print</span>
-                Print Settings
-              </p>
-              <div className="flex flex-wrap gap-1">
-                {s.pages && <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded text-[10px] font-semibold">{s.pages}pg</span>}
-                {s.copies && <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded text-[10px] font-semibold">{s.copies}cp</span>}
-                {s.colorMode && <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded text-[10px] font-semibold">{s.colorMode === "bw" ? "B&W" : "Color"}</span>}
-                {s.paperSize && <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded text-[10px] font-semibold uppercase">{s.paperSize}</span>}
-                {s.orientation && <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded text-[10px] font-semibold capitalize">{s.orientation}</span>}
-                {s.paperType && <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded text-[10px] font-semibold">{s.paperType}</span>}
-                {s.sides && <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded text-[10px] font-semibold">{s.sides} sided</span>}
-              </div>
-            </div>
-          );
-        })}
 
         {/* Rider Tip */}
         <CheckoutRiderTip

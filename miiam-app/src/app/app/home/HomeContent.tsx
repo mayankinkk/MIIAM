@@ -12,7 +12,7 @@ import BlurImage from "@/components/BlurImage";
 import { NetworkError } from "@/components/ui/EmptyStates";
 import { withRetry } from "@/lib/retry";
 import logger from "@/lib/logger";
-import PrintCostCalculator from "@/components/print/PrintCostCalculator";
+
 
 
 
@@ -83,9 +83,7 @@ export default function HomePage() {
 
   const categories = [
     { id: "food", label: t.nav.food, icon: "restaurant", color: "bg-orange-100", iconColor: "text-orange-600", offer: "20% OFF" },
-    { id: "grocery", label: t.nav.groceries, icon: "shopping_basket", color: "bg-green-100", iconColor: "text-green-600", offer: t.home.offerFreeDeliveryBadge },
     { id: "services", label: t.nav.services, icon: "handyman", color: "bg-blue-100", iconColor: "text-blue-600", offer: "Flat ₹200 OFF" },
-    { id: "printing", label: t.nav.printing, icon: "print", color: "bg-indigo-100", iconColor: "text-indigo-600", offer: null },
   ];
 
   const offers = [
@@ -690,20 +688,6 @@ export default function HomePage() {
           </div>
         </div>
       )}
-
-      {/* Print Store Quick Entry + Calculator */}
-      <div className="px-4 pb-4">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-indigo-500" style={{ fontVariationSettings: "'FILL' 1" }}>print</span>
-            <h2 className="text-lg font-bold text-on-surface">{t.home.printStore}</h2>
-          </div>
-          <Link href="/app/printing" className="text-xs font-bold text-primary">{t.home.open}</Link>
-        </div>
-        <div className="mt-3">
-          <PrintCostCalculator ctaHref="/app/printing" />
-        </div>
-      </div>
 
       {/* Nearby Popular Restaurants */}
       <div className="px-4 pb-4">

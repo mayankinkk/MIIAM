@@ -10,7 +10,6 @@ import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
-import { PRINTING_VENDOR_ID } from "@/lib/constants";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import { ListSkeleton } from "@/components/Skeleton";
 import logger from "@/lib/logger";
@@ -245,7 +244,7 @@ export default function CartPage() {
                 <div className="flex items-center gap-2 mb-4">
                   <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center shrink-0">
                     <span className="material-symbols-outlined text-white text-[18px]">
-                      {vendor.id === PRINTING_VENDOR_ID ? "print" : "restaurant"}
+                      restaurant
                     </span>
                   </div>
                   <div className="min-w-0">
@@ -262,18 +261,14 @@ export default function CartPage() {
                           <BlurImage src={item.image_url} alt={item.name} fill className="w-full h-full" sizes="(max-width: 768px) 50vw, 25vw" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center">
-                            <span className="material-symbols-outlined text-outline-variant text-2xl">{item.vendor_id === PRINTING_VENDOR_ID ? "print" : "fastfood"}</span>
+                            <span className="material-symbols-outlined text-outline-variant text-2xl">fastfood</span>
                           </div>
                         )}
                       </div>
                       {/* Details */}
                       <div className="flex-1 min-w-0">
                         <h3 className="font-bold text-on-surface dark:text-[var(--color-on-surface)] text-sm truncate">{item.name}</h3>
-                        {item.special_notes && item.vendor_id === PRINTING_VENDOR_ID ? (
-                          <p className="text-xs text-on-surface-variant dark:text-[var(--color-outline)] truncate">
-                            {(() => { try { const s = JSON.parse(item.special_notes!); return `${s.pages}pg × ${s.copies}cp · ${s.colorMode === "bw" ? "B&W" : "Color"} · ${s.paperSize?.toUpperCase()}`; } catch { return item.special_notes; } })()}
-                          </p>
-                        ) : item.special_notes ? (
+                        {item.special_notes ? (
                           <p className="text-xs text-on-surface-variant dark:text-[var(--color-outline)] truncate">{item.special_notes}</p>
                         ) : null}
                         <span className="text-primary font-bold text-sm">₹{item.price.toFixed(2)}</span>

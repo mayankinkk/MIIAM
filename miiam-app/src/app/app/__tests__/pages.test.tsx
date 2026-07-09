@@ -174,23 +174,11 @@ vi.mock("@/components/ui/EmptyStates", () => ({
 // ──────────────────────────────────────────────
 // Component imports (must come after all vi.mock)
 // ──────────────────────────────────────────────
-import GroceryPage from "@/app/app/grocery/page";
 import NotificationsPage from "@/app/app/notifications/page";
 
 describe("Page smoke tests", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-  });
-
-  it("grocery page renders header and category filters", () => {
-    render(<GroceryPage />);
-
-    expect(
-      screen.getByRole("heading", { name: /grocery/i }),
-    ).toBeInTheDocument();
-    expect(screen.getByText("All")).toBeInTheDocument();
-    expect(screen.getByText("Fruits")).toBeInTheDocument();
-    expect(screen.getByText("Vegetables")).toBeInTheDocument();
   });
 
   it("notifications page renders header and push notification section", () => {

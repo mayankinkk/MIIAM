@@ -13,7 +13,6 @@ import EmptyState from "@/components/EmptyState";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
 import PullToRefresh from "@/components/PullToRefresh";
-import { PRINTING_VENDOR_ID } from "@/lib/constants";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import logger from "@/lib/logger";
 
@@ -215,12 +214,12 @@ export default function OrdersPage() {
               <div key={order.id} className="bg-surface-container-lowest dark:bg-[var(--color-surface-container-lowest)] rounded-2xl shadow-sm overflow-hidden">
                 <Link href={`/app/orders/${order.id}`} className="block p-6 hover:bg-surface-container-low/30 dark:hover:bg-[var(--color-surface-container)]/30 transition-all">
                   <div className="flex items-center gap-4">
-                    <div className={`w-16 h-16 rounded-xl overflow-hidden flex items-center justify-center flex-shrink-0 ${order.vendor_id === PRINTING_VENDOR_ID ? "bg-indigo-100 dark:bg-indigo-900/30" : "bg-surface-container dark:bg-[var(--color-surface-container)]"}`}>
+                    <div className="w-16 h-16 rounded-xl overflow-hidden flex items-center justify-center flex-shrink-0 bg-surface-container dark:bg-[var(--color-surface-container)]">
                       {order.vendor?.cover_image_url ? (
                         <BlurImage src={order.vendor.cover_image_url} alt={order.vendor.shop_name} fill className="w-full h-full" sizes="(max-width: 768px) 50vw, 25vw" />
                       ) : (
-                        <span className={`material-symbols-outlined text-3xl ${order.vendor_id === PRINTING_VENDOR_ID ? "text-indigo-600" : "text-outline-variant"}`}>
-                          {order.vendor_id === PRINTING_VENDOR_ID ? "print" : "restaurant"}
+                        <span className="material-symbols-outlined text-3xl text-outline-variant">
+                          restaurant
                         </span>
                       )}
                     </div>

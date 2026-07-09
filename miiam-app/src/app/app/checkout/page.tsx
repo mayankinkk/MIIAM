@@ -8,13 +8,12 @@ import { useCartStore } from "@/lib/store/cartStore";
 import AddressPickerSheet, { type SelectedAddress } from "@/components/AddressPickerSheet";
 import CheckoutDeliveryAddress from "@/components/checkout/CheckoutDeliveryAddress";
 import CheckoutScheduledServices from "@/components/checkout/CheckoutScheduledServices";
-import CheckoutPrintOrderSummary from "@/components/checkout/CheckoutPrintOrderSummary";
 import CheckoutScheduledDelivery from "@/components/checkout/CheckoutScheduledDelivery";
 import CheckoutPaymentMethods from "@/components/checkout/CheckoutPaymentMethods";
 import CheckoutOrderSummary from "@/components/checkout/CheckoutOrderSummary";
 import CheckoutPromoCode from "@/components/checkout/CheckoutPromoCode";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import { SERVICES_VENDOR_ID, PRINTING_VENDOR_ID } from "@/lib/constants";
+import { SERVICES_VENDOR_ID } from "@/lib/constants";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import { Skeleton } from "@/components/Skeleton";
 import { calculateOrderTotals } from "@/lib/checkout-utils";
@@ -49,10 +48,6 @@ export default function CheckoutPage() {
   const supabase = useMemo(() => createClient(), []);
 
   useEffect(() => {
-    const hasPrint = items.some(i => i.vendor_id === PRINTING_VENDOR_ID);
-    const hasFood = items.some(i => i.vendor_id !== PRINTING_VENDOR_ID && i.vendor_id !== SERVICES_VENDOR_ID);
-    if (hasPrint && !hasFood) setPaymentMethod("cod");
-
     const saved = localStorage.getItem("miiam_selected_address");
     if (saved) {
       try { setDeliveryAddress(JSON.parse(saved)); } catch { /* corrupted data, ignore */ }
@@ -107,7 +102,7 @@ export default function CheckoutPage() {
 
   const subtotal = totalPrice();
   const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean)));
-  const serviceVendorIds = vendorIds.filter((id) => id !== PRINTING_VENDOR_ID && id !== SERVICES_VENDOR_ID);
+  const serviceVendorIds = vendorIds.filter((id) => id !== SERVICES_VENDOR_ID);
 
   const {
     promoCode,
@@ -200,7 +195,6 @@ export default function CheckoutPage() {
               onChangeAddress={() => setShowAddressPicker(true)}
             />
             <CheckoutScheduledServices items={items} />
-            <CheckoutPrintOrderSummary items={items} />
             {!items.some(i => i.vendor_id === SERVICES_VENDOR_ID) && (
               <CheckoutScheduledDelivery
                 scheduledDate={scheduledDate}

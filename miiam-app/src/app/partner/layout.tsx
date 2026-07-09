@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { getVendorForUser } from "@/lib/vendor";
-import { PRINTING_VENDOR_ID } from "@/lib/constants";
 
 const navLinks = [
   { href: "/partner/dashboard", label: "Dashboard", icon: "dashboard" },
@@ -38,11 +37,6 @@ export default function PartnerLayout({
 
   useEffect(() => {
     if (pathname === "/partner" || pathname === "/partner/register") return;
-
-    if (vendor?.id === PRINTING_VENDOR_ID) {
-      router.push("/denied?from=partner");
-      return;
-    }
 
     supabase.auth.getUser().then(({ data: { user }, error }: { data: { user: { id: string; email?: string } | null }; error: unknown }) => {
       if (error || !user) router.push("/auth/login?redirect=" + pathname);

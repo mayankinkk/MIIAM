@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import logger from "@/lib/logger";
 
 export type ServiceCategory =
-  | "food" | "grocery" | "printing" | "pharmacy" | "flowers" | "beauty"
+  | "food" | "pharmacy" | "flowers" | "beauty"
   | "ac" | "cleaning" | "plumbing" | "electrical" | "pest" | "car" | "appliance";
 
 export interface ServiceHours {
@@ -44,8 +44,6 @@ const defaultHours: ServiceHours = {
 
 const defaultSettings: ServiceSetting[] = [
   { id: "food", name: "Food Delivery", isEnabled: true, message: "Food delivery is currently under maintenance", icon: "restaurant", hours: defaultHours },
-  { id: "grocery", name: "Grocery", isEnabled: true, message: "Grocery service is coming soon!", icon: "shopping_cart", hours: defaultHours },
-  { id: "printing", name: "Printing", isEnabled: true, message: "Printing service is under maintenance", icon: "print", hours: { open: "06:00", close: "23:59", is24x7: false } },
   { id: "beauty", name: "Beauty & Wellness", isEnabled: true, message: "Beauty service is under maintenance", icon: "spa", hours: defaultHours },
   { id: "ac", name: "AC Repair", isEnabled: true, message: "AC repair service is under maintenance", icon: "ac_unit", hours: defaultHours },
   { id: "cleaning", name: "Home Cleaning", isEnabled: true, message: "Home cleaning service is coming soon!", icon: "cleaning_services", hours: defaultHours },
