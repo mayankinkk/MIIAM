@@ -32,10 +32,10 @@ const categories = [
 
 
 const collections = [
-  { id: "c1", name: "Budget Friendly", emoji: "💰", count: 45, image: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=300&q=80" },
-  { id: "c2", name: "Popular Picks", emoji: "🔥", count: 32, image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=300&q=80" },
-  { id: "c3", name: "Healthy Eats", emoji: "🥗", count: 28, image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=300&q=80" },
-  { id: "c4", name: "Late Night Cravings", emoji: "🌙", count: 21, image: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=300&q=80" },
+  { id: "c1", name: "Budget Friendly", emoji: "💰", image: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=300&q=80", type: "food" },
+  { id: "c2", name: "Popular Picks", emoji: "🔥", image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=300&q=80", type: "food" },
+  { id: "c3", name: "Healthy Eats", emoji: "🥗", image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=300&q=80", type: "grocery" },
+  { id: "c4", name: "Late Night Cravings", emoji: "🌙", image: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=300&q=80", type: "food" },
 ];
 
 const servicesData = [
@@ -67,6 +67,8 @@ export default function ExplorePage() {
   const [showLocationBanner, setShowLocationBanner] = useState(false);
   const [dismissedLocationBanner, setDismissedLocationBanner] = useState(false);
   const supabase = useMemo(() => createClient(), []);
+  const [vendorCounts, setVendorCounts] = useState<Record<string, number>>({});
+  const [totalVendorCount, setTotalVendorCount] = useState(0);
 
   const filteredServices = servicesData.filter(service => {
     const matchesSearch = searchQuery === "" || 
@@ -123,6 +125,30 @@ export default function ExplorePage() {
     }
     setPrevCartCount(cartCount);
   }, [cartCount, prevCartCount]);
+
+  useEffect(() => {
+    async function loadVendorCounts() {
+      try {
+        const { data } = await supabase
+          .from("vendors")
+          .select("id, type, status")
+          .eq("status", "active");
+        if (!data) return;
+
+        const counts: Record<string, number> = {};
+        for (const v of data) {
+          const type = v.type || "other";
+          counts[type] = (counts[type] || 0) + 1;
+        }
+        counts["all"] = data.length;
+        setVendorCounts(counts);
+        setTotalVendorCount(data.length);
+      } catch (err) {
+        logger.error({ err: err }, "Failed to load vendor counts");
+      }
+    }
+    loadVendorCounts();
+  }, [supabase]);
 
   const handleRefresh = async () => {
     try {
@@ -434,7 +460,7 @@ export default function ExplorePage() {
                 <div className="absolute bottom-4 left-4 right-4">
                   <p className="text-xl mb-1">{collection.emoji}</p>
                   <h3 className="font-black text-white text-lg">{collection.name}</h3>
-                  <p className="text-xs text-white/70">{collection.count} places</p>
+                  <p className="text-xs text-white/70">{vendorCounts[collection.type] || 0} places</p>
                 </div>
               </div>
               </StaggerItem>
@@ -454,7 +480,7 @@ export default function ExplorePage() {
               <p className="text-sm text-white/70">Grow your business with us</p>
             </div>
           </div>
-          <p className="text-sm text-white/80 mb-4">Join 10,000+ restaurants and service providers earning with MIIAM.</p>
+          <p className="text-sm text-white/80 mb-4">Join {totalVendorCount > 0 ? `${totalVendorCount}+` : ""} restaurants and service providers earning with MIIAM.</p>
           <a href="https://partner.miiam.in" target="_blank" rel="noopener noreferrer" className="block w-full py-3 bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface)] font-bold rounded-xl hover:bg-[var(--color-surface-container)] transition-colors text-center">
             Register Your Business
           </a>
