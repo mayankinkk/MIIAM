@@ -6,11 +6,12 @@ import { useLanguageStore } from "@/lib/store/languageStore";
 import { getTranslationsSync } from "@/lib/i18n";
 import LanguageSwitcher from "@/components/layout/LanguageSwitcher";
 import { createClient } from "@/lib/supabase/client";
+import type { User } from "@supabase/supabase-js";
 
 export default function LandingPage() {
   const { language } = useLanguageStore();
   const [mounted, setMounted] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const supabase = createClient();
 
   useEffect(() => {
