@@ -1,6 +1,9 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
+import logger from "@/lib/logger";
+
+const log = logger.child({ module: "rider-location-tracker" });
 
 export interface LocationUpdate {
   lat: number;
@@ -48,7 +51,7 @@ export class RiderLocationTracker {
 
   async start(): Promise<void> {
     if (!navigator.geolocation) {
-      console.warn("Geolocation not supported");
+      log.warn("Geolocation not supported");
       return;
     }
 
@@ -75,7 +78,7 @@ export class RiderLocationTracker {
 
         this.onLocationUpdate?.({ lat: latitude, lng: longitude });
       } catch (error) {
-        console.error("Failed to update location:", error);
+        log.error({ err: error }, "Failed to update location");
       }
     };
 
@@ -83,7 +86,7 @@ export class RiderLocationTracker {
     navigator.geolocation.getCurrentPosition(
       updateLocation,
       (error) => {
-        console.error("Initial location error:", error);
+        log.error({ err: error }, "Initial location error");
         this.onError?.(error);
       },
       { enableHighAccuracy: true }
@@ -93,7 +96,7 @@ export class RiderLocationTracker {
     this.watchId = navigator.geolocation.watchPosition(
       updateLocation,
       (error) => {
-        console.error("Location watch error:", error);
+        log.error({ err: error }, "Location watch error");
         this.onError?.(error);
       },
       {
@@ -103,14 +106,14 @@ export class RiderLocationTracker {
       }
     );
 
-    console.log("Location tracking started for order:", this.currentOrderId);
+    log.info({ orderId: this.currentOrderId }, "Location tracking started");
   }
 
   stop(): void {
     if (this.watchId !== null) {
       navigator.geolocation.clearWatch(this.watchId);
       this.watchId = null;
-      console.log("Location tracking stopped for order:", this.currentOrderId);
+      log.info({ orderId: this.currentOrderId }, "Location tracking stopped");
     }
     this.currentOrderId = null;
     this.currentRiderId = null;
@@ -141,12 +144,12 @@ export class RiderLocationTracker {
             }
             resolve({ lat: latitude, lng: longitude });
           } catch (error) {
-            console.error("Failed to update location:", error);
+            log.error({ err: error }, "Failed to update location");
             resolve(null);
           }
         },
         (error) => {
-          console.error("Failed to get location:", error);
+          log.error({ err: error }, "Failed to get location");
           this.onError?.(error);
           resolve(null);
         },
@@ -198,7 +201,7 @@ export async function startLocationTracking(
   riderPhone?: string
 ) {
   if (!navigator.geolocation) {
-    console.warn("Geolocation not supported");
+    log.warn("Geolocation not supported");
     return;
   }
 
@@ -226,19 +229,19 @@ export async function startLocationTracking(
         onConflict: 'order_id'
       });
     } catch (error) {
-      console.error("Failed to update location:", error);
+      log.error({ err: error }, "Failed to update location");
     }
   };
 
   navigator.geolocation.getCurrentPosition(
     updateLocation,
-    (error) => console.error("Initial location error:", error),
+    (error) => log.error({ err: error }, "Initial location error"),
     { enableHighAccuracy: true }
   );
 
   _legacyWatchId = navigator.geolocation.watchPosition(
     updateLocation,
-    (error) => console.error("Location watch error:", error),
+    (error) => log.error({ err: error }, "Location watch error"),
     {
       enableHighAccuracy: true,
       maximumAge: 2000,
@@ -246,14 +249,14 @@ export async function startLocationTracking(
     }
   );
 
-  console.log("Location tracking started for order:", orderId);
+  log.info({ orderId }, "Location tracking started");
 }
 
 export function stopLocationTracking() {
   if (_legacyWatchId !== null) {
     navigator.geolocation.clearWatch(_legacyWatchId);
     _legacyWatchId = null;
-    console.log("Location tracking stopped");
+    log.info("Location tracking stopped");
   }
   _legacyOrderId = null;
   _legacyRiderId = null;
@@ -284,12 +287,12 @@ export async function updateRiderLocation(orderId: string, riderId: string) {
           }
           resolve({ lat: latitude, lng: longitude });
         } catch (error) {
-          console.error("Failed to update location:", error);
+          log.error({ err: error }, "Failed to update location");
           resolve(null);
         }
       },
       (error) => {
-        console.error("Failed to get location:", error);
+        log.error({ err: error }, "Failed to get location");
         resolve(null);
       },
       { enableHighAccuracy: true }
