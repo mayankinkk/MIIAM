@@ -134,7 +134,7 @@ export default function RiderDashboard() {
         setRiderEarnings(totalEarnings);
 
         const todayStart = new Date(); todayStart.setHours(0, 0, 0, 0);
-        let todayEarned = 0; let collected = 0;
+        let todayEarned = 0; const collected = 0;
         const { data: todayOrders } = await supabase.from("orders").select("delivery_fee").eq("rider_id", riderIdVal).in("status", ["delivered", "completed"]).gte("placed_at", todayStart.toISOString());
         todayEarned = (todayOrders || []).reduce((s: number, o: { delivery_fee: number | null }) => s + (Number(o.delivery_fee) || 0), 0);
         if (!todayEarned) {

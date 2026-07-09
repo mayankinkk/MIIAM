@@ -180,7 +180,7 @@ export default function RiderMap({
       L.control.zoom({ position: "bottomright" }).addTo(map);
 
       // Add tile layer with fallback servers for 503 handling
-      let tileServerIndex = 0;
+      const tileServerIndex = 0;
       function addTileLayer(urlIndex: number) {
         if (urlIndex >= TILE_SERVERS.length) return;
         const tileLayer = L.tileLayer(TILE_SERVERS[urlIndex], {
