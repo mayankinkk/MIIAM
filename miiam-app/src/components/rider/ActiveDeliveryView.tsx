@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import Link from "next/link";
 import type { OrderWithTiming } from "@/app/rider/dashboard/types";
 import { calculatePeakEarnings } from "@/app/rider/dashboard/utils";
@@ -24,7 +25,7 @@ interface ActiveDeliveryViewProps {
   onSetPickedItems: (fn: (prev: Set<number>) => Set<number>) => void;
 }
 
-export default function ActiveDeliveryView({
+function ActiveDeliveryView({
   currentOrder,
   activeOrders,
   deliveryStep,
@@ -392,3 +393,5 @@ export default function ActiveDeliveryView({
     </div>
   );
 }
+
+export default memo(ActiveDeliveryView);

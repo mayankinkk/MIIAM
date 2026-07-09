@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, memo } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 interface Review {
@@ -16,8 +16,8 @@ interface VendorReviewsProps {
   vendorId: string;
 }
 
-export default function VendorReviews({ vendorId }: VendorReviewsProps) {
-  const supabase = createClient();
+function VendorReviews({ vendorId }: VendorReviewsProps) {
+  const supabase = useMemo(() => createClient(), []);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [avgRating, setAvgRating] = useState(0);
@@ -144,3 +144,5 @@ export default function VendorReviews({ vendorId }: VendorReviewsProps) {
     </div>
   );
 }
+
+export default memo(VendorReviews);
