@@ -47,11 +47,12 @@ export default function VendorProfilePage() {
   const [form, setForm] = useState<Partial<VendorProfile>>({});
 
   async function uploadImage(file: File): Promise<string | null> {
-    const fileExt = file.name.split(".").pop();
-    const fileName = `vendor/${vendor?.id || "new"}_${Date.now()}.${fileExt}`;
+    const { compressImage } = await import("@/lib/image-compress");
+    const compressed = await compressImage(file);
+    const fileName = `vendor/${vendor?.id || "new"}_${Date.now()}.jpg`;
     const { error: uploadError } = await supabase.storage
       .from("menu-images")
-      .upload(fileName, file);
+      .upload(fileName, compressed);
     if (uploadError) {
       useToastStore.getState().addToast("Upload failed. Make sure the 'menu-images' bucket exists in Supabase Storage with public read access.", "error");
       return null;
