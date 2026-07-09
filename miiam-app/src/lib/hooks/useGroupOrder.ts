@@ -32,9 +32,11 @@ export interface GroupOrderMember {
 
 function generateGroupCode(): string {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const arr = new Uint8Array(6);
+  crypto.getRandomValues(arr);
   let code = "";
   for (let i = 0; i < 6; i++) {
-    code += chars.charAt(Math.floor(Math.random() * chars.length));
+    code += chars.charAt(arr[i] % chars.length);
   }
   return code;
 }

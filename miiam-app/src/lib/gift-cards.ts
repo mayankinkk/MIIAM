@@ -20,13 +20,15 @@ export interface GiftCard {
 
 function generateGiftCardCode(): string {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const arr = new Uint8Array(8);
+  crypto.getRandomValues(arr);
   let code = "GIFT-";
   for (let i = 0; i < 4; i++) {
-    code += chars.charAt(Math.floor(Math.random() * chars.length));
+    code += chars.charAt(arr[i] % chars.length);
   }
   code += "-";
-  for (let i = 0; i < 4; i++) {
-    code += chars.charAt(Math.floor(Math.random() * chars.length));
+  for (let i = 4; i < 8; i++) {
+    code += chars.charAt(arr[i] % chars.length);
   }
   return code;
 }
