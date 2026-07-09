@@ -490,6 +490,20 @@ const [userOrders, setUserOrders] = useState<OrderData[]>([]);
             )}
           </div>
         )}
+
+        {/* Contact Info */}
+        <div className="px-4 py-8">
+          <div className="bg-surface-container-lowest rounded-2xl p-6 shadow-sm">
+            <h3 className="font-bold text-on-surface mb-4">Contact Us</h3>
+            <div className="space-y-3 text-sm text-on-surface-variant">
+              <p>📞 +91 99578 73472</p>
+              <p>📞 +91 60000 24164</p>
+              <p>✉️ miiamsupport@gmail.com</p>
+              <p>📸 Instagram: @miiam.in</p>
+              <p>📘 Facebook: Miiam Gauripur</p>
+            </div>
+          </div>
+        </div>
       </main>
     </div>
   );

@@ -477,10 +477,11 @@ export default function ExplorePage() {
             </div>
             <div>
               <h3 className="font-black text-xl">Partner with MIIAM</h3>
-              <p className="text-sm text-white/70">Grow your business with us</p>
+              <p className="text-sm text-white/70">Need it, miiam it</p>
             </div>
           </div>
-          <p className="text-sm text-white/80 mb-4">Join {totalVendorCount > 0 ? `${totalVendorCount}+` : ""} restaurants and service providers earning with MIIAM.</p>
+          <p className="text-sm text-white/80 mb-2">Join {totalVendorCount > 0 ? `${totalVendorCount}+` : ""} restaurants and service providers earning with MIIAM.</p>
+          <p className="text-sm text-white/80 mb-4">📞 Call us: +91 8822783952</p>
           <a href="https://partner.miiam.in" target="_blank" rel="noopener noreferrer" className="block w-full py-3 bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface)] font-bold rounded-xl hover:bg-[var(--color-surface-container)] transition-colors text-center">
             Register Your Business
           </a>

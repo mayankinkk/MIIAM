@@ -41,10 +41,13 @@ export default function AboutUsPage() {
           <span className="inline-block px-4 py-1.5 bg-[var(--color-primary)]/10 text-[var(--color-primary)] rounded-full text-xs font-black uppercase tracking-widest mb-6">
             Our Story
           </span>
-          <h1 className="text-5xl md:text-7xl font-black text-[var(--color-on-surface)] tracking-tighter leading-none mb-8">
+          <h1 className="text-5xl md:text-7xl font-black text-[var(--color-on-surface)] tracking-tighter leading-none mb-4">
             Reimagining the <br />
             <span className="text-[var(--color-primary)]">Hyper-Local Economy.</span>
           </h1>
+          <p className="text-2xl md:text-3xl font-black text-[var(--color-primary)] mb-6 tracking-tight">
+            Need it, miiam it
+          </p>
           <p className="text-xl text-[var(--color-on-surface-variant)] leading-relaxed font-medium">
             MIIAM was born out of a simple observation: the local economy is vibrant, but the technology connecting people to it is often fragmented. We set out to build a unified platform for Appetite and Trust.
           </p>
@@ -85,12 +88,21 @@ export default function AboutUsPage() {
 
       {/* Footer */}
       <footer className="py-12 border-t border-[var(--color-primary)]/10 text-center">
-        <div className="flex justify-center gap-6 mb-4">
-          <Link href="/terms" className="text-[var(--color-outline-variant)] text-sm hover:text-[var(--color-primary)] transition-colors">Terms</Link>
-          <Link href="/privacy" className="text-[var(--color-outline-variant)] text-sm hover:text-[var(--color-primary)] transition-colors">Privacy</Link>
-          <Link href="/refunds" className="text-[var(--color-outline-variant)] text-sm hover:text-[var(--color-primary)] transition-colors">Refund Policy</Link>
+        <div className="max-w-4xl mx-auto px-6">
+          <p className="text-2xl font-black text-[var(--color-primary)] mb-4 tracking-tight">Need it, miiam it</p>
+          <div className="flex justify-center gap-6 mb-4">
+            <a href="https://instagram.com/miiam.in" target="_blank" rel="noopener noreferrer" className="text-[var(--color-outline-variant)] text-sm hover:text-[var(--color-primary)] transition-colors">Instagram</a>
+            <a href="https://facebook.com/Miiamgauripur" target="_blank" rel="noopener noreferrer" className="text-[var(--color-outline-variant)] text-sm hover:text-[var(--color-primary)] transition-colors">Facebook</a>
+            <a href="mailto:miiamsupport@gmail.com" className="text-[var(--color-outline-variant)] text-sm hover:text-[var(--color-primary)] transition-colors">Email</a>
+          </div>
+          <p className="text-[var(--color-outline-variant)] text-sm mb-2">📞 +91 99578 73472 · +91 60000 24164</p>
+          <div className="flex justify-center gap-6 mb-4">
+            <Link href="/terms" className="text-[var(--color-outline-variant)] text-sm hover:text-[var(--color-primary)] transition-colors">Terms</Link>
+            <Link href="/privacy" className="text-[var(--color-outline-variant)] text-sm hover:text-[var(--color-primary)] transition-colors">Privacy</Link>
+            <Link href="/refunds" className="text-[var(--color-outline-variant)] text-sm hover:text-[var(--color-primary)] transition-colors">Refund Policy</Link>
+          </div>
+          <p className="text-[var(--color-outline-variant)] font-bold text-sm">© 2026 MIIAM. Built with ❤️ in Guwahati.</p>
         </div>
-        <p className="text-[var(--color-outline-variant)] font-bold text-sm">© 2026 MIIAM. Built with ❤️ in Guwahati.</p>
       </footer>
     </div>
   );
