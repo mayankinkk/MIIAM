@@ -498,7 +498,7 @@ export default function RiderOrdersPage() {
             .from("riders")
             .update({ total_deliveries: (rider?.total_deliveries || 0) + 1 })
             .eq("id", rId);
-        } catch { /* column may not exist */ }
+        } catch (err) { logger.error({ err }, "Failed to update rider stats (column may not exist)"); }
       }
 
       // 3. Non-critical: send notifications
@@ -511,7 +511,7 @@ export default function RiderOrdersPage() {
             type: "order",
             is_read: false,
           });
-        } catch { /* ignore */ }
+        } catch (err) { logger.error({ err }, "Failed to send delivery notification"); }
         try {
           await fetch("/api/emails/order-status", {
             method: "POST",
@@ -556,7 +556,7 @@ export default function RiderOrdersPage() {
             is_read: false,
             created_at: new Date().toISOString(),
           });
-        } catch { /* non-critical */ }
+        } catch (err) { logger.error({ err }, "Failed to send pickup notification"); }
 
         try {
           await fetch("/api/emails/order-status", {
@@ -584,7 +584,7 @@ export default function RiderOrdersPage() {
             lat: riderLocation.lat,
             lng: riderLocation.lng,
           });
-        } catch { /* non-critical */ }
+        } catch (err) { logger.error({ err }, "Failed to insert rider location"); }
       }
 
       setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: "picked_up", rider_id: riderProfile!.id } : o));

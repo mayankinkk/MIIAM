@@ -233,7 +233,7 @@ export default function RiderDashboard() {
     setSnoozeMessage(t.rider.notifications.snoozed);
     setTimeout(() => setSnoozeMessage(""), 3000);
     if (order.orderDbId && riderId) {
-      try { await supabase.rpc('snooze_order_for_rider', { p_order_id: order.orderDbId, p_rider_id: riderId, p_seconds: 30 }); } catch { /* silent */ }
+      try { await supabase.rpc('snooze_order_for_rider', { p_order_id: order.orderDbId, p_rider_id: riderId, p_seconds: 30 }); } catch (err) { logger.error({ err, orderId: order.orderDbId }, "Failed to snooze order"); }
     }
   }, [selectedOrder, riderId, supabase]);
 
@@ -466,7 +466,7 @@ export default function RiderDashboard() {
           return;
         }
         accepted = true;
-      } catch { /* silent */ }
+      } catch (err) { logger.error({ err, orderId: order.orderDbId }, "Failed to accept order via RPC"); }
     }
     if (!accepted && order.orderDbId && riderId) {
       const { error } = await supabase.from("orders").update({ rider_id: riderId, status: "accepted", accepted_at: new Date().toISOString() }).eq("id", order.orderDbId).is("rider_id", null);
@@ -493,7 +493,7 @@ export default function RiderDashboard() {
         if (orderData) {
           await fetch("/api/rider/cancel-order", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ order_id: orderData.id, rider_id: riderId, reason }) });
         }
-      } catch { /* silent */ }
+      } catch (err) { logger.error({ err, orderId }, "Failed to cancel order"); }
     }
   };
   handleDeclineRef.current = handleDecline;
@@ -515,13 +515,13 @@ export default function RiderDashboard() {
         } catch (walletErr) { logger.error({ err: walletErr }, "Wallet credit failed (non-critical)"); }
 
         // 2. Update rider stats
-        try { await supabase.from("riders").update({ total_deliveries: riderDeliveries + 1 }).eq("id", riderId); setRiderDeliveries((prev) => prev + 1); } catch { /* column may not exist */ }
+        try { await supabase.from("riders").update({ total_deliveries: riderDeliveries + 1 }).eq("id", riderId); setRiderDeliveries((prev) => prev + 1); } catch (err) { logger.error({ err }, "Failed to update rider stats"); }
 
         // 3. Update earnings + send notifications
         setRiderEarnings((prev) => prev + finalEarnings);
         if (currentOrder?.user_id) {
-          try { await supabase.from("notifications").insert({ user_id: currentOrder.user_id, title: t.rider.notifications.orderDeliveredTitle, body: t.rider.notifications.orderDeliveredMsg, type: "order", is_read: false, created_at: new Date().toISOString() }); } catch { /* silent */ }
-          try { await fetch("/api/emails/order-status", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ orderId: currentOrder.orderDbId, status: "delivered" }) }); } catch { /* silent */ }
+          try { await supabase.from("notifications").insert({ user_id: currentOrder.user_id, title: t.rider.notifications.orderDeliveredTitle, body: t.rider.notifications.orderDeliveredMsg, type: "order", is_read: false, created_at: new Date().toISOString() }); } catch (err) { logger.error({ err }, "Failed to send delivery notification"); }
+          try { await fetch("/api/emails/order-status", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ orderId: currentOrder.orderDbId, status: "delivered" }) }); } catch (err) { logger.error({ err }, "Failed to send delivery email"); }
         }
 
         // 4. Order status update LAST (critical — point of no return)
@@ -540,22 +540,22 @@ export default function RiderDashboard() {
   const handlePickedUp = async () => {
     setDeliveryStep("delivering");
     if (currentOrder?.orderDbId && riderId) {
-      try { await supabase.from("orders").update({ status: "picked_up", picked_at: new Date().toISOString() }).eq("id", currentOrder.orderDbId); startLocationTracking(riderId, currentOrder.orderDbId); } catch { /* silent */ }
+      try { await supabase.from("orders").update({ status: "picked_up", picked_at: new Date().toISOString() }).eq("id", currentOrder.orderDbId); startLocationTracking(riderId, currentOrder.orderDbId); } catch (err) { logger.error({ err, orderId: currentOrder.orderDbId }, "Failed to mark order as picked up"); }
     }
   };
 
   const handleArrived = async () => {
     if (currentOrder?.type === "multi_stop" && currentOrder.stops && currentStopIndex < currentOrder.stops.length - 1) {
       setCurrentStopIndex(currentStopIndex + 1);
-      if (currentOrder.orderDbId) { try { await supabase.from("orders").update({ delivery_notes: `Stop ${currentStopIndex + 2}/${currentOrder.stops.length} - ${currentOrder.stops[currentStopIndex + 1]?.name}` }).eq("id", currentOrder.orderDbId); } catch { /* silent */ } }
+      if (currentOrder.orderDbId) { try { await supabase.from("orders").update({ delivery_notes: `Stop ${currentStopIndex + 2}/${currentOrder.stops.length} - ${currentOrder.stops[currentStopIndex + 1]?.name}` }).eq("id", currentOrder.orderDbId); } catch (err) { logger.error({ err, orderId: currentOrder.orderDbId }, "Failed to update delivery notes"); } }
     } else {
-      if (currentOrder?.orderDbId) { try { await supabase.from("orders").update({ status: "arrived", arrived_at: new Date().toISOString() }).eq("id", currentOrder.orderDbId); } catch { /* silent */ } }
+      if (currentOrder?.orderDbId) { try { await supabase.from("orders").update({ status: "arrived", arrived_at: new Date().toISOString() }).eq("id", currentOrder.orderDbId); } catch (err) { logger.error({ err, orderId: currentOrder.orderDbId }, "Failed to mark arrived"); } }
       setDeliveryStep("arrived");
     }
   };
 
   const handleItemsCollected = async () => {
-    if (currentOrder?.orderDbId) { try { await supabase.from("orders").update({ status: "picking_up" }).eq("id", currentOrder.orderDbId); } catch { /* silent */ } }
+    if (currentOrder?.orderDbId) { try { await supabase.from("orders").update({ status: "picking_up" }).eq("id", currentOrder.orderDbId); } catch (err) { logger.error({ err, orderId: currentOrder.orderDbId }, "Failed to mark picking_up"); } }
     setDeliveryStep("picking_up");
   };
 
