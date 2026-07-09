@@ -332,7 +332,7 @@ export default function RestaurantProfilePage() {
     try {
       const [vendorRes, menuRes, reviewsRes] = await Promise.all([
         supabase.from("vendors").select("id, shop_name, cuisine, address, rating, review_count, delivery_time_min, delivery_time_max, delivery_charge, description, opening_hours, is_featured, cover_image_url, image_url").eq("id", vendorId).single(),
-        supabase.from("menu_items").select("id, name, price, category, is_veg, is_featured, vendor_id").eq("vendor_id", vendorId).order("name"),
+        supabase.from("menu_items").select("id, name, price, category, image_url, description, is_veg, is_featured, vendor_id").eq("vendor_id", vendorId).order("name"),
         supabase.from("reviews").select("id, user_name, rating, comment, created_at").eq("vendor_id", vendorId).order("created_at", { ascending: false }),
       ]);
       if (vendorRes.error) {

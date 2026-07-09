@@ -94,7 +94,7 @@ export default function VendorPage() {
 
         const { data: menuData } = await supabase
           .from(itemsTable)
-          .select("id, vendor_id, name, price, category, image_url, is_veg, is_available, is_featured, featured, description, menu_slot")
+          .select("*")
           .eq("vendor_id", vendorId);
 
         if (menuData) setMenuItems(menuData);
