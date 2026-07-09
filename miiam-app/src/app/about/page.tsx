@@ -46,7 +46,7 @@ export default function AboutUsPage() {
             <span className="text-[var(--color-primary)]">Hyper-Local Economy.</span>
           </h1>
           <p className="text-2xl md:text-3xl font-black text-[var(--color-primary)] mb-6 tracking-tight">
-            Need it, miiam it
+            Need it? MIIAM it!
           </p>
           <p className="text-xl text-[var(--color-on-surface-variant)] leading-relaxed font-medium">
             MIIAM was born out of a simple observation: the local economy is vibrant, but the technology connecting people to it is often fragmented. We set out to build a unified platform for Appetite and Trust.
@@ -89,7 +89,7 @@ export default function AboutUsPage() {
       {/* Footer */}
       <footer className="py-12 border-t border-[var(--color-primary)]/10 text-center">
         <div className="max-w-4xl mx-auto px-6">
-          <p className="text-2xl font-black text-[var(--color-primary)] mb-4 tracking-tight">Need it, miiam it</p>
+          <p className="text-2xl font-black text-[var(--color-primary)] mb-4 tracking-tight">Need it? MIIAM it!</p>
           <div className="flex justify-center gap-6 mb-4">
             <a href="https://instagram.com/miiam.in" target="_blank" rel="noopener noreferrer" className="text-[var(--color-outline-variant)] text-sm hover:text-[var(--color-primary)] transition-colors">Instagram</a>
             <a href="https://facebook.com/Miiamgauripur" target="_blank" rel="noopener noreferrer" className="text-[var(--color-outline-variant)] text-sm hover:text-[var(--color-primary)] transition-colors">Facebook</a>

@@ -414,7 +414,7 @@ export default function HomePage() {
             <div>
               <p className="text-sm text-on-surface-variant">{greeting} {timeIcon}</p>
               <h1 className="text-2xl font-black text-on-background capitalize">{userName}</h1>
-              <p className="text-xs text-primary font-bold">Need it, miiam it</p>
+              <p className="text-xs text-primary font-bold">Need it? MIIAM it!</p>
             </div>
             <div className="flex items-center gap-2">
               <select

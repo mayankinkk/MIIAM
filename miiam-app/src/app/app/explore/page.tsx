@@ -477,7 +477,7 @@ export default function ExplorePage() {
             </div>
             <div>
               <h3 className="font-black text-xl">Partner with MIIAM</h3>
-              <p className="text-sm text-white/70">Need it, miiam it</p>
+              <p className="text-sm text-white/70">Need it? MIIAM it!</p>
             </div>
           </div>
           <p className="text-sm text-white/80 mb-2">Join {totalVendorCount > 0 ? `${totalVendorCount}+` : ""} restaurants and service providers earning with MIIAM.</p>
