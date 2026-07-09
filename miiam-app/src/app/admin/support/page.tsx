@@ -2,31 +2,36 @@
 
 import { useMemo, useEffect, useState, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
+import logger from "@/lib/logger";
 
-interface ChatMessage {
+interface SupportConversation {
   id: string;
-  order_id: string;
+  user_id: string;
+  status: string;
+  priority: string;
+  created_at: string;
+  user_name?: string;
+  user_phone?: string;
+  lastMessage?: string;
+  unreadCount: number;
+}
+
+interface SupportMessage {
+  id: string;
+  conversation_id: string;
   sender_id: string;
   sender_type: string;
   message: string;
   created_at: string;
-  read: boolean;
-}
-
-interface ActiveChat {
-  orderId: string;
-  lastMessage: string;
-  lastMessageAt: string;
-  unreadCount: number;
 }
 
 export default function LiveChatSupport() {
   const supabase = useMemo(() => createClient(), []);
   const [currentUserId, setCurrentUserId] = useState<string>("");
-  const [chats, setChats] = useState<ActiveChat[]>([]);
+  const [conversations, setConversations] = useState<SupportConversation[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedChat, setSelectedChat] = useState<string | null>(null);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [selectedConv, setSelectedConv] = useState<string | null>(null);
+  const [messages, setMessages] = useState<SupportMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -37,111 +42,171 @@ export default function LiveChatSupport() {
   }, [supabase]);
 
   useEffect(() => {
-    loadChats();
-    const channel = supabase.channel("admin-chat")
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "chat_messages" }, () => {
-        loadChats();
-        if (selectedChat) loadMessages(selectedChat);
+    loadConversations();
+    const channel = supabase.channel("admin-support")
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "support_messages" }, () => {
+        loadConversations();
+        if (selectedConv) loadMessages(selectedConv);
+      })
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "support_conversations" }, () => {
+        loadConversations();
       })
       .subscribe();
     return () => { supabase.removeChannel(channel); };
-  }, [supabase]);
+  }, [supabase, selectedConv]);
 
-  async function loadChats() {
-    const { data } = await supabase
-      .from("chat_messages")
-      .select("order_id, created_at, message")
-      .order("created_at", { ascending: false });
-    
-    if (data) {
-      const uniqueChats = new Map<string, ActiveChat>();
-      data.forEach((msg: { order_id: string; created_at: string; message: string }) => {
-        if (!uniqueChats.has(msg.order_id)) {
-          uniqueChats.set(msg.order_id, {
-            orderId: msg.order_id,
-            lastMessage: msg.message,
-            lastMessageAt: msg.created_at,
-            unreadCount: 0
-          });
-        }
-      });
-      setChats(Array.from(uniqueChats.values()));
+  async function loadConversations() {
+    try {
+      const { data: convs } = await supabase
+        .from("support_conversations")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (!convs) { setLoading(false); return; }
+
+      const enriched = await Promise.all(
+        convs.map(async (conv: SupportConversation) => {
+          // Get user info
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("full_name, phone_number")
+            .eq("id", conv.user_id)
+            .maybeSingle();
+
+          // Get last message
+          const { data: lastMsg } = await supabase
+            .from("support_messages")
+            .select("message, created_at")
+            .eq("conversation_id", conv.id)
+            .order("created_at", { ascending: false })
+            .limit(1)
+            .maybeSingle();
+
+          // Count unread (messages from user that admin hasn't seen)
+          const { count } = await supabase
+            .from("support_messages")
+            .select("*", { count: "exact", head: true })
+            .eq("conversation_id", conv.id)
+            .eq("sender_type", "user");
+
+          return {
+            ...conv,
+            user_name: profile?.full_name || "User",
+            user_phone: profile?.phone_number || "",
+            lastMessage: lastMsg?.message || "",
+            unreadCount: count || 0,
+          };
+        })
+      );
+
+      setConversations(enriched);
+    } catch (err) {
+      logger.error({ err: err }, "Failed to load support conversations");
     }
     setLoading(false);
   }
 
-  async function loadMessages(orderId: string) {
+  async function loadMessages(convId: string) {
     const { data } = await supabase
-      .from("chat_messages")
+      .from("support_messages")
       .select("*")
-      .eq("order_id", orderId)
+      .eq("conversation_id", convId)
       .order("created_at", { ascending: true });
     if (data) setMessages(data);
   }
 
   useEffect(() => {
-    if (selectedChat) {
-      loadMessages(selectedChat);
-      const channel = supabase.channel(`chat-${selectedChat}`)
-        .on("postgres_changes", { event: "INSERT", schema: "public", table: "chat_messages", filter: `order_id=eq.${selectedChat}` }, () => {
-          loadMessages(selectedChat);
+    if (selectedConv) {
+      loadMessages(selectedConv);
+      const channel = supabase.channel(`support-msg-${selectedConv}`)
+        .on("postgres_changes", { event: "INSERT", schema: "public", table: "support_messages", filter: `conversation_id=eq.${selectedConv}` }, () => {
+          loadMessages(selectedConv);
         })
         .subscribe();
       return () => { supabase.removeChannel(channel); };
     }
-  }, [selectedChat]);
+  }, [selectedConv, supabase]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   async function sendMessage() {
-    if (!newMessage.trim() || !selectedChat || !currentUserId) return;
-    await supabase.from("chat_messages").insert({
-      order_id: selectedChat,
+    if (!newMessage.trim() || !selectedConv || !currentUserId) return;
+    await supabase.from("support_messages").insert({
+      conversation_id: selectedConv,
       sender_id: currentUserId,
       sender_type: "support",
-      message: newMessage
+      message: newMessage,
     });
     setNewMessage("");
-    loadMessages(selectedChat);
+    loadMessages(selectedConv);
   }
 
-  if (loading) return <div className="px-8">Loading chats...</div>;
+  async function updateStatus(convId: string, status: string) {
+    await supabase
+      .from("support_conversations")
+      .update({ status, resolved_at: status === "resolved" ? new Date().toISOString() : null })
+      .eq("id", convId);
+    loadConversations();
+  }
+
+  if (loading) return <div className="px-8 py-4 text-[var(--color-outline-variant)]">Loading conversations...</div>;
 
   return (
     <div className="px-8">
-      <div className="text-3xl font-extrabold text-[var(--color-on-surface)] tracking-tight mb-8">Live Chat Support</div>
-      
+      <div className="text-3xl font-extrabold text-[var(--color-on-surface)] tracking-tight mb-2">Live Chat Support</div>
+      <p className="text-sm text-[var(--color-outline-variant)] mb-8">Customer support conversations from the chatbot</p>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-200px)]">
-        {/* Chat List */}
+        {/* Conversation List */}
         <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] overflow-hidden shadow-sm">
           <div className="p-4 border-b border-[var(--color-border-subtle)]">
-            <h2 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm">Active Chats</h2>
+            <h2 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm">Conversations</h2>
           </div>
           <div className="overflow-y-auto h-full">
-            {chats.length === 0 ? (
+            {conversations.length === 0 ? (
               <div className="p-8 text-center text-[var(--color-outline-variant)]">
-                <span className="material-symbols-outlined text-4xl mb-2">chat</span>
-                <p>No active chats</p>
+                <span className="material-symbols-outlined text-4xl mb-2">support_agent</span>
+                <p>No conversations yet</p>
+                <p className="text-xs mt-1">When customers chat with the bot and need human help, they&apos;ll appear here</p>
               </div>
             ) : (
-              chats.map(chat => (
+              conversations.map(conv => (
                 <button
-                  key={chat.orderId}
-                  onClick={() => setSelectedChat(chat.orderId)}
+                  key={conv.id}
+                  onClick={() => { setSelectedConv(conv.id); }}
                   className={`w-full p-4 text-left border-b border-slate-50 hover:bg-[var(--color-surface-subtle)] transition-colors ${
-                    selectedChat === chat.orderId ? "bg-[var(--color-primary)]/5 border-l-4 border-l-[var(--color-primary)]" : ""
+                    selectedConv === conv.id ? "bg-[var(--color-primary)]/5 border-l-4 border-l-[var(--color-primary)]" : ""
                   }`}
                 >
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                    <span className="font-bold text-[var(--color-on-surface)]">Order #{chat.orderId.slice(0, 8)}</span>
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center gap-2">
+                      <span className={`w-2 h-2 rounded-full ${
+                        conv.status === "open" ? "bg-green-500 animate-pulse" :
+                        conv.status === "pending" ? "bg-amber-500" :
+                        conv.status === "resolved" ? "bg-blue-500" : "bg-gray-400"
+                      }`} />
+                      <span className="font-bold text-[var(--color-on-surface)] text-sm">{conv.user_name}</span>
+                    </div>
+                    {conv.unreadCount > 0 && (
+                      <span className="bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{conv.unreadCount}</span>
+                    )}
                   </div>
-                  <p className="text-sm text-[var(--color-outline)] truncate">{chat.lastMessage}</p>
-                  <p className="text-xs text-[var(--color-outline-variant)] mt-1">
-                    {new Date(chat.lastMessageAt).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}
-                  </p>
+                  <p className="text-xs text-[var(--color-outline-variant)] mb-1">{conv.user_phone}</p>
+                  <p className="text-sm text-[var(--color-outline)] truncate">{conv.lastMessage}</p>
+                  <div className="flex items-center justify-between mt-1">
+                    <p className="text-[10px] text-[var(--color-outline-variant)]">
+                      {new Date(conv.created_at).toLocaleString("en-IN", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "short" })}
+                    </p>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                      conv.status === "open" ? "bg-green-100 text-green-700" :
+                      conv.status === "pending" ? "bg-amber-100 text-amber-700" :
+                      conv.status === "resolved" ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-700"
+                    }`}>
+                      {conv.status}
+                    </span>
+                  </div>
                 </button>
               ))
             )}
@@ -150,23 +215,36 @@ export default function LiveChatSupport() {
 
         {/* Chat Window */}
         <div className="lg:col-span-2 bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] overflow-hidden shadow-sm flex flex-col">
-          {selectedChat ? (
+          {selectedConv ? (
             <>
               <div className="p-4 border-b border-[var(--color-border-subtle)] flex justify-between items-center">
                 <div>
-                  <h2 className="font-black text-[var(--color-on-surface)]">Order #{selectedChat.slice(0, 8)}</h2>
-                  <div className="flex items-center gap-1">
-                    <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                  <h2 className="font-black text-[var(--color-on-surface)]">
+                    {conversations.find(c => c.id === selectedConv)?.user_name || "User"}
+                  </h2>
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                     <span className="text-xs text-[var(--color-outline-variant)]">Online</span>
                   </div>
                 </div>
-                <button
-                  onClick={() => setSelectedChat(null)}
-                  className="p-2 text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]"
-                  title="Close chat"
-                >
-                  <span className="material-symbols-outlined">close</span>
-                </button>
+                <div className="flex items-center gap-2">
+                  <select
+                    value={conversations.find(c => c.id === selectedConv)?.status || "open"}
+                    onChange={(e) => updateStatus(selectedConv, e.target.value)}
+                    className="text-xs font-bold px-3 py-1.5 rounded-lg border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)]"
+                  >
+                    <option value="open">Open</option>
+                    <option value="pending">Pending</option>
+                    <option value="resolved">Resolved</option>
+                    <option value="closed">Closed</option>
+                  </select>
+                  <button
+                    onClick={() => setSelectedConv(null)}
+                    className="p-2 text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]"
+                  >
+                    <span className="material-symbols-outlined">close</span>
+                  </button>
+                </div>
               </div>
               <div className="flex-1 p-4 overflow-y-auto space-y-4">
                 {messages.map(msg => (
@@ -174,6 +252,11 @@ export default function LiveChatSupport() {
                     key={msg.id}
                     className={`flex ${msg.sender_type === "support" ? "justify-end" : "justify-start"}`}
                   >
+                    {msg.sender_type !== "support" && (
+                      <div className="w-8 h-8 bg-slate-300 rounded-full flex items-center justify-center text-white text-xs font-black mr-2 flex-shrink-0 mt-auto">
+                        {msg.sender_type === "user" ? "👤" : "M"}
+                      </div>
+                    )}
                     <div
                       className={`max-w-[75%] p-3 rounded-2xl ${
                         msg.sender_type === "support"
@@ -181,7 +264,7 @@ export default function LiveChatSupport() {
                           : "bg-[var(--color-surface-container)] text-[var(--color-on-surface)] rounded-bl-md"
                       }`}
                     >
-                      <p className="text-sm">{msg.message}</p>
+                      <p className="text-sm whitespace-pre-line">{msg.message}</p>
                       <p className={`text-[10px] mt-1 ${msg.sender_type === "support" ? "text-white/60" : "text-[var(--color-outline-variant)]"}`}>
                         {new Date(msg.created_at).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}
                       </p>
@@ -197,7 +280,7 @@ export default function LiveChatSupport() {
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-                    placeholder="Type a message..."
+                    placeholder="Type a reply..."
                     className="flex-1 bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/10"
                   />
                   <button
@@ -212,8 +295,9 @@ export default function LiveChatSupport() {
           ) : (
             <div className="flex-1 flex items-center justify-center text-[var(--color-outline-variant)]">
               <div className="text-center">
-                <span className="material-symbols-outlined text-6xl mb-2">forum</span>
-                <p>Select a chat to start</p>
+                <span className="material-symbols-outlined text-6xl mb-2">support_agent</span>
+                <p>Select a conversation to start</p>
+                <p className="text-xs mt-2">Conversations appear here when customers need human support</p>
               </div>
             </div>
           )}

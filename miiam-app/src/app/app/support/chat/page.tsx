@@ -69,6 +69,7 @@ export default function SupportChatPage() {
   const [typing, setTyping] = useState(false);
   const [humanMode, setHumanMode] = useState(false);
   const [conversationId, setConversationId] = useState<string | null>(null);
+  const [failedAttempts, setFailedAttempts] = useState(0);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -273,13 +274,37 @@ export default function SupportChatPage() {
           time: new Date(),
         }]);
       } else {
-        // Unknown query - offer human handoff
-        setMessages((prev) => [...prev, {
-          id: (Date.now() + 1).toString(),
-          text: "I'm not sure I understand. I can help with:\n• **Order status** — share your order ID\n• **Refunds** — share your order ID\n• **Delivery issues** — share your order ID\n• **Payment problems** — share your order ID\n\nOr type \"agent\" to talk to a human support agent.\n\nFor urgent issues, call us at **99578 73472**.",
-          role: "bot",
-          time: new Date(),
-        }]);
+        // Unknown query - track failed attempts and auto-redirect
+        const newFailedCount = failedAttempts + 1;
+        setFailedAttempts(newFailedCount);
+
+        if (newFailedCount >= 2 && !humanMode) {
+          // Auto-redirect to human after 2 failed attempts
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user) {
+            const convId = await createSupportConversation(user.id);
+            if (convId) {
+              setConversationId(convId);
+              setHumanMode(true);
+              await saveSupportMessage(convId, text, "user", user.id);
+              setMessages((prev) => [...prev, {
+                id: (Date.now() + 1).toString(),
+                text: "🧑‍💼 I'm connecting you with our support team since I couldn't fully resolve your issue.\n\nA human agent will respond shortly. Your messages are now being forwarded to our support team.\n\nFor urgent issues, call us at **99578 73472**.",
+                role: "agent",
+                time: new Date(),
+              }]);
+            }
+          }
+        } else {
+          setMessages((prev) => [...prev, {
+            id: (Date.now() + 1).toString(),
+            text: newFailedCount === 1
+              ? "I'm not sure I understand. Could you try rephrasing?\n\nI can help with:\n• **Order status** — share your order ID\n• **Refunds** — share your order ID\n• **Delivery issues** — share your order ID\n• **Payment problems** — share your order ID\n\nOr type **\"agent\"** to talk to a human support agent."
+              : "I'm still not sure I understand. Let me connect you with a human support agent who can better assist you.",
+            role: "bot",
+            time: new Date(),
+          }]);
+        }
       }
       setTyping(false);
     }, 1200);
