@@ -15,8 +15,6 @@ create table if not exists profiles (
   city text,
   state text,
   is_profile_complete boolean default false,
-  referral_code text unique,
-  referred_by uuid references profiles(id),
   created_at timestamp with time zone default timezone('utc'::text, now())
 );
 

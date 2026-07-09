@@ -101,13 +101,3 @@ begin
     alter table profiles add column if not exists email_verified_at timestamptz;
   end if;
 end $$;
-
--- referrals table
-create table if not exists referrals (
-  id uuid default gen_random_uuid() primary key,
-  referrer_id uuid references profiles(id) on delete cascade,
-  referred_email text,
-  referred_id uuid references profiles(id),
-  status text default 'pending',
-  created_at timestamptz default now()
-);
