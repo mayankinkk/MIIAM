@@ -244,21 +244,25 @@ export function useChatList(userId: string) {
 
     loadChats();
 
-    const channel = supabase
-      .channel("chat-list")
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "chat_messages",
-        },
-        () => { loadChats(); }
-      )
-      .subscribe();
+    // Filter subscription to only user's orders to prevent data leak
+    const channel = userId
+      ? supabase
+          .channel("chat-list")
+          .on(
+            "postgres_changes",
+            {
+              event: "INSERT",
+              schema: "public",
+              table: "chat_messages",
+              filter: `order_id=in.(SELECT id FROM orders WHERE user_id = '${userId}')`,
+            },
+            () => { loadChats(); }
+          )
+          .subscribe()
+      : null;
 
     return () => {
-      supabase.removeChannel(channel);
+      if (channel) supabase.removeChannel(channel);
     };
   }, [userId]);
 
