@@ -36,12 +36,16 @@ export function useUnreadMessages(userId: string) {
     async function setupChannel() {
       const { data: orders } = await supabase.from("orders").select("id").eq("user_id", userId);
       const orderIds = (orders?.map((o: { id: string }) => o.id) || []).filter((id: string): id is string => typeof id === "string" && /^[0-9a-f-]{36}$/.test(id));
+
+      // Skip subscription if no orders — filter=undefined would leak ALL messages
+      if (orderIds.length === 0) return null;
+
       const channel = supabase
         .channel(`unread-messages-${userId}`)
-        .on("postgres_changes", { event: "INSERT", schema: "public", table: "chat_messages", filter: orderIds.length > 0 ? `order_id=in.(${orderIds.join(",")})` : undefined }, () => {
+        .on("postgres_changes", { event: "INSERT", schema: "public", table: "chat_messages", filter: `order_id=in.(${orderIds.join(",")})` }, () => {
           loadUnread();
         })
-        .on("postgres_changes", { event: "UPDATE", schema: "public", table: "chat_messages", filter: orderIds.length > 0 ? `order_id=in.(${orderIds.join(",")})` : undefined }, () => {
+        .on("postgres_changes", { event: "UPDATE", schema: "public", table: "chat_messages", filter: `order_id=in.(${orderIds.join(",")})` }, () => {
           loadUnread();
         })
         .subscribe();
