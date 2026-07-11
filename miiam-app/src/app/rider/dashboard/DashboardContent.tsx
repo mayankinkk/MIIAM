@@ -448,11 +448,7 @@ export default function RiderDashboard() {
   }
 
   const clearAllPendingOrders = async () => {
-    try {
-      const { error } = await supabase.from("orders").delete().is("rider_id", null).in("status", ["pending"]);
-      if (error) throw error;
-      setPendingOrders([]);
-    } catch (err: unknown) { logger.error({ err }, "Clear failed"); }
+    setPendingOrders([]);
   };
 
   const handleAccept = async (order: OrderWithTiming) => {
