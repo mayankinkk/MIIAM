@@ -4,6 +4,7 @@ import { useEffect, useState, useRef, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { startLocationTracking, stopLocationTracking } from "@/lib/rider-location-tracker";
 import logger from "@/lib/logger";
+import { sanitizeHtml } from "@/lib/utils/sanitize";
 import type { Order, OrderItem } from "./types";
 import type * as Leaflet from 'leaflet';
 
@@ -149,7 +150,7 @@ export default function ActiveDeliveryView({ order, riderId, onUpdateItemStatus,
             const dLng = parseFloat(data[0].lon);
             destLatLngRef.current = [dLat, dLng];
             L.marker([dLat, dLng], { icon: destIcon })
-              .bindPopup(`<b>${destLabel}</b><br><span style="font-size:11px">${searchAddr}</span>`)
+              .bindPopup(`<b>${sanitizeHtml(destLabel)}</b><br><span style="font-size:11px">${sanitizeHtml(searchAddr)}</span>`)
               .openPopup().addTo(map);
             await drawRoute(riderLat, riderLng, dLat, dLng);
             geoSuccess = true;
@@ -163,7 +164,7 @@ export default function ActiveDeliveryView({ order, riderId, onUpdateItemStatus,
         const dLng = order.vendor.lng;
         destLatLngRef.current = [dLat, dLng];
         L.marker([dLat, dLng], { icon: destIcon })
-          .bindPopup(`<b>${destLabel}</b><br><span style="font-size:11px">${order.vendor?.shop_name || order.vendor?.name || "Vendor"}</span>`)
+          .bindPopup(`<b>${sanitizeHtml(destLabel)}</b><br><span style="font-size:11px">${sanitizeHtml(order.vendor?.shop_name || order.vendor?.name || "Vendor")}</span>`)
           .openPopup().addTo(map);
         await drawRoute(riderLat, riderLng, dLat, dLng);
         geoSuccess = true;
@@ -175,7 +176,7 @@ export default function ActiveDeliveryView({ order, riderId, onUpdateItemStatus,
         const dLng = order.delivery_lng;
         destLatLngRef.current = [dLat, dLng];
         L.marker([dLat, dLng], { icon: destIcon })
-          .bindPopup(`<b>${destLabel}</b><br><span style="font-size:11px">${deliveryAddress || "Customer"}</span>`)
+          .bindPopup(`<b>${sanitizeHtml(destLabel)}</b><br><span style="font-size:11px">${sanitizeHtml(deliveryAddress || "Customer")}</span>`)
           .openPopup().addTo(map);
         await drawRoute(riderLat, riderLng, dLat, dLng);
         geoSuccess = true;

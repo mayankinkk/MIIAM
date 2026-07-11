@@ -34,9 +34,9 @@ export function useRealtimeMetrics(): RealtimeMetrics & { loading: boolean; refr
       const today = new Date().toISOString().split("T")[0];
 
       const [ordersResult, todayResult, activeResult] = await Promise.all([
-        supabase.from("orders").select("id, total_amount"),
-        supabase.from("orders").select("id, total_amount").gte("created_at", today),
-        supabase.from("orders").select("id").in("status", ["pending", "accepted", "preparing", "ready_for_pickup", "shopping", "picked_up", "on_the_way"]),
+        supabase.from("orders").select("id, total_amount").limit(50000),
+        supabase.from("orders").select("id, total_amount").gte("created_at", today).limit(10000),
+        supabase.from("orders").select("id").in("status", ["pending", "accepted", "preparing", "ready_for_pickup", "shopping", "picked_up", "on_the_way"]).limit(500),
       ]);
 
       const allOrders = ordersResult.data || [];

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import logger from "@/lib/logger";
@@ -46,7 +46,7 @@ export function useGroupOrder() {
   const [groupOrder, setGroupOrder] = useState<GroupOrder | null>(null);
   const [members, setMembers] = useState<GroupOrderMember[]>([]);
   const { addToast } = useToastStore();
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
 
   const createGroupOrder = useCallback(async (vendorId: string, creatorId: string, displayName: string) => {
     setLoading(true);

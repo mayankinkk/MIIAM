@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { requestFcmToken, onForegroundMessage, getFirebaseMessaging } from "@/lib/firebase/messaging";
 import { useNotificationStore } from "@/lib/store/notificationStore";
@@ -11,7 +11,8 @@ export function usePushNotifications(userId?: string) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { addNotification, setPermission, permission } = useNotificationStore();
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
+  const unsubRef = useRef<(() => void) | null>(null);
 
   // Request permission and get token
   const subscribe = useCallback(async () => {
@@ -75,14 +76,28 @@ export function usePushNotifications(userId?: string) {
         }
       });
 
+      // Track cleanup function
+      if (unsubRef.current) unsubRef.current();
+      unsubRef.current = unsubscribe;
+
       setIsLoading(false);
-      return () => unsubscribe();
+      return;
     } catch (err) {
       logger.error({ err }, "Push notification setup error");
       setError("Failed to setup notifications");
       setIsLoading(false);
     }
   }, [userId, supabase, addNotification, setPermission]);
+
+  // Cleanup foreground message subscription on unmount
+  useEffect(() => {
+    return () => {
+      if (unsubRef.current) {
+        unsubRef.current();
+        unsubRef.current = null;
+      }
+    };
+  }, []);
 
   // Send notification
   const sendNotification = useCallback(async (

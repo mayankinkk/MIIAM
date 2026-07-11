@@ -19,6 +19,7 @@ import ActiveDeliveryView from "@/components/rider/ActiveDeliveryView";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
 import logger from "@/lib/logger";
+import { sanitizeHtml } from "@/lib/utils/sanitize";
 
 const CallModal = dynamic(() => import("@/components/rider/CallModal"), { ssr: false });
 const OrderChatOverlay = dynamic(() => import("@/components/order/OrderChatOverlay"), { ssr: false });
@@ -405,7 +406,7 @@ export default function RiderDashboard() {
       pendingOrders.forEach((order) => {
         if (order.vendorLat && order.vendorLng) {
           const dotIcon = L.divIcon({ className: '', html: `<div style="width:16px;height:16px;background:rgba(11,80,213,0.5);border:2px solid var(--color-secondary);border-radius:50%;box-shadow:0 0 12px rgba(11,80,213,0.4);animation:pulse-dot 2s ease-in-out infinite;"></div>`, iconSize: [16, 16], iconAnchor: [8, 8] });
-          demandMarkers.push(L.marker([order.vendorLat, order.vendorLng], { icon: dotIcon }).addTo(map).bindPopup(`<b>${order.vendor}</b><br/>₹${order.earnings} • ${order.items} items`));
+          demandMarkers.push(L.marker([order.vendorLat, order.vendorLng], { icon: dotIcon }).addTo(map).bindPopup(`<b>${sanitizeHtml(order.vendor)}</b><br/>₹${order.earnings} • ${order.items} items`));
         }
       });
       if (mapEl) mapEl._demandMarkers = demandMarkers;
@@ -499,7 +500,11 @@ export default function RiderDashboard() {
     const finalEarnings = calculateEarnings(currentOrder.totalDistance, 40, 8, currentOrder.peakMultiplier);
     try {
       if (currentOrder.orderDbId && riderId) {
-        // 1. Credit wallet first (non-critical)
+        // 1. Update order status FIRST (critical — point of no return)
+        const { error: orderErr } = await supabase.from("orders").update({ status: "delivered", delivered_at: new Date().toISOString() }).eq("id", currentOrder.orderDbId);
+        if (orderErr) throw new Error("order update: " + orderErr.message);
+
+        // 2. Credit wallet AFTER successful order update
         try {
           const { data: wallet } = await supabase.from("rider_wallets").select("id, balance, total_earnings").eq("rider_id", riderId).maybeSingle();
           if (wallet) {
@@ -510,19 +515,15 @@ export default function RiderDashboard() {
           await supabase.from("rider_wallet").insert({ rider_id: riderId, amount: finalEarnings, type: "earning", description: `Delivery earnings for order #${currentOrder.orderDbId.slice(0, 8)}`, order_id: currentOrder.orderDbId, created_at: new Date().toISOString() });
         } catch (walletErr) { logger.error({ err: walletErr }, "Wallet credit failed (non-critical)"); }
 
-        // 2. Update rider stats
+        // 3. Update rider stats
         try { await supabase.from("riders").update({ total_deliveries: riderDeliveries + 1 }).eq("id", riderId); setRiderDeliveries((prev) => prev + 1); } catch (err) { logger.error({ err }, "Failed to update rider stats"); }
 
-        // 3. Update earnings + send notifications
+        // 4. Update earnings + send notifications
         setRiderEarnings((prev) => prev + finalEarnings);
         if (currentOrder?.user_id) {
           try { await supabase.from("notifications").insert({ user_id: currentOrder.user_id, title: t.rider.notifications.orderDeliveredTitle, body: t.rider.notifications.orderDeliveredMsg, type: "order", is_read: false, created_at: new Date().toISOString() }); } catch (err) { logger.error({ err }, "Failed to send delivery notification"); }
           try { await fetch("/api/emails/order-status", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ orderId: currentOrder.orderDbId, status: "delivered" }) }); } catch (err) { logger.error({ err }, "Failed to send delivery email"); }
         }
-
-        // 4. Order status update LAST (critical — point of no return)
-        const { error: orderErr } = await supabase.from("orders").update({ status: "delivered", delivered_at: new Date().toISOString() }).eq("id", currentOrder.orderDbId);
-        if (orderErr) throw new Error("order update: " + orderErr.message);
       }
     } catch (e) { logger.error({ err: e }, "Failed to persist delivery"); }
     setCurrentOrder(null); stopLocationTracking();
