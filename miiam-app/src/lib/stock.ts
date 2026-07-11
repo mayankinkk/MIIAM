@@ -76,15 +76,7 @@ export async function decrementStock(
   orderId: string,
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const stockCheck = await checkStock(items);
-    if (!stockCheck.available) {
-      const outOfStock = stockCheck.items.filter(i => !i.in_stock);
-      return {
-        success: false,
-        error: `Out of stock: ${outOfStock.map(i => `${i.name} (requested ${i.requested}, available ${i.available})`).join(", ")}`,
-      };
-    }
-
+    // Atomic decrement per item: check stock >= quantity in WHERE clause to prevent race
     for (const item of items) {
       const { data: current } = await supabase
         .from("menu_items")
@@ -92,15 +84,33 @@ export async function decrementStock(
         .eq("id", item.menu_item_id)
         .single();
 
-      if (current?.stock !== null && current?.stock !== undefined) {
-        const newStock = current.stock - item.quantity;
-        await supabase
-          .from("menu_items")
-          .update({
-            stock: Math.max(0, newStock),
-            is_available: newStock > 0,
-          })
-          .eq("id", item.menu_item_id);
+      if (current?.stock === null || current?.stock === undefined) continue;
+
+      if (current.stock < item.quantity) {
+        return {
+          success: false,
+          error: `Out of stock: ${item.name} (requested ${item.quantity}, available ${current.stock})`,
+        };
+      }
+
+      const newStock = current.stock - item.quantity;
+      // The .gte("stock", item.quantity) in WHERE prevents race condition:
+      // if another order decremented first, this UPDATE affects 0 rows
+      const { data: updated, error: updateErr } = await supabase
+        .from("menu_items")
+        .update({
+          stock: newStock,
+          is_available: newStock > 0,
+        })
+        .eq("id", item.menu_item_id)
+        .gte("stock", item.quantity)
+        .select("id");
+
+      if (updateErr || !updated || updated.length === 0) {
+        return {
+          success: false,
+          error: `Failed to update stock for ${item.name}: another order may have claimed it`,
+        };
       }
     }
 
