@@ -336,20 +336,23 @@ export default function BookingsPage() {
                     </div>
                   )}
 
-                  {booking.status === "in_progress" && (
-                    <div className="flex gap-2">
-                      {booking.technician_name ? (
-                        <div className="flex-1 py-2 bg-green-50 dark:bg-green-900/20 rounded-lg text-xs font-bold text-green-700 dark:text-green-400 flex items-center justify-center gap-2">
-                          <span className="material-symbols-outlined text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-                          {booking.technician_name}
-                          {booking.technician_phone && <span className="text-green-600 dark:text-green-400 font-normal">· {booking.technician_phone}</span>}
-                        </div>
-                      ) : (
-                        <div className="flex-1 py-2 bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 rounded-lg text-xs font-bold text-center flex items-center justify-center gap-1">
-                          <span className="material-symbols-outlined text-[14px]">person_off</span>
-                          Technician Not Assigned
-                        </div>
-                      )}
+                  {booking.technician_name && ["pending", "confirmed", "in_progress"].includes(booking.status) && (
+                    <div className="flex items-center gap-2 mb-3 bg-green-50 dark:bg-green-900/20 rounded-lg px-3 py-2">
+                      <span className="material-symbols-outlined text-green-600 dark:text-green-400 text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>person</span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-bold text-green-700 dark:text-green-400">{booking.technician_name}</p>
+                        {booking.technician_phone && <p className="text-[10px] text-green-600 dark:text-green-400/70">{booking.technician_phone}</p>}
+                      </div>
+                      <span className="text-[10px] font-bold text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/40 px-2 py-0.5 rounded-full">Assigned</span>
+                    </div>
+                  )}
+
+                  {booking.status === "in_progress" && !booking.technician_name && (
+                    <div className="flex gap-2 mb-3">
+                      <div className="flex-1 py-2 bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 rounded-lg text-xs font-bold text-center flex items-center justify-center gap-1">
+                        <span className="material-symbols-outlined text-[14px]">person_off</span>
+                        Technician Not Assigned
+                      </div>
                     </div>
                   )}
 
