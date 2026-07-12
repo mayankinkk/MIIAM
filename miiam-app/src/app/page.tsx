@@ -46,7 +46,7 @@ export default function LandingPage() {
             {[
               { label: tl.navFood, href: "/app/food" },
               { label: tl.navServices, href: "/services" },
-              { label: tl.navVendors, href: "/app/explore" },
+              { label: tl.navVendors, href: "/app/home" },
               { label: tl.navCareers, href: "/careers" },
               { label: tl.navBusiness, href: "/about" },
             ].map((item) => (
@@ -188,7 +188,7 @@ export default function LandingPage() {
               <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-800">{tl.popularNearYou}</h2>
               <p className="text-slate-400 font-medium mt-1.5">{tl.popularDesc}</p>
             </div>
-            <Link href="/app/explore" className="text-[#ba001c] font-bold text-sm flex items-center gap-1.5 hover:gap-3 transition-all duration-200">
+            <Link href="/app/home" className="text-[#ba001c] font-bold text-sm flex items-center gap-1.5 hover:gap-3 transition-all duration-200">
               {tl.viewAll} <span className="material-symbols-outlined text-lg">arrow_forward</span>
             </Link>
           </div>

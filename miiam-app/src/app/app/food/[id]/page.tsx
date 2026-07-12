@@ -478,7 +478,7 @@ export default function RestaurantProfilePage() {
         </div>
       </div>
 
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Food', href: '/app/food' }, { label: vendor.shop_name }]} />
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/home' }, { label: 'Food', href: '/app/food' }, { label: vendor.shop_name }]} />
 
       {/* Info Strip */}
       <div className="bg-surface-container-lowest px-5 py-4 flex items-center gap-4 overflow-x-auto no-scrollbar shadow-sm border-b border-outline-variant">

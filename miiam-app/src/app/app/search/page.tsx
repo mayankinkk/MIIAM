@@ -157,7 +157,7 @@ function SearchContent() {
     <>
       <header className="fixed top-0 w-full z-50 px-6 py-4 bg-surface/80 dark:bg-[var(--color-surface)]/80 backdrop-blur-2xl border-b border-outline-variant/20">
         <div className="flex items-center gap-4 max-w-4xl mx-auto">
-          <Link href="/app/explore" aria-label="Go back" className="text-primary">
+          <Link href="/app/home" aria-label="Go back" className="text-primary">
             <span className="material-symbols-outlined">arrow_back</span>
           </Link>
           <div className="flex-1 relative">
@@ -181,7 +181,7 @@ function SearchContent() {
         </div>
       </header>
 
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Search' }]} />
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/home' }, { label: 'Search' }]} />
 
       <main className="pt-24 pb-24 px-6 max-w-4xl mx-auto">
         {query && (

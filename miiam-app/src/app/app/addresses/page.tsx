@@ -460,7 +460,7 @@ export default function AddressBookPage() {
         </div>
       </header>
 
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Profile', href: '/app/profile' }, { label: 'Addresses' }]} />
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/home' }, { label: 'Profile', href: '/app/profile' }, { label: 'Addresses' }]} />
 
       {/* Content */}
       <main className="max-w-2xl mx-auto px-4 py-6">

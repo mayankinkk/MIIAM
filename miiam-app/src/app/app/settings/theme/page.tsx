@@ -32,7 +32,7 @@ export default function ThemePage() {
         </div>
       </header>
 
-      <Breadcrumbs items={[{ label: t.common.home, href: '/app/explore' }, { label: t.settings.title, href: '/app/settings' }, { label: t.settings.theme }]} />
+      <Breadcrumbs items={[{ label: t.common.home, href: '/app/home' }, { label: t.settings.title, href: '/app/settings' }, { label: t.settings.theme }]} />
 
       <main className="p-6 space-y-4">
         <p className="text-sm text-on-surface-variant mb-6">{t.settings.themeSub}</p>

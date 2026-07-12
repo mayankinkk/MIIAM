@@ -191,7 +191,7 @@ function PaymentStatusContent() {
 
   return (
     <>
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Cart', href: '/app/cart' }, { label: `Payment ${status.charAt(0).toUpperCase() + status.slice(1)}` }]} />
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/home' }, { label: 'Cart', href: '/app/cart' }, { label: `Payment ${status.charAt(0).toUpperCase() + status.slice(1)}` }]} />
       <div className="min-h-screen bg-surface flex items-center justify-center p-6">
         <div className="w-full max-w-md">
         <div className="bg-surface-container-lowest rounded-2xl p-8 shadow-sm">

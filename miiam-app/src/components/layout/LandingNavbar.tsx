@@ -45,7 +45,7 @@ export function LandingNavbar({
   const defaultLinks = [
     { label: t.navFood, href: "/app/food" },
     { label: t.navServices, href: "/services" },
-    { label: t.navVendors, href: "/app/explore" },
+    { label: t.navVendors, href: "/app/home" },
     { label: t.navCareers, href: "/careers" },
     { label: t.navBusiness, href: "/about" },
   ];

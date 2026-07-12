@@ -153,7 +153,7 @@ export default function EditProfilePage() {
         <span className="text-xl font-extrabold tracking-tight text-on-surface">{t.settings.editProfile}</span>
       </header>
 
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Profile', href: '/app/profile' }, { label: 'Edit Profile' }]} />
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/home' }, { label: 'Profile', href: '/app/profile' }, { label: 'Edit Profile' }]} />
 
       <main className="pt-24 pb-32 px-6 max-w-2xl mx-auto">
         {error && (

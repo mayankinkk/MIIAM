@@ -125,7 +125,7 @@ export default function EnhancedProfilePage() {
         </div>
       </header>
 
-      <Breadcrumbs items={[{ label: t.profile.home, href: '/app/explore' }, { label: t.profile.profileLabel }]} />
+      <Breadcrumbs items={[{ label: t.profile.home, href: '/app/home' }, { label: t.profile.profileLabel }]} />
 
       {/* Menu Items */}
       <main className="px-6 -mt-6 space-y-4">

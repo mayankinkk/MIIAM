@@ -25,7 +25,7 @@ export default function LegalPage() {
         </div>
       </header>
 
-      <Breadcrumbs items={[{ label: t.common.home, href: '/app/explore' }, { label: t.settings.title, href: '/app/settings' }, { label: t.settings.legal }]} />
+      <Breadcrumbs items={[{ label: t.common.home, href: '/app/home' }, { label: t.settings.title, href: '/app/settings' }, { label: t.settings.legal }]} />
 
       <main className="p-6">
         <div className="bg-surface-container border border-outline-variant/10 rounded-2xl overflow-hidden shadow-sm">

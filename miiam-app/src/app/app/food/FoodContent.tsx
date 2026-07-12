@@ -634,7 +634,7 @@ export default function FoodPageContent() {
       )}
       <header className="bg-surface-container-lowest px-6 py-4 sticky top-0 z-10 shadow-sm">
         <div className="flex items-center justify-between mb-4">
-          <Link href="/app/explore" aria-label="Back to explore" className="w-10 h-10 bg-surface-container rounded-full flex items-center justify-center">
+          <Link href="/app/home" aria-label="Back to explore" className="w-10 h-10 bg-surface-container rounded-full flex items-center justify-center">
             <span className="material-symbols-outlined" aria-hidden="true">arrow_back</span>
           </Link>
           <h1 className="text-xl font-black text-on-surface">{t.food.title}</h1>
@@ -644,7 +644,7 @@ export default function FoodPageContent() {
         </div>
       </header>
 
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Food' }]} />
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/home' }, { label: 'Food' }]} />
 
       <div className="px-6 mt-4">
         <div className="rounded-2xl overflow-hidden relative h-44 shadow-sm">

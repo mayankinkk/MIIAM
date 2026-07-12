@@ -44,7 +44,7 @@ function VendorFailureContent() {
         <div className="w-10" />
       </nav>
 
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Order', href: '/app/orders' }, { label: 'Vendor Unavailable' }]} />
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/home' }, { label: 'Order', href: '/app/orders' }, { label: 'Vendor Unavailable' }]} />
 
       <main className="pt-24 pb-12 px-6 max-w-lg mx-auto">
         <div className="text-center mb-8">

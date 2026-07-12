@@ -21,7 +21,7 @@ const APP_SHELL_PAGES = [
   '/app/grocery',
   '/app/orders',
   '/app/wallet',
-  '/app/explore',
+  '/app/home',
   '/app/settings',
   '/offline.html',
 ];

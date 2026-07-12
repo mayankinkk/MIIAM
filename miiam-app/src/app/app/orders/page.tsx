@@ -172,7 +172,7 @@ export default function OrdersPage() {
       <header className="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-surface/80 dark:bg-[var(--color-surface)]/80 backdrop-blur-2xl shadow-sm">
         <span className="text-2xl font-extrabold tracking-tighter text-primary">MIIAM</span>
       </header>
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'My Orders' }]} />
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/home' }, { label: 'My Orders' }]} />
       <PullToRefresh onRefresh={async () => {
         await fetchOrders();
       }}>
@@ -205,7 +205,7 @@ export default function OrdersPage() {
               title={t.orders.noOrders}
               description={t.orders.noOrdersDesc}
               actionLabel={t.orders.startOrdering} 
-              actionHref="/app/explore" 
+              actionHref="/app/home" 
             />
           </div>
         ) : (

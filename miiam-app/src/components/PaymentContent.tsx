@@ -39,7 +39,7 @@ export default function PaymentContent() {
         </Link>
         <span className="text-xl font-extrabold tracking-tight text-on-surface">{t.profile.paymentMethods}</span>
       </header>
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Payment Methods' }]} />
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/home' }, { label: 'Payment Methods' }]} />
       <main className="pt-32 pb-32 px-6 max-w-2xl mx-auto min-h-[70vh]">
         <h1 className="text-3xl font-extrabold tracking-tight text-on-surface mb-6">Payment Methods</h1>
 

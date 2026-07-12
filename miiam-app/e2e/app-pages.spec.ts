@@ -27,7 +27,7 @@ test.describe("Public Pages", () => {
     { path: "/about", title: /About|MIIAM/i },
     { path: "/auth/login", title: /Sign In|Login|MIIAM/i },
     { path: "/auth/signup", title: /Sign Up|Register|MIIAM/i },
-    { path: "/app/explore", title: /Explore|MIIAM/i },
+    { path: "/app/home", title: /Explore|MIIAM/i },
     { path: "/app/food", title: /Food|MIIAM/i },
     { path: "/app/services", title: /Services|MIIAM/i },
   ];
@@ -103,7 +103,7 @@ test.describe("SEO and Meta", () => {
 test.describe("Dark Mode", () => {
   test("respects prefers-color-scheme", async ({ page }) => {
     await page.emulateMedia({ colorScheme: "dark" });
-    await page.goto("/app/explore");
+    await page.goto("/app/home");
     const html = page.locator("html");
     const color = await html.evaluate((el) =>
       getComputedStyle(el).getPropertyValue("color")
@@ -122,7 +122,7 @@ test.describe("Responsive Layout", () => {
   for (const { width, height, name } of viewports) {
     test(`renders correctly on ${name} (${width}x${height})`, async ({ page }) => {
       await page.setViewportSize({ width, height });
-      await page.goto("/app/explore");
+      await page.goto("/app/home");
       await expect(page.locator("body")).toBeVisible();
       if (width < 768) {
         await expect(page.locator("nav").last()).toBeVisible();

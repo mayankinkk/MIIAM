@@ -29,7 +29,7 @@ export default function OrderHeader({ orderId, isRefreshing, onRefresh }: OrderH
           <span className="material-symbols-outlined text-on-surface cursor-pointer hover:opacity-80 transition-opacity">account_circle</span>
         </div>
       </nav>
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'My Orders', href: '/app/orders' }, { label: `Order #${orderId.slice(0, 8).toUpperCase()}` }]} />
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/home' }, { label: 'My Orders', href: '/app/orders' }, { label: `Order #${orderId.slice(0, 8).toUpperCase()}` }]} />
     </>
   );
 }

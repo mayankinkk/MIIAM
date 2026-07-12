@@ -474,7 +474,7 @@ export default function HomePage() {
 
       {/* Offers Carousel */}
       <div className="px-4 py-4">
-        <Link href="/app/explore">
+        <Link href="/app/home">
           <div className={`relative h-28 rounded-2xl overflow-hidden bg-gradient-to-r ${offers[currentOffer].color}`}>
             <div className="absolute top-3 left-4">
               <span className="text-[10px] font-bold bg-[var(--color-surface-container-lowest)]/20 text-white px-2 py-1 rounded">

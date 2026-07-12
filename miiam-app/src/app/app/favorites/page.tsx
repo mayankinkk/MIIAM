@@ -98,14 +98,14 @@ export default function FavoritesPage() {
   return (
     <PullToRefresh onRefresh={loadFavorites}>
       <header className="fixed top-0 w-full z-50 flex items-center gap-4 px-6 py-4 bg-surface/80 dark:bg-[var(--color-surface)]/80 backdrop-blur-2xl shadow-sm">
-        <Link href="/app/explore" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-all">
+        <Link href="/app/home" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-all">
           <span className="material-symbols-outlined text-primary">arrow_back</span>
         </Link>
         <span className="text-2xl font-extrabold tracking-tighter text-primary">MIIAM</span>
         <span className="text-on-surface font-semibold ml-2">Favourites</span>
       </header>
 
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'My Favorites' }]} />
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/home' }, { label: 'My Favorites' }]} />
 
       <main className="pt-24 pb-24 px-6 max-w-4xl mx-auto">
         <section className="mb-10">
@@ -125,7 +125,7 @@ export default function FavoritesPage() {
               title="No favourites yet" 
               description="Tap the heart on any restaurant or service to save it here." 
               actionLabel="Explore" 
-              actionHref="/app/explore" 
+              actionHref="/app/home" 
             />
           </div>
         ) : (

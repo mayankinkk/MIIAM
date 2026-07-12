@@ -186,7 +186,7 @@ export default function DevicesPage() {
       </header>
 
       <Breadcrumbs items={[
-        { label: t.common.home, href: "/app/explore" },
+        { label: t.common.home, href: "/app/home" },
         { label: t.settings.title, href: "/app/settings" },
         { label: t.settings.security, href: "/app/settings/security" },
         { label: "Devices" },

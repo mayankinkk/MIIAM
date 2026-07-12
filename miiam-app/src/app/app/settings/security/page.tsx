@@ -36,7 +36,7 @@ export default function SecurityPage() {
         </div>
       </header>
 
-      <Breadcrumbs items={[{ label: t.common.home, href: '/app/explore' }, { label: t.settings.title, href: '/app/settings' }, { label: t.settings.security }]} />
+      <Breadcrumbs items={[{ label: t.common.home, href: '/app/home' }, { label: t.settings.title, href: '/app/settings' }, { label: t.settings.security }]} />
 
       <main className="p-6 space-y-4">
         {/* Change Password */}

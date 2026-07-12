@@ -4,7 +4,7 @@ import Breadcrumbs from "./Breadcrumbs";
 describe("Breadcrumbs", () => {
   it("renders breadcrumb items", () => {
     render(
-      <Breadcrumbs items={[{ label: "Home", href: "/app/explore" }, { label: "Grocery" }]} />
+      <Breadcrumbs items={[{ label: "Home", href: "/app/home" }, { label: "Grocery" }]} />
     );
     expect(screen.getByText("Home")).toBeInTheDocument();
     expect(screen.getByText("Grocery")).toBeInTheDocument();

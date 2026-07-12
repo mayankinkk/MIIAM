@@ -74,7 +74,7 @@ test.describe("MIIAM App E2E Tests", () => {
 
   test("should have responsive layout on tablet", async ({ page }) => {
     await page.setViewportSize({ width: 768, height: 1024 });
-    await page.goto("/app/explore");
+    await page.goto("/app/home");
     await expect(page.locator("body")).toBeVisible();
   });
 
@@ -84,7 +84,7 @@ test.describe("MIIAM App E2E Tests", () => {
   });
 
   test("should render bottom navigation", async ({ page }) => {
-    await page.goto("/app/explore");
+    await page.goto("/app/home");
     await expect(page.locator("text=Explore")).toBeVisible({ timeout: 10000 });
   });
 

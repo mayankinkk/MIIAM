@@ -150,7 +150,7 @@ const [userOrders, setUserOrders] = useState<OrderData[]>([]);
         </div>
       </header>
 
-      <Breadcrumbs items={[{ label: t.common.home, href: '/app/explore' }, { label: t.settings.helpCenter }]} />
+      <Breadcrumbs items={[{ label: t.common.home, href: '/app/home' }, { label: t.settings.helpCenter }]} />
 
       {/* Tabs */}
       <div className="bg-surface-container-lowest border-b border-[var(--color-border-subtle)] px-4 shrink-0">

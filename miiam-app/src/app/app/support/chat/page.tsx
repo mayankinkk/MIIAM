@@ -332,7 +332,7 @@ export default function SupportChatPage() {
         </div>
       </header>
 
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Help & Support', href: '/app/support' }, { label: 'Chat' }]} />
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/home' }, { label: 'Help & Support', href: '/app/support' }, { label: 'Chat' }]} />
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3 pb-40">

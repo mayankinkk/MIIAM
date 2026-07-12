@@ -129,7 +129,7 @@ function FeedbackContent() {
         </Link>
       </div>
 
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Feedback' }]} />
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/home' }, { label: 'Feedback' }]} />
 
       <div className="max-w-lg mx-auto p-6">
         {/* Service Info */}

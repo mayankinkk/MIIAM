@@ -240,7 +240,7 @@ export default function BookingsPage() {
         <span className="text-on-surface font-semibold hidden md:block">{t.profile.bookings}</span>
       </nav>
 
-      <Breadcrumbs items={[{ label: "Home", href: "/app/explore" }, { label: t.profile.bookings }]} />
+      <Breadcrumbs items={[{ label: "Home", href: "/app/home" }, { label: t.profile.bookings }]} />
 
       <main className="pt-20 max-w-2xl mx-auto px-4">
         <section className="mb-6">

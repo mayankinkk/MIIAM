@@ -34,7 +34,14 @@ const nextConfig = {
       },
     ],
   },
-  experimental: {
+  async redirects() {
+    return [
+      {
+        source: "/app/explore",
+        destination: "/app/home",
+        permanent: true,
+      },
+    ];
   },
   async headers() {
     return [

@@ -383,7 +383,7 @@ export default function AddressPickerPage() {
         </div>
       </header>
 
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Addresses', href: '/app/addresses' }, { label: 'Add Address' }]} />
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/home' }, { label: 'Addresses', href: '/app/addresses' }, { label: 'Add Address' }]} />
 
       <div className="flex-1 relative pt-[60px]">
         <div ref={mapRef} className="absolute inset-0" />

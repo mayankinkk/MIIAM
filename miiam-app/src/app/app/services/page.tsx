@@ -382,7 +382,7 @@ function ServicesContent() {
       <header className="bg-surface-container-lowest px-4 py-4 sticky top-0 z-30 shadow-sm">
         <div className="flex items-center gap-2 mb-2">
           <Link
-            href="/app/explore"
+            href="/app/home"
             aria-label="Back to explore"
             className="w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center hover:bg-surface-container-highest transition-colors"
           >
@@ -393,7 +393,7 @@ function ServicesContent() {
         <p className="text-sm text-on-surface-variant mt-1">{t.services.subtitle}</p>
       </header>
 
-      <Breadcrumbs items={[{ label: "Home", href: "/app/explore" }, { label: t.services.homeServices }]} />
+      <Breadcrumbs items={[{ label: "Home", href: "/app/home" }, { label: t.services.homeServices }]} />
 
       <PullToRefresh onRefresh={checkServiceability}>
         {/* Location / Availability Banner */}

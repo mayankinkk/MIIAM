@@ -93,7 +93,7 @@ export default function VendorReviewsPage() {
           </div>
         </div>
       </header>
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Reviews' }]} />
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/home' }, { label: 'Reviews' }]} />
       {/* Rating Summary */}
       <div className="bg-[var(--color-surface-container-lowest)] border-b border-[var(--color-border-subtle)] p-4">
         <div className="flex items-center gap-6">

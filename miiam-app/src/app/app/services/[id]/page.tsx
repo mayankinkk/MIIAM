@@ -121,7 +121,7 @@ function ServiceDetailContent() {
 
       <Breadcrumbs
         items={[
-          { label: "Home", href: "/app/explore" },
+          { label: "Home", href: "/app/home" },
           { label: t.services.homeServices, href: "/app/services" },
           { label: service.name },
         ]}

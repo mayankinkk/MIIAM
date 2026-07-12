@@ -171,7 +171,7 @@ export default function CheckoutPage() {
         <span className="text-on-surface dark:text-[var(--color-on-surface)] font-semibold hidden md:block">Checkout</span>
       </nav>
 
-      <Breadcrumbs items={[{ label: "Home", href: "/app/explore" }, { label: "Cart", href: "/app/cart" }, { label: "Checkout" }]} />
+      <Breadcrumbs items={[{ label: "Home", href: "/app/home" }, { label: "Cart", href: "/app/cart" }, { label: "Checkout" }]} />
 
       <main className="pt-20 sm:pt-24 pb-24 px-3 sm:px-6 max-w-7xl mx-auto bg-background dark:bg-[var(--color-surface)] text-on-background dark:text-[var(--color-on-surface)]">
         <header className="mb-6 sm:mb-12">

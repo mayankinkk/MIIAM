@@ -65,7 +65,7 @@ export default function SettingsPage() {
         </div>
       </header>
 
-      <Breadcrumbs items={[{ label: t.common.home, href: '/app/explore' }, { label: t.profile.profileLabel, href: '/app/profile' }, { label: t.settings.title }]} />
+      <Breadcrumbs items={[{ label: t.common.home, href: '/app/home' }, { label: t.profile.profileLabel, href: '/app/profile' }, { label: t.settings.title }]} />
 
       <main className="p-6">
         {settingsSections.map((section, sectionIndex) => (

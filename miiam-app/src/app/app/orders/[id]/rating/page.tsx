@@ -365,7 +365,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
           </div>
         </div>
       </header>
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'My Orders', href: '/app/orders' }, { label: t.rating.rateAndReview }]} />
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/home' }, { label: 'My Orders', href: '/app/orders' }, { label: t.rating.rateAndReview }]} />
       <main className="pt-24 pb-12 px-6 max-w-md mx-auto space-y-6">
         <section className="text-center space-y-2">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-surface-container-highest rounded-full mb-4">

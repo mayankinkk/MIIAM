@@ -202,7 +202,7 @@ const sortedItems = [...filteredItems].sort((a, b) => ((b.is_featured || b.featu
         </div>
       </div>
 
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: vendor.shop_name }]} />
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/home' }, { label: vendor.shop_name }]} />
 
       {/* Restaurant Info Bar */}
       <div className="bg-[var(--color-surface-container-lowest)] border-b border-[var(--color-border-subtle)] px-4 py-3">

@@ -81,7 +81,7 @@ export default function NotificationsPage() {
       <header className="fixed top-0 w-full z-50 bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container)] shadow-sm">
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-4">
-            <Link href="/app/explore" aria-label="Go back" className="w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center">
+            <Link href="/app/home" aria-label="Go back" className="w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center">
               <span className="material-symbols-outlined text-primary">arrow_back</span>
             </Link>
             <span className="text-2xl font-extrabold text-primary">MIIAM</span>
@@ -94,7 +94,7 @@ export default function NotificationsPage() {
         </div>
       </header>
 
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/explore' }, { label: 'Notifications' }]} />
+      <Breadcrumbs items={[{ label: 'Home', href: '/app/home' }, { label: 'Notifications' }]} />
 
       <main className="pt-20 px-6 max-w-2xl mx-auto">
         <section className="mb-8">
