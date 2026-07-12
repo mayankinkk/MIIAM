@@ -87,11 +87,13 @@ export default function HomePage() {
     { id: "services", label: t.nav.services, icon: "handyman", color: "bg-blue-100", iconColor: "text-blue-600", offer: "Flat ₹200 OFF" },
   ];
 
-  const offers = [
-    { id: "o1", title: t.home.offerFirstOrder, subtitle: t.home.offerFirstOrderDesc, color: "from-orange-500 to-red-500", badge: t.home.offerNewUser },
-    { id: "o2", title: t.home.offerFreeDelivery, subtitle: t.home.offerFreeDeliveryDesc, color: "from-green-500 to-emerald-500", badge: t.home.offerFreeDeliveryBadge },
-    { id: "o3", title: t.home.offerFlat100, subtitle: t.home.offerFlat100Desc, color: "from-blue-500 to-indigo-500", badge: t.home.offerFlatOff },
+  const fallbackOffers = [
+    { id: "o1", title: t.home.offerFirstOrder, subtitle: t.home.offerFirstOrderDesc, gradient: "from-orange-500 to-red-500", badge: t.home.offerNewUser },
+    { id: "o2", title: t.home.offerFreeDelivery, subtitle: t.home.offerFreeDeliveryDesc, gradient: "from-green-500 to-emerald-500", badge: t.home.offerFreeDeliveryBadge },
+    { id: "o3", title: t.home.offerFlat100, subtitle: t.home.offerFlat100Desc, gradient: "from-blue-500 to-indigo-500", badge: t.home.offerFlatOff },
   ];
+  const [dbOffers, setDbOffers] = useState<typeof fallbackOffers>([]);
+  const offers = dbOffers.length > 0 ? dbOffers : fallbackOffers;
 
   const [user, setUser] = useState<UserProfile | null>(null);
   const [currentOffer, setCurrentOffer] = useState(0);
@@ -385,13 +387,38 @@ export default function HomePage() {
 
   const userName = user?.profile_name || user?.email?.split("@")[0] || "User";
 
+  // Load promotions from DB
+  useEffect(() => {
+    async function loadPromos() {
+      try {
+        const { data } = await supabase
+          .from("home_promotions")
+          .select("id, badge, title, subtitle, gradient, link_url")
+          .eq("is_active", true)
+          .order("position");
+        if (data && data.length > 0) {
+          setDbOffers(data.map((p: { id: string; badge: string; title: string; subtitle: string; gradient: string }) => ({
+            id: p.id,
+            badge: p.badge || "",
+            title: p.title,
+            subtitle: p.subtitle || "",
+            gradient: p.gradient || "from-blue-500 to-indigo-500",
+          })));
+        }
+      } catch {
+        // Use fallback offers
+      }
+    }
+    loadPromos();
+  }, [supabase]);
+
   // Auto-rotate offers
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentOffer((prev) => (prev + 1) % offers.length);
     }, 4000);
     return () => clearInterval(timer);
-  }, []);
+  }, [offers.length]);
 
   if (loading) return <HomeSkeleton />;
 
@@ -475,7 +502,7 @@ export default function HomePage() {
       {/* Offers Carousel */}
       <div className="px-4 py-4">
         <Link href="/app/home">
-          <div className={`relative h-28 rounded-2xl overflow-hidden bg-gradient-to-r ${offers[currentOffer].color}`}>
+          <div className={`relative h-28 rounded-2xl overflow-hidden bg-gradient-to-r ${offers[currentOffer].gradient}`}>
             <div className="absolute top-3 left-4">
               <span className="text-[10px] font-bold bg-[var(--color-surface-container-lowest)]/20 text-white px-2 py-1 rounded">
                 {offers[currentOffer].badge}
