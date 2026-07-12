@@ -274,6 +274,20 @@ export default function HomePage() {
     setTimeIcon(icon);
   }, [t]);
 
+  const buildDisplayAddress = (address: Record<string, string>): string => {
+    const parts: string[] = [];
+    if (address.house_number && address.road) {
+      parts.push(`${address.road}, ${address.house_number}`);
+    } else if (address.road) {
+      parts.push(address.road);
+    }
+    const locality = address.neighbourhood || address.suburb || address.quarter || address.city_district || address.residential;
+    if (locality) parts.push(locality);
+    const city = address.city || address.town || address.village || address.county;
+    if (city && !parts.some(p => p.toLowerCase() === city.toLowerCase())) parts.push(city);
+    return parts.join(", ");
+  };
+
   const resolvePincodeToArea = async (pin: string): Promise<{ area: string; city: string; state: string }> => {
     try {
       const res = await fetch(`https://api.postalpincode.in/pincode/${pin}`);
@@ -297,6 +311,38 @@ export default function HomePage() {
     }
     setPincodeError("");
     setIsLoadingLocation(true);
+
+    try {
+      const geoRes = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&postalcode=${pin}&countrycodes=in&addressdetails=1&limit=1`
+      );
+      const geoData = await geoRes.json();
+
+      if (geoData.length > 0) {
+        const hit = geoData[0];
+        const address = hit.address || {};
+        const precise = buildDisplayAddress(address);
+        const city = address.city || address.town || address.village || address.county || "";
+        const state = address.state || "";
+        const displayName = precise
+          ? state ? `${precise}, ${state}` : precise
+          : hit.display_name?.split(",").slice(0, 3).join(", ") || `PIN: ${pin}`;
+
+        setLocation(displayName);
+        locationStore.setLocation({
+          pincode: pin,
+          lat: parseFloat(hit.lat),
+          lng: parseFloat(hit.lon),
+          city: city || undefined,
+          state: state || undefined,
+          displayAddress: displayName,
+        });
+        setIsLoadingLocation(false);
+        setShowLocationModal(false);
+        setManualPincode("");
+        return;
+      }
+    } catch { /* fall through to pincode API */ }
 
     const { area, city, state } = await resolvePincodeToArea(pin);
     const displayName = area
@@ -327,37 +373,28 @@ export default function HomePage() {
         try {
           const { latitude, longitude } = position.coords;
           const res = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&addressdetails=1`
           );
           const data = await res.json();
           const address = data.address || {};
           const pincode = address.postcode || "";
+          const precise = buildDisplayAddress(address);
+          const city = address.city || address.town || address.village || address.county || null;
+          const state = address.state || undefined;
 
-          if (pincode) {
-            // Resolve area name from the detected pincode
-            const { area, city, state } = await resolvePincodeToArea(pincode);
-            const displayName = area
-              ? state ? `${area}, ${state}` : area
-              : data.display_name?.split(",")[0] || `PIN: ${pincode}`;
+          const displayName = precise
+            ? state ? `${precise}, ${state}` : precise
+            : data.display_name?.split(",").slice(0, 3).join(", ") || `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
 
-            setLocation(displayName);
-            locationStore.setLocation({
-              pincode,
-              lat: latitude,
-              lng: longitude,
-              city: city || address.city || address.town || null,
-              state: state || undefined,
-              displayAddress: displayName,
-            });
-          } else {
-            const fallback = data.display_name?.split(",")[0] || `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
-            setLocation(fallback);
-            locationStore.setLocation({
-              lat: latitude,
-              lng: longitude,
-              displayAddress: fallback,
-            });
-          }
+          setLocation(displayName);
+          locationStore.setLocation({
+            pincode,
+            lat: latitude,
+            lng: longitude,
+            city,
+            state,
+            displayAddress: displayName,
+          });
           setShowLocationModal(false);
         } catch {
           const fallback = `${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`;
