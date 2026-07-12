@@ -797,8 +797,8 @@ export default function HomePage() {
 
       {/* Location Modal */}
       {showLocationModal && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end md:items-center justify-center animate-fade-in" role="dialog" aria-modal="true" aria-labelledby="location-modal-title" onKeyDown={(e) => { if (e.key === "Escape") setShowLocationModal(false); }}>
-          <div className="bg-surface-container dark:bg-[var(--color-surface-container-lowest)] w-full md:w-96 rounded-t-3xl md:rounded-3xl p-6 border-t border-x border-outline-variant/10 dark:border-[var(--color-border-subtle)] md:border animate-in slide-in-from-bottom duration-300">
+        <div className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm flex items-end md:items-center justify-center animate-fade-in" role="dialog" aria-modal="true" aria-labelledby="location-modal-title" onKeyDown={(e) => { if (e.key === "Escape") setShowLocationModal(false); }}>
+          <div className="bg-surface-container dark:bg-[var(--color-surface-container-lowest)] w-full md:w-96 rounded-t-3xl md:rounded-3xl p-6 pb-8 border-t border-x border-outline-variant/10 dark:border-[var(--color-border-subtle)] md:border animate-in slide-in-from-bottom duration-300 max-h-[85vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
               <h2 id="location-modal-title" className="text-xl font-black text-on-surface">{t.home.enterPincode}</h2>
               <button onClick={() => setShowLocationModal(false)} aria-label="Close location modal" className="w-11 h-11 bg-surface-container-high rounded-full flex items-center justify-center">
