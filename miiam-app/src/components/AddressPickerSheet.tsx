@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { reverseGeocode, searchLocation, buildDisplayAddress } from "@/lib/geocoding";
 
 export interface SelectedAddress {
   label: string;
@@ -31,7 +32,7 @@ const ADDRESS_TYPES = [
 ];
 
 interface NominatimSuggestion {
-  place_id: number;
+  place_id?: number;
   display_name: string;
   lat: string;
   lon: string;
@@ -89,18 +90,13 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
       async (pos) => {
         const { latitude: lat, longitude: lng } = pos.coords;
         try {
-          const res = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`,
-            { headers: { "Accept-Language": "en", "User-Agent": "MIIAM/1.0" } }
-          );
-          const data = await res.json();
-          const addr = data.address || {};
+          const geo = await reverseGeocode(lat, lng);
           setGpsAddress({
             label: "Current Location",
-            street: data.display_name || `${lat.toFixed(5)}, ${lng.toFixed(5)}`,
-            city: addr.city || addr.town || addr.village || "Unknown",
-            state: addr.state || "",
-            postal_code: addr.postcode || "",
+            street: geo.displayAddress,
+            city: geo.city || "Unknown",
+            state: geo.state,
+            postal_code: geo.postalCode,
             lat,
             lng,
             type: "other",
@@ -135,11 +131,7 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
     searchTimeout.current = setTimeout(async () => {
       setSearchLoading(true);
       try {
-        const res = await fetch(
-          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery)}&limit=6&addressdetails=1`,
-          { headers: { "Accept-Language": "en", "User-Agent": "MIIAM/1.0" } }
-        );
-        const data = await res.json();
+        const data = await searchLocation(searchQuery, 6);
         setSuggestions(data);
       } catch { setSuggestions([]); }
       setSearchLoading(false);
@@ -178,12 +170,8 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
         const target = (e as { target: { getLatLng: () => { lat: number; lng: number } } }).target;
         const { lat, lng } = target.getLatLng();
         try {
-          const res = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18`,
-            { headers: { "Accept-Language": "en", "User-Agent": "MIIAM/1.0" } }
-          );
-          const data = await res.json();
-          setPickedLocation({ lat, lng, display: data.display_name || `${lat.toFixed(5)}, ${lng.toFixed(5)}` });
+          const geo = await reverseGeocode(lat, lng);
+          setPickedLocation({ lat, lng, display: geo.displayAddress });
         } catch {
           setPickedLocation(prev => prev ? { ...prev, lat, lng } : null);
         }

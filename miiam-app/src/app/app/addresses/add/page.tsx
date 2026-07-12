@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { useToastStore } from "@/lib/store/toastStore";
+import { reverseGeocode as sharedReverseGeocode, searchLocation } from "@/lib/geocoding";
 import type * as L from "leaflet";
 
 interface DetectedLocation {
@@ -15,7 +16,7 @@ interface DetectedLocation {
 }
 
 interface SearchResult {
-  place_id: number;
+  place_id?: number;
   display_name: string;
   lat: string;
   lon: string;
@@ -179,53 +180,8 @@ export default function AddressPickerPage() {
     setCurrentLocation({ lat, lng, address: "Fetching address..." });
 
     try {
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1&accept-language=en`,
-        { headers: { 'User-Agent': 'MIIAM/1.0 (contact@mii.am)' } }
-      );
-      const data = await res.json();
-
-      let address = "";
-      if (data.address) {
-        const a = data.address;
-        const parts: string[] = [];
-
-        if (a.building || a.house_number || a.amenity) {
-          if (a.building) parts.push(a.building);
-          if (a.house_number) parts.push(a.house_number);
-        }
-
-        if (a.road || a.street) {
-          parts.push(a.road || a.street);
-        }
-
-        if (a.neighbourhood || a.suburb || a.quarter) {
-          parts.push(a.neighbourhood || a.suburb || a.quarter);
-        }
-
-        if (a.locality || a.village || a.town) {
-          parts.push(a.locality || a.village || a.town);
-        }
-
-        if (a.city) parts.push(a.city);
-
-        if (a.postcode) parts.push(a.postcode);
-
-        if (parts.length > 0) {
-          address = parts.join(", ");
-        }
-      }
-
-      if (!address && data.display_name) {
-        const parts = data.display_name.split(", ");
-        address = parts.slice(0, 5).join(", ");
-      }
-
-      if (!address) {
-        address = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
-      }
-
-      setCurrentLocation({ lat, lng, address });
+      const geo = await sharedReverseGeocode(lat, lng);
+      setCurrentLocation({ lat, lng, address: geo.displayAddress });
     } catch {
       setCurrentLocation({ lat, lng, address: `${lat.toFixed(6)}, ${lng.toFixed(6)}` });
     }
@@ -239,11 +195,7 @@ export default function AddressPickerPage() {
     
     setSearching(true);
     try {
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&addressdetails=1`,
-        { headers: { 'User-Agent': 'MIIAM/1.0' } }
-      );
-      const data = await res.json();
+      const data = await searchLocation(query, 5);
       setSearchResults(data);
     } catch (err) {
       setSearchResults([]);

@@ -9,6 +9,7 @@ import { useTranslation } from "@/lib/i18n/useTranslation";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import logger from "@/lib/logger";
 import { ListSkeleton } from "@/components/Skeleton";
+import { reverseGeocode } from "@/lib/geocoding";
 
 interface AddressData {
   id: string;
@@ -247,15 +248,25 @@ export default function AddressBookPage() {
     setLocationError("");
 
     if ("geolocation" in navigator) {
-      const handleSuccess = (position: GeolocationPosition) => {
+      const handleSuccess = async (position: GeolocationPosition) => {
         const { latitude, longitude, accuracy } = position.coords;
         logger.info({ latitude, longitude, accuracy }, "Location detected");
-        
-        setNewAddress((prev) => ({
-          ...prev,
-          street: `Lat: ${latitude.toFixed(5)}, Lng: ${longitude.toFixed(5)}`,
-          postal_code: "",
-        }));
+
+        try {
+          const geo = await reverseGeocode(latitude, longitude);
+          setNewAddress((prev) => ({
+            ...prev,
+            street: geo.displayAddress,
+            city: geo.city || prev.city,
+            state: geo.state || prev.state,
+            postal_code: geo.postalCode || prev.postal_code,
+          }));
+        } catch {
+          setNewAddress((prev) => ({
+            ...prev,
+            street: `${latitude.toFixed(5)}, ${longitude.toFixed(5)}`,
+          }));
+        }
         setDetectingLocation(false);
       };
 
