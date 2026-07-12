@@ -73,10 +73,10 @@ export default function LandingPage() {
               </Link>
             ) : (
               <Link
-                href="/onboarding"
+                href="/auth/login"
                 className="bg-[#ba001c] hover:bg-[#a40017] text-white px-6 py-2.5 rounded-full font-bold text-sm shadow-lg shadow-[#ba001c]/20 hover:shadow-[#ba001c]/30 active:scale-95 transition-all duration-200"
               >
-                {tl.getApp}
+                Login
               </Link>
             )}
           </div>
@@ -267,7 +267,7 @@ export default function LandingPage() {
                 {tl.promoDesc1}<span className="text-white font-bold">MIIAM50</span>{tl.promoDesc2}
               </p>
               <Link
-                href="/onboarding"
+                href="/auth/login"
                 className="inline-flex items-center gap-2 bg-[#ba001c] text-white px-8 py-4 rounded-2xl font-bold text-base shadow-xl shadow-[#ba001c]/20 hover:shadow-[#ba001c]/40 active:scale-95 transition-all duration-200"
               >
                 {tl.claimOffer}

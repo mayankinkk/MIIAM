@@ -91,10 +91,10 @@ export function LandingNavbar({
               </Link>
             ) : (
               <Link
-                href="/onboarding"
+                href="/auth/login"
                 className={`${variant === "indigo" ? "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-500/20 hover:shadow-indigo-500/30" : "bg-[var(--color-primary)] hover:bg-[var(--color-primary-dim)] shadow-[var(--color-primary)]/20 hover:shadow-[var(--color-primary)]/30"} text-white px-6 py-2.5 rounded-full font-bold text-sm shadow-lg active:scale-95 transition-all duration-200`}
               >
-                {t.getApp}
+                Login
               </Link>
             )
           )}
