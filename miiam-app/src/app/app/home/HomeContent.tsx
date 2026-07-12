@@ -435,12 +435,12 @@ export default function HomePage() {
                   void supabase.from("notifications").update({ is_read: true }).eq("user_id", user.id).eq("is_read", false);
                 }
               }}
-              className="relative w-10 h-10 bg-surface-container-high hover:bg-surface-container-highest transition-colors rounded-full flex items-center justify-center"
+              className="relative w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-container-high transition-colors"
             >
-              <span className="material-symbols-outlined text-primary" aria-hidden="true">notifications</span>
+              <span className="material-symbols-outlined text-[22px] text-on-surface-variant" aria-hidden="true" style={{ fontVariationSettings: "'FILL' 0" }}>notifications</span>
               {unreadCount > 0 && (
-                <span className="absolute top-0 right-0 w-4 h-4 bg-red-500 rounded-full border-2 border-surface-container text-[10px] text-white font-bold flex items-center justify-center">
-                  {unreadCount}
+                <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] bg-red-500 rounded-full border-2 border-surface-container-lowest flex items-center justify-center">
+                  <span className="text-[9px] text-white font-black leading-none px-0.5">{unreadCount > 9 ? "9+" : unreadCount}</span>
                 </span>
               )}
             </button>
