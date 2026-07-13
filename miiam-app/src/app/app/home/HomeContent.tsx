@@ -83,8 +83,8 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
 
   const categories = [
-    { id: "food", label: t.nav.food, icon: "restaurant", color: "bg-orange-100", iconColor: "text-orange-600", offer: "20% OFF" },
-    { id: "services", label: t.nav.services, icon: "handyman", color: "bg-blue-100", iconColor: "text-blue-600", offer: "Flat ₹200 OFF" },
+    { id: "food", label: t.nav.food, icon: "restaurant", color: "bg-orange-100", iconColor: "text-orange-600" },
+    { id: "services", label: t.nav.services, icon: "handyman", color: "bg-blue-100", iconColor: "text-blue-600" },
   ];
 
   const fallbackOffers = [
@@ -629,11 +629,7 @@ export default function HomePage() {
                 </div>
                 <p className="font-semibold text-on-surface text-xs">{cat.label}</p>
               </div>
-              {cat.offer && (
-                <div className="absolute -top-1 -right-1 bg-green-500 text-white text-[8px] font-bold px-2 py-0.5 rounded-full">
-                  {cat.offer}
-                </div>
-              )}
+
             </Link>
           ))}
         </div>
