@@ -14,6 +14,9 @@ async function requireAdmin() {
   return { user, isAdmin: profile?.role === "admin" };
 }
 
+// Admin-only endpoints: generous rate limits
+const adminRateLimit = { maxRequests: 100, windowMs: 60 * 1000 };
+
 export const GET = withRateLimit(async function GET() {
   const { user, isAdmin } = await requireAdmin();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -32,7 +35,7 @@ export const GET = withRateLimit(async function GET() {
   });
 
   return NextResponse.json({ settings });
-});
+}, adminRateLimit.maxRequests, adminRateLimit.windowMs);
 
 export const PUT = withRateLimit(async function PUT(request: NextRequest) {
   const { user, isAdmin } = await requireAdmin();
@@ -82,7 +85,7 @@ export const PUT = withRateLimit(async function PUT(request: NextRequest) {
     logger.error({ err: error }, "Settings error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
-});
+}, adminRateLimit.maxRequests, adminRateLimit.windowMs);
 
 export const POST = withRateLimit(async function POST(request: NextRequest) {
   const { user, isAdmin } = await requireAdmin();
@@ -129,4 +132,4 @@ export const POST = withRateLimit(async function POST(request: NextRequest) {
     logger.error({ err: error }, "Settings bulk update error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
-});
+}, adminRateLimit.maxRequests, adminRateLimit.windowMs);
