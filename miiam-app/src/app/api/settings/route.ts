@@ -103,29 +103,25 @@ export const POST = withRateLimit(async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Settings object required" }, { status: 400 });
     }
 
-    const updates = Object.entries(settings).map(([key, value]) => ({
-      key,
-      value: String(value),
-      updated_at: new Date().toISOString(),
-    }));
+    const updates = Object.entries(settings)
+      .filter(([key]) => key && typeof key === "string")
+      .map(([key, value]) => ({
+        key,
+        value: String(value ?? ""),
+        updated_at: new Date().toISOString(),
+      }));
 
-    for (const update of updates) {
-      const { data: existing } = await supabase
-        .from("site_settings")
-        .select("id")
-        .eq("key", update.key)
-        .maybeSingle();
+    if (updates.length === 0) {
+      return NextResponse.json({ success: true, message: "No settings to update" });
+    }
 
-      if (existing) {
-        await supabase
-          .from("site_settings")
-          .update({ value: update.value, updated_at: update.updated_at })
-          .eq("key", update.key);
-      } else {
-        await supabase
-          .from("site_settings")
-          .insert({ key: update.key, value: update.value });
-      }
+    const { error } = await supabase
+      .from("site_settings")
+      .upsert(updates, { onConflict: "key" });
+
+    if (error) {
+      logger.error({ err: error }, "Supabase upsert error");
+      return NextResponse.json({ error: `Database error: ${error.message}` }, { status: 500 });
     }
 
     return NextResponse.json({ success: true, message: "Settings updated" });

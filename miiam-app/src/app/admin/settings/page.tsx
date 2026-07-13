@@ -47,6 +47,7 @@ export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState("general");
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const [settings, setSettings] = useState<Settings>({});
   const [health, setHealth] = useState<HealthCheck[]>([
     { label: "Database", status: "loading", value: "Checking..." },
@@ -117,16 +118,7 @@ export default function SettingsPage() {
     setHealth(results);
   }, [supabase]);
 
-  useEffect(() => {
-    async function init() {
-      await loadSettings();
-      await runHealthChecks();
-    }
-    init();
-  }, [loadSettings, runHealthChecks]);
-
-  async function loadSettings() {
-    setLoading(true);
+  const loadSettings = useCallback(async () => {
     try {
       const res = await fetch("/api/settings");
       const data = await res.json();
@@ -136,12 +128,17 @@ export default function SettingsPage() {
     } catch (e) {
       logger.error({ err: e instanceof Error ? e : new Error(String(e)) }, "Failed to load settings");
     }
-    setLoading(false);
-  }
+  }, []);
+
+  useEffect(() => {
+    loadSettings();
+    runHealthChecks();
+  }, [loadSettings, runHealthChecks]);
 
   async function saveSettings() {
     setLoading(true);
     setSaved(false);
+    setSaveError(null);
     try {
       const res = await fetch("/api/settings", {
         method: "POST",
@@ -151,9 +148,13 @@ export default function SettingsPage() {
       if (res.ok) {
         setSaved(true);
         setTimeout(() => setSaved(false), 3000);
+      } else {
+        const data = await res.json().catch(() => ({ error: "Unknown error" }));
+        setSaveError(data.error || `Failed (${res.status})`);
       }
     } catch (e) {
       logger.error({ err: e instanceof Error ? e : new Error(String(e)) }, "Failed to save settings");
+      setSaveError("Network error — save failed");
     }
     setLoading(false);
   }
@@ -765,9 +766,15 @@ export default function SettingsPage() {
       )}
 
       <div className="flex justify-between items-center">
+        {saveError && (
+          <div className="flex items-center gap-2 px-4 py-2 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
+            <span className="material-symbols-outlined text-base">error</span>
+            <span className="font-bold">{saveError}</span>
+          </div>
+        )}
         {saved && (
-          <div className="flex items-center gap-2 text-green-600">
-            <span className="material-symbols-outlined">check_circle</span>
+          <div className="flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 rounded-xl text-green-700 text-sm">
+            <span className="material-symbols-outlined text-base">check_circle</span>
             <span className="font-bold">Settings saved!</span>
           </div>
         )}
