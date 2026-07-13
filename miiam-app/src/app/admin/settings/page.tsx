@@ -15,6 +15,7 @@ interface Settings {
   new_user_registration?: string;
   partner_onboarding?: string;
   default_delivery_fee?: string;
+  service_charge?: string;
   free_delivery_above?: string;
   max_delivery_radius?: string;
   max_order_value?: string;
@@ -304,6 +305,18 @@ export default function SettingsPage() {
                 onChange={(e) => handleChange("default_delivery_fee", e.target.value)}
                 className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
               />
+            </div>
+            <div>
+              <label htmlFor="settings-service-charge" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Service Charge (₹ per vendor)</label>
+              <input
+                id="settings-service-charge"
+                type="number"
+                min="0"
+                value={settings.service_charge || ""}
+                onChange={(e) => handleChange("service_charge", e.target.value)}
+                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+              />
+              <p className="text-xs text-[var(--color-outline-variant)] mt-1">Charged per vendor in cart. Default: ₹15</p>
             </div>
             <div>
               <label htmlFor="settings-free-delivery" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Free Delivery Above (₹)</label>

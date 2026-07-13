@@ -41,7 +41,7 @@ export default function CheckoutPage() {
   const [deliveryAddress, setDeliveryAddress] = useState<SelectedAddress | null>(null);
   const [savedAddresses, setSavedAddresses] = useState<SelectedAddress[]>([]);
   const [showAddressPicker, setShowAddressPicker] = useState(false);
-  const [serviceCharge, setServiceCharge] = useState(8);
+  const [serviceCharge, setServiceCharge] = useState(15);
   const [promoCodesRaw, setPromoCodesRaw] = useState<PromoCode[]>([]);
   const [hydrated, setHydrated] = useState(false);
   const { items, totalPrice } = useCartStore();

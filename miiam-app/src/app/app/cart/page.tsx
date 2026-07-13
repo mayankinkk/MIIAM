@@ -45,7 +45,7 @@ export default function CartPage() {
 
   const [hydrated, setHydrated] = useState(() => useCartStore.persist?.hasHydrated() ?? false);
   const [vendorDeliveryCharges, setVendorDeliveryCharges] = useState<Record<string, number>>({});
-  const [serviceCharge, setServiceCharge] = useState(8);
+  const [serviceCharge, setServiceCharge] = useState(15);
 
   useEffect(() => {
     if (hydrated) return;
