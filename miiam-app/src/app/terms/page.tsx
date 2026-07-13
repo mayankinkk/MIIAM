@@ -404,7 +404,7 @@ export default function TermsOfService() {
                       <p><strong>MIIAM Technologies Pvt. Ltd.</strong></p>
                       <p>Registered Office: Bangalore, Karnataka, India</p>
                       <p>Email: legal@miiam.com</p>
-                      <p>Phone: +91 98765 43210</p>
+                      <p>Phone: +91 99578 73472</p>
                       <p className="mt-4"><strong>Grievance Officer:</strong></p>
                       <p>Email: grievance@miiam.com</p>
                       <p>Phone: +91 98765 43211</p>

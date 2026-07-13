@@ -483,7 +483,7 @@ export default function SettingsPage() {
                   type="tel"
                   value={settings.support_phone || ""}
                   onChange={(e) => handleChange("support_phone", e.target.value)}
-                  placeholder="+9118001234567"
+                  placeholder="+919957873472"
                   className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                 />
               </div>
@@ -514,7 +514,7 @@ export default function SettingsPage() {
                   id="settings-whatsapp"
                   value={settings.support_whatsapp || ""}
                   onChange={(e) => handleChange("support_whatsapp", e.target.value)}
-                  placeholder="+9118001234567"
+                  placeholder="+919957873472"
                   className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
                 />
               </div>

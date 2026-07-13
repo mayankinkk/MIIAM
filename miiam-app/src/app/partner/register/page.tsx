@@ -239,7 +239,7 @@ export default function VendorRegister() {
               </div>
               <div>
                 <label htmlFor="phone" className={labelClass}>Phone Number *</label>
-                <input id="phone" type="tel" value={form.phone} onChange={(e) => update("phone", e.target.value)} placeholder="+91 98765 43210" className={inputClass} />
+                <input id="phone" type="tel" value={form.phone} onChange={(e) => update("phone", e.target.value)} placeholder="+91 99578 73472" className={inputClass} />
               </div>
               <div>
                 <label htmlFor="email" className={labelClass}>Email</label>

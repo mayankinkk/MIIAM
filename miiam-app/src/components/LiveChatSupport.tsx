@@ -67,7 +67,7 @@ export function LiveChatSupport({ orderId, onClose }: LiveChatProps) {
       const supportResponse: ChatMessage = {
         id: (Date.now() + 1).toString(),
         role: "support",
-        message: "Thanks for your message! A support agent will respond shortly. For urgent issues, call us at +91 98765 43210.",
+        message: "Thanks for your message! A support agent will respond shortly. For urgent issues, call us at +91 99578 73472.",
         timestamp: new Date(),
       };
       setMessages(prev => [...prev, supportResponse]);

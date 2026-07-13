@@ -306,7 +306,7 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
                   type="tel"
                   value={techPhone}
                   onChange={(e) => setTechPhone(e.target.value)}
-                  placeholder="e.g. +91 98765 43210"
+                  placeholder="e.g. +91 99578 73472"
                   className="w-full px-4 py-3 rounded-xl border-2 border-[var(--color-border-subtle)] text-sm font-bold text-[var(--color-on-surface)] focus:border-[var(--color-primary)] focus:outline-none"
                 />
               </div>
