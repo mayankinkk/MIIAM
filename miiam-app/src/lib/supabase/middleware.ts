@@ -55,7 +55,7 @@ export async function updateSession(request: NextRequest) {
   const redirectTo = request.nextUrl.searchParams.get('redirect');
   if (redirectTo && (!redirectTo.startsWith('/') || redirectTo.startsWith('//'))) {
     const url = request.nextUrl.clone()
-    url.pathname = '/'
+    url.pathname = '/app/home'
     url.searchParams.delete('redirect')
     return NextResponse.redirect(url)
   }
@@ -70,7 +70,7 @@ export async function updateSession(request: NextRequest) {
 
     if (!profile || profile.role !== 'admin') {
       const url = request.nextUrl.clone()
-      url.pathname = '/'
+      url.pathname = '/app/home'
       return NextResponse.redirect(url)
     }
   }
