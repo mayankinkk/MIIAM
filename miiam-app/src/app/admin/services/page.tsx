@@ -22,7 +22,7 @@ interface ServiceBooking {
   created_at: string;
 }
 
-const serviceOptions = [
+const defaultServiceOptions = [
   { id: "beauty", label: "Beauty & Wellness", icon: "spa", color: "text-pink-500", bg: "bg-pink-50" },
   { id: "ac", label: "AC Repair", icon: "ac_unit", color: "text-blue-500", bg: "bg-blue-50" },
   { id: "plumbing", label: "Plumbing", icon: "plumbing", color: "text-cyan-500", bg: "bg-cyan-50" },
@@ -31,6 +31,14 @@ const serviceOptions = [
   { id: "appliance", label: "Appliance", icon: "kitchen", color: "text-purple-500", bg: "bg-purple-50" },
   { id: "pest", label: "Pest Control", icon: "bug_report", color: "text-red-500", bg: "bg-red-50" },
 ];
+
+interface ServiceCategoryRow {
+  id: string;
+  name: string;
+  icon: string;
+  description: string | null;
+  is_active: boolean;
+}
 
 export default function EnhancedServicesDashboard() {
   const supabase = useMemo(() => createClient(), []);
@@ -45,12 +53,33 @@ export default function EnhancedServicesDashboard() {
   const [providerForm, setProviderForm] = useState({ name: "", phone: "", email: "", service_type: "beauty", experience: "" });
   const [categoryForm, setCategoryForm] = useState({ name: "", icon: "home_repair_service", description: "" });
   const [pricing, setPricing] = useState({ commission: "15", minOrder: "199", cancelWindow: "2" });
+  const [serviceOptions, setServiceOptions] = useState(defaultServiceOptions);
+  const [editingCategory, setEditingCategory] = useState<ServiceCategoryRow | null>(null);
+  const [editCategoryForm, setEditCategoryForm] = useState({ name: "", icon: "", description: "" });
 
   useEffect(() => {
     loadBookings();
     loadProviders();
     loadPricing();
+    loadCategories();
   }, [statusFilter, serviceFilter, supabase]);
+
+  async function loadCategories() {
+    try {
+      const { data } = await supabase.from("service_categories").select("*").order("name");
+      if (data && data.length > 0) {
+        const colors = ["text-pink-500", "text-blue-500", "text-cyan-500", "text-amber-500", "text-green-500", "text-purple-500", "text-red-500", "text-indigo-500", "text-teal-500"];
+        const bgs = ["bg-pink-50", "bg-blue-50", "bg-cyan-50", "bg-amber-50", "bg-green-50", "bg-purple-50", "bg-red-50", "bg-indigo-50", "bg-teal-50"];
+        setServiceOptions(data.map((c: ServiceCategoryRow, i: number) => ({
+          id: c.name.toLowerCase().replace(/\s+/g, "_"),
+          label: c.name,
+          icon: c.icon || "home_repair_service",
+          color: colors[i % colors.length],
+          bg: bgs[i % bgs.length],
+        })));
+      }
+    } catch { /* use defaults */ }
+  }
 
   async function loadPricing() {
     try {
@@ -533,12 +562,23 @@ export default function EnhancedServicesDashboard() {
                     <span className={`material-symbols-outlined ${service.color}`}>{service.icon}</span>
                     <span className="font-bold text-[var(--color-on-surface)]">{service.label}</span>
                   </div>
-                  <Link
-                    href="/admin/services-settings"
-                    className="text-xs font-bold text-[var(--color-primary)] hover:underline"
-                  >
-                    Configure
-                  </Link>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => {
+                        setEditingCategory({ id: service.id, name: service.label, icon: service.icon, description: "", is_active: true });
+                        setEditCategoryForm({ name: service.label, icon: service.icon, description: "" });
+                      }}
+                      className="text-xs font-bold text-[var(--color-primary)] hover:underline"
+                    >
+                      Edit
+                    </button>
+                    <Link
+                      href="/admin/services-settings"
+                      className="text-xs font-bold text-[var(--color-outline-variant)] hover:underline"
+                    >
+                      Settings
+                    </Link>
+                  </div>
                 </div>
               ))}
             </div>
@@ -684,6 +724,52 @@ export default function EnhancedServicesDashboard() {
                 className="flex-1 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm"
               >
                 Create
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Edit Category Modal */}
+      {editingCategory && (
+        <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="edit-category-modal-title" onKeyDown={(e) => e.key === "Escape" && setEditingCategory(null)}>
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-md p-6">
+            <h3 id="edit-category-modal-title" className="font-bold text-lg mb-4">Edit Service Category</h3>
+            <div className="space-y-3">
+              <input type="text" placeholder="Category Name" value={editCategoryForm.name} onChange={(e) => setEditCategoryForm({ ...editCategoryForm, name: e.target.value })} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm" />
+              <input type="text" placeholder="Icon name (e.g., construction, clean_hands)" value={editCategoryForm.icon} onChange={(e) => setEditCategoryForm({ ...editCategoryForm, icon: e.target.value })} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm" />
+              <textarea placeholder="Description (optional)" value={editCategoryForm.description} onChange={(e) => setEditCategoryForm({ ...editCategoryForm, description: e.target.value })} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm h-20 resize-none" />
+            </div>
+            <div className="flex gap-3 mt-6">
+              <button onClick={() => setEditingCategory(null)} className="flex-1 py-3 border border-[var(--color-border-subtle)] rounded-xl font-bold text-sm">Cancel</button>
+              <button
+                onClick={async () => {
+                  if (!editCategoryForm.name) { useToastStore.getState().addToast("Category name is required", "error"); return; }
+                  const { error } = await supabase.from("service_categories").update({
+                    name: editCategoryForm.name,
+                    icon: editCategoryForm.icon,
+                    description: editCategoryForm.description,
+                  }).eq("id", editingCategory.id);
+                  if (error) { useToastStore.getState().addToast("Error: " + error.message, "error"); return; }
+                  useToastStore.getState().addToast("Category updated!", "success");
+                  setEditingCategory(null);
+                  loadCategories();
+                }}
+                className="flex-1 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm"
+              >
+                Save Changes
+              </button>
+              <button
+                onClick={async () => {
+                  if (!confirm(`Delete "${editingCategory.name}"? This cannot be undone.`)) return;
+                  const { error } = await supabase.from("service_categories").delete().eq("id", editingCategory.id);
+                  if (error) { useToastStore.getState().addToast("Error: " + error.message, "error"); return; }
+                  useToastStore.getState().addToast("Category deleted!", "success");
+                  setEditingCategory(null);
+                  loadCategories();
+                }}
+                className="px-4 py-3 bg-red-500 text-white rounded-xl font-bold text-sm hover:bg-red-600"
+              >
+                <span className="material-symbols-outlined text-sm">delete</span>
               </button>
             </div>
           </div>
