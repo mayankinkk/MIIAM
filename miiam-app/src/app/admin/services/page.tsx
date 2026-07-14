@@ -35,6 +35,7 @@ const defaultServiceOptions: ServiceOption[] = [
 interface ServiceCategoryRow {
   id: string;
   name: string;
+  slug: string | null;
   icon: string;
   description: string | null;
   is_active: boolean;
@@ -84,8 +85,8 @@ export default function EnhancedServicesDashboard() {
         const colors = ["text-pink-500", "text-blue-500", "text-cyan-500", "text-amber-500", "text-green-500", "text-purple-500", "text-red-500", "text-indigo-500", "text-teal-500"];
         const bgs = ["bg-pink-50", "bg-blue-50", "bg-cyan-50", "bg-amber-50", "bg-green-50", "bg-purple-50", "bg-red-50", "bg-indigo-50", "bg-teal-50"];
         setServiceOptions(data.map((c: ServiceCategoryRow, i: number) => ({
-          id: c.name.toLowerCase().replace(/\s+/g, "_"),
-          dbId: c.id,
+          id: c.slug || c.name.toLowerCase().replace(/\s+/g, "_"),
+          dbId: c.name,
           label: c.name,
           icon: c.icon || "home_repair_service",
           color: colors[i % colors.length],
@@ -296,7 +297,7 @@ export default function EnhancedServicesDashboard() {
                         <button
                           onClick={(e) => {
                             e.preventDefault();
-                            setEditingCategory({ id: service.dbId, name: service.label, icon: service.icon, description: "", is_active: true });
+                            setEditingCategory({ id: service.dbId, name: service.label, slug: null, icon: service.icon, description: "", is_active: true });
                             setEditCategoryForm({ name: service.label, icon: service.icon, description: "" });
                           }}
                           className="w-7 h-7 rounded-full bg-white/80 flex items-center justify-center hover:bg-white shadow-sm"
@@ -610,7 +611,7 @@ export default function EnhancedServicesDashboard() {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => {
-                        setEditingCategory({ id: service.dbId, name: service.label, icon: service.icon, description: "", is_active: true });
+                        setEditingCategory({ id: service.dbId, name: service.label, slug: null, icon: service.icon, description: "", is_active: true });
                         setEditCategoryForm({ name: service.label, icon: service.icon, description: "" });
                       }}
                       className="text-xs font-bold text-[var(--color-primary)] hover:underline"
@@ -758,8 +759,8 @@ export default function EnhancedServicesDashboard() {
               <button
                 onClick={async () => {
                   if (!categoryForm.name) { useToastStore.getState().addToast("Category name is required", "error"); return; }
-                  const { error } = await supabase.from("service_categories").insert({
-                    name: categoryForm.name, icon: categoryForm.icon, description: categoryForm.description, is_active: true,
+                   const { error } = await supabase.from("service_categories").insert({
+                    name: categoryForm.name, slug: categoryForm.name.toLowerCase().replace(/\s+/g, "_"), icon: categoryForm.icon, description: categoryForm.description, is_active: true,
                   });
                   if (error) { useToastStore.getState().addToast("Error: " + error.message, "error"); return; }
                   useToastStore.getState().addToast("Category created!", "success");

@@ -64,9 +64,18 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
   const [techName, setTechName] = useState("");
   const [techPhone, setTechPhone] = useState("");
   const [assigning, setAssigning] = useState(false);
-  const service = SERVICE_DETAILS[serviceKey] || SERVICE_DETAILS.plumbing;
+  const [dbService, setDbService] = useState<ServiceDetail | null>(null);
+  const service = dbService || SERVICE_DETAILS[serviceKey] || { name: serviceKey.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase()), icon: "home_repair_service", color: "blue", bg: "bg-blue-50" };
 
-  useEffect(() => { loadBookings(); }, []);
+  useEffect(() => {
+    loadBookings();
+    if (!SERVICE_DETAILS[serviceKey]) {
+      supabase.from("service_categories").select("name, icon").eq("slug", serviceKey).maybeSingle()
+        .then(({ data }: { data: { name: string; icon: string | null } | null }) => {
+          if (data) setDbService({ name: data.name, icon: data.icon || "home_repair_service", color: "blue", bg: "bg-blue-50" });
+        });
+    }
+  }, []);
 
   async function loadBookings() {
     const { data } = await supabase
