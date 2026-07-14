@@ -22,14 +22,14 @@ interface ServiceBooking {
   created_at: string;
 }
 
-const defaultServiceOptions = [
-  { id: "beauty", label: "Beauty & Wellness", icon: "spa", color: "text-pink-500", bg: "bg-pink-50" },
-  { id: "ac", label: "AC Repair", icon: "ac_unit", color: "text-blue-500", bg: "bg-blue-50" },
-  { id: "plumbing", label: "Plumbing", icon: "plumbing", color: "text-cyan-500", bg: "bg-cyan-50" },
-  { id: "electrical", label: "Electrical", icon: "electrical_services", color: "text-amber-500", bg: "bg-amber-50" },
-  { id: "cleaning", label: "Cleaning", icon: "cleaning_services", color: "text-green-500", bg: "bg-green-50" },
-  { id: "appliance", label: "Appliance", icon: "kitchen", color: "text-purple-500", bg: "bg-purple-50" },
-  { id: "pest", label: "Pest Control", icon: "bug_report", color: "text-red-500", bg: "bg-red-50" },
+const defaultServiceOptions: ServiceOption[] = [
+  { id: "beauty", dbId: "beauty", label: "Beauty & Wellness", icon: "spa", color: "text-pink-500", bg: "bg-pink-50" },
+  { id: "ac", dbId: "ac", label: "AC Repair", icon: "ac_unit", color: "text-blue-500", bg: "bg-blue-50" },
+  { id: "plumbing", dbId: "plumbing", label: "Plumbing", icon: "plumbing", color: "text-cyan-500", bg: "bg-cyan-50" },
+  { id: "electrical", dbId: "electrical", label: "Electrical", icon: "electrical_services", color: "text-amber-500", bg: "bg-amber-50" },
+  { id: "cleaning", dbId: "cleaning", label: "Cleaning", icon: "cleaning_services", color: "text-green-500", bg: "bg-green-50" },
+  { id: "appliance", dbId: "appliance", label: "Appliance", icon: "kitchen", color: "text-purple-500", bg: "bg-purple-50" },
+  { id: "pest", dbId: "pest", label: "Pest Control", icon: "bug_report", color: "text-red-500", bg: "bg-red-50" },
 ];
 
 interface ServiceCategoryRow {
@@ -38,6 +38,15 @@ interface ServiceCategoryRow {
   icon: string;
   description: string | null;
   is_active: boolean;
+}
+
+interface ServiceOption {
+  id: string;
+  dbId: string;
+  label: string;
+  icon: string;
+  color: string;
+  bg: string;
 }
 
 export default function EnhancedServicesDashboard() {
@@ -53,7 +62,7 @@ export default function EnhancedServicesDashboard() {
   const [providerForm, setProviderForm] = useState({ name: "", phone: "", email: "", service_type: "beauty", experience: "" });
   const [categoryForm, setCategoryForm] = useState({ name: "", icon: "home_repair_service", description: "" });
   const [pricing, setPricing] = useState({ commission: "15", minOrder: "199", cancelWindow: "2" });
-  const [serviceOptions, setServiceOptions] = useState(defaultServiceOptions);
+  const [serviceOptions, setServiceOptions] = useState<ServiceOption[]>(defaultServiceOptions.map(s => ({ ...s, dbId: s.id })));
   const [editingCategory, setEditingCategory] = useState<ServiceCategoryRow | null>(null);
   const [editCategoryForm, setEditCategoryForm] = useState({ name: "", icon: "", description: "" });
 
@@ -72,6 +81,7 @@ export default function EnhancedServicesDashboard() {
         const bgs = ["bg-pink-50", "bg-blue-50", "bg-cyan-50", "bg-amber-50", "bg-green-50", "bg-purple-50", "bg-red-50", "bg-indigo-50", "bg-teal-50"];
         setServiceOptions(data.map((c: ServiceCategoryRow, i: number) => ({
           id: c.name.toLowerCase().replace(/\s+/g, "_"),
+          dbId: c.id,
           label: c.name,
           icon: c.icon || "home_repair_service",
           color: colors[i % colors.length],
@@ -280,7 +290,7 @@ export default function EnhancedServicesDashboard() {
                         <button
                           onClick={(e) => {
                             e.preventDefault();
-                            setEditingCategory({ id: service.id, name: service.label, icon: service.icon, description: "", is_active: true });
+                            setEditingCategory({ id: service.dbId, name: service.label, icon: service.icon, description: "", is_active: true });
                             setEditCategoryForm({ name: service.label, icon: service.icon, description: "" });
                           }}
                           className="w-7 h-7 rounded-full bg-white/80 flex items-center justify-center hover:bg-white shadow-sm"
@@ -292,7 +302,7 @@ export default function EnhancedServicesDashboard() {
                           onClick={(e) => {
                             e.preventDefault();
                             if (confirm(`Delete "${service.label}"? This cannot be undone.`)) {
-                              supabase.from("service_categories").delete().eq("id", service.id).then(() => {
+                              supabase.from("service_categories").delete().eq("id", service.dbId).then(() => {
                                 useToastStore.getState().addToast("Category deleted!", "success");
                                 loadCategories();
                               });
@@ -594,7 +604,7 @@ export default function EnhancedServicesDashboard() {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => {
-                        setEditingCategory({ id: service.id, name: service.label, icon: service.icon, description: "", is_active: true });
+                        setEditingCategory({ id: service.dbId, name: service.label, icon: service.icon, description: "", is_active: true });
                         setEditCategoryForm({ name: service.label, icon: service.icon, description: "" });
                       }}
                       className="text-xs font-bold text-[var(--color-primary)] hover:underline"
