@@ -256,26 +256,55 @@ export default function EnhancedServicesDashboard() {
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-6">
                   {serviceStats.map((service) => (
-                    <Link
+                    <div
                       key={service.id}
-                      href={`/admin/services/${service.id}`}
-                      className="bg-[var(--color-surface-subtle)] rounded-2xl p-4 hover:bg-[#ffecee] transition-colors group border border-transparent hover:border-[var(--color-primary)]"
+                      className="bg-[var(--color-surface-subtle)] rounded-2xl p-4 hover:bg-[#ffecee] transition-colors group border border-transparent hover:border-[var(--color-primary)] relative"
                     >
-                      <div className={`w-12 h-12 rounded-xl ${service.bg} flex items-center justify-center mb-3`}>
-                        <span className={`material-symbols-outlined ${service.color}`} style={{ fontVariationSettings: "'FILL' 1" }}>{service.icon}</span>
-                      </div>
-                      <p className="font-bold text-[var(--color-on-surface)] text-sm mb-2">{service.label}</p>
-                      <div className="space-y-1">
-                        <div className="flex justify-between text-xs">
-                          <span className="text-[var(--color-outline)]">Orders</span>
-                          <span className="font-bold text-[var(--color-on-surface)]">{service.orders}</span>
+                      <Link href={`/admin/services/${service.id}`} className="block">
+                        <div className={`w-12 h-12 rounded-xl ${service.bg} flex items-center justify-center mb-3`}>
+                          <span className={`material-symbols-outlined ${service.color}`} style={{ fontVariationSettings: "'FILL' 1" }}>{service.icon}</span>
                         </div>
-                        <div className="flex justify-between text-xs">
-                          <span className="text-[var(--color-outline)]">Revenue</span>
-                          <span className="font-bold text-green-600 dark:text-green-400">₹{service.revenue.toLocaleString()}</span>
+                        <p className="font-bold text-[var(--color-on-surface)] text-sm mb-2">{service.label}</p>
+                        <div className="space-y-1">
+                          <div className="flex justify-between text-xs">
+                            <span className="text-[var(--color-outline)]">Orders</span>
+                            <span className="font-bold text-[var(--color-on-surface)]">{service.orders}</span>
+                          </div>
+                          <div className="flex justify-between text-xs">
+                            <span className="text-[var(--color-outline)]">Revenue</span>
+                            <span className="font-bold text-green-600 dark:text-green-400">₹{service.revenue.toLocaleString()}</span>
+                          </div>
                         </div>
+                      </Link>
+                      <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setEditingCategory({ id: service.id, name: service.label, icon: service.icon, description: "", is_active: true });
+                            setEditCategoryForm({ name: service.label, icon: service.icon, description: "" });
+                          }}
+                          className="w-7 h-7 rounded-full bg-white/80 flex items-center justify-center hover:bg-white shadow-sm"
+                          aria-label={`Edit ${service.label}`}
+                        >
+                          <span className="material-symbols-outlined text-xs text-[var(--color-on-surface-variant)]">edit</span>
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            if (confirm(`Delete "${service.label}"? This cannot be undone.`)) {
+                              supabase.from("service_categories").delete().eq("id", service.id).then(() => {
+                                useToastStore.getState().addToast("Category deleted!", "success");
+                                loadCategories();
+                              });
+                            }
+                          }}
+                          className="w-7 h-7 rounded-full bg-white/80 flex items-center justify-center hover:bg-red-50 shadow-sm"
+                          aria-label={`Delete ${service.label}`}
+                        >
+                          <span className="material-symbols-outlined text-xs text-red-500">delete</span>
+                        </button>
                       </div>
-                    </Link>
+                    </div>
                   ))}
                 </div>
               </div>
