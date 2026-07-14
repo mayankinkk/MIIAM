@@ -23,9 +23,31 @@ import { usePlaceOrder } from "@/lib/hooks/usePlaceOrder";
 import { useRazorpay } from "@/lib/hooks/useRazorpay";
 import logger from "@/lib/logger";
 
+function parseIsOpen(hours: string | null | undefined): boolean {
+  if (!hours) return true;
+  try {
+    const to24 = (t: string) => {
+      const [time, mod] = t.trim().split(" ");
+      let [h, m] = time.split(":").map(Number);
+      if (!m) m = 0;
+      if (mod?.toUpperCase() === "PM" && h !== 12) h += 12;
+      if (mod?.toUpperCase() === "AM" && h === 12) h = 0;
+      return h * 60 + m;
+    };
+    const parts = hours.replace("–", "-").split("-");
+    if (parts.length < 2) return true;
+    const open = to24(parts[0]);
+    const close = to24(parts[1]);
+    const now = new Date();
+    const cur = now.getHours() * 60 + now.getMinutes();
+    return cur >= open && cur < close;
+  } catch { return true; }
+}
+
 export default function CheckoutPage() {
   const { t } = useTranslation();
   const [vendorDeliveryCharges, setVendorDeliveryCharges] = useState<Record<string, number>>({});
+  const [vendorHours, setVendorHours] = useState<Record<string, string>>({});
   const [paymentMethod, setPaymentMethod] = useState("upi");
   const [scheduledDate, setScheduledDate] = useState<string>("");
   const [specialInstructions, setSpecialInstructions] = useState("");
@@ -84,14 +106,17 @@ export default function CheckoutPage() {
         if (vendorIds.length === 0) return;
         const { data } = await supabase
           .from("vendors")
-          .select("id, delivery_charge")
+          .select("id, delivery_charge, opening_hours")
           .in("id", vendorIds);
         if (data) {
-          const charges = data.reduce((acc: Record<string, number>, v: { id: string; delivery_charge: number | null }) => {
-            acc[v.id] = v.delivery_charge || 0;
-            return acc;
-          }, {} as Record<string, number>);
+          const charges: Record<string, number> = {};
+          const hours: Record<string, string> = {};
+          for (const v of data as { id: string; delivery_charge: number | null; opening_hours: string | null }[]) {
+            charges[v.id] = v.delivery_charge || 0;
+            if (v.opening_hours) hours[v.id] = v.opening_hours;
+          }
           setVendorDeliveryCharges(charges);
+          setVendorHours(hours);
         }
       } catch (err) {
         logger.error({ err: err }, "Failed to load vendor delivery charges");
@@ -103,6 +128,10 @@ export default function CheckoutPage() {
   const subtotal = totalPrice();
   const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean)));
   const serviceVendorIds = vendorIds.filter((id) => id !== SERVICES_VENDOR_ID);
+
+  const hasClosedVendor = useMemo(() => {
+    return serviceVendorIds.some((id) => vendorHours[id] && !parseIsOpen(vendorHours[id]));
+  }, [serviceVendorIds, vendorHours]);
 
   const {
     promoCode,
@@ -249,6 +278,13 @@ export default function CheckoutPage() {
                 />
               </div>
 
+              {hasClosedVendor && (
+                <div className="bg-red-50 border border-red-200 rounded-xl p-3 mb-3 flex items-center gap-2">
+                  <span className="material-symbols-outlined text-red-500 text-lg">schedule</span>
+                  <p className="text-red-700 text-sm font-medium">One or more restaurants in your cart are currently closed. Please remove their items or try again later.</p>
+                </div>
+              )}
+
               <button
                 onClick={() => {
                   if (!deliveryAddress) return;
@@ -285,7 +321,7 @@ export default function CheckoutPage() {
                     placeOrder(orderArgs).finally(() => setPlacing(false));
                   }
                 }}
-                disabled={placing || razorpayLoading || items.length === 0 || !deliveryAddress}
+                disabled={placing || razorpayLoading || items.length === 0 || !deliveryAddress || hasClosedVendor}
                 className="w-full bg-gradient-to-r from-primary to-primary-container text-white py-4 sm:py-5 rounded-xl text-base sm:text-lg font-extrabold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 sm:gap-3 disabled:opacity-60"
               >
                 {(placing || razorpayLoading) ? (

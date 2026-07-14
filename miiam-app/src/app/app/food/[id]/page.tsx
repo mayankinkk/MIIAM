@@ -87,12 +87,13 @@ function StarRating({ rating, size = "sm" }: { rating: number; size?: "sm" | "lg
   );
 }
 
-function AddToCartButton({ item, vendor, compact }: { item: MenuItem; vendor: Vendor; compact?: boolean }) {
+function AddToCartButton({ item, vendor, compact, isOpen = true }: { item: MenuItem; vendor: Vendor; compact?: boolean; isOpen?: boolean }) {
   const { addItem, items, updateQuantity } = useCartStore();
   const cartItem = items.find((i) => i.menu_item_id === item.id);
   const qty = cartItem?.quantity ?? 0;
 
   const handleAdd = () => {
+    if (!isOpen) return;
     addItem({
       id: item.id,
       menu_item_id: item.id,
@@ -105,6 +106,17 @@ function AddToCartButton({ item, vendor, compact }: { item: MenuItem; vendor: Ve
     });
     if (navigator.vibrate) navigator.vibrate([20, 10, 20]);
   };
+
+  if (!isOpen) {
+    return (
+      <span className={compact
+        ? "px-2 py-0.5 bg-gray-200 text-gray-500 text-[9px] font-bold rounded-full cursor-not-allowed"
+        : "px-4 py-1.5 bg-gray-200 text-gray-500 text-xs font-bold rounded-full cursor-not-allowed"
+      }>
+        Closed
+      </span>
+    );
+  }
 
   if (qty === 0) {
     return (
@@ -513,6 +525,17 @@ export default function RestaurantProfilePage() {
         )}
       </div>
 
+      {/* Closed Banner */}
+      {!isOpen && (
+        <div className="mx-4 mt-4 bg-red-50 border border-red-200 rounded-2xl p-4 flex items-center gap-3">
+          <span className="material-symbols-outlined text-red-500 text-2xl">schedule</span>
+          <div>
+            <p className="font-bold text-red-700 text-sm">Restaurant is currently closed</p>
+            <p className="text-red-500 text-xs">You can browse the menu but cannot place orders right now.</p>
+          </div>
+        </div>
+      )}
+
       {/* Description */}
       {vendor.description && (
         <div className="bg-surface-container-lowest mx-4 mt-4 rounded-2xl p-4 shadow-sm border border-outline-variant">
@@ -548,7 +571,7 @@ export default function RestaurantProfilePage() {
                   </div>
                   <div className="flex items-center justify-between mt-0.5">
                     <span className="font-black text-primary text-xs">₹{item.price}</span>
-                    <AddToCartButton item={item} vendor={vendor} compact />
+                    <AddToCartButton item={item} vendor={vendor} compact isOpen={isOpen} />
                   </div>
                 </div>
               </div>
@@ -646,7 +669,7 @@ export default function RestaurantProfilePage() {
                   )}
                   <div className="flex items-center justify-between mt-2">
                     <span className="font-black text-primary text-base">₹{item.price}</span>
-                    <AddToCartButton item={item} vendor={vendor} />
+                    <AddToCartButton item={item} vendor={vendor} isOpen={isOpen} />
                   </div>
                 </div>
               </div>
