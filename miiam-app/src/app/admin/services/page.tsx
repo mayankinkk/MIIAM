@@ -75,7 +75,11 @@ export default function EnhancedServicesDashboard() {
 
   async function loadCategories() {
     try {
-      const { data } = await supabase.from("service_categories").select("*").order("name");
+      const { data, error } = await supabase.from("service_categories").select("*").order("name");
+      if (error) {
+        console.error("Failed to load service_categories:", error.message);
+        return;
+      }
       if (data && data.length > 0) {
         const colors = ["text-pink-500", "text-blue-500", "text-cyan-500", "text-amber-500", "text-green-500", "text-purple-500", "text-red-500", "text-indigo-500", "text-teal-500"];
         const bgs = ["bg-pink-50", "bg-blue-50", "bg-cyan-50", "bg-amber-50", "bg-green-50", "bg-purple-50", "bg-red-50", "bg-indigo-50", "bg-teal-50"];
@@ -88,7 +92,9 @@ export default function EnhancedServicesDashboard() {
           bg: bgs[i % bgs.length],
         })));
       }
-    } catch { /* use defaults */ }
+    } catch (err) {
+      console.error("Error loading service_categories:", err);
+    }
   }
 
   async function loadPricing() {
@@ -302,7 +308,7 @@ export default function EnhancedServicesDashboard() {
                           onClick={(e) => {
                             e.preventDefault();
                             if (confirm(`Delete "${service.label}"? This cannot be undone.`)) {
-                              supabase.from("service_categories").delete().eq("id", service.dbId).then(() => {
+                              supabase.from("service_categories").delete().eq("name", service.label).then(() => {
                                 useToastStore.getState().addToast("Category deleted!", "success");
                                 loadCategories();
                               });
@@ -787,7 +793,7 @@ export default function EnhancedServicesDashboard() {
                     name: editCategoryForm.name,
                     icon: editCategoryForm.icon,
                     description: editCategoryForm.description,
-                  }).eq("id", editingCategory.id);
+                  }).eq("name", editingCategory.name);
                   if (error) { useToastStore.getState().addToast("Error: " + error.message, "error"); return; }
                   useToastStore.getState().addToast("Category updated!", "success");
                   setEditingCategory(null);
@@ -800,7 +806,7 @@ export default function EnhancedServicesDashboard() {
               <button
                 onClick={async () => {
                   if (!confirm(`Delete "${editingCategory.name}"? This cannot be undone.`)) return;
-                  const { error } = await supabase.from("service_categories").delete().eq("id", editingCategory.id);
+                  const { error } = await supabase.from("service_categories").delete().eq("name", editingCategory.name);
                   if (error) { useToastStore.getState().addToast("Error: " + error.message, "error"); return; }
                   useToastStore.getState().addToast("Category deleted!", "success");
                   setEditingCategory(null);
