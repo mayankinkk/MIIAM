@@ -10,7 +10,6 @@ import ServiceUnavailable from "@/components/ServiceUnavailable";
 import PullToRefresh from "@/components/PullToRefresh";
 import QuickActionsFAB from "@/components/QuickActionsFAB";
 import { createClient } from "@/lib/supabase/client";
-import { VendorCardSkeleton } from "@/components/Skeleton";
 
 import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { useFavoritesStore } from "@/lib/store/favoritesStore";
@@ -18,7 +17,6 @@ import { useLocationStore } from "@/lib/store/locationStore";
 import EmptyState from "@/components/EmptyState";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
-import { PressScale, CartBounce } from "@/components/ui/AnimationWrappers";
 import { NetworkError } from "@/components/ui/EmptyStates";
 import { withRetry } from "@/lib/retry";
 import logger from "@/lib/logger";
