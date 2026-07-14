@@ -102,6 +102,12 @@ export default function PageAssetsPage() {
     await loadAssets();
   };
 
+  const handleDelete = async (asset: PageAsset) => {
+    if (!confirm(`Delete "${SECTION_LABELS[asset.section]?.label || asset.section}"? This cannot be undone.`)) return;
+    await supabase.from("page_assets").delete().eq("id", asset.id);
+    await loadAssets();
+  };
+
   const missingSections = DEFAULT_SECTIONS.filter(
     (s) => !assets.some((a) => a.section === s)
   );
@@ -233,6 +239,13 @@ export default function PageAssetsPage() {
                       }`}
                     >
                       {asset.is_active ? "Deactivate" : "Activate"}
+                    </button>
+                    <button
+                      onClick={() => handleDelete(asset)}
+                      className="px-4 py-2.5 rounded-xl font-bold text-sm active:scale-95 transition-all bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] hover:bg-red-50 hover:text-red-600"
+                      aria-label={`Delete ${SECTION_LABELS[asset.section]?.label || asset.section}`}
+                    >
+                      <span className="material-symbols-outlined text-sm">delete</span>
                     </button>
                   </div>
                 </div>
