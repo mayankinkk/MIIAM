@@ -1,0 +1,3 @@
+ALTER TABLE banners ADD COLUMN IF NOT EXISTS subtitle TEXT DEFAULT '';
+ALTER TABLE banners ADD COLUMN IF NOT EXISTS badge TEXT DEFAULT '';
+ALTER TABLE banners ADD COLUMN IF NOT EXISTS gradient TEXT DEFAULT 'from-primary to-primary-container';

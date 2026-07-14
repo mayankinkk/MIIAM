@@ -89,13 +89,7 @@ function parseIsOpen(hours: string | null | undefined): boolean {
 
 function PromoBannerCarousel() {
   const supabase = useMemo(() => createClient(), []);
-  const { t } = useTranslation();
-  const defaultBanners = [
-    { id: "1", label: t.food.promoteTitle, title: "50% OFF your first order", sub: "Use code FIRST50", color: "from-primary to-primary-container", image_url: "" },
-    { id: "2", label: "⚡ Flash Sale", title: "Free delivery all day", sub: "On orders above ₹299", color: "from-violet-600 to-purple-400", image_url: "" },
-    { id: "3", label: "🌟 New Arrival", title: "Try something new", sub: "Freshly added restaurants", color: "from-amber-500 to-yellow-300", image_url: "" },
-  ];
-  const [banners, setBanners] = useState<{ id: string; label: string; title: string; sub: string; color: string; image_url: string }[]>(defaultBanners);
+  const [banners, setBanners] = useState<Array<{ id: string; badge: string; title: string; sub: string; gradient: string; image_url: string }>>([]);
   const [active, setActive] = useState(0);
 
   useEffect(() => {
@@ -107,18 +101,18 @@ function PromoBannerCarousel() {
         .order("position");
       
       if (!error && data && data.length > 0) {
-        setBanners(data.map((b: { id: string; title: string; link_url?: string; image_url: string }) => ({
+        setBanners(data.map((b: { id: string; badge?: string; title: string; subtitle?: string; gradient?: string; link_url?: string; image_url: string }) => ({
           id: b.id,
-          label: "📣 Promotion",
+          badge: b.badge || "",
           title: b.title,
-          sub: b.link_url || t.food.promoteDesc,
-          color: "from-primary to-primary-container",
+          sub: b.subtitle || b.link_url || "",
+          gradient: b.gradient || "from-primary to-primary-container",
           image_url: b.image_url,
         })));
       }
     }
     fetchBanners();
-  }, []);
+  }, [supabase]);
 
   useEffect(() => {
     if (banners.length === 0) return;
@@ -134,16 +128,16 @@ function PromoBannerCarousel() {
       <div 
         style={b.image_url ? { backgroundImage: `url(${b.image_url})` } : {}}
         className={`bg-cover bg-center relative rounded-2xl p-4 flex items-center justify-between overflow-hidden transition-all duration-500 h-28 ${
-          !b.image_url ? `bg-gradient-to-r ${b.color}` : ""
+          !b.image_url ? `bg-gradient-to-r ${b.gradient}` : ""
         }`}
       >
         {b.image_url && <div className="absolute inset-0 bg-black/45 z-0" />}
         
         <div className="relative z-10 flex flex-col justify-between h-full w-full">
           <div>
-            <span className="text-white/80 text-[10px] font-black uppercase tracking-widest">{b.label}</span>
+            {b.badge && <span className="text-white/80 text-[10px] font-black uppercase tracking-widest">{b.badge}</span>}
             <p className="text-white font-black text-base mt-0.5 leading-tight">{b.title}</p>
-            <p className="text-white/80 text-xs mt-0.5">{b.sub}</p>
+            {b.sub && <p className="text-white/80 text-xs mt-0.5">{b.sub}</p>}
           </div>
           
           <div className="flex gap-1 mt-2">
@@ -644,15 +638,17 @@ export default function FoodPageContent() {
 
       <Breadcrumbs items={[{ label: 'Home', href: '/app/home' }, { label: 'Food' }]} />
 
-      <div className="px-6 mt-4">
-        <div className="rounded-2xl overflow-hidden relative h-44 shadow-sm">
-          <BlurImage src={heroAsset?.image_url || "/images/food_hero.png"} alt="Food Hero Banner" fill className="w-full h-full" sizes="100vw" fallbackSrc="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-5">
-            <h2 className="text-white text-2xl font-black">{heroAsset?.title || "Gourmet Selection"}</h2>
-            <p className="text-white/90 text-sm mt-1">{heroAsset?.subtitle || "Order food from top restaurants near you"}</p>
+      {heroAsset && (
+        <div className="px-6 mt-4">
+          <div className="rounded-2xl overflow-hidden relative h-44 shadow-sm">
+            <BlurImage src={heroAsset.image_url} alt="Food Hero Banner" fill className="w-full h-full" sizes="100vw" fallbackSrc="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-5">
+              <h2 className="text-white text-2xl font-black">{heroAsset.title}</h2>
+              <p className="text-white/90 text-sm mt-1">{heroAsset.subtitle}</p>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       <PromoBannerCarousel />
 

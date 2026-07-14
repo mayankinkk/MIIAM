@@ -8,6 +8,9 @@ import BlurImage from "@/components/BlurImage";
 interface Banner {
   id: string;
   title: string;
+  subtitle: string;
+  badge: string;
+  gradient: string;
   image_url: string;
   link_url: string | null;
   is_active: boolean;
@@ -22,7 +25,7 @@ export default function BannerManagement() {
   const [banners, setBanners] = useState<Banner[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
-  const [newBanner, setNewBanner] = useState({ title: "", image_url: "", link_url: "" });
+  const [newBanner, setNewBanner] = useState({ title: "", subtitle: "", badge: "", gradient: "from-primary to-primary-container", image_url: "", link_url: "" });
 
   async function loadBanners() {
     const { data } = await supabase.from("banners").select("*").order("position");
@@ -46,9 +49,12 @@ export default function BannerManagement() {
   }, [supabase]);
 
   async function addBanner() {
-    if (!newBanner.title || !newBanner.image_url) return;
+    if (!newBanner.title) return;
     const { data, error } = await supabase.from("banners").insert([{
       title: newBanner.title,
+      subtitle: newBanner.subtitle,
+      badge: newBanner.badge,
+      gradient: newBanner.gradient,
       image_url: newBanner.image_url,
       link_url: newBanner.link_url || null,
       is_active: true,
@@ -57,7 +63,7 @@ export default function BannerManagement() {
     if (!error && data) {
       setBanners([...banners, data]);
       setShowAdd(false);
-      setNewBanner({ title: "", image_url: "", link_url: "" });
+      setNewBanner({ title: "", subtitle: "", badge: "", gradient: "from-primary to-primary-container", image_url: "", link_url: "" });
     }
   }
 
@@ -129,18 +135,18 @@ export default function BannerManagement() {
               <span className="w-6 h-6 bg-[var(--color-surface-container-high)] rounded-full flex items-center justify-center text-xs font-bold">
                 {index + 1}
               </span>
-              <div className="w-24 h-16 bg-[var(--color-surface-container)] rounded-lg overflow-hidden flex-shrink-0">
+              <div className="w-32 h-16 rounded-lg overflow-hidden flex-shrink-0">
                 {banner.image_url ? (
                   <BlurImage src={banner.image_url} alt={`Banner: ${banner.title || 'Untitled'}`} className="w-full h-full object-cover" />
                 ) : (
-                  <span className="material-symbols-outlined text-2xl text-[var(--color-outline-variant)]/60">image</span>
+                  <div className={`w-full h-full bg-gradient-to-r ${banner.gradient || 'from-primary to-primary-container'}`} />
                 )}
               </div>
               <div className="flex-1">
+                {banner.badge && <span className="text-[10px] font-bold bg-[var(--color-primary)]/10 text-[var(--color-primary)] px-2 py-0.5 rounded">{banner.badge}</span>}
                 <p className="font-bold text-[var(--color-on-surface)]">{banner.title}</p>
-                {banner.link_url && (
-                  <p className="text-xs text-[var(--color-outline-variant)]">{banner.link_url}</p>
-                )}
+                {banner.subtitle && <p className="text-xs text-[var(--color-outline-variant)]">{banner.subtitle}</p>}
+                {banner.link_url && <p className="text-xs text-[var(--color-outline-variant)] truncate">{banner.link_url}</p>}
               </div>
               <div className="flex items-center gap-2">
                 <button 
@@ -175,15 +181,17 @@ export default function BannerManagement() {
         <div className="divide-y divide-slate-50">
           {banners.filter(b => !b.is_active).map(banner => (
             <div key={banner.id} className="p-4 flex items-center gap-4 opacity-60">
-              <div className="w-24 h-16 bg-[var(--color-surface-container)] rounded-lg overflow-hidden flex-shrink-0">
+              <div className="w-32 h-16 rounded-lg overflow-hidden flex-shrink-0">
                 {banner.image_url ? (
                   <BlurImage src={banner.image_url} alt={`Banner: ${banner.title || 'Untitled'}`} className="w-full h-full object-cover" />
                 ) : (
-                  <span className="material-symbols-outlined text-2xl text-[var(--color-outline-variant)]/60">image</span>
+                  <div className={`w-full h-full bg-gradient-to-r ${banner.gradient || 'from-primary to-primary-container'}`} />
                 )}
               </div>
               <div className="flex-1">
+                {banner.badge && <span className="text-[10px] font-bold bg-[var(--color-primary)]/10 text-[var(--color-primary)] px-2 py-0.5 rounded">{banner.badge}</span>}
                 <p className="font-bold text-[var(--color-on-surface)]">{banner.title}</p>
+                {banner.subtitle && <p className="text-xs text-[var(--color-outline-variant)]">{banner.subtitle}</p>}
               </div>
               <div className="flex items-center gap-2">
                 <button 
@@ -222,6 +230,16 @@ export default function BannerManagement() {
             </div>
             <div className="p-6 space-y-4">
               <div>
+                <label htmlFor="banner-badge" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-1">Badge (optional)</label>
+                <input
+                  id="banner-badge"
+                  value={newBanner.badge}
+                  onChange={(e) => setNewBanner({ ...newBanner, badge: e.target.value })}
+                  className="w-full bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/10"
+                  placeholder="e.g. FLASH SALE, NEW USER"
+                />
+              </div>
+              <div>
                 <label htmlFor="banner-title" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-1">Title</label>
                 <input
                   id="banner-title"
@@ -231,12 +249,41 @@ export default function BannerManagement() {
                   placeholder="Banner title"
                 />
               </div>
+              <div>
+                <label htmlFor="banner-subtitle" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-1">Subtitle (optional)</label>
+                <input
+                  id="banner-subtitle"
+                  value={newBanner.subtitle}
+                  onChange={(e) => setNewBanner({ ...newBanner, subtitle: e.target.value })}
+                  className="w-full bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/10"
+                  placeholder="e.g. On orders above ₹299"
+                />
+              </div>
+              <div>
+                <label htmlFor="banner-gradient" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-1">Gradient</label>
+                <select
+                  id="banner-gradient"
+                  value={newBanner.gradient}
+                  onChange={(e) => setNewBanner({ ...newBanner, gradient: e.target.value })}
+                  className="w-full bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/10"
+                >
+                  <option value="from-primary to-primary-container">Primary</option>
+                  <option value="from-orange-500 to-red-500">Orange-Red</option>
+                  <option value="from-green-500 to-emerald-500">Green</option>
+                  <option value="from-blue-500 to-indigo-500">Blue-Indigo</option>
+                  <option value="from-violet-600 to-purple-400">Violet-Purple</option>
+                  <option value="from-amber-500 to-yellow-300">Amber-Yellow</option>
+                  <option value="from-pink-500 to-rose-400">Pink-Rose</option>
+                  <option value="from-teal-500 to-cyan-400">Teal-Cyan</option>
+                </select>
+                <div className={`mt-2 h-8 rounded-lg bg-gradient-to-r ${newBanner.gradient}`} />
+              </div>
               <ImageUpload
                 value={newBanner.image_url}
                 onChange={(url) => setNewBanner({ ...newBanner, image_url: url })}
                 bucket="menu-images"
                 folder="banners"
-                label="Banner Image"
+                label="Banner Image (optional — gradient used if no image)"
                 previewHeight="h-32"
               />
               <div>
