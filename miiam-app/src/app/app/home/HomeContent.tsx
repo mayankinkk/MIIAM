@@ -87,13 +87,8 @@ export default function HomePage() {
     { id: "services", label: t.nav.services, icon: "handyman", color: "bg-blue-100", iconColor: "text-blue-600" },
   ];
 
-  const fallbackOffers = [
-    { id: "o1", title: t.home.offerFirstOrder, subtitle: t.home.offerFirstOrderDesc, gradient: "from-orange-500 to-red-500", badge: t.home.offerNewUser },
-    { id: "o2", title: t.home.offerFreeDelivery, subtitle: t.home.offerFreeDeliveryDesc, gradient: "from-green-500 to-emerald-500", badge: t.home.offerFreeDeliveryBadge },
-    { id: "o3", title: t.home.offerFlat100, subtitle: t.home.offerFlat100Desc, gradient: "from-blue-500 to-indigo-500", badge: t.home.offerFlatOff },
-  ];
-  const [dbOffers, setDbOffers] = useState<typeof fallbackOffers>([]);
-  const offers = dbOffers.length > 0 ? dbOffers : fallbackOffers;
+  const [dbOffers, setDbOffers] = useState<Array<{ id: string; title: string; subtitle: string; gradient: string; badge: string }>>([]);
+  const offers = dbOffers;
 
   const [user, setUser] = useState<UserProfile | null>(null);
   const [currentOffer, setCurrentOffer] = useState(0);
@@ -414,6 +409,7 @@ export default function HomePage() {
 
   // Auto-rotate offers
   useEffect(() => {
+    if (offers.length <= 1) return;
     const timer = setInterval(() => {
       setCurrentOffer((prev) => (prev + 1) % offers.length);
     }, 4000);
@@ -500,30 +496,34 @@ export default function HomePage() {
       </header>
 
       {/* Offers Carousel */}
-      <div className="px-4 py-4">
-        <Link href="/app/home">
-          <div className={`relative h-28 rounded-2xl overflow-hidden bg-gradient-to-r ${offers[currentOffer].gradient}`}>
-            <div className="absolute top-3 left-4">
-              <span className="text-[10px] font-bold bg-[var(--color-surface-container-lowest)]/20 text-white px-2 py-1 rounded">
-                {offers[currentOffer].badge}
-              </span>
-            </div>
-            <div className="absolute inset-0 flex items-center justify-between px-6">
-              <div>
-                <h3 className="text-xl font-black text-white">{offers[currentOffer].title}</h3>
-                <p className="text-white/90 text-sm mt-1">{offers[currentOffer].subtitle}</p>
+      {offers.length > 0 && (
+        <div className="px-4 py-4">
+          <Link href="/app/home">
+            <div className={`relative h-28 rounded-2xl overflow-hidden bg-gradient-to-r ${offers[currentOffer].gradient}`}>
+              <div className="absolute top-3 left-4">
+                <span className="text-[10px] font-bold bg-[var(--color-surface-container-lowest)]/20 text-white px-2 py-1 rounded">
+                  {offers[currentOffer].badge}
+                </span>
               </div>
-              <span className="material-symbols-outlined text-white/50 text-6xl">arrow_forward</span>
+              <div className="absolute inset-0 flex items-center justify-between px-6">
+                <div>
+                  <h3 className="text-xl font-black text-white">{offers[currentOffer].title}</h3>
+                  <p className="text-white/90 text-sm mt-1">{offers[currentOffer].subtitle}</p>
+                </div>
+                <span className="material-symbols-outlined text-white/50 text-6xl">arrow_forward</span>
+              </div>
+              {/* Dots */}
+              {offers.length > 1 && (
+                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5">
+                  {offers.map((_, i) => (
+                    <div key={i} className={`w-1.5 h-1.5 rounded-full ${i === currentOffer ? 'bg-white' : 'bg-[var(--color-surface-container-lowest)]/40'}`} />
+                  ))}
+                </div>
+              )}
             </div>
-            {/* Dots */}
-            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5">
-              {offers.map((_, i) => (
-                <div key={i} className={`w-1.5 h-1.5 rounded-full ${i === currentOffer ? 'bg-white' : 'bg-[var(--color-surface-container-lowest)]/40'}`} />
-              ))}
-            </div>
-          </div>
-        </Link>
-      </div>
+          </Link>
+        </div>
+      )}
 
       {/* Floating Order Bubble */}
       {activeOrder && (
