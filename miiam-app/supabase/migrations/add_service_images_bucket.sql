@@ -13,8 +13,18 @@ SET
   file_size_limit = EXCLUDED.file_size_limit,
   allowed_mime_types = EXCLUDED.allowed_mime_types;
 
--- Reset policies
-DELETE FROM storage.policies WHERE bucket_id = 'service-images';
+-- Drop old policies if they exist
+DO $$ BEGIN
+  IF EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'service_images_read' AND tablename = 'objects') THEN
+    DROP POLICY "service_images_read" ON storage.objects;
+  END IF;
+  IF EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'service_images_upload' AND tablename = 'objects') THEN
+    DROP POLICY "service_images_upload" ON storage.objects;
+  END IF;
+  IF EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'service_images_admin_all' AND tablename = 'objects') THEN
+    DROP POLICY "service_images_admin_all" ON storage.objects;
+  END IF;
+END $$;
 
 -- Anyone can read (public bucket)
 CREATE POLICY "service_images_read"
