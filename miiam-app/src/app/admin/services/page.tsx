@@ -91,6 +91,7 @@ export default function EnhancedServicesDashboard() {
   const [showItemModal, setShowItemModal] = useState(false);
   const [editingItem, setEditingItem] = useState<ServiceItem | null>(null);
   const [itemForm, setItemForm] = useState({ name: "", category_id: "", description: "", price: "", price_min: "", price_max: "", original_price: "", duration: "", image_url: "", included: "", warranty_days: "7", badge: "", rating: "0", reviews: "0", sort_order: "0" });
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   useEffect(() => {
     loadBookings();
@@ -158,6 +159,26 @@ export default function EnhancedServicesDashboard() {
       }
     } catch (err) {
       console.error("Error loading service_items:", err);
+    }
+  }
+
+  async function handleUploadServiceImage(file: File) {
+    setUploadingImage(true);
+    try {
+      const ext = file.name.split(".").pop() || "jpg";
+      const fileName = `services/${Date.now()}_${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const { error } = await supabase.storage.from("service-images").upload(fileName, file, {
+        contentType: file.type,
+        upsert: true,
+      });
+      if (error) throw error;
+      const { data: urlData } = supabase.storage.from("service-images").getPublicUrl(fileName);
+      setItemForm((prev) => ({ ...prev, image_url: urlData.publicUrl }));
+      useToastStore.getState().addToast("Image uploaded!", "success");
+    } catch (err) {
+      useToastStore.getState().addToast("Upload failed: " + (err instanceof Error ? err.message : "Unknown error"), "error");
+    } finally {
+      setUploadingImage(false);
     }
   }
 
@@ -1009,8 +1030,44 @@ export default function EnhancedServicesDashboard() {
                 </div>
               </div>
               <div>
-                <label className="text-xs font-bold text-[var(--color-outline)] mb-1 block">Image URL</label>
-                <input type="text" placeholder="https://..." value={itemForm.image_url} onChange={(e) => setItemForm({ ...itemForm, image_url: e.target.value })} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm" />
+                <label className="text-xs font-bold text-[var(--color-outline)] mb-1 block">Service Image</label>
+                {itemForm.image_url && (
+                  <div className="mb-2 relative rounded-xl overflow-hidden h-32 bg-gray-100">
+                    <img src={itemForm.image_url} alt="Preview" className="w-full h-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => setItemForm((prev) => ({ ...prev, image_url: "" }))}
+                      className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                )}
+                <div className="flex gap-2">
+                  <label className={`flex-1 flex items-center justify-center gap-2 py-2.5 border-2 border-dashed rounded-xl text-sm font-bold cursor-pointer transition-colors ${
+                    uploadingImage ? "border-gray-300 text-gray-400" : "border-[var(--color-border-subtle)] text-[var(--color-outline)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]"
+                  }`}>
+                    <span className="material-symbols-outlined text-sm">upload</span>
+                    {uploadingImage ? "Uploading..." : "Upload Image"}
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      className="hidden"
+                      disabled={uploadingImage}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) handleUploadServiceImage(file);
+                      }}
+                    />
+                  </label>
+                </div>
+                <input
+                  type="text"
+                  placeholder="Or paste image URL"
+                  value={itemForm.image_url}
+                  onChange={(e) => setItemForm({ ...itemForm, image_url: e.target.value })}
+                  className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-2.5 text-sm mt-2"
+                />
               </div>
               <div>
                 <label className="text-xs font-bold text-[var(--color-outline)] mb-1 block">What's Included (comma separated)</label>
