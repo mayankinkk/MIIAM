@@ -90,6 +90,21 @@ export default function VerificationPage() {
     }
   };
 
+  const deleteVendor = async (vendorId: string, shopName: string) => {
+    if (!confirm(`Delete "${shopName}" permanently? This cannot be undone.`)) return;
+
+    try {
+      const { error } = await supabase.from("vendors").delete().eq("id", vendorId);
+      if (error) throw error;
+      setVendors(vendors.filter((v) => v.id !== vendorId));
+      setSelectedVendor(null);
+      useToastStore.getState().addToast(`"${shopName}" deleted`, "success");
+    } catch (error: unknown) {
+      logger.error({ err: error instanceof Error ? error : new Error(String(error)) }, "Error deleting vendor");
+      useToastStore.getState().addToast(`Failed: ${(error as Error).message}`, "error");
+    }
+  };
+
   const filtered = vendors.filter(v => {
     if (filter === "all") return true;
     if (filter === "pending") return v.status === "pending";
@@ -228,6 +243,12 @@ export default function VerificationPage() {
                           className="px-3 py-1 bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] rounded-lg font-bold hover:bg-[var(--color-surface-container-high)]"
                         >
                           View
+                        </button>
+                        <button
+                          onClick={() => deleteVendor(vendor.id, vendor.shop_name)}
+                          className="px-3 py-1 bg-red-50 text-red-600 border border-red-200 rounded-lg font-bold hover:bg-red-100 dark:bg-red-900/20 dark:border-red-800 dark:text-red-400"
+                        >
+                          Delete
                         </button>
                       </div>
                     </td>
@@ -368,6 +389,12 @@ export default function VerificationPage() {
                     Suspend Partner
                   </button>
                 )}
+                <button
+                  onClick={() => deleteVendor(selectedVendor.id, selectedVendor.shop_name)}
+                  className="py-3 px-5 bg-red-50 text-red-600 border border-red-200 rounded-xl font-bold hover:bg-red-100 dark:bg-red-900/20 dark:border-red-800 dark:text-red-400 transition-colors"
+                >
+                  Delete
+                </button>
               </div>
             </div>
           </div>
