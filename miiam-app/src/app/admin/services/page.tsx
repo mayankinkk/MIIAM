@@ -112,7 +112,7 @@ export default function EnhancedServicesDashboard() {
         const bgs = ["bg-pink-50", "bg-blue-50", "bg-cyan-50", "bg-amber-50", "bg-green-50", "bg-purple-50", "bg-red-50", "bg-indigo-50", "bg-teal-50"];
         setServiceOptions(data.map((c: ServiceCategoryRow, i: number) => ({
           id: c.slug || c.name.toLowerCase().replace(/\s+/g, "_"),
-          dbId: c.name,
+          dbId: c.id,
           label: c.name,
           icon: c.icon || "home_repair_service",
           color: colors[i % colors.length],
