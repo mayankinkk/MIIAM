@@ -94,6 +94,12 @@ export default function VerificationPage() {
     if (!confirm(`Delete "${shopName}" permanently? This cannot be undone.`)) return;
 
     try {
+      // Delete related records that don't have ON DELETE CASCADE
+      await supabase.from("reviews").delete().eq("vendor_id", vendorId);
+      await supabase.from("recurring_schedules").delete().eq("vendor_id", vendorId);
+      await supabase.from("service_bookings").delete().eq("vendor_id", vendorId);
+      await supabase.from("orders").delete().eq("vendor_id", vendorId);
+
       const { error } = await supabase.from("vendors").delete().eq("id", vendorId);
       if (error) throw error;
       setVendors(vendors.filter((v) => v.id !== vendorId));
