@@ -764,6 +764,7 @@ export default function EnhancedServicesDashboard() {
                                 reviews: String(item.reviews),
                                 sort_order: String(item.sort_order),
                               });
+                              setShowItemModal(true);
                             }}
                             className="text-[10px] font-bold text-[var(--color-primary)] hover:underline px-1"
                           >
