@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { getVendorForUser } from "@/lib/vendor";
+import InstallPrompt from "@/components/InstallPrompt";
 
 const navLinks = [
   { href: "/partner/dashboard", label: "Dashboard", icon: "dashboard" },
@@ -60,6 +61,14 @@ export default function PartnerLayout({
 
   return (
     <div className="min-h-screen bg-[var(--color-surface-subtle)] flex">
+      <head>
+        <link rel="manifest" href="/partner-manifest.json" />
+        <meta name="theme-color" content="#ba001c" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="MIIAM Partner" />
+        <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+      </head>
       {/* Sidebar */}
       <aside className="w-64 bg-[var(--color-surface-container-lowest)] border-r border-[var(--color-border-subtle)] fixed h-full z-20 flex-col hidden md:flex">
         <div className="p-6 border-b border-[var(--color-border-subtle)] flex items-center justify-center">
@@ -165,6 +174,7 @@ export default function PartnerLayout({
 
         {children}
       </main>
+      <InstallPrompt />
     </div>
   );
 }

@@ -1,0 +1,72 @@
+{
+  "name": "MIIAM Partner — Vendor Dashboard",
+  "short_name": "MIIAM Partner",
+  "description": "Manage your store, orders, menu, and analytics on the go.",
+  "start_url": "/partner/dashboard",
+  "display": "standalone",
+  "background_color": "#fff4f4",
+  "theme_color": "#ba001c",
+  "orientation": "portrait",
+  "scope": "/partner",
+  "prefer_related_applications": false,
+  "lang": "en-IN",
+  "dir": "ltr",
+  "id": "/partner",
+  "categories": ["business", "productivity"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Home",
+      "description": "View your store dashboard",
+      "url": "/partner/dashboard",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Orders",
+      "short_name": "Orders",
+      "description": "Manage incoming orders",
+      "url": "/partner/orders",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Live POS",
+      "short_name": "POS",
+      "description": "Open live point of sale",
+      "url": "/partner/pos",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Menu",
+      "short_name": "Menu",
+      "description": "Manage your menu and inventory",
+      "url": "/partner/menu",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

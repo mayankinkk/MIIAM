@@ -6,7 +6,9 @@ const SHELL_CACHE = 'miiam-shell-v3';
 const STATIC_ASSETS = [
   '/',
   '/manifest.json',
+  '/partner-manifest.json',
   '/offline.html',
+  '/partner-offline.html',
   '/icons/icon-192.svg',
   '/icons/icon-512.svg',
 ];
@@ -23,7 +25,19 @@ const APP_SHELL_PAGES = [
   '/app/wallet',
   '/app/home',
   '/app/settings',
+  '/partner/dashboard',
+  '/partner/orders',
+  '/partner/menu',
+  '/partner/pos',
+  '/partner/kot',
+  '/partner/analytics',
+  '/partner/reviews',
+  '/partner/chat',
+  '/partner/wallet',
+  '/partner/promotions',
+  '/partner/profile',
   '/offline.html',
+  '/partner-offline.html',
 ];
 
 const API_CACHE_DURATION = 5 * 60 * 1000;
@@ -151,7 +165,9 @@ async function networkFirstWithCachedFallback(request, shellCacheName, dynamicCa
   } catch (fetchErr) {
     const cached = await caches.match(request);
     if (cached) return cached;
-    const shellCached = await caches.match('/offline.html');
+    const url = new URL(request.url);
+    const offlinePage = url.pathname.startsWith('/partner') ? '/partner-offline.html' : '/offline.html';
+    const shellCached = await caches.match(offlinePage);
     if (shellCached) return shellCached;
     return new Response('Offline', { status: 503 });
   }
