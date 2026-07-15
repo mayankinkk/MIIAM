@@ -1,21 +1,55 @@
 "use client";
 
-import { useState, Suspense, useCallback, useMemo } from "react";
+import { useState, useEffect, Suspense, useCallback, useMemo } from "react";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import { useRouter, useParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
 import { CardSkeleton } from "@/components/Skeleton";
-import { getServiceById, SERVICE_TIME_SLOTS } from "@/lib/data/services";
+import { SERVICE_TIME_SLOTS, type ServiceData } from "@/lib/data/services";
 
 function ServiceDetailContent() {
   const { t } = useTranslation();
   const router = useRouter();
   const params = useParams();
-  const serviceId = (params.id as string) || "s1";
-  const service = getServiceById(serviceId);
+  const serviceId = (params.id as string) || "";
   const supabase = useMemo(() => createClient(), []);
+  const [service, setService] = useState<ServiceData | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadService() {
+      if (!serviceId) { setLoading(false); return; }
+      const { data, error } = await supabase
+        .from("service_items")
+        .select("*, service_categories!inner(name)")
+        .eq("id", serviceId)
+        .single();
+      if (error || !data) { setLoading(false); return; }
+      const cat = data.service_categories as { name: string } | null;
+      const catName = cat?.name?.toLowerCase().replace(/\s+/g, "_").replace(/&/g, "") ?? "";
+      setService({
+        id: data.id,
+        name: data.name,
+        category: catName,
+        rating: Number(data.rating) || 0,
+        reviews: Number(data.reviews) || 0,
+        price: Number(data.price),
+        priceMin: data.price_min != null ? Number(data.price_min) : undefined,
+        priceMax: data.price_max != null ? Number(data.price_max) : undefined,
+        originalPrice: data.original_price != null ? Number(data.original_price) : undefined,
+        duration: data.duration || "",
+        image: data.image_url || "",
+        included: (data.included as string[]) || [],
+        warranty_days: Number(data.warranty_days) || 7,
+        badge: data.badge || undefined,
+        description: data.description || "",
+      });
+      setLoading(false);
+    }
+    loadService();
+  }, [serviceId, supabase]);
 
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
@@ -82,6 +116,15 @@ function ServiceDetailContent() {
       }),
     [],
   );
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-surface flex items-center justify-center px-4">
+        <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   // Fallback if service not found
   if (!service) {

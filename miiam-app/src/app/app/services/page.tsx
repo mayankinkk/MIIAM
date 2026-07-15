@@ -338,27 +338,81 @@ function ServicesContent() {
   const userPincode = locationStore.pincode;
   const userCity = locationStore.city;
   const { addToast } = useToastStore();
+  const supabase = useMemo(() => createClient(), []);
+  const [dbCategories, setDbCategories] = useState<{ id: string; name: string; slug: string; icon: string; color: string; bg: string }[]>([]);
+  const [loadingServices, setLoadingServices] = useState(true);
+  const [dbServices, setDbServices] = useState<ServiceData[]>([]);
 
   const rawCategory = searchParams.get("category") ?? "all";
 
-  const categoryIdMap: Record<string, ServiceCategory> = useMemo(
-    () => ({
-      ac: "ac",
-      beauty: "beauty",
-      cleaning: "cleaning",
-      plumbing: "plumbing",
-      electrical: "electrical",
-      pest: "pest",
-      car: "car",
-      appliance: "appliance",
-    }),
-    [],
-  );
+  const categoryIdMap: Record<string, string> = useMemo(() => {
+    const map: Record<string, string> = {};
+    dbCategories.forEach((cat) => {
+      map[cat.slug] = cat.slug;
+      map[cat.name] = cat.slug;
+    });
+    return map;
+  }, [dbCategories]);
 
-  const mappedCategory = categoryIdMap[rawCategory];
+  useEffect(() => {
+    async function loadServices() {
+      setLoadingServices(true);
+      const { data: cats } = await supabase.from("service_categories").select("id, name, slug, icon").eq("is_active", true).order("display_order");
+      if (cats) {
+        const colors = ["text-blue-500", "text-green-500", "text-cyan-500", "text-yellow-500", "text-pink-500", "text-red-500", "text-purple-500", "text-orange-500", "text-indigo-500", "text-teal-500"];
+        const bgs = ["bg-blue-100", "bg-green-100", "bg-cyan-100", "bg-yellow-100", "bg-pink-100", "bg-red-100", "bg-purple-100", "bg-orange-100", "bg-indigo-100", "bg-teal-100"];
+        const mapped = cats.map((c: { id: string; name: string; slug: string | null; icon: string }, i: number) => ({
+          id: c.id,
+          name: c.name,
+          slug: c.slug || c.name.toLowerCase().replace(/\s+/g, "_").replace(/&/g, ""),
+          icon: c.icon || "home_repair_service",
+          color: colors[i % colors.length],
+          bg: bgs[i % bgs.length],
+        }));
+        setDbCategories(mapped);
+        const catIds = cats.map((c: { id: string }) => c.id);
+        if (catIds.length > 0) {
+          const { data: items } = await supabase
+            .from("service_items")
+            .select("*, service_categories!inner(name)")
+            .in("category_id", catIds)
+            .eq("is_active", true)
+            .order("sort_order");
+          if (items) {
+            const mappedItems: ServiceData[] = items.map((item: Record<string, unknown>) => {
+              const cat = item.service_categories as { name: string } | null;
+              const catObj = mapped.find((c: { name: string }) => c.name === cat?.name);
+              return {
+                id: item.id as string,
+                name: item.name as string,
+                category: catObj?.slug ?? "",
+                rating: Number(item.rating) || 0,
+                reviews: Number(item.reviews) || 0,
+                price: Number(item.price),
+                priceMin: item.price_min != null ? Number(item.price_min) : undefined,
+                priceMax: item.price_max != null ? Number(item.price_max) : undefined,
+                originalPrice: item.original_price != null ? Number(item.original_price) : undefined,
+                duration: (item.duration as string) || "",
+                image: (item.image_url as string) || "",
+                included: (item.included as string[]) || [],
+                warranty_days: Number(item.warranty_days) || 7,
+                badge: (item.badge as string) || undefined,
+                description: (item.description as string) || "",
+              };
+            });
+            setDbServices(mappedItems);
+          }
+        }
+      }
+      setLoadingServices(false);
+    }
+    loadServices();
+  }, [supabase]);
 
-  const [selectedCategory, setSelectedCategory] = useState<ServiceCategory | "all">(
-    (categoryIdMap[rawCategory] ?? "all") as ServiceCategory | "all",
+  const mappedCategory = categoryIdMap[rawCategory] || null;
+
+  const [selectedCategory, setSelectedCategory] = useState<string>(
+    categoryIdMap[rawCategory] ?? "all",
   );
   const [bookingService, setBookingService] = useState<ServiceData | null>(null);
 
@@ -368,13 +422,16 @@ function ServicesContent() {
 
   // Check service availability after hooks
   if (mappedCategory) {
-    const setting = getSetting(mappedCategory);
+    const setting = getSetting(mappedCategory as ServiceCategory);
     if (setting && !setting.isEnabled) {
       return <ServiceUnavailable serviceName={setting.name} message={setting.message} icon={setting.icon} />;
     }
   }
 
-  const filteredServices = selectedCategory === "all" ? services : services.filter((s) => s.category === selectedCategory);
+  const filteredServices = useMemo(() => {
+    if (selectedCategory === "all") return dbServices;
+    return dbServices.filter((s) => s.category === selectedCategory);
+  }, [selectedCategory, dbServices]);
 
   return (
     <div className="min-h-screen bg-background text-on-background pb-24">
@@ -446,17 +503,17 @@ function ServicesContent() {
             >
               {t.services.all}
             </button>
-            {SERVICE_CATEGORIES.map((cat, i) => (
+            {dbCategories.map((cat, i) => (
               <button
                 key={cat.id}
                 role="tab"
-                aria-selected={selectedCategory === cat.id}
+                aria-selected={selectedCategory === cat.slug}
                 onClick={() => {
-                  setSelectedCategory(cat.id as ServiceCategory);
+                  setSelectedCategory(cat.slug as ServiceCategory);
                   if (navigator.vibrate) navigator.vibrate(10);
                 }}
                 className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap flex items-center gap-1 active:scale-95 transition-all animate-category-slide ${
-                  selectedCategory === cat.id
+                  selectedCategory === cat.slug
                     ? "bg-primary text-white"
                     : "bg-surface-container-lowest text-on-surface-variant border border-outline-variant/20 hover:bg-surface-container-low"
                 }`}
@@ -471,7 +528,12 @@ function ServicesContent() {
 
         {/* Services List */}
         <main className="px-4 space-y-5 pb-10">
-          {filteredServices.length === 0 ? (
+          {loadingServices ? (
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin mb-3" />
+              <p className="text-sm text-on-surface-variant">Loading services...</p>
+            </div>
+          ) : filteredServices.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center">
               <span className="material-symbols-outlined text-outline text-5xl mb-3">search_off</span>
               <p className="font-bold text-on-surface text-lg mb-1">{t.services.noServices || "No services found"}</p>

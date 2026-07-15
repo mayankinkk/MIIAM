@@ -50,6 +50,27 @@ interface ServiceOption {
   bg: string;
 }
 
+interface ServiceItem {
+  id: string;
+  name: string;
+  category_id: string;
+  category_name?: string;
+  description: string;
+  price: number;
+  price_min: number | null;
+  price_max: number | null;
+  original_price: number | null;
+  duration: string;
+  image_url: string;
+  included: string[];
+  warranty_days: number;
+  badge: string | null;
+  rating: number;
+  reviews: number;
+  sort_order: number;
+  is_active: boolean;
+}
+
 export default function EnhancedServicesDashboard() {
   const supabase = useMemo(() => createClient(), []);
   const [bookings, setBookings] = useState<ServiceBooking[]>([]);
@@ -66,12 +87,17 @@ export default function EnhancedServicesDashboard() {
   const [serviceOptions, setServiceOptions] = useState<ServiceOption[]>(defaultServiceOptions.map(s => ({ ...s, dbId: s.id })));
   const [editingCategory, setEditingCategory] = useState<ServiceCategoryRow | null>(null);
   const [editCategoryForm, setEditCategoryForm] = useState({ name: "", icon: "", description: "" });
+  const [serviceItems, setServiceItems] = useState<ServiceItem[]>([]);
+  const [showItemModal, setShowItemModal] = useState(false);
+  const [editingItem, setEditingItem] = useState<ServiceItem | null>(null);
+  const [itemForm, setItemForm] = useState({ name: "", category_id: "", description: "", price: "", price_min: "", price_max: "", original_price: "", duration: "", image_url: "", included: "", warranty_days: "7", badge: "", rating: "0", reviews: "0", sort_order: "0" });
 
   useEffect(() => {
     loadBookings();
     loadProviders();
     loadPricing();
     loadCategories();
+    loadServiceItems();
   }, [statusFilter, serviceFilter, supabase]);
 
   async function loadCategories() {
@@ -95,6 +121,43 @@ export default function EnhancedServicesDashboard() {
       }
     } catch (err) {
       console.error("Error loading service_categories:", err);
+    }
+  }
+
+  async function loadServiceItems() {
+    try {
+      const { data, error } = await supabase
+        .from("service_items")
+        .select("*, service_categories!inner(name)")
+        .order("sort_order");
+      if (error) {
+        console.error("Failed to load service_items:", error.message);
+        return;
+      }
+      if (data) {
+        setServiceItems(data.map((item: Record<string, unknown>) => ({
+          id: item.id as string,
+          name: item.name as string,
+          category_id: item.category_id as string,
+          category_name: (item.service_categories as { name: string } | null)?.name,
+          description: (item.description as string) || "",
+          price: Number(item.price) || 0,
+          price_min: item.price_min != null ? Number(item.price_min) : null,
+          price_max: item.price_max != null ? Number(item.price_max) : null,
+          original_price: item.original_price != null ? Number(item.original_price) : null,
+          duration: (item.duration as string) || "",
+          image_url: (item.image_url as string) || "",
+          included: (item.included as string[]) || [],
+          warranty_days: Number(item.warranty_days) || 7,
+          badge: (item.badge as string) || null,
+          rating: Number(item.rating) || 0,
+          reviews: Number(item.reviews) || 0,
+          sort_order: Number(item.sort_order) || 0,
+          is_active: item.is_active as boolean,
+        })));
+      }
+    } catch (err) {
+      console.error("Error loading service_items:", err);
     }
   }
 
@@ -636,6 +699,83 @@ export default function EnhancedServicesDashboard() {
             </button>
           </div>
 
+          {/* Service Items Management */}
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-6 shadow-sm">
+            <h2 className="text-lg font-black text-[var(--color-on-surface)] mb-6">Service Items</h2>
+            <p className="text-xs text-[var(--color-outline)] mb-4">Manage individual services shown to customers</p>
+            <div className="space-y-2 max-h-[500px] overflow-y-auto">
+              {serviceOptions.map((cat) => {
+                const items = serviceItems.filter((item) => item.category_name === cat.label);
+                if (items.length === 0) return null;
+                return (
+                  <div key={cat.id} className="mb-3">
+                    <p className="text-xs font-bold text-[var(--color-outline)] mb-2 flex items-center gap-1">
+                      <span className={`material-symbols-outlined text-sm ${cat.color}`}>{cat.icon}</span>
+                      {cat.label}
+                    </p>
+                    {items.map((item) => (
+                      <div key={item.id} className="flex items-center justify-between p-2 pl-4 bg-[var(--color-surface-subtle)] rounded-lg mb-1">
+                        <div className="flex-1 min-w-0">
+                          <span className="font-medium text-sm text-[var(--color-on-surface)] block truncate">{item.name}</span>
+                          <span className="text-[10px] text-[var(--color-outline)]">₹{item.price} · {item.duration}</span>
+                        </div>
+                        <div className="flex items-center gap-1 ml-2">
+                          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${item.is_active ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+                            {item.is_active ? "Active" : "Off"}
+                          </span>
+                          <button
+                            onClick={() => {
+                              setEditingItem(item);
+                              setItemForm({
+                                name: item.name,
+                                category_id: item.category_id,
+                                description: item.description,
+                                price: String(item.price),
+                                price_min: item.price_min != null ? String(item.price_min) : "",
+                                price_max: item.price_max != null ? String(item.price_max) : "",
+                                original_price: item.original_price != null ? String(item.original_price) : "",
+                                duration: item.duration,
+                                image_url: item.image_url,
+                                included: item.included.join(", "),
+                                warranty_days: String(item.warranty_days),
+                                badge: item.badge || "",
+                                rating: String(item.rating),
+                                reviews: String(item.reviews),
+                                sort_order: String(item.sort_order),
+                              });
+                            }}
+                            className="text-[10px] font-bold text-[var(--color-primary)] hover:underline px-1"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={async () => {
+                              await supabase.from("service_items").update({ is_active: !item.is_active }).eq("id", item.id);
+                              loadServiceItems();
+                            }}
+                            className={`text-[10px] font-bold px-1 ${item.is_active ? "text-red-500" : "text-green-500"} hover:underline`}
+                          >
+                            {item.is_active ? "Hide" : "Show"}
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })}
+            </div>
+            <button
+              onClick={() => {
+                setEditingItem(null);
+                setItemForm({ name: "", category_id: serviceOptions[0]?.dbId ? (serviceOptions[0].dbId) : "", description: "", price: "", price_min: "", price_max: "", original_price: "", duration: "", image_url: "", included: "", warranty_days: "7", badge: "", rating: "0", reviews: "0", sort_order: "0" });
+                setShowItemModal(true);
+              }}
+              className="w-full mt-4 py-3 border-2 border-dashed border-[var(--color-border-subtle)] rounded-xl text-[var(--color-outline)] font-bold text-sm hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-colors"
+            >
+              + Add New Service Item
+            </button>
+          </div>
+
           <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-6 shadow-sm">
             <h2 className="text-lg font-black text-[var(--color-on-surface)] mb-6">Pricing & Commission</h2>
             <div className="space-y-4">
@@ -817,6 +957,146 @@ export default function EnhancedServicesDashboard() {
               >
                 <span className="material-symbols-outlined text-sm">delete</span>
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Service Item Modal */}
+      {showItemModal && (
+        <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4" role="dialog" aria-modal="true" onKeyDown={(e) => e.key === "Escape" && setShowItemModal(false)}>
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-lg p-6 max-h-[85vh] overflow-y-auto">
+            <h3 className="font-bold text-lg mb-4">{editingItem ? "Edit Service Item" : "Add Service Item"}</h3>
+            <div className="space-y-3">
+              <div>
+                <label className="text-xs font-bold text-[var(--color-outline)] mb-1 block">Category *</label>
+                <select value={itemForm.category_id} onChange={(e) => setItemForm({ ...itemForm, category_id: e.target.value })} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm">
+                  <option value="">Select category</option>
+                  {serviceOptions.map((s) => (
+                    <option key={s.id} value={s.dbId}>{s.label}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-bold text-[var(--color-outline)] mb-1 block">Service Name *</label>
+                <input type="text" placeholder="e.g., AC Deep Cleaning" value={itemForm.name} onChange={(e) => setItemForm({ ...itemForm, name: e.target.value })} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm" />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-[var(--color-outline)] mb-1 block">Description</label>
+                <textarea placeholder="What this service includes" value={itemForm.description} onChange={(e) => setItemForm({ ...itemForm, description: e.target.value })} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm h-20 resize-none" />
+              </div>
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <label className="text-xs font-bold text-[var(--color-outline)] mb-1 block">Price (₹) *</label>
+                  <input type="number" min={0} placeholder="599" value={itemForm.price} onChange={(e) => setItemForm({ ...itemForm, price: e.target.value })} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm" />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-[var(--color-outline)] mb-1 block">Min Price</label>
+                  <input type="number" min={0} placeholder="499" value={itemForm.price_min} onChange={(e) => setItemForm({ ...itemForm, price_min: e.target.value })} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm" />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-[var(--color-outline)] mb-1 block">Max Price</label>
+                  <input type="number" min={0} placeholder="899" value={itemForm.price_max} onChange={(e) => setItemForm({ ...itemForm, price_max: e.target.value })} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm" />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-bold text-[var(--color-outline)] mb-1 block">Original Price</label>
+                  <input type="number" min={0} placeholder="799" value={itemForm.original_price} onChange={(e) => setItemForm({ ...itemForm, original_price: e.target.value })} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm" />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-[var(--color-outline)] mb-1 block">Duration</label>
+                  <input type="text" placeholder="90 mins" value={itemForm.duration} onChange={(e) => setItemForm({ ...itemForm, duration: e.target.value })} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm" />
+                </div>
+              </div>
+              <div>
+                <label className="text-xs font-bold text-[var(--color-outline)] mb-1 block">Image URL</label>
+                <input type="text" placeholder="https://..." value={itemForm.image_url} onChange={(e) => setItemForm({ ...itemForm, image_url: e.target.value })} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm" />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-[var(--color-outline)] mb-1 block">What's Included (comma separated)</label>
+                <input type="text" placeholder="Filter cleaning, Gas check, Coil cleaning" value={itemForm.included} onChange={(e) => setItemForm({ ...itemForm, included: e.target.value })} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm" />
+              </div>
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <label className="text-xs font-bold text-[var(--color-outline)] mb-1 block">Warranty (days)</label>
+                  <input type="number" min={0} value={itemForm.warranty_days} onChange={(e) => setItemForm({ ...itemForm, warranty_days: e.target.value })} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm" />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-[var(--color-outline)] mb-1 block">Badge</label>
+                  <select value={itemForm.badge} onChange={(e) => setItemForm({ ...itemForm, badge: e.target.value })} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm">
+                    <option value="">None</option>
+                    <option value="mostPopular">Most Popular</option>
+                    <option value="bestSeller">Best Seller</option>
+                    <option value="popular">Popular</option>
+                    <option value="premium">Premium</option>
+                    <option value="professional">Professional</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-[var(--color-outline)] mb-1 block">Sort Order</label>
+                  <input type="number" min={0} value={itemForm.sort_order || 0} onChange={(e) => setItemForm({ ...itemForm, sort_order: e.target.value })} className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm" />
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-3 mt-6">
+              <button onClick={() => { setShowItemModal(false); setEditingItem(null); }} className="flex-1 py-3 border border-[var(--color-border-subtle)] rounded-xl font-bold text-sm">Cancel</button>
+              <button
+                onClick={async () => {
+                  if (!itemForm.name || !itemForm.category_id || !itemForm.price) {
+                    useToastStore.getState().addToast("Name, category, and price are required", "error");
+                    return;
+                  }
+                  const payload = {
+                    name: itemForm.name,
+                    category_id: itemForm.category_id,
+                    description: itemForm.description,
+                    price: Number(itemForm.price),
+                    price_min: itemForm.price_min ? Number(itemForm.price_min) : null,
+                    price_max: itemForm.price_max ? Number(itemForm.price_max) : null,
+                    original_price: itemForm.original_price ? Number(itemForm.original_price) : null,
+                    duration: itemForm.duration,
+                    image_url: itemForm.image_url,
+                    included: itemForm.included ? itemForm.included.split(",").map((s) => s.trim()).filter(Boolean) : [],
+                    warranty_days: Number(itemForm.warranty_days) || 7,
+                    badge: itemForm.badge || null,
+                    rating: Number(itemForm.rating) || 0,
+                    reviews: Number(itemForm.reviews) || 0,
+                    sort_order: serviceItems.length + 1,
+                    is_active: true,
+                  };
+                  if (editingItem) {
+                    const { error } = await supabase.from("service_items").update(payload).eq("id", editingItem.id);
+                    if (error) { useToastStore.getState().addToast("Error: " + error.message, "error"); return; }
+                    useToastStore.getState().addToast("Service item updated!", "success");
+                  } else {
+                    const { error } = await supabase.from("service_items").insert(payload);
+                    if (error) { useToastStore.getState().addToast("Error: " + error.message, "error"); return; }
+                    useToastStore.getState().addToast("Service item created!", "success");
+                  }
+                  setShowItemModal(false);
+                  setEditingItem(null);
+                  loadServiceItems();
+                }}
+                className="flex-1 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm"
+              >
+                {editingItem ? "Save Changes" : "Create"}
+              </button>
+              {editingItem && (
+                <button
+                  onClick={async () => {
+                    if (!confirm(`Delete "${editingItem.name}"? This cannot be undone.`)) return;
+                    const { error } = await supabase.from("service_items").delete().eq("id", editingItem.id);
+                    if (error) { useToastStore.getState().addToast("Error: " + error.message, "error"); return; }
+                    useToastStore.getState().addToast("Service item deleted!", "success");
+                    setShowItemModal(false);
+                    setEditingItem(null);
+                    loadServiceItems();
+                  }}
+                  className="px-4 py-3 bg-red-500 text-white rounded-xl font-bold text-sm hover:bg-red-600"
+                >
+                  <span className="material-symbols-outlined text-sm">delete</span>
+                </button>
+              )}
             </div>
           </div>
         </div>
