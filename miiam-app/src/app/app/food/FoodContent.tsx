@@ -219,12 +219,14 @@ function SortDropdown({ sort, setSort }: { sort: SortOption; setSort: (s: SortOp
         {options.find(o => o.value === sort)?.label}
       </button>
       {open && (
-        <div
-          id={listboxId}
-          role="listbox"
-          aria-label="Sort options"
-          className="absolute top-full right-0 mt-2 bg-surface-container-lowest rounded-xl shadow-lg border border-outline-variant z-20 min-w-[180px] animate-pop-in"
-        >
+        <>
+          <div className="fixed inset-0 z-10" onClick={() => { setOpen(false); setActiveIndex(-1); }} />
+          <div
+            id={listboxId}
+            role="listbox"
+            aria-label="Sort options"
+            className="absolute top-full left-0 mt-2 bg-surface-container-lowest rounded-xl shadow-lg border border-outline-variant z-20 min-w-[180px] animate-pop-in"
+          >
           {options.map((opt, i) => (
             <button
               key={opt.value}
@@ -237,6 +239,7 @@ function SortDropdown({ sort, setSort }: { sort: SortOption; setSort: (s: SortOp
             </button>
           ))}
         </div>
+        </>
       )}
     </div>
   );
@@ -254,15 +257,18 @@ function PriceRangeFilter({ onApply }: { onApply: (min: number, max: number) => 
         ₹{min}-{max}
       </button>
       {open && (
-        <div className="absolute top-full right-0 mt-2 bg-surface-container-lowest rounded-xl shadow-lg border border-outline-variant z-20 p-4 min-w-[240px] animate-pop-in">
-          <p className="text-xs font-bold text-on-surface-variant mb-2">{t.food.priceRange}</p>
-          <div className="flex gap-2 items-center">
-            <input type="number" value={min} onChange={(e) => setMin(Number(e.target.value))} className="w-full px-3 py-2 border rounded-lg text-sm" placeholder={t.food.min} />
-            <span className="text-outline">-</span>
-            <input type="number" value={max} onChange={(e) => setMax(Number(e.target.value))} className="w-full px-3 py-2 border rounded-lg text-sm" placeholder={t.food.max} />
+        <>
+          <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
+          <div className="absolute top-full left-0 mt-2 bg-surface-container-lowest rounded-xl shadow-lg border border-outline-variant z-20 p-4 w-72 animate-pop-in">
+            <p className="text-xs font-bold text-on-surface-variant mb-2">{t.food.priceRange}</p>
+            <div className="flex gap-2 items-center">
+              <input type="number" value={min} onChange={(e) => setMin(Number(e.target.value))} className="w-full px-3 py-2 border rounded-lg text-sm" placeholder={t.food.min} />
+              <span className="text-outline">-</span>
+              <input type="number" value={max} onChange={(e) => setMax(Number(e.target.value))} className="w-full px-3 py-2 border rounded-lg text-sm" placeholder={t.food.max} />
+            </div>
+            <button onClick={() => { onApply(min, max); setOpen(false); if (navigator.vibrate) navigator.vibrate(15); }} className="w-full mt-3 py-2 bg-primary text-white text-sm font-bold rounded-lg active:scale-95 transition-transform">{t.food.apply}</button>
           </div>
-          <button onClick={() => { onApply(min, max); setOpen(false); if (navigator.vibrate) navigator.vibrate(15); }} className="w-full mt-3 py-2 bg-primary text-white text-sm font-bold rounded-lg active:scale-95 transition-transform">{t.food.apply}</button>
-        </div>
+        </>
       )}
     </div>
   );

@@ -25,17 +25,6 @@ const APP_SHELL_PAGES = [
   '/app/wallet',
   '/app/home',
   '/app/settings',
-  '/partner/dashboard',
-  '/partner/orders',
-  '/partner/menu',
-  '/partner/pos',
-  '/partner/kot',
-  '/partner/analytics',
-  '/partner/reviews',
-  '/partner/chat',
-  '/partner/wallet',
-  '/partner/promotions',
-  '/partner/profile',
   '/offline.html',
   '/partner-offline.html',
 ];
@@ -45,8 +34,12 @@ const API_CACHE_DURATION = 5 * 60 * 1000;
 self.addEventListener('install', (event) => {
   event.waitUntil(
     Promise.all([
-      caches.open(STATIC_CACHE).then((cache) => cache.addAll(STATIC_ASSETS)),
-      caches.open(SHELL_CACHE).then((cache) => cache.addAll(APP_SHELL_PAGES)),
+      caches.open(STATIC_CACHE).then((cache) =>
+        Promise.all(STATIC_ASSETS.map((url) => cache.add(url).catch(() => {})))
+      ),
+      caches.open(SHELL_CACHE).then((cache) =>
+        Promise.all(APP_SHELL_PAGES.map((url) => cache.add(url).catch(() => {})))
+      ),
     ])
   );
   self.skipWaiting();
