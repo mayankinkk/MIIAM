@@ -187,11 +187,14 @@ const sortedItems = [...filteredItems].sort((a, b) => ((b.is_featured || b.featu
   return (
     <div className="min-h-screen bg-[#f8f8f8] pb-24">
       <div className="relative h-56 overflow-hidden">
-        {vendor.banner_url || vendor.cover_image_url || vendor.image_url ? (
-        <BlurImage src={vendor.banner_url || vendor.cover_image_url || vendor.image_url!} alt={vendor.shop_name} fill className="w-full h-full" sizes="100vw" />
-        ) : (
-          <div className="w-full h-full bg-gradient-to-b from-slate-300 to-slate-100" />
-        )}
+        <BlurImage
+          src={vendor.banner_url || vendor.cover_image_url || vendor.image_url || "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80"}
+          alt={vendor.shop_name}
+          fill
+          className="w-full h-full"
+          sizes="100vw"
+          fallbackSrc="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80"
+        />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
         <button onClick={() => router.back()} aria-label="Go back" className="absolute top-4 left-4 bg-[var(--color-surface-container-lowest)]/90 p-2 rounded-full shadow-md">
           <span className="material-symbols-outlined">arrow_back</span>
@@ -349,13 +352,9 @@ const sortedItems = [...filteredItems].sort((a, b) => ((b.is_featured || b.featu
                   {(() => {
                     const imgs = item.images?.filter(Boolean) || (item.image_url ? [item.image_url] : []);
                     const idx = imageIndex[item.id] || 0;
-                    const src = imgs[idx] || item.image_url;
-                    return src ? (
-                      <BlurImage key={idx} src={src} alt={item.name} fill className="w-full h-full" sizes="(max-width: 768px) 50vw, 25vw" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <span className="material-symbols-outlined text-[var(--color-outline-variant)]/60">restaurant</span>
-                      </div>
+                    const src = imgs[idx] || item.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80";
+                    return (
+                      <BlurImage key={idx} src={src} alt={item.name} fill className="w-full h-full" sizes="(max-width: 768px) 50vw, 25vw" fallbackSrc="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80" />
                     );
                   })()}
                   {(() => {

@@ -210,7 +210,7 @@ export default function HomePage() {
           if (active) {
             let vendorName = "Restaurant";
             if (active.vendor_id) {
-              const { data: v } = await supabase.from("vendors").select("shop_name").eq("id", active.vendor_id).single();
+              const { data: v } = await supabase.from("vendors").select("shop_name").eq("id", active.vendor_id).maybeSingle();
               if (v?.shop_name) vendorName = v.shop_name;
             }
             setActiveOrder({
