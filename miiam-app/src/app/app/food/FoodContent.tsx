@@ -658,30 +658,46 @@ export default function FoodPageContent() {
 
       <PromoBannerCarousel />
 
-      <div className="bg-surface-container-lowest px-6 py-4 mt-4">
-        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-          <button onClick={() => { setSelectedCategory("all"); if (navigator.vibrate) navigator.vibrate(10); }} className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap ${selectedCategory === "all" ? "bg-primary text-white" : "bg-surface-container text-on-surface-variant"} active:scale-95 transition-all`}>
-            🍽 {t.food.all}
+      {/* Circular Category Icons - GKB Style */}
+      <div className="px-4 py-4">
+        <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+          <button
+            onClick={() => { setSelectedCategory("all"); if (navigator.vibrate) navigator.vibrate(10); }}
+            className="flex flex-col items-center gap-1.5 flex-shrink-0"
+          >
+            <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-all ${selectedCategory === "all" ? "bg-primary text-white shadow-lg shadow-primary/30" : "bg-surface-container-high text-on-surface-variant"}`}>
+              <span className="text-xl">🍽</span>
+            </div>
+            <span className={`text-[10px] font-bold ${selectedCategory === "all" ? "text-primary" : "text-on-surface-variant"}`}>{t.food.all}</span>
           </button>
           {foodCategories.map((cat) => (
-            <button key={cat.id} onClick={() => { setSelectedCategory(cat.id); if (navigator.vibrate) navigator.vibrate(10); }} className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap flex items-center gap-2 ${selectedCategory === cat.id ? "bg-primary text-white" : "bg-surface-container text-on-surface-variant"} active:scale-95 transition-all`}>
-              <span>{cat.icon}</span> {cat.name}
+            <button
+              key={cat.id}
+              onClick={() => { setSelectedCategory(cat.id); if (navigator.vibrate) navigator.vibrate(10); }}
+              className="flex flex-col items-center gap-1.5 flex-shrink-0"
+            >
+              <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-all ${selectedCategory === cat.id ? "bg-primary text-white shadow-lg shadow-primary/30" : "bg-surface-container-high text-on-surface-variant"}`}>
+                <span className="text-xl">{cat.icon}</span>
+              </div>
+              <span className={`text-[10px] font-bold ${selectedCategory === cat.id ? "text-primary" : "text-on-surface-variant"}`}>{cat.name}</span>
             </button>
           ))}
         </div>
-        <div className="flex flex-wrap gap-2 mt-3">
-          <button onClick={() => setVegFilter("all")} className={`px-4 py-2.5 rounded-full text-xs font-bold ${vegFilter === "all" ? "bg-inverse-surface text-white" : "bg-surface-container text-on-surface-variant"}`}>
-            {t.food.all}
-          </button>
-          <button onClick={() => setVegFilter("veg")} className={`px-4 py-2.5 rounded-full text-xs font-bold flex items-center gap-1.5 ${vegFilter === "veg" ? "bg-green-600 text-white" : "bg-green-100 text-green-700"}`}>
-            <span className="w-3 h-3 border-2 border-green-600 rounded-sm flex items-center justify-center"><span className="w-1.5 h-1.5 bg-green-600 rounded-full"></span></span> {t.food.veg}
-          </button>
-          <button onClick={() => setVegFilter("non_veg")} className={`px-4 py-2.5 rounded-full text-xs font-bold flex items-center gap-1.5 ${vegFilter === "non_veg" ? "bg-red-600 text-white" : "bg-red-100 text-red-700"}`}>
-            <span className="w-3 h-3 border-2 border-red-600 rounded-sm flex items-center justify-center"><span className="w-1.5 h-1.5 bg-red-600 rounded-full"></span></span> {t.food.nonVeg}
-          </button>
-          <SortDropdown sort={sortBy} setSort={setSortBy} />
-          <PriceRangeFilter onApply={(min, max) => { setPriceMin(min); setPriceMax(max); }} />
-        </div>
+      </div>
+
+      {/* Veg/Non-veg Filter + Sort */}
+      <div className="px-4 pb-3 flex flex-wrap gap-2">
+        <button onClick={() => setVegFilter("all")} className={`px-4 py-2 rounded-full text-xs font-bold ${vegFilter === "all" ? "bg-inverse-surface text-white" : "bg-surface-container text-on-surface-variant"}`}>
+          {t.food.all}
+        </button>
+        <button onClick={() => setVegFilter("veg")} className={`px-4 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 ${vegFilter === "veg" ? "bg-green-600 text-white" : "bg-green-100 text-green-700"}`}>
+          <span className="w-3 h-3 border-2 border-green-600 rounded-sm flex items-center justify-center"><span className="w-1.5 h-1.5 bg-green-600 rounded-full"></span></span> {t.food.veg}
+        </button>
+        <button onClick={() => setVegFilter("non_veg")} className={`px-4 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 ${vegFilter === "non_veg" ? "bg-red-600 text-white" : "bg-red-100 text-red-700"}`}>
+          <span className="w-3 h-3 border-2 border-red-600 rounded-sm flex items-center justify-center"><span className="w-1.5 h-1.5 bg-red-600 rounded-full"></span></span> {t.food.nonVeg}
+        </button>
+        <SortDropdown sort={sortBy} setSort={setSortBy} />
+        <PriceRangeFilter onApply={(min, max) => { setPriceMin(min); setPriceMax(max); }} />
       </div>
 
       <main className="p-6 space-y-4">
@@ -731,59 +747,129 @@ export default function FoodPageContent() {
         ) : filteredRestaurants.length === 0 ? (
           <EmptyState icon="🍽️" title={t.food.noRestaurants} description={t.food.noRestaurantsDesc} actionLabel={t.food.showAll} onAction={() => setVegFilter("all")} />
         ) : (
-          <div className="space-y-4">
-          {filteredRestaurants.map((restaurant) => (
-            <Link
-              key={restaurant.id}
-              href={`/app/food/${restaurant.id}`}
-              className="block bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm card-lift active:scale-[0.98] transition-transform"
-            >
-              <div className="flex">
-                <div className="w-32 h-32 flex-shrink-0 overflow-hidden bg-surface-container relative">
-                  <BlurImage src={restaurant.cover_image_url || restaurant.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"} alt={restaurant.shop_name} fill className="w-full h-full" sizes="(max-width: 768px) 50vw, 128px" fallbackSrc="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80" />
-                  <button
-                    onClick={(e) => { e.preventDefault(); toggleFavorite(restaurant.id); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }}
-                    aria-label="Toggle favorite"
-                    aria-pressed={favorites.has(restaurant.id)}
-                    className="absolute top-2 right-2 w-11 h-11 bg-[var(--color-surface-container-lowest)]/90 rounded-full flex items-center justify-center shadow hover:scale-110 transition-transform"
-                  >
-                    <span className={`material-symbols-outlined text-lg ${favorites.has(restaurant.id) ? "text-red-500" : "text-outline"}`}>favorite</span>
-                  </button>
-                  {restaurant.is_new && (
-                    <span className="absolute top-2 left-2 bg-green-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full">{t.food.new}</span>
-                  )}
-                  {(() => { const open = parseIsOpen(restaurant.opening_hours); return (
-                    <span className={`absolute bottom-0 left-0 right-0 text-[9px] font-black text-center py-0.5 ${
-                      open ? "bg-green-600/90 text-white" : "bg-black/60 text-white"
-                    }`}>{open ? t.food.open : t.food.closed}</span>
-                  );})()}
-                </div>
-                <div className="p-4 flex-1">
-                  <div className="flex items-start justify-between gap-1">
-                    <div className="flex items-center gap-2">
-                      <div className="relative w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-xs font-black flex-shrink-0 overflow-hidden">
-                        {restaurant.cover_image_url || restaurant.image_url ? <BlurImage src={(restaurant.cover_image_url || restaurant.image_url) as string} alt={`${restaurant.shop_name} cover`} fill className="w-full h-full" sizes="32px" /> : restaurant.shop_name?.charAt(0)}
-                      </div>
-                      <h3 className="font-bold text-on-surface text-base leading-tight">{restaurant.shop_name}</h3>
-                    </div>
-                    {restaurant.is_featured && <span className="text-amber-400 text-base flex-shrink-0">⭐</span>}
-                  </div>
-                  <p className="text-xs text-on-surface-variant mt-0.5 ml-10">{restaurant.cuisine}</p>
-                  <div className="flex items-center gap-2 mt-1.5">
-                    <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded font-medium">★ {restaurant.rating || "4.0"}</span>
-                    <span className="text-xs text-outline">•</span>
-                    <span className="text-xs text-on-surface-variant">{restaurant.delivery_time_min ? `${restaurant.delivery_time_min}–${restaurant.delivery_time_max || restaurant.delivery_time_min + 15} ${t.food.mins}` : restaurant.delivery_time_minutes ? `${restaurant.delivery_time_minutes - 5}–${restaurant.delivery_time_minutes + 5} ${t.food.mins}` : restaurant.delivery_time || `30-40 ${t.food.mins}`}</span>
-                  </div>
-                  <p className="text-xs text-on-surface-variant mt-1">{t.food.deliveryCharge} {restaurant.delivery_charge ? `₹${restaurant.delivery_charge}` : "₹49"}</p>
-                  <div className="mt-2 flex items-center gap-1 text-primary font-bold text-xs">
-                    <span>{t.food.viewMenu}</span>
-                    <span className="material-symbols-outlined text-sm">chevron_right</span>
-                  </div>
-                </div>
+          <>
+            {/* Horizontal Scroll Cards - GKB Style */}
+            <div className="px-4 mb-6">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-lg font-bold text-on-surface">{selectedCategory === "all" ? "All Restaurants" : foodCategories.find(c => c.id === selectedCategory)?.name || "Restaurants"}</h2>
+                <span className="text-xs font-bold text-primary">{filteredRestaurants.length} places</span>
               </div>
-            </Link>
-          ))}
-          </div>
+              <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+                {filteredRestaurants.map((restaurant) => (
+                  <Link
+                    key={restaurant.id}
+                    href={`/app/food/${restaurant.id}`}
+                    className="flex-shrink-0 w-44 bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm card-lift active:scale-[0.98] transition-transform"
+                  >
+                    {/* Image */}
+                    <div className="relative h-28 bg-surface-container">
+                      <BlurImage
+                        src={restaurant.cover_image_url || restaurant.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"}
+                        alt={restaurant.shop_name}
+                        fill
+                        className="w-full h-full"
+                        sizes="176px"
+                        fallbackSrc="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"
+                      />
+                      {/* Heart */}
+                      <button
+                        onClick={(e) => { e.preventDefault(); toggleFavorite(restaurant.id); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }}
+                        aria-label="Toggle favorite"
+                        aria-pressed={favorites.has(restaurant.id)}
+                        className="absolute top-2 right-2 w-8 h-8 bg-[var(--color-surface-container-lowest)]/90 rounded-full flex items-center justify-center shadow hover:scale-110 transition-transform"
+                      >
+                        <span className={`material-symbols-outlined text-base ${favorites.has(restaurant.id) ? "text-red-500" : "text-outline"}`}>favorite</span>
+                      </button>
+                      {/* Badges */}
+                      <div className="absolute top-2 left-2 flex gap-1">
+                        {restaurant.is_new && (
+                          <span className="bg-green-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full">{t.food.new}</span>
+                        )}
+                        {restaurant.is_featured && (
+                          <span className="bg-amber-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full">⭐ Featured</span>
+                        )}
+                      </div>
+                      {/* Open/Closed */}
+                      {(() => { const open = parseIsOpen(restaurant.opening_hours); return (
+                        <span className={`absolute bottom-0 left-0 right-0 text-[9px] font-black text-center py-0.5 ${
+                          open ? "bg-green-600/90 text-white" : "bg-black/60 text-white"
+                        }`}>{open ? t.food.open : t.food.closed}</span>
+                      );})()}
+                    </div>
+                    {/* Info */}
+                    <div className="p-2.5">
+                      <h3 className="font-bold text-on-surface text-sm truncate">{restaurant.shop_name}</h3>
+                      <p className="text-[10px] text-on-surface-variant truncate mt-0.5">{restaurant.cuisine}</p>
+                      <div className="flex items-center gap-1.5 mt-1.5">
+                        <span className="text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded font-bold">★ {restaurant.rating || "4.0"}</span>
+                        <span className="text-[10px] text-on-surface-variant">
+                          {restaurant.delivery_time_min ? `${restaurant.delivery_time_min} min` : `30-40 min`}
+                        </span>
+                      </div>
+                      <p className="text-[10px] text-on-surface-variant mt-1">
+                        {restaurant.delivery_charge ? `₹${restaurant.delivery_charge} delivery` : "Free delivery"}
+                      </p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* Vertical List - Full Details */}
+            <div className="px-4 pb-4">
+              <h3 className="text-base font-bold text-on-surface mb-3">More Options</h3>
+              <div className="space-y-3">
+                {filteredRestaurants.map((restaurant) => (
+                  <Link
+                    key={`list-${restaurant.id}`}
+                    href={`/app/food/${restaurant.id}`}
+                    className="block bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm card-lift active:scale-[0.98] transition-transform"
+                  >
+                    <div className="flex">
+                      <div className="w-28 h-28 flex-shrink-0 overflow-hidden bg-surface-container relative">
+                        <BlurImage src={restaurant.cover_image_url || restaurant.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"} alt={restaurant.shop_name} fill className="w-full h-full" sizes="112px" fallbackSrc="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80" />
+                        {restaurant.is_new && (
+                          <span className="absolute top-2 left-2 bg-green-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full">{t.food.new}</span>
+                        )}
+                        {(() => { const open = parseIsOpen(restaurant.opening_hours); return (
+                          <span className={`absolute bottom-0 left-0 right-0 text-[9px] font-black text-center py-0.5 ${
+                            open ? "bg-green-600/90 text-white" : "bg-black/60 text-white"
+                          }`}>{open ? t.food.open : t.food.closed}</span>
+                        );})()}
+                      </div>
+                      <div className="p-3 flex-1">
+                        <div className="flex items-start justify-between gap-1">
+                          <div className="flex items-center gap-2">
+                            <div className="relative w-7 h-7 rounded-full bg-primary flex items-center justify-center text-white text-[10px] font-black flex-shrink-0 overflow-hidden">
+                              {restaurant.cover_image_url || restaurant.image_url ? <BlurImage src={(restaurant.cover_image_url || restaurant.image_url) as string} alt={`${restaurant.shop_name} cover`} fill className="w-full h-full" sizes="28px" /> : restaurant.shop_name?.charAt(0)}
+                            </div>
+                            <h3 className="font-bold text-on-surface text-sm leading-tight">{restaurant.shop_name}</h3>
+                          </div>
+                          <button
+                            onClick={(e) => { e.preventDefault(); toggleFavorite(restaurant.id); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }}
+                            aria-label="Toggle favorite"
+                            className="flex-shrink-0"
+                          >
+                            <span className={`material-symbols-outlined text-lg ${favorites.has(restaurant.id) ? "text-red-500" : "text-outline"}`}>favorite</span>
+                          </button>
+                        </div>
+                        <p className="text-[10px] text-on-surface-variant mt-0.5 ml-9">{restaurant.cuisine}</p>
+                        <div className="flex items-center gap-2 mt-1.5 ml-9">
+                          <span className="text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded font-medium">★ {restaurant.rating || "4.0"}</span>
+                          <span className="text-[10px] text-outline">•</span>
+                          <span className="text-[10px] text-on-surface-variant">{restaurant.delivery_time_min ? `${restaurant.delivery_time_min}–${restaurant.delivery_time_max || restaurant.delivery_time_min + 15} min` : `30-40 min`}</span>
+                        </div>
+                        <div className="flex items-center gap-1 mt-2 ml-9 text-primary font-bold text-[10px]">
+                          <span>{t.food.viewMenu}</span>
+                          <span className="material-symbols-outlined text-xs">chevron_right</span>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </>
         )}
       </main>
       <CartFloater />

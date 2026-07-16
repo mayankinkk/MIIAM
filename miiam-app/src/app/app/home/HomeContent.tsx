@@ -617,19 +617,15 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Categories with Offers */}
+      {/* Categories - GKB Circular Style */}
       <div className="px-4 pb-4">
-        <h2 className="text-lg font-bold text-on-surface mb-3">{t.home.categories}</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+        <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
           {categories.map((cat) => (
-            <Link key={cat.id} href={`/app/${cat.id}`} className="relative">
-              <div className={`${cat.color} dark:bg-surface-container rounded-xl p-3 text-center shadow-sm`}>
-                <div className={`w-9 h-9 rounded-lg bg-surface-container-lowest mx-auto flex items-center justify-center mb-1.5`}>
-                  <span className={`material-symbols-outlined ${cat.iconColor} text-base`}>{cat.icon}</span>
-                </div>
-                <p className="font-semibold text-on-surface text-xs">{cat.label}</p>
+            <Link key={cat.id} href={`/app/${cat.id}`} className="flex flex-col items-center gap-1.5 flex-shrink-0">
+              <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-all ${cat.color} dark:bg-surface-container`}>
+                <span className={`material-symbols-outlined ${cat.iconColor} text-xl`}>{cat.icon}</span>
               </div>
-
+              <span className="text-[10px] font-bold text-on-surface-variant">{cat.label}</span>
             </Link>
           ))}
         </div>
@@ -712,66 +708,94 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Nearby Popular Restaurants */}
+      {/* Nearby Popular Restaurants - GKB Horizontal Scroll */}
       <div className="px-4 pb-4">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-lg font-bold text-on-surface">{t.home.nearbyPopular} 🔥</h2>
           <Link href="/app/food" className="text-xs font-bold text-primary">{t.home.seeAll}</Link>
         </div>
         {nearbyRestaurants.filter(r => r.type === 'food' || r.type === 'restaurant').length > 0 ? (
-          <div className="space-y-3">
-            {nearbyRestaurants.filter(r => r.type === 'food' || r.type === 'restaurant').map((restaurant) => (
-              <Link key={restaurant.id} href={`/app/vendor/${restaurant.id}`} className="block bg-surface-container-lowest dark:bg-[var(--color-surface-container)] border border-outline-variant/10 dark:border-[var(--color-border-subtle)] rounded-2xl overflow-hidden shadow-sm">
-                <div className="flex">
-                  <div className="w-28 h-28 flex-shrink-0 bg-surface-container relative">
+          <>
+            {/* Horizontal Scroll Cards */}
+            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+              {nearbyRestaurants.filter(r => r.type === 'food' || r.type === 'restaurant').slice(0, 10).map((restaurant) => (
+                <Link key={restaurant.id} href={`/app/vendor/${restaurant.id}`} className="flex-shrink-0 w-40 bg-surface-container-lowest dark:bg-[var(--color-surface-container)] border border-outline-variant/10 dark:border-[var(--color-border-subtle)] rounded-2xl overflow-hidden shadow-sm card-lift active:scale-[0.98] transition-transform">
+                  {/* Image */}
+                  <div className="relative h-24 bg-surface-container">
                     {restaurant.cover_image_url || restaurant.image_url ? (
-                      <BlurImage src={restaurant.cover_image_url || restaurant.image_url || ""} alt={restaurant.name || restaurant.shop_name} fill className="w-full h-full" sizes="112px" />
+                      <BlurImage src={restaurant.cover_image_url || restaurant.image_url || ""} alt={restaurant.name || restaurant.shop_name} fill className="w-full h-full" sizes="160px" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-3xl">🍽️</div>
                     )}
-                    {restaurant.is_featured && (
-                      <div className="absolute top-1 left-1 bg-amber-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
-                        <span className="material-symbols-outlined text-xs" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                        {t.home.featured}
-                      </div>
-                    )}
+                    {/* Badges */}
+                    <div className="absolute top-1.5 left-1.5 flex gap-1">
+                      {restaurant.is_new && (
+                        <span className="bg-green-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full">{t.home.new}</span>
+                      )}
+                      {restaurant.is_featured && (
+                        <span className="bg-amber-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full">⭐ {t.home.featured}</span>
+                      )}
+                    </div>
                     {restaurant.is_promoted && (
-                      <div className="absolute top-1 right-1 bg-purple-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">
+                      <div className="absolute top-1.5 right-1.5 bg-purple-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full">
                         {t.home.promoted}
                       </div>
                     )}
-                    {restaurant.is_new && (
-                      <div className="absolute bottom-1 left-1 bg-green-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">
-                        {t.home.new}
-                      </div>
-                    )}
                   </div>
-                  <div className="flex-1 p-3">
-                    <div className="flex items-start justify-between">
-                      <h3 className="font-bold text-on-surface">{restaurant.name || restaurant.shop_name}</h3>
-                      <div className="flex items-center gap-1 bg-green-500/15 px-1.5 py-0.5 rounded">
-                        <span className="text-xs font-bold text-green-600 dark:text-green-400">{restaurant.rating || 4.0}</span>
-                        <span className="text-green-600 dark:text-green-400 text-xs">★</span>
-                      </div>
-                    </div>
-                    <p className="text-xs text-on-surface-variant mt-1">{restaurant.cuisine || t.home.various}</p>
-                    <div className="flex items-center gap-2 mt-2 text-xs text-on-surface-variant">
-                      <span className="flex items-center gap-0.5">
-                        <span className="material-symbols-outlined text-sm">schedule</span>
+                  {/* Info */}
+                  <div className="p-2.5">
+                    <h3 className="font-bold text-on-surface text-sm truncate">{restaurant.name || restaurant.shop_name}</h3>
+                    <p className="text-[10px] text-on-surface-variant truncate mt-0.5">{restaurant.cuisine || t.home.various}</p>
+                    <div className="flex items-center gap-1.5 mt-1.5">
+                      <span className="text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded font-bold">★ {restaurant.rating || 4.0}</span>
+                      <span className="text-[10px] text-on-surface-variant flex items-center gap-0.5">
+                        <span className="material-symbols-outlined text-[10px]">schedule</span>
                         {t.home.minDelivery}
                       </span>
-                      {restaurant.is_featured && (
-                        <span className="flex items-center gap-0.5 text-amber-600">
-                          <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                          {t.home.topRated}
-                        </span>
-                      )}
                     </div>
                   </div>
-                </div>
-              </Link>
-            ))}
-          </div>
+                </Link>
+              ))}
+            </div>
+            {/* Vertical List - More Options */}
+            <div className="mt-4 space-y-3">
+              {nearbyRestaurants.filter(r => r.type === 'food' || r.type === 'restaurant').slice(0, 5).map((restaurant) => (
+                <Link key={`v-${restaurant.id}`} href={`/app/vendor/${restaurant.id}`} className="block bg-surface-container-lowest dark:bg-[var(--color-surface-container)] border border-outline-variant/10 dark:border-[var(--color-border-subtle)] rounded-2xl overflow-hidden shadow-sm card-lift active:scale-[0.98] transition-transform">
+                  <div className="flex">
+                    <div className="w-24 h-24 flex-shrink-0 bg-surface-container relative">
+                      {restaurant.cover_image_url || restaurant.image_url ? (
+                        <BlurImage src={restaurant.cover_image_url || restaurant.image_url || ""} alt={restaurant.name || restaurant.shop_name} fill className="w-full h-full" sizes="96px" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-2xl">🍽️</div>
+                      )}
+                    </div>
+                    <div className="p-2.5 flex-1">
+                      <div className="flex items-start justify-between">
+                        <h3 className="font-bold text-on-surface text-sm">{restaurant.name || restaurant.shop_name}</h3>
+                        <div className="flex items-center gap-0.5 bg-green-500/15 px-1.5 py-0.5 rounded">
+                          <span className="text-[10px] font-bold text-green-600 dark:text-green-400">{restaurant.rating || 4.0}</span>
+                          <span className="text-green-600 dark:text-green-400 text-[10px]">★</span>
+                        </div>
+                      </div>
+                      <p className="text-[10px] text-on-surface-variant mt-0.5">{restaurant.cuisine || t.home.various}</p>
+                      <div className="flex items-center gap-1.5 mt-1.5 text-[10px] text-on-surface-variant">
+                        <span className="flex items-center gap-0.5">
+                          <span className="material-symbols-outlined text-[10px]">schedule</span>
+                          {t.home.minDelivery}
+                        </span>
+                        {restaurant.is_featured && (
+                          <span className="flex items-center gap-0.5 text-amber-600">
+                            <span className="material-symbols-outlined text-[10px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                            {t.home.topRated}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </>
         ) : !locationStore.pincode ? (
           <div className="bg-surface-container dark:bg-[var(--color-surface-container-lowest)] border border-outline-variant/10 dark:border-[var(--color-border-subtle)] rounded-2xl p-8 text-center shadow-sm">
             <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 animate-glow-pulse">
