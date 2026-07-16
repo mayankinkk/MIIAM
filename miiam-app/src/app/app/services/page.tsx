@@ -12,7 +12,8 @@ import { createClient } from "@/lib/supabase/client";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
 import PullToRefresh from "@/components/PullToRefresh";
-import { services, SERVICE_CATEGORIES, SERVICE_TIME_SLOTS, type ServiceData } from "@/lib/data/services";
+import { SERVICE_TIME_SLOTS, type ServiceData } from "@/lib/data/services";
+import { motion, AnimatePresence } from "framer-motion";
 
 // ---------- Booking Modal ----------
 function BookingModal({ service, onClose }: { service: ServiceData; onClose: () => void }) {
@@ -60,15 +61,12 @@ function BookingModal({ service, onClose }: { service: ServiceData; onClose: () 
     }
     setBooking(true);
     try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+      const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         addToast("Please log in to book a service", "error");
         setBooking(false);
         return;
       }
-
       const res = await fetch("/api/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -85,14 +83,12 @@ function BookingModal({ service, onClose }: { service: ServiceData; onClose: () 
           provider_id: null,
         }),
       });
-
       if (!res.ok) {
         const err = await res.json().catch(() => ({ error: "Booking failed" }));
         addToast(err.error || "Booking failed. Please try again.", "error");
         setBooking(false);
         return;
       }
-
       setStep("done");
       if (navigator.vibrate) navigator.vibrate([20, 10, 20]);
     } catch {
@@ -101,7 +97,6 @@ function BookingModal({ service, onClose }: { service: ServiceData; onClose: () 
     }
   }, [booking, address, phone, selectedDate, selectedSlot, service, supabase, addToast, t]);
 
-  // Close on Escape
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onCloseRef.current();
@@ -111,125 +106,70 @@ function BookingModal({ service, onClose }: { service: ServiceData; onClose: () 
   }, []);
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 backdrop-blur-sm animate-fade-in"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="booking-modal-title"
-    >
-      <div className="bg-surface-container-lowest w-full max-w-lg rounded-t-3xl shadow-2xl p-6 pb-10 max-h-[90vh] overflow-y-auto animate-slide-reveal">
-        {/* Handle */}
-        <div className="w-12 h-1.5 bg-surface-container-high rounded-full mx-auto mb-5" aria-hidden="true" />
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 backdrop-blur-sm animate-fade-in" role="dialog" aria-modal="true" aria-labelledby="booking-modal-title">
+      <div className="bg-white w-full max-w-lg rounded-t-3xl shadow-2xl p-6 pb-10 max-h-[90vh] overflow-y-auto animate-slide-reveal">
+        <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-5" aria-hidden="true" />
 
         {step === "pick" && (
           <>
             <div className="flex items-center gap-3 mb-6">
-              <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-surface-container flex-shrink-0">
-                <BlurImage src={service.image} alt={service.name} fill className="w-full h-full" sizes="56px" />
+              <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-blue-50 flex-shrink-0">
+                <BlurImage src={service.image} alt={service.name} fill className="w-full h-full" sizes="56px" fallbackSrc="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=80" />
               </div>
               <div>
-                <h2 id="booking-modal-title" className="font-black text-on-surface text-lg">{service.name}</h2>
-                <p className="text-primary font-bold">
-                  {service.priceMin && service.priceMax ? `₹${service.priceMin} – ₹${service.priceMax}` : `₹${service.price}`} • {service.duration}
+                <h2 id="booking-modal-title" className="font-black text-gray-900 text-lg">{service.name}</h2>
+                <p className="text-blue-600 font-bold text-sm">
+                  {service.priceMin && service.priceMax ? `\u20B9${service.priceMin} \u2013 \u20B9${service.priceMax}` : `\u20B9${service.price}`} \u2022 {service.duration}
                 </p>
               </div>
             </div>
 
-            <p className="font-bold text-on-surface mb-3">{t.services.selectDate}</p>
+            <p className="font-bold text-gray-900 mb-3 text-sm">{t.services.selectDate}</p>
             <div className="flex gap-2 flex-wrap mb-5" role="radiogroup" aria-label="Select date">
               {dateOptions.map((d) => (
-                <button
-                  key={d.value}
-                  role="radio"
-                  aria-checked={selectedDate === d.value}
-                  onClick={() => {
-                    setSelectedDate(d.value);
-                    if (navigator.vibrate) navigator.vibrate(10);
-                  }}
-                  className={`px-4 py-2 rounded-xl text-sm font-bold border-2 transition-all hover:scale-105 active:scale-95 ${
+                <button key={d.value} role="radio" aria-checked={selectedDate === d.value}
+                  onClick={() => { setSelectedDate(d.value); if (navigator.vibrate) navigator.vibrate(10); }}
+                  className={`px-4 py-2.5 rounded-xl text-sm font-bold border-2 transition-all active:scale-95 ${
                     selectedDate === d.value
-                      ? "bg-primary text-white border-primary"
-                      : "border-outline text-on-surface-variant hover:border-primary"
-                  }`}
-                >
+                      ? "bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-600/20"
+                      : "border-gray-200 text-gray-600 hover:border-blue-300"
+                  }`}>
                   {d.label}
                 </button>
               ))}
             </div>
 
-            <p className="font-bold text-on-surface mb-3">{t.services.selectTimeSlot}</p>
+            <p className="font-bold text-gray-900 mb-3 text-sm">{t.services.selectTimeSlot}</p>
             <div className="grid grid-cols-2 gap-2 mb-5" role="radiogroup" aria-label="Select time slot">
               {SERVICE_TIME_SLOTS.map((slot) => (
-                <button
-                  key={slot}
-                  role="radio"
-                  aria-checked={selectedSlot === slot}
-                  onClick={() => {
-                    setSelectedSlot(slot);
-                    if (navigator.vibrate) navigator.vibrate(10);
-                  }}
-                  className={`p-3 rounded-xl text-xs font-bold border-2 transition-all text-left hover:scale-[1.02] active:scale-[0.98] ${
+                <button key={slot} role="radio" aria-checked={selectedSlot === slot}
+                  onClick={() => { setSelectedSlot(slot); if (navigator.vibrate) navigator.vibrate(10); }}
+                  className={`p-3 rounded-xl text-xs font-bold border-2 transition-all text-left active:scale-[0.98] ${
                     selectedSlot === slot
-                      ? "bg-primary text-white border-primary"
-                      : "border-outline text-on-surface-variant hover:border-primary"
-                  }`}
-                >
+                      ? "bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-600/20"
+                      : "border-gray-200 text-gray-600 hover:border-blue-300"
+                  }`}>
                   {slot}
                 </button>
               ))}
             </div>
 
-            <p className="font-bold text-on-surface mb-2">{t.services.serviceAddress}</p>
-            <textarea
-              className="w-full border-2 border-outline rounded-xl p-3 text-sm focus:border-primary focus:outline-none resize-none mb-4"
-              rows={2}
-              placeholder={t.services.addressPlaceholder}
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              aria-label={t.services.serviceAddress}
-            />
+            <p className="font-bold text-gray-900 mb-2 text-sm">{t.services.serviceAddress}</p>
+            <textarea className="w-full border-2 border-gray-200 rounded-xl p-3 text-sm focus:border-blue-500 focus:outline-none resize-none mb-4" rows={2} placeholder={t.services.addressPlaceholder} value={address} onChange={(e) => setAddress(e.target.value)} aria-label={t.services.serviceAddress} />
 
-            <p className="font-bold text-on-surface mb-2">{t.services.phoneNumber || "Phone Number"}</p>
-            <input
-              type="tel"
-              className="w-full border-2 border-outline rounded-xl p-3 text-sm focus:border-primary focus:outline-none mb-5"
-              placeholder={t.services.phonePlaceholder || "Enter your phone number"}
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              aria-label={t.services.phoneNumber || "Phone Number"}
-              inputMode="numeric"
-              maxLength={15}
-            />
+            <p className="font-bold text-gray-900 mb-2 text-sm">{t.services.phoneNumber || "Phone Number"}</p>
+            <input type="tel" className="w-full border-2 border-gray-200 rounded-xl p-3 text-sm focus:border-blue-500 focus:outline-none mb-5" placeholder={t.services.phonePlaceholder || "Enter your phone number"} value={phone} onChange={(e) => setPhone(e.target.value)} aria-label={t.services.phoneNumber || "Phone Number"} inputMode="numeric" maxLength={15} />
 
-            <button
-              disabled={!canProceed}
-              onClick={() => {
-                if (!selectedDate) {
-                  addToast(t.services.pleaseSelectDate, "error");
-                  return;
-                }
-                if (!selectedSlot) {
-                  addToast(t.services.pleaseSelectTime, "error");
-                  return;
-                }
-                if (!address.trim()) {
-                  addToast(t.services.pleaseEnterAddress, "error");
-                  return;
-                }
-                setStep("confirm");
-                if (navigator.vibrate) navigator.vibrate([20, 10, 20]);
-              }}
-              className="w-full bg-primary text-white py-4 rounded-2xl font-bold text-base disabled:opacity-40 hover:bg-primary-dim transition-all hover:scale-[1.02] active:scale-[0.98]"
-            >
+            <button disabled={!canProceed} onClick={() => {
+              if (!selectedDate) { addToast(t.services.pleaseSelectDate, "error"); return; }
+              if (!selectedSlot) { addToast(t.services.pleaseSelectTime, "error"); return; }
+              if (!address.trim()) { addToast(t.services.pleaseEnterAddress, "error"); return; }
+              setStep("confirm");
+              if (navigator.vibrate) navigator.vibrate([20, 10, 20]);
+            }} className="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold text-base disabled:opacity-40 hover:bg-blue-700 transition-all active:scale-[0.98]">
               {t.services.reviewBooking}
             </button>
-            <button
-              onClick={() => {
-                onClose();
-                if (navigator.vibrate) navigator.vibrate(10);
-              }}
-              className="w-full mt-3 py-3 text-on-surface-variant font-semibold text-sm hover:text-on-surface transition-colors"
-            >
+            <button onClick={() => { onClose(); if (navigator.vibrate) navigator.vibrate(10); }} className="w-full mt-3 py-3 text-gray-400 font-semibold text-sm hover:text-gray-600 transition-colors">
               {t.common.cancel}
             </button>
           </>
@@ -237,91 +177,36 @@ function BookingModal({ service, onClose }: { service: ServiceData; onClose: () 
 
         {step === "confirm" && (
           <>
-            <h2 id="booking-modal-title" className="font-black text-xl text-on-surface mb-6">
-              {t.services.confirmBooking}
-            </h2>
-            <div className="bg-surface-container-low rounded-2xl p-4 space-y-3 mb-6">
-              <div className="flex justify-between">
-                <span className="text-on-surface-variant text-sm">{t.services.service}</span>
-                <span className="font-bold text-on-surface text-sm text-right">{service.name}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-on-surface-variant text-sm">{t.services.date}</span>
-                <span className="font-bold text-on-surface text-sm">
-                  {new Date(selectedDate).toLocaleDateString("en-IN", { weekday: "long", month: "long", day: "numeric" })}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-on-surface-variant text-sm">{t.services.time}</span>
-                <span className="font-bold text-on-surface text-sm">{selectedSlot}</span>
-              </div>
-              {address && (
-                <div className="flex justify-between">
-                  <span className="text-on-surface-variant text-sm">{t.services.address}</span>
-                  <span className="font-bold text-on-surface text-sm text-right max-w-[60%]">{address}</span>
-                </div>
-              )}
-              <div className="border-t border-outline pt-3 flex justify-between">
-                <span className="font-bold text-on-surface">{t.services.total}</span>
-                <span className="font-black text-primary text-lg">₹{service.price}</span>
-              </div>
+            <h2 id="booking-modal-title" className="font-black text-xl text-gray-900 mb-6">{t.services.confirmBooking}</h2>
+            <div className="bg-gray-50 rounded-2xl p-4 space-y-3 mb-6 border border-gray-100">
+              <div className="flex justify-between"><span className="text-gray-500 text-sm">{t.services.service}</span><span className="font-bold text-gray-900 text-sm text-right">{service.name}</span></div>
+              <div className="flex justify-between"><span className="text-gray-500 text-sm">{t.services.date}</span><span className="font-bold text-gray-900 text-sm">{new Date(selectedDate).toLocaleDateString("en-IN", { weekday: "long", month: "long", day: "numeric" })}</span></div>
+              <div className="flex justify-between"><span className="text-gray-500 text-sm">{t.services.time}</span><span className="font-bold text-gray-900 text-sm">{selectedSlot}</span></div>
+              {address && <div className="flex justify-between"><span className="text-gray-500 text-sm">{t.services.address}</span><span className="font-bold text-gray-900 text-sm text-right max-w-[60%]">{address}</span></div>}
+              <div className="border-t border-gray-200 pt-3 flex justify-between"><span className="font-bold text-gray-900">{t.services.total}</span><span className="font-black text-blue-600 text-lg">\u20B9{service.price}</span></div>
             </div>
-            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-3 flex gap-2 mb-5">
-              <span className="material-symbols-outlined text-blue-600 dark:text-blue-400 text-sm mt-0.5">info</span>
-              <p className="text-xs text-blue-700 dark:text-blue-300">{t.services.paymentAfterService}</p>
+            <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 flex gap-2 mb-5">
+              <span className="material-symbols-outlined text-blue-600 text-sm mt-0.5">info</span>
+              <p className="text-xs text-blue-700">{t.services.paymentAfterService}</p>
             </div>
-            <button
-              onClick={handleConfirmBooking}
-              disabled={booking}
-              className="w-full bg-primary text-white py-4 rounded-2xl font-bold text-base hover:bg-primary-dim transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 flex items-center justify-center gap-2"
-            >
-              {booking ? (
-                <>
-                  <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  {t.services.booking}
-                </>
-              ) : (
-                t.services.confirmAndBook
-              )}
+            <button onClick={handleConfirmBooking} disabled={booking} className="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold text-base hover:bg-blue-700 transition-all active:scale-[0.98] disabled:opacity-60 flex items-center justify-center gap-2">
+              {booking ? (<><span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />{t.services.booking}</>) : t.services.confirmAndBook}
             </button>
-            <button
-              onClick={() => {
-                setStep("pick");
-                if (navigator.vibrate) navigator.vibrate(10);
-              }}
-              className="w-full mt-3 py-3 text-on-surface-variant font-semibold text-sm hover:text-on-surface transition-colors"
-            >
-              {t.services.goBack}
-            </button>
+            <button onClick={() => { setStep("pick"); if (navigator.vibrate) navigator.vibrate(10); }} className="w-full mt-3 py-3 text-gray-400 font-semibold text-sm hover:text-gray-600 transition-colors">{t.services.goBack}</button>
           </>
         )}
 
         {step === "done" && (
           <div className="text-center py-8 animate-pop-in">
-            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
-              <span
-                className="material-symbols-outlined text-green-600 text-4xl"
-                style={{ fontVariationSettings: "'FILL' 1" }}
-              >
-                check_circle
-              </span>
+            <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span className="material-symbols-outlined text-blue-600 text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
             </div>
-            <h2 className="font-black text-2xl text-on-surface mb-2">{t.services.bookingConfirmed}</h2>
-            <p className="text-on-surface-variant mb-1">{service.name}</p>
-            <p className="font-bold text-primary mb-1">
-              {new Date(selectedDate).toLocaleDateString("en-IN", { weekday: "long", month: "long", day: "numeric" })}
-            </p>
-            <p className="text-on-surface-variant font-semibold mb-6">{selectedSlot}</p>
-            <p className="text-sm text-on-surface-variant mb-8">{t.services.bookingConfirmedDesc}</p>
-            <button
-              onClick={() => {
-                onClose();
-                if (navigator.vibrate) navigator.vibrate([20, 10, 20]);
-              }}
-              className="w-full bg-primary text-white py-4 rounded-2xl font-bold text-base hover:bg-primary-dim transition-all hover:scale-[1.02] active:scale-[0.98]"
-            >
-              {t.common.done}
-            </button>
+            <h2 className="font-black text-2xl text-gray-900 mb-2">{t.services.bookingConfirmed}</h2>
+            <p className="text-gray-500 mb-1">{service.name}</p>
+            <p className="font-bold text-blue-600 mb-1">{new Date(selectedDate).toLocaleDateString("en-IN", { weekday: "long", month: "long", day: "numeric" })}</p>
+            <p className="text-gray-500 font-semibold mb-6">{selectedSlot}</p>
+            <p className="text-sm text-gray-400 mb-8">{t.services.bookingConfirmedDesc}</p>
+            <button onClick={() => { onClose(); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }} className="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold text-base hover:bg-blue-700 transition-all active:scale-[0.98]">{t.common.done}</button>
           </div>
         )}
       </div>
@@ -329,6 +214,7 @@ function BookingModal({ service, onClose }: { service: ServiceData; onClose: () 
   );
 }
 
+// ---------- Main Page ----------
 function ServicesContent() {
   const { t } = useTranslation();
   const searchParams = useSearchParams();
@@ -347,10 +233,7 @@ function ServicesContent() {
 
   const categoryIdMap: Record<string, string> = useMemo(() => {
     const map: Record<string, string> = {};
-    dbCategories.forEach((cat) => {
-      map[cat.slug] = cat.slug;
-      map[cat.name] = cat.slug;
-    });
+    dbCategories.forEach((cat) => { map[cat.slug] = cat.slug; map[cat.name] = cat.slug; });
     return map;
   }, [dbCategories]);
 
@@ -359,45 +242,23 @@ function ServicesContent() {
       setLoadingServices(true);
       const { data: cats } = await supabase.from("service_categories").select("id, name, slug, icon").eq("is_active", true).order("display_order");
       if (cats) {
-        const colors = ["text-blue-500", "text-green-500", "text-cyan-500", "text-yellow-500", "text-pink-500", "text-red-500", "text-purple-500", "text-orange-500", "text-indigo-500", "text-teal-500"];
-        const bgs = ["bg-blue-100", "bg-green-100", "bg-cyan-100", "bg-yellow-100", "bg-pink-100", "bg-red-100", "bg-purple-100", "bg-orange-100", "bg-indigo-100", "bg-teal-100"];
+        const colors = ["text-blue-600", "text-emerald-600", "text-cyan-600", "text-amber-600", "text-pink-600", "text-red-600", "text-purple-600", "text-orange-600", "text-indigo-600", "text-teal-600"];
+        const bgs = ["bg-blue-50", "bg-emerald-50", "bg-cyan-50", "bg-amber-50", "bg-pink-50", "bg-red-50", "bg-purple-50", "bg-orange-50", "bg-indigo-50", "bg-teal-50"];
         const mapped = cats.map((c: { id: string; name: string; slug: string | null; icon: string }, i: number) => ({
-          id: c.id,
-          name: c.name,
-          slug: c.slug || c.name.toLowerCase().replace(/\s+/g, "_").replace(/&/g, ""),
-          icon: c.icon || "home_repair_service",
-          color: colors[i % colors.length],
-          bg: bgs[i % bgs.length],
+          id: c.id, name: c.name, slug: c.slug || c.name.toLowerCase().replace(/\s+/g, "_").replace(/&/g, ""), icon: c.icon || "home_repair_service", color: colors[i % colors.length], bg: bgs[i % bgs.length],
         }));
         setDbCategories(mapped);
         const catIds = cats.map((c: { id: string }) => c.id);
         if (catIds.length > 0) {
-          const { data: items } = await supabase
-            .from("service_items")
-            .select("*, service_categories!inner(name)")
-            .in("category_id", catIds)
-            .eq("is_active", true)
-            .order("sort_order");
+          const { data: items } = await supabase.from("service_items").select("*, service_categories!inner(name)").in("category_id", catIds).eq("is_active", true).order("sort_order");
           if (items) {
             const mappedItems: ServiceData[] = items.map((item: Record<string, unknown>) => {
               const cat = item.service_categories as { name: string } | null;
               const catObj = mapped.find((c: { name: string }) => c.name === cat?.name);
               return {
-                id: item.id as string,
-                name: item.name as string,
-                category: catObj?.slug ?? "",
-                rating: Number(item.rating) || 0,
-                reviews: Number(item.reviews) || 0,
-                price: Number(item.price),
-                priceMin: item.price_min != null ? Number(item.price_min) : undefined,
-                priceMax: item.price_max != null ? Number(item.price_max) : undefined,
-                originalPrice: item.original_price != null ? Number(item.original_price) : undefined,
-                duration: (item.duration as string) || "",
-                image: (item.image_url as string) || "",
-                included: (item.included as string[]) || [],
-                warranty_days: Number(item.warranty_days) || 7,
-                badge: (item.badge as string) || undefined,
-                description: (item.description as string) || "",
+                id: item.id as string, name: item.name as string, category: catObj?.slug ?? "", rating: Number(item.rating) || 0, reviews: Number(item.reviews) || 0, price: Number(item.price),
+                priceMin: item.price_min != null ? Number(item.price_min) : undefined, priceMax: item.price_max != null ? Number(item.price_max) : undefined, originalPrice: item.original_price != null ? Number(item.original_price) : undefined,
+                duration: (item.duration as string) || "", image: (item.image_url as string) || "", included: (item.included as string[]) || [], warranty_days: Number(item.warranty_days) || 7, badge: (item.badge as string) || undefined, description: (item.description as string) || "",
               };
             });
             setDbServices(mappedItems);
@@ -410,17 +271,11 @@ function ServicesContent() {
   }, [supabase]);
 
   const mappedCategory = categoryIdMap[rawCategory] || null;
-
-  const [selectedCategory, setSelectedCategory] = useState<string>(
-    categoryIdMap[rawCategory] ?? "all",
-  );
+  const [selectedCategory, setSelectedCategory] = useState<string>(categoryIdMap[rawCategory] ?? "all");
   const [bookingService, setBookingService] = useState<ServiceData | null>(null);
 
-  const checkServiceability = useCallback(async () => {
-    setIsServiceable(true);
-  }, []);
+  const checkServiceability = useCallback(async () => { setIsServiceable(true); }, []);
 
-  // Check service availability after hooks
   if (mappedCategory) {
     const setting = getSetting(mappedCategory as ServiceCategory);
     if (setting && !setting.isEnabled) {
@@ -434,219 +289,214 @@ function ServicesContent() {
   }, [selectedCategory, dbServices]);
 
   return (
-    <div className="min-h-screen bg-background text-on-background pb-24">
-      {/* Header */}
-      <header className="bg-surface-container-lowest px-4 py-4 sticky top-0 z-30 shadow-sm">
-        <div className="flex items-center gap-2 mb-2">
-          <Link
-            href="/app/home"
-            aria-label="Back to explore"
-            className="w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center hover:bg-surface-container-highest transition-colors"
-          >
-            <span className="material-symbols-outlined text-on-surface-variant text-sm">arrow_back</span>
+    <div className="min-h-screen bg-gray-50 pb-24">
+      {/* Blue Header */}
+      <header className="bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 px-4 pt-12 pb-6 sticky top-0 z-30">
+        <div className="flex items-center gap-3 mb-4">
+          <Link href="/app/home" aria-label="Back" className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white border border-white/20 active:scale-90 transition-transform">
+            <span className="material-symbols-outlined">arrow_back</span>
           </Link>
-          <h1 className="text-xl font-black text-on-surface">{t.services.title}</h1>
+          <div className="flex-1">
+            <h1 className="text-xl font-black text-white">{t.services.title}</h1>
+            <p className="text-blue-100 text-xs mt-0.5">{t.services.subtitle}</p>
+          </div>
+          <Link href="/app/cart" className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white border border-white/20">
+            <span className="material-symbols-outlined">shopping_cart</span>
+          </Link>
         </div>
-        <p className="text-sm text-on-surface-variant mt-1">{t.services.subtitle}</p>
+        {/* Search */}
+        <div className="bg-white/15 backdrop-blur-sm rounded-xl px-4 py-3 flex items-center gap-3 border border-white/10">
+          <span className="material-symbols-outlined text-white/70">search</span>
+          <span className="text-white/50 text-sm">Search for services...</span>
+        </div>
       </header>
 
       <Breadcrumbs items={[{ label: "Home", href: "/app/home" }, { label: t.services.homeServices }]} />
 
       <PullToRefresh onRefresh={checkServiceability}>
-        {/* Location / Availability Banner */}
-        {!isServiceable && (userPincode || userCity) && (
-          <div className="bg-surface-container-low border-b border-amber-200 px-6 py-3 flex items-center gap-3">
-            <span className="material-symbols-outlined text-amber-600 text-xl animate-bounce">warning</span>
-            <div className="flex-1">
-              <p className="text-xs font-bold text-amber-800">
-                {t.services.notServiceable} {userPincode ? `Pincode ${userPincode}` : userCity}
-              </p>
-              <p className="text-[10px] text-amber-600 font-medium">{t.services.notServiceableDesc}</p>
-            </div>
-          </div>
-        )}
-        {isServiceable && (userPincode || userCity) && (
-          <div className="bg-surface-container-low border-b border-green-200 px-6 py-2 flex items-center gap-2">
-            <span className="material-symbols-outlined text-green-600 text-sm">location_on</span>
-            <p className="text-[11px] font-bold text-green-700">
-              {t.services.providingServices} {userPincode ? `Pincode ${userPincode}` : userCity}
-            </p>
+        {/* Location Banner */}
+        {(userPincode || userCity) && (
+          <div className={`mx-4 mt-3 px-4 py-2.5 rounded-xl flex items-center gap-2 text-xs font-bold ${isServiceable ? "bg-emerald-50 text-emerald-700 border border-emerald-200" : "bg-amber-50 text-amber-700 border border-amber-200"}`}>
+            <span className={`material-symbols-outlined text-sm ${isServiceable ? "text-emerald-600" : "text-amber-600"}`}>{isServiceable ? "location_on" : "warning"}</span>
+            {isServiceable
+              ? <span>Services available in {userPincode || userCity}</span>
+              : <span>{t.services.notServiceable} {userPincode || userCity}</span>
+            }
           </div>
         )}
 
         {/* Hero Banner */}
         <div className="px-4 mt-4">
-          <div className="rounded-2xl overflow-hidden relative h-40 shadow-sm">
-            <BlurImage src="/images/services_hero.png" alt="Professional Services" fill className="w-full h-full" sizes="100vw" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-4">
-              <h2 className="text-white text-xl font-black">{t.services.expertProfessionals}</h2>
-              <p className="text-white/90 text-sm">{t.services.expertDesc}</p>
+          <div className="rounded-2xl overflow-hidden relative h-40 shadow-lg shadow-blue-600/10">
+            <BlurImage src="/images/services_hero.png" alt="Professional Services" fill className="w-full h-full" sizes="100vw" fallbackSrc="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&q=80" />
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-900/80 via-blue-800/50 to-transparent flex flex-col justify-end p-5">
+              <h2 className="text-white text-xl font-black leading-tight">{t.services.expertProfessionals}</h2>
+              <p className="text-blue-100 text-xs mt-1">{t.services.expertDesc}</p>
+              <div className="flex items-center gap-1.5 mt-2">
+                <span className="bg-white/20 backdrop-blur-sm text-white text-[10px] font-bold px-2.5 py-1 rounded-full">Verified Pros</span>
+                <span className="bg-emerald-500/80 backdrop-blur-sm text-white text-[10px] font-bold px-2.5 py-1 rounded-full">Top Rated</span>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Service Categories */}
-        <div className="px-4 py-4">
-          <div className="flex gap-3 overflow-x-auto no-scrollbar" role="tablist" aria-label="Service categories">
-            <button
-              role="tab"
-              aria-selected={selectedCategory === "all"}
-              onClick={() => {
-                setSelectedCategory("all");
-                if (navigator.vibrate) navigator.vibrate(10);
-              }}
-              className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap active:scale-95 transition-all ${
-                selectedCategory === "all"
-                  ? "bg-primary text-white"
-                  : "bg-surface-container-lowest text-on-surface-variant border border-outline-variant/20 hover:bg-surface-container-low"
-              }`}
-            >
-              {t.services.all}
+        {/* Category Circles - GKB Style */}
+        <div className="px-4 py-5">
+          <div className="flex gap-4 overflow-x-auto no-scrollbar pb-2">
+            <button onClick={() => { setSelectedCategory("all"); if (navigator.vibrate) navigator.vibrate(10); }}
+              className="flex flex-col items-center gap-1.5 flex-shrink-0">
+              <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-all ${selectedCategory === "all" ? "bg-blue-600 text-white shadow-lg shadow-blue-600/30" : "bg-white text-gray-600 border border-gray-200"}`}>
+                <span className="material-symbols-outlined text-xl">apps</span>
+              </div>
+              <span className={`text-[10px] font-bold ${selectedCategory === "all" ? "text-blue-600" : "text-gray-500"}`}>{t.services.all}</span>
             </button>
-            {dbCategories.map((cat, i) => (
-              <button
-                key={cat.id}
-                role="tab"
-                aria-selected={selectedCategory === cat.slug}
-                onClick={() => {
-                  setSelectedCategory(cat.slug as ServiceCategory);
-                  if (navigator.vibrate) navigator.vibrate(10);
-                }}
-                className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap flex items-center gap-1 active:scale-95 transition-all animate-category-slide ${
-                  selectedCategory === cat.slug
-                    ? "bg-primary text-white"
-                    : "bg-surface-container-lowest text-on-surface-variant border border-outline-variant/20 hover:bg-surface-container-low"
-                }`}
-                style={{ animationDelay: `${i * 50}ms` }}
-              >
-                <span className="material-symbols-outlined text-sm">{cat.icon}</span>
-                {cat.name}
+            {dbCategories.map((cat) => (
+              <button key={cat.id} onClick={() => { setSelectedCategory(cat.slug as ServiceCategory); if (navigator.vibrate) navigator.vibrate(10); }}
+                className="flex flex-col items-center gap-1.5 flex-shrink-0">
+                <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-all ${selectedCategory === cat.slug ? "bg-blue-600 text-white shadow-lg shadow-blue-600/30" : "bg-white text-gray-600 border border-gray-200"}`}>
+                  <span className="material-symbols-outlined text-xl">{cat.icon}</span>
+                </div>
+                <span className={`text-[10px] font-bold text-center max-w-[56px] truncate ${selectedCategory === cat.slug ? "text-blue-600" : "text-gray-500"}`}>{cat.name}</span>
               </button>
             ))}
           </div>
         </div>
 
         {/* Services List */}
-        <main className="px-4 space-y-5 pb-10">
+        <main className="px-4 space-y-4 pb-10">
+          <div className="flex items-center justify-between">
+            <h2 className="text-base font-black text-gray-900">
+              {selectedCategory === "all" ? "All Services" : dbCategories.find(c => c.slug === selectedCategory)?.name || "Services"}
+            </h2>
+            <span className="text-xs font-bold text-gray-400">{filteredServices.length} services</span>
+          </div>
+
           {loadingServices ? (
             <div className="flex flex-col items-center justify-center py-16 text-center">
-              <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin mb-3" />
-              <p className="text-sm text-on-surface-variant">Loading services...</p>
+              <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-3" />
+              <p className="text-sm text-gray-400">Loading services...</p>
             </div>
           ) : filteredServices.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 text-center">
-              <span className="material-symbols-outlined text-outline text-5xl mb-3">search_off</span>
-              <p className="font-bold text-on-surface text-lg mb-1">{t.services.noServices || "No services found"}</p>
-              <p className="text-sm text-on-surface-variant mb-4">{t.services.tryDifferentCategory || "Try selecting a different category"}</p>
-              <button
-                onClick={() => setSelectedCategory("all")}
-                className="px-5 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:scale-[1.02] active:scale-95 transition-all"
-              >
+            <div className="bg-white rounded-2xl p-10 text-center border border-gray-100 shadow-sm">
+              <span className="material-symbols-outlined text-gray-300 text-5xl mb-3">search_off</span>
+              <p className="font-bold text-gray-900 text-lg mb-1">{t.services.noServices || "No services found"}</p>
+              <p className="text-sm text-gray-400 mb-4">{t.services.tryDifferentCategory || "Try selecting a different category"}</p>
+              <button onClick={() => setSelectedCategory("all")} className="px-5 py-2.5 bg-blue-600 text-white rounded-xl font-bold text-sm active:scale-95 transition-all">
                 {t.services.showAll || "Show All Services"}
               </button>
             </div>
           ) : (
-            filteredServices.map((service, index) => (
-              <div
-                key={service.id}
-                className="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-[0_2px_16px_rgba(0,0,0,0.06)] border border-outline-variant/10 card-lift animate-pop-in"
-                style={{ animationDelay: `${Math.min(index * 80, 500)}ms` }}
-              >
-                {/* Image with overlay badges */}
-                <div className="relative h-44 overflow-hidden">
-                  <BlurImage
-                    src={service.image}
-                    alt={service.name}
-                    fill
-                    className="w-full h-full"
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    fallbackSrc="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=80"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-                  {service.badge && (
-                    <span className="absolute top-3 left-3 bg-surface-container-lowest/95 backdrop-blur-sm text-green-600 dark:text-green-400 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wide shadow-sm">
-                      {t.services[service.badge as keyof typeof t.services] || service.badge}
-                    </span>
-                  )}
-                  {service.originalPrice && (
-                    <span className="absolute top-3 right-3 bg-primary text-white text-[10px] font-black px-2.5 py-1 rounded-full">
-                      {Math.round(((service.originalPrice - service.price) / service.originalPrice) * 100)}% OFF
-                    </span>
-                  )}
-                  <div className="absolute bottom-3 left-3 flex gap-2">
-                    <span className="bg-surface-container-lowest/95 backdrop-blur-sm text-on-surface-variant text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-sm">
-                      <span className="material-symbols-outlined text-[12px]">schedule</span>
-                      {service.duration}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="p-4">
-                  {/* Title & Rating */}
-                  <div className="flex items-start justify-between gap-2">
-                    <h3 className="font-bold text-on-surface text-lg leading-tight">{service.name}</h3>
-                    <div className="flex items-center gap-1 bg-surface-container-low border border-green-500/20 px-2 py-0.5 rounded-lg flex-shrink-0">
-                      <span className="text-green-600 dark:text-green-400 text-xs font-black">★ {service.rating}</span>
-                    </div>
-                  </div>
-                  <p className="text-xs text-on-surface-variant/70 mt-0.5">
-                    {service.reviews.toLocaleString()} {t.services.reviews}
-                  </p>
-
-                  {/* What's Included */}
-                  <div className="mt-3 bg-surface-container-low rounded-xl p-3">
-                    <p className="text-[10px] font-black text-on-surface-variant/60 uppercase tracking-widest mb-2">
-                      {t.services.whatIncluded}
-                    </p>
-                    <div className="grid grid-cols-2 gap-x-3 gap-y-1.5">
-                      {service.included.map((item, idx) => (
-                        <div key={idx} className="flex items-center gap-1.5">
-                          <span
-                            className="material-symbols-outlined text-green-500 text-[14px]"
-                            style={{ fontVariationSettings: "'FILL' 1" }}
-                          >
-                            check_circle
+            <>
+              {/* Featured Services - Horizontal Scroll */}
+              {filteredServices.some(s => s.badge) && (
+                <div className="mb-2">
+                  <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2">
+                    {filteredServices.filter(s => s.badge).map((service) => (
+                      <div key={service.id} className="flex-shrink-0 w-64 bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 card-lift">
+                        <div className="relative h-32 overflow-hidden">
+                          <BlurImage src={service.image} alt={service.name} fill className="w-full h-full" sizes="256px" fallbackSrc="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=80" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                          <span className="absolute top-2 left-2 bg-blue-600 text-white text-[9px] font-black px-2.5 py-1 rounded-full uppercase tracking-wide">
+                            {t.services[service.badge as keyof typeof t.services] || service.badge}
                           </span>
-                          <span className="text-xs text-on-surface-variant font-medium">{item.trim()}</span>
+                          {service.originalPrice && (
+                            <span className="absolute top-2 right-2 bg-red-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full">
+                              {Math.round(((service.originalPrice - service.price) / service.originalPrice) * 100)}% OFF
+                            </span>
+                          )}
+                          <div className="absolute bottom-2 left-2 right-2">
+                            <h3 className="text-white font-bold text-sm truncate">{service.name}</h3>
+                            <div className="flex items-center justify-between mt-1">
+                              <span className="text-white/80 text-[10px]">{service.duration}</span>
+                              <span className="text-white font-black text-sm">\u20B9{service.price}</span>
+                            </div>
+                          </div>
                         </div>
-                      ))}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* All Services - Vertical Cards */}
+              {filteredServices.map((service, index) => (
+                <motion.div key={service.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(index * 0.05, 0.3) }}
+                  className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+                  {/* Image */}
+                  <div className="relative h-44 overflow-hidden">
+                    <BlurImage src={service.image} alt={service.name} fill className="w-full h-full" sizes="(max-width: 768px) 100vw, 50vw" fallbackSrc="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=80" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                    {service.badge && (
+                      <span className="absolute top-3 left-3 bg-blue-600 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wide shadow-md">
+                        {t.services[service.badge as keyof typeof t.services] || service.badge}
+                      </span>
+                    )}
+                    {service.originalPrice && (
+                      <span className="absolute top-3 right-3 bg-red-500 text-white text-[10px] font-black px-2.5 py-1 rounded-full shadow-md">
+                        {Math.round(((service.originalPrice - service.price) / service.originalPrice) * 100)}% OFF
+                      </span>
+                    )}
+                    <div className="absolute bottom-3 left-3 flex gap-2">
+                      <span className="bg-white/90 backdrop-blur-sm text-gray-700 text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-sm">
+                        <span className="material-symbols-outlined text-[12px]">schedule</span>
+                        {service.duration}
+                      </span>
+                      <span className="bg-blue-600/90 backdrop-blur-sm text-white text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-sm">
+                        <span className="material-symbols-outlined text-[12px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                        {service.rating}
+                      </span>
                     </div>
                   </div>
 
-                  {/* Price & CTA */}
-                  <div className="flex items-center justify-between mt-4 pt-3 border-t border-outline-variant/10">
-                    <div>
-                      {service.originalPrice && (
-                        <span className="text-sm text-on-surface-variant/60 line-through mr-2">₹{service.originalPrice}</span>
-                      )}
-                      <span className="font-black text-2xl text-on-surface animate-price-tag">₹{service.price}</span>
+                  <div className="p-4">
+                    {/* Title & Rating */}
+                    <div className="flex items-start justify-between gap-2 mb-2">
+                      <h3 className="font-bold text-gray-900 text-base leading-tight">{service.name}</h3>
                     </div>
-                    <button
-                      onClick={() => {
-                        if (!isServiceable) {
-                          addToast(t.services.cannotBook, "error");
-                        } else {
-                          setBookingService(service);
-                        }
+                    <p className="text-xs text-gray-400">{service.reviews.toLocaleString()} {t.services.reviews}</p>
+
+                    {/* What's Included */}
+                    {service.included.length > 0 && (
+                      <div className="mt-3 bg-blue-50/50 rounded-xl p-3 border border-blue-100">
+                        <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-2">{t.services.whatIncluded}</p>
+                        <div className="grid grid-cols-2 gap-x-3 gap-y-1.5">
+                          {service.included.map((item, idx) => (
+                            <div key={idx} className="flex items-center gap-1.5">
+                              <span className="material-symbols-outlined text-blue-500 text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                              <span className="text-xs text-gray-600 font-medium">{item.trim()}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Price & CTA */}
+                    <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-100">
+                      <div className="flex items-baseline gap-2">
+                        {service.originalPrice && (
+                          <span className="text-sm text-gray-400 line-through">\u20B9{service.originalPrice}</span>
+                        )}
+                        <span className="font-black text-2xl text-gray-900">\u20B9{service.price}</span>
+                      </div>
+                      <button onClick={() => {
+                        if (!isServiceable) { addToast(t.services.cannotBook, "error"); } else { setBookingService(service); }
                         if (navigator.vibrate) navigator.vibrate([20, 10, 20]);
-                      }}
-                      className={`px-6 py-2.5 rounded-xl font-bold text-sm active:scale-95 transition-all shadow-sm ${
+                      }} className={`px-6 py-2.5 rounded-xl font-bold text-sm active:scale-95 transition-all ${
                         isServiceable
-                          ? "bg-primary text-white hover:bg-primary-dim shadow-primary/20 hover:scale-[1.02]"
-                          : "bg-outline text-white cursor-not-allowed shadow-none"
-                      }`}
-                    >
-                      {isServiceable ? t.services.bookNow : t.services.unavailable}
-                    </button>
+                          ? "bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-600/20"
+                          : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      }`}>
+                        {isServiceable ? t.services.bookNow : t.services.unavailable}
+                      </button>
+                    </div>
                   </div>
-                </div>
-              </div>
-            ))
+                </motion.div>
+              ))}
+            </>
           )}
         </main>
       </PullToRefresh>
 
-      {/* Booking Modal */}
       {bookingService && <BookingModal service={bookingService} onClose={() => setBookingService(null)} />}
     </div>
   );
@@ -654,13 +504,11 @@ function ServicesContent() {
 
 export default function ServicesPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
-        </div>
-      }
-    >
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin" />
+      </div>
+    }>
       <ServicesContent />
     </Suspense>
   );
