@@ -119,11 +119,13 @@ function ServiceDetailContent() {
           )}
           <h1 className="text-white font-black text-2xl leading-tight">{service.name}</h1>
           <div className="flex items-center gap-3 mt-2">
-            <span className="bg-white/20 backdrop-blur-sm text-white text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1">
-              <span style={{ fontVariationSettings: "'FILL' 1" }}>★</span> {service.rating}
-            </span>
-            <span className="text-white/70 text-xs">{service.reviews.toLocaleString()} {t.services.reviews}</span>
-            <span className="text-white/40">•</span>
+            {service.rating > 0 && (
+              <span className="bg-white/20 backdrop-blur-sm text-white text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1">
+                <span style={{ fontVariationSettings: "'FILL' 1" }}>★</span> {service.rating}
+              </span>
+            )}
+            {service.reviews > 0 && <span className="text-white/70 text-xs">{service.reviews.toLocaleString()} {t.services.reviews}</span>}
+            {service.rating > 0 && service.reviews > 0 && <span className="text-white/40">•</span>}
             <span className="text-white/70 text-xs flex items-center gap-1">
               <span className="material-symbols-outlined text-[12px]">schedule</span> {service.duration}
             </span>
@@ -216,14 +218,14 @@ function ServiceDetailContent() {
               {service.priceMin && service.priceMax ? (
                 <div className="flex items-baseline gap-1">
                   <span className="text-xs text-gray-400">Starting at</span>
-                  <span className="text-2xl font-black text-gray-900">\u20B9{service.priceMin}</span>
-                  <span className="text-sm text-gray-400">\u2013 \u20B9{service.priceMax}</span>
+                  <span className="text-2xl font-black text-gray-900">₹{service.priceMin}</span>
+                  <span className="text-sm text-gray-400">– ₹{service.priceMax}</span>
                 </div>
               ) : (
-                <span className="text-2xl font-black text-gray-900">\u20B9{service.price}</span>
+                <span className="text-2xl font-black text-gray-900">₹{service.price}</span>
               )}
               {service.originalPrice && (
-                <span className="text-sm text-gray-400 line-through ml-2">\u20B9{service.originalPrice}</span>
+                <span className="text-sm text-gray-400 line-through ml-2">₹{service.originalPrice}</span>
               )}
             </div>
             <span className="text-xs text-gray-400">{t.checkout.incTaxes}</span>

@@ -119,7 +119,7 @@ function BookingModal({ service, onClose }: { service: ServiceData; onClose: () 
               <div>
                 <h2 id="booking-modal-title" className="font-black text-gray-900 text-lg">{service.name}</h2>
                 <p className="text-blue-600 font-bold text-sm">
-                  {service.priceMin && service.priceMax ? `\u20B9${service.priceMin} \u2013 \u20B9${service.priceMax}` : `\u20B9${service.price}`} \u2022 {service.duration}
+                  {service.priceMin && service.priceMax ? `₹${service.priceMin} – ₹${service.priceMax}` : `₹${service.price}`} • {service.duration}
                 </p>
               </div>
             </div>
@@ -183,7 +183,7 @@ function BookingModal({ service, onClose }: { service: ServiceData; onClose: () 
               <div className="flex justify-between"><span className="text-gray-500 text-sm">{t.services.date}</span><span className="font-bold text-gray-900 text-sm">{new Date(selectedDate).toLocaleDateString("en-IN", { weekday: "long", month: "long", day: "numeric" })}</span></div>
               <div className="flex justify-between"><span className="text-gray-500 text-sm">{t.services.time}</span><span className="font-bold text-gray-900 text-sm">{selectedSlot}</span></div>
               {address && <div className="flex justify-between"><span className="text-gray-500 text-sm">{t.services.address}</span><span className="font-bold text-gray-900 text-sm text-right max-w-[60%]">{address}</span></div>}
-              <div className="border-t border-gray-200 pt-3 flex justify-between"><span className="font-bold text-gray-900">{t.services.total}</span><span className="font-black text-blue-600 text-lg">\u20B9{service.price}</span></div>
+              <div className="border-t border-gray-200 pt-3 flex justify-between"><span className="font-bold text-gray-900">{t.services.total}</span><span className="font-black text-blue-600 text-lg">₹{service.price}</span></div>
             </div>
             <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 flex gap-2 mb-5">
               <span className="material-symbols-outlined text-blue-600 text-sm mt-0.5">info</span>
@@ -408,7 +408,7 @@ function ServicesContent() {
                             <h3 className="text-white font-bold text-sm truncate">{service.name}</h3>
                             <div className="flex items-center justify-between mt-1">
                               <span className="text-white/80 text-[10px]">{service.duration}</span>
-                              <span className="text-white font-black text-sm">\u20B9{service.price}</span>
+                               <span className="text-white font-black text-sm">{"₹"}{service.price}</span>
                             </div>
                           </div>
                         </div>
@@ -441,10 +441,12 @@ function ServicesContent() {
                         <span className="material-symbols-outlined text-[12px]">schedule</span>
                         {service.duration}
                       </span>
-                      <span className="bg-blue-600/90 backdrop-blur-sm text-white text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-sm">
-                        <span className="material-symbols-outlined text-[12px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                        {service.rating}
-                      </span>
+                      {service.rating > 0 && (
+                        <span className="bg-blue-600/90 backdrop-blur-sm text-white text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-sm">
+                          <span className="material-symbols-outlined text-[12px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                          {service.rating}
+                        </span>
+                      )}
                     </div>
                   </div>
 
@@ -453,7 +455,7 @@ function ServicesContent() {
                     <div className="flex items-start justify-between gap-2 mb-2">
                       <h3 className="font-bold text-gray-900 text-base leading-tight">{service.name}</h3>
                     </div>
-                    <p className="text-xs text-gray-400">{service.reviews.toLocaleString()} {t.services.reviews}</p>
+                    <p className="text-xs text-gray-400">{service.reviews > 0 ? `${service.reviews.toLocaleString()} ${t.services.reviews}` : ""}</p>
 
                     {/* What's Included */}
                     {service.included.length > 0 && (
@@ -474,9 +476,9 @@ function ServicesContent() {
                     <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-100">
                       <div className="flex items-baseline gap-2">
                         {service.originalPrice && (
-                          <span className="text-sm text-gray-400 line-through">\u20B9{service.originalPrice}</span>
+                          <span className="text-sm text-gray-400 line-through">{"₹"}{service.originalPrice}</span>
                         )}
-                        <span className="font-black text-2xl text-gray-900">\u20B9{service.price}</span>
+                        <span className="font-black text-2xl text-gray-900">{"₹"}{service.price}</span>
                       </div>
                       <button onClick={() => {
                         if (!isServiceable) { addToast(t.services.cannotBook, "error"); } else { setBookingService(service); }
