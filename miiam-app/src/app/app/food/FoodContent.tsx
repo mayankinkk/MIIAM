@@ -894,6 +894,47 @@ export default function FoodPageContent() {
           <EmptyState icon="🍽️" title={t.food.noRestaurants} description={t.food.noRestaurantsDesc} actionLabel={t.food.showAll} onAction={() => { setVegFilter("all"); setOpenNow(false); }} />
         ) : (
           <>
+            {/* Popular Near You - Top Rated */}
+            {openFilteredRestaurants.length > 3 && (
+              <div className="px-4 mb-6">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">🔥</span>
+                    <h2 className="text-lg font-bold text-on-surface">Popular Near You</h2>
+                  </div>
+                </div>
+                <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+                  {[...openFilteredRestaurants]
+                    .sort((a, b) => parseFloat(String(b.rating || "0")) - parseFloat(String(a.rating || "0")))
+                    .slice(0, 6)
+                    .map((restaurant) => (
+                      <Link
+                        key={`popular-${restaurant.id}`}
+                        href={`/app/food/${restaurant.id}`}
+                        className="flex-shrink-0 w-36 bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm card-lift active:scale-[0.98] transition-transform"
+                      >
+                        <div className="relative h-24 bg-surface-container overflow-hidden">
+                          <BlurImage
+                            src={restaurant.cover_image_url || restaurant.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"}
+                            alt={restaurant.shop_name}
+                            fill
+                            className="w-full h-full"
+                            sizes="144px"
+                            fallbackSrc="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"
+                          />
+                          <span className="absolute top-1.5 left-1.5 bg-amber-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full shadow-sm">#{openFilteredRestaurants.indexOf(restaurant) + 1}</span>
+                          <span className="absolute bottom-1.5 right-1.5 bg-white/90 text-on-surface text-[10px] font-black px-1.5 py-0.5 rounded-full">★ {restaurant.rating || "4.0"}</span>
+                        </div>
+                        <div className="p-2.5">
+                          <h3 className="font-bold text-on-surface text-[11px] truncate">{restaurant.shop_name}</h3>
+                          <p className="text-[9px] text-on-surface-variant truncate mt-0.5">{restaurant.cuisine}</p>
+                        </div>
+                      </Link>
+                    ))}
+                </div>
+              </div>
+            )}
+
             {/* Horizontal Scroll Cards - GKB Style */}
             <div className="px-4 mb-6">
               <div className="flex items-center justify-between mb-3">
