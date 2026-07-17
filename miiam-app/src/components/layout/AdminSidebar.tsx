@@ -26,6 +26,7 @@ const menuGroups = [
       { name: "Cuisines", href: "/admin/foods/cuisines", icon: "lunch_dining" },
       { name: "Reviews", href: "/admin/reviews", icon: "star" },
       { name: "Verifications", href: "/admin/vendors/verification", icon: "verified" },
+      { name: "Store Items", href: "/admin/store", icon: "storefront" },
     ],
   },
 
