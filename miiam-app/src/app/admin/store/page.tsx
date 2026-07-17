@@ -55,6 +55,7 @@ export default function StoreItemsAdmin() {
   const [vendorResults, setVendorResults] = useState<{ id: string; shop_name: string }[]>([]);
   const [filterCategory, setFilterCategory] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [csvUploading, setCsvUploading] = useState(false);
 
   const loadItems = useCallback(async () => {
     setLoading(true);
@@ -160,6 +161,58 @@ export default function StoreItemsAdmin() {
     loadItems();
   };
 
+  const handleCsvUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.name.endsWith(".csv")) { addToast("Please upload a CSV file", "error"); return; }
+
+    setCsvUploading(true);
+    try {
+      const text = await file.text();
+      const lines = text.split("\n").filter((l) => l.trim());
+      if (lines.length < 2) { addToast("CSV must have a header row + data", "error"); setCsvUploading(false); return; }
+
+      const header = lines[0].toLowerCase().split(",").map((h) => h.trim());
+      const required = ["name", "price"];
+      const missing = required.filter((r) => !header.includes(r));
+      if (missing.length > 0) {
+        addToast(`Missing columns: ${missing.join(", ")}`, "error");
+        setCsvUploading(false);
+        return;
+      }
+
+      const rows = lines.slice(1).map((line) => {
+        const values = line.split(",").map((v) => v.trim());
+        const row: Record<string, string> = {};
+        header.forEach((h, i) => { row[h] = values[i] || ""; });
+        return row;
+      }).filter((r) => r.name && r.price);
+
+      if (rows.length === 0) { addToast("No valid rows found", "error"); setCsvUploading(false); return; }
+
+      const payload = rows.map((r) => ({
+        name: r.name,
+        description: r.description || null,
+        price: parseFloat(r.price) || 0,
+        original_price: r.original_price ? parseFloat(r.original_price) : null,
+        image_url: r.image_url || null,
+        vendor_name: r.vendor_name || null,
+        category: r.category || "under_99",
+        is_veg: r.is_veg === "true" || r.is_veg === "1",
+        is_active: true,
+        sort_order: 0,
+      }));
+
+      const { error } = await supabase.from("store_items").insert(payload);
+      if (error) { addToast("Upload failed: " + error.message, "error"); }
+      else { addToast(`${rows.length} items imported!`, "success"); loadItems(); }
+    } catch {
+      addToast("Failed to parse CSV", "error");
+    }
+    setCsvUploading(false);
+    e.target.value = "";
+  };
+
   const openEditModal = (item: StoreItem) => {
     setEditingItem(item);
     setForm({
@@ -206,10 +259,17 @@ export default function StoreItemsAdmin() {
           <h1 className="text-2xl font-black text-gray-900">Store Items</h1>
           <p className="text-sm text-gray-500 mt-0.5">Manage Under ₹99/149/199/249 store items</p>
         </div>
-        <button onClick={openCreateModal} className="px-5 py-2.5 bg-blue-600 text-white rounded-xl font-bold text-sm hover:bg-blue-700 active:scale-95 transition-all shadow-md shadow-blue-600/20 flex items-center gap-2">
-          <span className="material-symbols-outlined text-lg">add</span>
-          Add Item
-        </button>
+        <div className="flex items-center gap-3">
+          <label className={`px-4 py-2.5 bg-gray-100 text-gray-700 rounded-xl text-sm font-bold hover:bg-gray-200 active:scale-95 transition-all cursor-pointer flex items-center gap-2 ${csvUploading ? "opacity-50 pointer-events-none" : ""}`}>
+            <span className="material-symbols-outlined text-lg">upload_file</span>
+            {csvUploading ? "Importing..." : "Import CSV"}
+            <input type="file" accept=".csv" onChange={handleCsvUpload} className="hidden" disabled={csvUploading} />
+          </label>
+          <button onClick={openCreateModal} className="px-5 py-2.5 bg-blue-600 text-white rounded-xl font-bold text-sm hover:bg-blue-700 active:scale-95 transition-all shadow-md shadow-blue-600/20 flex items-center gap-2">
+            <span className="material-symbols-outlined text-lg">add</span>
+            Add Item
+          </button>
+        </div>
       </div>
 
       {/* Stats Cards */}
