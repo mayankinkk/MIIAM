@@ -64,7 +64,7 @@ function ServiceDetailContent() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Booking failed");
-      router.push("/app/bookings");
+      router.push(`/app/bookings/confirmation?id=${data.booking?.id || ""}`);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Booking failed");
     } finally { setAdding(false); }
