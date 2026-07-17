@@ -461,6 +461,7 @@ export default function FoodPageContent() {
   });
   const [openNow, setOpenNow] = useState(false);
   const [sortBy, setSortBy] = useState<SortOption>("rating");
+  const [searchQuery, setSearchQuery] = useState("");
   const [priceMin, setPriceMin] = useState(0);
   const [priceMax, setPriceMax] = useState(1000);
   const [restaurants, setRestaurants] = useState<FoodVendor[]>([]);
@@ -646,9 +647,13 @@ export default function FoodPageContent() {
       ? sortedRestaurants
       : sortedRestaurants.filter((r) => r.cuisine?.toLowerCase().includes(selectedCategory));
 
-  const openFilteredRestaurants = openNow
-    ? filteredRestaurants.filter((r) => parseIsOpen(r.opening_hours))
+  const searchedRestaurants = searchQuery
+    ? filteredRestaurants.filter((r) => r.shop_name?.toLowerCase().includes(searchQuery.toLowerCase()) || r.cuisine?.toLowerCase().includes(searchQuery.toLowerCase()))
     : filteredRestaurants;
+
+  const openFilteredRestaurants = openNow
+    ? searchedRestaurants.filter((r) => parseIsOpen(r.opening_hours))
+    : searchedRestaurants;
 
   return (
     <PullToRefresh onRefresh={handleRefresh} className="min-h-screen bg-surface">
@@ -721,6 +726,25 @@ export default function FoodPageContent() {
               <span className={`text-[10px] font-bold ${selectedCategory === cat.id ? "text-primary" : "text-on-surface-variant"}`}>{cat.name}</span>
             </button>
           ))}
+        </div>
+      </div>
+
+      {/* Search Bar */}
+      <div className="px-4 pb-3">
+        <div className="relative">
+          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">search</span>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search restaurants or cuisines..."
+            className="w-full pl-10 pr-4 py-3 bg-surface-container rounded-xl text-sm font-medium text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30"
+          />
+          {searchQuery && (
+            <button onClick={() => setSearchQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant">
+              <span className="material-symbols-outlined text-lg">close</span>
+            </button>
+          )}
         </div>
       </div>
 
