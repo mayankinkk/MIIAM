@@ -32,6 +32,7 @@ export default function AdminMenuItemsPage() {
   const [vendorFilter, setVendorFilter] = useState("all");
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
+  const [csvUploading, setCsvUploading] = useState(false);
   const [newItem, setNewItem] = useState({
     name: "",
     price: "",
@@ -123,6 +124,52 @@ export default function AdminMenuItemsPage() {
     }
   };
 
+  const handleCsvUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.name.endsWith(".csv")) { useToastStore.getState().addToast("Please upload a CSV file", "error"); return; }
+
+    setCsvUploading(true);
+    try {
+      const text = await file.text();
+      const lines = text.split("\n").filter((l) => l.trim());
+      if (lines.length < 2) { useToastStore.getState().addToast("CSV must have a header + data rows", "error"); setCsvUploading(false); return; }
+
+      const header = lines[0].toLowerCase().split(",").map((h) => h.trim());
+      if (!header.includes("name") || !header.includes("price") || !header.includes("vendor_id")) {
+        useToastStore.getState().addToast("CSV must have: name, price, vendor_id columns", "error");
+        setCsvUploading(false);
+        return;
+      }
+
+      const rows = lines.slice(1).map((line) => {
+        const values = line.split(",").map((v) => v.trim());
+        const row: Record<string, string> = {};
+        header.forEach((h, i) => { row[h] = values[i] || ""; });
+        return row;
+      }).filter((r) => r.name && r.price && r.vendor_id);
+
+      if (rows.length === 0) { useToastStore.getState().addToast("No valid rows found", "error"); setCsvUploading(false); return; }
+
+      const payload = rows.map((r) => ({
+        name: r.name,
+        price: parseFloat(r.price) || 0,
+        category: r.category || "Main Course",
+        vendor_id: r.vendor_id,
+        image_url: r.image_url || null,
+        is_available: true,
+      }));
+
+      const { error } = await supabase.from("menu_items").insert(payload);
+      if (error) { useToastStore.getState().addToast("Upload failed: " + error.message, "error"); }
+      else { useToastStore.getState().addToast(`${rows.length} menu items imported!`, "success"); loadData(); }
+    } catch {
+      useToastStore.getState().addToast("Failed to parse CSV", "error");
+    }
+    setCsvUploading(false);
+    e.target.value = "";
+  };
+
   const toggleAvailability = async (item: MenuItem) => {
     try {
       await supabase
@@ -151,12 +198,19 @@ export default function AdminMenuItemsPage() {
     <div className="px-8 space-y-8">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-black text-[var(--color-on-surface)]">Menu Items</h1>
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="bg-[var(--color-primary)] text-white px-6 py-3 rounded-xl font-bold text-sm"
-        >
-          + Add Item
-        </button>
+        <div className="flex items-center gap-3">
+          <label className={`bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] text-[var(--color-on-surface-variant)] px-4 py-3 rounded-xl font-bold text-sm cursor-pointer hover:bg-[var(--color-surface-subtle)] flex items-center gap-2 ${csvUploading ? "opacity-50 pointer-events-none" : ""}`}>
+            <span className="material-symbols-outlined text-sm">upload_file</span>
+            {csvUploading ? "Importing..." : "Import CSV"}
+            <input type="file" accept=".csv" onChange={handleCsvUpload} className="hidden" disabled={csvUploading} />
+          </label>
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="bg-[var(--color-primary)] text-white px-6 py-3 rounded-xl font-bold text-sm"
+          >
+            + Add Item
+          </button>
+        </div>
       </div>
 
       <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)] overflow-hidden shadow-sm">
