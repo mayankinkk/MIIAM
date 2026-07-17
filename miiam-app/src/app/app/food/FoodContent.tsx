@@ -701,6 +701,69 @@ export default function FoodPageContent() {
       </div>
 
       <main className="p-6 space-y-4">
+        {/* Price Bucket Sections - Under 99/149/199/249 */}
+        {!loading && hasLocation && !noLocalVendors && menuItems.length > 0 && (
+          <div className="space-y-5">
+            {[
+              { max: 99, label: "Under ₹99", emoji: "🔥", color: "from-orange-500 to-red-500" },
+              { max: 149, label: "Under ₹149", emoji: "💰", color: "from-emerald-500 to-teal-500" },
+              { max: 199, label: "Under ₹199", emoji: "⭐", color: "from-blue-500 to-indigo-500" },
+              { max: 249, label: "Under ₹249", emoji: "🎯", color: "from-purple-500 to-pink-500" },
+            ].map((bucket) => {
+              const items = menuItems
+                .filter((item) => item.price > 0 && item.price <= bucket.max)
+                .slice(0, 10);
+              if (items.length === 0) return null;
+              return (
+                <div key={bucket.max}>
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">{bucket.emoji}</span>
+                      <h2 className="text-lg font-bold text-on-surface">{bucket.label}</h2>
+                    </div>
+                    <span className="text-xs font-bold text-primary">{items.length} items</span>
+                  </div>
+                  <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+                    {items.map((item) => {
+                      const restaurant = restaurants.find((r) => r.id === item.vendor_id);
+                      return (
+                        <Link
+                          key={item.id}
+                          href={`/app/food/${item.vendor_id}`}
+                          className="flex-shrink-0 w-36 bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm card-lift active:scale-[0.98] transition-transform"
+                        >
+                          <div className="relative h-24 bg-surface-container overflow-hidden">
+                            <BlurImage
+                              src={item.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"}
+                              alt={item.name}
+                              fill
+                              className="w-full h-full"
+                              sizes="144px"
+                              fallbackSrc="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"
+                            />
+                            <div className="absolute top-1.5 left-1.5">
+                              <span className={`w-3.5 h-3.5 border-[1.5px] ${item.is_veg ? "border-green-600 bg-white" : "border-red-600 bg-white"} rounded-sm flex items-center justify-center`}>
+                                <span className={`w-1.5 h-1.5 ${item.is_veg ? "bg-green-600" : "bg-red-600"} rounded-full`} />
+                              </span>
+                            </div>
+                            <span className="absolute bottom-1.5 right-1.5 bg-emerald-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-sm">
+                              ₹{item.price}
+                            </span>
+                          </div>
+                          <div className="p-2.5">
+                            <h3 className="font-bold text-on-surface text-[11px] truncate leading-tight">{item.name}</h3>
+                            <p className="text-[9px] text-on-surface-variant truncate mt-1">{restaurant?.shop_name || "Restaurant"}</p>
+                          </div>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
         {loading ? (
           <div className="space-y-4">
             {[1,2,3,4].map(i => (
