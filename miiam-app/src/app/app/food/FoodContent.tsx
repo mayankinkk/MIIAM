@@ -455,7 +455,10 @@ export default function FoodPageContent() {
   ];
   const getSetting = useServiceSettingsStore((s) => s.getSetting);
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [vegFilter, setVegFilter] = useState<"all" | "veg" | "non_veg">("all");
+  const [vegFilter, setVegFilter] = useState<"all" | "veg" | "non_veg">(() => {
+    if (typeof window !== "undefined") return (localStorage.getItem("miiam-veg-filter") as "all" | "veg" | "non_veg") || "all";
+    return "all";
+  });
   const [openNow, setOpenNow] = useState(false);
   const [sortBy, setSortBy] = useState<SortOption>("rating");
   const [priceMin, setPriceMin] = useState(0);
@@ -563,6 +566,10 @@ export default function FoodPageContent() {
       }
     });
   }, [userPincode, userCity, fetchData, setFavorites]);
+
+  useEffect(() => {
+    localStorage.setItem("miiam-veg-filter", vegFilter);
+  }, [vegFilter]);
 
   // Real-time: listen for vendor status changes (online/offline toggle)
   useEffect(() => {
