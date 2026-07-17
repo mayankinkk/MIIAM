@@ -6,6 +6,32 @@ import { createRouteLogger } from "@/lib/logger";
 
 const logger = createRouteLogger("notify");
 
+async function sendFCMPush(tokens: string[], title: string, body: string, data?: Record<string, string>) {
+  const serverKey = process.env.FIREBASE_SERVER_KEY;
+  if (!serverKey || tokens.length === 0) return;
+
+  try {
+    const response = await fetch("https://fcm.googleapis.com/fcm/send", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `key=${serverKey}`,
+      },
+      body: JSON.stringify({
+        registration_ids: tokens,
+        notification: { title, body, icon: "/icons/icon-192x192.png" },
+        data: data || {},
+      }),
+    });
+    if (!response.ok) {
+      const text = await response.text();
+      logger.error({ status: response.status, body: text }, "FCM send failed");
+    }
+  } catch (err) {
+    logger.error({ err }, "FCM push error");
+  }
+}
+
 export const POST = withRateLimit(async function POST(req: NextRequest) {
   if (!checkCsrf(req)) {
     return NextResponse.json({ error: "CSRF validation failed" }, { status: 403 });
@@ -48,6 +74,26 @@ export const POST = withRateLimit(async function POST(req: NextRequest) {
       });
 
     if (error) throw error;
+
+    // Send FCM push if tokens exist
+    try {
+      const { data: tokens } = await supabaseAdmin
+        .from("push_tokens")
+        .select("token")
+        .eq("user_id", user_id)
+        .eq("is_active", true);
+
+      if (tokens && tokens.length > 0) {
+        await sendFCMPush(
+          tokens.map((t: { token: string }) => t.token),
+          title,
+          body || "",
+          action_url ? { action_url } : undefined
+        );
+      }
+    } catch {
+      // push_tokens table may not exist yet — non-critical
+    }
 
     return NextResponse.json({ success: true });
   } catch (err: unknown) {

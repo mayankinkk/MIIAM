@@ -1,163 +1,47 @@
 "use client";
 
-import { useEffect, useState, useCallback, useMemo, useRef } from "react";
+import { useEffect, useCallback, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { requestFcmToken, onForegroundMessage, getFirebaseMessaging } from "@/lib/firebase/messaging";
-import { useNotificationStore } from "@/lib/store/notificationStore";
-import { showLocalNotification } from "@/lib/notifications";
-import logger from "@/lib/logger";
+import { requestPushPermission, onPushMessage } from "@/lib/firebase";
+import { useToastStore } from "@/lib/store/toastStore";
 
-export function usePushNotifications(userId?: string) {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const { addNotification, setPermission, permission } = useNotificationStore();
-  const supabase = useMemo(() => createClient(), []);
-  const unsubRef = useRef<(() => void) | null>(null);
+export function usePushNotifications() {
+  const supabase = createClient();
+  const { addToast } = useToastStore();
+  const [token, setToken] = useState<string | null>(null);
+  const [permission, setPermission] = useState<NotificationPermission>("default");
 
-  // Request permission and get token
-  const subscribe = useCallback(async () => {
-    if (!userId) {
-      setError("User not logged in");
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      // Request browser notification permission
-      const browserPermission = await Notification.requestPermission();
-      setPermission(browserPermission);
-
-      if (browserPermission !== "granted") {
-        setError("Notification permission denied");
-        setIsLoading(false);
-        return;
-      }
-
-      // Try to get FCM token
-      const fcmToken = await requestFcmToken();
-
-      if (fcmToken) {
-        // Save token to database
-        await supabase.from("user_push_tokens").upsert(
-          {
-            user_id: userId,
-            token: fcmToken,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          },
-          { onConflict: "user_id" }
-        );
-
-        logger.info("FCM token saved");
-      }
-
-      // Listen for foreground messages
-      const unsubscribe = onForegroundMessage((payload: unknown) => {
-        const payloadWithType = payload as { notification?: { title?: string; body?: string; icon?: string }; data?: Record<string, string> };
-        const { notification, data } = payloadWithType;
-        
-        if (notification) {
-          const title = notification.title || "";
-          const body = notification.body || "";
-          
-          // Show local notification
-          showLocalNotification(title, body);
-
-          // Add to store
-          addNotification({
-            title,
-            body,
-            icon: notification.icon,
-            data,
-            actionUrl: data?.actionUrl,
-          });
-        }
-      });
-
-      // Track cleanup function
-      if (unsubRef.current) unsubRef.current();
-      unsubRef.current = unsubscribe;
-
-      setIsLoading(false);
-      return;
-    } catch (err) {
-      logger.error({ err }, "Push notification setup error");
-      setError("Failed to setup notifications");
-      setIsLoading(false);
-    }
-  }, [userId, supabase, addNotification, setPermission]);
-
-  // Cleanup foreground message subscription on unmount
   useEffect(() => {
-    return () => {
-      if (unsubRef.current) {
-        unsubRef.current();
-        unsubRef.current = null;
-      }
-    };
+    if (typeof window === "undefined" || !("Notification" in window)) return;
+    setPermission(Notification.permission);
   }, []);
 
-  // Send notification
-  const sendNotification = useCallback(async (
-    title: string,
-    message: string,
-    type?: string,
-    actionUrl?: string
-  ) => {
-    if (!userId) return;
+  const subscribe = useCallback(async () => {
+    const fcmToken = await requestPushPermission();
+    if (!fcmToken) return null;
 
-    try {
-      const response = await fetch("/api/notifications/send", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId,
-          title,
-          body: message,
-          type,
-          actionUrl,
-        }),
-      });
+    setToken(fcmToken);
+    setPermission(Notification.permission);
 
-      return response.json();
-    } catch (err) {
-      logger.error({ err }, "Failed to send notification");
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      await supabase.from("push_tokens").upsert({
+        user_id: user.id,
+        token: fcmToken,
+        platform: "web",
+        updated_at: new Date().toISOString(),
+      }, { onConflict: "token" });
     }
-  }, [userId]);
 
-  // Fetch notification history
-  const fetchHistory = useCallback(async () => {
-    if (!userId) return [];
+    return fcmToken;
+  }, [supabase]);
 
-    try {
-      const response = await fetch(`/api/notifications/send?userId=${userId}`);
-      const data = await response.json();
-      return data.notifications || [];
-    } catch (err) {
-      logger.error({ err }, "Failed to fetch notifications");
-      return [];
-    }
-  }, [userId]);
+  useEffect(() => {
+    const unsub = onPushMessage((payload) => {
+      addToast(payload.body || payload.title || "New notification", "info");
+    });
+    return () => { unsub?.(); };
+  }, [addToast]);
 
-  return {
-    subscribe,
-    sendNotification,
-    fetchHistory,
-    isLoading,
-    error,
-    permission,
-  };
+  return { subscribe, token, permission };
 }
-
-// Service types for notifications
-export const NotificationType = {
-  ORDER_CONFIRMED: "order_confirmed",
-  ORDER_COMPLETED: "order_completed",
-  PROMO: "promo",
-  BOOKING_REMINDER: "booking_reminder",
-  PAYMENT: "payment",
-} as const;
-
-export type NotificationType = typeof NotificationType[keyof typeof NotificationType];
