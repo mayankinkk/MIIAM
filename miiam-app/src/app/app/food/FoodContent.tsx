@@ -993,8 +993,8 @@ export default function FoodPageContent() {
                           {restaurant.delivery_time_min ? `${restaurant.delivery_time_min} min` : `30-40 min`}
                         </span>
                       </div>
-                      <p className="text-[10px] text-on-surface-variant mt-1">
-                        {restaurant.delivery_charge ? `₹${restaurant.delivery_charge} delivery` : "Free delivery"}
+                      <p className={`text-[10px] font-bold mt-1 ${!restaurant.delivery_charge ? "text-green-600" : "text-on-surface-variant"}`}>
+                        {restaurant.delivery_charge ? `₹${restaurant.delivery_charge} delivery` : "免费配送 • Free delivery"}
                       </p>
                     </div>
                   </Link>
@@ -1045,6 +1045,7 @@ export default function FoodPageContent() {
                           <span className="text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded font-medium">★ {restaurant.rating || "4.0"}</span>
                           <span className="text-[10px] text-outline">•</span>
                           <span className="text-[10px] text-on-surface-variant">{restaurant.delivery_time_min ? `${restaurant.delivery_time_min}–${restaurant.delivery_time_max || restaurant.delivery_time_min + 15} min` : `30-40 min`}</span>
+                          {!restaurant.delivery_charge && <span className="text-[10px] text-green-600 font-bold">Free delivery</span>}
                         </div>
                         <div className="flex items-center gap-1 mt-2 ml-9 text-primary font-bold text-[10px]">
                           <span>{t.food.viewMenu}</span>
