@@ -769,7 +769,7 @@ export default function FoodPageContent() {
                       const itemVeg = (item as StoreItem).is_veg ?? (item as FoodMenuItem).is_veg;
                       const vendorId = (item as StoreItem).vendor_id || (item as FoodMenuItem).vendor_id;
                       const vendorName = isStoreItem ? (item as StoreItem).vendor_name || restaurant?.shop_name : restaurant?.shop_name || "Restaurant";
-                      const linkHref = vendorId ? `/app/food/${vendorId}` : "#";
+                      const linkHref = isStoreItem ? `/app/store/${item.id}` : vendorId ? `/app/food/${vendorId}` : "#";
                       return (
                         <Link
                           key={item.id}
