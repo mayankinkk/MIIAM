@@ -418,6 +418,36 @@ function ServicesContent() {
                 </div>
               )}
 
+              {/* Top Rated Services */}
+              {filteredServices.length > 3 && (() => {
+                const topRated = [...filteredServices].filter(s => s.rating > 0).sort((a, b) => b.rating - a.rating).slice(0, 6);
+                if (topRated.length === 0) return null;
+                return (
+                  <div className="mb-6">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-lg">⭐</span>
+                      <h2 className="text-lg font-bold text-gray-900">Top Rated</h2>
+                    </div>
+                    <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+                      {topRated.map((service) => (
+                        <Link key={`top-${service.id}`} href={`/app/services/${service.id}`} className="flex-shrink-0 w-36 bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 active:scale-[0.97] transition-transform">
+                          <div className="relative h-20 overflow-hidden">
+                            <BlurImage src={service.image} alt={service.name} fill className="w-full h-full" sizes="144px" fallbackSrc="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=80" />
+                            <span className="absolute top-1.5 right-1.5 bg-blue-600 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full flex items-center gap-0.5 shadow-sm">
+                              <span className="text-[8px]">★</span> {service.rating}
+                            </span>
+                          </div>
+                          <div className="p-2.5">
+                            <h3 className="font-bold text-gray-900 text-[11px] truncate">{service.name}</h3>
+                            <p className="text-[10px] font-bold text-blue-600 mt-0.5">₹{service.price}</p>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })()}
+
               {/* All Services - Vertical Cards */}
               {filteredServices.map((service, index) => (
                 <motion.div key={service.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(index * 0.05, 0.3) }}
