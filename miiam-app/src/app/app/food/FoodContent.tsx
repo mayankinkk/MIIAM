@@ -456,6 +456,7 @@ export default function FoodPageContent() {
   const getSetting = useServiceSettingsStore((s) => s.getSetting);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [vegFilter, setVegFilter] = useState<"all" | "veg" | "non_veg">("all");
+  const [openNow, setOpenNow] = useState(false);
   const [sortBy, setSortBy] = useState<SortOption>("rating");
   const [priceMin, setPriceMin] = useState(0);
   const [priceMax, setPriceMax] = useState(1000);
@@ -638,6 +639,10 @@ export default function FoodPageContent() {
       ? sortedRestaurants
       : sortedRestaurants.filter((r) => r.cuisine?.toLowerCase().includes(selectedCategory));
 
+  const openFilteredRestaurants = openNow
+    ? filteredRestaurants.filter((r) => parseIsOpen(r.opening_hours))
+    : filteredRestaurants;
+
   return (
     <PullToRefresh onRefresh={handleRefresh} className="min-h-screen bg-surface">
       {/* Pincode Verification Banner */}
@@ -722,6 +727,9 @@ export default function FoodPageContent() {
         </button>
         <button onClick={() => setVegFilter("non_veg")} className={`px-4 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 ${vegFilter === "non_veg" ? "bg-red-600 text-white" : "bg-red-100 text-red-700"}`}>
           <span className="w-3 h-3 border-2 border-red-600 rounded-sm flex items-center justify-center"><span className="w-1.5 h-1.5 bg-red-600 rounded-full"></span></span> {t.food.nonVeg}
+        </button>
+        <button onClick={() => setOpenNow(!openNow)} className={`px-4 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 ${openNow ? "bg-green-600 text-white" : "bg-green-100 text-green-700"}`}>
+          <span className="material-symbols-outlined text-sm">schedule</span> Open Now
         </button>
         <SortDropdown sort={sortBy} setSort={setSortBy} />
         <PriceRangeFilter onApply={(min, max) => { setPriceMin(min); setPriceMax(max); }} />
@@ -851,18 +859,18 @@ export default function FoodPageContent() {
               {t.home.changeLocation}
             </button>
           </div>
-        ) : filteredRestaurants.length === 0 ? (
-          <EmptyState icon="🍽️" title={t.food.noRestaurants} description={t.food.noRestaurantsDesc} actionLabel={t.food.showAll} onAction={() => setVegFilter("all")} />
+        ) : openFilteredRestaurants.length === 0 ? (
+          <EmptyState icon="🍽️" title={t.food.noRestaurants} description={t.food.noRestaurantsDesc} actionLabel={t.food.showAll} onAction={() => { setVegFilter("all"); setOpenNow(false); }} />
         ) : (
           <>
             {/* Horizontal Scroll Cards - GKB Style */}
             <div className="px-4 mb-6">
               <div className="flex items-center justify-between mb-3">
                 <h2 className="text-lg font-bold text-on-surface">{selectedCategory === "all" ? "All Restaurants" : foodCategories.find(c => c.id === selectedCategory)?.name || "Restaurants"}</h2>
-                <span className="text-xs font-bold text-primary">{filteredRestaurants.length} places</span>
+                <span className="text-xs font-bold text-primary">{openFilteredRestaurants.length} places</span>
               </div>
               <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-                {filteredRestaurants.map((restaurant) => (
+                {openFilteredRestaurants.map((restaurant) => (
                   <Link
                     key={restaurant.id}
                     href={`/app/food/${restaurant.id}`}
@@ -926,7 +934,7 @@ export default function FoodPageContent() {
             <div className="px-4 pb-4">
               <h3 className="text-base font-bold text-on-surface mb-3">More Options</h3>
               <div className="space-y-3">
-                {filteredRestaurants.map((restaurant) => (
+                {openFilteredRestaurants.map((restaurant) => (
                   <Link
                     key={`list-${restaurant.id}`}
                     href={`/app/food/${restaurant.id}`}
