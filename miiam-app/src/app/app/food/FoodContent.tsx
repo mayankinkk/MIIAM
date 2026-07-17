@@ -68,6 +68,21 @@ interface FoodMenuItem {
   [key: string]: unknown;
 }
 
+interface StoreItem {
+  id: string;
+  name: string;
+  description: string | null;
+  price: number;
+  original_price: number | null;
+  image_url: string | null;
+  vendor_id: string | null;
+  vendor_name: string | null;
+  category: string;
+  is_veg: boolean;
+  is_active: boolean;
+  sort_order: number;
+}
+
 function parseIsOpen(hours: string | null | undefined): boolean {
   if (!hours) return true;
   try {
@@ -446,6 +461,7 @@ export default function FoodPageContent() {
   const [priceMax, setPriceMax] = useState(1000);
   const [restaurants, setRestaurants] = useState<FoodVendor[]>([]);
   const [menuItems, setMenuItems] = useState<FoodMenuItem[]>([]);
+  const [storeItems, setStoreItems] = useState<StoreItem[]>([]);
   const favoriteIds = useFavoritesStore((s) => s.favoriteIds);
   const toggle = useFavoritesStore((s) => s.toggle);
   const setFavorites = useFavoritesStore((s) => s.setFavorites);
@@ -507,6 +523,17 @@ export default function FoodPageContent() {
         } else {
           setMenuItems([]);
         }
+
+        const { data: storeData, error: storeError } = await supabase
+          .from("store_items")
+          .select("*")
+          .eq("is_active", true)
+          .order("category")
+          .order("sort_order");
+        if (storeError) {
+          logger.error({ err: storeError }, "Store items query failed");
+        }
+        setStoreItems(storeData || []);
         
         if (heroRes?.data) setHeroAsset(heroRes.data);
       });
@@ -702,17 +729,24 @@ export default function FoodPageContent() {
 
       <main className="p-6 space-y-4">
         {/* Price Bucket Sections - Under 99/149/199/249 */}
-        {!loading && hasLocation && !noLocalVendors && menuItems.length > 0 && (
+        {!loading && hasLocation && !noLocalVendors && (storeItems.length > 0 || menuItems.length > 0) && (
           <div className="space-y-5">
             {[
-              { max: 99, label: "Under ₹99", emoji: "🔥", color: "from-orange-500 to-red-500" },
-              { max: 149, label: "Under ₹149", emoji: "💰", color: "from-emerald-500 to-teal-500" },
-              { max: 199, label: "Under ₹199", emoji: "⭐", color: "from-blue-500 to-indigo-500" },
-              { max: 249, label: "Under ₹249", emoji: "🎯", color: "from-purple-500 to-pink-500" },
+              { max: 99, label: "Under ₹99", emoji: "🔥", color: "from-orange-500 to-red-500", dbCategory: "under_99" },
+              { max: 149, label: "Under ₹149", emoji: "💰", color: "from-emerald-500 to-teal-500", dbCategory: "under_149" },
+              { max: 199, label: "Under ₹199", emoji: "⭐", color: "from-blue-500 to-indigo-500", dbCategory: "under_199" },
+              { max: 249, label: "Under ₹249", emoji: "🎯", color: "from-purple-500 to-pink-500", dbCategory: "under_249" },
             ].map((bucket) => {
-              const items = menuItems
-                .filter((item) => item.price > 0 && item.price <= bucket.max)
+              // Prefer store_items from DB, fall back to filtering menu_items
+              const dbItems = storeItems
+                .filter((item) => item.category === bucket.dbCategory)
                 .slice(0, 10);
+              const fallbackItems = dbItems.length === 0
+                ? menuItems
+                    .filter((item) => item.price > 0 && item.price <= bucket.max)
+                    .slice(0, 10)
+                : [];
+              const items = dbItems.length > 0 ? dbItems : fallbackItems;
               if (items.length === 0) return null;
               return (
                 <div key={bucket.max}>
@@ -725,34 +759,44 @@ export default function FoodPageContent() {
                   </div>
                   <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
                     {items.map((item) => {
-                      const restaurant = restaurants.find((r) => r.id === item.vendor_id);
+                      const isStoreItem = "original_price" in item;
+                      const restaurant = isStoreItem
+                        ? restaurants.find((r) => r.id === (item as StoreItem).vendor_id)
+                        : restaurants.find((r) => r.id === (item as FoodMenuItem).vendor_id);
+                      const itemName = item.name;
+                      const itemImage = (item as StoreItem).image_url || (item as FoodMenuItem).image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80";
+                      const itemPrice = item.price;
+                      const itemVeg = (item as StoreItem).is_veg ?? (item as FoodMenuItem).is_veg;
+                      const vendorId = (item as StoreItem).vendor_id || (item as FoodMenuItem).vendor_id;
+                      const vendorName = isStoreItem ? (item as StoreItem).vendor_name || restaurant?.shop_name : restaurant?.shop_name || "Restaurant";
+                      const linkHref = vendorId ? `/app/food/${vendorId}` : "#";
                       return (
                         <Link
                           key={item.id}
-                          href={`/app/food/${item.vendor_id}`}
+                          href={linkHref}
                           className="flex-shrink-0 w-36 bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm card-lift active:scale-[0.98] transition-transform"
                         >
                           <div className="relative h-24 bg-surface-container overflow-hidden">
                             <BlurImage
-                              src={item.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"}
-                              alt={item.name}
+                              src={itemImage}
+                              alt={itemName}
                               fill
                               className="w-full h-full"
                               sizes="144px"
                               fallbackSrc="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"
                             />
                             <div className="absolute top-1.5 left-1.5">
-                              <span className={`w-3.5 h-3.5 border-[1.5px] ${item.is_veg ? "border-green-600 bg-white" : "border-red-600 bg-white"} rounded-sm flex items-center justify-center`}>
-                                <span className={`w-1.5 h-1.5 ${item.is_veg ? "bg-green-600" : "bg-red-600"} rounded-full`} />
+                              <span className={`w-3.5 h-3.5 border-[1.5px] ${itemVeg ? "border-green-600 bg-white" : "border-red-600 bg-white"} rounded-sm flex items-center justify-center`}>
+                                <span className={`w-1.5 h-1.5 ${itemVeg ? "bg-green-600" : "bg-red-600"} rounded-full`} />
                               </span>
                             </div>
                             <span className="absolute bottom-1.5 right-1.5 bg-emerald-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-sm">
-                              ₹{item.price}
+                              ₹{itemPrice}
                             </span>
                           </div>
                           <div className="p-2.5">
-                            <h3 className="font-bold text-on-surface text-[11px] truncate leading-tight">{item.name}</h3>
-                            <p className="text-[9px] text-on-surface-variant truncate mt-1">{restaurant?.shop_name || "Restaurant"}</p>
+                            <h3 className="font-bold text-on-surface text-[11px] truncate leading-tight">{itemName}</h3>
+                            <p className="text-[9px] text-on-surface-variant truncate mt-1">{vendorName}</p>
                           </div>
                         </Link>
                       );
