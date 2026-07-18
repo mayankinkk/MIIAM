@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import SignOutButton from "@/components/AdminSignOut";
@@ -29,7 +30,6 @@ const menuGroups = [
       { name: "Store Items", href: "/admin/store", icon: "storefront" },
     ],
   },
-
   {
     title: "Home Services",
     items: [
@@ -83,46 +83,60 @@ const menuGroups = [
 export default function AdminSidebar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  
-  // Combine pathname and search params for exact matching
+  const [collapsed, setCollapsed] = useState(false);
+
   const fullPath = pathname + (searchParams.toString() ? `?${searchParams.toString()}` : "");
 
   return (
-    <aside className="w-64 bg-[var(--color-surface-container-lowest)] border-r border-[var(--color-primary)]/10 fixed h-full z-20 flex flex-col hidden md:flex shadow-2xl shadow-red-900/5 overflow-y-auto custom-scrollbar">
-      <div className="p-6 border-b border-slate-50 flex items-center gap-3">
-        <div className="w-8 h-8 bg-[var(--color-primary)] rounded-lg flex items-center justify-center text-white font-black">M</div>
-        <Link href="/admin" className="text-xl font-black tracking-tighter text-[var(--color-primary)]">
-          MIIAM <span className="text-[var(--color-outline-variant)] text-xs tracking-normal">Staff</span>
-        </Link>
+    <aside className={`${collapsed ? "w-[72px]" : "w-64"} bg-surface-container-lowest border-r border-outline/10 fixed h-full z-20 flex flex-col hidden md:flex shadow-2xl shadow-red-900/5 overflow-y-auto custom-scrollbar transition-all duration-300`}>
+      {/* Header */}
+      <div className={`${collapsed ? "px-3 py-4" : "px-6 py-6"} border-b border-outline/5 flex items-center ${collapsed ? "justify-center" : "gap-3"}`}>
+        <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-black shrink-0">M</div>
+        {!collapsed && (
+          <Link href="/admin" className="text-xl font-black tracking-tighter text-primary">
+            MIIAM <span className="text-outline-variant text-xs tracking-normal">Staff</span>
+          </Link>
+        )}
+        <button
+          onClick={() => setCollapsed(!collapsed)}
+          className={`${collapsed ? "mt-3" : "ml-auto"} p-1 rounded-lg hover:bg-surface-container-high transition-colors`}
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+        >
+          <span className="material-symbols-outlined text-sm text-on-surface-variant">
+            {collapsed ? "chevron_right" : "chevron_left"}
+          </span>
+        </button>
       </div>
-      
-      <nav className="flex-1 p-4 space-y-1">
+
+      {/* Nav */}
+      <nav className="flex-1 p-3 space-y-1">
         {menuGroups.map((group) => (
           <div key={group.title}>
-            <p className="text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-[2px] px-4 py-3 mt-4 first:mt-0">
-              {group.title}
-            </p>
+            {!collapsed && (
+              <p className="text-[10px] font-black text-outline-variant uppercase tracking-[2px] px-4 py-3 mt-4 first:mt-0">
+                {group.title}
+              </p>
+            )}
             {group.items.map((item) => {
               const isActive = fullPath === item.href;
               return (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all duration-200 group ${
+                  title={collapsed ? item.name : undefined}
+                  className={`flex items-center ${collapsed ? "justify-center" : "gap-3 px-4"} py-3 rounded-xl font-bold transition-all duration-200 group ${
                     isActive
-                      ? "bg-[var(--color-primary)] text-white shadow-lg shadow-red-900/20"
-                      : "text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-subtle)]"
+                      ? "bg-primary text-on-primary shadow-lg shadow-red-900/20"
+                      : "text-on-surface-variant hover:bg-surface-subtle"
                   }`}
                 >
                   <span
-                    className={`material-symbols-outlined text-[20px] ${
-                      isActive ? "" : "group-hover:text-[var(--color-primary)]"
-                    }`}
+                    className={`material-symbols-outlined text-[20px] shrink-0 ${isActive ? "" : "group-hover:text-primary"}`}
                     style={{ fontVariationSettings: isActive ? "'FILL' 1" : "'FILL' 0" }}
                   >
                     {item.icon}
                   </span>
-                  {item.name}
+                  {!collapsed && item.name}
                 </Link>
               );
             })}
@@ -130,8 +144,9 @@ export default function AdminSidebar() {
         ))}
       </nav>
 
-      <div className="p-4 border-t border-slate-50">
-        <SignOutButton />
+      {/* Footer */}
+      <div className={`${collapsed ? "p-2" : "p-4"} border-t border-outline/5`}>
+        <SignOutButton collapsed={collapsed} />
       </div>
     </aside>
   );

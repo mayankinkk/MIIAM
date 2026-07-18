@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-export default function SignOutButton() {
+export default function SignOutButton({ collapsed = false }: { collapsed?: boolean }) {
   const router = useRouter();
   const supabase = createClient();
 
@@ -16,10 +16,11 @@ export default function SignOutButton() {
   return (
     <button
       onClick={handleSignOut}
-      className="flex items-center gap-3 px-4 py-3 rounded-xl text-[var(--color-outline-variant)] hover:text-red-600 transition-colors font-bold text-sm w-full"
+      title={collapsed ? "Sign Out" : undefined}
+      className={`flex items-center ${collapsed ? "justify-center" : "gap-3 px-4"} py-3 rounded-xl text-on-surface-variant hover:text-red-600 transition-colors font-bold text-sm w-full`}
     >
       <span className="material-symbols-outlined text-[18px]">power_settings_new</span>
-      Sign Out
+      {!collapsed && "Sign Out"}
     </button>
   );
 }
