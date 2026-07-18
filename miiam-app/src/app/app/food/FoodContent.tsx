@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import Link from "next/link";
+import { useInfiniteScroll } from "@/lib/hooks/useInfiniteScroll";
 import { motion } from "framer-motion";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useServiceSettingsStore } from "@/lib/store/serviceSettingsStore";
@@ -160,7 +161,7 @@ function PromoBannerCarousel() {
               <button 
                 key={i} 
                 onClick={() => setActive(i)}
-                className={`h-1.5 rounded-full transition-all duration-300 ${i === active ? "w-5 bg-surface-container-lowest" : "w-1.5 bg-[var(--color-surface-container-lowest)]/40"}`} 
+                className={`h-1.5 rounded-full transition-all duration-300 ${i === active ? "w-5 bg-surface-container-lowest" : "w-1.5 bg-[var(--color-surface-container-lowest)]/40"}`}
               />
             ))}
           </div>
@@ -655,6 +656,8 @@ export default function FoodPageContent() {
     ? searchedRestaurants.filter((r) => parseIsOpen(r.opening_hours))
     : searchedRestaurants;
 
+  const { visibleItems: visibleRestaurants, hasMore: hasMoreRestaurants, loadMore: loadMoreRestaurants, sentinelRef: restaurantSentinel } = useInfiniteScroll({ items: openFilteredRestaurants, pageSize: 8 });
+
   return (
     <PullToRefresh onRefresh={handleRefresh} className="min-h-screen bg-surface">
       {/* Pincode Verification Banner */}
@@ -1006,7 +1009,7 @@ export default function FoodPageContent() {
             <div className="px-4 pb-4">
               <h3 className="text-base font-bold text-on-surface mb-3">More Options</h3>
               <div className="space-y-3">
-                {openFilteredRestaurants.map((restaurant) => (
+                {visibleRestaurants.map((restaurant) => (
                   <Link
                     key={`list-${restaurant.id}`}
                     href={`/app/food/${restaurant.id}`}
