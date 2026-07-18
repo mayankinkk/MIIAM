@@ -3,6 +3,7 @@ import NotificationPermission from "@/components/NotificationPermission";
 import InstallPrompt from "@/components/InstallPrompt";
 import ServiceSettingsSync from "@/components/ServiceSettingsSync";
 import ThemeProvider from "@/components/ThemeProvider";
+import PageTransition from "@/components/PageTransition";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -12,7 +13,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <InstallPrompt />
         <ServiceSettingsSync />
         <div className="max-w-7xl mx-auto">
-          {children}
+          <PageTransition>
+            {children}
+          </PageTransition>
         </div>
         <BottomNavBar />
       </div>

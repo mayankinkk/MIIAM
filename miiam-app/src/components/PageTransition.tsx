@@ -1,56 +1,17 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
-import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
+import type { ReactNode } from "react";
 
-import { useState, useEffect } from "react";
-import { useUiA11yStore } from "@/lib/store/uiA11yStore";
-
-const routeVariants = {
-  forward: {
-    initial: { opacity: 0, x: 20 },
-    animate: { opacity: 1, x: 0 },
-    exit: { opacity: 0, x: -20 },
-  },
-  fade: {
-    initial: { opacity: 0, y: 8 },
-    animate: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -8 },
-  },
-};
-
-export default function PageTransition({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
-  const [mounted, setMounted] = useState(false);
-  const reducedMotion = useUiA11yStore((s) => s.reducedMotion);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const isModalRoute =
-    pathname.includes("/checkout") ||
-    pathname.includes("/payment") ||
-    pathname.includes("/auth");
-
-  const variantKey = isModalRoute ? "fade" : "forward";
-  const variant = routeVariants[variantKey];
-
-  if (!mounted || reducedMotion) {
-    return <div key={pathname}>{children}</div>;
-  }
-
+export default function PageTransition({ children }: { children: ReactNode }) {
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={pathname}
-        initial={variant.initial}
-        animate={variant.animate}
-        exit={variant.exit}
-        transition={{ duration: 0.2, ease: "easeOut" }}
-      >
-        {children}
-      </motion.div>
-    </AnimatePresence>
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -8 }}
+      transition={{ duration: 0.25, ease: "easeInOut" }}
+    >
+      {children}
+    </motion.div>
   );
 }
