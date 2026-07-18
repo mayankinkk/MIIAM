@@ -7,35 +7,43 @@ type Theme = "light" | "dark" | "system";
 
 interface ThemeStore {
   theme: Theme;
-  resolvedTheme: "light" | "dark";
   setTheme: (theme: Theme) => void;
-  toggleTheme: () => void;
+  resolved: "light" | "dark";
 }
 
-export const getSystemTheme = (): "light" | "dark" => {
+function getSystemTheme(): "light" | "dark" {
   if (typeof window === "undefined") return "light";
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-};
+}
 
-export const applyTheme = (resolved: "light" | "dark") => {
-  document.documentElement.classList.toggle("dark", resolved === "dark");
-};
+function applyTheme(resolved: "light" | "dark") {
+  if (typeof document === "undefined") return;
+  const root = document.documentElement;
+  root.classList.remove("light", "dark");
+  root.classList.add(resolved);
+  root.style.colorScheme = resolved;
+}
 
 export const useThemeStore = create<ThemeStore>()(
   persist(
     (set, get) => ({
-      theme: "light",
-      resolvedTheme: "light",
-      setTheme: (theme) => {
-        const resolvedTheme = theme === "system" ? getSystemTheme() : theme;
-        set({ theme, resolvedTheme });
-      },
-      toggleTheme: () => {
-        const current = get().resolvedTheme;
-        const newTheme = current === "dark" ? "light" : "dark";
-        set({ theme: newTheme, resolvedTheme: newTheme });
+      theme: "system",
+      resolved: "light",
+      setTheme: (theme: Theme) => {
+        const resolved = theme === "system" ? getSystemTheme() : theme;
+        applyTheme(resolved);
+        set({ theme, resolved });
       },
     }),
-    { name: "miiam-theme" }
+    {
+      name: "miiam-theme",
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          const resolved = state.theme === "system" ? getSystemTheme() : state.theme;
+          applyTheme(resolved);
+          state.resolved = resolved;
+        }
+      },
+    }
   )
 );

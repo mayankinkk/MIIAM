@@ -11,6 +11,7 @@ import { useTranslation } from "@/lib/i18n/useTranslation";
 import logger from "@/lib/logger";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function EnhancedProfilePage() {
   const supabase = useMemo(() => createClient(), []);
@@ -162,7 +163,23 @@ export default function EnhancedProfilePage() {
         </div>
 
         {/* Settings Section */}
-        <div className="space-y-2">
+        <div className="space-y-3">
+          {/* Theme Toggle */}
+          <div className="bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container)] rounded-2xl p-4">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                <span className="material-symbols-outlined text-gray-500 dark:text-gray-400">palette</span>
+              </div>
+              <div className="flex-1">
+                <p className="font-bold text-[var(--color-on-surface)]">Appearance</p>
+                <p className="text-xs text-[var(--color-outline)]">Light, Dark, or System</p>
+              </div>
+            </div>
+            <div className="mt-3 ml-16">
+              <ThemeToggle />
+            </div>
+          </div>
+
           {menuItems.slice(8).map((item) => (
             item.special ? (
               <button 
