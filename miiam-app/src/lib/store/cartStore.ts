@@ -59,18 +59,21 @@ export const useCartStore = create<CartStore>()(
         const currentItems = get().items;
         if (!Array.isArray(currentItems)) {
           set({ items: [{ ...item, quantity }] });
-          return;
-        }
-        const existing = currentItems.find((i) => i.id === item.id);
-        if (existing) {
-          set({
-            items: currentItems.map((i) =>
-              i.id === item.id ? { ...i, quantity: i.quantity + quantity } : i
-            ),
-          });
         } else {
-          set({ items: [...currentItems, { ...item, quantity }] });
+          const existing = currentItems.find((i) => i.id === item.id);
+          if (existing) {
+            set({
+              items: currentItems.map((i) =>
+                i.id === item.id ? { ...i, quantity: i.quantity + quantity } : i
+              ),
+            });
+          } else {
+            set({ items: [...currentItems, { ...item, quantity }] });
+          }
         }
+
+        // Haptic feedback on add
+        try { navigator.vibrate?.(10); } catch {}
 
         if (!suppressToast) {
           useToastStore.getState().addToast(`Added ${item.name} to cart`, "success");
@@ -82,6 +85,9 @@ export const useCartStore = create<CartStore>()(
         if (!Array.isArray(currentItems)) return;
         const item = currentItems.find((i) => i.id === id);
         set({ items: currentItems.filter((i) => i.id !== id) });
+
+        // Haptic feedback on remove
+        try { navigator.vibrate?.(15); } catch {}
         if (item) {
           useToastStore.getState().addToast(`Removed ${item.name}`, "info");
         }
