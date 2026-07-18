@@ -9,7 +9,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useToastStore } from "@/lib/store/toastStore";
 import { OrderSkeleton } from "@/components/Skeleton";
-import EmptyState from "@/components/EmptyState";
+import { EmptyState } from "@/components/ui/EmptyStates";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
 import PullToRefresh from "@/components/PullToRefresh";

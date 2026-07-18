@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 interface EmptyStateProps {
   icon: string;
@@ -14,112 +14,106 @@ interface EmptyStateProps {
   type?: "cart" | "orders" | "favorites" | "search" | "default";
 }
 
-export function EmptyState({ 
-  icon, 
+export function EmptyState({
+  icon,
   emoji,
-  title, 
-  description, 
-  actionLabel, 
+  title,
+  description,
+  actionLabel,
   actionHref,
   onAction,
-  type = "default" 
+  type = "default"
 }: EmptyStateProps) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const typeStyles: Record<string, { bg: string; icon: string; animation: string }> = {
-    cart: { 
-      bg: "bg-[var(--color-surface-container)]", 
-      icon: "text-[var(--color-primary)]",
-      animation: mounted ? "animate-bounce-subtle" : ""
-    },
-    orders: { 
-      bg: "bg-[var(--color-secondary-container)]/20", 
-      icon: "text-[var(--color-secondary)]",
-      animation: mounted ? "animate-pulse-slow" : ""
-    },
-    favorites: { 
-      bg: "bg-rose-50", 
-      icon: "text-rose-500",
-      animation: mounted ? "animate-heartbeat" : ""
-    },
-    search: { 
-      bg: "bg-amber-50", 
-      icon: "text-amber-500",
-      animation: mounted ? "animate-wiggle" : ""
-    },
-    default: { 
-      bg: "bg-[var(--color-surface-subtle)]", 
-      icon: "text-[var(--color-outline)]",
-      animation: ""
-    },
+  const typeStyles: Record<string, { bg: string; icon: string }> = {
+    cart: { bg: "bg-primary/10", icon: "text-primary" },
+    orders: { bg: "bg-secondary/10", icon: "text-secondary" },
+    favorites: { bg: "bg-rose-500/10", icon: "text-rose-500" },
+    search: { bg: "bg-amber-500/10", icon: "text-amber-500" },
+    default: { bg: "bg-surface-container-high", icon: "text-on-surface-variant" },
   };
 
   const style = typeStyles[type] || typeStyles.default;
 
   return (
-    <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
-      {/* Animated Icon Container */}
-      <div className={`w-28 h-28 ${style.bg} rounded-full flex items-center justify-center mb-6 ${style.animation} relative`}>
-        {/* Decorative elements */}
-        <div className="absolute -top-2 -right-2 w-6 h-6 bg-amber-200/50 rounded-full animate-float" />
-        <div className="absolute -bottom-2 -left-2 w-4 h-4 bg-[var(--color-primary)]/20 rounded-full animate-float-delayed" />
-        <div className="absolute top-1/2 -left-4 w-3 h-3 bg-blue-200/50 rounded-full animate-float" />
-        
-        {/* Main icon/emoji */}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      className="flex flex-col items-center justify-center py-16 px-6 text-center"
+    >
+      <motion.div
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ delay: 0.1, type: "spring", stiffness: 300 }}
+        className={`w-24 h-24 ${style.bg} rounded-full flex items-center justify-center mb-6 relative`}
+      >
+        <div className="absolute -top-2 -right-2 w-5 h-5 bg-amber-200/50 rounded-full" />
+        <div className="absolute -bottom-2 -left-2 w-4 h-4 bg-primary/20 rounded-full" />
+
         {emoji ? (
-          <span className={`text-5xl ${mounted ? "animate-bounce-in" : ""}`}>{emoji}</span>
+          <span className="text-5xl">{emoji}</span>
         ) : (
           <span className={`material-symbols-outlined text-5xl ${style.icon}`} style={{ fontVariationSettings: "'FILL' 1" }}>
             {icon}
           </span>
         )}
-      </div>
-      
-      {/* Title with typewriter effect */}
-      <h3 className={`text-xl font-bold text-[var(--color-on-surface)] mb-2 ${mounted ? "animate-fade-up" : ""}`}>
+      </motion.div>
+
+      <motion.h3
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="text-xl font-bold text-on-surface mb-2"
+      >
         {title}
-      </h3>
-      
-      {/* Description */}
-      <p className={`text-[var(--color-on-surface-variant)] text-sm mb-6 max-w-xs ${mounted ? "animate-fade-up-delay" : ""}`}>
+      </motion.h3>
+
+      <motion.p
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="text-on-surface-variant text-sm mb-6 max-w-xs"
+      >
         {description}
-      </p>
-      
-      {/* Action Button with shimmer */}
+      </motion.p>
+
       {actionLabel && actionHref && (
-        <Link 
-          href={actionHref} 
-          className={`group relative px-6 py-3 bg-[var(--color-primary)] text-white font-bold rounded-xl overflow-hidden transition-all duration-300 hover:bg-[var(--color-primary-dim)] hover:scale-105 active:scale-95 ${mounted ? "animate-fade-up-delay-2" : ""}`}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
         >
-          {/* Shimmer effect on hover */}
-          <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-          <span className="relative flex items-center gap-2">
-            {actionLabel}
-            <span className="material-symbols-outlined text-lg group-hover:translate-x-1 transition-transform">
-              arrow_forward
+          <Link
+            href={actionHref}
+            className="group relative px-6 py-3 bg-primary text-on-primary font-bold rounded-xl overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95"
+          >
+            <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+            <span className="relative flex items-center gap-2">
+              {actionLabel}
+              <span className="material-symbols-outlined text-lg group-hover:translate-x-1 transition-transform">arrow_forward</span>
             </span>
-          </span>
-        </Link>
+          </Link>
+        </motion.div>
       )}
       {actionLabel && onAction && !actionHref && (
-        <button
-          onClick={onAction}
-          className={`group relative px-6 py-3 bg-[var(--color-primary)] text-white font-bold rounded-xl overflow-hidden transition-all duration-300 hover:bg-[var(--color-primary-dim)] hover:scale-105 active:scale-95 ${mounted ? "animate-fade-up-delay-2" : ""}`}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
         >
-          <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-          <span className="relative flex items-center gap-2">
-            {actionLabel}
-            <span className="material-symbols-outlined text-lg group-hover:translate-x-1 transition-transform">
-              arrow_forward
+          <button
+            onClick={onAction}
+            className="group relative px-6 py-3 bg-primary text-on-primary font-bold rounded-xl overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95"
+          >
+            <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+            <span className="relative flex items-center gap-2">
+              {actionLabel}
+              <span className="material-symbols-outlined text-lg group-hover:translate-x-1 transition-transform">arrow_forward</span>
             </span>
-          </span>
-        </button>
+          </button>
+        </motion.div>
       )}
-    </div>
+    </motion.div>
   );
 }
 
@@ -209,23 +203,27 @@ export function EmptyBookings() {
 
 export function NetworkError({ onRetry }: { onRetry?: () => void }) {
   return (
-    <div className="flex flex-col items-center justify-center py-12 px-6 text-center">
-      <div className="w-24 h-24 bg-red-50 rounded-full flex items-center justify-center mb-6 animate-pulse">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex flex-col items-center justify-center py-12 px-6 text-center"
+    >
+      <div className="w-24 h-24 bg-red-500/10 rounded-full flex items-center justify-center mb-6">
         <span className="text-5xl">📡</span>
       </div>
-      <h3 className="text-xl font-bold text-[var(--color-on-surface)] mb-2">Connection Lost</h3>
-      <p className="text-[var(--color-on-surface-variant)] text-sm mb-6 max-w-xs">
+      <h3 className="text-xl font-bold text-on-surface mb-2">Connection Lost</h3>
+      <p className="text-on-surface-variant text-sm mb-6 max-w-xs">
         Please check your internet connection and try again.
       </p>
       {onRetry && (
-        <button 
+        <button
           onClick={onRetry}
-          className="px-6 py-3 bg-[var(--color-primary)] text-white font-bold rounded-xl hover:bg-[var(--color-primary-dim)] transition-colors flex items-center gap-2"
+          className="px-6 py-3 bg-primary text-on-primary font-bold rounded-xl hover:opacity-90 transition-colors flex items-center gap-2"
         >
           <span className="material-symbols-outlined">refresh</span>
           Retry
         </button>
       )}
-    </div>
+    </motion.div>
   );
 }

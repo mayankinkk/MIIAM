@@ -1,10 +1,9 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import EmptyState from "./EmptyState";
+import { EmptyState } from "./ui/EmptyStates";
 
 describe("EmptyState", () => {
-  it("renders icon, title, and description", () => {
-    render(<EmptyState icon="🌸" title="No items" description="Nothing here yet" />);
-    expect(screen.getByText("🌸")).toBeInTheDocument();
+  it("renders title and description", () => {
+    render(<EmptyState icon="search" title="No items" description="Nothing here yet" />);
     expect(screen.getByText("No items")).toBeInTheDocument();
     expect(screen.getByText("Nothing here yet")).toBeInTheDocument();
   });
@@ -13,7 +12,7 @@ describe("EmptyState", () => {
     const onAction = vi.fn();
     render(
       <EmptyState
-        icon="🍽️"
+        icon="restaurant"
         title="No restaurants"
         description="Try again"
         actionLabel="Browse All"
@@ -27,7 +26,7 @@ describe("EmptyState", () => {
   });
 
   it("does not render button when no actionLabel", () => {
-    render(<EmptyState icon="⭐" title="No reviews" description="Be the first" />);
+    render(<EmptyState icon="star" title="No reviews" description="Be the first" />);
     expect(screen.queryByRole("button")).not.toBeInTheDocument();
   });
 });

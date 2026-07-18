@@ -14,7 +14,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { useFavoritesStore } from "@/lib/store/favoritesStore";
 import { useLocationStore } from "@/lib/store/locationStore";
-import EmptyState from "@/components/EmptyState";
+import { EmptyState } from "@/components/ui/EmptyStates";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
 import { NetworkError } from "@/components/ui/EmptyStates";

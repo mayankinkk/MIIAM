@@ -7,7 +7,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import logger from "@/lib/logger";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import EmptyState from "@/components/EmptyState";
+import { EmptyState } from "@/components/ui/EmptyStates";
 import { ListSkeleton } from "@/components/Skeleton";
 
 interface VendorData {

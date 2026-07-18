@@ -6,7 +6,7 @@ import { useFavoritesStore } from "@/lib/store/favoritesStore";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import logger from "@/lib/logger";
-import EmptyState from "@/components/EmptyState";
+import { EmptyState } from "@/components/ui/EmptyStates";
 import { VendorCardSkeleton } from "@/components/Skeleton";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
