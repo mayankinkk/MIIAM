@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import SwipeableCard from "@/components/SwipeableCard";
 
 import { useCartStore } from "@/lib/store/cartStore";
 import { EmptyCart } from "@/components/ui/EmptyStates";
@@ -255,7 +256,12 @@ export default function CartPage() {
                 </div>
                 <div className="space-y-3 relative z-10">
                   {vendor.items.map((item) => (
-                    <div key={item.id} className="flex items-center gap-2 sm:gap-3 bg-surface-container-lowest dark:bg-[var(--color-surface-container-lowest)] p-2.5 sm:p-3 rounded-xl shadow-sm">
+                    <SwipeableCard
+                      key={item.id}
+                      onSwipeLeft={() => removeItem(item.id)}
+                      leftAction={{ label: "Remove", color: "bg-red-500", icon: "delete" }}
+                    >
+                    <div className="flex items-center gap-2 sm:gap-3 bg-surface-container-lowest dark:bg-[var(--color-surface-container-lowest)] p-2.5 sm:p-3 rounded-xl shadow-sm">
                       {/* Thumbnail */}
                       <div className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-surface-container dark:bg-[var(--color-surface-container)]">
                         {item.image_url ? (
@@ -322,6 +328,7 @@ export default function CartPage() {
                         </div>
                       </div>
                     </div>
+                    </SwipeableCard>
                   ))}
                 </div>
                 <div className="mt-4 flex justify-between items-center text-xs border-t border-outline-variant/20 dark:border-t-[var(--color-border-subtle)]/20 pt-3">
