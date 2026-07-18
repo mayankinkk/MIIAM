@@ -13,6 +13,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
 import PullToRefresh from "@/components/PullToRefresh";
 import { SERVICE_TIME_SLOTS, type ServiceData } from "@/lib/data/services";
+import BookingStepper from "@/components/BookingStepper";
 import { motion, AnimatePresence } from "framer-motion";
 
 // ---------- Booking Modal ----------
@@ -109,6 +110,10 @@ function BookingModal({ service, onClose }: { service: ServiceData; onClose: () 
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 backdrop-blur-sm animate-fade-in" role="dialog" aria-modal="true" aria-labelledby="booking-modal-title">
       <div className="bg-white w-full max-w-lg rounded-t-3xl shadow-2xl p-6 pb-10 max-h-[90vh] overflow-y-auto animate-slide-reveal">
         <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-5" aria-hidden="true" />
+
+        {step !== "done" && (
+          <BookingStepper steps={[t.services.selectDate || "Details", t.services.confirmBooking || "Confirm", t.services.bookingConfirmed || "Done"]} current={step === "pick" ? 0 : 1} />
+        )}
 
         {step === "pick" && (
           <>
