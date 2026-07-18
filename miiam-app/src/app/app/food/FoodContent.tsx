@@ -8,6 +8,9 @@ import { motion } from "framer-motion";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useServiceSettingsStore } from "@/lib/store/serviceSettingsStore";
 import ServiceUnavailable from "@/components/ServiceUnavailable";
+import dynamic from "next/dynamic";
+
+const RestaurantMap = dynamic(() => import("@/components/RestaurantMap"), { ssr: false });
 import PullToRefresh from "@/components/PullToRefresh";
 import QuickActionsFAB from "@/components/QuickActionsFAB";
 import { createClient } from "@/lib/supabase/client";
@@ -465,6 +468,7 @@ export default function FoodPageContent() {
   const [searchQuery, setSearchQuery] = useState("");
   const [priceMin, setPriceMin] = useState(0);
   const [priceMax, setPriceMax] = useState(1000);
+  const [showMap, setShowMap] = useState(false);
   const [restaurants, setRestaurants] = useState<FoodVendor[]>([]);
   const [menuItems, setMenuItems] = useState<FoodMenuItem[]>([]);
   const [storeItems, setStoreItems] = useState<StoreItem[]>([]);
@@ -767,7 +771,20 @@ export default function FoodPageContent() {
         </button>
         <SortDropdown sort={sortBy} setSort={setSortBy} />
         <PriceRangeFilter onApply={(min, max) => { setPriceMin(min); setPriceMax(max); }} />
+        <button onClick={() => setShowMap(!showMap)} className={`px-3 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 transition-colors ${showMap ? "bg-primary text-on-primary" : "bg-surface-container text-on-surface-variant"}`}>
+          <span className="material-symbols-outlined text-sm">map</span> Map
+        </button>
       </div>
+
+      {/* Map View */}
+      {showMap && !loading && (
+        <div className="px-4 mb-4">
+          <RestaurantMap
+            restaurants={openFilteredRestaurants}
+            onRestaurantClick={(id) => window.location.href = `/app/food/${id}`}
+          />
+        </div>
+      )}
 
       <main className="p-6 space-y-4">
         {/* Price Bucket Sections - Under 99/149/199/249 */}
