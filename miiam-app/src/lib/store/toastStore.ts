@@ -9,25 +9,26 @@ export interface Toast {
   message: string;
   type: ToastType;
   duration?: number;
+  action?: { label: string; onClick: () => void };
 }
 
 interface ToastStore {
   toasts: Toast[];
-  addToast: (message: string, type?: ToastType, duration?: number) => void;
+  addToast: (message: string, type?: ToastType, duration?: number, action?: Toast["action"]) => void;
   removeToast: (id: string) => void;
   clearToasts: () => void;
 }
 
-const MAX_VISIBLE = 5;
+const MAX_VISIBLE = 3;
 
 export const useToastStore = create<ToastStore>()((set, get) => ({
   toasts: [],
-  addToast: (message, type = "info", duration = 4000) => {
+  addToast: (message, type = "info", duration = 3500, action) => {
     const activeToasts = get().toasts || [];
     if (activeToasts.some((t) => t.message === message)) return;
 
     const id = Math.random().toString(36).substring(2, 9);
-    const toast: Toast = { id, message, type, duration };
+    const toast: Toast = { id, message, type, duration, action };
 
     set((state) => {
       const updated = [toast, ...state.toasts];
