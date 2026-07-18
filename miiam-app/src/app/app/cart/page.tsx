@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 import { useCartStore } from "@/lib/store/cartStore";
 import { EmptyCart } from "@/components/ui/EmptyStates";
@@ -283,7 +284,20 @@ export default function CartPage() {
                           >
                             <span className="material-symbols-outlined text-sm" aria-hidden="true">remove</span>
                           </button>
-                          <span className="px-2 font-bold text-sm" aria-live="polite" aria-atomic="true">{item.quantity}</span>
+                          <span className="px-2 font-bold text-sm w-8 text-center" aria-live="polite" aria-atomic="true">
+                            <AnimatePresence mode="popLayout">
+                              <motion.span
+                                key={item.quantity}
+                                initial={{ y: -10, opacity: 0 }}
+                                animate={{ y: 0, opacity: 1 }}
+                                exit={{ y: 10, opacity: 0 }}
+                                transition={{ duration: 0.15 }}
+                                className="block"
+                              >
+                                {item.quantity}
+                              </motion.span>
+                            </AnimatePresence>
+                          </span>
                           <button
                             onClick={() => updateQuantity(item.id, item.quantity + 1)}
                             aria-label={`Increase quantity of ${item.name}`}
