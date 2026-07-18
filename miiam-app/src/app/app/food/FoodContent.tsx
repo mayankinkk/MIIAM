@@ -751,8 +751,8 @@ export default function FoodPageContent() {
         </div>
       </div>
 
-      {/* Veg/Non-veg Filter + Sort */}
-      <div className="px-4 pb-3 flex flex-wrap gap-2">
+      {/* Veg/Non-veg Filter + Sort — Sticky */}
+      <div className="sticky top-0 z-20 bg-surface/95 backdrop-blur-lg px-4 py-3 flex flex-wrap gap-2 border-b border-outline/5">
         <button onClick={() => setVegFilter("all")} className={`px-4 py-2 rounded-full text-xs font-bold ${vegFilter === "all" ? "bg-inverse-surface text-white" : "bg-surface-container text-on-surface-variant"}`}>
           {t.food.all}
         </button>
