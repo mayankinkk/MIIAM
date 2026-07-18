@@ -97,6 +97,83 @@ export function SearchResultSkeleton() {
   );
 }
 
+export function FoodPageSkeleton() {
+  return (
+    <div className="min-h-screen bg-surface p-4 space-y-6">
+      <div className="h-12 bg-surface-container-high rounded-2xl animate-pulse" />
+      <div className="h-44 bg-surface-container-high rounded-2xl animate-pulse" />
+      <div className="flex gap-4 overflow-hidden">
+        {[1, 2, 3, 4, 5, 6].map((i) => (
+          <div key={i} className="flex flex-col items-center gap-1.5 flex-shrink-0">
+            <Skeleton className="w-14 h-14 rounded-full" />
+            <Skeleton className="w-10 h-3 rounded" />
+          </div>
+        ))}
+      </div>
+      <div className="flex gap-2">
+        {[1, 2, 3, 4].map((i) => (
+          <Skeleton key={i} className="h-9 w-20 rounded-full" />
+        ))}
+      </div>
+      <div className="flex gap-3 overflow-hidden">
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className="flex-shrink-0 w-36 rounded-2xl overflow-hidden">
+            <Skeleton className="h-24 w-full" />
+            <div className="p-2.5 space-y-2">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-3 w-16" />
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="space-y-3">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="flex bg-surface-container-lowest rounded-2xl overflow-hidden">
+            <Skeleton className="w-28 h-28 flex-shrink-0" />
+            <div className="p-3 flex-1 space-y-2">
+              <Skeleton className="h-5 w-32" />
+              <Skeleton className="h-3 w-24" />
+              <Skeleton className="h-3 w-20" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function ServicesPageSkeleton() {
+  return (
+    <div className="min-h-screen bg-gray-50 p-4 space-y-6">
+      <div className="h-10 w-48 bg-gray-200 rounded animate-pulse" />
+      <div className="h-44 bg-gray-200 rounded-2xl animate-pulse" />
+      <div className="flex gap-4 overflow-hidden">
+        {[1, 2, 3, 4, 5].map((i) => (
+          <div key={i} className="flex flex-col items-center gap-1.5 flex-shrink-0">
+            <Skeleton className="w-14 h-14 rounded-full" />
+            <Skeleton className="w-12 h-3 rounded" />
+          </div>
+        ))}
+      </div>
+      <div className="space-y-4">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="bg-white rounded-2xl overflow-hidden">
+            <Skeleton className="h-44 w-full" />
+            <div className="p-4 space-y-3">
+              <Skeleton className="h-5 w-36" />
+              <Skeleton className="h-4 w-48" />
+              <div className="flex gap-2">
+                <Skeleton className="h-8 w-20 rounded-full" />
+                <Skeleton className="h-8 w-16 rounded-full" />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function OrderSkeleton() {
   return (
     <div className="p-6 bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] space-y-4">
