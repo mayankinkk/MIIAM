@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect, ReactNode } from "react";
+import { motion, useAnimation } from "framer-motion";
 
 interface PullToRefreshProps {
   children: ReactNode;
@@ -21,6 +22,7 @@ export default function PullToRefresh({
   const startY = useRef(0);
   const isPulling = useRef(false);
   const isReadyToRefresh = useRef(false);
+  const controls = useAnimation();
 
   useEffect(() => {
     const el = containerRef.current;
@@ -77,6 +79,8 @@ export default function PullToRefresh({
     };
   }, [onRefresh, threshold]);
 
+  const progress = Math.min(pullDistance / threshold, 1);
+
   return (
     <div
       ref={containerRef}
@@ -84,29 +88,37 @@ export default function PullToRefresh({
     >
       {/* Pull Indicator */}
       <div
-        className="absolute top-0 left-0 right-0 flex items-center justify-center transition-all duration-200 z-10"
+        className="absolute top-0 left-0 right-0 flex items-center justify-center z-10"
         style={{
           height: refreshing ? 60 : pullDistance,
-          opacity: pullDistance > 10 ? 1 : 0,
+          opacity: pullDistance > 10 || refreshing ? 1 : 0,
+          transition: refreshing ? "height 0.3s ease" : "none",
         }}
       >
-        <div className="flex flex-col items-center gap-1">
+        <div className="flex flex-col items-center gap-1.5">
           {refreshing ? (
-            <>
-              <div className="w-6 h-6 border-2 border-brand-primary border-t-transparent rounded-full animate-spin" />
-              <span className="text-xs font-bold text-brand-primary">Refreshing...</span>
-            </>
+            <motion.div
+              initial={{ scale: 0, rotate: 0 }}
+              animate={{ scale: 1, rotate: 360 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+            >
+              <div className="w-7 h-7 border-[3px] border-primary border-t-transparent rounded-full animate-spin" />
+            </motion.div>
           ) : (
             <>
-              <div
-                className="w-6 h-6 transition-transform duration-200"
-                style={{ transform: `rotate(${Math.min(pullDistance, threshold)}deg)` }}
+              <motion.div
+                animate={{ rotate: progress * 180, scale: 0.8 + progress * 0.4 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
               >
-                <span className="material-symbols-outlined text-brand-primary">arrow_downward</span>
-              </div>
-              <span className="text-xs font-medium text-surface-neutral">
-                {pullDistance >= threshold ? "Release to refresh" : "Pull down"}
-              </span>
+                <span className="material-symbols-outlined text-primary text-2xl">arrow_downward</span>
+              </motion.div>
+              <motion.span
+                initial={{ opacity: 0 }}
+                animate={{ opacity: progress }}
+                className="text-[11px] font-bold text-primary"
+              >
+                {progress >= 1 ? "Release to refresh" : "Pull down"}
+              </motion.span>
             </>
           )}
         </div>
@@ -114,8 +126,11 @@ export default function PullToRefresh({
 
       {/* Content */}
       <div
-        className="transition-transform duration-200"
-        style={{ transform: pullDistance > threshold ? `translateY(${threshold}px)` : `translateY(${pullDistance}px)` }}
+        className="transition-transform"
+        style={{
+          transform: refreshing ? "translateY(60px)" : `translateY(${pullDistance}px)`,
+          transitionDuration: refreshing ? "0.3s" : pullDistance === 0 ? "0.3s" : "0s",
+        }}
       >
         {children}
       </div>
