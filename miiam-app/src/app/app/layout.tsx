@@ -5,6 +5,7 @@ import ServiceSettingsSync from "@/components/ServiceSettingsSync";
 import ThemeProvider from "@/components/ThemeProvider";
 import PageTransition from "@/components/PageTransition";
 import OnboardingGate from "@/components/OnboardingGate";
+import BackToTop from "@/components/BackToTop";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -20,6 +21,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             </PageTransition>
           </div>
           <BottomNavBar />
+          <BackToTop />
         </div>
       </OnboardingGate>
     </ThemeProvider>
