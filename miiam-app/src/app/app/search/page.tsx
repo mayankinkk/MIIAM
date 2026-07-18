@@ -13,6 +13,44 @@ import { EmptySearch } from "@/components/ui/EmptyStates";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
 
+function RecentSearches({ onSelect }: { onSelect: (term: string) => void }) {
+  const [recent, setRecent] = useState<string[]>([]);
+
+  useEffect(() => {
+    try {
+      setRecent(JSON.parse(localStorage.getItem("miiam-search-history") || "[]"));
+    } catch { /* ignore */ }
+  }, []);
+
+  if (recent.length === 0) return null;
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-sm font-bold text-on-surface-variant">Recent Searches</h3>
+        <button
+          onClick={() => { localStorage.removeItem("miiam-search-history"); setRecent([]); }}
+          className="text-xs font-bold text-primary"
+        >
+          Clear
+        </button>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {recent.map((term) => (
+          <button
+            key={term}
+            onClick={() => onSelect(term)}
+            className="flex items-center gap-1.5 px-3 py-2 bg-surface-container rounded-full text-xs font-bold text-on-surface-variant hover:bg-surface-container-high transition-colors"
+          >
+            <span className="material-symbols-outlined text-sm">history</span>
+            {term}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 interface VendorResult {
   id: string;
   shop_name: string;
@@ -184,6 +222,17 @@ function SearchContent() {
       <Breadcrumbs items={[{ label: 'Home', href: '/app/home' }, { label: 'Search' }]} />
 
       <main className="pt-24 pb-24 px-6 max-w-4xl mx-auto">
+        {!query && (
+          <div className="mb-6">
+            <RecentSearches onSelect={(term) => {
+              setInputValue(term);
+              const url = new URL(window.location.href);
+              url.searchParams.set("q", term);
+              window.history.replaceState({}, "", url);
+              router.replace(url.pathname + url.search, { scroll: false });
+            }} />
+          </div>
+        )}
         {query && (
           <div className="flex flex-wrap gap-2 mb-6">
             <div className="flex gap-2">
