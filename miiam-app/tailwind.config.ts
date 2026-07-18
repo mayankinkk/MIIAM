@@ -72,6 +72,10 @@ const config: Config = {
           "70%": { transform: "scale(0.9)" },
           "100%": { transform: "scale(1)", opacity: "1" },
         },
+        shimmer: {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(100%)" },
+        },
       },
       animation: {
         moveRider: "moveRider 10s linear infinite",
@@ -80,6 +84,7 @@ const config: Config = {
         scaleIn: "scaleIn 0.5s ease-out",
         "fade-out-delayed": "fadeOutDelayed 2s forwards",
         "bounce-in": "bounceIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards",
+        shimmer: "shimmer 1.5s infinite",
       },
     },
   },

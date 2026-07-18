@@ -2,12 +2,19 @@
 
 interface SkeletonProps {
   className?: string;
+  variant?: "pulse" | "shimmer" | "wave";
 }
 
-export function Skeleton({ className = "" }: SkeletonProps) {
+export function Skeleton({ className = "", variant = "shimmer" }: SkeletonProps) {
+  const variants = {
+    pulse: "animate-pulse bg-gray-200 dark:bg-gray-700",
+    shimmer: "bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 dark:from-gray-700 dark:via-gray-600 dark:to-gray-700 bg-[length:200%_100%] animate-shimmer",
+    wave: "bg-gray-200 dark:bg-gray-700 relative overflow-hidden after:absolute after:inset-0 after:-translate-x-full after:animate-[shimmer_1.5s_infinite] after:bg-gradient-to-r after:from-transparent after:via-white/40 after:to-transparent dark:after:via-white/10",
+  };
+
   return (
     <div
-      className={`animate-pulse bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200 bg-[length:200%_100%] rounded ${className}`}
+      className={`${variants[variant]} rounded ${className}`}
       aria-hidden="true"
     />
   );
