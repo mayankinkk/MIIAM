@@ -4,6 +4,7 @@ import { useMemo, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import logger from "@/lib/logger";
+import { useKeyboardShortcuts } from "@/lib/hooks/useKeyboardShortcuts";
 
 const modules = [
   { id: "foods", title: "Foods", icon: "restaurant", color: "bg-[var(--color-primary)]/10 text-[var(--color-primary)]", route: "/admin/foods", type: "food" },
@@ -18,6 +19,18 @@ const categoryColors: Record<string, string> = {
 export default function AdminDashboard() {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
+
+  // Keyboard shortcuts
+  useKeyboardShortcuts({
+    "g": () => router.push("/admin"),
+    "o": () => router.push("/admin/orders"),
+    "r": () => router.push("/admin/vendors"),
+    "s": () => router.push("/admin/services"),
+    "m": () => router.push("/admin/foods/menu-items"),
+    "u": () => router.push("/admin/users"),
+    "b": () => router.push("/admin/banners"),
+    "?": () => alert("Shortcuts: G=Dashboard, O=Orders, R=Restaurants, S=Services, M=Menu, U=Users, B=Banners"),
+  });
 
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
