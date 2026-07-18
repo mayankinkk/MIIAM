@@ -1,157 +1,77 @@
 "use client";
 
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
 interface QuickAction {
-  id: string;
   icon: string;
   label: string;
-  href?: string;
-  onClick?: () => void;
-  color: string;
+  href: string;
+  color?: string;
 }
+
+const defaultActions: QuickAction[] = [
+  { icon: "restaurant", label: "Order Food", href: "/app/food", color: "bg-emerald-500" },
+  { icon: "home_repair_service", label: "Book Service", href: "/app/services", color: "bg-blue-500" },
+  { icon: "receipt_long", label: "My Orders", href: "/app/orders", color: "bg-amber-500" },
+  { icon: "support_agent", label: "Get Help", href: "/app/support", color: "bg-purple-500" },
+];
 
 interface QuickActionsFABProps {
   actions?: QuickAction[];
 }
 
-const defaultActions: QuickAction[] = [
-  { id: "food", icon: "restaurant", label: "Food", href: "/app/food", color: "bg-orange-500" },
-  { id: "cart", icon: "shopping_cart", label: "Cart", href: "/app/cart", color: "bg-[var(--color-primary)]" },
-  { id: "orders", icon: "receipt_long", label: "Orders", href: "/app/orders", color: "bg-blue-500" },
-  { id: "support", icon: "support_agent", label: "Support", href: "/app/support", color: "bg-green-500" },
-];
-
 export default function QuickActionsFAB({ actions = defaultActions }: QuickActionsFABProps) {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleAction = (action: QuickAction) => {
-    if (action.onClick) {
-      action.onClick();
-    }
-    setIsOpen(false);
-  };
+  const [open, setOpen] = useState(false);
 
   return (
-    <>
-      {/* Quick Actions Menu */}
-      <div className="fixed bottom-24 right-6 z-40 flex flex-col items-end gap-3"
-        style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}>
-        {isOpen && (
-          <div className="flex flex-col gap-2 animate-fade-in">
-            {actions.map((action) => (
-              <Link
-                key={action.id}
-                href={action.href || "#"}
-                onClick={(e) => {
-                  if (action.onClick) {
-                    e.preventDefault();
-                    handleAction(action);
-                  }
-                }}
-                className="flex items-center gap-3 group"
+    <div className="fixed bottom-24 right-4 z-40 md:bottom-6">
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute bottom-16 right-0 flex flex-col gap-2 items-end"
+          >
+            {actions.map((action, i) => (
+              <motion.div
+                key={action.label}
+                initial={{ opacity: 0, y: 20, scale: 0.8 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 10, scale: 0.8 }}
+                transition={{ delay: i * 0.05 }}
               >
-                <span className="bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface)] px-3 py-1.5 rounded-lg text-sm font-semibold shadow-lg opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-200 whitespace-nowrap">
-                  {action.label}
-                </span>
-                <div
-                  className={`w-12 h-12 ${action.color} rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform`}
+                <Link
+                  href={action.href}
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-2 bg-surface-container-lowest shadow-lg rounded-full pl-4 pr-3 py-2 hover:scale-105 active:scale-95 transition-transform"
                 >
-                  <span className="material-symbols-outlined text-white text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>
-                    {action.icon}
-                  </span>
-                </div>
-              </Link>
+                  <span className="text-xs font-bold text-on-surface whitespace-nowrap">{action.label}</span>
+                  <div className={`w-8 h-8 ${action.color} rounded-full flex items-center justify-center`}>
+                    <span className="material-symbols-outlined text-white text-sm">{action.icon}</span>
+                  </div>
+                </Link>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         )}
+      </AnimatePresence>
 
-        {/* Main FAB */}
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className={`w-14 h-14 bg-gradient-to-br from-primary to-primary-container rounded-full flex items-center justify-center shadow-2xl shadow-primary/30 active:scale-90 transition-all duration-300 ${
-            isOpen ? "rotate-45" : ""
-          }`}
-          aria-label="Quick actions"
-        >
-          <span className="material-symbols-outlined text-white text-2xl transition-transform duration-300" style={{ fontVariationSettings: "'FILL' 1" }}>
-            {isOpen ? "close" : "add"}
-          </span>
-        </button>
-
-        {/* Pulse effect when closed */}
-        {!isOpen && (
-          <div className="absolute inset-0 w-14 h-14 rounded-full bg-[var(--color-primary)]/30 animate-ping -z-10" />
-        )}
-      </div>
-
-      {/* Backdrop */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 bg-black/20 z-30 backdrop-blur-sm animate-fade-in"
-          onClick={() => setIsOpen(false)}
-        />
-      )}
-    </>
-  );
-}
-
-export function MiniFAB() {
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <div className="fixed bottom-24 right-6 z-40"
-      style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}>
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        aria-label={isOpen ? "Close menu" : "Open quick actions"}
-        aria-expanded={isOpen}
-        className="w-12 h-12 bg-[var(--color-primary)] rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform"
+      <motion.button
+        whileTap={{ scale: 0.9 }}
+        onClick={() => setOpen(!open)}
+        className="w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg shadow-primary/30 flex items-center justify-center"
       >
-        <span className="material-symbols-outlined text-white text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>
-          {isOpen ? "close" : "menu"}
-        </span>
-      </button>
-      
-      {isOpen && (
-        <div className="absolute bottom-16 right-0 flex flex-col gap-2 animate-slide-in">
-          <Link
-            href="/app/food"
-            className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform"
-          >
-            <span className="material-symbols-outlined text-white text-lg">restaurant</span>
-          </Link>
-          <Link
-            href="/app/orders"
-            className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform"
-          >
-            <span className="material-symbols-outlined text-white text-lg">receipt_long</span>
-          </Link>
-          <Link
-            href="/app/support"
-            className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform"
-          >
-            <span className="material-symbols-outlined text-white text-lg">support_agent</span>
-          </Link>
-        </div>
-      )}
+        <motion.span
+          animate={{ rotate: open ? 45 : 0 }}
+          transition={{ duration: 0.2 }}
+          className="material-symbols-outlined text-2xl"
+        >
+          {open ? "close" : "add"}
+        </motion.span>
+      </motion.button>
     </div>
-  );
-}
-
-export function ChatFAB() {
-  return (
-    <Link
-      href="/app/support/chat"
-      aria-label="Chat with support"
-      className="fixed bottom-24 right-6 z-40 w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform animate-bounce-in"
-      style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}
-    >
-      <span className="material-symbols-outlined text-white text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>
-        chat
-      </span>
-      <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white animate-pulse" />
-    </Link>
   );
 }
