@@ -966,27 +966,3 @@ textarea:focus-visible {
   }
 }
 
-/* Admin dark mode overrides — remap hardcoded Tailwind grays */
-.dark .bg-gray-50 { background-color: var(--color-dark-surface) !important; }
-.dark .bg-gray-100 { background-color: var(--color-dark-surface-variant) !important; }
-.dark .bg-gray-200 { background-color: #3d1520 !important; }
-.dark .bg-gray-300 { background-color: #4a202d !important; }
-.dark .bg-gray-400 { background-color: #5c3340 !important; }
-.dark .bg-white { background-color: var(--color-dark-surface) !important; }
-.dark .bg-\[#fcf9f9\] { background-color: var(--color-dark-background) !important; }
-.dark .border-gray-100 { border-color: var(--color-dark-outline) !important; }
-.dark .border-gray-200 { border-color: #3d1520 !important; }
-.dark .border-gray-300 { border-color: #4a202d !important; }
-.dark .text-gray-300 { color: #5c3340 !important; }
-.dark .text-gray-400 { color: #8a5a68 !important; }
-.dark .text-gray-500 { color: #9a6a78 !important; }
-.dark .text-gray-600 { color: #bb8898 !important; }
-.dark .text-gray-700 { color: #dd9ca6 !important; }
-.dark .text-gray-900 { color: var(--color-dark-on-surface) !important; }
-.dark .hover\:bg-gray-50:hover { background-color: #2d1018 !important; }
-.dark .hover\:bg-gray-100:hover { background-color: #3d1520 !important; }
-.dark .hover\:bg-gray-200:hover { background-color: #4a202d !important; }
-.dark .hover\:bg-red-50:hover { background-color: rgba(239, 68, 68, 0.1) !important; }
-.dark .hover\:bg-blue-50:hover { background-color: rgba(59, 130, 246, 0.1) !important; }
-.dark .hover\:bg-\[#ffecee\]:hover { background-color: #3d1520 !important; }
-

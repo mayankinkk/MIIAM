@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   description: "Global platform management.",
 };
 
+import AdminThemeLock from "@/components/AdminThemeLock";
+
 export default async function AdminLayout({
   children,
 }: {
@@ -33,18 +35,20 @@ export default async function AdminLayout({
   }
 
   return (
-    <div className="min-h-screen bg-surface flex">
-      <Suspense fallback={<div className="w-64 bg-surface animate-pulse" />}>
-        <AdminSidebar />
-      </Suspense>
+    <AdminThemeLock>
+      <div className="min-h-screen bg-surface flex">
+        <Suspense fallback={<div className="w-64 bg-surface animate-pulse" />}>
+          <AdminSidebar />
+        </Suspense>
 
-      {/* Main Content */}
-      <main className="flex-1 md:ml-64 relative">
-        <AdminHeader />
-        <div className="pt-24 pb-12">
-          {children}
-        </div>
-      </main>
-    </div>
+        {/* Main Content */}
+        <main className="flex-1 md:ml-64 relative">
+          <AdminHeader />
+          <div className="pt-24 pb-12">
+            {children}
+          </div>
+        </main>
+      </div>
+    </AdminThemeLock>
   );
 }
