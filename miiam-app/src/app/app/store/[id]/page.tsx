@@ -230,8 +230,8 @@ export default function StoreItemDetailPage() {
         )}
       </div>
 
-      {/* Sticky Add to Cart Bar */}
-      <div className="fixed bottom-0 left-0 right-0 bg-surface-container-lowest border-t border-outline-variant/20 p-4 z-50" style={{ paddingBottom: "env(safe-area-inset-bottom, 16px)" }}>
+      {/* Sticky Add to Cart Bar — sits above bottom nav */}
+      <div className="fixed bottom-[72px] left-0 right-0 bg-surface-container-lowest/95 backdrop-blur-xl border-t border-outline-variant/20 p-4 z-40 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]" style={{ paddingBottom: "env(safe-area-inset-bottom, 16px)" }}>
         {qty === 0 ? (
           <motion.button
             onClick={handleAdd}
