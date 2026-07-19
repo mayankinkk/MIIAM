@@ -83,8 +83,11 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
 
   const categories = [
-    { id: "food", label: t.nav.food, icon: "restaurant", color: "bg-orange-100", iconColor: "text-orange-600" },
-    { id: "services", label: t.nav.services, icon: "handyman", color: "bg-blue-100", iconColor: "text-blue-600" },
+    { id: "food", label: t.nav.food, icon: "restaurant", color: "from-orange-400 to-red-400", bgLight: "bg-orange-50" },
+    { id: "services", label: t.nav.services, icon: "handyman", color: "from-blue-400 to-indigo-400", bgLight: "bg-blue-50" },
+    { id: "store", label: "Store", icon: "storefront", color: "from-emerald-400 to-teal-400", bgLight: "bg-emerald-50" },
+    { id: "grocery", label: "Grocery", icon: "local_grocery_store", color: "from-lime-400 to-green-400", bgLight: "bg-lime-50" },
+    { id: "pharmacy", label: "Pharmacy", icon: "local_pharmacy", color: "from-cyan-400 to-blue-400", bgLight: "bg-cyan-50" },
   ];
 
   const [dbOffers, setDbOffers] = useState<Array<{ id: string; title: string; subtitle: string; gradient: string; badge: string }>>([]);
@@ -625,13 +628,13 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Categories - GKB Circular Style */}
-      <div className="px-4 pb-4">
-        <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+      {/* Categories */}
+      <div className="px-5 pt-4 pb-2">
+        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
           {categories.map((cat) => (
-            <Link key={cat.id} href={`/app/${cat.id}`} className="flex flex-col items-center gap-1.5 flex-shrink-0">
-              <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-all ${cat.color} dark:bg-surface-container`}>
-                <span className={`material-symbols-outlined ${cat.iconColor} text-xl`}>{cat.icon}</span>
+            <Link key={cat.id} href={`/app/${cat.id}`} className="flex flex-col items-center gap-2 flex-shrink-0 group">
+              <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${cat.color} flex items-center justify-center shadow-sm group-active:scale-95 transition-transform`}>
+                <span className="material-symbols-outlined text-white text-xl">{cat.icon}</span>
               </div>
               <span className="text-[10px] font-bold text-on-surface-variant">{cat.label}</span>
             </Link>
