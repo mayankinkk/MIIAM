@@ -727,101 +727,73 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Nearby Popular Restaurants - GKB Horizontal Scroll */}
-      <div className="px-4 pb-4">
+      {/* Nearby Popular Restaurants */}
+      <div className="px-5 pb-4">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-lg font-bold text-on-surface">{t.home.nearbyPopular} 🔥</h2>
-          <Link href="/app/food" className="text-xs font-bold text-primary">{t.home.seeAll}</Link>
+          <div>
+            <h2 className="text-lg font-black text-on-surface">{t.home.nearbyPopular}</h2>
+            <p className="text-[11px] text-on-surface-variant mt-0.5">{nearbyRestaurants.filter(r => r.type === 'food' || r.type === 'restaurant').length} restaurants nearby</p>
+          </div>
+          <Link href="/app/food" className="text-xs font-bold text-primary bg-primary/10 px-3 py-1.5 rounded-full">{t.home.seeAll}</Link>
         </div>
         {nearbyRestaurants.filter(r => r.type === 'food' || r.type === 'restaurant').length > 0 ? (
-          <>
-            {/* Horizontal Scroll Cards */}
-            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-              {nearbyRestaurants.filter(r => r.type === 'food' || r.type === 'restaurant').slice(0, 10).map((restaurant) => (
-                <Link key={restaurant.id} href={`/app/vendor/${restaurant.id}`} className="flex-shrink-0 w-40 bg-surface-container-lowest dark:bg-[var(--color-surface-container)] border border-outline-variant/10 dark:border-[var(--color-border-subtle)] rounded-2xl overflow-hidden shadow-sm card-lift active:scale-[0.98] transition-transform">
-                  {/* Image */}
-                  <div className="relative h-24 bg-surface-container">
+          <div className="space-y-3">
+            {nearbyRestaurants.filter(r => r.type === 'food' || r.type === 'restaurant').slice(0, 8).map((restaurant, idx) => (
+              <Link key={restaurant.id} href={`/app/vendor/${restaurant.id}`} className="block bg-surface-container-lowest rounded-2xl overflow-hidden border border-outline-variant/10 active:scale-[0.98] transition-transform">
+                <div className="flex">
+                  <div className="w-28 h-28 flex-shrink-0 bg-surface-container relative overflow-hidden">
                     {restaurant.cover_image_url || restaurant.image_url ? (
-                      <BlurImage src={restaurant.cover_image_url || restaurant.image_url || ""} alt={restaurant.name || restaurant.shop_name} fill className="w-full h-full" sizes="160px" />
+                      <BlurImage src={restaurant.cover_image_url || restaurant.image_url || ""} alt={restaurant.name || restaurant.shop_name} fill className="w-full h-full" sizes="112px" />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-3xl">🍽️</div>
+                      <div className="w-full h-full flex items-center justify-center text-3xl bg-gradient-to-br from-orange-100 to-amber-50">🍽️</div>
                     )}
-                    {/* Badges */}
-                    <div className="absolute top-1.5 left-1.5 flex gap-1">
-                      {restaurant.is_new && (
-                        <span className="bg-green-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full">{t.home.new}</span>
-                      )}
-                      {restaurant.is_featured && (
-                        <span className="bg-amber-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full">⭐ {t.home.featured}</span>
-                      )}
-                    </div>
-                    {restaurant.is_promoted && (
-                      <div className="absolute top-1.5 right-1.5 bg-purple-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full">
-                        {t.home.promoted}
-                      </div>
+                    {restaurant.is_new && (
+                      <span className="absolute top-1.5 left-1.5 bg-green-500 text-white text-[8px] font-black px-1.5 py-0.5 rounded-md">{t.home.new}</span>
                     )}
                   </div>
-                  {/* Info */}
-                  <div className="p-2.5">
-                    <h3 className="font-bold text-on-surface text-sm truncate">{restaurant.name || restaurant.shop_name}</h3>
-                    <p className="text-[10px] text-on-surface-variant truncate mt-0.5">{restaurant.cuisine || t.home.various}</p>
-                    <div className="flex items-center gap-1.5 mt-1.5">
-                      <span className="text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded font-bold">★ {restaurant.rating || 4.0}</span>
-                      <span className="text-[10px] text-on-surface-variant flex items-center gap-0.5">
-                        <span className="material-symbols-outlined text-[10px]">schedule</span>
-                        {t.home.minDelivery}
+                  <div className="p-3 flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0 flex-1">
+                        <h3 className="font-bold text-sm text-on-surface truncate">{restaurant.name || restaurant.shop_name}</h3>
+                        <p className="text-[11px] text-on-surface-variant truncate mt-0.5">{restaurant.cuisine || t.home.various}</p>
+                      </div>
+                      <div className="flex items-center gap-0.5 bg-green-500/10 px-2 py-1 rounded-lg flex-shrink-0">
+                        <span className="text-[11px] font-black text-green-600">{restaurant.rating || 4.0}</span>
+                        <span className="text-green-600 text-[10px]">★</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 mt-2">
+                      <span className="flex items-center gap-1 text-[11px] text-on-surface-variant">
+                        <span className="material-symbols-outlined text-[12px] text-primary">schedule</span>
+                        {restaurant.delivery_time_min || 25}–{restaurant.delivery_time_max || 35} min
                       </span>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-            {/* Vertical List - More Options */}
-            <div className="mt-4 space-y-3">
-              {nearbyRestaurants.filter(r => r.type === 'food' || r.type === 'restaurant').slice(0, 5).map((restaurant) => (
-                <Link key={`v-${restaurant.id}`} href={`/app/vendor/${restaurant.id}`} className="block bg-surface-container-lowest dark:bg-[var(--color-surface-container)] border border-outline-variant/10 dark:border-[var(--color-border-subtle)] rounded-2xl overflow-hidden shadow-sm card-lift active:scale-[0.98] transition-transform">
-                  <div className="flex">
-                    <div className="w-24 h-24 flex-shrink-0 bg-surface-container relative">
-                      {restaurant.cover_image_url || restaurant.image_url ? (
-                        <BlurImage src={restaurant.cover_image_url || restaurant.image_url || ""} alt={restaurant.name || restaurant.shop_name} fill className="w-full h-full" sizes="96px" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-2xl">🍽️</div>
+                      {restaurant.delivery_charge !== undefined && restaurant.delivery_charge !== null && (
+                        <span className={`text-[11px] font-bold ${Number(restaurant.delivery_charge) === 0 ? "text-green-600" : "text-on-surface-variant"}`}>
+                          {Number(restaurant.delivery_charge) === 0 ? "Free delivery" : `₹${restaurant.delivery_charge}`}
+                        </span>
+                      )}
+                      {restaurant.min_order_amount && (
+                        <span className="text-[10px] text-on-surface-variant/60">Min ₹{restaurant.min_order_amount}</span>
                       )}
                     </div>
-                    <div className="p-2.5 flex-1">
-                      <div className="flex items-start justify-between">
-                        <h3 className="font-bold text-on-surface text-sm">{restaurant.name || restaurant.shop_name}</h3>
-                        <div className="flex items-center gap-0.5 bg-green-500/15 px-1.5 py-0.5 rounded">
-                          <span className="text-[10px] font-bold text-green-600 dark:text-green-400">{restaurant.rating || 4.0}</span>
-                          <span className="text-green-600 dark:text-green-400 text-[10px]">★</span>
-                        </div>
+                    {idx < 2 && restaurant.is_featured && (
+                      <div className="flex items-center gap-1 mt-1.5">
+                        <span className="material-symbols-outlined text-[12px] text-amber-500" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                        <span className="text-[10px] font-bold text-amber-600">{t.home.topRated}</span>
                       </div>
-                      <p className="text-[10px] text-on-surface-variant mt-0.5">{restaurant.cuisine || t.home.various}</p>
-                      <div className="flex items-center gap-1.5 mt-1.5 text-[10px] text-on-surface-variant">
-                        <span className="flex items-center gap-0.5">
-                          <span className="material-symbols-outlined text-[10px]">schedule</span>
-                          {t.home.minDelivery}
-                        </span>
-                        {restaurant.is_featured && (
-                          <span className="flex items-center gap-0.5 text-amber-600">
-                            <span className="material-symbols-outlined text-[10px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                            {t.home.topRated}
-                          </span>
-                        )}
-                      </div>
-                    </div>
+                    )}
                   </div>
-                </Link>
-              ))}
-            </div>
-          </>
+                </div>
+              </Link>
+            ))}
+          </div>
         ) : !locationStore.pincode ? (
-          <div className="bg-surface-container dark:bg-[var(--color-surface-container-lowest)] border border-outline-variant/10 dark:border-[var(--color-border-subtle)] rounded-2xl p-8 text-center shadow-sm">
-            <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 animate-glow-pulse">
+          <div className="bg-surface-container-lowest border border-outline-variant/10 rounded-2xl p-8 text-center shadow-sm">
+            <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="material-symbols-outlined text-4xl text-primary">location_on</span>
             </div>
-            <h3 className="text-lg font-black text-on-surface dark:text-[var(--color-on-surface)] mb-1">{t.home.locationRequired}</h3>
-            <p className="text-sm text-on-surface-variant dark:text-[var(--color-outline)] mb-5">
+            <h3 className="text-lg font-black text-on-surface mb-1">{t.home.locationRequired}</h3>
+            <p className="text-sm text-on-surface-variant mb-5">
               {t.home.locationRequiredDesc}
             </p>
             <button
@@ -832,12 +804,12 @@ export default function HomePage() {
             </button>
           </div>
         ) : locationStore.pincode ? (
-          <div className="bg-surface-container dark:bg-[var(--color-surface-container-lowest)] border border-outline-variant/10 dark:border-[var(--color-border-subtle)] rounded-2xl p-8 text-center shadow-sm">
+          <div className="bg-surface-container-lowest border border-outline-variant/10 rounded-2xl p-8 text-center shadow-sm">
             <div className="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="material-symbols-outlined text-4xl text-amber-500">location_off</span>
             </div>
-            <h3 className="text-lg font-black text-on-surface dark:text-[var(--color-on-surface)] mb-1">{t.home.notAvailable}</h3>
-            <p className="text-sm text-on-surface-variant dark:text-[var(--color-outline)] mb-1">
+            <h3 className="text-lg font-black text-on-surface mb-1">{t.home.notAvailable}</h3>
+            <p className="text-sm text-on-surface-variant mb-1">
               {t.home.notAvailableDesc}
             </p>
             <p className="text-sm font-bold text-primary mb-4">
