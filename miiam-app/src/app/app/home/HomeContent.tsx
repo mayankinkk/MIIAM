@@ -86,8 +86,6 @@ export default function HomePage() {
     { id: "food", label: t.nav.food, icon: "restaurant", color: "from-orange-400 to-red-400", bgLight: "bg-orange-50" },
     { id: "services", label: t.nav.services, icon: "handyman", color: "from-blue-400 to-indigo-400", bgLight: "bg-blue-50" },
     { id: "store", label: "Store", icon: "storefront", color: "from-emerald-400 to-teal-400", bgLight: "bg-emerald-50" },
-    { id: "grocery", label: "Grocery", icon: "local_grocery_store", color: "from-lime-400 to-green-400", bgLight: "bg-lime-50" },
-    { id: "pharmacy", label: "Pharmacy", icon: "local_pharmacy", color: "from-cyan-400 to-blue-400", bgLight: "bg-cyan-50" },
   ];
 
   const [dbOffers, setDbOffers] = useState<Array<{ id: string; title: string; subtitle: string; gradient: string; badge: string }>>([]);
