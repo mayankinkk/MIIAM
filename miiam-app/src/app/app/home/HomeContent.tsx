@@ -115,6 +115,7 @@ export default function HomePage() {
   const [dataError, setDataError] = useState<string | null>(null);
   const [retryKey, setRetryKey] = useState(0);
   const userPincode = locationStore.pincode;
+  const [lastOrder, setLastOrder] = useState<{ id: string; vendor_id: string; vendor_name: string; items: string; total: number; placed_at: string } | null>(null);
 
   useEffect(() => {
     // Check if redirecting from another page requesting location change
@@ -153,6 +154,34 @@ export default function HomePage() {
         ...user,
         profile_name: profileResult.data?.full_name || user.user_metadata?.full_name || user.user_metadata?.name
       });
+
+      // Fetch last completed order for quick reorder
+      const { data: lastOrderData } = await supabase
+        .from("orders")
+        .select("id, status, total_amount, placed_at, vendor_id, items")
+        .eq("user_id", user.id)
+        .in("status", ["delivered", "completed"])
+        .order("placed_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (lastOrderData) {
+        let vendorName = "Restaurant";
+        if (lastOrderData.vendor_id) {
+          const { data: v } = await supabase.from("vendors").select("shop_name").eq("id", lastOrderData.vendor_id).maybeSingle();
+          if (v?.shop_name) vendorName = v.shop_name;
+        }
+        const itemsList = Array.isArray(lastOrderData.items)
+          ? (lastOrderData.items as Array<{ name?: string }>).map((i) => i.name || "Item").join(", ")
+          : typeof lastOrderData.items === "string" ? lastOrderData.items : "Previous order";
+        setLastOrder({
+          id: lastOrderData.id,
+          vendor_id: lastOrderData.vendor_id || "",
+          vendor_name: vendorName,
+          items: itemsList,
+          total: lastOrderData.total_amount || 0,
+          placed_at: lastOrderData.placed_at,
+        });
+      }
 
       if (notifsResult.data) {
         setNotifications(notifsResult.data);
@@ -649,6 +678,31 @@ export default function HomePage() {
           ))}
         </div>
       </div>
+
+      {/* Quick Reorder */}
+      {lastOrder && (
+        <div className="px-5 pt-2 pb-1">
+          <div className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-2xl p-4 border border-primary/10">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="material-symbols-outlined text-primary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>replay</span>
+              <span className="text-xs font-bold text-primary uppercase tracking-wider">Order again</span>
+            </div>
+            <div className="flex items-center justify-between gap-3">
+              <div className="min-w-0 flex-1">
+                <p className="font-bold text-on-surface text-sm truncate">{lastOrder.vendor_name}</p>
+                <p className="text-[11px] text-on-surface-variant truncate mt-0.5">{lastOrder.items}</p>
+                <p className="text-[10px] text-on-surface-variant/60 mt-0.5">₹{lastOrder.total} · {new Date(lastOrder.placed_at).toLocaleDateString()}</p>
+              </div>
+              <Link
+                href={`/app/vendor/${lastOrder.vendor_id}`}
+                className="flex-shrink-0 bg-primary text-white text-xs font-bold px-4 py-2.5 rounded-xl active:scale-95 transition-transform shadow-sm"
+              >
+                Reorder
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Spotlight Section - Featured Today */}
       {spotlightRestaurant && (
