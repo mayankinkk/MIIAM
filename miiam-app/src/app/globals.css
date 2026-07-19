@@ -861,6 +861,11 @@ textarea:focus-visible {
   transform-origin: top;
 }
 
+@keyframes offerProgress {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+
 /* =========================================================================
    PRINT STYLESHEET
    - Hides app chrome (nav, buttons, breadcrumbs, modals)
