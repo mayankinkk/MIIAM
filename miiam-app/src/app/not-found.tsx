@@ -34,14 +34,11 @@ export default function NotFound() {
             <Link href="/app/food" className="text-xs px-3 py-1 bg-[var(--color-surface-container)] rounded-full text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]">
               Food
             </Link>
-            <Link href="/app/grocery" className="text-xs px-3 py-1 bg-[var(--color-surface-container)] rounded-full text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]">
-              Grocery
-            </Link>
-            <Link href="/app/pharmacy" className="text-xs px-3 py-1 bg-[var(--color-surface-container)] rounded-full text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]">
-              Pharmacy
-            </Link>
             <Link href="/app/services" className="text-xs px-3 py-1 bg-[var(--color-surface-container)] rounded-full text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]">
               Services
+            </Link>
+            <Link href="/app/store" className="text-xs px-3 py-1 bg-[var(--color-surface-container)] rounded-full text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]">
+              Store
             </Link>
             <Link href="/partner" className="text-xs px-3 py-1 bg-[var(--color-surface-container)] rounded-full text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]">
               Become a Partner
