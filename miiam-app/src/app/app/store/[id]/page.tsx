@@ -117,7 +117,7 @@ export default function StoreItemDetailPage() {
   const bucket = BUCKET_LABELS[item.category];
 
   return (
-    <div className="min-h-screen bg-surface pb-24">
+    <div className="min-h-screen bg-surface pb-36">
       {/* Hero Image */}
       <div className="relative h-72 bg-surface-container overflow-hidden">
         <BlurImage
@@ -231,7 +231,7 @@ export default function StoreItemDetailPage() {
       </div>
 
       {/* Sticky Add to Cart Bar — sits above bottom nav */}
-      <div className="fixed bottom-[72px] left-0 right-0 bg-surface-container-lowest/95 backdrop-blur-xl border-t border-outline-variant/20 p-4 z-40 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]" style={{ paddingBottom: "env(safe-area-inset-bottom, 16px)" }}>
+      <div className="fixed bottom-[80px] md:bottom-6 left-3 right-3 md:left-auto md:right-6 md:max-w-sm bg-surface-container-lowest/95 backdrop-blur-xl border border-outline-variant/10 p-3.5 rounded-2xl z-40 shadow-xl" style={{ paddingBottom: "max(env(safe-area-inset-bottom, 0px), 14px)" }}>
         {qty === 0 ? (
           <motion.button
             onClick={handleAdd}
