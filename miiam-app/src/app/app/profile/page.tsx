@@ -165,10 +165,10 @@ export default function EnhancedProfilePage() {
         {/* Settings Section */}
         <div className="space-y-3">
           {/* Theme Toggle */}
-          <div className="bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container)] rounded-2xl p-4">
+          <div className="bg-surface-container-lowest rounded-2xl p-4">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-                <span className="material-symbols-outlined text-gray-500 dark:text-gray-400">palette</span>
+              <div className="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center">
+                <span className="material-symbols-outlined text-on-surface-variant">palette</span>
               </div>
               <div className="flex-1">
                 <p className="font-bold text-[var(--color-on-surface)]">Appearance</p>

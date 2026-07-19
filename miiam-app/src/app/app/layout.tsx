@@ -11,7 +11,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider>
       <OnboardingGate>
-        <div className="min-h-screen bg-surface dark:bg-gray-950 text-on-surface dark:text-gray-100 transition-colors">
+        <div className="min-h-screen bg-surface text-on-surface transition-colors">
           <NotificationPermission />
           <InstallPrompt />
           <ServiceSettingsSync />

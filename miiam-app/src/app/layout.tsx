@@ -92,10 +92,13 @@ export default function RootLayout({
           __html: `
             try {
               var t = localStorage.getItem("miiam-theme");
-              var s = t ? JSON.parse(t).state?.theme : "light";
-              if (s === "dark" || (s === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
-                document.documentElement.classList.add("dark");
-              }
+              var s = t ? JSON.parse(t).state?.theme || "light" : "light";
+              var resolved = s === "system"
+                ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+                : s;
+              document.documentElement.classList.remove("light", "dark");
+              document.documentElement.classList.add(resolved);
+              document.documentElement.style.colorScheme = resolved;
               var l = localStorage.getItem("miiam-language");
               var lang = l ? JSON.parse(l).state?.language : "en";
               document.documentElement.lang = lang;
