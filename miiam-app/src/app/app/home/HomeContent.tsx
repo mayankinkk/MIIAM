@@ -10,6 +10,7 @@ import { NetworkError } from "@/components/ui/EmptyStates";
 import { withRetry } from "@/lib/retry";
 import logger from "@/lib/logger";
 import { reverseGeocode, geocodePincode } from "@/lib/geocoding";
+import { useRecentlyViewed } from "@/lib/hooks/useRecentlyViewed";
 
 import HomeHeader from "@/components/home/HomeHeader";
 import OffersCarousel from "@/components/home/OffersCarousel";
@@ -22,6 +23,7 @@ import PromotedPartners from "@/components/home/PromotedPartners";
 import NearbyRestaurants from "@/components/home/NearbyRestaurants";
 import LocationModal from "@/components/home/LocationModal";
 import NotificationsPanel from "@/components/home/NotificationsPanel";
+import RecentlyViewed from "@/components/home/RecentlyViewed";
 
 import type { User } from "@supabase/supabase-js";
 
@@ -85,6 +87,7 @@ export default function HomePage() {
   const supabase = useMemo(() => createClient(), []);
   const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
+  const { recentlyViewed } = useRecentlyViewed();
 
   const categories = [
     { id: "food", label: t.nav.food, icon: "restaurant", color: "from-orange-400 to-red-400" },
@@ -492,6 +495,8 @@ export default function HomePage() {
       {spotlightRestaurant && <SpotlightCard restaurant={spotlightRestaurant} />}
 
       <PromotedPartners restaurants={featuredRestaurants} />
+
+      <RecentlyViewed items={recentlyViewed} />
 
       <NearbyRestaurants
         restaurants={nearbyRestaurants}

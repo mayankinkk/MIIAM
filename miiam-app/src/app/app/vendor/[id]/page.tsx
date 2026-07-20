@@ -6,6 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cartStore";
+import { useRecentlyViewed } from "@/lib/hooks/useRecentlyViewed";
 import CustomizationModal from "@/components/food/CustomizationModal";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
@@ -92,6 +93,7 @@ export default function VendorPage() {
   const router = useRouter();
   const vendorId = params.id as string;
   const supabase = useMemo(() => createClient(), []);
+  const { trackView } = useRecentlyViewed();
   const [vendor, setVendor] = useState<Vendor | null>(null);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -111,7 +113,16 @@ export default function VendorPage() {
           .eq("id", vendorId)
           .single();
 
-        if (vendorData) setVendor(vendorData);
+        if (vendorData) {
+          setVendor(vendorData);
+          trackView({
+            id: vendorData.id,
+            name: vendorData.shop_name,
+            image_url: vendorData.image_url,
+            cuisine: vendorData.cuisine,
+            rating: vendorData.rating,
+          });
+        }
 
         let itemsTable = "menu_items";
         if (vendorData?.type === "grocery") itemsTable = "grocery_products";
